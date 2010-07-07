@@ -1,0 +1,23 @@
+Index: icedtea6-1.8/build/openjdk/hotspot/src/os/linux/vm/os_linux.cpp
+===================================================================
+--- openjdk/hotspot/src/os/linux/vm/os_linux.cpp	2010-06-09 22:22:13.696298239 +0200
++++ openjdk/hotspot/src/os/linux/vm/os_linux.cpp	2010-06-09 22:24:15.308790737 +0200
+@@ -49,7 +49,6 @@
+ # include <string.h>
+ # include <syscall.h>
+ # include <sys/sysinfo.h>
+-# include <gnu/libc-version.h>
+ # include <sys/ipc.h>
+ # include <sys/shm.h>
+ # include <link.h>
+@@ -544,9 +543,7 @@
+      os::Linux::set_glibc_version(str);
+   } else {
+      // _CS_GNU_LIBC_VERSION is not supported, try gnu_get_libc_version()
+-     static char _gnu_libc_version[32];
+-     jio_snprintf(_gnu_libc_version, sizeof(_gnu_libc_version),
+-              "glibc %s %s", gnu_get_libc_version(), gnu_get_libc_release());
++     static char _gnu_libc_version[32] = "2.9";
+      os::Linux::set_glibc_version(_gnu_libc_version);
+   }
+ 

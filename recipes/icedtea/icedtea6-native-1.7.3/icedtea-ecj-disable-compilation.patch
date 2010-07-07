@@ -1,0 +1,513 @@
+Index: openjdk/jdk/make/sun/awt/Makefile
+===================================================================
+--- openjdk.orig/jdk/make/sun/awt/Makefile	2009-04-24 09:33:55.000000000 +0200
++++ openjdk/jdk/make/sun/awt/Makefile	2009-09-29 13:57:14.446815782 +0200
+@@ -180,7 +180,8 @@
+ include $(BUILDDIR)/common/Mapfile-vers.gmk
+ include $(BUILDDIR)/common/Library.gmk
+ 
+-build: fontconfigs
++#build: fontconfigs
++build:
+ 
+ 
+ ifeq ($(PLATFORM), windows)
+@@ -535,9 +536,9 @@
+             -I$(PLATFORM_SRC)/native/$(PKGDIR) \
+ 	    $(EVENT_MODEL)
+ 
+-ifeq ($(PLATFORM), linux)
+-LDFLAGS += -L$(MOTIF_LIB) -L$(OPENWIN_LIB)
+-endif
++#ifeq ($(PLATFORM), linux)
++#LDFLAGS += -L$(MOTIF_LIB) -L$(OPENWIN_LIB)
++#endif
+ 
+ LDFLAGS += -L$(LIBDIR)/$(LIBARCH)/$(TSOBJDIR) \
+ 	   $(AWT_RUNPATH)
+Index: openjdk/jdk/make/javax/sound/jsoundalsa/Makefile
+===================================================================
+--- openjdk.orig/jdk/make/javax/sound/jsoundalsa/Makefile	2009-09-29 13:48:34.534565581 +0200
++++ openjdk/jdk/make/javax/sound/jsoundalsa/Makefile	2009-09-29 13:57:14.446815782 +0200
+@@ -44,34 +44,35 @@
+ # Files
+ #
+ 
+-FILES_c = \
+-	Utilities.c \
+-	$(DAUDIOFILES_c) \
+-	$(MIDIFILES_c) \
+-	$(PORTFILES_c)
++#FILES_c = \
++#	Utilities.c \
++#	$(DAUDIOFILES_c) \
++#	$(MIDIFILES_c) \
++#	$(PORTFILES_c)
+ 
+ # platform dependent files
+-FILES_c += \
+-	PLATFORM_API_LinuxOS_ALSA_CommonUtils.c   \
+-	PLATFORM_API_LinuxOS_ALSA_PCM.c     \
+-	PLATFORM_API_LinuxOS_ALSA_PCMUtils.c   \
+-	PLATFORM_API_LinuxOS_ALSA_MidiIn.c  \
+-	PLATFORM_API_LinuxOS_ALSA_MidiOut.c \
+-	PLATFORM_API_LinuxOS_ALSA_MidiUtils.c \
+-	PLATFORM_API_LinuxOS_ALSA_Ports.c
+-
+-FILES_export = \
+-	$(DAUDIOFILES_export) \
+-	$(MIDIFILES_export) \
+-	$(PORTFILES_export)
++#FILES_c += \
++#	PLATFORM_API_LinuxOS_ALSA_CommonUtils.c   \
++#	PLATFORM_API_LinuxOS_ALSA_PCM.c     \
++#	PLATFORM_API_LinuxOS_ALSA_PCMUtils.c   \
++#	PLATFORM_API_LinuxOS_ALSA_MidiIn.c  \
++#	PLATFORM_API_LinuxOS_ALSA_MidiOut.c \
++#	PLATFORM_API_LinuxOS_ALSA_MidiUtils.c \
++#	PLATFORM_API_LinuxOS_ALSA_Ports.c
++
++FILES_export =
++#FILES_export = \
++#	$(DAUDIOFILES_export) \
++#	$(MIDIFILES_export) \
++#	$(PORTFILES_export)
+ 
+-OTHER_LDLIBS += -lasound
++#OTHER_LDLIBS += -lasound
+ 
+ CPPFLAGS += \
+-	-DUSE_DAUDIO=TRUE \
+-	-DUSE_PORTS=TRUE  \
+-	-DUSE_PLATFORM_MIDI_OUT=TRUE \
+-	-DUSE_PLATFORM_MIDI_IN=TRUE \
++	-DUSE_DAUDIO=FALSE \
++	-DUSE_PORTS=FALSE  \
++	-DUSE_PLATFORM_MIDI_OUT=FALSE \
++	-DUSE_PLATFORM_MIDI_IN=FALSE \
+ 	-I$(SHARE_SRC)/native/com/sun/media/sound
+ 
+ #
+Index: openjdk/jdk/make/sun/splashscreen/Makefile
+===================================================================
+--- openjdk.orig/jdk/make/sun/splashscreen/Makefile	2009-09-29 13:48:33.738565601 +0200
++++ openjdk/jdk/make/sun/splashscreen/Makefile	2009-09-29 13:57:14.446815782 +0200
+@@ -32,7 +32,8 @@
+ #
+ # Files
+ #
+-include FILES_c.gmk
++#include FILES_c.gmk
++FILES_c = 
+ 
+ FILES_java = \
+     java/awt/SplashScreen.java
+@@ -62,9 +63,9 @@
+ CFLAGS += -DSPLASHSCREEN -DPNG_NO_MMX_CODE
+ 
+ ifneq ($(PLATFORM), windows)
+-  CFLAGS += -DWITH_X11
+-  CPPFLAGS += -I$(OPENWIN_HOME)/include -I$(OPENWIN_HOME)/include/X11/extensions
+-  OTHER_LDLIBS += -L$(OPENWIN_LIB) -lX11 -lXext $(LIBM) -lpng -ljpeg -lgif -lz -lpthread
++#  CFLAGS += -DWITH_X11
++#  CPPFLAGS += -I$(OPENWIN_HOME)/include -I$(OPENWIN_HOME)/include/X11/extensions
++#  OTHER_LDLIBS += -L$(OPENWIN_LIB) -lX11 -lXext $(LIBM) -lpng -ljpeg -lgif -lz -lpthread
+ else # PLATFORM
+   CFLAGS += -DWITH_WIN32
+   OTHER_LDLIBS += kernel32.lib user32.lib gdi32.lib 
+@@ -79,7 +80,7 @@
+ vpath %.c   $(SHARE_SRC)/native/$(PKGDIR)/image/jpeg
+ vpath %.c   $(PLATFORM_SRC)/native/$(PKGDIR)/splashscreen
+ 
+-CPPFLAGS += -I$(PLATFORM_SRC)/native/$(PKGDIR)/splashscreen -I$(SHARE_SRC)/native/$(PKGDIR)/splashscreen
++#CPPFLAGS += -I$(PLATFORM_SRC)/native/$(PKGDIR)/splashscreen -I$(SHARE_SRC)/native/$(PKGDIR)/splashscreen
+ 
+ ifeq ($(PLATFORM), linux)
+   ifeq ($(ARCH_DATA_MODEL), 64)
+Index: openjdk/jdk/make/sun/xawt/Makefile
+===================================================================
+--- openjdk.orig/jdk/make/sun/xawt/Makefile	2009-04-24 09:33:56.000000000 +0200
++++ openjdk/jdk/make/sun/xawt/Makefile	2009-09-29 13:57:14.446815782 +0200
+@@ -41,15 +41,16 @@
+ #
+ # Files
+ #
+-include FILES_c_unix.gmk
+-include FILES_export_unix.gmk
++#include FILES_c_unix.gmk
++FILES_c = 
++#include FILES_export_unix.gmk
+ AUTO_FILES_JAVA_DIRS = sun/awt/X11
+ AUTO_JAVA_PRUNE = WrapperGenerator.java
+ 
+ LDFLAGS += -L$(OPENWIN_LIB)
+ 
+ ifeq ($(PLATFORM), linux)
+-LDFLAGS += -lpthread
++#LDFLAGS += -lpthread
+ dummy := $(shell $(MKDIR) -p $(LIB_LOCATION))
+ endif
+ 
+@@ -86,16 +87,19 @@
+ vpath %.c   $(PLATFORM_SRC)/native/sun/java2d/opengl
+ vpath %.c   $(PLATFORM_SRC)/native/sun/java2d/x11
+ 
+-OTHER_LDLIBS = $(LIBM) -lawt -lXext -lX11 -ldl \
+-                   $(LDFLAGS_COMMON) $(AWT_RUNPATH) $(OTHER_LDFLAGS) -lXtst -lXi
++#OTHER_LDLIBS = $(LIBM) -lawt -lXext -lX11 -ldl \
++#                   $(LDFLAGS_COMMON) $(AWT_RUNPATH) $(OTHER_LDFLAGS) -lXtst -lXi
+ 
+ ifeq  ($(PLATFORM), solaris)
+ CPPFLAGS += -DFUNCPROTO=15
+ dummy := $(shell $(MKDIR) -p $(LIB_LOCATION))
+ endif
+ 
+-CPPFLAGS += -I$(CUPS_HEADERS_PATH)
++#CPPFLAGS += -I$(CUPS_HEADERS_PATH)
+ 
++# Normally we would like to patch these includes away but
++# we need them for the successfull compilation of the sizer
++# executables.
+ CPPFLAGS += -DXAWT -DXAWT_HACK \
+         -I$(TEMPDIR)/../../sun.awt/awt/CClassHeaders \
+         -I$(PLATFORM_SRC)/native/sun/awt \
+@@ -124,10 +128,10 @@
+ 
+ ifeq ($(PLATFORM), linux)
+ # Allows for builds on Debian GNU Linux, X11 is in a different place 
+-  CPPFLAGS += -I/usr/X11R6/include/X11/extensions \
+-              -I/usr/include/X11/extensions \
+-              -I$(MOTIF_DIR)/include \
+-              -I$(OPENWIN_HOME)/include 
++#  CPPFLAGS += -I/usr/X11R6/include/X11/extensions \
++#              -I/usr/include/X11/extensions \
++#              -I$(MOTIF_DIR)/include \
++#              -I$(OPENWIN_HOME)/include 
+ endif
+ 
+ ifeq ($(PLATFORM), solaris)
+@@ -238,18 +242,20 @@
+ 	    $(SIZER_DIR) $(XLIBTYPES) "sizer" $(subst .,,$(suffix $(basename $@)))
+ 
+ $(SIZES): $(SIZERS)
+-	@if [ "$(DOHACK)$@" = "true$(PREDEFINED_SIZES)" ]; then \
+-	    $(ECHO) COPYING $(PREDEFINED_SIZES_TMPL) into $@; \
+-	    $(CP) $(PREDEFINED_SIZES_TMPL) $@; \
+-	    $(CHMOD) +w $@;\
+-	else	\
+-	    $(ECHO) GENERATING $@; \
+-	    $(WRAPPER_GENERATOR_DIR)/sizer$(suffix $@) > $@; \
+-	fi
+-	@if [ "$(DOCOMPARE)$(suffix $@)" = "true.64" ]; then \
+-	    $(ECHO) COMPARING $@ and $(STORED_SIZES_TMPL_$(PLATFORM)_$(LIBARCH)); \
+-	    $(DIFF) $@ $(STORED_SIZES_TMPL_$(PLATFORM)_$(LIBARCH)); \
+-	fi	
++	touch $(SIZES)
++#
++#	@if [ "$(DOHACK)$@" = "true$(PREDEFINED_SIZES)" ]; then \
++#	    $(ECHO) COPYING $(PREDEFINED_SIZES_TMPL) into $@; \
++#	    $(CP) $(PREDEFINED_SIZES_TMPL) $@; \
++#	    $(CHMOD) +w $@;\
++#	else	\
++#	    $(ECHO) GENERATING $@; \
++#	    $(WRAPPER_GENERATOR_DIR)/sizer$(suffix $@) > $@; \
++#	fi
++#	@if [ "$(DOCOMPARE)$(suffix $@)" = "true.64" ]; then \
++#	    $(ECHO) COMPARING $@ and $(STORED_SIZES_TMPL_$(PLATFORM)_$(LIBARCH)); \
++#	    $(DIFF) $@ $(STORED_SIZES_TMPL_$(PLATFORM)_$(LIBARCH)); \
++#	fi	
+ 
+ $(TEMPDIR)/.gen.wrappers: $(SIZES) $(WRAPPER_GENERATOR_CLASS) $(XLIBTYPES)
+ 	$(BOOT_JAVA_CMD) -cp $(WRAPPER_GENERATOR_TEMPDIR) WrapperGenerator \
+Index: openjdk/jdk/make/sun/jawt/Makefile
+===================================================================
+--- openjdk.orig/jdk/make/sun/jawt/Makefile	2009-09-29 13:48:34.186565471 +0200
++++ openjdk/jdk/make/sun/jawt/Makefile	2009-09-29 13:57:14.446815782 +0200
+@@ -36,7 +36,8 @@
+ ifeq ($(PLATFORM), windows)
+ FILES_cpp = jawt.cpp
+ else # PLATFORM
+-FILES_c = jawt.c
++FILES_c = 
++#FILES_c = jawt.c
+ endif # PLATFORM
+ 
+ FILES_h = $(INCLUDEDIR)/jawt.h \
+Index: openjdk/jdk/make/sun/jpeg/Makefile
+===================================================================
+--- openjdk.orig/jdk/make/sun/jpeg/Makefile	2009-09-29 13:48:33.726565626 +0200
++++ openjdk/jdk/make/sun/jpeg/Makefile	2009-09-29 13:57:14.446815782 +0200
+@@ -37,7 +37,8 @@
+ #
+ # Files
+ #
+-include FILES_c.gmk
++FILES_c = 
++#include FILES_c.gmk
+ 
+ AUTO_FILES_JAVA_DIRS = sun/awt/image com/sun/imageio/plugins/jpeg
+ 
+Index: openjdk/jdk/make/common/shared/Defs-java.gmk
+===================================================================
+--- openjdk.orig/jdk/make/common/shared/Defs-java.gmk	2009-09-29 13:48:55.954565215 +0200
++++ openjdk/jdk/make/common/shared/Defs-java.gmk	2009-09-29 13:57:14.446815782 +0200
+@@ -36,14 +36,14 @@
+ # Memory related -J flags that all uses of java tools should use.
+ #
+ JAVA_MEM_FLAGS   = -Xmx$(MAX_VM_MEMORY)m
+-ifneq (,$(filter $(ARCH), ia64 s390))
++#ifneq (,$(filter $(ARCH), ia64 s390))
+   # Special flags for javac on ia64 to work around a VM problem with
+   #   bad code generation during inlining (what version had this problem?):
+   #   Suspect this may not be needed anymore.
+-  JAVA_MEM_FLAGS   += -Xms$(MAX_VM_MEMORY)m -XX:-Inline
+-else
+-  JAVA_MEM_FLAGS   += -Xms$(MIN_VM_MEMORY)m -XX:PermSize=32m -XX:MaxPermSize=160m
+-endif
++#  JAVA_MEM_FLAGS   += -Xms$(MAX_VM_MEMORY)m -XX:-Inline
++#else
++#  JAVA_MEM_FLAGS   += -Xms$(MIN_VM_MEMORY)m -XX:PermSize=32m -XX:MaxPermSize=160m
++#endif
+ 
+ # 
+ # All java tools (javac, javah, and javadoc) run faster with certain java
+Index: openjdk/jdk/src/share/classes/java/awt/GraphicsEnvironment.java
+===================================================================
+--- openjdk.orig/jdk/src/share/classes/java/awt/GraphicsEnvironment.java	2009-04-24 09:34:04.000000000 +0200
++++ openjdk/jdk/src/share/classes/java/awt/GraphicsEnvironment.java	2009-09-29 13:57:14.450815511 +0200
+@@ -113,7 +113,7 @@
+      * @since 1.4
+      */
+     public static boolean isHeadless() {
+-        return getHeadlessProperty();
++        return true;
+     }
+ 
+     /**
+Index: openjdk/corba/make/common/Defs.gmk
+===================================================================
+--- openjdk.orig/corba/make/common/Defs.gmk	2009-04-24 09:30:19.000000000 +0200
++++ openjdk/corba/make/common/Defs.gmk	2009-09-29 13:57:14.450815511 +0200
+@@ -444,11 +444,11 @@
+ # Tool flags
+ #
+ ASFLAGS         = $(ASFLAGS_$(VARIANT)) $(ASFLAGS_COMMON) $(OTHER_ASFLAGS)
+-CFLAGS          = $(CFLAGS_$(VARIANT)/BYFILE)   $(CFLAGS_COMMON) $(OTHER_CFLAGS)
+-CXXFLAGS        = $(CXXFLAGS_$(VARIANT)/BYFILE) $(CXXFLAGS_COMMON) $(OTHER_CXXFLAGS)
+-CPPFLAGS        = $(CPPFLAGS_$(VARIANT)) $(CPPFLAGS_COMMON) $(OTHER_CPPFLAGS) \
++CFLAGS          = $(CFLAGS_$(VARIANT)/BYFILE)   $(CFLAGS_COMMON) $(OTHER_CFLAGS) $(OE_CFLAGS)
++CXXFLAGS        = $(CXXFLAGS_$(VARIANT)/BYFILE) $(CXXFLAGS_COMMON) $(OTHER_CXXFLAGS) $(OE_CXXFLAGS)
++CPPFLAGS        = $(CPPFLAGS_$(VARIANT)) $(CPPFLAGS_COMMON) $(OTHER_CPPFLAGS) $(OE_CPPFLAGS) \
+ 		  $(DEFINES) $(OPTIONS:%=-D%)
+-LDFLAGS         = $(LDFLAGS_$(VARIANT)) $(LDFLAGS_COMMON) $(OTHER_LDFLAGS)
++LDFLAGS         = $(LDFLAGS_$(VARIANT)) $(LDFLAGS_COMMON) $(OTHER_LDFLAGS) $(OE_LDFLAGS)
+ LDLIBS          = $(OTHER_LDLIBS) $(LDLIBS_$(VARIANT)) $(LDLIBS_COMMON)
+ LINTFLAGS       = $(LINTFLAGS_$(VARIANT)) $(LINTFLAGS_COMMON) \
+ 		  $(OTHER_LINTFLAGS)
+Index: openjdk/jdk/make/common/Defs.gmk
+===================================================================
+--- openjdk.orig/jdk/make/common/Defs.gmk	2009-09-29 13:48:33.590565061 +0200
++++ openjdk/jdk/make/common/Defs.gmk	2009-09-29 13:57:14.450815511 +0200
+@@ -662,11 +662,11 @@
+ # Tool flags
+ #
+ ASFLAGS         = $(ASFLAGS_$(VARIANT)) $(ASFLAGS_COMMON) $(OTHER_ASFLAGS)
+-CFLAGS          = $(CFLAGS_$(VARIANT)/BYFILE)   $(CFLAGS_COMMON) $(OTHER_CFLAGS)
+-CXXFLAGS        = $(CXXFLAGS_$(VARIANT)/BYFILE) $(CXXFLAGS_COMMON) $(OTHER_CXXFLAGS)
+-CPPFLAGS        = $(CPPFLAGS_$(VARIANT)) $(CPPFLAGS_COMMON) $(OTHER_CPPFLAGS) \
++CFLAGS          = $(CFLAGS_$(VARIANT)/BYFILE)   $(CFLAGS_COMMON) $(OTHER_CFLAGS) $(OE_CFLAGS)
++CXXFLAGS        = $(CXXFLAGS_$(VARIANT)/BYFILE) $(CXXFLAGS_COMMON) $(OTHER_CXXFLAGS) $(OE_CXXFLAGS)
++CPPFLAGS        = $(CPPFLAGS_$(VARIANT)) $(CPPFLAGS_COMMON) $(OTHER_CPPFLAGS) $(OE_CPPFLAGS) \
+ 		  $(DEFINES) $(OPTIONS:%=-D%)
+-LDFLAGS         = $(LDFLAGS_$(VARIANT)) $(LDFLAGS_COMMON) $(OTHER_LDFLAGS)
++LDFLAGS         = $(LDFLAGS_$(VARIANT)) $(LDFLAGS_COMMON) $(OTHER_LDFLAGS) $(OE_LDFLAGS)
+ LDLIBS          = $(OTHER_LDLIBS) $(LDLIBS_$(VARIANT)) $(LDLIBS_COMMON)
+ LINTFLAGS       = $(LINTFLAGS_$(VARIANT)) $(LINTFLAGS_COMMON) \
+ 		  $(OTHER_LINTFLAGS)
+Index: openjdk/hotspot/make/linux/makefiles/vm.make
+===================================================================
+--- openjdk.orig/hotspot/make/linux/makefiles/vm.make	2009-09-29 13:48:34.098565716 +0200
++++ openjdk/hotspot/make/linux/makefiles/vm.make	2009-09-29 13:57:14.450815511 +0200
+@@ -170,6 +170,7 @@
+ LIBS_VM   += $(LLVM_LIBS)
+ endif
+ 
++LFLAGS_VM = $(OE_LDFLAGS)
+ LINK_VM = $(LINK_LIB.c)
+ 
+ # rule for building precompiled header
+Index: openjdk/jdk/src/solaris/native/sun/awt/CUPSfuncs.c
+===================================================================
+--- openjdk.orig/jdk/src/solaris/native/sun/awt/CUPSfuncs.c	2009-04-24 09:34:34.000000000 +0200
++++ openjdk/jdk/src/solaris/native/sun/awt/CUPSfuncs.c	2009-09-29 13:57:14.450815511 +0200
+@@ -26,8 +26,10 @@
+ #include <jni.h>
+ #include <jni_util.h>
+ #include <dlfcn.h>
++#if 0
+ #include <cups/cups.h>
+ #include <cups/ppd.h>
++#endif
+ 
+ //#define CUPS_DEBUG
+ 
+@@ -37,6 +39,7 @@
+ #define DPRINTF(x, y)
+ #endif
+ 
++#if 0
+ typedef const char* (*fn_cupsServer)(void);
+ typedef int (*fn_ippPort)(void);
+ typedef http_t* (*fn_httpConnect)(const char *, int);
+@@ -56,7 +59,7 @@
+ fn_ppdClose j2d_ppdClose;
+ fn_ppdFindOption j2d_ppdFindOption;
+ fn_ppdPageSize j2d_ppdPageSize;
+-
++#endif
+ 
+ /*
+  * Initialize library functions.
+@@ -65,6 +68,7 @@
+ JNIEXPORT jboolean JNICALL
+ Java_sun_print_CUPSPrinter_initIDs(JNIEnv *env,
+                                          jobject printObj) {
++#if 0
+   void *handle = dlopen("libcups.so.2", RTLD_LAZY | RTLD_GLOBAL);
+ 
+   if (handle == NULL) {
+@@ -131,6 +135,8 @@
+   }
+ 
+   return JNI_TRUE;
++#endif
++	return JNI_FALSE;
+ }
+ 
+ /*
+@@ -141,6 +147,7 @@
+ Java_sun_print_CUPSPrinter_getCupsServer(JNIEnv *env,
+                                          jobject printObj)
+ {
++#if 0
+     jstring cServer = NULL;
+     const char* server = j2d_cupsServer();
+     if (server != NULL) {
+@@ -152,6 +159,8 @@
+         }
+     }
+     return cServer;
++#endif
++	return NULL;
+ }
+ 
+ /*
+@@ -162,8 +171,11 @@
+ Java_sun_print_CUPSPrinter_getCupsPort(JNIEnv *env,
+                                          jobject printObj)
+ {
++#if 0
+     int port = j2d_ippPort();
+     return (jint) port;
++#endif
++	return 0;
+ }
+ 
+ 
+@@ -177,6 +189,7 @@
+                                       jstring server,
+                                       jint port)
+ {
++#if 0
+     const char *serverName;
+     serverName = (*env)->GetStringUTFChars(env, server, NULL);
+     if (serverName != NULL) {
+@@ -187,6 +200,7 @@
+             return JNI_TRUE;
+         }
+     }
++#endif
+     return JNI_FALSE;
+ }
+ 
+@@ -199,6 +213,7 @@
+                                          jobject printObj,
+                                          jstring printer)
+ {
++#if 0
+     ppd_file_t *ppd;
+     ppd_option_t *optionTray, *optionPage;
+     ppd_choice_t *choice;
+@@ -304,6 +319,8 @@
+     j2d_ppdClose(ppd);
+     unlink(filename);
+     return nameArray;
++#endif
++	return NULL;
+ }
+ 
+ 
+@@ -315,6 +332,7 @@
+                                          jobject printObj,
+                                          jstring printer)
+ {
++#if 0
+     ppd_file_t *ppd;
+     ppd_option_t *option;
+     ppd_choice_t *choice;
+@@ -374,4 +392,6 @@
+     j2d_ppdClose(ppd);
+     unlink(filename);
+     return sizeArray;
++#endif
++	return NULL;
+ }
+Index: openjdk/jdk/src/share/classes/sun/java2d/SunGraphicsEnvironment.java
+===================================================================
+--- openjdk.orig/jdk/src/share/classes/sun/java2d/SunGraphicsEnvironment.java	2009-04-24 09:34:17.000000000 +0200
++++ openjdk/jdk/src/share/classes/sun/java2d/SunGraphicsEnvironment.java	2009-09-29 13:57:14.454815276 +0200
+@@ -244,6 +244,8 @@
+                  * that might be specified.
+                  */
+                 fontConfig = createFontConfiguration();
++								if (fontConfig == null)
++									return null;
+                 getPlatformFontPathFromFontConfig();
+ 
+                 String extraFontPath = fontConfig.getExtraFontPath();
+Index: openjdk/jdk/src/solaris/classes/sun/awt/X11GraphicsEnvironment.java
+===================================================================
+--- openjdk.orig/jdk/src/solaris/classes/sun/awt/X11GraphicsEnvironment.java	2009-04-24 09:34:33.000000000 +0200
++++ openjdk/jdk/src/solaris/classes/sun/awt/X11GraphicsEnvironment.java	2009-09-29 13:57:14.454815276 +0200
+@@ -899,7 +899,8 @@
+ 
+     // Implements SunGraphicsEnvironment.createFontConfiguration.
+     protected FontConfiguration createFontConfiguration() {
+-        return new MFontConfiguration(this);
++//        return new MFontConfiguration(this);
++			return null;
+     }
+     public FontConfiguration
+         createFontConfiguration(boolean preferLocaleFonts,
+Index: openjdk/jdk/make/launchers/Makefile
+===================================================================
+--- openjdk.orig/jdk/make/launchers/Makefile	2009-09-29 13:48:33.490815135 +0200
++++ openjdk/jdk/make/launchers/Makefile	2009-09-29 13:57:14.454815276 +0200
+@@ -57,7 +57,7 @@
+ endif
+ # Run MAKE $@ for all generic launchers
+ define make-all-launchers
+-$(call make-launcher, appletviewer, sun.applet.Main, , )
++#$(call make-launcher, appletviewer, sun.applet.Main, , )
+ $(call make-launcher, apt, com.sun.tools.apt.Main, , )
+ $(call make-launcher, extcheck, com.sun.tools.extcheck.Main, , )
+ $(call make-launcher, idlj, com.sun.tools.corba.se.idl.toJavaPortable.Compile, , )
+@@ -93,7 +93,7 @@
+   -J-Dcom.sun.CORBA.activation.Port=1049 \
+   -J-Dcom.sun.CORBA.POA.ORBServerId=1, )
+ $(call make-launcher, pack200, com.sun.java.util.jar.pack.Driver, , --pack)
+-$(call make-launcher, policytool, sun.security.tools.PolicyTool, , )
++#$(call make-launcher, policytool, sun.security.tools.PolicyTool, , )
+ $(call make-launcher, rmic, sun.rmi.rmic.Main, , )
+ $(call make-launcher, rmid, sun.rmi.server.Activation, , )
+ $(call make-launcher, rmiregistry, sun.rmi.registry.RegistryImpl, , )

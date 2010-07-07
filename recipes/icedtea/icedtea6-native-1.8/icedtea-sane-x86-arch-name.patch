@@ -1,0 +1,38 @@
+Index: icedtea6-1.8/acinclude.m4
+===================================================================
+--- icedtea6-1.8.orig/acinclude.m4	2010-04-10 21:58:40.000000000 +0200
++++ icedtea6-1.8/acinclude.m4	2010-04-22 10:09:42.752587915 +0200
+@@ -9,11 +9,11 @@
+       ARCHFLAG="-m64"
+       ;;
+     i?86)
+-      BUILD_ARCH_DIR=i586
+-      INSTALL_ARCH_DIR=i386
+-      JRE_ARCH_DIR=i386
++      BUILD_ARCH_DIR=x86
++      INSTALL_ARCH_DIR=x86
++      JRE_ARCH_DIR=x86
+       ARCH_PREFIX=${LINUX32}
+-      CROSS_TARGET_ARCH=i386
++      CROSS_TARGET_ARCH=x86
+       ARCHFLAG="-m32"
+       ;;
+     alpha*)
+@@ -765,7 +765,7 @@
+   ZERO_LIBARCH="${INSTALL_ARCH_DIR}"
+   dnl can't use AC_CHECK_SIZEOF on multilib
+   case "${ZERO_LIBARCH}" in
+-    i386|ppc|s390|sparc)
++    x86|ppc|s390|sparc)
+       ZERO_BITSPERWORD=32
+       ;;
+     amd64|ppc64|s390x|sparc64)
+@@ -777,7 +777,7 @@
+   esac
+   AC_C_BIGENDIAN([ZERO_ENDIANNESS="big"], [ZERO_ENDIANNESS="little"])
+   case "${ZERO_LIBARCH}" in
+-    i386)
++    x86)
+       ZERO_ARCHDEF="IA32"
+       ;;
+     ppc*)

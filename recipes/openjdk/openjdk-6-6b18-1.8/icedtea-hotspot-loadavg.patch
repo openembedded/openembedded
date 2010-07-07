@@ -1,0 +1,28 @@
+Index: icedtea6-1.8/build/openjdk/hotspot/src/os/linux/vm/os_linux.cpp
+===================================================================
+--- openjdk/hotspot/src/os/linux/vm/os_linux.cpp	2010-06-09 22:16:09.406334411 +0200
++++ openjdk/hotspot/src/os/linux/vm/os_linux.cpp	2010-06-09 22:19:38.952152043 +0200
+@@ -4325,7 +4325,22 @@
+ // Linux doesn't yet have a (official) notion of processor sets,
+ // so just return the system wide load average.
+ int os::loadavg(double loadavg[], int nelem) {
+-  return ::getloadavg(loadavg, nelem);
++
++	FILE *LOADAVG;
++	double avg[3] = { 0.0, 0.0, 0.0 };
++	int i, res = -1;;
++
++	if ((LOADAVG = fopen("/proc/loadavg", "r"))) {
++		fscanf(LOADAVG, "%lf %lf %lf", &avg[0], &avg[1], &avg[2]);
++		res = 0;
++		fclose(LOADAVG);
++	}
++
++	for (i = 0; (i < nelem) && (i < 3); i++) {
++		loadavg[i] = avg[i];
++	}
++
++	return res;
+ }
+ 
+ void os::pause() {

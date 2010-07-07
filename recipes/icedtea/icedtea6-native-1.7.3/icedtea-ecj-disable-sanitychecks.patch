@@ -1,0 +1,76 @@
+Index: openjdk-ecj/jdk/make/common/shared/Sanity.gmk
+===================================================================
+--- openjdk-ecj/jdk/make/common/shared/Sanity.gmk.orig	2009-07-18 00:55:46.924662599 +0200
++++ openjdk-ecj/jdk/make/common/shared/Sanity.gmk	2009-07-18 01:00:50.241296356 +0200
+@@ -1,3 +1,4 @@
++# BLA
+ #
+ # Copyright 2005-2007 Sun Microsystems, Inc.  All Rights Reserved.
+ # DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+@@ -80,8 +81,8 @@
+       ALSA_VERSION = 1.0.0
+     else
+       # dummy program that outputs ALSA's version (created in target sane-alsa-versioncheck)
+-      ALSA_VERSION_CHECK = $(TEMPDIR)/alsaversioncheck
+-      ALSA_VERSION = `if [ -f "$(ALSA_VERSION_CHECK)" ] ; then $(ALSA_VERSION_CHECK) ; fi`
++#      ALSA_VERSION_CHECK = $(TEMPDIR)/alsaversioncheck
++#      ALSA_VERSION = `if [ -f "$(ALSA_VERSION_CHECK)" ] ; then $(ALSA_VERSION_CHECK) ; fi`
+     endif
+   endif
+ endif
+@@ -131,11 +132,7 @@
+ 
+ ifndef CROSS_COMPILATION
+ MORE_PHONY_RULES = \
+-	sane-freetype \
+-  sane-cups \
+-  sane-motif \
+-  sane-alsa-versioncheck \
+-  sane-alsa-headers
++	sane-freetype
+ endif
+ 
+ .PHONY: \
+Index: openjdk-ecj/jdk/make/common/Sanity.gmk
+===================================================================
+--- openjdk-ecj/jdk/make/common/Sanity.gmk.orig	2009-07-18 00:55:46.924662599 +0200
++++ openjdk-ecj/jdk/make/common/Sanity.gmk	2009-07-18 01:02:48.041771212 +0200
+@@ -95,10 +95,6 @@
+     sane-alt_bootdir \
+     sane-bootdir
+ 
+-ifndef CROSS_COMPILATION
+-sanity-all:: sane-alsa-headers
+-endif
+-
+ ifdef OPENJDK
+ sanity-all:: sane-freetype 
+ endif
+@@ -109,27 +105,6 @@
+     sane-motif
+ endif
+ 
+-# on Linux, only check motif path if we are not building it from scratch.
+-#   (Which only happens with a full control build. The control makefiles are
+-#    the files that set BUILD_MOTIF).
+-#   We cannot sanity check something that has not been built yet. 
+-ifndef CROSS_COMPILATION
+-  ifeq ($(PLATFORM), linux)
+-    ifneq ($(BUILD_MOTIF), true)
+-sanity-all:: \
+-  sane-motif
+-    endif
+-  endif
+-endif
+-
+-# Always check cups header paths on solaris & linux
+-ifndef CROSS_COMPILATION
+-  ifneq ($(PLATFORM), windows)
+-sanity-all:: \
+-    sane-cups
+-  endif
+-endif
+-
+ # Always check hotspot binary paths even if we are building them from scratch
+ HOTSPOT_IMPORT_CHECK=true
+ ifeq ($(HOTSPOT_IMPORT_CHECK),true)

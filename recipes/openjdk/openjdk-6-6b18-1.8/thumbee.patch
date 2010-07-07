@@ -1,0 +1,15 @@
+Index: icedtea6-1.8/ports/hotspot/make/linux/makefiles/zeroshark.make
+===================================================================
+--- icedtea6-1.8.orig/ports/hotspot/make/linux/makefiles/zeroshark.make	2010-06-18 12:42:36.000000000 +0200
++++ icedtea6-1.8/ports/hotspot/make/linux/makefiles/zeroshark.make	2010-06-18 12:46:55.264667548 +0200
+@@ -31,8 +31,8 @@
+ Obj_Files += cppInterpreter_arm.o
+ Obj_Files += thumb2.o
+ 
+-CFLAGS += -DHOTSPOT_ASM
+-CCFLAGS += -DHOTSPOT_ASM
++CFLAGS += -DHOTSPOT_ASM -DTHUMB2EE
++CCFLAGS += -DHOTSPOT_ASM -DTHUMB2EE
+ 
+ ifeq ($(CROSS_COMPILATION, true)
+   C_COMPILE_FOR_MKBC = $(CC_FOR_BUILD)

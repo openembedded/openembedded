@@ -1,0 +1,186 @@
+From 662e11a8b6017f39ceb6d00dcdbfe11473b56174 Mon Sep 17 00:00:00 2001
+From: woglinde <woglinde@rhein.zuhause.netz>
+Date: Fri, 23 Oct 2009 18:06:43 +0200
+Subject: [PATCH] sane-arch2
+
+---
+ openjdk/jdk/make/common/shared/Compiler-gcc.gmk |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+Index: openjdk/jdk/make/common/shared/Compiler-gcc.gmk
+===================================================================
+--- openjdk/jdk/make/common/shared/Compiler-gcc.gmk.orig	2010-04-22 12:04:08.000000000 +0200
++++ openjdk/jdk/make/common/shared/Compiler-gcc.gmk	2010-04-22 12:13:53.335169757 +0200
+@@ -85,8 +85,8 @@
+     REQUIRED_CC_VER = 3.2
+     REQUIRED_GCC_VER = 3.2.*
+   endif
+-  ifeq ($(ARCH), i586)
+-    # i586
++  ifeq ($(ARCH), x86)
++    # x86
+     REQUIRED_CC_VER = 3.2
+     REQUIRED_GCC_VER = 3.2.1*
+     REQUIRED_GCC_VER_INT = 3.2.1-7a
+Index: openjdk/jdk/src/solaris/bin/i586/jvm.cfg
+===================================================================
+--- openjdk/jdk/src/solaris/bin/i586/jvm.cfg	2010-02-17 04:14:46.000000000 +0100
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,38 +0,0 @@
+-# Copyright 2001-2004 Sun Microsystems, Inc.  All Rights Reserved.
+-# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+-#
+-# This code is free software; you can redistribute it and/or modify it
+-# under the terms of the GNU General Public License version 2 only, as
+-# published by the Free Software Foundation.  Sun designates this
+-# particular file as subject to the "Classpath" exception as provided
+-# by Sun in the LICENSE file that accompanied this code.
+-#
+-# This code is distributed in the hope that it will be useful, but WITHOUT
+-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+-# version 2 for more details (a copy is included in the LICENSE file that
+-# accompanied this code).
+-#
+-# You should have received a copy of the GNU General Public License version
+-# 2 along with this work; if not, write to the Free Software Foundation,
+-# Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+-#
+-# Please contact Sun Microsystems, Inc., 4150 Network Circle, Santa Clara,
+-# CA 95054 USA or visit www.sun.com if you need additional information or
+-# have any questions.
+-#
+-# List of JVMs that can be used as an option to java, javac, etc.
+-# Order is important -- first in this list is the default JVM.
+-# NOTE that this both this file and its format are UNSUPPORTED and
+-# WILL GO AWAY in a future release.
+-#
+-# You may also select a JVM in an arbitrary location with the
+-# "-XXaltjvm=<jvm_dir>" option, but that too is unsupported
+-# and may not be available in a future release.
+-#
+--client IF_SERVER_CLASS -server
+--server KNOWN
+--hotspot ALIASED_TO -client
+--classic WARN
+--native ERROR
+--green ERROR
+Index: openjdk/jdk/src/solaris/bin/x86/jvm.cfg
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ openjdk/jdk/src/solaris/bin/x86/jvm.cfg	2010-04-22 12:12:10.545603344 +0200
+@@ -0,0 +1,38 @@
++# Copyright 2001-2004 Sun Microsystems, Inc.  All Rights Reserved.
++# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
++#
++# This code is free software; you can redistribute it and/or modify it
++# under the terms of the GNU General Public License version 2 only, as
++# published by the Free Software Foundation.  Sun designates this
++# particular file as subject to the "Classpath" exception as provided
++# by Sun in the LICENSE file that accompanied this code.
++#
++# This code is distributed in the hope that it will be useful, but WITHOUT
++# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
++# version 2 for more details (a copy is included in the LICENSE file that
++# accompanied this code).
++#
++# You should have received a copy of the GNU General Public License version
++# 2 along with this work; if not, write to the Free Software Foundation,
++# Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
++#
++# Please contact Sun Microsystems, Inc., 4150 Network Circle, Santa Clara,
++# CA 95054 USA or visit www.sun.com if you need additional information or
++# have any questions.
++#
++# List of JVMs that can be used as an option to java, javac, etc.
++# Order is important -- first in this list is the default JVM.
++# NOTE that this both this file and its format are UNSUPPORTED and
++# WILL GO AWAY in a future release.
++#
++# You may also select a JVM in an arbitrary location with the
++# "-XXaltjvm=<jvm_dir>" option, but that too is unsupported
++# and may not be available in a future release.
++#
++-client IF_SERVER_CLASS -server
++-server KNOWN
++-hotspot ALIASED_TO -client
++-classic WARN
++-native ERROR
++-green ERROR
+Index: openjdk/jdk/make/common/shared/Platform.gmk
+===================================================================
+--- openjdk/jdk/make/common/shared/Platform.gmk.orig	2010-04-22 12:04:08.000000000 +0200
++++ openjdk/jdk/make/common/shared/Platform.gmk	2010-04-22 12:16:43.848486263 +0200
+@@ -56,8 +56,8 @@
+ #     OS_VENDOR                   company name
+ #     TEMP_DISK                   /tmp or C:/temp
+ #     ARCH_DATA_MODEL             32 or 64
+-#     ARCH                        sparc, sparcv9, i586, amd64, or ia64
+-#     ARCH_FAMILY                 sparc or i586
++#     ARCH                        sparc, sparcv9, x86, amd64, or ia64
++#     ARCH_FAMILY                 sparc or x86
+ #     ARCHPROP                    sparc or x86
+ #     ARCH_VM_SUBDIR              jre/bin, jre/lib/sparc, etc.
+ #     LIBARCH                     sparc, sparcv9, i386, amd64, or ia64
+@@ -124,7 +124,7 @@
+     processor := $(shell uname -p)
+     archExpr = case "$(processor)" in  \
+                 i[3-9]86) \
+-                    echo i586 \
++                    echo 586 \
+                     ;; \
+                 sparc*)  \
+                     echo sparc \
+@@ -200,7 +200,7 @@
+   endif
+   archExpr = case "$(mach)" in \
+                 i[3-9]86) \
+-                    echo i586 \
++                    echo x86 \
+                     ;; \
+                 ia64) \
+                     echo ia64 \
+@@ -237,7 +237,7 @@
+       ARCH=sparcv9
+     endif
+   else
+-    # i586 is 32-bit, amd64 is 64-bit
++    # x86 is 32-bit, amd64 is 64-bit
+     ifndef ARCH_DATA_MODEL
+       ifeq ($(ARCH), alpha)
+         ARCH_DATA_MODEL=64
+@@ -248,7 +248,7 @@
+       ifeq ($(ARCH), arm)
+         ARCH_DATA_MODEL=32
+       endif
+-      ifeq ($(ARCH), i586)
++      ifeq ($(ARCH), x86)
+         ARCH_DATA_MODEL=32
+       endif
+       ifeq ($(ARCH), ia64)
+@@ -281,12 +281,7 @@
+     endif
+   endif
+ 
+-  # Need to maintain the jre/lib/i386 location for 32-bit Intel
+-  ifeq ($(ARCH), i586)
+-    LIBARCH = i386
+-  else
+-    LIBARCH = $(ARCH)
+-  endif
++  LIBARCH = $(ARCH)
+ 
+   # Value of Java os.arch property
+   ARCHPROP  = $(LIBARCH)
+@@ -378,8 +373,8 @@
+     REQUIRED_WINDOWS_VERSION=2000 or Unknown
+     #REQUIRED_WINDOWS_VERSION=XP Professional
+     # LIBARCH is used to preserve the jre/lib/i386 directory name for 32-bit intel
+-    ARCH=i586
+-    LIBARCH=i386
++    ARCH=x86
++    LIBARCH=x86
+     # Value of Java os.arch property
+     ARCHPROP=x86
+   endif

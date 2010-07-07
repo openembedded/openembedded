@@ -1,0 +1,240 @@
+From 662e11a8b6017f39ceb6d00dcdbfe11473b56174 Mon Sep 17 00:00:00 2001
+From: woglinde <woglinde@rhein.zuhause.netz>
+Date: Fri, 23 Oct 2009 18:06:43 +0200
+Subject: [PATCH] sane-arch2
+
+---
+ openjdk/jdk/make/common/shared/Compiler-gcc.gmk |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git openjdk/jdk/make/common/shared/Compiler-gcc.gmk openjdk/jdk/make/common/shared/Compiler-gcc.gmk
+index 8329530..de85a11 100644
+--- openjdk/jdk/make/common/shared/Compiler-gcc.gmk
++++ openjdk/jdk/make/common/shared/Compiler-gcc.gmk
+@@ -90,8 +90,8 @@ ifeq ($(PLATFORM), linux)
+     REQUIRED_CC_VER = 3.2
+     REQUIRED_GCC_VER = 3.2.*
+   endif
+-  ifeq ($(ARCH), i586)
+-    # i586
++  ifeq ($(ARCH), x86)
++    # x86
+     REQUIRED_CC_VER = 3.2
+     REQUIRED_GCC_VER = 3.2.1*
+     REQUIRED_GCC_VER_INT = 3.2.1-7a
+-- 
+1.6.5
+
+From e2e87228dd36bd737b52ed3daeaed526b5e4d3ea Mon Sep 17 00:00:00 2001
+From: woglinde <woglinde@rhein.zuhause.netz>
+Date: Fri, 23 Oct 2009 18:16:54 +0200
+Subject: [PATCH] sane-arch3
+
+---
+ jdk/src/solaris/bin/i586/jvm.cfg |   38 --------------------------------------
+ jdk/src/solaris/bin/x86/jvm.cfg  |   38 ++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 38 insertions(+), 38 deletions(-)
+ delete mode 100644 jdk/src/solaris/bin/i586/jvm.cfg
+ create mode 100644 jdk/src/solaris/bin/x86/jvm.cfg
+
+diff --git openjdk/jdk/src/solaris/bin/i586/jvm.cfg openjdk/jdk/src/solaris/bin/i586/jvm.cfg
+deleted file mode 100644
+index b97e5ae..0000000
+--- openjdk/jdk/src/solaris/bin/i586/jvm.cfg
++++ /dev/null
+@@ -1,38 +0,0 @@
+-# Copyright 2001-2004 Sun Microsystems, Inc.  All Rights Reserved.
+-# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+-#
+-# This code is free software; you can redistribute it and/or modify it
+-# under the terms of the GNU General Public License version 2 only, as
+-# published by the Free Software Foundation.  Sun designates this
+-# particular file as subject to the "Classpath" exception as provided
+-# by Sun in the LICENSE file that accompanied this code.
+-#
+-# This code is distributed in the hope that it will be useful, but WITHOUT
+-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+-# version 2 for more details (a copy is included in the LICENSE file that
+-# accompanied this code).
+-#
+-# You should have received a copy of the GNU General Public License version
+-# 2 along with this work; if not, write to the Free Software Foundation,
+-# Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+-#
+-# Please contact Sun Microsystems, Inc., 4150 Network Circle, Santa Clara,
+-# CA 95054 USA or visit www.sun.com if you need additional information or
+-# have any questions.
+-#
+-# List of JVMs that can be used as an option to java, javac, etc.
+-# Order is important -- first in this list is the default JVM.
+-# NOTE that this both this file and its format are UNSUPPORTED and
+-# WILL GO AWAY in a future release.
+-#
+-# You may also select a JVM in an arbitrary location with the
+-# "-XXaltjvm=<jvm_dir>" option, but that too is unsupported
+-# and may not be available in a future release.
+-#
+--client IF_SERVER_CLASS -server
+--server KNOWN
+--hotspot ALIASED_TO -client
+--classic WARN
+--native ERROR
+--green ERROR
+diff --git openjdk/jdk/src/solaris/bin/x86/jvm.cfg openjdk/jdk/src/solaris/bin/x86/jvm.cfg
+new file mode 100644
+index 0000000..b97e5ae
+--- /dev/null
++++ openjdk/jdk/src/solaris/bin/x86/jvm.cfg
+@@ -0,0 +1,38 @@
++# Copyright 2001-2004 Sun Microsystems, Inc.  All Rights Reserved.
++# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
++#
++# This code is free software; you can redistribute it and/or modify it
++# under the terms of the GNU General Public License version 2 only, as
++# published by the Free Software Foundation.  Sun designates this
++# particular file as subject to the "Classpath" exception as provided
++# by Sun in the LICENSE file that accompanied this code.
++#
++# This code is distributed in the hope that it will be useful, but WITHOUT
++# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
++# version 2 for more details (a copy is included in the LICENSE file that
++# accompanied this code).
++#
++# You should have received a copy of the GNU General Public License version
++# 2 along with this work; if not, write to the Free Software Foundation,
++# Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
++#
++# Please contact Sun Microsystems, Inc., 4150 Network Circle, Santa Clara,
++# CA 95054 USA or visit www.sun.com if you need additional information or
++# have any questions.
++#
++# List of JVMs that can be used as an option to java, javac, etc.
++# Order is important -- first in this list is the default JVM.
++# NOTE that this both this file and its format are UNSUPPORTED and
++# WILL GO AWAY in a future release.
++#
++# You may also select a JVM in an arbitrary location with the
++# "-XXaltjvm=<jvm_dir>" option, but that too is unsupported
++# and may not be available in a future release.
++#
++-client IF_SERVER_CLASS -server
++-server KNOWN
++-hotspot ALIASED_TO -client
++-classic WARN
++-native ERROR
++-green ERROR
+-- 
+1.6.5
+
+From d5274fb90454c0e40b665d865f456430949791c4 Mon Sep 17 00:00:00 2001
+From: woglinde <woglinde@rhein.zuhause.netz>
+Date: Fri, 23 Oct 2009 18:42:11 +0200
+Subject: [PATCH 2/4] sane-arch4
+
+---
+ .../share/native/com/sun/mediopenjdk/sound/SoundDefs.h   |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git openjdk/jdk/src/share/native/com/sun/media/sound/SoundDefs.h openjdk/jdk/src/share/native/com/sun/media/sound/SoundDefs.h 
+index 94624e0..6522503 100644
+--- openjdk/jdk/src/share/native/com/sun/media/sound/SoundDefs.h
++++ openjdk/jdk/src/share/native/com/sun/media/sound/SoundDefs.h
+@@ -36,7 +36,7 @@
+ #define X_ALPHA         1
+ #define X_AMD64         2
+ #define X_ARM           3
+-#define X_I586          4
++#define X_X86           4
+ #define X_IA64          5
+ #define X_M68K          6
+ #define X_MIPS          7
+-- 
+1.6.5
+
+From 251338c93253d1026a37df2793956d7985f9f4eb Mon Sep 17 00:00:00 2001
+From: woglinde <woglinde@rhein.zuhause.netz>
+Date: Fri, 23 Oct 2009 18:44:13 +0200
+Subject: [PATCH 4/4] sane-arch4
+
+---
+ jdk/make/javax/sound/SoundDefs.gmk |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git openjdk/jdk/make/javax/sound/SoundDefs.gmk openjdk/jdk/make/javax/sound/SoundDefs.gmk
+index 22ad8e0..a54ecd5 100644
+--- openjdk/jdk/make/javax/sound/SoundDefs.gmk
++++ openjdk/jdk/make/javax/sound/SoundDefs.gmk
+@@ -70,9 +70,9 @@ else
+     CPPFLAGS += -DX_ARCH=X_ARM
+   endif # ARCH arm
+ 
+-  ifeq ($(ARCH), i586)
+-    CPPFLAGS += -DX_ARCH=X_I586
+-  endif # ARCH i586
++  ifeq ($(ARCH), x86)
++    CPPFLAGS += -DX_ARCH=X_X86
++  endif # ARCH x86
+ 
+   ifeq ($(ARCH), ia64)
+     CPPFLAGS += -DX_ARCH=X_IA64
+-- 
+1.6.5
+
+Index: openjdk/jdk/make/common/shared/Platform.gmk
+===================================================================
+--- openjdk/jdk/make/common/shared/Platform.gmk	2009-10-23 22:17:12.749059413 +0200
++++ openjdk/jdk/make/common/shared/Platform.gmk	2009-10-23 22:18:16.236579466 +0200
+@@ -56,8 +56,8 @@
+ #     OS_VENDOR                   company name
+ #     TEMP_DISK                   /tmp or C:/temp
+ #     ARCH_DATA_MODEL             32 or 64
+-#     ARCH                        sparc, sparcv9, i586, amd64, or ia64
+-#     ARCH_FAMILY                 sparc or i586
++#     ARCH                        sparc, sparcv9, x86, amd64, or ia64
++#     ARCH_FAMILY                 sparc or x86
+ #     ARCHPROP                    sparc or x86
+ #     ARCH_VM_SUBDIR              jre/bin, jre/lib/sparc, etc.
+ #     LIBARCH                     sparc, sparcv9, i386, amd64, or ia64
+@@ -200,7 +200,7 @@
+   endif
+   archExpr = case "$(mach)" in \
+                 i[3-9]86) \
+-                    echo i586 \
++                    echo x86 \
+                     ;; \
+                 ia64) \
+                     echo ia64 \
+@@ -239,7 +239,7 @@
+       ARCH=sparcv9
+     endif
+   else
+-    # i586 is 32-bit, amd64 is 64-bit
++    # x86 is 32-bit, amd64 is 64-bit
+     ifndef ARCH_DATA_MODEL
+       ifeq ($(ARCH), alpha)
+         ARCH_DATA_MODEL=64
+@@ -250,7 +250,7 @@
+       ifeq ($(ARCH), arm)
+         ARCH_DATA_MODEL=32
+       endif
+-      ifeq ($(ARCH), i586)
++      ifeq ($(ARCH), x86)
+         ARCH_DATA_MODEL=32
+       endif
+       ifeq ($(ARCH), ia64)
+@@ -280,12 +280,7 @@
+     endif
+   endif
+ 
+-  # Need to maintain the jre/lib/i386 location for 32-bit Intel
+-  ifeq ($(ARCH), i586)
+-    LIBARCH = i386
+-  else
+-    LIBARCH = $(ARCH)
+-  endif
++  LIBARCH = $(ARCH)
+ 
+   # Value of Java os.arch property
+   ARCHPROP  = $(LIBARCH)

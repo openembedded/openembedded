@@ -1,0 +1,15 @@
+Index: icedtea6-1.6.1/Makefile.am
+===================================================================
+--- icedtea6-1.6.1.orig/Makefile.am	2009-12-24 11:38:06.582572265 +0100
++++ icedtea6-1.6.1/Makefile.am	2009-12-24 11:57:27.159578486 +0100
+@@ -265,6 +265,10 @@
+ 	FT2_LIB="$(FREETYPE2_LIBS)" \
+ 	ALT_PARALLEL_COMPILE_JOBS="$(PARALLEL_JOBS)" \
+ 	HOTSPOT_BUILD_JOBS="$(PARALLEL_JOBS)" \
++        OE_CFLAGS="$(OE_CFLAGS)" \
++        OE_CPPFLAGS="$(OE_CPPFLAGS)" \
++        OE_CXXFLAGS="$(OE_CXXFLAGS)" \
++        OE_LDFLAGS="$(OE_LDFLAGS)" \
+ 	JAVAC="" \
+ 	RHINO_JAR="$(RHINO_JAR)" \
+ 	JAR_KNOWS_ATFILE="$(JAR_KNOWS_ATFILE)" \

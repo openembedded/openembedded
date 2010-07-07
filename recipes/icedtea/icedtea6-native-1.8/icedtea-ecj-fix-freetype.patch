@@ -1,0 +1,13 @@
+Index: openjdk/jdk/make/tools/freetypecheck/Makefile
+===================================================================
+--- openjdk.orig/jdk/make/tools/freetypecheck/Makefile	2009-09-29 13:48:33.590565061 +0200
++++ openjdk/jdk/make/tools/freetypecheck/Makefile	2009-09-29 14:00:04.470566156 +0200
+@@ -45,7 +45,7 @@
+   FT_OPTIONS  = $(CFLAGS)
+ endif
+ 
+-FT_OPTIONS += -I$(FT_HEADERS) -I$(FT_HEADERS)/freetype2
++FT_OPTIONS += -I$(FT_HEADERS) -I$(FT_HEADERS)/freetype2 $(FREETYPE2_CFLAGS) $(FREETYPE2_LIBS) $(FREETYPE2_HEADERS)
+ FT_OPTIONS += $(XARCH)
+ 
+ #add runtime library search path
