@@ -11,7 +11,7 @@ LICENSE = "GPLv2"
 SECTION = "base"
 PRIORITY = "required"
 
-INC_PR = "r31"
+INC_PR = "r32"
 
 SRC_URI = "\
   file://busybox-cron \
@@ -135,15 +135,35 @@ do_install () {
 
 	install -d ${D}${sysconfdir}/init.d
 
-	# Install /bin/busybox, and the /bin/sh link so the postinst script
-	# can run. Let update-alternatives handle the rest.
-	install -d ${D}${base_bindir}
-	if grep -q "CONFIG_FEATURE_SUID=y" ${WORKDIR}/defconfig; then
-		install -m 4755 ${S}/busybox ${D}${base_bindir}
+	if ! grep -q "CONFIG_FEATURE_INDIVIDUAL=y" ${WORKDIR}/defconfig; then
+		# Install /bin/busybox, and the /bin/sh link so the postinst script
+		# can run. Let update-alternatives handle the rest.
+		install -d ${D}${base_bindir}
+		if grep -q "CONFIG_FEATURE_SUID=y" ${WORKDIR}/defconfig; then
+			install -m 4755 ${S}/busybox ${D}${base_bindir}
+		else
+			install -m 0755 ${S}/busybox ${D}${base_bindir}
+		fi
+		ln -sf busybox ${D}${base_bindir}/sh
 	else
-		install -m 0755 ${S}/busybox ${D}${base_bindir}
+		install -d ${D}${base_bindir} ${D}${base_sbindir}
+		install -d ${D}${libdir} ${D}${bindir} ${D}${sbindir}
+		cat busybox.links | while read FILE; do
+			NAME=`basename "$FILE"`
+			install -m 0755 "0_lib/$NAME" "${D}$FILE.${PN}"
+		done
+		# add suid bit where needed
+		for i in `grep -E "APPLET.*_BB_SUID_((MAYBE|REQUIRE))" include/applets.h | grep -v _BB_SUID_DROP | cut -f 3 -d '(' | cut -f 1 -d ','`; do
+			find ${D} -name $i.${PN} -exec chmod a+s {} \;
+		done
+		install -m 0755 0_lib/libbusybox.so.${PV} ${D}${libdir}/libbusybox.so.${PV}
+		ln -sf sh.${PN} ${D}${base_bindir}/sh
+		ln -sf ln.${PN} ${D}${base_bindir}/ln
+		ln -sf test.${PN} ${D}${bindir}/test
+		if [ -f ${D}/linuxrc.${PN} ]; then
+			mv ${D}/linuxrc.${PN} ${D}/linuxrc
+		fi
 	fi
-	ln -sf busybox ${D}${base_bindir}/sh
 
 	if grep -q "CONFIG_SYSLOGD=y" ${WORKDIR}/defconfig; then
 		install -m 0755 ${WORKDIR}/syslog ${D}${sysconfdir}/init.d/syslog.${PN}
@@ -181,12 +201,42 @@ pkg_postinst_${PN} () {
 	# so the update-alternatives script will get the utilities it needs
 	# (update-alternatives have no problem replacing links later anyway)
 	test -n 2> /dev/null || alias test='busybox test'
-	if test "x$D" = "x"; then while read link; do if test ! -h "$link"; then case "$link" in /*/*/*) to="../../bin/busybox";; /bin/*) to="busybox";; /*/*) to="../bin/busybox";; /*) to="/bin/busybox";; esac; busybox ln -s $to $link; fi; done </etc/busybox.links; fi
+	ln --help >/dev/null 2>&1 || alias ln='busybox ln'
+	if test "x$D" = "x"; then
+		while read link; do
+			if test ! -h "$link"; then
+				if test -f "$link.busybox"; then
+					to="$link.busybox"
+				else
+					case "$link" in
+						/*/*/*) to="../../bin/busybox";;
+						/bin/*) to="busybox";;
+						/*/*) to="../bin/busybox";;
+						/*) to="/bin/busybox";;
+					esac
+				fi
+				ln -s $to $link
+			fi
+		done </etc/busybox.links
+	fi
 
 	# This adds the links, remember that this has to work when building an image too, hence the $D
-    set +e
-	while read link; do case "$link" in /*/*/*) to="../../bin/busybox";; /bin/*) to="busybox";; /*/*) to="../bin/busybox";; /*) to="/bin/busybox";; esac; bn=`basename $link`; update-alternatives --install $link $bn $to 50; done <$D/etc/busybox.links
-    set -e
+	set +e
+	while read link; do
+		if test -f "$D$link.${PN}"; then
+			to="$link.${PN}"
+		else
+			case "$link" in
+				/*/*/*) to="../../bin/busybox";;
+				/bin/*) to="busybox";;
+				/*/*) to="../bin/busybox";;
+				/*) to="/bin/busybox";;
+			esac
+		fi
+		bn=`basename $link`
+		update-alternatives --install $link $bn $to 50
+	done <$D/etc/busybox.links
+	set -e
 }
 
 pkg_postinst_${PN}-mountall () {
