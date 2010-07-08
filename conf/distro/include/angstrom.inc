@@ -30,7 +30,8 @@ DEPLOY_DIR = "${TMPDIR}/deploy/${LIBC}"
 require conf/distro/include/angstrom-${LIBC}.inc
 
 # Set some java bits
-require conf/distro//include/sane-toolchain-java.inc
+require conf/distro/include/sane-toolchain-java.inc
+require conf/distro/include/angstrom-jalimo.conf
 
 # ARM920T and up can use thumb mode to decrease binary size at the expense of speed
 # (the complete story is a bit more nuanced due to cache starvation)
