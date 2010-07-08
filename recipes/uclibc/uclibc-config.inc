@@ -90,16 +90,19 @@ def uclibc_cfg(feature, features, tokens, cnf, rem):
 		cnf.extend([token + '=y' for token in tokens])
 	else:
 		cnf.extend(['# ' + token + ' is not set' for token in tokens])
+
 # Map distro and machine features to config settings
 def features_to_uclibc_settings(d):
 	cnf, rem = ([], [])
 	distro_features = bb.data.getVar('DISTRO_FEATURES', d).split()
-	machine_features = bb.data.getVar('MACHINE_FEATURES', d).split()
+	if bb.data.getVar('THUMB_INTERWORKING', d, 1) == "yes":
+		distro_features += "thumb-interworking"
+	#machine_features = bb.data.getVar('MACHINE_FEATURES', d).split()
 	uclibc_cfg('ipv4',      distro_features, 'UCLIBC_HAS_IPV4', cnf, rem)
 	uclibc_cfg('ipv6',      distro_features, 'UCLIBC_HAS_IPV6', cnf, rem)
 	uclibc_cfg('largefile', distro_features, 'UCLIBC_HAS_LFS', cnf, rem)
 	uclibc_cfg('nls',       distro_features, 'UCLIBC_HAS_LOCALE', cnf, rem)
-	uclibc_cfg('bx',        machine_features,'USE_BX', cnf, rem)
+	uclibc_cfg('thumb-interwork', distro_features,'USE_BX', cnf, rem)
 	return "\n".join(cnf), "\n".join(rem)
 # X, Y = ${@features_to_uclibc_settings(d)}
 # unfortunately doesn't seem to work with bitbake, workaround:

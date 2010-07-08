@@ -19,7 +19,6 @@ python __anonymous () {
         raise bb.parse.SkipPackage("incompatible with target %s" %
                                    bb.data.getVar('TARGET_OS', d, 1))
 }
-
 PROVIDES += "virtual/libc virtual/${TARGET_PREFIX}libc-for-gcc"
 DEPENDS = "virtual/${TARGET_PREFIX}binutils \
            virtual/${TARGET_PREFIX}gcc-intermediate \
@@ -79,8 +78,12 @@ EXTRA_OEMAKE = "${OEMAKE_NO_CC} \
 EXTRA_OEMAKE_task_do_package = "${OEMAKE_NO_CC}"
 
 # enable verbose output:
-export V="1"
+export V="2"
 
+# -O<n> -fno-omit-frame-pointer ends up with GCC ICE on thumb as reported
+# http://gcc.gnu.org/bugzilla/show_bug.cgi?id=44860
+#
+CFLAGS_arm := "${@oe_filter_out('-fno-omit-frame-pointer', '${CFLAGS}', d)}"
 UCLIBC_EXTRA_CFLAGS  := "${@oe_filter_out('(-I\S+|-i\S+)', '${CFLAGS}', d)}"
 UCLIBC_EXTRA_LDFLAGS := "${@oe_filter_out('(-L\S+|-l\S+)', '${LDFLAGS}', d)}"
 do_compile_prepend () {
@@ -180,7 +183,7 @@ do_configure() {
 
 do_install() {
         oe_runmake PREFIX=${D} install
-        oe_runmake PREFIX=${D} install_utils
+        oe_runmake PREFIX=${D} "SSP_ALL_CFLAGS=${TARGET_LINK_HASH_STYLE}" install_utils
 }
 
 get_monotonic_srcrev () {

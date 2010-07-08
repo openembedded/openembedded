@@ -7,7 +7,7 @@
 # on whether the base patches apply to the selected (SRCDATE) svn release.
 #
 UCLIBC_BASE ?= "0.9.31"
-SRCREV="13f9f3229bd7623352927f3b0de17e2b3f7a3ecc"
+SRCREV="42fb51e0d4e7ab9fe8ff2be3a7405acb8d44e9b2"
 PR_append = "+gitr${SRCPV}"
 DEFAULT_PREFERENCE = "-1"
 #DEFAULT_PREFERENCE is 0 (empty), releases have a preference of 1 so take
@@ -23,8 +23,7 @@ FILESPATHPKG =. "uclibc-git:uclibc-${UCLIBC_BASE}:"
 
 #as stated above, uclibc needs real kernel-headers
 #however: we can't depend on virtual/kernel when nptl hits due to depends deadlocking ....
-KERNEL_SOURCE = "${CROSS_DIR}/${TARGET_SYS}"
-
+KERNEL_SOURCE = "${STAGING_DIR_HOST}/${exec_prefix}"
 SRC_URI = "git://uclibc.org/uClibc.git;branch=master;protocol=git \
 	file://uClibc.config \
 	file://uClibc.machine \
