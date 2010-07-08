@@ -65,7 +65,11 @@ def process_dir (directory, d):
                     fdir = os.path.dirname(fpath.rpartition(tmpdir)[2])
                     ldir = rpath.partition(tmpdir)[2].strip()
 
-                new_rpaths.append("$ORIGIN/%s" % oe.path.relative(fdir, ldir))
+                try:
+                    new_rpaths.append("$ORIGIN/%s" % oe.path.relative(fdir, ldir))
+                except ValueError:
+                    # Some programs link in non-existant RPATH directories.
+                    continue
 
             # if we have modified some rpaths call chrpath to update the binary
             if len(new_rpaths):
