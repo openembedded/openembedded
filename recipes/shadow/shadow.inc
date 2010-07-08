@@ -13,7 +13,7 @@ DEPENDS += "${@base_contains('DISTRO_FEATURES', 'pam', 'libpam', '', d)}"
 
 PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
 
-INC_PR = "r15"
+INC_PR = "r16"
 
 # Additional Policy files for PAM
 PAM_SRC_URI = " \

@@ -8,6 +8,18 @@ ttyS1
 ttyS2
 ttyS3
 
+# Samsung ARM SoCs
+ttySAC0
+ttySAC1
+ttySAC2
+ttySAC3
+
+# TI OMAP SoCs
+ttyO0
+ttyO1
+ttyO2
+ttyO3
+
 # USB dongles
 ttyUSB0
 ttyUSB1
