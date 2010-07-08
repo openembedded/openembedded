@@ -1,16 +1,17 @@
 DESCRIPTION = "Commands for Manipulating Filesystem Extended Attributes"
 LICENSE = "GPLv2"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://mirror.its.uidaho.edu/pub/savannah/attr/attr-${PV}.src.tar.gz"
 
 inherit gettext autotools lib_package
-
 EXTRA_OECONF = " --enable-gettext=yes \
                  ac_cv_path_XGETTEXT=${STAGING_BINDIR_NATIVE}/xgettext \
                  ac_cv_path_MSGFMT=${STAGING_BINDIR_NATIVE}/msgfmt \
-                 ac_cv_path_MSGMERGE=${STAGING_BINDIR_NATIVE}/msgmerge "
+                 ac_cv_path_MSGMERGE=${STAGING_BINDIR_NATIVE}/msgmerge \
+		 PLATFORM="linux" \
+		"
 
 LDFLAGS_append_libc-uclibc += " -lintl"
 
@@ -19,6 +20,10 @@ TOPDIR[unexport] = "1"
 do_configure_append() {
 	# gettext hack
 	echo "#define _(str) str" >> ${S}/include/config.h
+}
+
+do_configure_prepend_libc-uclibc() {
+	eval "${@base_contains('DISTRO_FEATURES', 'largefile', '', 'sed -i -e "s/-D_FILE_OFFSET_BITS=64//" ${S}/include/builddefs.in', d)}"
 }
 
 do_install() {
