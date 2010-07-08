@@ -2,7 +2,7 @@ DESCRIPTION = "XML::Parser - A perl module for parsing XML documents"
 SECTION = "libs"
 LICENSE = "Artistic"
 DEPENDS += "expat expat-native"
-PR= "r2"
+PR= "r3"
 
 SRC_URI = "http://www.cpan.org/modules/by-module/XML/XML-Parser-${PV}.tar.gz"
 
@@ -14,6 +14,9 @@ inherit cpan
 
 do_compile() {
 	export LIBC="$(find ${STAGING_DIR_TARGET}/lib -name 'libc-*.so')"
+	cpan_do_compile
+}
+do_compile_virtclass-native (){
 	cpan_do_compile
 }
 
