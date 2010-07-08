@@ -14,6 +14,6 @@ INSTALL += "arfile.py"
 
 do_install() {
         for i in ${INSTALL}; do
-                install -m 0755 $i ${STAGING_BINDIR}
+                install -m 0755 $i ${D}${bindir}
         done
 }
