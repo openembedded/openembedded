@@ -4,7 +4,7 @@ LICENCE = "unknown"
 SECTION = "multimedia"
 
 PV = "1_05_00_00"
-PR = "1"
+PR = "2"
 
 SRC_URI = "http://focus.ti.com/lit/sw/slac388/slac388.zip;name=slac388zip"
 
