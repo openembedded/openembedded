@@ -1,5 +1,5 @@
 # Qt Embedded toolchain
-PR = "r3"
+PR = "r4"
 TOOLCHAIN_HOST_TASK = "task-qte-toolchain-host"
 TOOLCHAIN_TARGET_TASK = "task-qte-toolchain-target"
 
@@ -10,7 +10,7 @@ SDK_SUFFIX_angstrom = "toolchain-qte-${ANGSTROM_QT_VERSION}"
 QT_DIR_NAME = "qtopia"
 
 do_populate_sdk_append() {
-       script = "${SDK_OUTPUT}/${SDKPATH}/environment-setup"
+       script="${SDK_OUTPUT}/${SDKPATH}/environment-setup"
        touch $script
        echo 'export OE_QMAKE_CC=${TARGET_SYS}-gcc' >> $script
        echo 'export OE_QMAKE_CXX=${TARGET_SYS}-g++' >> $script
