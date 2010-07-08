@@ -732,11 +732,11 @@ ipkg_install_file_dest() {
 
 	local pkg=`ipkg_file_part $filename | sed 's/\([a-z0-9.+-]\+\)_.*/\1/'`
 	local ext=`echo $filename | sed 's/.*\.//'`
-	local pkg_extract_stdout
+	local pkg_extract
 	#if [ "$ext" = "ipk" ]; then
 	#	pkg_extract_stdout="tar -xzOf"
 	#elif [ "$ext" = "deb" ]; then
-		pkg_extract_stdout="ar p"
+		pkg_extract="ar x"
 	#else
 	#	echo "ipkg_install_file: ERROR: File $filename has unknown extension $ext (not .ipk or .deb)"
 	#	return 1
@@ -768,7 +768,7 @@ ipkg_install_file_dest() {
 	mkdir -p $IPKG_TMP/$pkg/data
 	mkdir -p $info_dir
 
-	if ! $pkg_extract_stdout $filename control.tar.gz | (cd $IPKG_TMP/$pkg/control; tar -xzf - ) ; then
+	if ! (cd $IPKG_TMP/$pkg/control ; $pkg_extract $filename control.tar.gz ; gunzip control.tar.gz ; tar xf control.tar ) ; then
 		echo "ipkg_install_file: ERROR unpacking control.tar.gz from $filename"
 		return 1
 	fi
@@ -798,10 +798,11 @@ Status: install ok pending" | ipkg_status_update_sd $sd $pkg
 	set -o noglob
 	rm -r $IPKG_TMP/$pkg/control
 
-	if ! $pkg_extract_stdout $filename ./data.tar.gz | (cd $IPKG_TMP/$pkg/data; tar -xzf - ) ; then
+	if ! (cd $IPKG_TMP/$pkg/data ; $pkg_extract $filename ./data.tar.gz ; gunzip data.tar.gz ; tar xf data.tar ) ; then
 		echo "ipkg_install_file: ERROR unpacking data.tar.gz from $filename"
 		return 1
 	fi
+	rm $IPKG_TMP/$pkg/data/data.tar
 	echo "Done."
 
 	echo -n "Configuring $pkg..."
@@ -869,7 +870,10 @@ diff -u $dest/$conffile $IPKG_TMP/$pkg/data/$conffile"
 	(cd $IPKG_TMP/$pkg/data/; tar cf - . | (cd $owd; cd $dest; tar xf -))		
 	rm -rf $IPKG_TMP/$pkg/data
 	rmdir $IPKG_TMP/$pkg
-	$pkg_extract_stdout $filename ./data.tar.gz | tar tzf - | sed -e 's/^\.//' > $info_dir/$pkg.list
+	$pkg_extract $filename ./data.tar.gz
+	gunzip data.tar
+	tar tf data.tar | sed -e 's/^\.//' > $info_dir/$pkg.list
+	rm data.tar
 
 	if [ -x "$info_dir/$pkg.postinst" ]; then
 		$info_dir/$pkg.postinst configure
