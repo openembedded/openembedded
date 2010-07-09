@@ -1,7 +1,7 @@
 require ipkg-utils_${PV}.bb
 
 RDEPENDS_${PN} = ""
-PR = "r23"
+PR = "r24"
 
 inherit native
 
@@ -13,6 +13,7 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/ipkg-utils"
 INSTALL += "arfile.py"
 
 do_install() {
+	install -d ${D}${bindir}
         for i in ${INSTALL}; do
                 install -m 0755 $i ${D}${bindir}
         done
