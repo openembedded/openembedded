@@ -1,10 +1,11 @@
 require busybox.inc
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "\
   http://www.busybox.net/downloads/busybox-${PV}.tar.bz2;name=tarball \
+  file://fdisk_nios2.patch \
 \
   file://udhcpscript.patch \
   file://udhcpc-fix-nfsroot.patch \
