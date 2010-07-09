@@ -1,0 +1,34 @@
+#If you're so lucky as to be using a Windriver Linux product, and your
+#patch files are actually symlinks, this option set to yes will allow
+#the symlink to be preserved (resulting in the file the link is pointing to
+#to be refreshed).
+
+--- quilt-0.48.orig/quilt/scripts/patchfns.in.org	2010-07-09 11:35:07.992300000 -0700
++++ quilt-0.48/quilt/scripts/patchfns.in	2010-07-09 11:41:01.312300001 -0700
+@@ -783,7 +783,13 @@ cat_to_new_file()
+ {
+ 	local filename="$1"
+ 
+-	[ -e "$filename" ] && rm -f "$filename"
++	if [ -e "$filename" ]
++	then
++	    if [ "$QUILT_NO_RM_SYMLINKS" != "yes" ]
++	    then
++		rm -f "$filename"
++	    fi
++	fi
+ 
+ 	case "$filename" in
+ 	*.gz)
+--- quilt-0.48.orig/quilt.quiltrc.org	2010-07-09 11:45:07.582300001 -0700
++++ quilt-0.48/quilt.quiltrc	2010-07-09 11:46:35.222300001 -0700
+@@ -29,3 +29,9 @@ QUILT_PATCHES_PREFIX=yes
+ # Use a specific editor for quilt (defaults to the value of $EDITOR before
+ # sourcing this configuration file, or vi if $EDITOR wasn't set).
+ #EDITOR=nedit
++
++#If patch files are actually symlinks, this option set to yes will allow
++#the symlink to be preserved (resulting in the file the link is pointing to
++#to be refreshed).
++QUILT_NO_RM_SYMLINKS=yes
++
