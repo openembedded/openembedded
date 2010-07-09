@@ -1,5 +1,5 @@
---- a/gfx/thebes/src/gfxPlatformGtk.cpp	2010-04-19 18:02:04.000000000 +0000
-+++ b/gfx/thebes/src/gfxPlatformGtk.cpp	2010-04-25 11:36:49.000000000 +0000
+--- a/gfx/thebes/gfxPlatformGtk.cpp	2010-04-19 18:02:04.000000000 +0000
++++ b/gfx/thebes/gfxPlatformGtk.cpp	2010-04-25 11:36:49.000000000 +0000
 @@ -91,7 +91,12 @@
  #include FT_FREETYPE_H
  #endif
@@ -45,5 +45,5 @@
 +    }
 +    if (!xrenderFormat) xrenderFormat = XRenderFindStandardFormat(display, xrenderFormatID);
  
-     if (xrenderFormat && sizeOk) {
+     if (xrenderFormat) {
          pixmap = gdk_pixmap_new(nsnull, size.width, size.height,
