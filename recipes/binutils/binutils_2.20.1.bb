@@ -15,6 +15,11 @@ SRC_URI = "\
      file://libtool-update.patch \
      "
 
+SRC_URI_append_nios2 =" \
+	file://binutils-nios2-files.patch;patch=1 \
+	file://binutils-nios2.patch;patch=1 \
+	"
+
 SRC_URI[tarball.sha256sum] = "228b84722d87e88e7fdd36869e590e649ab523a0800a7d53df906498afe6f6f8"
 SRC_URI[tarball.md5sum] = "9cdfb9d6ec0578c166d3beae5e15c4e5"
 

@@ -1,0 +1,650 @@
+Only in .: .pc
+Index: binutils-2.20.1/bfd/Makefile.am
+===================================================================
+--- binutils-2.20.1.orig/bfd/Makefile.am
++++ binutils-2.20.1/bfd/Makefile.am
+@@ -112,6 +112,7 @@ ALL_MACHINES = \
+ 	cpu-moxie.lo \
+ 	cpu-msp430.lo \
+ 	cpu-mt.lo \
++	cpu-nios2.lo \
+ 	cpu-ns32k.lo \
+ 	cpu-openrisc.lo \
+ 	cpu-or32.lo \
+@@ -183,6 +184,7 @@ ALL_MACHINES_CFILES = \
+ 	cpu-moxie.c \
+ 	cpu-msp430.c \
+ 	cpu-mt.c \
++	cpu-nios2.c \
+ 	cpu-ns32k.c \
+ 	cpu-openrisc.c \
+ 	cpu-or32.c \
+@@ -303,6 +305,7 @@ BFD32_BACKENDS = \
+ 	elf32-moxie.lo \
+ 	elf32-msp430.lo \
+ 	elf32-mt.lo \
++	elf32-nios2.lo \
+ 	elf32-openrisc.lo \
+ 	elf32-or32.lo \
+ 	elf32-pj.lo \
+@@ -486,6 +489,7 @@ BFD32_BACKENDS_CFILES = \
+ 	elf32-moxie.c \
+ 	elf32-msp430.c \
+ 	elf32-mt.c \
++	elf32-nios2.c \
+ 	elf32-openrisc.c \
+ 	elf32-or32.c \
+ 	elf32-pj.c \
+Index: binutils-2.20.1/bfd/Makefile.in
+===================================================================
+--- binutils-2.20.1.orig/bfd/Makefile.in
++++ binutils-2.20.1/bfd/Makefile.in
+@@ -407,6 +407,7 @@ ALL_MACHINES = \
+ 	cpu-moxie.lo \
+ 	cpu-msp430.lo \
+ 	cpu-mt.lo \
++	cpu-nios2.lo \
+ 	cpu-ns32k.lo \
+ 	cpu-openrisc.lo \
+ 	cpu-or32.lo \
+@@ -478,6 +479,7 @@ ALL_MACHINES_CFILES = \
+ 	cpu-moxie.c \
+ 	cpu-msp430.c \
+ 	cpu-mt.c \
++	cpu-nios2.c \
+ 	cpu-ns32k.c \
+ 	cpu-openrisc.c \
+ 	cpu-or32.c \
+@@ -599,6 +601,7 @@ BFD32_BACKENDS = \
+ 	elf32-moxie.lo \
+ 	elf32-msp430.lo \
+ 	elf32-mt.lo \
++	elf32-nios2.lo \
+ 	elf32-openrisc.lo \
+ 	elf32-or32.lo \
+ 	elf32-pj.lo \
+@@ -782,6 +785,7 @@ BFD32_BACKENDS_CFILES = \
+ 	elf32-moxie.c \
+ 	elf32-msp430.c \
+ 	elf32-mt.c \
++	elf32-nios2.c \
+ 	elf32-openrisc.c \
+ 	elf32-or32.c \
+ 	elf32-pj.c \
+@@ -1263,6 +1267,7 @@ distclean-compile:
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cpu-moxie.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cpu-msp430.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cpu-mt.Plo@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cpu-nios2.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cpu-ns32k.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cpu-openrisc.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cpu-or32.Plo@am__quote@
+@@ -1341,6 +1346,7 @@ distclean-compile:
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elf32-moxie.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elf32-msp430.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elf32-mt.Plo@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elf32-nios2.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elf32-openrisc.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elf32-or32.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elf32-pj.Plo@am__quote@
+Index: binutils-2.20.1/bfd/archures.c
+===================================================================
+--- binutils-2.20.1.orig/bfd/archures.c
++++ binutils-2.20.1/bfd/archures.c
+@@ -423,6 +423,8 @@ DESCRIPTION
+ .  bfd_arch_lm32,      {* Lattice Mico32 *}
+ .#define bfd_mach_lm32      1
+ .  bfd_arch_microblaze,{* Xilinx MicroBlaze. *}
++bfd_arch_nios2,
++#define bfd_mach_nios2          1
+ .  bfd_arch_last
+ .  };
+ */
+@@ -504,6 +506,7 @@ extern const bfd_arch_info_type bfd_mn10
+ extern const bfd_arch_info_type bfd_moxie_arch;
+ extern const bfd_arch_info_type bfd_msp430_arch;
+ extern const bfd_arch_info_type bfd_mt_arch;
++extern const bfd_arch_info_type bfd_nios2_arch;
+ extern const bfd_arch_info_type bfd_ns32k_arch;
+ extern const bfd_arch_info_type bfd_openrisc_arch;
+ extern const bfd_arch_info_type bfd_or32_arch;
+@@ -531,6 +534,7 @@ extern const bfd_arch_info_type bfd_xten
+ extern const bfd_arch_info_type bfd_xc16x_arch;
+ extern const bfd_arch_info_type bfd_z80_arch;
+ extern const bfd_arch_info_type bfd_z8k_arch;
++extern const bfd_arch_info_type bfd_nios2_arch;
+ 
+ static const bfd_arch_info_type * const bfd_archures_list[] =
+   {
+@@ -580,6 +584,7 @@ static const bfd_arch_info_type * const
+     &bfd_moxie_arch,
+     &bfd_msp430_arch,
+     &bfd_mt_arch,
++    &bfd_nios2_arch,
+     &bfd_ns32k_arch,
+     &bfd_openrisc_arch,
+     &bfd_or32_arch,
+Index: binutils-2.20.1/bfd/bfd-in2.h
+===================================================================
+--- binutils-2.20.1.orig/bfd/bfd-in2.h
++++ binutils-2.20.1/bfd/bfd-in2.h
+@@ -2094,6 +2094,8 @@ enum bfd_architecture
+ #define bfd_mach_z80            3 /* With ixl, ixh, iyl, and iyh.  */
+ #define bfd_mach_z80full        7 /* All undocumented instructions.  */
+ #define bfd_mach_r800           11 /* R800: successor with multiplication.  */
++  bfd_arch_nios2,
++#define bfd_mach_nios2          1
+   bfd_arch_lm32,      /* Lattice Mico32 */
+ #define bfd_mach_lm32      1
+   bfd_arch_microblaze,/* Xilinx MicroBlaze. */
+@@ -4422,6 +4424,42 @@ This is the 5 bits of a value.  */
+   BFD_RELOC_IQ2000_OFFSET_21,
+   BFD_RELOC_IQ2000_UHI16,
+ 
++/* Relocations used by the Altera New Jersey core  */
++  BFD_RELOC_NIOS2_S16,
++  BFD_RELOC_NIOS2_U16,
++  BFD_RELOC_NIOS2_CALL26,
++  BFD_RELOC_NIOS2_IMM5,
++  BFD_RELOC_NIOS2_CACHE_OPX,
++  BFD_RELOC_NIOS2_IMM6,
++  BFD_RELOC_NIOS2_IMM8,
++  BFD_RELOC_NIOS2_HI16,
++  BFD_RELOC_NIOS2_LO16,
++  BFD_RELOC_NIOS2_HIADJ16,
++  BFD_RELOC_NIOS2_GPREL,
++  BFD_RELOC_NIOS2_UJMP,
++  BFD_RELOC_NIOS2_CJMP,
++  BFD_RELOC_NIOS2_CALLR,
++  BFD_RELOC_NIOS2_ALIGN,
++  BFD_RELOC_NIOS2_GOT16,
++  BFD_RELOC_NIOS2_CALL16,
++  BFD_RELOC_NIOS2_GOTOFF_LO,
++  BFD_RELOC_NIOS2_GOTOFF_HA,
++  BFD_RELOC_NIOS2_PCREL_LO,
++  BFD_RELOC_NIOS2_PCREL_HA,
++  BFD_RELOC_NIOS2_TLS_GD16,
++  BFD_RELOC_NIOS2_TLS_LDM16,
++  BFD_RELOC_NIOS2_TLS_LDO16,
++  BFD_RELOC_NIOS2_TLS_IE16,
++  BFD_RELOC_NIOS2_TLS_LE16,
++  BFD_RELOC_NIOS2_TLS_DTPMOD,
++  BFD_RELOC_NIOS2_TLS_DTPREL,
++  BFD_RELOC_NIOS2_TLS_TPREL,
++  BFD_RELOC_NIOS2_COPY,
++  BFD_RELOC_NIOS2_GLOB_DAT,
++  BFD_RELOC_NIOS2_JUMP_SLOT,
++  BFD_RELOC_NIOS2_RELATIVE,
++  BFD_RELOC_NIOS2_GOTOFF,
++
+ /* Special Xtensa relocation used only by PLT entries in ELF shared
+ objects to indicate that the runtime linker should set the value
+ to one of its own internal functions or data structures.  */
+Index: binutils-2.20.1/bfd/config.bfd
+===================================================================
+--- binutils-2.20.1.orig/bfd/config.bfd
++++ binutils-2.20.1/bfd/config.bfd
+@@ -93,6 +93,7 @@ m88*)		 targ_archs=bfd_m88k_arch ;;
+ maxq*)		 targ_archs=bfd_maxq_arch ;;
+ microblaze*)	 targ_archs=bfd_microblaze_arch ;;
+ mips*)		 targ_archs=bfd_mips_arch ;;
++nios2*)		 targ_archs=bfd_nios2_arch ;;
+ or32*)		 targ_archs=bfd_or32_arch ;;
+ pdp11*)		 targ_archs=bfd_pdp11_arch ;;
+ pj*)		 targ_archs="bfd_pj_arch bfd_i386_arch";;
+@@ -1055,6 +1056,21 @@ case "${targ}" in
+     targ_underscore=yes
+     ;;
+ 
++  nios2eb-*-*)
++    targ_defvec=bfd_elf32_bignios2_vec
++    targ_selvecs=bfd_elf32_littlenios2_vec
++    ;;
++
++  nios2el-*-*)
++    targ_defvec=bfd_elf32_littlenios2_vec
++    targ_selvecs=bfd_elf32_bignios2_vec
++    ;;
++
++  nios2-*-*)
++    targ_defvec=bfd_elf32_littlenios2_vec
++    targ_selvecs=bfd_elf32_bignios2_vec
++    ;;
++
+   openrisc-*-elf)
+     targ_defvec=bfd_elf32_openrisc_vec
+     ;;
+Index: binutils-2.20.1/bfd/configure
+===================================================================
+--- binutils-2.20.1.orig/bfd/configure
++++ binutils-2.20.1/bfd/configure
+@@ -14855,6 +14855,8 @@ do
+     bfd_elf32_microblaze_vec)	tb="$tb elf32-microblaze.lo elf32.lo $elf" ;;
+     bfd_elf32_mn10200_vec)	tb="$tb elf-m10200.lo elf32.lo $elf" ;;
+     bfd_elf32_mn10300_vec)	tb="$tb elf-m10300.lo elf32.lo $elf" ;;
++    bfd_elf32_littlenios2_vec)        tb="$tb elf32-nios2.lo elf32.lo $elf" ;;
++    bfd_elf32_bignios2_vec)   tb="$tb elf32-nios2.lo elf32.lo $elf" ;;
+     bfd_elf32_mt_vec)           tb="$tb elf32-mt.lo elf32.lo $elf" ;;
+     bfd_elf32_msp430_vec)	tb="$tb elf32-msp430.lo elf32.lo $elf" ;;
+     bfd_elf32_nbigmips_vec)	tb="$tb elfn32-mips.lo elfxx-mips.lo elf-vxworks.lo elf32.lo $elf ecofflink.lo"; target_size=64 ;;
+Index: binutils-2.20.1/bfd/configure.in
+===================================================================
+--- binutils-2.20.1.orig/bfd/configure.in
++++ binutils-2.20.1/bfd/configure.in
+@@ -743,6 +743,8 @@ do
+     bfd_elf32_microblaze_vec)	tb="$tb elf32-microblaze.lo elf32.lo $elf" ;;
+     bfd_elf32_mn10200_vec)	tb="$tb elf-m10200.lo elf32.lo $elf" ;;
+     bfd_elf32_mn10300_vec)	tb="$tb elf-m10300.lo elf32.lo $elf" ;;
++    bfd_elf32_littlenios2_vec)        tb="$tb elf32-nios2.lo elf32.lo $elf" ;;
++    bfd_elf32_bignios2_vec)   tb="$tb elf32-nios2.lo elf32.lo $elf" ;;
+     bfd_elf32_mt_vec)           tb="$tb elf32-mt.lo elf32.lo $elf" ;;
+     bfd_elf32_msp430_vec)	tb="$tb elf32-msp430.lo elf32.lo $elf" ;;
+     bfd_elf32_nbigmips_vec)	tb="$tb elfn32-mips.lo elfxx-mips.lo elf-vxworks.lo elf32.lo $elf ecofflink.lo"; target_size=64 ;;
+Index: binutils-2.20.1/bfd/targets.c
+===================================================================
+--- binutils-2.20.1.orig/bfd/targets.c
++++ binutils-2.20.1/bfd/targets.c
+@@ -634,6 +634,8 @@ extern const bfd_target bfd_elf32_nbigmi
+ extern const bfd_target bfd_elf32_nlittlemips_vec;
+ extern const bfd_target bfd_elf32_ntradbigmips_vec;
+ extern const bfd_target bfd_elf32_ntradlittlemips_vec;
++extern const bfd_target bfd_elf32_littlenios2_vec;
++extern const bfd_target bfd_elf32_bignios2_vec;
+ extern const bfd_target bfd_elf32_openrisc_vec;
+ extern const bfd_target bfd_elf32_or32_big_vec;
+ extern const bfd_target bfd_elf32_pj_vec;
+@@ -971,6 +973,8 @@ static const bfd_target * const _bfd_tar
+ 	&bfd_elf32_ntradbigmips_vec,
+ 	&bfd_elf32_ntradlittlemips_vec,
+ #endif
++	&bfd_elf32_littlenios2_vec,
++	&bfd_elf32_bignios2_vec,
+ 	&bfd_elf32_openrisc_vec,
+ 	&bfd_elf32_or32_big_vec,
+ 	&bfd_elf32_pj_vec,
+Index: binutils-2.20.1/ld/Makefile.am
+===================================================================
+--- binutils-2.20.1.orig/ld/Makefile.am
++++ binutils-2.20.1/ld/Makefile.am
+@@ -353,6 +353,7 @@ ALL_EMULATIONS = \
+ 	emsp430x448.o \
+ 	emsp430x449.o \
+ 	enews.o \
++	enios2elf.o \
+ 	ens32knbsd.o \
+ 	eor32.o \
+ 	eor32elf.o \
+@@ -1614,6 +1615,9 @@ emsp430x449.c: $(srcdir)/emulparams/msp4
+ enews.c: $(srcdir)/emulparams/news.sh \
+   $(srcdir)/emultempl/generic.em $(srcdir)/scripttempl/aout.sc ${GEN_DEPENDS}
+ 	${GENSCRIPTS} news "$(tdir_news)"
++enios2elf.c: $(srcdir)/emulparams/nios2elf.sh \
++  $(ELFDEPS) $(srcdir)/scripttempl/elf.sc ${GEN_DEPENDS}
++	${GENSCRIPTS} nios2elf "$(tdir_nios2)"
+ ens32knbsd.c:	$(srcdir)/emulparams/ns32knbsd.sh \
+   $(srcdir)/emultempl/generic.em $(srcdir)/emultempl/netbsd.em \
+   $(srcdir)/scripttempl/aout.sc ${GEN_DEPENDS}
+Index: binutils-2.20.1/ld/Makefile.in
+===================================================================
+--- binutils-2.20.1.orig/ld/Makefile.in
++++ binutils-2.20.1/ld/Makefile.in
+@@ -639,6 +639,7 @@ ALL_EMULATIONS = \
+ 	emsp430x448.o \
+ 	emsp430x449.o \
+ 	enews.o \
++	enios2elf.o \
+ 	ens32knbsd.o \
+ 	eor32.o \
+ 	eor32elf.o \
+@@ -2956,6 +2957,9 @@ emsp430x449.c: $(srcdir)/emulparams/msp4
+ enews.c: $(srcdir)/emulparams/news.sh \
+   $(srcdir)/emultempl/generic.em $(srcdir)/scripttempl/aout.sc ${GEN_DEPENDS}
+ 	${GENSCRIPTS} news "$(tdir_news)"
++enios2elf.c: $(srcdir)/emulparams/nios2elf.sh \
++  $(ELF_DEPS) $(srcdir)/scripttempl/elf.sc ${GEN_DEPENDS}
++	${GENSCRIPTS} nios2elf "$(tdir_nios2)"
+ ens32knbsd.c:	$(srcdir)/emulparams/ns32knbsd.sh \
+   $(srcdir)/emultempl/generic.em $(srcdir)/emultempl/netbsd.em \
+   $(srcdir)/scripttempl/aout.sc ${GEN_DEPENDS}
+Index: binutils-2.20.1/ld/configure.tgt
+===================================================================
+--- binutils-2.20.1.orig/ld/configure.tgt
++++ binutils-2.20.1/ld/configure.tgt
+@@ -428,6 +428,7 @@ mt-*elf)                targ_emul=elf32m
+ msp430-*-*)             targ_emul=msp430x110
+                         targ_extra_emuls="msp430x112 msp430x1101 msp430x1111 msp430x1121 msp430x1122 msp430x1132 msp430x122 msp430x123 msp430x1222 msp430x1232 msp430x133 msp430x135 msp430x1331 msp430x1351 msp430x147 msp430x148 msp430x149 msp430x155 msp430x156 msp430x157 msp430x167 msp430x168 msp430x169 msp430x1610 msp430x1611 msp430x1612 msp430x2101 msp430x2111 msp430x2121 msp430x2131 msp430x311 msp430x312 msp430x313 msp430x314 msp430x315 msp430x323 msp430x325 msp430x336 msp430x337 msp430x412 msp430x413 msp430x415 msp430x417 msp430xE423 msp430xE425 msp430xE427 msp430xW423 msp430xW425 msp430xW427 msp430xG437 msp430xG438 msp430xG439 msp430x435 msp430x436 msp430x437 msp430x447 msp430x448 msp430x449"
+ 			;;
++nios2*-*-*)           targ_emul=nios2elf ;;
+ ns32k-pc532-mach* | ns32k-pc532-ux*)  targ_emul=pc532macha ;;
+ ns32k-*-netbsd* | ns32k-pc532-lites*) targ_emul=ns32knbsd
+ 			;;
+Index: binutils-2.20.1/opcodes/configure
+===================================================================
+--- binutils-2.20.1.orig/opcodes/configure
++++ binutils-2.20.1/opcodes/configure
+@@ -12323,6 +12323,7 @@ if test x${all_targets} = xfalse ; then
+ 	bfd_mt_arch)		ta="$ta mt-asm.lo mt-desc.lo mt-dis.lo mt-ibld.lo mt-opc.lo" using_cgen=yes ;;
+ 	bfd_msp430_arch)	ta="$ta msp430-dis.lo" ;;
+ 	bfd_ns32k_arch)		ta="$ta ns32k-dis.lo" ;;
++	bfd_nios2_arch)		ta="$ta nios2-dis.lo nios2-opc.lo" ;;
+ 	bfd_openrisc_arch)	ta="$ta openrisc-asm.lo openrisc-desc.lo openrisc-dis.lo openrisc-ibld.lo openrisc-opc.lo" using_cgen=yes ;;
+ 	bfd_or32_arch)		ta="$ta or32-dis.lo or32-opc.lo" using_cgen=yes ;;
+ 	bfd_pdp11_arch)		ta="$ta pdp11-dis.lo pdp11-opc.lo" ;;
+Index: binutils-2.20.1/opcodes/configure.in
+===================================================================
+--- binutils-2.20.1.orig/opcodes/configure.in
++++ binutils-2.20.1/opcodes/configure.in
+@@ -262,6 +262,7 @@ if test x${all_targets} = xfalse ; then
+ 	bfd_mt_arch)		ta="$ta mt-asm.lo mt-desc.lo mt-dis.lo mt-ibld.lo mt-opc.lo" using_cgen=yes ;;
+ 	bfd_msp430_arch)	ta="$ta msp430-dis.lo" ;;
+ 	bfd_ns32k_arch)		ta="$ta ns32k-dis.lo" ;;
++	bfd_nios2_arch)		ta="$ta nios2-dis.lo nios2-opc.lo" ;;
+ 	bfd_openrisc_arch)	ta="$ta openrisc-asm.lo openrisc-desc.lo openrisc-dis.lo openrisc-ibld.lo openrisc-opc.lo" using_cgen=yes ;;
+ 	bfd_or32_arch)		ta="$ta or32-dis.lo or32-opc.lo" using_cgen=yes ;;
+ 	bfd_pdp11_arch)		ta="$ta pdp11-dis.lo pdp11-opc.lo" ;;
+Index: binutils-2.20.1/binutils/readelf.c
+===================================================================
+--- binutils-2.20.1.orig/binutils/readelf.c
++++ binutils-2.20.1/binutils/readelf.c
+@@ -126,6 +126,7 @@
+ #include "elf/mn10300.h"
+ #include "elf/mt.h"
+ #include "elf/msp430.h"
++#include "elf/nios2.h"
+ #include "elf/or32.h"
+ #include "elf/pj.h"
+ #include "elf/ppc.h"
+@@ -1593,6 +1594,17 @@ get_score_dynamic_type (unsigned long ty
+     }
+ }
+ 
++static const char *
++get_nios2_dynamic_type (unsigned long type)
++{
++  switch (type)
++    {
++    case DT_NIOS2_GP: return "NIOS2_GP";
++    default:
++      return NULL;
++    }
++}
++
+ 
+ static const char *
+ get_dynamic_type (unsigned long type)
+@@ -1705,6 +1717,9 @@ get_dynamic_type (unsigned long type)
+ 	    case EM_SCORE:
+ 	      result = get_score_dynamic_type (type);
+ 	      break;
++	    case EM_ALTERA_NIOS2:
++	      result = get_nios2_dynamic_type (type);
++	      break;
+ 	    default:
+ 	      result = NULL;
+ 	      break;
+Index: binutils-2.20.1/binutils/testsuite/binutils-all/bintest.s
+===================================================================
+--- binutils-2.20.1.orig/binutils/testsuite/binutils-all/bintest.s
++++ binutils-2.20.1/binutils/testsuite/binutils-all/bintest.s
+@@ -1,5 +1,8 @@
+ 	.globl text_symbol
+ 	.text
++        # this is needed to get the readelf -s, -S and -r tests to work
++        # with nios2 as it has relaxation on by default
++        .set norelax
+ text_symbol:	
+ static_text_symbol:
+ 	.long	1
+Index: binutils-2.20.1/configure
+===================================================================
+--- binutils-2.20.1.orig/configure
++++ binutils-2.20.1/configure
+@@ -3387,6 +3387,10 @@ case "${target}" in
+     noconfigdirs="$noconfigdirs gprof ${libgcj}"
+     libgloss_dir=mips
+     ;;
++  nios2*-*-*)
++    skipdirs=`echo " ${skipdirs} " | sed -e 's/ gprof / /'`
++    noconfigdirs="$noconfigdirs"
++    ;;
+   romp-*-*)
+     noconfigdirs="$noconfigdirs bfd binutils ld gas opcodes target-libgloss ${libgcj}"
+     ;;
+@@ -7275,7 +7279,7 @@ case " $build_configdirs " in
+     # For an installed makeinfo, we require it to be from texinfo 4.7 or
+     # higher, else we use the "missing" dummy.
+     if ${MAKEINFO} --version \
+-       | egrep 'texinfo[^0-9]*(4\.([7-9]|[1-9][0-9])|[5-9]|[1-9][0-9])' >/dev/null 2>&1; then
++       | egrep 'texinfo[^0-9]*([1-3][0-9]|4.[4-9]|4.[1-9][0-9]+|[5-9])' >/dev/null 2>&1; then
+       :
+     else
+       MAKEINFO="$MISSING makeinfo"
+Index: binutils-2.20.1/gas/config/obj-elf.c
+===================================================================
+--- binutils-2.20.1.orig/gas/config/obj-elf.c
++++ binutils-2.20.1/gas/config/obj-elf.c
+@@ -62,6 +62,10 @@
+ #include "elf/mep.h"
+ #endif
+ 
++#ifdef TC_NIOS2
++#include "elf/nios2.h"
++#endif
++
+ static void obj_elf_line (int);
+ static void obj_elf_size (int);
+ static void obj_elf_type (int);
+Index: binutils-2.20.1/gas/configure.tgt
+===================================================================
+--- binutils-2.20.1.orig/gas/configure.tgt
++++ binutils-2.20.1/gas/configure.tgt
+@@ -313,6 +313,8 @@ case ${generic_target} in
+ 
+   msp430-*-*)				fmt=elf ;;
+ 
++  nios2*-linux*)                        fmt=elf em=linux ;;
++
+   ns32k-pc532-mach*)			fmt=aout em=pc532mach ;;
+   ns32k-pc532-ux*)			fmt=aout em=pc532mach ;;
+   ns32k-pc532-lites*)			fmt=aout em=nbsd532 ;;
+Index: binutils-2.20.1/gas/doc/Makefile.am
+===================================================================
+--- binutils-2.20.1.orig/gas/doc/Makefile.am
++++ binutils-2.20.1/gas/doc/Makefile.am
+@@ -54,6 +54,7 @@ CPU_DOCS = \
+ 	c-mmix.texi \
+ 	c-mt.texi \
+ 	c-msp430.texi \
++	c-nios2.texi \
+ 	c-ns32k.texi \
+ 	c-pdp11.texi \
+ 	c-pj.texi \
+Index: binutils-2.20.1/gas/doc/as.texinfo
+===================================================================
+--- binutils-2.20.1.orig/gas/doc/as.texinfo
++++ binutils-2.20.1/gas/doc/as.texinfo
+@@ -845,6 +845,21 @@ unit coprocessor.  The default is to ass
+ @end table
+ @end ifset
+ 
++@ifset NIOSII
++The following options are available when @value{AS} is configured for
++an Altera Nios II processor.
++
++@table @gcctabopt
++@item -relax-all
++Replace all branch and call instructions with @code{jmp} and @code{callr} sequences
++@item -relax-section
++Replace identified out of range branches with @code{jmp} sequences (default)
++@item -no-relax
++Do not replace any branches or calls
++@end table
++@end ifset
++
++
+ @ifset PDP11
+ 
+ For details about the PDP-11 machine dependent features options,
+@@ -6972,6 +6987,10 @@ family.
+ @include c-msp430.texi
+ @end ifset
+ 
++@ifset NIOSII
++@include c-nios2.texi
++@end ifset
++
+ @ifset NS32K
+ @include c-ns32k.texi
+ @end ifset
+Index: binutils-2.20.1/include/dis-asm.h
+===================================================================
+--- binutils-2.20.1.orig/include/dis-asm.h
++++ binutils-2.20.1/include/dis-asm.h
+@@ -225,6 +225,7 @@ extern int print_insn_avr		(bfd_vma, dis
+ extern int print_insn_bfin		(bfd_vma, disassemble_info *);
+ extern int print_insn_big_arm		(bfd_vma, disassemble_info *);
+ extern int print_insn_big_mips		(bfd_vma, disassemble_info *);
++extern int print_insn_big_nios2		(bfd_vma, disassemble_info *);
+ extern int print_insn_big_or32		(bfd_vma, disassemble_info *);
+ extern int print_insn_big_powerpc	(bfd_vma, disassemble_info *);
+ extern int print_insn_big_score         (bfd_vma, disassemble_info *);
+@@ -251,6 +252,7 @@ extern int print_insn_ip2k		(bfd_vma, di
+ extern int print_insn_iq2000		(bfd_vma, disassemble_info *);
+ extern int print_insn_little_arm	(bfd_vma, disassemble_info *);
+ extern int print_insn_little_mips	(bfd_vma, disassemble_info *);
++extern int print_insn_little_nios2	(bfd_vma, disassemble_info *);
+ extern int print_insn_little_or32	(bfd_vma, disassemble_info *);
+ extern int print_insn_little_powerpc	(bfd_vma, disassemble_info *);
+ extern int print_insn_little_score      (bfd_vma, disassemble_info *); 
+Index: binutils-2.20.1/opcodes/disassemble.c
+===================================================================
+--- binutils-2.20.1.orig/opcodes/disassemble.c
++++ binutils-2.20.1/opcodes/disassemble.c
+@@ -65,6 +65,7 @@
+ #define ARCH_mt
+ #define ARCH_msp430
+ #define ARCH_ns32k
++#define ARCH_nios2
+ #define ARCH_openrisc
+ #define ARCH_or32
+ #define ARCH_pdp11
+@@ -275,6 +276,14 @@ disassembler (abfd)
+       disassemble = print_insn_msp430;
+       break;
+ #endif
++#ifdef ARCH_nios2
++    case bfd_arch_nios2:
++      if (bfd_big_endian (abfd))
++      disassemble = print_insn_big_nios2;
++      else
++      disassemble = print_insn_little_nios2;
++    break;
++#endif
+ #ifdef ARCH_ns32k
+     case bfd_arch_ns32k:
+       disassemble = print_insn_ns32k;
+Index: binutils-2.20.1/bfd/elf-bfd.h
+===================================================================
+--- binutils-2.20.1.orig/bfd/elf-bfd.h
++++ binutils-2.20.1/bfd/elf-bfd.h
+@@ -1417,6 +1417,7 @@ enum elf_object_id
+   HPPA_ELF_TDATA,
+   I386_ELF_TDATA,
+   MIPS_ELF_TDATA,
++  NIOS2_ELF_TDATA,
+   PPC32_ELF_TDATA,
+   PPC64_ELF_TDATA,
+   S390_ELF_TDATA,
+Index: binutils-2.20.1/gas/Makefile.am
+===================================================================
+--- binutils-2.20.1.orig/gas/Makefile.am
++++ binutils-2.20.1/gas/Makefile.am
+@@ -75,6 +75,7 @@ CPU_TYPES = \
+ 	mn10300 \
+ 	msp430 \
+ 	mt \
++	nios2 \
+ 	ns32k \
+ 	openrisc \
+ 	or32 \
+@@ -278,6 +279,7 @@ TARGET_CPU_CFILES = \
+ 	config/tc-moxie.c \
+ 	config/tc-msp430.c \
+ 	config/tc-mt.c \
++	config/tc-nios2.c \
+ 	config/tc-ns32k.c \
+ 	config/tc-openrisc.c \
+ 	config/tc-or32.c \
+@@ -340,6 +342,7 @@ TARGET_CPU_HFILES = \
+ 	config/tc-mn10300.h \
+ 	config/tc-msp430.h \
+ 	config/tc-mt.h \
++	config/tc-nios2.h \
+ 	config/tc-ns32k.h \
+ 	config/tc-openrisc.h \
+ 	config/tc-or32.h \
+Index: binutils-2.20.1/gas/Makefile.in
+===================================================================
+--- binutils-2.20.1.orig/gas/Makefile.in
++++ binutils-2.20.1/gas/Makefile.in
+@@ -340,7 +340,8 @@ CPU_TYPES = \
+ 	mn10200 \
+ 	mn10300 \
+ 	msp430 \
+-	mt \
++	nios2 \
++	nios2 \
+ 	ns32k \
+ 	openrisc \
+ 	or32 \
+@@ -541,7 +542,8 @@ TARGET_CPU_CFILES = \
+ 	config/tc-mn10300.c \
+ 	config/tc-moxie.c \
+ 	config/tc-msp430.c \
+-	config/tc-mt.c \
++	config/tc-nios2.c \
++	config/tc-nios2.c \
+ 	config/tc-ns32k.c \
+ 	config/tc-openrisc.c \
+ 	config/tc-or32.c \
+@@ -603,7 +605,8 @@ TARGET_CPU_HFILES = \
+ 	config/tc-mn10200.h \
+ 	config/tc-mn10300.h \
+ 	config/tc-msp430.h \
+-	config/tc-mt.h \
++	config/tc-nios2.h \
++	config/tc-nios2.h \
+ 	config/tc-ns32k.h \
+ 	config/tc-openrisc.h \
+ 	config/tc-or32.h \
+@@ -982,7 +985,8 @@ distclean-compile:
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tc-mn10300.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tc-moxie.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tc-msp430.Po@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tc-mt.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tc-nios2.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tc-nios2.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tc-ns32k.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tc-openrisc.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tc-or32.Po@am__quote@
+@@ -1562,6 +1566,20 @@ tc-mt.obj: config/tc-mt.c
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tc-mt.obj `if test -f 'config/tc-mt.c'; then $(CYGPATH_W) 'config/tc-mt.c'; else $(CYGPATH_W) '$(srcdir)/config/tc-mt.c'; fi`
+ 
++tc-nios2.o: config/tc-nios2.c
++@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tc-nios2.o -MD -MP -MF $(DEPDIR)/tc-nios2.Tpo -c -o tc-nios2.o `test -f 'config/tc-nios2.c' || echo '$(srcdir)/'`config/tc-nios2.c
++@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/tc-nios2.Tpo $(DEPDIR)/tc-nios2.Po
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='config/tc-nios2.c' object='tc-nios2.o' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tc-nios2.o `test -f 'config/tc-nios2.c' || echo '$(srcdir)/'`config/tc-nios2.c
++
++tc-nios2.obj: config/tc-nios2.c
++@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tc-nios2.obj -MD -MP -MF $(DEPDIR)/tc-nios2.Tpo -c -o tc-nios2.obj `if test -f 'config/tc-nios2.c'; then $(CYGPATH_W) 'config/tc-nios2.c'; else $(CYGPATH_W) '$(srcdir)/config/tc-nios2.c'; fi`
++@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/tc-nios2.Tpo $(DEPDIR)/tc-nios2.Po
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='config/tc-nios2.c' object='tc-nios2.obj' libtool=no @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tc-nios2.obj `if test -f 'config/tc-nios2.c'; then $(CYGPATH_W) 'config/tc-nios2.c'; else $(CYGPATH_W) '$(srcdir)/config/tc-nios2.c'; fi`
++
+ tc-ns32k.o: config/tc-ns32k.c
+ @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tc-ns32k.o -MD -MP -MF $(DEPDIR)/tc-ns32k.Tpo -c -o tc-ns32k.o `test -f 'config/tc-ns32k.c' || echo '$(srcdir)/'`config/tc-ns32k.c
+ @am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/tc-ns32k.Tpo $(DEPDIR)/tc-ns32k.Po
