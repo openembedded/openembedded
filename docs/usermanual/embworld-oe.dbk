@@ -503,7 +503,7 @@ KERNEL_OBJECT_SUFFIX = ".o"
 SRC_URI = "${KERNEL_MIRROR}/v2./linux-${KV}.tar.bz2"
 
 # where to get my specific patches
-SRC_URI_append = " ${MY_URL}/patches/linux-${KV}-${MYV}.patch.gz;patch=1"
+SRC_URI_append = " ${MY_URL}/patches/linux-${KV}-${MYV}.patch.gz;apply=yes"
 
 # specify the source directory
 # (only necessary where it differs from the package name)
@@ -573,8 +573,8 @@ PR = "r1"
 DEPENDS = "flex-native"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/a/at/at_${PV}-11.tar.gz \
-	   file://configure.patch;patch=1 \
-	   file://nonrootinstall.patch;patch=1"
+	   file://configure.patch \
+	   file://nonrootinstall.patch"
 
 inherit autotools
 
@@ -601,8 +601,7 @@ to be downloaded:
 the main distribution tarball with the URL where to find it, and two
 specific patches to build this package with OpenEmbedded.
 These patches are located together with the package file.
-The <varname>patch=1</varname> specifies that this file is to be
-applied as patch with <option>-p1</option>.
+They are applied as patch with 1 striplevel same as <option>-p1</option>.
 The <varname>${PV}</varname> in the tarball URL is expanded from the
 recipe version
 number.  And the recipe version number is taken from the file name

@@ -71,7 +71,7 @@
           used in recipes:<screen>S = "${WORKDIR}/postfix-${PV}"
 PR = "r4"
 CFLAGS += "-DNO_ASM"
-SRC_URI_append = "file://fixup.patch;patch=1"</screen></para>
+SRC_URI_append = "file://fixup.patch"</screen></para>
         </listitem>
       </varlistentry>
 
@@ -169,7 +169,7 @@ VAR1 ?= "New value"</screen></para>
           <para>You can append values to existing variables using the
           <emphasis>+=</emphasis> operator. Note that this operator will add a
           space between the existing content of the variable and the new
-          content.<screen>SRC_URI += "file://fix-makefile.patch;patch=1"</screen></para>
+          content.<screen>SRC_URI += "file://fix-makefile.patch"</screen></para>
         </listitem>
       </varlistentry>
 
@@ -196,15 +196,15 @@ VAR1 ?= "New value"</screen></para>
 
           <para>The following example shows the space being explicitly added to
           the start to ensure the appended value is not merged with the
-          existing value:<screen>SRC_URI_append = " file://fix-makefile.patch;patch=1"</screen>The
+          existing value:<screen>SRC_URI_append = " file://fix-makefile.patch"</screen>The
           <emphasis>_append</emphasis> method can also be used with overrides,
           which results in the actions only being performed for the specified
-          target or machine: [TODO: Link to section on overrides]<screen>SRC_URI_append_sh4 = " file://fix-makefile.patch;patch=1"</screen>Note
+          target or machine: [TODO: Link to section on overrides]<screen>SRC_URI_append_sh4 = " file://fix-makefile.patch"</screen>Note
           that the appended information is a variable itself, and therefore
           it's possible to use <emphasis>+=</emphasis> or
           <emphasis>=+</emphasis> to assign variables to the
-          <emphasis>_append</emphasis> information:<screen>SRC_URI_append = " file://fix-makefile.patch;patch=1"
-SRC_URI_append += "file://fix-install.patch;patch=1"</screen></para>
+          <emphasis>_append</emphasis> information:<screen>SRC_URI_append = " file://fix-makefile.patch"
+SRC_URI_append += "file://fix-install.patch"</screen></para>
         </listitem>
       </varlistentry>
 
@@ -223,7 +223,7 @@ SRC_URI_append += "file://fix-install.patch;patch=1"</screen></para>
           <emphasis>_prepend</emphasis> method can also be used with
           overrides, which result in the actions only being performed for the
           specified target or machine: [TODO: Link to section on
-          overrides]<screen>CFLAGS_prepend_sh4 = " file://fix-makefile.patch;patch=1"</screen>Note
+          overrides]<screen>CFLAGS_prepend_sh4 = " file://fix-makefile.patch"</screen>Note
           that the appended information is a variable itself, and therefore
           it's possible to use <emphasis>+=</emphasis> or
           <emphasis>=+</emphasis> to assign variables to the
@@ -633,7 +633,7 @@ mv fixed.recipe.bb myrecipe.bb</screen></para>
 
     <para>The following example from the havp recipe shows a typical <emphasis
     role="bold">SRC_URI</emphasis> definition:<screen>SRC_URI = "http://www.server-side.de/download/havp-${PV}.tar.gz \
-           file://sysconfdir-is-etc.patch;patch=1 \
+           file://sysconfdir-is-etc.patch \
            file://havp.init \
            file://doc.configure.txt \
            file://volatiles.05_havp"</screen></para>
@@ -656,11 +656,12 @@ mv fixed.recipe.bb myrecipe.bb</screen></para>
       </varlistentry>
 
       <varlistentry>
-        <term>file://sysconfdir-is-etc.patch;patch=1</term>
+        <term>file://sysconfdir-is-etc.patch</term>
 
         <listitem>
           <para>This is a local file that is used to patch the extracted
-          source code. The patch=1 is what specifies that this is a patch. The
+	  source code. If a filename ends in .patch or .diff then this is
+	  treated as patch file and applied with striplevel 1. The
           patch will be applied from the unpacked source directory, <emphasis
           role="bold">${S}</emphasis>. In this case <emphasis
           role="bold">${S}</emphasis> will be <emphasis
@@ -783,7 +784,7 @@ mv fixed.recipe.bb myrecipe.bb</screen></para>
 
       <para>If we take a look at the recipe for quagga we can see example
       non patch files for configuration and init scripts:<screen>SRC_URI = "http://www.quagga.net/download/quagga-${PV}.tar.gz \
-           file://fix-for-lib-inpath.patch;patch=1 \
+           file://fix-for-lib-inpath.patch \
            file://quagga.init \
            file://quagga.default \
            file://watchquagga.init \
@@ -3093,8 +3094,8 @@ PR = "r0"</screen>Note that all of the functionality of the recipe is provided
     this recipe it permits the common code to be used for both old and new
     recipes:<screen>PR = "r1"
 
-SRC_URI += "file://iproute2-2.6.15_no_strip.diff;patch=1;pnum=0 \
-            file://new-flex-fix.patch;patch=1"
+SRC_URI += "file://iproute2-2.6.15_no_strip.diff;striplevel=0 \
+            file://new-flex-fix.patch"
 
 require iproute2.inc
 
@@ -3106,10 +3107,10 @@ DATE = "060323"</screen></para>
     this version, thus replacing the <emphasis>configure</emphasis> task that
     is provided by the common include:<screen>PR = "r7"
 
-SRC_URI_append = "file://configure.patch;patch=1 \
-                  file://Makefile.in.patch;patch=1 \
-                  file://Makefile.cget.patch;patch=1 \
-                  file://util.patch;patch=1"
+SRC_URI_append = "file://configure.patch \
+                  file://Makefile.in.patch \
+                  file://Makefile.cget.patch \
+                  file://util.patch"
 
 require cherokee.inc
 

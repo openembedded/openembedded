@@ -252,18 +252,21 @@ SRC_URI[sha256sum] = &quot;36bdb85c97b39ac604bc58cb7857ee08295242c78a12848ef8a31
 
     <variablelist>
       <varlistentry>
-        <term>patch</term>
+	  <term>apply={yes|no}</term>
 
         <listitem>
-          <para>Used as <command>"patch=1"</command> to define this file as a
-          patch file. Patch files will be copied to
+          <para>If set to 'yes' it is used as <command>"patch=1"</command> to define this file as a
+          patch file. Patch files will be symlinked into
           <command>${S}/patches</command> and then applied to source from
-          within the source directory, <command>${S}</command>.</para>
+	  within the source directory, <command>${S}</command>.
+	  If set to 'no' the file will be copied to <command>${S}</command>
+	  during unpack.
+      </para>
         </listitem>
       </varlistentry>
 
       <varlistentry>
-        <term>pnum</term>
+        <term>striplevel</term>
 
         <listitem>
           <para>By default patches are applied with the <command>"-p
@@ -272,7 +275,7 @@ SRC_URI[sha256sum] = &quot;36bdb85c97b39ac604bc58cb7857ee08295242c78a12848ef8a31
           the value passed to <command>"-p"</command>. The most typical use is
           when the patches are relative to the source directory already and
           need to be applied using <command>"-p 0"</command>, in which case
-          the <command>"pnum=0"</command> option is supplied.</para>
+          the <command>"striplevel=0"</command> option is supplied.</para>
         </listitem>
       </varlistentry>
     </variablelist>
