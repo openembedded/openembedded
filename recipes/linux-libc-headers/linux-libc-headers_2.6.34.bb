@@ -16,11 +16,16 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
 SRC_URI_nios2 = "ftp://opensource.axon.nl/mirror/git_sopc.et.ntust.edu.tw.linux-2.6.git_a32ca88c4f3f3850c5c9789db2afab2530c6856d.tar.gz;name=nios2tarball \
 	  "
 
+SRC_URI[md5sum] = "10eebcb0178fb4540e2165bfd7efc7ad"
+SRC_URI[sha256sum] = "fa395fec7de633df1cb85b6248b8f35af98380ed128a8bc465fb48bc4d252633"
+
 # nios2 checksums
 SRC_URI[nios2tarball.md5sum] = "ad27c6ddfe5b2bb0f81968c0155d072d"
 SRC_URI[nios2tarball.sha256sum] = "7c99c5ee4bf26d08fde030c605c618454984dba5ae79c298064228ab0053e60f"
 
-S = "${WORKDIR}/linux-2.6"
+
+S = "${WORKDIR}/linux-2.6.34"
+S_nios2 = "${WORKDIR}/linux-2.6"
 
 do_configure() {
 	cd ${S}
