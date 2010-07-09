@@ -1,3 +1,5 @@
+# Note: DO NOT USE THIS PACKAGE. While the build is fine, the resulting JDK
+# is unable to compile itself yet (some issue with the built-in XML parser).
 require ${PN}.inc
 
 PR = "${INC_PR}.0"
