@@ -1,0 +1,217 @@
+Backport the below patch from trunk. This will let gcc use 
+Hard TLS register on ARMv7 so far it has been using soft access
+this should help improve performance.
+
+2010-02-01  Richard Earnshaw  <rearnsha@arm.com>
+
+       * arm.c (FL_FOR_ARCH_7A): is also a superset of ARMv6K.
+       (arm_override_options): Allow automatic selection of the thread
+       pointer register if thumb2.
+       (legitimize_pic_address): Improve code sequences for Thumb2.
+       (arm_call_tls_get_addr): Likewise.
+       (legitimize_tls_address): Likewise.
+       * arm.md (pic_load_addr_arm): Delete.  Replace with ...
+       (pic_load_addr_32bit): ... this.  New named pattern.
+       * thumb2.md (pic_load_addr_thumb2): Delete.
+       (pic_load_dot_plus_four): Delete.
+       (tls_load_dot_plus_four): New named pattern.
+
+
+Index: gcc-4.4.4/gcc/config/arm/arm.c
+===================================================================
+--- gcc-4.4.4.orig/gcc/config/arm/arm.c	2010-02-18 05:13:03.000000000 -0800
++++ gcc-4.4.4/gcc/config/arm/arm.c	2010-07-09 15:07:03.829739455 -0700
+@@ -495,7 +495,7 @@ static int thumb_call_reg_needed;
+ #define FL_FOR_ARCH6T2	(FL_FOR_ARCH6 | FL_THUMB2)
+ #define FL_FOR_ARCH6M	(FL_FOR_ARCH6 & ~FL_NOTM)
+ #define FL_FOR_ARCH7	(FL_FOR_ARCH6T2 &~ FL_NOTM)
+-#define FL_FOR_ARCH7A	(FL_FOR_ARCH7 | FL_NOTM)
++#define FL_FOR_ARCH7A	(FL_FOR_ARCH7 | FL_NOTM | FL_ARCH6K)
+ #define FL_FOR_ARCH7R	(FL_FOR_ARCH7A | FL_DIV)
+ #define FL_FOR_ARCH7M	(FL_FOR_ARCH7 | FL_DIV)
+ 
+@@ -1549,7 +1549,7 @@ arm_override_options (void)
+   /* Use the cp15 method if it is available.  */
+   if (target_thread_pointer == TP_AUTO)
+     {
+-      if (arm_arch6k && !TARGET_THUMB)
++      if (arm_arch6k && !TARGET_THUMB1)
+ 	target_thread_pointer = TP_CP15;
+       else
+ 	target_thread_pointer = TP_SOFT;
+@@ -3634,10 +3634,8 @@ legitimize_pic_address (rtx orig, enum m
+       else
+ 	address = reg;
+ 
+-      if (TARGET_ARM)
+-	emit_insn (gen_pic_load_addr_arm (address, orig));
+-      else if (TARGET_THUMB2)
+-	emit_insn (gen_pic_load_addr_thumb2 (address, orig));
++      if (TARGET_32BIT)
++	emit_insn (gen_pic_load_addr_32bit (address, orig));
+       else /* TARGET_THUMB1 */
+ 	emit_insn (gen_pic_load_addr_thumb1 (address, orig));
+ 
+@@ -3814,7 +3812,7 @@ arm_load_pic_register (unsigned long sav
+     {
+       pic_rtx = gen_rtx_SYMBOL_REF (Pmode, VXWORKS_GOTT_BASE);
+       pic_rtx = gen_rtx_CONST (Pmode, pic_rtx);
+-      emit_insn (gen_pic_load_addr_arm (pic_reg, pic_rtx));
++      emit_insn (gen_pic_load_addr_32bit (pic_reg, pic_rtx));
+ 
+       emit_insn (gen_rtx_SET (Pmode, pic_reg, gen_rtx_MEM (Pmode, pic_reg)));
+ 
+@@ -3837,29 +3835,13 @@ arm_load_pic_register (unsigned long sav
+ 				UNSPEC_GOTSYM_OFF);
+       pic_rtx = gen_rtx_CONST (Pmode, pic_rtx);
+ 
+-      if (TARGET_ARM)
+-	{
+-	  emit_insn (gen_pic_load_addr_arm (pic_reg, pic_rtx));
+-	  emit_insn (gen_pic_add_dot_plus_eight (pic_reg, pic_reg, labelno));
+-	}
+-      else if (TARGET_THUMB2)
++      if (TARGET_32BIT)
+ 	{
+-	  /* Thumb-2 only allows very limited access to the PC.  Calculate the
+-	     address in a temporary register.  */
+-	  if (arm_pic_register != INVALID_REGNUM)
+-	    {
+-	      pic_tmp = gen_rtx_REG (SImode,
+-				     thumb_find_work_register (saved_regs));
+-	    }
++	  emit_insn (gen_pic_load_addr_32bit (pic_reg, pic_rtx));
++	  if (TARGET_ARM)
++	    emit_insn (gen_pic_add_dot_plus_eight (pic_reg, pic_reg, labelno));
+ 	  else
+-	    {
+-	      gcc_assert (can_create_pseudo_p ());
+-	      pic_tmp = gen_reg_rtx (Pmode);
+-	    }
+-
+-	  emit_insn (gen_pic_load_addr_thumb2 (pic_reg, pic_rtx));
+-	  emit_insn (gen_pic_load_dot_plus_four (pic_tmp, labelno));
+-	  emit_insn (gen_addsi3 (pic_reg, pic_reg, pic_tmp));
++	    emit_insn (gen_pic_add_dot_plus_four (pic_reg, pic_reg, labelno));
+ 	}
+       else /* TARGET_THUMB1 */
+ 	{
+@@ -4499,14 +4481,7 @@ arm_call_tls_get_addr (rtx x, rtx reg, r
+   if (TARGET_ARM)
+     emit_insn (gen_pic_add_dot_plus_eight (reg, reg, labelno));
+   else if (TARGET_THUMB2)
+-    {
+-      rtx tmp;
+-      /* Thumb-2 only allows very limited access to the PC.  Calculate
+-	 the address in a temporary register.  */
+-      tmp = gen_reg_rtx (SImode);
+-      emit_insn (gen_pic_load_dot_plus_four (tmp, labelno));
+-      emit_insn (gen_addsi3(reg, reg, tmp));
+-    }
++    emit_insn (gen_pic_add_dot_plus_four (reg, reg, labelno));
+   else /* TARGET_THUMB1 */
+     emit_insn (gen_pic_add_dot_plus_four (reg, reg, labelno));
+ 
+@@ -4562,15 +4537,7 @@ legitimize_tls_address (rtx x, rtx reg)
+       if (TARGET_ARM)
+ 	emit_insn (gen_tls_load_dot_plus_eight (reg, reg, labelno));
+       else if (TARGET_THUMB2)
+-	{
+-	  rtx tmp;
+-	  /* Thumb-2 only allows very limited access to the PC.  Calculate
+-	     the address in a temporary register.  */
+-	  tmp = gen_reg_rtx (SImode);
+-	  emit_insn (gen_pic_load_dot_plus_four (tmp, labelno));
+-	  emit_insn (gen_addsi3(reg, reg, tmp));
+-	  emit_move_insn (reg, gen_const_mem (SImode, reg));
+-	}
++	emit_insn (gen_tls_load_dot_plus_four (reg, reg, labelno));
+       else
+ 	{
+ 	  emit_insn (gen_pic_add_dot_plus_four (reg, reg, labelno));
+Index: gcc-4.4.4/gcc/config/arm/arm.md
+===================================================================
+--- gcc-4.4.4.orig/gcc/config/arm/arm.md	2010-02-18 05:13:03.000000000 -0800
++++ gcc-4.4.4/gcc/config/arm/arm.md	2010-07-09 15:07:03.833742490 -0700
+@@ -5091,14 +5091,17 @@
+ ;; the insn alone, and to force the minipool generation pass to then move
+ ;; the GOT symbol to memory.
+ 
+-(define_insn "pic_load_addr_arm"
++(define_insn "pic_load_addr_32bit"
+   [(set (match_operand:SI 0 "s_register_operand" "=r")
+ 	(unspec:SI [(match_operand:SI 1 "" "mX")] UNSPEC_PIC_SYM))]
+-  "TARGET_ARM && flag_pic"
++  "TARGET_32BIT && flag_pic"
+   "ldr%?\\t%0, %1"
+   [(set_attr "type" "load1")
+-   (set (attr "pool_range")     (const_int 4096))
+-   (set (attr "neg_pool_range") (const_int 4084))]
++   (set_attr "pool_range" "4096")
++   (set (attr "neg_pool_range")
++	(if_then_else (eq_attr "is_thumb" "no")
++		      (const_int 4084)
++		      (const_int 0)))]
+ )
+ 
+ (define_insn "pic_load_addr_thumb1"
+@@ -5116,7 +5119,7 @@
+ 		    (const_int 4)
+ 		    (match_operand 2 "" "")]
+ 		   UNSPEC_PIC_BASE))]
+-  "TARGET_THUMB1"
++  "TARGET_THUMB"
+   "*
+   (*targetm.asm_out.internal_label) (asm_out_file, \"LPIC\",
+ 				     INTVAL (operands[2]));
+Index: gcc-4.4.4/gcc/config/arm/thumb2.md
+===================================================================
+--- gcc-4.4.4.orig/gcc/config/arm/thumb2.md	2010-02-24 06:50:43.000000000 -0800
++++ gcc-4.4.4/gcc/config/arm/thumb2.md	2010-07-09 15:07:03.829739455 -0700
+@@ -243,37 +243,19 @@
+    (set_attr "neg_pool_range" "*,*,*,*,0,*")]
+ )
+ 
+-;; ??? We can probably do better with thumb2
+-(define_insn "pic_load_addr_thumb2"
+-  [(set (match_operand:SI 0 "s_register_operand" "=r")
+-	(unspec:SI [(match_operand:SI 1 "" "mX")] UNSPEC_PIC_SYM))]
+-  "TARGET_THUMB2 && flag_pic"
+-  "ldr%?\\t%0, %1"
+-  [(set_attr "type" "load1")
+-   (set_attr "pool_range" "4096")
+-   (set_attr "neg_pool_range" "0")]
+-)
+-
+-;; Set reg to the address of this instruction plus four.  The low two
+-;; bits of the PC are always read as zero, so ensure the instructions is
+-;; word aligned.
+-(define_insn "pic_load_dot_plus_four"
+-  [(set (match_operand:SI 0 "register_operand" "=r")
+-	(unspec:SI [(const_int 4)
+-		    (match_operand 1 "" "")]
+-		   UNSPEC_PIC_BASE))]
++(define_insn "tls_load_dot_plus_four"
++  [(set (match_operand:SI 0 "register_operand" "=l,r")
++	(mem:SI (unspec:SI [(match_operand:SI 1 "register_operand" "+l,r")
++			    (const_int 4)
++			    (match_operand 2 "" "")]
++			   UNSPEC_PIC_BASE)))]
+   "TARGET_THUMB2"
+   "*
+-  assemble_align(BITS_PER_WORD);
+   (*targetm.asm_out.internal_label) (asm_out_file, \"LPIC\",
+-			     INTVAL (operands[1]));
+-  /* We use adr because some buggy gas assemble add r8, pc, #0
+-     to add.w r8, pc, #0, not addw r8, pc, #0.  */
+-  asm_fprintf (asm_out_file, \"\\tadr\\t%r, %LLPIC%d + 4\\n\",
+-	       REGNO(operands[0]), (int)INTVAL (operands[1]));
+-  return \"\";
++			     INTVAL (operands[2]));
++  return \"add\\t%1, %|pc\;ldr%?\\t%0, [%1]\";
+   "
+-  [(set_attr "length" "6")]
++  [(set_attr "length" "4,6")]
+ )
+ 
+ ;; Thumb-2 always has load/store halfword instructions, so we can avoid a lot
