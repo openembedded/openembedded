@@ -10,7 +10,7 @@ NATIVEDEPS = "mpfr-native gmp-native libmpc-native"
 
 INC_PR = "r5"
 
-SRCREV = "161450"
+SRCREV = "162000"
 PV = "4.5"
 # BINV should be incremented after updating to a revision
 # after a minor gcc release (e.g. 4.5.1 or 4.5.2) has been made
