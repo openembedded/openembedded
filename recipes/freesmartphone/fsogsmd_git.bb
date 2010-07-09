@@ -7,8 +7,8 @@ PE = "1"
 
 DEPENDS += "libfsoresource libgsm0710mux ppp msmcommd"
 
-SRC_URI_append_om-gta01 = " file://0001-fsogsmd-update-sysfs-node-in-config-for-openmoko_gta.patch"
-SRC_URI_append_om-gta02 = " file://0001-fsogsmd-update-sysfs-node-in-config-for-openmoko_gta.patch"
+SRC_URI_append_om-gta01 = " file://0001-fsogsmd-update-sysfs-node-in-config-for-openmoko_gta.patch;striplevel=2"
+SRC_URI_append_om-gta02 = " file://0001-fsogsmd-update-sysfs-node-in-config-for-openmoko_gta.patch;striplevel=2"
 
 EXTRA_OECONF_append = "\
   --enable-libgsm0710mux \
