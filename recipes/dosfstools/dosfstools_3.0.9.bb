@@ -6,14 +6,16 @@ DESCRIPTION = "DOS FAT Filesystem Utilities"
 
 SECTION = "base"
 PRIORITY = "optional"
-LICENSE = "GPLv2"
+LICENSE = "GPLv3"
 
-PR = "r1"
+DEFAULT_PREFERENCE = "-1"
 
-SRC_URI = "ftp://ftp.uni-erlangen.de/pub/Linux/LOCAL/dosfstools/dosfstools-${PV}.src.tar.gz \
-	   file://alignment_hack.patch \
-           file://msdos_fat12_undefined.patch \
-	   file://include-linux-types.patch"
+PR = "r0"
+
+SRC_URI = "http://www.daniel-baumann.ch/software/dosfstools/dosfstools-${PV}.tar.bz2 \
+	"
+# output of getconf LFS_CFLAGS
+#
 CLFAGS_append = ' -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64'
 CFLAGS_append_libc-uclibc = ' ${@base_contains("DISTRO_FEATURES", "largefile", "-D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64", "", d)}'
 
@@ -22,5 +24,5 @@ do_install () {
 		   "MANDIR=${D}${mandir}/man8" install
 }
 
-SRC_URI[md5sum] = "407d405ade410f7597d364ab5dc8c9f6"
-SRC_URI[sha256sum] = "0eac6d12388b3d9ed78684529c1b0d9346fa2abbe406c4d4a3eb5a023c98a484"
+SRC_URI[md5sum] = "7f159ec44d3b9c502904bab0236050e4"
+SRC_URI[sha256sum] = "3f63676faeac507e909d84c8920ddb6597da1eb688577c2fc9c756b821d0458f"
