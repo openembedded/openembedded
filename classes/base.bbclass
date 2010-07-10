@@ -391,6 +391,13 @@ python () {
             if this_machine and not re.match(need_machine, this_machine):
                 raise bb.parse.SkipPackage("incompatible with machine %s" % this_machine)
 
+        need_target = bb.data.getVar('COMPATIBLE_TARGET_SYS', d, 1)
+        if need_target:
+            import re
+            this_target = bb.data.getVar('TARGET_SYS', d, 1)
+            if this_target and not re.match(need_target, this_target):
+                raise bb.parse.SkipPackage("incompatible with target system %s" % this_target)
+
     pn = bb.data.getVar('PN', d, 1)
 
     # OBSOLETE in bitbake 1.7.4
