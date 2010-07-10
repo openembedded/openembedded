@@ -1,0 +1,183 @@
+Index: glibc-2.10.1/csu/libc-start.c
+===================================================================
+--- glibc-2.10.1.orig/csu/libc-start.c
++++ glibc-2.10.1/csu/libc-start.c
+@@ -234,7 +234,9 @@ LIBC_START_MAIN (int (*main) (int, char
+       result = 0;
+ # ifdef SHARED
+       unsigned int *ptr = __libc_pthread_functions.ptr_nthreads;
++#ifdef PTR_DEMANGLE
+       PTR_DEMANGLE (ptr);
++#endif
+ # else
+       extern unsigned int __nptl_nthreads __attribute ((weak));
+       unsigned int *const ptr = &__nptl_nthreads;
+Index: glibc-2.10.1/inet/getnetgrent_r.c
+===================================================================
+--- glibc-2.10.1.orig/inet/getnetgrent_r.c
++++ glibc-2.10.1/inet/getnetgrent_r.c
+@@ -57,14 +57,18 @@ setup (void **fctp, service_user **nipp)
+ 	 same result every time.  So we need no locking.  */
+       no_more = __nss_netgroup_lookup (nipp, "setnetgrent", fctp);
+       startp = no_more ? (service_user *) -1 : *nipp;
++#ifdef PTR_MANGLE
+       PTR_MANGLE (startp);
++#endif
+       atomic_write_barrier ();
+       startp_initialized = true;
+     }
+   else
+     {
+       service_user *nip = startp;
++#ifdef PTR_DEMANGLE
+       PTR_DEMANGLE (nip);
++#endif
+       if (nip == (service_user *) -1)
+ 	/* No services at all.  */
+ 	return 1;
+Index: glibc-2.10.1/nptl/sysdeps/pthread/unwind-forcedunwind.c
+===================================================================
+--- glibc-2.10.1.orig/nptl/sysdeps/pthread/unwind-forcedunwind.c
++++ glibc-2.10.1/nptl/sysdeps/pthread/unwind-forcedunwind.c
+@@ -63,13 +63,21 @@ pthread_cancel_init (void)
+       )
+     __libc_fatal ("libgcc_s.so.1 must be installed for pthread_cancel to work\n");
+ 
++#ifdef PTR_MANGLE
+   PTR_MANGLE (resume);
++#endif
+   libgcc_s_resume = resume;
++#ifdef PTR_MANGLE
+   PTR_MANGLE (personality);
++#endif
+   libgcc_s_personality = personality;
++#ifdef PTR_MANGLE
+   PTR_MANGLE (forcedunwind);
++#endif
+   libgcc_s_forcedunwind = forcedunwind;
++#ifdef PTR_MANGLE
+   PTR_MANGLE (getcfa);
++#endif
+   libgcc_s_getcfa = getcfa;
+   /* Make sure libgcc_s_handle is written last.  Otherwise,
+      pthread_cancel_init might return early even when the pointer the
+@@ -97,7 +105,9 @@ _Unwind_Resume (struct _Unwind_Exception
+     pthread_cancel_init ();
+ 
+   void (*resume) (struct _Unwind_Exception *exc) = libgcc_s_resume;
++#ifdef PTR_DEMANGLE
+   PTR_DEMANGLE (resume);
++#endif
+   resume (exc);
+ }
+ 
+@@ -113,7 +123,9 @@ __gcc_personality_v0 (int version, _Unwi
+   _Unwind_Reason_Code (*personality)
+     (int, _Unwind_Action, _Unwind_Exception_Class, struct _Unwind_Exception *,
+      struct _Unwind_Context *) = libgcc_s_personality;
++#ifdef PTR_DEMANGLE
+   PTR_DEMANGLE (personality);
++#endif
+   return personality (version, actions, exception_class, ue_header, context);
+ }
+ 
+@@ -127,7 +139,9 @@ _Unwind_ForcedUnwind (struct _Unwind_Exc
+   _Unwind_Reason_Code (*forcedunwind)
+     (struct _Unwind_Exception *, _Unwind_Stop_Fn, void *)
+     = libgcc_s_forcedunwind;
++#ifdef PTR_DEMANGLE
+   PTR_DEMANGLE (forcedunwind);
++#endif
+   return forcedunwind (exc, stop, stop_argument);
+ }
+ 
+@@ -138,6 +152,8 @@ _Unwind_GetCFA (struct _Unwind_Context *
+     pthread_cancel_init ();
+ 
+   _Unwind_Word (*getcfa) (struct _Unwind_Context *) = libgcc_s_getcfa;
++#ifdef PTR_DEMANGLE
+   PTR_DEMANGLE (getcfa);
++#endif
+   return getcfa (context);
+ }
+Index: glibc-2.10.1/nptl/sysdeps/unix/sysv/linux/libc_pthread_init.c
+===================================================================
+--- glibc-2.10.1.orig/nptl/sysdeps/unix/sysv/linux/libc_pthread_init.c
++++ glibc-2.10.1/nptl/sysdeps/unix/sysv/linux/libc_pthread_init.c
+@@ -67,7 +67,9 @@ __libc_pthread_init (ptr, reclaim, funct
+   for (size_t cnt = 0; cnt < NPTRS; ++cnt)
+     {
+       void *p = src->parr[cnt];
++#ifdef PTR_MANGLE
+       PTR_MANGLE (p);
++#endif
+       dest->parr[cnt] = p;
+     }
+   __libc_pthread_functions_init = 1;
+Index: glibc-2.10.1/nss/getXXbyYY_r.c
+===================================================================
+--- glibc-2.10.1.orig/nss/getXXbyYY_r.c
++++ glibc-2.10.1/nss/getXXbyYY_r.c
+@@ -202,7 +202,9 @@ INTERNAL (REENTRANT_NAME) (ADD_PARAMS, L
+       if (no_more)
+ 	{
+ 	  void *tmp_ptr = (service_user *) -1l;
++#ifdef PTR_MANGLE
+ 	  PTR_MANGLE (tmp_ptr);
++#endif
+ 	  startp = tmp_ptr;
+ 	}
+       else
+@@ -223,10 +225,14 @@ INTERNAL (REENTRANT_NAME) (ADD_PARAMS, L
+ #endif /* need _res_hconf */
+ 
+ 	  void *tmp_ptr = fct.l;
++#ifdef PTR_MANGLE
+ 	  PTR_MANGLE (tmp_ptr);
++#endif
+ 	  start_fct = tmp_ptr;
+ 	  tmp_ptr = nip;
++#ifdef PTR_MANGLE
+ 	  PTR_MANGLE (tmp_ptr);
++#endif
+ 	  startp = tmp_ptr;
+ 	}
+ 
+@@ -238,9 +244,13 @@ INTERNAL (REENTRANT_NAME) (ADD_PARAMS, L
+   else
+     {
+       fct.l = start_fct;
++#ifdef PTR_DEMANGLE
+       PTR_DEMANGLE (fct.l);
++#endif
+       nip = startp;
++#ifdef PTR_DEMANGLE
+       PTR_DEMANGLE (nip);
++#endif
+       no_more = nip == (service_user *) -1l;
+     }
+ 
+Index: glibc-2.10.1/nss/nsswitch.c
+===================================================================
+--- glibc-2.10.1.orig/nss/nsswitch.c
++++ glibc-2.10.1/nss/nsswitch.c
+@@ -303,7 +303,9 @@ __nss_lookup_function (service_user *ni,
+     {
+       /* The search found an existing structure in the tree.  */
+       result = ((known_function *) *found)->fct_ptr;
++#ifdef PTR_DEMANGLE
+       PTR_DEMANGLE (result);
++#endif
+     }
+   else
+     {
+@@ -427,7 +429,9 @@ __nss_lookup_function (service_user *ni,
+ 	  /* Remember function pointer for later calls.  Even if null, we
+ 	     record it so a second try needn't search the library again.  */
+ 	  known->fct_ptr = result;
++#ifdef PTR_MANGLE
+ 	  PTR_MANGLE (known->fct_ptr);
++#endif
+ 	}
+     }
+ 
