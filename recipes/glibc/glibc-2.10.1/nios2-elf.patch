@@ -1,0 +1,67 @@
+*** glibc-2.5/elf/elf.h	2010-05-31 16:05:58.000000000 +0200
+--- glibc-2.5-/elf/elf.h	2008-12-19 00:35:12.000000000 +0100
+***************
+*** 250,255 ****
+--- 250,257 ----
+  #define EM_XTENSA	94		/* Tensilica Xtensa Architecture */
+  #define EM_NUM		95
+  
++ #define EM_ALTERA_NIOS2 113             /* Altera Nios II */
++ 
+  /* If it is necessary to assign new unofficial EM_* values, please
+     pick large random numbers (0x8523, 0xa7f2, etc.) to minimize the
+     chances of collision with official or non-GNU unofficial values.  */
+***************
+*** 2602,2607 ****
+--- 2605,2655 ----
+  #define R_M32R_GOTOFF_LO	64	/* Low 16 bit offset to GOT */
+  #define R_M32R_NUM		256	/* Keep this the last entry. */
+  
++ /* Legal values for d_tag (dynamic entry type).  */
++ #define DT_NIOS2_GP             0x70000002 /* Address of _gp.  */
++ 
++ /* Nios II relocs.  */
++ #define R_NIOS2_NONE            0       /* No reloc.  */
++ #define R_NIOS2_S16             1       /* Direct signed 16 bit.  */
++ #define R_NIOS2_U16             2       /* Direct unsigned 16 bit.  */
++ #define R_NIOS2_PCREL16         3       /* PC relative 16 bit.  */
++ #define R_NIOS2_CALL26          4
++ #define R_NIOS2_IMM5            5
++ #define R_NIOS2_CACHE_OPX       6
++ #define R_NIOS2_IMM6            7
++ #define R_NIOS2_IMM8            8
++ #define R_NIOS2_HI16            9
++ #define R_NIOS2_LO16            10
++ #define R_NIOS2_HIADJ16         11
++ #define R_NIOS2_BFD_RELOC_32    12
++ #define R_NIOS2_BFD_RELOC_16    13
++ #define R_NIOS2_BFD_RELOC_8     14
++ #define R_NIOS2_GPREL           15
++ #define R_NIOS2_GNU_VTINHERIT   16
++ #define R_NIOS2_GNU_VTENTRY     17
++ #define R_NIOS2_UJMP            18
++ #define R_NIOS2_CJMP            19
++ #define R_NIOS2_CALLR           20
++ #define R_NIOS2_ALIGN           21
++ #define R_NIOS2_GOT16           22
++ #define R_NIOS2_CALL16          23
++ #define R_NIOS2_GOTOFF_LO       24
++ #define R_NIOS2_GOTOFF_HA       25
++ #define R_NIOS2_PCREL_LO        26
++ #define R_NIOS2_PCREL_HA        27
++ #define R_NIOS2_TLS_GD16        28
++ #define R_NIOS2_TLS_LDM16       29
++ #define R_NIOS2_TLS_LDO16       30
++ #define R_NIOS2_TLS_IE16        31
++ #define R_NIOS2_TLS_LE16        32
++ #define R_NIOS2_TLS_DTPMOD      33
++ #define R_NIOS2_TLS_DTPREL      34
++ #define R_NIOS2_TLS_TPREL       35
++ #define R_NIOS2_COPY            36
++ #define R_NIOS2_GLOB_DAT        37
++ #define R_NIOS2_JUMP_SLOT       38
++ #define R_NIOS2_RELATIVE        39
++ #define R_NIOS2_GOTOFF          40
+  
+  __END_DECLS
+  

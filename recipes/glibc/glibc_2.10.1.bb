@@ -69,6 +69,11 @@ SRC_URI_append_sh4 = " file://no-z-defs.patch"
 #powerpc patches to add support for soft-float
 SRC_URI_append_powerpc= " file://powerpc-sqrt-hack.diff"
 
+SRC_URI_append_nios2 = " \
+  file://sysdeps-nios2.patch \
+  file://nios2-elf.patch \
+"
+
 S = "${WORKDIR}/glibc-${PV}"
 B = "${WORKDIR}/build-${TARGET_SYS}"
 
