@@ -1,0 +1,4 @@
+# Kernel keymap for hx4700
+
+# Record button
+keycode 89 = F24
