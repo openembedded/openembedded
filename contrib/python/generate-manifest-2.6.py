@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # generate Python Manifest for the OpenEmbedded build system
-# (C) 2002-2009 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
+# (C) 2002-2010 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
 # (C) 2007 Jeremy Laine
 # licensed under MIT, see COPYING.MIT
 
@@ -12,7 +12,7 @@ import time
 VERSION = "2.6.4"
 
 __author__ = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
-__version__ = "20100505"
+__version__ = "20100711"
 
 class MakefileMaker:
 
@@ -62,8 +62,8 @@ class MakefileMaker:
 
         #
         # generate provides line
-        # 
- 
+        #
+
         provideLine = 'PROVIDES+="'
         for name in self.packages:
             provideLine += "%s " % name
@@ -273,16 +273,19 @@ if __name__ == "__main__":
 
     m.addPackage( "python-mmap", "Python Memory-Mapped-File Support", "python-core python-io",
     "lib-dynload/mmap.so " )
-    
+
     m.addPackage( "python-multiprocessing", "Python Multiprocessing Support", "python-core python-io python-lang",
-    "lib-dynload/_multiprocessing.so multiprocessing" ) # package   
+    "lib-dynload/_multiprocessing.so multiprocessing" ) # package
 
     m.addPackage( "python-netclient", "Python Internet Protocol Clients", "python-core python-crypt python-datetime python-io python-lang python-logging python-mime",
-    "*Cookie*.* " + 
+    "*Cookie*.* " +
     "base64.* cookielib.* ftplib.* gopherlib.* hmac.* httplib.* mimetypes.* nntplib.* poplib.* smtplib.* telnetlib.* urllib.* urllib2.* urlparse.* uuid.* rfc822.* mimetools.*" )
 
     m.addPackage( "python-netserver", "Python Internet Protocol Servers", "python-core python-netclient",
     "cgi.* *HTTPServer.* SocketServer.*" )
+
+    m.addPackage( "python-numbers", "Python Number APIs", "python-core python-lang python-re",
+    "decimal.* numbers.*" )
 
     m.addPackage( "python-pickle", "Python Persistence Support", "python-core python-codecs python-io python-re",
     "pickle.* shelve.* lib-dynload/cPickle.so" )
@@ -334,16 +337,16 @@ if __name__ == "__main__":
 
     m.addPackage( "python-threading", "Python Threading & Synchronization Support", "python-core python-lang",
     "_threading_local.* dummy_thread.* dummy_threading.* mutex.* threading.* Queue.*" )
-    
+
     m.addPackage( "python-tkinter", "Python Tcl/Tk Bindings", "python-core",
     "lib-dynload/_tkinter.so lib-tk" ) # package
-    
+
     m.addPackage( "python-unittest", "Python Unit Testing Framework", "python-core python-stringold python-lang",
     "unittest.*" )
 
     m.addPackage( "python-unixadmin", "Python Unix Administration Support", "python-core",
     "lib-dynload/nis.so lib-dynload/grp.so lib-dynload/pwd.so getpass.*" )
-        
+
     m.addPackage( "python-xml", "Python basic XML support.", "python-core python-re",
     "lib-dynload/pyexpat.so xml xmllib.*" ) # package
 

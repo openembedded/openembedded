@@ -1,6 +1,7 @@
 require python.inc
 DEPENDS = "openssl-native bzip2-full-native zlib-native readline-native"
-PR = "${INC_PR}.4"
+# set to 0 on every increase of INC_PR
+PR = "${INC_PR}.0"
 
 SRC_URI = "\
   http://www.python.org/ftp/python/${PV}/Python-${PV}.tar.bz2;name=archive \
