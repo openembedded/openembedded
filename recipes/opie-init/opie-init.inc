@@ -30,14 +30,15 @@ do_install() {
 	    install -m 0644 ${WORKDIR}/locale.conf ${D}${palmtopdir}/etc/skel/
 	fi
 
-	case ${MACHINE} in
-	c7x0)
-		install -d ${D}${sysconfdir}/apm/event.d/
-		install -m 0755 ${WORKDIR}/qpe-suspend-resume ${D}${sysconfdir}/apm/event.d/00-qpe-suspend-resume.sh
-                ;;
-        *)
-                ;;
-        esac	
+# This should not be necessary anymore (w100 is currently disabled for c7x0)
+#	case ${MACHINE} in
+#	c7x0)
+#		install -d ${D}${sysconfdir}/apm/event.d/
+#		install -m 0755 ${WORKDIR}/qpe-suspend-resume ${D}${sysconfdir}/apm/event.d/00-qpe-suspend-resume.sh
+#                ;;
+#        *)
+#                ;;
+#        esac	
 }
 
 #FILES_opie-init_append = " ${sysconfdir} ${palmtopdir}/bin"
