@@ -104,7 +104,8 @@ do_configure() {
 }
 do_compile() {
         if test "${MACHINE}" != "native"; then
-            sed -i -e 's|/usr/include|${STAGING_INCDIR}|g' ext/Errno/Errno_pm.PL
+            sed -i -e 's|/usr/include|${STAGING_INCDIR}|g' \
+                   -e 's|$Config{cppflags}||' ext/Errno/Errno_pm.PL
         fi
         cd Cross
         oe_runmake perl LD="${TARGET_SYS}-gcc"
