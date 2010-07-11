@@ -9,7 +9,7 @@
 
 # on debian-like systems
 # set up bridge aptitude install bridge-utils
-# 
+#
 # change /etc/network/interfaces to something like below and restart
 # network
 
@@ -18,9 +18,9 @@
 #
 #auto br0
 #iface br0 inet static
-#        address 10.0.1.37
-#        netmask 255.255.0.0
-#        gateway 10.0.0.1
+#        address 192.168.1.1
+#        netmask 255.255.255.0
+#        gateway 192.168.1.254
 #        bridge_ports eth0
 #        bridge_maxwait 0
 #        bridge_fd 9
@@ -54,7 +54,7 @@
 #		from dhcp server. Note that this option is not entertained if networking
 #		is disabled
 
-supported_archs="{arm mips ppc sh4 x86}"
+supported_archs="{arm mips mipsel ppc sh4 x86}"
 if [ $# -lt 2 ]; then
     echo -en "
     Usage: `basename $0` <arch> <libc>
@@ -75,73 +75,85 @@ staticip="yes"
 
 case $arch in
     arm)
-	address="10.0.1.101"
-        macaddr="00:16:3e:00:00:01"
+	address="192.168.1.101"
+	macaddr="00:16:3e:00:00:01"
 	machine="versatilepb"
 	gdbport="1234"
 	consoleopt="console=ttyAMA0 console=ttyS0"
 	rootdisk="sda"
 	qemuopts="-nographic"
-        kernel="zImage"
-        image="native-sdk-image"
-        ;;
+	kernel="zImage"
+	image="native-sdk-image"
+	;;
     mips)
-	address="10.0.1.102"
-        macaddr="00:16:3e:00:00:02"
+	address="192.168.1.102"
+	macaddr="00:16:3e:00:00:02"
 	machine="malta"
 	gdbport="1235"
-        consoleopt="console=ttyS0"
+	consoleopt="console=ttyS0"
 	rootdisk="hda"
 	qemuopts="-nographic"
-        kernel="vmlinux"
-        image="native-sdk-image"
-        ;;
+	kernel="vmlinux"
+	image="native-sdk-image"
+	;;
+    mipsel)
+	address="192.168.1.103"
+	macaddr="00:16:3e:00:00:03"
+	machine="malta"
+	gdbport="1235"
+	consoleopt="console=ttyS0"
+	rootdisk="hda"
+	qemuopts="-nographic"
+	kernel="vmlinux"
+	image="native-sdk-image"
+	;;
     ppc|powerpc)
-    	arch=ppc
-	address="10.0.1.103"
-        macaddr="00:16:3e:00:00:03"
+	arch=ppc
+	address="192.168.1.104"
+	macaddr="00:16:3e:00:00:04"
 	machine="g3beige"
 	gdbport="1236"
 	mem="1024"
-        consoleopt="console=ttyS0"
+	consoleopt="console=ttyS0"
 	rootdisk="hdc"
 	qemuopts="-nographic"
-        kernel="vmlinux"
-        image="minimalist-image"
-        ;;
+	kernel="vmlinux"
+	image="minimalist-image"
+	;;
     sh|sh4)
-    	arch=sh4
-	address="10.0.1.104"
-        macaddr="00:16:3e:00:00:04"
+	arch=sh4
+	address="192.168.1.105"
+	macaddr="00:16:3e:00:00:05"
 	machine="r2d"
 	gdbport="1237"
 	mem="512"
-        consoleopt="console=ttySC1 noiotrap earlyprintk=sh-sci.1"
+	consoleopt="console=ttySC1 noiotrap earlyprintk=sh-sci.1"
 	rootdisk="sda"
 	qemuopts="-monitor null -serial vc -serial stdio"
-        kernel="zImage"
-        image="minimalist-image"
-        ;;
+	kernel="zImage"
+	image="minimalist-image"
+	;;
     x86)
-	address="10.0.1.105"
-        macaddr="00:16:3e:00:00:05"
+	address="192.168.1.106"
+	macaddr="00:16:3e:00:00:06"
 	gdbport="1237"
 	machine="pc"
-        consoleopt="console=ttyS0"
+	mem="1024"
+	consoleopt="console=ttyS0"
 	rootdisk="hda"
-	qemuopts="-nographic"
-        kernel="bzImage"
-        image="minimalist-image"
-        ;;
+	qemuopts=""
+	kernel="bzImage"
+	image="minimalist-image"
+	;;
     *)
-        echo "Specify one architectures out of $supported_archs to emulate."
-   	exit 1
-    	;;
+	echo "Specify one architectures out of $supported_archs to emulate."
+	exit 1
+	;;
     esac
 
-nfsserver="10.0.1.37"		# address of NFS server
-gateway="10.0.0.1"		# default gateway
-netmask="255.255.0.0"		# subnet mask
+nfsserver="192.168.1.1"		# address of NFS server
+gateway="192.168.1.254"		# default gateway
+netmask="255.255.255.0"		# subnet mask
 hostname="qemu$arch"		# hostname for guest server
 nfsdir="/opt/oe/$hostname"	# nfs directory where root file system is
 device="eth0"			# interface that guest server will use
@@ -155,7 +167,7 @@ oesrcdir=$HOME/work/oe/openembedded
 nfsopts="rsize=8192,wsize=8192,hard,intr,tcp,nolock"	# nfs options
 
 if [ $nfsboot = "yes" ]; then
-	# for NFS root 
+	# for NFS root
 	rootfs="root=/dev/nfs rw nfsroot=$nfsserver:$nfsdir,$nfsopts"
 	# without networking nfsroot wouldnt be possible so enable it explicitly.
 	networking="yes"
