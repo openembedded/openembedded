@@ -117,5 +117,8 @@ samba_cv_sysquotas_file=${samba_cv_sysquotas_file=lib/sysquotas_4A.c}
 # doesn't cache it.
 samba_cv_LINUX_LFS_SUPPORT=${samba_cv_LINUX_LFS_SUPPORT=yes}
 
+# vim
+ac_cv_sizeof_int=${ac_cv_sizeof_int=4}
+
 # rp-pppoe
 rpppoe_cv_pack_bitfields=${rpppoe_cv_pack_bitfields=rev}
