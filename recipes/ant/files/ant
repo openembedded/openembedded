@@ -1,0 +1,10 @@
+#!/bin/sh
+
+export CLASSPATH
+CLASSPATH=$CLASSPATH:@JAR_FILE@
+
+if [ ! $JAVA ];then
+	JAVA=java
+fi
+
+$JAVA org.apache.tools.ant.launch.Launcher $*
