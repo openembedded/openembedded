@@ -1,0 +1,30 @@
+From 6b23ecf49d1c2ee5227ff57101919af46ecd7396 Mon Sep 17 00:00:00 2001
+From: Roger Monk <r-monk@ti.com>
+Date: Fri, 9 Jul 2010 08:37:04 +0100
+Subject: [PATCH] omap3evm:  Change default 'console' serial port from ttyS2 to ttyS0
+
+   * Update default kernel console env variable ($(console))
+     to use ttyS0 (instead of ttyS2) to match the serial port
+      used by x-loader and u-boot
+
+Signed-off-by: Roger Monk <r-monk@ti.com>
+---
+ include/configs/omap3_evm.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/include/configs/omap3_evm.h b/include/configs/omap3_evm.h
+index 73a5c98..d01d733 100644
+--- a/include/configs/omap3_evm.h
++++ b/include/configs/omap3_evm.h
+@@ -203,7 +203,7 @@
+ #define CONFIG_EXTRA_ENV_SETTINGS \
+ 	"loadaddr=0x82000000\0" \
+ 	"usbtty=cdc_acm\0" \
+-	"console=ttyS2,115200n8\0" \
++	"console=ttyS0,115200n8\0" \
+ 	"mmcargs=setenv bootargs console=${console} " \
+ 		"root=/dev/mmcblk0p2 rw " \
+ 		"rootfstype=ext3 rootwait\0" \
+-- 
+1.6.0.4
+
