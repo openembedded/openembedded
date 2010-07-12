@@ -1,0 +1,13 @@
+Index: jamvm-1.5.3/src/Makefile.am
+===================================================================
+--- jamvm-1.5.3.orig/src/Makefile.am	2009-09-29 09:29:13.386565473 +0200
++++ jamvm-1.5.3/src/Makefile.am	2009-09-29 09:33:47.702565852 +0200
+@@ -23,7 +23,7 @@
+ DIST_SUBDIRS = os arch interp
+ 
+ bin_PROGRAMS = jamvm
+-include_HEADERS = jni.h
++noinst_HEADERS = jni.h
+ 
+ lib_LTLIBRARIES = libjvm.la
+ noinst_LTLIBRARIES = libcore.la

@@ -1,9 +1,13 @@
 require jamvm.inc 
 
-DEPENDS = "zlib-native classpath-native ecj-initial"
-RDEPENDS = ""
+DEPENDS = "zlib-native classpath-native ecj-initial libffi-native"
+RDEPENDS_${PN} = ""
 
 PROVIDES = "virtual/java-native"
+
+# Use libffi instead of handcoded JNI calling code. This code seems to have issues which only randomly
+# trigger a segfault.
+EXTRA_OECONF += "--enable-ffi"
 
 RPROVIDES_jamvm = ""
 
@@ -18,7 +22,7 @@ inherit native
 S = "${WORKDIR}/jamvm-${PV}"
 
 do_install_append() {
-  ln -sf jamvm ${STAGING_BINDIR}/java
+        ln -sf jamvm ${STAGING_BINDIR}/java
 }
 
 # Enforce usage of ecj-initial.
