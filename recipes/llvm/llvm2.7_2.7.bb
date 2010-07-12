@@ -1,11 +1,12 @@
 require llvm.inc
 
-PR = "r4"
+PR = "r5"
 
 DEPENDS = "llvm-common llvm2.7-native"
 
 SRC_URI = "\
   http://llvm.org/releases/${PV}/llvm-${PV}.tgz \
+  file://arm_ppc.patch \
   file://BX_to_BLX.patch \
   "
 
