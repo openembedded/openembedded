@@ -1,0 +1,51 @@
+Index: openjdk/jdk/src/solaris/native/sun/xawt/XToolkit.c
+===================================================================
+--- openjdk/jdk/src/solaris/native/sun/xawt/XToolkit.c	2010-06-13 13:44:00.741955478 +0200
++++ openjdk/jdk/src/solaris/native/sun/xawt/XToolkit.c	2010-06-13 13:48:11.451931804 +0200
+@@ -27,9 +27,6 @@
+ #include <X11/Xutil.h>
+ #include <X11/Xos.h>
+ #include <X11/Xatom.h>
+-#ifdef __linux__
+-#include <execinfo.h>
+-#endif
+ 
+ #include <jvm.h>
+ #include <jni.h>
+@@ -692,35 +689,11 @@
+ 
+ static XErrorHandler saved_error_handler = NULL;
+ 
+-#ifdef __linux__
+-void print_stack(void)
+-{
+-  void *array[10];
+-  size_t size;
+-  char **strings;
+-  size_t i;
+-
+-  size = backtrace (array, 10);
+-  strings = backtrace_symbols (array, size);
+-
+-  fprintf (stderr, "Obtained %zd stack frames.\n", size);
+-
+-  for (i = 0; i < size; i++)
+-     fprintf (stderr, "%s\n", strings[i]);
+-
+-  free (strings);
+-}
+-#endif
+-
+ static int NoisyXErrorHandler(Display * dpy, XErrorEvent * event) {
+     fprintf(stderr, "id=%x, serial=%x, ec=%d, rc=%d, mc=%d\n",
+             event->resourceid, event->serial, event->error_code,
+             event->request_code, event->minor_code);
+-    /*
+-    #ifdef __linux__
+-        print_stack();
+-    #endif
+-    */
++
+     if (jvm != NULL) {
+       JNIEnv * env = (JNIEnv *)JNU_GetEnv(jvm, JNI_VERSION_1_2);
+       JNU_CallStaticMethodByName(env, NULL, "java/lang/Thread", "dumpStack", "()V");

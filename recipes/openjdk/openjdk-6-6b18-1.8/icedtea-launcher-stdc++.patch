@@ -1,0 +1,13 @@
+Index: openjdk/hotspot/make/linux/makefiles/launcher.make
+===================================================================
+--- openjdk.orig/hotspot/make/linux/makefiles/launcher.make	2009-01-16 17:30:56.000000000 +0100
++++ openjdk/hotspot/make/linux/makefiles/launcher.make	2009-01-16 17:31:13.000000000 +0100
+@@ -45,7 +45,7 @@
+ else
+   LAUNCHER.o                 = launcher.o
+   LFLAGS_LAUNCHER           += -L `pwd`
+-  LIBS_LAUNCHER             += -l$(JVM) $(LIBS)
++  LIBS_LAUNCHER             += -l$(JVM) $(LIBS) -lstdc++
+ endif
+ 
+ LINK_LAUNCHER = $(LINK.c)
