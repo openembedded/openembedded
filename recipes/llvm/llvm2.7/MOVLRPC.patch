@@ -1,0 +1,106 @@
+Index: llvm/lib/Target/ARM/ARMISelLowering.cpp
+===================================================================
+--- llvm.orig/lib/Target/ARM/ARMISelLowering.cpp	2010-07-11 12:57:59.000000000 +0200
++++ llvm/lib/Target/ARM/ARMISelLowering.cpp	2010-07-11 22:07:28.000000000 +0200
+@@ -560,6 +560,7 @@
+   case ARMISD::BR_JT:         return "ARMISD::BR_JT";
+   case ARMISD::BR2_JT:        return "ARMISD::BR2_JT";
+   case ARMISD::RET_FLAG:      return "ARMISD::RET_FLAG";
++  case ARMISD::MOVLRPC:       return "ARMISD::MOVLRPC";
+   case ARMISD::PIC_ADD:       return "ARMISD::PIC_ADD";
+   case ARMISD::CMP:           return "ARMISD::CMP";
+   case ARMISD::CMPZ:          return "ARMISD::CMPZ";
+@@ -1288,6 +1289,14 @@
+     // implicit def LR - LR mustn't be allocated as GRP:$dst of CALL_NOLINK
+     Chain = DAG.getCopyToReg(Chain, dl, ARM::LR, DAG.getUNDEF(MVT::i32),InFlag);
+     InFlag = Chain.getValue(1);
++
++    if(!isTailCall){
++      // explicit copy PC to LR and chain flag it to the call.
++      Chain = DAG.getNode(ARMISD::MOVLRPC, dl,
++                          DAG.getVTList(MVT::Other, MVT::Flag),
++                          Chain, InFlag);
++      InFlag = Chain.getValue(1);
++    }
+   }
+ 
+   std::vector<SDValue> Ops;
+Index: llvm/lib/Target/ARM/ARMISelLowering.h
+===================================================================
+--- llvm.orig/lib/Target/ARM/ARMISelLowering.h	2010-07-11 12:57:59.000000000 +0200
++++ llvm/lib/Target/ARM/ARMISelLowering.h	2010-07-11 12:59:02.000000000 +0200
+@@ -42,6 +42,7 @@
+       BR_JT,        // Jumptable branch.
+       BR2_JT,       // Jumptable branch (2 level - jumptable entry is a jump).
+       RET_FLAG,     // Return with a flag operand.
++      MOVLRPC,      // Store return address PC in LR before call - flag before CALL_NOLINK
+ 
+       PIC_ADD,      // Add with a PC operand and a PIC label.
+ 
+Index: llvm/lib/Target/ARM/ARMInstrInfo.td
+===================================================================
+--- llvm.orig/lib/Target/ARM/ARMInstrInfo.td	2010-07-11 12:57:59.000000000 +0200
++++ llvm/lib/Target/ARM/ARMInstrInfo.td	2010-07-11 12:59:02.000000000 +0200
+@@ -74,6 +74,9 @@
+                               [SDNPHasChain, SDNPOptInFlag, SDNPOutFlag,
+                                SDNPVariadic]>;
+ 
++def ARMmovlrpc       : SDNode<"ARMISD::MOVLRPC", SDTNone,
++                               [SDNPHasChain, SDNPOptInFlag, SDNPOutFlag]>;
++
+ def ARMretflag       : SDNode<"ARMISD::RET_FLAG", SDTNone,
+                               [SDNPHasChain, SDNPOptInFlag]>;
+ 
+@@ -674,6 +677,16 @@
+            [(ARMcallseq_start timm:$amt)]>;
+ }
+ 
++let Defs = [LR], hasSideEffects = 1 in
++def MOVLRPC : AI<(outs), (ins), BrMiscFrm, IIC_Br,
++             "mov", "\tlr, pc", [(ARMmovlrpc)]>,
++          Requires<[IsARM]> {
++  let Inst{11-0}  = 0b000000001111;
++  let Inst{15-12} = 0b1110;
++  let Inst{19-16} = 0b0000;
++  let Inst{27-20} = 0b00011010;
++}
++
+ def NOP : AI<(outs), (ins), MiscFrm, NoItinerary, "nop", "",
+              [/* For disassembly only; pattern left blank */]>,
+           Requires<[IsARM, HasV6T2]> {
+@@ -962,7 +975,7 @@
+   // ARMv4T
+   // Note: Restrict $func to the tGPR regclass to prevent it being in LR.
+   def BX : ABXIx2<(outs), (ins tGPR:$func, variable_ops),
+-                  IIC_Br, "mov\tlr, pc\n\tbx\t$func",
++                  IIC_Br, "bx\t$func",
+                   [(ARMcall_nolink tGPR:$func)]>,
+            Requires<[IsARM, HasV4T, IsNotDarwin]> {
+     let Inst{7-4}   = 0b0001;
+@@ -972,7 +985,7 @@
+ 
+   // ARMv4
+   def BMOVPCRX : ABXIx2<(outs), (ins tGPR:$func, variable_ops),
+-                 IIC_Br, "mov\tlr, pc\n\tmov\tpc, $func",
++                 IIC_Br, "mov\tpc, $func",
+                  [(ARMcall_nolink tGPR:$func)]>,
+            Requires<[IsARM, NoV4T, IsNotDarwin]> {
+     let Inst{11-4}  = 0b00000000;
+@@ -1011,7 +1024,7 @@
+   // ARMv4T
+   // Note: Restrict $func to the tGPR regclass to prevent it being in LR.
+   def BXr9 : ABXIx2<(outs), (ins tGPR:$func, variable_ops),
+-                  IIC_Br, "mov\tlr, pc\n\tbx\t$func",
++                  IIC_Br, "bx\t$func",
+                   [(ARMcall_nolink tGPR:$func)]>,
+              Requires<[IsARM, HasV4T, IsDarwin]> {
+     let Inst{7-4}   = 0b0001;
+@@ -1021,7 +1034,7 @@
+ 
+   // ARMv4
+   def BMOVPCRXr9 : ABXIx2<(outs), (ins tGPR:$func, variable_ops),
+-                 IIC_Br, "mov\tlr, pc\n\tmov\tpc, $func",
++                 IIC_Br, "mov\tpc, $func",
+                  [(ARMcall_nolink tGPR:$func)]>,
+            Requires<[IsARM, NoV4T, IsDarwin]> {
+     let Inst{11-4}  = 0b00000000;

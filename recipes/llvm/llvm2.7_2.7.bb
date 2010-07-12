@@ -1,13 +1,13 @@
 require llvm.inc
 
-PR = "r5"
+PR = "r6"
 
 DEPENDS = "llvm-common llvm2.7-native"
 
 SRC_URI = "\
   http://llvm.org/releases/${PV}/llvm-${PV}.tgz \
   file://arm_ppc.patch \
-  file://BX_to_BLX.patch \
+  file://MOVLRPC.patch \
   "
 
 LLVM_RELEASE = "2.7"
