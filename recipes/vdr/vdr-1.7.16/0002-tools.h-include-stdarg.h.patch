@@ -1,0 +1,73 @@
+From e5d29ca595564b939fc9fee43c08788f477df218 Mon Sep 17 00:00:00 2001
+From: Paul Menzel <paulepanter@users.sourceforge.net>
+Date: Sun, 12 Dec 2010 19:21:25 +0100
+Subject: [PATCH 2/3] tools.h: include `stdarg.h`
+
+In recent compilers headers need to be included explicitely.
+
+NOTE: package vdr-1.7.16-r0: task do_distribute_sources: Succeeded
+ERROR: TaskFailed event exception, aborting
+ERROR: Build of /home/paul/oe/openembedded/recipes/vdr/vdr_1.7.16.bb do_compile failed
+ERROR: Task 11 (/home/paul/oe/openembedded/recipes/vdr/vdr_1.7.16.bb, do_compile) failed with 256
+ERROR: Function do_compile failed
+NOTE: Task failed: ('function do_compile failed', '/home/paul/oe/build-minimal-uclibc/minimal-uclibc-dev/work/armv7a-oe-linux-uclibceabi/vdr-1.7.16-r0/temp/log.do_compile.8011')
+ERROR: Logfile of failure stored in: /home/paul/oe/build-minimal-uclibc/minimal-uclibc-dev/work/armv7a-oe-linux-uclibceabi/vdr-1.7.16-r0/temp/log.do_compile.8011
+Log data follows:
+| NOTE: make -j4 -e MAKEFLAGS= INCLUDES=-I/home/paul/oe/build-minimal-uclibc/minimal-uclibc-dev/sysroots/armv7a-oe-linux-uclibceabi/usr/include/freetype2
+| arm-oe-linux-uclibceabi-g++ -march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp -mthumb-interwork -mno-thumb -isystem/home/paul/oe/build-minimal-uclibc/minimal-uclibc-dev/sysroots/armv7a-oe-linux-uclibceabi/usr/include -fexpensive-optimizations -fomit-frame-pointer -frename-registers -Os -fpermissive -fvisibility-inlines-hidden -c -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -DREMOTE_KBD -DLIRC_DEVICE=\"/dev/lircd\" -DRCU_DEVICE=\"/dev/ttyS1\" -D_GNU_SOURCE -DVIDEODIR=\"/video\" -DCONFDIR=\"/video\" -DPLUGINDIR=\"./PLUGINS/lib\" -DLOCDIR=\"./locale\" -I/home/paul/oe/build-minimal-uclibc/minimal-uclibc-dev/sysroots/armv7a-oe-linux-uclibceabi/usr/include/freetype2 audio.c
+| arm-oe-linux-uclibceabi-g++ -march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp -mthumb-interwork -mno-thumb -isystem/home/paul/oe/build-minimal-uclibc/minimal-uclibc-dev/sysroots/armv7a-oe-linux-uclibceabi/usr/include -fexpensive-optimizations -fomit-frame-pointer -frename-registers -Os -fpermissive -fvisibility-inlines-hidden -c -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -DREMOTE_KBD -DLIRC_DEVICE=\"/dev/lircd\" -DRCU_DEVICE=\"/dev/ttyS1\" -D_GNU_SOURCE -DVIDEODIR=\"/video\" -DCONFDIR=\"/video\" -DPLUGINDIR=\"./PLUGINS/lib\" -DLOCDIR=\"./locale\" -I/home/paul/oe/build-minimal-uclibc/minimal-uclibc-dev/sysroots/armv7a-oe-linux-uclibceabi/usr/include/freetype2 channels.c
+| arm-oe-linux-uclibceabi-g++ -march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp -mthumb-interwork -mno-thumb -isystem/home/paul/oe/build-minimal-uclibc/minimal-uclibc-dev/sysroots/armv7a-oe-linux-uclibceabi/usr/include -fexpensive-optimizations -fomit-frame-pointer -frename-registers -Os -fpermissive -fvisibility-inlines-hidden -c -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -DREMOTE_KBD -DLIRC_DEVICE=\"/dev/lircd\" -DRCU_DEVICE=\"/dev/ttyS1\" -D_GNU_SOURCE -DVIDEODIR=\"/video\" -DCONFDIR=\"/video\" -DPLUGINDIR=\"./PLUGINS/lib\" -DLOCDIR=\"./locale\" -I/home/paul/oe/build-minimal-uclibc/minimal-uclibc-dev/sysroots/armv7a-oe-linux-uclibceabi/usr/include/freetype2 ci.c
+| arm-oe-linux-uclibceabi-g++ -march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp -mthumb-interwork -mno-thumb -isystem/home/paul/oe/build-minimal-uclibc/minimal-uclibc-dev/sysroots/armv7a-oe-linux-uclibceabi/usr/include -fexpensive-optimizations -fomit-frame-pointer -frename-registers -Os -fpermissive -fvisibility-inlines-hidden -c -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -DREMOTE_KBD -DLIRC_DEVICE=\"/dev/lircd\" -DRCU_DEVICE=\"/dev/ttyS1\" -D_GNU_SOURCE -DVIDEODIR=\"/video\" -DCONFDIR=\"/video\" -DPLUGINDIR=\"./PLUGINS/lib\" -DLOCDIR=\"./locale\" -I/home/paul/oe/build-minimal-uclibc/minimal-uclibc-dev/sysroots/armv7a-oe-linux-uclibceabi/usr/include/freetype2 config.c
+| In file included from i18n.h:14:0,
+|                  from config.h:19,
+|                  from channels.h:13,
+|                  from ci.h:15,
+|                  from ci.c:10:
+| tools.h:176:43: error: 'va_list' has not been declared
+| In file included from audio.h:14:0,
+|                  from audio.c:10:
+| tools.h:176:43: error: 'va_list' has not been declared
+| In file included from i18n.h:14:0,
+|                  from config.h:19,
+|                  from config.c:10:
+| tools.h:176:43: error: 'va_list' has not been declared
+| In file included from i18n.h:14:0,
+|                  from config.h:19,
+|                  from channels.h:13,
+|                  from channels.c:10:
+| tools.h:176:43: error: 'va_list' has not been declared
+| make: *** [audio.o] Error 1
+| make: *** Waiting for unfinished jobs....
+| make: *** [config.o] Error 1
+| make: *** [channels.o] Error 1
+| make: *** [ci.o] Error 1
+| FATAL: oe_runmake failed
+| ERROR: Function do_compile failed
+NOTE: package vdr-1.7.16-r0: task do_compile: Failed
+ERROR: TaskFailed event exception, aborting
+ERROR: Build of /home/paul/oe/openembedded/recipes/vdr/vdr_1.7.16.bb do_compile failed
+ERROR: Task 11 (/home/paul/oe/openembedded/recipes/vdr/vdr_1.7.16.bb, do_compile) failed with 256
+ERROR: '/home/paul/oe/openembedded/recipes/vdr/vdr_1.7.16.bb' failed
+ERROR: '/home/paul/oe/openembedded/recipes/vdr/vdr_1.7.16.bb' failed
+ERROR: '/home/paul/oe/openembedded/recipes/vdr/vdr_1.7.16.bb' failed
+
+Signed-off-by: Paul Menzel <paulepanter@users.sourceforge.net>
+---
+ tools.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/tools.h b/tools.h
+index 95c35ff..1fbe005 100644
+--- a/tools.h
++++ b/tools.h
+@@ -17,6 +17,7 @@
+ #include <iconv.h>
+ #include <math.h>
+ #include <poll.h>
++#include <stdarg.h>
+ #include <stddef.h>
+ #include <stdint.h>
+ #include <stdio.h>
+-- 
+1.7.2.3
+

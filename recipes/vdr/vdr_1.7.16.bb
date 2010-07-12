@@ -1,16 +1,14 @@
 require vdr.inc
-PR = "r3"
+PR = "r0"
 
-SRC_URI += " file://fixpaths.patch \
-           file://cplusplus.patch \
-           file://disable_plugin.patch \
-           file://linkerflags.patch \
-          "
+SRC_URI += "file://0001-Makefile-Pass-LDFLAGS.patch \
+            file://0002-tools.h-include-stdarg.h.patch \
+           "
 
-SRC_URI_append_linux-uclibceabi = " file://libintl.patch "
-SRC_URI_append_uclinux-uclibc = " file://libintl.patch "
+SRC_URI_append_linux-uclibceabi = " file://0003-uclibc-Add-lintl-to-LIBS.patch "
+SRC_URI_append_uclinux-uclibc = " file://0003-uclibc-Add-lintl-to-LIBS.patch "
 
-CFLAGS_append += " -I${STAGING_INCDIR}/freetype2"
+EXTRA_OEMAKE += "INCLUDES=-I${STAGING_INCDIR}/freetype2"
 
 PLUGINDIR = "${libdir}/vdr/plugins"
 
@@ -34,5 +32,5 @@ python populate_packages_prepend () {
 FILES_${PN} = "${bindir}/* /var/lib/vdr/conf/* ${sysconfdir}/*"
 FILES_${PN}-dbg += "${PLUGINDIR}/.debug/*"
 
-SRC_URI[md5sum] = "c74ee966baca1c47ed6b9e2be3d1639b"
-SRC_URI[sha256sum] = "165bfcd811ef92cab50d11a88a76c481e105689438929414d27edfacfb312f52"
+SRC_URI[md5sum] = "d5cc4bf87e73385a843f5de4763639f0"
+SRC_URI[sha256sum] = "f760d196c6f976043774f6ad9ba1af956d24ad456f8b2fea7dd6a73d38c96e95"

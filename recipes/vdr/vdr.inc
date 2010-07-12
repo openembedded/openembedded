@@ -3,6 +3,6 @@ HOMEPAGE = "http://www.tvdr.de"
 SECTION = "console/multimedia"
 LICENSE = "GPLv2"
 AUTHOR = "Klaus Schmidinger"
-DEPENDS = "fontconfig freetype gettext libcap jpeg virtual/libintl"
+DEPENDS = "fontconfig freetype gettext libcap jpeg virtual/libintl ncurses"
 
 SRC_URI = "ftp://ftp.tvdr.de/vdr/Developer/${P}.tar.bz2"
