@@ -1,0 +1,5 @@
+#!/bin/sh
+
+cp=OE_STAGING_DATADIR_JAVA/OE_JLEX_JAR
+
+exec OE_STAGING_BINDIR/java -cp $cp JLex.Main "$@"
