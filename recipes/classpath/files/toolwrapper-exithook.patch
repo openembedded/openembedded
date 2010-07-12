@@ -1,0 +1,46 @@
+Index: classpath-0.97.2/tools/toolwrapper.c
+===================================================================
+--- classpath-0.97.2.orig/tools/toolwrapper.c	2006-12-13 18:56:44.000000000 +0100
++++ classpath-0.97.2/tools/toolwrapper.c	2009-12-24 13:16:44.295000627 +0100
+@@ -59,6 +59,10 @@
+ /* Typedef for JNI_CreateJavaVM dlopen call. */
+ typedef jint createVM (JavaVM **, void **, void *);
+ 
++void exit_hook(jint);
++
++int return_code = 1;
++
+ int
+ main (int argc, const char** argv)
+ {
+@@ -143,6 +147,17 @@
+       vm_args.options[vm_args.nOptions++].optionString = "-Xbootclasspath/p:" TOOLS_ZIP;
+     }
+ 
++  /* Set the exit hook */
++  vm_args.options = (JavaVMOption*) realloc (vm_args.options, (vm_args.nOptions + 1) * sizeof (JavaVMOption));
++
++  if (vm_args.options == NULL)
++	{
++	  fprintf (stderr, TOOLNAME ": realloc failed.\n");
++	  goto destroy;
++	}
++  vm_args.options[vm_args.nOptions].optionString = "exit";
++  vm_args.options[vm_args.nOptions++].extraInfo = (void *) exit_hook;
++  
+   /* Terminate vm_args.options with a NULL element. */
+   vm_args.options = (JavaVMOption*) realloc (vm_args.options, (vm_args.nOptions + 1) * sizeof (JavaVMOption));
+   if (vm_args.options == NULL)
+@@ -260,5 +275,11 @@
+   if (lt_dlexit () != 0)
+     fprintf (stderr, TOOLNAME ": lt_dlexit failed.\n");
+ 
+-  return 1;
++  return return_code;
++}
++
++void exit_hook(jint code)
++{
++	return_code = code;
+ }
++
