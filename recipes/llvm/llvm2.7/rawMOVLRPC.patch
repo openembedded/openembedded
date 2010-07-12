@@ -1,0 +1,61 @@
+Index: llvm/lib/Target/ARM/ARMInstrInfo.td
+===================================================================
+--- llvm.orig/lib/Target/ARM/ARMInstrInfo.td	2010-07-13 17:41:01.000000000 +0200
++++ llvm/lib/Target/ARM/ARMInstrInfo.td	2010-07-19 17:11:19.000000000 +0200
+@@ -961,7 +961,7 @@
+ 
+   // ARMv4T
+   // Note: Restrict $func to the tGPR regclass to prevent it being in LR.
+-  def BX : ABXIx2<(outs), (ins tGPR:$func, variable_ops),
++  def BX : PseudoInst<(outs), (ins tGPR:$func, variable_ops),
+                   IIC_Br, "mov\tlr, pc\n\tbx\t$func",
+                   [(ARMcall_nolink tGPR:$func)]>,
+            Requires<[IsARM, HasV4T, IsNotDarwin]> {
+@@ -971,7 +971,7 @@
+   }
+ 
+   // ARMv4
+-  def BMOVPCRX : ABXIx2<(outs), (ins tGPR:$func, variable_ops),
++  def BMOVPCRX : PseudoInst<(outs), (ins tGPR:$func, variable_ops),
+                  IIC_Br, "mov\tlr, pc\n\tmov\tpc, $func",
+                  [(ARMcall_nolink tGPR:$func)]>,
+            Requires<[IsARM, NoV4T, IsNotDarwin]> {
+@@ -1010,7 +1010,7 @@
+ 
+   // ARMv4T
+   // Note: Restrict $func to the tGPR regclass to prevent it being in LR.
+-  def BXr9 : ABXIx2<(outs), (ins tGPR:$func, variable_ops),
++  def BXr9 : PseudoInst<(outs), (ins tGPR:$func, variable_ops),
+                   IIC_Br, "mov\tlr, pc\n\tbx\t$func",
+                   [(ARMcall_nolink tGPR:$func)]>,
+              Requires<[IsARM, HasV4T, IsDarwin]> {
+@@ -1020,7 +1020,7 @@
+   }
+ 
+   // ARMv4
+-  def BMOVPCRXr9 : ABXIx2<(outs), (ins tGPR:$func, variable_ops),
++  def BMOVPCRXr9 : PseudoInst<(outs), (ins tGPR:$func, variable_ops),
+                  IIC_Br, "mov\tlr, pc\n\tmov\tpc, $func",
+                  [(ARMcall_nolink tGPR:$func)]>,
+            Requires<[IsARM, NoV4T, IsDarwin]> {
+Index: llvm/lib/Target/ARM/ARMCodeEmitter.cpp
+===================================================================
+--- llvm.orig/lib/Target/ARM/ARMCodeEmitter.cpp	2010-07-13 17:41:01.000000000 +0200
++++ llvm/lib/Target/ARM/ARMCodeEmitter.cpp	2010-07-19 17:20:26.000000000 +0200
+@@ -654,6 +654,16 @@
+   switch (Opcode) {
+   default:
+     llvm_unreachable("ARMCodeEmitter::emitPseudoInstruction");
++  case ARM::BX:
++  case ARM::BMOVPCRX:
++  case ARM::BXr9:
++  case ARM::BMOVPCRXr9: {
++    // First emit mov lr, pc
++    emitWordLE(0xe1a0e00f);
++    // and then emit the branch.
++    emitMiscBranchInstruction(MI);
++    break;
++  }
+   case TargetOpcode::INLINEASM: {
+     // We allow inline assembler nodes with empty bodies - they can
+     // implicitly define registers, which is ok for JIT.

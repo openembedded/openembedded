@@ -1,0 +1,31 @@
+Index: llvm-2.7/lib/Target/ARM/ARMCodeEmitter.cpp
+===================================================================
+--- llvm-2.7.orig/lib/Target/ARM/ARMCodeEmitter.cpp	2010-07-21 12:28:57.000000000 +0200
++++ llvm-2.7/lib/Target/ARM/ARMCodeEmitter.cpp	2010-07-21 12:36:04.000000000 +0200
+@@ -778,10 +778,6 @@
+                                                    unsigned ImplicitRn) {
+   const TargetInstrDesc &TID = MI.getDesc();
+ 
+-  if (TID.Opcode == ARM::BFC) {
+-    llvm_report_error("ARMv6t2 JIT is not yet supported.");
+-  }
+-
+   // Part of binary is determined by TableGn.
+   unsigned Binary = getBinaryCodeForInstr(MI);
+ 
+@@ -817,6 +813,15 @@
+       Binary |= ((Hi16 >> 12) & 0xF) << 16;
+       emitWordLE(Binary);
+       return;
++  } else if((TID.Opcode == ARM::BFC) || (TID.Opcode == ARM::BFI)) {
++      uint32_t v = ~MI.getOperand(2).getImm();
++      int32_t lsb = CountTrailingZeros_32(v);
++      int32_t msb = (32 - CountLeadingZeros_32(v)) - 1;
++      // Insts[20-16] = msb, Insts[11-7] = lsb
++      Binary |= (msb & 0x1F) << 16;
++      Binary |= (lsb & 0x1F) << 7;
++      emitWordLE(Binary);
++      return;
+   }
+ 
+   // If this is a two-address operand, skip it. e.g. MOVCCr operand 1.
