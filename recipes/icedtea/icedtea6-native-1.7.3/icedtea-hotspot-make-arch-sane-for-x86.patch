@@ -1,0 +1,1130 @@
+From b8a51665ada45e3beb0823c03c025d5514f5e745 Mon Sep 17 00:00:00 2001
+From: woglinde <woglinde@rhein.zuhause.netz>
+Date: Thu, 22 Oct 2009 16:35:25 +0200
+Subject: [PATCH] hotspot: make arch sane for x86
+
+diff --git openjdk/hotspot/agent/make/saenv.sh openjdk/hotspot/agent/make/saenv.sh
+index 38e0f78..64c8410 100644
+--- openjdk/hotspot/agent/make/saenv.sh
++++ openjdk/hotspot/agent/make/saenv.sh
+@@ -43,9 +43,9 @@ if [ "$OS" = "Linux" ]; then
+      OPTIONS="-Dsa.library.path=$SA_LIBPATH"
+      CPU=amd64
+    else
+-     SA_LIBPATH=$STARTDIR/../src/os/linux/i386:$STARTDIR/linux/i386
++     SA_LIBPATH=$STARTDIR/../src/os/linux/x86:$STARTDIR/linux/x86
+      OPTIONS="-Dsa.library.path=$SA_LIBPATH"
+-     CPU=i386
++     CPU=x86
+    fi
+ else
+    SA_LIBPATH=$STARTDIR/../src/os/solaris/proc/`uname -p`:$STARTDIR/solaris/`uname -p`
+diff --git openjdk/hotspot/make/defs.make openjdk/hotspot/make/defs.make
+index 83ddd1a..c20c7eb 100644
+--- openjdk/hotspot/make/defs.make
++++ openjdk/hotspot/make/defs.make
+@@ -207,7 +207,7 @@ ifneq ($(OSNAME),windows)
+     ifdef LP64
+       BUILDARCH = amd64
+     else
+-      BUILDARCH = i486
++      BUILDARCH = x86
+     endif
+   endif
+   ifeq ($(BUILDARCH), sparc)
+@@ -218,7 +218,7 @@ ifneq ($(OSNAME),windows)
+ 
+   # LIBARCH is 1:1 mapping from BUILDARCH
+   LIBARCH         = $(LIBARCH/$(BUILDARCH))
+-  LIBARCH/i486    = i386
++  LIBARCH/x86     = x86
+   LIBARCH/amd64   = amd64
+   LIBARCH/sparc   = sparc
+   LIBARCH/sparcv9 = sparcv9
+diff --git openjdk/hotspot/make/jprt.config openjdk/hotspot/make/jprt.config
+index bc82543..4a1ef4e 100644
+--- openjdk/hotspot/make/jprt.config
++++ openjdk/hotspot/make/jprt.config
+@@ -111,7 +111,7 @@ elif [ "${osname}" = Linux ] ; then
+     # LINUX: X86, AMD64
+     osarch=`uname -m`
+     if [ "${osarch}" = i686 ] ; then
+-	linux_arch=i586
++	linux_arch=x86
+     elif [ "${osarch}" = x86_64 ] ; then
+ 	linux_arch=amd64
+     fi
+diff --git openjdk/hotspot/make/jprt.properties openjdk/hotspot/make/jprt.properties
+index eb2ce82..7193de0 100644
+--- openjdk/hotspot/make/jprt.properties
++++ openjdk/hotspot/make/jprt.properties
+@@ -70,7 +70,7 @@ jprt.my.solaris.x64.jdk6u10=solaris_x64_5.10
+ jprt.my.solaris.x64.jdk6u14=solaris_x64_5.10
+ jprt.my.solaris.x64=${jprt.my.solaris.x64.${jprt.tools.default.release}}
+ 
+-jprt.my.linux.i586=linux_i586
++jprt.my.linux.x86=linux_x86
+ jprt.my.linux.x64=linux_x64
+ jprt.my.windows.i586=windows_i586
+ jprt.my.windows.x64=windows_x64
+@@ -201,30 +201,30 @@ jprt.my.solaris.i586.test.targets= \
+     ${jprt.my.solaris.i586}-{product|fastdebug}-{c1|c2}-scimark_2, \
+     ${jprt.my.solaris.i586}-{product|fastdebug}-{c1|c2}-scimark_3
+ 
+-jprt.my.linux.i586.test.targets = \
+-    ${jprt.my.linux.i586}-{product|fastdebug}-{c1|c2}-jvm98, \
+-    ${jprt.my.linux.i586}-{product|fastdebug}-{c1|c2}-scimark, \
+-    ${jprt.my.linux.i586}-product-c1-runThese_Xcomp, \
+-    ${jprt.my.linux.i586}-product-c1-runThese_Xcomp_2, \
+-    ${jprt.my.linux.i586}-product-c1-runThese_Xcomp_3, \
+-    ${jprt.my.linux.i586}-fastdebug-c1-runThese_Xshare, \
+-    ${jprt.my.linux.i586}-fastdebug-c2-runThese_Xcomp, \
+-    ${jprt.my.linux.i586}-fastdebug-c2-runThese_Xcomp_2, \
+-    ${jprt.my.linux.i586}-{product|fastdebug}-{c1|c2}-GCBasher_default, \
+-    ${jprt.my.linux.i586}-{product|fastdebug}-{c1|c2}-GCBasher_SerialGC, \
+-    ${jprt.my.linux.i586}-{product|fastdebug}-{c1|c2}-GCBasher_ParallelGC, \
+-    ${jprt.my.linux.i586}-{product|fastdebug}-{c1|c2}-GCBasher_ParNewGC, \
+-    ${jprt.my.linux.i586}-{product|fastdebug}-{c1|c2}-GCBasher_CMS, \
+-    ${jprt.my.linux.i586}-product-{c1|c2}-GCOld_default, \
+-    ${jprt.my.linux.i586}-product-{c1|c2}-GCOld_SerialGC, \
+-    ${jprt.my.linux.i586}-product-{c1|c2}-GCOld_ParallelGC, \
+-    ${jprt.my.linux.i586}-product-{c1|c2}-GCOld_ParNewGC, \
+-    ${jprt.my.linux.i586}-product-{c1|c2}-GCOld_CMS, \
+-    ${jprt.my.linux.i586}-{product|fastdebug}-c1-jbb_default, \
+-    ${jprt.my.linux.i586}-{product|fastdebug}-c1-jbb_ParallelGC, \
+-    ${jprt.my.linux.i586}-{product|fastdebug}-c1-jbb_CMS, \
+-    ${jprt.my.linux.i586}-{product|fastdebug}-c2-scimark_2, \
+-    ${jprt.my.linux.i586}-{product|fastdebug}-c2-scimark_3
++jprt.my.linux.x86.test.targets = \
++    ${jprt.my.linux.x86}-{product|fastdebug}-{c1|c2}-jvm98, \
++    ${jprt.my.linux.x86}-{product|fastdebug}-{c1|c2}-scimark, \
++    ${jprt.my.linux.x86}-product-c1-runThese_Xcomp, \
++    ${jprt.my.linux.x86}-product-c1-runThese_Xcomp_2, \
++    ${jprt.my.linux.x86}-product-c1-runThese_Xcomp_3, \
++    ${jprt.my.linux.x86}-fastdebug-c1-runThese_Xshare, \
++    ${jprt.my.linux.x86}-fastdebug-c2-runThese_Xcomp, \
++    ${jprt.my.linux.x86}-fastdebug-c2-runThese_Xcomp_2, \
++    ${jprt.my.linux.x86}-{product|fastdebug}-{c1|c2}-GCBasher_default, \
++    ${jprt.my.linux.x86}-{product|fastdebug}-{c1|c2}-GCBasher_SerialGC, \
++    ${jprt.my.linux.x86}-{product|fastdebug}-{c1|c2}-GCBasher_ParallelGC, \
++    ${jprt.my.linux.x86}-{product|fastdebug}-{c1|c2}-GCBasher_ParNewGC, \
++    ${jprt.my.linux.x86}-{product|fastdebug}-{c1|c2}-GCBasher_CMS, \
++    ${jprt.my.linux.x86}-product-{c1|c2}-GCOld_default, \
++    ${jprt.my.linux.x86}-product-{c1|c2}-GCOld_SerialGC, \
++    ${jprt.my.linux.x86}-product-{c1|c2}-GCOld_ParallelGC, \
++    ${jprt.my.linux.x86}-product-{c1|c2}-GCOld_ParNewGC, \
++    ${jprt.my.linux.x86}-product-{c1|c2}-GCOld_CMS, \
++    ${jprt.my.linux.x86}-{product|fastdebug}-c1-jbb_default, \
++    ${jprt.my.linux.x86}-{product|fastdebug}-c1-jbb_ParallelGC, \
++    ${jprt.my.linux.x86}-{product|fastdebug}-c1-jbb_CMS, \
++    ${jprt.my.linux.x86}-{product|fastdebug}-c2-scimark_2, \
++    ${jprt.my.linux.x86}-{product|fastdebug}-c2-scimark_3
+ 
+ jprt.my.linux.x64.test.targets = \
+     ${jprt.my.linux.x64}-{product|fastdebug}-c2-jvm98, \
+@@ -294,7 +294,7 @@ jprt.test.targets = \
+   ${jprt.my.solaris.sparcv9.test.targets}, \
+   ${jprt.my.solaris.i586.test.targets}, \
+   ${jprt.my.solaris.x64.test.targets}, \
+-  ${jprt.my.linux.i586.test.targets}, \
++  ${jprt.my.linux.x86.test.targets}, \
+   ${jprt.my.linux.x64.test.targets}, \
+   ${jprt.my.windows.i586.test.targets}, \
+   ${jprt.my.windows.x64.test.targets}
+diff --git openjdk/hotspot/make/linux/build.sh openjdk/hotspot/make/linux/build.sh
+index e317fdd..5d3b1ff 100644
+--- openjdk/hotspot/make/linux/build.sh
++++ openjdk/hotspot/make/linux/build.sh
+@@ -43,7 +43,7 @@ esac
+ 
+ case `uname -m` in
+   i386|i486|i586|i686)
+-    mach=i386
++    mach=x86
+     ;;
+   *)
+     echo "Unsupported machine: " `uname -m`
+diff --git openjdk/hotspot/make/linux/makefiles/buildtree.make openjdk/hotspot/make/linux/makefiles/buildtree.make
+index add9823..cbbf81f 100644
+--- openjdk/hotspot/make/linux/makefiles/buildtree.make
++++ openjdk/hotspot/make/linux/makefiles/buildtree.make
+@@ -30,7 +30,7 @@
+ # The macros ARCH, GAMMADIR, OS_FAMILY and VARIANT must be defined in the
+ # environment or on the command-line:
+ #
+-# ARCH		- sparc, i486, ... HotSpot cpu and os_cpu source directory
++# ARCH		- sparc, x86, ... HotSpot cpu and os_cpu source directory
+ # BUILDARCH     - build directory
+ # LIBARCH       - the corresponding directory in JDK/JRE
+ # GAMMADIR	- top of workspace
+@@ -316,7 +316,7 @@ NO_JAVA_HOME_MSG	= \
+ DATA_MODE = $(DATA_MODE/$(BUILDARCH))
+ JAVA_FLAG = $(JAVA_FLAG/$(DATA_MODE))
+ 
+-DATA_MODE/i486    = 32
++DATA_MODE/x86     = 32
+ DATA_MODE/sparc   = 32
+ DATA_MODE/sparcv9 = 64
+ DATA_MODE/amd64   = 64
+diff --git openjdk/hotspot/make/linux/makefiles/cscope.make openjdk/hotspot/make/linux/makefiles/cscope.make
+index 113d4f8..d3f06cb 100644
+--- openjdk/hotspot/make/linux/makefiles/cscope.make
++++ openjdk/hotspot/make/linux/makefiles/cscope.make
+@@ -78,7 +78,7 @@ endif
+ # Processor-specific files for other processors are excluded by default.  Use
+ # CS_CPU=x to include platform-specific files for other platforms.
+ ifndef	CS_CPU
+-CS_CPU		= i486 sparc amd64 ia64
++CS_CPU		= x86 sparc amd64 ia64
+ CS_PRUNE_CPU	= $(patsubst %,-o -name '*%*',$(filter-out ${SRCARCH},${CS_CPU}))
+ endif
+ 
+diff --git openjdk/hotspot/make/linux/makefiles/defs.make openjdk/hotspot/make/linux/makefiles/defs.make
+index 9131c79..138dfb3 100644
+--- openjdk/hotspot/make/linux/makefiles/defs.make
++++ openjdk/hotspot/make/linux/makefiles/defs.make
+@@ -85,6 +85,14 @@ ifeq ($(ARCH), sparc)
+   HS_ARCH          = sparc
+ endif
+ 
++# x86
++ifeq ($(findstring 86,$(ARCH)), 86)
++  ARCH_DATA_MODEL  = 32
++  PLATFORM         = linux-x86
++  VM_PLATFORM      = linux_x86
++  HS_ARCH          = x86
++endif
++
+ # x86_64
+ ifeq ($(ARCH), x86_64) 
+   ifeq ($(ARCH_DATA_MODEL), 64)
+@@ -95,22 +103,12 @@ ifeq ($(ARCH), x86_64)
+     HS_ARCH         = x86
+   else
+     ARCH_DATA_MODEL = 32
+-    PLATFORM        = linux-i586
+-    VM_PLATFORM     = linux_i486
++    PLATFORM        = linux-x86
++    VM_PLATFORM     = linux_x86
+     HS_ARCH         = x86
+-    # We have to reset ARCH to i686 since SRCARCH relies on it
+-    ARCH            = i686   
+   endif
+ endif
+ 
+-# i686
+-ifeq ($(ARCH), i686)
+-  ARCH_DATA_MODEL  = 32
+-  PLATFORM         = linux-i586
+-  VM_PLATFORM      = linux_i486
+-  HS_ARCH          = x86
+-endif
+-
+ JDK_INCLUDE_SUBDIR=linux
+ 
+ # FIXUP: The subdirectory for a debug build is NOT the same on all platforms
+diff --git openjdk/hotspot/make/linux/makefiles/sparcWorks.make openjdk/hotspot/make/linux/makefiles/sparcWorks.make
+index 0a9f75b..2e29bb9 100644
+--- openjdk/hotspot/make/linux/makefiles/sparcWorks.make
++++ openjdk/hotspot/make/linux/makefiles/sparcWorks.make
+@@ -30,7 +30,7 @@ CC  = cc
+ AS  = $(CC) -c
+ 
+ ARCHFLAG = $(ARCHFLAG/$(BUILDARCH))
+-ARCHFLAG/i486    = -m32
++ARCHFLAG/x86    = -m32
+ ARCHFLAG/amd64   = -m64
+ 
+ CFLAGS     += $(ARCHFLAG)
+diff --git openjdk/hotspot/make/linux/platform_i486 openjdk/hotspot/make/linux/platform_i486
+deleted file mode 100644
+index 610ac91..0000000
+--- openjdk/hotspot/make/linux/platform_i486
++++ /dev/null
+@@ -1,15 +0,0 @@
+-os_family = linux
+-
+-arch = x86
+-
+-arch_model = x86_32
+-
+-os_arch = linux_x86
+-
+-os_arch_model = linux_x86_32
+-
+-lib_arch = i386
+-
+-compiler = gcc
+-
+-sysdefs = -DLINUX -D_GNU_SOURCE -DIA32
+diff --git openjdk/hotspot/make/linux/platform_i486.suncc openjdk/hotspot/make/linux/platform_i486.suncc
+index 325a3fe..717fc75 100644
+--- openjdk/hotspot/make/linux/platform_i486.suncc
++++ openjdk/hotspot/make/linux/platform_i486.suncc
+@@ -8,10 +8,10 @@ os_arch = linux_x86
+ 
+ os_arch_model = linux_x86_32
+ 
+-lib_arch = i386
++lib_arch = x86
+ 
+ compiler = sparcWorks
+ 
+-gnu_dis_arch = i386
++gnu_dis_arch = x86
+ 
+ sysdefs = -DLINUX -DSPARC_WORKS -D_GNU_SOURCE -DIA32
+diff --git openjdk/hotspot/make/linux/platform_x86 openjdk/hotspot/make/linux/platform_x86
+new file mode 100644
+index 0000000..5c613fe
+--- /dev/null
++++ openjdk/hotspot/make/linux/platform_x86
+@@ -0,0 +1,15 @@
++os_family = linux
++
++arch = x86
++
++arch_model = x86_32
++
++os_arch = linux_x86
++
++os_arch_model = linux_x86_32
++
++lib_arch = x86
++
++compiler = gcc
++
++sysdefs = -DLINUX -D_GNU_SOURCE -DIA32
+diff --git openjdk/hotspot/src/os/linux/vm/os_linux.cpp openjdk/hotspot/src/os/linux/vm/os_linux.cpp
+index b2b3162..a4bbe70 100644
+--- openjdk/hotspot/src/os/linux/vm/os_linux.cpp
++++ openjdk/hotspot/src/os/linux/vm/os_linux.cpp
+@@ -164,7 +164,7 @@ bool os::have_special_privileges() {
+ // i386: 224, ia64: 1105, amd64: 186, sparc 143
+ #ifdef __ia64__
+ #define SYS_gettid 1105
+-#elif __i386__
++#elif __x86__
+ #define SYS_gettid 224
+ #elif __amd64__
+ #define SYS_gettid 186
+@@ -181,7 +181,7 @@ static char cpu_arch[] = ZERO_LIBARCH;
+ #elif defined(IA64)
+ static char cpu_arch[] = "ia64";
+ #elif defined(IA32)
+-static char cpu_arch[] = "i386";
++static char cpu_arch[] = "x86";
+ #elif defined(AMD64)
+ static char cpu_arch[] = "amd64";
+ #elif defined(SPARC)
+diff --git openjdk/hotspot/src/share/tools/hsdis/Makefile openjdk/hotspot/src/share/tools/hsdis/Makefile
+index 6bdf4b8..fd43c6e 100644
+--- openjdk/hotspot/src/share/tools/hsdis/Makefile
++++ openjdk/hotspot/src/share/tools/hsdis/Makefile
+@@ -32,7 +32,7 @@ BINUTILS	= $(shell cd ../../../../..;pwd)/binutils-2.17-$(LIBARCH)
+ endif
+ 
+ # Default arch; it is changed below as needed.
+-ARCH		= i386
++ARCH		= x86
+ OS		= $(shell uname)
+ 
+ CPPFLAGS	+= -I$(BINUTILS)/include -I$(BINUTILS)/bfd
+@@ -87,7 +87,7 @@ endif	# SunOS
+ LIBARCH		= $(ARCH)
+ ifdef		LP64
+ LIBARCH64/sparc	= sparcv9
+-LIBARCH64/i386	= amd64
++LIBARCH64/x86	= amd64
+ LIBARCH64	= $(LIBARCH64/$(ARCH))
+ ifneq		($(LIBARCH64),)
+ LIBARCH		= $(LIBARCH64)
+diff --git openjdk/hotspot/src/share/tools/hsdis/hsdis.c openjdk/hotspot/src/share/tools/hsdis/hsdis.c
+index 75b7efe..62c692b 100644
+--- openjdk/hotspot/src/share/tools/hsdis/hsdis.c
++++ openjdk/hotspot/src/share/tools/hsdis/hsdis.c
+@@ -383,8 +383,8 @@ static void print_help(struct hsdis_app_data* app_data,
+   else
+     disassembler_usage(stderr); /* better than nothing */
+   (*printf_callback)(printf_stream, "  mach=<arch>   select disassembly mode\n");
+-#if defined(LIBARCH_i386) || defined(LIBARCH_amd64)
+-  (*printf_callback)(printf_stream, "  mach=i386     select 32-bit mode\n");
++#if defined(LIBARCH_x86) || defined(LIBARCH_amd64)
++  (*printf_callback)(printf_stream, "  mach=x86      select 32-bit mode\n");
+   (*printf_callback)(printf_stream, "  mach=x86-64   select 64-bit mode\n");
+   (*printf_callback)(printf_stream, "  suffix        always print instruction suffix\n");
+ #endif
+@@ -406,7 +406,7 @@ static const bfd_arch_info_type* find_arch_info(const char* arch_name) {
+ static const char* native_arch_name() {
+   const char* res = HOTSPOT_LIB_ARCH;
+ #ifdef LIBARCH_amd64
+-    res = "i386:x86-64";
++    res = "x86:x86-64";
+ #endif
+ #ifdef LIBARCH_sparc
+     res = "sparc:v8plusb";
+diff --git openjdk/hotspot/test/Makefile openjdk/hotspot/test/Makefile
+index 2596d85..c2f3eb9 100644
+--- openjdk/hotspot/test/Makefile
++++ openjdk/hotspot/test/Makefile
+@@ -33,14 +33,14 @@ ifeq ($(OSNAME), SunOS)
+   PLATFORM = solaris
+   ARCH = $(shell uname -p)
+   ifeq ($(ARCH), i386)
+-    ARCH=i586
++    ARCH=x86
+   endif
+ endif
+ ifeq ($(OSNAME), Linux)
+   PLATFORM = linux
+   ARCH = $(shell uname -m)
+-  ifeq ($(ARCH), i386)
+-    ARCH = i586
++  ifeq ($(findstring 86,$(ARCH)), 86)
++    ARCH = x86
+   endif
+ endif
+ ifeq ($(OSNAME), Windows_NT)
+@@ -55,7 +55,7 @@ ifeq ($(OSNAME), Windows_NT)
+       ifeq ($(word 1, $(PROCESSOR_IDENTIFIER)),EM64T)
+         ARCH = x64
+       else
+-        ARCH = i586
++        ARCH = x86
+       endif
+     endif
+   endif
+diff --git openjdk/hotspot/agent/make/saenv.sh openjdk/hotspot/agent/make/saenv.sh
+index 38e0f78..64c8410 100644
+--- openjdk/hotspot/agent/make/saenv.sh
++++ openjdk/hotspot/agent/make/saenv.sh
+@@ -43,9 +43,9 @@ if [ "$OS" = "Linux" ]; then
+      OPTIONS="-Dsa.library.path=$SA_LIBPATH"
+      CPU=amd64
+    else
+-     SA_LIBPATH=$STARTDIR/../src/os/linux/i386:$STARTDIR/linux/i386
++     SA_LIBPATH=$STARTDIR/../src/os/linux/x86:$STARTDIR/linux/x86
+      OPTIONS="-Dsa.library.path=$SA_LIBPATH"
+-     CPU=i386
++     CPU=x86
+    fi
+ else
+    SA_LIBPATH=$STARTDIR/../src/os/solaris/proc/`uname -p`:$STARTDIR/solaris/`uname -p`
+diff --git openjdk/hotspot/agent/src/os/linux/LinuxDebuggerLocal.c openjdk/hotspot/agent/src/os/linux/LinuxDebuggerLocal.c
+index c4ca7de..54c12ca 100644
+--- openjdk/hotspot/agent/src/os/linux/LinuxDebuggerLocal.c
++++ openjdk/hotspot/agent/src/os/linux/LinuxDebuggerLocal.c
+@@ -29,7 +29,7 @@
+ #define amd64 1
+ #endif
+ 
+-#ifdef i386
++#ifdef x86
+ #include "sun_jvm_hotspot_debugger_x86_X86ThreadContext.h"
+ #endif
+ 
+@@ -295,7 +295,7 @@ JNIEXPORT jlongArray JNICALL Java_sun_jvm_hotspot_debugger_linux_LinuxDebuggerLo
+   }
+ 
+ #undef NPRGREG
+-#ifdef i386
++#ifdef x86
+ #define NPRGREG sun_jvm_hotspot_debugger_x86_X86ThreadContext_NPRGREG
+ #endif
+ #ifdef ia64
+@@ -314,7 +314,7 @@ JNIEXPORT jlongArray JNICALL Java_sun_jvm_hotspot_debugger_linux_LinuxDebuggerLo
+ 
+ #undef REG_INDEX
+ 
+-#ifdef i386
++#ifdef x86
+ #define REG_INDEX(reg) sun_jvm_hotspot_debugger_x86_X86ThreadContext_##reg
+ 
+   regs[REG_INDEX(GS)]  = (uintptr_t) gregs.xgs;
+@@ -333,7 +333,7 @@ JNIEXPORT jlongArray JNICALL Java_sun_jvm_hotspot_debugger_linux_LinuxDebuggerLo
+   regs[REG_INDEX(CS)]  = (uintptr_t) gregs.xcs;
+   regs[REG_INDEX(SS)]  = (uintptr_t) gregs.xss;
+ 
+-#endif /* i386 */
++#endif /* x86 */
+ 
+ #if ia64
+   regs = (*env)->GetLongArrayElements(env, array, &isCopy);
+diff --git openjdk/hotspot/agent/src/os/linux/Makefile openjdk/hotspot/agent/src/os/linux/Makefile
+index a16f3a7..85fecb1 100644
+--- openjdk/hotspot/agent/src/os/linux/Makefile
++++ openjdk/hotspot/agent/src/os/linux/Makefile
+@@ -22,7 +22,7 @@
+ #  
+ #
+ 
+-ARCH := $(shell if ([ `uname -m` = "ia64" ])  ; then echo ia64 ; elif ([ `uname -m` = "x86_64" ]) ; then echo amd64; elif ([ `uname -m` = "sparc64" ]) ; then echo sparc; else echo i386 ; fi )
++ARCH := $(shell if ([ `uname -m` = "ia64" ])  ; then echo ia64 ; elif ([ `uname -m` = "x86_64" ]) ; then echo amd64; elif ([ `uname -m` = "sparc64" ]) ; then echo sparc; else echo x86 ; fi )
+ GCC      = gcc$(GCC_SUFFIX)
+ 
+ JAVAH    = ${JAVA_HOME}/bin/javah
+diff --git openjdk/hotspot/agent/src/os/linux/ps_core.c openjdk/hotspot/agent/src/os/linux/ps_core.c
+index 3562f2d..47ab01b 100644
+--- openjdk/hotspot/agent/src/os/linux/ps_core.c
++++ openjdk/hotspot/agent/src/os/linux/ps_core.c
+@@ -540,7 +540,7 @@ static bool core_handle_prstatus(struct ps_prochandle* ph, const char* buf, size
+ 
+    if (is_debug()) {
+       print_debug("integer regset\n");
+-#ifdef i386
++#ifdef x86
+       // print the regset
+       print_debug("\teax = 0x%x\n", newthr->regs.eax);
+       print_debug("\tebx = 0x%x\n", newthr->regs.ebx);
+diff --git openjdk/hotspot/make/defs.make openjdk/hotspot/make/defs.make
+index 83ddd1a..c20c7eb 100644
+--- openjdk/hotspot/make/defs.make
++++ openjdk/hotspot/make/defs.make
+@@ -207,7 +207,7 @@ ifneq ($(OSNAME),windows)
+     ifdef LP64
+       BUILDARCH = amd64
+     else
+-      BUILDARCH = i486
++      BUILDARCH = x86
+     endif
+   endif
+   ifeq ($(BUILDARCH), sparc)
+@@ -218,7 +218,7 @@ ifneq ($(OSNAME),windows)
+ 
+   # LIBARCH is 1:1 mapping from BUILDARCH
+   LIBARCH         = $(LIBARCH/$(BUILDARCH))
+-  LIBARCH/i486    = i386
++  LIBARCH/x86     = x86
+   LIBARCH/amd64   = amd64
+   LIBARCH/sparc   = sparc
+   LIBARCH/sparcv9 = sparcv9
+diff --git openjdk/hotspot/make/jprt.config openjdk/hotspot/make/jprt.config
+index bc82543..4a1ef4e 100644
+--- openjdk/hotspot/make/jprt.config
++++ openjdk/hotspot/make/jprt.config
+@@ -111,7 +111,7 @@ elif [ "${osname}" = Linux ] ; then
+     # LINUX: X86, AMD64
+     osarch=`uname -m`
+     if [ "${osarch}" = i686 ] ; then
+-	linux_arch=i586
++	linux_arch=x86
+     elif [ "${osarch}" = x86_64 ] ; then
+ 	linux_arch=amd64
+     fi
+diff --git openjdk/hotspot/make/jprt.properties openjdk/hotspot/make/jprt.properties
+index eb2ce82..7193de0 100644
+--- openjdk/hotspot/make/jprt.properties
++++ openjdk/hotspot/make/jprt.properties
+@@ -70,7 +70,7 @@ jprt.my.solaris.x64.jdk6u10=solaris_x64_5.10
+ jprt.my.solaris.x64.jdk6u14=solaris_x64_5.10
+ jprt.my.solaris.x64=${jprt.my.solaris.x64.${jprt.tools.default.release}}
+ 
+-jprt.my.linux.i586=linux_i586
++jprt.my.linux.x86=linux_x86
+ jprt.my.linux.x64=linux_x64
+ jprt.my.windows.i586=windows_i586
+ jprt.my.windows.x64=windows_x64
+@@ -201,30 +201,30 @@ jprt.my.solaris.i586.test.targets= \
+     ${jprt.my.solaris.i586}-{product|fastdebug}-{c1|c2}-scimark_2, \
+     ${jprt.my.solaris.i586}-{product|fastdebug}-{c1|c2}-scimark_3
+ 
+-jprt.my.linux.i586.test.targets = \
+-    ${jprt.my.linux.i586}-{product|fastdebug}-{c1|c2}-jvm98, \
+-    ${jprt.my.linux.i586}-{product|fastdebug}-{c1|c2}-scimark, \
+-    ${jprt.my.linux.i586}-product-c1-runThese_Xcomp, \
+-    ${jprt.my.linux.i586}-product-c1-runThese_Xcomp_2, \
+-    ${jprt.my.linux.i586}-product-c1-runThese_Xcomp_3, \
+-    ${jprt.my.linux.i586}-fastdebug-c1-runThese_Xshare, \
+-    ${jprt.my.linux.i586}-fastdebug-c2-runThese_Xcomp, \
+-    ${jprt.my.linux.i586}-fastdebug-c2-runThese_Xcomp_2, \
+-    ${jprt.my.linux.i586}-{product|fastdebug}-{c1|c2}-GCBasher_default, \
+-    ${jprt.my.linux.i586}-{product|fastdebug}-{c1|c2}-GCBasher_SerialGC, \
+-    ${jprt.my.linux.i586}-{product|fastdebug}-{c1|c2}-GCBasher_ParallelGC, \
+-    ${jprt.my.linux.i586}-{product|fastdebug}-{c1|c2}-GCBasher_ParNewGC, \
+-    ${jprt.my.linux.i586}-{product|fastdebug}-{c1|c2}-GCBasher_CMS, \
+-    ${jprt.my.linux.i586}-product-{c1|c2}-GCOld_default, \
+-    ${jprt.my.linux.i586}-product-{c1|c2}-GCOld_SerialGC, \
+-    ${jprt.my.linux.i586}-product-{c1|c2}-GCOld_ParallelGC, \
+-    ${jprt.my.linux.i586}-product-{c1|c2}-GCOld_ParNewGC, \
+-    ${jprt.my.linux.i586}-product-{c1|c2}-GCOld_CMS, \
+-    ${jprt.my.linux.i586}-{product|fastdebug}-c1-jbb_default, \
+-    ${jprt.my.linux.i586}-{product|fastdebug}-c1-jbb_ParallelGC, \
+-    ${jprt.my.linux.i586}-{product|fastdebug}-c1-jbb_CMS, \
+-    ${jprt.my.linux.i586}-{product|fastdebug}-c2-scimark_2, \
+-    ${jprt.my.linux.i586}-{product|fastdebug}-c2-scimark_3
++jprt.my.linux.x86.test.targets = \
++    ${jprt.my.linux.x86}-{product|fastdebug}-{c1|c2}-jvm98, \
++    ${jprt.my.linux.x86}-{product|fastdebug}-{c1|c2}-scimark, \
++    ${jprt.my.linux.x86}-product-c1-runThese_Xcomp, \
++    ${jprt.my.linux.x86}-product-c1-runThese_Xcomp_2, \
++    ${jprt.my.linux.x86}-product-c1-runThese_Xcomp_3, \
++    ${jprt.my.linux.x86}-fastdebug-c1-runThese_Xshare, \
++    ${jprt.my.linux.x86}-fastdebug-c2-runThese_Xcomp, \
++    ${jprt.my.linux.x86}-fastdebug-c2-runThese_Xcomp_2, \
++    ${jprt.my.linux.x86}-{product|fastdebug}-{c1|c2}-GCBasher_default, \
++    ${jprt.my.linux.x86}-{product|fastdebug}-{c1|c2}-GCBasher_SerialGC, \
++    ${jprt.my.linux.x86}-{product|fastdebug}-{c1|c2}-GCBasher_ParallelGC, \
++    ${jprt.my.linux.x86}-{product|fastdebug}-{c1|c2}-GCBasher_ParNewGC, \
++    ${jprt.my.linux.x86}-{product|fastdebug}-{c1|c2}-GCBasher_CMS, \
++    ${jprt.my.linux.x86}-product-{c1|c2}-GCOld_default, \
++    ${jprt.my.linux.x86}-product-{c1|c2}-GCOld_SerialGC, \
++    ${jprt.my.linux.x86}-product-{c1|c2}-GCOld_ParallelGC, \
++    ${jprt.my.linux.x86}-product-{c1|c2}-GCOld_ParNewGC, \
++    ${jprt.my.linux.x86}-product-{c1|c2}-GCOld_CMS, \
++    ${jprt.my.linux.x86}-{product|fastdebug}-c1-jbb_default, \
++    ${jprt.my.linux.x86}-{product|fastdebug}-c1-jbb_ParallelGC, \
++    ${jprt.my.linux.x86}-{product|fastdebug}-c1-jbb_CMS, \
++    ${jprt.my.linux.x86}-{product|fastdebug}-c2-scimark_2, \
++    ${jprt.my.linux.x86}-{product|fastdebug}-c2-scimark_3
+ 
+ jprt.my.linux.x64.test.targets = \
+     ${jprt.my.linux.x64}-{product|fastdebug}-c2-jvm98, \
+@@ -294,7 +294,7 @@ jprt.test.targets = \
+   ${jprt.my.solaris.sparcv9.test.targets}, \
+   ${jprt.my.solaris.i586.test.targets}, \
+   ${jprt.my.solaris.x64.test.targets}, \
+-  ${jprt.my.linux.i586.test.targets}, \
++  ${jprt.my.linux.x86.test.targets}, \
+   ${jprt.my.linux.x64.test.targets}, \
+   ${jprt.my.windows.i586.test.targets}, \
+   ${jprt.my.windows.x64.test.targets}
+diff --git openjdk/hotspot/make/linux/build.sh openjdk/hotspot/make/linux/build.sh
+index e317fdd..5d3b1ff 100644
+--- openjdk/hotspot/make/linux/build.sh
++++ openjdk/hotspot/make/linux/build.sh
+@@ -43,7 +43,7 @@ esac
+ 
+ case `uname -m` in
+   i386|i486|i586|i686)
+-    mach=i386
++    mach=x86
+     ;;
+   *)
+     echo "Unsupported machine: " `uname -m`
+diff --git openjdk/hotspot/make/linux/makefiles/buildtree.make openjdk/hotspot/make/linux/makefiles/buildtree.make
+index add9823..cbbf81f 100644
+--- openjdk/hotspot/make/linux/makefiles/buildtree.make
++++ openjdk/hotspot/make/linux/makefiles/buildtree.make
+@@ -30,7 +30,7 @@
+ # The macros ARCH, GAMMADIR, OS_FAMILY and VARIANT must be defined in the
+ # environment or on the command-line:
+ #
+-# ARCH		- sparc, i486, ... HotSpot cpu and os_cpu source directory
++# ARCH		- sparc, x86, ... HotSpot cpu and os_cpu source directory
+ # BUILDARCH     - build directory
+ # LIBARCH       - the corresponding directory in JDK/JRE
+ # GAMMADIR	- top of workspace
+@@ -316,7 +316,7 @@ NO_JAVA_HOME_MSG	= \
+ DATA_MODE = $(DATA_MODE/$(BUILDARCH))
+ JAVA_FLAG = $(JAVA_FLAG/$(DATA_MODE))
+ 
+-DATA_MODE/i486    = 32
++DATA_MODE/x86     = 32
+ DATA_MODE/sparc   = 32
+ DATA_MODE/sparcv9 = 64
+ DATA_MODE/amd64   = 64
+diff --git openjdk/hotspot/make/linux/makefiles/cscope.make openjdk/hotspot/make/linux/makefiles/cscope.make
+index 113d4f8..d3f06cb 100644
+--- openjdk/hotspot/make/linux/makefiles/cscope.make
++++ openjdk/hotspot/make/linux/makefiles/cscope.make
+@@ -78,7 +78,7 @@ endif
+ # Processor-specific files for other processors are excluded by default.  Use
+ # CS_CPU=x to include platform-specific files for other platforms.
+ ifndef	CS_CPU
+-CS_CPU		= i486 sparc amd64 ia64
++CS_CPU		= x86 sparc amd64 ia64
+ CS_PRUNE_CPU	= $(patsubst %,-o -name '*%*',$(filter-out ${SRCARCH},${CS_CPU}))
+ endif
+ 
+diff --git openjdk/hotspot/make/linux/makefiles/defs.make openjdk/hotspot/make/linux/makefiles/defs.make
+index 9131c79..138dfb3 100644
+--- openjdk/hotspot/make/linux/makefiles/defs.make
++++ openjdk/hotspot/make/linux/makefiles/defs.make
+@@ -85,6 +85,14 @@ ifeq ($(ARCH), sparc)
+   HS_ARCH          = sparc
+ endif
+ 
++# x86
++ifeq ($(findstring 86,$(ARCH)), 86)
++  ARCH_DATA_MODEL  = 32
++  PLATFORM         = linux-x86
++  VM_PLATFORM      = linux_x86
++  HS_ARCH          = x86
++endif
++
+ # x86_64
+ ifeq ($(ARCH), x86_64) 
+   ifeq ($(ARCH_DATA_MODEL), 64)
+@@ -95,22 +103,12 @@ ifeq ($(ARCH), x86_64)
+     HS_ARCH         = x86
+   else
+     ARCH_DATA_MODEL = 32
+-    PLATFORM        = linux-i586
+-    VM_PLATFORM     = linux_i486
++    PLATFORM        = linux-x86
++    VM_PLATFORM     = linux_x86
+     HS_ARCH         = x86
+-    # We have to reset ARCH to i686 since SRCARCH relies on it
+-    ARCH            = i686   
+   endif
+ endif
+ 
+-# i686
+-ifeq ($(ARCH), i686)
+-  ARCH_DATA_MODEL  = 32
+-  PLATFORM         = linux-i586
+-  VM_PLATFORM      = linux_i486
+-  HS_ARCH          = x86
+-endif
+-
+ JDK_INCLUDE_SUBDIR=linux
+ 
+ # FIXUP: The subdirectory for a debug build is NOT the same on all platforms
+diff --git openjdk/hotspot/make/linux/makefiles/gcc.make openjdk/hotspot/make/linux/makefiles/gcc.make
+index a2c24bc..27bad01 100644
+--- openjdk/hotspot/make/linux/makefiles/gcc.make
++++ openjdk/hotspot/make/linux/makefiles/gcc.make
+@@ -77,7 +77,7 @@ CFLAGS += -fcheck-new
+ CFLAGS += -g
+ 
+ ARCHFLAG = $(ARCHFLAG/$(BUILDARCH))
+-ARCHFLAG/i486    = -m32 -march=i586
++ARCHFLAG/x86    = -m32
+ ARCHFLAG/amd64   = -m64
+ ARCHFLAG/ia64    =
+ ARCHFLAG/sparc   = -m32 -mcpu=v9
+diff --git openjdk/hotspot/make/linux/makefiles/sparcWorks.make openjdk/hotspot/make/linux/makefiles/sparcWorks.make
+index 0a9f75b..2e29bb9 100644
+--- openjdk/hotspot/make/linux/makefiles/sparcWorks.make
++++ openjdk/hotspot/make/linux/makefiles/sparcWorks.make
+@@ -30,7 +30,7 @@ CC  = cc
+ AS  = $(CC) -c
+ 
+ ARCHFLAG = $(ARCHFLAG/$(BUILDARCH))
+-ARCHFLAG/i486    = -m32
++ARCHFLAG/x86    = -m32
+ ARCHFLAG/amd64   = -m64
+ 
+ CFLAGS     += $(ARCHFLAG)
+diff --git openjdk/hotspot/make/linux/platform_i486 openjdk/hotspot/make/linux/platform_i486
+deleted file mode 100644
+index 610ac91..0000000
+--- openjdk/hotspot/make/linux/platform_i486
++++ /dev/null
+@@ -1,15 +0,0 @@
+-os_family = linux
+-
+-arch = x86
+-
+-arch_model = x86_32
+-
+-os_arch = linux_x86
+-
+-os_arch_model = linux_x86_32
+-
+-lib_arch = i386
+-
+-compiler = gcc
+-
+-sysdefs = -DLINUX -D_GNU_SOURCE -DIA32
+diff --git openjdk/hotspot/make/linux/platform_i486.suncc openjdk/hotspot/make/linux/platform_i486.suncc
+deleted file mode 100644
+index 325a3fe..0000000
+--- openjdk/hotspot/make/linux/platform_i486.suncc
++++ /dev/null
+@@ -1,17 +0,0 @@
+-os_family = linux
+-
+-arch = x86
+-
+-arch_model = x86_32
+-
+-os_arch = linux_x86
+-
+-os_arch_model = linux_x86_32
+-
+-lib_arch = i386
+-
+-compiler = sparcWorks
+-
+-gnu_dis_arch = i386
+-
+-sysdefs = -DLINUX -DSPARC_WORKS -D_GNU_SOURCE -DIA32
+diff --git openjdk/hotspot/make/linux/platform_x86 openjdk/hotspot/make/linux/platform_x86
+new file mode 100644
+index 0000000..5c613fe
+--- /dev/null
++++ openjdk/hotspot/make/linux/platform_x86
+@@ -0,0 +1,15 @@
++os_family = linux
++
++arch = x86
++
++arch_model = x86_32
++
++os_arch = linux_x86
++
++os_arch_model = linux_x86_32
++
++lib_arch = x86
++
++compiler = gcc
++
++sysdefs = -DLINUX -D_GNU_SOURCE -DIA32
+diff --git openjdk/hotspot/make/linux/platform_x86.suncc openjdk/hotspot/make/linux/platform_x86.suncc
+new file mode 100644
+index 0000000..717fc75
+--- /dev/null
++++ openjdk/hotspot/make/linux/platform_x86.suncc
+@@ -0,0 +1,17 @@
++os_family = linux
++
++arch = x86
++
++arch_model = x86_32
++
++os_arch = linux_x86
++
++os_arch_model = linux_x86_32
++
++lib_arch = x86
++
++compiler = sparcWorks
++
++gnu_dis_arch = x86
++
++sysdefs = -DLINUX -DSPARC_WORKS -D_GNU_SOURCE -DIA32
+diff --git openjdk/hotspot/src/os/linux/launcher/java_md.c openjdk/hotspot/src/os/linux/launcher/java_md.c
+index 50a86cd..48141be 100644
+--- openjdk/hotspot/src/os/linux/launcher/java_md.c
++++ openjdk/hotspot/src/os/linux/launcher/java_md.c
+@@ -56,8 +56,8 @@
+  * models is supported, then DUAL_MODE is defined.  When DUAL_MODE is
+  * defined, the architecture names for the narrow and wide version of
+  * the architecture are defined in BIG_ARCH and SMALL_ARCH.  Currently
+- * only Solaris on sparc/sparcv9 and i586/amd64 is DUAL_MODE; linux
+- * i586/amd64 could be defined as DUAL_MODE but that is not the
++ * only Solaris on sparc/sparcv9 and x86/amd64 is DUAL_MODE; linux
++ * x86/amd64 could be defined as DUAL_MODE but that is not the
+  * current policy.
+  */
+ 
+@@ -75,8 +75,8 @@
+ 
+ #else /* 32-bit data model */
+ 
+-#  ifdef i586
+-#    define ARCH "i386"
++#  ifdef x86
++#    define ARCH "x86"
+ #  elif defined(__sparc)
+ #    define ARCH "sparc"
+ #  endif
+@@ -90,7 +90,7 @@
+ #    define SMALL_ARCH "sparc"
+ #  else
+ #    define BIG_ARCH "amd64"
+-#    define SMALL_ARCH "i386"
++#    define SMALL_ARCH "x86"
+ #  endif
+ #  include <sys/systeminfo.h>
+ #  include <sys/elf.h>
+@@ -1103,7 +1103,7 @@ void PrintMachineDependentOptions() {
+  * This code is somewhat more confused with #ifdef's than we'd
+  * like because this file is used by both Solaris and Linux
+  * platforms, and so needs to be parameterized for SPARC and
+- * i586 hardware.  The other Linux platforms (amd64 and ia64)
++ * x86 hardware.  The other Linux platforms (amd64 and ia64)
+  * don't even ask this question, because they only come with
+  * server JVMs.  */
+ 
+@@ -1168,11 +1168,11 @@ solaris_sparc_ServerClassMachine(void) {
+ 
+ #endif /* __sun && __sparc */
+ 
+-#if defined(__sun) && defined(i586)
++#if defined(__sun) && defined(x86)
+ 
+ /*
+  * A utility method for asking the CPU about itself.
+- * There's a corresponding version of linux-i586
++ * There's a corresponding version of linux-x86
+  * because the compilers are different.
+  */
+ void
+@@ -1218,13 +1218,13 @@ get_cpuid(uint32_t arg,
+ #endif
+ }
+ 
+-#endif /* __sun && i586 */
++#endif /* __sun && x86 */
+ 
+-#if defined(__linux__) && defined(i586)
++#if defined(__linux__) && defined(x86)
+ 
+ /*
+  * A utility method for asking the CPU about itself.
+- * There's a corresponding version of solaris-i586
++ * There's a corresponding version of solaris-x86
+  * because the compilers are different.
+  */
+ void
+@@ -1286,11 +1286,11 @@ get_cpuid(uint32_t arg,
+ #endif
+ }
+ 
+-#endif /* __linux__ && i586 */
++#endif /* __linux__ && x86 */
+ 
+-#ifdef i586
++#ifdef x86
+ /*
+- * Routines shared by solaris-i586 and linux-i586.
++ * Routines shared by solaris-x86 and linux-x86.
+  */
+ 
+ enum HyperThreadingSupport_enum {
+@@ -1430,11 +1430,11 @@ physical_processors(void) {
+   return result;
+ }
+ 
+-#endif /* i586 */
++#endif /* x86 */
+ 
+-#if defined(__sun) && defined(i586)
++#if defined(__sun) && defined(x86)
+ 
+-/* The definition of a server-class machine for solaris-i586/amd64 */
++/* The definition of a server-class machine for solaris-x86/amd64 */
+ jboolean
+ solaris_i586_ServerClassMachine(void) {
+   jboolean            result            = JNI_FALSE;
+@@ -1463,11 +1463,11 @@ solaris_i586_ServerClassMachine(void) {
+   return result;
+ }
+ 
+-#endif /* __sun && i586 */
++#endif /* __sun && x86 */
+ 
+-#if defined(__linux__) && defined(i586)
++#if defined(__linux__) && defined(x86)
+ 
+-/* The definition of a server-class machine for linux-i586 */
++/* The definition of a server-class machine for linux-x86 */
+ jboolean
+ linux_i586_ServerClassMachine(void) {
+   jboolean            result            = JNI_FALSE;
+@@ -1496,7 +1496,7 @@ linux_i586_ServerClassMachine(void) {
+   return result;
+ }
+ 
+-#endif /* __linux__ && i586 */
++#endif /* __linux__ && x86 */
+ 
+ /* Dispatch to the platform-specific definition of "server-class" */
+ jboolean
+@@ -1504,9 +1504,9 @@ ServerClassMachine(void) {
+   jboolean result = JNI_FALSE;
+ #if   defined(__sun) && defined(__sparc)
+   result = solaris_sparc_ServerClassMachine();
+-#elif defined(__sun) && defined(i586)
++#elif defined(__sun) && defined(x86)
+   result = solaris_i586_ServerClassMachine();
+-#elif defined(__linux__) && defined(i586)
++#elif defined(__linux__) && defined(x86)
+   result = linux_i586_ServerClassMachine();
+ #else
+   if (_launcher_debug) {
+diff --git openjdk/hotspot/src/os/linux/vm/os_linux.cpp openjdk/hotspot/src/os/linux/vm/os_linux.cpp
+index b2b3162..a4bbe70 100644
+--- openjdk/hotspot/src/os/linux/vm/os_linux.cpp
++++ openjdk/hotspot/src/os/linux/vm/os_linux.cpp
+@@ -164,7 +164,7 @@ bool os::have_special_privileges() {
+ // i386: 224, ia64: 1105, amd64: 186, sparc 143
+ #ifdef __ia64__
+ #define SYS_gettid 1105
+-#elif __i386__
++#elif __x86__
+ #define SYS_gettid 224
+ #elif __amd64__
+ #define SYS_gettid 186
+@@ -181,7 +181,7 @@ static char cpu_arch[] = ZERO_LIBARCH;
+ #elif defined(IA64)
+ static char cpu_arch[] = "ia64";
+ #elif defined(IA32)
+-static char cpu_arch[] = "i386";
++static char cpu_arch[] = "x86";
+ #elif defined(AMD64)
+ static char cpu_arch[] = "amd64";
+ #elif defined(SPARC)
+diff --git openjdk/hotspot/src/share/tools/hsdis/Makefile openjdk/hotspot/src/share/tools/hsdis/Makefile
+index 6bdf4b8..fd43c6e 100644
+--- openjdk/hotspot/src/share/tools/hsdis/Makefile
++++ openjdk/hotspot/src/share/tools/hsdis/Makefile
+@@ -32,7 +32,7 @@ BINUTILS	= $(shell cd ../../../../..;pwd)/binutils-2.17-$(LIBARCH)
+ endif
+ 
+ # Default arch; it is changed below as needed.
+-ARCH		= i386
++ARCH		= x86
+ OS		= $(shell uname)
+ 
+ CPPFLAGS	+= -I$(BINUTILS)/include -I$(BINUTILS)/bfd
+@@ -87,7 +87,7 @@ endif	# SunOS
+ LIBARCH		= $(ARCH)
+ ifdef		LP64
+ LIBARCH64/sparc	= sparcv9
+-LIBARCH64/i386	= amd64
++LIBARCH64/x86	= amd64
+ LIBARCH64	= $(LIBARCH64/$(ARCH))
+ ifneq		($(LIBARCH64),)
+ LIBARCH		= $(LIBARCH64)
+diff --git openjdk/hotspot/src/share/tools/hsdis/hsdis.c openjdk/hotspot/src/share/tools/hsdis/hsdis.c
+index 75b7efe..62c692b 100644
+--- openjdk/hotspot/src/share/tools/hsdis/hsdis.c
++++ openjdk/hotspot/src/share/tools/hsdis/hsdis.c
+@@ -383,8 +383,8 @@ static void print_help(struct hsdis_app_data* app_data,
+   else
+     disassembler_usage(stderr); /* better than nothing */
+   (*printf_callback)(printf_stream, "  mach=<arch>   select disassembly mode\n");
+-#if defined(LIBARCH_i386) || defined(LIBARCH_amd64)
+-  (*printf_callback)(printf_stream, "  mach=i386     select 32-bit mode\n");
++#if defined(LIBARCH_x86) || defined(LIBARCH_amd64)
++  (*printf_callback)(printf_stream, "  mach=x86      select 32-bit mode\n");
+   (*printf_callback)(printf_stream, "  mach=x86-64   select 64-bit mode\n");
+   (*printf_callback)(printf_stream, "  suffix        always print instruction suffix\n");
+ #endif
+@@ -406,7 +406,7 @@ static const bfd_arch_info_type* find_arch_info(const char* arch_name) {
+ static const char* native_arch_name() {
+   const char* res = HOTSPOT_LIB_ARCH;
+ #ifdef LIBARCH_amd64
+-    res = "i386:x86-64";
++    res = "x86:x86-64";
+ #endif
+ #ifdef LIBARCH_sparc
+     res = "sparc:v8plusb";
+diff --git openjdk/hotspot/src/share/vm/adlc/Test/i486.ad openjdk/hotspot/src/share/vm/adlc/Test/i486.ad
+deleted file mode 100644
+index e69de29..0000000
+diff --git openjdk/hotspot/src/share/vm/adlc/Test/x86.ad openjdk/hotspot/src/share/vm/adlc/Test/x86.ad
+new file mode 100644
+index 0000000..e69de29
+diff --git openjdk/hotspot/test/Makefile openjdk/hotspot/test/Makefile
+index 2596d85..c2f3eb9 100644
+--- openjdk/hotspot/test/Makefile
++++ openjdk/hotspot/test/Makefile
+@@ -33,14 +33,14 @@ ifeq ($(OSNAME), SunOS)
+   PLATFORM = solaris
+   ARCH = $(shell uname -p)
+   ifeq ($(ARCH), i386)
+-    ARCH=i586
++    ARCH=x86
+   endif
+ endif
+ ifeq ($(OSNAME), Linux)
+   PLATFORM = linux
+   ARCH = $(shell uname -m)
+-  ifeq ($(ARCH), i386)
+-    ARCH = i586
++  ifeq ($(findstring 86,$(ARCH)), 86)
++    ARCH = x86
+   endif
+ endif
+ ifeq ($(OSNAME), Windows_NT)
+@@ -55,7 +55,7 @@ ifeq ($(OSNAME), Windows_NT)
+       ifeq ($(word 1, $(PROCESSOR_IDENTIFIER)),EM64T)
+         ARCH = x64
+       else
+-        ARCH = i586
++        ARCH = x86
+       endif
+     endif
+   endif
+-- 
+1.6.5
+
+diff --git openjdk/hotspot/make/linux/makefiles/i486.make b/hotspot/make/linux/makefiles/i486.make
+deleted file mode 100644
+index 9dd0b44..0000000
+--- openjdk/hotspot/make/linux/makefiles/i486.make
++++ /dev/null
+@@ -1,36 +0,0 @@
+-#
+-# Copyright 1999-2008 Sun Microsystems, Inc.  All Rights Reserved.
+-# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+-#
+-# This code is free software; you can redistribute it and/or modify it
+-# under the terms of the GNU General Public License version 2 only, as
+-# published by the Free Software Foundation.
+-#
+-# This code is distributed in the hope that it will be useful, but WITHOUT
+-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+-# version 2 for more details (a copy is included in the LICENSE file that
+-# accompanied this code).
+-#
+-# You should have received a copy of the GNU General Public License version
+-# 2 along with this work; if not, write to the Free Software Foundation,
+-# Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+-#
+-# Please contact Sun Microsystems, Inc., 4150 Network Circle, Santa Clara,
+-# CA 95054 USA or visit www.sun.com if you need additional information or
+-# have any questions.
+-#  
+-#
+-
+-# TLS helper, assembled from .s file
+-# Not included in includeDB because it has no dependencies
+-Obj_Files += linux_x86_32.o
+-
+-# The copied fdlibm routines in sharedRuntimeTrig.o must not be optimized
+-OPT_CFLAGS/sharedRuntimeTrig.o = $(OPT_CFLAGS/NOOPT)
+-# The copied fdlibm routines in sharedRuntimeTrans.o must not be optimized
+-OPT_CFLAGS/sharedRuntimeTrans.o = $(OPT_CFLAGS/NOOPT)
+-# Must also specify if CPU is little endian
+-CFLAGS += -DVM_LITTLE_ENDIAN
+-
+-OPT_CFLAGS/compactingPermGenGen.o = -O1
+diff --git openjdk/hotspot/make/linux/makefiles/x86.make openjdk/hotspot/make/linux/makefiles/x86.make
+new file mode 100644
+index 0000000..9dd0b44
+--- /dev/null
++++ openjdk/hotspot/make/linux/makefiles/x86.make
+@@ -0,0 +1,36 @@
++#
++# Copyright 1999-2008 Sun Microsystems, Inc.  All Rights Reserved.
++# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
++#
++# This code is free software; you can redistribute it and/or modify it
++# under the terms of the GNU General Public License version 2 only, as
++# published by the Free Software Foundation.
++#
++# This code is distributed in the hope that it will be useful, but WITHOUT
++# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
++# version 2 for more details (a copy is included in the LICENSE file that
++# accompanied this code).
++#
++# You should have received a copy of the GNU General Public License version
++# 2 along with this work; if not, write to the Free Software Foundation,
++# Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
++#
++# Please contact Sun Microsystems, Inc., 4150 Network Circle, Santa Clara,
++# CA 95054 USA or visit www.sun.com if you need additional information or
++# have any questions.
++#  
++#
++
++# TLS helper, assembled from .s file
++# Not included in includeDB because it has no dependencies
++Obj_Files += linux_x86_32.o
++
++# The copied fdlibm routines in sharedRuntimeTrig.o must not be optimized
++OPT_CFLAGS/sharedRuntimeTrig.o = $(OPT_CFLAGS/NOOPT)
++# The copied fdlibm routines in sharedRuntimeTrans.o must not be optimized
++OPT_CFLAGS/sharedRuntimeTrans.o = $(OPT_CFLAGS/NOOPT)
++# Must also specify if CPU is little endian
++CFLAGS += -DVM_LITTLE_ENDIAN
++
++OPT_CFLAGS/compactingPermGenGen.o = -O1
+

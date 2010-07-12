@@ -1,0 +1,28 @@
+From 90688bde5acdb9193f5c381ce332012ff67c0e02 Mon Sep 17 00:00:00 2001
+From: woglinde <woglinde@rhein.zuhause.netz>
+Date: Fri, 23 Oct 2009 16:10:49 +0200
+Subject: [PATCH 3/3] javac.in: remove fake-jdk rt
+
+---
+ javac.in |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git icedtea6-1.6.1/javac.in icedtea6-1.6.1/javac.in
+index a897b39..235d9b5 100644
+--- icedtea6-1.6.1/javac.in
++++ icedtea6-1.6.1/javac.in
+@@ -33,9 +33,9 @@ fi
+ if [ -e @abs_top_builddir@/native-ecj ] ; then
+     @abs_top_builddir@/native-ecj -1.5 -nowarn $bcoption $NEW_ARGS ;
+ elif [ ! -z "@ECJ@" ] ; then
+-    @ECJ@ -1.5 -nowarn $bcoption $NEW_ARGS
++    @ECJ@ -1.5 -nowarn $NEW_ARGS
+ else
+     CLASSPATH=@ECJ_JAR@${CLASSPATH:+:}$CLASSPATH \
+-     @JAVA@ org.eclipse.jdt.internal.compiler.batch.Main -1.5 -nowarn $bcoption $NEW_ARGS
++     @JAVA@ org.eclipse.jdt.internal.compiler.batch.Main -1.5 -nowarn $NEW_ARGS
+ fi
+ 
+-- 
+1.6.5
+

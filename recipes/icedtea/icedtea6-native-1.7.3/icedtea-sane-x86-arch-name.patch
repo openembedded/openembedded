@@ -1,0 +1,47 @@
+Index: icedtea6-1.7/acinclude.m4
+===================================================================
+--- icedtea6-1.7.orig/acinclude.m4	2010-01-26 20:37:07.000000000 +0100
++++ icedtea6-1.7/acinclude.m4	2010-02-02 09:28:43.681373126 +0100
+@@ -8,11 +8,11 @@
+       CROSS_TARGET_ARCH=x86_64
+       ;;
+     i?86-*-*)
+-      BUILD_ARCH_DIR=i586
+-      INSTALL_ARCH_DIR=i386
+-      JRE_ARCH_DIR=i386
++      BUILD_ARCH_DIR=x86
++      INSTALL_ARCH_DIR=x86
++      JRE_ARCH_DIR=x86
+       ARCH_PREFIX=${LINUX32}
+-      CROSS_TARGET_ARCH=i386
++      CROSS_TARGET_ARCH=x86
+       ;;
+     alpha*-*-*)
+       BUILD_ARCH_DIR=alpha
+@@ -733,7 +733,7 @@
+   ZERO_LIBARCH="${INSTALL_ARCH_DIR}"
+   dnl can't use AC_CHECK_SIZEOF on multilib
+   case "${ZERO_LIBARCH}" in
+-    i386|ppc|s390|sparc)
++    x86|ppc|s390|sparc)
+       ZERO_BITSPERWORD=32
+       ;;
+     amd64|ppc64|s390x|sparc64)
+@@ -745,7 +745,7 @@
+   esac
+   AC_C_BIGENDIAN([ZERO_ENDIANNESS="big"], [ZERO_ENDIANNESS="little"])
+   case "${ZERO_LIBARCH}" in
+-    i386)
++    x86)
+       ZERO_ARCHDEF="IA32"
+       ;;
+     ppc*)
+@@ -762,7 +762,7 @@
+   esac
+   dnl multilib machines need telling which mode to build for
+   case "${ZERO_LIBARCH}" in
+-    i386|ppc|sparc)
++    x86|ppc|sparc)
+       ZERO_ARCHFLAG="-m32"
+       ;;
+     s390)
