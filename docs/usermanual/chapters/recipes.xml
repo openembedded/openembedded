@@ -1138,7 +1138,7 @@ PR = "r0"</screen></para>
       is done via the install task, so we need to define a do_install function
       in the recipe to describe how to install the package:<screen>do_install() {
         install -m 0755 -d ${D}${bindir} ${D}${docdir}/myhelloworld
-        install -m 0644 ${S}/myhelloworld ${D}${bindir}
+        install -m 0755 ${S}/myhelloworld ${D}${bindir}
         install -m 0644 ${WORKDIR}/README.txt ${D}${docdir}/myhelloworld
 }</screen></para>
 
