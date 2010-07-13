@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r57"
+PR ="r58"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -105,12 +105,16 @@ SRCREV_omap3-touchbook = "d363f9cb0918a1b6b92e2e20d01543d0c4f53274"
 PV_omap3-touchbook = "2009.05+${PR}+gitr${SRCREV}"
 
 # ~ TI PSP v2009.11_OMAPPSP_03.00.01.06 (+ couple of commits)
-SRC_URI_omap3evm = "git://arago-project.org/git/projects/u-boot-omap3.git;protocol=git"
+SRC_URI_omap3evm = "git://arago-project.org/git/projects/u-boot-omap3.git;protocol=git \
+	file://0001-omap3evm-Change-default-console-serial-port-from.patch \
+"
 SRCREV_omap3evm = "c0a8fb217fdca7888d89f9a3dee74a4cec865620"
 PV_omap3evm = "2009.11+${PR}+gitr${SRCREV}"
 
 # ~ TI PSP v2009.11_OMAPPSP_03.00.01.06 (+ couple of commits)
-SRC_URI_dm3730-am3715-evm = "git://arago-project.org/git/projects/u-boot-omap3.git;protocol=git"
+SRC_URI_dm3730-am3715-evm = "git://arago-project.org/git/projects/u-boot-omap3.git;protocol=git \
+	file://0001-omap3evm-Change-default-console-serial-port-from.patch \
+"
 SRCREV_dm3730-am3715-evm = "c0a8fb217fdca7888d89f9a3dee74a4cec865620"
 PV_dm3730-am3715-evm = "2009.11+${PR}+gitr${SRCREV}"
 

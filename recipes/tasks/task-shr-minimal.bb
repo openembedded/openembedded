@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r31"
+PR = "r32"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -11,8 +11,8 @@ def get_rdepends(bb, d):
     enabled = bb.data.getVar("ENABLE_BINARY_LOCALE_GENERATION", d, 1)
 
     # If locale is disabled, bail out
-    if not enabled:
-        return
+    if not enabled or not int(enabled):
+        return ""
 
     locales = bb.data.getVar("GLIBC_GENERATE_LOCALES", d, 1)
     if not locales or locales == "all":
