@@ -4,7 +4,7 @@ AUTHOR = "FreeSmartphone.Org Development Team"
 SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
-SRCREV = "8f618948c4c74853f28b773cdc74ceefa1fb6899"
+SRCREV = "5ed055335b251b290179928bd0d56b5476759876"
 PV = "0.9.5.9+gitr${SRCPV}"
 PR = "r5"
 PE = "1"
@@ -15,8 +15,6 @@ INITSCRIPT_NAME = "frameworkd"
 INITSCRIPT_PARAMS = "defaults 29"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/framework.git;protocol=git;branch=master \
-           file://0001-ogpsd-update-sysfs-node-for-2.6.32-kernels-on-freeru.patch \
-           file://0002-ogsmd-ti_calipsy-update-sysfs-node-for-2.6.32-kernel.patch \
            file://frameworkd \
            file://frameworkd.conf \
 	   "
