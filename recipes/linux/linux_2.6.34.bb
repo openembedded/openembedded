@@ -14,6 +14,7 @@ DEFAULT_PREFERENCE_qemumipsel = "1"
 DEFAULT_PREFERENCE_qemux86 = "1"
 DEFAULT_PREFERENCE_lite5200 = "1"
 DEFAULT_PREFERENCE_omap5912osk = "1"
+DEFAULT_PREFERENCE_tqm8540 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/${P}.tar.bz2;name=kernel \
            file://ARM-Add-support-for-LZMA-compressed-kernel-images.patch;status=pending \
