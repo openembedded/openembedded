@@ -2,12 +2,14 @@ require gtk+.inc
 
 SRC_URI_append_virtclass-native = " file://no-demos.patch \
 "
-SRC_URI_append = "file://gtk-dnd-grab-deadlock-fix.patch"
+SRC_URI_append = "file://gtk-dnd-grab-deadlock-fix.patch \
+		  file://cross-nm.patch \
+		 "
 
 SRC_URI[gtk.md5sum] = "53e6f3a93bd22934878fc4a4a34c68aa"
 SRC_URI[gtk.sha256sum] = "0e081731d21e34ff45c82199490c2889504fa8b3c7e117c043e82ababaec0f65"
 
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 BBCLASSEXTEND = "native"
 

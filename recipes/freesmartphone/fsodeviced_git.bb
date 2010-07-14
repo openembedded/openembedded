@@ -32,8 +32,6 @@ CONFFILES_${PN} = "${sysconfdir}/freesmartphone/conf/openmoko_gta/fsodeviced.con
 do_install_append() {
 	install -d ${D}${sysconfdir}/init.d/
 	install -m 0755 ${WORKDIR}/fsodeviced ${D}${sysconfdir}/init.d/
-	rm -f ${D}${sysconfdir}/freesmartphone/conf/openmoko_gta/alsa-default
-	ln -s alsa-2.6.31 ${D}${sysconfdir}/freesmartphone/conf/openmoko_gta/alsa-default
 }
 
 pkg_preinst_${PN} () {

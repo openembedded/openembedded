@@ -15,12 +15,21 @@ Index: jamvm-1.5.0/java-initial
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
 +++ jamvm-1.5.0/java-initial	2007-12-20 00:03:27.000000000 +0100
-@@ -0,0 +1,5 @@
+@@ -0,0 +1,14 @@
 +#!/bin/sh
 +#
-+# Wrapper script inspired by the one provided by cacao.
++# Wrapper which (almost) silently restarts the VM in case of segfaults.
 +
-+exec jamvm-initial ${1+"$@"}
++redo_from_start=1;
++while [ $redo_from_start -eq 1 ]; do
++    echo "Running JamVM-initial: ${@}"
++    redo_from_start=0;
++    jamvm-initial ${1+"$@"}
++    if [ $? -eq 139 ]; then
++        echo "JamVM-initial crashed - silently trying again"
++        redo_from_start=1;
++    fi
++done
 Index: jamvm-1.5.0/lib/Makefile.am
 ===================================================================
 --- jamvm-1.5.0.orig/lib/Makefile.am	2007-12-20 00:05:24.000000000 +0100
