@@ -13,12 +13,17 @@ ARM_INSTRUCTION_SET = "arm"
 # Needed for big compilation targets like OpenJDK
 CFLAGS += "-DDEFAULT_MAX_HEAP=2048*MB"
 
+EXTRA_OECONF += "--with-program-suffix=-bin"
+
+SRC_URI += "file://java"
+
 inherit native
 
 S = "${WORKDIR}/jamvm-${PV}"
 
 do_install_append() {
-  ln -sf jamvm ${STAGING_BINDIR}/java
+	install -d ${D}${bindir}
+	install -m 0755 ${WORKDIR}/java ${D}${bindir}/
 }
 
 # Enforce usage of ecj-initial.
