@@ -14,7 +14,7 @@ EXTRA_OEMAKE = "CC='${CC}'"
 HEADERS = "src/c-client/*.h src/osdep/unix/*.h c-client/auths.c c-client/linkage.c c-client/linkage.h c-client/osdep.h"
 
 do_compile() {
-	echo "SSLINCLUDE=${STAGING_INCDIR}/openssl SSLLIB=${STAGING_LIBDIR}" > ${S}/SPECIALS
+	echo "SSLINCLUDE=${STAGING_INCDIR} SSLLIB=${STAGING_LIBDIR}" > ${S}/SPECIALS
 	oe_runmake lnp
 }
 
