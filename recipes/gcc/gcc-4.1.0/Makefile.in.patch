@@ -1,0 +1,38 @@
+Index: gcc-4.1.2/gcc/Makefile.in
+===================================================================
+--- gcc-4.1.2.orig/gcc/Makefile.in
++++ gcc-4.1.2/gcc/Makefile.in
+@@ -548,7 +548,7 @@ LIBGCC2_INCLUDES =
+ TARGET_LIBGCC2_CFLAGS =
+ 
+ # Options to use when compiling crtbegin/end.
+-CRTSTUFF_CFLAGS = -O2 $(GCC_CFLAGS) $(INCLUDES) $(MULTILIB_CFLAGS) -g0 \
++CRTSTUFF_CFLAGS = -O2 $(GCC_CFLAGS) $(TARGET_INCLUDES) $(MULTILIB_CFLAGS) -g0 \
+   -finhibit-size-directive -fno-inline-functions -fno-exceptions \
+   -fno-zero-initialized-in-bss -fno-unit-at-a-time \
+   $(INHIBIT_LIBC_CFLAGS)
+@@ -845,9 +845,13 @@ BUILD_VARRAY = build/varray.o
+ # -I$(@D) and -I$(srcdir)/$(@D) cause the subdirectory of the file
+ # currently being compiled, in both source trees, to be examined as well.
+ # libintl.h will be found in ../intl if we are using the included libintl.
+-INCLUDES = -I. -I$(@D) -I$(srcdir) -I$(srcdir)/$(@D) \
++#
++# TARGET_INCLUDES is added to avoid that GMPINC (which points to the host
++# include dir) is used for compiling libgcc.a
++TARGET_INCLUDES = -I. -I$(@D) -I$(srcdir) -I$(srcdir)/$(@D) \
+ 	   -I$(srcdir)/../include @INCINTL@ \
+-	   $(CPPINC) $(GMPINC)
++	   $(CPPINC)
++INCLUDES = $(TARGET_INCLUDES) $(GMPINC)
+ 
+ .c.o:
+ 	$(CC) -c $(ALL_CFLAGS) $(ALL_CPPFLAGS) $< $(OUTPUT_OPTION)
+@@ -1379,7 +1383,7 @@ libgcc.a: $(LIBGCC_DEPS)
+ 	$(MAKE) \
+ 	  CFLAGS="$(CFLAGS) $(WARN_CFLAGS)" \
+ 	  CONFIG_H="$(TCONFIG_H)" TM_H="$(TM_H)" \
+-	  INCLUDES="$(INCLUDES)" \
++	  INCLUDES="$(TARGET_INCLUDES)" \
+ 	  MAKEOVERRIDES= \
+ 	  -f libgcc.mk all
+ 

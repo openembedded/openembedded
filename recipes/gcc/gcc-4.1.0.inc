@@ -1,6 +1,6 @@
 require gcc-common.inc
 
-INC_PR = "r10"
+INC_PR = "r11"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -11,7 +11,9 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
 	file://arm-nolibfloat.patch \
 	file://arm-softfloat.patch \
 	file://zecke-xgcc-cpp.patch \
-    file://pr34130.patch"
+	file://pr34130.patch \
+	file://Makefile.in.patch \
+    "
 
 SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch "
 

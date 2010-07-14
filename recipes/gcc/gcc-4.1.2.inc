@@ -3,7 +3,7 @@ require gcc-common.inc
 DEPENDS = "mpfr gmp"
 NATIVEDEPS = "mpfr-native gmp-native"
 
-INC_PR = "r22"
+INC_PR = "r23"
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
 	file://100-uclibc-conf.patch \
@@ -29,6 +29,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
 	file://gfortran.patch \
         file://gcc-4.0.2-e300c2c3.patch \
         file://pr34130.patch \
+	file://Makefile.in.patch \
        "
 
 SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch "
