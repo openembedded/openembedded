@@ -36,7 +36,7 @@ EXTRA_OECONF = "${@['--enable-clocale=generic', ''][bb.data.getVar('USE_NLS', d,
                 --enable-shared \
                 --enable-languages=${LANGUAGES} \
                 --enable-threads=posix \
-                --enable-multilib \
+		--disable-multilib \
                 --enable-c99 \
                 --enable-long-long \
                 --enable-symvers=gnu \
