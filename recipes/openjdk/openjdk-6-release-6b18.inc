@@ -39,7 +39,6 @@ OEPATCHES = "\
 	file://zero-cmpswap-long.patch \
 	file://fix_hotspot_crosscompile.patch \
 	file://mkbc_returncode.patch \
-	file://thumbee.patch \
 	file://icedtea-fix-jar-command.patch \
 	file://fix-llvm-libs.patch \
 	file://shark-build-openjdkdir.patch \

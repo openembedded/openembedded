@@ -10,7 +10,7 @@ ICEDTEA = "NEEDS TO BE SET"
 S = "${WORKDIR}/${ICEDTEA}"
 B = "${S}/build"
 
-INC_PR = "r5"
+INC_PR = "r6"
 
 SRC_URI = "\
   ${ICEDTEA_URI} \
