@@ -19,6 +19,8 @@ inherit java autotools update-alternatives
 EXTRA_OECONF = "--with-classpath-install-dir=${prefix} --libdir=${libdir}/jamvm"
 CFLAGS += "-DDEFAULT_MAX_HEAP=16*MB"
 
+FILES_${PN} += "${libdir}/jamvm/lib*.so"
+
 ALTERNATIVE_NAME = "java"
 ALTERNATIVE_PATH = "${bindir}/jamvm"
 ALTERNATIVE_PRIORITY = "4"
