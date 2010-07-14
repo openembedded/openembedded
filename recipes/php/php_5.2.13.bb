@@ -43,7 +43,7 @@ export PHP_PEAR_PHP_BIN = "${bindir}/php"
 #LDFLAGS += "-lstdc++"
 
 do_configure_append() {
-    find ${S} -type f | xargs sed -i 's:I/usr/include:I${STAGING_INCDIR}:g'
+    find ${S} -type f -readable -writable | xargs sed -i 's:I/usr/include:I${STAGING_INCDIR}:g'
 }
 
 # fixme
