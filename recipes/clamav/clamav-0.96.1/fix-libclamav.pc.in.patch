@@ -1,0 +1,11 @@
+Index: clamav-0.96.1/libclamav.pc.in
+===================================================================
+--- clamav-0.96.1.orig/libclamav.pc.in	2010-07-14 13:13:59.000000000 -0700
++++ clamav-0.96.1/libclamav.pc.in	2010-07-14 13:14:05.000000000 -0700
+@@ -7,5 +7,5 @@
+ Description: A GPL virus scanner
+ Version: @LIBCLAMAV_VERSION@
+ Libs: -L${libdir} -lclamav @LIBCLAMAV_LIBS@
+-Cflags: -I${includedir} @CFLAGS@
++Cflags: -I${includedir}
+ 
