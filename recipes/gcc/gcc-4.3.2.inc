@@ -21,7 +21,8 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://fedora/gcc43-libgomp-speedup.patch;patch=1;pnum=0 \
 	file://fedora/gcc43-i386-libgomp.patch;patch=1;pnum=0 \
 	file://fedora/gcc43-rh251682.patch;patch=1;pnum=0 \
-    file://debian/arm-unbreak-eabi-armv4t.dpatch;patch=1 \
+	file://debian/arm-unbreak-eabi-armv4t.dpatch;patch=1 \
+        file://debian/armel-atomic-builtins.dpatch;patch=1;pnum=0 \
 	file://debian/libstdc++-pic.dpatch;patch=1;pnum=0 \
 	file://debian/gcc-ice-hack.dpatch;patch=1;pnum=0 \ 
 	file://debian/pr30961.dpatch;patch=1;pnum=0 \
@@ -56,6 +57,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://gcc-4.3.1-ARCH_FLAGS_FOR_TARGET.patch;patch=1 \
 	file://zecke-xgcc-cpp.patch;patch=1 \
 	file://gcc-flags-for-build.patch;patch=1 \
+        file://gcc-4.4-20090519-arm-eabi-atomic-builtins-unbreak-v2.patch;patch=1 \
 "
 
 SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch;patch=1 "
