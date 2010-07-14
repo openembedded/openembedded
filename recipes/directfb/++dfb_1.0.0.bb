@@ -4,7 +4,9 @@ SECTION = "libs"
 DEPENDS = "directfb"
 LICENSE = "LGPL"
 
-SRC_URI = "http://www.directfb.org/downloads/Extras/++DFB-${PV}.tar.gz"
+PR = "r1"
+SRC_URI = "http://www.directfb.org/downloads/Extras/++DFB-${PV}.tar.gz \
+	    file://dfb-api-change.patch"
 S = "${WORKDIR}/++DFB-${PV}"
 RV = "0.9-25"
 
