@@ -10,10 +10,6 @@ PREFERRED_VERSION_mtd-utils-native = "1.2.0+git"
 PREFERRED_VERSION_strace = "4.5.15"
 PREFERRED_VERSION_emacs-x11 = "23.1"
 
-# We need this for jamvm
-PREFERRED_VERSION_classpath = "0.98"
-PREFERRED_VERSION_classpath-native = "0.98"
-
 # we need new headers for libc, now OLDEST_KERNEL_linux-gnueabi = "2.6.24"
 # and 2.6.31 for fsodeviced
 LINUX_LIBC_HEADERS_VERSION ?= "2.6.32"
