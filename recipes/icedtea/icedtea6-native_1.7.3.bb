@@ -6,6 +6,7 @@ SRC_URI = "\
 	http://icedtea.classpath.org/download/source/icedtea6-${PV}.tar.gz;name=iced \
 	http://download.java.net/openjdk/jdk6/promoted/b17/openjdk-6-src-b17-14_oct_2009.tar.gz;subdir=openjdk-src-dir;name=ojdk \
 	file://disable-library-checks.patch \
+	file://icedtea-fix-jar-path.patch \
 	file://build-hacks-native.patch \
 	file://icedtea-sane-x86-arch-name.patch \
         file://icedtea-javac-in.patch \
