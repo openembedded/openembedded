@@ -1,6 +1,6 @@
 DESCRIPTION = "phone-utils library"
 SECTION = "libs"
-SRCREV = "3eb7242866543a266bd43a048d05b1a674ce94cf"
+SRCREV = "d3f510d75f76d6d03c53b3376ce1aba1c88062e7"
 PV = "0.0.2+gitr${SRCPV}"
 PR = "r2"
 

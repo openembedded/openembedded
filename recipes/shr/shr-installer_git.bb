@@ -5,7 +5,7 @@ LICENSE ?= "GPL"
 RDEPENDS_${PN} = "python-elementary python-dbus python-core python-edbus packagekit"
 SECTION = "x11/application"
 
-SRCREV = "8608816ea1a1ac14b6e9faaa3685dd2b6450e889"
+SRCREV = "26c914bb438be450ba768b6131cbb52250ae55ae"
 PV = "0.0.2+gitr${SRCPV}"
 PR = "r1"
 
