@@ -18,8 +18,8 @@ SRC_URI += " \
             file://hack-fbdev-ignore-return-mode.patch \
             file://0001-xf86Modes-make-sure-that-DisplayModeRec-name-is-init.patch \
            "
-SRC_URI[archive.md5sum] = "5e987ddbd3796718b52ee0b7c06b3c68"
-SRC_URI[archive.sha256sum] = "be2b0097997758fbd917449ee013435b4012722a02774fe2a4ec1d06d7ea75d1"
+SRC_URI[archive.md5sum] = "7772d0bdcf6819332fb3a896fa854bd8"
+SRC_URI[archive.sha256sum] = "5f8d472d8a486f7638a9bce164baa8be400ebe21746a6805e6621887f2689678"
 
 SRC_URI_append_angstrom = " file://hack-assume-pixman-supports-overlapped-blt.patch"
 SRC_URI_append_shr = " file://hack-assume-pixman-supports-overlapped-blt.patch"
