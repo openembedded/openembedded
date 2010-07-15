@@ -1,13 +1,14 @@
 DESCRIPTION = "Harness to build the source code from OpenJDK using Free Software build tools"
 HOMEPAGE = "http://icedtea.classpath.org"
 LICENSE  = "GPL with Classpath Exception"
-INC_PR = "r0"
+INC_PR = "r1"
 
 DEPENDS = "virtual/javac-native classpath-tools-native \
 	   virtual/java-native classpath-native \
 	   xalan-j-native xerces-j-native rhino-native \
 	   ant-native libx11-native xproto-native libxt-native \
-	   freetype-native zlib-native giflib-native jpeg-native\
+	   freetype-native zlib-native giflib-native jpeg-native \
+           zip-native \
 	  "
 
 inherit native java autotools
@@ -16,8 +17,6 @@ JAVA_HOME[unexport] = "1"
 
 # No parallel build yet.
 PARALLEL_MAKE = ""
-
-#EXTRA_OEMAKE = "--debug=v"
 
 # Configure options compatible with Cacao >= 0.99 only!
 EXTRA_OECONF = "\
@@ -104,6 +103,10 @@ do_configure_append() {
 			$F
 	done
 }
+
+EXTRA_OEMAKE = ' \
+                STAGING_BINDIR_NATIVE="${STAGING_BINDIR_NATIVE}/" \
+               '
 
 do_compile() {
 	# OpenJDK uses slightly different names for certain arches. We need to know
