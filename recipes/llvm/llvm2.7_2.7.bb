@@ -4,6 +4,9 @@ PR = "r6"
 
 DEPENDS = "llvm-common llvm2.7-native"
 
+# Force arm mode for armv4t until http://llvm.org/bugs/show_bug.cgi?id=6065 is resolved somehow
+ARM_INSTRUCTION_SET_armv4t = "ARM"
+
 SRC_URI = "\
   http://llvm.org/releases/${PV}/llvm-${PV}.tgz \
   file://arm_ppc.patch \
