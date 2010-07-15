@@ -1,7 +1,8 @@
 DESCRIPTION = "Freetype font rendering library"
 SECTION = "libs"
 LICENSE = "freetype"
-PR = "r0"
+PR = "r1"
+DEPENDS = "zlib"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/freetype/freetype-${PV}.tar.bz2 \
@@ -18,7 +19,6 @@ inherit autotools pkgconfig binconfig
 
 LIBTOOL = "${HOST_SYS}-libtool"
 EXTRA_OEMAKE = "'LIBTOOL=${LIBTOOL}'"
-EXTRA_OECONF = "--without-zlib"
 
 do_configure() {
 	cd builds/unix
