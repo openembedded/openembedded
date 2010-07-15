@@ -72,7 +72,7 @@ Index: icedtea6-1.8/ports/hotspot/src/share/vm/shark/sharkCompiler.cpp
 +}
 +
 +bool getARMHostCPUFeatures(StringMap<bool> &Features) {
-+  Features["neon"]=TestARMLinuxHWCAP(HWCAP_NEON);
++  // FIXME LLVM PR6561 // Features["neon"]=TestARMLinuxHWCAP(HWCAP_NEON);
 +  Features["thumb2"]=TestARMLinuxHWCAP(HWCAP_THUMBEE);
 +  Features["vfp2"]=TestARMLinuxHWCAP(HWCAP_VFP);
 +
