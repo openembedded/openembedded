@@ -22,11 +22,11 @@ SRC_URI[ojdk.sha256sum] = "778ea7b323aaa24d3c6e8fe32b8bb0f49040d9e86271859077ada
 SRC_URI[iced.md5sum] = "e08dd0762749fb50ec6c273c366ee8ae"
 SRC_URI[iced.sha256sum] = "6823ff87969d978fe5523c729be3074142698c89acc8cc96c05b849fde54f61b"
 
-JAXWS_URI = "http://kenai.com/projects/jdk6-drops/downloads/download/jdk6-jaxws-2009_10_27.zip;name=jaxws"
+JAXWS_URI = "http://icedtea.classpath.org/download/source/drops/jdk6-jaxws-2009_10_27.zip;name=jaxws"
 SRC_URI[jaxws.md5sum] = "3ea5728706169498b722b898a1008acf"
 SRC_URI[jaxws.sha256sum] = "155ff3be83c980e197621a2fbf7ee34e8e0f536489351a5865cf0e52206245e2"
 
-JAF_URI = "http://kenai.com/projects/jdk6-drops/downloads/download/jdk6-jaf-2009_10_27.zip;name=jaf"
+JAF_URI = "http://icedtea.classpath.org/download/source/drops/jdk6-jaf-2009_10_27.zip;name=jaf"
 SRC_URI[jaf.md5sum] = "7a50bb540a27cdd0001885630088b758"
 SRC_URI[jaf.sha256sum] = "fdc51476fc6bcc69ea1f099f33e84601a126bfa8b11c8fa11c25dc574345aa9f"
 
@@ -52,3 +52,7 @@ export DISTRIBUTION_PATCHES = "\
         patches/icedtea-jdk-sane-x86-arch.patch \
 	patches/icedtea-unbreak-float.patch \
 	"
+
+EXTRA_OECONF += " --with-jaxws-drop-zip=${DL_DIR}/jdk6-jaxws-2009_10_27.zip \
+                  --with-jaf-drop-zip=${DL_DIR}/jdk6-jaf-2009_10_27.zip \
+                  --with-jaxp-drop-zip=${DL_DIR}/jdk6-jaxp-2009_10_13.zip "
