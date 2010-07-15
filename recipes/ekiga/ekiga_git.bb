@@ -7,7 +7,7 @@ DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "1"
 
 PV = "3.3.1+git"
-PR = "r5+gitr${SRCREV}"
+PR = "r6+gitr${SRCREV}"
 SRCREV = "7c669dd4ce69296f09004f8876366058c20a3352"
 
 inherit gnome

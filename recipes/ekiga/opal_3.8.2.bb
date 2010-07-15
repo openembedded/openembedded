@@ -1,6 +1,8 @@
 DESCRIPTION = "Open Phone Abstraction Library, implementation of the ITU H.323 teleconferencing protocol, and successor of the openh323 library."
 LICENSE = "MPL"
 
+PR = "r1"
+
 inherit gnome
 
 DEPENDS += " ffmpeg ptlib virtual/libsdl openldap"
