@@ -17,11 +17,11 @@ OPENJDK_URI = "http://download.java.net/openjdk/jdk6/promoted/b18/openjdk-6-src-
 SRC_URI[openjdk.md5sum] = "94db01691ab38f98b7d42b2ebf4d5c0b"
 SRC_URI[openjdk.sha256sum] = "778ea7b323aaa24d3c6e8fe32b8bb0f49040d9e86271859077ada9f9ee3c8ebf"
 
-JAXWS_URI = "http://kenai.com/projects/jdk6-drops/downloads/download/jdk6-jaxws-2009_10_27.zip;name=jaxws"
+JAXWS_URI = "http://icedtea.classpath.org/download/source/drops/jdk6-jaxws-2009_10_27.zip;name=jaxws"
 SRC_URI[jaxws.md5sum] = "3ea5728706169498b722b898a1008acf"
 SRC_URI[jaxws.sha256sum] = "155ff3be83c980e197621a2fbf7ee34e8e0f536489351a5865cf0e52206245e2"
 
-JAF_URI = "http://kenai.com/projects/jdk6-drops/downloads/download/jdk6-jaf-2009_10_27.zip;name=jaf"
+JAF_URI = "http://icedtea.classpath.org/download/source/drops/jdk6-jaf-2009_10_27.zip;name=jaf"
 SRC_URI[jaf.md5sum] = "7a50bb540a27cdd0001885630088b758"
 SRC_URI[jaf.sha256sum] = "fdc51476fc6bcc69ea1f099f33e84601a126bfa8b11c8fa11c25dc574345aa9f"
 
