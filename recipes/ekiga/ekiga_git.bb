@@ -5,13 +5,12 @@ ARM_INSTRUCTION_SET = "arm"
 
 DEFAULT_PREFERENCE = "-1"
 PV = "3.3.1+git"
-PR = "r4+gitr${SRCREV}"
-SRCREV = "c81cabbee7901b6643907d08f9a530308044ec22"
+PR = "r5+gitr${SRCREV}"
+SRCREV = "7c669dd4ce69296f09004f8876366058c20a3352"
 
 inherit gnome
 
 SRC_URI = "git://git.gnome.org/ekiga;protocol=git;branch=master \
-           file://rgb16.patch \
 "
 
 S = "${WORKDIR}/git"
