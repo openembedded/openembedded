@@ -7,6 +7,9 @@ EXTRA_OECONF += "\
 	--with-cacao-src-zip=${DL_DIR}/cacao-0.99.4.tar.gz \
 "
 
+# Force arm mode for now
+ARM_INSTRUCTION_SET_armv4t = "ARM"
+
 # Use IcedTea6 1.8 release.
 ICEDTEA = "icedtea6-1.8"
 ICEDTEA_URI = "http://icedtea.classpath.org/download/source/${ICEDTEA}.tar.gz;name=iced"
