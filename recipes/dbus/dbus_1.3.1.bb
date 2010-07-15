@@ -1,9 +1,10 @@
 include dbus.inc
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 SRC_URI = "\
   http://dbus.freedesktop.org/releases/dbus/dbus-${PV}.tar.gz \
   \
+  file://bugfix-17754.patch \
   file://tmpdir.patch \
   file://fix-install-daemon.patch \
   file://add-configurable-reply-timeouts.patch \
