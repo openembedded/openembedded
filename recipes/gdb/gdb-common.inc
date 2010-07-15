@@ -23,7 +23,7 @@ B = "${WORKDIR}/build-${TARGET_SYS}"
 do_install_append() {
 	# these mo files from gdb-cross-sdk clash with files from binutils-cross-sdk
 	# when building sdk archives. Drop them for now as a way to restore toolchains.
-	rm ${D}/${datadir}/locale/*/LC_MESSAGES/{bfd,opcodes}.mo
+	rm -f ${D}/${datadir}/locale/*/LC_MESSAGES/{bfd,opcodes}.mo
 
 	# we don't care about these infos, installed from binutils
 	rm -f ${D}/${infodir}/{configure,standards,bfd}.info
