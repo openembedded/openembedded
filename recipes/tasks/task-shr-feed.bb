@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r60"
+PR = "r61"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -143,6 +143,7 @@ RDEPENDS_${PN} += "\
 		x11vnc \
 #		libswt3.4-gtk-java \
 		cacao \
+		openjdk-6
 #		jamvm \
 		dbus-x11 \
 #		bluez-utils-alsa \
