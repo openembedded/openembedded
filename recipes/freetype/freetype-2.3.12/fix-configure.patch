@@ -4,8 +4,8 @@ Index: freetype-2.3.6/builds/unix/configure.ac
 +++ freetype-2.3.6/builds/unix/configure.ac
 @@ -506,8 +506,6 @@ AC_SUBST([FT2_EXTRA_LIBS])
  AC_SUBST([SYSTEM_ZLIB])
-
-
+ 
+ 
 -LT_INIT(win32-dll)
 -
  AC_SUBST([hardcode_libdir_flag_spec])

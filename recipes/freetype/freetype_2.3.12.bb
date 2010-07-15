@@ -1,7 +1,7 @@
 DESCRIPTION = "Freetype font rendering library"
 SECTION = "libs"
 LICENSE = "freetype"
-PR = "r1"
+PR = "r2"
 DEPENDS = "zlib"
 
 SRC_URI = "\
