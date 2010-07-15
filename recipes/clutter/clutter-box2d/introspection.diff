@@ -1,0 +1,31 @@
+From dae84a82efe22b284cba8ca1985ce14bb4e86c99 Mon Sep 17 00:00:00 2001
+From: Damien Lespiau <damien.lespiau@intel.com>
+Date: Mon, 03 Aug 2009 10:47:41 +0000
+Subject: [build] Don't build introspection stuff when configure said we can't
+
+Surround the instrospection file generation with if HAVE_INTROSPECTION /
+endif
+---
+diff --git a/clutter-box2d/Makefile.am b/clutter-box2d/Makefile.am
+index 8da23a7..6db8aae 100644
+--- a/clutter-box2d/Makefile.am
++++ b/clutter-box2d/Makefile.am
+@@ -39,6 +39,8 @@ DISTCLEANFILES = $(MARSHALFILES)
+ EXTRA_DIST = \
+ 	clutter-box2d-marshal.list
+ 
++if HAVE_INTROSPECTION
++
+ BUILT_GIRSOURCES =
+ 
+ ClutterBox2D-@CLUTTER_BOX2D_API_VERSION@.gir: $(INTROSPECTION_SCANNER) libclutter-box2d-@CLUTTER_BOX2D_API_VERSION@.la
+@@ -68,5 +70,7 @@ typelibs_DATA = $(BUILT_GIRSOURCES:.gir=.typelib)
+ %.typelib: %.gir $(INTROSPECTION_COMPILER)
+ 	$(QUIET_GEN)$(DEBUG) $(INTROSPECTION_COMPILER) --includedir=$(srcdir) --includedir=. $(INTROSPECTION_COMPILER_OPTS) $< -o $(builddir)/$(@F)
+ 
++endif # HAVE_INTROSPECTION
++
+ CLEANFILES=
+ CLEANFILES += $(BUILT_GIRSOURCES) $(typelibs_DATA)
+--
+cgit v0.8.3.1-30-gff3a
