@@ -12,7 +12,7 @@ XSERVER ?= "xserver-xorg \
            xf86-input-keyboard \
 "
 
-PR = "r12"
+PR = "r13"
 
 PACKAGES += "task-gnome-apps task-gnome-fonts task-gnome task-gnome-gstreamer task-gnome-perl task-gnome-pulseaudio task-gnome-themes task-gnome-totem task-gnome-xserver-base task-gnome-xserver"
 
@@ -54,7 +54,6 @@ RDEPENDS_task-gnome-fonts = " \
   ttf-liberation-sans \
   ttf-liberation-serif \
   ttf-liberation-mono \
-  xorg-minimal-fonts \
  "  
 
 RDEPENDS_task-gnome = " \
