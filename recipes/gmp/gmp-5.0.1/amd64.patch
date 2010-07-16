@@ -1,0 +1,14 @@
+--- gmp-5.0.1.oorig/longlong.h	2010-02-06 13:43:13.000000000 +0100
++++ gmp-5.0.1/longlong.h	2010-02-08 17:22:46.000000000 +0100
+@@ -849,8 +849,10 @@ extern UWtype __MPN(udiv_qrnnd) _PROTO (
+    count is only an int. */
+ #define count_trailing_zeros(count, x)					\
+   do {									\
++    UDItype __cbtmp;							\
+     ASSERT ((x) != 0);							\
+-    __asm__ ("bsfq %1,%q0" : "=r" (count) : "rm" ((UDItype)(x)));	\
++    __asm__ ("bsfq %1,%0" : "=r" (__cbtmp) : "rm" ((UDItype)(x)));	\
++    (count) = __cbtmp;						\
+   } while (0)
+ #endif /* x86_64 */
+ 
