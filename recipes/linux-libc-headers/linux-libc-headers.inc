@@ -8,3 +8,5 @@ RDEPENDS_${PN}-dev = ""
 RRECOMMENDS_${PN}-dbg = "${PN}-dev (= ${EXTENDPV})"
 
 inherit kernel-arch
+
+COMPATIBLE_TARGET_SYS ?= "(?!nios2)"
