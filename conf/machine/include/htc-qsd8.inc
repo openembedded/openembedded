@@ -12,7 +12,7 @@ XSERVER = " \
 	xf86-input-evdev \
 	xf86-input-mouse \
 	xf86-input-keyboard \
-	xf86-video-msm \
+	xf86-video-fbdev \
 "
 
 # capability database
