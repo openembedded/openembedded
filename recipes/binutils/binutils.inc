@@ -5,6 +5,8 @@ LICENSE = "GPL"
 
 INC_PR = "r10"
 
+COMPATIBLE_TARGET_SYS ?= "(?!nios2)"
+
 inherit autotools gettext
 
 PACKAGES += "${PN}-symlinks"

@@ -1,6 +1,8 @@
 require binutils.inc
 PR = "${INC_PR}.1"
 
+COMPATIBLE_TARGET_SYS = "."
+
 SRC_URI = \
     "${KERNELORG_MIRROR}/pub/linux/devel/binutils/binutils-${PV}.tar.bz2 \
      file://binutils-2.16.91.0.6-objcopy-rename-errorcode.patch \
