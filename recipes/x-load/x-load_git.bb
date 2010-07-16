@@ -30,9 +30,14 @@ SRCREV_omap3evm = "fc6d5be15c703d21aef0ae0b8c02177721f0445f"
 PV_omap3evm = "1.46+${PR}+gitr${SRCREV}"
 
 # TI PSP v1.46_OMAPPSP_03.00.01.06 (Tag is one commit different)
-SRC_URI_dm3730-am3715-evm = "git://arago-project.org/git/projects/x-load-omap3.git;protocol=git"
-SRCREV_dm3730-am3715-evm = "fc6d5be15c703d21aef0ae0b8c02177721f0445f"
-PV_dm3730-am3715-evm = "1.46+${PR}+gitr${SRCREV}"
+SRC_URI_dm37x-evm = "git://arago-project.org/git/projects/x-load-omap3.git;protocol=git"
+SRCREV_dm37x-evm = "fc6d5be15c703d21aef0ae0b8c02177721f0445f"
+PV_dm37x-evm = "1.46+${PR}+gitr${SRCREV}"
+
+# TI PSP v1.46_OMAPPSP_03.00.01.06 (Tag is one commit different)
+SRC_URI_am37x-evm = "git://arago-project.org/git/projects/x-load-omap3.git;protocol=git"
+SRCREV_am37x-evm = "fc6d5be15c703d21aef0ae0b8c02177721f0445f"
+PV_am37x-evm = "1.46+${PR}+gitr${SRCREV}"
 
 # TI PSP v1.46_OMAPPSP_03.00.01.06 (Tag is one commit different)
 SRC_URI_am3517-evm = "git://arago-project.org/git/projects/x-load-omap3.git;protocol=git"

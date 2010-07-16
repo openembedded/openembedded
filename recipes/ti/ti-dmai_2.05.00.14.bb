@@ -3,7 +3,7 @@ require ti-dmai.inc
 PV = "2_05_00_14"
 PR = "r0"
  
-COMPATIBLE_MACHINE = "(omap3evm|dm3730-am3715-evm)"
+COMPATIBLE_MACHINE = "(omap3evm|dm37x-evm|am37x-evm)"
 
 SRC_URI_append = " \
 	file://doxygen_templates.tar.gz \
