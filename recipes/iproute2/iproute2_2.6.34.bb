@@ -1,6 +1,6 @@
 require iproute2.inc
 
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 SRC_URI = "http://developer.osdl.org/dev/iproute2/download/${P}.tar.bz2 \
 	   file://configure-cross.patch \
@@ -13,4 +13,8 @@ S = "${WORKDIR}/iproute2-${PV}"
 
 do_configure () {
     ./configure ${STAGING_DIR_TARGET}
+}
+
+do_install_append() {
+	install -m 0755 tc/tc ${D}${base_sbindir}
 }
