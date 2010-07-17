@@ -1,8 +1,7 @@
-DESCRIPTION = "HTC Dream GPS utility"
-SECTION = "console/utils"
+DESCRIPTION = "Android RPC library"
+SECTION = "devel"
 LICENSE = "GPL"
-SRCREV = "c0e7ca9cce89088192ade34457d9fbf41352c9bf"
-#SRCREV = "${AUTOREV}"
+SRCREV = "72b90c4185c3a14657e3d05dba4ed44acdf6bce6"
 PV = "1.0+gitr${SRCPV}"
 PR = "r0"
 
