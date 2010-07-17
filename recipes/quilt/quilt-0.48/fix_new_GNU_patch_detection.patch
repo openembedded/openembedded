@@ -1,0 +1,36 @@
+# origin: http://git.savannah.gnu.org/cgit/quilt.git/commit/?id=38df0b210c3df67f3e784af92232ae1946b98ecd
+# Properly detect newer versions of GNU patch
+# New versions of GNU patch present themselves as "GNU patch" instead of just "patch".
+
+diff --git a/configure.ac b/configure.ac
+index 9d4a62e..cc850fa 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -262,7 +262,11 @@ fi
+ AC_MSG_CHECKING([the version of $PATCH])
+ if $PATCH --version 2> /dev/null | grep GNU >/dev/null; then
+   set -- `$PATCH --version 2> /dev/null`
+-  patch_version=$2
++  if test x$1 = xGNU ; then
++    patch_version=$3
++  else
++    patch_version=$2
++  fi
+   AC_MSG_RESULT($patch_version)
+   saved_IFS=$IFS; IFS='.'
+   set -- $patch_version
+--- a/configure
++++ b/configure
+@@ -5896,7 +5896,11 @@
+ echo $ECHO_N "checking the version of $PATCH... $ECHO_C" >&6; }
+ if $PATCH --version 2> /dev/null | grep GNU >/dev/null; then
+   set -- `$PATCH --version 2> /dev/null`
+-  patch_version=$2
++  if test x$1 = xGNU ; then
++    patch_version=$3
++  else
++    patch_version=$2
++  fi
+   { echo "$as_me:$LINENO: result: $patch_version" >&5
+ echo "${ECHO_T}$patch_version" >&6; }
+   saved_IFS=$IFS; IFS='.'

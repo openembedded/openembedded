@@ -1,7 +1,7 @@
 DESCRIPTION = "Harness to build the source code from OpenJDK using Free Software build tools"
 HOMEPAGE = "http://icedtea.classpath.org"
 LICENSE  = "GPL with Classpath Exception"
-INC_PR = "r1"
+INC_PR = "r2"
 
 DEPENDS = "virtual/javac-native classpath-tools-native \
 	   virtual/java-native classpath-native \
@@ -105,7 +105,7 @@ do_configure_append() {
 }
 
 EXTRA_OEMAKE = ' \
-                STAGING_BINDIR_NATIVE="${STAGING_BINDIR_NATIVE}/" \
+                ZIPEXE="${STAGING_BINDIR_NATIVE}/zip" \
                '
 
 do_compile() {

@@ -10,7 +10,7 @@ ICEDTEA = "NEEDS TO BE SET"
 S = "${WORKDIR}/${ICEDTEA}"
 B = "${S}/build"
 
-INC_PR = "r6"
+INC_PR = "r7"
 
 SRC_URI = "\
   ${ICEDTEA_URI} \
@@ -35,6 +35,7 @@ DEPENDS = "giflib libpng jpeg cups \
 	   ant-native alsa-lib libffi \
 	   icedtea6-native fastjar \
            llvm2.7 cacaoh-openjdk-native \
+           zip-native \
 	 "
 
 # The OpenJDK build with interpreter optimizations for ARM depends on a binary
@@ -223,6 +224,7 @@ EXTRA_OEMAKE += ' \
                 OE_CPPFLAGS="${TARGET_CPPFLAGS}" \
                 OE_CXXFLAGS="${TARGET_CXXFLAGS}" \
                 OE_LDFLAGS="${TARGET_LDFLAGS}" \
+                ZIPEXE="${STAGING_BINDIR_NATIVE}/zip" \
                '
 
 # Puts an OE specific string into the binary making it possible for the user
