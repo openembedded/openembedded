@@ -1,6 +1,6 @@
 SECTION = "libs"
 DEPENDS = ""
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openjade/OpenSP-${PV}.tar.gz \
 		file://m4.patch \
@@ -9,7 +9,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/openjade/OpenSP-${PV}.tar.gz \
 
 S = "${WORKDIR}/OpenSP-${PV}"
 LICENSE = "MIT"
-inherit autotools native
+inherit autotools native gettext
 
 EXTRA_OECONF = "\
 	--enable-default-catalog=${sysconfdir}/sgml/catalog \
