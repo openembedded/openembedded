@@ -3,8 +3,8 @@ HOMEPAGE = "http://pawsa.fedorapeople.org/balsa/"
 SECTION = "x11/network"
 LICENSE = "GPL"
 SRC_URI = "http://pawsa.fedorapeople.org/balsa/${P}.tar.bz2 \
-	   file://libbalsa-gpe-corruption.patch"
-PR = "r1"
+           file://obsolete-icon.patch"
+PR = "r0"
 
 DEPENDS = "glib-2.0 gmime gnome-icon-theme gtk+ intltool-native libesmtp libxml-parser-perl-native"
 RDEPENDS_${PN} = "gnome-icon-theme"
@@ -17,7 +17,7 @@ DEPENDS += ""
 # Options for remote activation are: libbonobo libunique
 DEPENDS += "libunique"
 
-# Options for HTML view are: gtkhtml-2.0 gtkhtml-3.0 webkit-gtk NONE
+# Options for HTML view are: gtkhtml-2.0(gtkhtml2) gtkhtml-3.0(gtkhtml3) webkit-gtk(webkit) NONE
 DEPENDS += "webkit-gtk"
 
 # Optional dependencies (missing in OE): Spell checking
@@ -70,7 +70,7 @@ EXTRA_OECONF="--with-ssl \
 	      --enable-smime \
 	      --with-sqlite \
 	      --with-ssl \
-	      --with-webkit \
+	      --with-html-widget=webkit \
 	      --with-unique \
 	      --without-gtkspell \
 	      --without-nm \
@@ -92,5 +92,5 @@ do_configure_prepend() {
 	mkdir -p ${S}/m4
 }
 
-SRC_URI[md5sum] = "1eb90a92c089e194a595072a57c57394"
-SRC_URI[sha256sum] = "48bde6ff926fcc5d47853b87242cc890bdb21b5c74a2454a2b5c0269e9340090"
+SRC_URI[md5sum] = "fb9597446dfe8adcfae4a0928da336f7"
+SRC_URI[sha256sum] = "581326a68a52f8344c900ca47d862536821bc5864c38b09cb6c333722a212952"

@@ -1,0 +1,15 @@
+fix infinite symlink in documentation
+https://bugzilla.gnome.org/show_bug.cgi?id=624690
+
+Index: balsa-2.4.7/doc/Makefile.am
+===================================================================
+--- balsa-2.4.7.orig/doc/Makefile.am
++++ balsa-2.4.7/doc/Makefile.am
+@@ -7,7 +7,6 @@ DOC_INCLUDES =
+ DOC_FIGURES = figures/address-book-ldap.png			\
+ 	      figures/address-book-modify.png			\
+ 	      figures/address-book.png				\
+-	      figures/address-book-start.png			\
+ 	      figures/address-book-vcard.png			\
+ 	      figures/balsa_logo.png				\
+ 	      figures/druid-start.png				\
