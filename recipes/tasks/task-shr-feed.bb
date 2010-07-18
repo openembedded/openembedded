@@ -143,7 +143,7 @@ RDEPENDS_${PN} += "\
 		x11vnc \
 #		libswt3.4-gtk-java \
 		cacao \
-		openjdk-6 \
+		openjdk-6-jre \
 #		jamvm \
 		dbus-x11 \
 #		bluez-utils-alsa \
