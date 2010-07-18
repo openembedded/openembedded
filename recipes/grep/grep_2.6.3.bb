@@ -1,14 +1,14 @@
 LICENSE = "GPL"
 SECTION = "console/utils"
 DESCRIPTION = "grep GNU utility"
-PR = "r1"
+PR = "r2"
 
 do_unpack[depends] += "xz-native:do_populate_sysroot"
 
 SRC_URI = "${GNU_MIRROR}/grep/grep-${PV}.tar.xz \
            file://uclibc-fix.patch"
 
-inherit autotools
+inherit autotools gettext
 
 EXTRA_OECONF = "--disable-perl-regexp --disable-ncurses"
 EXTRA_OECONF_virtclass-native = "--with-included-regex --disable-ncurses"
