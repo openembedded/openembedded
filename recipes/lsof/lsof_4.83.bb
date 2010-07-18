@@ -3,7 +3,7 @@ Its name stands for LiSt Open Files, and it does just that."
 SECTION = "devel"
 LICENSE = "BSD"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/lsof_${PV}.tar.bz2;name=lsof483tarbz2"
 SRC_URI[lsof483tarbz2.md5sum] = "8f731a6251b8c0143d585df0d5ca779e"
@@ -16,7 +16,7 @@ S = "${WORKDIR}/lsof_${PV}_src"
 do_unpackpost() {
 	tar x --no-same-owner -f ${LOCALSRC} -C ${WORKDIR}
 }
-addtask do_unpackpost before do_patch after do_unpack
+addtask unpackpost before do_patch after do_unpack
 
 export LSOF_OS = "${TARGET_OS}"
 LSOF_OS_linux-uclibc = "linux"
