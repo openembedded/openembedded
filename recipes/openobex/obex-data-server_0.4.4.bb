@@ -1,7 +1,8 @@
 DESCRIPTION = "obex-data-server is a D-Bus service providing high-level OBEX client and server side functionality"
 LICENSE = "GPLv2"
+PR = "r1"
 
-DEPENDS = "gtk+ bluez4 dbus-glib openobex"
+DEPENDS = "gtk+ bluez4 dbus-glib imagemagick openobex"
 
 SRC_URI = "http://tadas.dailyda.com/software/obex-data-server-${PV}.tar.gz"
 
