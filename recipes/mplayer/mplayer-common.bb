@@ -4,7 +4,7 @@
 DESCRIPTION = "Preconfigured mplayer preferences"
 
 PV = "0.0.1"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "file://mplayer.conf"
 
