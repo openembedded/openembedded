@@ -4,7 +4,7 @@ require linux-openmoko.inc
 KERNEL_RELEASE="2.6.32.13"
 
 SRCREV = "a9254be10ac2294ea20165a87c09ea6afcf66d94"
-OEV = "oe3.2"
+OEV = "oe3.3"
 PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCPV}"
 
 SRC_URI = "\
@@ -21,8 +21,6 @@ SRC_URI = "\
   file://0003-usbhost.patch.patch \
   file://0004-ar6000_delay.patch.patch \
   file://0005-save_regs.patch.patch \
-# defconfig updates
-  file://0006-gta02-defconfigs-enable-LEDS_S3C24XX-and-dummy-batte.patch \
 # patches from Weiss's gdrm-for-merging branch
   file://0007-DRM-for-platform-devices.patch \
   file://0008-Glamo-DRM-and-KMS-driver.patch \
@@ -38,6 +36,9 @@ SRC_URI = "\
   file://0001-glamo-core-initialize-engine-states-as-disabled.patch \
 # fix HS Jack
   file://hs-jack.patch \
+# faster glamo
+  file://0001-mfd-glamo-Enable-FIFO-stage-for-the-LCD-engine-s-mem.patch \
+  file://defconfig \
 "
 
 SRC_URI[stablepatch.md5sum] = "ba6abb1ffee513a1d4f831599ddae490"
@@ -45,8 +46,6 @@ SRC_URI[stablepatch.sha256sum] = "baf6dff5d1c478e65decf2e8b704c60e546ea37c4de59e
 
 S = "${WORKDIR}/git"
 
-CONFIG_NAME_om-gta02 = "gta02_drm_defconfig"
-
 do_configure_prepend() {
-        install -m 644 ./arch/arm/configs/${CONFIG_NAME} ${WORKDIR}/defconfig-oe
+        install -m 644 ${WORKDIR}/defconfig ${WORKDIR}/defconfig-oe
 }
