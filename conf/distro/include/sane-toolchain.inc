@@ -145,7 +145,7 @@ def detect_arm_abi (d):
 			return "oabi"
 		else:
 			return ""
-	if bb.data.getVar('TARGET_ARCH', d, 1) in [ 'arm', 'armeb' ]:          
+	if bb.data.getVar('TARGET_ARCH', d, 1) in [ 'arm', 'armeb' ]:
 		if 'eabi' in bb.data.getVar('DISTRO_FEATURES',d).split():
 			return "eabi"
 		return "oabi"
@@ -154,7 +154,7 @@ def detect_arm_abi (d):
 def compute_os_portion_of_target_triplet (d):
 	import bb
 	arm_eabi_supporting_arches = "armv6 armv6-novfp \
-	armv5te iwmmxt armv7a armv7 armv5teb armv4t"
+	armv5te iwmmxt armv7a armv7 armv5teb armv4t armv4"
 	ppc_spe_supporting_arches = "ppce500v2 ppce500"
 	gnu_suffix = ""
 	if bb.data.getVar('LIBC', d, 1) == "uclibc":
