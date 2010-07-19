@@ -1,7 +1,7 @@
 DESCRIPTION = "tool to switch multidevice usb modes"
 LICENSE = "GPL"
 
-DEPENDS = "virtual/libusb"
+DEPENDS = "virtual/libusb0"
 
 SRC_URI = "http://www.draisberghof.de/usb_modeswitch/usb-modeswitch-${PV}.tar.bz2"
 SRC_URI[md5sum] = "571e6b81873231246693d18a9912f55d"
