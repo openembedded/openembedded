@@ -2,7 +2,7 @@ DESCRIPTION = "TI Texture streaming using bufferclass API demo (spinning video c
 LICENSE = "TI-BSD/GPLv2"
 DEPENDS = "virtual/egl"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/apps_processors/OMAP35x_AM35x_Video_Texture_Streaming/1_0/exports/bc-cat-${PV}.tar.gz;name=bccat \
            file://bc-cat-0.2.0.patch \
@@ -44,4 +44,6 @@ do_install() {
 PACKAGES =+ "${PN}-fb ${PN}-x11"
 FILES_${PN}-x11 = "${bindir}/*x11 ${datadir}/applications"
 FILES_${PN}-fb = "${bindir}/*fb"
+
+RDEPENDS_${PN}-x11 += "libgles-omap3-x11wsegl" 
 
