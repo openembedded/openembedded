@@ -4,7 +4,7 @@ SECTION = "x11/applications"
 LICENSE = "GPLv3"
 PR = "r0"
 
-DEPENDS = "openjpeg jbig2dec jpeg zlib virtual/libx11 libxext freetype"
+DEPENDS = "openjpeg-native jbig2dec-native jpeg-native freetype-native libpng-native openjpeg jbig2dec jpeg zlib virtual/libx11 libxext freetype"
 
 SRC_URI = "http://mupdf.com/download/source/${PN}-${PV}-source.tar.gz \
            file://mupdf_fix_endianness.patch \
@@ -35,10 +35,12 @@ do_compile() {
     # mupdf uses couple of tools for code generation during build process
     # so we need to compile them first with host compiler
     unset CFLAGS LDFLAGS
+    export PKG_CONFIG_PATH=${STAGING_LIBDIR_NATIVE}/pkgconfig
     oe_runmake build/debug
-    oe_runmake build/debug/cmapdump LD=${BUILD_CC} CC=${BUILD_CC}
-    oe_runmake build/debug/fontdump LD=${BUILD_CC} CC=${BUILD_CC}
+    oe_runmake build/debug/cmapdump LD="${BUILD_CC} -L${STAGING_LIBDIR_NATIVE} -Wl,-rpath,${STAGING_LIBDIR_NATIVE}" CC=${BUILD_CC}
+    oe_runmake build/debug/fontdump LD="${BUILD_CC} -L${STAGING_LIBDIR_NATIVE} -Wl,-rpath,${STAGING_LIBDIR_NATIVE}" CC=${BUILD_CC}
 
+    export PKG_CONFIG_PATH=${STAGING_LIBDIR}/pkgconfig
     # ...and then we fire 'make', feeding proper
     # cross-compilation flags through Makerules file
     echo "CFLAGS += ${CFLAGS}" >> ${S}/Makerules
