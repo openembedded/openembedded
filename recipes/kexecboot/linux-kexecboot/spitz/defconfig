@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux kernel version: 2.6.35-rc3
-# Sun Jun 20 08:56:48 2010
+# Linux kernel version: 2.6.35-rc6
+# Thu Jul 22 23:42:39 2010
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -417,6 +417,7 @@ CONFIG_HAVE_AOUT=y
 CONFIG_PM=y
 # CONFIG_PM_DEBUG is not set
 CONFIG_PM_SLEEP=y
+CONFIG_SUSPEND_NVS=y
 CONFIG_SUSPEND=y
 CONFIG_SUSPEND_FREEZER=y
 CONFIG_APM_EMULATION=y
@@ -557,36 +558,82 @@ CONFIG_BLK_DEV_LOOP=y
 # CONFIG_MG_DISK is not set
 # CONFIG_MISC_DEVICES is not set
 CONFIG_HAVE_IDE=y
-CONFIG_IDE=y
-
-#
-# Please see Documentation/ide/ide.txt for help/info on IDE drives
-#
-# CONFIG_BLK_DEV_IDE_SATA is not set
-CONFIG_IDE_GD=y
-CONFIG_IDE_GD_ATA=y
-# CONFIG_IDE_GD_ATAPI is not set
-CONFIG_BLK_DEV_IDECS=y
-# CONFIG_BLK_DEV_IDECD is not set
-# CONFIG_BLK_DEV_IDETAPE is not set
-# CONFIG_IDE_TASK_IOCTL is not set
-# CONFIG_IDE_PROC_FS is not set
-
-#
-# IDE chipset support/bugfixes
-#
-# CONFIG_BLK_DEV_PLATFORM is not set
-# CONFIG_BLK_DEV_IDEDMA is not set
+# CONFIG_IDE is not set
 
 #
 # SCSI device support
 #
 CONFIG_SCSI_MOD=y
 # CONFIG_RAID_ATTRS is not set
-# CONFIG_SCSI is not set
-# CONFIG_SCSI_DMA is not set
+CONFIG_SCSI=y
+CONFIG_SCSI_DMA=y
+# CONFIG_SCSI_TGT is not set
 # CONFIG_SCSI_NETLINK is not set
-# CONFIG_ATA is not set
+CONFIG_SCSI_PROC_FS=y
+
+#
+# SCSI support type (disk, tape, CD-ROM)
+#
+# CONFIG_BLK_DEV_SD is not set
+# CONFIG_CHR_DEV_ST is not set
+# CONFIG_CHR_DEV_OSST is not set
+# CONFIG_BLK_DEV_SR is not set
+# CONFIG_CHR_DEV_SG is not set
+# CONFIG_CHR_DEV_SCH is not set
+# CONFIG_SCSI_MULTI_LUN is not set
+# CONFIG_SCSI_CONSTANTS is not set
+# CONFIG_SCSI_LOGGING is not set
+# CONFIG_SCSI_SCAN_ASYNC is not set
+
+#
+# SCSI Transports
+#
+# CONFIG_SCSI_SPI_ATTRS is not set
+# CONFIG_SCSI_FC_ATTRS is not set
+# CONFIG_SCSI_SAS_ATTRS is not set
+# CONFIG_SCSI_SAS_LIBSAS is not set
+# CONFIG_SCSI_SRP_ATTRS is not set
+CONFIG_SCSI_LOWLEVEL=y
+# CONFIG_LIBFC is not set
+# CONFIG_LIBFCOE is not set
+# CONFIG_SCSI_DEBUG is not set
+# CONFIG_SCSI_LOWLEVEL_PCMCIA is not set
+# CONFIG_SCSI_DH is not set
+# CONFIG_SCSI_OSD_INITIATOR is not set
+CONFIG_ATA=y
+# CONFIG_ATA_NONSTANDARD is not set
+CONFIG_ATA_VERBOSE_ERROR=y
+CONFIG_SATA_PMP=y
+
+#
+# Controllers with non-SFF native interface
+#
+# CONFIG_SATA_AHCI_PLATFORM is not set
+CONFIG_ATA_SFF=y
+
+#
+# SFF controllers with custom DMA interface
+#
+CONFIG_ATA_BMDMA=y
+
+#
+# SATA SFF controllers with BMDMA
+#
+# CONFIG_SATA_MV is not set
+
+#
+# PATA SFF controllers with BMDMA
+#
+
+#
+# PIO-only SFF controllers
+#
+CONFIG_PATA_PCMCIA=y
+CONFIG_PATA_PLATFORM=y
+
+#
+# Generic fallback / legacy drivers
+#
 # CONFIG_MD is not set
 # CONFIG_PHONE is not set
 
@@ -616,7 +663,7 @@ CONFIG_INPUT_APMPOWER=y
 CONFIG_INPUT_KEYBOARD=y
 # CONFIG_KEYBOARD_ADP5588 is not set
 # CONFIG_KEYBOARD_ATKBD is not set
-# CONFIG_QT2160 is not set
+# CONFIG_KEYBOARD_QT2160 is not set
 # CONFIG_KEYBOARD_LKKBD is not set
 CONFIG_KEYBOARD_GPIO=y
 # CONFIG_KEYBOARD_TCA6416 is not set
@@ -1046,7 +1093,6 @@ CONFIG_LEDS_TRIGGERS=y
 # LED Triggers
 #
 CONFIG_LEDS_TRIGGER_TIMER=y
-CONFIG_LEDS_TRIGGER_IDE_DISK=y
 CONFIG_LEDS_TRIGGER_HEARTBEAT=y
 # CONFIG_LEDS_TRIGGER_BACKLIGHT is not set
 # CONFIG_LEDS_TRIGGER_GPIO is not set
