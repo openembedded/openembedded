@@ -435,6 +435,11 @@ RPROVIDES_${JDK_PN}-vm-cacao = "java2-vm"
 
 RDEPENDS_${JDK_PN}-java = "java2-vm"
 
+# For some reason shark and cacao do not automatically depends on -common.
+# So we add that manually.
+RDEPENDS_${JDK_PN}-vm-shark = "${JDK_PN}-common"
+RDEPENDS_${JDK_PN}-vm-cacao = "${JDK_PN}-common"
+
 # There is a symlink to a .so but this one is valid.
 INSANE_SKIP_${JDK_PN}-vm-shark = "1"
 INSANE_SKIP_${JDK_PN}-vm-zero = "1"
