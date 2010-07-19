@@ -4,7 +4,7 @@ require linux-openmoko.inc
 KERNEL_RELEASE="2.6.34"
 
 SRCREV = "3f6725d43021d2d7597027e36020df5b44d0667e"
-OEV = "oe4.3"
+OEV = "oe4.4"
 PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCPV}"
 
 SRC_URI = "\
