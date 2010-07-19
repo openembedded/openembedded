@@ -6,7 +6,7 @@ DEPENDS = "zlib"
 PROVIDES = "ssh sshd"
 RPROVIDES_${PN} = "ssh sshd"
 
-INC_PR = "r4"
+INC_PR = "r5"
 
 SRC_URI = "\
   http://matt.ucc.asn.au/dropbear/dropbear-${PV}.tar.bz2 \
