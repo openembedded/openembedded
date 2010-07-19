@@ -46,6 +46,7 @@ OEPATCHES = "\
 	file://fix-llvm-libs.patch \
 	file://shark-build-openjdkdir.patch \
 	file://shark-arm-linux-cpu-detection.patch \
+	file://icedtea1.8-pre1.8.1-releasebranch-fixes.patch \
 	"
 
 # Allow overriding this separately
