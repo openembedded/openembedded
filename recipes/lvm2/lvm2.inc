@@ -6,7 +6,8 @@ INC_PR = "r2"
 
 S = "${WORKDIR}/LVM2.${PV}"
 SRC_URI = "ftp://sources.redhat.com/pub/lvm2/old/LVM2.${PV}.tgz \
-           file://crosscompile_fix.patch"
+           file://crosscompile_fix.patch \
+           file://include-limits.patch"
 
 # Unset user/group to unbreak install.
 EXTRA_OECONF = "--with-user= --with-group= --disable-o_direct"
