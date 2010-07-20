@@ -153,8 +153,7 @@ def detect_arm_abi (d):
 
 def compute_os_portion_of_target_triplet (d):
 	import bb
-	arm_eabi_supporting_arches = "armv6 armv6-novfp \
-	armv5te iwmmxt armv7a armv7 armv5teb armv4t armv4"
+	arm_eabi_unsupported_arches = "armv1 armv2 armv3"
 	ppc_spe_supporting_arches = "ppce500v2 ppce500"
 	gnu_suffix = ""
 	if bb.data.getVar('LIBC', d, 1) == "uclibc":
@@ -175,7 +174,7 @@ def compute_os_portion_of_target_triplet (d):
 	bparch is not None:
 		if 'eabi' in bb.data.getVar('DISTRO_FEATURES',d,1).split() and \
 		bb.data.getVar('TARGET_ARCH', d, 1) in [ 'arm', 'armeb' ]:
-			if bparch not in arm_eabi_supporting_arches.split():
+			if bparch in arm_eabi_unsupported_arches.split():
 				bb.fatal("DISTRO requested EABI but selected machine does not support EABI")
 				abi_suffix = ""
 			else:
