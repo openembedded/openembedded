@@ -22,6 +22,7 @@ IMAGE_FSTYPES ?= "jffs2 tar.gz"
 EXTRA_IMAGECMD_jffs2 = "--pad --eraseblock=0x20000 -n"
 
 require conf/machine/include/tune-xscale.inc
+require conf/machine/include/tune-thumb.inc
 
 #-------------------------------------------------------------------------------
 # Board defaults
