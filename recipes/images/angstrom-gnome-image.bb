@@ -17,7 +17,7 @@ ROOTFS_POSTPROCESS_COMMAND += 'install_linguas;'
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
 
 IMAGE_LOGIN_MANAGER = "shadow"
-IMAGE_SPLASH = "exquisite exquisite-themes exquisite-theme-angstrom"
+IMAGE_SPLASH = "psplash-angstrom"
 
 ANGSTROM_EXTRA_INSTALL ?= ""
 
