@@ -10,7 +10,7 @@ PV = "1_00_00_03"
 SRC_URI[dm6467codecsbin.md5sum] = "c15085bd613a1df4f3634cc3ed0e04a5"
 SRC_URI[dm6467codecsbin.sha256sum] = "d10e221e53ca4420d72e13496ceabce9b2d0be8c08a5d622bee691ccfa98b8bd"
 
-PR = "r3"
+PR = "r4"
 
 require ti-paths.inc
 require ti-staging.inc
@@ -20,7 +20,7 @@ PROVIDES += "ti-codecs-dm6467-server"
 
 S = "${WORKDIR}/dvsdk/dvsdk_3_10_00_11/cs2dm6467_1_00_00_03"
 
-SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/dvsdk/DVSDK_3_10/latest/exports/cs2dm6467_1_00_00_03_Setup.bin;name=dm6467codecsbin"
+SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/dvsdk/DVSDK_3_10/3_10_00_11/exports/cs2dm6467_1_00_00_03_Setup.bin;name=dm6467codecsbin"
 
 BINFILE = "cs2dm6467_1_00_00_03_Setup.bin"
 TI_BIN_UNPK_CMDS = "Y: qY:workdir:Y"
