@@ -1,6 +1,6 @@
 require llvm.inc
 
-PR = "r6"
+PR = "r7"
 
 DEPENDS = "llvm-common llvm2.7-native"
 
@@ -10,7 +10,9 @@ ARM_INSTRUCTION_SET_armv4t = "ARM"
 SRC_URI = "\
   http://llvm.org/releases/${PV}/llvm-${PV}.tgz \
   file://arm_ppc.patch \
-  file://MOVLRPC.patch \
+  file://r97745-llvmPR6480.patch \
+  file://r104587-MOVimm32.patch \
+  file://rawMOVLRPC.patch \
   "
 
 LLVM_RELEASE = "2.7"
