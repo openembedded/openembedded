@@ -123,6 +123,11 @@ IMAGE_FSTYPES = "jffs2 tar"
 # (Note that this rootfs is NOT usuable as NFS export.)
 # IMAGE_KEEPROOTFS = "1"
 
+# Uncomment this to enable the use of ccache when building.  Due to
+# the nature of our builds this is only helpful in cases when one
+# is rebuilding a recipe or set of recipes, repeatedly.
+# CCACHE = "${@bb.which(bb.data.getVar('PATH', d, 1), 'ccache') and 'ccache '}"
+
 # Uncomment this to disable the parse cache (not recommended).
 # CACHE = ""
 
