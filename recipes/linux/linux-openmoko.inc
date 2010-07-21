@@ -68,10 +68,11 @@ pkg_postinst_kernel-image () {
 # Get the lastest root file system value of boot args
 boot_arg=`cat /proc/cmdline |tr " " "\n"|grep "root=" |tail -n 1`
 has_mtdblock=`echo $boot_arg |grep mtdblock`
+has_ubi=`echo $boot_arg |grep ubi`
 
 if test "x$D" != "x"; then
         exit 1
-elif test "empty$has_mtdblock" != "empty"; then
+elif test "empty$has_mtdblock" != "empty" -o "empty$has_ubi" != "empty"; then
 	if [ -f ${sysconfdir}/default/flashkernel ] ; then
 		echo "Upgrading Kernel in Flash"
 		echo "DO NOT stop this process"
