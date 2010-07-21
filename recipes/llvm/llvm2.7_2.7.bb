@@ -1,6 +1,6 @@
 require llvm.inc
 
-PR = "r7"
+PR = "r8"
 
 DEPENDS = "llvm-common llvm2.7-native"
 
@@ -11,7 +11,10 @@ SRC_URI = "\
   http://llvm.org/releases/${PV}/llvm-${PV}.tgz \
   file://arm_ppc.patch \
   file://r97745-llvmPR6480.patch \
+  file://r104558-VFPmisc.patch \
   file://r104587-MOVimm32.patch \
+  file://r104652-VFPLoadStoreMultiple.patch \
+  file://r104653-BFC-BFI.patch \
   file://rawMOVLRPC.patch \
   "
 
