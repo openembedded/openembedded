@@ -53,14 +53,14 @@ do_install() {
 	for x in ansi console dumb linux rxvt screen sun vt{52,100,102,200,220} xterm-color xterm-xfree86
         do
                 local termfile="$(find "${D}${datadir}/terminfo/" -name "${x}" 2>/dev/null)"
-                local basedir="$(basename $(dirname "${termfile}"))"
+                local basedir="$(basename $(dirname "$termfile"))"
 
-                if [ -n "${termfile}" ]
+                if [ -n "$termfile" ]
                 then
-                        install -d ${D}${sysconfdir}/terminfo/${basedir}
-                        mv ${termfile} ${D}${sysconfdir}/terminfo/${basedir}/
-                        ln -s /etc/terminfo/${basedir}/${x} \
-                                ${D}${datadir}/terminfo/${basedir}/${x}
+                        install -d ${D}${sysconfdir}/terminfo/$basedir
+                        mv $termfile ${D}${sysconfdir}/terminfo/$basedir/
+                        ln -s /etc/terminfo/$basedir/${x} \
+                                ${D}${datadir}/terminfo/$basedir/${x}
                 fi
         done
 	# i think we can use xterm-color as default xterm
