@@ -23,8 +23,17 @@ DISTRO_VERSION ?= "${SLUGOS_VERSION}${DISTRO_REVISION}-${DISTRO_TYPE}"
 # DISTRO_FEED ?= "${SLUGOS_VERSION}-${DISTRO_TYPE}"
 DISTRO_FEED ?= "unstable"
 
+THUMB_INTERWORK = "yes"
+# "yes" "no"
+#    Whether to compile with code to allow interworking between the two
+#    instruction sets.  This allows thumb code to be executed on a primarily
+#    arm system and vice versa.  It is strongly recommended that DISTROs not
+#    turn this off - the actual cost is very small.
 # We want images supporting the following features (for task-base)
 DISTRO_FEATURES = "nfs smbfs wifi ppp alsa bluetooth ext2 vfat irda pcmcia usbgadget usbhost pci"
+
+# Add thumb-interwork to feature list if selected machine supports it.
+DISTRO_FEATURES += ' ${@["", "thumb-interwork"][bb.data.getVar('THUMB_INTERWORK', d, 1) == "yes"]}'
 
 IMAGE_BASENAME = "${@['slugos${SITEINFO_ENDIANESS}', 'ucslugc'][bb.data.getVar('TARGET_OS', d, 1) == 'linux-uclibc']}"
 

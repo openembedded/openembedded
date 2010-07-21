@@ -94,10 +94,8 @@ def uclibc_cfg(feature, features, tokens, cnf, rem):
 # Map distro and machine features to config settings
 def features_to_uclibc_settings(d):
 	cnf, rem = ([], [])
-	distro_features = bb.data.getVar('DISTRO_FEATURES', d).split()
-	if bb.data.getVar('THUMB_INTERWORKING', d, 1) == "yes":
-		distro_features += "thumb-interworking"
-	#machine_features = bb.data.getVar('MACHINE_FEATURES', d).split()
+	distro_features = bb.data.getVar('DISTRO_FEATURES', d, True).split()
+	#machine_features = bb.data.getVar('MACHINE_FEATURES', d, True).split()
 	uclibc_cfg('ipv4',      distro_features, 'UCLIBC_HAS_IPV4', cnf, rem)
 	uclibc_cfg('ipv6',      distro_features, 'UCLIBC_HAS_IPV6', cnf, rem)
 	uclibc_cfg('largefile', distro_features, 'UCLIBC_HAS_LFS', cnf, rem)
