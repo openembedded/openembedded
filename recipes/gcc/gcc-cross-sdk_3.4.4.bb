@@ -7,7 +7,7 @@ SRC_URI += 'file://sdk-libstdc++-includes.patch'
 
 do_compile_prepend () {
 	mkdir -p gcc
-	ln -s ${CROSS_DIR}/bin/${TARGET_PREFIX}as gcc/as 
-	ln -s ${CROSS_DIR}/bin/${TARGET_PREFIX}ld gcc/ld
+	ln -s ${STAGING_DIR_NATIVE}${prefix_native}/bin/${TARGET_PREFIX}as gcc/as 
+	ln -s ${STAGING_DIR_NATIVE}${prefix_native}/bin/${TARGET_PREFIX}ld gcc/ld
 }
 

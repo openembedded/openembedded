@@ -19,5 +19,5 @@ do_compile () {
 do_stage () {
 	cd gcc
 	oe_runmake installdirs install-common install-headers install-libgcc
-	install -m 0755 xgcc ${CROSS_DIR}/bin/${TARGET_PREFIX}gcc-${PV}
+	install -m 0755 xgcc ${STAGING_DIR_NATIVE}${prefix_native}/bin/${TARGET_PREFIX}gcc-${PV}
 }
