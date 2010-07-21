@@ -20,8 +20,8 @@ EXTRA_OECONF = "\
 	--enable-sjlj-exceptions \
 	--enable-wchar_t=no  \
 	--with-gxx-include-dir=${STAGING_DIR_TARGET}/${layout_includedir}/c++ \
-	--with-as=${CROSS_DIR}/bin/${TARGET_PREFIX}as \
-	--with-ld=${CROSS_DIR}/bin/${TARGET_PREFIX}ld \
+	--with-as=${STAGING_DIR_NATIVE}${prefix_native}/bin/${TARGET_PREFIX}as \
+	--with-ld=${STAGING_DIR_NATIVE}${prefix_native}/bin/${TARGET_PREFIX}ld \
 	--with-sysroot=${STAGING_DIR_TARGET} \
 	--with-build-sysroot=${STAGING_DIR_TARGET} \
 	--with-local-prefix=${STAGING_DIR_TARGET}${layout_prefix} \

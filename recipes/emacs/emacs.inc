@@ -32,7 +32,7 @@ export LOGNAME = "$(whoami)"
 
 do_compile_prepend() {
 	sed -i ':1;s:\(START.* \|LIB_STANDARD.* \|LIBES.* \)/usr/lib:\1${STAGING_LIBDIR}:;t1' ${S}/src/s/gnu-linux.h `find "${S}" -name Makefile`
-	export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${CROSS_DIR}/${TARGET_SYS}/lib"
+	export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${STAGING_DIR_NATIVE}${prefix_native}/${TARGET_SYS}/lib"
 # Ugly hack, see files/use-qemu.patch for more:
 	ln -sf ../src/emacs lisp/emacs
 	ln -sf ../src/emacs lib-src/emacs
@@ -44,11 +44,11 @@ do_compile_prepend() {
 	fi
 	mkdir $treedir
 	cp -pPR ${STAGING_DIR_TARGET}/* $treedir
-	if [ -f ${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.so ]; then
-                cp -pPR ${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.so $treedir/lib
+	if [ -f ${STAGING_DIR_NATIVE}${prefix_native}/${TARGET_SYS}/lib/libgcc_s.so ]; then
+                cp -pPR ${STAGING_DIR_NATIVE}${prefix_native}/${TARGET_SYS}/lib/libgcc_s.so $treedir/lib
         fi
-        if [ -f ${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.so.* ]; then
-                cp -pPR ${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.so.* $treedir/lib
+        if [ -f ${STAGING_DIR_NATIVE}${prefix_native}/${TARGET_SYS}/lib/libgcc_s.so.* ]; then
+                cp -pPR ${STAGING_DIR_NATIVE}${prefix_native}/${TARGET_SYS}/lib/libgcc_s.so.* $treedir/lib
         fi
 	# stupid hack, but without it, it tries to use /usr/lib/libc.so from host and fails
 	# temacs: error while loading shared libraries: /usr/lib/libc.so: ELF file version does not match current one

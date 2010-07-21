@@ -29,12 +29,12 @@ do_stage () {
 	DIETLIBC_BUILD_ARCH=`echo ${BUILD_ARCH} | sed -e s'/.86/386/'`
 	DIETLIBC_TARGET_ARCH=`echo ${TARGET_ARCH} | sed -e s'/.86/386/'`
 	rm -rf ${STAGING_DIR_TARGET}/lib/dietlibc || true
-	rm ${CROSS_DIR}/bin/diet || true
+	rm ${STAGING_DIR_NATIVE}${prefix_native}/bin/diet || true
 	install -d ${STAGING_DIR_TARGET}/lib/dietlibc/lib-${DIETLIBC_TARGET_ARCH}
 	install -d ${STAGING_DIR_TARGET}/lib/dietlibc/include
         for i in `find include -name \*.h`; do install -m 644 -D $i ${STAGING_DIR_TARGET}/lib/dietlibc/$i; done
 
-        install -m755 bin-${DIETLIBC_BUILD_ARCH}/diet-i ${CROSS_DIR}/bin/diet
+        install -m755 bin-${DIETLIBC_BUILD_ARCH}/diet-i ${STAGING_DIR_NATIVE}${prefix_native}/bin/diet
 	
 	cd bin-${DIETLIBC_TARGET_ARCH}
 	install -m 644 start.o libm.a libpthread.a librpc.a \
