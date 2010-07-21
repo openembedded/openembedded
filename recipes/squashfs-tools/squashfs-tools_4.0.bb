@@ -1,3 +1,5 @@
+SRCDATE = "20100721"
+
 # This override is required since this has not yet been released
 SRC_URI  = "cvs://anonymous@squashfs.cvs.sourceforge.net/cvsroot/squashfs;module=squashfs;date=${SRCDATE} \
             http://downloads.sourceforge.net/sevenzip/lzma465.tar.bz2"
