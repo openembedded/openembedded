@@ -1,7 +1,7 @@
 LICENSE = "GPL"
 
 DEPENDS = "klibc"
-RDEPENDS_${PN} = "kexec-klibc-static"
+RDEPENDS_${PN} = "kexec-klibc-static klibc-utils-static-losetup"
 
 # The binary itself is not machine-specific
 # but the EXTRA_OECONF overrides have this effect 
