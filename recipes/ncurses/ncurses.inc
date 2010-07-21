@@ -68,6 +68,7 @@ do_install() {
 	then
 		ln -sf xterm-color ${D}${sysconfdir}/terminfo/x/xterm
 	fi
+        install -d ${D}${sysconfdir}/terminfo/r
 	ln -sf rxvt ${D}${sysconfdir}/terminfo/r/rxvt-unicode
 
 	if [ "${PN}" = "ncurses" ]; then
