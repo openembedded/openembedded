@@ -82,7 +82,7 @@ Index: icedtea6-1.8/ports/hotspot/src/share/vm/shark/sharkCompiler.cpp
 +  archLinuxToLLVMMap["v4l"]="v4t";
 +  archLinuxToLLVMMap["v5l"]="v5t";
 +  archLinuxToLLVMMap["v6l"]="v6";
-+  // FIXME change this from v6 to v7a when LLVM PR6265 have been fixed
++  // FIXME change this from v6 to v7a when LLVM PR7048 have been fixed
 +  archLinuxToLLVMMap["v7l"]="v6";
 +
 +  llvm::StringMapIterator<std::string> resultIterator(archLinuxToLLVMMap.find(
