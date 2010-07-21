@@ -1,0 +1,26 @@
+From d42fdae2330c191e3f06bd692650cc944c60e3eb Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Thu, 15 Jul 2010 00:55:43 -0500
+Subject: [PATCH 54/71] DEBUG: omap3beagle: Add MT9T112 to defconfig
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ arch/arm/configs/omap3_beagle_cam_defconfig |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/configs/omap3_beagle_cam_defconfig b/arch/arm/configs/omap3_beagle_cam_defconfig
+index 0ea8300..80b64db 100644
+--- a/arch/arm/configs/omap3_beagle_cam_defconfig
++++ b/arch/arm/configs/omap3_beagle_cam_defconfig
+@@ -1737,7 +1737,7 @@ CONFIG_VIDEO_WM8775=m
+ CONFIG_VIDEO_MT9V011=m
+ # CONFIG_VIDEO_TCM825X is not set
+ CONFIG_VIDEO_MT9P012=m
+-CONFIG_VIDEO_MT9T111=y
++CONFIG_VIDEO_MT9T112=y
+ # CONFIG_VIDEO_DW9710 is not set
+ # CONFIG_VIDEO_OV3640 is not set
+ # CONFIG_VIDEO_IMX046 is not set
+-- 
+1.6.6.1
+

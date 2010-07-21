@@ -1,0 +1,26 @@
+From bb29d0713a991471b0d1a7cbb5194fc8e6a41ddb Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Thu, 15 Jul 2010 18:15:32 -0500
+Subject: [PATCH 59/71] omap3beagle: camera: Switch flag for no sensor ISP
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ arch/arm/mach-omap2/board-omap3beagle-camera.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle-camera.c b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+index 3118026..75622bf 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle-camera.c
++++ b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+@@ -262,7 +262,7 @@ static struct omap34xxcam_hw_config mt9t112_hwc = {
+ 	.dev_index		= 0,
+ 	.dev_minor		= 0,
+ 	.dev_type		= OMAP34XXCAM_SLAVE_SENSOR,
+-	.u.sensor.sensor_isp	= 1,
++	.u.sensor.sensor_isp	= 0,
+ 	.u.sensor.capture_mem	= MT9T112_BIGGEST_FRAME_BYTE_SIZE,
+ 	.u.sensor.ival_default	= { 1, 10 },
+ };
+-- 
+1.6.6.1
+

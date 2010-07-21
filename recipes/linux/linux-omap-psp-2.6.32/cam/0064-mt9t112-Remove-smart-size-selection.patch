@@ -1,0 +1,188 @@
+From 50c7b176efb764ff4f4e3d5e847cd44396d692dc Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Fri, 16 Jul 2010 17:09:10 -0500
+Subject: [PATCH 64/71] mt9t112: Remove "smart" size selection
+
+This code is broken, as it doesn't really adjust all other
+settings, but output size to desired size. It isn't really
+toggling everything that needs, and giving the false impression
+of good size flexibility.
+
+So, meanwhile, let's put fixed init settings for the contexts,
+and toggle between them (implemented in other patch).
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ drivers/media/video/mt9t112.c |  105 ++++++++++++++++-------------------------
+ 1 files changed, 41 insertions(+), 64 deletions(-)
+
+diff --git a/drivers/media/video/mt9t112.c b/drivers/media/video/mt9t112.c
+index ac295dd..ee991ef 100644
+--- a/drivers/media/video/mt9t112.c
++++ b/drivers/media/video/mt9t112.c
+@@ -390,50 +390,6 @@ static void mt9t112_frame_check(u32 *width, u32 *height)
+ 		*height = MAX_HEIGHT;
+ }
+ 
+-static int mt9t112_set_a_frame_size(const struct i2c_client *client,
+-				   u16 width,
+-				   u16 height)
+-{
+-	int ret;
+-	u16 wstart, hstart, wend, hend;
+-	u16 max_width = MAX_WIDTH_PREV, max_height = MAX_HEIGHT_PREV;
+-
+-	if ((width > max_width) || (height > max_height)) {
+-		/* Capture case */
+-		max_width = MAX_WIDTH;
+-		max_height = MAX_HEIGHT;
+-		hstart = 4;
+-		wstart = 4;
+-		hend = 1547;
+-		wend = 2059;
+-	} else {
+-		hstart = 0;
+-		wstart = 0;
+-		hend = 1549;
+-		wend = 2061;
+-	}
+-
+-	/* (Context A) Image Width/Height */
+-	mt9t112_mcu_write(ret, client, VAR(26, 0), width);
+-	mt9t112_mcu_write(ret, client, VAR(26, 2), height);
+-
+-	/* (Context A) Output Width/Height */
+-	mt9t112_mcu_write(ret, client, VAR(18, 43), 8 + max_width);
+-	mt9t112_mcu_write(ret, client, VAR(18, 45), 8 + max_height);
+-
+-	/* (Context A) Start Row/Column */
+-	mt9t112_mcu_write(ret, client, VAR(18, 2), hstart);
+-	mt9t112_mcu_write(ret, client, VAR(18, 4), wstart);
+-
+-	/* (Context A) End Row/Column */
+-	mt9t112_mcu_write(ret, client, VAR(18, 6), hend);
+-	mt9t112_mcu_write(ret, client, VAR(18, 8), wend);
+-
+-	mt9t112_mcu_write(ret, client, VAR8(1, 0), 0x06);
+-
+-	return ret;
+-}
+-
+ static int mt9t112_set_pll_dividers(const struct i2c_client *client,
+ 				    u8 m, u8 n,
+ 				    u8 p1, u8 p2, u8 p3,
+@@ -561,9 +517,27 @@ static int mt9t112_init_setting(const struct i2c_client *client)
+ 
+ 	int ret;
+ 
++	/* Output Width (A) */
++	mt9t112_mcu_write(ret, client, VAR(26, 0), 640);
++
++	/* Output Height (A) */
++	mt9t112_mcu_write(ret, client, VAR(26, 2), 480);
++
+ 	/* Adaptive Output Clock (A) */
+ 	mt9t112_mcu_mask_set(ret, client, VAR(26, 160), 0x0040, 0x0000);
+ 
++	/* Row Start (A) */
++	mt9t112_mcu_write(ret, client, VAR(18, 2), 0);
++
++	/* Column Start (A) */
++	mt9t112_mcu_write(ret, client, VAR(18, 4), 0);
++
++	/* Row End (A) */
++	mt9t112_mcu_write(ret, client, VAR(18, 6), 1549);
++
++	/* Column End (A) */
++	mt9t112_mcu_write(ret, client, VAR(18, 8), 2061);
++
+ 	/* Read Mode (A) */
+ 	mt9t112_mcu_write(ret, client, VAR(18, 12), 0x046C);
+ 
+@@ -585,6 +559,18 @@ static int mt9t112_init_setting(const struct i2c_client *client)
+ 	/* Line Length (A) */
+ 	mt9t112_mcu_write(ret, client, VAR(18, 37), 0x07AC);
+ 
++	/* Context Width (A) */
++	mt9t112_mcu_write(ret, client, VAR(18, 43), 8 + 1024);
++
++	/* Context Height (A) */
++	mt9t112_mcu_write(ret, client, VAR(18, 45), 8 + 768);
++
++	/* Output Width (B) */
++	mt9t112_mcu_write(ret, client, VAR(27, 0), 2048);
++
++	/* Output Hieght (B) */
++	mt9t112_mcu_write(ret, client, VAR(27, 2), 1536);
++
+ 	/* Adaptive Output Clock (B) */
+ 	mt9t112_mcu_mask_set(ret, client, VAR(27, 160), 0x0040, 0x0000);
+ 
+@@ -610,13 +596,19 @@ static int mt9t112_init_setting(const struct i2c_client *client)
+ 	mt9t112_mcu_write(ret, client, VAR(18, 91), 0x00FF);
+ 
+ 	/* Base Frame Lines (B) */
+-	mt9t112_mcu_write(ret, client, VAR(18, 101), 0x0668);
++	mt9t112_mcu_write(ret, client, VAR(18, 101), 0x066C);
+ 
+ 	/* Min Line Length (B) */
+-	mt9t112_mcu_write(ret, client, VAR(18, 103), 0x0AF0);
++	mt9t112_mcu_write(ret, client, VAR(18, 103), 0x0378);
+ 
+ 	/* Line Length (B) */
+-	mt9t112_mcu_write(ret, client, VAR(18, 109), 0x0AF0);
++	mt9t112_mcu_write(ret, client, VAR(18, 109), 0x0CB1);
++
++	/* Context Width (B) */
++	mt9t112_mcu_write(ret, client, VAR(18, 115), 8 + 2048);
++
++	/* Context Height (B) */
++	mt9t112_mcu_write(ret, client, VAR(18, 117), 8 + 1536);
+ 
+ 	/*
+ 	 * Flicker Dectection registers
+@@ -692,10 +684,10 @@ static int mt9t112_init_setting(const struct i2c_client *client)
+ 	mt9t112_mcu_write(ret, client, VAR8(8, 12), 0x0A);
+ 
+ 	/* RX FIFO Watermark (A) */
+-	mt9t112_mcu_write(ret, client, VAR(18, 70), 0x0014);
++	mt9t112_mcu_write(ret, client, VAR(18, 70), 0x0080);
+ 
+ 	/* RX FIFO Watermark (B) */
+-	mt9t112_mcu_write(ret, client, VAR(18, 142), 0x0014);
++	mt9t112_mcu_write(ret, client, VAR(18, 142), 0x0080);
+ 
+ 	/* MCLK: 16MHz
+ 	 * PCLK: 73MHz
+@@ -1008,17 +1000,6 @@ static int mt9t112_v4l2_int_s_power(struct v4l2_int_device *s,
+ 	case V4L2_POWER_STANDBY:
+ 		/* FALLTHROUGH */
+ 	case V4L2_POWER_OFF:
+-		/* FIXME
+-		 *
+-		 * If user selected large output size,
+-		 * and used it long time,
+-		 * mt9t112 camera will be very warm.
+-		 *
+-		 * But current driver can not stop mt9t112 camera.
+-		 * So, set small size here to solve this problem.
+-		 */
+-		mt9t112_set_a_frame_size(client, VGA_WIDTH, VGA_HEIGHT);
+-
+ 		ret = priv->pdata->power_set(s, power);
+ 		if (ret < 0) {
+ 			dev_err(&client->dev, "Unable to set target board power "
+@@ -1051,10 +1032,6 @@ static int mt9t112_v4l2_int_s_power(struct v4l2_int_device *s,
+ 				  mt9t112_pixfmt_to_order(priv->pix.pixelformat));
+ 		mt9t112_mcu_write(ret, client, VAR8(1, 0), 0x06);
+ 
+-		mt9t112_set_a_frame_size(client,
+-					 priv->pix.width,
+-					 priv->pix.height);
+-
+ 		ECHECKER(ret, mt9t112_auto_focus_trigger(client));
+ 
+ 		dev_dbg(&client->dev, "format : %d\n", priv->pix.pixelformat);
+-- 
+1.6.6.1
+

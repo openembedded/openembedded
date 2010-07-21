@@ -1,0 +1,390 @@
+From aea0e79b7ace8ffc3b6752276d693af54a23cdb8 Mon Sep 17 00:00:00 2001
+From: Vaibhav Hiremath <hvaibhav@ti.com>
+Date: Tue, 13 Jul 2010 19:39:34 +0530
+Subject: [PATCH 40/71] mt9v113:Clean Up: Remove unneccessary code/printf
+
+Signed-off-by: Vaibhav Hiremath <hvaibhav@ti.com>
+---
+ drivers/media/video/mt9v113.c |  105 ++++++++++++++++------------------------
+ 1 files changed, 42 insertions(+), 63 deletions(-)
+
+diff --git a/drivers/media/video/mt9v113.c b/drivers/media/video/mt9v113.c
+index 8f8ba35..9a86cce 100644
+--- a/drivers/media/video/mt9v113.c
++++ b/drivers/media/video/mt9v113.c
+@@ -22,10 +22,10 @@
+ #include <linux/i2c.h>
+ #include <linux/delay.h>
+ #include <linux/videodev2.h>
++#include <linux/io.h>
++
+ #include <media/v4l2-int-device.h>
+ #include <media/mt9v113.h>
+-#include <mach/hardware.h>
+-#include <linux/io.h>
+ 
+ #include "mt9v113_regs.h"
+ 
+@@ -34,21 +34,13 @@
+ 
+ /* Private macros for TVP */
+ #define I2C_RETRY_COUNT                 (5)
+-#define LOCK_RETRY_COUNT                (5)
+-#define LOCK_RETRY_DELAY                (200)
+ 
+ /* Debug functions */
+ static int debug = 1;
+ module_param(debug, bool, 0644);
+ MODULE_PARM_DESC(debug, "Debug level (0-1)");
+ 
+-#define dump_reg(client, reg, val)				\
+-	do {							\
+-		val = mt9v113_read_reg(client, reg);		\
+-		v4l_info(client, "Reg(0x%.2X): 0x%.2X\n", reg, val); \
+-	} while (0)
+-
+-/**
++/*
+  * enum mt9v113_std - enum for supported standards
+  */
+ enum mt9v113_std {
+@@ -57,7 +49,7 @@ enum mt9v113_std {
+ 	MT9V113_STD_INVALID
+ };
+ 
+-/**
++/*
+  * enum mt9v113_state - enum for different decoder states
+  */
+ enum mt9v113_state {
+@@ -65,7 +57,7 @@ enum mt9v113_state {
+ 	STATE_DETECTED
+ };
+ 
+-/**
++/*
+  * struct mt9v113_std_info - Structure to store standard informations
+  * @width: Line width in pixels
+  * @height:Number of active lines
+@@ -79,7 +71,7 @@ struct mt9v113_std_info {
+ 	struct v4l2_standard standard;
+ };
+ 
+-/**
++/*
+  * struct mt9v113_decoded - decoder object
+  * @v4l2_int_device: Slave handle
+  * @pdata: Board specific
+@@ -93,7 +85,6 @@ struct mt9v113_std_info {
+  * @current_std: Current standard
+  * @num_stds: Number of standards
+  * @std_list: Standards list
+- * @route: input and output routing at chip level
+  */
+ struct mt9v113_decoder {
+ 	struct v4l2_int_device *v4l2_int_device;
+@@ -112,8 +103,6 @@ struct mt9v113_decoder {
+ 	enum mt9v113_std current_std;
+ 	int num_stds;
+ 	struct mt9v113_std_info *std_list;
+-
+-	struct v4l2_routing route;
+ };
+ 
+ /* MT9V113 register set for VGA mode */
+@@ -160,7 +149,7 @@ static struct mt9v113_reg mt9v113_reg_list[] = {
+ 	{TOK_WRITE, 0x0016, 0x42DF},
+ 	{TOK_WRITE, 0x0014, 0x2145},
+ 	{TOK_WRITE, 0x0014, 0x2145},
+-	{TOK_WRITE, 0x0010, 0x0431},
++	{TOK_WRITE, 0x0010, 0x0231},
+ 	{TOK_WRITE, 0x0012, 0x0000},
+ 	{TOK_WRITE, 0x0014, 0x244B},
+ 	{TOK_WRITE, 0x0014, 0x304B},
+@@ -378,6 +367,10 @@ static const struct v4l2_queryctrl mt9v113_autogain_ctrl = {
+ 	.default_value = 1,
+ };
+ 
++const struct v4l2_fract mt9v113_frameintervals[] = {
++	{  .numerator = 1, .denominator = 10 }
++};
++
+ static int mt9v113_read_reg(struct i2c_client *client, unsigned short reg)
+ {
+ 	int err = 0;
+@@ -510,10 +503,6 @@ static int mt9v113_configure(struct mt9v113_decoder *decoder)
+ 	if (err)
+ 		return err;
+ 
+-#if 0
+-	if (debug)
+-		mt9v113_reg_dump(decoder);
+-#endif
+ 	return 0;
+ }
+ 
+@@ -534,13 +523,13 @@ static int mt9v113_vga_mode(struct mt9v113_decoder *decoder)
+ }
+ 
+ 
+-/**
++/*
+  * ioctl_enum_framesizes - V4L2 sensor if handler for vidioc_int_enum_framesizes
+  * @s: pointer to standard V4L2 device structure
+  * @frms: pointer to standard V4L2 framesizes enumeration structure
+  *
+  * Returns possible framesizes depending on choosen pixel format
+- **/
++ */
+ static int ioctl_enum_framesizes(struct v4l2_int_device *s,
+ 					struct v4l2_frmsizeenum *frms)
+ {
+@@ -584,9 +573,14 @@ static int ioctl_enum_frameintervals(struct v4l2_int_device *s,
+ 	if (ifmt == decoder->num_fmts)
+ 		return -EINVAL;
+ 
++	if (frmi->index >= ARRAY_SIZE(mt9v113_frameintervals))
++		return -EINVAL;
++
+ 	frmi->type = V4L2_FRMSIZE_TYPE_DISCRETE;
+-	frmi->discrete.numerator = 1;
+-	frmi->discrete.denominator = 10;
++	frmi->discrete.numerator =
++		mt9v113_frameintervals[frmi->index].numerator;
++	frmi->discrete.denominator =
++		mt9v113_frameintervals[frmi->index].denominator;
+ 	return 0;
+ }
+ 
+@@ -631,7 +625,7 @@ static int mt9v113_detect(struct mt9v113_decoder *decoder)
+  * mt9v113 decoder driver.
+  */
+ 
+-/**
++/*
+  * ioctl_querystd - V4L2 decoder interface handler for VIDIOC_QUERYSTD ioctl
+  * @s: pointer to standard V4L2 device structure
+  * @std_id: standard V4L2 std_id ioctl enum
+@@ -660,7 +654,7 @@ static int ioctl_querystd(struct v4l2_int_device *s, v4l2_std_id *std_id)
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * ioctl_s_std - V4L2 decoder interface handler for VIDIOC_S_STD ioctl
+  * @s: pointer to standard V4L2 device structure
+  * @std_id: standard V4L2 v4l2_std_id ioctl enum
+@@ -696,7 +690,7 @@ static int ioctl_s_std(struct v4l2_int_device *s, v4l2_std_id *std_id)
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * ioctl_s_routing - V4L2 decoder interface handler for VIDIOC_S_INPUT ioctl
+  * @s: pointer to standard V4L2 device structure
+  * @index: number of the input
+@@ -711,7 +705,7 @@ static int ioctl_s_routing(struct v4l2_int_device *s,
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * ioctl_queryctrl - V4L2 decoder interface handler for VIDIOC_QUERYCTRL ioctl
+  * @s: pointer to standard V4L2 device structure
+  * @qctrl: standard V4L2 v4l2_queryctrl structure
+@@ -771,7 +765,7 @@ ioctl_queryctrl(struct v4l2_int_device *s, struct v4l2_queryctrl *qctrl)
+ 	return err;
+ }
+ 
+-/**
++/*
+  * ioctl_g_ctrl - V4L2 decoder interface handler for VIDIOC_G_CTRL ioctl
+  * @s: pointer to standard V4L2 device structure
+  * @ctrl: pointer to v4l2_control structure
+@@ -828,7 +822,7 @@ ioctl_g_ctrl(struct v4l2_int_device *s, struct v4l2_control *ctrl)
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * ioctl_s_ctrl - V4L2 decoder interface handler for VIDIOC_S_CTRL ioctl
+  * @s: pointer to standard V4L2 device structure
+  * @ctrl: pointer to v4l2_control structure
+@@ -936,7 +930,7 @@ ioctl_s_ctrl(struct v4l2_int_device *s, struct v4l2_control *ctrl)
+ 	return err;
+ }
+ 
+-/**
++/*
+  * ioctl_enum_fmt_cap - Implement the CAPTURE buffer VIDIOC_ENUM_FMT ioctl
+  * @s: pointer to standard V4L2 device structure
+  * @fmt: standard V4L2 VIDIOC_ENUM_FMT ioctl structure
+@@ -969,7 +963,7 @@ ioctl_enum_fmt_cap(struct v4l2_int_device *s, struct v4l2_fmtdesc *fmt)
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * ioctl_try_fmt_cap - Implement the CAPTURE buffer VIDIOC_TRY_FMT ioctl
+  * @s: pointer to standard V4L2 device structure
+  * @f: pointer to standard V4L2 VIDIOC_TRY_FMT ioctl structure
+@@ -1026,7 +1020,7 @@ ioctl_try_fmt_cap(struct v4l2_int_device *s, struct v4l2_format *f)
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * ioctl_s_fmt_cap - V4L2 decoder interface handler for VIDIOC_S_FMT ioctl
+  * @s: pointer to standard V4L2 device structure
+  * @f: pointer to standard V4L2 VIDIOC_S_FMT ioctl structure
+@@ -1058,7 +1052,7 @@ ioctl_s_fmt_cap(struct v4l2_int_device *s, struct v4l2_format *f)
+ 	return rval;
+ }
+ 
+-/**
++/*
+  * ioctl_g_fmt_cap - V4L2 decoder interface handler for ioctl_g_fmt_cap
+  * @s: pointer to standard V4L2 device structure
+  * @f: pointer to standard V4L2 v4l2_format structure
+@@ -1087,7 +1081,7 @@ ioctl_g_fmt_cap(struct v4l2_int_device *s, struct v4l2_format *f)
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * ioctl_g_parm - V4L2 decoder interface handler for VIDIOC_G_PARM ioctl
+  * @s: pointer to standard V4L2 device structure
+  * @a: pointer to standard V4L2 VIDIOC_G_PARM ioctl structure
+@@ -1125,7 +1119,7 @@ ioctl_g_parm(struct v4l2_int_device *s, struct v4l2_streamparm *a)
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * ioctl_s_parm - V4L2 decoder interface handler for VIDIOC_S_PARM ioctl
+  * @s: pointer to standard V4L2 device structure
+  * @a: pointer to standard V4L2 VIDIOC_S_PARM ioctl structure
+@@ -1161,7 +1155,7 @@ ioctl_s_parm(struct v4l2_int_device *s, struct v4l2_streamparm *a)
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * ioctl_g_ifparm - V4L2 decoder interface handler for vidioc_int_g_ifparm_num
+  * @s: pointer to standard V4L2 device structure
+  * @p: pointer to standard V4L2 vidioc_int_g_ifparm_num ioctl structure
+@@ -1193,7 +1187,7 @@ static int ioctl_g_ifparm(struct v4l2_int_device *s, struct v4l2_ifparm *p)
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * ioctl_g_priv - V4L2 decoder interface handler for vidioc_int_g_priv_num
+  * @s: pointer to standard V4L2 device structure
+  * @p: void pointer to hold decoder's private data address
+@@ -1210,7 +1204,7 @@ static int ioctl_g_priv(struct v4l2_int_device *s, void *p)
+ 	return decoder->pdata->priv_data_set(p);
+ }
+ 
+-/**
++/*
+  * ioctl_s_power - V4L2 decoder interface handler for vidioc_int_s_power_num
+  * @s: pointer to standard V4L2 device structure
+  * @on: power state to which device is to be set
+@@ -1272,7 +1266,7 @@ static int ioctl_s_power(struct v4l2_int_device *s, enum v4l2_power on)
+ 	return err;
+ }
+ 
+-/**
++/*
+  * ioctl_init - V4L2 decoder interface handler for VIDIOC_INT_INIT
+  * @s: pointer to standard V4L2 device structure
+  *
+@@ -1289,7 +1283,7 @@ static int ioctl_init(struct v4l2_int_device *s)
+ 	return err;
+ }
+ 
+-/**
++/*
+  * ioctl_dev_exit - V4L2 decoder interface handler for vidioc_int_dev_exit_num
+  * @s: pointer to standard V4L2 device structure
+  *
+@@ -1300,7 +1294,7 @@ static int ioctl_dev_exit(struct v4l2_int_device *s)
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * ioctl_dev_init - V4L2 decoder interface handler for vidioc_int_dev_init_num
+  * @s: pointer to standard V4L2 device structure
+  *
+@@ -1397,7 +1391,7 @@ static struct v4l2_int_device mt9v113_int_device = {
+ 	      },
+ };
+ 
+-/**
++/*
+  * mt9v113_probe - decoder driver i2c probe handler
+  * @client: i2c driver client device structure
+  *
+@@ -1410,30 +1404,15 @@ mt9v113_probe(struct i2c_client *client, const struct i2c_device_id *id)
+ 	struct mt9v113_decoder *decoder = &mt9v113_dev;
+ 	int err;
+ 
+-	printk("%s: %d\n", __func__, __LINE__);
+ 	/* Check if the adapter supports the needed features */
+ 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_SMBUS_BYTE_DATA))
+ 		return -EIO;
+ 
+-	printk("%s: %d\n", __func__, __LINE__);
+ 	decoder->pdata = client->dev.platform_data;
+ 	if (!decoder->pdata) {
+ 		v4l_err(client, "No platform data!!\n");
+ 		return -ENODEV;
+ 	}
+-	printk("%s: %d\n", __func__, __LINE__);
+-	/*
+-	 * Fetch platform specific data, and configure the
+-	 * mt9v113_reg_list[] accordingly. Since this is one
+-	 * time configuration, no need to preserve.
+-	 */
+-
+-	/*mt9v113_reg_list[REG_OUTPUT_FORMATTER2].val |=
+-			(decoder->pdata->clk_polarity << 1);
+-	mt9v113_reg_list[REG_SYNC_CONTROL].val |=
+-			((decoder->pdata->hs_polarity << 2) |
+-			(decoder->pdata->vs_polarity << 3));
+-	*/
+ 	/*
+ 	 * Save the id data, required for power up sequence
+ 	 */
+@@ -1458,7 +1437,7 @@ mt9v113_probe(struct i2c_client *client, const struct i2c_device_id *id)
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * mt9v113_remove - decoder driver i2c remove handler
+  * @client: i2c driver client device structure
+  *
+@@ -1511,7 +1490,7 @@ static struct i2c_driver mt9v113_i2c_driver = {
+ 	.id_table = mt9v113_id,
+ };
+ 
+-/**
++/*
+  * mt9v113_init
+  *
+  * Module init function
+@@ -1521,7 +1500,7 @@ static int __init mt9v113_init(void)
+ 	return i2c_add_driver(&mt9v113_i2c_driver);
+ }
+ 
+-/**
++/*
+  * mt9v113_cleanup
+  *
+  * Module exit function
+-- 
+1.6.6.1
+

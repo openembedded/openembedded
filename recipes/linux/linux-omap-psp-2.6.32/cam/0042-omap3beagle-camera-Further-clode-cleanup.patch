@@ -1,0 +1,237 @@
+From 3db061a3a65a93a0b5a4bd6c7619e4082c098b7f Mon Sep 17 00:00:00 2001
+From: Vaibhav Hiremath <hvaibhav@ti.com>
+Date: Wed, 14 Jul 2010 19:07:06 +0530
+Subject: [PATCH 42/71] omap3beagle-camera: Further clode cleanup
+
+Signed-off-by: Vaibhav Hiremath <hvaibhav@ti.com>
+---
+ arch/arm/mach-omap2/board-omap3beagle-camera.c |   89 ++++--------------------
+ drivers/media/video/isp/isp.h                  |   13 ++++
+ 2 files changed, 28 insertions(+), 74 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle-camera.c b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+index 8d4e5ab..90eadd0 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle-camera.c
++++ b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+@@ -46,21 +46,19 @@
+ #include "mux.h"
+ #include "board-omap3beagle-camera.h"
+ 
+-#define MODULE_NAME			"omap3beaglelmb"
++#define MODULE_NAME		"omap3beaglelmb"
+ 
+-#define CAM_USE_XCLKA       0
++#define CAM_USE_XCLKA		0
+ 
+-#define ISP_MT9V113_MCLK		216000000
++#define ISP_MT9V113_MCLK	216000000
+ 
+-#define LEOPARD_RESET_GPIO		98
++#define LEOPARD_RESET_GPIO	98
+ 
+ static struct regulator *beagle_mt9v113_1_8v1;
+ static struct regulator *beagle_mt9v113_1_8v2;
+ 
+-#if defined(CONFIG_VIDEO_MT9V113) || defined(CONFIG_VIDEO_MT9V113_MODULE)
+-
+ /* Arbitrary memory handling limit */
+-#define MT9V113_BIGGEST_FRAME_BYTE_SIZE	PAGE_ALIGN(2048 * 1536 * 4)
++#define MT9V113_MAX_FRAME_SIZE	PAGE_ALIGN(640 * 480 * 4)
+ 
+ static struct isp_interface_config mt9v113_if_config = {
+ 	.ccdc_par_ser		= ISP_PARLL,
+@@ -77,21 +75,6 @@ static struct isp_interface_config mt9v113_if_config = {
+ };
+ 
+ static struct v4l2_ifparm mt9v113_ifparm_s = {
+-#if 0
+-	.if_type = V4L2_IF_TYPE_RAW,
+-	.u 	 = {
+-		.raw = {
+-			.frame_start_on_rising_vs = 1,
+-			.bt_sync_correct	= 0,
+-			.swap			= 0,
+-			.latch_clk_inv		= 0,
+-			.nobt_hs_inv		= 0,	/* active high */
+-			.nobt_vs_inv		= 0,	/* active high */
+-			.clock_min		= MT9V113_CLK_MIN,
+-			.clock_max		= MT9V113_CLK_MAX,
+-		},
+-	},
+-#else
+ 	.if_type = V4L2_IF_TYPE_YCbCr,
+ 	.u 	 = {
+ 		.ycbcr = {
+@@ -99,13 +82,12 @@ static struct v4l2_ifparm mt9v113_ifparm_s = {
+ 			.bt_sync_correct	= 0,
+ 			.swap			= 0,
+ 			.latch_clk_inv		= 0,
+-			.nobt_hs_inv		= 0,	/* active high */
+-			.nobt_vs_inv		= 0,	/* active high */
++			.nobt_hs_inv		= 0,
++			.nobt_vs_inv		= 0,
+ 			.clock_min		= MT9V113_CLK_MIN,
+ 			.clock_max		= MT9V113_CLK_MAX,
+ 		},
+ 	},
+-#endif
+ };
+ 
+ /**
+@@ -124,16 +106,14 @@ static int mt9v113_ifparm(struct v4l2_ifparm *p)
+ 	return 0;
+ }
+ 
+-#if defined(CONFIG_VIDEO_OMAP3) || defined(CONFIG_VIDEO_OMAP3_MODULE)
+ static struct omap34xxcam_hw_config mt9v113_hwc = {
+ 	.dev_index		= 0,
+ 	.dev_minor		= 0,
+ 	.dev_type		= OMAP34XXCAM_SLAVE_SENSOR,
+ 	.u.sensor.sensor_isp	= 1,
+-	.u.sensor.capture_mem	= MT9V113_BIGGEST_FRAME_BYTE_SIZE * 2,
++	.u.sensor.capture_mem	= MT9V113_MAX_FRAME_SIZE * 2,
+ 	.u.sensor.ival_default	= { 1, 10 },
+ };
+-#endif
+ 
+ /**
+  * @brief mt9v113_set_prv_data - Returns mt9v113 omap34xx driver private data
+@@ -144,7 +124,6 @@ static struct omap34xxcam_hw_config mt9v113_hwc = {
+  */
+ static int mt9v113_set_prv_data(void *priv)
+ {
+-#if defined(CONFIG_VIDEO_OMAP3) || defined(CONFIG_VIDEO_OMAP3_MODULE)
+ 	struct omap34xxcam_hw_config *hwc = priv;
+ 
+ 	if (priv == NULL)
+@@ -154,10 +133,8 @@ static int mt9v113_set_prv_data(void *priv)
+ 	hwc->dev_index = mt9v113_hwc.dev_index;
+ 	hwc->dev_minor = mt9v113_hwc.dev_minor;
+ 	hwc->dev_type = mt9v113_hwc.dev_type;
++
+ 	return 0;
+-#else
+-	return -EINVAL;
+-#endif
+ }
+ 
+ /**
+@@ -172,21 +149,22 @@ static int mt9v113_power_set(struct v4l2_int_device *s, enum v4l2_power power)
+ 	struct omap34xxcam_videodev *vdev = s->u.slave->master->priv;
+ 
+ 	switch (power) {
+-	case V4L2_POWER_OFF:
+ 	case V4L2_POWER_STANDBY:
++		break;
++
++	case V4L2_POWER_OFF:
+ 		isp_set_xclk(vdev->cam->isp, 0, CAM_USE_XCLKA);
+ 
+ 		if (regulator_is_enabled(beagle_mt9v113_1_8v1))
+ 			regulator_disable(beagle_mt9v113_1_8v1);
+ 		if (regulator_is_enabled(beagle_mt9v113_1_8v2))
+ 			regulator_disable(beagle_mt9v113_1_8v2);
++
+ 		break;
+ 
+ 	case V4L2_POWER_ON:
+-#if defined(CONFIG_VIDEO_OMAP3) || defined(CONFIG_VIDEO_OMAP3_MODULE)
+-		isp_configure_interface(vdev->cam->isp, &mt9v113_if_config);
+-#endif
+ 
++		isp_configure_interface(vdev->cam->isp, &mt9v113_if_config);
+ 		/* Set RESET_BAR to 0 */
+ 		gpio_set_value(LEOPARD_RESET_GPIO, 0);
+ 
+@@ -216,8 +194,8 @@ static int mt9v113_power_set(struct v4l2_int_device *s, enum v4l2_power power)
+ 
+ 	default:
+ 		return -ENODEV;
+-		break;
+ 	}
++
+ 	return 0;
+ }
+ 
+@@ -232,9 +210,6 @@ struct mt9v113_platform_data mt9v113_pdata = {
+ 	.vs_polarity	= 1, /* 0 - Active low, 1- Active high */
+ };
+ 
+-#endif				/* #ifdef CONFIG_VIDEO_MT9V113 */
+-
+-
+ static int beagle_cam_probe(struct platform_device *pdev)
+ {
+ 	beagle_mt9v113_1_8v1 = regulator_get(&pdev->dev, "vaux3_1");
+@@ -277,40 +252,6 @@ static int beagle_cam_remove(struct platform_device *pdev)
+ 
+ 	gpio_free(LEOPARD_RESET_GPIO);
+ 
+-	/* MUX init */
+-	omap_ctrl_writew(OMAP_PIN_INPUT_PULLUP | OMAP_MUX_MODE0,
+-			 0x10C); /* CAM_HS */
+-	omap_ctrl_writew(OMAP_PIN_INPUT_PULLUP | OMAP_MUX_MODE0,
+-			 0x10E); /* CAM_VS */
+-	omap_ctrl_writew(OMAP_PIN_OUTPUT | OMAP_MUX_MODE0,
+-			 0x110); /* CAM_XCLKA */
+-	omap_ctrl_writew(OMAP_PIN_INPUT_PULLUP | OMAP_MUX_MODE0,
+-			 0x112); /* CAM_PCLK */
+-	omap_ctrl_writew(OMAP_PIN_INPUT | OMAP_MUX_MODE0,
+-			 0x116); /* CAM_D0 */
+-	omap_ctrl_writew(OMAP_PIN_INPUT | OMAP_MUX_MODE0,
+-			 0x118); /* CAM_D1 */
+-	omap_ctrl_writew(OMAP_PIN_INPUT | OMAP_MUX_MODE0,
+-			 0x11A); /* CAM_D2 */
+-	omap_ctrl_writew(OMAP_PIN_INPUT | OMAP_MUX_MODE0,
+-			 0x11C); /* CAM_D3 */
+-	omap_ctrl_writew(OMAP_PIN_INPUT | OMAP_MUX_MODE0,
+-			 0x11E); /* CAM_D4 */
+-	omap_ctrl_writew(OMAP_PIN_INPUT | OMAP_MUX_MODE0,
+-			 0x120); /* CAM_D5 */
+-	omap_ctrl_writew(OMAP_PIN_INPUT | OMAP_MUX_MODE0,
+-			 0x122); /* CAM_D6 */
+-	omap_ctrl_writew(OMAP_PIN_INPUT | OMAP_MUX_MODE0,
+-			 0x124); /* CAM_D7 */
+-	omap_ctrl_writew(OMAP_PIN_INPUT | OMAP_MUX_MODE0,
+-			 0x126); /* CAM_D8 */
+-	omap_ctrl_writew(OMAP_PIN_INPUT | OMAP_MUX_MODE0,
+-			 0x128); /* CAM_D9 */
+-	omap_ctrl_writew(OMAP_PIN_INPUT | OMAP_MUX_MODE0,
+-			 0x12A); /* CAM_D10 */
+-	omap_ctrl_writew(OMAP_PIN_INPUT | OMAP_MUX_MODE0,
+-			 0x12C); /* CAM_D11 */
+-
+ 	return 0;
+ }
+ 
+diff --git a/drivers/media/video/isp/isp.h b/drivers/media/video/isp/isp.h
+index 85c3fa9..4929fad 100644
+--- a/drivers/media/video/isp/isp.h
++++ b/drivers/media/video/isp/isp.h
+@@ -482,10 +482,23 @@ int isp_set_callback(struct device *dev, enum isp_callback_type type,
+ 
+ int isp_unset_callback(struct device *dev, enum isp_callback_type type);
+ 
++#if defined(CONFIG_VIDEO_OMAP3_ISP)
+ u32 isp_set_xclk(struct device *dev, u32 xclk, u8 xclksel);
+ 
+ int isp_configure_interface(struct device *dev,
+ 			    struct isp_interface_config *config);
++#else
++static inline u32 isp_set_xclk(struct device *dev, u32 xclk, u8 xclksel)
++{
++	return 0;
++}
++static inline int isp_configure_interface(struct device *dev,
++			    struct isp_interface_config *config)
++{
++	return 0;
++}
++
++#endif
+ 
+ struct device *isp_get(void);
+ 
+-- 
+1.6.6.1
+

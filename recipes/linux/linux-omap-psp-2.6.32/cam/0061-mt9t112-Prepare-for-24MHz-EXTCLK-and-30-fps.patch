@@ -1,0 +1,63 @@
+From 5c6d1392f4781e7b86bb0335461ef2fda0349fdf Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Thu, 15 Jul 2010 23:41:32 -0500
+Subject: [PATCH 61/71] mt9t112: Prepare for 24MHz EXTCLK and 30 fps
+
+Set Aptina recommended values to get 30 FPS with VGA, which
+are achievable given the new PLL divider settings, considering
+an input of 24MHz in the master clock.
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ drivers/media/video/mt9t112.c |   18 +++++++++---------
+ 1 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/media/video/mt9t112.c b/drivers/media/video/mt9t112.c
+index 46d1bd6..44234e4 100644
+--- a/drivers/media/video/mt9t112.c
++++ b/drivers/media/video/mt9t112.c
+@@ -144,7 +144,7 @@ const static struct mt9t112_frame_size mt9t112_sizes[] = {
+ 
+ ************************************************************************/
+ const struct v4l2_fract mt9t112_frameintervals[] = {
+-	{  .numerator = 1, .denominator = 10 }
++	{  .numerator = 1, .denominator = 30 }
+ };
+ 
+ /************************************************************************
+@@ -932,9 +932,9 @@ static int mt9t112_v4l2_int_g_parm(struct v4l2_int_device *s,
+ 	a->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+ 
+ 	cparm->capability = V4L2_CAP_TIMEPERFRAME;
+-	/* FIXME: Is 10 fps really the only option? */
++	/* FIXME: Is 30 fps really the only option? */
+ 	cparm->timeperframe.numerator = 1;
+-	cparm->timeperframe.denominator = 10;
++	cparm->timeperframe.denominator = 30;
+ 
+ 	return 0;
+ }
+@@ -1195,14 +1195,14 @@ static int mt9t112_probe(struct i2c_client *client,
+ 	priv->pdata = client->dev.platform_data;
+ 
+ 	/* Revisit: Init Sensor info settings */
+-	priv->info.divider.m = 25;
+-	priv->info.divider.n = 2;
++	priv->info.divider.m = 24;
++	priv->info.divider.n = 1;
+ 	priv->info.divider.p1 = 0;
+-	priv->info.divider.p2 = 9;
++	priv->info.divider.p2 = 8;
+ 	priv->info.divider.p3 = 0;
+-	priv->info.divider.p4 = 13;
+-	priv->info.divider.p5 = 13;
+-	priv->info.divider.p6 = 9;
++	priv->info.divider.p4 = 11;
++	priv->info.divider.p5 = 11;
++	priv->info.divider.p6 = 8;
+ 	priv->info.divider.p7 = 0;
+ 	priv->info.flags = MT9T112_FLAG_PCLK_RISING_EDGE;
+ 
+-- 
+1.6.6.1
+

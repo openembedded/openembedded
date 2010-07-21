@@ -1,0 +1,58 @@
+From fd5fc55fe4ffedb3bf865f54b2648f77bcf0aa2e Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Mon, 19 Jul 2010 12:31:47 -0500
+Subject: [PATCH 69/71] mt9t112: Fix pll p-dividers abstraction
+
+Previously, it wasn't clear that the values needed to be filled
+were (val - 1). Fix that.
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ drivers/media/video/mt9t112.c |   16 +++++++++-------
+ 1 files changed, 9 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/media/video/mt9t112.c b/drivers/media/video/mt9t112.c
+index 3c516b4..c1a9b41 100644
+--- a/drivers/media/video/mt9t112.c
++++ b/drivers/media/video/mt9t112.c
+@@ -393,6 +393,8 @@ static void mt9t112_frame_check(u32 *width, u32 *height)
+ 		*height = MAX_HEIGHT;
+ }
+ 
++#define PLL_ADJ(x)	((x != 0) ? x - 1 : 0)
++
+ static int mt9t112_set_pll_dividers(const struct i2c_client *client,
+ 				    u8 m, u8 n,
+ 				    u8 p1, u8 p2, u8 p3,
+@@ -408,21 +410,21 @@ static int mt9t112_set_pll_dividers(const struct i2c_client *client,
+ 	mt9t112_reg_mask_set(ret, client, 0x0010, 0x3fff, val);
+ 
+ 	/* P1/P2/P3 */
+-	val = ((p3 & 0x0F) << 8) |
+-	      ((p2 & 0x0F) << 4) |
+-	      ((p1 & 0x0F) << 0);
++	val = ((PLL_ADJ(p3) & 0x0F) << 8) |
++	      ((PLL_ADJ(p2) & 0x0F) << 4) |
++	      ((PLL_ADJ(p1) & 0x0F) << 0);
+ 	mt9t112_reg_mask_set(ret, client, 0x0012, 0x0fff, val);
+ 
+ 	/* P4/P5/P6 */
+ 	val = (0x7         << 12) |
+-	      ((p6 & 0x0F) <<  8) |
+-	      ((p5 & 0x0F) <<  4) |
+-	      ((p4 & 0x0F) <<  0);
++	      ((PLL_ADJ(p6) & 0x0F) <<  8) |
++	      ((PLL_ADJ(p5) & 0x0F) <<  4) |
++	      ((PLL_ADJ(p4) & 0x0F) <<  0);
+ 	mt9t112_reg_mask_set(ret, client, 0x002A, 0x7fff, val);
+ 
+ 	/* P7 */
+ 	val = (0x1         << 12) |
+-	      ((p7 & 0x0F) <<  0);
++	      ((PLL_ADJ(p7) & 0x0F) <<  0);
+ 	mt9t112_reg_mask_set(ret, client, 0x002C, 0x100f, val);
+ 
+ 	return ret;
+-- 
+1.6.6.1
+

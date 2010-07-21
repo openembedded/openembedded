@@ -1,0 +1,31 @@
+From 0e5fd12767472b52744c5dce43c77451aa89ba3d Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Sun, 27 Jun 2010 16:11:39 +0200
+Subject: [PATCH 29/71] omap3beagle: camera: only register camera driver for 36xx based SoCs
+
+This is a workaround for the bootcrash when used on 35xx based beagleboards.
+
+Signed-off-by: Koen Kooi <koen@dominion.thruhere.net>
+---
+ arch/arm/mach-omap2/board-omap3beagle-camera.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle-camera.c b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+index 75471f2..8faa437 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle-camera.c
++++ b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+@@ -355,7 +355,9 @@ static struct platform_driver beagle_cam_driver = {
+  */
+ int __init omap3beaglelmb_init(void)
+ {
+-	platform_driver_register(&beagle_cam_driver);
+-	return 0;
++	if (cpu_is_omap3630()) {
++			platform_driver_register(&beagle_cam_driver);
++	}
++			return 0;
+ }
+ late_initcall(omap3beaglelmb_init);
+-- 
+1.6.6.1
+

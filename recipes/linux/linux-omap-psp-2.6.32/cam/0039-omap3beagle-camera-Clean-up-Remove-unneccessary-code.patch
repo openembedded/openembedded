@@ -1,0 +1,118 @@
+From a776cd344136f046bea77e223bf53912cd5f21bc Mon Sep 17 00:00:00 2001
+From: Vaibhav Hiremath <hvaibhav@ti.com>
+Date: Tue, 13 Jul 2010 19:38:51 +0530
+Subject: [PATCH 39/71] omap3beagle-camera:Clean up: Remove unneccessary code/printf
+
+Signed-off-by: Vaibhav Hiremath <hvaibhav@ti.com>
+---
+ arch/arm/mach-omap2/board-omap3beagle-camera.c |   25 +++--------------------
+ 1 files changed, 4 insertions(+), 21 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle-camera.c b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+index 0a591a1..be59040 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle-camera.c
++++ b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+@@ -77,7 +77,7 @@ static struct isp_interface_config mt9v113_if_config = {
+ };
+ 
+ static struct v4l2_ifparm mt9v113_ifparm_s = {
+-#if 1
++#if 0
+ 	.if_type = V4L2_IF_TYPE_RAW,
+ 	.u 	 = {
+ 		.raw = {
+@@ -192,32 +192,24 @@ static int mt9v113_power_set(struct v4l2_int_device *s, enum v4l2_power power)
+ 
+ 		/* turn on VDD */
+ 		regulator_enable(beagle_mt9v113_1_8v1);
+-
+ 		mdelay(1);
+-
+ 		/* turn on VDD_IO */
+ 		regulator_enable(beagle_mt9v113_1_8v2);
+-
+ 		mdelay(50);
+ 
+ 		/* Enable EXTCLK */
+ 		isp_set_xclk(vdev->cam->isp, MT9V113_CLK_MIN, CAM_USE_XCLKA);
+-
+ 		/*
+ 		 * Wait at least 70 CLK cycles (w/EXTCLK = 6MHz, or CLK_MIN):
+ 		 * ((1000000 * 70) / 6000000) = aprox 12 us.
+ 		 */
+-
+ 		udelay(12);
+-
+ 		/* Set RESET_BAR to 1 */
+ 		gpio_set_value(LEOPARD_RESET_GPIO, 1);
+-
+ 		/*
+ 		 * Wait at least 100 CLK cycles (w/EXTCLK = 6MHz, or CLK_MIN):
+ 		 * ((1000000 * 100) / 6000000) = aprox 17 us.
+ 		 */
+-
+ 		udelay(17);
+ 
+ 		break;
+@@ -245,15 +237,11 @@ struct mt9v113_platform_data mt9v113_pdata = {
+ 
+ static int beagle_cam_probe(struct platform_device *pdev)
+ {
+-	int err;
+-
+-	printk("%s:%d\n", __func__, __LINE__);
+ 	beagle_mt9v113_1_8v1 = regulator_get(&pdev->dev, "vaux3_1");
+ 	if (IS_ERR(beagle_mt9v113_1_8v1)) {
+ 		dev_err(&pdev->dev, "vaux3_1 regulator missing\n");
+ 		return PTR_ERR(beagle_mt9v113_1_8v1);
+ 	}
+-	printk("%s:%d\n", __func__, __LINE__);
+ 	beagle_mt9v113_1_8v2 = regulator_get(&pdev->dev, "vaux4_1");
+ 	if (IS_ERR(beagle_mt9v113_1_8v2)) {
+ 		dev_err(&pdev->dev, "vaux4_1 regulator missing\n");
+@@ -261,7 +249,6 @@ static int beagle_cam_probe(struct platform_device *pdev)
+ 		return PTR_ERR(beagle_mt9v113_1_8v2);
+ 	}
+ 
+-	printk("%s:%d\n", __func__, __LINE__);
+ 	if (gpio_request(LEOPARD_RESET_GPIO, "cam_rst") != 0) {
+ 		dev_err(&pdev->dev, "Could not request GPIO %d",
+ 			LEOPARD_RESET_GPIO);
+@@ -270,7 +257,6 @@ static int beagle_cam_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	}
+ 
+-	printk("%s:%d\n", __func__, __LINE__);
+ 	/* set to output mode, default value 0 */
+ 	gpio_direction_output(LEOPARD_RESET_GPIO, 0);
+ 
+@@ -281,10 +267,10 @@ static int beagle_cam_probe(struct platform_device *pdev)
+ 
+ static int beagle_cam_remove(struct platform_device *pdev)
+ {
+-	printk("%s:%d\n", __func__, __LINE__);
+ 	if (regulator_is_enabled(beagle_mt9v113_1_8v1))
+ 		regulator_disable(beagle_mt9v113_1_8v1);
+ 	regulator_put(beagle_mt9v113_1_8v1);
++
+ 	if (regulator_is_enabled(beagle_mt9v113_1_8v2))
+ 		regulator_disable(beagle_mt9v113_1_8v2);
+ 	regulator_put(beagle_mt9v113_1_8v2);
+@@ -360,12 +346,9 @@ static struct platform_driver beagle_cam_driver = {
+  */
+ int __init omap3beaglelmb_init(void)
+ {
+-	printk("%s:%d\n", __func__, __LINE__);
+-	if (cpu_is_omap3630()) {
+-	printk("%s:%d\n", __func__, __LINE__);
++	if (cpu_is_omap3630())
+ 		platform_driver_register(&beagle_cam_driver);
+-	}
+-	printk("%s:%d\n", __func__, __LINE__);
++
+ 	return 0;
+ }
+ late_initcall(omap3beaglelmb_init);
+-- 
+1.6.6.1
+

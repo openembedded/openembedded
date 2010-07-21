@@ -1,7 +1,7 @@
 From 5c343b5261a3a7382cb9aa414be9f1b57acb3056 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Fri, 25 Jun 2010 13:43:54 -0500
-Subject: [PATCH 27/28] mt9t111: Fix detect function retval and cleanup prints
+Subject: [PATCH 27/71] mt9t111: Fix detect function retval and cleanup prints
 
 Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
 ---

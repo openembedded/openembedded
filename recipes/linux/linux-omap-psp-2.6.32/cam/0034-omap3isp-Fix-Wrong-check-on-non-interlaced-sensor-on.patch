@@ -1,0 +1,34 @@
+From 242df5600b1bb1173670846eac802840d4601de0 Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Fri, 9 Jul 2010 16:56:18 -0500
+Subject: [PATCH 34/71] omap3isp: Fix Wrong check on non-interlaced sensor on isr
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ drivers/media/video/isp/isp.c |    9 +++++----
+ 1 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/media/video/isp/isp.c b/drivers/media/video/isp/isp.c
+index 29dd005..2ef2d58 100644
+--- a/drivers/media/video/isp/isp.c
++++ b/drivers/media/video/isp/isp.c
+@@ -978,11 +978,12 @@ static irqreturn_t omap34xx_isp_isr(int irq, void *_pdev)
+ 	}
+ 
+ 	if (irqstatus & CCDC_VD0) {
+-		if (isp->pipeline.pix.field == V4L2_FIELD_INTERLACED) {
++		if (((isp->pipeline.pix.field == V4L2_FIELD_INTERLACED) &&
++		     (isp->current_field != 0)) ||
++		    (isp->pipeline.pix.field != V4L2_FIELD_INTERLACED)) {
+ 			/* Skip even fields, and process only odd fields */
+-			if (isp->current_field != 0)
+-				if (RAW_CAPTURE(isp))
+-					isp_buf_process(dev, bufs);
++			if (RAW_CAPTURE(isp))
++				isp_buf_process(dev, bufs);
+ 		}
+ 		if (!ispccdc_busy(&isp->isp_ccdc))
+ 			ispccdc_config_shadow_registers(&isp->isp_ccdc);
+-- 
+1.6.6.1
+

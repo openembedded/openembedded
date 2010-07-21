@@ -1,0 +1,29 @@
+From 7838aaa29f4b131cb034d56ea41b900ff9f04551 Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Fri, 9 Jul 2010 16:22:38 -0500
+Subject: [PATCH 33/71] mt9v113: Fix wrong active widths
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ include/media/mt9v113.h |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/media/mt9v113.h b/include/media/mt9v113.h
+index c7ad362..0a30f4c 100644
+--- a/include/media/mt9v113.h
++++ b/include/media/mt9v113.h
+@@ -35,9 +35,9 @@
+ #define MT9V113_MODULE_NAME		"mt9v113"
+ 
+ /* Number of pixels and number of lines per frame for different standards */
+-#define VGA_NUM_ACTIVE_PIXELS		(640*2)
++#define VGA_NUM_ACTIVE_PIXELS		(640)
+ #define VGA_NUM_ACTIVE_LINES		(480)
+-#define QVGA_NUM_ACTIVE_PIXELS	(320*2)
++#define QVGA_NUM_ACTIVE_PIXELS	(320)
+ #define QVGA_NUM_ACTIVE_LINES		(240)
+ 
+ /**
+-- 
+1.6.6.1
+

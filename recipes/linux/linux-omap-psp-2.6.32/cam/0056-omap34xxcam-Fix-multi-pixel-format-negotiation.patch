@@ -1,0 +1,26 @@
+From d1b23a6a7e9c92877c21a1325c699176e1e0be8f Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Thu, 1 Jul 2010 13:57:26 -0500
+Subject: [PATCH 56/71] omap34xxcam: Fix multi pixel format negotiation
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ drivers/media/video/omap34xxcam.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/media/video/omap34xxcam.c b/drivers/media/video/omap34xxcam.c
+index 2e8153b..051c6a7 100644
+--- a/drivers/media/video/omap34xxcam.c
++++ b/drivers/media/video/omap34xxcam.c
+@@ -544,7 +544,7 @@ static int try_pix_parm(struct omap34xxcam_videodev *vdev,
+ 				pix_tmp_out.height = pix_tmp_in.height;
+ 			rval = isp_try_fmt_cap(isp, &pix_tmp_in, &pix_tmp_out);
+ 			if (rval)
+-				return rval;
++				break;
+ 
+ 			dev_dbg(&vdev->vfd->dev, "this w %d\th %d\tfmt %8.8x\t"
+ 				"-> w %d\th %d\t fmt %8.8x"
+-- 
+1.6.6.1
+

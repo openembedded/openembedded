@@ -1,0 +1,45 @@
+From 6a768a155a2758aa55e27574dd2e5d268b54079b Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Sat, 10 Jul 2010 09:51:16 -0500
+Subject: [PATCH 35/71] omap3isp: Fix bad YUV_BT checks in datapath_config
+
+The use of an external write enable signals (from ISP point of
+view) shouldn't depend on the sensor parallel interface type.
+
+Also, the bit shift selection should NOT be other than 9_0 by
+default (i.e. No shift).
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ drivers/media/video/isp/ispccdc.c |   15 +++++----------
+ 1 files changed, 5 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/media/video/isp/ispccdc.c b/drivers/media/video/isp/ispccdc.c
+index 137a5e6..ea6d87c 100644
+--- a/drivers/media/video/isp/ispccdc.c
++++ b/drivers/media/video/isp/ispccdc.c
+@@ -602,16 +602,11 @@ static int ispccdc_config_datapath(struct isp_ccdc_device *isp_ccdc,
+ 		syn_mode &= ~ISPCCDC_SYN_MODE_VP2SDR;
+ 		syn_mode &= ~ISPCCDC_SYN_MODE_SDR2RSZ;
+ 		syn_mode |= ISPCCDC_SYN_MODE_WEN;
+-		if (pipe->ccdc_in == CCDC_YUV_BT) {
+-			syn_mode &= ~ISPCCDC_SYN_MODE_EXWEN;
+-			isp_reg_and(isp_ccdc->dev, OMAP3_ISP_IOMEM_CCDC,
+-					ISPCCDC_CFG, ~ISPCCDC_CFG_WENLOG);
+-		} else {
+-			syn_mode |= ISPCCDC_SYN_MODE_EXWEN;
+-			isp_reg_or(isp_ccdc->dev, OMAP3_ISP_IOMEM_CCDC,
+-					ISPCCDC_CFG, ISPCCDC_CFG_WENLOG);
+-		}
+-		vpcfg.bitshift_sel = BIT11_2;
++		syn_mode &= ~ISPCCDC_SYN_MODE_EXWEN;
++
++		isp_reg_and(isp_ccdc->dev, OMAP3_ISP_IOMEM_CCDC,
++				ISPCCDC_CFG, ~ISPCCDC_CFG_WENLOG);
++		vpcfg.bitshift_sel = BIT9_0;
+ 		vpcfg.freq_sel = PIXCLKBY2;
+ 		ispccdc_config_vp(isp_ccdc, vpcfg);
+ 		ispccdc_enable_vp(isp_ccdc, 0);
+-- 
+1.6.6.1
+

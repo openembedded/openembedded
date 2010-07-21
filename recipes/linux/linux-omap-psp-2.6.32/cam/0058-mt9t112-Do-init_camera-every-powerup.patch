@@ -1,0 +1,57 @@
+From b62a517b3a1600fa491840223feb11fc99a76e0f Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Thu, 15 Jul 2010 17:53:44 -0500
+Subject: [PATCH 58/71] mt9t112: Do init_camera every powerup
+
+This is because we want to ensure we always come from a known state.
+
+Probably this could be revisited later for optimization.
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ drivers/media/video/mt9t112.c |   17 ++++++++---------
+ 1 files changed, 8 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/media/video/mt9t112.c b/drivers/media/video/mt9t112.c
+index 98a4ea9..eebc2b5 100644
+--- a/drivers/media/video/mt9t112.c
++++ b/drivers/media/video/mt9t112.c
+@@ -982,6 +982,8 @@ static int mt9t112_v4l2_int_s_power(struct v4l2_int_device *s,
+ {
+ 	struct mt9t112_priv *priv = s->priv;
+ 	struct i2c_client *client = priv->client;
++	u16 param = (MT9T112_FLAG_PCLK_RISING_EDGE &
++		     priv->info.flags) ? 0x0001 : 0x0000;
+ 	int ret;
+ 
+ 	switch (power) {
+@@ -1014,20 +1016,17 @@ static int mt9t112_v4l2_int_s_power(struct v4l2_int_device *s,
+ 			return ret;
+ 		}
+ 		if (!(priv->flags & INIT_DONE)) {
+-			u16 param = (MT9T112_FLAG_PCLK_RISING_EDGE &
+-				     priv->info.flags) ? 0x0001 : 0x0000;
+-
+ 			ECHECKER(ret, mt9t112_detect(client));
+-			ECHECKER(ret, mt9t112_init_camera(client));
+-
+-			/* Invert PCLK (Data sampled on falling edge of pixclk) */
+-			mt9t112_reg_write(ret, client, 0x3C20, param);
+-
+-			mdelay(5);
+ 
+ 			priv->flags |= INIT_DONE;
+ 		}
+ 
++		ECHECKER(ret, mt9t112_init_camera(client));
++
++		/* Invert PCLK (Data sampled on falling edge of pixclk) */
++		mt9t112_reg_write(ret, client, 0x3C20, param);
++
++		mdelay(5);
+ 		mt9t112_mcu_write(ret, client, VAR(26, 7),
+ 				  mt9t112_pixfmt_to_fmt(priv->pix.pixelformat));
+ 		mt9t112_mcu_write(ret, client, VAR(26, 9),
+-- 
+1.6.6.1
+

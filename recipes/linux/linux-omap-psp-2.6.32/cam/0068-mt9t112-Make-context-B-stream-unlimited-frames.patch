@@ -1,0 +1,30 @@
+From 49fbfdfd756f126edc16fe04c55ce238e22815fc Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Sun, 18 Jul 2010 01:47:41 -0500
+Subject: [PATCH 68/71] mt9t112: Make context B stream unlimited frames
+
+Context A does this by default, so, only context B needs
+to be configured like this.
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ drivers/media/video/mt9t112.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/media/video/mt9t112.c b/drivers/media/video/mt9t112.c
+index 18d7ce5..3c516b4 100644
+--- a/drivers/media/video/mt9t112.c
++++ b/drivers/media/video/mt9t112.c
+@@ -771,6 +771,9 @@ static int mt9t112_goto_capture(const struct i2c_client *client)
+ 	if (ret == 0x7)
+ 		return 0;
+ 
++	/* Num Frames Run (B) */
++	mt9t112_mcu_write(ret, client, VAR(27, 5), 0);
++
+ 	/* Go to capture mode */
+ 	mt9t112_mcu_write(ret, client, VAR8(1, 0), 2);
+ 	do {
+-- 
+1.6.6.1
+

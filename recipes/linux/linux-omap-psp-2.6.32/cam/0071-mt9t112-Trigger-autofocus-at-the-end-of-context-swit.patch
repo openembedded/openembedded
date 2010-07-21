@@ -1,0 +1,35 @@
+From afb4dbf5c3633692ca5cdc052ec1c7c473a8020b Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Mon, 19 Jul 2010 17:45:38 -0500
+Subject: [PATCH 71/71] mt9t112: Trigger autofocus at the end of context switch
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ drivers/media/video/mt9t112.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/video/mt9t112.c b/drivers/media/video/mt9t112.c
+index 8528417..0769f66 100644
+--- a/drivers/media/video/mt9t112.c
++++ b/drivers/media/video/mt9t112.c
+@@ -1080,8 +1080,6 @@ static int mt9t112_v4l2_int_s_power(struct v4l2_int_device *s,
+ 				  mt9t112_pixfmt_to_order(priv->pix.pixelformat));
+ 		mt9t112_mcu_write(ret, client, VAR8(1, 0), 0x06);
+ 
+-		ECHECKER(ret, mt9t112_auto_focus_trigger(client));
+-
+ 		ECHECKER(ret, mt9t112_goto_preview(client));
+ 
+ 		if ((priv->pix.width == MAX_WIDTH) &&
+@@ -1089,6 +1087,8 @@ static int mt9t112_v4l2_int_s_power(struct v4l2_int_device *s,
+ 			ECHECKER(ret, mt9t112_goto_capture(client));
+ 		}
+ 
++		ECHECKER(ret, mt9t112_auto_focus_trigger(client));
++
+ 		dev_dbg(&client->dev, "format : %d\n", priv->pix.pixelformat);
+ 		dev_dbg(&client->dev, "size   : %d x %d\n",
+ 			priv->pix.width,
+-- 
+1.6.6.1
+

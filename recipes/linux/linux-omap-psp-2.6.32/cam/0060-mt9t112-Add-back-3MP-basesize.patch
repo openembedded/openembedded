@@ -1,0 +1,37 @@
+From cb36a121a4a73d6c9080f6648258317abb787f4c Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Thu, 15 Jul 2010 18:33:00 -0500
+Subject: [PATCH 60/71] mt9t112: Add back 3MP basesize
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ drivers/media/video/mt9t112.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/media/video/mt9t112.c b/drivers/media/video/mt9t112.c
+index eebc2b5..46d1bd6 100644
+--- a/drivers/media/video/mt9t112.c
++++ b/drivers/media/video/mt9t112.c
+@@ -41,8 +41,8 @@
+ /*
+  * frame size
+  */
+-#define MAX_WIDTH   640 /* 2048 */
+-#define MAX_HEIGHT  480 /* 1536 */
++#define MAX_WIDTH   2048
++#define MAX_HEIGHT  1536
+ 
+ #define VGA_WIDTH   640
+ #define VGA_HEIGHT  480
+@@ -133,7 +133,7 @@ const static struct v4l2_fmtdesc mt9t112_formats[] = {
+ ************************************************************************/
+ const static struct mt9t112_frame_size mt9t112_sizes[] = {
+ 	{  640, 480 },
+-	/* { 2048, 1536} */
++	{ 2048, 1536}
+ };
+ 
+ /************************************************************************
+-- 
+1.6.6.1
+

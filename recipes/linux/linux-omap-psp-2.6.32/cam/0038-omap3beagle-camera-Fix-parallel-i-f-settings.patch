@@ -1,0 +1,43 @@
+From 35c871dc139883d790a0080b9f3a9bfcf0a5a24c Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Mon, 12 Jul 2010 14:11:44 -0500
+Subject: [PATCH 38/71] omap3beagle: camera: Fix parallel i/f settings
+
+This makes the sensor input be shifted from 13:4 -> 9:0, as
+in YUV streaming, the 8 least significant pins are used.
+
+Also, activate the 8 to 16 bit conversion bridge in ISP, in
+big endian mode.
+
+This makes the ISP interpret the data correctly now. ;)
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ arch/arm/mach-omap2/board-omap3beagle-camera.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle-camera.c b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+index 6c06265..0a591a1 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle-camera.c
++++ b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+@@ -64,7 +64,7 @@ static struct regulator *beagle_mt9v113_1_8v2;
+ 
+ static struct isp_interface_config mt9v113_if_config = {
+ 	.ccdc_par_ser		= ISP_PARLL,
+-	.dataline_shift		= 0x0,
++	.dataline_shift		= 0x2,
+ 	.hsvs_syncdetect	= ISPCTRL_SYNC_DETECT_VSRISE,
+ 	.strobe			= 0x0,
+ 	.prestrobe		= 0x0,
+@@ -72,7 +72,7 @@ static struct isp_interface_config mt9v113_if_config = {
+ 	.cam_mclk		= ISP_MT9V113_MCLK,
+ 	.wenlog 		= ISPCCDC_CFG_WENLOG_AND,
+ 	.wait_hs_vs		= 2,
+-	.u.par.par_bridge	= 0x1,
++	.u.par.par_bridge	= 0x3,
+ 	.u.par.par_clk_pol	= 0x0,
+ };
+ 
+-- 
+1.6.6.1
+

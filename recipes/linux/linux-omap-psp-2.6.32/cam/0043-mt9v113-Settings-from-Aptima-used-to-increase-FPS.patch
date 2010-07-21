@@ -1,0 +1,135 @@
+From b61ff796dd0bb5bb34d7d2125983baa78f8a3831 Mon Sep 17 00:00:00 2001
+From: Vaibhav Hiremath <hvaibhav@ti.com>
+Date: Wed, 14 Jul 2010 19:07:34 +0530
+Subject: [PATCH 43/71] mt9v113: Settings from Aptima used to increase FPS
+
+The FPS is still low at around ~15FPS, expected one is 30FPS.
+
+Signed-off-by: Vaibhav Hiremath <hvaibhav@ti.com>
+---
+ drivers/media/video/mt9v113.c |   55 +++++++++++++++++++++++++---------------
+ 1 files changed, 34 insertions(+), 21 deletions(-)
+
+diff --git a/drivers/media/video/mt9v113.c b/drivers/media/video/mt9v113.c
+index 9a86cce..466702e 100644
+--- a/drivers/media/video/mt9v113.c
++++ b/drivers/media/video/mt9v113.c
+@@ -119,6 +119,21 @@ static struct mt9v113_reg mt9v113_vga_reg[] = {
+ 	{TOK_WRITE, 0x0990, 0x0280},
+ 	{TOK_WRITE, 0x098C, 0x2705},
+ 	{TOK_WRITE, 0x0990, 0x01E0},
++	{TOK_WRITE, 0x098C, 0x2715},
++	{TOK_WRITE, 0x0990, 0x0001},
++	{TOK_WRITE, 0x098C, 0x2717},
++	{TOK_WRITE, 0x0990, 0x0026},
++	{TOK_WRITE, 0x098C, 0x2719},
++	{TOK_WRITE, 0x0990, 0x001A},
++	{TOK_WRITE, 0x098C, 0x271B},
++	{TOK_WRITE, 0x0990, 0x006B},
++	{TOK_WRITE, 0x098C, 0x271D},
++	{TOK_WRITE, 0x0990, 0x006B},
++	{TOK_WRITE, 0x098C, 0x271F},
++	{TOK_WRITE, 0x0990, 0x0202},
++	{TOK_WRITE, 0x098C, 0x2721},
++	{TOK_WRITE, 0x0990, 0x034A},
++
+ 	{TOK_WRITE, 0x098C, 0xA103},
+ 	{TOK_WRITE, 0x0990, 0x0005},
+ 	{TOK_DELAY, 0, 100},
+@@ -148,8 +163,7 @@ static struct mt9v113_reg mt9v113_reg_list[] = {
+ 	{TOK_WRITE, 0x001E, 0x0777},
+ 	{TOK_WRITE, 0x0016, 0x42DF},
+ 	{TOK_WRITE, 0x0014, 0x2145},
+-	{TOK_WRITE, 0x0014, 0x2145},
+-	{TOK_WRITE, 0x0010, 0x0231},
++	{TOK_WRITE, 0x0010, 0x0234},
+ 	{TOK_WRITE, 0x0012, 0x0000},
+ 	{TOK_WRITE, 0x0014, 0x244B},
+ 	{TOK_WRITE, 0x0014, 0x304B},
+@@ -267,29 +281,31 @@ static struct mt9v113_reg mt9v113_reg_list[] = {
+ 	{TOK_WRITE, 0x0990, 0x0005},
+ 	{TOK_DELAY, 0, 100},
+ 	{TOK_WRITE, 0x098C, 0x222D},
+-	{TOK_WRITE, 0x0990, 0x0088},
++	{TOK_WRITE, 0x0990, 0x0081},
+ 	{TOK_WRITE, 0x098C, 0xA408},
+-	{TOK_WRITE, 0x0990, 0x0020},
++	{TOK_WRITE, 0x0990, 0x001F},
+ 	{TOK_WRITE, 0x098C, 0xA409},
+-	{TOK_WRITE, 0x0990, 0x0023},
++	{TOK_WRITE, 0x0990, 0x0021},
+ 	{TOK_WRITE, 0x098C, 0xA40A},
+-	{TOK_WRITE, 0x0990, 0x0027},
++	{TOK_WRITE, 0x0990, 0x0025},
+ 	{TOK_WRITE, 0x098C, 0xA40B},
+-	{TOK_WRITE, 0x0990, 0x002A},
++	{TOK_WRITE, 0x0990, 0x0027},
+ 	{TOK_WRITE, 0x098C, 0x2411},
+-	{TOK_WRITE, 0x0990, 0x0088},
++	{TOK_WRITE, 0x0990, 0x0081},
+ 	{TOK_WRITE, 0x098C, 0x2413},
+-	{TOK_WRITE, 0x0990, 0x00A4},
++	{TOK_WRITE, 0x0990, 0x009A},
+ 	{TOK_WRITE, 0x098C, 0x2415},
+-	{TOK_WRITE, 0x0990, 0x0088},
++	{TOK_WRITE, 0x0990, 0x0081},
+ 	{TOK_WRITE, 0x098C, 0x2417},
+-	{TOK_WRITE, 0x0990, 0x00A4},
++	{TOK_WRITE, 0x0990, 0x009A},
+ 	{TOK_WRITE, 0x098C, 0xA404},
+ 	{TOK_WRITE, 0x0990, 0x0010},
+ 	{TOK_WRITE, 0x098C, 0xA40D},
+ 	{TOK_WRITE, 0x0990, 0x0002},
+ 	{TOK_WRITE, 0x098C, 0xA40E},
+ 	{TOK_WRITE, 0x0990, 0x0003},
++	{TOK_WRITE, 0x098C, 0xA410},
++	{TOK_WRITE, 0x0990, 0x000A},
+ 	{TOK_WRITE, 0x098C, 0xA103},
+ 	{TOK_WRITE, 0x0990, 0x0006},
+ 	{TOK_DELAY, 0, 100},
+@@ -1216,13 +1232,10 @@ static int ioctl_s_power(struct v4l2_int_device *s, enum v4l2_power on)
+ 	struct mt9v113_decoder *decoder = s->priv;
+ 	int err = 0;
+ 
+-	if (decoder->state == STATE_DETECTED)
+-		return 0;
+-
+ 	switch (on) {
+ 	case V4L2_POWER_OFF:
+ 		/* Power Down Sequence */
+-/* TODO: FIXME: implement proper OFF and Standby code here */
++		/* TODO: FIXME: implement proper OFF and Standby code here */
+ #if 0
+ 		err = mt9v113_write_reg(decoder->client, REG_OPERATION_MODE,
+ 				0x01);
+@@ -1240,10 +1253,10 @@ static int ioctl_s_power(struct v4l2_int_device *s, enum v4l2_power on)
+ 
+ 	case V4L2_POWER_ON:
+ 		/* Enable mux for mt9v113 data path */
+-		if ((decoder->pdata->power_set) &&
+-				(decoder->state == STATE_NOT_DETECTED)) {
++		if (decoder->state == STATE_NOT_DETECTED) {
+ 
+-			err = decoder->pdata->power_set(s, on);
++			if (decoder->pdata->power_set)
++				err = decoder->pdata->power_set(s, on);
+ 
+ 			/* Detect the sensor is not already detected */
+ 			err |= mt9v113_detect(decoder);
+@@ -1252,10 +1265,10 @@ static int ioctl_s_power(struct v4l2_int_device *s, enum v4l2_power on)
+ 						"Unable to detect decoder\n");
+ 				return err;
+ 			}
+-			/* Only VGA mode for now */
+-			err |= mt9v113_configure(decoder);
+-			err |= mt9v113_vga_mode(decoder);
+ 		}
++		/* Only VGA mode for now */
++		err |= mt9v113_configure(decoder);
++		err |= mt9v113_vga_mode(decoder);
+ 		break;
+ 
+ 	default:
+-- 
+1.6.6.1
+

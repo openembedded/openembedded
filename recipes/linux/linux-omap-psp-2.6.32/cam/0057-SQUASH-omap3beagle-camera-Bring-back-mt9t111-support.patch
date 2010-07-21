@@ -1,0 +1,43 @@
+From 1f47f621038372fe698921b5469dadf5446f73a8 Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Thu, 15 Jul 2010 17:53:07 -0500
+Subject: [PATCH 57/71] SQUASH: omap3beagle: camera: Bring back mt9t111 support
+
+---
+ arch/arm/mach-omap2/board-omap3beagle-camera.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle-camera.c b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+index 0b4dff7..3118026 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle-camera.c
++++ b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+@@ -221,14 +221,14 @@ static struct isp_interface_config mt9t112_if_config = {
+ 	.cam_mclk		= ISP_MT9T112_MCLK,
+ 	.wenlog 		= ISPCCDC_CFG_WENLOG_AND,
+ 	.wait_hs_vs		= 2,
+-	.u.par.par_bridge	= 0x3,
++	.u.par.par_bridge	= 0x2,
+ 	.u.par.par_clk_pol	= 0x0,
+ };
+ 
+ static struct v4l2_ifparm mt9t112_ifparm_s = {
+-	.if_type = V4L2_IF_TYPE_RAW,
++	.if_type = V4L2_IF_TYPE_YCbCr,
+ 	.u 	 = {
+-		.raw = {
++		.ycbcr = {
+ 			.frame_start_on_rising_vs = 1,
+ 			.bt_sync_correct	= 0,
+ 			.swap			= 0,
+@@ -262,7 +262,7 @@ static struct omap34xxcam_hw_config mt9t112_hwc = {
+ 	.dev_index		= 0,
+ 	.dev_minor		= 0,
+ 	.dev_type		= OMAP34XXCAM_SLAVE_SENSOR,
+-	.u.sensor.sensor_isp	= 0,
++	.u.sensor.sensor_isp	= 1,
+ 	.u.sensor.capture_mem	= MT9T112_BIGGEST_FRAME_BYTE_SIZE,
+ 	.u.sensor.ival_default	= { 1, 10 },
+ };
+-- 
+1.6.6.1
+

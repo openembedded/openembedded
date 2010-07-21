@@ -1,0 +1,32 @@
+From d098c75d211e3affc0a67ac98edce6494521faad Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Sun, 18 Jul 2010 01:45:29 -0500
+Subject: [PATCH 67/71] mt9t112: Disable JPEG in Context B
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ drivers/media/video/mt9t112.c |    8 --------
+ 1 files changed, 0 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/media/video/mt9t112.c b/drivers/media/video/mt9t112.c
+index ec7514f..18d7ce5 100644
+--- a/drivers/media/video/mt9t112.c
++++ b/drivers/media/video/mt9t112.c
+@@ -812,14 +812,6 @@ static int mt9t112_init_camera(const struct i2c_client *client)
+ 	mt9t112_mcu_write(ret, client, VAR(26, 160), 0x0A2E);
+ 	mt9t112_mcu_write(ret, client, VAR(27, 160), 0x0A2E);
+ 
+-	/* Configure STatus in Status_before_length Format and enable header */
+-	/* PRI_B_CONFIG_JPEG_OB_TX_CONTROL_VAR */
+-	mt9t112_mcu_write(ret, client, VAR(27, 144), 0x0CB4);
+-
+-	/* Enable JPEG in context B */
+-	/* PRI_B_CONFIG_JPEG_OB_TX_CONTROL_VAR */
+-	mt9t112_mcu_write(ret, client, VAR8(27, 142), 0x01);
+-
+ 	/* Disable Dac_TXLO */
+ 	mt9t112_reg_write(ret, client, 0x316C, 0x350F);
+ 
+-- 
+1.6.6.1
+

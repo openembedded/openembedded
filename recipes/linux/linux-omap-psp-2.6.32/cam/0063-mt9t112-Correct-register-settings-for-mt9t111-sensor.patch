@@ -1,0 +1,109 @@
+From 78cb5d13faa2b29e33c6a820435dbd82ad3effa5 Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Fri, 16 Jul 2010 07:52:06 -0500
+Subject: [PATCH 63/71] mt9t112: Correct register settings for mt9t111 sensor
+
+This now matches with Aptina's recommended values.
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ drivers/media/video/mt9t112.c |   46 ++++++++++++++++++++++++++++------------
+ 1 files changed, 32 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/media/video/mt9t112.c b/drivers/media/video/mt9t112.c
+index 44234e4..ac295dd 100644
+--- a/drivers/media/video/mt9t112.c
++++ b/drivers/media/video/mt9t112.c
+@@ -44,6 +44,9 @@
+ #define MAX_WIDTH   2048
+ #define MAX_HEIGHT  1536
+ 
++#define MAX_WIDTH_PREV   1024
++#define MAX_HEIGHT_PREV  768
++
+ #define VGA_WIDTH   640
+ #define VGA_HEIGHT  480
+ 
+@@ -392,24 +395,39 @@ static int mt9t112_set_a_frame_size(const struct i2c_client *client,
+ 				   u16 height)
+ {
+ 	int ret;
+-	u16 wstart = (MAX_WIDTH - width) / 2;
+-	u16 hstart = (MAX_HEIGHT - height) / 2;
++	u16 wstart, hstart, wend, hend;
++	u16 max_width = MAX_WIDTH_PREV, max_height = MAX_HEIGHT_PREV;
++
++	if ((width > max_width) || (height > max_height)) {
++		/* Capture case */
++		max_width = MAX_WIDTH;
++		max_height = MAX_HEIGHT;
++		hstart = 4;
++		wstart = 4;
++		hend = 1547;
++		wend = 2059;
++	} else {
++		hstart = 0;
++		wstart = 0;
++		hend = 1549;
++		wend = 2061;
++	}
+ 
+ 	/* (Context A) Image Width/Height */
+ 	mt9t112_mcu_write(ret, client, VAR(26, 0), width);
+ 	mt9t112_mcu_write(ret, client, VAR(26, 2), height);
+ 
+ 	/* (Context A) Output Width/Height */
+-	mt9t112_mcu_write(ret, client, VAR(18, 43), 8 + width);
+-	mt9t112_mcu_write(ret, client, VAR(18, 45), 8 + height);
++	mt9t112_mcu_write(ret, client, VAR(18, 43), 8 + max_width);
++	mt9t112_mcu_write(ret, client, VAR(18, 45), 8 + max_height);
+ 
+ 	/* (Context A) Start Row/Column */
+-	mt9t112_mcu_write(ret, client, VAR(18, 2), 4 + hstart);
+-	mt9t112_mcu_write(ret, client, VAR(18, 4), 4 + wstart);
++	mt9t112_mcu_write(ret, client, VAR(18, 2), hstart);
++	mt9t112_mcu_write(ret, client, VAR(18, 4), wstart);
+ 
+ 	/* (Context A) End Row/Column */
+-	mt9t112_mcu_write(ret, client, VAR(18, 6), 11 + height + hstart);
+-	mt9t112_mcu_write(ret, client, VAR(18, 8), 11 + width  + wstart);
++	mt9t112_mcu_write(ret, client, VAR(18, 6), hend);
++	mt9t112_mcu_write(ret, client, VAR(18, 8), wend);
+ 
+ 	mt9t112_mcu_write(ret, client, VAR8(1, 0), 0x06);
+ 
+@@ -547,25 +565,25 @@ static int mt9t112_init_setting(const struct i2c_client *client)
+ 	mt9t112_mcu_mask_set(ret, client, VAR(26, 160), 0x0040, 0x0000);
+ 
+ 	/* Read Mode (A) */
+-	mt9t112_mcu_write(ret, client, VAR(18, 12), 0x0024);
++	mt9t112_mcu_write(ret, client, VAR(18, 12), 0x046C);
+ 
+ 	/* Fine Correction (A) */
+ 	mt9t112_mcu_write(ret, client, VAR(18, 15), 0x00CC);
+ 
+ 	/* Fine IT Min (A) */
+-	mt9t112_mcu_write(ret, client, VAR(18, 17), 0x01f1);
++	mt9t112_mcu_write(ret, client, VAR(18, 17), 0x0381);
+ 
+ 	/* Fine IT Max Margin (A) */
+-	mt9t112_mcu_write(ret, client, VAR(18, 19), 0x00fF);
++	mt9t112_mcu_write(ret, client, VAR(18, 19), 0x024F);
+ 
+ 	/* Base Frame Lines (A) */
+-	mt9t112_mcu_write(ret, client, VAR(18, 29), 0x032D);
++	mt9t112_mcu_write(ret, client, VAR(18, 29), 0x0378);
+ 
+ 	/* Min Line Length (A) */
+-	mt9t112_mcu_write(ret, client, VAR(18, 31), 0x073a);
++	mt9t112_mcu_write(ret, client, VAR(18, 31), 0x05D0);
+ 
+ 	/* Line Length (A) */
+-	mt9t112_mcu_write(ret, client, VAR(18, 37), 0x07d0);
++	mt9t112_mcu_write(ret, client, VAR(18, 37), 0x07AC);
+ 
+ 	/* Adaptive Output Clock (B) */
+ 	mt9t112_mcu_mask_set(ret, client, VAR(27, 160), 0x0040, 0x0000);
+-- 
+1.6.6.1
+

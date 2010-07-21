@@ -1,0 +1,251 @@
+From 7e836bcc19cd61006cbc8bc0eb3360b2c188fa47 Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Mon, 12 Jul 2010 16:42:41 -0500
+Subject: [PATCH 47/71] omap3beagle: camera: Bring back mt9t111 support
+
+Restore MT9T111 sensor support.
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ arch/arm/mach-omap2/board-omap3beagle-camera.c |  175 +++++++++++++++++++++++-
+ arch/arm/mach-omap2/board-omap3beagle.c        |   12 ++
+ 2 files changed, 184 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle-camera.c b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+index c91529d..2e49158 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle-camera.c
++++ b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+@@ -37,7 +37,6 @@
+ #include <plat/control.h>
+ 
+ #include <media/v4l2-int-device.h>
+-#include <media/mt9v113.h>
+ 
+ /* Include V4L2 ISP-Camera driver related header file */
+ #include <../drivers/media/video/omap34xxcam.h>
+@@ -47,13 +46,16 @@
+ 
+ #define CAM_USE_XCLKA		0
+ 
+-#define ISP_MT9V113_MCLK	216000000
+-
+ #define LEOPARD_RESET_GPIO	98
+ 
+ static struct regulator *cam_1v8_reg;
+ static struct regulator *cam_2v8_reg;
+ 
++#if defined(CONFIG_VIDEO_MT9V113) || defined(CONFIG_VIDEO_MT9V113_MODULE)
++#include <media/mt9v113.h>
++
++#define ISP_MT9V113_MCLK	216000000
++
+ /* Arbitrary memory handling limit */
+ #define MT9V113_MAX_FRAME_SIZE	PAGE_ALIGN(640 * 480 * 4)
+ 
+@@ -199,6 +201,173 @@ struct mt9v113_platform_data mt9v113_pdata = {
+ 	.ifparm		= mt9v113_ifparm,
+ };
+ 
++#endif				/* #ifdef CONFIG_VIDEO_MT9V113 */
++
++#if defined(CONFIG_VIDEO_MT9T111) || defined(CONFIG_VIDEO_MT9T111_MODULE)
++#include <media/mt9t111.h>
++
++#define ISP_MT9T111_MCLK	216000000
++
++/* Arbitrary memory handling limit */
++#define MT9T111_BIGGEST_FRAME_BYTE_SIZE	PAGE_ALIGN((2048 * 2) * 1536 * 4)
++
++static struct isp_interface_config mt9t111_if_config = {
++	.ccdc_par_ser		= ISP_PARLL,
++	.dataline_shift		= 0x2,
++	.hsvs_syncdetect	= ISPCTRL_SYNC_DETECT_VSRISE,
++	.strobe			= 0x0,
++	.prestrobe		= 0x0,
++	.shutter		= 0x0,
++	.cam_mclk		= ISP_MT9T111_MCLK,
++	.wenlog 		= ISPCCDC_CFG_WENLOG_AND,
++	.wait_hs_vs		= 2,
++	.u.par.par_bridge	= 0x3,
++	.u.par.par_clk_pol	= 0x0,
++};
++
++static struct v4l2_ifparm mt9t111_ifparm_s = {
++	.if_type = V4L2_IF_TYPE_RAW,
++	.u 	 = {
++		.raw = {
++			.frame_start_on_rising_vs = 1,
++			.bt_sync_correct	= 0,
++			.swap			= 0,
++			.latch_clk_inv		= 0,
++			.nobt_hs_inv		= 0,	/* active high */
++			.nobt_vs_inv		= 0,	/* active high */
++			.clock_min		= MT9T111_CLK_MIN,
++			.clock_max		= MT9T111_CLK_MAX,
++		},
++	},
++};
++
++/**
++ * @brief mt9t111_ifparm - Returns the mt9t111 interface parameters
++ *
++ * @param p - pointer to v4l2_ifparm structure
++ *
++ * @return result of operation - 0 is success
++ */
++static int mt9t111_ifparm(struct v4l2_ifparm *p)
++{
++	if (p == NULL)
++		return -EINVAL;
++
++	*p = mt9t111_ifparm_s;
++	return 0;
++}
++
++#if defined(CONFIG_VIDEO_OMAP3) || defined(CONFIG_VIDEO_OMAP3_MODULE)
++static struct omap34xxcam_hw_config mt9t111_hwc = {
++	.dev_index		= 0,
++	.dev_minor		= 0,
++	.dev_type		= OMAP34XXCAM_SLAVE_SENSOR,
++	.u.sensor.sensor_isp	= 0,
++	.u.sensor.capture_mem	= MT9T111_BIGGEST_FRAME_BYTE_SIZE,
++	.u.sensor.ival_default	= { 1, 10 },
++};
++#endif
++
++/**
++ * @brief mt9t111_set_prv_data - Returns mt9t111 omap34xx driver private data
++ *
++ * @param priv - pointer to omap34xxcam_hw_config structure
++ *
++ * @return result of operation - 0 is success
++ */
++static int mt9t111_set_prv_data(void *priv)
++{
++#if defined(CONFIG_VIDEO_OMAP3) || defined(CONFIG_VIDEO_OMAP3_MODULE)
++	struct omap34xxcam_hw_config *hwc = priv;
++
++	if (priv == NULL)
++		return -EINVAL;
++
++	*hwc = mt9t111_hwc;
++	return 0;
++#else
++	return -EINVAL;
++#endif
++}
++
++/**
++ * @brief mt9t111_power_set - Power-on or power-off TVP5146 device
++ *
++ * @param power - enum, Power on/off, resume/standby
++ *
++ * @return result of operation - 0 is success
++ */
++static int mt9t111_power_set(struct v4l2_int_device *s, enum v4l2_power power)
++{
++	struct omap34xxcam_videodev *vdev = s->u.slave->master->priv;
++
++	switch (power) {
++	case V4L2_POWER_OFF:
++	case V4L2_POWER_STANDBY:
++		isp_set_xclk(vdev->cam->isp, 0, CAM_USE_XCLKA);
++
++		if (regulator_is_enabled(cam_1v8_reg))
++			regulator_disable(cam_1v8_reg);
++		if (regulator_is_enabled(cam_2v8_reg))
++			regulator_disable(cam_2v8_reg);
++		break;
++
++	case V4L2_POWER_ON:
++#if defined(CONFIG_VIDEO_OMAP3) || defined(CONFIG_VIDEO_OMAP3_MODULE)
++		isp_configure_interface(vdev->cam->isp, &mt9t111_if_config);
++#endif
++
++		/* Set RESET_BAR to 0 */
++		gpio_set_value(LEOPARD_RESET_GPIO, 0);
++
++		/* turn on VDD */
++		regulator_enable(cam_1v8_reg);
++
++		mdelay(1);
++
++		/* turn on VDD_IO */
++		regulator_enable(cam_2v8_reg);
++
++		mdelay(50);
++
++		/* Enable EXTCLK */
++		isp_set_xclk(vdev->cam->isp, MT9T111_CLK_MIN, CAM_USE_XCLKA);
++
++		/*
++		 * Wait at least 70 CLK cycles (w/EXTCLK = 6MHz, or CLK_MIN):
++		 * ((1000000 * 70) / 6000000) = aprox 12 us.
++		 */
++
++		udelay(12);
++
++		/* Set RESET_BAR to 1 */
++		gpio_set_value(LEOPARD_RESET_GPIO, 1);
++
++		/*
++		 * Wait at least 100 CLK cycles (w/EXTCLK = 6MHz, or CLK_MIN):
++		 * ((1000000 * 100) / 6000000) = aprox 17 us.
++		 */
++
++		udelay(17);
++
++		break;
++
++	default:
++		return -ENODEV;
++		break;
++	}
++	return 0;
++}
++
++struct mt9t111_platform_data mt9t111_pdata = {
++	.master		= "omap34xxcam",
++	.power_set	= mt9t111_power_set,
++	.priv_data_set	= mt9t111_set_prv_data,
++	.ifparm		= mt9t111_ifparm,
++};
++
++#endif				/* #ifdef CONFIG_VIDEO_MT9T111 */
++
+ static int beagle_cam_probe(struct platform_device *pdev)
+ {
+ 	cam_1v8_reg = regulator_get(&pdev->dev, "cam_1v8");
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index b0da483..0e7e8b2 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -77,6 +77,12 @@ static struct omap_opp * _omap37x_l3_rate_table         = NULL;
+ extern struct mt9v113_platform_data mt9v113_pdata;
+ #endif
+ 
++#if defined(CONFIG_VIDEO_MT9T111) || defined(CONFIG_VIDEO_MT9T111_MODULE)
++#include <media/v4l2-int-device.h>
++#include <media/mt9t111.h>
++extern struct mt9t111_platform_data mt9t111_pdata;
++#endif
++
+ #define GPMC_CS0_BASE  0x60
+ #define GPMC_CS_SIZE   0x30
+ 
+@@ -596,6 +602,12 @@ static struct i2c_board_info __initdata beagle_i2c2_boardinfo[] = {
+ 		.platform_data	= &mt9v113_pdata,
+ 	},
+ #endif
++#if defined(CONFIG_VIDEO_MT9T111) || defined(CONFIG_VIDEO_MT9T111_MODULE)
++	{
++		I2C_BOARD_INFO("mt9t111", MT9T111_I2C_ADDR),
++		.platform_data	= &mt9t111_pdata,
++	},
++#endif
+ };
+ 
+ static int __init omap3_beagle_i2c_init(void)
+-- 
+1.6.6.1
+

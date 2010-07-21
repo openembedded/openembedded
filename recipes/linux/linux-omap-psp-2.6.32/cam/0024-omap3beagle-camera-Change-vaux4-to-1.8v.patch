@@ -1,7 +1,7 @@
 From 838274e9850c8dfbb723c892604b017ebf5f0528 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Fri, 25 Jun 2010 11:24:07 -0500
-Subject: [PATCH 24/28] omap3beagle: camera: Change vaux4 to 1.8v
+Subject: [PATCH 24/71] omap3beagle: camera: Change vaux4 to 1.8v
 
 Both voltage sources seem to need 1.8v.
 

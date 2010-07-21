@@ -1,0 +1,54 @@
+From ffaa0e141898987cba2618d8e5b0ef2a285e79a9 Mon Sep 17 00:00:00 2001
+From: Vaibhav Hiremath <hvaibhav@ti.com>
+Date: Tue, 13 Jul 2010 19:40:39 +0530
+Subject: [PATCH 41/71] MT9V113: Min, Max clk input changed as per the spec
+
+Signed-off-by: Vaibhav Hiremath <hvaibhav@ti.com>
+---
+ arch/arm/mach-omap2/board-omap3beagle-camera.c |    2 +-
+ drivers/media/video/isp/ispreg.h               |    2 +-
+ include/media/mt9v113.h                        |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle-camera.c b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+index be59040..8d4e5ab 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle-camera.c
++++ b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+@@ -198,7 +198,7 @@ static int mt9v113_power_set(struct v4l2_int_device *s, enum v4l2_power power)
+ 		mdelay(50);
+ 
+ 		/* Enable EXTCLK */
+-		isp_set_xclk(vdev->cam->isp, MT9V113_CLK_MIN, CAM_USE_XCLKA);
++		isp_set_xclk(vdev->cam->isp, MT9V113_CLK_MIN*2, CAM_USE_XCLKA);
+ 		/*
+ 		 * Wait at least 70 CLK cycles (w/EXTCLK = 6MHz, or CLK_MIN):
+ 		 * ((1000000 * 70) / 6000000) = aprox 12 us.
+diff --git a/drivers/media/video/isp/ispreg.h b/drivers/media/video/isp/ispreg.h
+index 1240e0e..098713e 100644
+--- a/drivers/media/video/isp/ispreg.h
++++ b/drivers/media/video/isp/ispreg.h
+@@ -116,7 +116,7 @@
+ #define ISP_32B_BOUNDARY_BUF		0xFFFFFFE0
+ #define ISP_32B_BOUNDARY_OFFSET		0x0000FFE0
+ 
+-#define CM_CAM_MCLK_HZ			172800000	/* Hz */
++#define CM_CAM_MCLK_HZ			216000000	/* Hz */
+ 
+ /* ISP Submodules offset */
+ 
+diff --git a/include/media/mt9v113.h b/include/media/mt9v113.h
+index 0a30f4c..4504f26 100644
+--- a/include/media/mt9v113.h
++++ b/include/media/mt9v113.h
+@@ -76,7 +76,7 @@ struct mt9v113_platform_data {
+ #define MT9V113_VGA_30FPS  (1130)
+ #define MT9V113_QVGA_30FPS  (1131)
+ 
+-#define MT9V113_CLK_MAX 	(54000000) /* 54MHz */
++#define MT9V113_CLK_MAX 	(48000000) /* 48MHz */
+ #define MT9V113_CLK_MIN	(6000000)  /* 6Mhz */
+ 
+ #endif				/* ifndef _MT9V113_H */
+-- 
+1.6.6.1
+

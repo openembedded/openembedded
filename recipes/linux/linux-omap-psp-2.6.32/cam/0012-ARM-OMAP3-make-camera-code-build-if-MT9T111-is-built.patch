@@ -1,7 +1,7 @@
 From e37a8b39623910576c5784ccc10229fabe51b4c3 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Wed, 16 Jun 2010 09:45:46 +0200
-Subject: [PATCH 12/28] ARM: OMAP3: make camera code build if MT9T111 is built as module or disabled
+Subject: [PATCH 12/71] ARM: OMAP3: make camera code build if MT9T111 is built as module or disabled
 
 ---
  arch/arm/mach-omap2/board-omap3beagle.c |    4 +++-

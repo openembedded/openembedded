@@ -1,0 +1,294 @@
+From 85fc82296bf6f9eaaad63e0aee2c0ec98a0d6ed9 Mon Sep 17 00:00:00 2001
+From: Vaibhav Hiremath <hvaibhav@ti.com>
+Date: Fri, 9 Jul 2010 17:38:09 +0530
+Subject: [PATCH 32/71] MT9V113: Fixed sensor nitialization issues
+
+With this patch sensor is now able to generate HS, VS and pixel clock, also
+CCDC is able to generate HS/VS, VD0, VD1 interrupts.
+
+There are some issues with Buffer processing in ISR routine because of which
+DQBUF still hangs.
+---
+ drivers/media/video/mt9v113.c     |  155 ++++++++++++++++++++----------------
+ drivers/media/video/omap34xxcam.c |    2 +-
+ 2 files changed, 87 insertions(+), 70 deletions(-)
+
+diff --git a/drivers/media/video/mt9v113.c b/drivers/media/video/mt9v113.c
+index 755a88a..8f8ba35 100644
+--- a/drivers/media/video/mt9v113.c
++++ b/drivers/media/video/mt9v113.c
+@@ -389,8 +389,8 @@ static int mt9v113_read_reg(struct i2c_client *client, unsigned short reg)
+ 		err = -ENODEV;
+ 		return err;
+ 	}else {
+-		// TODO: addr should be set up where else
+-		msg->addr = MT9V113_I2C_ADDR;//client->addr;
++		/* TODO: addr should be set up where else client->addr */
++		msg->addr = MT9V113_I2C_ADDR;
+ 		msg->flags = 0;
+ 		msg->len = I2C_TWO_BYTE_TRANSFER;
+ 		msg->buf = data;
+@@ -432,8 +432,8 @@ static int mt9v113_write_reg(struct i2c_client *client, unsigned short reg, unsi
+ 		if (!client->adapter) {
+ 			err = -ENODEV;
+ 		} else {
+-			// TODO: addr should be set up where else
+-			msg->addr = MT9V113_I2C_ADDR;//client->addr;
++			/* TODO:addr should be set up where else client->addr */
++			msg->addr = MT9V113_I2C_ADDR;
+ 			msg->flags = 0;
+ 			msg->len = I2C_FOUR_BYTE_TRANSFER;
+ 			msg->buf = data;
+@@ -446,51 +446,11 @@ static int mt9v113_write_reg(struct i2c_client *client, unsigned short reg, unsi
+ 			err = i2c_transfer(client->adapter, msg, 1);
+ 		}
+ 	}
+-	if (err < 0) {
++	if (err < 0)
+ 		printk(KERN_INFO "\n I2C write failed");
+-	}
+-	return err;
+-}
+-
+-/* configure mux, for DM355 EVM only */
+-#ifndef CONFIG_MACH_DM355_LEOPARD
+-static int mt9v113_en_mux(struct i2c_client *client)
+-{
+-	int err = 0;
+-	int trycnt = 0;
+-	/* unsigned short readval = 0;*/
+-
+-	struct i2c_msg msg[1];
+-	unsigned char data[4];
+-	err = -1;
+-	printk(KERN_INFO
+-		       "\n entering mt9v113_en_mux \n");
+-
+-	while ((err < 0) && (trycnt < 5)) {
+-		trycnt++;
+-		if (!client->adapter) {
+-			err = -ENODEV;
+-		} else {
+-			msg->addr = 0x25;
+-			msg->flags = 0;
+-			msg->len = I2C_TWO_BYTE_TRANSFER;
+-			msg->buf = data;
+-			data[0] = (unsigned char)(0x08 & I2C_TXRX_DATA_MASK);
+-			data[1] = (unsigned char)(0x80 & I2C_TXRX_DATA_MASK);
+ 
+-			err = i2c_transfer(client->adapter, msg, 1);
+-			if (err < 0) {
+-				printk(KERN_INFO
+-				       "\n ERROR in ECP  register write\n");
+-			}
+-		}
+-	}
+-	if (err < 0) {
+-		printk(KERN_INFO "\n I2C write failed");
+-	}
+ 	return err;
+ }
+-#endif
+ 
+ /*
+  * mt9v113_write_regs : Initializes a list of registers
+@@ -550,9 +510,10 @@ static int mt9v113_configure(struct mt9v113_decoder *decoder)
+ 	if (err)
+ 		return err;
+ 
+-//	if (debug)
+-//		mt9v113_reg_dump(decoder);
+-
++#if 0
++	if (debug)
++		mt9v113_reg_dump(decoder);
++#endif
+ 	return 0;
+ }
+ 
+@@ -573,6 +534,62 @@ static int mt9v113_vga_mode(struct mt9v113_decoder *decoder)
+ }
+ 
+ 
++/**
++ * ioctl_enum_framesizes - V4L2 sensor if handler for vidioc_int_enum_framesizes
++ * @s: pointer to standard V4L2 device structure
++ * @frms: pointer to standard V4L2 framesizes enumeration structure
++ *
++ * Returns possible framesizes depending on choosen pixel format
++ **/
++static int ioctl_enum_framesizes(struct v4l2_int_device *s,
++					struct v4l2_frmsizeenum *frms)
++{
++	struct mt9v113_decoder *decoder = s->priv;
++	int ifmt;
++
++	for (ifmt = 0; ifmt < decoder->num_fmts; ifmt++) {
++		if (frms->pixel_format == decoder->fmt_list[ifmt].pixelformat)
++			break;
++	}
++	/* Is requested pixelformat not found on sensor? */
++	if (ifmt == decoder->num_fmts)
++		return -EINVAL;
++
++	/* Do we already reached all discrete framesizes? */
++	if (frms->index >= decoder->num_stds)
++		return -EINVAL;
++
++	frms->type = V4L2_FRMSIZE_TYPE_DISCRETE;
++	frms->discrete.width = decoder->std_list[frms->index].width;
++	frms->discrete.height = decoder->std_list[frms->index].height;
++
++	return 0;
++
++}
++
++static int ioctl_enum_frameintervals(struct v4l2_int_device *s,
++					struct v4l2_frmivalenum *frmi)
++{
++	struct mt9v113_decoder *decoder = s->priv;
++	int ifmt;
++
++	if (frmi->index >= 1)
++		return -EINVAL;
++
++	for (ifmt = 0; ifmt < decoder->num_fmts; ifmt++) {
++		if (frmi->pixel_format == decoder->fmt_list[ifmt].pixelformat)
++			break;
++	}
++	/* Is requested pixelformat not found on sensor? */
++	if (ifmt == decoder->num_fmts)
++		return -EINVAL;
++
++	frmi->type = V4L2_FRMSIZE_TYPE_DISCRETE;
++	frmi->discrete.numerator = 1;
++	frmi->discrete.denominator = 10;
++	return 0;
++}
++
+ /*
+  * Detect if an mt9v113 is present, and if so which revision.
+  * A device is considered to be detected if the chip ID (LSB and MSB)
+@@ -585,15 +602,9 @@ static int mt9v113_detect(struct mt9v113_decoder *decoder)
+ {
+ 	unsigned short val=0;
+ 
+-#ifndef CONFIG_MACH_DM355_LEOPARD
+-//	mt9v113_en_mux(decoder->client);
+-#endif
+-
+ 	val = mt9v113_read_reg(decoder->client, REG_CHIP_ID);
+ 
+-	v4l_dbg(1, debug, decoder->client,
+-		 "chip id detected 0x%x\n",
+-		 val);
++	v4l_dbg(1, debug, decoder->client, "chip id detected 0x%x\n", val);
+ 
+ 	if (MT9V113_CHIP_ID != val) {
+ 		/* We didn't read the values we expected, so this must not be
+@@ -1042,7 +1053,7 @@ ioctl_s_fmt_cap(struct v4l2_int_device *s, struct v4l2_format *f)
+ 	if (rval)
+ 		return rval;
+ 
+-		decoder->pix = *pix;
++	decoder->pix = *pix;
+ 
+ 	return rval;
+ }
+@@ -1177,7 +1188,7 @@ static int ioctl_g_ifparm(struct v4l2_int_device *s, struct v4l2_ifparm *p)
+ 		return rval;
+ 	}
+ 
+-	p->u.bt656.clock_curr = 27000000; // TODO: read clock rate from sensor
++	p->u.bt656.clock_curr = 27000000; /* TODO:read clock rate from sensor */
+ 
+ 	return 0;
+ }
+@@ -1211,12 +1222,17 @@ static int ioctl_s_power(struct v4l2_int_device *s, enum v4l2_power on)
+ 	struct mt9v113_decoder *decoder = s->priv;
+ 	int err = 0;
+ 
++	if (decoder->state == STATE_DETECTED)
++		return 0;
++
+ 	switch (on) {
+ 	case V4L2_POWER_OFF:
+ 		/* Power Down Sequence */
+-		err =
+-		    mt9v113_write_reg(decoder->client, REG_OPERATION_MODE,
+-					0x01);
++/* TODO: FIXME: implement proper OFF and Standby code here */
++#if 0
++		err = mt9v113_write_reg(decoder->client, REG_OPERATION_MODE,
++				0x01);
++#endif
+ 		/* Disable mux for mt9v113 data path */
+ 		if (decoder->pdata->power_set)
+ 			err |= decoder->pdata->power_set(s, on);
+@@ -1242,9 +1258,10 @@ static int ioctl_s_power(struct v4l2_int_device *s, enum v4l2_power on)
+ 						"Unable to detect decoder\n");
+ 				return err;
+ 			}
++			/* Only VGA mode for now */
++			err |= mt9v113_configure(decoder);
++			err |= mt9v113_vga_mode(decoder);
+ 		}
+-		// Only VGA mode for now
+-		err |= mt9v113_vga_mode(decoder);
+ 		break;
+ 
+ 	default:
+@@ -1263,14 +1280,11 @@ static int ioctl_s_power(struct v4l2_int_device *s, enum v4l2_power on)
+  */
+ static int ioctl_init(struct v4l2_int_device *s)
+ {
+-//	struct mt9v113_decoder *decoder = s->priv;
++	struct mt9v113_decoder *decoder = s->priv;
+ 	int err = 0;
+ 
+-	/* Set default standard to auto */
+-	//mt9v113_reg_list[REG_VIDEO_STD].val =
+-	//    VIDEO_STD_AUTO_SWITCH_BIT;
+-//	err |= mt9v113_configure(decoder);
+-//	err |= mt9v113_vga_mode(decoder);
++	err |= mt9v113_configure(decoder);
++	err |= mt9v113_vga_mode(decoder);
+ 
+ 	return err;
+ }
+@@ -1298,7 +1312,6 @@ static int ioctl_dev_init(struct v4l2_int_device *s)
+ 	struct mt9v113_decoder *decoder = s->priv;
+ 	int err;
+ 
+-	printk("%s: %d\n", __func__, __LINE__);
+ 	err = mt9v113_detect(decoder);
+ 	if (err < 0) {
+ 		v4l_err(decoder->client,
+@@ -1340,6 +1353,10 @@ static struct v4l2_int_ioctl_desc mt9v113_ioctl_desc[] = {
+ 	{vidioc_int_s_std_num, (v4l2_int_ioctl_func *) ioctl_s_std},
+ 	{vidioc_int_s_video_routing_num,
+ 		(v4l2_int_ioctl_func *) ioctl_s_routing},
++	{vidioc_int_enum_framesizes_num,
++		(v4l2_int_ioctl_func *)ioctl_enum_framesizes},
++	{vidioc_int_enum_frameintervals_num,
++		(v4l2_int_ioctl_func *)ioctl_enum_frameintervals},
+ };
+ 
+ static struct v4l2_int_slave mt9v113_slave = {
+diff --git a/drivers/media/video/omap34xxcam.c b/drivers/media/video/omap34xxcam.c
+index 6301ed3..2e8153b 100644
+--- a/drivers/media/video/omap34xxcam.c
++++ b/drivers/media/video/omap34xxcam.c
+@@ -1852,8 +1852,8 @@ static int omap34xxcam_open(struct file *file)
+ 				vdev->slave_config[OMAP34XXCAM_SLAVE_SENSOR]
+ 					.cur_input = route.input;
+ 		}
+-		sensor_format.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+ 	}
++	sensor_format.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+ 
+ 	/* Get the format the sensor is using. */
+ 	rval = vidioc_int_g_fmt_cap(vdev->vdev_sensor, &sensor_format);
+-- 
+1.6.6.1
+

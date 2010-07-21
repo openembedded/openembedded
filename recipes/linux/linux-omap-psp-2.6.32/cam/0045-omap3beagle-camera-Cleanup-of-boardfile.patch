@@ -1,0 +1,161 @@
+From 67792c04d84e341ce964c8c4fd5ddf2e6822ef3b Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Mon, 12 Jul 2010 15:44:18 -0500
+Subject: [PATCH 45/71] omap3beagle: camera: Cleanup of boardfile
+
+This removes a lot of dead code.
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ arch/arm/mach-omap2/board-omap3beagle-camera.c |   51 ++++++++++++++++++------
+ arch/arm/mach-omap2/board-omap3beagle-camera.h |   41 -------------------
+ 2 files changed, 38 insertions(+), 54 deletions(-)
+ delete mode 100644 arch/arm/mach-omap2/board-omap3beagle-camera.h
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle-camera.c b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+index 90eadd0..befa7d4 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle-camera.c
++++ b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+@@ -44,9 +44,6 @@
+ #include <../drivers/media/video/isp/ispreg.h>
+ 
+ #include "mux.h"
+-#include "board-omap3beagle-camera.h"
+-
+-#define MODULE_NAME		"omap3beaglelmb"
+ 
+ #define CAM_USE_XCLKA		0
+ 
+@@ -129,11 +126,7 @@ static int mt9v113_set_prv_data(void *priv)
+ 	if (priv == NULL)
+ 		return -EINVAL;
+ 
+-	hwc->u.sensor = mt9v113_hwc.u.sensor;
+-	hwc->dev_index = mt9v113_hwc.dev_index;
+-	hwc->dev_minor = mt9v113_hwc.dev_minor;
+-	hwc->dev_type = mt9v113_hwc.dev_type;
+-
++	*hwc = mt9v113_hwc;
+ 	return 0;
+ }
+ 
+@@ -204,10 +197,6 @@ struct mt9v113_platform_data mt9v113_pdata = {
+ 	.power_set	= mt9v113_power_set,
+ 	.priv_data_set	= mt9v113_set_prv_data,
+ 	.ifparm		= mt9v113_ifparm,
+-	/* Some interface dependent params */
+-	.clk_polarity	= 0, /* data clocked out on falling edge */
+-	.hs_polarity	= 1, /* 0 - Active low, 1- Active high */
+-	.vs_polarity	= 1, /* 0 - Active low, 1- Active high */
+ };
+ 
+ static int beagle_cam_probe(struct platform_device *pdev)
+@@ -217,6 +206,7 @@ static int beagle_cam_probe(struct platform_device *pdev)
+ 		dev_err(&pdev->dev, "vaux3_1 regulator missing\n");
+ 		return PTR_ERR(beagle_mt9v113_1_8v1);
+ 	}
++
+ 	beagle_mt9v113_1_8v2 = regulator_get(&pdev->dev, "vaux4_1");
+ 	if (IS_ERR(beagle_mt9v113_1_8v2)) {
+ 		dev_err(&pdev->dev, "vaux4_1 regulator missing\n");
+@@ -235,7 +225,41 @@ static int beagle_cam_probe(struct platform_device *pdev)
+ 	/* set to output mode, default value 0 */
+ 	gpio_direction_output(LEOPARD_RESET_GPIO, 0);
+ 
+-	printk(KERN_INFO MODULE_NAME ": Driver registration complete \n");
++	/* MUX init */
++	omap_ctrl_writew(OMAP_PIN_INPUT_PULLUP | OMAP_MUX_MODE0,
++			 0x10C); /* CAM_HS */
++	omap_ctrl_writew(OMAP_PIN_INPUT_PULLUP | OMAP_MUX_MODE0,
++			 0x10E); /* CAM_VS */
++	omap_ctrl_writew(OMAP_PIN_OUTPUT | OMAP_MUX_MODE0,
++			 0x110); /* CAM_XCLKA */
++	omap_ctrl_writew(OMAP_PIN_INPUT_PULLUP | OMAP_MUX_MODE0,
++			 0x112); /* CAM_PCLK */
++	omap_ctrl_writew(OMAP_PIN_INPUT | OMAP_MUX_MODE0,
++			 0x116); /* CAM_D0 */
++	omap_ctrl_writew(OMAP_PIN_INPUT | OMAP_MUX_MODE0,
++			 0x118); /* CAM_D1 */
++	omap_ctrl_writew(OMAP_PIN_INPUT | OMAP_MUX_MODE0,
++			 0x11A); /* CAM_D2 */
++	omap_ctrl_writew(OMAP_PIN_INPUT | OMAP_MUX_MODE0,
++			 0x11C); /* CAM_D3 */
++	omap_ctrl_writew(OMAP_PIN_INPUT | OMAP_MUX_MODE0,
++			 0x11E); /* CAM_D4 */
++	omap_ctrl_writew(OMAP_PIN_INPUT | OMAP_MUX_MODE0,
++			 0x120); /* CAM_D5 */
++	omap_ctrl_writew(OMAP_PIN_INPUT | OMAP_MUX_MODE0,
++			 0x122); /* CAM_D6 */
++	omap_ctrl_writew(OMAP_PIN_INPUT | OMAP_MUX_MODE0,
++			 0x124); /* CAM_D7 */
++	omap_ctrl_writew(OMAP_PIN_INPUT | OMAP_MUX_MODE0,
++			 0x126); /* CAM_D8 */
++	omap_ctrl_writew(OMAP_PIN_INPUT | OMAP_MUX_MODE0,
++			 0x128); /* CAM_D9 */
++	omap_ctrl_writew(OMAP_PIN_INPUT | OMAP_MUX_MODE0,
++			 0x12A); /* CAM_D10 */
++	omap_ctrl_writew(OMAP_PIN_INPUT | OMAP_MUX_MODE0,
++			 0x12C); /* CAM_D11 */
++
++	printk(KERN_INFO "omap3beaglelmb: Driver registration complete\n");
+ 
+ 	return 0;
+ }
+@@ -287,6 +311,7 @@ static struct platform_driver beagle_cam_driver = {
+  */
+ int __init omap3beaglelmb_init(void)
+ {
++	/* NOTE: Beagle xM boards are the only ones with camera interface */
+ 	if (cpu_is_omap3630())
+ 		platform_driver_register(&beagle_cam_driver);
+ 
+diff --git a/arch/arm/mach-omap2/board-omap3beagle-camera.h b/arch/arm/mach-omap2/board-omap3beagle-camera.h
+deleted file mode 100644
+index 1026aeb..0000000
+--- a/arch/arm/mach-omap2/board-omap3beagle-camera.h
++++ /dev/null
+@@ -1,41 +0,0 @@
+-/*
+- * Copyright (C) 2010 Texas Instruments Inc
+- * Author: Sergio Aguirre <saaguirre@ti.com>
+- *
+- * Based on work done by:
+- *    Vaibhav Hiremath <hvaibhav@ti.com>
+- *    Anuj Aggarwal <anuj.aggarwal@ti.com>
+- *    Sivaraj R <sivaraj@ti.com>
+- *
+- * This package is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+- */
+-
+-#ifndef __BOARD_OMAP3BEAGLE_LMB_H_
+-#define __BOARD_OMAP3BEAGLE_LMB_H_
+-
+-/* mux id to enable/disable signal routing to different peripherals */
+-enum omap3beaglelmb_mux {
+-	MUX_TVP5146 = 0,
+-	MUX_CAMERA_SENSOR,
+-	MUX_EXP_CAMERA_SENSOR,
+-	NUM_MUX
+-};
+-
+-/* enum to enable or disable mux */
+-enum config_mux {
+-	DISABLE_MUX,
+-	ENABLE_MUX
+-};
+-
+-#endif		/* __BOARD_OMAP3BEAGLE_LMB_H_ */
+-- 
+1.6.6.1
+

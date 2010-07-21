@@ -1,0 +1,31 @@
+From c56b16bf7ee83b17d6aefa30f84fb50417fde28b Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <morimoto.kuninori@renesas.com>
+Date: Tue, 2 Feb 2010 13:17:54 +0900
+Subject: [PATCH 50/71] soc-camera: mt9t112: modify exiting conditions from standby mode
+
+This polling is needed if camera is in standby mode, but current exiting
+condition is inverted.
+
+Signed-off-by: Kuninori Morimoto <morimoto.kuninori@renesas.com>
+Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@redhat.com>
+---
+ drivers/media/video/mt9t112.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/media/video/mt9t112.c b/drivers/media/video/mt9t112.c
+index fc4dd60..7438f8d 100644
+--- a/drivers/media/video/mt9t112.c
++++ b/drivers/media/video/mt9t112.c
+@@ -514,7 +514,7 @@ static int mt9t112_init_pll(const struct i2c_client *client)
+ 	/* poll to verify out of standby. Must Poll this bit */
+ 	for (i = 0; i < 100; i++) {
+ 		mt9t112_reg_read(data, client, 0x0018);
+-		if (0x4000 & data)
++		if (!(0x4000 & data))
+ 			break;
+ 
+ 		mdelay(10);
+-- 
+1.6.6.1
+

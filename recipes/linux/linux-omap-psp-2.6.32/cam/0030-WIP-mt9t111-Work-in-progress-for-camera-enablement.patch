@@ -1,0 +1,53 @@
+From 250e5bf211583993d5e56cb5fc736a07945fa496 Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Fri, 25 Jun 2010 16:01:47 -0500
+Subject: [PATCH 30/71] WIP: mt9t111: Work in progress for camera enablement
+
+This is changing so far:
+- Remove useless printk's in enum_frameinterval calls.
+- Call mt9t111_loaddefault instead of mt9t111_configure dummy function.
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ drivers/media/video/mt9t111.c |   11 +----------
+ 1 files changed, 1 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/media/video/mt9t111.c b/drivers/media/video/mt9t111.c
+index 08122ff..10080af 100644
+--- a/drivers/media/video/mt9t111.c
++++ b/drivers/media/video/mt9t111.c
+@@ -288,14 +288,6 @@ static int ioctl_enum_frameintervals(struct v4l2_int_device *s,
+ {
+ 	int ifmt;
+ 
+-	printk(KERN_INFO "entering ioctl_enum_frameintervals\n");
+-	printk(KERN_INFO "index = %d, pixel_format = 0x%x,"
+-			 " width = %d, height = %d\n",
+-			 frmi->index, frmi->pixel_format,
+-			 frmi->width, frmi->height);
+-	printk(KERN_INFO "mt9t111 format = 0x%x\n",
+-			 mt9t111_formats[0].pixelformat);
+-
+ 	if (frmi->index >= NUM_CAPTURE_FRAMEINTERVALS)
+ 		return -EINVAL;
+ 
+@@ -379,7 +371,7 @@ static int ioctl_s_power(struct v4l2_int_device *s, enum v4l2_power on)
+ 	}
+ 
+ 	if ((on == V4L2_POWER_ON) && (sensor->state == SENSOR_DETECTED))
+-		mt9t111_configure(s);
++		mt9t111_loaddefault(c);
+ 
+ 	if ((on == V4L2_POWER_ON) && (sensor->state == SENSOR_NOT_DETECTED)) {
+ 		rval = mt9t111_detect(c);
+@@ -392,7 +384,6 @@ static int ioctl_s_power(struct v4l2_int_device *s, enum v4l2_power on)
+ 		dev_info(&c->dev, "chip version 0x%02x detected\n", rval);
+ 		sensor->state = SENSOR_DETECTED;
+ 		sensor->ver = rval;
+-		mt9t111_loaddefault(c);
+ 	}
+ 	return 0;
+ }
+-- 
+1.6.6.1
+

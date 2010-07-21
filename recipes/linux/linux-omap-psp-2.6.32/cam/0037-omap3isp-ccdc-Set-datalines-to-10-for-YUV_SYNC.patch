@@ -1,0 +1,29 @@
+From 059f8c94d288f5e40f38aa86344ae7556c0f0f45 Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Mon, 12 Jul 2010 14:09:38 -0500
+Subject: [PATCH 37/71] omap3isp: ccdc: Set datalines to 10 for YUV_SYNC
+
+Most of the sensors we use are 10 bits, so set this as
+default.
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ drivers/media/video/isp/ispccdc.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/media/video/isp/ispccdc.c b/drivers/media/video/isp/ispccdc.c
+index b4691c0..280a721 100644
+--- a/drivers/media/video/isp/ispccdc.c
++++ b/drivers/media/video/isp/ispccdc.c
+@@ -664,7 +664,7 @@ static int ispccdc_config_datapath(struct isp_ccdc_device *isp_ccdc,
+ 	case CCDC_YUV_SYNC:
+ 		syncif.ccdc_mastermode = 0;
+ 		syncif.datapol = 0;
+-		syncif.datsz = DAT8;
++		syncif.datsz = DAT10;
+ 		syncif.fldmode = 0;
+ 		syncif.fldout = 0;
+ 		syncif.fldpol = 0;
+-- 
+1.6.6.1
+

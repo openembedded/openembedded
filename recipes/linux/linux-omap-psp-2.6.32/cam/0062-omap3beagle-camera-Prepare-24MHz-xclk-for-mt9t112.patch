@@ -1,0 +1,62 @@
+From b16f10756ac1aeeab5c636fcaa2837b2ffec43f2 Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Thu, 15 Jul 2010 23:43:20 -0500
+Subject: [PATCH 62/71] omap3beagle: camera: Prepare 24MHz xclk for mt9t112
+
+Adjust calculations of timings based on # of EXTCLK cycles.
+
+Also, set default requested framerate to 30 fps.
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ arch/arm/mach-omap2/board-omap3beagle-camera.c |   16 ++++++++--------
+ 1 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle-camera.c b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+index 75622bf..520e1d8 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle-camera.c
++++ b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+@@ -264,7 +264,7 @@ static struct omap34xxcam_hw_config mt9t112_hwc = {
+ 	.dev_type		= OMAP34XXCAM_SLAVE_SENSOR,
+ 	.u.sensor.sensor_isp	= 0,
+ 	.u.sensor.capture_mem	= MT9T112_BIGGEST_FRAME_BYTE_SIZE,
+-	.u.sensor.ival_default	= { 1, 10 },
++	.u.sensor.ival_default	= { 1, 30 },
+ };
+ #endif
+ 
+@@ -331,24 +331,24 @@ static int mt9t112_power_set(struct v4l2_int_device *s, enum v4l2_power power)
+ 		mdelay(50);
+ 
+ 		/* Enable EXTCLK */
+-		isp_set_xclk(vdev->cam->isp, MT9T112_CLK_MIN, CAM_USE_XCLKA);
++		isp_set_xclk(vdev->cam->isp, 24000000, CAM_USE_XCLKA);
+ 
+ 		/*
+-		 * Wait at least 70 CLK cycles (w/EXTCLK = 6MHz, or CLK_MIN):
+-		 * ((1000000 * 70) / 6000000) = aprox 12 us.
++		 * Wait at least 70 CLK cycles (w/EXTCLK = 24MHz):
++		 * ((1000000 * 70) / 24000000) = aprox 2.91 us.
+ 		 */
+ 
+-		udelay(12);
++		udelay(3);
+ 
+ 		/* Set RESET_BAR to 1 */
+ 		gpio_set_value(LEOPARD_RESET_GPIO, 1);
+ 
+ 		/*
+-		 * Wait at least 100 CLK cycles (w/EXTCLK = 6MHz, or CLK_MIN):
+-		 * ((1000000 * 100) / 6000000) = aprox 17 us.
++		 * Wait at least 100 CLK cycles (w/EXTCLK = 24MHz):
++		 * ((1000000 * 100) / 24000000) = aprox 4.16 us.
+ 		 */
+ 
+-		udelay(17);
++		udelay(5);
+ 
+ 		break;
+ 
+-- 
+1.6.6.1
+

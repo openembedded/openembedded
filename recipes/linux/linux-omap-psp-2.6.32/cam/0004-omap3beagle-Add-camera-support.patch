@@ -1,7 +1,7 @@
 From 06ff02b8346c0ed77fabba84a1b984f53bfaecb6 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Fri, 11 Jun 2010 16:15:58 -0500
-Subject: [PATCH 04/28] omap3beagle: Add camera support
+Subject: [PATCH 04/71] omap3beagle: Add camera support
 
 This is tested with the xM + Leopard imaging module camera, which
 has a MT9T111.

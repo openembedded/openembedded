@@ -1,0 +1,2441 @@
+From eed14c95dbe46b0e34b489ad5e0452654e0f1661 Mon Sep 17 00:00:00 2001
+From: Vaibhav Hiremath <hvaibhav@ti.com>
+Date: Wed, 7 Jul 2010 11:55:43 +0530
+Subject: [PATCH 31/71] BeagleXM:Cam: Add support for MT9V113 VGA Sensor
+
+This patch replaces the MT9T111 to MT9V113 sensor.
+---
+ arch/arm/mach-omap2/board-omap3beagle-camera.c |  132 ++-
+ arch/arm/mach-omap2/board-omap3beagle.c        |   32 +-
+ drivers/media/video/Kconfig                    |   10 +
+ drivers/media/video/Makefile                   |    1 +
+ drivers/media/video/mt9v113.c                  | 1522 ++++++++++++++++++++++++
+ drivers/media/video/mt9v113_regs.h             |  294 +++++
+ include/media/mt9v113.h                        |   83 ++
+ include/media/v4l2-int-device.h                |   27 +
+ 8 files changed, 2023 insertions(+), 78 deletions(-)
+ create mode 100644 drivers/media/video/mt9v113.c
+ create mode 100644 drivers/media/video/mt9v113_regs.h
+ create mode 100644 include/media/mt9v113.h
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle-camera.c b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+index 8faa437..6c06265 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle-camera.c
++++ b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+@@ -37,7 +37,7 @@
+ #include <plat/control.h>
+ 
+ #include <media/v4l2-int-device.h>
+-#include <media/mt9t111.h>
++#include <media/mt9v113.h>
+ 
+ /* Include V4L2 ISP-Camera driver related header file */
+ #include <../drivers/media/video/omap34xxcam.h>
+@@ -50,99 +50,99 @@
+ 
+ #define CAM_USE_XCLKA       0
+ 
+-#define ISP_MT9T111_MCLK		216000000
++#define ISP_MT9V113_MCLK		216000000
+ 
+ #define LEOPARD_RESET_GPIO		98
+ 
+-static struct regulator *beagle_mt9t111_1_8v1;
+-static struct regulator *beagle_mt9t111_1_8v2;
++static struct regulator *beagle_mt9v113_1_8v1;
++static struct regulator *beagle_mt9v113_1_8v2;
+ 
+-#if defined(CONFIG_VIDEO_MT9T111) || defined(CONFIG_VIDEO_MT9T111_MODULE)
++#if defined(CONFIG_VIDEO_MT9V113) || defined(CONFIG_VIDEO_MT9V113_MODULE)
+ 
+ /* Arbitrary memory handling limit */
+-#define MT9T111_BIGGEST_FRAME_BYTE_SIZE	PAGE_ALIGN(2048 * 1536 * 4)
++#define MT9V113_BIGGEST_FRAME_BYTE_SIZE	PAGE_ALIGN(2048 * 1536 * 4)
+ 
+-static struct isp_interface_config mt9t111_if_config = {
+-	.ccdc_par_ser		= ISP_PARLL, 
++static struct isp_interface_config mt9v113_if_config = {
++	.ccdc_par_ser		= ISP_PARLL,
+ 	.dataline_shift		= 0x0,
+ 	.hsvs_syncdetect	= ISPCTRL_SYNC_DETECT_VSRISE,
+ 	.strobe			= 0x0,
+ 	.prestrobe		= 0x0,
+ 	.shutter		= 0x0,
+-	.cam_mclk		= ISP_MT9T111_MCLK,
++	.cam_mclk		= ISP_MT9V113_MCLK,
+ 	.wenlog 		= ISPCCDC_CFG_WENLOG_AND,
+ 	.wait_hs_vs		= 2,
+ 	.u.par.par_bridge	= 0x1,
+ 	.u.par.par_clk_pol	= 0x0,
+ };
+ 
+-static struct v4l2_ifparm mt9t111_ifparm_s = {
++static struct v4l2_ifparm mt9v113_ifparm_s = {
+ #if 1
+-	.if_type = V4L2_IF_TYPE_RAW, 
++	.if_type = V4L2_IF_TYPE_RAW,
+ 	.u 	 = {
+-		.raw = {  
++		.raw = {
+ 			.frame_start_on_rising_vs = 1,
+ 			.bt_sync_correct	= 0,
+ 			.swap			= 0,
+ 			.latch_clk_inv		= 0,
+ 			.nobt_hs_inv		= 0,	/* active high */
+ 			.nobt_vs_inv		= 0,	/* active high */
+-			.clock_min		= MT9T111_CLK_MIN,
+-			.clock_max		= MT9T111_CLK_MAX,
++			.clock_min		= MT9V113_CLK_MIN,
++			.clock_max		= MT9V113_CLK_MAX,
+ 		},
+ 	},
+-#else		
+-	.if_type = V4L2_IF_TYPE_YCbCr, 
++#else
++	.if_type = V4L2_IF_TYPE_YCbCr,
+ 	.u 	 = {
+-		.ycbcr = {  
++		.ycbcr = {
+ 			.frame_start_on_rising_vs = 1,
+ 			.bt_sync_correct	= 0,
+ 			.swap			= 0,
+ 			.latch_clk_inv		= 0,
+ 			.nobt_hs_inv		= 0,	/* active high */
+ 			.nobt_vs_inv		= 0,	/* active high */
+-			.clock_min		= MT9T111_CLK_MIN,
+-			.clock_max		= MT9T111_CLK_MAX,
++			.clock_min		= MT9V113_CLK_MIN,
++			.clock_max		= MT9V113_CLK_MAX,
+ 		},
+ 	},
+ #endif
+ };
+ 
+ /**
+- * @brief mt9t111_ifparm - Returns the mt9t111 interface parameters
++ * @brief mt9v113_ifparm - Returns the mt9v113 interface parameters
+  *
+  * @param p - pointer to v4l2_ifparm structure
+  *
+  * @return result of operation - 0 is success
+  */
+-static int mt9t111_ifparm(struct v4l2_ifparm *p)
++static int mt9v113_ifparm(struct v4l2_ifparm *p)
+ {
+ 	if (p == NULL)
+ 		return -EINVAL;
+ 
+-	*p = mt9t111_ifparm_s;
++	*p = mt9v113_ifparm_s;
+ 	return 0;
+ }
+ 
+ #if defined(CONFIG_VIDEO_OMAP3) || defined(CONFIG_VIDEO_OMAP3_MODULE)
+-static struct omap34xxcam_hw_config mt9t111_hwc = {
++static struct omap34xxcam_hw_config mt9v113_hwc = {
+ 	.dev_index		= 0,
+ 	.dev_minor		= 0,
+ 	.dev_type		= OMAP34XXCAM_SLAVE_SENSOR,
+ 	.u.sensor.sensor_isp	= 1,
+-	.u.sensor.capture_mem	= MT9T111_BIGGEST_FRAME_BYTE_SIZE * 2,
++	.u.sensor.capture_mem	= MT9V113_BIGGEST_FRAME_BYTE_SIZE * 2,
+ 	.u.sensor.ival_default	= { 1, 10 },
+ };
+ #endif
+ 
+ /**
+- * @brief mt9t111_set_prv_data - Returns mt9t111 omap34xx driver private data
++ * @brief mt9v113_set_prv_data - Returns mt9v113 omap34xx driver private data
+  *
+  * @param priv - pointer to omap34xxcam_hw_config structure
+  *
+  * @return result of operation - 0 is success
+  */
+-static int mt9t111_set_prv_data(void *priv)
++static int mt9v113_set_prv_data(void *priv)
+ {
+ #if defined(CONFIG_VIDEO_OMAP3) || defined(CONFIG_VIDEO_OMAP3_MODULE)
+ 	struct omap34xxcam_hw_config *hwc = priv;
+@@ -150,10 +150,10 @@ static int mt9t111_set_prv_data(void *priv)
+ 	if (priv == NULL)
+ 		return -EINVAL;
+ 
+-	hwc->u.sensor = mt9t111_hwc.u.sensor;
+-	hwc->dev_index = mt9t111_hwc.dev_index;
+-	hwc->dev_minor = mt9t111_hwc.dev_minor;
+-	hwc->dev_type = mt9t111_hwc.dev_type;
++	hwc->u.sensor = mt9v113_hwc.u.sensor;
++	hwc->dev_index = mt9v113_hwc.dev_index;
++	hwc->dev_minor = mt9v113_hwc.dev_minor;
++	hwc->dev_type = mt9v113_hwc.dev_type;
+ 	return 0;
+ #else
+ 	return -EINVAL;
+@@ -161,13 +161,13 @@ static int mt9t111_set_prv_data(void *priv)
+ }
+ 
+ /**
+- * @brief mt9t111_power_set - Power-on or power-off TVP5146 device
++ * @brief mt9v113_power_set - Power-on or power-off TVP5146 device
+  *
+  * @param power - enum, Power on/off, resume/standby
+  *
+  * @return result of operation - 0 is success
+  */
+-static int mt9t111_power_set(struct v4l2_int_device *s, enum v4l2_power power)
++static int mt9v113_power_set(struct v4l2_int_device *s, enum v4l2_power power)
+ {
+ 	struct omap34xxcam_videodev *vdev = s->u.slave->master->priv;
+ 
+@@ -176,32 +176,32 @@ static int mt9t111_power_set(struct v4l2_int_device *s, enum v4l2_power power)
+ 	case V4L2_POWER_STANDBY:
+ 		isp_set_xclk(vdev->cam->isp, 0, CAM_USE_XCLKA);
+ 
+-		if (regulator_is_enabled(beagle_mt9t111_1_8v1))
+-			regulator_disable(beagle_mt9t111_1_8v1);
+-		if (regulator_is_enabled(beagle_mt9t111_1_8v2))
+-			regulator_disable(beagle_mt9t111_1_8v2);
++		if (regulator_is_enabled(beagle_mt9v113_1_8v1))
++			regulator_disable(beagle_mt9v113_1_8v1);
++		if (regulator_is_enabled(beagle_mt9v113_1_8v2))
++			regulator_disable(beagle_mt9v113_1_8v2);
+ 		break;
+ 
+ 	case V4L2_POWER_ON:
+ #if defined(CONFIG_VIDEO_OMAP3) || defined(CONFIG_VIDEO_OMAP3_MODULE)
+-		isp_configure_interface(vdev->cam->isp, &mt9t111_if_config);
++		isp_configure_interface(vdev->cam->isp, &mt9v113_if_config);
+ #endif
+ 
+ 		/* Set RESET_BAR to 0 */
+ 		gpio_set_value(LEOPARD_RESET_GPIO, 0);
+ 
+ 		/* turn on VDD */
+-		regulator_enable(beagle_mt9t111_1_8v1);
++		regulator_enable(beagle_mt9v113_1_8v1);
+ 
+ 		mdelay(1);
+ 
+ 		/* turn on VDD_IO */
+-		regulator_enable(beagle_mt9t111_1_8v2);
++		regulator_enable(beagle_mt9v113_1_8v2);
+ 
+ 		mdelay(50);
+ 
+ 		/* Enable EXTCLK */
+-		isp_set_xclk(vdev->cam->isp, MT9T111_CLK_MIN, CAM_USE_XCLKA);
++		isp_set_xclk(vdev->cam->isp, MT9V113_CLK_MIN, CAM_USE_XCLKA);
+ 
+ 		/*
+ 		 * Wait at least 70 CLK cycles (w/EXTCLK = 6MHz, or CLK_MIN):
+@@ -229,44 +229,48 @@ static int mt9t111_power_set(struct v4l2_int_device *s, enum v4l2_power power)
+ 	return 0;
+ }
+ 
+-struct mt9t111_platform_data mt9t111_pdata = {
++struct mt9v113_platform_data mt9v113_pdata = {
+ 	.master		= "omap34xxcam",
+-	.power_set	= mt9t111_power_set,
+-	.priv_data_set	= mt9t111_set_prv_data,
+-	.ifparm		= mt9t111_ifparm,
++	.power_set	= mt9v113_power_set,
++	.priv_data_set	= mt9v113_set_prv_data,
++	.ifparm		= mt9v113_ifparm,
+ 	/* Some interface dependent params */
+ 	.clk_polarity	= 0, /* data clocked out on falling edge */
+ 	.hs_polarity	= 1, /* 0 - Active low, 1- Active high */
+ 	.vs_polarity	= 1, /* 0 - Active low, 1- Active high */
+ };
+ 
+-#endif				/* #ifdef CONFIG_VIDEO_MT9T111 */
++#endif				/* #ifdef CONFIG_VIDEO_MT9V113 */
+ 
+ 
+ static int beagle_cam_probe(struct platform_device *pdev)
+ {
+ 	int err;
+ 
+-	beagle_mt9t111_1_8v1 = regulator_get(&pdev->dev, "vaux3_1");
+-	if (IS_ERR(beagle_mt9t111_1_8v1)) {
++	printk("%s:%d\n", __func__, __LINE__);
++	beagle_mt9v113_1_8v1 = regulator_get(&pdev->dev, "vaux3_1");
++	if (IS_ERR(beagle_mt9v113_1_8v1)) {
+ 		dev_err(&pdev->dev, "vaux3_1 regulator missing\n");
+-		return PTR_ERR(beagle_mt9t111_1_8v1);
++		return PTR_ERR(beagle_mt9v113_1_8v1);
+ 	}
+-	beagle_mt9t111_1_8v2 = regulator_get(&pdev->dev, "vaux4_1");
+-	if (IS_ERR(beagle_mt9t111_1_8v2)) {
++	printk("%s:%d\n", __func__, __LINE__);
++	beagle_mt9v113_1_8v2 = regulator_get(&pdev->dev, "vaux4_1");
++	if (IS_ERR(beagle_mt9v113_1_8v2)) {
+ 		dev_err(&pdev->dev, "vaux4_1 regulator missing\n");
+-		regulator_put(beagle_mt9t111_1_8v1);
+-		return PTR_ERR(beagle_mt9t111_1_8v2);
++		regulator_put(beagle_mt9v113_1_8v1);
++		return PTR_ERR(beagle_mt9v113_1_8v2);
+ 	}
+ 
++	printk("%s:%d\n", __func__, __LINE__);
+ 	if (gpio_request(LEOPARD_RESET_GPIO, "cam_rst") != 0) {
+ 		dev_err(&pdev->dev, "Could not request GPIO %d",
+ 			LEOPARD_RESET_GPIO);
+-		regulator_put(beagle_mt9t111_1_8v2);
+-		regulator_put(beagle_mt9t111_1_8v1);
++		regulator_put(beagle_mt9v113_1_8v2);
++		regulator_put(beagle_mt9v113_1_8v1);
+ 		return -ENODEV;
+ 	}
+ 
++	printk("%s:%d\n", __func__, __LINE__);
+ 	/* set to output mode, default value 0 */
+ 	gpio_direction_output(LEOPARD_RESET_GPIO, 0);
+ 
+@@ -277,12 +281,13 @@ static int beagle_cam_probe(struct platform_device *pdev)
+ 
+ static int beagle_cam_remove(struct platform_device *pdev)
+ {
+-	if (regulator_is_enabled(beagle_mt9t111_1_8v1))
+-		regulator_disable(beagle_mt9t111_1_8v1);
+-	regulator_put(beagle_mt9t111_1_8v1);
+-	if (regulator_is_enabled(beagle_mt9t111_1_8v2))
+-		regulator_disable(beagle_mt9t111_1_8v2);
+-	regulator_put(beagle_mt9t111_1_8v2);
++	printk("%s:%d\n", __func__, __LINE__);
++	if (regulator_is_enabled(beagle_mt9v113_1_8v1))
++		regulator_disable(beagle_mt9v113_1_8v1);
++	regulator_put(beagle_mt9v113_1_8v1);
++	if (regulator_is_enabled(beagle_mt9v113_1_8v2))
++		regulator_disable(beagle_mt9v113_1_8v2);
++	regulator_put(beagle_mt9v113_1_8v2);
+ 
+ 	gpio_free(LEOPARD_RESET_GPIO);
+ 
+@@ -355,9 +360,12 @@ static struct platform_driver beagle_cam_driver = {
+  */
+ int __init omap3beaglelmb_init(void)
+ {
++	printk("%s:%d\n", __func__, __LINE__);
+ 	if (cpu_is_omap3630()) {
+-			platform_driver_register(&beagle_cam_driver);
++	printk("%s:%d\n", __func__, __LINE__);
++		platform_driver_register(&beagle_cam_driver);
+ 	}
+-			return 0;
++	printk("%s:%d\n", __func__, __LINE__);
++	return 0;
+ }
+ late_initcall(omap3beaglelmb_init);
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index af9b818..d4b0b0a 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -71,10 +71,10 @@ static struct omap_opp * _omap35x_l3_rate_table         = NULL;
+ static struct omap_opp * _omap37x_l3_rate_table         = NULL;
+ #endif  /* CONFIG_PM */
+ 
+-#if defined(CONFIG_VIDEO_MT9T111) || defined(CONFIG_VIDEO_MT9T111_MODULE)
++#if defined(CONFIG_VIDEO_MT9V113) || defined(CONFIG_VIDEO_MT9V113_MODULE)
+ #include <media/v4l2-int-device.h>
+-#include <media/mt9t111.h>
+-extern struct mt9t111_platform_data mt9t111_pdata;
++#include <media/mt9v113.h>
++extern struct mt9v113_platform_data mt9v113_pdata;
+ #endif
+ 
+ #define GPMC_CS0_BASE  0x60
+@@ -159,7 +159,7 @@ static void __init omap3beagle_ks8851_init(void)
+ 		printk(KERN_ERR "could not obtain gpio for KS8851_IRQ\n");
+ 		return;
+ 	}
+-	
++
+ 	spi_register_board_info(omap3beagle_zippy2_spi_board_info,
+ 							ARRAY_SIZE(omap3beagle_zippy2_spi_board_info));
+ }
+@@ -369,9 +369,9 @@ static int beagle_twl_gpio_setup(struct device *dev,
+ 	 */
+ 
+ 	if (cpu_is_omap3630()) {
+-		/* Power on DVI, Serial and PWR led */ 
++		/* Power on DVI, Serial and PWR led */
+  		gpio_request(gpio + 1, "nDVI_PWR_EN");
+-		gpio_direction_output(gpio + 1, 0);	
++		gpio_direction_output(gpio + 1, 0);
+ 
+ 		/* Power on camera interface */
+ 		gpio_request(gpio + 2, "CAM_EN");
+@@ -560,7 +560,7 @@ static struct i2c_board_info __initdata beagle_i2c1_boardinfo[] = {
+ 	},
+ };
+ 
+-	
++
+ #if defined(CONFIG_EEPROM_AT24) || defined(CONFIG_EEPROM_AT24_MODULE)
+ #include <linux/i2c/at24.h>
+ 
+@@ -594,10 +594,10 @@ static struct i2c_board_info __initdata beagle_zippy_i2c2_boardinfo[] = {};
+ #endif
+ 
+ static struct i2c_board_info __initdata beagle_i2c2_boardinfo[] = {
+-#if defined(CONFIG_VIDEO_MT9T111) || defined(CONFIG_VIDEO_MT9T111_MODULE)
++#if defined(CONFIG_VIDEO_MT9V113) || defined(CONFIG_VIDEO_MT9V113_MODULE)
+ 	{
+-		I2C_BOARD_INFO("mt9t111", MT9T111_I2C_ADDR),
+-		.platform_data	= &mt9t111_pdata,
++		I2C_BOARD_INFO("mt9v113", MT9V113_I2C_ADDR),
++		.platform_data	= &mt9v113_pdata,
+ 	},
+ #endif
+ };
+@@ -606,7 +606,7 @@ static int __init omap3_beagle_i2c_init(void)
+ {
+ 	omap_register_i2c_bus(1, 2600, beagle_i2c1_boardinfo,
+ 			ARRAY_SIZE(beagle_i2c1_boardinfo));
+-	if(!strcmp(expansionboard_name, "zippy") || !strcmp(expansionboard_name, "zippy2")) 
++	if(!strcmp(expansionboard_name, "zippy") || !strcmp(expansionboard_name, "zippy2"))
+ 	{
+ 		printk(KERN_INFO "Beagle expansionboard: registering i2c2 bus for zippy/zippy2\n");
+ 		omap_register_i2c_bus(2, 400,  beagle_zippy_i2c2_boardinfo,
+@@ -681,7 +681,7 @@ static struct spi_board_info beaglefpga_mcspi_board_info[] = {
+ 		.modalias	= "spidev",
+ 		.max_speed_hz	= 48000000, //48 Mbps
+ 		.bus_num	= 4,
+-		.chip_select	= 0,	
++		.chip_select	= 0,
+ 		.mode = SPI_MODE_1,
+ 	},
+ };
+@@ -830,7 +830,7 @@ static void __init omap3_beagle_init(void)
+ 	/* REVISIT leave DVI powered down until it's needed ... */
+ 	gpio_direction_output(170, true);
+ 
+-	if(!strcmp(expansionboard_name, "zippy")) 
++	if(!strcmp(expansionboard_name, "zippy"))
+ 	{
+ 		printk(KERN_INFO "Beagle expansionboard: initializing enc28j60\n");
+ 		omap3beagle_enc28j60_init();
+@@ -838,8 +838,8 @@ static void __init omap3_beagle_init(void)
+ 		mmc[1].gpio_wp = 141;
+ 		mmc[1].gpio_cd = 162;
+ 	}
+-	
+-	if(!strcmp(expansionboard_name, "zippy2")) 
++
++	if(!strcmp(expansionboard_name, "zippy2"))
+ 	{
+ 		printk(KERN_INFO "Beagle expansionboard: initializing ks_8851\n");
+ 		omap3beagle_ks8851_init();
+@@ -880,7 +880,7 @@ static void __init omap3_beagle_init(void)
+ 	}
+ 
+ 	if(!strcmp(expansionboard_name, "beaglefpga"))
+-	{  
++	{
+ 		printk(KERN_INFO "Beagle expansionboard: Using McSPI for SPI\n");
+ 		beaglefpga_init_spi();
+ 	}
+diff --git a/drivers/media/video/Kconfig b/drivers/media/video/Kconfig
+index f67ed46..c14d758 100644
+--- a/drivers/media/video/Kconfig
++++ b/drivers/media/video/Kconfig
+@@ -329,6 +329,16 @@ config VIDEO_MT9V011
+ 	  mt0v011 1.3 Mpixel camera.  It currently only works with the
+ 	  em28xx driver.
+ 
++config VIDEO_MT9V113
++	tristate "Aptina MT9V113 VGA CMOS IMAGE SENSOR"
++	depends on VIDEO_V4L2 && I2C
++	---help---
++	  This is a Video4Linux2 sensor-level driver for the Aptina MT9V113
++	  image sensor.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called mt9v113.
++
+ config VIDEO_TCM825X
+ 	tristate "TCM825x camera sensor support"
+ 	depends on I2C && VIDEO_V4L2
+diff --git a/drivers/media/video/Makefile b/drivers/media/video/Makefile
+index 31688bf..763c157 100644
+--- a/drivers/media/video/Makefile
++++ b/drivers/media/video/Makefile
+@@ -75,6 +75,7 @@ obj-$(CONFIG_VIDEO_OV7670) 	+= ov7670.o
+ obj-$(CONFIG_VIDEO_TCM825X) += tcm825x.o
+ obj-$(CONFIG_VIDEO_TVEEPROM) += tveeprom.o
+ obj-$(CONFIG_VIDEO_MT9V011) += mt9v011.o
++obj-$(CONFIG_VIDEO_MT9V113) += mt9v113.o
+ 
+ obj-$(CONFIG_SOC_CAMERA_MT9M001)	+= mt9m001.o
+ obj-$(CONFIG_SOC_CAMERA_MT9M111)	+= mt9m111.o
+diff --git a/drivers/media/video/mt9v113.c b/drivers/media/video/mt9v113.c
+new file mode 100644
+index 0000000..755a88a
+--- /dev/null
++++ b/drivers/media/video/mt9v113.c
+@@ -0,0 +1,1522 @@
++/*
++ * drivers/media/video/mt9v113.c
++ *
++ * Based on TI TVP5146/47 decoder driver
++ *
++ *
++ * This package is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ *
++ */
++
++#include <linux/i2c.h>
++#include <linux/delay.h>
++#include <linux/videodev2.h>
++#include <media/v4l2-int-device.h>
++#include <media/mt9v113.h>
++#include <mach/hardware.h>
++#include <linux/io.h>
++
++#include "mt9v113_regs.h"
++
++/* Module Name */
++#define MT9V113_MODULE_NAME		"mt9v113"
++
++/* Private macros for TVP */
++#define I2C_RETRY_COUNT                 (5)
++#define LOCK_RETRY_COUNT                (5)
++#define LOCK_RETRY_DELAY                (200)
++
++/* Debug functions */
++static int debug = 1;
++module_param(debug, bool, 0644);
++MODULE_PARM_DESC(debug, "Debug level (0-1)");
++
++#define dump_reg(client, reg, val)				\
++	do {							\
++		val = mt9v113_read_reg(client, reg);		\
++		v4l_info(client, "Reg(0x%.2X): 0x%.2X\n", reg, val); \
++	} while (0)
++
++/**
++ * enum mt9v113_std - enum for supported standards
++ */
++enum mt9v113_std {
++	MT9V113_STD_VGA = 0,
++	MT9V113_STD_QVGA,
++	MT9V113_STD_INVALID
++};
++
++/**
++ * enum mt9v113_state - enum for different decoder states
++ */
++enum mt9v113_state {
++	STATE_NOT_DETECTED,
++	STATE_DETECTED
++};
++
++/**
++ * struct mt9v113_std_info - Structure to store standard informations
++ * @width: Line width in pixels
++ * @height:Number of active lines
++ * @video_std: Value to write in REG_VIDEO_STD register
++ * @standard: v4l2 standard structure information
++ */
++struct mt9v113_std_info {
++	unsigned long width;
++	unsigned long height;
++	u8 video_std;
++	struct v4l2_standard standard;
++};
++
++/**
++ * struct mt9v113_decoded - decoder object
++ * @v4l2_int_device: Slave handle
++ * @pdata: Board specific
++ * @client: I2C client data
++ * @id: Entry from I2C table
++ * @ver: Chip version
++ * @state: decoder state - detected or not-detected
++ * @pix: Current pixel format
++ * @num_fmts: Number of formats
++ * @fmt_list: Format list
++ * @current_std: Current standard
++ * @num_stds: Number of standards
++ * @std_list: Standards list
++ * @route: input and output routing at chip level
++ */
++struct mt9v113_decoder {
++	struct v4l2_int_device *v4l2_int_device;
++	const struct mt9v113_platform_data *pdata;
++	struct i2c_client *client;
++
++	struct i2c_device_id *id;
++
++	int ver;
++	enum mt9v113_state state;
++
++	struct v4l2_pix_format pix;
++	int num_fmts;
++	const struct v4l2_fmtdesc *fmt_list;
++
++	enum mt9v113_std current_std;
++	int num_stds;
++	struct mt9v113_std_info *std_list;
++
++	struct v4l2_routing route;
++};
++
++/* MT9V113 register set for VGA mode */
++static struct mt9v113_reg mt9v113_vga_reg[] = {
++	{TOK_WRITE, 0x098C, 0x2739},
++	{TOK_WRITE, 0x0990, 0x0000},
++	{TOK_WRITE, 0x098C, 0x273B},
++	{TOK_WRITE, 0x0990, 0x027F},
++	{TOK_WRITE, 0x098C, 0x273D},
++	{TOK_WRITE, 0x0990, 0x0000},
++	{TOK_WRITE, 0x098C, 0x273F},
++	{TOK_WRITE, 0x0990, 0x01DF},
++	{TOK_WRITE, 0x098C, 0x2703},
++	{TOK_WRITE, 0x0990, 0x0280},
++	{TOK_WRITE, 0x098C, 0x2705},
++	{TOK_WRITE, 0x0990, 0x01E0},
++	{TOK_WRITE, 0x098C, 0xA103},
++	{TOK_WRITE, 0x0990, 0x0005},
++	{TOK_DELAY, 0, 100},
++	{TOK_TERM, 0, 0},
++};
++
++/* MT9V113 default register values */
++static struct mt9v113_reg mt9v113_reg_list[] = {
++	{TOK_WRITE, 0x0018, 0x4028},
++	{TOK_DELAY, 0, 100},
++	{TOK_WRITE, 0x001A, 0x0011},
++	{TOK_WRITE, 0x001A, 0x0010},
++	{TOK_WRITE, 0x0018, 0x4028},
++	{TOK_DELAY, 0, 100},
++	{TOK_WRITE, 0x098C, 0x02F0},
++	{TOK_WRITE, 0x0990, 0x0000},
++	{TOK_WRITE, 0x098C, 0x02F2},
++	{TOK_WRITE, 0x0990, 0x0210},
++	{TOK_WRITE, 0x098C, 0x02F4},
++	{TOK_WRITE, 0x0990, 0x001A},
++	{TOK_WRITE, 0x098C, 0x2145},
++	{TOK_WRITE, 0x0990, 0x02F4},
++	{TOK_WRITE, 0x098C, 0xA134},
++	{TOK_WRITE, 0x0990, 0x0001},
++	{TOK_WRITE, 0x31E0, 0x0001},
++	{TOK_WRITE, 0x001A, 0x0210},
++	{TOK_WRITE, 0x001E, 0x0777},
++	{TOK_WRITE, 0x0016, 0x42DF},
++	{TOK_WRITE, 0x0014, 0x2145},
++	{TOK_WRITE, 0x0014, 0x2145},
++	{TOK_WRITE, 0x0010, 0x0431},
++	{TOK_WRITE, 0x0012, 0x0000},
++	{TOK_WRITE, 0x0014, 0x244B},
++	{TOK_WRITE, 0x0014, 0x304B},
++	{TOK_DELAY, 0, 100},
++	{TOK_WRITE, 0x0014, 0xB04A},
++	{TOK_WRITE, 0x098C, 0xAB1F},
++	{TOK_WRITE, 0x0990, 0x00C7},
++	{TOK_WRITE, 0x098C, 0xAB31},
++	{TOK_WRITE, 0x0990, 0x001E},
++	{TOK_WRITE, 0x098C, 0x274F},
++	{TOK_WRITE, 0x0990, 0x0004},
++	{TOK_WRITE, 0x098C, 0x2741},
++	{TOK_WRITE, 0x0990, 0x0004},
++	{TOK_WRITE, 0x098C, 0xAB20},
++	{TOK_WRITE, 0x0990, 0x0054},
++	{TOK_WRITE, 0x098C, 0xAB21},
++	{TOK_WRITE, 0x0990, 0x0046},
++	{TOK_WRITE, 0x098C, 0xAB22},
++	{TOK_WRITE, 0x0990, 0x0002},
++	{TOK_WRITE, 0x098C, 0xAB24},
++	{TOK_WRITE, 0x0990, 0x0005},
++	{TOK_WRITE, 0x098C, 0x2B28},
++	{TOK_WRITE, 0x0990, 0x170C},
++	{TOK_WRITE, 0x098C, 0x2B2A},
++	{TOK_WRITE, 0x0990, 0x3E80},
++	{TOK_WRITE, 0x3210, 0x09A8},
++	{TOK_WRITE, 0x098C, 0x2306},
++	{TOK_WRITE, 0x0990, 0x0315},
++	{TOK_WRITE, 0x098C, 0x2308},
++	{TOK_WRITE, 0x0990, 0xFDDC},
++	{TOK_WRITE, 0x098C, 0x230A},
++	{TOK_WRITE, 0x0990, 0x003A},
++	{TOK_WRITE, 0x098C, 0x230C},
++	{TOK_WRITE, 0x0990, 0xFF58},
++	{TOK_WRITE, 0x098C, 0x230E},
++	{TOK_WRITE, 0x0990, 0x02B7},
++	{TOK_WRITE, 0x098C, 0x2310},
++	{TOK_WRITE, 0x0990, 0xFF31},
++	{TOK_WRITE, 0x098C, 0x2312},
++	{TOK_WRITE, 0x0990, 0xFF4C},
++	{TOK_WRITE, 0x098C, 0x2314},
++	{TOK_WRITE, 0x0990, 0xFE4C},
++	{TOK_WRITE, 0x098C, 0x2316},
++	{TOK_WRITE, 0x0990, 0x039E},
++	{TOK_WRITE, 0x098C, 0x2318},
++	{TOK_WRITE, 0x0990, 0x001C},
++	{TOK_WRITE, 0x098C, 0x231A},
++	{TOK_WRITE, 0x0990, 0x0039},
++	{TOK_WRITE, 0x098C, 0x231C},
++	{TOK_WRITE, 0x0990, 0x007F},
++	{TOK_WRITE, 0x098C, 0x231E},
++	{TOK_WRITE, 0x0990, 0xFF77},
++	{TOK_WRITE, 0x098C, 0x2320},
++	{TOK_WRITE, 0x0990, 0x000A},
++	{TOK_WRITE, 0x098C, 0x2322},
++	{TOK_WRITE, 0x0990, 0x0020},
++	{TOK_WRITE, 0x098C, 0x2324},
++	{TOK_WRITE, 0x0990, 0x001B},
++	{TOK_WRITE, 0x098C, 0x2326},
++	{TOK_WRITE, 0x0990, 0xFFC6},
++	{TOK_WRITE, 0x098C, 0x2328},
++	{TOK_WRITE, 0x0990, 0x0086},
++	{TOK_WRITE, 0x098C, 0x232A},
++	{TOK_WRITE, 0x0990, 0x00B5},
++	{TOK_WRITE, 0x098C, 0x232C},
++	{TOK_WRITE, 0x0990, 0xFEC3},
++	{TOK_WRITE, 0x098C, 0x232E},
++	{TOK_WRITE, 0x0990, 0x0001},
++	{TOK_WRITE, 0x098C, 0x2330},
++	{TOK_WRITE, 0x0990, 0xFFEF},
++	{TOK_WRITE, 0x098C, 0xA348},
++	{TOK_WRITE, 0x0990, 0x0008},
++	{TOK_WRITE, 0x098C, 0xA349},
++	{TOK_WRITE, 0x0990, 0x0002},
++	{TOK_WRITE, 0x098C, 0xA34A},
++	{TOK_WRITE, 0x0990, 0x0090},
++	{TOK_WRITE, 0x098C, 0xA34B},
++	{TOK_WRITE, 0x0990, 0x00FF},
++	{TOK_WRITE, 0x098C, 0xA34C},
++	{TOK_WRITE, 0x0990, 0x0075},
++	{TOK_WRITE, 0x098C, 0xA34D},
++	{TOK_WRITE, 0x0990, 0x00EF},
++	{TOK_WRITE, 0x098C, 0xA351},
++	{TOK_WRITE, 0x0990, 0x0000},
++	{TOK_WRITE, 0x098C, 0xA352},
++	{TOK_WRITE, 0x0990, 0x007F},
++	{TOK_WRITE, 0x098C, 0xA354},
++	{TOK_WRITE, 0x0990, 0x0043},
++	{TOK_WRITE, 0x098C, 0xA355},
++	{TOK_WRITE, 0x0990, 0x0001},
++	{TOK_WRITE, 0x098C, 0xA35D},
++	{TOK_WRITE, 0x0990, 0x0078},
++	{TOK_WRITE, 0x098C, 0xA35E},
++	{TOK_WRITE, 0x0990, 0x0086},
++	{TOK_WRITE, 0x098C, 0xA35F},
++	{TOK_WRITE, 0x0990, 0x007E},
++	{TOK_WRITE, 0x098C, 0xA360},
++	{TOK_WRITE, 0x0990, 0x0082},
++	{TOK_WRITE, 0x098C, 0x2361},
++	{TOK_WRITE, 0x0990, 0x0040},
++	{TOK_WRITE, 0x098C, 0xA363},
++	{TOK_WRITE, 0x0990, 0x00D2},
++	{TOK_WRITE, 0x098C, 0xA364},
++	{TOK_WRITE, 0x0990, 0x00F6},
++	{TOK_WRITE, 0x098C, 0xA302},
++	{TOK_WRITE, 0x0990, 0x0000},
++	{TOK_WRITE, 0x098C, 0xA303},
++	{TOK_WRITE, 0x0990, 0x00EF},
++	{TOK_WRITE, 0x098C, 0xAB20},
++	{TOK_WRITE, 0x0990, 0x0024},
++	{TOK_WRITE, 0x098C, 0xA103},
++	{TOK_WRITE, 0x0990, 0x0006},
++	{TOK_DELAY, 0, 100},
++	{TOK_WRITE, 0x098C, 0xA103},
++	{TOK_WRITE, 0x0990, 0x0005},
++	{TOK_DELAY, 0, 100},
++	{TOK_WRITE, 0x098C, 0x222D},
++	{TOK_WRITE, 0x0990, 0x0088},
++	{TOK_WRITE, 0x098C, 0xA408},
++	{TOK_WRITE, 0x0990, 0x0020},
++	{TOK_WRITE, 0x098C, 0xA409},
++	{TOK_WRITE, 0x0990, 0x0023},
++	{TOK_WRITE, 0x098C, 0xA40A},
++	{TOK_WRITE, 0x0990, 0x0027},
++	{TOK_WRITE, 0x098C, 0xA40B},
++	{TOK_WRITE, 0x0990, 0x002A},
++	{TOK_WRITE, 0x098C, 0x2411},
++	{TOK_WRITE, 0x0990, 0x0088},
++	{TOK_WRITE, 0x098C, 0x2413},
++	{TOK_WRITE, 0x0990, 0x00A4},
++	{TOK_WRITE, 0x098C, 0x2415},
++	{TOK_WRITE, 0x0990, 0x0088},
++	{TOK_WRITE, 0x098C, 0x2417},
++	{TOK_WRITE, 0x0990, 0x00A4},
++	{TOK_WRITE, 0x098C, 0xA404},
++	{TOK_WRITE, 0x0990, 0x0010},
++	{TOK_WRITE, 0x098C, 0xA40D},
++	{TOK_WRITE, 0x0990, 0x0002},
++	{TOK_WRITE, 0x098C, 0xA40E},
++	{TOK_WRITE, 0x0990, 0x0003},
++	{TOK_WRITE, 0x098C, 0xA103},
++	{TOK_WRITE, 0x0990, 0x0006},
++	{TOK_DELAY, 0, 100},
++	/* test pattern all white*/
++	/* {TOK_WRITE, 0x098C, 0xA766},
++	{TOK_WRITE, 0x0990, 0x0001},
++	*/
++	{TOK_WRITE, 0x098C, 0xA103},
++	{TOK_WRITE, 0x0990, 0x0005},
++	{TOK_DELAY, 0, 100},
++	{TOK_TERM, 0, 0},
++};
++
++/* List of image formats supported by mt9v113
++ * Currently we are using 8 bit mode only, but can be
++ * extended to 10/20 bit mode.
++ */
++static const struct v4l2_fmtdesc mt9v113_fmt_list[] = {
++	{
++	 .index = 0,
++	 .type = V4L2_BUF_TYPE_VIDEO_CAPTURE,
++	 .flags = 0,
++	 .description = "8-bit UYVY 4:2:2 Format",
++	 .pixelformat = V4L2_PIX_FMT_UYVY,
++	},
++};
++
++/*
++ * Supported standards -
++ *
++ * Currently supports two standards only, need to add support for rest of the
++ * modes, like SECAM, etc...
++ */
++static struct mt9v113_std_info mt9v113_std_list[] = {
++	/* Standard: STD_NTSC_MJ */
++	[MT9V113_STD_VGA] = {
++	 .width = VGA_NUM_ACTIVE_PIXELS,
++	 .height = VGA_NUM_ACTIVE_LINES,
++	 .video_std = MT9V113_IMAGE_STD_VGA,
++	 .standard = {
++		      .index = 0,
++		      .id = MT9V113_IMAGE_STD_VGA,
++		      .name = "VGA",
++		      .frameperiod = {1001, 30000},
++		      .framelines = 480
++		     },
++	/* Standard: STD_PAL_BDGHIN */
++	},
++	[MT9V113_STD_QVGA] = {
++	 .width = QVGA_NUM_ACTIVE_PIXELS,
++	 .height = QVGA_NUM_ACTIVE_LINES,
++	 .video_std = MT9V113_IMAGE_STD_QVGA,
++	 .standard = {
++		      .index = 1,
++		      .id = MT9V113_IMAGE_STD_QVGA,
++		      .name = "QVGA",
++		      .frameperiod = {1001, 30000},
++		      .framelines = 320
++		     },
++	},
++	/* Standard: need to add for additional standard */
++};
++/*
++ * Control structure for Auto Gain
++ *     This is temporary data, will get replaced once
++ *     v4l2_ctrl_query_fill supports it.
++ */
++static const struct v4l2_queryctrl mt9v113_autogain_ctrl = {
++	.id = V4L2_CID_AUTOGAIN,
++	.name = "Gain, Automatic",
++	.type = V4L2_CTRL_TYPE_BOOLEAN,
++	.minimum = 0,
++	.maximum = 1,
++	.step = 1,
++	.default_value = 1,
++};
++
++static int mt9v113_read_reg(struct i2c_client *client, unsigned short reg)
++{
++	int err = 0;
++	struct i2c_msg msg[1];
++	unsigned char data[2];
++	unsigned short val = 0;
++
++	if (!client->adapter) {
++		err = -ENODEV;
++		return err;
++	}else {
++		// TODO: addr should be set up where else
++		msg->addr = MT9V113_I2C_ADDR;//client->addr;
++		msg->flags = 0;
++		msg->len = I2C_TWO_BYTE_TRANSFER;
++		msg->buf = data;
++		data[0] = (reg & I2C_TXRX_DATA_MASK_UPPER) >>
++			    I2C_TXRX_DATA_SHIFT;
++		data[1] = (reg & I2C_TXRX_DATA_MASK);
++		err = i2c_transfer(client->adapter, msg, 1);
++		if (err >= 0) {
++			msg->flags = I2C_M_RD;
++			msg->len = I2C_TWO_BYTE_TRANSFER;	/* 2 byte read */
++			err = i2c_transfer(client->adapter, msg, 1);
++			if (err >= 0) {
++				val = ((data[0] & I2C_TXRX_DATA_MASK)
++					<< I2C_TXRX_DATA_SHIFT)
++				    | (data[1] & I2C_TXRX_DATA_MASK);
++			}
++		}
++	}
++	return (int)(0x0000ffff & val);
++}
++
++
++
++static int mt9v113_write_reg(struct i2c_client *client, unsigned short reg, unsigned short val)
++{
++	int err = 0;
++	int trycnt = 0;
++
++	struct i2c_msg msg[1];
++	unsigned char data[4];
++	err = -1;
++
++	v4l_dbg(1, debug, client,
++		 "mt9v113_write_reg reg=0x%x, val=0x%x\n",
++		 reg,val);
++
++	while ((err < 0) && (trycnt < I2C_RETRY_COUNT)) {
++		trycnt++;
++		if (!client->adapter) {
++			err = -ENODEV;
++		} else {
++			// TODO: addr should be set up where else
++			msg->addr = MT9V113_I2C_ADDR;//client->addr;
++			msg->flags = 0;
++			msg->len = I2C_FOUR_BYTE_TRANSFER;
++			msg->buf = data;
++			data[0] = (reg & I2C_TXRX_DATA_MASK_UPPER) >>
++			    I2C_TXRX_DATA_SHIFT;
++			data[1] = (reg & I2C_TXRX_DATA_MASK);
++			data[2] = (val & I2C_TXRX_DATA_MASK_UPPER) >>
++			    I2C_TXRX_DATA_SHIFT;
++			data[3] = (val & I2C_TXRX_DATA_MASK);
++			err = i2c_transfer(client->adapter, msg, 1);
++		}
++	}
++	if (err < 0) {
++		printk(KERN_INFO "\n I2C write failed");
++	}
++	return err;
++}
++
++/* configure mux, for DM355 EVM only */
++#ifndef CONFIG_MACH_DM355_LEOPARD
++static int mt9v113_en_mux(struct i2c_client *client)
++{
++	int err = 0;
++	int trycnt = 0;
++	/* unsigned short readval = 0;*/
++
++	struct i2c_msg msg[1];
++	unsigned char data[4];
++	err = -1;
++	printk(KERN_INFO
++		       "\n entering mt9v113_en_mux \n");
++
++	while ((err < 0) && (trycnt < 5)) {
++		trycnt++;
++		if (!client->adapter) {
++			err = -ENODEV;
++		} else {
++			msg->addr = 0x25;
++			msg->flags = 0;
++			msg->len = I2C_TWO_BYTE_TRANSFER;
++			msg->buf = data;
++			data[0] = (unsigned char)(0x08 & I2C_TXRX_DATA_MASK);
++			data[1] = (unsigned char)(0x80 & I2C_TXRX_DATA_MASK);
++
++			err = i2c_transfer(client->adapter, msg, 1);
++			if (err < 0) {
++				printk(KERN_INFO
++				       "\n ERROR in ECP  register write\n");
++			}
++		}
++	}
++	if (err < 0) {
++		printk(KERN_INFO "\n I2C write failed");
++	}
++	return err;
++}
++#endif
++
++/*
++ * mt9v113_write_regs : Initializes a list of registers
++ *		if token is TOK_TERM, then entire write operation terminates
++ *		if token is TOK_DELAY, then a delay of 'val' msec is introduced
++ *		if token is TOK_SKIP, then the register write is skipped
++ *		if token is TOK_WRITE, then the register write is performed
++ *
++ * reglist - list of registers to be written
++ * Returns zero if successful, or non-zero otherwise.
++ */
++static int mt9v113_write_regs(struct i2c_client *client,
++			      const struct mt9v113_reg reglist[])
++{
++	int err;
++	const struct mt9v113_reg *next = reglist;
++
++	for (; next->token != TOK_TERM; next++) {
++		if (next->token == TOK_DELAY) {
++			msleep(next->val);
++			continue;
++		}
++
++		if (next->token == TOK_SKIP)
++			continue;
++
++		err = mt9v113_write_reg(client, next->reg, next->val);
++		if (err < 0) {
++			v4l_err(client, "Write failed. Err[%d]\n", err);
++			return err;
++		}
++	}
++	return 0;
++}
++
++/*
++ * mt9v113_get_current_std:
++ * Returns the current standard
++ */
++static enum mt9v113_std mt9v113_get_current_std(struct mt9v113_decoder
++						*decoder)
++{
++	return MT9V113_STD_VGA;
++}
++
++/*
++ * Configure the mt9v113 with the current register settings
++ * Returns zero if successful, or non-zero otherwise.
++ */
++static int mt9v113_configure(struct mt9v113_decoder *decoder)
++{
++	int err;
++
++	/* common register initialization */
++	err =
++	    mt9v113_write_regs(decoder->client, mt9v113_reg_list);
++	if (err)
++		return err;
++
++//	if (debug)
++//		mt9v113_reg_dump(decoder);
++
++	return 0;
++}
++
++/*
++ * Configure the MT9V113 to VGA mode
++ * Returns zero if successful, or non-zero otherwise.
++ */
++static int mt9v113_vga_mode(struct mt9v113_decoder *decoder)
++{
++	int err;
++
++	err =
++	    mt9v113_write_regs(decoder->client, mt9v113_vga_reg);
++	if (err)
++		return err;
++
++	return 0;
++}
++
++
++/*
++ * Detect if an mt9v113 is present, and if so which revision.
++ * A device is considered to be detected if the chip ID (LSB and MSB)
++ * registers match the expected values.
++ * Any value of the rom version register is accepted.
++ * Returns ENODEV error number if no device is detected, or zero
++ * if a device is detected.
++ */
++static int mt9v113_detect(struct mt9v113_decoder *decoder)
++{
++	unsigned short val=0;
++
++#ifndef CONFIG_MACH_DM355_LEOPARD
++//	mt9v113_en_mux(decoder->client);
++#endif
++
++	val = mt9v113_read_reg(decoder->client, REG_CHIP_ID);
++
++	v4l_dbg(1, debug, decoder->client,
++		 "chip id detected 0x%x\n",
++		 val);
++
++	if (MT9V113_CHIP_ID != val) {
++		/* We didn't read the values we expected, so this must not be
++		 * MT9V113.
++		 */
++		v4l_err(decoder->client,
++			"chip id mismatch read 0x%x, expecting 0x%x\n", val, MT9V113_CHIP_ID);
++		return -ENODEV;
++	}
++
++	decoder->ver = val;
++	decoder->state = STATE_DETECTED;
++
++	v4l_info(decoder->client,
++			"%s found at 0x%x (%s)\n", decoder->client->name,
++			decoder->client->addr << 1,
++			decoder->client->adapter->name);
++
++	return 0;
++}
++
++/*
++ * Following are decoder interface functions implemented by
++ * mt9v113 decoder driver.
++ */
++
++/**
++ * ioctl_querystd - V4L2 decoder interface handler for VIDIOC_QUERYSTD ioctl
++ * @s: pointer to standard V4L2 device structure
++ * @std_id: standard V4L2 std_id ioctl enum
++ *
++ * Returns the current standard detected by mt9v113. If no active input is
++ * detected, returns -EINVAL
++ */
++static int ioctl_querystd(struct v4l2_int_device *s, v4l2_std_id *std_id)
++{
++	struct mt9v113_decoder *decoder = s->priv;
++	enum mt9v113_std current_std;
++
++	if (std_id == NULL)
++		return -EINVAL;
++
++	/* get the current standard */
++	current_std = mt9v113_get_current_std(decoder);
++	if (current_std == MT9V113_IMAGE_STD_INVALID)
++		return -EINVAL;
++
++	decoder->current_std = current_std;
++	*std_id = decoder->std_list[current_std].standard.id;
++
++	v4l_dbg(1, debug, decoder->client, "Current STD: %s",
++			decoder->std_list[current_std].standard.name);
++	return 0;
++}
++
++/**
++ * ioctl_s_std - V4L2 decoder interface handler for VIDIOC_S_STD ioctl
++ * @s: pointer to standard V4L2 device structure
++ * @std_id: standard V4L2 v4l2_std_id ioctl enum
++ *
++ * If std_id is supported, sets the requested standard. Otherwise, returns
++ * -EINVAL
++ */
++static int ioctl_s_std(struct v4l2_int_device *s, v4l2_std_id *std_id)
++{
++	struct mt9v113_decoder *decoder = s->priv;
++	int err, i;
++
++	if (std_id == NULL)
++		return -EINVAL;
++
++	for (i = 0; i < decoder->num_stds; i++)
++		if (*std_id & decoder->std_list[i].standard.id)
++			break;
++
++	if ((i == decoder->num_stds) || (i == MT9V113_STD_INVALID))
++		return -EINVAL;
++
++	err = mt9v113_write_reg(decoder->client, REG_VIDEO_STD,
++				decoder->std_list[i].video_std);
++	if (err)
++		return err;
++
++	decoder->current_std = i;
++	mt9v113_reg_list[REG_VIDEO_STD].val = decoder->std_list[i].video_std;
++
++	v4l_dbg(1, debug, decoder->client, "Standard set to: %s",
++			decoder->std_list[i].standard.name);
++	return 0;
++}
++
++/**
++ * ioctl_s_routing - V4L2 decoder interface handler for VIDIOC_S_INPUT ioctl
++ * @s: pointer to standard V4L2 device structure
++ * @index: number of the input
++ *
++ * If index is valid, selects the requested input. Otherwise, returns -EINVAL if
++ * the input is not supported or there is no active signal present in the
++ * selected input.
++ */
++static int ioctl_s_routing(struct v4l2_int_device *s,
++				struct v4l2_routing *route)
++{
++	return 0;
++}
++
++/**
++ * ioctl_queryctrl - V4L2 decoder interface handler for VIDIOC_QUERYCTRL ioctl
++ * @s: pointer to standard V4L2 device structure
++ * @qctrl: standard V4L2 v4l2_queryctrl structure
++ *
++ * If the requested control is supported, returns the control information.
++ * Otherwise, returns -EINVAL if the control is not supported.
++ */
++static int
++ioctl_queryctrl(struct v4l2_int_device *s, struct v4l2_queryctrl *qctrl)
++{
++	struct mt9v113_decoder *decoder = s->priv;
++	int err = -EINVAL;
++
++	if (qctrl == NULL)
++		return err;
++
++	switch (qctrl->id) {
++	case V4L2_CID_BRIGHTNESS:
++		/* Brightness supported is same as standard one (0-255),
++		 * so make use of standard API provided.
++		 */
++		err = v4l2_ctrl_query_fill(qctrl, 0, 255, 1, 128);
++		break;
++	case V4L2_CID_CONTRAST:
++	case V4L2_CID_SATURATION:
++		/* Saturation and Contrast supported is -
++		 *	Contrast: 0 - 255 (Default - 128)
++		 *	Saturation: 0 - 255 (Default - 128)
++		 */
++		err = v4l2_ctrl_query_fill(qctrl, 0, 255, 1, 128);
++		break;
++	case V4L2_CID_HUE:
++		/* Hue Supported is -
++		 *	Hue - -180 - +180 (Default - 0, Step - +180)
++		 */
++		err = v4l2_ctrl_query_fill(qctrl, -180, 180, 180, 0);
++		break;
++	case V4L2_CID_AUTOGAIN:
++		/* Autogain is either 0 or 1*/
++		memcpy(qctrl, &mt9v113_autogain_ctrl,
++				sizeof(struct v4l2_queryctrl));
++		err = 0;
++		break;
++	default:
++		v4l_err(decoder->client,
++			"invalid control id %d\n", qctrl->id);
++		return err;
++	}
++
++	v4l_dbg(1, debug, decoder->client,
++			"Query Control: %s : Min - %d, Max - %d, Def - %d",
++			qctrl->name,
++			qctrl->minimum,
++			qctrl->maximum,
++			qctrl->default_value);
++
++	return err;
++}
++
++/**
++ * ioctl_g_ctrl - V4L2 decoder interface handler for VIDIOC_G_CTRL ioctl
++ * @s: pointer to standard V4L2 device structure
++ * @ctrl: pointer to v4l2_control structure
++ *
++ * If the requested control is supported, returns the control's current
++ * value from the decoder. Otherwise, returns -EINVAL if the control is not
++ * supported.
++ */
++static int
++ioctl_g_ctrl(struct v4l2_int_device *s, struct v4l2_control *ctrl)
++{
++	struct mt9v113_decoder *decoder = s->priv;
++
++	if (ctrl == NULL)
++		return -EINVAL;
++
++	switch (ctrl->id) {
++	case V4L2_CID_BRIGHTNESS:
++		ctrl->value = mt9v113_reg_list[REG_BRIGHTNESS].val;
++		break;
++	case V4L2_CID_CONTRAST:
++		ctrl->value = mt9v113_reg_list[REG_CONTRAST].val;
++		break;
++	case V4L2_CID_SATURATION:
++		ctrl->value = mt9v113_reg_list[REG_SATURATION].val;
++		break;
++	case V4L2_CID_HUE:
++		ctrl->value = mt9v113_reg_list[REG_HUE].val;
++		if (ctrl->value == 0x7F)
++			ctrl->value = 180;
++		else if (ctrl->value == 0x80)
++			ctrl->value = -180;
++		else
++			ctrl->value = 0;
++
++		break;
++	case V4L2_CID_AUTOGAIN:
++		ctrl->value = mt9v113_reg_list[REG_AFE_GAIN_CTRL].val;
++		if ((ctrl->value & 0x3) == 3)
++			ctrl->value = 1;
++		else
++			ctrl->value = 0;
++
++		break;
++	default:
++		v4l_err(decoder->client,
++			"invalid control id %d\n", ctrl->id);
++		return -EINVAL;
++	}
++
++	v4l_dbg(1, debug, decoder->client,
++			"Get Control: ID - %d - %d",
++			ctrl->id, ctrl->value);
++	return 0;
++}
++
++/**
++ * ioctl_s_ctrl - V4L2 decoder interface handler for VIDIOC_S_CTRL ioctl
++ * @s: pointer to standard V4L2 device structure
++ * @ctrl: pointer to v4l2_control structure
++ *
++ * If the requested control is supported, sets the control's current
++ * value in HW. Otherwise, returns -EINVAL if the control is not supported.
++ */
++static int
++ioctl_s_ctrl(struct v4l2_int_device *s, struct v4l2_control *ctrl)
++{
++	struct mt9v113_decoder *decoder = s->priv;
++	int err = -EINVAL, value;
++
++	if (ctrl == NULL)
++		return err;
++
++	value = (__s32) ctrl->value;
++
++	switch (ctrl->id) {
++	case V4L2_CID_BRIGHTNESS:
++		if (ctrl->value < 0 || ctrl->value > 255) {
++			v4l_err(decoder->client,
++					"invalid brightness setting %d\n",
++					ctrl->value);
++			return -ERANGE;
++		}
++		err = mt9v113_write_reg(decoder->client, REG_BRIGHTNESS,
++				value);
++		if (err)
++			return err;
++		mt9v113_reg_list[REG_BRIGHTNESS].val = value;
++		break;
++	case V4L2_CID_CONTRAST:
++		if (ctrl->value < 0 || ctrl->value > 255) {
++			v4l_err(decoder->client,
++					"invalid contrast setting %d\n",
++					ctrl->value);
++			return -ERANGE;
++		}
++		err = mt9v113_write_reg(decoder->client, REG_CONTRAST,
++				value);
++		if (err)
++			return err;
++		mt9v113_reg_list[REG_CONTRAST].val = value;
++		break;
++	case V4L2_CID_SATURATION:
++		if (ctrl->value < 0 || ctrl->value > 255) {
++			v4l_err(decoder->client,
++					"invalid saturation setting %d\n",
++					ctrl->value);
++			return -ERANGE;
++		}
++		err = mt9v113_write_reg(decoder->client, REG_SATURATION,
++				value);
++		if (err)
++			return err;
++		mt9v113_reg_list[REG_SATURATION].val = value;
++		break;
++	case V4L2_CID_HUE:
++		if (value == 180)
++			value = 0x7F;
++		else if (value == -180)
++			value = 0x80;
++		else if (value == 0)
++			value = 0;
++		else {
++			v4l_err(decoder->client,
++					"invalid hue setting %d\n",
++					ctrl->value);
++			return -ERANGE;
++		}
++		err = mt9v113_write_reg(decoder->client, REG_HUE,
++				value);
++		if (err)
++			return err;
++		mt9v113_reg_list[REG_HUE].val = value;
++		break;
++	case V4L2_CID_AUTOGAIN:
++		if (value == 1)
++			value = 0x0F;
++		else if (value == 0)
++			value = 0x0C;
++		else {
++			v4l_err(decoder->client,
++					"invalid auto gain setting %d\n",
++					ctrl->value);
++			return -ERANGE;
++		}
++		err = mt9v113_write_reg(decoder->client, REG_AFE_GAIN_CTRL,
++				value);
++		if (err)
++			return err;
++		mt9v113_reg_list[REG_AFE_GAIN_CTRL].val = value;
++		break;
++	default:
++		v4l_err(decoder->client,
++			"invalid control id %d\n", ctrl->id);
++		return err;
++	}
++
++	v4l_dbg(1, debug, decoder->client,
++			"Set Control: ID - %d - %d",
++			ctrl->id, ctrl->value);
++
++	return err;
++}
++
++/**
++ * ioctl_enum_fmt_cap - Implement the CAPTURE buffer VIDIOC_ENUM_FMT ioctl
++ * @s: pointer to standard V4L2 device structure
++ * @fmt: standard V4L2 VIDIOC_ENUM_FMT ioctl structure
++ *
++ * Implement the VIDIOC_ENUM_FMT ioctl to enumerate supported formats
++ */
++static int
++ioctl_enum_fmt_cap(struct v4l2_int_device *s, struct v4l2_fmtdesc *fmt)
++{
++	struct mt9v113_decoder *decoder = s->priv;
++	int index;
++
++	if (fmt == NULL)
++		return -EINVAL;
++
++	index = fmt->index;
++	if ((index >= decoder->num_fmts) || (index < 0))
++		return -EINVAL;	/* Index out of bound */
++
++	if (fmt->type != V4L2_BUF_TYPE_VIDEO_CAPTURE)
++		return -EINVAL;	/* only capture is supported */
++
++	memcpy(fmt, &decoder->fmt_list[index],
++		sizeof(struct v4l2_fmtdesc));
++
++	v4l_dbg(1, debug, decoder->client,
++			"Current FMT: index - %d (%s)",
++			decoder->fmt_list[index].index,
++			decoder->fmt_list[index].description);
++	return 0;
++}
++
++/**
++ * ioctl_try_fmt_cap - Implement the CAPTURE buffer VIDIOC_TRY_FMT ioctl
++ * @s: pointer to standard V4L2 device structure
++ * @f: pointer to standard V4L2 VIDIOC_TRY_FMT ioctl structure
++ *
++ * Implement the VIDIOC_TRY_FMT ioctl for the CAPTURE buffer type. This
++ * ioctl is used to negotiate the image capture size and pixel format
++ * without actually making it take effect.
++ */
++static int
++ioctl_try_fmt_cap(struct v4l2_int_device *s, struct v4l2_format *f)
++{
++	struct mt9v113_decoder *decoder = s->priv;
++	int ifmt;
++	struct v4l2_pix_format *pix;
++	enum mt9v113_std current_std;
++
++	if (f == NULL)
++		return -EINVAL;
++
++	if (f->type != V4L2_BUF_TYPE_VIDEO_CAPTURE)
++		f->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
++
++	pix = &f->fmt.pix;
++
++	/* Calculate height and width based on current standard */
++	current_std = mt9v113_get_current_std(decoder);
++	if (current_std == MT9V113_STD_INVALID)
++		return -EINVAL;
++
++	decoder->current_std = current_std;
++	pix->width = decoder->std_list[current_std].width;
++	pix->height = decoder->std_list[current_std].height;
++
++	for (ifmt = 0; ifmt < decoder->num_fmts; ifmt++) {
++		if (pix->pixelformat ==
++			decoder->fmt_list[ifmt].pixelformat)
++			break;
++	}
++	if (ifmt == decoder->num_fmts)
++		ifmt = 0;	/* None of the format matched, select default */
++	pix->pixelformat = decoder->fmt_list[ifmt].pixelformat;
++
++	pix->field = V4L2_FIELD_NONE;
++	pix->bytesperline = pix->width * 2;
++	pix->sizeimage = pix->bytesperline * pix->height;
++	pix->colorspace = V4L2_COLORSPACE_SMPTE170M;
++	pix->priv = 0;
++
++	v4l_dbg(1, debug, decoder->client,
++			"Try FMT: pixelformat - %s, bytesperline - %d"
++			"Width - %d, Height - %d",
++			decoder->fmt_list[ifmt].description, pix->bytesperline,
++			pix->width, pix->height);
++	return 0;
++}
++
++/**
++ * ioctl_s_fmt_cap - V4L2 decoder interface handler for VIDIOC_S_FMT ioctl
++ * @s: pointer to standard V4L2 device structure
++ * @f: pointer to standard V4L2 VIDIOC_S_FMT ioctl structure
++ *
++ * If the requested format is supported, configures the HW to use that
++ * format, returns error code if format not supported or HW can't be
++ * correctly configured.
++ */
++static int
++ioctl_s_fmt_cap(struct v4l2_int_device *s, struct v4l2_format *f)
++{
++	struct mt9v113_decoder *decoder = s->priv;
++	struct v4l2_pix_format *pix;
++	int rval;
++
++	if (f == NULL)
++		return -EINVAL;
++
++	if (f->type != V4L2_BUF_TYPE_VIDEO_CAPTURE)
++		return -EINVAL;	/* only capture is supported */
++
++	pix = &f->fmt.pix;
++	rval = ioctl_try_fmt_cap(s, f);
++	if (rval)
++		return rval;
++
++		decoder->pix = *pix;
++
++	return rval;
++}
++
++/**
++ * ioctl_g_fmt_cap - V4L2 decoder interface handler for ioctl_g_fmt_cap
++ * @s: pointer to standard V4L2 device structure
++ * @f: pointer to standard V4L2 v4l2_format structure
++ *
++ * Returns the decoder's current pixel format in the v4l2_format
++ * parameter.
++ */
++static int
++ioctl_g_fmt_cap(struct v4l2_int_device *s, struct v4l2_format *f)
++{
++	struct mt9v113_decoder *decoder = s->priv;
++
++	if (f == NULL)
++		return -EINVAL;
++
++	if (f->type != V4L2_BUF_TYPE_VIDEO_CAPTURE)
++		return -EINVAL;	/* only capture is supported */
++
++	f->fmt.pix = decoder->pix;
++
++	v4l_dbg(1, debug, decoder->client,
++			"Current FMT: bytesperline - %d"
++			"Width - %d, Height - %d",
++			decoder->pix.bytesperline,
++			decoder->pix.width, decoder->pix.height);
++	return 0;
++}
++
++/**
++ * ioctl_g_parm - V4L2 decoder interface handler for VIDIOC_G_PARM ioctl
++ * @s: pointer to standard V4L2 device structure
++ * @a: pointer to standard V4L2 VIDIOC_G_PARM ioctl structure
++ *
++ * Returns the decoder's video CAPTURE parameters.
++ */
++static int
++ioctl_g_parm(struct v4l2_int_device *s, struct v4l2_streamparm *a)
++{
++	struct mt9v113_decoder *decoder = s->priv;
++	struct v4l2_captureparm *cparm;
++	enum mt9v113_std current_std;
++
++	if (a == NULL)
++		return -EINVAL;
++
++	if (a->type != V4L2_BUF_TYPE_VIDEO_CAPTURE)
++		return -EINVAL;	/* only capture is supported */
++
++	memset(a, 0, sizeof(*a));
++	a->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
++
++	/* get the current standard */
++	current_std = mt9v113_get_current_std(decoder);
++	if (current_std == MT9V113_STD_INVALID)
++		return -EINVAL;
++
++	decoder->current_std = current_std;
++
++	cparm = &a->parm.capture;
++	cparm->capability = V4L2_CAP_TIMEPERFRAME;
++	cparm->timeperframe =
++		decoder->std_list[current_std].standard.frameperiod;
++
++	return 0;
++}
++
++/**
++ * ioctl_s_parm - V4L2 decoder interface handler for VIDIOC_S_PARM ioctl
++ * @s: pointer to standard V4L2 device structure
++ * @a: pointer to standard V4L2 VIDIOC_S_PARM ioctl structure
++ *
++ * Configures the decoder to use the input parameters, if possible. If
++ * not possible, returns the appropriate error code.
++ */
++static int
++ioctl_s_parm(struct v4l2_int_device *s, struct v4l2_streamparm *a)
++{
++	struct mt9v113_decoder *decoder = s->priv;
++	struct v4l2_fract *timeperframe;
++	enum mt9v113_std current_std;
++
++	if (a == NULL)
++		return -EINVAL;
++
++	if (a->type != V4L2_BUF_TYPE_VIDEO_CAPTURE)
++		return -EINVAL;	/* only capture is supported */
++
++	timeperframe = &a->parm.capture.timeperframe;
++
++	/* get the current standard */
++	current_std = mt9v113_get_current_std(decoder);
++	if (current_std == MT9V113_STD_INVALID)
++		return -EINVAL;
++
++	decoder->current_std = current_std;
++
++	*timeperframe =
++	    decoder->std_list[current_std].standard.frameperiod;
++
++	return 0;
++}
++
++/**
++ * ioctl_g_ifparm - V4L2 decoder interface handler for vidioc_int_g_ifparm_num
++ * @s: pointer to standard V4L2 device structure
++ * @p: pointer to standard V4L2 vidioc_int_g_ifparm_num ioctl structure
++ *
++ * Gets slave interface parameters.
++ * Calculates the required xclk value to support the requested
++ * clock parameters in p. This value is returned in the p
++ * parameter.
++ */
++static int ioctl_g_ifparm(struct v4l2_int_device *s, struct v4l2_ifparm *p)
++{
++	struct mt9v113_decoder *decoder = s->priv;
++	int rval;
++
++	if (p == NULL)
++		return -EINVAL;
++
++	if (NULL == decoder->pdata->ifparm)
++		return -EINVAL;
++
++	rval = decoder->pdata->ifparm(p);
++	if (rval) {
++		v4l_err(decoder->client, "g_ifparm.Err[%d]\n", rval);
++		return rval;
++	}
++
++	p->u.bt656.clock_curr = 27000000; // TODO: read clock rate from sensor
++
++	return 0;
++}
++
++/**
++ * ioctl_g_priv - V4L2 decoder interface handler for vidioc_int_g_priv_num
++ * @s: pointer to standard V4L2 device structure
++ * @p: void pointer to hold decoder's private data address
++ *
++ * Returns device's (decoder's) private data area address in p parameter
++ */
++static int ioctl_g_priv(struct v4l2_int_device *s, void *p)
++{
++	struct mt9v113_decoder *decoder = s->priv;
++
++	if (NULL == decoder->pdata->priv_data_set)
++		return -EINVAL;
++
++	return decoder->pdata->priv_data_set(p);
++}
++
++/**
++ * ioctl_s_power - V4L2 decoder interface handler for vidioc_int_s_power_num
++ * @s: pointer to standard V4L2 device structure
++ * @on: power state to which device is to be set
++ *
++ * Sets devices power state to requrested state, if possible.
++ */
++static int ioctl_s_power(struct v4l2_int_device *s, enum v4l2_power on)
++{
++	struct mt9v113_decoder *decoder = s->priv;
++	int err = 0;
++
++	switch (on) {
++	case V4L2_POWER_OFF:
++		/* Power Down Sequence */
++		err =
++		    mt9v113_write_reg(decoder->client, REG_OPERATION_MODE,
++					0x01);
++		/* Disable mux for mt9v113 data path */
++		if (decoder->pdata->power_set)
++			err |= decoder->pdata->power_set(s, on);
++		decoder->state = STATE_NOT_DETECTED;
++		break;
++
++	case V4L2_POWER_STANDBY:
++		if (decoder->pdata->power_set)
++			err = decoder->pdata->power_set(s, on);
++		break;
++
++	case V4L2_POWER_ON:
++		/* Enable mux for mt9v113 data path */
++		if ((decoder->pdata->power_set) &&
++				(decoder->state == STATE_NOT_DETECTED)) {
++
++			err = decoder->pdata->power_set(s, on);
++
++			/* Detect the sensor is not already detected */
++			err |= mt9v113_detect(decoder);
++			if (err) {
++				v4l_err(decoder->client,
++						"Unable to detect decoder\n");
++				return err;
++			}
++		}
++		// Only VGA mode for now
++		err |= mt9v113_vga_mode(decoder);
++		break;
++
++	default:
++		err = -ENODEV;
++		break;
++	}
++
++	return err;
++}
++
++/**
++ * ioctl_init - V4L2 decoder interface handler for VIDIOC_INT_INIT
++ * @s: pointer to standard V4L2 device structure
++ *
++ * Initialize the decoder device (calls mt9v113_configure())
++ */
++static int ioctl_init(struct v4l2_int_device *s)
++{
++//	struct mt9v113_decoder *decoder = s->priv;
++	int err = 0;
++
++	/* Set default standard to auto */
++	//mt9v113_reg_list[REG_VIDEO_STD].val =
++	//    VIDEO_STD_AUTO_SWITCH_BIT;
++//	err |= mt9v113_configure(decoder);
++//	err |= mt9v113_vga_mode(decoder);
++
++	return err;
++}
++
++/**
++ * ioctl_dev_exit - V4L2 decoder interface handler for vidioc_int_dev_exit_num
++ * @s: pointer to standard V4L2 device structure
++ *
++ * Delinitialise the dev. at slave detach. The complement of ioctl_dev_init.
++ */
++static int ioctl_dev_exit(struct v4l2_int_device *s)
++{
++	return 0;
++}
++
++/**
++ * ioctl_dev_init - V4L2 decoder interface handler for vidioc_int_dev_init_num
++ * @s: pointer to standard V4L2 device structure
++ *
++ * Initialise the device when slave attaches to the master. Returns 0 if
++ * mt9v113 device could be found, otherwise returns appropriate error.
++ */
++static int ioctl_dev_init(struct v4l2_int_device *s)
++{
++	struct mt9v113_decoder *decoder = s->priv;
++	int err;
++
++	printk("%s: %d\n", __func__, __LINE__);
++	err = mt9v113_detect(decoder);
++	if (err < 0) {
++		v4l_err(decoder->client,
++			"Unable to detect decoder\n");
++		return err;
++	}
++
++	v4l_info(decoder->client,
++		 "chip version 0x%.2x detected\n", decoder->ver);
++
++	err |= mt9v113_configure(decoder);
++	err |= mt9v113_vga_mode(decoder);
++
++	return 0;
++}
++
++static struct v4l2_int_ioctl_desc mt9v113_ioctl_desc[] = {
++	{vidioc_int_dev_init_num, (v4l2_int_ioctl_func*) ioctl_dev_init},
++	{vidioc_int_dev_exit_num, (v4l2_int_ioctl_func*) ioctl_dev_exit},
++	{vidioc_int_s_power_num, (v4l2_int_ioctl_func*) ioctl_s_power},
++	{vidioc_int_g_priv_num, (v4l2_int_ioctl_func*) ioctl_g_priv},
++	{vidioc_int_g_ifparm_num, (v4l2_int_ioctl_func*) ioctl_g_ifparm},
++	{vidioc_int_init_num, (v4l2_int_ioctl_func*) ioctl_init},
++	{vidioc_int_enum_fmt_cap_num,
++	 (v4l2_int_ioctl_func *) ioctl_enum_fmt_cap},
++	{vidioc_int_try_fmt_cap_num,
++	 (v4l2_int_ioctl_func *) ioctl_try_fmt_cap},
++	{vidioc_int_g_fmt_cap_num,
++	 (v4l2_int_ioctl_func *) ioctl_g_fmt_cap},
++	{vidioc_int_s_fmt_cap_num,
++	 (v4l2_int_ioctl_func *) ioctl_s_fmt_cap},
++	{vidioc_int_g_parm_num, (v4l2_int_ioctl_func *) ioctl_g_parm},
++	{vidioc_int_s_parm_num, (v4l2_int_ioctl_func *) ioctl_s_parm},
++	{vidioc_int_queryctrl_num,
++	 (v4l2_int_ioctl_func *) ioctl_queryctrl},
++	{vidioc_int_g_ctrl_num, (v4l2_int_ioctl_func *) ioctl_g_ctrl},
++	{vidioc_int_s_ctrl_num, (v4l2_int_ioctl_func *) ioctl_s_ctrl},
++	{vidioc_int_querystd_num, (v4l2_int_ioctl_func *) ioctl_querystd},
++	{vidioc_int_s_std_num, (v4l2_int_ioctl_func *) ioctl_s_std},
++	{vidioc_int_s_video_routing_num,
++		(v4l2_int_ioctl_func *) ioctl_s_routing},
++};
++
++static struct v4l2_int_slave mt9v113_slave = {
++	.ioctls = mt9v113_ioctl_desc,
++	.num_ioctls = ARRAY_SIZE(mt9v113_ioctl_desc),
++};
++
++static struct mt9v113_decoder mt9v113_dev = {
++	.state = STATE_NOT_DETECTED,
++
++	.fmt_list = mt9v113_fmt_list,
++	.num_fmts = ARRAY_SIZE(mt9v113_fmt_list),
++
++	.pix = {		/* Default to 8-bit YUV 422 */
++		.width = VGA_NUM_ACTIVE_PIXELS,
++		.height = VGA_NUM_ACTIVE_LINES,
++		.pixelformat = V4L2_PIX_FMT_UYVY,
++		.field = V4L2_FIELD_NONE,
++		.bytesperline = VGA_NUM_ACTIVE_PIXELS * 2,
++		.sizeimage =
++		VGA_NUM_ACTIVE_PIXELS * 2 * VGA_NUM_ACTIVE_LINES,
++		.colorspace = V4L2_COLORSPACE_SMPTE170M,
++		},
++
++	.current_std = MT9V113_STD_VGA,
++	.std_list = mt9v113_std_list,
++	.num_stds = ARRAY_SIZE(mt9v113_std_list),
++
++};
++
++static struct v4l2_int_device mt9v113_int_device = {
++	.module = THIS_MODULE,
++	.name = MT9V113_MODULE_NAME,
++	.priv = &mt9v113_dev,
++	.type = v4l2_int_type_slave,
++	.u = {
++	      .slave = &mt9v113_slave,
++	      },
++};
++
++/**
++ * mt9v113_probe - decoder driver i2c probe handler
++ * @client: i2c driver client device structure
++ *
++ * Register decoder as an i2c client device and V4L2
++ * device.
++ */
++static int
++mt9v113_probe(struct i2c_client *client, const struct i2c_device_id *id)
++{
++	struct mt9v113_decoder *decoder = &mt9v113_dev;
++	int err;
++
++	printk("%s: %d\n", __func__, __LINE__);
++	/* Check if the adapter supports the needed features */
++	if (!i2c_check_functionality(client->adapter, I2C_FUNC_SMBUS_BYTE_DATA))
++		return -EIO;
++
++	printk("%s: %d\n", __func__, __LINE__);
++	decoder->pdata = client->dev.platform_data;
++	if (!decoder->pdata) {
++		v4l_err(client, "No platform data!!\n");
++		return -ENODEV;
++	}
++	printk("%s: %d\n", __func__, __LINE__);
++	/*
++	 * Fetch platform specific data, and configure the
++	 * mt9v113_reg_list[] accordingly. Since this is one
++	 * time configuration, no need to preserve.
++	 */
++
++	/*mt9v113_reg_list[REG_OUTPUT_FORMATTER2].val |=
++			(decoder->pdata->clk_polarity << 1);
++	mt9v113_reg_list[REG_SYNC_CONTROL].val |=
++			((decoder->pdata->hs_polarity << 2) |
++			(decoder->pdata->vs_polarity << 3));
++	*/
++	/*
++	 * Save the id data, required for power up sequence
++	 */
++	decoder->id = (struct i2c_device_id *)id;
++	/* Attach to Master */
++	strcpy(mt9v113_int_device.u.slave->attach_to, decoder->pdata->master);
++	decoder->v4l2_int_device = &mt9v113_int_device;
++	decoder->client = client;
++	i2c_set_clientdata(client, decoder);
++
++	/* Register with V4L2 layer as slave device */
++	err = v4l2_int_device_register(decoder->v4l2_int_device);
++	if (err) {
++		i2c_set_clientdata(client, NULL);
++		v4l_err(client,
++			"Unable to register to v4l2. Err[%d]\n", err);
++
++	} else
++		v4l_info(client, "Registered to v4l2 master %s!!\n",
++				decoder->pdata->master);
++
++	return 0;
++}
++
++/**
++ * mt9v113_remove - decoder driver i2c remove handler
++ * @client: i2c driver client device structure
++ *
++ * Unregister decoder as an i2c client device and V4L2
++ * device. Complement of mt9v113_probe().
++ */
++static int __exit mt9v113_remove(struct i2c_client *client)
++{
++	struct mt9v113_decoder *decoder = i2c_get_clientdata(client);
++
++	if (!client->adapter)
++		return -ENODEV;	/* our client isn't attached */
++
++	v4l2_int_device_unregister(decoder->v4l2_int_device);
++	i2c_set_clientdata(client, NULL);
++
++	return 0;
++}
++/*
++ * mt9v113 Init/Power on Sequence
++ */
++static const struct mt9v113_reg mt9v113m_init_reg_seq[] = {
++	{TOK_WRITE, REG_OPERATION_MODE, 0x01},
++	{TOK_WRITE, REG_OPERATION_MODE, 0x00},
++};
++static const struct mt9v113_init_seq mt9v113m_init = {
++	.no_regs = ARRAY_SIZE(mt9v113m_init_reg_seq),
++	.init_reg_seq = mt9v113m_init_reg_seq,
++};
++/*
++ * I2C Device Table -
++ *
++ * name - Name of the actual device/chip.
++ * driver_data - Driver data
++ */
++static const struct i2c_device_id mt9v113_id[] = {
++	{"mt9v113", (unsigned long)&mt9v113m_init},
++	{},
++};
++
++MODULE_DEVICE_TABLE(i2c, mt9v113_id);
++
++static struct i2c_driver mt9v113_i2c_driver = {
++	.driver = {
++		   .name = MT9V113_MODULE_NAME,
++		   .owner = THIS_MODULE,
++		   },
++	.probe = mt9v113_probe,
++	.remove = __exit_p(mt9v113_remove),
++	.id_table = mt9v113_id,
++};
++
++/**
++ * mt9v113_init
++ *
++ * Module init function
++ */
++static int __init mt9v113_init(void)
++{
++	return i2c_add_driver(&mt9v113_i2c_driver);
++}
++
++/**
++ * mt9v113_cleanup
++ *
++ * Module exit function
++ */
++static void __exit mt9v113_cleanup(void)
++{
++	i2c_del_driver(&mt9v113_i2c_driver);
++}
++
++module_init(mt9v113_init);
++module_exit(mt9v113_cleanup);
++
++MODULE_AUTHOR("Texas Instruments");
++MODULE_DESCRIPTION("MT9V113 linux decoder driver");
++MODULE_LICENSE("GPL");
+diff --git a/drivers/media/video/mt9v113_regs.h b/drivers/media/video/mt9v113_regs.h
+new file mode 100644
+index 0000000..64b065f
+--- /dev/null
++++ b/drivers/media/video/mt9v113_regs.h
+@@ -0,0 +1,294 @@
++/*
++ * drivers/media/video/mt9v113_regs.h
++ *
++ * Copyright (C) 2008 Texas Instruments Inc
++ * Author: Vaibhav Hiremath <hvaibhav@ti.com>
++ *
++ * Contributors:
++ *     Sivaraj R <sivaraj@ti.com>
++ *     Brijesh R Jadav <brijesh.j@ti.com>
++ *     Hardik Shah <hardik.shah@ti.com>
++ *     Manjunath Hadli <mrh@ti.com>
++ *     Karicheri Muralidharan <m-karicheri2@ti.com>
++ *
++ * This package is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ *
++ */
++
++#ifndef _MT9V113_REGS_H
++#define _MT9V113_REGS_H
++
++/*
++ * MT9V113 registers
++ */
++#define REG_CHIP_ID				(0x00)
++
++/*
++ * MT9V113 registers
++ */
++#define REG_INPUT_SEL			(0x00)
++#define REG_AFE_GAIN_CTRL		(0x01)
++#define REG_VIDEO_STD			(0x02)
++#define REG_OPERATION_MODE		(0x03)
++#define REG_AUTOSWITCH_MASK		(0x04)
++
++#define REG_COLOR_KILLER		(0x05)
++#define REG_LUMA_CONTROL1		(0x06)
++#define REG_LUMA_CONTROL2		(0x07)
++#define REG_LUMA_CONTROL3		(0x08)
++
++#define REG_BRIGHTNESS			(0x09)
++#define REG_CONTRAST			(0x0A)
++#define REG_SATURATION			(0x0B)
++#define REG_HUE				(0x0C)
++
++#define REG_CHROMA_CONTROL1		(0x0D)
++#define REG_CHROMA_CONTROL2		(0x0E)
++
++/* 0x0F Reserved */
++
++#define REG_COMP_PR_SATURATION		(0x10)
++#define REG_COMP_Y_CONTRAST		(0x11)
++#define REG_COMP_PB_SATURATION		(0x12)
++
++/* 0x13 Reserved */
++
++#define REG_COMP_Y_BRIGHTNESS		(0x14)
++
++/* 0x15 Reserved */
++
++#define REG_AVID_START_PIXEL_LSB	(0x16)
++#define REG_AVID_START_PIXEL_MSB	(0x17)
++#define REG_AVID_STOP_PIXEL_LSB		(0x18)
++#define REG_AVID_STOP_PIXEL_MSB		(0x19)
++
++#define REG_HSYNC_START_PIXEL_LSB	(0x1A)
++#define REG_HSYNC_START_PIXEL_MSB	(0x1B)
++#define REG_HSYNC_STOP_PIXEL_LSB	(0x1C)
++#define REG_HSYNC_STOP_PIXEL_MSB	(0x1D)
++
++#define REG_VSYNC_START_LINE_LSB	(0x1E)
++#define REG_VSYNC_START_LINE_MSB	(0x1F)
++#define REG_VSYNC_STOP_LINE_LSB		(0x20)
++#define REG_VSYNC_STOP_LINE_MSB		(0x21)
++
++#define REG_VBLK_START_LINE_LSB		(0x22)
++#define REG_VBLK_START_LINE_MSB		(0x23)
++#define REG_VBLK_STOP_LINE_LSB		(0x24)
++#define REG_VBLK_STOP_LINE_MSB		(0x25)
++
++/* 0x26 - 0x27 Reserved */
++
++#define REG_FAST_SWTICH_CONTROL		(0x28)
++
++/* 0x29 Reserved */
++
++#define REG_FAST_SWTICH_SCART_DELAY	(0x2A)
++
++/* 0x2B Reserved */
++
++#define REG_SCART_DELAY			(0x2C)
++#define REG_CTI_DELAY			(0x2D)
++#define REG_CTI_CONTROL			(0x2E)
++
++/* 0x2F - 0x31 Reserved */
++
++#define REG_SYNC_CONTROL		(0x32)
++#define REG_OUTPUT_FORMATTER1		(0x33)
++#define REG_OUTPUT_FORMATTER2		(0x34)
++#define REG_OUTPUT_FORMATTER3		(0x35)
++#define REG_OUTPUT_FORMATTER4		(0x36)
++#define REG_OUTPUT_FORMATTER5		(0x37)
++#define REG_OUTPUT_FORMATTER6		(0x38)
++#define REG_CLEAR_LOST_LOCK		(0x39)
++
++#define REG_STATUS1			(0x3A)
++#define REG_STATUS2			(0x3B)
++
++#define REG_AGC_GAIN_STATUS_LSB		(0x3C)
++#define REG_AGC_GAIN_STATUS_MSB		(0x3D)
++
++/* 0x3E Reserved */
++
++#define REG_VIDEO_STD_STATUS		(0x3F)
++#define REG_GPIO_INPUT1			(0x40)
++#define REG_GPIO_INPUT2			(0x41)
++
++/* 0x42 - 0x45 Reserved */
++
++#define REG_AFE_COARSE_GAIN_CH1		(0x46)
++#define REG_AFE_COARSE_GAIN_CH2		(0x47)
++#define REG_AFE_COARSE_GAIN_CH3		(0x48)
++#define REG_AFE_COARSE_GAIN_CH4		(0x49)
++
++#define REG_AFE_FINE_GAIN_PB_B_LSB	(0x4A)
++#define REG_AFE_FINE_GAIN_PB_B_MSB	(0x4B)
++#define REG_AFE_FINE_GAIN_Y_G_CHROMA_LSB	(0x4C)
++#define REG_AFE_FINE_GAIN_Y_G_CHROMA_MSB	(0x4D)
++#define REG_AFE_FINE_GAIN_PR_R_LSB	(0x4E)
++#define REG_AFE_FINE_GAIN_PR_R_MSB	(0x4F)
++#define REG_AFE_FINE_GAIN_CVBS_LUMA_LSB	(0x50)
++#define REG_AFE_FINE_GAIN_CVBS_LUMA_MSB	(0x51)
++
++/* 0x52 - 0x68 Reserved */
++
++#define REG_FBIT_VBIT_CONTROL1		(0x69)
++
++/* 0x6A - 0x6B Reserved */
++
++#define REG_BACKEND_AGC_CONTROL		(0x6C)
++
++/* 0x6D - 0x6E Reserved */
++
++#define REG_AGC_DECREMENT_SPEED_CONTROL	(0x6F)
++#define REG_ROM_VERSION			(0x70)
++
++/* 0x71 - 0x73 Reserved */
++
++#define REG_AGC_WHITE_PEAK_PROCESSING	(0x74)
++#define REG_FBIT_VBIT_CONTROL2		(0x75)
++#define REG_VCR_TRICK_MODE_CONTROL	(0x76)
++#define REG_HORIZONTAL_SHAKE_INCREMENT	(0x77)
++#define REG_AGC_INCREMENT_SPEED		(0x78)
++#define REG_AGC_INCREMENT_DELAY		(0x79)
++
++/* 0x7A - 0x7F Reserved */
++
++#define REG_CHIP_ID_MSB			(0x80)
++#define REG_CHIP_ID_LSB			(0x81)
++
++/* 0x82 Reserved */
++
++#define REG_CPLL_SPEED_CONTROL		(0x83)
++
++/* 0x84 - 0x96 Reserved */
++
++#define REG_STATUS_REQUEST		(0x97)
++
++/* 0x98 - 0x99 Reserved */
++
++#define REG_VERTICAL_LINE_COUNT_LSB	(0x9A)
++#define REG_VERTICAL_LINE_COUNT_MSB	(0x9B)
++
++/* 0x9C - 0x9D Reserved */
++
++#define REG_AGC_DECREMENT_DELAY		(0x9E)
++
++/* 0x9F - 0xB0 Reserved */
++
++#define REG_VDP_TTX_FILTER_1_MASK1	(0xB1)
++#define REG_VDP_TTX_FILTER_1_MASK2	(0xB2)
++#define REG_VDP_TTX_FILTER_1_MASK3	(0xB3)
++#define REG_VDP_TTX_FILTER_1_MASK4	(0xB4)
++#define REG_VDP_TTX_FILTER_1_MASK5	(0xB5)
++#define REG_VDP_TTX_FILTER_2_MASK1	(0xB6)
++#define REG_VDP_TTX_FILTER_2_MASK2	(0xB7)
++#define REG_VDP_TTX_FILTER_2_MASK3	(0xB8)
++#define REG_VDP_TTX_FILTER_2_MASK4	(0xB9)
++#define REG_VDP_TTX_FILTER_2_MASK5	(0xBA)
++#define REG_VDP_TTX_FILTER_CONTROL	(0xBB)
++#define REG_VDP_FIFO_WORD_COUNT		(0xBC)
++#define REG_VDP_FIFO_INTERRUPT_THRLD	(0xBD)
++
++/* 0xBE Reserved */
++
++#define REG_VDP_FIFO_RESET		(0xBF)
++#define REG_VDP_FIFO_OUTPUT_CONTROL	(0xC0)
++#define REG_VDP_LINE_NUMBER_INTERRUPT	(0xC1)
++#define REG_VDP_PIXEL_ALIGNMENT_LSB	(0xC2)
++#define REG_VDP_PIXEL_ALIGNMENT_MSB	(0xC3)
++
++/* 0xC4 - 0xD5 Reserved */
++
++#define REG_VDP_LINE_START		(0xD6)
++#define REG_VDP_LINE_STOP		(0xD7)
++#define REG_VDP_GLOBAL_LINE_MODE	(0xD8)
++#define REG_VDP_FULL_FIELD_ENABLE	(0xD9)
++#define REG_VDP_FULL_FIELD_MODE		(0xDA)
++
++/* 0xDB - 0xDF Reserved */
++
++#define REG_VBUS_DATA_ACCESS_NO_VBUS_ADDR_INCR	(0xE0)
++#define REG_VBUS_DATA_ACCESS_VBUS_ADDR_INCR	(0xE1)
++#define REG_FIFO_READ_DATA			(0xE2)
++
++/* 0xE3 - 0xE7 Reserved */
++
++#define REG_VBUS_ADDRESS_ACCESS1	(0xE8)
++#define REG_VBUS_ADDRESS_ACCESS2	(0xE9)
++#define REG_VBUS_ADDRESS_ACCESS3	(0xEA)
++
++/* 0xEB - 0xEF Reserved */
++
++#define REG_INTERRUPT_RAW_STATUS0	(0xF0)
++#define REG_INTERRUPT_RAW_STATUS1	(0xF1)
++#define REG_INTERRUPT_STATUS0		(0xF2)
++#define REG_INTERRUPT_STATUS1		(0xF3)
++#define REG_INTERRUPT_MASK0		(0xF4)
++#define REG_INTERRUPT_MASK1		(0xF5)
++#define REG_INTERRUPT_CLEAR0		(0xF6)
++#define REG_INTERRUPT_CLEAR1		(0xF7)
++
++/* 0xF8 - 0xFF Reserved */
++
++/* The ID values we are looking for */
++#define MT9V113_CHIP_ID_MSB		(0x51)
++
++#define MT9V113_IMAGE_STD_VGA			(0x01)
++#define MT9V113_IMAGE_STD_QVGA			(0x02)
++#define MT9V113_IMAGE_STD_INVALID		(0xFF)
++
++/*
++ * Status bit
++ */
++#define STATUS_TV_VCR_BIT		(1<<0)
++#define STATUS_HORZ_SYNC_LOCK_BIT	(1<<1)
++#define STATUS_VIRT_SYNC_LOCK_BIT	(1<<2)
++#define STATUS_CLR_SUBCAR_LOCK_BIT	(1<<3)
++#define STATUS_LOST_LOCK_DETECT_BIT	(1<<4)
++#define STATUS_FEILD_RATE_BIT		(1<<5)
++#define STATUS_LINE_ALTERNATING_BIT	(1<<6)
++#define STATUS_PEAK_WHITE_DETECT_BIT	(1<<7)
++
++/* Tokens for register write */
++#define TOK_WRITE                       (0)     /* token for write operation */
++#define TOK_TERM                        (1)     /* terminating token */
++#define TOK_DELAY                       (2)     /* delay token for reg list */
++#define TOK_SKIP                        (3)     /* token to skip a register */
++/**
++ * struct mt9v113_reg - Structure for TVP5146/47 register initialization values
++ * @token - Token: TOK_WRITE, TOK_TERM etc..
++ * @reg - Register offset
++ * @val - Register Value for TOK_WRITE or delay in ms for TOK_DELAY
++ */
++struct mt9v113_reg {
++	unsigned short token;
++	unsigned short reg;
++	unsigned short val;
++};
++
++/**
++ * struct mt9v113_init_seq - Structure for TVP5146/47/46M2/47M1 power up
++ *		Sequence.
++ * @ no_regs - Number of registers to write for power up sequence.
++ * @ init_reg_seq - Array of registers and respective value to write.
++ */
++struct mt9v113_init_seq {
++	unsigned int no_regs;
++	const struct mt9v113_reg *init_reg_seq;
++};
++
++#define MT9V113_CHIP_ID			(0x2280)
++
++#endif				/* ifndef _MT9V113_REGS_H */
+diff --git a/include/media/mt9v113.h b/include/media/mt9v113.h
+new file mode 100644
+index 0000000..c7ad362
+--- /dev/null
++++ b/include/media/mt9v113.h
+@@ -0,0 +1,83 @@
++/*
++ * drivers/media/video/mt9v113.h
++ *
++ * Copyright (C) 2008 Texas Instruments Inc
++ * Author: Vaibhav Hiremath <hvaibhav@ti.com>
++ *
++ * Contributors:
++ *     Sivaraj R <sivaraj@ti.com>
++ *     Brijesh R Jadav <brijesh.j@ti.com>
++ *     Hardik Shah <hardik.shah@ti.com>
++ *     Manjunath Hadli <mrh@ti.com>
++ *     Karicheri Muralidharan <m-karicheri2@ti.com>
++ *
++ * This package is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ *
++ */
++
++#ifndef _MT9V113_H
++#define _MT9V113_H
++
++/*
++ * Other macros
++ */
++#define MT9V113_MODULE_NAME		"mt9v113"
++
++/* Number of pixels and number of lines per frame for different standards */
++#define VGA_NUM_ACTIVE_PIXELS		(640*2)
++#define VGA_NUM_ACTIVE_LINES		(480)
++#define QVGA_NUM_ACTIVE_PIXELS	(320*2)
++#define QVGA_NUM_ACTIVE_LINES		(240)
++
++/**
++ * struct mt9v113_platform_data - Platform data values and access functions.
++ * @power_set: Power state access function, zero is off, non-zero is on.
++ * @ifparm: Interface parameters access function.
++ * @priv_data_set: Device private data (pointer) access function.
++ * @clk_polarity: Clock polarity of the current interface.
++ * @ hs_polarity: HSYNC Polarity configuration for current interface.
++ * @ vs_polarity: VSYNC Polarity configuration for current interface.
++ */
++struct mt9v113_platform_data {
++	char *master;
++	int (*power_set) (struct v4l2_int_device *s, enum v4l2_power on);
++	int (*ifparm) (struct v4l2_ifparm *p);
++	int (*priv_data_set) (void *);
++	/* Interface control params */
++	bool clk_polarity;
++	bool hs_polarity;
++	bool vs_polarity;
++};
++
++// new
++
++/*i2c adress for MT9V113*/
++#define MT9V113_I2C_ADDR  		(0x78 >>1)
++
++#define I2C_ONE_BYTE_TRANSFER		(1)
++#define I2C_TWO_BYTE_TRANSFER		(2)
++#define I2C_THREE_BYTE_TRANSFER		(3)
++#define I2C_FOUR_BYTE_TRANSFER		(4)
++#define I2C_TXRX_DATA_MASK		(0x00FF)
++#define I2C_TXRX_DATA_MASK_UPPER	(0xFF00)
++#define I2C_TXRX_DATA_SHIFT		(8)
++
++#define MT9V113_VGA_30FPS  (1130)
++#define MT9V113_QVGA_30FPS  (1131)
++
++#define MT9V113_CLK_MAX 	(54000000) /* 54MHz */
++#define MT9V113_CLK_MIN	(6000000)  /* 6Mhz */
++
++#endif				/* ifndef _MT9V113_H */
++
+diff --git a/include/media/v4l2-int-device.h b/include/media/v4l2-int-device.h
+index ce415ec..7827575 100644
+--- a/include/media/v4l2-int-device.h
++++ b/include/media/v4l2-int-device.h
+@@ -115,6 +115,7 @@ enum v4l2_if_type {
+ 	V4L2_IF_TYPE_BT656,
+ 	V4L2_IF_TYPE_YCbCr,
+ 	V4L2_IF_TYPE_RAW,
++	V4L2_IF_TYPE_PARALLEL,
+ };
+ 
+ enum v4l2_if_type_bt656_mode {
+@@ -215,12 +216,38 @@ struct v4l2_if_type_raw {
+ 	u32 clock_curr;
+ };
+ 
++struct v4l2_if_type_parallel {
++	/*
++	 * 0: Frame begins when vsync is high.
++	 * 1: Frame begins when vsync changes from low to high.
++	 */
++	unsigned frame_start_on_rising_vs:1;
++	/* Swap every two adjacent image data elements. */
++	unsigned swap:1;
++	/* Inverted latch clock polarity from slave. */
++	unsigned latch_clk_inv:1;
++	/* Hs polarity. 0 is active high, 1 active low. */
++	unsigned no_hs_inv:1;
++	/* Vs polarity. 0 is active high, 1 active low. */
++	unsigned no_vs_inv:1;
++	/* Minimum accepted bus clock for slave (in Hz). */
++	u32 clock_min;
++	/* Maximum accepted bus clock for slave. */
++	u32 clock_max;
++	/*
++	 * Current wish of the slave. May only change in response to
++	 * ioctls that affect image capture.
++	 */
++	u32 clock_curr;
++};
++
+ struct v4l2_ifparm {
+ 	enum v4l2_if_type if_type;
+ 	union {
+ 		struct v4l2_if_type_bt656 bt656;
+ 		struct v4l2_if_type_ycbcr ycbcr;
+ 		struct v4l2_if_type_raw raw;
++		struct v4l2_if_type_parallel parallel;
+ 	} u;
+ };
+ 
+-- 
+1.6.6.1
+

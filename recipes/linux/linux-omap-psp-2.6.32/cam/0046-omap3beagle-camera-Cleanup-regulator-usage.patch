@@ -1,0 +1,172 @@
+From f976a2d7fc5b5e13a3445c668d5771605fee80c8 Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Mon, 12 Jul 2010 15:53:44 -0500
+Subject: [PATCH 46/71] omap3beagle: camera: Cleanup regulator usage
+
+We were missing the point of regulator abstraction layer.
+
+Camera board file shouldn't be aware of what vaux is using, but
+just asking for a specific power supply (for cam_1v8 and cam_2v8).
+
+How is that mapped before, is something that the regulator machine
+should figure out.
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ arch/arm/mach-omap2/board-omap3beagle-camera.c |   50 ++++++++++++------------
+ arch/arm/mach-omap2/board-omap3beagle.c        |   24 +++++-------
+ 2 files changed, 35 insertions(+), 39 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle-camera.c b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+index befa7d4..c91529d 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle-camera.c
++++ b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+@@ -51,8 +51,8 @@
+ 
+ #define LEOPARD_RESET_GPIO	98
+ 
+-static struct regulator *beagle_mt9v113_1_8v1;
+-static struct regulator *beagle_mt9v113_1_8v2;
++static struct regulator *cam_1v8_reg;
++static struct regulator *cam_2v8_reg;
+ 
+ /* Arbitrary memory handling limit */
+ #define MT9V113_MAX_FRAME_SIZE	PAGE_ALIGN(640 * 480 * 4)
+@@ -148,10 +148,10 @@ static int mt9v113_power_set(struct v4l2_int_device *s, enum v4l2_power power)
+ 	case V4L2_POWER_OFF:
+ 		isp_set_xclk(vdev->cam->isp, 0, CAM_USE_XCLKA);
+ 
+-		if (regulator_is_enabled(beagle_mt9v113_1_8v1))
+-			regulator_disable(beagle_mt9v113_1_8v1);
+-		if (regulator_is_enabled(beagle_mt9v113_1_8v2))
+-			regulator_disable(beagle_mt9v113_1_8v2);
++		if (regulator_is_enabled(cam_1v8_reg))
++			regulator_disable(cam_1v8_reg);
++		if (regulator_is_enabled(cam_2v8_reg))
++			regulator_disable(cam_2v8_reg);
+ 
+ 		break;
+ 
+@@ -162,10 +162,10 @@ static int mt9v113_power_set(struct v4l2_int_device *s, enum v4l2_power power)
+ 		gpio_set_value(LEOPARD_RESET_GPIO, 0);
+ 
+ 		/* turn on VDD */
+-		regulator_enable(beagle_mt9v113_1_8v1);
++		regulator_enable(cam_1v8_reg);
+ 		mdelay(1);
+ 		/* turn on VDD_IO */
+-		regulator_enable(beagle_mt9v113_1_8v2);
++		regulator_enable(cam_2v8_reg);
+ 		mdelay(50);
+ 
+ 		/* Enable EXTCLK */
+@@ -201,24 +201,24 @@ struct mt9v113_platform_data mt9v113_pdata = {
+ 
+ static int beagle_cam_probe(struct platform_device *pdev)
+ {
+-	beagle_mt9v113_1_8v1 = regulator_get(&pdev->dev, "vaux3_1");
+-	if (IS_ERR(beagle_mt9v113_1_8v1)) {
+-		dev_err(&pdev->dev, "vaux3_1 regulator missing\n");
+-		return PTR_ERR(beagle_mt9v113_1_8v1);
++	cam_1v8_reg = regulator_get(&pdev->dev, "cam_1v8");
++	if (IS_ERR(cam_1v8_reg)) {
++		dev_err(&pdev->dev, "cam_1v8 regulator missing\n");
++		return PTR_ERR(cam_1v8_reg);
+ 	}
+ 
+-	beagle_mt9v113_1_8v2 = regulator_get(&pdev->dev, "vaux4_1");
+-	if (IS_ERR(beagle_mt9v113_1_8v2)) {
+-		dev_err(&pdev->dev, "vaux4_1 regulator missing\n");
+-		regulator_put(beagle_mt9v113_1_8v1);
+-		return PTR_ERR(beagle_mt9v113_1_8v2);
++	cam_2v8_reg = regulator_get(&pdev->dev, "cam_2v8");
++	if (IS_ERR(cam_2v8_reg)) {
++		dev_err(&pdev->dev, "cam_2v8 regulator missing\n");
++		regulator_put(cam_1v8_reg);
++		return PTR_ERR(cam_2v8_reg);
+ 	}
+ 
+ 	if (gpio_request(LEOPARD_RESET_GPIO, "cam_rst") != 0) {
+ 		dev_err(&pdev->dev, "Could not request GPIO %d",
+ 			LEOPARD_RESET_GPIO);
+-		regulator_put(beagle_mt9v113_1_8v2);
+-		regulator_put(beagle_mt9v113_1_8v1);
++		regulator_put(cam_2v8_reg);
++		regulator_put(cam_1v8_reg);
+ 		return -ENODEV;
+ 	}
+ 
+@@ -266,13 +266,13 @@ static int beagle_cam_probe(struct platform_device *pdev)
+ 
+ static int beagle_cam_remove(struct platform_device *pdev)
+ {
+-	if (regulator_is_enabled(beagle_mt9v113_1_8v1))
+-		regulator_disable(beagle_mt9v113_1_8v1);
+-	regulator_put(beagle_mt9v113_1_8v1);
++	if (regulator_is_enabled(cam_1v8_reg))
++		regulator_disable(cam_1v8_reg);
++	regulator_put(cam_1v8_reg);
+ 
+-	if (regulator_is_enabled(beagle_mt9v113_1_8v2))
+-		regulator_disable(beagle_mt9v113_1_8v2);
+-	regulator_put(beagle_mt9v113_1_8v2);
++	if (regulator_is_enabled(cam_2v8_reg))
++		regulator_disable(cam_2v8_reg);
++	regulator_put(cam_2v8_reg);
+ 
+ 	gpio_free(LEOPARD_RESET_GPIO);
+ 
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index d4b0b0a..b0da483 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -414,18 +414,14 @@ static struct platform_device beagle_cam_device = {
+ 	.id		= -1,
+ };
+ 
+-static struct regulator_consumer_supply beagle_vaux3_supplies[] = {
+-	{
+-		.supply		= "vaux3_1",
+-		.dev		= &beagle_cam_device.dev,
+-	},
++static struct regulator_consumer_supply beagle_vaux3_supply = {
++	.supply		= "cam_1v8",
++	.dev		= &beagle_cam_device.dev,
+ };
+ 
+-static struct regulator_consumer_supply beagle_vaux4_supplies[] = {
+-	{
+-		.supply		= "vaux4_1",
+-		.dev		= &beagle_cam_device.dev,
+-	},
++static struct regulator_consumer_supply beagle_vaux4_supply = {
++	.supply		= "cam_2v8",
++	.dev		= &beagle_cam_device.dev,
+ };
+ 
+ /* VAUX3 for CAM_1V8 */
+@@ -439,8 +435,8 @@ static struct regulator_init_data beagle_vaux3 = {
+ 		.valid_ops_mask		= REGULATOR_CHANGE_MODE
+ 					| REGULATOR_CHANGE_STATUS,
+ 	},
+-	.num_consumer_supplies	= ARRAY_SIZE(beagle_vaux3_supplies),
+-	.consumer_supplies	= beagle_vaux3_supplies,
++	.num_consumer_supplies	= 1,
++	.consumer_supplies	= &beagle_vaux3_supply,
+ };
+ 
+ /* VAUX4 for CAM_2V8 */
+@@ -454,8 +450,8 @@ static struct regulator_init_data beagle_vaux4 = {
+ 		.valid_ops_mask		= REGULATOR_CHANGE_MODE
+ 					| REGULATOR_CHANGE_STATUS,
+ 	},
+-	.num_consumer_supplies	= ARRAY_SIZE(beagle_vaux4_supplies),
+-	.consumer_supplies	= beagle_vaux4_supplies,
++	.num_consumer_supplies	= 1,
++	.consumer_supplies	= &beagle_vaux4_supply,
+ };
+ 
+ /* VMMC1 for MMC1 pins CMD, CLK, DAT0..DAT3 (20 mA, plus card == max 220 mA) */
+-- 
+1.6.6.1
+

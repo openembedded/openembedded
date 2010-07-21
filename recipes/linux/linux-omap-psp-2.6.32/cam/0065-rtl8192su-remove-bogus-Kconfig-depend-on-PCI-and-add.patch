@@ -1,0 +1,38 @@
+From aa46956935fdee7636a66b023c521643c982208c Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Sun, 18 Jul 2010 11:25:12 +0200
+Subject: [PATCH 65/71] rtl8192su: remove bogus Kconfig depend on PCI and add another product ID
+
+Signed-off-by: Koen Kooi <koen@dominion.thruhere.net>
+---
+ drivers/staging/rtl8192su/Kconfig       |    2 +-
+ drivers/staging/rtl8192su/r8192U_core.c |    1 +
+ 2 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/staging/rtl8192su/Kconfig b/drivers/staging/rtl8192su/Kconfig
+index 123fa6d..9888927 100644
+--- a/drivers/staging/rtl8192su/Kconfig
++++ b/drivers/staging/rtl8192su/Kconfig
+@@ -1,6 +1,6 @@
+ config RTL8192SU
+ 	tristate "RealTek RTL8192SU Wireless LAN NIC driver"
+-	depends on PCI && WLAN && USB
++	depends on WLAN && USB
+ 	depends on WIRELESS_EXT
+ 	default N
+ 	---help---
+diff --git a/drivers/staging/rtl8192su/r8192U_core.c b/drivers/staging/rtl8192su/r8192U_core.c
+index 66274d7..48e4c29 100644
+--- a/drivers/staging/rtl8192su/r8192U_core.c
++++ b/drivers/staging/rtl8192su/r8192U_core.c
+@@ -112,6 +112,7 @@ u32 rt_global_debug_component = \
+ 
+ static struct usb_device_id rtl8192_usb_id_tbl[] = {
+ 	/* Realtek */
++	{USB_DEVICE(0x0bda, 0x8171)},
+ 	{USB_DEVICE(0x0bda, 0x8192)},
+ 	{USB_DEVICE(0x0bda, 0x8709)},
+ 	/* Corega */
+-- 
+1.6.6.1
+

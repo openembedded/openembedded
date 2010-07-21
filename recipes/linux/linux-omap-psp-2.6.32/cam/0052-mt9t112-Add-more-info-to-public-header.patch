@@ -1,0 +1,29 @@
+From 0c96e072dd20fbf998ec2bfe9d9002994ec595fa Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Thu, 1 Jul 2010 07:33:49 -0500
+Subject: [PATCH 52/71] mt9t112: Add more info to public header
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ include/media/mt9t112.h |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/include/media/mt9t112.h b/include/media/mt9t112.h
+index 62caaf5..49fa042 100644
+--- a/include/media/mt9t112.h
++++ b/include/media/mt9t112.h
+@@ -13,6 +13,11 @@
+ 
+ #include <media/v4l2-int-device.h>
+ 
++#define MT9T112_I2C_ADDR		(0x78 >> 1)
++
++#define MT9T112_CLK_MAX			(54000000) /* 54MHz */
++#define MT9T112_CLK_MIN			(6000000)  /* 6Mhz */
++
+ #define MT9T112_FLAG_PCLK_RISING_EDGE	(1 << 0)
+ #define MT9T112_FLAG_DATAWIDTH_8	(1 << 1) /* default width is 10 */
+ 
+-- 
+1.6.6.1
+

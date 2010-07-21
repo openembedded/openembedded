@@ -1,0 +1,35 @@
+From 92135e4024ba2115305da23acb9d13bd0f9251b1 Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Sat, 10 Jul 2010 09:57:40 -0500
+Subject: [PATCH 36/71] omap3isp: Set vd_pol to 0 by default on all cases
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ drivers/media/video/isp/ispccdc.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/video/isp/ispccdc.c b/drivers/media/video/isp/ispccdc.c
+index ea6d87c..b4691c0 100644
+--- a/drivers/media/video/isp/ispccdc.c
++++ b/drivers/media/video/isp/ispccdc.c
+@@ -671,7 +671,7 @@ static int ispccdc_config_datapath(struct isp_ccdc_device *isp_ccdc,
+ 		syncif.fldstat = 0;
+ 		syncif.hdpol = 0;
+ 		syncif.ipmod = YUV16;
+-		syncif.vdpol = 1;
++		syncif.vdpol = 0;
+ 		syncif.bt_r656_en = 0;
+ 		ispccdc_config_imgattr(isp_ccdc, 0);
+ 		ispccdc_config_sync_if(isp_ccdc, syncif);
+@@ -688,7 +688,7 @@ static int ispccdc_config_datapath(struct isp_ccdc_device *isp_ccdc,
+ 		syncif.fldstat = 0;
+ 		syncif.hdpol = 0;
+ 		syncif.ipmod = YUV8;
+-		syncif.vdpol = 1;
++		syncif.vdpol = 0;
+ 		syncif.bt_r656_en = 1;
+ 		ispccdc_config_imgattr(isp_ccdc, 0);
+ 		ispccdc_config_sync_if(isp_ccdc, syncif);
+-- 
+1.6.6.1
+
