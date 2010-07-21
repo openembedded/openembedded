@@ -6,7 +6,9 @@ UNIX-like platforms, Windows, OS/2 and BeOS."
 LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "glib-2.0-native gtk-doc zlib"
+DEPENDS = "gtk-doc zlib"
+DEPENDS_virtclass-native = "gettext-native gtk-doc-native \
+                            pkgconfig-native"
 
 PR = "r0"
 
@@ -44,8 +46,6 @@ do_install_append() {
 	sed -i -e s:${STAGING_BINDIR_NATIVE}:${bindir}:g ${D}${bindir}/glib-mkenums || true
 }
 
-DEPENDS_virtclass-native = "gettext-native gtk-doc-native \
-                            pkgconfig-native"
 EXTRA_OECONF_virtclass-native = ""
 
 do_configure_prepend_virtclass-native() {
