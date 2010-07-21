@@ -3,10 +3,10 @@ LICENSE = "xbmc"
 
 DEPENDS = "libxmu fribidi mpeg2dec ffmpeg samba fontconfig curl libmodplug libmicrohttpd wavpack libmms cmake-native libsdl-image libsdl-mixer virtual/egl mysql5 sqlite3 libmms faad2 libcdio libpcre boost lzo2 enca avahi libsamplerate0 libxrandr bzip2 virtual/libsdl"
 
-SRCREV = "11eb9981945e60828678ef641dae8f950a2e9295"
+SRCREV = "e2ab481ebe964321c358ab9d6402088c714adcbe"
 
 PV = "10.05"
-PR = "r3"
+PR = "r7"
 PR_append = "+gitr${SRCPV}"
 
 SRC_URI = "git://xbmc.git.sourceforge.net/gitroot/xbmc/xbmc;protocol=git;branch=master \
@@ -34,7 +34,11 @@ EXTRA_OECONF = " \
 "
 
 do_configure() {
-	sh bootstrap.angstrom
+	if [ -e bootstrap.angstrom ] ; then
+		sh bootstrap.angstrom
+	else
+		sh bootstrap
+	fi
 	oe_runconf
 }
 
@@ -55,6 +59,9 @@ do_install_append() {
 
 FILES_${PN} += "${datadir}/xsessions"
 FILES_${PN}-dbg += "${libdir}/xbmc/.debug ${libdir}/xbmc/*/.debug ${libdir}/xbmc/*/*/.debug ${libdir}/xbmc/*/*/*/.debug"
+
+# Only builds with glibc currently, so this is "safe"
+RRECOMMENDS_${PN} += "glibc-charmap-ibm850 glibc-gconv-ibm850"
 
 # GNU_HASH QA errors...
 INSANE_SKIP_${PN} = "True"
