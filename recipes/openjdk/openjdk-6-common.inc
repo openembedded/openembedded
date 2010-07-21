@@ -10,7 +10,7 @@ ICEDTEA = "NEEDS TO BE SET"
 S = "${WORKDIR}/${ICEDTEA}"
 B = "${S}/build"
 
-INC_PR = "r8"
+INC_PR = "r9"
 
 SRC_URI = "\
   ${ICEDTEA_URI} \
@@ -21,6 +21,7 @@ SRC_URI = "\
   ${CACAO_URI} \
   ${OEPATCHES} \
   ${ICEDTEAPATCHES} \
+  file://jvm.cfg \
   "
 
 JDK_PN = "openjdk-6"
@@ -337,6 +338,8 @@ do_install() {
 		rm ${D}${JDK_HOME}/bin/$bf
 		ln -s ${JDK_HOME}/jre/bin/$bf ${D}${JDK_HOME}/bin/$bf
 	done
+
+        install -m644 ${WORKDIR}/jvm.cfg  ${D}${JDK_HOME}/jre/lib/${JDK_ARCH}/
 }
 
 # Manual staging step that is only needed for oe-stable.
@@ -459,19 +462,53 @@ RDEPENDS_${JDK_PN}-jdk = "${JDK_PN}-jre"
 FILES_${JDK_PN}-doc = "${JDK_HOME}/man"
 
 pkg_postinst_${JDK_PN}-vm-shark () {
-	sed -i -e "s|^\-shark.*||" -e "s|\(^\-server*\)|\-shark KNOWN\n\1|" ${JDK_HOME}/jre/lib/arm/jvm.cfg
+        if  grep -q "\-cacao KNOWN" ${JDK_HOME}/jre/lib/arm/jvm.cfg && grep -q "\-server ERROR" ${JDK_HOME}/jre/lib/arm/jvm.cfg; then
+          sed -i -e "/\-cacao KNOWN/d" ${JDK_HOME}/jre/lib/arm/jvm.cfg
+          echo "-cacao KNOWN" >> ${JDK_HOME}/jre/lib/arm/jvm.cfg
+        fi 
+
+	sed -i -e "/\-shark.*/d" -e "s|\(^\-server*\)|\-shark KNOWN\n\1|" -e "/^$/d" ${JDK_HOME}/jre/lib/arm/jvm.cfg
 }
 
 pkg_prerm_${JDK_PN}-vm-shark () {
-	sed -i -e "s|^\-shark.*||"  ${JDK_HOME}/jre/lib/arm/jvm.cfg
+	sed -i -e "/^\-shark.*/d" -e "/^$/d" ${JDK_HOME}/jre/lib/arm/jvm.cfg 
+        if  grep -q "\-cacao KNOWN" ${JDK_HOME}/jre/lib/arm/jvm.cfg && grep -q "\-server ERROR" ${JDK_HOME}/jre/lib/arm/jvm.cfg; then
+          sed -i -e "/\-cacao KNOWN/d" -e  "s|\(^\-server*\)|\-cacao KNOWN\n\1|" ${JDK_HOME}/jre/lib/arm/jvm.cfg
+        fi
 }
 
 pkg_postinst_${JDK_PN}-vm-cacao () {
-	sed -i -e "s|^\-cacao.*|\-cacao KNOWN|" ${JDK_HOME}/jre/lib/arm/jvm.cfg
+        if  grep -q "\-server ERROR" ${JDK_HOME}/jre/lib/arm/jvm.cfg && ! grep -q "\-shark KNOWN" ${JDK_HOME}/jre/lib/arm/jvm.cfg; then
+          sed -i -e "/\-cacao.*/d" -e  "s|\(^\-server*\)|\-cacao KNOWN\n\1|" -e "/^$/d" ${JDK_HOME}/jre/lib/arm/jvm.cfg
+        else 
+	  sed -i -e "s|^\-cacao.*|\-cacao KNOWN|" -e "/^$/d" ${JDK_HOME}/jre/lib/arm/jvm.cfg
+        fi
 }
 
 pkg_prerm_${JDK_PN}-vm-cacao () {
-	sed -i -e "s|^\-cacao.*|\-cacao ERROR|"  ${JDK_HOME}/jre/lib/arm/jvm.cfg
+     if  grep -q "\-server ERROR" ${JDK_HOME}/jre/lib/arm/jvm.cfg && ! grep -q "\-shark KNOWN" ${JDK_HOME}/jre/lib/arm/jvm.cfg; then
+	sed -i -e "/\-cacao.*/d" -e "/^$/d" ${JDK_HOME}/jre/lib/arm/jvm.cfg
+        echo "-cacao ERROR" >> ${JDK_HOME}/jre/lib/arm/jvm.cfg
+      else
+	sed -i -e "s|^\-cacao.*|\-cacao ERROR|" -e "/^$/d" ${JDK_HOME}/jre/lib/arm/jvm.cfg
+      fi
+}
+
+pkg_postinst_${JDK_PN}-vm-zero () {
+ if  grep -q "\-cacao KNOWN" ${JDK_HOME}/jre/lib/arm/jvm.cfg  && ! grep -q "\-shark KNOWN" ${JDK_HOME}/jre/lib/arm/jvm.cfg; then
+   sed -i -e "/\-cacao KNOWN/d" ${JDK_HOME}/jre/lib/arm/jvm.cfg
+   echo "-cacao KNOWN" >> ${JDK_HOME}/jre/lib/arm/jvm.cfg
+ fi
+
+ sed -i -e "s|^\-server.*|\-server KNOWN|" -e "/^$/d" ${JDK_HOME}/jre/lib/arm/jvm.cfg
+}
+
+pkg_prerm_${JDK_PN}-vm-zero () {
+ if  grep -q "\-cacao KNOWN" ${JDK_HOME}/jre/lib/arm/jvm.cfg  && ! grep -q "\-shark KNOWN" ${JDK_HOME}/jre/lib/arm/jvm.cfg; then
+   sed -i -e "/\-cacao KNOWN/d" -e  "s|\(^\-server*\)|\-cacao KNOWN\n\1|" ${JDK_HOME}/jre/lib/arm/jvm.cfg
+ fi
+
+ sed -i -e "s|^\-server.*|\-server ERROR|" -e "/^$/d" ${JDK_HOME}/jre/lib/arm/jvm.cfg
 }
 
 pkg_postinst_${JDK_PN}-jre () {
