@@ -34,7 +34,7 @@ do_install_append() {
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/umount ${D}${base_bindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/uname ${D}${base_bindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/modprobe ${D}${base_sbindir}
-        install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/losetup ${D}${base_bindir}
+        install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/losetup ${D}${base_sbindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/wc ${D}${base_bindir}
         ln -s gzip ${D}${base_bindir}/gunzip
         ln -s gzip ${D}${base_bindir}/zcat
@@ -119,7 +119,7 @@ FILES_${KLIBC_UTILS_PKGNAME}-true = "${base_bindir}/true"
 FILES_${KLIBC_UTILS_PKGNAME}-umount = "${base_bindir}/umount"
 FILES_${KLIBC_UTILS_PKGNAME}-uname = "${base_bindir}/uname"
 FILES_${KLIBC_UTILS_PKGNAME}-modprobe = "${base_sbindir}/modprobe"
-FILES_${KLIBC_UTILS_PKGNAME}-losetup = "${base_bindir}/losetup"
+FILES_${KLIBC_UTILS_PKGNAME}-losetup = "${base_sbindir}/losetup"
 FILES_${KLIBC_UTILS_PKGNAME}-wc = "${base_bindir}/wc"
 FILES_${KLIBC_UTILS_PKGNAME}-insmod = "${base_bindir}/insmod"
 FILES_${KLIBC_UTILS_PKGNAME}-ls = "${base_bindir}/ls"
