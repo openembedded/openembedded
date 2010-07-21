@@ -1,7 +1,7 @@
-From 135a829c2fe551a7418696138df68eefad5a9b39 Mon Sep 17 00:00:00 2001
+From 9a8375f9f03770c85e635fc5dbde7124efb66154 Mon Sep 17 00:00:00 2001
 From: Thomas White <taw@bitwiz.org.uk>
 Date: Thu, 26 Nov 2009 08:55:33 +0300
-Subject: [PATCH] mfd: glamo: Enable FIFO stage for the LCD engine's memory access
+Subject: [PATCH 20/22] mfd: glamo: Enable FIFO stage for the LCD engine's memory access
 
 By avoiding conflicts of memory access inside Glamo, this doubles the
 speed of internal memory access.
