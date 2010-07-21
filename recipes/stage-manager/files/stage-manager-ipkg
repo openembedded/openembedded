@@ -732,11 +732,11 @@ ipkg_install_file_dest() {
 
 	local pkg=`ipkg_file_part $filename | sed 's/\([a-z0-9.+-]\+\)_.*/\1/'`
 	local ext=`echo $filename | sed 's/.*\.//'`
-	local pkg_extract
+	local pkg_extract_stdout
 	#if [ "$ext" = "ipk" ]; then
 	#	pkg_extract_stdout="tar -xzOf"
 	#elif [ "$ext" = "deb" ]; then
-		pkg_extract="ar x"
+		pkg_extract_stdout="ar p"
 	#else
 	#	echo "ipkg_install_file: ERROR: File $filename has unknown extension $ext (not .ipk or .deb)"
 	#	return 1
@@ -768,10 +768,20 @@ ipkg_install_file_dest() {
 	mkdir -p $IPKG_TMP/$pkg/data
 	mkdir -p $info_dir
 
-	if ! (cd $IPKG_TMP/$pkg/control ; $pkg_extract $filename control.tar.gz ; gunzip control.tar.gz ; tar xf control.tar ) ; then
+# In certain some versions of Ubuntu, or at least Ubuntu 9.10, tar has some
+# signal handling problems.  The symptom is a sigpipe signal to gzip when
+# using the -z option on tar.  Here and in subsequent sections, we get around
+# this by using temp files instead of the tar -z option or piping straight
+# from gzip.
+
+	rm -f $IPKG_TMP/control.tar.gz $IPKG_TMP/control.tar
+	if ! { $pkg_extract_stdout $filename control.tar.gz > $IPKG_TMP/control.tar.gz &&
+	       gzip -d $IPKG_TMP/control.tar.gz &&
+	       tar -C $IPKG_TMP/$pkg/control -xf $IPKG_TMP/control.tar ; } ; then
 		echo "ipkg_install_file: ERROR unpacking control.tar.gz from $filename"
 		return 1
 	fi
+	rm -f $IPKG_TMP/control.tar.gz $IPKG_TMP/control.tar
 
 	if [ -n "$IPKG_OFFLINE_ROOT" ]; then
 		if grep -q '^InstallsOffline:[[:space:]]*no' $IPKG_TMP/$pkg/control/control; then
@@ -798,11 +808,14 @@ Status: install ok pending" | ipkg_status_update_sd $sd $pkg
 	set -o noglob
 	rm -r $IPKG_TMP/$pkg/control
 
-	if ! (cd $IPKG_TMP/$pkg/data ; $pkg_extract $filename ./data.tar.gz ; gunzip data.tar.gz ; tar xf data.tar ) ; then
+	rm -f $IPKG_TMP/data.tar.gz $IPKG_TMP/data.tar
+	if ! { $pkg_extract_stdout $filename ./data.tar.gz > $IPKG_TMP/data.tar.gz &&
+	       gzip -d $IPKG_TMP/data.tar.gz &&
+	       tar -C $IPKG_TMP/$pkg/data -xf $IPKG_TMP/data.tar ; } ; then
 		echo "ipkg_install_file: ERROR unpacking data.tar.gz from $filename"
 		return 1
 	fi
-	rm $IPKG_TMP/$pkg/data/data.tar
+	rm -f $IPKG_TMP/data.tar.gz $IPKG_TMP/data.tar
 	echo "Done."
 
 	echo -n "Configuring $pkg..."
@@ -870,10 +883,10 @@ diff -u $dest/$conffile $IPKG_TMP/$pkg/data/$conffile"
 	(cd $IPKG_TMP/$pkg/data/; tar cf - . | (cd $owd; cd $dest; tar xf -))		
 	rm -rf $IPKG_TMP/$pkg/data
 	rmdir $IPKG_TMP/$pkg
-	$pkg_extract $filename ./data.tar.gz
-	gunzip data.tar
-	tar tf data.tar | sed -e 's/^\.//' > $info_dir/$pkg.list
-	rm data.tar
+	rm -f $IPKG_TMP/data.tar.gz $IPKG_TMP/data.tar
+	$pkg_extract_stdout $filename ./data.tar.gz > $IPKG_TMP/data.tar.gz
+	tar tzf $IPKG_TMP/data.tar.gz | sed -e 's/^\.//' > $info_dir/$pkg.list
+	rm -f $IPKG_TMP/data.tar.gz $IPKG_TMP/data.tar
 
 	if [ -x "$info_dir/$pkg.postinst" ]; then
 		$info_dir/$pkg.postinst configure
