@@ -149,6 +149,8 @@ def check_sanity(e):
 			os.system(bb.data.expand("cd ${TMPDIR}/stamps; for i in */*do_populate_staging; do new=`echo $i | sed -e 's/do_populate_staging/do_populate_sysroot/'`; mv $i $new; done", e.data))
 			f = file(abifile, "w")
 			f.write(current_abi)
+		elif abi == "5" and current_abi != "5":
+			messages = messages + "Staging layout has changed. The cross directory has been deprecated and cross packages are now built under the native sysroot.\nThis requires a rebuild.\n"
 		elif (abi != current_abi):
 			# Code to convert from one ABI to another could go here if possible.
 			messages = messages + "Error, TMPDIR has changed ABI (%s to %s) and you need to either rebuild, revert or adjust it at your own risk.\n" % (abi, current_abi)
