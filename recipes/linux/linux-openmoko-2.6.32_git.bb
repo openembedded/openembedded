@@ -1,7 +1,7 @@
 require linux.inc
 require linux-openmoko.inc
 
-KERNEL_RELEASE="2.6.32.16"
+KERNEL_RELEASE="2.6.32.17"
 
 SRCREV = "a9254be10ac2294ea20165a87c09ea6afcf66d94"
 OEV = "oe3.3"
@@ -42,8 +42,8 @@ SRC_URI = "\
   file://defconfig \
 "
 
-SRC_URI[stablepatch.md5sum] = "744890f9651962ceae7663d44b19df65"
-SRC_URI[stablepatch.sha256sum] = "e744aaa87d2daee6d10b76f411d9efa13db24f779981890b482d72364694aa08"
+SRC_URI[stablepatch.md5sum] = "ca9a0f5c28803e9231dc9ee5b0faa863"
+SRC_URI[stablepatch.sha256sum] = "823a3c2d8d76e4c7d278999a11c274ffb28a0d25a45b24bc95c5bee7ec192ee3"
 
 S = "${WORKDIR}/git"
 
