@@ -2,7 +2,7 @@ LICENSE = "BSD"
 DEPENDS = "ti-codec-engine ti-dsplib"
 
 PV = "0+svnr${SRCPV}"
-SRCREV = "105"
+SRCREV = "128"
 
 SRC_URI = "svn://opencv-dsp-acceleration.googlecode.com/svn/;proto=http;module=trunk \
            http://focus.ti.com/lit/sw/sprc264/sprc264.zip;name=imglib \
@@ -22,7 +22,7 @@ export OPENCV_PATH = "${STAGING_INCDIR}"
 export DSPLIB_PATH = "${DSPLIB_INSTALL_DIR}"
 
 # You need to extract the imglib from the .exe manually and place it in /OE/tmp (or somewhere else and change the patch below)
-export IMGLIB_PATH = "/OE/tmp/imglib"
+export IMGLIB_PATH = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}${installdir}/imglib_v201"
 
 do_configure() {
 	echo "-l ${DSPLIB_INSTALL_DIR}/dsplib64plus.lib" >> ${S}/beagle/server/opencv_unitserver_evm3530/link.cmd
