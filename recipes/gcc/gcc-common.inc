@@ -9,6 +9,8 @@ inherit autotools gettext
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/gcc-${PV}"
 
+COMPATIBLE_TARGET_SYS ?= "(?!nios2)"
+
 # When making a Canadian SDK, we use these files too to make the compiler
 # for building for the new host part.  So only obey TARGET_FPU for the
 # real target.

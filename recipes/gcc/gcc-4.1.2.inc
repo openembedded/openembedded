@@ -3,6 +3,8 @@ require gcc-common.inc
 DEPENDS = "mpfr gmp"
 NATIVEDEPS = "mpfr-native gmp-native"
 
+COMPATIBLE_TARGET_SYS = "."
+
 INC_PR = "r23"
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
