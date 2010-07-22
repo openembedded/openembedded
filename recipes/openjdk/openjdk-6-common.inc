@@ -48,8 +48,7 @@ DEPENDS_append_arm = " qemu-native "
 
 FILESPATHPKG = "openjdk-6-${PV}"
 
-# For compatibility with Poky:
-FILESPATH_append = ":${FILE_DIRNAME}/openjdk-6-${PV}"
+FILESPATHPKG_append = ":files"
 
 # No package should directly depend on this (it should require
 # java2-runtime instead).
