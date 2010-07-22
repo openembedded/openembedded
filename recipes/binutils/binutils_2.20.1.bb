@@ -3,7 +3,7 @@ LICENSE = "GPLv3"
 
 PR = "${INC_PR}.1"
 
-COMPATIBLE_TARGET_SYS = "."
+#COMPATIBLE_TARGET_SYS = "."
 
 SRC_URI = "\
      ${GNU_MIRROR}/binutils/binutils-${PV}.tar.bz2;name=tarball \
