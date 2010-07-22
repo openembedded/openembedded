@@ -6,7 +6,7 @@ RDEPENDS_${PN} = "python-shell python-pycairo python-pygobject"
 PROVIDES = "python-pygtk2"
 SRCNAME = "pygtk"
 LICENSE = "LGPL"
-PR = "r2"
+PR = "r3"
 
 MAJ_VER = "${@bb.data.getVar('PV',d,1).split('.')[0]}.${@bb.data.getVar('PV',d,1).split('.')[1]}"
 SRC_URI = "ftp://ftp.gnome.org/pub/gnome/sources/pygtk/${MAJ_VER}/${SRCNAME}-${PV}.tar.bz2;name=pygtk \
@@ -38,6 +38,8 @@ do_install_append() {
 	find ${D} -name "*.la"|xargs rm -f
 	rm -f ${D}/${bindir}/pygtk-codegen-2.0
 	rm -rf ${D}/${libdir}/pkgconfig
+	install -d ${D}${libdir}/pkgconfig
+	install -m 0644 ${S}/*.pc ${D}${libdir}/pkgconfig
 }
 
 # dirty fix #2: fix build system paths leaking in
