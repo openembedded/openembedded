@@ -128,6 +128,7 @@ SRC_URI = "git://arago-project.org/git/people/sriram/ti-psp-omap.git;protocol=gi
            file://cam/0069-mt9t112-Fix-pll-p-dividers-abstraction.patch \
            file://cam/0070-mt9t112-Adjust-50-60Hz-flickering-settings.patch \
            file://cam/0071-mt9t112-Trigger-autofocus-at-the-end-of-context-swit.patch \
+           file://0001-BeagleBoard-Adjust-USER-button-pin-for-xM.patch \
            file://defconfig"
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
