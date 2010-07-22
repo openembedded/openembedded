@@ -1,6 +1,8 @@
 require glibc.inc
 PR = "${INC_PR}.2"
 
+COMPATIBLE_TARGET_SYS = "."
+
 ARM_INSTRUCTION_SET = "arm"
 
 PACKAGES_DYNAMIC = "libc6*"
