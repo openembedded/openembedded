@@ -6,7 +6,7 @@ PV = "3.9.2+4.0.0beta5"
 
 PR = "r4"
 
-SRC_URI = "ftp://ftp.remotesensing.org/pub/libtiff/tiff-4.0.0beta5.tar.gz;name=tiff400beta5targz"
+SRC_URI = "http://download.osgeo.org/libtiff/tiff-4.0.0beta5.tar.gz;name=tiff400beta5targz"
 SRC_URI[tiff400beta5targz.md5sum] = "a0a83604e38a299fae9f0b1a39c04870"
 SRC_URI[tiff400beta5targz.sha256sum] = "64b61567782643a841e33a8d031d0d6a9b3e436108829e2e947183f8dcdc6ec7"
 
