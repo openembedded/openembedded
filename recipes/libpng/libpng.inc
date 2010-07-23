@@ -3,11 +3,14 @@ HOMEPAGE = "http://www.libpng.org/"
 LICENSE = "libpng"
 SECTION = "libs"
 PRIORITY = "required"
+
 DEPENDS = "zlib"
 
 INC_PR = "r2"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/libpng/libpng-${PV}.tar.bz2;name=tarball"
+BBCLASSEXTEND = "native"
+
+SRC_URI = "${SOURCEFORGE_MIRROR}/libpng/libpng-${PV}.tar.bz2;name=libpng"
 S = "${WORKDIR}/libpng-${PV}"
 
 inherit autotools pkgconfig binconfig
@@ -19,3 +22,4 @@ FILES_libpng12 = "${libdir}/libpng12.so.*"
 FILES_${PN}-dev = "${includedir} ${libdir}/lib*.so ${libdir}/*.la \
 		${libdir}/*.a ${libdir}/pkgconfig \
 		${datadir}/aclocal ${bindir} ${sbindir}"
+
