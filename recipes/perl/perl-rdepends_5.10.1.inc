@@ -22,6 +22,8 @@ RDEPENDS_perl-module-english += "perl-module-errno "
 RDEPENDS_perl-module-errno += "perl-module-list-util "
 RDEPENDS_perl-module-config-heavy += "perl-module-config-git "
 
+RDEPENDS_perl-module-utf8-heavy += "perl-module-unicore-exact "
+
 # Auto-generated dependencies
 RDEPENDS_perl-module-app-prove += "perl-module-app-prove-state "
 RDEPENDS_perl-module-app-prove += "perl-module-carp "
