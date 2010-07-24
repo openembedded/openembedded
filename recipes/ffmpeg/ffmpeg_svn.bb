@@ -3,13 +3,13 @@ require ffmpeg.inc
 # The license depends on the configure option selected in this recipe 'non-free' is disabled and 'gpl' is enabled
 LICENSE = "GPLv2+"
 
-DEPENDS += "schroedinger libgsm libvpx"
+DEPENDS += "virtual/libsdl schroedinger libgsm libvpx"
 
 # When bumping SRCREV make sure you bump PR here and in dependant recipes (gst-ffmpeg, gnash, omxil, etc) to account for SOVERSION changes
 SRCREV = "23733"
 
 PV = "0.6+${PR}+svnr${SRCPV}"
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "1"
@@ -36,6 +36,8 @@ EXTRA_OECONF = " \
         --cross-prefix=${TARGET_PREFIX} \
         --prefix=${prefix} \
         \
+        --enable-ffserver \
+        --enable-ffplay \
         --enable-x11grab \
         --enable-libgsm \
         --enable-libmp3lame \
