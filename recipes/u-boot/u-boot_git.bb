@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r58"
+PR ="r59"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -62,11 +62,13 @@ SRC_URI_beagleboard = "git://www.denx.de/git/u-boot.git;protocol=git \
                        file://0038-Added-configurations-for-xM-Rev-A-board.patch \
                        file://0039-OMAP3-beagle-setenv-beaglerev-for-AxBx-Cx-xMA-for-be.patch \
                        file://0001-OMAP-mmc-add-support-for-second-and-third-mmc-chan.patch \
-		       file://0001-OMAP3-Beagle-enable-support-for-second-and-third-m.patch \
-		       file://0038-BeagleBoard-Added-LED-driver.patch \
-		       file://0039-Add-led-command.patch \
-		       file://0041-BeagleBoard-Enabled-LEDs.patch \
-		       file://0043-BeagleBoard-Add-CONFIG_SYS_MEMTEST_SCRATCH.patch \
+                       file://0001-OMAP3-Beagle-enable-support-for-second-and-third-m.patch \
+                       file://0038-BeagleBoard-Added-LED-driver.patch \
+                       file://0039-Add-led-command.patch \
+                       file://0041-BeagleBoard-Enabled-LEDs.patch \
+                       file://0042-BeagleBoard-New-command-for-status-of-USER-button.patch \
+                       file://0043-BeagleBoard-Add-CONFIG_SYS_MEMTEST_SCRATCH.patch \
+                       file://0044-Beagleboard-Adjust-boot.patch \
                        file://fw_env.config \
 "
 SRCREV_beagleboard = "ca6e1c136ddb720c3bb2cc043b99f7f06bc46c55"

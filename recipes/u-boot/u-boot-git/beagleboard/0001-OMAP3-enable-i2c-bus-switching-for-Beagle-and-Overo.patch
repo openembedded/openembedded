@@ -1,19 +1,24 @@
-From fc313d72cbfd788f23a7623d0b8cd9c2af329b7b Mon Sep 17 00:00:00 2001
-From: Steve Sakoman <steve@sakoman.com>
-Date: Wed, 10 Feb 2010 13:39:40 -0800
-Subject: [PATCH 01/37] OMAP3: enable i2c bus switching for Beagle and Overo
+From 9c1581dd7f6057d5d25d6b2dcf8bacef95d526d2 Mon Sep 17 00:00:00 2001
+From: Syed Mohammed Khasim <khasim@ti.com>
+Date: Mon, 18 Jan 2010 18:11:14 +0530
+Subject: [PATCH] Enable I2C bus switching
 
+OMAP3 supports Multiple I2C channels, this patch allows
+us to use i2c dev <bus no> command to switch between busses.
+
+Signed-off-by: Syed Mohammed Khasim <khasim@ti.com>
+Acked-by: Heiko Schocher <hs@denx.de>
+(cherry picked from commit 9bb1c3501c8f098dac6e224c99e409ebf92b0ab9)
 ---
- drivers/i2c/omap24xx_i2c.c     |    6 ++++++
- include/configs/omap3_beagle.h |    1 +
- include/configs/omap3_overo.h  |    1 +
- 3 files changed, 8 insertions(+), 0 deletions(-)
+ drivers/i2c/omap24xx_i2c.c     |    5 +++++
+ include/configs/omap3_beagle.h |    6 ++++++
+ 2 files changed, 11 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/i2c/omap24xx_i2c.c b/drivers/i2c/omap24xx_i2c.c
-index ff18991..30a8b4c 100644
+index f00468d..0af230d 100644
 --- a/drivers/i2c/omap24xx_i2c.c
 +++ b/drivers/i2c/omap24xx_i2c.c
-@@ -435,3 +435,9 @@ int i2c_set_bus_num(unsigned int bus)
+@@ -435,3 +435,8 @@ int i2c_set_bus_num(unsigned int bus)
  
  	return 0;
  }
@@ -22,31 +27,23 @@ index ff18991..30a8b4c 100644
 +{
 +	return (int) current_bus;
 +}
-+
 diff --git a/include/configs/omap3_beagle.h b/include/configs/omap3_beagle.h
-index 08d79ac..87e3dd0 100644
+index ad73a66..1a76004 100644
 --- a/include/configs/omap3_beagle.h
 +++ b/include/configs/omap3_beagle.h
-@@ -146,6 +146,7 @@
- #define CONFIG_SYS_I2C_BUS		0
- #define CONFIG_SYS_I2C_BUS_SELECT	1
- #define CONFIG_DRIVER_OMAP34XX_I2C	1
-+#define CONFIG_I2C_MULTI_BUS		1
+@@ -113,6 +113,12 @@
+ /* DDR - I use Micron DDR */
+ #define CONFIG_OMAP3_MICRON_DDR		1
  
- /*
-  * TWL4030
-diff --git a/include/configs/omap3_overo.h b/include/configs/omap3_overo.h
-index a43500b..0d24758 100644
---- a/include/configs/omap3_overo.h
-+++ b/include/configs/omap3_overo.h
-@@ -117,6 +117,7 @@
- #define CONFIG_SYS_I2C_BUS		0
- #define CONFIG_SYS_I2C_BUS_SELECT	1
- #define CONFIG_DRIVER_OMAP34XX_I2C	1
++/* Enable Multi Bus support for I2C */
 +#define CONFIG_I2C_MULTI_BUS		1
- 
- /*
-  * TWL4030
++
++/* Probe all devices */
++#define CONFIG_SYS_I2C_NOPROBES		{0x0, 0x0}
++
+ /* USB */
+ #define CONFIG_MUSB_UDC			1
+ #define CONFIG_USB_OMAP3		1
 -- 
-1.6.6.1
+1.6.1
 
