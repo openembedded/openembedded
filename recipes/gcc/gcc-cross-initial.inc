@@ -13,8 +13,7 @@ EXTRA_OECONF = "--with-local-prefix=${STAGING_DIR_TARGET}${target_prefix} \
 		--disable-__cxa_atexit \
 		--enable-languages=c \
 		--program-prefix=${TARGET_PREFIX} \
-		--with-sysroot=${STAGING_DIR_TARGET} \
-		--with-build-sysroot=${STAGING_DIR_TARGET} \
+		${EXTRA_OECONF_PATHS} \
 		${EXTRA_OECONF_INITIAL} \
 		${OPTSPACE} \
 		${@get_gcc_fpu_setting(bb, d)} \

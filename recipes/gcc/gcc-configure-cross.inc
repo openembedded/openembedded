@@ -3,9 +3,10 @@ require gcc-configure-common.inc
 USE_NLS = '${@base_conditional( "TARGET_OS", "linux-uclibc", "no", "", d )}'
 
 EXTRA_OECONF_PATHS = "--with-local-prefix=${STAGING_DIR_TARGET}${target_prefix} \
-		      --with-gxx-include-dir=${STAGING_DIR_TARGET}/${target_includedir}/c++ \
+		      --with-gxx-include-dir=${STAGING_DIR_TARGET}${target_includedir}/c++ \
                       --with-sysroot=${STAGING_DIR_TARGET} \
-                      --with-build-sysroot=${STAGING_DIR_TARGET}"
+                      --with-build-sysroot=${STAGING_DIR_TARGET} \
+		      --with-build-time-tools=${bindir}"
 
 do_configure_prepend () {
 	export CC="${BUILD_CC}"
