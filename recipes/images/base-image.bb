@@ -20,7 +20,8 @@ IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
 
 DISTRO_SSH_DAEMON ?= "dropbear"
 
-DISTRO_PACKAGE_MANAGER ?= "ipkg ipkg-collateral"
+IPKG_VARIANT ?= "opkg"
+DISTRO_PACKAGE_MANAGER ?= "${IPKG_VARIANT}"
 
 # FIXME: We need a distro-indendent way of specifying feed configs.
 # Once the RFC for the DISTRO_FEED_CONFIGS variable name is approved,
