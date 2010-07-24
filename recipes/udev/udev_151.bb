@@ -29,6 +29,7 @@ SRC_URI += " \
        file://default \
        file://init \
        file://cache \
+       file://udev-compat-wrapper-patch \
 "
 
 SRC_URI_append_h2200 = " file://50-hostap_cs.rules "
@@ -73,6 +74,22 @@ FILES_${PN}-dbg += "${usrbindir}/.debug ${usrsbindir}/.debug"
 # is ${prefix}/lib64
 FILES_${PN} += "/lib/udev* ${libdir}/ConsoleKit"
 FILES_${PN}-dbg += "/lib/udev/.debug"
+
+RPROVIDES_udev_spitz = "udev-compat-wrapper"
+do_unpack_append_spitz() {
+	bb.build.exec_func('do_apply_compat_wrapper', d)
+}
+RPROVIDES_udev_akita = "udev-compat-wrapper"
+do_unpack_append_akita() {
+	bb.build.exec_func('do_apply_compat_wrapper', d)
+}
+# Modify init script on platforms that need to boot old kernels:
+do_apply_compat_wrapper() {
+	cd ${WORKDIR}
+	sed -i "s:/sbin/udevd:\$UDEVD:g;s:/sbin/udevadm:\$UDEVADM:g" init
+	patch <udev-compat-wrapper-patch
+	cd -
+}
 
 do_install () {
 	install -d ${D}${usrsbindir} \
