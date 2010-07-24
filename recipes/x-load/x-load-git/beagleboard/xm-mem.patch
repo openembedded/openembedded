@@ -1,0 +1,236 @@
+From ead751e4a361ce19552ac94bbeba232f12849244 Mon Sep 17 00:00:00 2001
+From: Steve Kipisz <s-kipisz2@ti.com>
+Date: Thu, 8 Jul 2010 10:30:58 -0500
+Subject: [PATCH] Support Micron or Numonyx memory
+
+---
+ board/omap3530beagle/omap3530beagle.c |   56 +++++++++++++++++++++++++++-----
+ drivers/k9f1g08r0a.c                  |   43 +++++++++++++++++++------
+ include/asm/arch-omap3/mem.h          |   43 ++++++++++++++++++++++++-
+ 3 files changed, 121 insertions(+), 21 deletions(-)
+
+diff --git a/board/omap3530beagle/omap3530beagle.c b/board/omap3530beagle/omap3530beagle.c
+index eb8008e..1254aa0 100644
+--- a/board/omap3530beagle/omap3530beagle.c
++++ b/board/omap3530beagle/omap3530beagle.c
+@@ -265,6 +265,32 @@ u32 wait_on_value(u32 read_bit_mask, u32 match_value, u32 read_addr, u32 bound)
+ }
+ 
+ #ifdef CFG_3430SDRAM_DDR
++
++#define MICRON_DDR	0
++#define NUMONYX_MCP	1
++int identify_xm_ddr()
++{
++	int	mfr, id;
++
++	__raw_writel(M_NAND_GPMC_CONFIG1, GPMC_CONFIG1 + GPMC_CONFIG_CS0);
++	__raw_writel(M_NAND_GPMC_CONFIG2, GPMC_CONFIG2 + GPMC_CONFIG_CS0);
++	__raw_writel(M_NAND_GPMC_CONFIG3, GPMC_CONFIG3 + GPMC_CONFIG_CS0);
++	__raw_writel(M_NAND_GPMC_CONFIG4, GPMC_CONFIG4 + GPMC_CONFIG_CS0);
++	__raw_writel(M_NAND_GPMC_CONFIG5, GPMC_CONFIG5 + GPMC_CONFIG_CS0);
++	__raw_writel(M_NAND_GPMC_CONFIG6, GPMC_CONFIG6 + GPMC_CONFIG_CS0);
++
++	/* Enable the GPMC Mapping */
++	__raw_writel((((OMAP34XX_GPMC_CS0_SIZE & 0xF)<<8) |
++			     ((NAND_BASE_ADR>>24) & 0x3F) |
++			     (1<<6)),  (GPMC_CONFIG7 + GPMC_CONFIG_CS0));
++	delay(2000);
++
++	nand_readid(&mfr, &id);
++	if (mfr == 0)
++		return MICRON_DDR;
++	if ((mfr == 0x20) && (id == 0xba))
++		return NUMONYX_MCP;
++}
+ /*********************************************************************
+  * config_3430sdram_ddr() - Init DDR on 3430SDP dev board.
+  *********************************************************************/
+@@ -279,15 +305,27 @@ void config_3430sdram_ddr(void)
+ 	__raw_writel(SDP_SDRC_SHARING, SDRC_SHARING);
+ 
+ 	if (beagle_revision() == REVISION_XM) {
+-		__raw_writel(0x2, SDRC_CS_CFG); /* 256MB/bank */
+-		__raw_writel(SDP_SDRC_MDCFG_0_DDR_XM, SDRC_MCFG_0);
+-		__raw_writel(SDP_SDRC_MDCFG_0_DDR_XM, SDRC_MCFG_1);
+-		__raw_writel(MICRON_V_ACTIMA_200, SDRC_ACTIM_CTRLA_0);
+-		__raw_writel(MICRON_V_ACTIMB_200, SDRC_ACTIM_CTRLB_0);
+-		__raw_writel(MICRON_V_ACTIMA_200, SDRC_ACTIM_CTRLA_1);
+-		__raw_writel(MICRON_V_ACTIMB_200, SDRC_ACTIM_CTRLB_1);
+-		__raw_writel(SDP_3430_SDRC_RFR_CTRL_200MHz, SDRC_RFR_CTRL_0);
+-		__raw_writel(SDP_3430_SDRC_RFR_CTRL_200MHz, SDRC_RFR_CTRL_1);
++		if (identify_xm_ddr() == MICRON_DDR) {
++			__raw_writel(0x2, SDRC_CS_CFG); /* 256MB/bank */
++			__raw_writel(SDP_SDRC_MDCFG_0_DDR_MICRON_XM, SDRC_MCFG_0);
++			__raw_writel(SDP_SDRC_MDCFG_0_DDR_MICRON_XM, SDRC_MCFG_1);
++			__raw_writel(MICRON_V_ACTIMA_200, SDRC_ACTIM_CTRLA_0);
++			__raw_writel(MICRON_V_ACTIMB_200, SDRC_ACTIM_CTRLB_0);
++			__raw_writel(MICRON_V_ACTIMA_200, SDRC_ACTIM_CTRLA_1);
++			__raw_writel(MICRON_V_ACTIMB_200, SDRC_ACTIM_CTRLB_1);
++			__raw_writel(SDP_3430_SDRC_RFR_CTRL_200MHz, SDRC_RFR_CTRL_0);
++			__raw_writel(SDP_3430_SDRC_RFR_CTRL_200MHz, SDRC_RFR_CTRL_1);
++		} else {
++			__raw_writel(0x2, SDRC_CS_CFG); /* 256MB/bank */
++			__raw_writel(SDP_SDRC_MDCFG_0_DDR_NUMONYX_XM, SDRC_MCFG_0);
++			__raw_writel(SDP_SDRC_MDCFG_0_DDR_NUMONYX_XM, SDRC_MCFG_1);
++			__raw_writel(NUMONYX_V_ACTIMA_165, SDRC_ACTIM_CTRLA_0);
++			__raw_writel(NUMONYX_V_ACTIMB_165, SDRC_ACTIM_CTRLB_0);
++			__raw_writel(NUMONYX_V_ACTIMA_165, SDRC_ACTIM_CTRLA_1);
++			__raw_writel(NUMONYX_V_ACTIMB_165, SDRC_ACTIM_CTRLB_1);
++			__raw_writel(SDP_3430_SDRC_RFR_CTRL_165MHz, SDRC_RFR_CTRL_0);
++			__raw_writel(SDP_3430_SDRC_RFR_CTRL_165MHz, SDRC_RFR_CTRL_1);
++		}
+ 	} else {
+ 		__raw_writel(0x1, SDRC_CS_CFG); /* 128MB/bank */
+ 		__raw_writel(SDP_SDRC_MDCFG_0_DDR, SDRC_MCFG_0);
+diff --git a/drivers/k9f1g08r0a.c b/drivers/k9f1g08r0a.c
+index 8968a1b..d2da804 100644
+--- a/drivers/k9f1g08r0a.c
++++ b/drivers/k9f1g08r0a.c
+@@ -154,6 +154,29 @@ static int NanD_Address(unsigned int numbytes, unsigned long ofs)
+ 	return 0;
+ }
+ 
++int nand_readid(int *mfr, int *id)
++{
++	NAND_ENABLE_CE();
++
++	if (NanD_Command(NAND_CMD_RESET)) {
++		NAND_DISABLE_CE();
++		return 1;
++	}
++ 
++	if (NanD_Command(NAND_CMD_READID)) {
++		NAND_DISABLE_CE();
++		return 1;
++	}
++ 
++	NanD_Address(ADDR_COLUMN, 0);
++
++	*mfr = READ_NAND(NAND_ADDR);
++	*id = READ_NAND(NAND_ADDR);
++
++	NAND_DISABLE_CE();
++	return 0;
++}
++
+ /* read chip mfr and id
+  * return 0 if they match board config
+  * return 1 if not
+@@ -162,23 +185,23 @@ int nand_chip()
+ {
+ 	int mfr, id;
+ 
+- 	NAND_ENABLE_CE();
++	NAND_ENABLE_CE();
+ 
+- 	if (NanD_Command(NAND_CMD_RESET)) {
+- 		printf("Err: RESET\n");
+- 		NAND_DISABLE_CE();   
++	if (NanD_Command(NAND_CMD_RESET)) {
++		printf("Err: RESET\n");
++		NAND_DISABLE_CE();   
+ 		return 1;
+ 	}
+  
+- 	if (NanD_Command(NAND_CMD_READID)) {
+- 		printf("Err: READID\n");
+- 		NAND_DISABLE_CE();
++	if (NanD_Command(NAND_CMD_READID)) {
++		printf("Err: READID\n");
++		NAND_DISABLE_CE();
+ 		return 1;
+- 	}
++	}
+  
+- 	NanD_Address(ADDR_COLUMN, 0);
++	NanD_Address(ADDR_COLUMN, 0);
+ 
+- 	mfr = READ_NAND(NAND_ADDR);
++	mfr = READ_NAND(NAND_ADDR);
+ 	id = READ_NAND(NAND_ADDR);
+ 
+ 	NAND_DISABLE_CE();
+diff --git a/include/asm/arch-omap3/mem.h b/include/asm/arch-omap3/mem.h
+index cba4c6f..63cdba1 100644
+--- a/include/asm/arch-omap3/mem.h
++++ b/include/asm/arch-omap3/mem.h
+@@ -46,6 +46,7 @@ typedef enum {
+ #define MMC_NAND            4
+ #define MMC_ONENAND         5
+ #define GPMC_NONE           6
++#define GPMC_ONENAND_TRY    7
+ 
+ #endif
+ 
+@@ -71,7 +72,8 @@ typedef enum {
+ #define SDP_SDRC_MDCFG_0_DDR	(0x02582019|B_ALL) /* Infin ddr module */
+ #else
+ #define SDP_SDRC_MDCFG_0_DDR	(0x02584019|B_ALL)
+-#define SDP_SDRC_MDCFG_0_DDR_XM	(0x03588019|B_ALL)
++#define SDP_SDRC_MDCFG_0_DDR_MICRON_XM	(0x03588019|B_ALL)
++#define SDP_SDRC_MDCFG_0_DDR_NUMONYX_XM	(0x04590019|B_ALL)
+ #endif
+ 
+ #define SDP_SDRC_MR_0_DDR		0x00000032
+@@ -252,12 +254,47 @@ typedef enum {
+ 		(MICRON_TDPL_200 << 6) | (MICRON_TDAL_200))
+ 
+ #define MICRON_TWTR_200   2
+-#define MICRON_TCKE_200   1
++#define MICRON_TCKE_200   4
+ #define MICRON_TXP_200    2
+ #define MICRON_XSR_200   23
+ #define MICRON_V_ACTIMB_200 ((MICRON_TCKE_200 << 12) | (MICRON_XSR_200 << 0)) | \
+ 				(MICRON_TXP_200 << 8) | (MICRON_TWTR_200 << 16)
+ 
++/* NUMONYX part of IGEP0020 (165MHz optimized) 6.06ns
++ *   ACTIMA
++ *      TDAL = Twr/Tck + Trp/tck = 15/6 + 18/6 = 2.5 + 3 = 5.5 -> 6
++ *      TDPL (Twr) = 15/6 = 2.5 -> 3
++ *      TRRD = 12/6 = 2
++ *      TRCD = 22.5/6 = 3.75 -> 4
++ *      TRP  = 18/6 = 3
++ *      TRAS = 42/6 = 7
++ *      TRC  = 60/6 = 10
++ *      TRFC = 140/6 = 23.3 -> 24
++ *   ACTIMB
++ *	TWTR = 2
++ *	TCKE = 2
++ *	TXSR = 200/6 =  33.3 -> 34
++ *	TXP  = 1.0 + 1.1 = 2.1 -> 3 ¿?
++ */
++#define NUMONYX_TDAL_165   6
++#define NUMONYX_TDPL_165   3
++#define NUMONYX_TRRD_165   2
++#define NUMONYX_TRCD_165   4
++#define NUMONYX_TRP_165    3
++#define NUMONYX_TRAS_165   7
++#define NUMONYX_TRC_165   10
++#define NUMONYX_TRFC_165  24
++#define NUMONYX_V_ACTIMA_165 ((NUMONYX_TRFC_165 << 27) | (NUMONYX_TRC_165 << 22) | (NUMONYX_TRAS_165 << 18) \
++		| (NUMONYX_TRP_165 << 15) | (NUMONYX_TRCD_165 << 12) |(NUMONYX_TRRD_165 << 9) | \
++		(NUMONYX_TDPL_165 << 6) | (NUMONYX_TDAL_165))
++
++#define NUMONYX_TWTR_165   2
++#define NUMONYX_TCKE_165   2
++#define NUMONYX_TXP_165    3
++#define NUMONYX_XSR_165    34
++#define NUMONYX_V_ACTIMB_165 ((NUMONYX_TCKE_165 << 12) | (NUMONYX_XSR_165 << 0)) | \
++				(NUMONYX_TXP_165 << 8) | (NUMONYX_TWTR_165 << 16)
++
+ /* New and compatability speed defines */
+ #if defined(PRCM_CLK_CFG2_200MHZ) || defined(PRCM_CONFIG_II) || defined(PRCM_CONFIG_5B)
+ # define L3_100MHZ   /* Use with <= 100MHz SDRAM */
+@@ -276,6 +313,8 @@ typedef enum {
+ #elif  defined(L3_165MHZ)
+ # define MICRON_SDRC_ACTIM_CTRLA_0     MICRON_V_ACTIMA_165
+ # define MICRON_SDRC_ACTIM_CTRLB_0     MICRON_V_ACTIMB_165
++# define NUMONYX_SDRC_ACTIM_CTRLA_0    NUMONYX_V_ACTIMA_165
++# define NUMONYX_SDRC_ACTIM_CTRLB_0    NUMONYX_V_ACTIMB_165
+ #endif
+ 
+ 
+-- 
+1.6.1
+
