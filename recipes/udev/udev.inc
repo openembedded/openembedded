@@ -43,11 +43,13 @@ EXTRA_OEMAKE = "-e \
 		'EXTRAS=${UDEV_EXTRAS}' \
 		'STRIP=echo'"
 
-RPROVIDES_udev_spitz = "udev-compat-wrapper"
+RPROVIDES_udev_spitz += "udev-compat-wrapper"
+RDEPENDS_udev_spitz += "udev-compat"
 do_unpack_append_spitz() {
 	bb.build.exec_func('do_apply_compat_wrapper', d)
 }
-RPROVIDES_udev_akita = "udev-compat-wrapper"
+RPROVIDES_udev_akita += "udev-compat-wrapper"
+RDEPENDS_udev_akita += "udev-compat"
 do_unpack_append_akita() {
 	bb.build.exec_func('do_apply_compat_wrapper', d)
 }
