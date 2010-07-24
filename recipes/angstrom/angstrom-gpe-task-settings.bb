@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r35"
+PR = "r36"
 
 inherit task
 
@@ -8,7 +8,6 @@ RDEPENDS_${PN} = "\
     mboxkbd-layouts-gui \
 	gpe-su \
     gpe-conf \
-    gpe-package \
     gpe-shield \
     gpe-taskmanager \
     keylaunch \
