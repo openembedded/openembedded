@@ -1,0 +1,43 @@
+From b5412a27380f0c8d571181ba2ab719574fce796a Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Thu, 22 Jul 2010 11:03:33 -0500
+Subject: [PATCH 2/3] omap3beagle: camera: Fix dual sensor registration
+
+dev_index should be different, which represents an internal index
+in the master camera driver.
+
+Also, make device video nodes be alloted with the "first free", by setting
+dev_minor to -1.
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ arch/arm/mach-omap2/board-omap3beagle-camera.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle-camera.c b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+index 520e1d8..c0218e3 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle-camera.c
++++ b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+@@ -107,7 +107,7 @@ static int mt9v113_ifparm(struct v4l2_ifparm *p)
+ 
+ static struct omap34xxcam_hw_config mt9v113_hwc = {
+ 	.dev_index		= 0,
+-	.dev_minor		= 0,
++	.dev_minor		= -1,
+ 	.dev_type		= OMAP34XXCAM_SLAVE_SENSOR,
+ 	.u.sensor.sensor_isp	= 1,
+ 	.u.sensor.capture_mem	= MT9V113_MAX_FRAME_SIZE * 2,
+@@ -259,8 +259,8 @@ static int mt9t112_ifparm(struct v4l2_ifparm *p)
+ 
+ #if defined(CONFIG_VIDEO_OMAP3) || defined(CONFIG_VIDEO_OMAP3_MODULE)
+ static struct omap34xxcam_hw_config mt9t112_hwc = {
+-	.dev_index		= 0,
+-	.dev_minor		= 0,
++	.dev_index		= 1,
++	.dev_minor		= -1,
+ 	.dev_type		= OMAP34XXCAM_SLAVE_SENSOR,
+ 	.u.sensor.sensor_isp	= 0,
+ 	.u.sensor.capture_mem	= MT9T112_BIGGEST_FRAME_BYTE_SIZE,
+-- 
+1.6.6.1
+
