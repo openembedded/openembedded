@@ -6,6 +6,9 @@ SRC_URI = "file://encdec-updater.c"
 
 COMPATIBLE_MACHINE = '(poodle|c7x0|spitz|akita|tosa)'
 
+BBCLASSEXTEND = "native"
+NATIVE_INSTALL_WORKS = "1"
+
 do_compile() {
 	${CC} ${LDFLAGS} -o encdec-updater ${WORKDIR}/encdec-updater.c
 }
