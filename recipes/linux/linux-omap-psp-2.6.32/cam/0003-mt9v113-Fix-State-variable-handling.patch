@@ -1,0 +1,68 @@
+From ff2a80a1bef6f7215221812eab381f4303fffce8 Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Thu, 22 Jul 2010 13:29:16 -0500
+Subject: [PATCH 3/3] mt9v113: Fix State variable handling
+
+State variable was misused, and was running detection all the
+time the sensor was powered back on.
+
+Reason? power off code was putting it to "not detected" always.
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+---
+ drivers/media/video/mt9v113.c |   23 ++++++++++++++---------
+ 1 files changed, 14 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/media/video/mt9v113.c b/drivers/media/video/mt9v113.c
+index 6714240..37e3e19 100644
+--- a/drivers/media/video/mt9v113.c
++++ b/drivers/media/video/mt9v113.c
+@@ -1251,7 +1251,6 @@ static int ioctl_s_power(struct v4l2_int_device *s, enum v4l2_power on)
+ 		/* Disable mux for mt9v113 data path */
+ 		if (decoder->pdata->power_set)
+ 			err |= decoder->pdata->power_set(s, on);
+-		decoder->state = STATE_NOT_DETECTED;
+ 		break;
+ 
+ 	case V4L2_POWER_STANDBY:
+@@ -1260,23 +1259,29 @@ static int ioctl_s_power(struct v4l2_int_device *s, enum v4l2_power on)
+ 		break;
+ 
+ 	case V4L2_POWER_ON:
+-		/* Enable mux for mt9v113 data path */
+-		if (decoder->state == STATE_NOT_DETECTED) {
+-
+-			if (decoder->pdata->power_set)
+-				err = decoder->pdata->power_set(s, on);
++		if (decoder->pdata->power_set) {
++			err = decoder->pdata->power_set(s, on);
++			if (err)
++				return err;
++		}
+ 
++		if (decoder->state == STATE_NOT_DETECTED) {
+ 			/* Detect the sensor is not already detected */
+-			err |= mt9v113_detect(decoder);
++			err = mt9v113_detect(decoder);
+ 			if (err) {
+ 				v4l_err(decoder->client,
+ 						"Unable to detect decoder\n");
++				WARN_ON(1);
+ 				return err;
+ 			}
+ 		}
+ 		/* Only VGA mode for now */
+-		err |= mt9v113_configure(decoder);
+-		err |= mt9v113_vga_mode(decoder);
++		err = mt9v113_configure(decoder);
++		if (err)
++			return err;
++		err = mt9v113_vga_mode(decoder);
++		if (err)
++			return err;
+ 		break;
+ 
+ 	default:
+-- 
+1.6.6.1
+
