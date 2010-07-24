@@ -119,7 +119,7 @@ do_install_append_bug() {
 }
 
 # Create the cache after checkroot has run
-pkg_postinst_${PN}_append() {
+pkg_postinst_udev_append() {
 	update-rc.d $OPT udev-cache start 12 S .
 }
 

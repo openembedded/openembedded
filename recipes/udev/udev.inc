@@ -63,7 +63,7 @@ do_install () {
 	install -m 0755 ${WORKDIR}/mount.sh ${D}${sysconfdir}/udev/scripts/mount.sh
 	install -m 0755 ${WORKDIR}/network.sh ${D}${sysconfdir}/udev/scripts
         install -m 0644 ${S}/extras/volume_id/lib/libvolume_id.h ${D}${includedir}
-        oe_libinstall -C extras/volume_id/lib -so libvolume_id ${D}${libdir}
+        oe_libinstall -C extras/volume_id/lib libvolume_id ${D}${libdir}
 }
 
 PACKAGES =+ "udev-utils libvolume-id libvolume-id-dev"

@@ -79,7 +79,7 @@ do_install () {
 
 	install -m 0755 ${WORKDIR}/mount.sh ${D}${sysconfdir}/udev/scripts/mount.sh
 	install -m 0755 ${WORKDIR}/network.sh ${D}${sysconfdir}/udev/scripts
-        oe_libinstall -C udev/lib -so libudev ${D}${libdir}
+        oe_libinstall -C udev/lib libudev ${D}${libdir}
         install ${S}/udev/lib/libudev.h ${D}${includedir}
 }
 
@@ -99,7 +99,7 @@ do_install_append_hipox() {
 }
 
 # Create the cache after checkroot has run
-pkg_postinst_${PN}_append() {
+pkg_postinst_udev_append() {
 update-rc.d $OPT udev-cache start 12 S .
 
 if [ -d $D/lib/udev/rules.d ] ; then
