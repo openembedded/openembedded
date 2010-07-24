@@ -12,7 +12,7 @@ PE = "2"
 DEPENDS = "zlib libogg libvorbis libtheora faac faad2 ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'lame liba52', d)}"
 RSUGGESTS_${PN} = "mplayer"
 
-INC_PR = "r14"
+INC_PR = "r15"
 
 inherit autotools pkgconfig
 
@@ -33,7 +33,7 @@ EXTRA_OECONF = "\
 "
 
 FFMPEG_LIBS = "libavcodec libavdevice libavformat \
-               libavutil libpostproc libswscale"
+               libavutil libpostproc libswscale libavfilter"
 
 SYSROOT_PREPROCESS_FUNCS = " \
   ffmpeg_stage_cleanup \
@@ -70,7 +70,9 @@ PACKAGES += "ffmpeg-x264-presets \
              libavformat libavformat-dev libavformat-dbg \
              libavutil   libavutil-dev   libavutil-dbg \
              libpostproc libpostproc-dev libpostproc-dbg \
-             libswscale  libswscale-dev  libswscale-dbg"
+             libswscale  libswscale-dev  libswscale-dbg \
+             libavfilter libavfilter-dev libavfilter-dbg \
+            "
 
 FILES_ffmpeg-x264-presets = "${datadir}/*.ffpreset"
 
@@ -98,3 +100,7 @@ FILES_libpostproc-dbg += "${libdir}/.debug/libpostproc*"
 FILES_libswscale = "${libdir}/libswscale*.so.*"
 FILES_libswscale-dev = "${libdir}/libswscale*.so ${libdir}/pkgconfig/libswscale.pc ${libdir}/libswscale*.a"
 FILES_libswscale-dbg += "${libdir}/.debug/libswscale*"
+
+FILES_libavfilter = "${libdir}/libavfilter*.so.*"
+FILES_libavfilter-dev = "${libdir}/libavfilter*.so ${libdir}/pkgconfig/libavfilter.pc ${libdir}/libavfilter*.a"
+FILES_libavfilter-dbg += "${libdir}/.debug/libavfilter*"
