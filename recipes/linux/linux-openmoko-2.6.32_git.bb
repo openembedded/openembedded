@@ -1,7 +1,7 @@
 require linux.inc
 require linux-openmoko.inc
 
-KERNEL_RELEASE="2.6.32.13"
+KERNEL_RELEASE="2.6.32.16"
 
 SRCREV = "a9254be10ac2294ea20165a87c09ea6afcf66d94"
 OEV = "oe3.3"
@@ -12,10 +12,10 @@ SRC_URI = "\
   file://0001-Revert-s3cmci-initialize-default-platform-data-no_wp.patch \
 # latest stable patch for ubi fix 943e167cb3e8fb191894bde8a4a75db78531a7c8
   ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${KERNEL_RELEASE}.bz2;apply=yes;name=stablepatch \
-# build fix
+# build fix - only when snd is as module
   file://0001-wm8753-fix-build-with-gcc-4.4.2-which-works-ok-with-.patch \
 # fix runtime issue when built with gcc-4.5
-  file://use-noclone-attribute-for-naked.patch \
+  file://0001-add-noinline-and-noclone-attributes-to-naked-functio.patch \
 # patches from Radek Polak used in qtmoko
   file://0002-accels.patch.patch \
   file://0003-usbhost.patch.patch \
@@ -30,19 +30,20 @@ SRC_URI = "\
   file://0012-Fix-dynamic-command-queue-allocation.patch \
   file://0013-Debug-statements-for-testing.patch \
   file://0014-Fix-claim-of-2D-register-resource.patch \
-# fix for lost touchscreen https://docs.openmoko.org/trac/ticket/2328
-  file://touchscreen_ignoreunexpectedintr29.patch \
-# fix WS
-  file://0001-glamo-core-initialize-engine-states-as-disabled.patch \
 # fix HS Jack
-  file://hs-jack.patch \
+  file://0019-wm8753-use-snd_soc_jack-on-neo1973.patch \
+# fix for lost touchscreen https://docs.openmoko.org/trac/ticket/2328
+  file://0017-s3c2410_ts-ignore-unexpected-interrupts.patch \
+# fix WS
+  file://0016-jbt6k74-fix-WS.patch \
+  file://0018-glamo-core-initialize-engine-states-as-disabled.patch \
 # faster glamo
-  file://0001-mfd-glamo-Enable-FIFO-stage-for-the-LCD-engine-s-mem.patch \
+  file://0020-mfd-glamo-Enable-FIFO-stage-for-the-LCD-engine-s-mem.patch \
   file://defconfig \
 "
 
-SRC_URI[stablepatch.md5sum] = "ba6abb1ffee513a1d4f831599ddae490"
-SRC_URI[stablepatch.sha256sum] = "baf6dff5d1c478e65decf2e8b704c60e546ea37c4de59ee8eb6af9dd3d63f145"
+SRC_URI[stablepatch.md5sum] = "744890f9651962ceae7663d44b19df65"
+SRC_URI[stablepatch.sha256sum] = "e744aaa87d2daee6d10b76f411d9efa13db24f779981890b482d72364694aa08"
 
 S = "${WORKDIR}/git"
 

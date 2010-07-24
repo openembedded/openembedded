@@ -7,7 +7,7 @@ LICENSE = "GPL"
 DEPENDS = "sqlite3"
 APPTYPE = "binary"
 APPDESKTOP = "${WORKDIR}/zbedic/misc"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/bedic/libbedic_${PV}-0.tgz"
 
@@ -31,12 +31,6 @@ do_install() {
     install -m 0644 ${S}/include/*.h ${D}${includedir}
     install -d ${D}${libdir}
     oe_libinstall -a libbedic ${D}${libdir}
-}
-
-do_stage() {
-    install -d ${STAGING_INCDIR}/libbedic/
-    install -m 0644 ${S}/include/*.h ${STAGING_INCDIR}/libbedic/
-    oe_libinstall -a libbedic ${STAGING_LIBDIR}
 }
 
 FILES_${PN}-dev = "${includedir} ${libdir}"

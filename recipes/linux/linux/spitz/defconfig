@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux kernel version: 2.6.35-rc4
-# Thu Jul  8 10:27:47 2010
+# Linux kernel version: 2.6.35-rc6
+# Thu Jul 22 23:22:01 2010
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -1015,7 +1015,7 @@ CONFIG_ATA_BMDMA=y
 # PIO-only SFF controllers
 #
 CONFIG_PATA_PCMCIA=y
-# CONFIG_PATA_PLATFORM is not set
+CONFIG_PATA_PLATFORM=y
 
 #
 # Generic fallback / legacy drivers
@@ -1161,7 +1161,7 @@ CONFIG_INPUT_APMPOWER=y
 CONFIG_INPUT_KEYBOARD=y
 # CONFIG_KEYBOARD_ADP5588 is not set
 # CONFIG_KEYBOARD_ATKBD is not set
-# CONFIG_QT2160 is not set
+# CONFIG_KEYBOARD_QT2160 is not set
 # CONFIG_KEYBOARD_LKKBD is not set
 CONFIG_KEYBOARD_GPIO=y
 # CONFIG_KEYBOARD_TCA6416 is not set
