@@ -3,6 +3,8 @@ require gcc-common.inc
 DEPENDS = "mpfr gmp"
 NATIVEDEPS = "mpfr-native gmp-native"
 
+INC_PR = "r22"
+
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
 	file://100-uclibc-conf.patch \
 	file://103-uclibc-conf-noupstream.patch \
@@ -33,6 +35,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
 	file://cache-amnesia.patch \
 	file://gfortran.patch \
 	file://pr34130.patch \
+	file://Makefile.in.patch \
 "
 
 SRC_URI_avr32 = " http://ewi546.ewi.utwente.nl/tmp/avr32-gcc-4.2.1-atmel.1.0.3.tar.gz;name=atmel \
