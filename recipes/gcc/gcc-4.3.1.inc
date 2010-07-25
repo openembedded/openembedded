@@ -8,7 +8,7 @@ LICENSE = "GPLv3"
 DEPENDS = "mpfr gmp"
 NATIVEDEPS = "mpfr-native gmp-native"
 
-INC_PR = "r22"
+INC_PR = "r23"
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
 	file://fedora/gcc43-c++-builtin-redecl.patch;striplevel=0 \
@@ -65,6 +65,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
 	file://zecke-xgcc-cpp.patch \
 	file://gcc-4.3.x-fix-EXTRA_BUILD.patch \
 	file://gcc-flags-for-build.patch \
+	file://Makefile.in.patch \
 "
 
 SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch "
