@@ -8,7 +8,7 @@ LICENSE = "GPLv3"
 DEPENDS = "mpfr gmp"
 NATIVEDEPS = "mpfr-native gmp-native"
 
-INC_PR = "r3"
+INC_PR = "r4"
 
 FILESPATHPKG .= ":gcc-$PV"
 
@@ -26,6 +26,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
 	file://gcc-pr41175.patch \
 	file://gcc-armv4-pass-fix-v4bx-to-ld.patch \
 	file://gcc-4.3.3-fix-EXTRA_BUILD.patch \
+	file://Makefile.in.patch \
 	"
 # Language Overrides
 FORTRAN = ""

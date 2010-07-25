@@ -8,7 +8,7 @@ LICENSE = "GPLv3"
 DEPENDS = "mpfr gmp"
 NATIVEDEPS = "mpfr-native gmp-native"
 
-INC_PR = "r3"
+INC_PR = "r4"
 
 FILESPATHPKG .= ":gcc-$PV"
 
@@ -27,6 +27,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=gcc444tarbz2 \
 	file://gcc-armv4-pass-fix-v4bx-to-ld.patch \
 	file://gcc-add-t-slibgcc-libgcc.patch \
 	file://gcc-4.3.3-fix-EXTRA_BUILD.patch \
+	file://Makefile.in.patch \
 	"
 SRC_URI[gcc444tarbz2.md5sum] = "7ff5ce9e5f0b088ab48720bbd7203530"
 SRC_URI[gcc444tarbz2.sha256sum] = "e1c13696b45752ad3f652304fab5120a43a8a5c0f438d3bda78cf16b620c0c58"
