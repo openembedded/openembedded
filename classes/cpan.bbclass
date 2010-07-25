@@ -13,6 +13,8 @@ export PERL_INC = "${STAGING_LIBDIR}/perl/${@get_perl_version(d)}/CORE"
 export PERL_LIB = "${STAGING_DATADIR}/perl/${@get_perl_version(d)}"
 export PERL_ARCHLIB = "${STAGING_LIBDIR}/perl/${@get_perl_version(d)}"
 
+NATIVE_INSTALL_WORKS = "1"
+
 cpan_do_configure () {
 	yes '' | perl Makefile.PL ${EXTRA_CPANFLAGS}
 	if [ "${BUILD_SYS}" != "${HOST_SYS}" ]; then
@@ -31,16 +33,7 @@ cpan_do_compile () {
 }
 
 cpan_do_install () {
-	if [ ${@is_target(d)} = "yes" ]; then
-		oe_runmake install_vendor
-	fi
+	oe_runmake DESTDIR="${D}" install_vendor
 }
 
-cpan_do_stage () {
-	if [ ${@is_target(d)} = "no" ]; then
-		oe_runmake install_vendor
-	fi
-}
-								
-
-EXPORT_FUNCTIONS do_configure do_compile do_install do_stage
+EXPORT_FUNCTIONS do_configure do_compile do_install
