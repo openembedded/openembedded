@@ -32,8 +32,7 @@ export EXTRA_OEMAKE = '"BUILD_LDFLAGS=" "BUILD_CCFLAGS=${BUILD_CCFLAGS}"'
 # Below option is added to overcome the GCC bug on ARM
 # see http://gcc.gnu.org/PR42981 for further details.
 # We could potentially take it off when its fixed in gcc 4.5
-
-CFLAGS_append_arm = " -fforward-propagate "
+CFLAGS_EXTRA_append_arm = " -fforward-progagate"
 
 # This is necessary so that the "tic" command executed during the install can
 # link with the correct libary in staging.
