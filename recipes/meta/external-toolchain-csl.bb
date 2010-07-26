@@ -1,4 +1,4 @@
-PR = "r5"
+PR = "r6"
 
 INHIBIT_DEFAULT_DEPS = "1"
 
@@ -165,6 +165,7 @@ CSL_VER_MAIN := "${@csl_get_main_version(d)}"
 CSL_VER_GCC := "${@csl_get_gcc_version(d)}"
 CSL_VER_LIBC := "${@csl_get_libc_version(d)}"
 CSL_VER_KERNEL := "${@csl_get_kernel_version(d)}"
+CSL_LIC_RLE := "${@["GPLv3 with GCC RLE", "GPLv2 with GCC RLE"][csl_get_main_version(d) <= "2009q1-203"]}"
 
 PKGV = ${CSL_VER_MAIN}
 PKGV_libgcc = ${CSL_VER_GCC}
@@ -191,8 +192,10 @@ PKGV_linux-libc-headers = ${CSL_VER_KERNEL}
 LICENSE_ldd = "LGPLv2.1+"
 LICENSE_glibc = "LGPLv2.1+"
 LICENSE_glibc-thread-db = "LGPLv2.1+"
-LICENSE_libgcc := "${@["GPLv3 with GCC RLE", "GPLv2 with GCC RLE"][csl_get_main_version(d) <= "2009q1-203"]}"
-LICENSE_libstdc++ := "${@["GPLv3 with GCC RLE", "GPLv2 with GCC RLE"][csl_get_main_version(d) <= "2009q1-203"]}"
+LICENSE_libgcc = ${CSL_LIC_RLE}
+LICENSE_libgcc-dev = ${CSL_LIC_RLE}
+LICENSE_libstdc++ = ${CSL_LIC_RLE}
+LICENSE_libstdc++-dev = ${CSL_LIC_RLE}
 
 do_install() {
 	install -d ${D}${sysconfdir}
