@@ -53,3 +53,14 @@ def remove(path):
             shutil.rmtree(path)
         elif exc.errno != errno.ENOENT:
             raise
+
+def symlink(source, destination, force=False):
+    """Create a symbolic link"""
+    import os, errno
+    try:
+        if force:
+            remove(destination)
+        os.symlink(source, destination)
+    except OSError, e:
+        if e.errno != errno.EEXIST or os.readlink(destination) != source:
+            raise

@@ -1,3 +1,5 @@
+import oe.path
+
 class NotFoundError(Exception):
     def __init__(self, path):
         self.path = path
@@ -230,7 +232,7 @@ class QuiltTree(PatchSet):
         if not self.initialized:
             self.InitFromDir()
         PatchSet.Import(self, patch, force)
-        os.symlink(patch["file"], self._quiltpatchpath(patch["file"]))
+        oe.path.symlink(patch["file"], self._quiltpatchpath(patch["file"]))
         f = open(os.path.join(self.dir, "patches","series"), "a");
         f.write(os.path.basename(patch["file"]) + " -p" + patch["strippath"]+"\n")
         f.close()
