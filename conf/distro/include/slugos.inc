@@ -35,14 +35,14 @@ DISTRO_FEATURES = "nfs smbfs wifi ppp alsa bluetooth ext2 vfat irda pcmcia usbga
 # Add thumb-interwork to feature list if selected machine supports it.
 DISTRO_FEATURES += ' ${@["", "thumb-interwork"][bb.data.getVar('THUMB_INTERWORK', d, 1) == "yes"]}'
 
-IMAGE_BASENAME = "${@['slugos${SITEINFO_ENDIANNESS}', 'ucslugc'][bb.data.getVar('TARGET_OS', d, 1) == 'linux-uclibc']}"
+IMAGE_BASENAME = "${@['slugos${SITEINFO_ENDIANESS}', 'ucslugc'][bb.data.getVar('TARGET_OS', d, 1) == 'linux-uclibc']}"
 
 # The following need not be set, the defaults should be adequate
 #USE_NLS = "no" or "yes"
 USE_NLS ?= "no"
 
 # To make errors easier to identify:
-DISTRO_NAME ?= "INVALID-${SITEINFO_ENDIANNESS}-${ARM_INSTRUCTION_SET}-${TARGET_OS}"
+DISTRO_NAME ?= "INVALID-${SITEINFO_ENDIANESS}-${ARM_INSTRUCTION_SET}-${TARGET_OS}"
 DISTRO_TYPE ?= "INVALID"
 
 # The following must not be changed.

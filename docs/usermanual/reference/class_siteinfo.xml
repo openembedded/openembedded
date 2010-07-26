@@ -23,7 +23,7 @@
 
   <variablelist>
     <varlistentry>
-      <term>SITEINFO_ENDIANNESS</term>
+      <term>SITEINFO_ENDIANESS</term>
 
       <listitem>
         <para>Defines the endianess of the target as either
@@ -55,19 +55,19 @@
     </varlistentry>
   </variablelist>
 
-  <para>A typical use for the <command>SITEINFO_ENDIANNESS</command> and
+  <para>A typical use for the <command>SITEINFO_ENDIANESS</command> and
   <command>SITEINFO_BITS</command> variables is to provide configuration
   within a recipe based on their values. The following example from the
   <emphasis>openssl</emphasis> recipe showw the correct define for the
   endiness of the target being passed to openssl via the compiler flags. The
   define to add to the flags is set based on the value of the
-  <command>SITEINFO_ENDIANNESS</command> variable. Note that use of the
+  <command>SITEINFO_ENDIANESS</command> variable. Note that use of the
   <emphasis>base_conditional</emphasis> method (see the <xref
   linkend="recipes_advanced_python" /> section) to select a value conditional
   on the endianess setting:</para>
 
   <para><screen>  # Additional flag based on target endiness (see siteinfo.bbclass)
-    CFLAG="${CFLAG} ${@base_conditional('SITEINFO_ENDIANNESS', 'le', '-DL_ENDIAN', '-DB_ENDIAN', d)}"</screen></para>
+    CFLAG="${CFLAG} ${@base_conditional('SITEINFO_ENDIANESS', 'le', '-DL_ENDIAN', '-DB_ENDIAN', d)}"</screen></para>
 
   <section>
     <title>CONFIG_SITE: The autoconf site files</title>

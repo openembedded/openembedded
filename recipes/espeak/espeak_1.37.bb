@@ -1,7 +1,7 @@
 require espeak.inc
 inherit siteinfo
 
-EXTRA_PHONEMES = '${@base_contains("SITEINFO_ENDIANNESS", "be",  "espeak-data (= ${PV})", "", d)}'
+EXTRA_PHONEMES = '${@base_contains("SITEINFO_ENDIANESS", "be",  "espeak-data (= ${PV})", "", d)}'
 RDEPENDS_${PN} = "portaudio-v19 ${EXTRA_PHONEMES}"
 
 PR = "r0"
@@ -32,7 +32,7 @@ do_install() {
         install -m 0644 ${S}/src/speak_lib.h ${D}${includedir}
         oe_libinstall -so -C src libespeak ${D}${libdir}
 
-	if [ "${SITEINFO_ENDIANNESS}" = "be" ] ; then
+	if [ "${SITEINFO_ENDIANESS}" = "be" ] ; then
 		# the big-endian phon* files are provided by the package espeak-data
 		rm -f ${S}/espeak-data/phon*
 	fi

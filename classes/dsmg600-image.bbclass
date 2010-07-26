@@ -1,6 +1,6 @@
 dsmg600_pack_image () {
 	install -d ${DEPLOY_DIR_IMAGE}/firmupgrade
-	install -m 0755 ${DEPLOY_DIR_IMAGE}/zImage-nslu2${SITEINFO_ENDIANNESS}.bin \
+	install -m 0755 ${DEPLOY_DIR_IMAGE}/zImage-nslu2${SITEINFO_ENDIANESS}.bin \
 		${DEPLOY_DIR_IMAGE}/firmupgrade/ip-ramdisk
 	install -m 0644 ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 \
 		${DEPLOY_DIR_IMAGE}/firmupgrade/rootfs.gz

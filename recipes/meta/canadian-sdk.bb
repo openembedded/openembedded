@@ -4,7 +4,7 @@ DEPENDS = "opkg-native ipkg-utils-native fakeroot-native sed-native zip-native"
 PR = "r5"
 
 # NOTE: We need to save and restore PACKAGE_ARCHS, because sdk.bbclass
-# will change HOST_ARCH, which can result in SITEINFO_ENDIANNESS (which
+# will change HOST_ARCH, which can result in SITEINFO_ENDIANESS (which
 # is computed in siteinfo.bbclass) in changing if the original HOST_ARCH
 # endianess differs from the new HOST_ARCH endianess.  SITEINFO_ENDIANNESS
 # is used in a number of places, including the construction of the

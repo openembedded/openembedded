@@ -29,14 +29,14 @@ oe_runmake() {
 # defconfig to .config
 do_configure() {
 	rm -f ${S}/.config
-	if [ "x${SITEINFO_ENDIANNESS}" = "xbe" ]; then
+	if [ "x${SITEINFO_ENDIANESS}" = "xbe" ]; then
 	  sed -e 's/.*CONFIG_USER_BIGENDIAN.*/CONFIG_USER_BIGENDIAN=y/' \
 	      -e 's/.*CONFIG_BIGENDIAN.*/CONFIG_BIGENDIAN=y/' \
 	      -e 's/.*CONFIG_TARGET_DESCRIPTION.*/CONFIG_TARGET_DESCRIPTION=\"OpenEmbedded NSLU2\/BE (16MiB Flash)\"/' \
 	      -e 's|CONFIG_ENV_DEFAULT_CMDLINE=|CONFIG_ENV_DEFAULT_CMDLINE=\"${CMDLINE_CONSOLE} ${CMDLINE_ROOT} ${CMDLINE_DEBUG}\"|' \
 	      -e 's|CONFIG_ENV_DEFAULT_CMDLINE_ALT=|CONFIG_ENV_DEFAULT_CMDLINE_ALT=\"${CMDLINE_CONSOLE} ${CMDLINE_ROOT} ${CMDLINE_DEBUG}\"|' \
 		${WORKDIR}/defconfig > ${S}/.config
-	elif [ "x${SITEINFO_ENDIANNESS}" = "xle" ]; then
+	elif [ "x${SITEINFO_ENDIANESS}" = "xle" ]; then
 	  sed -e 's/.*CONFIG_USER_LITTLEENDIAN.*/CONFIG_USER_LITTLEENDIAN=y/' \
 	      -e 's/.*CONFIG_LITTLEENDIAN.*/CONFIG_LITTLEENDIAN=y/' \
 	      -e 's/.*CONFIG_TARGET_DESCRIPTION.*/CONFIG_TARGET_DESCRIPTION=\"OpenEmbedded NSLU2\/LE (16MiB Flash)\"/' \
@@ -53,9 +53,9 @@ DEPENDS += "devio-native"
 
 do_stage() {
 	install -d ${STAGING_LOADER_DIR}
-	if [ "x${SITEINFO_ENDIANNESS}" = "xbe" ]; then
+	if [ "x${SITEINFO_ENDIANESS}" = "xbe" ]; then
 		cp src/arch-arm/rom/apex.bin ${STAGING_LOADER_DIR}/apex-nslu2-16mb.bin
-	elif [ "x${SITEINFO_ENDIANNESS}" = "xle" ]; then
+	elif [ "x${SITEINFO_ENDIANESS}" = "xle" ]; then
 		devio '<<'src/arch-arm/rom/apex.bin >${STAGING_LOADER_DIR}/apex-nslu2-16mb.bin 'xp $,4'
 	else
 		oefatal do_populate_sysroot cannot determine endianess

@@ -187,7 +187,7 @@ EXTRA_OEMAKE += "MAKEFLAGS='--no-print-directory'"
 do_configure_prepend() {
 	rm -f ${S}/.config
 	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >>'${S}/.config'
-	if test '${SITEINFO_ENDIANNESS}' = be
+	if test '${SITEINFO_ENDIANESS}' = be
 	then
 		echo 'CONFIG_CPU_BIG_ENDIAN=y' >>'${S}/.config'
 	fi
@@ -254,56 +254,56 @@ FILES_kernel-image = "/boot/${KERNEL_IMAGETYPE}-${MACHINE_ARCH}-${KERNEL_VERSION
 nslu2_MACHID = "597"
 PACKAGES += "kernel-image-nslu2"
 PKG_kernel-image-nslu2 = "kernel-image-${KERNEL_VERSION}"
-PACKAGE_ARCH_kernel-image-nslu2 = "nslu2${SITEINFO_ENDIANNESS}"
+PACKAGE_ARCH_kernel-image-nslu2 = "nslu2${SITEINFO_ENDIANESS}"
 DESCRIPTION_kernel-image-nslu2 = "Linux kernel for the LinkSys NSLU2"
-FILES_kernel-image-nslu2 = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nslu2${SITEINFO_ENDIANNESS}-${KERNEL_VERSION}"
+FILES_kernel-image-nslu2 = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nslu2${SITEINFO_ENDIANESS}-${KERNEL_VERSION}"
 pkg_postinst_kernel-image-nslu2 () {
-	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nslu2${SITEINFO_ENDIANNESS}-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
+	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nslu2${SITEINFO_ENDIANESS}-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
 }
 pkg_postrm_kernel-image-nslu2 () {
-	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nslu2${SITEINFO_ENDIANNESS}-${KERNEL_VERSION} || true
+	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nslu2${SITEINFO_ENDIANESS}-${KERNEL_VERSION} || true
 }
 
 # The correct settings for the NAS100D board:
 nas100d_MACHID = "865"
 PACKAGES += "kernel-image-nas100d"
 PKG_kernel-image-nas100d = "kernel-image-${KERNEL_VERSION}"
-PACKAGE_ARCH_kernel-image-nas100d = "nas100d${SITEINFO_ENDIANNESS}"
+PACKAGE_ARCH_kernel-image-nas100d = "nas100d${SITEINFO_ENDIANESS}"
 DESCRIPTION_kernel-image-nas100d = "Linux kernel for the IOMega NAS100D"
-FILES_kernel-image-nas100d = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nas100d${SITEINFO_ENDIANNESS}-${KERNEL_VERSION}"
+FILES_kernel-image-nas100d = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nas100d${SITEINFO_ENDIANESS}-${KERNEL_VERSION}"
 pkg_postinst_kernel-image-nas100d () {
-	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nas100d${SITEINFO_ENDIANNESS}-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
+	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nas100d${SITEINFO_ENDIANESS}-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
 }
 pkg_postrm_kernel-image-nas100d () {
-	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nas100d${SITEINFO_ENDIANNESS}-${KERNEL_VERSION} || true
+	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-nas100d${SITEINFO_ENDIANESS}-${KERNEL_VERSION} || true
 }
 
 # The correct settings for the DSMG600 board:
 dsmg600_MACHID = "964"
 PACKAGES += "kernel-image-dsmg600"
 PKG_kernel-image-dsmg600 = "kernel-image-${KERNEL_VERSION}"
-PACKAGE_ARCH_kernel-image-dsmg600 = "dsmg600${SITEINFO_ENDIANNESS}"
+PACKAGE_ARCH_kernel-image-dsmg600 = "dsmg600${SITEINFO_ENDIANESS}"
 DESCRIPTION_kernel-image-dsmg600 = "Linux kernel for the D-Link DSM-G600"
-FILES_kernel-image-dsmg600 = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-dsmg600${SITEINFO_ENDIANNESS}-${KERNEL_VERSION}"
+FILES_kernel-image-dsmg600 = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-dsmg600${SITEINFO_ENDIANESS}-${KERNEL_VERSION}"
 pkg_postinst_kernel-image-dsmg600 () {
-	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-dsmg600${SITEINFO_ENDIANNESS}-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
+	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-dsmg600${SITEINFO_ENDIANESS}-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
 }
 pkg_postrm_kernel-image-dsmg600 () {
-	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-dsmg600${SITEINFO_ENDIANNESS}-${KERNEL_VERSION} || true
+	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-dsmg600${SITEINFO_ENDIANESS}-${KERNEL_VERSION} || true
 }
 
 # The correct settings for the FSG-3 board:
 fsg3_MACHID = "1091"
 PACKAGES += "kernel-image-fsg3"
 PKG_kernel-image-fsg3 = "kernel-image-${KERNEL_VERSION}"
-PACKAGE_ARCH_kernel-image-fsg3 = "fsg3${SITEINFO_ENDIANNESS}"
+PACKAGE_ARCH_kernel-image-fsg3 = "fsg3${SITEINFO_ENDIANESS}"
 DESCRIPTION_kernel-image-fsg3 = "Linux kernel for the Freecom FSG-3"
-FILES_kernel-image-fsg3 = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-fsg3${SITEINFO_ENDIANNESS}-${KERNEL_VERSION}"
+FILES_kernel-image-fsg3 = "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-fsg3${SITEINFO_ENDIANESS}-${KERNEL_VERSION}"
 pkg_postinst_kernel-image-fsg3 () {
-	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-fsg3${SITEINFO_ENDIANNESS}-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
+	update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-fsg3${SITEINFO_ENDIANESS}-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
 }
 pkg_postrm_kernel-image-fsg3 () {
-	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-fsg3${SITEINFO_ENDIANNESS}-${KERNEL_VERSION} || true
+	update-alternatives --remove ${KERNEL_IMAGETYPE} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-fsg3${SITEINFO_ENDIANESS}-${KERNEL_VERSION} || true
 }
 
 BYTESWAP_armeb = "cp$"
@@ -347,10 +347,10 @@ do_install_append() {
 	install_image '${MACHINE_ARCH}'
 
 	# Add the machine specific images, with appropriate suffixes
-	install_image 'nslu2${SITEINFO_ENDIANNESS}' 'nslu2'
-	install_image 'nas100d${SITEINFO_ENDIANNESS}' 'nas100d'
-	install_image 'dsmg600${SITEINFO_ENDIANNESS}' 'dsmg600'
-	install_image 'fsg3${SITEINFO_ENDIANNESS}' 'fsg3'
+	install_image 'nslu2${SITEINFO_ENDIANESS}' 'nslu2'
+	install_image 'nas100d${SITEINFO_ENDIANESS}' 'nas100d'
+	install_image 'dsmg600${SITEINFO_ENDIANESS}' 'dsmg600'
+	install_image 'fsg3${SITEINFO_ENDIANESS}' 'fsg3'
 }
 
 deploy_image() {
@@ -362,8 +362,8 @@ do_deploy() {
 	deploy_image '${MACHINE_ARCH}'
 
 	# And the machine specific images
-	deploy_image 'nslu2${SITEINFO_ENDIANNESS}' 'nslu2'
-	deploy_image 'nas100d${SITEINFO_ENDIANNESS}' 'nas100d'
-	deploy_image 'dsmg600${SITEINFO_ENDIANNESS}' 'dsmg600'
-	deploy_image 'fsg3${SITEINFO_ENDIANNESS}' 'fsg3'
+	deploy_image 'nslu2${SITEINFO_ENDIANESS}' 'nslu2'
+	deploy_image 'nas100d${SITEINFO_ENDIANESS}' 'nas100d'
+	deploy_image 'dsmg600${SITEINFO_ENDIANESS}' 'dsmg600'
+	deploy_image 'fsg3${SITEINFO_ENDIANESS}' 'fsg3'
 }

@@ -14,7 +14,7 @@ TARGET_CC_ARCH += "${LDFLAGS}"
 
 do_configure() {
         # Additional flag based on target endiness (see siteinfo.bbclass)
-        ENDIANESS="${@base_conditional('SITEINFO_ENDIANNESS', 'le', '--with-endianness=little', '--with-endianness=big', d)}"
+        ENDIANESS="${@base_conditional('SITEINFO_ENDIANESS', 'le', '--with-endianness=little', '--with-endianness=big', d)}"
         oenote Determined endianess as: $ENDIANESS
         oe_runconf $ENDIANESS
 }

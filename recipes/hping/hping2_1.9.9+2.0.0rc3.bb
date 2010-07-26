@@ -24,7 +24,7 @@ inherit siteinfo
 #
 do_configure() {
 	# Additional flag based on target endiness (see siteinfo.bbclass)
-	BYTEORDER="${@base_conditional('SITEINFO_ENDIANNESS', 'le', '__LITTLE_ENDIAN_BITFIELD', '__BIG_ENDIAN_BITFIELD', d)}"
+	BYTEORDER="${@base_conditional('SITEINFO_ENDIANESS', 'le', '__LITTLE_ENDIAN_BITFIELD', '__BIG_ENDIAN_BITFIELD', d)}"
 	oenote Determined byteorder as: $BYTEORDER
 	BYTEORDER="${BYTEORDER}" CONFIGOSTYPE="LINUX" ./configure
 }
