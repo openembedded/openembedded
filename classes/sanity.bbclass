@@ -188,8 +188,8 @@ def check_sanity(e):
 	if messages != "":
 		raise_sanity_error(messages)
 
-addhandler check_sanity_eventhandler
 python check_sanity_eventhandler() {
-    if bb.event.getName(e) == "ConfigParsed":
+    if isinstance(e, bb.event.BuildStarted):
         check_sanity(e)
 }
+addhandler check_sanity_eventhandler
