@@ -1,0 +1,10 @@
+diff -ru webkit.original/WebKit/CMakeListsEfl.txt webkit/WebKit/CMakeListsEfl.txt
+--- webkit.original/WebKit/CMakeListsEfl.txt	2010-07-21 09:20:50.000000000 +0200
++++ webkit/WebKit/CMakeListsEfl.txt	2010-07-21 11:51:21.000000000 +0200
+@@ -118,3 +118,6 @@
+ 
+ INSTALL(FILES ${EWebKit_HEADERS}
+         DESTINATION include/EWebKit)
++
++INSTALL(TARGETS ../Programs/EWebLauncher RUNTIME DESTINATION bin)
++SET_TARGET_PROPERTIES(../Programs/EWebLauncher PROPERTIES SKIP_BUILD_RPATH TRUE)
