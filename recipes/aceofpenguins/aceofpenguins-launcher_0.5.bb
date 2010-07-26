@@ -1,14 +1,13 @@
 DESCRIPTION = "EFL launcher for ace-of-penguins"
 HOMEPAGE = "http://shr-project.org"
-SHR_RELEASE ?= "shr"
-LICENSE ?= "GPL"
+LICENSE = "GPL"
 DEPENDS = "python-native python-elementary"
 RDEPENDS_${PN} = "aceofpenguins"
 SECTION = "x11/application"
 
 PACKAGE_ARCH = "all"
 
-PR = "r1"
+PR = "r0"
 
 inherit setuptools
 
@@ -20,5 +19,6 @@ FILES_${PN} += "${prefix}/share/pixmaps"
 FILES_${PN} += "${prefix}/share/applications"
 
 
-SRC_URI[md5sum] = "40f19a26cbfa35de8346efe582b5d984"
-SRC_URI[sha256sum] = "ea09581b3a31e3409968876461da3e384dcb0000abbb0060ae14e4fccb4994e1"
+SRC_URI[md5sum] = "9494abb238064871f17600ee419794c4"
+SRC_URI[sha256sum] = "9a32120873e930baa2f17513618911cc58f94f4c6510e706687ae9192df6b58b"
+
