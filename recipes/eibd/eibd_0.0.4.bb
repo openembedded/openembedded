@@ -1,3 +1,7 @@
+PR = "${INC_PR}.0"
+
+S = "${WORKDIR}/bcusdk-${PV}"
+
 SRC_URI = "http://www.auto.tuwien.ac.at/~mkoegler/eib/bcusdk_${PV}.tar.gz "
 
 require eibd.inc

@@ -6,10 +6,9 @@ LICENSE = "GPLv2"
 DEPENDS = " pthsem libxml2"
 DEPENDS_append_linux-uclibc = " argp-standalone "
 DEPENDS_append_linux-uclibceabi = " argp-standalone "
+INC_PR = "r1"
 
 SRC_URI += " file://eibd "
-
-S = "${WORKDIR}/bcusdk-${PV}"
 
 inherit autotools update-rc.d
 
@@ -32,25 +31,29 @@ do_install_prepend() {
         install -m 0755 ${WORKDIR}/eibd ${D}${sysconfdir}/init.d/eibd
 }
 
-PACKAGES =+ "eibd-server eibd-clients libeibclient-dev"
+PACKAGES = "eibd-client-sources libeibclient eibd-server eibd-server-dbg \
+            eibd-clients-dbg eibd-clients libeibclient-dev libeibclient-dbg"
 
 FILES_eibd-server = "${bindir}/eibnetsearch ${bindir}/findknxusb \
                      ${bindir}/eibd ${bindir}/bcuaddrtab \
                      ${bindir}/eibnetdescribe ${bindir}/bcuread \
                      ${sysconfdir}/init.d/eibd  "
+FILES_eibd-server-dbg = "${bindir}/.debug/eibd"
+FILES_eibd-client-sources = "${datadir}/bcusdk/*"
 FILES_eibd-clients = "${bindir}/*"
+FILES_eibd-clients-dbg = "${bindir}/.debug"
+FILES_libeibclient = "\
+                     ${libdir}/lib*${SOLIBS} \
+                     ${base_libdir}/*${SOLIBS} "
 FILES_libeibclient-dev = "\
                      ${includedir} \
-                     ${libdir}/lib*.so \
                      ${libdir}/*.la \
-                     ${libdir}/*.a \
-                     ${libdir}/*.o \
-                     ${libdir}/pkgconfig \
-                     /lib/*.a \
-                     /lib/*.o \
-                     ${datadir}/aclocal"
+                     ${libdir}/*.a "
+FILES_libeibclient-dbg = "${libexecdir}/.debug ${libdir}/.debug \
+                          ${base_libdir}/.debug "
 
 DESCRIPTION_eibd-clients = "Simple example programs to perform management tasks on a EIB system."
+DESCRIPTION_libeibclient = "A client library written in C to access the EIB bus over eibd."
 DESCRIPTION_libeibclient-dev = "A client library written in C to access the EIB bus over eibd."
 DESCRIPTION_eibd-server = "eibd is a daemon which supports connection to an EIB (KNX) network over various \
 interfaces. It provides its services over TCP/IP or Unix domain sockets. \
