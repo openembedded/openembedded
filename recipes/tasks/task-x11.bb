@@ -25,7 +25,7 @@ XSERVER_COMMON ?= "xserver-kdrive-common"
 XSERVER_COMMON_shr = "xserver-common"
 
 # This is also the reason why we have to make this package machine specific :/
-PACKAGE_ARCH_${PN}-server = "${MACHINE_ARCH}"
+PACKAGE_ARCH_pn-${PN}-server = "${MACHINE_ARCH}"
 
 RDEPENDS_${PN}-server = "\
   ${XSERVER} \
