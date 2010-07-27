@@ -17,6 +17,8 @@ LDFLAGS_append_libc-uclibc += " -lintl"
 
 TOPDIR[unexport] = "1"
 
+BBCLASSEXTEND = "native"
+
 do_configure_append() {
 	# gettext hack
 	echo "#define _(str) str" >> ${S}/include/config.h
