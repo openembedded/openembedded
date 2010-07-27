@@ -40,9 +40,6 @@ python () {
     # These classes encode staging paths into the binary data so can only be
     # reused if the path doesn't change/
     if bb.data.inherits_class('native', d) or bb.data.inherits_class('cross', d) or bb.data.inherits_class('sdk', d) or bb.data.inherits_class('crosssdk', d):
-        path = bb.data.getVar('PSTAGE_PKGPATH', d, 1)
-        path = path + bb.data.getVar('TMPDIR', d, 1).replace('/', '-')
-        bb.data.setVar('PSTAGE_PKGPATH', path, d)
         scan_cmd = "grep -Irl ${STAGING_DIR} ${PSTAGE_TMPDIR_STAGE}"
         bb.data.setVar('PSTAGE_SCAN_CMD', scan_cmd, d)
 

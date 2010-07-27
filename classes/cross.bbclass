@@ -1,4 +1,4 @@
-# Disabled for now since the relocation paths are too long
+# We want cross packages to be relocatable
 inherit relocatable
 
 # Cross packages are built indirectly via dependency,
