@@ -1,4 +1,5 @@
 DEPENDS = "zlib openssl"
+DEPENDS += "${@base_contains('DISTRO_FEATURES', 'pam', 'libpam', '', d)}"
 
 RCONFLICTS_${PN} = "dropbear"
 RCONFLICTS_${PN}-sshd = "dropbear"
@@ -16,7 +17,7 @@ used to provide applications with a secure communication channel."
 HOMEPAGE = "http://www.openssh.org/"
 LICENSE = "BSD"
 
-INC_PR = "r8"
+INC_PR = "r9"
 
 inherit autotools
 
@@ -26,7 +27,8 @@ CFLAGS_prepend = "-I${S} "
 CFLAGS_append = " -D__FILE_OFFSET_BITS=64"
 LDFLAGS_prepend = "-L${S} -L${S}/openbsd-compat "
 EXTRA_OECONF = "--disable-suid-ssh --with-ssl=${STAGING_LIBDIR}/ssl \
-	        --with-rand-helper=no --without-pam \
+	        --with-rand-helper=no \
+		${@base_contains('DISTRO_FEATURES', 'pam', '--with-pam', '--without-pam', d)}	    
 	        --without-zlib-version-check \
 		--with-privsep-path=/var/run/sshd \
 		--sysconfdir=${sysconfdir}/ssh \
