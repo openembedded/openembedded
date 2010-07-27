@@ -8,9 +8,10 @@ DEPENDS = "virtual/libintl"
 SRC_URI = "${GNU_MIRROR}/bison/bison-${PV}.tar.gz \
 	   file://m4.patch"
 
-INC_PR = "r6"
+INC_PR = "r7"
 
 inherit autotools gettext
 
 NATIVE_INSTALL_WORKS = "1"
 BBCLASSEXTEND = "native"
+PSTAGING_DISABLED_virtclass-native = "1"
