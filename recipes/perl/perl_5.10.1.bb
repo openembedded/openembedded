@@ -35,6 +35,8 @@ SRC_URI = "ftp://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz;name=perl-${PV} \
 SRC_URI[perl-5.10.1.md5sum] = "b9b2fdb957f50ada62d73f43ee75d044"
 SRC_URI[perl-5.10.1.sha256sum] = "cb7f26ea4b2b28d6644354d87a269d01cac1b635287dae64e88eeafa24b44f35"
 
+inherit siteinfo
+
 # Where to find the native perl
 HOSTPERL = "${STAGING_BINDIR_NATIVE}/perl${PV}"
 
@@ -57,8 +59,8 @@ do_configure() {
         # Generate configuration
         rm -f config.sh-${TARGET_ARCH}-${TARGET_OS}
         for i in ${WORKDIR}/config.sh \
-                 ${WORKDIR}/config.sh-${@siteinfo_get_bits(d)} \
-                 ${WORKDIR}/config.sh-${@siteinfo_get_bits(d)}-${@siteinfo_get_endianess(d)}; do
+                 ${WORKDIR}/config.sh-${SITEINFO_BITS} \
+                 ${WORKDIR}/config.sh-${SITEINFO_BITS}-${SITEINFO_ENDIANNESS}; do
             cat $i >> config.sh-${TARGET_ARCH}-${TARGET_OS}
         done
 

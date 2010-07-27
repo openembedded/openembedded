@@ -62,8 +62,8 @@ do_configure() {
         # Generate configuration
         rm -f config.sh-${TARGET_ARCH}-${TARGET_OS}
         for i in ${WORKDIR}/config.sh \
-                 ${WORKDIR}/config.sh-${@siteinfo_get_bits(d)} \
-                 ${WORKDIR}/config.sh-${@siteinfo_get_bits(d)}-${@siteinfo_get_endianess(d)}; do
+                 ${WORKDIR}/config.sh-${SITEINFO_BITS} \
+                 ${WORKDIR}/config.sh-${SITEINFO_BITS}-${SITEINFO_ENDIANNESS}; do
             cat $i >> config.sh-${TARGET_ARCH}-${TARGET_OS}
         done
 
