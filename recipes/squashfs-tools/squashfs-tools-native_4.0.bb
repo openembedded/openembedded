@@ -2,7 +2,7 @@ require squashfs-tools_4.0.bb
 
 inherit native
 
-DEPENDS = "zlib-native"
+DEPENDS = "attr-native zlib-native"
 
 PACKAGES = ""
 
