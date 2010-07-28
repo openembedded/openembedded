@@ -6,9 +6,8 @@ LICENSE = "GPL"
 DEPENDS = "expat glib-2.0 virtual/libintl dbus-glib-native dbus"
 DEPENDS_virtclass-native = "expat-native glib-2.0-native dbus-native"
 
-INC_PR = "r1"
+INC_PR = "r2"
 
-BBCLASSEXTEND = "native"
 
 SRC_URI = "\
            http://dbus.freedesktop.org/releases/dbus-glib/dbus-glib-${PV}.tar.gz \
@@ -20,6 +19,8 @@ SRC_URI_virtclass-native = "http://dbus.freedesktop.org/releases/dbus-glib/dbus-
 
 inherit autotools pkgconfig gettext
 
+BBCLASSEXTEND = "native"
+
 do_configure_prepend() {
         install -m 0644 ${STAGING_DATADIR_NATIVE}/dbus/dbus-bus-introspect.xml ${S}/tools/
         install -m 0644 ${STAGING_DATADIR_NATIVE}/dbus/dbus-glib-bindings.h ${S}/tools/
@@ -30,7 +31,8 @@ do_configure_virtclass-native() {
         autotools_do_configure
 }
 
-do_install_virtclass-native_prepend() {
+do_install_virtclass-native() {
+        autotools_do_install
         install -d ${D}${datadir}/dbus
         install -m 0644 tools/dbus-glib-bindings.h ${D}${datadir}/dbus
 }
