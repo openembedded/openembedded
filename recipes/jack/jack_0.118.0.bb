@@ -8,7 +8,10 @@ LICENSE = "GPLv2 LGPLv2.1"
 
 DEPENDS = "alsa-lib"
 
-SRC_URI = "http://jackaudio.org/downloads/jack-audio-connection-kit-${PV}.tar.gz"
+PR = "r1"
+
+SRC_URI = "http://jackaudio.org/downloads/jack-audio-connection-kit-${PV}.tar.gz \
+           file://jack_fix_TWL4030_alsa_capture.patch"
 SRC_URI[md5sum] = "d58e29a55f285d54e75134cec8e02a10"
 SRC_URI[sha256sum] = "6aadf38ca98104772fd675bba7adecf72d2a600e17cccfc5d1f7c50f19b722c2"
 
