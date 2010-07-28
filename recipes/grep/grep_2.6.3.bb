@@ -3,8 +3,6 @@ SECTION = "console/utils"
 DESCRIPTION = "grep GNU utility"
 PR = "r2"
 
-do_unpack[depends] += "do_populate_sysroot"
-
 SRC_URI = "${GNU_MIRROR}/grep/grep-${PV}.tar.gz \
            file://uclibc-fix.patch"
 
