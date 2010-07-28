@@ -3,9 +3,9 @@ SECTION = "console/utils"
 DESCRIPTION = "grep GNU utility"
 PR = "r2"
 
-do_unpack[depends] += "xz-native:do_populate_sysroot"
+do_unpack[depends] += "do_populate_sysroot"
 
-SRC_URI = "${GNU_MIRROR}/grep/grep-${PV}.tar.xz \
+SRC_URI = "${GNU_MIRROR}/grep/grep-${PV}.tar.gz \
            file://uclibc-fix.patch"
 
 inherit autotools gettext
@@ -43,7 +43,5 @@ pkg_prerm_${PN} () {
 }
 
 BBCLASSEXTEND = "native"
-
-SRC_URI[md5sum] = "69a3bf508a3f14d12369e0e1c7a92763"
-SRC_URI[sha256sum] = "ba745e2ff297ab225bf870740d35593d402a1d92999cf0d7e56840f10218db7c"
-
+SRC_URI[md5sum] = "3095b57837b312f087c0680559de7f13"
+SRC_URI[sha256sum] = "a340e5d1544d9a964072196be627bad3e434ff7a87f3a57ea15aaccbbea4d666"
