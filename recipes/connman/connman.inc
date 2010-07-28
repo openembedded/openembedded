@@ -33,10 +33,6 @@ do_install_append() {
     install -m 0755 ${WORKDIR}/connman ${D}${sysconfdir}/init.d/connman
 }
 
-do_stage() {
-	autotools_stage_all
-}
-
 python populate_packages_prepend() {
 	depmap = dict( pppd="ppp", udhcp="busybox connman-scripts", dhclient="dhclient", wifi="wpa-supplicant", resolvconf="resolvconf", bluetooth="bluez4" )
 	packages = []
