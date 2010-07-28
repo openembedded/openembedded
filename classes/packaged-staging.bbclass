@@ -34,7 +34,7 @@ python __anonymous() {
         bb.data.setVar('PSTAGE_PKGARCH', "${HOST_SYS}-${PACKAGE_ARCH}-${TARGET_OS}", d)
 }
 
-def pstage_check_allowed (d):
+python () {
     pstage_allowed = True
 
     # These classes encode staging paths into the binary data so can only be
@@ -74,6 +74,7 @@ def pstage_check_allowed (d):
         bb.data.setVar("PSTAGING_ACTIVE", "1", d)
     else:
         bb.data.setVar("PSTAGING_ACTIVE", "0", d)
+}
 
 PSTAGE_MACHCONFIG   = "${PSTAGE_WORKDIR}/opkg.conf"
 
@@ -192,8 +193,6 @@ SCENEFUNCS += "packagestage_scenefunc"
 
 python packagestage_scenefunc () {
     import glob
-
-    pstage_check_allowed(d)
     if bb.data.getVar("PSTAGING_ACTIVE", d, 1) == "0":
         return
 
@@ -319,27 +318,26 @@ populate_sysroot_postamble () {
 		if [ "$exitcode" != "5" -a "$exitcode" != "0" ]; then
 			exit $exitcode
 		fi
+		if [ "$exitcode" != "5" -a "$exitcode" != "0" ]; then
+			exit $exitcode
+		fi
 		set -e
 	fi
 }
 
-python packagedstaging_fastpath () {
-    pstage_check_allowed(d)
-    if bb.data.getVar("PSTAGING_ACTIVE", d, 1) == "0":
-        path = bb.data.getVar("PATH", d, 1)
-        bb.mkdirhier(bb.data.expand("${PSTAGE_TMPDIR_STAGE}/sysroots", d))
-        cmd = bb.data.expand("cp -fpPR ${SYSROOT_DESTDIR}/${STAGING_DIR}/* ${PSTAGE_TMPDIR_STAGE}/sysroots/", d)
-        os.system("PATH=\"%s\" %s" % (path, cmd))
+packagedstaging_fastpath () {
+	if [ "$PSTAGING_ACTIVE" = "1" ]; then
+		mkdir -p ${PSTAGE_TMPDIR_STAGE}/sysroots/
+		cp -fpPR ${SYSROOT_DESTDIR}/${STAGING_DIR}/* ${PSTAGE_TMPDIR_STAGE}/sysroots/ || /bin/true
+	fi
 }
 
 do_populate_sysroot[dirs] =+ "${PSTAGE_DIR}"
 python populate_sysroot_prehook() {
-    pstage_check_allowed(d)
     bb.build.exec_func("populate_sysroot_preamble", d)
 }
 
 python populate_sysroot_posthook() {
-    pstage_check_allowed(d)
     bb.build.exec_func("populate_sysroot_postamble", d)
 }
 
@@ -413,8 +411,7 @@ python staging_package_libtoolhack () {
 }
 
 python do_package_stage () {
-    pstage_check_allowed(d)
-    if bb.data.getVar("PSTAGING_ACTIVE", d, 1) == "0":
+    if bb.data.getVar("PSTAGING_ACTIVE", d, 1) != "1":
         return
 
     #
