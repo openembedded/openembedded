@@ -3,7 +3,13 @@ DAEMON=/usr/sbin/squid
 NAME=squid
 DESC="Squid HTTP proxy"
 PIDFILE=/var/run/squid.pid
-SQUID_ARGS="-D -sY"
+
+# -D option is obsolete in squid version 3, so avoid warning
+if $DAEMON -v | grep -q Version\ 3; then
+	SQUID_ARGS="-sY"
+else
+	SQUID_ARGS="-D -sY"
+fi
 
 test -f $DAEMON || exit 0
 
