@@ -1,8 +1,9 @@
-From ead751e4a361ce19552ac94bbeba232f12849244 Mon Sep 17 00:00:00 2001
+From a25b926ff963a1866e26b11a4dac742564618375 Mon Sep 17 00:00:00 2001
 From: Steve Kipisz <s-kipisz2@ti.com>
 Date: Thu, 8 Jul 2010 10:30:58 -0500
 Subject: [PATCH] Support Micron or Numonyx memory
 
+* Updated Numonyx memory size.
 ---
  board/omap3530beagle/omap3530beagle.c |   56 +++++++++++++++++++++++++++-----
  drivers/k9f1g08r0a.c                  |   43 +++++++++++++++++++------
@@ -10,7 +11,7 @@ Subject: [PATCH] Support Micron or Numonyx memory
  3 files changed, 121 insertions(+), 21 deletions(-)
 
 diff --git a/board/omap3530beagle/omap3530beagle.c b/board/omap3530beagle/omap3530beagle.c
-index eb8008e..1254aa0 100644
+index eb8008e..1b3d8c7 100644
 --- a/board/omap3530beagle/omap3530beagle.c
 +++ b/board/omap3530beagle/omap3530beagle.c
 @@ -265,6 +265,32 @@ u32 wait_on_value(u32 read_bit_mask, u32 match_value, u32 read_addr, u32 bound)
@@ -70,7 +71,7 @@ index eb8008e..1254aa0 100644
 +			__raw_writel(SDP_3430_SDRC_RFR_CTRL_200MHz, SDRC_RFR_CTRL_0);
 +			__raw_writel(SDP_3430_SDRC_RFR_CTRL_200MHz, SDRC_RFR_CTRL_1);
 +		} else {
-+			__raw_writel(0x2, SDRC_CS_CFG); /* 256MB/bank */
++			__raw_writel(0x4, SDRC_CS_CFG); /* 512MB/bank */
 +			__raw_writel(SDP_SDRC_MDCFG_0_DDR_NUMONYX_XM, SDRC_MCFG_0);
 +			__raw_writel(SDP_SDRC_MDCFG_0_DDR_NUMONYX_XM, SDRC_MCFG_1);
 +			__raw_writel(NUMONYX_V_ACTIMA_165, SDRC_ACTIM_CTRLA_0);
