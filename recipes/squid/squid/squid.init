@@ -9,7 +9,7 @@ test -f $DAEMON || exit 0
 
 grepconf() {
     w="     " # space tab
-    sq=/etc/$NAME.conf
+    sq=/etc/$NAME/$NAME.conf
     # sed is cool.
     res=`sed -ne '
             s/^'$1'['"$w"']\+[^'"$w"']\+['"$w"']\+\([^'"$w"']\+\).*$/\1/p;

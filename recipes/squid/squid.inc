@@ -1,6 +1,6 @@
 DESCRIPTION = "Squid is a caching proxy for the Web supporting HTTP, HTTPS, FTP, and more"
 LICENSE = "GPLv2"
-INC_PR = "r8"
+INC_PR = "r9"
 DEPENDS = "openssl openssl-native openldap"
 
 SQ_MAJ = "${@bb.data.getVar('PV',d,1).split('.')[0]}"
