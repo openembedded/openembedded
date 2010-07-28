@@ -83,6 +83,7 @@ sourceipk_do_create_srcipk() {
         echo "Section: ${SECTION}" >> $control_file
         echo "Priority: Optional" >> $control_file
         echo "Maintainer: ${MAINTAINER}" >> $control_file
+        echo "License: ${LICENSE}" >> $control_file
         echo "Architecture: ${SRCIPK_PACKAGE_ARCH}" >> $control_file
         srcuri="${SRC_URI}"
         if [ "$srcuri" == "" ]
