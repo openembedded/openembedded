@@ -4,12 +4,12 @@ HOMEPAGE = "http://git.debian.org/?p=pkg-fso/omhacks.git;a=blob;f=README"
 SECTION = "openmoko/tools"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
-PV = "0.10+gitr${SRCPV}"
+PV = "0.11+gitr${SRCPV}"
 PR = "r0"
 
 SRC_URI = "git://git.debian.org/pkg-fso/omhacks.git;protocol=git;branch=master"
 
-SRCREV = "e1e41c002148369a5ef61227dadc2cfd42a8491e"
+SRCREV = "7f316203486acd3ae5902c02f20e59c805f019ab"
 S = "${WORKDIR}/git"
 
 inherit cmake
