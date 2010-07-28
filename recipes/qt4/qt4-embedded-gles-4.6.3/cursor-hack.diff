@@ -1,0 +1,34 @@
+Patch originally done by Bin Liu, rediffed by Koen Kooi for Qt 4.6.2
+
+This patch is a first step to get a working cursor when using the powervr driver, it flickers when hovering over a QGLWidget, but still better than no cursor at all
+
+--- /tmp/pvreglscreen.cpp	2010-04-19 09:30:32.000000000 +0200
++++ qt-everywhere-opensource-src-4.6.2/src/plugins/gfxdrivers/powervr/pvreglscreen/pvreglscreen.cpp	2010-04-19 09:31:30.000000000 +0200
+@@ -85,6 +85,9 @@
+ bool PvrEglScreen::initDevice()
+ {
+     openTty();
++#ifndef QT_NO_QWS_CURSOR
++    QScreenCursor::initSoftwareCursor();
++#endif
+     return true;
+ }
+ 
+--- /tmp/qwindowsystem_qws.cpp	2010-04-19 09:32:47.000000000 +0200
++++ qt-everywhere-opensource-src-4.6.2/src/gui/embedded/qwindowsystem_qws.cpp	2010-04-19 09:33:30.000000000 +0200
+@@ -3501,7 +3501,6 @@
+         }
+ 
+ #ifdef QT_QWS_CLIENTBLIT
+-#ifdef QT_NO_QWS_CURSOR
+         // This optimization only really works when there isn't a crazy cursor
+         // wizzing around.
+         QRegion directPaint = (r - transparentRegion); // in gloal coords
+@@ -3513,7 +3512,6 @@
+                                          QWSRegionEvent::DirectPaint, id);
+         }
+ #endif
+-#endif
+     }
+ 
+     if (doLock)
