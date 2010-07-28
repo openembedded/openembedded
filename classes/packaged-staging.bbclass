@@ -29,22 +29,20 @@ PSTAGE_NATIVEDEPENDS = "\
 BB_STAMP_WHITELIST = "${PSTAGE_NATIVEDEPENDS}"
 
 python __anonymous() {
+    pstage_allowed = True
+
     # We need PSTAGE_PKGARCH to contain information about the target.
     if bb.data.inherits_class('cross', d):
         bb.data.setVar('PSTAGE_PKGARCH', "${HOST_SYS}-${PACKAGE_ARCH}-${TARGET_OS}", d)
-}
 
-python () {
-    pstage_allowed = True
-
-    # These classes encode staging paths into the binary data so can only be
-    # reused if the path doesn't change/
-    if bb.data.inherits_class('native', d) or bb.data.inherits_class('cross', d) or bb.data.inherits_class('sdk', d) or bb.data.inherits_class('crosssdk', d):
+    # These classes encode staging paths data files so we must mangle them
+    # for reuse.
+    if bb.data.inherits_class('native', d) or bb.data.inherits_class('nativesdk', d) or bb.data.inherits_class('cross', d) or bb.data.inherits_class('crosssdk', d) or bb.data.inherits_class('sdk', d):
         scan_cmd = "grep -Irl ${STAGING_DIR} ${PSTAGE_TMPDIR_STAGE}"
         bb.data.setVar('PSTAGE_SCAN_CMD', scan_cmd, d)
 
-    # PSTAGE_NATIVEDEPENDS lists the packages we need before we can use packaged 
-    # staging. There will always be some packages we depend on.
+    # PSTAGE_NATIVEDEPENDS lists the packages we need before we can use
+    # packaged staging. There will always be some packages we depend on.
     if bb.data.inherits_class('native', d):
         pn = bb.data.getVar('PN', d, True)
         nativedeps = bb.data.getVar('PSTAGE_NATIVEDEPENDS', d, True).split()
@@ -55,7 +53,10 @@ python () {
     if bb.data.inherits_class('image', d):
         pstage_allowed = False
 
-    if bb.data.getVar('PSTAGING_DISABLED', d, True) == "1":
+    # We need OVERRIDES to be evaluated and applied.
+    localdata = d.createCopy()
+    bb.data.update_data(localdata)
+    if localdata.getVar('PSTAGING_DISABLED', True) == "1":
         pstage_allowed = False
 
     # Add task dependencies if we're active, otherwise mark packaged staging
@@ -315,9 +316,6 @@ populate_sysroot_postamble () {
 		set +e
 		stage-manager -p ${STAGING_DIR} -c ${PSTAGE_WORKDIR}/stamp-cache-staging -u -d ${PSTAGE_TMPDIR_STAGE}/sysroots
 		exitcode=$?
-		if [ "$exitcode" != "5" -a "$exitcode" != "0" ]; then
-			exit $exitcode
-		fi
 		if [ "$exitcode" != "5" -a "$exitcode" != "0" ]; then
 			exit $exitcode
 		fi

@@ -52,6 +52,8 @@ export PKG_CONFIG_SYSROOT_DIR = "${STAGING_DIR_HOST}"
 ORIG_DEPENDS := "${DEPENDS}"
 DEPENDS_virtclass-nativesdk ?= "${ORIG_DEPENDS}"
 
+OVERRIDES .= ":virtclass-nativesdk"
+
 python __anonymous () {
     pn = bb.data.getVar("PN", d, True)
     depends = bb.data.getVar("DEPENDS_virtclass-nativesdk", d, True)
@@ -74,7 +76,4 @@ python __anonymous () {
         if not prov.endswith("-nativesdk"):
             provides = provides.replace(prov, prov + "-nativesdk")
     bb.data.setVar("PROVIDES", provides, d)
-    bb.data.setVar("OVERRIDES", bb.data.getVar("OVERRIDES", d, False) + ":virtclass-nativesdk", d)
 }
-
-

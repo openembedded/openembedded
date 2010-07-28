@@ -91,6 +91,12 @@ ORIG_DEPENDS := "${DEPENDS}"
 
 DEPENDS_virtclass-native ?= "${ORIG_DEPENDS}"
 
+def native_virtclass_add_override(d):
+    if "native" in (bb.data.getVar('BBCLASSEXTEND', d, True) or ""):
+        bb.data.setVar("OVERRIDES", bb.data.getVar("OVERRIDES", d, False) + ":virtclass-native", d)
+
+OVERRIDES .= "${@native_virtclass_add_override(d)}"
+
 python __anonymous () {
     # If we've a legacy native do_stage, we need to neuter do_install
     stagefunc = bb.data.getVar('do_stage', d, True)
@@ -124,6 +130,5 @@ python __anonymous () {
     
                 provides = provides.replace(prov, prov + "-native")
         bb.data.setVar("PROVIDES", provides, d)
-        bb.data.setVar("OVERRIDES", bb.data.getVar("OVERRIDES", d, False) + ":virtclass-native", d)
 }
 
