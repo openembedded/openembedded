@@ -10,7 +10,7 @@ SRC_URI = "http://www.xmms.org/files/1.2.x/xmms-${PV}.tar.bz2 \
            file://xmms-config-dequote.patch \
 	   file://acinclude.m4 \
            file://xmms.sh"
-PR = "r5"
+PR = "r6"
 
 RRECOMMENDS_${PN} = "xmms-plugin-output-oss xmms-plugin-output-alsa \
                     xmms-mad xmms-tremor"
