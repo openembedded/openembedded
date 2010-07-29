@@ -6,7 +6,7 @@ RDEPENDS_${PN} = "libpcap libnet libpcre barnyard"
 
 PR = "r2"
 
-SRC_URI = " http://dl.snort.org/snort-current/${P}.tar.gz;name=tarball \
+SRC_URI = " ${GENTOO_MIRROR}/${P}.tar.gz;name=tarball \
             file://snort.fix.configure.in.HACK;apply=yes \
           "
 SRC_URI[tarball.md5sum] = "ef02aaad54746603f2cb3236fe962128"

@@ -5,7 +5,7 @@ DEPENDS = "libpcap"
 RDEPENDS_${PN} = "libpcap"
 PR = "r2"
 
-SRC_URI = " http://dl.snort.org/barnyard/${P}.tar.gz;name=tarball \
+SRC_URI = " ${GENTOO_MIRROR}/${P}.tar.gz;name=tarball \
           "
 SRC_URI[tarball.md5sum] = "be3283028cf414b52b220308ceb411e9"
 SRC_URI[tarball.sha256sum] = "09e0f8e095e79cfe70ea069d13e7d02521a504a1f400a45556a634dccfd31a3a"
