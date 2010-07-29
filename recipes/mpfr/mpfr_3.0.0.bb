@@ -5,6 +5,7 @@ S = "${WORKDIR}/mpfr-${PV}"
 NATIVE_INSTALL_WORKS = "1"
 PR = "r0"
 BBCLASSEXTEND = "native"
+ARM_INSTRUCTION_SET_armv4t = "arm"
 
 SRC_URI = "http://www.mpfr.org/mpfr-${PV}/mpfr-${PV}.tar.bz2 \
            file://p3.patch"
