@@ -1,7 +1,7 @@
 LICENSE = "BSD"
 DESCRIPTION = "Tool to sign omap3 x-loader images"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "file://signGP.c"
 
