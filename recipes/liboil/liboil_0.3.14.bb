@@ -1,6 +1,7 @@
 DESCRIPTION = "Liboil is a library of simple functions that are optimized for various CPUs."
 HOMEPAGE = "http://liboil.freedesktop.org/"
-LICENSE = "various"
+LICENSE = "liboil"
+PR = "r1"
 
 # The configure script seems to have bogus checks, so let's not make it the default
 DEFAULT_PREFERENCE = "-1"

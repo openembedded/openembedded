@@ -1,7 +1,7 @@
 DESCRIPTION = "Liboil is a library of simple functions that are optimized for various CPUs."
 HOMEPAGE = "http://liboil.freedesktop.org/"
-LICENSE = "various"
-PR = "r5"
+LICENSE = "liboil"
+PR = "r6"
 
 DEPENDS = "glib-2.0"
 
