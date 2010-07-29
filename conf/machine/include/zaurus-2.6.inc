@@ -64,6 +64,12 @@ PREFERRED_PROVIDER_virtual/kernel = "linux-rp"
 PREFERRED_PROVIDER_virtual/kernel_collie = "linux"
 PREFERRED_PROVIDER_virtual/kernel_tosa = "linux"
 
+# udev-141 is the latest version that works with linux-2.6.26-RP
+PREFERRED_PROVIDER_udev-compat_akita = "udev-compat141"
+PREFERRED_PROVIDER_udev-compat_spitz = "udev-compat141"
+PREFERRED_PROVIDER_udev-compat_c7x0 = "udev-compat141"
+PREFERRED_PROVIDER_udev-compat_poodle = "udev-compat141"
+
 # Default bootloader expects "zImage", use "uImage" for u-boot
 # Note: kexecboot can boot both kind of images
 ZAURUS_KERNEL_IMAGETYPE ?= "zImage"
