@@ -46,11 +46,11 @@ fi
 
 if [ -b ${DRIVE}2 ]; then
 	umount ${DRIVE}2
-	mke2fs -j -L "rootfs" ${DRIVE}2
+	mke2fs -j -L "Angstrom" ${DRIVE}2
 else
 	if [ -b ${DRIVE}p2 ]; then
 		umount ${DRIVE}p2
-		mke2fs -j -L "rootfs" ${DRIVE}p2
+		mke2fs -j -L "Angstrom" ${DRIVE}p2
 	else
 		echo "Cant find rootfs partition in /dev"
 	fi
