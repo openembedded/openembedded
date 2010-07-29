@@ -3,6 +3,4 @@ HOMEPAGE = "http://www.mpfr.org/"
 LICENSE = "GPL LGPL"
 SECTION = "libs"
 
-ARM_INSTRUCTION_SET_armv4t = "arm"
-
 inherit autotools
