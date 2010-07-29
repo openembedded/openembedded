@@ -85,6 +85,17 @@ RDEPENDS_udev_append_akita += "udev-compat"
 do_unpack_append_akita() {
 	bb.build.exec_func('do_apply_compat_wrapper', d)
 }
+RPROVIDES_udev_append_c7x0 += "udev-compat-wrapper"
+RDEPENDS_udev_append_c7x0 += "udev-compat"
+do_unpack_append_c7x0() {
+	bb.build.exec_func('do_apply_compat_wrapper', d)
+}
+RPROVIDES_udev_append_poodle += "udev-compat-wrapper"
+RDEPENDS_udev_append_poodle += "udev-compat"
+do_unpack_append_poodle() {
+	bb.build.exec_func('do_apply_compat_wrapper', d)
+}
+
 # Modify init script on platforms that need to boot old kernels:
 do_apply_compat_wrapper() {
 	cd ${WORKDIR}
