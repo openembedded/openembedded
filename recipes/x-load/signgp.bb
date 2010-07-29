@@ -1,13 +1,12 @@
 LICENSE = "unknown"
 DESCRIPTION = "Tool to sign omap3 x-loader images"
 
-PR = "r1"
+PR = "r2"
 
-inherit native 
 SRC_URI = "file://signGP.c"
 
 do_compile() {
-	${CC} ${WORKDIR}/signGP.c -o signGP
+	${CC} ${CFLAGS} ${LDFLAGS} ${WORKDIR}/signGP.c -o signGP
 }
 
 do_install() {
@@ -16,3 +15,5 @@ do_install() {
 }
 
 NATIVE_INSTALL_WORKS = "1"
+
+BBCLASSEXTEND = "native sdk"
