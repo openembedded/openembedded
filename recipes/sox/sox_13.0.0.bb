@@ -4,7 +4,8 @@ and can apply different effects and filters to the audio data."
 HOMEPAGE = "http://sox.sourceforge.net"
 SECTION = "audio"
 LICENSE = "GPL"
-PR = "r0"
+
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/sox/sox-${PV}.tar.gz \
          file://src-Makefile.am.patch"
