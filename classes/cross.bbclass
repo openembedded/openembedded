@@ -44,9 +44,9 @@ target_base_libdir := "${base_libdir}"
 target_prefix := "${prefix}"
 
 # Overrides for paths
-prefix = "${STAGING_DIR_NATIVE}${prefix_native}"
 base_prefix = "${STAGING_DIR_NATIVE}"
-exec_prefix = "${STAGING_DIR_NATIVE}${prefix_native}"
+prefix = "${base_prefix}${prefix_native}/${BASE_PACKAGE_ARCH}"
+exec_prefix = "${prefix}"
 base_sbindir = "${base_prefix}/bin"
 sbindir = "${exec_prefix}/bin"
 
