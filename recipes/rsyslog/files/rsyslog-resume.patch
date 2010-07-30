@@ -1,0 +1,29 @@
+From 467f10a13950b4b8d5a9fff7f14c20874777a4ba Mon Sep 17 00:00:00 2001
+From: Steffen Sledz <sledz@dresearch.de>
+Date: Fri, 30 Jul 2010 14:39:53 +0200
+Subject: [PATCH] break potential infinite loop in actionDoRetry
+
+If a module always returns RS_RET_OK (like ompipe does) the actionDoRetry
+loop may not have leaved faked ACT_STATE_SUSP state in case iResumeOKinRow
+had ever reached a count of 1000.
+
+Signed-off-by: Steffen Sledz <sledz@dresearch.de>
+---
+ action.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/action.c b/action.c
+index 32a07dc..90ec1bf 100644
+--- a/action.c
++++ b/action.c
+@@ -508,6 +508,7 @@ static rsRetVal actionDoRetry(action_t *pThis, time_t ttNow)
+ 		iRet = pThis->pMod->tryResume(pThis->pModData);
+ 		if((pThis->iResumeOKinRow > 999) && (pThis->iResumeOKinRow % 1000 == 0)) {
+ 			bTreatOKasSusp = 1;
++			pThis->iResumeOKinRow = 0;
+ 		} else {
+ 			bTreatOKasSusp = 0;
+ 		}
+-- 
+1.6.4.2
+
