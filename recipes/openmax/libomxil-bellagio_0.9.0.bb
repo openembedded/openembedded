@@ -3,7 +3,7 @@ LICENSE = "LGPLv2"
 DEPENDS = "alsa-lib ffmpeg \
            ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad', d)}"
 
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/omxil/${PN}-${PV}.tar.gz"
 

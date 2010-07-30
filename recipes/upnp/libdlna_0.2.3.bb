@@ -2,6 +2,7 @@ DESCRIPTION = "bdlna aims at being the reference open-source implementation of D
 LICENSE = "LGPLv2.1"
 
 DEPENDS = "sqlite3 ffmpeg"
+PR = "r1"
 
 SRC_URI = "http://libdlna.geexbox.org/releases/libdlna-${PV}.tar.bz2 \
            file://dlna.diff"

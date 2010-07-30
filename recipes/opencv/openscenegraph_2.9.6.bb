@@ -3,7 +3,7 @@ LICENSE = "OSGPL"
 
 DEPENDS = "libxml2 gtk+ ffmpeg poppler libxrandr"
 
-PR = "r1"
+PR = "r2"
 
 inherit cmake
 

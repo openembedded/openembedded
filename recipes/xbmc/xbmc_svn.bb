@@ -6,7 +6,7 @@ DEPENDS = "libxmu fribidi mpeg2dec ffmpeg samba fontconfig curl libmodplug libmi
 SRCREV = "e2ab481ebe964321c358ab9d6402088c714adcbe"
 
 PV = "10.05"
-PR = "r7"
+PR = "r8"
 PR_append = "+gitr${SRCPV}"
 
 SRC_URI = "git://xbmc.git.sourceforge.net/gitroot/xbmc/xbmc;protocol=git;branch=master \

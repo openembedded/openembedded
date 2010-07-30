@@ -1,7 +1,7 @@
 require libxine.inc
 
 PPDIR = "1.26"
-PR = "r1"
+PR = "r2"
 
 FILESPATHPKG .= ":libxine-1.1.16"
 

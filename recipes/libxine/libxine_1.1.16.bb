@@ -1,7 +1,7 @@
 require libxine.inc
 
 PPDIR = "1.25"
-PR = "r0"
+PR = "r1"
 
 
 SRC_URI += " \

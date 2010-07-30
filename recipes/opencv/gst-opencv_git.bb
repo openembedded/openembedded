@@ -9,6 +9,7 @@ CFLAGS += " -I${STAGING_INCDIR}/opencv"
 
 PE = "1"
 PV = "0.10.0.1"
+PR = "r1"
 PR_append = "+gitr${SRCPV}"
 SRCREV = "c767c38c847b0ee32b0a"
 SRC_URI = "git://github.com/Elleo/gst-opencv.git;protocol=git"

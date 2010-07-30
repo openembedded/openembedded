@@ -13,7 +13,7 @@ SRC_URI = "svn://code.ros.org/svn/opencv/trunk;module=opencv;proto=https \
 
 SRCREV = "3241"
 PV = "2.1.0+svnr${SRCPV}"
-PR = "r1"
+PR = "r2"
 
 S = "${WORKDIR}/opencv"
 

@@ -4,7 +4,7 @@ SECTION = "libs/multimedia"
 LICENSE = "LGPLv2.1"
 DEPENDS = "sqlite3 curl ffmpeg libnfo"
 
-INC_PR = "r0"
+INC_PR = "r1"
 
 SRC_URI = "http://libvalhalla.geexbox.org/releases/${P}.tar.bz2;name=${PN}"
 

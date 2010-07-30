@@ -1,6 +1,6 @@
 DESCRIPTION = "Swfdec plugin for browsers using NPAPI. Swfdec is a decoder/renderer for Macromedia Flash animations."
 LICENSE = "LGPL"
-PR = "r2"
+PR = "r3"
 DEPENDS = "swfdec glib-2.0"
 RDEPENDS_${PN} = "gst-ffmpeg"
 
