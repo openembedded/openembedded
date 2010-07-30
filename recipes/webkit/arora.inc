@@ -2,7 +2,7 @@ DESCRIPTION = "Arora is a lightweight cross-platform web browser"
 LICENE = "GPLv2"
 HOMEPAGE = "http://code.google.com/p/arora/"
 
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "http://arora.googlecode.com/files/arora-${PV}.tar.gz;name=arora"
 
@@ -51,5 +51,5 @@ PACKAGES =+ "arora-data arora-utils"
 FILES_arora-data += "${datadir}/pixmaps ${datadir}/applications ${datadir}/arora ${datadir}/gnome-control-center ${datadir}/icons"
 FILES_arora-utils += "${bindir}/arora-cacheinfo ${bindir}/arora-placesimport ${bindir}/htmlToXBel"
 
-RDEPENDS_${PN} += "arora-data arago-utils"
+RDEPENDS_${PN} += "arora-data arora-utils"
 
