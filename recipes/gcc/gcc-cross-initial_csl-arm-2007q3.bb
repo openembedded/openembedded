@@ -5,6 +5,6 @@ S = "${WORKDIR}/gcc-4.2"
 
 # Hack till we fix *libc properly
 do_install_append() {
-	install -d ${STAGING_DIR_NATIVE}${prefix_native}/lib/gcc/${TARGET_SYS}/${BINV}/include/
-	ln -sf ${STAGING_DIR_NATIVE}${prefix_native}/lib/gcc/${TARGET_SYS}/${BINV}/include-fixed/* ${STAGING_DIR_NATIVE}${prefix_native}/lib/gcc/${TARGET_SYS}/${BINV}/include/
+	install -d ${TOOLCHAIN_PATH}/lib/gcc/${TARGET_SYS}/${BINV}/include/
+	ln -sf ${TOOLCHAIN_PATH}/lib/gcc/${TARGET_SYS}/${BINV}/include-fixed/* ${TOOLCHAIN_PATH}/lib/gcc/${TARGET_SYS}/${BINV}/include/
 }

@@ -5,23 +5,23 @@ USE_NLS = '${@base_conditional( "TARGET_OS", "linux-uclibc", "no", "", d )}'
 USE_NLS = '${@base_conditional( "TARGET_OS", "linux-uclibceabi", "no", "", d )}'
 
 EXTRA_OECONF_PATHS = "--with-sysroot=${prefix}/${TARGET_SYS} \
-                      --with-build-time-tools=${STAGING_DIR_NATIVE}${prefix_native}/${TARGET_SYS}/bin \
+                      --with-build-time-tools=${TOOLCHAIN_PATH}/${TARGET_SYS}/bin \
                       --with-build-sysroot=${STAGING_DIR_TARGET}"
 
 #
 # gcc-cross looks and finds these in ${exec_prefix} but we're not so lucky
 # for the sdk. Hardcoding the paths ensures the build doesn't go canadian or worse.
 #
-export AR_FOR_TARGET = "${STAGING_DIR_NATIVE}${prefix_native}/${TARGET_SYS}/bin/ar"
-export AS_FOR_TARGET = "${STAGING_DIR_NATIVE}${prefix_native}/${TARGET_SYS}/bin/as"
-export DLLTOOL_FOR_TARGET = "${STAGING_DIR_NATIVE}${prefix_native}/${TARGET_SYS}/bin/dlltool"
-export LD_FOR_TARGET = "${STAGING_DIR_NATIVE}${prefix_native}/${TARGET_SYS}/bin/ld"
-export LIPO_FOR_TARGET = "${STAGING_DIR_NATIVE}${prefix_native}/${TARGET_SYS}/bin/lipo"
-export NM_FOR_TARGET = "${STAGING_DIR_NATIVE}${prefix_native}/${TARGET_SYS}/bin/nm"
-export OBJDUMP_FOR_TARGET = "${STAGING_DIR_NATIVE}${prefix_native}/${TARGET_SYS}/bin/objdump"
-export RANLIB_FOR_TARGET = "${STAGING_DIR_NATIVE}${prefix_native}/${TARGET_SYS}/bin/ranlib"
-export STRIP_FOR_TARGET = "${STAGING_DIR_NATIVE}${prefix_native}/${TARGET_SYS}/bin/strip"
-export WINDRES_FOR_TARGET = "${STAGING_DIR_NATIVE}${prefix_native}/${TARGET_SYS}/bin/windres"
+export AR_FOR_TARGET = "${TOOLCHAIN_PATH}/${TARGET_SYS}/bin/ar"
+export AS_FOR_TARGET = "${TOOLCHAIN_PATH}/${TARGET_SYS}/bin/as"
+export DLLTOOL_FOR_TARGET = "${TOOLCHAIN_PATH}/${TARGET_SYS}/bin/dlltool"
+export LD_FOR_TARGET = "${TOOLCHAIN_PATH}/${TARGET_SYS}/bin/ld"
+export LIPO_FOR_TARGET = "${TOOLCHAIN_PATH}/${TARGET_SYS}/bin/lipo"
+export NM_FOR_TARGET = "${TOOLCHAIN_PATH}/${TARGET_SYS}/bin/nm"
+export OBJDUMP_FOR_TARGET = "${TOOLCHAIN_PATH}/${TARGET_SYS}/bin/objdump"
+export RANLIB_FOR_TARGET = "${TOOLCHAIN_PATH}/${TARGET_SYS}/bin/ranlib"
+export STRIP_FOR_TARGET = "${TOOLCHAIN_PATH}/${TARGET_SYS}/bin/strip"
+export WINDRES_FOR_TARGET = "${TOOLCHAIN_PATH}/${TARGET_SYS}/bin/windres"
 
 #
 # We need to override this and make sure the compiler can find staging
