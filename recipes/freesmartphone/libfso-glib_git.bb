@@ -4,7 +4,7 @@ LICENSE = "LGPL"
 SECTION = "devel"
 DEPENDS = "vala-dbus-binding-tool-native dbus-glib glib-2.0 fso-specs"
 SRCREV = "9ab41751525d89d834d3d1011a6cde9b16c69a0d"
-PV = "2010.07.16.1+gitr${SRCPV}"
+PV = "2010.07.28.1+gitr${SRCPV}"
 PE = "1"
 PR = "r1"
 
