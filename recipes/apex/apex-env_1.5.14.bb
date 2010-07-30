@@ -10,11 +10,11 @@ SRC_URI = "ftp://ftp.buici.com/pub/apex/apex-${PV}.tar.gz \
 	"
 S = ${WORKDIR}/apex-${PV}/usr
 
-EXTRA_OEMAKE_append = " CROSS_COMPILE=${STAGING_DIR_NATIVE}${prefix_native}/bin/${HOST_PREFIX}"
+EXTRA_OEMAKE_append = " CROSS_COMPILE=${TOOLCHAIN_PATH}/bin/${HOST_PREFIX}"
 
 oe_runmake() {
-	oenote make ${PARALLEL_MAKE} CROSS_COMPILE=${STAGING_DIR_NATIVE}${prefix_native}/bin/${TARGET_PREFIX} "$@"
-	make ${PARALLEL_MAKE} LDFLAGS= CROSS_COMPILE=${STAGING_DIR_NATIVE}${prefix_native}/bin/${TARGET_PREFIX} "$@" || die "oe_runmake failed"
+	oenote make ${PARALLEL_MAKE} CROSS_COMPILE=${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX} "$@"
+	make ${PARALLEL_MAKE} LDFLAGS= CROSS_COMPILE=${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX} "$@" || die "oe_runmake failed"
 }
 
 do_install() {

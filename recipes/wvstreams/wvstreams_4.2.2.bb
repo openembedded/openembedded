@@ -12,7 +12,7 @@ SRC_URI = "http://ftp.de.debian.org/debian/pool/main/w/wvstreams/${PN}_${PV}.ori
 
 inherit autotools pkgconfig
 
-LDFLAGS_append = " -Wl,-rpath-link,${STAGING_DIR_NATIVE}${prefix_native}/${TARGET_SYS}/lib"
+LDFLAGS_append = " -Wl,-rpath-link,${TOOLCHAIN_PATH}/${TARGET_SYS}/lib"
 
 EXTRA_AUTORECONF += " -I${S}/gnulib/m4"
 EXTRA_OECONF = " --without-tcl --without-qt --without-pam"

@@ -27,12 +27,12 @@ FILES_${PN}-el = "${datadir}/emacs/*/*/*.el.gz \
 FILES_${PN} += "${datadir}/emacs"
 
 QEMU = "qemu-${TARGET_ARCH} -L ${STAGING_DIR_TARGET}"
-LDFLAGS += "-L${STAGING_DIR_NATIVE}${prefix_native}/${TARGET_SYS}/lib"
+LDFLAGS += "-L${TOOLCHAIN_PATH}/${TARGET_SYS}/lib"
 
 EXTRA_OECONF = "--without-sound --without-x"
 
 do_bootstrap() {
-    cp "${STAGING_DIR_NATIVE}${prefix_native}/${TARGET_SYS}/lib/libgcc_s.so.1" "${S}"
+    cp "${TOOLCHAIN_PATH}/${TARGET_SYS}/lib/libgcc_s.so.1" "${S}"
     export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${S}"
     export QEMU="${QEMU}"
 
@@ -46,7 +46,7 @@ do_bootstrap() {
 addtask bootstrap before do_compile after do_configure
 
 do_compile_prepend() {
-    cp "${STAGING_DIR_NATIVE}${prefix_native}/${TARGET_SYS}/lib/libgcc_s.so.1" "${S}"
+    cp "${TOOLCHAIN_PATH}/${TARGET_SYS}/lib/libgcc_s.so.1" "${S}"
     export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${S}"
     export QEMU="${QEMU}"
 }

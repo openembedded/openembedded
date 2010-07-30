@@ -8,7 +8,7 @@ SRC_URI = "http://wvstreams.googlecode.com/files/${PN}-${PV}.tar.gz \
 
 inherit autotools pkgconfig
 
-LDFLAGS_append = " -Wl,-rpath-link,${STAGING_DIR_NATIVE}${prefix_native}/${TARGET_SYS}/lib"
+LDFLAGS_append = " -Wl,-rpath-link,${TOOLCHAIN_PATH}/${TARGET_SYS}/lib"
 
 EXTRA_OECONF = " --without-tcl --without-qt --without-pam"
 

@@ -16,7 +16,7 @@ SRC_URI = \
      file://binutils-uclibc-300-012_check_ldrunpath_length.patch \
      "
 
-EXTRA_OECONF = "--with-sysroot=${STAGING_DIR_NATIVE}${prefix_native}/${TARGET_SYS} \
+EXTRA_OECONF = "--with-sysroot=${TOOLCHAIN_PATH}/${TARGET_SYS} \
 		--program-prefix=${TARGET_PREFIX} --disable-shared"
 
 HOST_SYS = "${BUILD_SYS}"

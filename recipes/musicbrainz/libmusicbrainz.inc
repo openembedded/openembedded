@@ -10,5 +10,5 @@ SRC_URI = "ftp://ftp.musicbrainz.org/pub/musicbrainz/libmusicbrainz-${PV}.tar.gz
 inherit cmake pkgconfig
 
 # Fight a compiler/link bug that leaks too many c++ symbols
-TARGET_LDFLAGS += " -Wl,-rpath-link,${STAGING_DIR_NATIVE}${prefix_native}/${TARGET_SYS}/lib -ldl"
+TARGET_LDFLAGS += " -Wl,-rpath-link,${TOOLCHAIN_PATH}/${TARGET_SYS}/lib -ldl"
 

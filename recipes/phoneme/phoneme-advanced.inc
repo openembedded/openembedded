@@ -66,7 +66,7 @@ do_configure() {
 
   pmo "# Java toolchain binaries"
   pmo JDK_HOME /dev/null
-  pmo CVM_TARGET_TOOLS_PREFIX ${STAGING_DIR_NATIVE}${prefix_native}/bin/
+  pmo CVM_TARGET_TOOLS_PREFIX ${TOOLCHAIN_PATH}/bin/
   pmo CVM_JAVA java
   pmo CVM_JAVAC javac
   pmo CVM_JAVADOC true

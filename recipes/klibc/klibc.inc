@@ -13,7 +13,7 @@ do_install() {
 export INST=${STAGING_DIR_TARGET}
 do_stage() {
         oe_runmake  install
-        cp '${STAGING_DIR_TARGET}/bin/klcc'  '${STAGING_DIR_NATIVE}${prefix_native}/bin/${TARGET_PREFIX}klcc'
+        cp '${STAGING_DIR_TARGET}/bin/klcc'  '${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}klcc'
 }
 
 PACKAGES = "${PN} ${PN}-dev "

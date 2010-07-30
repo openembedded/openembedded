@@ -20,7 +20,7 @@ COMPATIBLE_HOST = "bfin.*-uclinux"
 
 #as stated above, uclibc needs real kernel-headers
 #however: we can't depend on virtual/kernel when nptl hits due to depends deadlocking ....
-KERNEL_SOURCE = "${STAGING_DIR_NATIVE}${prefix_native}/${TARGET_SYS}"
+KERNEL_SOURCE = "${TOOLCHAIN_PATH}/${TARGET_SYS}"
 
 SRC_URI = "svn://sources.blackfin.uclinux.org/toolchain/trunk;module=uClibc "
 SRC_URI += "file://uClibc.machine file://uClibc.distro"

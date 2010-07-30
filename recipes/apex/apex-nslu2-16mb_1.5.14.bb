@@ -17,11 +17,11 @@ CMDLINE_ROOT  ?= "root=/dev/mtdblock4 rootfstype=jffs2 rw"
 
 CMDLINE_DEBUG ?= ""
 
-EXTRA_OEMAKE_append = " CROSS_COMPILE=${STAGING_DIR_NATIVE}${prefix_native}/bin/${HOST_PREFIX}"
+EXTRA_OEMAKE_append = " CROSS_COMPILE=${TOOLCHAIN_PATH}/bin/${HOST_PREFIX}"
 
 oe_runmake() {
-	oenote make ${PARALLEL_MAKE} CROSS_COMPILE=${STAGING_DIR_NATIVE}${prefix_native}/bin/${TARGET_PREFIX} "$@"
-	make ${PARALLEL_MAKE} LDFLAGS= CROSS_COMPILE=${STAGING_DIR_NATIVE}${prefix_native}/bin/${TARGET_PREFIX} "$@" || die "oe_runmake failed"
+	oenote make ${PARALLEL_MAKE} CROSS_COMPILE=${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX} "$@"
+	make ${PARALLEL_MAKE} LDFLAGS= CROSS_COMPILE=${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX} "$@" || die "oe_runmake failed"
 }
 
 # Set the correct CONFIG_USER_xxx_ENDIAN and CONFIG_CMDLINE at the head

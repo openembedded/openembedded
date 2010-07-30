@@ -100,7 +100,7 @@ TARGET_CC_ARCH += "${LDFLAGS}"
 
 do_compile() {
 	cd ${S}
-	export CROSSTOOL=${STAGING_DIR_NATIVE}${prefix_native}/bin/${TARGET_PREFIX}
+	export CROSSTOOL=${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}
 	export AR=${CROSSTOOL}ar
 	export AS=${CROSSTOOL}as
 	export RANLIB=${CROSSTOOL}ranlib
