@@ -2,10 +2,10 @@ DESCRIPTION = "Delayed job execution and batch processing."
 SECTION = "base"
 LICENSE = "GPL"
 DEPENDS = "flex-native flex"
-RCONFLICTS = "atd"
-RREPLACES = "atd"
+RCONFLICTS_${PN} = "atd"
+RREPLACES_${PN} = "atd"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = " \
 	${DEBIAN_MIRROR}/main/a/at/at_${PV}.orig.tar.gz \
