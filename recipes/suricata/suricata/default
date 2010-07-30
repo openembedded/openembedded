@@ -1,0 +1,7 @@
+# Set listen (pcap/nfqueue/pf_ring) parameters for suricata here, like:
+#
+# SURICATA_PARAMS="-i eth0"
+# or
+# SURICATA_PARAMS="-q 100"
+#
+# Default it none and suricata won't be started

@@ -1,0 +1,46 @@
+#!/bin/sh
+# Suricata init file (rather simplistic)
+
+DAEMON=/usr/bin/suricata
+DESC="IDS/IPS service"
+NAME="suricata"
+DEFAULT_FILE=/etc/default/suricata
+CONF_FILE=/etc/suricata/suricata.yaml
+PID_FILE=/var/run/suricata.pid
+
+if [ -f /etc/default/suricata ]; then
+	. /etc/default/suricata
+fi
+
+if [ "x$SURICATA_PARAMS" == "x" ]; then
+	echo "No SURICATA_PARAMS defined in default file, won't run Suricata" >&2
+	exit 1
+fi
+
+case "$1" in
+	start)
+		echo -n "Starting $DESC: "
+		start-stop-daemon --oknodo -S -x $DAEMON -p $PID_FILE -- $SURICATA_PARAMS -c $CONF_FILE -D --pidfile $PID_FILE
+		echo "$NAME."
+	;;
+	stop)
+		echo -n "Stopping $DESC: "
+		start-stop-daemon -K -p $PID_FILE
+		for i in `seq 1 5`; do
+			if start-stop-daemon -p $PID -t -K >/dev/null 2>&1; then
+				break;
+			fi
+			sleep 1
+		done
+	;;
+	restart|force-reload)
+		$0 stop
+		$0 start
+	;;
+	*)
+		echo "Usage: $0 {start|stop|restart|force-reload}" >&2
+		exit 2
+	;;
+esac
+
+exit 0
