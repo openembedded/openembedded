@@ -5,7 +5,7 @@ LICENSE = "BSD"
 DEPENDS = "libxslt-native"
 SECTION = "devel/specifications"
 SRCREV = "4a26955b481be312c1ca64e87c5283a9a323cf83"
-PV = "2010.07.16.1+gitr${SRCPV}"
+PV = "2010.07.28.1+gitr${SRCPV}"
 PE = "1"
 PR = "r1"
 
