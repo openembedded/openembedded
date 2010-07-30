@@ -1,0 +1,12 @@
+/var/log/snort/*.log /var/log/snort/alert {
+    size 1M
+    missingok
+    compress
+    delaycompress
+    rotate 10
+    sharedscripts
+    postrotate
+	/etc/init.d/snort restart
+    endscript
+}
+

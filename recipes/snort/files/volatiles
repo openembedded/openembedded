@@ -1,0 +1,2 @@
+# <type> <owner> <group> <mode> <path> <linksource>
+d snort snort 0755 /var/log/snort none
