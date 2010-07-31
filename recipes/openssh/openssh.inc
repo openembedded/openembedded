@@ -34,6 +34,13 @@ EXTRA_OECONF = "--disable-suid-ssh --with-ssl=${STAGING_LIBDIR}/ssl \
 		--sysconfdir=${sysconfdir}/ssh \
 		--with-xauth=/usr/bin/xauth"
 
+# this is a workaround for uclibc becasue including stdio.h
+# pulls in pthreads.h and causes conflicts in function prototypes
+# ending in compilation failure so unless this is fixed disable
+# pam for uclibc
+
+EXTRA_OECONF_append_libc-uclibc=" --without-pam"
+
 EXTRA_OEMAKE = "'STRIP_OPT='"
 
 do_configure_prepend () {
