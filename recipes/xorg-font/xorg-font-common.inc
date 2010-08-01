@@ -28,10 +28,6 @@ do_install_append() {
 	find ${D}${datadir}/fonts/X11 -type f -name fonts.scale | xargs rm -f	
 }
 
-do_stage() {
-	autotools_stage_all
-}
-
 PACKAGE_ARCH = "all"
 
 FILES_${PN} += " ${libdir}/X11/fonts ${datadir}"
