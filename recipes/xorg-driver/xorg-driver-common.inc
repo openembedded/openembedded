@@ -17,11 +17,6 @@ inherit autotools pkgconfig
 
 TARGET_CPPFLAGS += "-I${STAGING_DIR_HOST}/usr/include/xorg"
 
-
-do_stage() {
-	autotools_stage_all
-}
-
 # Another sucky behavor from Xorg configure scripts.
 # They use AC_CHECK_FILE to check for DRI headers. Yuck!
 # Of course this will blow up when cross compiling.
