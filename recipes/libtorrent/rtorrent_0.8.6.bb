@@ -11,6 +11,5 @@ PR = "r0"
 
 inherit autotools
 
-
-SRC_URI[md5sum] = "dc0f37d933b0b6c713ad617e09441f3b"
-SRC_URI[sha256sum] = "257722380b39e84e700e9f2d2f6600ba724723f1ed59327bfce47a57d293eeee"
+SRC_URI[md5sum] = "b804c45c01c40312926bcea6b55bb084"
+SRC_URI[sha256sum] = "8c96c68e1524162abd1fc4b612d0c3d924fccc25159c0b3f208e69281f0b32db"
