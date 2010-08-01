@@ -8,12 +8,15 @@ LICENSE = "GPLv2 LGPLv2.1"
 
 DEPENDS = "alsa-lib"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://jackaudio.org/downloads/jack-audio-connection-kit-${PV}.tar.gz \
-           file://jack_fix_TWL4030_alsa_capture.patch"
+          "
 SRC_URI[md5sum] = "d58e29a55f285d54e75134cec8e02a10"
 SRC_URI[sha256sum] = "6aadf38ca98104772fd675bba7adecf72d2a600e17cccfc5d1f7c50f19b722c2"
+
+# This is not omap3 specific, but there is a strong correlation between using twl4030 and using omap3
+SRC_URI_append_omap3 = " file://jack_fix_TWL4030_alsa_capture.patch"
 
 S = "${WORKDIR}/jack-audio-connection-kit-${PV}"
 
@@ -26,6 +29,9 @@ EXTRA_OEMAKE = 'transform="s,^,,"'
 LDFLAGS_append = " -ldl -L${STAGING_LIBDIR}"
 
 PACKAGES =+ "libjack jack-server jack-examples"
+
+# Arch specific patch
+PACKAGE_ARCH_omap3 = "${MACHINE_ARCH}"
 
 FILES_libjack = "${libdir}/*.so.* ${libdir}/jack/*.so"
 FILES_jack-server = "${bindir}/jackd"
