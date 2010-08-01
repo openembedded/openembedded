@@ -12,10 +12,6 @@ do_install() {
     make PLATFORM="linux" PREFIX="${prefix}" TARGET_PREFIX="${STAGING_DIR_TARGET}${layout_prefix}" TARGETSYSTEM="${TARGET_SYS}" LIBRARIAN=ar install
 }
 
-do_stage() {
-    make PLATFORM="linux" PREFIX="${prefix}" TARGET_PREFIX="${STAGING_DIR_TARGET}${layout_prefix}" TARGETSYSTEM="${TARGET_SYS}" LIBRARIAN=ar install
-}
-
 PACKAGES += "chicken-bin libchicken libuchicken"
 
 FILES_${PN} = ""
