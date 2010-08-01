@@ -16,11 +16,7 @@ EXTRA_OECONF = "--with-local-prefix=${STAGING_DIR_TARGET}${prefix} \
 		--program-prefix=${TARGET_PREFIX}"
 
 do_install () {
-	:
-}
-
-do_stage () {
 	cd gcc
-	oe_runmake install-common install-headers install-libgcc
-	install -m 0755 xgcc ${STAGING_BINDIR}/gcc-${PV}
+	oe_runmake 'DESTDIR=${D}' install-common install-headers install-libgcc
+	install -m 0755 xgcc ${D}${STAGING_BINDIR}/gcc-${PV}
 }
