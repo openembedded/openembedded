@@ -53,7 +53,3 @@ do_compile() {
 do_install() {
 	make -C fonts DESTDIR="${D}" install
 }
-
-do_stage() {
-	:
-}
