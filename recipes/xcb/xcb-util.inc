@@ -25,7 +25,3 @@ FILES_libxcbreply = "${libdir}/libXCBReply.so.*"
 FILES_libxcbwm = "${libdir}/libXCBWM.so.*"
 
 inherit autotools pkgconfig
-
-do_stage () {
-	autotools_stage_all
-}
