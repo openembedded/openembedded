@@ -22,14 +22,5 @@ do_install() {
                    INCLUDEDIR="${D}/usr/include/" LIBDIR="${D}/usr/lib" install
 }
 
-do_stage() {
-        install -d ${STAGING_INCDIR} ${STAGING_LIBDIR}
-        install -m 0644 paranoia/cdda_paranoia.h ${STAGING_INCDIR}
-        install -m 0644 interface/cdda_interface.h ${STAGING_INCDIR}
-        oe_libinstall -C interface libcdda_interface ${STAGING_LIBDIR}
-        oe_libinstall -C paranoia libcdda_paranoia ${STAGING_LIBDIR}
-}
-
-
 SRC_URI[md5sum] = "b304bbe8ab63373924a744eac9ebc652"
 SRC_URI[sha256sum] = "005db45ef4ee017f5c32ec124f913a0546e77014266c6a1c50df902a55fe64df"
