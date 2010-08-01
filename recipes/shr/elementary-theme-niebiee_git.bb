@@ -2,7 +2,7 @@ DESCRIPTION = "Extremely blue elementary theme - Niebiee"
 SECTION = "e/utils"
 DEPENDS = "edje-native"
 LICENSE = "MIT BSD"
-SRCREV = "2ac643cc273d144bb731a8cbb8ec6b3615de43a0"
+SRCREV = "4b89eb1d477fb1e5256e2e35bf214af2c59843eb"
 PV = "0.1-${EFL_SRCREV}+gitr${SRCPV}"
 PR = "r0"
 
