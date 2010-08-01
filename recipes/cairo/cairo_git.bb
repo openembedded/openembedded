@@ -22,4 +22,3 @@ S = "${WORKDIR}/git"
 do_compile_append() {
 	cd ${S}/perf ; oe_runmake
 }
-

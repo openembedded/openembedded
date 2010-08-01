@@ -12,4 +12,3 @@ SRC_URI = "cvs://anoncvs:anoncvs@cvs.cairographics.org/cvs/cairo;module=libsvg-c
 S = "${WORKDIR}/libsvg-cairo"
 
 inherit autotools pkgconfig
-

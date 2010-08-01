@@ -11,4 +11,3 @@ PR = "r2"
 EXTRA_OECONF = "--with-expat"
 
 inherit autotools pkgconfig
-

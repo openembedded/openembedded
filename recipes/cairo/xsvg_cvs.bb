@@ -13,4 +13,3 @@ S = "${WORKDIR}/xsvg"
 BROKEN = "1"
 
 inherit autotools pkgconfig
-
