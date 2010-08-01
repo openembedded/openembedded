@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 RPROVIDES_${PN} += "libfftw3"
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://www.fftw.org/fftw-${PV}.tar.gz"
 
@@ -15,11 +15,6 @@ inherit autotools pkgconfig
 do_configure_prepend() {
         echo 'AM_PROG_AS' >> ${S}/configure.ac 
 }
-
-do_stage () {
-        autotools_stage_all
-}
-
 
 PACKAGES =+ "lib${PN}"
 
