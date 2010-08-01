@@ -6,10 +6,6 @@ EXTRA_OECONF = "--with-sysroot=${prefix}/${TARGET_SYS} \
 	       		--enable-install-libbfd \
                 --disable-werror"
 
-do_stage() {
-	:
-}
-
 do_install () {
         autotools_do_install
 

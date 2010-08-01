@@ -14,10 +14,6 @@ PR = "r4"
 
 FILES_${PN}-dbg += "${prefix}/${TARGET_SYS}/bin/.debug"
 
-do_stage() {
-	:
-}
-
 do_install () {
         autotools_do_install
 
