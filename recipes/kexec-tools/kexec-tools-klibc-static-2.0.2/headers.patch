@@ -1,7 +1,7 @@
-Index: kexec-tools-2.0.1/purgatory/arch/arm/include/limits.h
+Index: kexec-tools-2.0.2/purgatory/arch/arm/include/limits.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ kexec-tools-2.0.1/purgatory/arch/arm/include/limits.h	2006-02-06 18:28:37.031096672 +0100
++++ kexec-tools-2.0.2/purgatory/arch/arm/include/limits.h	2006-02-06 18:28:37.031096672 +0100
 @@ -0,0 +1,58 @@
 +#ifndef LIMITS_H
 +#define LIMITS_H	1
@@ -61,10 +61,10 @@ Index: kexec-tools-2.0.1/purgatory/arch/arm/include/limits.h
 +
 +
 +#endif /* LIMITS_H */
-Index: kexec-tools-2.0.1/purgatory/arch/arm/include/stdint.h
+Index: kexec-tools-2.0.2/purgatory/arch/arm/include/stdint.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ kexec-tools-2.0.1/purgatory/arch/arm/include/stdint.h	2006-02-06 18:28:37.031096672 +0100
++++ kexec-tools-2.0.2/purgatory/arch/arm/include/stdint.h	2006-02-06 18:28:37.031096672 +0100
 @@ -0,0 +1,31 @@
 +#ifndef STDINT_H
 +#define STDINT_H
