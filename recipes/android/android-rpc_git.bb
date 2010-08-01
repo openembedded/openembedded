@@ -1,8 +1,8 @@
 DESCRIPTION = "Android RPC library"
 SECTION = "devel"
 LICENSE = "GPL"
-SRCREV = "72b90c4185c3a14657e3d05dba4ed44acdf6bce6"
-PV = "1.0+gitr${SRCPV}"
+SRCREV = "9da90ad4ebc0efe978c61060d8fdf7362cc9115c"
+PV = "1.1+gitr${SRCPV}"
 PR = "r0"
 
 SRC_URI = "\
