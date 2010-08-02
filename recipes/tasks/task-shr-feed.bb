@@ -1,9 +1,11 @@
 DESCRIPTION = "SHR Feed"
-PR = "r62"
+PR = "r63"
 PV = "1.0"
 LICENSE = "GPL"
 
 inherit task
+
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 RDEPENDS_${PN} += "\
 		babiloo-efl \
