@@ -1,7 +1,7 @@
 require linux-kexecboot.inc
 
-KERNEL_RELEASE = "2.6.35-rc6"
-SRCREV = "b37fa16e78d6f9790462b3181602a26b5af36260"
+KERNEL_RELEASE = "2.6.35"
+SRCREV = "9fe6206f400646a2322096b56c59891d530e8d51"
 PV = "${KERNEL_RELEASE}+gitr${SRCPV}"
 
 SRC_URI += "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;branch=master \
