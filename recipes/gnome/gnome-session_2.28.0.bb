@@ -14,10 +14,6 @@ do_configure_append() {
 	done	
 }
 
-do_stage () {
-	 autotools_stage_all
-}
-
 FILES_${PN} += "${datadir}/xsessions ${datadir}/icons ${datadir}/gnome ${libdir}/gnome-session/helpers"
 FILES_${PN}-dbg += "${libdir}/gnome-session/helpers/.debug"
 

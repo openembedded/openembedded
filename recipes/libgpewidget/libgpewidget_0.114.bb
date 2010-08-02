@@ -15,10 +15,6 @@ EXTRA_OECONF = "--enable-cairo"
 
 LDFLAGS += " -L${STAGING_LIBDIR}"
 
-do_stage () {
-	autotools_stage_all
-}
-
 PACKAGES =+ "libgpewidget-bin"
 FILES_libgpewidget-bin = "${bindir}/*"
 RRECOMMENDS_${PN} = "gpe-icons"

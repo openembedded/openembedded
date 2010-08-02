@@ -22,10 +22,6 @@ do_configure() {
 	done
 }
 
-do_stage() {
-        autotools_stage_all
-}
-
 PACKAGES =+ "libdjvulibre"
 FILES_libdjvulibre = "${libdir}/libdjvulibre.so.*"
 FILES_${PN} += "${datadir}/djvu"

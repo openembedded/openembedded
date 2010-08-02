@@ -11,10 +11,3 @@ SRC_URI = "svn://svn.gnome.org/svn/${PN}/;module=trunk"
 
 S = "${WORKDIR}/trunk"
 
-do_stage() {
-	autotools_stage_all
-}
-
-
-
-

@@ -24,8 +24,3 @@ do_install_append () {
 	install -m 644 ${S}/conf/imconfig ${D}/${libdir}/gtk-2.0/*/immodules/ptim
 }
 
-
-
-do_stage () {
-    autotools_stage_all
-}

@@ -24,9 +24,5 @@ do_configure_append() {
 	if ! test -f libtool ; then cp -a *-libtool libtool ; fi
 }
 
-do_stage() {
-	autotools_stage_all
-}
-
 SRC_URI[md5sum] = "1a53a0e72bee0bf814f4da83a9b6a636"
 SRC_URI[sha256sum] = "64331bda459e984b8d369b449eec89daa2f3cd288186f1d2a9ad8011badd4dad"

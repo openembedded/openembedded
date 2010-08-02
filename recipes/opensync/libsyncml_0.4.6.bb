@@ -8,10 +8,6 @@ SRC_URI = "http://libsyncml.opensync.org/download/releases/${PV}/libsyncml-${PV}
 
 inherit cmake pkgconfig
 
-do_stage() {
-        autotools_stage_all
-}
-
 PACKAGES += "${PN}-tools"
 
 FILES_${PN}-tools = "${bindir}"

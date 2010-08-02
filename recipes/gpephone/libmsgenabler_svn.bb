@@ -16,6 +16,3 @@ FILES_${PN} += "$(datadir)/libmsgenabler"
 
 S = "${WORKDIR}/${PN}"
 
-do_stage () {
-	autotools_stage_all
-}

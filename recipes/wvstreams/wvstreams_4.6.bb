@@ -31,9 +31,6 @@ FILES_libwvstreams-extras-dbg = "${libdir}/.debug/libwvbase.so.* ${libdir}/.debu
 
 PARALLEL_MAKE = ""
 
-do_stage() {
-    autotools_stage_all
-}
 do_configure() {
         autoreconf
         oe_runconf

@@ -24,10 +24,6 @@ do_install_append() {
 	mv ${D}/usr/contrib ${D}${docdir}/rrdtool/
 }
 
-do_stage () {
-	autotools_stage_all
-}
-
 FILES_${PN} += "${libdir}/perl/auto/RRDs/RRDs.bs ${libdir}/perl/auto/RRDs/RRDs.so ${libdir}/perl/RRDs.pm ${libdir}/perl/RRDp.pm"
 
 

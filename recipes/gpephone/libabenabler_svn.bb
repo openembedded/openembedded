@@ -16,6 +16,3 @@ S = "${WORKDIR}/${PN}"
 
 LDFLAGS += " -L${STAGING_LIBDIR}"
 
-do_stage () {
-	autotools_stage_all
-}

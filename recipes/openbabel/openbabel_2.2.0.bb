@@ -8,10 +8,6 @@ inherit autotools
 
 EXTRA_OECONF = "  --disable-xmltest  "
 
-do_stage() {
-	autotools_stage_all
-}
-
 FILES_${PN}-dbg += "${libdir}/openbabel/*/.debug"
 FILES_${PN}-dev += "${libdir}/openbabel/*/*.la"
 

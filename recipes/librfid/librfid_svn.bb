@@ -34,6 +34,3 @@ do_install_append() {
 	install -m 0644 ${WORKDIR}/librfid.rules ${D}/${sysconfdir}/udev/rules.d/70-librfid.rules
 }
 
-do_stage() {
-	autotools_stage_all
-}

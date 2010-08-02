@@ -12,7 +12,3 @@ S = "${WORKDIR}/proj-4.${PV}"
 
 FILES_${PN} += "${datadir}/proj"
 
-do_stage() {
-	autotools_stage_all
-}
-

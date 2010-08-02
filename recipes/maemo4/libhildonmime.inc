@@ -10,8 +10,3 @@ do_configure_prepend() {
 	sed -i s:-Werror::g configure.in
 }
 
-do_stage() {
-	autotools_stage_all
-}
-
-

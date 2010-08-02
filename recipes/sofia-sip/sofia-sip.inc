@@ -16,6 +16,3 @@ FILES_${PN}-glib = "${libdir}/libsofia-sip-ua-glib.so.*"
 
 LEAD_SONAME = "libsofia-sip-ua.so"
 
-do_stage () {
-	autotools_stage_all
-}

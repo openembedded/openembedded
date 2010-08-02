@@ -39,10 +39,6 @@ do_configure_append() {
 	find . -name "Makefile" -exec sed -i s,-I/usr/include,, {} \;
 }
 
-do_stage() {
-	autotools_stage_all
-}
-
 PACKAGES =+ "${PN}-utils ${PN}-dsp"
 FILES_${PN}-utils = "${bindir}/speex*"
 FILES_${PN}-dsp = "${libdir}/libspeexdsp.so.*"

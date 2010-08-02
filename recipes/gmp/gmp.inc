@@ -13,6 +13,3 @@ ARM_INSTRUCTION_SET = "arm"
 
 acpaths = ""
 
-do_stage () {
-	autotools_stage_all
-}

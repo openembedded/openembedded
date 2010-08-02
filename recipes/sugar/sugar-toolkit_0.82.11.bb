@@ -16,10 +16,5 @@ do_configure_prepend() {
 
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
-do_stage() {
-        autotools_stage_all
-}
-
-
 SRC_URI[md5sum] = "c3a2c45d6444efcd3fa59c50198f9483"
 SRC_URI[sha256sum] = "a0fae53f396c6223365c28c8cda0538f2cb20c660bffd9cfcc37ee00b57c2a7b"

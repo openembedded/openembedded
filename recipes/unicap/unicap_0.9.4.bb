@@ -9,10 +9,6 @@ SRC_URI = "http://www.unicap-imaging.org/downloads/tisCMOS/unicap-${PV}.tar.gz \
 
 inherit autotools pkgconfig
 
-do_stage () {
-        autotools_stage_all
-}
-
 PACKAGES += "libucil unicapgtk"
 
 FILES_${PN} = "${libdir}/libunicap.*so.* ${libdir}/unicap2/cpi/lib*.*so.*  ${libdir}/unicap2/cpi/lib*.*so"

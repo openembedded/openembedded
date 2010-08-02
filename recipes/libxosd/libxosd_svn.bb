@@ -14,10 +14,6 @@ S = "${WORKDIR}/current"
 
 inherit autotools binconfig
 
-do_stage() {
-	autotools_stage_all
-}
-
 PACKAGES =+ "${PN}-examples-dbg ${PN}-examples"
 FILES_${PN}-examples = "${bindir}/osd_cat"
 FILES_${PN}-examples-dbg += "${bindir}/.debug/"

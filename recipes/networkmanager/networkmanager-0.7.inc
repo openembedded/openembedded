@@ -21,10 +21,6 @@ EXTRA_OECONF = " \
 INITSCRIPT_NAME = "NetworkManager"
 INITSCRIPT_PARAMS = "defaults 28"
 
-do_stage () {
-	autotools_stage_all
-}
-
 # Work around dbus permission problems since we lack a proper at_console
 do_install_prepend() {
 		sed -i -e s:deny:allow:g ${S}/src/NetworkManager.conf

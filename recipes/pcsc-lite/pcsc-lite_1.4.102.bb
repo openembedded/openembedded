@@ -20,10 +20,6 @@ EXTRA_OECONF = " \
 	--enable-usbdropdir=${libdir}/pcsc/drivers \
 	"
 
-do_stage() {
-	autotools_stage_all
-}
-
 do_install() {
 	oe_runmake DESTDIR="${D}" install
 	install -d "${D}/etc/init.d"

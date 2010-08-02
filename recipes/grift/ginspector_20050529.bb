@@ -8,10 +8,6 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/g-inspector/ginspector-${PV}.tar.bz2"
 
 inherit autotools pkgconfig
 
-do_stage() {
-	autotools_stage_all
-}
-
 FILES_${PN} += "${libdir}/*/*/ginspector/*.so"
 
 SRC_URI[md5sum] = "0a8474e0d90b139b1baa70b097a4fd51"

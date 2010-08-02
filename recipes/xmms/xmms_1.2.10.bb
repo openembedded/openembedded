@@ -69,10 +69,6 @@ python populate_packages_prepend () {
 	do_split_packages(d, visualisation_root, '^lib(.*)\.so$', 'xmms-plugin-visualization-%s', 'XMMS Visualization plugin for %s')
 }
 
-do_stage() {
-	autotools_stage_all
-}
-
 FILES_${PN} = "${bindir}/xmms ${bindir}/xmms.sh ${libdir}/libxmms*.so.* \
                ${datadir}/applications/xmms.desktop \
 	       ${datadir}/pixmaps/xmms_mini.xpm"

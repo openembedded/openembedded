@@ -12,11 +12,6 @@ inherit autotools distutils-base
 
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
-do_stage() {
-        autotools_stage_all
-}
-
-
 FILES_${PN} += "${datadir}/dbus-1"
 
 SRC_URI[md5sum] = "7a6bbb387c1f7cd3ddd6663869df3b88"

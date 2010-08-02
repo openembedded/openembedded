@@ -35,10 +35,6 @@ EXTRA_OECONF = "--with-zlib-path=${STAGING_EXECPREFIXDIR} \
 LIBTOOL = "${HOST_SYS}-libtool"
 EXTRA_OEMAKE = "'LIBTOOL=${LIBTOOL}'"
 
-do_stage() {
-        autotools_stage_all
-}
-
 PACKAGES_DYNAMIC = "libxine-plugin-* libxine-font-*"
 
 python populate_packages_prepend () {

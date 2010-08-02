@@ -11,10 +11,6 @@ S = "${WORKDIR}/ConsoleKit-${PV}"
 
 EXTRA_OECONF += "--enable-pam-module --with-pam-module-dir=${libdir}/security"
 
-do_stage () {
-	autotools_stage_all
-}
-
 PACKAGES += "pam-plugin-ck-connector"
 FILES_${PN} += "${libdir}/ConsoleKit ${datadir}/dbus-1 ${datadir}/PolicyKit"
 FILES_${PN}-dbg += ""${libdir}/security/.debug/*.so"

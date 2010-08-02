@@ -17,6 +17,3 @@ EXTRA_OECONF = "--enable-gui --enable-test=no  --with-cuint=no"
 
 S = ${WORKDIR}/${PN}
 
-do_stage () {
-        autotools_stage_all
-}

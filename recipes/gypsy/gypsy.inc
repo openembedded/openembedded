@@ -9,11 +9,6 @@ do_configure_prepend () {
 	touch ${S}/gtk-doc.make
 }
 
-do_stage() {
-	autotools_stage_all
-}
-
-
 PACKAGES += "libgypsy libgypsy-dev libgypsy-dbg"
 
 FILES_lib${PN} = "${libdir}/lib*.so*"

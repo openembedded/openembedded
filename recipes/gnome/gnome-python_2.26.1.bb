@@ -17,10 +17,6 @@ do_configure_prepend() {
            ${S}/configure.ac
 }
 
-do_stage() {
-	autotools_stage_all
-}
-
 FILES_${PN} += "${datadir}"
 FILES_${PN}-dbg += "${libdir}/gnome-vfs-2.0/modules/.debug"
 

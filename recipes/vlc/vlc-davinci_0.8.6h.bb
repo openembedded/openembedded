@@ -51,10 +51,6 @@ do_configure() {
 	sed -i -e s:-L/usr/lib:-L${STAGING_LIBDIR}/:g vlc-config
 }
 
-do_stage() {
-	autotools_stage_all
-}
-
 RCONFLICTS_${PN} = "vlc"
 
 FILES_${PN} += "${bindir}/vlc \

@@ -9,6 +9,3 @@ SRC_URI = "http://hem.bredband.net/miko22/${P}.tar.gz       \
 
 inherit autotools pkgconfig
 
-do_stage() {
-	autotools_stage_all
-}

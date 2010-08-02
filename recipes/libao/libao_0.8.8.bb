@@ -21,12 +21,6 @@ EXTRA_OECONF = "\
   --enable-pulse \
 "
 
-do_stage() {
-	autotools_stage_all
-}
-
-
-
 PACKAGES =+ "${PN}-alsa ${PN}-alsa-dev ${PN}-pulse ${PN}-pulse-dev ${PN}-oss ${PN}-oss-dev"
 
 FILES_${PN}-alsa = "${libdir}/ao/plugins-2/libalsa*.so"

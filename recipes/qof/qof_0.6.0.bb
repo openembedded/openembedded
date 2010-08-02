@@ -12,10 +12,6 @@ inherit autotools pkgconfig
 
 PARALLEL_MAKE = ""
 
-do_stage() {
-         autotools_stage_all
-}
-
 FILES_${PN} += "/usr/share/xml"
 
 

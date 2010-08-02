@@ -17,10 +17,6 @@ do_configure() {
 	oe_runconf
 }
 
-do_stage() {
-	autotools_stage_all
-}
-
 FILES_${PN}-dev += "${libdir}/CLucene"
 
 SRC_URI[md5sum] = "ba1a8f764a2ca19c66ad907dddd88352"

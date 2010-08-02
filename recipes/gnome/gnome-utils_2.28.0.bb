@@ -15,10 +15,6 @@ do_configure_append() {
         done
 }
 
-do_stage () {
-	autotools_stage_all
-}
-
 FILES_${PN} += "${datadir}/baobab \
                 ${datadir}/gdict-1.0 \
                 ${datadir}/gnome-dictionary \

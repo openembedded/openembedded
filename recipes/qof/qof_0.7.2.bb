@@ -13,10 +13,6 @@ EXTRA_OECONF = "--disable-error-on-warning"
 
 PARALLEL_MAKE = ""
 
-do_stage() {
-         autotools_stage_all
-}
-
 FILES_${PN} += "/usr/share/xml"
 
 

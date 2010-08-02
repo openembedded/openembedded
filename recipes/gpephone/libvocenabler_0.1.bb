@@ -15,9 +15,5 @@ do_compile_prepend() {
 	done	
 }
 
-do_stage () {
-	autotools_stage_all
-}
-
 SRC_URI[md5sum] = "536cd97488c0882913c097a833cb2ca2"
 SRC_URI[sha256sum] = "748a9a5a1b2e6bf1db4cc767742acf58d836e551e56a493bd34ad759d3bb4f53"

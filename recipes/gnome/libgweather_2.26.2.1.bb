@@ -12,10 +12,6 @@ do_configure_prepend() {
 	sed -i -e 's: doc : :g' ${S}/Makefile.am
 }
 
-do_stage() {
-        autotools_stage_all
-}
-
 FILES_${PN} += "${datadir}/gnome* \
                 ${datadir}/icons"
 

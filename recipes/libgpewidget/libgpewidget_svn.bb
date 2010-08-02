@@ -15,8 +15,4 @@ S = "${WORKDIR}/${PN}"
 
 EXTRA_OECONF = "--enable-cairo"
 
-do_stage () {
-	autotools_stage_all
-}
-
 RRECOMMENDS_${PN} = "gpe-icons"

@@ -12,8 +12,3 @@ do_configure_prepend() {
   sed -i s:-Werror::g configure.ac
 }
 
-do_stage() {
-  autotools_stage_all
-}
-
-

@@ -24,10 +24,6 @@ do_configure_append() {
 	sed -i s:-I/usr/include/:-I/foo/:g */*/Makefile
 }
 
-do_stage() {
-        autotools_stage_all
-}
-
 PACKAGES += "${PN}-tools"
 
 FILES_${PN}-tools = "${bindir}"

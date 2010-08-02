@@ -23,10 +23,6 @@ do_install_append() {
 	install -m 0755 ${S}/data/icons/48x48/apps/evince.png ${D}${datadir}/pixmaps/
 }
 
-do_stage () {
-	 autotools_stage_all
-}
-
 FILES_${PN}-dbg += "${libdir}/evince/1/backends/.debug"
 
 PACKAGES =+ "evince-nautilus-extension"

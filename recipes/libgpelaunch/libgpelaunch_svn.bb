@@ -11,10 +11,6 @@ SRC_URI = "${GPE_SVN}"
 
 S = "${WORKDIR}/${PN}"
 
-do_stage() {
- autotools_stage_all
-}
-
 FILES_${PN}-dbg += "${libexecdir}/libgpelaunch/.debug"
 
 DEFAULT_PREFERENCE = "-1"

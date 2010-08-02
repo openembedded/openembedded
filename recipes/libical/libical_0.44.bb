@@ -10,9 +10,5 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/freeassociation/${P}.tar.gz \
 
 inherit autotools
 
-do_stage () {
-    autotools_stage_all
-}
-
 SRC_URI[md5sum] = "e0403c31e1ed82569325685f8c15959c"
 SRC_URI[sha256sum] = "20a4750df8f4dedd718b55117b8351989e0dfa4ad2c966a383550ed43e6a72d8"

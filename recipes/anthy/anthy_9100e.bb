@@ -23,10 +23,6 @@ inherit autotools pkgconfig
 LEAD_SONAME = "libanthy.so.0"
 RDEPENDS_anthy = "libanthy0"
 
-do_stage() {
-	autotools_stage_all
-}
-
 PACKAGES += "${PN}-el libanthy0 libanthy-dev"
 FILES_${PN}-dbg += "${libdir}/.debug"
 FILES_libanthy0 = "${libdir}/libanthy.so.*	\

@@ -14,10 +14,5 @@ acpaths=""
 
 EXTRA_OECONF="--with-arch=${TARGET_ARCH} --enable-shared --enable-static"
 
-do_stage() {
-    autotools_stage_all
-}
-
-
 SRC_URI[md5sum] = "1472cada46e2ab9f532f984de9740386"
 SRC_URI[sha256sum] = "50b574d330fecbc9faed81746a1abfcec903c264ae753ac64d4edf22c701519f"

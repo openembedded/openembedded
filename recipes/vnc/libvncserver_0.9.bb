@@ -13,10 +13,6 @@ S = "${WORKDIR}/LibVNCServer-${PV}"
 
 inherit autotools
 
-do_stage() {
-    autotools_stage_all
-}
-
 do_install_append() {
         install -d ${D}${bindir}
         install -m 0755 examples/storepasswd ${D}${bindir}

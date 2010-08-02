@@ -30,10 +30,6 @@ FILES_${PN}-dev += "\
 "
 FILES_${PN}-doc += "${datadir}/gtk-doc"
 
-do_stage () {
-autotools_stage_all
-}
-
 PACKAGES_DYNAMIC = "gnome-vfs-plugin-*"
 
 python populate_packages_prepend () {

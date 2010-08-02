@@ -29,9 +29,6 @@ PR = "${INC_PR}"
 EXTRA_OECONF += "--disable-gpg --enable-static --disable-shared"
 
 # Not sure this is needed; needs to be investigated and removed if not
-do_stage() {
-	autotools_stage_all
-}
 
 # The nogpg version isn't getting much love and has an unused variable which trips up -Werror
 do_configure_prepend() {

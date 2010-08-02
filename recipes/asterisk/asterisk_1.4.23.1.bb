@@ -94,10 +94,6 @@ pkg_postinst_prepend() {
 	chown -R asterisk:asterisk ${libdir}/asterisk ${localstatedir}/lib/asterisk ${localstatedir}/spool/asterisk ${localstatedir}/log/asterisk ${localstatedir}/run/asterisk ${sysconfdir}/asterisk
 }
 
-do_stage() {
-        autotools_stage_all
-}
-
 FILES_${PN} += "${libdir}/asterisk/modules/*"
 FILES_${PN}-dbg += "${libdir}/asterisk/modules/.debug \
                     ${localstatedir}/lib/asterisk/*/.debug"

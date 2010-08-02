@@ -15,6 +15,3 @@ do_configure_prepend() {
     rm -f ${S}/m4/vorbis.m4
 }
 
-do_stage() {
-    autotools_stage_all
-}

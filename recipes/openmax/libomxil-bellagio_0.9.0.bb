@@ -11,11 +11,6 @@ inherit autotools
 
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
-do_stage() {
-	autotools_stage_all
-}
-
-
 FILES_${PN} += "${libdir}/bellagio/*.so ${libdir}/bellagio/*.la"
 FILES_${PN}-dev += "${libdir}/bellagio/*.a"
 FILES_${PN}-dbg += "${libdir}/bellagio/.debug"

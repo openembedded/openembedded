@@ -21,10 +21,6 @@ RDEPENDS_append = ""
 INITSCRIPT_NAME = "gsmd"
 INITSCRIPT_PARAMS = "defaults 35"
 
-do_stage() {
-    autotools_stage_all
-}
-
 do_install_append() {
 	install -d ${D}/${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/gsmd ${D}/${sysconfdir}/init.d/

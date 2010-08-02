@@ -10,10 +10,6 @@ S = "${WORKDIR}/libsoup-${PV}"
 
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
-do_stage() {
-	autotools_stage_all
-}
-
 FILES_${PN} = "${libdir}/lib*.so.*"
 FILES_${PN}-dev = "${includedir}/ ${libdir}/"
 FILES_${PN}-doc = "${datadir}/"

@@ -16,10 +16,6 @@ do_install_append() {
 	install -m 0755 ${WORKDIR}/90tracker  ${D}/${sysconfdir}/X11/Xsession.d/
 }
 
-do_stage() {
-	autotools_stage_all
-}
-
 FILES_${PN} += "${datadir}/dbus-1/"
 CONFFILES_${PN} += "${sysconfdir}/X11/Xsession.d/90tracker"
 

@@ -11,10 +11,6 @@ do_compile() {
 	install -m 0755 tools/dbusxx-xml2cpp ${STAGING_BINDIR_NATIVE}
 }
 
-do_stage() {
-    autotools_stage_all
-}
-
 do_install() {
 	:
 }

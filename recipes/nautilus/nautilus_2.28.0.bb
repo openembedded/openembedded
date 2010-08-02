@@ -33,9 +33,5 @@ do_configure_append () {
 	find -name Makefile -exec sed -i '/\/usr\/bin\/orbit-idl-2/{s:/usr/bin:${STAGING_BINDIR_NATIVE}:;s:/usr/share:${STAGING_DATADIR}:g}' {} \;
 }
 
-do_stage() {
-	autotools_stage_all
-}
-
 SRC_URI[archive.md5sum] = "14d9464043848eddd0bd0d35bbe63415"
 SRC_URI[archive.sha256sum] = "3761b27da474b71194ff900e7941c005be608a00fe0ba1f216390ce1ba9cba72"

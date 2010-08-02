@@ -9,10 +9,5 @@ SRC_URI = "http://www.dtek.chalmers.se/groups/dvd/dist/libdvdread-${PV}.tar.gz"
 
 inherit autotools
 
-do_stage() {
-	autotools_stage_all
-}
-
-
 SRC_URI[md5sum] = "329401b84ad0b00aaccaad58f2fc393c"
 SRC_URI[sha256sum] = "509503979441e078866d75a628d8a6483e67737454feaa5366f609ecf2a0f5cf"

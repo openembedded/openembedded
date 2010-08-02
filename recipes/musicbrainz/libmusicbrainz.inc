@@ -12,7 +12,3 @@ inherit cmake pkgconfig
 # Fight a compiler/link bug that leaks too many c++ symbols
 TARGET_LDFLAGS += " -Wl,-rpath-link,${STAGING_DIR_NATIVE}${prefix_native}/${TARGET_SYS}/lib -ldl"
 
-do_stage() {
-	autotools_stage_all
-}
-

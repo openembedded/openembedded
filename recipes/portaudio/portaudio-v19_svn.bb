@@ -22,9 +22,5 @@ paqa_errs  patest_dither        patest_longsine     patest_pink           patest
 
 # INCLUDEPATH = ../pa_common
 
-do_stage() {
-	autotools_stage_all
-}
-
 PACKAGES += "portaudio-examples"
 FILES_portaudio-examples = "${bindir}"

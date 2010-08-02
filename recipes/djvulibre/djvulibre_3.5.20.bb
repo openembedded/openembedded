@@ -14,10 +14,6 @@ inherit qt4x11 autotools pkgconfig
 EXTRA_OECONF = " --enable-threads \
                  --with-qt=${PAMLTOPDIR} "
 
-do_stage() {
-        autotools_stage_all
-}
-
 PACKAGES =+ "libdjvulibre"
 FILES_libdjvulibre = "${libdir}/libdjvulibre.so.*"
 FILES_${PN} += "${datadir}/djvu"

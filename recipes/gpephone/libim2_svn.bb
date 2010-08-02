@@ -17,6 +17,3 @@ S = ${WORKDIR}/libim2
 
 FILES_${PN} += " ${datadir}/dbus-1"
 
-do_stage () {
-	autotools_stage_all
-}

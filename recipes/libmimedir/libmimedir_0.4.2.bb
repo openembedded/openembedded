@@ -9,11 +9,6 @@ inherit autotools pkgconfig gpe
 
 EXTRA_OECONF = "--disable-gtk-doc"
 
-do_stage() {
-    autotools_stage_all
-}
-
-
 PACKAGES += "libmimedir-utils"
 FILES_libmimedir-utils = "${bindir}"
 FILES_${PN} = "${libdir}/*.so.*"

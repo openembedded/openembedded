@@ -8,10 +8,6 @@ FILES_${PN}-dbg += "${libdir}/goffice/${PV}/plugins/*/.debug"
 
 inherit gnome pkgconfig
 
-do_stage() {
-	autotools_stage_all
-}
-
 PACKAGES_DYNAMIC = "goffice-plugin-*"
 
 python populate_packages_prepend () {

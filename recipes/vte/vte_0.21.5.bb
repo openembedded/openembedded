@@ -22,10 +22,6 @@ do_configure_prepend() {
 	echo "EXTRA_DIST = version.xml" > gtk-doc.make
 }
 
-do_stage() {
-	autotools_stage_all
-}
-
 PACKAGES =+ "libvte vte-termcap gnome-pty-helper"
 FILES_libvte = "${libdir}/*.so.*"
 FILES_gnome-pty-helper = "${libexecdir}/gnome-pty-helper"

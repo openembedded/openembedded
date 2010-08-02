@@ -16,10 +16,6 @@ S = "${WORKDIR}/${PN}-${PV}"
 
 EXTRA_OECONF = ""
 
-do_stage () {
-	autotools_stage_all
-}
-
 do_compile () {
 	oe_runmake -f GNUmakefile 
 }

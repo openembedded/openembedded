@@ -10,10 +10,6 @@ PR = "r1"
 
 inherit autotools
 
-do_stage () {
-	autotools_stage_all
-}
-
 do_install () {
 	oe_runmake DESTDIR=${D} install
 }

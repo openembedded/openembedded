@@ -17,7 +17,3 @@ do_configure_prepend() {
 	fi
 }
 
-do_stage () {
-        autotools_stage_all
-}
-

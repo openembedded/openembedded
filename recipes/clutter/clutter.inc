@@ -58,6 +58,3 @@ do_configure_prepend() {
     sed -i s:doc::g ${S}/Makefile.am
 }
 
-do_stage () {
-        autotools_stage_all
-}

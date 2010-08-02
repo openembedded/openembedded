@@ -9,10 +9,6 @@ inherit autotools pkgconfig
 # --enable-compat builds halt, reboot, shutdown tools
 EXTRA_OECONF += "--enable-compat"
 
-do_stage () {
- 	autotools_stage_all
-}
-
 # libupstart can be used for upstart event generation from other programs.
 # However it is not used by upstart itself, so package it seperately.
 PACKAGES =+ "libupstart libupstart-dev"

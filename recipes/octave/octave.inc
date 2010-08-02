@@ -28,6 +28,3 @@ PACKAGES =+ "octave-m"
 # octave-m provides matlab routines in .m file format
 FILES_${PN}-m = "${datadir}/${PN}/*"
 
-do_stage() {
-        autotools_stage_all
-}

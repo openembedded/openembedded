@@ -9,6 +9,3 @@ S = "${WORKDIR}/FS"
 
 inherit autotools pkgconfig
 
-do_stage() {
-	autotools_stage_all
-}

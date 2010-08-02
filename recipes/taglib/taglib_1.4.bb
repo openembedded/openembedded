@@ -15,10 +15,6 @@ do_postpatch() {
 }
 addtask postpatch after do_patch before do_configure
 
-do_stage() {
-	autotools_stage_all
-}
-
 PACKAGES =+ "${PN}-c"
 FILES_${PN}-dbg += "${bindir}/taglib-config"
 FILES_${PN}-c = "${libdir}/libtag_c.so.*"

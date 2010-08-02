@@ -40,10 +40,6 @@ do_configure_append() {
 	sed -i s,CONFIGDIR,'"${datadir}/ede/"', src/core/Fl_Config.cpp
 }
 
-do_stage() {
-    autotools_stage_all
-}
-
 do_install () {
 	install -d ${D}${libdir}
     oe_runmake install prefix="${D}${prefix}" \

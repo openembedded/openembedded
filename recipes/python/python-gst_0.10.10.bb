@@ -22,10 +22,6 @@ do_configure_prepend() {
     install -m 0644 ${S}/common/m4/*.m4 ${S}/m4/
 }
 
-do_stage() {
-	autotools_stage_all
-}
-
 PACKAGES =+ "${PN}-examples"
 
 FILES_${PN} += "${datadir}/gst-python"

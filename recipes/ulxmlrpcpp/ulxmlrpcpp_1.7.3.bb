@@ -15,10 +15,6 @@ do_configure_append() {
 	echo "#define ulxr_snprintf   snprintf" >>ulxmlrpcpp/ulxmlrpcpp.h
 }
 
-do_stage() {
-	autotools_stage_all
-}
-
 LEAD_SONAME = "libulxmlrpcpp.so"
 PACKAGES =+ "${PN}-examples ${PN}-contrib"
 FILES_${PN}-examples = "${bindir}/*"

@@ -13,10 +13,6 @@ do_configure_append () {
 	sed -i "s/@requirements@/alsa vorbis/" admin/pkgconfig/openal.pc
 }
 
-do_stage () {
-	autotools_stage_all
-}
-
 PACKAGES =+ "libopenal"
 
 FILES_libopenal += "${libdir}/libopenal.so.*"

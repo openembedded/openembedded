@@ -54,10 +54,6 @@ LEAD_SONAME = "libpam.so.*"
 # This is crude - the modules maybe should each have independent ipks
 FILES_${PN} += "/usr/lib/security/pam_*.so /usr/lib/security/pam_filter/*"
 
-do_stage() {
-	autotools_stage_all
-}
-
 # An attempt to build on uclibc will fail, causing annoyance,
 # so force the package to be skipped here (this will cause a
 # 'nothing provides' error)

@@ -11,6 +11,3 @@ inherit autotools
 SRC_URI = "svn://svn.minisip.org/minisip/trunk;module=libmnetutil"
 S = "${WORKDIR}/libmnetutil"
 
-do_stage() {
-	autotools_stage_all
-}

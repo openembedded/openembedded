@@ -24,10 +24,6 @@ EXTRA_OECONF = " \
 
 inherit autotools pkgconfig
 
-do_stage () {
-	autotools_stage_all
-}
-
 do_install_append () {
         install -d ${D}/etc/default/volatiles
         install -m 0644 ${WORKDIR}/99_networkmanager ${D}/etc/default/volatiles

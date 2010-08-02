@@ -10,8 +10,3 @@ SRC_URI = "http://releases.chipx86.com/libsexy/${PN}/${PN}-${PV}.tar.gz \
 
 inherit autotools pkgconfig
 
-do_stage() {
-autotools_stage_all
-}
-
-

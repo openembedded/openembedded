@@ -10,6 +10,3 @@ inherit autotools pkgconfig
 SRC_URI = "http://www.autistici.org/bakunin/libmrss/libmrss-${PV}.tar.gz \
           "
 
-do_stage() {
-    autotools_stage_all
-}

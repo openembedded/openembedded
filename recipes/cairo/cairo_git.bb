@@ -23,6 +23,3 @@ do_compile_append() {
 	cd ${S}/perf ; oe_runmake
 }
 
-do_stage () {
- 	autotools_stage_all
-}

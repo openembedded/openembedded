@@ -24,11 +24,5 @@ FILES_libgphotoport = "${libdir}/libgphoto2_port.so.*"
 FILES_${PN} += "${libdir}/udev/*"
 FILES_${PN}-dbg += "${libdir}/*/*/.debug"
 
-do_stage() {
-        autotools_stage_all
-}
-
-
-
 SRC_URI[md5sum] = "714859617c0b616855f6906280010c5d"
 SRC_URI[sha256sum] = "f319655b272186ad76ab73317b7e8c5e3b87d51c1265ce676f02e8c312745226"

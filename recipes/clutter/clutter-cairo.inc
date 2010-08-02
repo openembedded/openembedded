@@ -9,7 +9,3 @@ FILES_${PN}-examples = "${bindir}/flowers ${bindir}/clock"
 
 inherit autotools pkgconfig
 
-do_stage () {
-        autotools_stage_all
-}
-

@@ -14,6 +14,3 @@ do_compile_append() {
 
 }
 
-do_stage () {
-	autotools_stage_all
-}

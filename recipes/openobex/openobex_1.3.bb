@@ -16,10 +16,6 @@ inherit autotools binconfig pkgconfig
 EXTRA_OECONF = "--enable-apps --enable-syslog --enable-dump \
                 --with-usb=${STAGING_LIBDIR}/.. --with-bluez=${STAGING_LIBDIR}/.."
 
-do_stage() {
-	autotools_stage_all
-}
-
 # how to stop shlibrename from renaming -apps?
 PACKAGES += "openobex-apps"
 FILES_${PN} = "${libdir}/lib*.so.*"

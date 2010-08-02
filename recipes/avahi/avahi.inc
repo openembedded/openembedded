@@ -110,6 +110,3 @@ do_install() {
 	install ${WORKDIR}/99avahi-autoipd ${D}${sysconfdir}/udhcpc.d
 }
 
-do_stage() {
-	autotools_stage_all
-}

@@ -12,10 +12,6 @@ SRC_URI = "${GPEPHONE_SVN}"
 
 S = "${WORKDIR}/${PN}"
 
-do_stage () {
-        autotools_stage_all
-}
-
 DEFAULT_PREFERENCE = "-1"
 
 LDFLAGS += " -L${STAGING_LIBDIR}"

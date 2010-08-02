@@ -12,10 +12,6 @@ inherit gpephone pkgconfig autotools
 # for a better solution: "patches accepted"
 SRC_URI_append_angstrom = " file://gemfilechooser-NULL-callback.patch"
 
-do_stage () {
-	autotools_stage_all
-}
-
 SRC_URI[md5sum] = "95d269ad7e7cb7d3032498ad2e47643b"
 SRC_URI[sha256sum] = "b8a1da871aa34362caf0c76dcbd3df42aef7313a4ed08f38eddcb159b80302c5"
 # CHECKSUMS.INI MISMATCH: I got this:

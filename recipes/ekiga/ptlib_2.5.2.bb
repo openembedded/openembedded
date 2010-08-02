@@ -21,13 +21,5 @@ do_compile_append() {
 
 FILES_${PN} += "${libdir}/ptlib-${PV}/*/*/*.so"
 
-do_stage() {
-	autotools_stage_all
-}
-
-
-
-
-
 SRC_URI[md5sum] = "7d8dcd999827d51ad4a15afe74aad181"
 SRC_URI[sha256sum] = "c99897464bd07c73dbb72095a9806ddc0c26141230e34b181d7e742e78259e4b"

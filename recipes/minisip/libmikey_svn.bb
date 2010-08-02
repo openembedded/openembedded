@@ -11,7 +11,3 @@ inherit autotools
 SRC_URI = "svn://svn.minisip.org/minisip/trunk;module=libmikey"
 S = "${WORKDIR}/libmikey"
 
-do_stage() {
-	autotools_stage_all
-}
-

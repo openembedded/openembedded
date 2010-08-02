@@ -34,11 +34,6 @@ FILES_libwvstreams-base-dbg = "${libdir}/.debug/libwvutils.so.*"
 FILES_libwvstreams-extras     = "${libdir}/libwvbase.so.* ${libdir}/libwvstreams.so.*"
 FILES_libwvstreams-extras-dbg = "${libdir}/.debug/libwvbase.so.* ${libdir}/.debug/libwvstreams.so.*"
 
-
-do_stage() {
-    autotools_stage_all
-}
-
 SRC_URI[archive.md5sum] = "103230cb9926cb8f3f4d8dc8584f3b9c"
 SRC_URI[archive.sha256sum] = "8fa45a6bfe4d6ac3d9a457543844873090d0c7da817991ac0cd547732f475a14"
 SRC_URI[patch22.md5sum] = "58e1df79ce031b256417ba5992cce833"

@@ -26,10 +26,6 @@ do_configure_prepend() {
         sed -i -e 's:	doc	::g' Makefile.am
 }
 
-do_stage () {
-	autotools_stage_all
-}
-
 PACKAGES_DYNAMIC = "gnome-vfs-plugin-*"
 
 python populate_packages_prepend () {

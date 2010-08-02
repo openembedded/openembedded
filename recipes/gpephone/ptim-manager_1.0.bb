@@ -21,10 +21,5 @@ do_install_append () {
 	install -m 644 ${S}/conf/imconfig ${D}/${libdir}/gtk-2.0/*/immodules/ptim
 }
 
-
-do_stage () {
-    autotools_stage_all
-}
-
 SRC_URI[md5sum] = "cafd1d222ae30fa496e299950de19ae7"
 SRC_URI[sha256sum] = "e8e5144314fd2cd13722835338105c0236bf3da4dbf383a6ce052574c1ba7230"

@@ -32,10 +32,6 @@ do_configure_prepend() {
         sed -i -e s:0\.1\.5:0\.1\.6:g configure.ac
 }
 
-do_stage () {
-        autotools_stage_all
-}
-
 FILES_${PN} += "${libdir}/packagekit-backend/*.so ${datadir}/dbus-1/system-services/"
 FILES_${PN}-dbg += "${libdir}/packagekit-backend/.debug/*.so "
 

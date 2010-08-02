@@ -8,7 +8,3 @@ PR = "r0"
 SRC_URI = "git://anongit.freedesktop.org/xcb/proto;protocol=git"
 S = "${WORKDIR}/git"
 
-do_stage() {
-	autotools_stage_all
-}
-

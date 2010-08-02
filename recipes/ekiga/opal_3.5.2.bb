@@ -25,10 +25,5 @@ do_configure() {
 FILES_${PN} += "${libdir}/opal-${PV}/*/*.so ${libdir}/opal-${PV}/*/*/*.so"
 FILES_${PN}-dbg += "${libdir}/opal-${PV}/*/.debug ${libdir}/opal-${PV}/*/*/.debug"
 
-do_stage() {
-	autotools_stage_all
-}
-
-
 SRC_URI[md5sum] = "7a1e7424b346ee0a0b719217a1081cfd"
 SRC_URI[sha256sum] = "c11daf4e0baf1bc70d30411944f9a3238d61e3c1972c33443dbe0cb078cfe2d7"

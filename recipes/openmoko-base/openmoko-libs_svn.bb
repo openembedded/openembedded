@@ -7,10 +7,6 @@ PR = "r0"
 
 inherit openmoko
 
-do_stage() {
-	autotools_stage_all
-}
-
 PACKAGES =+ "\
   libmokojournal libmokojournal-dev libmokojournal-dbg \
   libmokogsmd libmokogsmd-dev libmokogsmd-dbg \

@@ -48,11 +48,6 @@ do_configure() {
 	sed -i -e s:'$(MOC) $(DEFS) $(CPPFLAGS)':'$(MOC) $(DEFS)'\ -I${S}/include\ -DSYS_LINUX:g ${S}/modules/gui/qt4/Makefile
 }
 
-do_stage() {
-	autotools_stage_all
-}
-
-
 FILES_${PN} += "${bindir}/vlc \
 	${datadir}/applications \
 	${datadir}/vlc/ \

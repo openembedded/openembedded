@@ -18,6 +18,3 @@ FILES_${PN} += " ${libdir}/gtk-2.0/*/immodules/ptim/helper/*.so ${libdir}/gtk-2.
 FILES_${PN}-dbg += "${libdir}/gtk-2.0/*/immodules/ptim/helper/.debug/*.so"
 FILES_${PN}-dev += "${libdir}/gtk-2.0/*/immodules/ptim/helper/*.la"
 
-do_stage () {
-    autotools_stage_all
-}

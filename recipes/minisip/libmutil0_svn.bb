@@ -11,6 +11,3 @@ inherit autotools lib_package
 SRC_URI = "svn://svn.minisip.org/minisip/trunk;module=libmutil"
 S = "${WORKDIR}/libmutil"
 
-do_stage() {
-	autotools_stage_all
-}

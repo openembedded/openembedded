@@ -15,10 +15,6 @@ do_install_append() {
 	install -m 0755 ${S}/player/.libs/swfplay ${D}/${bindir}
 }
 
-do_stage() {
-	autotools_stage_all
-}
-
 PACKAGES =+ "libswfdecgtk libswfdec"
 FILES_libswfdec = "${libdir}/libswfdec-0.8.so.*"
 FILES_libswfdecgtk = "${libdir}/libswfdec-gtk-0.8.so.*"

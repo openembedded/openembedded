@@ -22,10 +22,6 @@ do_configure_append() {
         find ${S} -name Makefile | xargs sed -i 's|ORBIT_IDL =.*|ORBIT_IDL = ${ORBIT_IDL}|'
 }
 
-do_stage() {
-	autotools_stage_all
-}
-
 FILES_${PN} += "${datadir}/gtkhtml-3.8"
 
 

@@ -16,10 +16,6 @@ do_install_append() {
 	rm ${D}${libdir}/mozilla/plugins/*.la
 }
 
-do_stage() {
-	autotools_stage_all
-}
-
 FILES_${PN} += "${libdir}/mozilla/plugins/*.so"
 FILES_${PN}-dbg += "${libdir}/mozilla/plugins/.debug"
 

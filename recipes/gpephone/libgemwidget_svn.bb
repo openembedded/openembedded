@@ -14,6 +14,3 @@ S = ${WORKDIR}/${PN}
 
 FILES_${PN} += "${datadir}/gem"
 
-do_stage () {
-	autotools_stage_all
-}

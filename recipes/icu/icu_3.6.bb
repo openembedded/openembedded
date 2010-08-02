@@ -34,10 +34,6 @@ FILES_libiculx = "${libdir}/libiculx.so.*"
 FILES_libicutu = "${libdir}/libicutu.so.*"
 FILES_libicuio = "${libdir}/libicuio.so.*"
 
-do_stage() {
-        autotools_stage_all
-}
-
 SYSROOT_PREPROCESS_FUNCS += "icu_sysroot_preprocess"
 
 # We need to append this so it runs *after* binconfig's preprocess function

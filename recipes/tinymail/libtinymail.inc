@@ -48,7 +48,3 @@ FILES_tinymail-camel-lite-dev +=  "${libdir}/libcamel-lite*.so \
 				   ${libdir}/camel-lite-1.2/camel-providers/*.a "
 FILES_tinymail-camel-lite-dbg +=  "${libdir}/camel-lite-1.2/camel-providers/.debug"
 
-
-do_stage () {
-	autotools_stage_all
-}

@@ -12,10 +12,6 @@ inherit autotools binconfig
 
 EXTRA_OECONF = "--disable-isoc --with-openssl=${STAGING_LIBDIR}/.."
 
-do_stage() {
-	autotools_stage_all
-}
-
 FILES_libesmtp_append = " ${libdir}/esmtp-plugins/*.so"
 FILES_${PN}-dbg += "${libdir}/esmtp-plugins/.debug/"
 

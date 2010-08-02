@@ -13,10 +13,6 @@ S = "${WORKDIR}/PolicyKit-gnome-${PV}"
 
 inherit autotools pkgconfig
 
-do_stage() {
-        autotools_stage_all
-}
-
 FILES_${PN} += " ${datadir}/dbus-1 \
                  ${datadir}/PolicyKit \
                "

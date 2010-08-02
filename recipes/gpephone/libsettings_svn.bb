@@ -18,6 +18,3 @@ FILES_${PN} += " ${libdir}/*.so.*"
 FILES_${PN}-dbg += "${libdir}/.debug/*.so.*"
 FILES_${PN}-dev += "${includedir} ${libdir}/*.la ${libdir}/*.so"
 
-do_stage () {
-    autotools_stage_all
-}

@@ -18,9 +18,5 @@ do_configure() {
 	oe_runconf
 }
 
-do_stage() {
-	autotools_stage_all
-}
-
 SRC_URI[md5sum] = "8e9cc71a1303b67b3278fbeab9799f2e"
 SRC_URI[sha256sum] = "5768fcc4d38fa6f811b0a89e2ef450d0f52688ff9263e548819adb096fbfc9c3"

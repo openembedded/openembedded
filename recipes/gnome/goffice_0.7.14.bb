@@ -10,10 +10,6 @@ inherit gnome pkgconfig
 SRC_URI += " file://c99math.patch \
              file://nodolt.patch "
 
-do_stage() {
-	autotools_stage_all
-}
-
 FILES_${PN}-dbg += "${libdir}/goffice/${PV}/plugins/*/.debug"
 
 RRECOMMENDS_${PN} = " \
