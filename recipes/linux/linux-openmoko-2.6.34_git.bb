@@ -4,7 +4,7 @@ require linux-openmoko.inc
 KERNEL_RELEASE="2.6.34"
 
 SRCREV = "3f6725d43021d2d7597027e36020df5b44d0667e"
-OEV = "oe4.4"
+OEV = "oe4.6"
 PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCPV}"
 
 SRC_URI = "\
@@ -24,11 +24,14 @@ SRC_URI = "\
   file://0006-Debug-statements-for-testing.patch \
   file://0007-Fix-claim-of-2D-register-resource.patch \
   file://0008-Use-unlocked_ioctl-rather-than-ioctl.patch \
+  file://0001-glamo-display-Enable-FIFO-stage-for-the-LCD-engine-s.patch \
 # patches from Radek Polak used in qtmoko
   file://0001-accels.patch.patch \
   file://0002-usbhost.patch.patch \
   file://0003-ar6000_delay.patch.patch \
   file://0004-save_regs.patch.patch \
+# sysfs node path fix
+  file://0001-mach-gta02-fix-gsm-power_on-sysfs-node-path.patch \
   file://defconfig \
 "
 
