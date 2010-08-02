@@ -2,7 +2,7 @@ require xorg-xserver-common.inc
 
 DESCRIPTION = "the X.Org X server"
 DEPENDS += "pixman libpciaccess openssl dri2proto glproto xorg-minimal-fonts font-util-native"
-PV = "1.8.99.904"
+PV = "1.8.99.905"
 PR = "${INC_PR}.4"
 PR_append = "+gitr${SRCPV}"
 PE = "2"
@@ -10,7 +10,7 @@ PE = "2"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_shr = "1"
 
-SRCREV = "2307ab5bc9365ebbe04568edb7c7620a23689b70"
+SRCREV = "7e0575baf14ec4a89492fd2780f9ab5b9244afbd"
 SRC_URI = "git://anongit.freedesktop.org/xorg/xserver;protocol=git;branch=master \
            file://dolt-fix-1.7.0.patch \
            file://randr-support-1.7.0.patch \
