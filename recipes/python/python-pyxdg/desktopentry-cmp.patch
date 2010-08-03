@@ -1,0 +1,15 @@
+This method definition causes an infinite recursion, and has been dropped
+from later releases.
+
+--- pyxdg-0.15/xdg/DesktopEntry.py.orig	2010-08-03 03:01:34.000000000 +0200
++++ pyxdg-0.15/xdg/DesktopEntry.py	2010-08-03 03:01:46.000000000 +0200
+@@ -29,9 +29,6 @@
+ 	def __str__(self):
+ 		return self.getName()
+ 
+-	def __cmp__(self, other):
+-		return cmp(self, other)
+-
+ 	def parse(self, file):
+ 		IniFile.parse(self, file, ["Desktop Entry", "KDE Desktop Entry"])
+ 
