@@ -175,6 +175,8 @@ case `module_id` in
                  if [ "$XSERVER" = "/usr/bin/Xorg" ];then
                       ARGS=""
                  fi;; #TODO: handle kdrive
+        "Xilinx Virtex"*)
+                ARGS="$ARGS $PPM" ;;
         *)
                 # It is a device we do not know about, in which case we force
                 # kdrive to use the current framebuffer geometry -- otherwise
