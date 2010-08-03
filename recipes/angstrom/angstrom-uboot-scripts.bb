@@ -1,6 +1,6 @@
 DESCRIPTION = "Various uboot scripts"
 
-PR = "r6"
+PR = "r7"
 
 DEPENDS = "u-boot-mkimage-native"
 
