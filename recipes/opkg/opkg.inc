@@ -4,7 +4,7 @@ SECTION = "base"
 LICENSE = "GPLv2"
 SRCREV = ${OPKG_SRCREV}
 PV = "0.1.8+svnr${SRCPV}"
-INC_PR = "r0"
+INC_PR = "r1"
 
 SRC_URI = "svn://opkg.googlecode.com/svn;module=trunk;proto=http \
 	   file://configure \
