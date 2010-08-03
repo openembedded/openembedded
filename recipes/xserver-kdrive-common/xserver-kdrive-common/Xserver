@@ -34,7 +34,11 @@ module_id() {
     # grep "Module ID" /proc/hal/assets | sed "s/.*://"
     ## used to read from /proc/hal/model, but that is removed in 2.6
     # echo ' iPAQ' `cat /proc/hal/model`
-    awk 'BEGIN { FS=": " } /Hardware/ { print $2 } ' </proc/cpuinfo
+    id=`awk 'BEGIN { FS=": " } /Hardware/ { print $2 } ' </proc/cpuinfo`
+    if [ -n "$id" ]; then
+        id=`awk 'BEGIN { FS=": " } /platform/ { print $2 } ' </proc/cpuinfo`
+    fi
+    echo -n "$id"
 }
 
 export USER=root
