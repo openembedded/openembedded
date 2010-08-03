@@ -1,0 +1,14 @@
+Index: xserver-common-1.13/X11/xserver-common
+===================================================================
+--- xserver-common-1.13.orig/X11/xserver-common
++++ xserver-common-1.13/X11/xserver-common
+@@ -181,6 +181,9 @@ else
+             # this is to rotate X display properly, tested with display TX09D71VM1CCA
+             ronetix*pm9261*  | ronetix*pm9263*)
+                  ARGS="$ARGS -screen 240/54x320/81@90x16" ;;
++        "Xilinx Virtex"*)
++            DPI="96"
++            ARGS="$ARGS" ;;
+         # This is a fallback for PCs
+         "")
+             if [ -f $BINDIR/Xvesa ]; then
