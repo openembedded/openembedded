@@ -4,7 +4,8 @@ LICENSE = "public domain"
 
 SRC_URI = "ftp://invisible-island.net/byacc/byacc-${PV}.tgz"
 EXTRA_OECONF += "--program-transform-name='s,^,b,'"
-S = "${WORKDIR}/byacc-${PV}"
+
+BBCLASSEXTEND = "native"
 
 inherit autotools
 
