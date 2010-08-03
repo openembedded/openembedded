@@ -1,0 +1,21 @@
+commit 752db9abcce80fc2713e9892444894a86c7f59a0
+Author: Yann Dirson <ydirson@altern.org>
+Date:   Tue Aug 3 23:30:11 2010 +0200
+
+    Make slider less high to allow unlocking screen in shr.
+    
+    Signed-off-by: Yann Dirson <ydirson@altern.org>
+
+diff --git a/literki.conf b/literki.conf
+index 3c47bda..ae4219f 100644
+--- a/literki.conf
++++ b/literki.conf
+@@ -27,7 +27,7 @@ switcher_width 400
+ switcher_height 230
+ 
+ slider_width 240
+-slider_height 80
++slider_height 50
+ landscape_slider_width 240
+ landscape_slider_height 80
+ slider_dist 50
