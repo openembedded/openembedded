@@ -1,7 +1,7 @@
 require linux.inc
 require linux-openmoko.inc
 
-KERNEL_RELEASE="2.6.34"
+KERNEL_RELEASE="2.6.34.2"
 
 SRCREV = "3f6725d43021d2d7597027e36020df5b44d0667e"
 OEV = "oe4.6"
@@ -9,12 +9,13 @@ PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCPV}"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=om-gta02-2.6.34 \
+# Latest stablepatch
+  ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${KERNEL_RELEASE}.bz2;apply=yes;name=stablepatch \
 # build fix
   file://wm8753-fix-build-with-gcc-4.4.2-which-works-ok-with-.patch \
+  file://0001-glamo-core-move-glamo_engine_reg_set-definition-outs.patch \
 # fix for lost touchscreen https://docs.openmoko.org/trac/ticket/2328
   file://touchscreen_ignoreunexpectedintr34.patch \
-# fix runtime issue when built with gcc-4.5
-  file://use-noclone-attribute-for-naked.patch \
 # patches from Thomas White's gdrm-for-merging branch
   file://0001-DRM-for-platform-devices.patch \
   file://0002-Glamo-DRM-and-KMS-driver.patch \
@@ -34,6 +35,9 @@ SRC_URI = "\
   file://0001-mach-gta02-fix-gsm-power_on-sysfs-node-path.patch \
   file://defconfig \
 "
+
+SRC_URI[stablepatch.md5sum] = "6ce06c43ddb9cd557cbbd25d4e0d0033"
+SRC_URI[stablepatch.sha256sum] = "7dda0d094a3daccb9b51e33f074efa10e3e4f2fa1489194b3564bbb93b86a567"
 
 S = "${WORKDIR}/git"
 
