@@ -210,12 +210,7 @@ FILES_${PN}-doc = "${datadir}/perl/${PV}/*/*.txt \
 
 RPROVIDES_perl-lib = "perl-lib"
 
-def all_perl_packages(d):
-    depchains = (d.getVar("DEPCHAIN_POST", True) or "").split()
-    blacklist = ["perl-modules", "perl-misc", "perl-pod", "perl-doc"]
-    for pkg in d.getVar("PACKAGES", True).split():
-        if not pkg in blacklist and not any(pkg.endswith(post) for post in depchains):
-            yield pkg
+require perl.inc
 
 # Create a perl-modules package recommending all the other perl
 # packages (actually the non modules packages and not created too)
