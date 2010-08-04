@@ -5,20 +5,20 @@ SECTION = "libs"
 PROVIDES = "openobex-apps"
 DEPENDS = "virtual/libusb0 bluez-libs"
 LICENSE = "GPLv2/LGPLv2.1"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://www.kernel.org/pub/linux/bluetooth/openobex-${PV}.tar.gz \
            file://disable-cable-test.patch \
            file://libusb_crosscompile_check.patch"
 
-inherit autotools_stage binconfig pkgconfig
+inherit autotools binconfig pkgconfig
 
 EXTRA_OECONF = "--enable-apps --enable-syslog --enable-dump \
                 --with-usb=${STAGING_LIBDIR}/.. --with-bluez=${STAGING_LIBDIR}/.."
 
-do_stage_append() {
-	install -d ${STAGING_DATADIR}/aclocal
-	install -m 0644 ${S}/openobex.m4 ${STAGING_DATADIR}/aclocal
+do_install_append() {
+	install -d ${D}${datadir}/aclocal
+	install -m 0644 ${S}/openobex.m4 ${D}${datadir}/aclocal
 }
 
 PACKAGES += "openobex-apps"
