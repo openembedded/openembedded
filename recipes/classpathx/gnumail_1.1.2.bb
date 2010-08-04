@@ -12,6 +12,9 @@ inherit java-library autotools
 S = "${WORKDIR}/mail-${PV}"
 
 DEPENDS = "fastjar-native gnujaf inetlib"
+DEPENDS_virtclass-native = "fastjar-native gnujaf-native inetlib-native"
+
+PR = "r1"
 
 export JAVAC = "${STAGING_BINDIR_NATIVE}/javac"
 export JAVA = "${STAGING_BINDIR_NATIVE}/java"
@@ -43,3 +46,6 @@ do_stage() {
 
 SRC_URI[md5sum] = "0a94ff4328ceb6a4131be96946976a33"
 SRC_URI[sha256sum] = "5eb09597a8f81bfc943206e3e0f45b963ba605a646051c353374f1b475bb9f04"
+
+NATIVE_INSTALL_WORKS = "1"
+BBCLASSEXTEND = "native"
