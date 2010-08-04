@@ -128,7 +128,6 @@ SRC_URI = "git://arago-project.org/git/people/sriram/ti-psp-omap.git;protocol=gi
            file://cam/0069-mt9t112-Fix-pll-p-dividers-abstraction.patch \
            file://cam/0070-mt9t112-Adjust-50-60Hz-flickering-settings.patch \
            file://cam/0071-mt9t112-Trigger-autofocus-at-the-end-of-context-swit.patch \
-           file://cam/0001-omap3beagle-Partial-revert-HACK-try-to-poweron-stuff.patch \
            file://cam/0002-omap3beagle-camera-Fix-dual-sensor-registration.patch \
            file://cam/0003-mt9v113-Fix-State-variable-handling.patch \
            file://0001-BeagleBoard-Adjust-USER-button-pin-for-xM.patch \
