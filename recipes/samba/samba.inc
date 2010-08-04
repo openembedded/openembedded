@@ -18,6 +18,9 @@ FILES_${PN}     += "${libdir}/vfs/*.so ${libdir}/charset/*.so ${libdir}/*.dat \
 FILES_${PN}-dbg += "${libdir}/vfs/.debug/*.so ${libdir}/charset/.debug/*.so \
                     ${libdir}/auth/.debug/*.so ${libdir}/security/.debug/*.so"
 
+SAMBAMMAP = "no"
+SAMBAMMAP_libc-glibc = "yes"
+
 # The file system settings --foodir=dirfoo and overridden unconditionally
 # in the samba config by --with-foodir=dirfoo - even if the --with is not
 # specified!  Fix that here.  Set the privatedir to /etc/samba/private.
@@ -33,7 +36,9 @@ EXTRA_OECONF='--disable-cups \
               --with-libdir=${libdir} \
               --with-mandir=${mandir} \
               --with-swatdir=${datadir}/swat \
-              samba_cv_struct_timespec=yes'
+              --with-aio-support \
+              samba_cv_struct_timespec=yes \
+              libreplace_cv_HAVE_MMAP=${SAMBAMMAP}'
 
 INITSCRIPT_NAME = "samba"
 # No dependencies, goes in at level 20 (NOTE: take care with the
