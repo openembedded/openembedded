@@ -4,6 +4,6 @@ AUTHOR = "Jeff Johnson"
 LICENSE = "MIT"
 SECTION = "libs"
 
-S = "${WORKDIR}/popt-${PV}"
-FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/popt-${PV}"
+INC_PR = "r3"
 
+inherit autotools gettext
