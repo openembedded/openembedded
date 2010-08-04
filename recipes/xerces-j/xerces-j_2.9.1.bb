@@ -12,7 +12,10 @@ inherit java-library
 JPN = "libxerces2-java"
 
 DEPENDS = "fastjar-native jaxp1.3 xml-commons-resolver1.1"
+DEPENDS_virtclass-native = "fastjar-native jaxp1.3-native xml-commons-resolver1.1-native"
+
 RDEPENDS_${PN} = "libjaxp1.3-java libxml-commons-resolver1.1-java"
+RDEPENDS_${PN}_virtclass-native = ""
 
 do_unpackpost() {
   find src -exec \
@@ -47,3 +50,6 @@ do_compile() {
 
 SRC_URI[md5sum] = "e340cba4a2abf4f0f833488380821153"
 SRC_URI[sha256sum] = "13af0062a72a4a0d541ca5336391eafa4d580258cacf4a5e062ea584ca950592"
+
+NATIVE_INSTALL_WORKS = "1"
+BBCLASSEXTEND = "native"
