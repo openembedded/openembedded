@@ -1,5 +1,7 @@
 SRC_URI = "http://divmod.org/trac/attachment/wiki/SoftwareReleases/${REALPN}-${PV}.tar.gz?format=raw"
 
+INC_PR = "r0"
+
 DEPENDS += "python-twisted-native"
 
 do_unpack2() {

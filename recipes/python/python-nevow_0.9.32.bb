@@ -5,6 +5,8 @@ REALPN = "Nevow"
 
 require divmod.inc
 
+PR = "${INC_PR}.1"
+
 FILES_${PN} += "${datadir}"
 DEPENDS += "python-twisted-native"
 
