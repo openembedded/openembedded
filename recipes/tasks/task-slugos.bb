@@ -133,7 +133,6 @@ RDEPENDS_${PN} += "\
         busybox initscripts-slugos slugos-init \
         update-modules sysvinit udev \
 	module-init-tools modutils-initscripts \
-        opkg-collateral ${IPKG_VARIANT} \
 	libgcc \
 	beep \
 	util-linux-mount \

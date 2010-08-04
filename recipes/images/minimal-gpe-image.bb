@@ -17,7 +17,6 @@ IMAGE_INSTALL = "\
     matchbox-wm \
     gpe-terminal \
     angstrom-feed-configs \
-    opkg opkg-collateral \
     ${SPLASH} \
     "
 

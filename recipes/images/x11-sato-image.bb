@@ -1,5 +1,4 @@
 DISTRO_SSH_DAEMON ?= "dropbear"
-DISTRO_PACKAGE_MANAGER ?= "opkg opkg-collateral"
 
 XSERVER ?= "xserver-kdrive-fbdev"
 
@@ -8,7 +7,6 @@ IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
 IMAGE_INSTALL = "\
 	task-base-extended \
 	${DISTRO_SSH_DAEMON} \
-	${DISTRO_PACKAGE_MANAGER} \
 	pointercal \
 	matchbox-wm \
 	matchbox-keyboard matchbox-keyboard-applet matchbox-keyboard-im \

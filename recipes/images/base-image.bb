@@ -20,9 +20,6 @@ IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
 
 DISTRO_SSH_DAEMON ?= "dropbear"
 
-IPKG_VARIANT ?= "opkg"
-DISTRO_PACKAGE_MANAGER ?= "${IPKG_VARIANT}"
-
 # FIXME: We need a distro-indendent way of specifying feed configs.
 # Once the RFC for the DISTRO_FEED_CONFIGS variable name is approved,
 # we can remove this default definition and set it in the distro config.
@@ -31,7 +28,6 @@ DISTRO_FEED_CONFIGS ?= "${ANGSTROM_FEED_CONFIGS}"
 DEPENDS = "\
 	task-boot \
 	${DISTRO_SSH_DAEMON} \
-	${DISTRO_PACKAGE_MANAGER} \
 	${DISTRO_FEED_CONFIGS} \
 	${@base_contains('MACHINE_FEATURES', 'ext2', 'task-base-ext2', '', d)} \
 	${@base_contains('MACHINE_FEATURES', 'usbhost', 'task-base-usbhost', '', d)} \
@@ -40,7 +36,6 @@ DEPENDS = "\
 IMAGE_INSTALL = "\
 	task-boot \
 	${DISTRO_SSH_DAEMON} \
-	${DISTRO_PACKAGE_MANAGER} \
 	${DISTRO_FEED_CONFIGS} \
 	${@base_contains('MACHINE_FEATURES', 'ext2', 'task-base-ext2', '', d)} \
 	${@base_contains('MACHINE_FEATURES', 'usbhost', 'task-base-usbhost', '', d)} \
