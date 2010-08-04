@@ -5,7 +5,8 @@ PRIORITY = "optional"
 LICENSE = "Classpath"
 PBN = "classpath"
 
-DEPENDS = "virtual/javac-native fastjar-native zip-native gmp antlr-native"
+DEPENDS = "virtual/javac-native fastjar-native zip-native gmp antlr-native gtk+ gconf libxtst"
+
 RPROVIDES_${PN} = ""
 
 RDEPENDS_${PN} = "${PBN}-common (>= ${PV})"
@@ -17,7 +18,6 @@ RPROVIDES_${PN}-common = "${PBN}-common"
 RPROVIDES_${PN}-gtk = "${PBN}-awt"
 
 SRC_URI = "${GNU_MIRROR}/classpath/classpath-${PV}.tar.gz"
-	  
 
 S = "${WORKDIR}/${PBN}-${PV}"
 
@@ -31,13 +31,24 @@ EXTRA_OECONF = "\
   --with-vm=java \
   --disable-Werror \
   --with-antlr-jar=${STAGING_DATADIR_JAVA_NATIVE}/antlr.jar \
+  --disable-alsa \
+  --disable-dssi \
+  --disable-qt4-peer \
+  --disable-plugin \
+  --enable-gconf-peer \
+  --enable-gtk-peer \
+  --enable-local-sockets \
+  --with-vm=java \
   "
 
+DEPENDS += "gtk+ gconf libxtst"
+
+EXTRA_OECONF += "\
+               "
 inherit autotools java
 
 do_configure_prepend () {
-
-        cp ${STAGING_DATADIR_NATIVE}/gettext/config.rpath ${S}
+  cp ${STAGING_DATADIR_NATIVE}/gettext/config.rpath ${S}
 }
 	
 

@@ -13,21 +13,7 @@ SRC_URI += "\
   file://toolwrapper-exithook.patch \
   "
 
-PR = "r10"
-
-DEPENDS += "gtk+ gconf libxtst"
-
-EXTRA_OECONF += "\
-                --disable-alsa \
-                --disable-dssi \
-                --disable-qt4-peer \
-                --disable-plugin \
-                --enable-gconf-peer \
-                --enable-gtk-peer \
-                --enable-local-sockets \
-                --with-vm=java \
-               "
-
+PR = "r11"
 
 SRC_URI[md5sum] = "6a35347901ace03c31cc49751b338f31"
 SRC_URI[sha256sum] = "001fee5ad3ddd043783d59593153510f09064b0d9b5aea82f535266f62f02db4"
