@@ -23,3 +23,4 @@ IMAGE_INSTALL += " \
 export IMAGE_BASENAME = "beagleboard-test-image"
 
 EXTRA_IMAGEDEPENDS += "x-load u-boot virtual/kernel"
+IMAGE_FSTYPES += "ext2.gz"
