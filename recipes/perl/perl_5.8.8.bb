@@ -210,11 +210,18 @@ FILES_${PN}-doc = "${datadir}/perl/${PV}/*/*.txt \
 
 RPROVIDES_perl-lib = "perl-lib"
 
+def all_perl_packages(d):
+    depchains = (d.getVar("DEPCHAIN_POST", True) or "").split()
+    blacklist = ["perl-modules", "perl-misc", "perl-pod", "perl-doc"]
+    for pkg in d.getVar("PACKAGES", True).split():
+        if not pkg in blacklist and not any(pkg.endswith(post) for post in depchains):
+            yield pkg
+
 # Create a perl-modules package recommending all the other perl
 # packages (actually the non modules packages and not created too)
 ALLOW_EMPTY_perl-modules = "1"
 PACKAGES_append = " perl-modules "
-RRECOMMENDS_perl-modules = "${@bb.data.getVar('PACKAGES', d, 1).replace('perl-modules ', '').replace('perl-dbg ', '').replace('perl-misc ', '').replace('perl-dev ', '').replace('perl-pod ', '').replace('perl-doc ', '')}"
+RRECOMMENDS_perl-modules = "${@' '.join(all_perl_packages(d))}"
 
 python populate_packages_prepend () {
         libdir = bb.data.expand('${libdir}/perl/${PV}', d)

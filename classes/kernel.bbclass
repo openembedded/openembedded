@@ -476,6 +476,7 @@ python populate_packages_prepend () {
 	bb.data.setVar('ALLOW_EMPTY_' + metapkg, "1", d)
 	bb.data.setVar('FILES_' + metapkg, "", d)
 	blacklist = [ 'kernel-dev', 'kernel-image', 'kernel-base', 'kernel-vmlinux' ]
+	depchains = (d.getVar("DEPCHAIN_POST", True) or "").split()
 	for l in module_deps.values():
 		for i in l:
 			pkg = module_pattern % legitimize_package_name(re.match(module_regex, os.path.basename(i)).group(1))
@@ -483,7 +484,7 @@ python populate_packages_prepend () {
 	metapkg_rdepends = []
 	packages = bb.data.getVar('PACKAGES', d, 1).split()
 	for pkg in packages[1:]:
-		if not pkg in blacklist and not pkg in metapkg_rdepends:
+		if not pkg in blacklist and not pkg in metapkg_rdepends and not any(pkg.endswith(post) for post in depchains):
 			metapkg_rdepends.append(pkg)
 	bb.data.setVar('RDEPENDS_' + metapkg, ' '.join(metapkg_rdepends), d)
 	bb.data.setVar('DESCRIPTION_' + metapkg, 'Kernel modules meta package', d)
