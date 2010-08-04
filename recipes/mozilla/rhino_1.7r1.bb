@@ -4,6 +4,8 @@ LICENSE = "GPL MPL"
 
 DEPENDS = "fastjar-native"
 
+PR = "r1"
+
 inherit java-library
 
 SRC_URI = "\
@@ -17,7 +19,9 @@ S = "${WORKDIR}/rhino1_7R1"
 PACKAGES = "${JPN} rhino"
 
 FILES_${PN} = "${bindir}/rhino ${bindir}/rhino-jsc"
+
 RDEPENDS_${PN} = "java2-runtime ${JPN}"
+RDEPENDS_${PN}_virtclass-native = ""
 
 do_compile() {
   mkdir -p build
@@ -43,3 +47,6 @@ do_install_append() {
 
 SRC_URI[md5sum] = "613eed8201d37be201805e5048ebb0c3"
 SRC_URI[sha256sum] = "084e250d2392369b2548b663e61bcf128baecb2f527e381e9ba89f0148db2c0d"
+
+NATIVE_INSTALL_WORKS = "1"
+BBCLASSEXTEND = "native"
