@@ -1,4 +1,4 @@
-#Mon Aug  2 10:12:14 CEST 2010
+#Wed Aug  4 08:58:39 CEST 2010
 #app
 PREFERRED_VERSION_appres ?= "1.0.2"
 PREFERRED_VERSION_bdftopcf ?= "1.0.2"
@@ -264,7 +264,7 @@ PREFERRED_VERSION_libxfont ?= "1.4.2"
 PREFERRED_VERSION_libxfont-native ?= "1.4.2"
 PREFERRED_VERSION_libxfontcache ?= "1.0.5"
 PREFERRED_VERSION_libxft ?= "2.1.14"
-PREFERRED_VERSION_libxi ?= "1.3.1"
+PREFERRED_VERSION_libxi ?= "1.3.2"
 PREFERRED_VERSION_libxinerama ?= "1.1"
 PREFERRED_VERSION_libxmu ?= "1.0.5"
 PREFERRED_VERSION_libxp ?= "1.0.0"
