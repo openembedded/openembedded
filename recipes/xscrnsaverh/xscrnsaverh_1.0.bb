@@ -1,5 +1,5 @@
 
-PR = "r0"
+PR = "r1"
 
 DEPENDS = "libxext"
 SECTION = "x11"
@@ -8,6 +8,7 @@ DESCRIPTION = "missing header"
 
 SRC_URI = "file://scrnsaver.h"
 
-do_stage() {
-	install -m 0644 ${WORKDIR}/scrnsaver.h ${STAGING_INCDIR}/X11/extensions/
+do_install() {
+	install -d ${D}${includedir}/X11/extensions/
+	install -m 0644 ${WORKDIR}/scrnsaver.h ${D}${includedir}/X11/extensions/
 }
