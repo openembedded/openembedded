@@ -6,6 +6,9 @@ test -x "$matrixgui" || exit 0
 
 case "$1" in
   start)
+
+    chvt 4
+
     # switch to component 480p mode
     echo 480P-60 > /sys/class/davinci_display/ch0/mode
     echo COMPONENT > /sys/class/davinci_display/ch0/output
