@@ -7,6 +7,9 @@ SRC_URI = "http://archive.apache.org/dist/jakarta/bsf/source/bsf-src-${PV}.tar.g
 inherit java-library
 
 DEPENDS = "fastjar-native jacl commons-logging rhino xalan-j bcel"
+DEPENDS_virtclass-native = "fastjar-native jacl-native commons-logging-native rhino-native xalan-j-native bcel-native"
+
+PR = "r1"
 
 do_compile() {
   mkdir -p build
@@ -25,3 +28,7 @@ do_compile() {
 
 SRC_URI[md5sum] = "7e58b2a009c0f70ab36bbef420b25c07"
 SRC_URI[sha256sum] = "5ab58cf5738c144f4d85a4a442c2f33be2c4c502dca6e29e0c570c2a51ae6ae9"
+
+NATIVE_INSTALL_WORKS = "1"
+BBCLASSEXTEND = "native"
+
