@@ -11,5 +11,5 @@ INC_PR = "r0"
 
 SRC_URI = "http://www.netfilter.org/projects/libnfnetlink/files/libnfnetlink-${PV}.tar.bz2;name=libnfnetlink-${PV}"
 
-inherit autotools_stage pkgconfig
+inherit autotools pkgconfig
 

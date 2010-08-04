@@ -15,7 +15,7 @@ SRC_URI = "\
 "
 S = "${WORKDIR}/trunk"
 
-inherit autotools_stage binconfig
+inherit autotools binconfig
 
 EXTRA_OECONF = "\
   --enable-shared \

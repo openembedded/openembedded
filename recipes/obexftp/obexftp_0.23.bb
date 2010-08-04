@@ -8,7 +8,7 @@ PR = "r1"
 SRC_URI = "${SOURCEFORGE_MIRROR}/openobex/obexftp-${PV}.tar.bz2 \
 	  "
 
-inherit autotools_stage
+inherit autotools
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 EXTRA_OECONF += "--enable-bluetooth \

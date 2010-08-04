@@ -2,7 +2,7 @@ DESCRIPTION = "libgdata is a GLib-based library for accessing online service API
 LICENSE = "LGPL"
 DEPENDS = "libxml2 glib-2.0 libsoup-2.4"
 
-inherit gnome lib_package autotools_stage
+inherit gnome lib_package autotools
 
 SRC_URI += " \
            file://gtk-doc.make \

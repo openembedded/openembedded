@@ -9,7 +9,7 @@ DEPENDS = "libpcre"
 
 S = "${WORKDIR}/git"
 
-inherit autotools_stage
+inherit autotools
 
 do_configure_prepend () {
 	cd ${S}/src

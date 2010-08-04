@@ -9,7 +9,7 @@ SRC_URI = "http://www.bzip.org/${PV}/bzip2-${PV}.tar.gz \
 
 S = "${WORKDIR}/bzip2-${PV}"
 
-inherit autotools_stage pkgconfig native
+inherit autotools pkgconfig native
 
 do_configure_prepend () {
 	if test -f LICENSE ; then sh ./autogen.sh ; fi

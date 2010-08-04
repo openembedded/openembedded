@@ -8,7 +8,7 @@ SRC_URI = "http://libproxy.googlecode.com/files/libproxy-${PV}.tar.gz \
 	   file://libproxy-move-define-__USE_BSD.patch \
 	   "
 
-inherit autotools_stage
+inherit autotools
 
 # Disable plugins that are *up* in the depchain, they need libproxy to build
 # Don't we just love circular deps?

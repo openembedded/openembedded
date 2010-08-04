@@ -18,7 +18,7 @@ SRC_URI = "git://dev.openbossa.org/mamona/projects/mamona_input_methods.git;prot
 
 S = "${WORKDIR}/git"
 
-inherit autotools_stage pkgconfig lib_package
+inherit autotools pkgconfig lib_package
 
 EXTRA_OECONF = "\
         --enable-ecore-im \

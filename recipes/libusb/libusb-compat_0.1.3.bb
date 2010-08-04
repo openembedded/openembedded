@@ -14,7 +14,7 @@ SRC_URI[libusbcompat013tarbz2.sha256sum] = "a590a03b6188030ee1ca1a0af55685fcde00
 
 SRC_URI_append_nylon = " file://gcc-3-compatibility.patch"
 
-inherit autotools_stage binconfig lib_package
+inherit autotools binconfig lib_package
 
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 EXTRA_OECONF = "--disable-build-docs"

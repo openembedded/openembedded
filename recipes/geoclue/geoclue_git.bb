@@ -9,7 +9,7 @@ PR = "r1"
 PR_append = "+gitr${SRCREV}"
 PE = "1"
 
-inherit gnome autotools_stage
+inherit gnome autotools
 
 SRC_URI = "git://anongit.freedesktop.org/git/geoclue;protocol=git \
            file://gtk-doc.make"

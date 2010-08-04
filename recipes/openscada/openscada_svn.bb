@@ -15,7 +15,7 @@ PV = "0.6.4+svnr${SRCPV}"
 
 S = "${WORKDIR}/OpenSCADA"
 
-inherit autotools_stage
+inherit autotools
 
 EXTRA_OECONF = " \
       --includedir=${STAGING_INCDIR} \

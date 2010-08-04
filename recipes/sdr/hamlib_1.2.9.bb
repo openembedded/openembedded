@@ -7,7 +7,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/hamlib/hamlib-${PV}.tar.gz"
 
 PR = "r1"
 
-inherit autotools_stage
+inherit autotools
 
 EXTRA_OECONF = "--with-perl-inc=${STAGING_LIBDIR}/perl/5.8.8/CORE"
 # This is a hack, someone with some more time should fix the autofoo

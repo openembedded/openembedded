@@ -8,6 +8,6 @@ INC_PR = "r3"
 
 SRC_URI = "http://downloads.freesmartphone.org/sources/vala-dbus-binding-tool-${PV}.tar.bz2;name=archive"
 
-inherit autotools_stage
+inherit autotools
 
 BBCLASSEXTEND = "native"

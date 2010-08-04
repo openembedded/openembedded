@@ -28,7 +28,7 @@ SRC_URI = " \
 SRC_URI_append_libc-uclibc = " file://kill-stack-protector.patch"
 SRC_URI[md5sum] = "c844d98a5e6163192dd9f073ba9856ff"
 SRC_URI[sha256sum] = "55b30bf018720f28d92c22519cbb26ebedb5c511dbeedb7e2c2a2712034ebd92"
-inherit autotools_stage python-dir
+inherit autotools python-dir
 
 S = "${WORKDIR}/Pacemaker-1-0-Pacemaker-${PV}"
 

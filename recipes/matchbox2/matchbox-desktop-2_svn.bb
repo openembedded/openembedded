@@ -7,7 +7,7 @@ SRCREV = "2096"
 PV = "2.0+svnr${SRCPV}"
 PR = "r2"
 
-inherit autotools_stage pkgconfig
+inherit autotools pkgconfig
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=${PN};proto=http \
 	   file://fallback-folder.patch;striplevel=0 \

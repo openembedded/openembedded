@@ -11,7 +11,7 @@ SRCREV = "${EFL_SRCREV}"
 SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/BINDINGS;module=vala;proto=http"
 S = "${WORKDIR}/vala"
 
-inherit autotools_stage pkgconfig vala
+inherit autotools pkgconfig vala
 
 PACKAGES =+ "${PN}-examples"
 FILES_${PN}-examples = "${datadir}/libeflvala ${bindir}/*"

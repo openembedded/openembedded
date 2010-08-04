@@ -4,7 +4,7 @@ SRCREV = "7d2f657d248bd86377e66c329aa6826459d406da"
 PV = "0.0.1+gitr${SRCPV}"
 PR = "r1"
 
-inherit autotools autotools_stage pkgconfig vala
+inherit autotools autotools pkgconfig vala
 
 DEPENDS = "glib-2.0 dbus-glib libxml2 libgee"
 

@@ -7,7 +7,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/omxil/${PN}-${PV}.tar.gz"
 
 PR = "r1"
 
-inherit autotools_stage
+inherit autotools
 
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 

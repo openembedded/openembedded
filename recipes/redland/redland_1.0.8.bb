@@ -7,7 +7,7 @@ PR = "r3"
 
 DEPENDS = "db mysql"
 
-inherit autotools_stage
+inherit autotools
 
 EXTRA_OECONF = "--with-bdb-lib=${STAGING_LIBDIR} --with-bdb-include=${STAGING_INCDIR} --with-sqlite=no"
 

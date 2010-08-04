@@ -9,4 +9,4 @@ PR = "r0"
 SRC_URI = "git://git.gnome.org/mobile-broadband-provider-info;protocol=git"
 S = "${WORKDIR}/git"
 
-inherit autotools_stage
+inherit autotools

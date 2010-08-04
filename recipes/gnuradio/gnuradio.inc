@@ -5,7 +5,7 @@ LICENSE = "GPLv3"
 DEPENDS = "virtual/libusb0 guile-native fftwf python virtual/libsdl alsa-lib jack boost cppunit sdcc-native swig-native python-numpy"
 INC_PR = "r7"
 
-inherit distutils-base autotools autotools_stage pkgconfig
+inherit distutils-base autotools autotools pkgconfig
 
 export BUILD_SYS
 export HOST_SYS=${MULTIMACH_TARGET_SYS}

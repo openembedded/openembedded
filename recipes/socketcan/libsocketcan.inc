@@ -13,4 +13,4 @@ SRC_URI = "git://git.pengutronix.de/git/tools/libsocketcan.git;protocol=git;tag=
 
 S = "${WORKDIR}/git"
 
-inherit autotools_stage pkgconfig
+inherit autotools pkgconfig

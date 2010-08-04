@@ -9,6 +9,6 @@ LICENSE = "GPL"
 
 INC_PR = "r1"
 
-inherit pkgconfig autotools_stage
+inherit pkgconfig autotools
 
 FILES_${PN}-dev += "${libdir}/freerdp/*.a ${libdir}/freerdp/*.la"

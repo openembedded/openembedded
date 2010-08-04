@@ -7,7 +7,7 @@ AUTHOR = "Lennart Poettering"
 HOMEPAGE = "http://0pointer.de/lennart/projects/libcanberra"
 PR = "r4"
 
-inherit autotools_stage vala
+inherit autotools vala
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 SRC_URI = "http://0pointer.de/lennart/projects/libcanberra/libcanberra-${PV}.tar.gz \

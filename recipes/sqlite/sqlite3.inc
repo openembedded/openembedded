@@ -9,7 +9,7 @@ SRC_URI = "http://www.sqlite.org/sqlite-${PV}.tar.gz \
 
 S = "${WORKDIR}/sqlite-${PV}"
 
-inherit autotools_stage pkgconfig
+inherit autotools pkgconfig
 
 EXTRA_OECONF = "--disable-tcl --enable-shared \
 		--enable-threadsafe"

@@ -11,6 +11,6 @@ PR = "r1"
 SRC_URI = "svn://gabriel.svn.sourceforge.net/svnroot/gabriel;module=gabriel;proto=https"
 S = "${WORKDIR}/gabriel"
 
-inherit autotools_stage
+inherit autotools
 
 RDEPENDS_${PN} = "socat"

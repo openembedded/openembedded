@@ -8,7 +8,7 @@ PROVIDES = "libfribidi"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "1"
 
-inherit autotools_stage lib_package pkgconfig
+inherit autotools lib_package pkgconfig
 
 CFLAGS_append = "  -DPAGE_SIZE=4096 "
 

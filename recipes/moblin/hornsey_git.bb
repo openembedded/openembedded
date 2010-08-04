@@ -13,7 +13,7 @@ SRC_URI = "git://git.moblin.org/${PN}.git;protocol=git \
 "
 S = "${WORKDIR}/git"
 
-inherit autotools_stage
+inherit autotools
 
 FILES_${PN} += "${datadir}/icons"
 

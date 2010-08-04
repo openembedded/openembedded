@@ -17,7 +17,7 @@ SRC_URI_append_libc-uclibc = " file://kill-stack-protector.patch"
 SRC_URI[tar.md5sum] = "09721e2d2ab3c3fa6696b4347e31721a"
 SRC_URI[tar.sha256sum] = "c437a04494850b79c094f7e84d396e917ec09d9a2fdfb7c11f3b420741ea91a2"
 
-inherit autotools_stage
+inherit autotools
 
 S = "${WORKDIR}/Reusable-Cluster-Components-glue-${PV}"
 

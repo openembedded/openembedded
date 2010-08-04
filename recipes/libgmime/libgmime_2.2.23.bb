@@ -9,7 +9,7 @@ SRC_URI = "http://ftp.acc.umu.se/pub/GNOME/sources/gmime/2.2/gmime-${PV}.tar.bz2
 EXTRA_OECONF += "--disable-mono"
 S = "${WORKDIR}/gmime-${PV}"
 
-inherit autotools_stage lib_package binconfig
+inherit autotools lib_package binconfig
 
 export ac_cv_have_iconv_detect_h=yes
 do_configure_append = "cp ${WORKDIR}/iconv-detect.h ${S}"

@@ -21,7 +21,7 @@ SRC_URI = "http://cairographics.org/releases/pixman-${PV}.tar.gz;name=archive \
 SRC_URI[archive.md5sum] = "32cbdf7a1ac1c275ee56230e26701456"
 SRC_URI[archive.sha256sum] = "14ea5a185d8ea6ce3203ff008279e3f3433b6a5bad5853b42a82978527e618cb"
 
-inherit autotools_stage
+inherit autotools
 
 NEON = " --disable-arm-neon "
 NEON_armv7a = ""

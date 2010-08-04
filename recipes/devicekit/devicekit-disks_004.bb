@@ -5,7 +5,7 @@ DEPENDS = "devicekit zlib sqlite3 policykit parted device-mapper libatasmart ude
 SRC_URI = "http://hal.freedesktop.org/releases/DeviceKit-disks-${PV}.tar.gz"
 S = "${WORKDIR}/DeviceKit-disks-${PV}"
 
-inherit autotools_stage
+inherit autotools
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 FILES_${PN} += "${datadir}/dbus-1/ \

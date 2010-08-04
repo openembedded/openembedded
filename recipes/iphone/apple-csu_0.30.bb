@@ -8,4 +8,4 @@ SRC_URI = "svn://iphone-dev.googlecode.com/svn/trunk;proto=http;module=csu"
 
 S = "${WORKDIR}/csu"
 
-inherit autotools_stage
+inherit autotools

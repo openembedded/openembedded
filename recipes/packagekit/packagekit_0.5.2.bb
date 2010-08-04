@@ -5,7 +5,7 @@ LICENSE = "GPL"
 DEPENDS = "gtk+ python cppunit dbus (>= 1.1.1) dbus-glib glib-2.0 sqlite3 ${IPKG_VARIANT} intltool intltool-native (>= 0.37.1)"
 RDEPENDS_${PN} = "${IPKG_VARIANT}"
 
-inherit gnome autotools_stage
+inherit gnome autotools
 
 SRC_URI = "http://www.packagekit.org/releases/PackageKit-${PV}.tar.gz \
            "

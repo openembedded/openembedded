@@ -17,4 +17,4 @@ RDEPENDS_${PN}-tests += "${PN} python-core"
 
 EXTRA_OECONF = "--disable-manpages"
 
-inherit autotools_stage python-dir
+inherit autotools python-dir

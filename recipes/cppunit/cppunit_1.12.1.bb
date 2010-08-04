@@ -10,7 +10,7 @@ PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/cppunit/cppunit-${PV}.tar.gz"
 
-inherit autotools_stage binconfig
+inherit autotools binconfig
 
 CXXFLAGS_powerpc += "-lstdc++"
 

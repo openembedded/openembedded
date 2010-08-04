@@ -10,7 +10,7 @@ DEPENDS = "glib-2.0 gtk+ libccss clutter-0.9"
 SRC_URI = "git://git.moblin.org/${PN}.git;protocol=git"
 S = "${WORKDIR}/git"
 
-inherit autotools_stage
+inherit autotools
 
 do_configure_prepend () {
     echo "EXTRA_DIST=" > ${S}/gtk-doc.make

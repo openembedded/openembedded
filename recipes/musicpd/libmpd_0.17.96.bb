@@ -5,7 +5,7 @@ LICENSE = "GPLv2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/musicpd/libmpd-${PV}.tar.gz"
 
-inherit autotools_stage
+inherit autotools
 
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 

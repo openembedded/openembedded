@@ -10,6 +10,6 @@ S = "${WORKDIR}/sgalib-${PV}"
 COMPATIBLE_MACHINE = "nhk15"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
-inherit autotools_stage
+inherit autotools
 
 EXTRA_OECONF = "--with-kernelsrcdir=${STAGING_KERNEL_DIR}"

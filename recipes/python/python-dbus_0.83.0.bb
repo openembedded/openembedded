@@ -8,7 +8,7 @@ PR = "ml2"
 SRC_URI = "http://dbus.freedesktop.org/releases/dbus-python/dbus-python-${PV}.tar.gz"
 S = "${WORKDIR}/dbus-python-${PV}"
 
-inherit distutils-base autotools_stage pkgconfig
+inherit distutils-base autotools pkgconfig
 
 export BUILD_SYS
 export HOST_SYS

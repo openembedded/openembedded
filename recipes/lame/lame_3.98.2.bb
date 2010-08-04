@@ -8,7 +8,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-398-2.tar.gz \
 	file://no-gtk1.patch \
 	file://ldflags-qa.patch"
 
-inherit autotools_stage
+inherit autotools
 
 PACKAGES += "libmp3lame libmp3lame-dev"
 FILES_${PN} = "${bindir}/lame"

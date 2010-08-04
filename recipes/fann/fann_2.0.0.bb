@@ -5,7 +5,7 @@ LICENSE = "BSD"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/fann/fann-${PV}.tar.bz2"
 
-inherit autotools_stage
+inherit autotools
 
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 

@@ -5,7 +5,7 @@ LICENSE = "GPLv2"
 
 SRC_URI = "http://www.kernel.org/pub/linux/bluetooth/obexd-${PV}.tar.gz"
 
-inherit autotools_stage
+inherit autotools
 
 FILES_${PN} += "${datadir}/dbus-1/"
 

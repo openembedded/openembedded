@@ -11,4 +11,4 @@ S = "${WORKDIR}/git"
 
 DEPENDS = "gtk+"
 
-inherit autotools_stage
+inherit autotools

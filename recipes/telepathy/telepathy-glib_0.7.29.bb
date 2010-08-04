@@ -5,7 +5,7 @@ LICENSE = "LGPL"
 
 SRC_URI = "http://telepathy.freedesktop.org/releases/telepathy-glib/${P}.tar.gz "
 
-inherit autotools_stage
+inherit autotools
 
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 

@@ -9,7 +9,7 @@ SRC_URI = "\
   http://ftp.debian.org/debian/pool/main/libs/libsidplay/libsidplay_1.36.59-5.diff.gz;name=patch \
 "
 
-inherit autotools_stage
+inherit autotools
 
 SRC_URI[archive.md5sum] = "37c51ba4bd57164b1b0bb7b43b9adece"
 SRC_URI[archive.sha256sum] = "3da9b38d4eb5bf9e936b9604ba92da0594ef38047d50cf806a8e11c400008024"

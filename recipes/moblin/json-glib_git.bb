@@ -7,7 +7,7 @@ S = "${WORKDIR}/git"
 
 DEPENDS = "glib-2.0"
 
-inherit autotools_stage
+inherit autotools
 
 acpaths = "-I ${S}/build/autotools "
 

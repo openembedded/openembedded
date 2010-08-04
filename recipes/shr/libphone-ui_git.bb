@@ -8,7 +8,7 @@ PR = "r0"
 
 DEPENDS="glib-2.0 dbus-glib libframeworkd-glib libfso-glib libfsoframework libphone-utils alsa-lib"
 
-inherit pkgconfig autotools autotools_stage
+inherit pkgconfig autotools autotools
 
 SRC_URI = "git://git.shr-project.org/repo/libphone-ui.git;protocol=http;branch=master"
 

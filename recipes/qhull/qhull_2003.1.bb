@@ -3,7 +3,7 @@ LICENSE = "unknown"
 
 SRC_URI = "http://www.qhull.org/download/qhull-${PV}.tar.gz"
 
-inherit autotools_stage lib_package
+inherit autotools lib_package
 
 
 

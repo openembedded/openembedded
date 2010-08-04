@@ -8,7 +8,7 @@ RDEPENDS_${PN} = "hal"
 SRC_URI = "https://alioth.debian.org/frs/download.php/2795/pcsc-lite-${PV}.tar.bz2 \
            file://pcscd.init "
 
-inherit autotools_stage update-rc.d
+inherit autotools update-rc.d
 
 INITSCRIPT_NAME = "pcscd"
 INITSCRIPT_PARAMS = "defaults"

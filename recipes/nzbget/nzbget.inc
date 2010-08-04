@@ -8,7 +8,7 @@ INC_PR = "r0"
 SRC_URI = "${SOURCEFORGE_MIRROR}/nzbget/nzbget-stable/nzbget-${PV}.tar.gz"
 S = "${WORKDIR}/nzbget-${PV}"
 
-inherit autotools_stage pkgconfig
+inherit autotools pkgconfig
 
 EXTRA_OECONF = "\
 	--disable-tls \

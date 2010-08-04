@@ -10,7 +10,7 @@ SRCREV = "2098"
 PV = "2.0+svnr${SRCPV}"
 PR = "r1"
 
-inherit autotools_stage pkgconfig
+inherit autotools pkgconfig
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=${PN};proto=http \
 	   file://scaling-image-double-free.patch;striplevel=0 \

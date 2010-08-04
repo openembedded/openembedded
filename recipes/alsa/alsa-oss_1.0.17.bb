@@ -8,7 +8,7 @@ SRC_URI = "ftp://ftp.alsa-project.org/pub/oss-lib/alsa-oss-${PV}.tar.bz2 \
 	   file://libio.patch \
 	  "
 
-inherit autotools_stage
+inherit autotools
 
 LEAD_SONAME = "libaoss.so.0"
 

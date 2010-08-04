@@ -1,4 +1,4 @@
-inherit autotools_stage
+inherit autotools
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/wvware/${PN}/${PV}/${P}.tar.gz;name=tarball \
            file://libwmf-0.2.8.4-intoverflow.patch                   \

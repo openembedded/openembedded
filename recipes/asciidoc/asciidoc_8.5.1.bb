@@ -4,7 +4,7 @@ LICENSE = "GPLv2"
 
 SRC_URI = "http://mesh.dl.sourceforge.net/project/asciidoc/asciidoc/${PV}/asciidoc-${PV}.tar.gz"
 
-inherit distutils-base autotools_stage pkgconfig
+inherit distutils-base autotools pkgconfig
 
 export vimdir = "${D}${sysconfdir}/vim"
 export DESTDIR = "${D}"

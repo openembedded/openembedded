@@ -6,7 +6,7 @@ LICENSE = "LGPLv2.1"
 SRC_URI = "${SOURCEFORGE_MIRROR}/libusb/libusb-${PV}.tar.bz2"
 S = "${WORKDIR}/libusb-${PV}"
 
-inherit autotools_stage
+inherit autotools
 
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 EXTRA_OECONF = "--disable-build-docs"

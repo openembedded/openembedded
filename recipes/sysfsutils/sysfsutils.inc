@@ -5,7 +5,7 @@ INC_PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/linux-diag/sysfsutils-${PV}.tar.gz"
 
-inherit autotools autotools_stage
+inherit autotools autotools
 
 acpaths = "-I ${S}/m4"
 

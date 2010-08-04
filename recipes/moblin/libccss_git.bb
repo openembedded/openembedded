@@ -6,7 +6,7 @@ DEPENDS = "glib-2.0 cairo librsvg libsoup-2.4"
 
 S = "${WORKDIR}/git"
 
-inherit autotools_stage
+inherit autotools
 
 do_configure_prepend () {
 	echo "EXTRA_DIST=" > ${S}/gtk-doc.make

@@ -15,7 +15,7 @@ SRC_URI[md5sum] = "a1f5b03512977d495819e2ed05ba645b"
 SRC_URI[sha256sum] = "0f774cee5d9f5d3e20b146c8719115c029815015952b48de1b99b61b462367d1"
 
 
-inherit autotools_stage update-rc.d
+inherit autotools update-rc.d
 
 INITSCRIPT_NAME = "corosync-daemon"
 

@@ -7,7 +7,7 @@ LICENSE = "LGPL"
 SRC_URI = "http://telepathy.freedesktop.org/releases/telepathy-gabble/${P}.tar.gz \
            file://gabble.manager"
 
-inherit autotools_stage 
+inherit autotools
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 do_compile_prepend() {

@@ -8,7 +8,7 @@ PR_append = "+gitr${SRCREV}"
 SRC_URI = "git://anongit.freedesktop.org/libdlo;protocol=git"
 S = "${WORKDIR}/git"
 
-inherit lib_package autotools_stage
+inherit lib_package autotools
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 do_configure_prepend() {

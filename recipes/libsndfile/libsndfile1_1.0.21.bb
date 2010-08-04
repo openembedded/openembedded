@@ -12,7 +12,7 @@ SRC_URI[libsndfile1021targz.sha256sum] = "7e9083a2551ff347276d82cdb61f2b4f9cd137
 
 S = "${WORKDIR}/libsndfile-${PV}"
 
-inherit autotools_stage  lib_package pkgconfig
+inherit autotools  lib_package pkgconfig
 
 do_configure_prepend_arm() {
 	ac_cv_sizeof_off_t=8

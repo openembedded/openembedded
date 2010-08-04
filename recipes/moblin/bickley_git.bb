@@ -11,7 +11,7 @@ S = "${WORKDIR}/git"
 
 FILES_${PN} =+ "${datadir}/dbus-1/services/"
 
-inherit autotools_stage
+inherit autotools
 
 do_compile_prepend() {
 	sed -i -e '/#  warn /d' src/bkl-investigator.c

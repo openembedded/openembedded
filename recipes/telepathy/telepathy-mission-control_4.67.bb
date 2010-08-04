@@ -7,7 +7,7 @@ PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/mission-control/telepathy-mission-control-${PV}.tar.gz"
 
-inherit autotools_stage 
+inherit autotools 
 
 PACKAGES =+ " \
 	libmissioncontrol \

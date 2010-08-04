@@ -7,7 +7,7 @@ PR = "r10"
 
 DEPENDS="glib-2.0 dbus-glib libframeworkd-glib libphone-utils"
 
-inherit pkgconfig autotools autotools_stage
+inherit pkgconfig autotools autotools
 
 SRCREV = "9d7ca1cecb93022e5b890cd87756ac6f072710ca"
 SRC_URI = "git://git.shr-project.org/repo/shr.git;protocol=http;branch=master"

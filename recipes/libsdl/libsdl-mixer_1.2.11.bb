@@ -13,7 +13,7 @@ S = "${WORKDIR}/SDL_mixer-${PV}"
 
 export SDL_CONFIG = "${STAGING_BINDIR_CROSS}/sdl-config"
 
-inherit autotools_stage
+inherit autotools
 
 # Although we build SMPEG lets not use it as it is pointless in the embedded space.
 

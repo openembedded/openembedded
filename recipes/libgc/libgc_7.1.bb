@@ -4,7 +4,7 @@ HOMEPAGE	= "http://www.hpl.hp.com/personal/Hans_Boehm/gc/"
 
 SRC_URI 	= "http://www.hpl.hp.com/personal/Hans_Boehm/gc/gc_source/gc-${PV}.tar.gz"
 
-inherit autotools_stage
+inherit autotools
 
 S = "${WORKDIR}/gc-${PV}"
 

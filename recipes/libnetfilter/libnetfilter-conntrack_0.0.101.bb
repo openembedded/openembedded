@@ -8,4 +8,4 @@ SRC_URI[tar.sha256sum] = "9d2919df3794e1e8f2311ad31949698103061206379b75094cb2bf
 
 S = "${WORKDIR}/libnetfilter_conntrack-${PV}"
 
-inherit autotools_stage pkgconfig
+inherit autotools pkgconfig

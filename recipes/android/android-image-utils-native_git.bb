@@ -10,7 +10,7 @@ SRC_URI = "\
 "
 S = "${WORKDIR}/git/android/image-utils"
 
-inherit autotools_stage native
+inherit autotools native
 
 do_deploy () {
 	install -d ${DEPLOY_DIR_TOOLS}

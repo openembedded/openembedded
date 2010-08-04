@@ -5,7 +5,7 @@ LICENSE = "GPL"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gsoap2/gsoap_${PV}.tar.gz"
 
-inherit autotools_stage
+inherit autotools
 
 S = "${WORKDIR}/gsoap-2.7"
 

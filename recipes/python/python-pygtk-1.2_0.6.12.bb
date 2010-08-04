@@ -12,7 +12,7 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/python/v1.2/${SRCNAME}-${PV}.tar.gz \
            file://acinclude.m4"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
-inherit autotools_stage pkgconfig distutils-base
+inherit autotools pkgconfig distutils-base
 
 EXTRA_OECONF += "--with-python-includes=${STAGING_INCDIR}/../"
 
