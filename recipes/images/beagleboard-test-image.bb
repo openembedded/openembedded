@@ -18,6 +18,7 @@ IMAGE_INSTALL += " \
   angstrom-uboot-scripts \
   beagleboard-test-scripts \
   nano \
+  cpuburn-neon \
 "
 
 export IMAGE_BASENAME = "beagleboard-test-image"
