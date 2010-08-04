@@ -7,7 +7,10 @@ SRC_URI = "http://www.apache.org/dist/commons/net/source/${BP}-src.tar.gz"
 S = "${WORKDIR}/${BP}"
 
 DEPENDS += "oro"
+DEPENDS_virtclass-native += "oro-native"
+
 RDEPENDS_${PN} = "liboro-java"
+RDEPENDS_${PN}_virtclass-native = ""
 
 CP = "oro"
 
