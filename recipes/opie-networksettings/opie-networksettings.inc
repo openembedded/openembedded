@@ -5,8 +5,6 @@ LICENSE = "GPL"
 PROVIDES = "opie-networksettings-pppplugin opie-networksettings-wlanplugin"
 APPNAME = "networksettings"
 
-SRC_URI_append = " file://wireless.patch"
-
 S = "${WORKDIR}/${APPNAME}"
 
 inherit opie
