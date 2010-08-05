@@ -1,6 +1,6 @@
 require gpe-ownerinfo.inc
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI += "file://compile.patch"
 
