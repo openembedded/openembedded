@@ -13,6 +13,8 @@ PR = "${INC_PR}.1"
 
 BBCLASSEXTEND = "native"
 
+ARM_INSTRUCTION_SET = "arm"
+
 DEPENDS_virtclass-native = "libpng-native atk-native pango-native cairo-native libxrender-native libxext-native"
 RRECOMMENDS_${PN}_virtclass-native = ""
 PROVIDES_virtclass-native = "gdk-pixbuf-csource-native"
