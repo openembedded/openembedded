@@ -13,7 +13,7 @@ DEPENDS += " sysfsutils"
 
 SRC_URI = "${OPIE_GIT};protocol=git;subpath=library \
            file://fix-titleheight.patch \
-           file://unbreak-logging.patch \
+           file://unbreak-logging-2.patch \
            file://citytime-path-2.patch \
            file://no-include-pro.patch \
           "
