@@ -1,13 +1,13 @@
 DESCRIPTION = "Params::Validate - Validate method/function parameters"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
-PR = "r14"
+PR = "r0"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/Params-Validate-${PV}.tar.gz"
 
 S = "${WORKDIR}/Params-Validate-${PV}"
 
-inherit cpan
+inherit cpan_build
 
 FILES_${PN} = "${PERLLIBDIRS}/auto/Params/Validate/* \
                 ${PERLLIBDIRS}/Params \
@@ -15,5 +15,5 @@ FILES_${PN} = "${PERLLIBDIRS}/auto/Params/Validate/* \
 
 BBCLASSEXTEND="native"
 
-SRC_URI[md5sum] = "99f6093ecf15717c1a888bb6040aea43"
-SRC_URI[sha256sum] = "cf381182872bedd5f70fdb297863373bdfcac4f10f1b276aa227e9722b258be5"
+SRC_URI[md5sum] = "f544f12357ae4ba44044cd8cb2b83a9f"
+SRC_URI[sha256sum] = "0739ccd0e7c7c0ffc0e2ad797d78e42c050e6297ab58d56f90a0e4de623f8942"
