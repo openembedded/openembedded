@@ -1,7 +1,7 @@
 Index: openjdk/jdk/src/solaris/native/sun/xawt/XToolkit.c
 ===================================================================
---- openjdk/jdk/src/solaris/native/sun/xawt/XToolkit.c	2010-06-13 13:44:00.741955478 +0200
-+++ openjdk/jdk/src/solaris/native/sun/xawt/XToolkit.c	2010-06-13 13:48:11.451931804 +0200
+--- openjdk/jdk/src/solaris/native/sun/xawt/XToolkit.c	2010-08-05 16:45:56.607257503 +0200
++++ openjdk/jdk/src/solaris/native/sun/xawt/XToolkit.c	2010-08-05 16:47:19.727254686 +0200
 @@ -27,9 +27,6 @@
  #include <X11/Xutil.h>
  #include <X11/Xos.h>
@@ -12,9 +12,9 @@ Index: openjdk/jdk/src/solaris/native/sun/xawt/XToolkit.c
  
  #include <jvm.h>
  #include <jni.h>
-@@ -692,35 +689,11 @@
- 
- static XErrorHandler saved_error_handler = NULL;
+@@ -689,26 +686,6 @@
+     return ret;
+ }
  
 -#ifdef __linux__
 -void print_stack(void)
@@ -36,16 +36,6 @@ Index: openjdk/jdk/src/solaris/native/sun/xawt/XToolkit.c
 -}
 -#endif
 -
- static int NoisyXErrorHandler(Display * dpy, XErrorEvent * event) {
-     fprintf(stderr, "id=%x, serial=%x, ec=%d, rc=%d, mc=%d\n",
-             event->resourceid, event->serial, event->error_code,
-             event->request_code, event->minor_code);
--    /*
--    #ifdef __linux__
--        print_stack();
--    #endif
--    */
-+
-     if (jvm != NULL) {
-       JNIEnv * env = (JNIEnv *)JNU_GetEnv(jvm, JNI_VERSION_1_2);
-       JNU_CallStaticMethodByName(env, NULL, "java/lang/Thread", "dumpStack", "()V");
+ Window get_xawt_root_shell(JNIEnv *env) {
+   static jclass classXRootWindow = NULL;
+   static jmethodID methodGetXRootWindow = NULL;
