@@ -14,7 +14,7 @@ DEFAULT_PREFERENCE = "-1"
 # precedence.
 
 require uclibc.inc
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 PROVIDES += "virtual/${TARGET_PREFIX}libc-for-gcc"
 
 #recent versions uclibc require real kernel headers
@@ -31,5 +31,6 @@ SRC_URI = "git://uclibc.org/uClibc.git;branch=master;protocol=git \
 	file://uclibc-arm-ftruncate64.patch \
 	file://uclibc_enable_log2_test.patch \
 	file://ldso_use_arm_dl_linux_resolve_in_thumb_mode.patch \
+        file://isnan.patch \
 	"
 S = "${WORKDIR}/git"
