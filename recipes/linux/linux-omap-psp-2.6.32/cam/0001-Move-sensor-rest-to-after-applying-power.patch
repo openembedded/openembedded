@@ -1,0 +1,65 @@
+From f3fdd3fb4e45b75722d68e5e380c0c71f83fffcf Mon Sep 17 00:00:00 2001
+From: Steve Kipisz <s-kipisz2@ti.com>
+Date: Thu, 5 Aug 2010 10:51:11 -0500
+Subject: [PATCH] Move sensor rest to after applying power.
+
+---
+ arch/arm/mach-omap2/board-omap3beagle-camera.c |   12 ++++++++----
+ 1 files changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle-camera.c b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+index 520e1d8..39ac4b7 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle-camera.c
++++ b/arch/arm/mach-omap2/board-omap3beagle-camera.c
+@@ -160,8 +160,6 @@ static int mt9v113_power_set(struct v4l2_int_device *s, enum v4l2_power power)
+ 	case V4L2_POWER_ON:
+ 
+ 		isp_configure_interface(vdev->cam->isp, &mt9v113_if_config);
+-		/* Set RESET_BAR to 0 */
+-		gpio_set_value(LEOPARD_RESET_GPIO, 0);
+ 
+ 		/* turn on VDD */
+ 		regulator_enable(cam_1v8_reg);
+@@ -170,6 +168,9 @@ static int mt9v113_power_set(struct v4l2_int_device *s, enum v4l2_power power)
+ 		regulator_enable(cam_2v8_reg);
+ 		mdelay(50);
+ 
++		/* Set RESET_BAR to 0 */
++		gpio_set_value(LEOPARD_RESET_GPIO, 0);
++
+ 		/* Enable EXTCLK */
+ 		isp_set_xclk(vdev->cam->isp, MT9V113_CLK_MIN*2, CAM_USE_XCLKA);
+ 		/*
+@@ -177,8 +178,10 @@ static int mt9v113_power_set(struct v4l2_int_device *s, enum v4l2_power power)
+ 		 * ((1000000 * 70) / 6000000) = aprox 12 us.
+ 		 */
+ 		udelay(12);
++
+ 		/* Set RESET_BAR to 1 */
+ 		gpio_set_value(LEOPARD_RESET_GPIO, 1);
++
+ 		/*
+ 		 * Wait at least 100 CLK cycles (w/EXTCLK = 6MHz, or CLK_MIN):
+ 		 * ((1000000 * 100) / 6000000) = aprox 17 us.
+@@ -317,8 +320,6 @@ static int mt9t112_power_set(struct v4l2_int_device *s, enum v4l2_power power)
+ 		isp_configure_interface(vdev->cam->isp, &mt9t112_if_config);
+ #endif
+ 
+-		/* Set RESET_BAR to 0 */
+-		gpio_set_value(LEOPARD_RESET_GPIO, 0);
+ 
+ 		/* turn on VDD */
+ 		regulator_enable(cam_1v8_reg);
+@@ -330,6 +331,9 @@ static int mt9t112_power_set(struct v4l2_int_device *s, enum v4l2_power power)
+ 
+ 		mdelay(50);
+ 
++		/* Set RESET_BAR to 0 */
++		gpio_set_value(LEOPARD_RESET_GPIO, 0);
++
+ 		/* Enable EXTCLK */
+ 		isp_set_xclk(vdev->cam->isp, 24000000, CAM_USE_XCLKA);
+ 
+-- 
+1.6.6.1
+
