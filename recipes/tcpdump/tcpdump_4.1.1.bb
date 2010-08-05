@@ -8,10 +8,10 @@ PR = "r1"
 
 SRC_URI = " \
 	http://www.tcpdump.org/release/tcpdump-${PV}.tar.gz \
-	file://tcpdump_configure_no_-O2.patch;patch=1 \
-	file://0001-minimal-IEEE802.15.4-allowed.patch;patch=1 \
-	file://ipv6-cross.patch;patch=1 \
-	file://configure.patch;patch=1 \
+	file://tcpdump_configure_no_-O2.patch \
+	file://0001-minimal-IEEE802.15.4-allowed.patch \
+	file://ipv6-cross.patch \
+	file://configure.patch \
 "
 
 inherit autotools
