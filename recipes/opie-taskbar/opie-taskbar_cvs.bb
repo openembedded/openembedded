@@ -1,6 +1,6 @@
 require ${PN}.inc
 PV = "${OPIE_GIT_PV}"
-PR = "r19"
+PR = "r20"
 
 SRC_URI = "${OPIE_GIT};protocol=git;subpath=core/apps/calibrate \
            ${OPIE_GIT};protocol=git;subpath=noncore/settings/mediummount \
@@ -15,6 +15,7 @@ SRC_URI = "${OPIE_GIT};protocol=git;subpath=core/apps/calibrate \
            file://restart-from-bindir.patch \
            file://server-pro-cvs.patch \
            file://firstuse-path.patch \
+           file://force-firstuse-calibrate.patch \
            file://03opiesignal \
           "
 
