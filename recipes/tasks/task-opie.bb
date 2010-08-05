@@ -59,7 +59,7 @@ RDEPENDS_task-opie-base-applets_append_akita  = " opie-autorotateapplet"
 RDEPENDS_task-opie-base-inputmethods = "opie-multikey opie-handwriting opie-handwriting-classicset"
 
 RDEPENDS_task-opie-base-apps = "opie-console opie-clock opie-citytime opie-backup opie-sysinfo \
-                       opie-advancedfm"
+                       opie-advancedfm opie-textedit"
 
 RDEPENDS_task-opie-base-settings = "opie-packagemanager opie-light-and-power opie-appearance \
                            opie-systemtime opie-networksettings opie-button-settings \
@@ -89,7 +89,7 @@ RDEPENDS_task-opie-base-todayplugins = "opie-today-addressbookplugin opie-today-
                                opie-today-todolistplugin"
 
 RDEPENDS_task-opie-base-pim = "opie-addressbook opie-datebook opie-drawpad \
-                      opie-search opie-textedit opie-today opie-todo \
+                      opie-search opie-notes opie-today opie-todo \
                       task-opie-base-todayplugins \
                       opie-datebook-birthdayplugin"
 
