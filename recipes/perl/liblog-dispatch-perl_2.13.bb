@@ -7,10 +7,6 @@ SRC_URI = "http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/Log-Dispatch-${PV
 
 S = "${WORKDIR}/Log-Dispatch-${PV}"
 
-do_stage() {
-	:
-}
-
 inherit cpan_build
 
 SRC_URI[md5sum] = "88349394af92f521e1ccc845d64fb9f2"

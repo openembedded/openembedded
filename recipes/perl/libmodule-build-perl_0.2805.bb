@@ -12,10 +12,6 @@ PR = "r6"
 
 S = "${WORKDIR}/Module-Build-${PV}"
 
-do_stage() {
-	:
-}
-
 inherit cpan_build
 
 SRC_URI[md5sum] = "598bb59b86c2c4842eeffb03392fab5b"
