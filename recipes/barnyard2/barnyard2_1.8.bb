@@ -6,7 +6,7 @@ PR = "r2"
 
 SRC_URI = " \
 	http://www.securixlive.com/download/barnyard2/barnyard2-${PV}.tar.gz \
-	file://barnyard2-cross-fix.patch;patch=1 \
+	file://barnyard2-cross-fix.patch \
 	"
 SRC_URI[md5sum] = "72fc6c490db6ea6a0f46c27d24998067"
 SRC_URI[sha256sum] = "1abfe6530d721debd98921421722b02c844c289564730b1e85729e4915b2bb7a"
