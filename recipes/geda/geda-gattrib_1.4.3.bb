@@ -6,7 +6,7 @@ PR = "r1"
 DEPENDS = "gtk+ libgeda"
 
 SRC_URI = "http://geda.seul.org/release/v1.4/${PV}/${P}.tar.gz\
-	   file://gattrib-gtk218.patch;patch=1"
+	   file://gattrib-gtk218.patch"
 
 inherit autotools pkgconfig
 
