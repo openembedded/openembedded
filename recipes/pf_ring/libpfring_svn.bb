@@ -10,7 +10,7 @@ S = "${WORKDIR}/lib"
 SRCREV = "4326"
 SRC_URI = " \
 	svn://svn.ntop.org/svn/ntop/trunk/PF_RING/userland;module=lib;proto=https \
-	file://libpfring-makefile-fixes.patch;patch=1;pnum=0 \
+	file://libpfring-makefile-fixes.patch;striplevel=0 \
 	"
 
 CFLAGS += "-fPIC"
