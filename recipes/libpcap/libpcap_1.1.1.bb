@@ -2,7 +2,7 @@ require libpcap.inc
 
 PR = "r1"
 SRC_URI = "http://www.tcpdump.org/release/libpcap-${PV}.tar.gz"
-SRC_URI += "file://ieee80215-arphrd.patch;patch=1"
+SRC_URI += "file://ieee80215-arphrd.patch"
 
 BINCONFIG_GLOB = "pcap-config"
 
