@@ -5,7 +5,7 @@ DEPENDS = "intltool-native libglade glib-2.0 gtk+ gconf dbus db gnome-common vir
 
 SRCREV = "91812cd2f797fb8ec8befbb2685037584ce144ee"
 PV = "1.4.0"
-PR = "r2"
+PR = "r3"
 PE = "1"
 PR_append = "+gitr${SRCREV}"
 
@@ -26,7 +26,7 @@ do_configure_prepend () {
      cp ${WORKDIR}/gtk-doc.make ${S}
 }
 
-EXTRA_OECONF = "--without-openldap --with-dbus --without-weather --without-bug-buddy --without-soup --without-libdb --with-libdb=${STAGING_DIR_HOST}${layout_prefix} --disable-smime --disable-nss --disable-nntp --disable-gtk-doc --disable-calendar --disable-hula --disable-dot-locking --disable-gnome-keyring"
+EXTRA_OECONF = "--without-openldap --with-dbus --without-weather --without-bug-buddy --without-soup --without-libdb --with-libdb=${STAGING_DIR_HOST}${layout_prefix} --disable-smime --disable-nss --disable-nntp --disable-gtk-doc --enable-calendar --disable-hula --disable-dot-locking --disable-gnome-keyring"
 
 PACKAGES =+ "libcamel-collateral libcamel libcamel-dev libebook libebook-dev libecal libecal-dev libedata-book libedata-book-dev libedata-cal libedata-cal-dev libedataserver libedataserver-dev"
 
