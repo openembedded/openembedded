@@ -9,7 +9,7 @@ DEPENDS = "ncurses"
 LEAD_SONAME = "libreadline.so"
 
 PKGV = "${PV}+p2"
-PR = "r0"
+PR = "r1"
 
 # Don't bring it in silently because there was a switch from GPLv2
 # to GPLv3.  It might require newer ncurses 5.7 too which are not
@@ -17,8 +17,8 @@ PR = "r0"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "${GNU_MIRROR}/readline/readline-${PV}.tar.gz;name=tarball \
-  ${GNU_MIRROR}/readline/readline-${PV}-patches/readline61-001;striplevel=0;name=patch001 \
-  ${GNU_MIRROR}/readline/readline-${PV}-patches/readline61-002;striplevel=0;name=patch002 \
+  ${GNU_MIRROR}/readline/readline-${PV}-patches/readline61-001;striplevel=0;name=patch001;apply=yes \
+  ${GNU_MIRROR}/readline/readline-${PV}-patches/readline61-002;striplevel=0;name=patch002;apply=yes \
   file://libs.patch \
   file://acinclude.m4"
 S = "${WORKDIR}/readline-${PV}"
