@@ -1,0 +1,14 @@
+t a/drivers/mmc/fsl_esdhc.c b/drivers/mmc/fsl_esdhc.c
+index a368fe6..f982a69 100644
+--- a/drivers/mmc/fsl_esdhc.c
++++ b/drivers/mmc/fsl_esdhc.c
+@@ -208,7 +208,7 @@ static int esdhc_setup_data(struct mmc *mmc, struct mmc_data *data)
+ 
+ 	/* Calculate the timeout period for data transactions */
+ 	timeout = fls(mmc->tran_speed/10) - 1;
+-	timeout -= 13;
++	timeout -= 11;
+ 
+ 	if (timeout > 14)
+ 		timeout = 14;
+
