@@ -53,6 +53,7 @@ iface eth0 inet dhcp
 iface eth1 inet dhcp
 
 # Ethernet/RNDIS gadget (g_ether) or LAN9514
+auto usb0
 iface usb0 inet dhcp
 
 # Bluetooth networking
