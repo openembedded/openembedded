@@ -4,7 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "virtual/libsdl flac libmikmod libvorbis libmad"
 LICENSE = "LGPL"
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-${PV}.tar.gz \
            file://fix-flac-madness.diff"
