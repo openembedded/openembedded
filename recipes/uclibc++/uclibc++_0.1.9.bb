@@ -5,7 +5,7 @@ LICENSE = "LGPL"
 PRIORITY = "optional"
 SECTION = "libs"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://cxx.uclibc.org/src/uClibc++-${PV}.tbz2 \
 	   file://nobash.patch \
@@ -38,12 +38,6 @@ do_configure () {
 	perl -i -p -e '${configmangle}' ${S}/.config
 
 	oe_runmake oldconfig
-}
-
-do_stage () {
-	oe_runmake 'UCLIBCXX_RUNTIME_PREFIX=${STAGING_LIBDIR}/../' \
-		   install
-	chmod +x ${STAGING_LIBDIR}/libuClibc++.so.*
 }
 
 do_install () {
