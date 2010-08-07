@@ -2,7 +2,7 @@ SECTION = "libs"
 LICENSE = "GD"
 DESCRIPTION = "gd is a library used to create PNG, JPEG, or WBMP images."
 DEPENDS = "freetype libpng jpeg zlib"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://www.libgd.org/releases/gd-2.0.36RC1.tar.gz;name=src"
 SRC_URI[src.md5sum] = "39ac48e6d5e0012a3bd2248a0102f209"

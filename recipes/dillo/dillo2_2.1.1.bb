@@ -8,7 +8,7 @@ RDEPENDS_${PN} = "fltk2-images"
 SRC_URI="http://www.dillo.org/download/dillo-${PV}.tar.bz2 \
          file://dillo.desktop \
          file://dillo.png"
-PR = "r4"
+PR = "r5"
 
 S = "${WORKDIR}/dillo-${PV}/"
 

@@ -8,7 +8,7 @@ RDEPENDS_${PN} = "mplayer lame libxv libsdl-x11"
 
 SRCREV = "12"
 PV = "0.13+svnr${SRCPV}"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "svn://intone-video.googlecode.com/svn;module=trunk;proto=http"
 S = "${WORKDIR}/trunk"

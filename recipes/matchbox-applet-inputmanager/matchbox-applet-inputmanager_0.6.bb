@@ -3,7 +3,7 @@ LICENSE = "GPL"
 DEPENDS = "matchbox-wm libmatchbox"
 SECTION = "x11/wm"
 
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://projects.o-hand.com/matchbox/sources/mb-applet-input-manager/${PV}/mb-applet-input-manager-${PV}.tar.gz \
 	   file://update-to-svn.diff \

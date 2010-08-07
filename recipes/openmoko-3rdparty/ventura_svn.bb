@@ -6,7 +6,7 @@ LICENSE = "GPLv2"
 DEPENDS = "elementary webkit-efl sqlite3"
 RRECOMMENDS_${PN} = "ca-certificates"
 PV = "0.2+svnr${SRCPV}"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "svn://elm-browser.googlecode.com/svn;module=trunk;proto=http"
 

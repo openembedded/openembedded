@@ -4,7 +4,7 @@ LICENSE = "GPL"
 # FIXME: There is much more checked libraries. All should be added or explicitly disabled to get consistent results.
 DEPENDS = "bzip2 jpeg libpng librsvg tiff zlib"
 
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "ftp://ftp.nluug.nl/pub/ImageMagick/ImageMagick-${PV}.tar.bz2 \
            file://PerlMagic_MakePatch;apply=yes \

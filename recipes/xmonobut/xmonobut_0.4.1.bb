@@ -2,7 +2,7 @@ DESCRIPTION = "X-Utility to allow middle and right clicking with a stylus"
 LICENSE = "GPL"
 SECTION = "x11/utils"
 DEPENDS = "virtual/libx11 libxext libxpm libmatchbox"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "\
   http://familiar.handhelds.org/source/v0.8.4-rc2/sources/xmonobut-${PV}.tar.gz \

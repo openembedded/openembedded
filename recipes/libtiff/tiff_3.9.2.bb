@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.remotesensing.org/libtiff/"
 DEPENDS = "zlib jpeg lzo"
 PV = "3.9.2+4.0.0beta5"
 
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://download.osgeo.org/libtiff/tiff-4.0.0beta5.tar.gz;name=tiff400beta5targz"
 SRC_URI[tiff400beta5targz.md5sum] = "a0a83604e38a299fae9f0b1a39c04870"

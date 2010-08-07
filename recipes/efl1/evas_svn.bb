@@ -1,5 +1,5 @@
 require evas.inc
-PR = "r7"
+PR = "r8"
 
 EVAS_CPU_TWEAKS = ""
 # Disabled for now, see http://thread.gmane.org/gmane.comp.window-managers.enlightenment.devel/25194

@@ -4,7 +4,7 @@ LICENSE = "LGPL"
 SECTION = "devel"
 DEPENDS = "vala-native glib-2.0 dbus dbus-glib eina eet evas ecore edje elementary"
 PV = "0.5.0+svnr${SRCPV}"
-PR = "r0"
+PR = "r1"
 PE = "1"
 SRCREV = "${EFL_SRCREV}"
 

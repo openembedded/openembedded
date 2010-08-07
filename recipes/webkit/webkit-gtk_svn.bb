@@ -3,7 +3,7 @@ DEPENDS = "geoclue enchant gtk-doc-native gtk-doc gnome-keyring libsoup-2.4 curl
 
 SRCREV_FORMAT = "webcore-rwebkit"
 
-PR = "r1"
+PR = "r2"
 SRCREV = "60413"
 PV = "1.3.1+svnr${SRCPV}"
 

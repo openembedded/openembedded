@@ -2,7 +2,7 @@ DESCRIPTION = "EFL based widget set for mobile devices"
 LICENSE = "LGPL"
 DEPENDS = "eet-native efreet evas ecore edje eet edbus"
 PV = "0.7.0+svnr${SRCPV}"
-PR = "r10"
+PR = "r11"
 SRCREV = "${EFL_SRCREV}"
 
 inherit efl

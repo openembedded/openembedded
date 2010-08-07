@@ -3,7 +3,7 @@ DEPENDS = "eet evas ecore edje efreet edbus"
 LICENSE = "MIT BSD"
 SRCNAME = "e"
 PV = "0.16.999.060+svnr${SRCPV}"
-PR = "r13"
+PR = "r14"
 SRCREV = "${EFL_SRCREV}"
 
 inherit e update-alternatives

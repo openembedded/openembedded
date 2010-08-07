@@ -1,6 +1,6 @@
 require ecore.inc
 SRCREV = "${EFL_SRCREV}"
-PR = "r11"
+PR = "r12"
 
 SRC_URI += "\
   file://iconv.patch;maxrev=43996 \

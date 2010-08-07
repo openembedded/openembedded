@@ -1,5 +1,7 @@
 require gst-plugins.inc
 
+PR = "${INC_PR}.1"
+
 SRC_URI[archive.md5sum] = "9cddbb0e7e90677f0cc05c23feffef5c"
 SRC_URI[archive.sha256sum] = "2e7771a611cedb1e8208601cb26744fbf33109598e222afee1be8811ba4babcf"
 

@@ -8,4 +8,5 @@ AUTHOR = "seabra"
 inherit e
 
 PV = "0.9.9+svnr${SRCPV}"
+PR = "r1"
 SRCREV = "${EFL_SRCREV}"
