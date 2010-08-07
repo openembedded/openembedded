@@ -1,0 +1,18 @@
+Index: ftdi_eeprom-0.3/src/main.c
+===================================================================
+--- ftdi_eeprom-0.3.orig/src/main.c	2009-02-16 01:23:28.000000000 -0800
++++ ftdi_eeprom-0.3/src/main.c	2010-08-06 22:47:51.243444000 -0700
+@@ -134,8 +134,11 @@
+ 
+     	    i = ftdi_usb_open(&ftdi, 0x0403, 0x6001);
+ 	    if (i != 0) {
+-		printf("Error: %s\n", ftdi.error_str);
+-		exit (-1);
++    	    	i = ftdi_usb_open(&ftdi, 0x0403, 0x6010);
++	    	if (i != 0) {
++		    printf("Error: %s\n", ftdi.error_str);
++		    exit (-1);
++		}
+ 	    }
+ 	}
+     }
