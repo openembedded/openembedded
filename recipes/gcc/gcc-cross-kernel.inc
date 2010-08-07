@@ -5,10 +5,6 @@ DEPENDS += "gcc-cross"
 
 PROVIDES = "virtual/${TARGET_PREFIX}gcc-${PV}"
 
-do_install () {
-	:
-}
-
 do_compile () {
 	# This compiler is only for the kernel.  Don't bother running fixincludes.
 	mkdir -p gcc
@@ -16,8 +12,8 @@ do_compile () {
 	oe_runmake
 }
 
-do_stage () {
+do_install () {
 	cd gcc
-	oe_runmake installdirs install-common install-headers install-libgcc
-	install -m 0755 xgcc ${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}gcc-${PV}
+	oe_runmake 'DESTDIR=${D}' installdirs install-common install-headers install-libgcc
+	install -m 0755 xgcc ${D}${STAGING_DIR_NATIVE}${prefix_native}/bin/${TARGET_PREFIX}gcc-${PV}
 }
