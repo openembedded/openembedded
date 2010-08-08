@@ -5,16 +5,12 @@ do_install() {
 
         install -d ${D}${base_libdir}
         install -m 755 usr/klibc/klibc-*.so ${D}${base_libdir}
-        cd ${D}${base_libdir}
-        ln -s klibc-*.so klibc.so
-        cd -
+	install -d  ${D}${TOOLCHAIN_PATH}/bin/
+	install -m 755 klcc/klcc '${D}${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}klcc'
+	(cd  ${D}${base_libdir}; ln -s klibc-*.so klibc.so)
 }
 
 export INST=${STAGING_DIR_TARGET}
-do_stage() {
-        oe_runmake  install
-        cp '${STAGING_DIR_TARGET}/bin/klcc'  '${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}klcc'
-}
 
 PACKAGES = "${PN} ${PN}-dev "
 FILES_${PN} = "${base_libdir}/klibc-*.so"

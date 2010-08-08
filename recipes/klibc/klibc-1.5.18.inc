@@ -31,4 +31,5 @@ do_install_append() {
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/dmesg ${D}${base_bindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/sync ${D}${base_bindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/ls ${D}${base_bindir}
+        install -m 755 klcc/klcc ${D}${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}klcc
 }
