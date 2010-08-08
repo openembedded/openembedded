@@ -19,6 +19,9 @@ IMAGE_INSTALL += " \
   beagleboard-test-scripts \
   nano \
   cpuburn-neon \
+  kernel-module-mt9t112 \
+  u-boot-mkimage \
+  sox \
 "
 
 export IMAGE_BASENAME = "beagleboard-test-image"
