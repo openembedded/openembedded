@@ -1,6 +1,6 @@
 DESCRIPTION = "UrJTAG is a universal JTAG library, servers and tools"
 HOMEPAGE = "http://urjtag.org/"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 DEPENDS = "libftdi libusb gettext readline"
 
 PR = "r0"
