@@ -1,7 +1,7 @@
 DESCRIPTION = "Touchscreen calibration data"
 LICENSE = "MIT"
 SECTION = "base"
-PR = "r21"
+PR = "r22"
 
 SRC_URI = "file://pointercal"
 S = "${WORKDIR}"
