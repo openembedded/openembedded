@@ -2,7 +2,7 @@ DESCRIPTION = "The X Window System -- install this task to get a client/server b
 SECTION = "x11/server"
 LICENSE = "MIT"
 PV = "1.0"
-PR = "r5"
+PR = "r6"
 
 # WORK IN PROGRESS
 
@@ -25,7 +25,7 @@ XSERVER_COMMON ?= "xserver-kdrive-common"
 XSERVER_COMMON_shr = "xserver-common"
 
 # This is also the reason why we have to make this package machine specific :/
-PACKAGE_ARCH_pn-${PN}-server = "${MACHINE_ARCH}"
+PACKAGE_ARCH_${PN}-server = "${MACHINE_ARCH}"
 
 RDEPENDS_${PN}-server = "\
   ${XSERVER} \
