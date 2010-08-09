@@ -50,6 +50,10 @@ exec_prefix = "${prefix}"
 base_sbindir = "${base_prefix}/bin"
 sbindir = "${exec_prefix}/bin"
 
+# staging should be special for cross
+STAGING_DIR_HOST = ""
+SHLIBSDIR = "${STAGING_DIR_NATIVE}/shlibs"
+
 do_install () {
 	oe_runmake 'DESTDIR=${D}' install
 }
