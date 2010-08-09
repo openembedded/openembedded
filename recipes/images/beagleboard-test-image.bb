@@ -22,6 +22,7 @@ IMAGE_INSTALL += " \
   kernel-module-mt9t112 \
   u-boot-mkimage \
   sox \
+  devmem2 \
 "
 
 export IMAGE_BASENAME = "beagleboard-test-image"
