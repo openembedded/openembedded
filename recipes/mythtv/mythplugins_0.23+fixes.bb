@@ -47,22 +47,22 @@ do_configure() {
 
 do_install_mythweb_apache () {
         oe_runmake install INSTALL_ROOT="${D}"
-	install -d  ${D}${datadir}/apache2
-	install -d  ${D}${datadir}/apache2/htdocs
-	install -d  ${D}/etc/apache2
-	install -d  ${D}/etc/apache2/extra
-	cp -r ${S}/mythweb/* ${D}${datadir}/apache2/htdocs/
-	cp -r ${S}/mythweb/mythweb.conf.apache ${D}/etc/apache2/extra/mythweb.conf
-	sed -i -e s:/var/www/html:/usr/share/apache2/htdocs:g ${D}/etc/apache2/extra/mythweb.conf
+        install -d  ${D}${datadir}/apache2
+        install -d  ${D}${datadir}/apache2/htdocs
+        install -d  ${D}/etc/apache2
+        install -d  ${D}/etc/apache2/extra
+        cp -r ${S}/mythweb/* ${D}${datadir}/apache2/htdocs/
+        cp -r ${S}/mythweb/mythweb.conf.apache ${D}/etc/apache2/extra/mythweb.conf
+        sed -i -e s:/var/www/html:/usr/share/apache2/htdocs:g ${D}/etc/apache2/extra/mythweb.conf
 }
 
 do_install_mythweb_lighttpd () {
         oe_runmake install INSTALL_ROOT="${D}"
-	install -d  ${D}/www
-	install -d  ${D}/www/pages
-	cp -r ${S}/mythweb/* ${D}www/pages/
-	cp -r ${S}/mythweb/mythweb.conf.lighttpd ${D}/etc/mythweb.conf
-	sed -i -e s:/var/www/html:/www/pages:g ${D}/etc/mythweb.conf
+        install -d  ${D}/www
+        install -d  ${D}/www/pages
+        cp -r ${S}/mythweb/* ${D}www/pages/
+        cp -r ${S}/mythweb/mythweb.conf.lighttpd ${D}/etc/mythweb.conf
+        sed -i -e s:/var/www/html:/www/pages:g ${D}/etc/mythweb.conf
 }
 
 pkg_postinst_mythweb_apache () {

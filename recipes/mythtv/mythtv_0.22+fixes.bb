@@ -2,7 +2,7 @@ require mythtv.inc
 
 DEPENDS_{PN} += "libmyth"
 DEPENDS_libmyth = "libmythdb libmythavutil libmythavcodec libmythavformat libmythswscale libmythhdhomerun \
-	libmythtv libmythui libmythfreemheg libmythupnp libmythlivemedia"
+        libmythtv libmythui libmythfreemheg libmythupnp libmythlivemedia"
 
 RDEPENDS_${PN} = "mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mythtv-database \
 mysql5-server mysql5-client libmysqlclient qt4-plugin-sqldriver-sqlmysql xmltv"
@@ -64,7 +64,7 @@ do_configure_prepend() {
 }
 
 do_install() {
-	oe_runmake INSTALL_ROOT=${D} install
+        oe_runmake INSTALL_ROOT=${D} install
         install -d ${D}${datadir}/mythtv
         install -d ${D}${datadir}/mythtv/sql
         install -m 0644 ${S}/database/mc.sql ${D}${datadir}/mythtv/sql
