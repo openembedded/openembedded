@@ -1,0 +1,28 @@
+upstream: n/a
+status: accepted in r3406
+comment: Fix underquoted macro definitions.
+
+diff -Nurd gsnmp-0.3.0.orig/acinclude.m4 gsnmp-0.3.0/acinclude.m4
+--- gsnmp-0.3.0.orig/acinclude.m4	2010-02-19 10:35:29.000000000 +0200
++++ gsnmp-0.3.0/acinclude.m4	2010-08-09 13:30:32.000000000 +0300
+@@ -6,7 +6,7 @@
+ dnl usually in <utime.h>.
+ dnl Some systems have utime.h but don't declare the struct anywhere.
+
+-AC_DEFUN(jm_CHECK_TYPE_STRUCT_UTIMBUF,
++AC_DEFUN([jm_CHECK_TYPE_STRUCT_UTIMBUF],
+ [
+   AC_CHECK_HEADERS(utime.h)
+   AC_REQUIRE([AC_HEADER_TIME])
+diff -Nurd gsnmp-0.3.0.orig/gsnmp.m4 gsnmp-0.3.0/gsnmp.m4
+--- gsnmp-0.3.0.orig/gsnmp.m4	2010-02-19 10:35:29.000000000 +0200
++++ gsnmp-0.3.0/gsnmp.m4	2010-08-09 13:30:46.000000000 +0300
+@@ -1,7 +1,7 @@
+ dnl AM_PATH_GSNMP()
+ dnl
+
+-AC_DEFUN(AM_PATH_GSNMP,
++AC_DEFUN([AM_PATH_GSNMP],
+ [
+   PKG_CHECK_MODULES(GSNMP, glib-2.0 >= 2.0.1)
+ ])
