@@ -2,7 +2,7 @@ require xorg-proto-common.inc
 DESCRIPTION = "Touchscreen calibration protocol"
 PE = "3"
 PV = "0.0+${PR}+gitr${SRCPV}"
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 SRC_URI = "git://anongit.freedesktop.org/git/xorg/proto/calibrateproto;protocol=git"
 
@@ -11,5 +11,5 @@ S = "${WORKDIR}/git"
 
 do_install_append() {
         #make it compatible with the old package from cvs
-        ln -sf ${D}${libdir}/pkgconfig/xcalibrateproto.pc ${D}${libdir}/pkgconfig/xcalibrateext.pc
+        ln -sf xcalibrateproto.pc ${D}${libdir}/pkgconfig/xcalibrateext.pc
 }
