@@ -1,6 +1,5 @@
 inherit package
 
-BOOTSTRAP_EXTRA_RDEPENDS += "opkg-collateral opkg"
 IMAGE_PKGTYPE ?= "ipk"
 
 IPKGCONF_TARGET = "${STAGING_ETCDIR_NATIVE}/opkg.conf"
