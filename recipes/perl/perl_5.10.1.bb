@@ -5,7 +5,10 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r12"
+PR = "r13"
+
+# 5.10.1 has Module::Build built-in
+PROVIDES += "libmodule-build-perl"
 
 # Not tested enough
 DEFAULT_PREFERENCE = "-1"
@@ -279,5 +282,6 @@ FILES_perl-module-unicore-name += "${datadir}/perl/${PV}/unicore"
 
 require perl-rdepends_${PV}.inc
 require perl-rprovides.inc
+require perl-rprovides_${PV}.inc
 
 PARALLEL_MAKE = ""
