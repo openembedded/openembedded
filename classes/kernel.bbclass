@@ -1,7 +1,7 @@
 inherit linux-kernel-base module_strip
 
 PROVIDES += "virtual/kernel"
-DEPENDS += "virtual/${TARGET_PREFIX}gcc virtual/${TARGET_PREFIX}depmod-${@get_kernelmajorversion('${PV}')} virtual/${TARGET_PREFIX}gcc${KERNEL_CCSUFFIX} update-modules"
+DEPENDS += "virtual/${TARGET_PREFIX}gcc virtual/${TARGET_PREFIX}depmod-${@get_kernelmajorversion('${PV}')} virtual/${TARGET_PREFIX}gcc${KERNEL_CCSUFFIX} update-modules bluez-dtl1-workaround"
 
 # we include gcc above, we dont need virtual/libc
 INHIBIT_DEFAULT_DEPS = "1"
@@ -268,7 +268,6 @@ ALLOW_EMPTY_kernel-image = "1"
 
 # Userspace workarounds for kernel modules issues
 # This is shame, fix the kernel instead!
-DEPENDS_kernel-module-dtl1-cs = "bluez-dtl1-workaround"
 RDEPENDS_kernel-module-dtl1-cs = "bluez-dtl1-workaround"
 
 # renamed modules

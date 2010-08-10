@@ -266,11 +266,7 @@ RRECOMMENDS_task-base-bluetooth = "\
     ${@base_contains('COMBINED_FEATURES', 'pcmcia', 'kernel-module-bluecard-cs', '',d)} \
     ${@base_contains('COMBINED_FEATURES', 'pcmcia', 'kernel-module-bluetoothuart-cs', '',d)} \
     ${@base_contains('COMBINED_FEATURES', 'pcmcia', 'kernel-module-dtl1-cs', '',d)} \
-    ${@base_contains('COMBINED_FEATURES', 'pcmcia', 'bluez-dtl1-workaround', '',d)} \
     "
-# bluez-dtl1-workaround above is workaround for bitbake not handling DEPENDS on it in
-# kernel.bbclass. It should be there as long as kernel-module-dtl1-cs is, but not longer.
-
 RDEPENDS_task-base-irda = "\
     irda-utils"
 
