@@ -12,7 +12,6 @@ SRC_URI = "ftp://sources.redhat.com/pub/lvm2/old/LVM2.${PV}.tgz \
 
 # Unset user/group to unbreak install.
 EXTRA_OECONF = "--with-user= --with-group= --disable-o_direct"
-EXTRA_OECONF_arm = "--with-user= --with-group= --disable-o_direct"
 
 inherit autotools
 
