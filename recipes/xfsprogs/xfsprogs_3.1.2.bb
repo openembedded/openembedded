@@ -3,6 +3,7 @@ HOMEPAGE = "http://oss.sgi.com/projects/xfs"
 LICENSE = "GPL"
 SECTION = "base"
 DEPENDS = "util-linux-ng"
+PR = "r1"
 
 SRC_URI = "ftp://oss.sgi.com/projects/xfs/cmd_tars/${P}.tar.gz"
 SRC_URI[md5sum] = "86d10178ee6897cb099c97303e6d9da0"
@@ -13,6 +14,8 @@ inherit autotools
 EXTRA_OECONF = "--enable-gettext=no"
 TARGET_CC_ARCH += "${LDFLAGS}"
 
+FILES_${PN}-dev += "${base_libdir}/libhandle.la \
+                    ${base_libdir}/libhandle.so"
 
 do_configure () {
 	export LIBTOOL="${STAGING_BINDIR_NATIVE}/${HOST_SYS}-libtool"
@@ -23,5 +26,16 @@ do_configure () {
 do_install () {
 	export DIST_ROOT=${D}
 	oe_runmake install
+	# needed for xfsdump
+	oe_runmake install-dev
+	# replace extra links to /usr/lib with relative links (otherwise autotools_prepackage_lamangler fails to read nonexistent link)
+	rm -f ${D}/${base_libdir}/libhandle.la
+	rm -f ${D}/${base_libdir}/libhandle.a
+	ln -s ../usr/lib/libhandle.la ${D}/${base_libdir}/libhandle.la
+	ln -s ../usr/lib/libhandle.a ${D}/${base_libdir}/libhandle.a
+
+	# and link from /usr/lib/libhandle.so to /lib/libhandle.so
+	rm -f ${D}/${libdir}/libhandle.so
+	ln -s ../../lib/libhandle.a ${D}/${libdir}/libhandle.so
 }
 
