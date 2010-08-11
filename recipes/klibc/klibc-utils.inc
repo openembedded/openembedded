@@ -1,7 +1,8 @@
 KLIBC_UTILS_VARIANT ?= "shared"
 KLIBC_UTILS_PKGNAME ?= "klibc-utils"
 
-# We only want the static utils. klibc build both. So we install only what we want.
+# modprobe and losetup go to ${base_sbindir}
+
 do_install_append() {
         install -d ${D}${base_bindir}
         install -d ${D}${base_sbindir}
@@ -15,14 +16,18 @@ do_install_append() {
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/chroot ${D}${base_bindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/cpio ${D}${base_bindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/dd ${D}${base_bindir}
+        install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/dmesg ${D}${base_bindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/false ${D}${base_bindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/halt ${D}${base_bindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/kill ${D}${base_bindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/ln ${D}${base_bindir}
+        install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/losetup ${D}${base_sbindir}
+        install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/ls ${D}${base_bindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/minips ${D}${base_bindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/mkdir ${D}${base_bindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/mkfifo ${D}${base_bindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/mknod ${D}${base_bindir}
+        install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/modprobe ${D}${base_sbindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/mount ${D}${base_bindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/nuke ${D}${base_bindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/pivot_root ${D}${base_bindir}
@@ -30,27 +35,18 @@ do_install_append() {
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/readlink ${D}${base_bindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/reboot ${D}${base_bindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/sleep ${D}${base_bindir}
+        install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/sync ${D}${base_bindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/true ${D}${base_bindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/umount ${D}${base_bindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/uname ${D}${base_bindir}
-        install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/modprobe ${D}${base_sbindir}
-        install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/losetup ${D}${base_sbindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/wc ${D}${base_bindir}
         ln -s gzip ${D}${base_bindir}/gunzip
         ln -s gzip ${D}${base_bindir}/zcat
 }
 
-# only in 1.5
-# install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/insmod ${D}${base_bindir}
-
-# only in >= 1.5.18 (can be moved to do_install_append above as soon as klibc_1.5 is dropped from tree)
-# install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/dmesg ${D}${base_bindir}
-# install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/sync ${D}${base_bindir}
-# install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/ls ${D}${base_bindir}
-
 PACKAGES += "${KLIBC_UTILS_PKGNAME}-sh \
-             ${KLIBC_UTILS_PKGNAME}-gzip \
              ${KLIBC_UTILS_PKGNAME}-kinit \
+             ${KLIBC_UTILS_PKGNAME}-gzip \
              ${KLIBC_UTILS_PKGNAME}-fstype \
              ${KLIBC_UTILS_PKGNAME}-ipconfig \
              ${KLIBC_UTILS_PKGNAME}-nfsmount \
@@ -65,10 +61,13 @@ PACKAGES += "${KLIBC_UTILS_PKGNAME}-sh \
              ${KLIBC_UTILS_PKGNAME}-halt \
              ${KLIBC_UTILS_PKGNAME}-kill \
              ${KLIBC_UTILS_PKGNAME}-ln \
+             ${KLIBC_UTILS_PKGNAME}-losetup \
+             ${KLIBC_UTILS_PKGNAME}-ls \
              ${KLIBC_UTILS_PKGNAME}-minips \
              ${KLIBC_UTILS_PKGNAME}-mkdir \
              ${KLIBC_UTILS_PKGNAME}-mkfifo \
              ${KLIBC_UTILS_PKGNAME}-mknod \
+             ${KLIBC_UTILS_PKGNAME}-modprobe \
              ${KLIBC_UTILS_PKGNAME}-mount \
              ${KLIBC_UTILS_PKGNAME}-nuke \
              ${KLIBC_UTILS_PKGNAME}-pivot-root \
@@ -80,15 +79,11 @@ PACKAGES += "${KLIBC_UTILS_PKGNAME}-sh \
              ${KLIBC_UTILS_PKGNAME}-true \
              ${KLIBC_UTILS_PKGNAME}-umount \
              ${KLIBC_UTILS_PKGNAME}-uname \
-             ${KLIBC_UTILS_PKGNAME}-modprobe \
-             ${KLIBC_UTILS_PKGNAME}-losetup \
-             ${KLIBC_UTILS_PKGNAME}-wc \
-             ${KLIBC_UTILS_PKGNAME}-insmod \
-             ${KLIBC_UTILS_PKGNAME}-ls"
+             ${KLIBC_UTILS_PKGNAME}-wc"
 
 FILES_${KLIBC_UTILS_PKGNAME}-sh = "${base_bindir}/sh"
-FILES_${KLIBC_UTILS_PKGNAME}-gzip = "${base_bindir}/gzip ${base_bindir}/gunzip ${base_bindir}/zcat"
 FILES_${KLIBC_UTILS_PKGNAME}-kinit = "${base_bindir}/kinit"
+FILES_${KLIBC_UTILS_PKGNAME}-gzip = "${base_bindir}/gzip ${base_bindir}/gunzip ${base_bindir}/zcat"
 FILES_${KLIBC_UTILS_PKGNAME}-fstype = "${base_bindir}/fstype"
 FILES_${KLIBC_UTILS_PKGNAME}-ipconfig = "${base_bindir}/ipconfig"
 FILES_${KLIBC_UTILS_PKGNAME}-nfsmount = "${base_bindir}/nfsmount"
@@ -103,10 +98,13 @@ FILES_${KLIBC_UTILS_PKGNAME}-false = "${base_bindir}/false"
 FILES_${KLIBC_UTILS_PKGNAME}-halt = "${base_bindir}/halt"
 FILES_${KLIBC_UTILS_PKGNAME}-kill = "${base_bindir}/kill"
 FILES_${KLIBC_UTILS_PKGNAME}-ln = "${base_bindir}/ln"
+FILES_${KLIBC_UTILS_PKGNAME}-losetup = "${base_sbindir}/losetup"
+FILES_${KLIBC_UTILS_PKGNAME}-ls = "${base_bindir}/ls"
 FILES_${KLIBC_UTILS_PKGNAME}-minips = "${base_bindir}/minips"
 FILES_${KLIBC_UTILS_PKGNAME}-mkdir = "${base_bindir}/mkdir"
 FILES_${KLIBC_UTILS_PKGNAME}-mkfifo = "${base_bindir}/mkfifo"
 FILES_${KLIBC_UTILS_PKGNAME}-mknod = "${base_bindir}/mknod"
+FILES_${KLIBC_UTILS_PKGNAME}-modprobe = "${base_sbindir}/modprobe"
 FILES_${KLIBC_UTILS_PKGNAME}-mount = "${base_bindir}/mount"
 FILES_${KLIBC_UTILS_PKGNAME}-nuke = "${base_bindir}/nuke"
 FILES_${KLIBC_UTILS_PKGNAME}-pivot-root = "${base_bindir}/pivot_root"
@@ -118,8 +116,4 @@ FILES_${KLIBC_UTILS_PKGNAME}-sync = "${base_bindir}/sync"
 FILES_${KLIBC_UTILS_PKGNAME}-true = "${base_bindir}/true"
 FILES_${KLIBC_UTILS_PKGNAME}-umount = "${base_bindir}/umount"
 FILES_${KLIBC_UTILS_PKGNAME}-uname = "${base_bindir}/uname"
-FILES_${KLIBC_UTILS_PKGNAME}-modprobe = "${base_sbindir}/modprobe"
-FILES_${KLIBC_UTILS_PKGNAME}-losetup = "${base_sbindir}/losetup"
 FILES_${KLIBC_UTILS_PKGNAME}-wc = "${base_bindir}/wc"
-FILES_${KLIBC_UTILS_PKGNAME}-insmod = "${base_bindir}/insmod"
-FILES_${KLIBC_UTILS_PKGNAME}-ls = "${base_bindir}/ls"

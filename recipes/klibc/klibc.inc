@@ -1,57 +1,52 @@
-do_install() {
-        install -d ${D}${base_bindir}
-        install -m 755 usr/dash/sh.${KLIBC_UTILS_VARIANT} ${D}${base_bindir}/sh
-        install -m 755 usr/kinit/kinit.${KLIBC_UTILS_VARIANT} ${D}${base_bindir}/kinit
+DEPENDS = "virtual/kernel perl-native"
+SECTION = "libs"
+DESCRIPTION = "klibc is intended to be a minimalistic libc subset for \
+use with initramfs.  It is deliberately written for small size, \
+minimal entaglement, and portability, not speed."
+LICENSE = "BSD-ADV"
 
-        install -d ${D}${base_libdir}
-        install -m 755 usr/klibc/klibc-*.so ${D}${base_libdir}
-	install -d  ${D}${TOOLCHAIN_PATH}/bin/
-	install -m 755 klcc/klcc '${D}${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}klcc'
-	(cd  ${D}${base_libdir}; ln -s klibc-*.so klibc.so)
+PACKAGE_ARCH = "${MACHINE_ARCH}"
+INC_PR = "r18"
+
+KLIBC_ARCH = '${TARGET_ARCH}'
+KLIBC_ARCH_armeb = 'arm'
+KLIBC_ARCH_mipsel = 'mips'
+KLIBC_ARCH_x86 = 'i386'
+KLIBC_ARCH_i486 = 'i386'
+KLIBC_ARCH_i586 = 'i386'
+KLIBC_ARCH_i686 = 'i386'
+KLIBC_ARCH_pentium = 'i386'
+
+# the klibc code contains ARM instructions (for ARM), this
+# could be fixed, but for the moment:
+ARM_INSTRUCTION_SET = "arm"
+
+KLIBC_FETCHDIR = "1.5"
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/klibc/${KLIBC_FETCHDIR}/klibc-${PV}.tar.bz2"
+
+SRC_URI_append_linux-gnueabi = "file://klibc-config-eabi.patch"
+SRC_URI_append_linux-uclibceabi = "file://klibc-config-eabi.patch"
+
+SRC_URI += "file://fstype-sane-vfat-and-jffs2-for-1.5.patch \
+            file://modprobe.patch \
+            file://dash_readopt.patch \
+            file://wc.patch \
+            file://staging.patch \
+            file://klibc_kexecsyscall.patch \
+            file://mntproc-definitions.patch \
+            file://arm-signal-cleanup.patch \
+            file://socket.h.patch \
+            file://isystem.patch \
+            file://klibc-x86-KLIBCARCHINCFLAGS.patch \
+            "
+
+S = "${WORKDIR}/klibc-${PV}"
+
+EXTRA_OEMAKE = "'KLIBCARCH=${KLIBC_ARCH}' \
+                'CROSS_COMPILE=${TARGET_PREFIX}' \
+                'KLIBCKERNELSRC=${STAGING_KERNEL_DIR}' \
+                "
+
+do_configure () {
+        ln -sf ${STAGING_KERNEL_DIR} linux
 }
-
-export INST=${STAGING_DIR_TARGET}
-
-PACKAGES = "${PN} ${PN}-dev "
-FILES_${PN} = "${base_libdir}/klibc-*.so"
-FILES_${PN}-dev = "${base_libdir}/klibc.so"
-
-require klibc-utils.inc
-
-# Yes we want exactly the klibc that was compiled with the utils
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-sh = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-kinit = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-fstype = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-ipconfig = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-nfsmount = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-resume = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-run-init = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-cat = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-chroot = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-cpio = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-dd = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-dmesg = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-false = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-halt = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-insmod = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-kill = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-ln = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-minips = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-mkdir = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-mkfifo = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-mknod = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-mount = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-nuke = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-pivot-root = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-poweroff = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-readlink = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-reboot = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-sleep = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-sync = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-true = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-umount = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-uname = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-modprobe = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-losetup = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-wc = "${PN} (=${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-ls = "${PN} (=${PV}-${PR})"
