@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r65"
+PR = "r66"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -298,6 +298,8 @@ RDEPENDS_${PN} += "\
 		maxima \
 		xfsprogs \
 		xfsdump \
+		numberx \
+		neomis \
 "
 
 # this is only usefull on gta02 and on other devices it's trying to pull mesa-dri (not respecting DEFAULT_PROVIDER for virtual/libgl)
