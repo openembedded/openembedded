@@ -1,4 +1,5 @@
 do_install() {
+	oe_runmake DEST_DIR=${D} install
         install -d ${D}${base_bindir}
         install -m 755 usr/dash/sh.${KLIBC_UTILS_VARIANT} ${D}${base_bindir}/sh
         install -m 755 usr/kinit/kinit.${KLIBC_UTILS_VARIANT} ${D}${base_bindir}/kinit
@@ -6,14 +7,10 @@ do_install() {
         install -d ${D}${base_libdir}
         install -m 755 usr/klibc/klibc-*.so ${D}${base_libdir}
         (cd  ${D}${base_libdir}; ln -s klibc-*.so klibc.so)
+        install -m 755 klcc/klcc ${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}klcc
 }
 
 export INST=${STAGING_DIR_TARGET}
-
-do_stage() {
-        oe_runmake install
-        cp '${STAGING_DIR_TARGET}/bin/klcc' '${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}klcc'
-}
 
 PACKAGES = "${PN} ${PN}-dev "
 FILES_${PN} = "${base_libdir}/klibc-*.so"
@@ -60,4 +57,6 @@ RDEPENDS_${KLIBC_UTILS_PKGNAME}-wc = "${PN} (=${PV}-${PR})"
 #######################
 require klibc-utils.inc
 require klibc.inc
-require klibc-${PV}.inc
+
+SRC_URI[md5sum] = "5c8b6577b9acb3809cace6e118cdd55b"
+SRC_URI[sha256sum] = "e4104f8b34a5f354222bd4622f50b58c6218bf70614450d68539cbef666b6446"
