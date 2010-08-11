@@ -2,7 +2,7 @@ DESCRIPTION = "XFS Filesystem Dump Utility"
 HOMEPAGE = "http://oss.sgi.com/projects/xfs"
 LICENSE = "GPL"
 SECTION = "base"
-DEPENDS = "util-linux-ng"
+DEPENDS = "xfsprogs"
 
 SRC_URI = "ftp://oss.sgi.com/projects/xfs/cmd_tars/${P}.tar.gz"
 SRC_URI[md5sum] = "af6932cfcd95ce64dc583128a190ffd7"
