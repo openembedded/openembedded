@@ -8,6 +8,12 @@
 		<graphics type="gtk_drawing_area"/>
 		<gui type="gtk" enabled="no" menubar="1" toolbar="1" statusbar="1"/>
 		<xi:include href="/usr/share/navit/navit.default.xml" xpointer="xpointer(/config/navit/gui[@type='internal'])"/>
+		<!-- or comment gtk version above and try:
+		opkg install navit-graphics-qt
+		opkg install navit-gui-qml
+		<graphics type="qt_qpainter"/>
+		<gui type="qml" enabled="yes" menubar="1" toolbar="1" statusbar="1"/>
+		-->
 		<xi:include href="/usr/share/navit/osd.xml"/>
 		<log enabled="no" type="textfile_debug" data="debug_%Y%m%d-%i.txt" flush_size="1000" flush_time="30"/>
 		<vehicle name="Local GPS" profilename="car" enabled="yes" active="1" source="gpsd://localhost" gpsd_query="w+xj">

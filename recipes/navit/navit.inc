@@ -1,10 +1,10 @@
 DESCRIPTION = "Navit is a car navigation system with routing engine."
 LICENSE = "GPL"
 SECTION = "x11/applications"
-DEPENDS = "glib-2.0 gtk+ qt4-x11-free"
-DEPENDS_shr += " gd gypsy librsvg-native"
+DEPENDS = "glib-2.0 gtk+ qt4-x11-free gd gypsy librsvg-native"
 RDEPENDS_${PN} = " navit-icons ${PN}-config "
-RDEPENDS_append_shr = " fsoraw"
+RDEPENDS_${PN}_append_shr = " fsoraw"
+RDEPENDS_${PN}-gui-qml = "qt4-plugin-imageformat-svg"
 RRECOMMENDS_${PN} = "gpsd ${PN}-dbus ${PN}-speech-cmdline ${PN}-gui-internal ${PN}-graphics-gtk"
 RSUGGESTS_${PN} = "flite espeak ${PN}-speech-dbus ${PN}-gui-gtk ${PN}-gui-qml ${PN}-graphics-sdl ${PN}-graphics-qt ${PN}-maptool"
 
