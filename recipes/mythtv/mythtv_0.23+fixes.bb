@@ -16,7 +16,7 @@ PV = "0.23"
 # but for packaging the real PV is needed
 REALPV = "0.23"
 
-SRCREV = "25073"
+SRCREV = "25609"
 SRC_URI = "svn://svn.mythtv.org/svn/branches/release-0-23-fixes;module=mythtv;proto=http"
 
 S = "${WORKDIR}/mythtv"
