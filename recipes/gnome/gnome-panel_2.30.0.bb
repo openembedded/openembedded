@@ -3,6 +3,8 @@ LICENSE = "GPL"
 SECTION = "x11/gnome"
 DEPENDS = "libcanberra gconf librsvg libgweather startup-notification libwnck orbit2 gtk+ libbonoboui libglade libgnome libgnomeui gnome-desktop libglade gnome-menus orbit2-native"
 
+PR = "r1"
+
 inherit gnome pkgconfig
 
 SRC_URI += "file://idl-sysroot.patch"
