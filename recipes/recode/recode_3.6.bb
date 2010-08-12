@@ -8,7 +8,7 @@ SRC_URI = "${GNU_MIRROR}/recode/recode-${PV}.tar.gz \
 
 inherit autotools
 
-TARGET_CC_ARCH_append = "${LDFLAGS}"
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 do_configure() {
 	gnu-configize
