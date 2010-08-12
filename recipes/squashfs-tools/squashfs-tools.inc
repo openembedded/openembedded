@@ -7,7 +7,7 @@ INC_PR = "r4"
 S = "${WORKDIR}/squashfs${@bb.data.getVar('PV',d,1).replace('r','-r')}/squashfs-tools"
 
 # required to share same place with -lzma specific packages
-FILESPATHPKG = "squashfs-tools-${PV}:squashfs-tools:files"
+FILESPATHPKG =. "squashfs-tools-${PV}:"
 
 SRC_URI ?= "${SOURCEFORGE_MIRROR}/squashfs/squashfs${@bb.data.getVar('PV',d,1).replace('r','-r')}.tar.gz"
 
