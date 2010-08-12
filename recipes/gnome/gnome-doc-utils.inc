@@ -1,6 +1,6 @@
 LICENSE = "GPL LGPL"
-DEPENDS = "libxml2 libxslt libxslt-native libxml2-native"
-DEPENDS_virtclass-native = "libxslt-native libxml2-native"
+DEPENDS = "libxml2 libxslt libxslt-native libxml2-native gettext-native"
+DEPENDS_virtclass-native = "libxslt-native libxml2-native gettext-native"
 
 INC_PR = "r5"
 
