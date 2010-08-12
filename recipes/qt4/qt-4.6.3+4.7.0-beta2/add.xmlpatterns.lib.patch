@@ -5,7 +5,7 @@ diff -uNr qt-everywhere-opensource-src-4.7.0-beta1.orig//demos/browser/browser.p
  TEMPLATE = app
  TARGET = browser
 -QT += webkit network mediaservices
-+QT += webkit network mediaservices xmlpatterns
++QT += webkit network mediaservices xmlpatterns phonon
  
  CONFIG += qt warn_on
  contains(QT_BUILD_PARTS, tools):!embedded: CONFIG += uitools
@@ -16,7 +16,7 @@ diff -uNr qt-everywhere-opensource-src-4.7.0-beta1.orig//examples/xmlpatterns/qo
  
  FORMS       += forms/mainwindow.ui
 -QT +=       xmlpatterns webkit
-+QT +=       xmlpatterns webkit mediaservices
++QT +=       xmlpatterns webkit mediaservices phonon
  SOURCES     += qobjectxmlmodel.cpp main.cpp mainwindow.cpp ../shared/xmlsyntaxhighlighter.cpp
  HEADERS     += qobjectxmlmodel.h  mainwindow.h ../shared/xmlsyntaxhighlighter.h
  RESOURCES   = queries.qrc
