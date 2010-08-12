@@ -1,4 +1,4 @@
 require squashfs-tools.inc
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.0"
 
 SRC_URI += " file://Makefile.patch"

@@ -6,7 +6,7 @@ SRC_URI  = "cvs://anonymous@squashfs.cvs.sourceforge.net/cvsroot/squashfs;module
 SRC_URI += " file://Makefile.patch"
 
 require squashfs-tools.inc
-PR = "${INC_PR}.3"
+PR = "${INC_PR}.0"
 
 S = "${WORKDIR}/squashfs/squashfs-tools"
 
