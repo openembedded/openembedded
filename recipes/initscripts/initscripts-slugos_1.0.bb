@@ -24,7 +24,7 @@ PR := "${PR}.24"
 CONFFILES_${PN} = ""
 
 # We wish to search the same file paths as does the initscripts recipe.
-FILESPATHPKG = "initscripts-${PV}:initscripts:files"
+FILESPATHPKG =. "initscripts-${PV}:"
 
 PACKAGES = "${PN}-dbg ${PN}"
 
