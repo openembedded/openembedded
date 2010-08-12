@@ -5,7 +5,10 @@ PRIORITY = "optional"
 LICENSE = "GPLv2"
 
 DEPENDS = "ncurses"
+# actually RDEPENDS, but ncurses-terminfo is only in ncurses-5.7, so RRECOMMENDS for now
+RRECOMMENDS_${PN} = "ncurses-terminfo"
 
+PR = "r1"
 SRC_URI = "${SOURCEFORGE_MIRROR}/htop/htop-${PV}.tar.gz \
            file://remove-proc-test.patch"
 
