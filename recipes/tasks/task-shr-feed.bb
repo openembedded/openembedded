@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r66"
+PR = "r67"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -300,6 +300,8 @@ RDEPENDS_${PN} += "\
 		xfsdump \
 		numberx \
 		neomis \
+		supertux-qvga \
+		wesnoth \
 "
 
 # this is only usefull on gta02 and on other devices it's trying to pull mesa-dri (not respecting DEFAULT_PROVIDER for virtual/libgl)
