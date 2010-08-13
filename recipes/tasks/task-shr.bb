@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Fat Image Feed"
-PR = "r8"
+PR = "r9"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -26,7 +26,7 @@ RDEPENDS_${PN}-apps += "\
    task-shr-minimal-apps \
 	opimd-utils-notes \
 	iliwi \
-	ventura \
+	eve \
 	intone \
 "
 RDEPENDS_${PN}-cli += "\
