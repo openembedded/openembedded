@@ -11,8 +11,8 @@ SRC_URI = "\
   file://pidgin-cross-python-265.patch \
 "
 
-SRC_URI[md5sum] = "c23d85bb6a197dd841d1b5585148327d"
-SRC_URI[sha256sum] = "8ab5f126f384197727db8f61306663325c2779c25e54e61ff95366448a0861c0"
+SRC_URI[md5sum] = "e4bbadadae85e5e008690b52dd51f102"
+SRC_URI[sha256sum] = "8b5788aa7b8c3fa372e6c5f671592731c86e41322bcc09facb6bbe6127e323f2"
 
 EXTRA_OECONF += "\
   --disable-gtkspell \
