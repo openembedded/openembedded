@@ -23,6 +23,7 @@ IMAGE_INSTALL += " \
   u-boot-mkimage \
   sox \
   devmem2 \
+  ti-dsplink-examples \
 "
 
 export IMAGE_BASENAME = "beagleboard-test-image"
