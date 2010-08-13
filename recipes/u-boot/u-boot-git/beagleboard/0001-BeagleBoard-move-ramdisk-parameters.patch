@@ -1,0 +1,38 @@
+From c8d02f2a8500f06de39681aed60ea5c9894f8087 Mon Sep 17 00:00:00 2001
+From: Jason Kridner <jkridner@beagleboard.org>
+Date: Wed, 11 Aug 2010 14:50:38 -0500
+Subject: [PATCH] BeagleBoard: move ramdisk parameters
+
+This will make it easier to reprogram the ramdisk size.
+
+Signed-off-by: Jason Kridner <jkridner@beagleboard.org>
+---
+ include/configs/omap3_beagle.h |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/include/configs/omap3_beagle.h b/include/configs/omap3_beagle.h
+index 48ad805..4f5c1d4 100644
+--- a/include/configs/omap3_beagle.h
++++ b/include/configs/omap3_beagle.h
+@@ -217,7 +217,7 @@
+ 	"mmcrootfstype=ext3 rootwait\0" \
+ 	"nandroot=/dev/mtdblock4 rw\0" \
+ 	"nandrootfstype=jffs2\0" \
+-	"ramroot=/dev/ram0 rw\0" \
++	"ramroot=/dev/ram0 rw ramdisk_size=65536 initrd=${rdaddr},64M\0" \
+ 	"ramrootfstype=ext2\0" \
+ 	"mmcargs=setenv bootargs console=${console} " \
+ 		"${optargs} " \
+@@ -248,8 +248,7 @@
+ 		"vram=${vram} " \
+ 		"omapfb.mode=dvi:${dvimode} " \
+ 		"omapdss.def_disp=${defaultdisplay} " \
+-		"root=${ramroot} rw ramdisk_size=65536 " \
+-		"initrd=${rdaddr},64M " \
++		"root=${ramroot} " \
+ 		"rootfstype=${ramrootfstype}\0" \
+ 	"loadramdisk=fatload mmc ${mmcdev} ${rdaddr} ramdisk.gz\0" \
+ 	"bootscript=echo Running bootscript from mmc ...; " \
+-- 
+1.5.6.4
+

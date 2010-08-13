@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r63"
+PR ="r64"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -71,6 +71,7 @@ SRC_URI_beagleboard = "git://www.denx.de/git/u-boot.git;protocol=git \
                        file://0044-Beagleboard-Adjust-boot.patch \
                        file://0045-BeagleBoard-Enable-pullups-on-i2c2.patch \
                        file://0046-BeagleBoard-Add-camera-to-default-bootargs.patch \
+		       file://0001-BeagleBoard-move-ramdisk-parameters.patch \
                        file://fw_env.config \
 "
 SRCREV_beagleboard = "ca6e1c136ddb720c3bb2cc043b99f7f06bc46c55"
