@@ -1,0 +1,22 @@
+diff -uNr qt-everywhere-opensource-src-4.7.0-beta1.orig//demos/browser/browser.pro qt-everywhere-opensource-src-4.7.0-beta1/demos/browser/browser.pro
+--- qt-everywhere-opensource-src-4.7.0-beta1.orig//demos/browser/browser.pro	2010-06-26 13:15:06.000000000 +0200
++++ qt-everywhere-opensource-src-4.7.0-beta1/demos/browser/browser.pro	2010-06-26 13:18:17.000000000 +0200
+@@ -1,6 +1,6 @@
+ TEMPLATE = app
+ TARGET = browser
+-QT += webkit network mediaservices
++QT += webkit network mediaservices xmlpatterns phonon
+ 
+ CONFIG += qt warn_on
+ contains(QT_BUILD_PARTS, tools):!embedded: CONFIG += uitools
+diff -uNr qt-everywhere-opensource-src-4.7.0-beta1.orig//examples/xmlpatterns/qobjectxmlmodel/qobjectxmlmodel.pro qt-everywhere-opensource-src-4.7.0-beta1/examples/xmlpatterns/qobjectxmlmodel/qobjectxmlmodel.pro
+--- qt-everywhere-opensource-src-4.7.0-beta1.orig//examples/xmlpatterns/qobjectxmlmodel/qobjectxmlmodel.pro	2010-05-04 02:43:18.000000000 +0200
++++ qt-everywhere-opensource-src-4.7.0-beta1/examples/xmlpatterns/qobjectxmlmodel/qobjectxmlmodel.pro	2010-06-26 13:17:42.000000000 +0200
+@@ -1,6 +1,6 @@
+ 
+ FORMS       += forms/mainwindow.ui
+-QT +=       xmlpatterns webkit
++QT +=       xmlpatterns webkit mediaservices phonon
+ SOURCES     += qobjectxmlmodel.cpp main.cpp mainwindow.cpp ../shared/xmlsyntaxhighlighter.cpp
+ HEADERS     += qobjectxmlmodel.h  mainwindow.h ../shared/xmlsyntaxhighlighter.h
+ RESOURCES   = queries.qrc

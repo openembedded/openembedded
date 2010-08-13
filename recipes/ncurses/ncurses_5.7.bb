@@ -4,15 +4,15 @@ LICENSE = "MIT"
 SECTION = "libs"
 PATCHDATE = "20100501"
 PKGV = "${PV}+${PATCHDATE}"
-PR = "r10"
+PR = "r11"
 
 # recipe is experimental for now...
 DEFAULT_PREFERENCE = "-99"
 
-DEPENDS = "ncurses-native"
-DEPENDS_virtclass-native = ""
+DEPENDS = "ncurses-native unifdef-native"
+DEPENDS_virtclass-native = "unifdef-native"
 
-inherit autotools binconfig
+inherit autotools binconfig test
 
 SRC_URI = "${GNU_MIRROR}/ncurses/ncurses-${PV}.tar.gz;name=tarball \
         ftp://invisible-island.net/ncurses/5.7/ncurses-5.7-20100424-patch.sh.bz2;apply=yes;name=p20100424sh \
@@ -83,6 +83,30 @@ do_compile() {
             oe_runmake -C widec libs
 }
 
+# set of expected differences between narrowc and widec header
+#
+# TODO: the NCURSES_CH_T difference can cause real problems :(
+_unifdef_cleanup = " \
+  -e '\!/\* \$Id: curses.wide,v!,\!/\* \$Id: curses.tail,v!d' \
+  -e '/^#define NCURSES_CH_T /d' \
+  -e '/^#include <wchar.h>/d' \
+  -e '\!^/\* .* \*/!d' \
+"
+
+do_test[dirs] = "${S}"
+do_test() {
+        ${ENABLE_WIDEC} || return 0
+
+        # make sure that the narrow and widec header are compatible
+        # and differ only in minor details.
+        unifdef -k narrowc/include/curses.h | \
+            sed ${_unifdef_cleanup} > curses-narrowc.h
+        unifdef -k widec/include/curses.h | \
+            sed ${_unifdef_cleanup} > curses-widec.h
+
+        diff curses-narrowc.h curses-widec.h
+}
+
 _install_opts = "\
   DESTDIR='${D}' \
   PKG_CONFIG_LIBDIR='${libdir}/pkgconfig' \
@@ -90,11 +114,14 @@ _install_opts = "\
 "
 
 do_install() {
+        # Order of installation is important; widec installs a 'curses.h'
+        # header with more definitions and must be installed last hence.
+        # Compatibility of these headers will be checked in 'do_test()'.
+        oe_runmake -C narrowc ${_install_opts} \
+                install.data install.progs
+
         ! ${ENABLE_WIDEC} || \
             oe_runmake -C widec ${_install_opts}
-
-        oe_runmake -C narrowc ${_install_opts} \
-		install.data install.progs
 
 
         cd narrowc

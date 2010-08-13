@@ -6,7 +6,7 @@ DEPENDS = "edje-native"
 RRECOMMENDS_${PN} = "e-wm-theme-illume-gry"
 LICENSE = "unknown"
 
-SRCREV = "722b0dcc2b1bf79515eaaddd9ebc7819c7f923d0"
+SRCREV = "7218f7db425111ef32624565c18d6406119e6c6d"
 PV = "0.8-${EFL_SRCREV}+gitr${SRCPV}"
 PR = "r2"
 

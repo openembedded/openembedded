@@ -14,7 +14,7 @@ RDEPENDS_mythweb_lighttpd = "lighttpd lighttpd-module-cgi lighttpd-module-fastcg
 PR = "svnr${SRCPV}+r0"
 PV = "0.23"
 
-SRCREV = "25073"
+SRCREV = "25609"
 SRC_URI = "svn://svn.mythtv.org/svn/branches/release-0-23-fixes;module=mythplugins;proto=http \
         file://sysroot.patch \
         file://mythplugins_wo_qtopengl.diff \

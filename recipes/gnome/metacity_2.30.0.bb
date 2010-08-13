@@ -3,6 +3,8 @@ DESCRIPTION = "Metacity is the boring window manager for the adult in you."
 LICENSE = "GPL"
 DEPENDS = "libcanberra libwnck startup-notification gtk+ gconf gdk-pixbuf-csource-native"
 
+PR = "r1"
+
 inherit gnome update-alternatives
 
 SRC_URI += "file://crosscompile.patch "

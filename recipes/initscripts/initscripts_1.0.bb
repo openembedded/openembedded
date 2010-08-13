@@ -4,7 +4,7 @@ PRIORITY = "required"
 DEPENDS = "makedevs"
 RDEPENDS_${PN} = "makedevs"
 LICENSE = "GPL"
-PR = "r122"
+PR = "r123"
 
 SRC_URI = "file://functions \
            file://halt \
@@ -35,7 +35,7 @@ SRC_URI = "file://functions \
 
 SRC_URI_append_arm = " file://alignment.sh"
 
-CONFFILES_${PN} += "${sysconfdir}/device_table" 
+CONFFILES_${PN} += "${sysconfdir}/device_table"
 
 KERNEL_VERSION = ""
 

@@ -50,7 +50,7 @@ def merge_tasks(d):
 		__gather_taskdeps(task, items)
 		return items
 
-	newtask = "do_populate_sysroot"
+	newtask = "do_populate_sysroot_post"
 	mergedtasks = gather_taskdeps(newtask)
 	mergedtasks.pop()
 	deltasks = gather_taskdeps("do_patch")
@@ -83,17 +83,22 @@ def merge_tasks(d):
 		d.setVarFlag(task, "deps", deps)
 
 	# Pull cross recipe task deps over
-	depends = (d.getVarFlag(task, "depends") or ""
-	           for task in mergedtasks[:-1]
-	           if not task in deltasks)
-	d.setVarFlag("do_populate_sysroot", "depends", " ".join(depends))
+	depends = []
+	deptask = []
+	for task in mergedtasks[:-1]:
+	    if not task in deltasks:
+		depends.append(d.getVarFlag(task, "depends") or "")
+		deptask.append(d.getVarFlag(task, "deptask") or "")
+
+	d.setVarFlag("do_populate_sysroot_post", "depends", " ".join(depends))
+	d.setVarFlag("do_populate_sysroot_post", "deptask", " ".join(deptask))
 
 python () {
     merge_tasks(d)
 }
 
-# Manually run do_install & all of its deps, then do_stage
-python do_populate_sysroot () {
+# Manually run do_install & all of its deps
+python do_populate_sysroot_post () {
 	from os.path import exists
 	from bb.build import exec_task, exec_func
 	from bb import note
@@ -105,11 +110,11 @@ python do_populate_sysroot () {
 			if not dep in seen:
 				rec_exec_task(dep, seen)
 		seen.add(task)
-		#if not exists("%s.%s" % (stamp, task)):
-		note("%s: executing task %s" % (d.getVar("PF", True), task))
-		exec_task(task, d)
+		if not exists("%s.%s" % (stamp, task)):
+		    note("%s: executing task %s" % (d.getVar("PF", True), task))
+		    exec_func(task, d)
 
-	rec_exec_task("do_install", set())
-	exec_func("do_stage", d)
+	rec_exec_task("do_populate_sysroot", set())
 }
-do_populate_sysroot[lockfiles] += "${S}/.lock"
+addtask populate_sysroot_post after do_populate_sysroot
+do_populate_sysroot_post[lockfiles] += "${S}/.lock"

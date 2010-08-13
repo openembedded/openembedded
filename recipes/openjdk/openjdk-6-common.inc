@@ -46,9 +46,7 @@ DEPENDS = "giflib libpng jpeg cups \
 DEPENDS_append_arm = " qemu-native "
 
 
-FILESPATHPKG = "openjdk-6-${PV}"
-
-FILESPATHPKG_append = ":files"
+FILESPATHPKG =. "openjdk-6-${PV}:"
 
 # No package should directly depend on this (it should require
 # java2-runtime instead).

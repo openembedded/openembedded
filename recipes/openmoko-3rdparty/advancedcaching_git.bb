@@ -2,11 +2,12 @@ DESCRIPTION = "Advanced Geocaching Tool for Linux - Towards paperless geocaching
 SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "GPL"
-HOMEPAGE = "http://www.opkg.org/package_268.html"
+AUTHOR = "Daniel Fett"
+HOMEPAGE = "http://www.danielfett.de/internet-und-opensource,software,agtl"
 RDEPENDS_${PN} = "python-pygtk python-html python-image python-netclient python-misc python-sqlite3 python-mime python-json"
-SRCREV = "9c3661f5573d2dd712437f1590070153d12e4c02"
-PV = "0.1.2+gitr${SRCPV}"
-PR = "r1"
+SRCREV = "45a42994753fb396840890dd756b118790b8989e"
+PV = "0.6.1.5+gitr${SRCPV}"
+PR = "r2"
 
 SRC_URI = "git://github.com/webhamster/advancedcaching.git;protocol=git;branch=master"
 

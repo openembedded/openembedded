@@ -1,0 +1,11 @@
+--- /tmp/bc_cat.c	2010-08-11 11:36:20.000000000 +0200
++++ OMAP35x_Graphics_SDK_3_01_00_06/GFX_Linux_KM/services4/3rdparty/bufferclass_ti/bc_cat.c	2010-08-11 11:36:53.000000000 +0200
+@@ -487,7 +487,7 @@
+ 
+     /* texture buffer width should be multiple of 8 for OMAP3 ES3.x,
+      * or 32 for ES2.x */
+-    width_align = omap_rev_lt_3_0() ? 32 : 8;
++    width_align = cpu_is_omap3530() && omap_rev_lt_3_0() ? 32 : 8;
+     
+     major = register_chrdev(0, DEVNAME, &bc_cat_fops);
+ 
