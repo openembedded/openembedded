@@ -1,6 +1,6 @@
 require wxwidgets.inc
 
-INC_PR = "r0"
+INC_PR = "r1"
 
 PROVIDES += "wxwidgets"
 
@@ -14,7 +14,6 @@ WXCONFIG ?= "${TOOLKIT}-${UNICODE}-${DEBUG}-${RELEASE}"
 LEAD_SONAME = "libwx_.*_core-.*\.so"
 
 # Patch and regenerate configure script so that it finds staging root.
-FILESDIR = "${FILE_DIRNAME}/wxwidgets-${PV}"
 SRC_URI += "file://configure-cross_root.patch"
 
 do_configure_prepend() {
