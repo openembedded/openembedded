@@ -1,18 +1,15 @@
 DESCRIPTION = "Libcgroup"
 PRIORITY = "optional"
 SECTION = "libs"
-LICENSE = "GPL"
+LICENSE = "LGPL"
 #DEPENDS = "bison-native flex-native"
-PR = "r0"
+PR = "r1"
 
 inherit autotools pkgconfig
 
 DEPENDS = "libpam"
 
-SRC_URI = "http://downloads.sourceforge.net/project/libcg/libcgroup/v0.36.2/v0.36.2.rc/libcgroup-0.36.2.rc.tar.bz2"
-S = "${WORKDIR}/libcgroup-${PV}.rc"
+SRC_URI = "${SOURCEFORGE_MIRROR}/project/libcg/${PN}/v${PV}/${PN}-${PV}.tar.bz2"
 
-
-SRC_URI[md5sum] = "08df957084cba32e2a28ec1e8e8740f5"
-SRC_URI[sha256sum] = "35e803a4bf4845bb38ec74cca654e9de5d792758b8b1978a4a699ac6689510c9"
-
+SRC_URI[md5sum] = "2b0fedf37e8f3e915a2f4f3f10879076"
+SRC_URI[sha256sum] = "7fdb171c09d7e9d13d118045a5651b8c146ede979c05aca0f6bb20624e6a73e3"
