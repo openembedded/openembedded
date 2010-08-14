@@ -5,7 +5,9 @@ LICENSE = "GPL"
 AUTHOR = "Rasca <thron@gmx.de> Karl H. Beckers <karl.h.beckers@gmx.net>"
 HOMEPAGE = "http://xvidcap.sf.net"
 
-DEPENDS = "intltool-native docbook-utils-native gtk+ glib-2.0 libglade lame xmu libxfixes xdamage"
+DEPENDS = "intltool-native docbook-utils-native gtk+ glib-2.0 libglade lame libxmu libxfixes libxdamage"
+
+INC_PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.gz"
 
