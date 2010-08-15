@@ -37,7 +37,7 @@ SRC_URI_append_boc01 = "\
            file://012-081209-BUG_SETENV.patch \
            file://013-090206-FIX_OOB_8BITS_LARGEPAGE_NAND.patch \
            file://014-081211-BOOT_RESCUE.patch \
-           file://015-090205-EMC.patch \
+           file://015-090205-EMC.patch \
            file://016-090209-PM.patch \
            "
 
