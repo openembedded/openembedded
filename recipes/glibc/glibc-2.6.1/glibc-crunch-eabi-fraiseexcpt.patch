@@ -1,0 +1,88 @@
+diff -urN glibc-2.5/ports/sysdeps/arm/eabi/fraiseexcpt.c glibc-2.5/ports/sysdeps/arm/eabi-new/fraiseexcpt.c
+--- glibc-2.5/ports/sysdeps/arm/eabi/fraiseexcpt.c	2005-10-11 01:29:32.000000000 +1000
++++ glibc-2.5/ports/sysdeps/arm/eabi-new/fraiseexcpt.c	2008-04-14 17:21:09.000000000 +1000
+@@ -25,6 +25,7 @@
+ #include <ldsodefs.h>
+ #include <dl-procinfo.h>
+ #include <sysdep.h>
++#include <math.h>
+ 
+ int
+ feraiseexcept (int excepts)
+@@ -105,8 +105,74 @@
+ 
+   if (GLRO (dl_hwcap) & HWCAP_ARM_CRUNCH)
+     {
+-      /* Unsupported, for now.  */
+-      return 1;
++      unsigned int dspsc;
++      const float fp_zero = 0.0, fp_one = 1.0, fp_max = FLT_MAX,
++                  fp_min = FLT_MIN, fp_1e32 = 1.0e32f, fp_two = 2.0,
++		  fp_three = 3.0, fp_inf = HUGE_VALF;
++
++      /* Raise exceptions represented by EXPECTS.  But we must raise only
++	 one signal at a time.  It is important that if the overflow/underflow
++	 exception and the inexact exception are given at the same time,
++	 the overflow/underflow exception follows the inexact exception.  After
++	 each exception we read from the dspsc, to force the exception to be
++	 raised immediately.  */
++
++      /* There are additional complications because this file may be compiled
++         without CRUNCH support enabled, and we also can't assume that the
++	 assembler has CRUNCH instructions enabled. To get around this we use the
++	 generic coprocessor mnemonics and avoid asking GCC to put float values
++	 in CRUNCH registers.  */
++
++      /* First: invalid exception.  */
++      if (FE_CRUNCH_INVALID & excepts)
++	/* (ZERO * INFINITY) */
++	__asm__ __volatile__ (
++	  "ldc p4, cr0, %1\n\t"                        /* cflds mvf0, %1  */
++	  "ldc p4, cr1, %2\n\t"                        /* cflds mvf1, %2  */
++	  "cdp p4, 1, cr0, cr0, cr1, 0\n\t"            /* cfmuls mvf0, mvf0, mvf1  */
++	  "cdp p4, 0, cr0, cr0, cr0, 7\n\t"            /* cfmv32sc mvdx0, dspsc */
++      "mrc p5, 0, %0, cr0, cr0, 0" : "=r" (dspsc) /* cfmvr64l dspsc, mvdx0 */
++			                : "m" (fp_zero), "m" (fp_inf)
++					: "s0", "s1");
++
++      /* Next: overflow.  */
++      if (FE_CRUNCH_OVERFLOW & excepts)
++	/* There's no way to raise overflow without also raising inexact.  */
++	__asm__ __volatile__ (
++	  "ldc p4, cr0, %1\n\t"                        /* cflds mvf0, %1  */
++	  "ldc p4, cr1, %2\n\t"                        /* cflds mvf1, %2  */
++	  "cdp p4, 3, cr0, cr0, cr1, 4\n\t"            /* cfadds mvf0, mvf0, mvf1  */
++	  "cdp p4, 0, cr0, cr0, cr0, 7\n\t"            /* cfmv32sc mvdx0, dspsc */
++      "mrc p5, 0, %0, cr0, cr0, 0" : "=r" (dspsc) /* cfmvr64l dspsc, mvdx0  */
++			                : "m" (fp_max), "m" (fp_1e32)
++					: "s0", "s1");
++
++      /* Next: underflow.  */
++      if (FE_CRUNCH_UNDERFLOW & excepts)
++	/* (FLT_MIN * FLT_MIN) */
++	__asm__ __volatile__ (
++	  "ldc p4, cr0, %1\n\t"                        /* cflds mvf0, %1  */
++	  "ldc p4, cr1, %2\n\t"                        /* cflds mvf1, %2  */
++	  "cdp p4, 1, cr0, cr0, cr1, 0\n\t"            /* cfmul mvf0, mvf0, mvf1  */
++	  "cdp p4, 0, cr0, cr0, cr0, 7\n\t"            /* cfmv32sc mvdx0, dspsc */
++      "mrc p5, 0, %0, cr0, cr0, 0" : "=r" (dspsc) /* cfmvr64l dspsc, mvdx0 */
++			                : "m" (fp_min), "m" (fp_min)
++					: "s0", "s1");
++
++      /* Last: inexact.  */
++      if (FE_CRUNCH_INEXACT & excepts)
++	/* There's no way to raise inexact without also raising overflow.  */
++	__asm__ __volatile__ (
++	  "ldc p4, cr0, %1\n\t"                        /* cflds mvf0, %1  */
++	  "ldc p4, cr1, %2\n\t"                        /* cflds mvf1, %2  */
++	  "cdp p4, 3, cr0, cr0, cr1, 4\n\t"            /* cfadds mvf0, mvf0, mvf1  */
++	  "cdp p4, 0, cr0, cr0, cr0, 7\n\t"            /* cfmv32sc mvdx0, dspsc */
++      "mrc p5, 0, %0, cr0, cr0, 0" : "=r" (dspsc) /* cfmvr64l dspsc, mvdx0 */
++			                : "m" (fp_max), "m" (fp_1e32)
++					: "s0", "s1");
++
++      /* Success.  */
++      return 0;
+     }
+ 
+   /* Unsupported, so fail.  */
