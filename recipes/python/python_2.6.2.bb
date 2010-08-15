@@ -14,15 +14,6 @@ SRC_URI = "\
   file://04-default-is-optimized.patch \
   file://05-enable-ctypes-cross-build.patch \
   file://99-ignore-optimization-flag.patch \
-  \
-# not yet pushed forward
-# sitebranding
-  \
-#  file://05-install.patch \
-#  file://06-fix-urllib-exception.patch \
-#  file://16-bug1179-imageop.patch \
-#  file://13-set-wakeup-fix.patch \
-  \
   file://sitecustomize.py \
 "
 S = "${WORKDIR}/Python-${PV}"

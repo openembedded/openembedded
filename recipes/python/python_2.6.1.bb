@@ -15,15 +15,6 @@ SRC_URI = "\
   file://06-libffi-enable-default-mips.patch \
   file://07-export-grammer.patch \
   file://99-ignore-optimization-flag.patch \
-  \
-# not yet pushed forward
-# sitecustomize, sitebranding
-  \
-#  file://05-install.patch \
-#  file://06-fix-urllib-exception.patch \
-#  file://16-bug1179-imageop.patch \
-#  file://13-set-wakeup-fix.patch \
-  \
   file://sitecustomize.py \
 "
 S = "${WORKDIR}/Python-${PV}"
