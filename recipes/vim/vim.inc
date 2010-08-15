@@ -5,9 +5,7 @@ DEPENDS = "ncurses"
 RSUGGESTS_${PN} = "diffutils"
 LICENSE = "vim"
 
-FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/vim-${PV}"
-
-INC_PR = "r5"
+INC_PR = "r6"
 
 SRC_URI = "ftp://ftp.vim.org/pub/vim/unix/vim-${PV}.tar.bz2;name=vim${PV}tarbz2 \
            ftp://ftp.vim.org/pub/vim/extra/vim-${PV}-extra.tar.gz;name=vim${PV}extratargz \
