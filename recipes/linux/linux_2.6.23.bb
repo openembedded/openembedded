@@ -16,8 +16,6 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2;name=k
 
 # Bug fixes on the 2.6.23.x stable branch
 SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-2.6.23.17.bz2;apply=yes;name=stablepatch"
-# Real-time preemption (includes CFS). This is experimental and requires a different defconfig.
-#SRC_URI += "file://patch-2.6.23.12-rt14;apply=yes"
 # Only the Completely Fair Scheduler (CFS), the official backport from 2.6.24 (adapted for 2.6.23.17)
 SRC_URI += "file://sched-cfs-v2.6.23.12-v24.1.patch"
 # Add support for squashfs-lzma (a highly compressed read-only filesystem)
