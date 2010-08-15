@@ -40,10 +40,6 @@ SRC_URI = "http://www.openzaurus.org/mirror/linux-sl5500-${SHARPV}-rom3_10.tar.b
 # touchclicks etc so it is removed until be fixed
 #           file://sound-2.4.18r2.patch
 
-# apply this when we have a patch that allows building with gcc 3.x:
-# SRC_URI_append = file://gcc-3.3.patch
-# SRC_URI_append = file://machtune-args.patch
-
 S = "${WORKDIR}/linux"
 
 inherit kernel

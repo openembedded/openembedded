@@ -56,8 +56,6 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2;name=ke
 
 SRC_URI_append_poodle += " file://smallfonts.diff"
 SRC_URI_append_poodle255 += " file://smallfonts.diff"
-# apply this when we have a kernel that builds with gcc 3.x:
-# SRC_URI_append = file://machtune-args.patch
 SRC_URI_append_tosa = " file://tosa-power-key-off.patch"
 
 S = "${WORKDIR}/linux"

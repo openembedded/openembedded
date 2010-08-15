@@ -33,10 +33,6 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2;name=ke
            file://iw240_we18-5.diff \
 "
 
-# apply this when we have a patch that allows building with gcc 3.x:
-# SRC_URI_append = file://gcc-3.3.patch
-# SRC_URI_append = file://machtune-args.patch
-
 S = "${WORKDIR}/linux-${KV}"
 
 inherit kernel
