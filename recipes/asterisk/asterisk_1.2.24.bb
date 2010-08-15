@@ -10,7 +10,6 @@ PR = "r1"
 SRC_URI="http://downloads.asterisk.org/pub/telephony/asterisk/releases/${P}.tar.gz \
 	 file://uclibc-compat-getloadavg.patch \
 	 file://uclibc-dns.patch \
-#         file://uclibc-define-glob.patch \
          file://asterisk.patch \
          file://enable-speex.patch"
 
