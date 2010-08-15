@@ -11,7 +11,6 @@ SRC_URI = "file://no-compat.patch \
 	file://msleep-vs-mdelay.patch \
 	file://might-sleep.patch \
 	file://only-the-modules.patch \
-#	file://module_param_array.patch \
 	file://scripts-makefile-hostcc.patch \
 	file://pcmciasrc.patch \
 	file://config.in"
