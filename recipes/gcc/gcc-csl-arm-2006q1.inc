@@ -6,7 +6,7 @@ PV = "4.1.0+csl-arm-2006q1-6"
 FILESDIR = "${FILE_DIRNAME}/gcc-csl-arm"
 
 SRC_URI = "http://www.codesourcery.com/public/gnu_toolchain/arm-none-eabi/arm-2006q1-6-arm-none-eabi.src.tar.bz2;name=archive \
-           file://gcc-configure-no-fortran.patch \
+#           file://gcc-configure-no-fortran.patch \
            file://gcc-new-makeinfo.patch"
 
 S = "${WORKDIR}/gcc-2006q1"
