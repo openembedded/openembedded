@@ -14,8 +14,6 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2;name=k
            file://powerpc-clockres.patch \
            file://defconfig"
 
-#           file://sysctl_missing_include.patch \
-
 S = "${WORKDIR}/linux-2.6.24"
 
 SRC_URI_append_mpc8313e-rdb = " \
