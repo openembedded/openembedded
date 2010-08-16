@@ -3,7 +3,7 @@ SECTION = "e/apps"
 DEPENDS += " dbus-glib libframeworkd-glib libfsoframework libphone-ui evas ecore edje edje-native elementary"
 SRCREV = "be5a4b0f48ce5df67bdf01f88979c93c7d9a59d3"
 PV = "0.0.1+gitr${SRCPV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "git://shr.bearstech.com/repo/libphone-ui-shr.git;protocol=http;branch=master"
 S = "${WORKDIR}/git"

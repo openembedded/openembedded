@@ -8,7 +8,7 @@ RDEPENDS_${PN} = "mplayer lame libxv libsdl-x11"
 
 SRCREV = "76"
 PV = "0.66+svnr${SRCPV}"
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "svn://intone.googlecode.com/svn;module=trunk;proto=http \
 file://vorbis-include-id3tag.patch;maxrev=18"

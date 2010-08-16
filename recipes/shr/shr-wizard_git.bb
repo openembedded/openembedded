@@ -6,7 +6,7 @@ RDEPENDS_${PN} = "python-elementary shr-settings python-phoneutils e-wm python-d
 SECTION = "x11/application"
 SRCREV = "b04c841861b0f293e1a9536592fd154efc662554"
 PV = "0.0.0+gitr${SRCPV}"
-PR = "r6"
+PR = "r7"
 
 inherit autotools
 
