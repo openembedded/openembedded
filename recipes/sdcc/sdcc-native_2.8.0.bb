@@ -1,5 +1,6 @@
 require sdcc_${PV}.bb
-DEPENDS = ""
+DEPENDS = "bison-native flex-native"
+PR = "r1"
 
 # don't need native-tools patch here
 SRC_URI = "${SOURCEFORGE_MIRROR}/sdcc/sdcc-src-${PV}.tar.bz2 \
