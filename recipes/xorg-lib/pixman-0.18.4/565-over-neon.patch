@@ -1,0 +1,23 @@
+From d297443267de0f5fab49ec245df9055a0dddddaf Mon Sep 17 00:00:00 2001
+From: Siarhei Siamashka <siarhei.siamashka@nokia.com>
+Date: Tue, 25 May 2010 17:21:26 +0000
+Subject: ARM: NEON: don't hit general path for r5g6b5 OVER r5g6b5 operation
+
+OVER can't be reduced to SRC because the source image is not
+considered opaque when repeat is set to PIXMAN_REPEAT_NONE.
+An additional fast path table entry solves the problem.
+---
+diff --git a/pixman/pixman-arm-neon.c b/pixman/pixman-arm-neon.c
+index 64aa908..394dcea 100644
+--- a/pixman/pixman-arm-neon.c
++++ b/pixman/pixman-arm-neon.c
+@@ -246,6 +246,7 @@ static const pixman_fast_path_t arm_neon_fast_paths[] =
+     PIXMAN_STD_FAST_PATH (OVER, a8b8g8r8, null,     x8b8g8r8, neon_composite_over_8888_8888),
+     PIXMAN_STD_FAST_PATH (OVER, x8r8g8b8, null,     a8r8g8b8, neon_composite_src_x888_8888),
+     PIXMAN_STD_FAST_PATH (OVER, x8b8g8r8, null,     a8b8g8r8, neon_composite_src_x888_8888),
++    PIXMAN_STD_FAST_PATH (OVER, r5g6b5,   null,     r5g6b5,   neon_composite_src_0565_0565),
+     PIXMAN_STD_FAST_PATH (ADD,  solid,    a8,       a8,       neon_composite_add_n_8_8),
+     PIXMAN_STD_FAST_PATH (ADD,  a8,       a8,       a8,       neon_composite_add_8_8_8),
+     PIXMAN_STD_FAST_PATH (ADD,  a8r8g8b8, a8r8g8b8, a8r8g8b8, neon_composite_add_8888_8888_8888),
+--
+cgit v0.8.3-6-g21f6
