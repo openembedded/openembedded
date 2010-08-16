@@ -1,0 +1,21 @@
+diff -uNr libX11-1.2.99.901.orig/acinclude.m4 libX11-1.2.99.901/acinclude.m4
+--- libX11-1.2.99.901.orig/acinclude.m4	2009-09-05 10:57:11.000000000 +0200
++++ libX11-1.2.99.901/acinclude.m4	2009-09-05 10:59:14.000000000 +0200
+@@ -197,7 +197,7 @@
+     cat <<__DOLTLIBTOOL__EOF__ > doltlibtool
+ #!$DOLT_BASH
+ __DOLTLIBTOOL__EOF__
+-    cat <<'__DOLTLIBTOOL__EOF__' >>doltlibtool
++    cat <<'__DOLTLIBTOOL__EOF__' | sed -e "s/@host_alias@/$host_alias/g" >>doltlibtool
+ top_builddir_slash="${0%%doltlibtool}"
+ : ${top_builddir_slash:=./}
+ args=()
+@@ -213,7 +213,7 @@
+ if $modeok && $tagok ; then
+     . ${top_builddir_slash}doltcompile "${args@<:@@@:>@}"
+ else
+-    exec ${top_builddir_slash}libtool "$[]@"
++    exec ${top_builddir_slash}@host_alias@-libtool "$[]@"
+ fi
+ __DOLTLIBTOOL__EOF__
+ 
