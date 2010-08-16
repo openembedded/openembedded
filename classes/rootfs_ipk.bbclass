@@ -98,15 +98,19 @@ fakeroot rootfs_ipk_do_rootfs () {
 		else
 			rm -f ${IMAGE_ROOTFS}${libdir}/opkg/lists/*
 		fi
-	
+
+		# Remove lists, but leave SHR's tmp dir if it exists.
+		rm -f ${IMAGE_ROOTFS}/var/lib/opkg/* || true
+
 		# Keep these lines until package manager selection is implemented
 		ln -s opkg ${IMAGE_ROOTFS}${sysconfdir}/ipkg
 		ln -s opkg ${IMAGE_ROOTFS}${libdir}/ipkg
 	else
 		rm -rf ${IMAGE_ROOTFS}${libdir}/opkg
 		rm -rf ${IMAGE_ROOTFS}/usr/lib/opkg
+		rm -rf ${IMAGE_ROOTFS}/var/lib/opkg
 	fi
-	
+
 	log_check rootfs 	
 	rm -rf ${IPKG_TMP_DIR}
 }
