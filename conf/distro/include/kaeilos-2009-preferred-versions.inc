@@ -50,7 +50,6 @@ PREFERRED_VERSION_pango-native     = "1.24.4"
 PREFERRED_VERSION_pkgconfig	= "0.23"
 PREFERRED_VERSION_pkgconfig-native = "0.23"
 PREFERRED_VERSION_pulseaudio 	= "0.9.15"
-PREFERRED_VERSION_python = "2.6.4"
 PREFERRED_VERSION_python-pycairo = "1.8.0"
 
 KAEILOS_WX_VERSION ?= "2.8.10"
