@@ -1,7 +1,10 @@
 require guile.inc
 
+PR = "r1"
+
 SRC_URI = "http://ftp.gnu.org/pub/gnu/guile/guile-${PV}.tar.gz \
            file://configure-fix.patch \
+           file://18.diff \
           "
 
 
