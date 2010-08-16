@@ -43,13 +43,13 @@ def format_display(path, metadata):
     else:
         return rel
 
-def remove(path):
+def remove(path, recurse=True):
     """Equivalent to rm -f or rm -rf"""
     import os, errno, shutil
     try:
         os.unlink(path)
     except OSError, exc:
-        if exc.errno == errno.EISDIR:
+        if recurse and exc.errno == errno.EISDIR:
             shutil.rmtree(path)
         elif exc.errno != errno.ENOENT:
             raise
