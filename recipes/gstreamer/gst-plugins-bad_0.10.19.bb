@@ -5,7 +5,7 @@ SRC_URI[archive.sha256sum] = "7b6c49f22caad3b573aee481381355b38ac9f2077f291d9f33
 
 DEPENDS += "orc-native orc libcdaudio gst-plugins-base openssl directfb"
 
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 # We don't have vdpau headers in OE and it creates crosscompile badness
 EXTRA_OECONF_append = " --disable-vdpau --enable-sdl"

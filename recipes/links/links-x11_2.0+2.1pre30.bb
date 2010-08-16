@@ -2,7 +2,7 @@ require links.inc
 
 DEPENDS += "virtual/libx11"
 RCONFLICTS_${PN} = "links"
-PR = "r3"
+PR = "r4"
 
 SRC_URI += " file://links2.desktop \
              http://www.xora.org.uk/oe/links2.png;name=icon"

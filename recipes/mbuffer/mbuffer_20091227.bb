@@ -2,7 +2,7 @@ DESCRIPTION = "mbuffer is a tool for buffering data streams with a large set of 
 HOMEPAGE = "http://www.maier-komor.de/mbuffer.html"
 LICENSE = "GPLv3"
 SECTION = "console/network"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://www.maier-komor.de/software/mbuffer/mbuffer-20091227.tgz;name=mbuffer20091227tgz"
 SRC_URI[mbuffer20091227tgz.md5sum] = "191663396b4b1752d7104803631b9e54"

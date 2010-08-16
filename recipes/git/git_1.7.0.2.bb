@@ -14,7 +14,7 @@ RDEPENDS_${PN} = "perl perl-module-file-path cpio findutils sed"
 # Dropbear ssh needs a wrapper script, so install openssh-ssh to make it work out of the box
 RRECOMMENDS_${PN} = "openssh-ssh"
 
-PR = "r6"
+PR = "r7"
 
 do_install_append() {
 	# Fix broken hardlinks

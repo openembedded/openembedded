@@ -1,5 +1,6 @@
 require openvpn.inc
 
+PR = "r1"
 SRC_URI = "http://openvpn.net/release/${P}.tar.gz \
 	   file://openvpn"
 
