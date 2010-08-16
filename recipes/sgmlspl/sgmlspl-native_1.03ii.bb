@@ -2,6 +2,7 @@ DESCRIPTION = "A simple post-processor for SGMLS and NSGMLS"
 HOMEPAGE = "http://search.cpan.org/src/DMEGG/SGMLSpm-1.03ii/DOC/HTML/SGMLSpm/sgmlspm.html"
 SECTION = "libs"
 LICENSE = "GPL"
+PR = "r1"
 
 SRC_URI = "http://www.cpan.org/authors/id/D/DM/DMEGG/SGMLSpm-${PV}.tar.gz \
           file://combined.patch"
@@ -9,14 +10,6 @@ SRC_URI = "http://www.cpan.org/authors/id/D/DM/DMEGG/SGMLSpm-${PV}.tar.gz \
 S = "${WORKDIR}/SGMLSpm"
 
 inherit native cpan
-
-do_install() {
-  :
-}
-
-do_stage() {
-  oe_runmake install_vendor
-}
 
 PACKAGES = "${PN}-dbg  "
 
