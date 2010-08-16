@@ -1,0 +1,34 @@
+linux-libc-dev: <linux/resource.h> getrusage() prototype should be protected from user space
+see http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=575381
+guard added with 2.6.32
+Index: klibc-1.5.19/usr/include/sys/resource.h
+===================================================================
+--- klibc-1.5.19.old/usr/include/sys/resource.h	2010-07-07 14:07:48.000000000 +0200
++++ klibc-1.5.19/usr/include/sys/resource.h	2010-08-16 01:51:14.000000000 +0200
+@@ -12,6 +12,9 @@
+ __extern int getpriority(int, int);
+ __extern int setpriority(int, int, int);
+ 
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,32)
+ __extern int getrusage(int, struct rusage *);
++#endif
+ 
+ #endif				/* _SYS_RESOURCE_H */
+Index: klibc-1.5.19/usr/klibc/SYSCALLS.def
+===================================================================
+--- klibc-1.5.19.old/usr/klibc/SYSCALLS.def	2010-08-16 01:49:02.000000000 +0200
++++ klibc-1.5.19/usr/klibc/SYSCALLS.def	2010-08-16 01:55:07.000000000 +0200
+@@ -49,7 +49,12 @@
+ <alpha,ia64> int getpriority(int, int);
+ <!alpha,ia64> int getpriority::__getpriority(int, int);
+ int setpriority(int, int, int);
++
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,32)
+ int getrusage(int, struct rusage *);
++#endif
++
+ int sched_setscheduler(pid_t, int, const struct sched_param *);
+ int sched_yield();
+ <i386> int prctl@varadic(int, unsigned long, unsigned long, unsigned long, unsigned long);

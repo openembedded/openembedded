@@ -16,5 +16,5 @@ KLIBC_UTILS_PKGNAME = "klibc-utils-static"
 require klibc-utils.inc
 require klibc.inc
 
-SRC_URI[md5sum] = "5c8b6577b9acb3809cace6e118cdd55b"
-SRC_URI[sha256sum] = "e4104f8b34a5f354222bd4622f50b58c6218bf70614450d68539cbef666b6446"
+SRC_URI[md5sum] = "1b713fe65c345e687666b9f94b12f0a0"
+SRC_URI[sha256sum] = "de0fa51d47b7363e064a3e6f26dabcb458d371a14e78e6407d49bb3386a24a97"

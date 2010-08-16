@@ -63,9 +63,9 @@ Index: klibc-1.5.16/usr/include/sys/socket.h
  };
 -
 +#endif
- 
- __extern int socket(int, int, int);
- __extern int bind(int, struct sockaddr *, int);
+ /* Ancillary data structures and cmsg macros are also hidden under __KERNEL__ */
+ #ifndef CMSG_FIRSTHDR
+ /*
 Index: klibc-1.5.16/usr/kinit/nfsmount/nfsmount.h
 ===================================================================
 --- a/usr/kinit/nfsmount/nfsmount.h	2009-01-04 20:28:03.000000000 +0100
