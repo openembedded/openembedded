@@ -37,7 +37,6 @@ SRC_URI += "file://fstype-sane-vfat-and-jffs2-for-1.5.patch \
             file://arm-signal-cleanup.patch \
             file://socket.h.patch \
             file://isystem.patch \
-            file://klibc-x86-KLIBCARCHINCFLAGS.patch \
             file://getrusage.patch \
             "
 
