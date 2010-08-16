@@ -1,0 +1,25 @@
+Index: xorg-server-1.1.0/randr/randr.c
+===================================================================
+--- xorg-server-1.1.0.orig/randr/randr.c
++++ xorg-server-1.1.0/randr/randr.c
+@@ -56,6 +56,9 @@
+ #define SubPixelUnknown 0
+ #endif
+ 
++#define SERVER_RANDR_MAJOR	1
++#define SERVER_RANDR_MINOR	0
++
+ #define RR_VALIDATE
+ int	RRGeneration;
+ int	RRNScreens;
+@@ -473,8 +476,8 @@ ProcRRQueryVersion (ClientPtr client)
+     rep.type = X_Reply;
+     rep.length = 0;
+     rep.sequenceNumber = client->sequence;
+-    rep.majorVersion = RANDR_MAJOR;
+-    rep.minorVersion = RANDR_MINOR;
++    rep.majorVersion = SERVER_RANDR_MAJOR;
++    rep.minorVersion = SERVER_RANDR_MINOR;
+     if (client->swapped) {
+     	swaps(&rep.sequenceNumber, n);
+     	swapl(&rep.length, n);

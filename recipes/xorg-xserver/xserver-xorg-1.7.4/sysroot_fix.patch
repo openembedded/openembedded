@@ -1,0 +1,13 @@
+Index: xorg-server-1.4/xorg-server.m4
+===================================================================
+--- xorg-server-1.4.orig/xorg-server.m4	2008-03-15 20:09:36.000000000 +0100
++++ xorg-server-1.4/xorg-server.m4	2008-03-15 20:09:51.000000000 +0100
+@@ -30,7 +30,7 @@
+ 
+ AC_DEFUN([XORG_DRIVER_CHECK_EXT],[
+ 	SAVE_CFLAGS="$CFLAGS"
+-	CFLAGS="$CFLAGS -I`pkg-config --variable=sdkdir xorg-server`"
++	CFLAGS="$CFLAGS `pkg-config --cflags xorg-server`"
+ 	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+ #include "xorg-server.h"
+ #if !defined $1

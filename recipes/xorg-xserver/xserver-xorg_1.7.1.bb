@@ -6,8 +6,8 @@ PE = "2"
 PR = "${INC_PR}.1"
 
 SRC_URI += "file://sysroot_fix.patch \
-            file://dolt-fix-1.7.0.patch \
-            file://randr-support-1.7.0.patch \
+            file://dolt-fix.patch \
+            file://randr-support.patch \
            "
 do_install_prepend() {
         mkdir -p ${D}/${libdir}/X11/fonts

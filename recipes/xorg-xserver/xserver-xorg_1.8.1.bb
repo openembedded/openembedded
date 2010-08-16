@@ -9,8 +9,8 @@ PE = "2"
 PR = "${INC_PR}.2"
 
 SRC_URI += " \
-            file://dolt-fix-1.7.0.patch \
-            file://randr-support-1.7.0.patch \
+            file://dolt-fix.patch \
+            file://randr-support.patch \
 	    file://hack-fbdev-ignore-return-mode.patch \
            "
 SRC_URI[archive.md5sum] = "7c3b873692f4e93938261d774510e78d"
