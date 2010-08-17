@@ -4,7 +4,7 @@ DEPENDS = "icu libxslt sqlite3 gperf-native bison-native flex-native jpeg \
            libpng libxt fontconfig cairo freetype glib-2.0 libsoup-2.4 \
            libxml2 pango eina ecore evas edje"
 
-SRCREV = "64079"
+SRCREV = "65655"
 PV = "1.1.11+svnr${SRCPV}"
 PR = "r9"
 
@@ -21,14 +21,14 @@ SRC_URI = "\
   file://cmakeconfig.h.cmake \
   file://CMakeLists.txt \
   file://install-efl-launcher.patch \
-  file://set-so-version.patch \
  "
 
 S = "${WORKDIR}/src"
 
 inherit cmake lib_package pkgconfig
 
-EXTRA_OECMAKE = "-DPORT=Efl"
+#EXTRA_OECMAKE = "-DPORT=Efl"
+EXTRA_OECMAKE = "-DPORT=Efl -DSHARED_CORE=ON"
 
 do_unpack_append() {
 	bb.build.exec_func('do_move_files', d)
@@ -39,6 +39,7 @@ do_move_files() {
 	mv "${WORKDIR}/CMakeLists.txt" "${S}"
 }
 
+LEAD_SONAME = "libewebkit.so"
 PACKAGES =+ "${PN}launcher-dbg ${PN}launcher"
 
 FILES_${PN} += "${datadir}/webkit-1.0/theme/default.edj"
