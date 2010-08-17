@@ -20,6 +20,7 @@ IMAGE_INSTALL += " \
   nano \
   cpuburn-neon \
   kernel-module-mt9t112 \
+  kernel-module-g-ether \
   u-boot-mkimage \
   sox \
   devmem2 \
