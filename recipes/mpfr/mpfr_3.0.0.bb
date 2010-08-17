@@ -3,8 +3,7 @@ require mpfr.inc
 DEPENDS = "gmp"
 S = "${WORKDIR}/mpfr-${PV}"
 NATIVE_INSTALL_WORKS = "1"
-PR = "r2"
-BBCLASSEXTEND = "native"
+PR = "${INC_PR}.0"
 
 SRC_URI = "http://www.mpfr.org/mpfr-${PV}/mpfr-${PV}.tar.bz2 \
            file://p3.patch"
