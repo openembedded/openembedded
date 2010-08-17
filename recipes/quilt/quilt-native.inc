@@ -15,6 +15,10 @@ do_configure () {
 	oe_runconf
 }
 
+do_install () {
+	oe_runmake 'BUILD_ROOT=${D}' install
+}
+
 do_test() {
     oe_runmake check
 }

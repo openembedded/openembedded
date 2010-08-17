@@ -1,6 +1,6 @@
 require quilt-native.inc
 
-PR="r4"
+PR = "${INC_PR}"
 
 SRC_URI_append = "file://fix_new_GNU_patch_detection.patch"
 
