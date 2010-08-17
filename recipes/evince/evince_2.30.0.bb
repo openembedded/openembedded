@@ -2,10 +2,14 @@ DESCRIPTION = "Evince is a document viewer for document formats like pdf, ps, dj
 LICENSE = "GPL"
 SECTION = "x11/office"
 DEPENDS = "nautilus gnome-icon-theme tiff libxt espgs gnome-doc-utils poppler libxml2 gtk+ gconf libglade gnome-keyring "
+DEPENDS += "gnome-doc-utils-native"
+
 RDEPENDS_${PN} = "espgs gnome-icon-theme"
-PR = "r1"
+PR = "r2"
 
 inherit gnome pkgconfig gtk-icon-cache
+
+SRC_URI += "file://cross-compile-fix.patch"
 
 SRC_URI[archive.md5sum] = "a55f1997891a64157286b6f6b00f8458"
 SRC_URI[archive.sha256sum] = "36dfee4e973421f15cb51c9b1c84784523592dc81feb6465fb59f87b8f7f8bf7"
