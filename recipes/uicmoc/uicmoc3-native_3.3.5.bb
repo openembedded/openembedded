@@ -4,7 +4,7 @@ SECTION = "devel"
 PRIORITY = "optional"
 LICENSE = "GPL QPL"
 DEPENDS = "qmake-native"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-free-${PV}.tar.bz2 \
            file://no-examples.patch \
@@ -36,19 +36,23 @@ do_compile() {
     oe_runmake sub-tools || die "Building tools failed"
 }
 
-do_stage() {
-	install -d ${OE_QMAKE_INCDIR_QT}
-	install -d ${OE_QMAKE_LIBDIR_QT}
+do_install() {
+        install -d ${D}${includedir}/qte3/include
+        install -d ${D}${libdir}/qte3/lib
+        install -d ${D}${bindir}/
+        install -d ${D}${bindir}/
 
-	install -m 0755 bin/moc ${OE_QMAKE_MOC}
-	install -m 0755 bin/uic ${OE_QMAKE_UIC}
-	install -m 0655 lib/*.a ${OE_QMAKE_LIBDIR_QT}
+        install -m 0755 bin/moc ${D}${bindir}/moc3
+        install -m 0755 bin/uic ${D}${bindir}/uic3
+        install -m 0655 lib/*.a ${D}${libdir}/qte3/lib
 
-	for f in include/*.h
-	do
-		install -m 0644 $f ${OE_QMAKE_INCDIR_QT}/
-	done
+        for f in include/*.h
+        do
+                install -m 0644 $f ${D}${includedir}/qte3/include/
+        done
 }
+
+NATIVE_INSTALL_WORKS = "1"
 
 SRC_URI[md5sum] = "022d7a3c572b554f3c47b12cae71a8a4"
 SRC_URI[sha256sum] = "a97656796c0ef8e87dd83e6138bc406e31830d08f9b213e039d8be39ea65c8e4"
