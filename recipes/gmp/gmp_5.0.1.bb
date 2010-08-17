@@ -5,4 +5,4 @@ SRC_URI[gmp.sha256sum] = "a2a610f01fd3298dc08c87bf30498c2402590e1bcb227fc40b15ee
 require gmp.inc
 LICENSE = "GPLv3 LGPLv3"
 NATIVE_INSTALL_WORKS = "1"
-BBCLASSEXTEND = "native"
+BBCLASSEXTEND = "native nativesdk"
