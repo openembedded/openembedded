@@ -5,7 +5,7 @@
 
 FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -Os"
 # Work-around for alignment traps when eglibc-2.12 is built with gcc-4.5*
-FULL_OPTIMIZATION_pn-eglibc = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -Os -ggdb3"
+FULL_OPTIMIZATION-pn-eglibc_arm = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -Os -ggdb3"
 FULL_OPTIMIZATION_pn-perl = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O1"
 FULL_OPTIMIZATION_sparc = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2"
 
