@@ -1,11 +1,11 @@
 DESCRIPTION = "Evolution database backend server"
 HOMEPAGE = "http://labs.o-hand.com/embedded-eds/"
 LICENSE = "LGPL"
-DEPENDS = "libical intltool-native libglade glib-2.0 gtk+ gconf dbus db gnome-common virtual/libiconv zlib intltool libxml2"
+DEPENDS = "libical intltool-native libglade glib-2.0 gtk+ gconf dbus db gnome-common virtual/libiconv zlib intltool libxml2 libsoup-2.4"
 
 SRCREV = "91812cd2f797fb8ec8befbb2685037584ce144ee"
 PV = "1.4.0"
-PR = "r4"
+PR = "r5"
 PE = "1"
 PR_append = "+gitr${SRCREV}"
 
