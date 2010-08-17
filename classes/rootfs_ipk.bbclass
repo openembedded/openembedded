@@ -41,7 +41,7 @@ fakeroot rootfs_ipk_do_rootfs () {
 	for i in ${BAD_RECOMMENDATIONS}; do
 		echo "Package: $i" >> $STATUS
 		echo "Architecture: ${TARGET_ARCH}" >> $STATUS
-		echo "Status: deinstall ok not-installed" >> $STATUS
+		echo "Status: deinstall hold not-installed" >> $STATUS
 		echo >> $STATUS
 	done
 
