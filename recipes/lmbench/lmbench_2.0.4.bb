@@ -2,7 +2,10 @@ SECTION = "console/utils"
 DESCRIPTION = "Tools for performance analysis."
 LICENSE = "GPL"
 RDEPENDS_${PN} = "debianutils"
-PR = "r2"
+
+PR = "r3"
+
+inherit autotools
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lmbench/lmbench-${PV}.tgz \
 	   file://debian.patch \
@@ -14,12 +17,6 @@ EXTRA_OEMAKE = '"CC=${CC}" "AR=${AR}" "CFLAGS=$CFLAGS" \
 		"LDFLAGS=${LDFLAGS}" "LD=${LD}" "OS=${TARGET_SYS}" \
 		"TARGET=${TARGET_OS}" "O=${S}/bin/${TARGET_SYS}"'
 
-
-inherit siteinfo
-
-# Space separated list of shell scripts with variables defined to supply test
-# results for autoconf tests we cannot run at build time.
-export CONFIG_SITE = "${@siteinfo_get_files(d)}"
 python do_unpack () {
 	bb.build.exec_func('base_do_unpack', d)
 	bb.build.exec_func('byebk_do_unpack', d)
@@ -27,6 +24,10 @@ python do_unpack () {
 
 byebk_do_unpack () {
 	find ${S}/.. -name BitKeeper -o -name SCCS | xargs rm -rf
+}
+
+do_configure() {
+	:
 }
 
 do_compile () {
