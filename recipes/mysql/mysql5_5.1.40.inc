@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.mysql.com/"
 SECTION = "libs"
 LICENSE = "GPL"
 DEPENDS = "ncurses"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://downloads.mysql.com/archives/mysql-5.1/mysql-${PV}.tar.gz \
            file://configure.in.patch \
@@ -12,6 +12,7 @@ SRC_URI = "http://downloads.mysql.com/archives/mysql-5.1/mysql-${PV}.tar.gz \
            file://Makefile.am.patch \
            file://fix_host_path.patch \
 	   file://configure-ps-cache-check.patch \
+           file://fix-abi-check-gcc45.patch \
            file://my.cnf \
            file://mysqld.sh"
 
