@@ -10,7 +10,8 @@ SRCREV = "12"
 PV = "0.13+svnr${SRCPV}"
 PR = "r7"
 
-SRC_URI = "svn://intone-video.googlecode.com/svn;module=trunk;proto=http"
+SRC_URI = "svn://intone-video.googlecode.com/svn;module=trunk;proto=http \
+           file://depends.eina.patch"
 S = "${WORKDIR}/trunk"
 
 inherit autotools
