@@ -1,7 +1,7 @@
 LICENSE = "MIT"
 
 PV = "${DISTRO_VERSION}"
-PR = "r4"
+PR = "r5"
 PE = "1"
 
 SRC_URI = "file://lsb_release"
@@ -14,7 +14,7 @@ export METADATA_BRANCH
 export TARGET_SYS
 
 do_install() {
-	mkdir -p ${D}${sysconfdir}
+	install -d ${D}${sysconfdir}
 	echo "Angstrom ${DISTRO_VERSION}" > ${D}${sysconfdir}/angstrom-version
 	echo "Built from branch: ${METADATA_BRANCH}" >> ${D}${sysconfdir}/angstrom-version
 	echo "Revision: ${METADATA_REVISION}" >> ${D}${sysconfdir}/angstrom-version
