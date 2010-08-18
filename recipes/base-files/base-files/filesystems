@@ -1,6 +1,7 @@
 minix
 fat
 vfat
-ext2
+ext4
 ext3
+ext2
 *
