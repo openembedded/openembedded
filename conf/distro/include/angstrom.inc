@@ -21,7 +21,7 @@ INHERIT += "src_distribute_local"
 SRC_DIST_LOCAL ?= "symlink"
 
 # Can be "glibc", "eglibc" or "uclibc"
-ANGSTROMLIBC ?= "glibc"
+ANGSTROMLIBC ?= "eglibc"
 LIBC ?= "${ANGSTROMLIBC}"
 PSTAGE_EXTRAPATH = "${LIBC}"
 

@@ -12,10 +12,8 @@ USE_NLS_gcc-cross = "no"
 TARGET_OS_UC = "linux${@['-uclibc','-uclibceabi'][bb.data.getVar('TARGET_ARCH',d,1) in ['arm', 'armeb']]}"
 TARGET_OS = "${@['${TARGET_OS_UC}', 'uclinux-uclibc'][bb.data.getVar('TARGET_ARCH',d)  in ['bfin']]}"
 
-#mess with compiler flags to use -Os instead of -O2
-#Please see http://free-electrons.com/doc/embedded_linux_optimizations/img47.html for some more info
 FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2 -ggdb3"
-BUILD_OPTIMIZATION = "-O2"
+BUILD_OPTIMIZATION = "-O2 -g"
 
 #Gcc will die with 'internal consistency error when using the above optimizations
 #with gcc-4.2.1-atmel.1.0.3 (and probably most other avr32 gcc ports).
