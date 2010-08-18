@@ -3,12 +3,12 @@ HOMEPAGE = "http://www.gnu.org/software/bison/"
 LICENSE = "GPL"
 SECTION = "devel"
 PRIORITY = "optional"
-DEPENDS = "virtual/libintl"
+DEPENDS = "virtual/libintl flex-native"
 
 SRC_URI = "${GNU_MIRROR}/bison/bison-${PV}.tar.gz \
 	   file://m4.patch"
 
-INC_PR = "r7"
+INC_PR = "r8"
 
 inherit autotools gettext
 
