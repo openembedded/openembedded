@@ -1,7 +1,7 @@
 DESCRIPTION = "i2c init file and command line tool"
 SECTION = "base"
 PRIORITY = "required"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = " \
   file://Config.h \   
@@ -24,7 +24,7 @@ SRC_URI = " \
 S = "${WORKDIR}"
 
 do_compile () {
-	${CC} -o i2c *.c
+	${CC} ${LDFLAGS} -o i2c *.c
 }
 
 do_install () {
