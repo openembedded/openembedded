@@ -1,10 +1,11 @@
 LICENSE = "GPL"
 SECTION = "x11/gnome/libs"
 DESCRIPTION = "A powerful object-oriented display"
+PR = "r1"
 
 inherit gnome
 
-DEPENDS = "libglade libart-lgpl virtual/gail"
+DEPENDS = "libglade libart-lgpl virtual/gail xineramaproto"
 
 EXTRA_OECONF = "--disable-gtk-doc"
 
