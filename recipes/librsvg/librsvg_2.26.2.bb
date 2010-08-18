@@ -1,7 +1,8 @@
 DESCRIPTION = "Library for rendering SVG files"
 SECTION = "x11/utils"
-DEPENDS = "bzip2 gtk+ libcroco cairo libart-lgpl libxml2 popt"
+DEPENDS = "bzip2 gtk+ libcroco cairo libart-lgpl libxml2 popt xineramaproto"
 LICENSE = "LGPL"
+PR = "r1"
 
 inherit gnome
 
