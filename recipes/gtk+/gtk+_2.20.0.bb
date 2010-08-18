@@ -7,11 +7,11 @@ SRC_URI_append = " file://cross-nm.patch"
 SRC_URI[gtk.md5sum] = "5517f78b1eb9b1eb60bd48a0152d09e6"
 SRC_URI[gtk.sha256sum] = "8ea7e11ff88e9a8867b7d9221d40a3bfce5c648ce27cd6bac422ff8f6cca414d"
 
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 BBCLASSEXTEND = "native"
 
-DEPENDS_virtclass-native = "libpng-native atk-native pango-native cairo-native libxrender-native libxext-native"
+DEPENDS_virtclass-native = "libpng-native atk-native pango-native cairo-native libxrender-native libxext-native libgcrypt-native"
 RRECOMMENDS_${PN}_virtclass-native = ""
 PROVIDES_virtclass-native = "gdk-pixbuf-csource-native"
 

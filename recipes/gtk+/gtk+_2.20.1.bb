@@ -9,13 +9,13 @@ SRC_URI_append = "file://gtk-dnd-grab-deadlock-fix.patch \
 SRC_URI[gtk.md5sum] = "53e6f3a93bd22934878fc4a4a34c68aa"
 SRC_URI[gtk.sha256sum] = "0e081731d21e34ff45c82199490c2889504fa8b3c7e117c043e82ababaec0f65"
 
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.3"
 
 BBCLASSEXTEND = "native"
 
 ARM_INSTRUCTION_SET = "arm"
 
-DEPENDS_virtclass-native = "libpng-native atk-native pango-native cairo-native libxrender-native libxext-native"
+DEPENDS_virtclass-native = "libpng-native atk-native pango-native cairo-native libxrender-native libxext-native libgcrypt-native"
 RRECOMMENDS_${PN}_virtclass-native = ""
 PROVIDES_virtclass-native = "gdk-pixbuf-csource-native"
 
