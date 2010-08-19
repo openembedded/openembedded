@@ -12,11 +12,10 @@ EXTRA_OEMAKE += "DEFAULT_STYLESHEET=${sysconfdir}/squid/errorpage.css DEFAULT_CO
 SRC_URI += " \
 	file://squidv3-build-cf_gen.patch \
 	file://fix-runs-in-configure.patch \
-	file://fix-ltdl-usage.patch \
 	"
 
-SRC_URI[squid-3.1.4.md5sum] = "3fb544ae02fadc2b4085f62bb927e861"
-SRC_URI[squid-3.1.4.sha256sum] = "13ea33907c64f417afaf596b04550cd950f57dc43357d309ffa92cfac2de58f6"
+SRC_URI[squid-3.1.6.md5sum] = "e9e2e9a9b5a305ba717be93ebb85f245"
+SRC_URI[squid-3.1.6.sha256sum] = "e1de72d85a1b607e7dd477e29c4582b34f844af675211cb273421c920073f4fa"
 
 do_configure_prepend() {
 	export ac_cv_epoll_ctl=yes
