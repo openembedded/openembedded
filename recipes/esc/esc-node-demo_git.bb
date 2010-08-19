@@ -4,7 +4,7 @@ SECTION = "devel"
 PRIORITY = "optional"
 
 PV = "0"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "git://gist.github.com/397547.git;protocol=git \
 "
@@ -15,6 +15,7 @@ S = "${WORKDIR}/git"
 DEMO_FILES = " \
     matrix_command_shell.js \
     hello_world.js \
+    index.html \
 "
 
 do_install() {
