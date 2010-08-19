@@ -4,7 +4,7 @@ SECTION = "interpreters"
 LICENSE = "GPL"
 RDEPENDS_gawk += "gawk-common"
 RDEPENDS_pgawk += "gawk-common"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${GNU_MIRROR}/gawk/gawk-${PV}.tar.gz"
 
@@ -28,3 +28,6 @@ ALTERNATIVE_PRIORITY = "100"
 
 SRC_URI[md5sum] = "3c8935efb9fdc7202720894279ad04a7"
 SRC_URI[sha256sum] = "5cdfe0c0919895e2ec87773c583cc6ebf2b84cba7617d5ec6cfd0150749e190f"
+
+BBCLASSEXTEND = "native"
+NATIVE_INSTALL_WORKS = "1"
