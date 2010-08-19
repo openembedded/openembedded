@@ -6,7 +6,7 @@ LICENSE = "GPLv2"
 DEPENDS = "elementary eina edbus"
 RDEPENDS_${PN} = "bluez4 obexd"
 
-SRCREV = "77"
+SRCREV = "78"
 PV = "0.1+svnr${SRCPV}"
 PR = "r5"
 
