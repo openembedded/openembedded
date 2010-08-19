@@ -66,7 +66,6 @@ RDEPENDS_task-openmoko-feed = "\
   om-maps-san-francisco \
   om-maps-sydney \
   om-maps-taipei \
-  om-locations \
   om-settings \
   assassin \
   assassin-thumbnail \
