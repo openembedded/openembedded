@@ -2,9 +2,9 @@ DESCRIPTION = "Diversity Radar is a GPS location based communicative application
 HOMEPAGE = "http://diversity.projects.openmoko.org/"
 SECTION = "openmoko/applications"
 LICENSE = "GPL"
-DEPENDS = "python-evas python-edje python-ecore python-edbus python-dbus python-etk"
+DEPENDS = "python-evas python-edje python-ecore python-edbus python-dbus"
 RDEPENDS_${PN} = "diversity-daemon"
-SRCREV = "453"
+SRCREV = "510"
 PV = "0.0.4+svnr${SRCPV}"
 PR = "r0.02"
 
