@@ -3,9 +3,9 @@ DESCRIPTION = "Utilities for the IP protocol, including traceroute6, \
 tracepath, tracepath6, ping, ping6 and arping."
 SECTION = "console/network"
 LICENSE ="BSD"
-DEPENDS = "docbook-utils-native"
+DEPENDS = "docbook-utils-native sgmlspl-native"
 
-PR = "r1"
+PR = "r2"
 
 DEFAULT_PREFERENCE_angstrom = "2"
 
