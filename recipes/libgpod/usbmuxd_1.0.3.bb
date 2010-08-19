@@ -1,5 +1,6 @@
 DESCRIPTION = "This daemon is in charge of multiplexing connections over USB to an iPhone or iPod touch."
 LICENSE = "GPLv3/GPLv2/LGPLv2.1"
+PR = "r1"
 
 DEPENDS = "udev libusb1"
 
