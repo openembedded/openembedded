@@ -14,7 +14,7 @@ RDEPENDS_task-openmoko-feed = "\
   bluez-hcidump \
   bootchart \
   eet evas ecore embryo edje efreet emotion epdf \
-  exhibit edje-viewer \
+  edje-viewer \
   free42-vga \
   gpe-filemanager gpe-gallery gpe-timesheet gpe-todo gpe-contacts \
   leafpad abiword \

@@ -70,7 +70,6 @@ RDEPENDS_${PN} += "\
 		pingus \
 		openmoocow \
 		python-pygame \
-#		exhibit \
 		obexpush \
 		obexftp \
 		obex-data-server \
