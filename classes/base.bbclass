@@ -442,23 +442,10 @@ python () {
     # unless the package sets SRC_URI_OVERRIDES_PACKAGE_ARCH=0
     #
     override = bb.data.getVar('SRC_URI_OVERRIDES_PACKAGE_ARCH', d, 1)
-    if override != '0':
-        paths = []
-        for p in [ "${PF}", "${P}", "${PN}", "files", "" ]:
-            path = bb.data.expand(os.path.join("${FILE_DIRNAME}", p, "${MACHINE}"), d)
-            if os.path.isdir(path):
-                paths.append(path)
-        if len(paths) != 0:
-            for s in srcuri.split():
-                if not s.startswith("file://"):
-                    continue
-                local = bb.data.expand(bb.fetch.localpath(s, d), d)
-                for mp in paths:
-                    if local.startswith(mp):
-                        #bb.note("overriding PACKAGE_ARCH from %s to %s" % (pkg_arch, mach_arch))
-                        bb.data.setVar('PACKAGE_ARCH', "${MACHINE_ARCH}", d)
-                        bb.data.setVar('MULTIMACH_ARCH', mach_arch, d)
-                        return
+    if override != '0' and is_machine_specific(d):
+        bb.data.setVar('PACKAGE_ARCH', "${MACHINE_ARCH}", d)
+        bb.data.setVar('MULTIMACH_ARCH', mach_arch, d)
+        return
 
     multiarch = pkg_arch
 

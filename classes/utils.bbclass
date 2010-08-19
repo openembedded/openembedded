@@ -38,6 +38,24 @@ def oe_filter(f, str, d):
 def oe_filter_out(f, str, d):
     return oe.utils.str_filter_out(f, str, d)
 
+def machine_paths(d):
+    """List any existing machine specific filespath directories"""
+    machine = d.getVar("MACHINE", True)
+    filespathpkg = d.getVar("FILESPATHPKG", True).split(":")
+    for basepath in d.getVar("FILESPATHBASE", True).split(":"):
+        for pkgpath in filespathpkg:
+            machinepath = os.path.join(basepath, pkgpath, machine)
+            if os.path.isdir(machinepath):
+                yield machinepath
+
+def is_machine_specific(d):
+    """Determine whether the current recipe is machine specific"""
+    machinepaths = set(machine_paths(d))
+    urldatadict = bb.fetch.init(d.getVar("SRC_URI", True).split(), d, True)
+    for urldata in (urldata for urldata in urldatadict.itervalues()
+                    if urldata.type == "file"):
+        if any(urldata.path.startswith(mp + "/") for mp in machinepaths):
+            return True
 
 def subprocess_setup():
    import signal
