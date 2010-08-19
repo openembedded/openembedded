@@ -67,8 +67,6 @@ RDEPENDS_task-openmoko-feed = "\
   om-maps-sydney \
   om-maps-taipei \
   om-settings \
-  assassin \
-  assassin-thumbnail \
   tangogps \
   pyefl-sudoku \
   minicom \
