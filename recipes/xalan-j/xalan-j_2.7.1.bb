@@ -3,10 +3,10 @@ LICENSE = "AL2.0"
 
 AUTHOR = "Apache Software Foundation"
 HOMEPAGE = "http://xml.apache.org/xalan-j
-PR = "r2"
+PR = "r3"
 
 DEPENDS = "fastjar-native xerces-j regexp jlex cup jaxp1.3 bcel"
-DEPENDS = "\
+DEPENDS_virtclass-native = "\
 	fastjar-native \
 	xerces-j-native regexp-native jlex-native cup-native jaxp1.3-native bcel-native \
 	"
