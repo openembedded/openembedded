@@ -1,7 +1,7 @@
 # the binaries are statically linked against klibc
 require kexec-tools_${PV}.inc
 
-PR = "r0"
+PR = "r1"
 DEPENDS = "klibc"
 
 FILESPATHPKG =. "kexec-tools-${PV}:"
@@ -24,7 +24,7 @@ export CFLAGS=""
 export CPPFLAGS=""
 export LDFLAGS=""
 
-PACKAGES =+ "kexec-klibc-static kdump-klibc-static"
+PACKAGES =+ "kexec-klibc kdump-klibc"
 
-FILES_kexec-klibc-static = "${sbindir}/kexec"
-FILES_kdump-klibc-static = "${sbindir}/kdump"
+FILES_kexec-klibc = "${sbindir}/kexec"
+FILES_kdump-klibc = "${sbindir}/kdump"
