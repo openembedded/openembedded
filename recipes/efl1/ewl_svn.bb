@@ -7,6 +7,8 @@ SRCREV = "${EFL_SRCREV}"
 
 inherit efl
 
+SRC_URI = "svn://svn.enlightenment.org/svn/e/BROKEN;module=${PN};proto=http"
+
 EXTRA_OECONF = "\
   --enable-software-x11 \
   --enable-software-16-x11 \
