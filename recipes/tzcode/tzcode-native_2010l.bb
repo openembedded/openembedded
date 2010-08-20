@@ -6,11 +6,11 @@ require tzcode-native.inc
 # Also, tzdata (and it is needed to build tzcode) version can differ from
 # tzcode version, thus this variable
 
-TZDATA_PV = "2010k"
+TZDATA_PV = "2010l"
 
-SRC_URI[tzcode-2010k.md5sum] = "63cd2199679c91bed972a0248d6916af"
-SRC_URI[tzcode-2010k.sha256sum] = "96671eac3a98d0c974833c8bfa7ea9b537cc9d32573e902103846b90f6dccdbd"
-SRC_URI[tzdata-2010k.md5sum] = "5e2086249d6a6bb116534d358661ad3f"
-SRC_URI[tzdata-2010k.sha256sum] = "ef69c99504c0fd9864ba8ef1daae5f2d4df097cf7dc350f09b8f70386272408d"
+SRC_URI[tzcode-2010l.md5sum] = "77668c37a0b13753c65eee5db3a4b009"
+SRC_URI[tzcode-2010l.sha256sum] = "489876779f75f1c7659d26c09c3bcce62188b60eeb3981e0e3cd1f7669808ccc"
+SRC_URI[tzdata-2010l.md5sum] = "0458bd8ffd537146d34b1a658c42efa5"
+SRC_URI[tzdata-2010l.sha256sum] = "bae7b4a8364f7ab3d6d644eb6075de1e9a0c72fb3fb5843fc217d2ff57408577"
 
 PR = "${INC_PR}.0"
