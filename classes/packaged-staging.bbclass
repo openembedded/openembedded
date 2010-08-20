@@ -324,10 +324,8 @@ populate_sysroot_postamble () {
 }
 
 packagedstaging_fastpath () {
-	if [ "$PSTAGING_ACTIVE" = "1" ]; then
-		mkdir -p ${PSTAGE_TMPDIR_STAGE}/sysroots/
-		cp -fpPR ${SYSROOT_DESTDIR}/${STAGING_DIR}/* ${PSTAGE_TMPDIR_STAGE}/sysroots/ || /bin/true
-	fi
+	mkdir -p ${PSTAGE_TMPDIR_STAGE}/sysroots/
+	cp -fpPR ${SYSROOT_DESTDIR}/${STAGING_DIR}/* ${PSTAGE_TMPDIR_STAGE}/sysroots/ || /bin/true
 }
 
 do_populate_sysroot[dirs] =+ "${PSTAGE_DIR}"

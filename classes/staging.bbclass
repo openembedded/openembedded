@@ -168,7 +168,8 @@ python do_populate_sysroot () {
         #os.system('cp -pPR %s/* %s/' % (dest, sysrootdest))
         for f in (bb.data.getVar('SYSROOT_PREPROCESS_FUNCS', d, True) or '').split():
             bb.build.exec_func(f, d)
-        bb.build.exec_func("packagedstaging_fastpath", d)
+        if pstageactive:
+            bb.build.exec_func("packagedstaging_fastpath", d)
 
         lock = bb.utils.lockfile(lockfile)
         os.system(bb.data.expand('cp -pPR ${SYSROOT_DESTDIR}${TMPDIR}/* ${TMPDIR}/', d))
