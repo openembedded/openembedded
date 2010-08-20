@@ -3,8 +3,6 @@ SECTION = "kernel"
 LICENSE = "GPLv2"
 PR = "r2"
 
-DEPENDS = "u-boot-utils-native"
-
 COMPATIBLE_MACHINE = "gumstix"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
@@ -74,7 +72,7 @@ do_configure_prepend() {
 
 do_deploy_append() {
         ${HOST_PREFIX}objcopy -O binary -R .note -R .comment -S arch/arm/boot/compressed/vmlinux arch/arm/boot/compressed/linux.bin
-        mkimage -A arm -O linux -T kernel -C none -a 0xa0008000 -e 0xa0008000 -n "gumstix" -d arch/arm/boot/compressed/linux.bin arch/arm/boot/uImage
+        uboot-mkimage -A arm -O linux -T kernel -C none -a 0xa0008000 -e 0xa0008000 -n "gumstix" -d arch/arm/boot/compressed/linux.bin arch/arm/boot/uImage
 		install -d ${DEPLOY_DIR_IMAGE}
 		cp arch/arm/boot/uImage ${DEPLOY_DIR_IMAGE}/uImage-${PN}-${PV}
 }
