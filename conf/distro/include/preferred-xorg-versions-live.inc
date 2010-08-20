@@ -1,4 +1,4 @@
-#Mon Aug 16 13:41:58 CEST 2010
+#Fri Aug 20 11:13:11 CEST 2010
 #app
 PREFERRED_VERSION_appres ?= "1.0.2"
 PREFERRED_VERSION_bdftopcf ?= "1.0.2"
@@ -120,7 +120,7 @@ PREFERRED_VERSION_xf86-input-dmc ?= "1.1.2"
 PREFERRED_VERSION_xf86-input-dynapro ?= "1.1.2"
 PREFERRED_VERSION_xf86-input-elo2300 ?= "1.1.2"
 PREFERRED_VERSION_xf86-input-elographics ?= "1.2.4"
-PREFERRED_VERSION_xf86-input-evdev ?= "2.4.0"
+PREFERRED_VERSION_xf86-input-evdev ?= "2.4.99.901"
 PREFERRED_VERSION_xf86-input-fpit ?= "1.3.0"
 PREFERRED_VERSION_xf86-input-hyperpen ?= "1.3.0"
 PREFERRED_VERSION_xf86-input-jamstudio ?= "1.2.0"
