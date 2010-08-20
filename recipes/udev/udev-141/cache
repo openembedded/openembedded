@@ -6,13 +6,17 @@ export TZ=/etc/localtime
 
 echo "Caching udev devnodes"
 
-			if [ "$DEVCACHE" != "" ]; then
-				echo -n "Populating dev cache"
-				(cd /; tar cf $DEVCACHE dev)
-				mv /tmp/uname /etc/udev/saved.uname
-				mv /tmp/cmdline /etc/udev/saved.cmdline
-				mv /tmp/atags /etc/udev/saved.atags
-				echo
-			fi
+if [ "$DEVCACHE" != "" ]; then
+	echo -n "Populating dev cache"
+	(cd /; tar cf $DEVCACHE dev)
+	mv /tmp/uname /etc/udev/saved.uname
+	mv /tmp/cmdline /etc/udev/saved.cmdline
+	mv /tmp/atags /etc/udev/saved.atags
+	echo
+else
+	rm -f /tmp/uname
+	rm -f /tmp/cmdline
+	rm -f /tmp/atags
+fi
 
 exit 0
