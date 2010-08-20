@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r68"
+PR = "r69"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -245,7 +245,7 @@ RDEPENDS_${PN} += "\
 		aceofpenguins-launcher \
 		om-neon \
 		ipython \
-#		phoneme-advanced-foundation \
+ 		phoneme-advanced-foundation \
 		eve \
 		python-pybluez \
 		x11perf \
