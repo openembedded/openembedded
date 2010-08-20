@@ -12,11 +12,10 @@ S = "${WORKDIR}/u-boot-${PV}"
 inherit native
 
 do_configure() {
-	:
+	oe_runmake Sandpoint8240_config
 }
 
 do_compile () {
-	oe_runmake Sandpoint8240_config
 	oe_runmake tools
 }
 

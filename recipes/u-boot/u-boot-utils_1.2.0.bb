@@ -18,11 +18,10 @@ TARGET_LDFLAGS = ""
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/u-boot-${PV}"
 
 do_configure() {
-        :
+        oe_runmake Sandpoint8240_config
 }
 
 do_compile () {
-        oe_runmake Sandpoint8240_config
         oe_runmake tools
 }
 
