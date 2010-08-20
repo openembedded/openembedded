@@ -2,7 +2,8 @@
 # Released under the MIT license (see packages/COPYING)
 
 require debianutils.inc
-PR="r1"
+
+PR = "${INC_PR}"
 
 do_configure_prepend() {
 	sed -i -e 's:tempfile.1 which.1:which.1:g' Makefile.am

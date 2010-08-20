@@ -2,4 +2,5 @@
 # Released under the MIT license (see packages/COPYING)
 
 require debianutils.inc
-PR ="r0"
+
+PR = "${INC_PR}"
