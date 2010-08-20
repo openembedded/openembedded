@@ -1,3 +1,5 @@
+DEPENDS += "u-boot-mkimage-native"
+
 magicbox_gen_images() {
         # find latest kernel
         KERNEL=`ls -tr ${DEPLOY_DIR_IMAGE}/uImage* | tail -n 1`
@@ -9,7 +11,7 @@ magicbox_gen_images() {
         #squashfs
         #We need to prep the image so that u-boot recognizes it
          mv ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.squashfs ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.squashfs.bin
-         ${STAGING_BINDIR_NATIVE}/mkimage -A ppc -O linux -T ramdisk -C none -n "OPLinux-uclibc-squashfs"  \
+         ${STAGING_BINDIR_NATIVE}/uboot-mkimage -A ppc -O linux -T ramdisk -C none -n "OPLinux-uclibc-squashfs"  \
                 -d ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.squashfs.bin ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.squashfs
          rm -f ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.squashfs.bin
 
@@ -17,7 +19,7 @@ magicbox_gen_images() {
         #squashfs-lzma
         #same as squashfs
          mv ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.squashfs-lzma ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.squashfs-lzma.bin
-         ${STAGING_BINDIR_NATIVE}/mkimage -A ppc -O linux -T ramdisk -C none -n "OPLinux-uclibc-squashfs-lzma"  \
+         ${STAGING_BINDIR_NATIVE}/uboot-mkimage -A ppc -O linux -T ramdisk -C none -n "OPLinux-uclibc-squashfs-lzma"  \
            -d ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.squashfs-lzma.bin ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.squashfs-lzma
          rm -f ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.squashfs-lzma.bin
 
