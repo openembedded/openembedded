@@ -14,6 +14,8 @@
 
 . /etc/default/rcS
 
+. /etc/default/hwclock
+
 [ "$UTC" = yes ] && UTC=-u || UTC=-l
 
 case "$1" in

@@ -11,7 +11,7 @@ LICENSE = "GPLv2"
 SECTION = "base"
 PRIORITY = "required"
 
-INC_PR = "r32"
+INC_PR = "r33"
 
 SRC_URI = "\
   file://busybox-cron \
@@ -20,6 +20,7 @@ SRC_URI = "\
   file://default.script file://simple.script \
   file://dhcp-hostname.patch \
   file://hwclock.sh \
+  file://hwclock-default \
   file://ifupdown-spurious-environ.patch \
   file://mount.busybox \
   file://syslog \
@@ -180,7 +181,9 @@ do_install () {
 		install -m 0755 ${WORKDIR}/busybox-udhcpd ${D}${sysconfdir}/init.d/
 	fi
 	if grep "CONFIG_HWCLOCK=y" ${WORKDIR}/defconfig; then
+		install -d ${D}${sysconfdir}/default
 		install -m 0755 ${WORKDIR}/hwclock.sh ${D}${sysconfdir}/init.d/
+		install -m 0644 ${WORKDIR}/hwclock-default ${D}${sysconfdir}/default/hwclock
 	fi
 	if grep "CONFIG_APP_UDHCPC=y" ${WORKDIR}/defconfig; then
 		install -d ${D}${sysconfdir}/udhcpc.d
