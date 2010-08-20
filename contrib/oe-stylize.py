@@ -45,6 +45,7 @@ OE_vars = [
     'PE',
     'PV',
     'PR',
+    'INC_PR',
     'SRC_URI',
     'S',
     'GPE_TARBALL_SUFFIX',
