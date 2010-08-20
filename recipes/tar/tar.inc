@@ -2,6 +2,7 @@ DESCRIPTION = "GNU tar saves many files together into a single tape \
 or disk archive, and can restore individual files from the archive."
 SECTION = "base"
 LICENSE = "GPLv3"
+BBCLASSEXTEND = "native"
 
 SRC_URI = "${GNU_MIRROR}/tar/tar-${PV}.tar.bz2"
 
