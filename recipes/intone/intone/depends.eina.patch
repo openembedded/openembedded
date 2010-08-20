@@ -1,0 +1,11 @@
+--- trunk.orig/configure.ac	2009-12-13 10:25:27.000000000 +0100
++++ trunk/configure.ac	2010-08-20 17:15:09.000000000 +0200
+@@ -14,7 +14,7 @@
+ 
+ AM_PROG_LIBTOOL
+ 
+-PKG_CHECK_MODULES(INTONE, [elementary eina-0 dbus-1 sqlite3 edbus vorbisfile])
++PKG_CHECK_MODULES(INTONE, [elementary eina dbus-1 sqlite3 edbus vorbisfile])
+ 
+ AC_OUTPUT([
+ Makefile

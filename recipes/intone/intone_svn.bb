@@ -8,10 +8,12 @@ RDEPENDS_${PN} = "mplayer lame libxv libsdl-x11"
 
 SRCREV = "76"
 PV = "0.66+svnr${SRCPV}"
-PR = "r9"
+PR = "r10"
 
 SRC_URI = "svn://intone.googlecode.com/svn;module=trunk;proto=http \
-file://vorbis-include-id3tag.patch;maxrev=18"
+file://vorbis-include-id3tag.patch;maxrev=18 \
+file://depends.eina.patch"
+
 S = "${WORKDIR}/trunk"
 
 inherit autotools
