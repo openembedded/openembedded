@@ -3,7 +3,8 @@ DESCRIPTION_dbench = "Filesystem load benchmark"
 DESCRIPTION_tbench = "TCP load benchmark"
 HOMEPAGE = "http://samba.org/ftp/tridge/dbench/"
 LICENSE = "GPL"
-PR = "r0"
+DEPENDS = "popt"
+PR = "r1"
 
 SRC_URI = "\
   http://samba.org/ftp/tridge/dbench/dbench-${PV}.tar.gz \
@@ -14,7 +15,9 @@ inherit autotools
 
 PACKAGES =+ "tbench tbench-dbg"
 
-FILES_tbench = "${bindir}/tbench*"
+TARGET_CC_ARCH += "${LDFLAGS}"
+
+FILES_tbench = "${bindir}/tbench* ${prefix}/share/client.txt"
 FILES_tbench-dbg += "${bindir}/.debug/tbench*"
 
 SRC_URI[md5sum] = "1fe56ff71b9a416f8889d7150ac54da4"
