@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.linphone.org/?lang=us"
 SECTION = "x11/utils"
 LICENSE = "GPLv2"
 
-PR = "r2"
+PR = "r3"
 
 DEPENDS = "intltool libosip2 speex libogg alsa-lib readline libexosip2 gtk+ libglade"
 DEPENDS_${PN} = "liblinphone libglade gtk+"
