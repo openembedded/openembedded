@@ -8,7 +8,7 @@ inherit autotools gettext
 
 DEFAULT_PREFERENCE = "-1"
 
-INC_PR = "r25"
+INC_PR = "r26"
 
 # allows for a release candidate
 RC ?= ""
@@ -123,8 +123,8 @@ do_install () {
 		'LDFLAGS=${LDFLAGS}' 'DESTDIR=${D}' install
 	mkdir -p ${D}${base_bindir}
 
-        sbinprogs="agetty blockdev ctrlaltdel cfdisk vipw vigr"
-        sbinprogs_a="pivot_root hwclock mkswap shutdown mkfs.minix fsck.minix losetup swapon fdisk readprofile fsck blkid"
+        sbinprogs="agetty blockdev ctrlaltdel cfdisk"
+        sbinprogs_a="pivot_root hwclock mkswap shutdown mkfs.minix fsck.minix losetup swapon fdisk readprofile fsck blkid vigr vipw"
         usrbinprogs_a="chfn chsh hexdump last logger mesg newgrp renice wall setsid chrt"
         binprogs_a="dmesg kill more umount mount login reset"
 
@@ -207,7 +207,7 @@ pkg_postinst_${PN} () {
 	update-alternatives --install ${base_bindir}/login login login.${PN} 100
 	update-alternatives --install ${base_sbindir}/vipw vipw vipw.${PN} 100
 	update-alternatives --install ${base_sbindir}/vigr vigr vigr.${PN} 100
-	update-alternatives --install ${bindir}/reset reset reset.${PN} 100
+	update-alternatives --install ${base_bindir}/reset reset reset.${PN} 100
 	update-alternatives --install ${bindir}/setsid setsid setsid.${PN} 100
 	update-alternatives --install ${bindir}/chrt chrt chrt.${PN} 100
 	
@@ -271,7 +271,7 @@ pkg_prerm_util-linux-ng-swaponoff () {
 }
 
 pkg_postinst_util-linux-ng-readprofile() {
-    update-alternatives --install ${sbindir}/readprofile readprofile readprofile.${PN} 100
+    update-alternatives --install ${base_sbindir}/readprofile readprofile readprofile.${PN} 100
 }
 
 pkg_prerm_util-linux-ng-readprofile () {
