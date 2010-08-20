@@ -1,11 +1,12 @@
-PR = "r1"
+PR = "r2"
 
 require phoneme-advanced.inc
 
 BUILDREV = "b160"
 SRCREV = "20424"
 
-SRC_URI += "file://${BUILDREV}-makefile-fix.patch;striplevel=0"
+SRC_URI += "file://${BUILDREV}-makefile-fix.patch;striplevel=0 \
+            file://${BUILDREV}-newer-libc.patch;striplevel=0"
 
 FILES_${PN} += "\
 	${COMMON_DIR}/bin/cvm \ 

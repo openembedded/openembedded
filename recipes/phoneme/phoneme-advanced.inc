@@ -85,14 +85,14 @@ do_configure() {
   pmo HOST_RANLIB "${BUILD_RANLIB}"
 
   pmo "# C/C++ toolchain binaries"
-  pmo TARGET_CC "${CC}"
+  pmo TARGET_CC "${CC} "
   pmo TARGET_CC_PATH "${CC}"
   pmo CCFLAGS "${CFLAGS}"
   pmo TARGET_CCC "${CXX}"
   pmo TARGET_PATH "${CXX}"
   pmo CCCFLAGS "${CXXFLAGS}"
   pmo TARGET_AR "${AR}"
-  pmo TARGET_LD "${CC}"
+  pmo TARGET_LD "${CC} ${LDFLAGS}"
   pmo TARGET_RANLIB "${RANLIB}"
 
   pmo USE_GCC2 false
