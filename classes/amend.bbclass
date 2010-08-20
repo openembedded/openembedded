@@ -14,20 +14,32 @@ python () {
     amendfiles = [os.path.join(fpath, "amend.inc")
                   for fpath in filespath]
 
-    # Adding all amend.incs that can exist to the __depends, to ensure that
-    # creating one of them invalidates the bitbake cache.  Note that it
-    # requires a fix in bitbake.  Without the bitbake fix, the cache will be
-    # completely invalidated on every bitbake execution.
-    depends = d.getVar("__depends", 0) or []
-    d.setVar("__depends", depends + [(file, 0) for file in amendfiles if not os.path.exists(file)])
-
-    # Make sure we don't parse the same amend.inc file more than once, if
-    # there are duplicates in FILESPATH
+    newdata = []
     seen = set()
-
     for file in amendfiles:
+        if file in seen:
+            continue
+        seen.add(file)
+
         if os.path.exists(file):
-            if file not in seen:
-                bb.parse.handle(file, d, 1)
-                seen.add(file)
+            bb.parse.handle(file, d, 1)
+        else:
+            # Manually add amend.inc files that don't exist to the __depends, to
+            # ensure that creating them invalidates the bitbake cache for that recipe.
+            newdata.append((file, 0))
+
+    if not newdata:
+        return
+
+    depends = d.getVar("__depends", False)
+    bbversion = tuple(int(i) for i in bb.__version__.split("."))
+    if bbversion < (1, 11, 0):
+        if depends is None:
+            depends = []
+        depends += newdata
+    else:
+        if depends is None:
+            depends = set()
+        depends |= set(newdata)
+    d.setVar("__depends", depends)
 }
