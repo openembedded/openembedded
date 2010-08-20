@@ -5,9 +5,7 @@ PR = "r1"
 
 inherit kernel
 
-DEPENDS += " \
-           u-boot-mkimage-openmoko-native \
-          "
+DEPENDS += "u-boot-mkimage-native"
 
 KERNEL_IMAGE_BASE_NAME = ${KERNEL_IMAGETYPE}-${PV}-${PR}-${MACHINE}
 
