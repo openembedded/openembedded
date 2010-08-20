@@ -3,7 +3,7 @@ SECTION = "kernel"
 HOMEPAGE = "N/A"
 LICENSE = "GPLv2"
 COMPATIBLE_MACHINE = "bd-neon"
-DEPENDS += "u-boot-utils-native"
+DEPENDS += "u-boot-mkimage-native"
 
 PR = "r2"
 
@@ -37,7 +37,7 @@ do_deploy_append() {
         ${OBJCOPY} -O binary -R .note -R .comment -S vmlinux linux.bin
         rm -f linux.bin.gz
         gzip -9 linux.bin
-        ${STAGING_BINDIR_NATIVE}/mkimage -A arm -O linux -T kernel -C gzip -a a0008000 -e a0008000 -n "Boundary Devices NEON" -d linux.bin.gz ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE}.bin
+        ${STAGING_BINDIR_NATIVE}/uboot-mkimage -A arm -O linux -T kernel -C gzip -a a0008000 -e a0008000 -n "Boundary Devices NEON" -d linux.bin.gz ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE}.bin
         rm -f linux.bin.gz
 }
 
