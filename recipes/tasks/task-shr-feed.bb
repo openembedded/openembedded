@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r67"
+PR = "r68"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -19,6 +19,7 @@ RDEPENDS_${PN} += "\
 		dosbox \
 		enotes \
 		epdfview \
+		mupdf \
 		estardict \
 		evopedia \
 		fbreader \
@@ -245,7 +246,7 @@ RDEPENDS_${PN} += "\
 		om-neon \
 		ipython \
 #		phoneme-advanced-foundation \
-#		eve was killed in svnr45979
+		eve \
 		python-pybluez \
 		x11perf \
 		pyring \
