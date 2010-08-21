@@ -10,8 +10,6 @@ NATIVEDEPS = "mpfr-native gmp-native"
 
 INC_PR = "r10"
 
-FILESPATHPKG .= ":gcc-$PV"
-
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
         file://gcc-4.3.1-ARCH_FLAGS_FOR_TARGET.patch \
 	file://100-uclibc-conf.patch \
