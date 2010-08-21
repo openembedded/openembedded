@@ -1,13 +1,14 @@
 LICENSE = "GPL"
 
-DEPENDS = "klibc"
+# the binary is statically linked against klibc
+inherit klibc
+inherit autotools
+
 RDEPENDS_${PN} = "kexec-klibc"
 
 # The binary itself is not machine-specific
 # but the EXTRA_OECONF overrides have this effect 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-
-inherit autotools
 
 # You can create your own *-img.h by doing
 # ./make-image-header.sh <file>.png HAND
@@ -15,8 +16,6 @@ inherit autotools
 SRC_URI += "file://logo-img.h \
         file://logo.png \
         "
-
-export CC=${TARGET_PREFIX}klcc
 
 # Defaults as in ver 0.5+0.6b
 #############################
