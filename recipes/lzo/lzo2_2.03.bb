@@ -19,6 +19,5 @@ do_configure() {
 	oe_runconf
 }
 
-NATIVE_INSTALL_WORKS = "1"
 BBCLASSEXTEND = "native"
 
