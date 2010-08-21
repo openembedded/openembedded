@@ -1,7 +1,6 @@
 PR = "${INC_PR}.0"
 
 export INST=${D}
-export KLCC_INST=${STAGING_DIR_TARGET}/lib/klibc
 
 do_install() {
         oe_runmake install
@@ -12,7 +11,6 @@ do_install() {
         install -d ${D}${base_libdir}
         install -m 755 usr/klibc/klibc-*.so ${D}${base_libdir}
         (cd  ${D}${base_libdir}; ln -s klibc-*.so klibc.so)
-        install -m 755 klcc/klcc ${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}klcc
 }
 
 PACKAGES = "${PN} ${PN}-dev "
