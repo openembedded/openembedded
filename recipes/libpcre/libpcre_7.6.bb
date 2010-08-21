@@ -5,7 +5,7 @@ provides a POSIX calling interface to PCRE; the regular expressions \
 themselves still follow Perl syntax and semantics. The header file for \
 the POSIX-style functions is called pcreposix.h."
 SECTION = "devel"
-PR = "r7"
+PR = "r8"
 LICENSE = "BSD"
 SRC_URI = "${SOURCEFORGE_MIRROR}/pcre/pcre-${PV}.tar.bz2 \
            file://pcre-cross.patch"
@@ -43,17 +43,10 @@ do_install_append () {
     install -m 0755 ${D}${bindir}/pcre-config ${STAGING_BINDIR}/
 }
 
-python populate_packages_prepend () {
-	pcre_libdir = bb.data.expand('${libdir}', d)
-	pcre_libdir_dbg = bb.data.expand('${libdir}/.debug', d)
-	do_split_packages(d, pcre_libdir, '^lib(.*)\.so$', 'lib%s-dev', 'libpcre %s development package', extra_depends='${PN}-dev', allow_links=True)
-	do_split_packages(d, pcre_libdir, '^lib(.*)\.la$', 'lib%s-dev', 'libpcre %s development package', extra_depends='${PN}-dev')
-	do_split_packages(d, pcre_libdir, '^lib(.*)\.a$', 'lib%s-dev', 'libpcre %s development package', extra_depends='${PN}-dev')
-	do_split_packages(d, pcre_libdir, '^lib(.*)\.so\.*', 'lib%s', 'libpcre %s library', extra_depends='', allow_links=True)
-}
-
-FILES_${PN} = "${libdir}/libpcre.so.*"
+FILES_${PN} = "${libdir}/lib*${SOLIBS}"
 FILES_${PN}-dev += "${bindir}/*"
+
+LEAD_SONAME = "libpcre.so.*"
 
 SRC_URI[md5sum] = "2af38e083fb90ef60fa9eda7cc290e86"
 SRC_URI[sha256sum] = "362e4b4473f2f7a3bfa28ea73e80ec00a2fe525a1aceb5f66e1c528a900bd735"
