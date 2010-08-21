@@ -7,7 +7,6 @@ SRC_URI  = "${GNU_MIRROR}/gperf/gperf-${PV}.tar.gz \
 
 inherit autotools
 
-NATIVE_INSTALL_WORKS = "1"
 BBCLASSEXTEND = "native"
 
 SRC_URI[md5sum] = "cc20e58975a38075440423c8fb85fd00"
