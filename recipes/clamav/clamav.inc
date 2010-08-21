@@ -18,7 +18,7 @@ RRECOMMENDS_${PN} = "${PN}-freshclam"
 RRECOMMENDS_${PN}-daemon = "${PN}-freshclam"
 RPROVIDES_${PN}-freshclam = "${PN}-data"
 
-INC_PR = "r4"
+INC_PR = "r5"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/clamav/clamav-${PV}.tar.gz;name=clamav-${PV} \
           file://clamav-daemon.init \
@@ -69,7 +69,7 @@ LEAD_SONAME = "libclamav.so.*"
 FILES_${PN} = "${bindir}/clamscan \
                ${bindir}/sigtool \
                ${bindir}/clamdscan"
-FILES_${PN}-lib = "${libdir}/libclamav.so.* ${libdir}/libclamunrar.so* ${libdir}/libclamunrar_iface.so*"
+FILES_${PN}-lib = "${libdir}/libclamav.so.* ${libdir}/libclamunrar.so.* ${libdir}/libclamunrar_iface.so.*"
 FILES_${PN}-conf = "${sysconfdir}/clamd.conf"
 FILES_${PN}-clamconf = "${bindir}/clamconf"
 FILES_${PN}-freshclam = "${bindir}/freshclam \
