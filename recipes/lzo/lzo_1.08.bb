@@ -11,7 +11,6 @@ inherit autotools
 
 EXTRA_OECONF = "--enable-shared"
 
-NATIVE_INSTALL_WORKS = "1"
 BBCLASSEXTEND = "native"
 
 SRC_URI[md5sum] = "ab94d3da364c7cbd5b78d76f1875b0f6"
