@@ -1,0 +1,139 @@
+Index: texinfo-4.13/gnulib/m4/po.m4
+===================================================================
+--- texinfo-4.13.orig/gnulib/m4/po.m4	2007-12-25 15:57:18.000000000 -0800
++++ texinfo-4.13/gnulib/m4/po.m4	2010-08-21 00:46:46.419648001 -0700
+@@ -1,5 +1,5 @@
+-# po.m4 serial 15 (gettext-0.17)
+-dnl Copyright (C) 1995-2007 Free Software Foundation, Inc.
++# po.m4 serial 17 (gettext-0.18)
++dnl Copyright (C) 1995-2010 Free Software Foundation, Inc.
+ dnl This file is free software; the Free Software Foundation
+ dnl gives unlimited permission to copy and/or distribute it,
+ dnl with or without modifications, as long as this notice is preserved.
+@@ -17,7 +17,7 @@ dnl Authors:
+ dnl   Ulrich Drepper <drepper@cygnus.com>, 1995-2000.
+ dnl   Bruno Haible <haible@clisp.cons.org>, 2000-2003.
+ 
+-AC_PREREQ(2.50)
++AC_PREREQ([2.50])
+ 
+ dnl Checks for all prerequisites of the po subdirectory.
+ AC_DEFUN([AM_PO_SUBDIRS],
+@@ -29,7 +29,7 @@ AC_DEFUN([AM_PO_SUBDIRS],
+ 
+   dnl Release version of the gettext macros. This is used to ensure that
+   dnl the gettext macros and po/Makefile.in.in are in sync.
+-  AC_SUBST([GETTEXT_MACRO_VERSION], [0.17])
++  AC_SUBST([GETTEXT_MACRO_VERSION], [0.18])
+ 
+   dnl Perform the following tests also if --disable-nls has been given,
+   dnl because they are needed for "make dist" to work.
+@@ -41,7 +41,7 @@ AC_DEFUN([AM_PO_SUBDIRS],
+     [$ac_dir/$ac_word --statistics /dev/null >&]AS_MESSAGE_LOG_FD[ 2>&1 &&
+      (if $ac_dir/$ac_word --statistics /dev/null 2>&1 >/dev/null | grep usage >/dev/null; then exit 1; else exit 0; fi)],
+     :)
+-  AC_PATH_PROG(GMSGFMT, gmsgfmt, $MSGFMT)
++  AC_PATH_PROG([GMSGFMT], [gmsgfmt], [$MSGFMT])
+ 
+   dnl Test whether it is GNU msgfmt >= 0.15.
+ changequote(,)dnl
+Index: texinfo-4.13/po/Makefile.in.in
+===================================================================
+--- texinfo-4.13.orig/po/Makefile.in.in	2007-12-25 15:57:21.000000000 -0800
++++ texinfo-4.13/po/Makefile.in.in	2010-08-21 00:45:19.719648002 -0700
+@@ -1,5 +1,5 @@
+ # Makefile for PO directory in any package using GNU gettext.
+-# Copyright (C) 1995-1997, 2000-2007 by Ulrich Drepper <drepper@gnu.ai.mit.edu>
++# Copyright (C) 1995-1997, 2000-2007, 2009-2010 by Ulrich Drepper <drepper@gnu.ai.mit.edu>
+ #
+ # This file can be copied and used freely without restrictions.  It can
+ # be used in projects which are not available under the GNU General Public
+@@ -8,8 +8,8 @@
+ # Please note that the actual code of GNU gettext is covered by the GNU
+ # General Public License and is *not* in the public domain.
+ #
+-# Origin: gettext-0.17
+-GETTEXT_MACRO_VERSION = 0.17
++# Origin: gettext-0.18
++GETTEXT_MACRO_VERSION = 0.18
+ 
+ PACKAGE = @PACKAGE@
+ VERSION = @VERSION@
+@@ -88,8 +88,8 @@ CATALOGS = @CATALOGS@
+ .po.gmo:
+ 	@lang=`echo $* | sed -e 's,.*/,,'`; \
+ 	test "$(srcdir)" = . && cdcmd="" || cdcmd="cd $(srcdir) && "; \
+-	echo "$${cdcmd}rm -f $${lang}.gmo && $(GMSGFMT) -c --statistics -o $${lang}.gmo $${lang}.po"; \
+-	cd $(srcdir) && rm -f $${lang}.gmo && $(GMSGFMT) -c --statistics -o t-$${lang}.gmo $${lang}.po && mv t-$${lang}.gmo $${lang}.gmo
++	echo "$${cdcmd}rm -f $${lang}.gmo && $(GMSGFMT) -c --statistics --verbose -o $${lang}.gmo $${lang}.po"; \
++	cd $(srcdir) && rm -f $${lang}.gmo && $(GMSGFMT) -c --statistics --verbose -o t-$${lang}.gmo $${lang}.po && mv t-$${lang}.gmo $${lang}.gmo
+ 
+ .sin.sed:
+ 	sed -e '/^#/d' $< > t-$@
+@@ -193,8 +193,15 @@ $(POFILES): $(srcdir)/$(DOMAIN).pot
+ 	@lang=`echo $@ | sed -e 's,.*/,,' -e 's/\.po$$//'`; \
+ 	if test -f "$(srcdir)/$${lang}.po"; then \
+ 	  test "$(srcdir)" = . && cdcmd="" || cdcmd="cd $(srcdir) && "; \
+-	  echo "$${cdcmd}$(MSGMERGE_UPDATE) $${lang}.po $(DOMAIN).pot"; \
+-	  cd $(srcdir) && $(MSGMERGE_UPDATE) $${lang}.po $(DOMAIN).pot; \
++	  echo "$${cdcmd}$(MSGMERGE_UPDATE) $(MSGMERGE_OPTIONS) --lang=$${lang} $${lang}.po $(DOMAIN).pot"; \
++	  cd $(srcdir) \
++	    && { case `$(MSGMERGE_UPDATE) --version | sed 1q | sed -e 's,^[^0-9]*,,'` in \
++	           '' | 0.[0-9] | 0.[0-9].* | 0.1[0-7] | 0.1[0-7].*) \
++	             $(MSGMERGE_UPDATE) $(MSGMERGE_OPTIONS) $${lang}.po $(DOMAIN).pot;; \
++	           *) \
++	             $(MSGMERGE_UPDATE) $(MSGMERGE_OPTIONS) --lang=$${lang} $${lang}.po $(DOMAIN).pot;; \
++	         esac; \
++	       }; \
+ 	else \
+ 	  $(MAKE) $${lang}.po-create; \
+ 	fi
+@@ -217,7 +224,6 @@ install-data: install-data-@USE_NLS@
+ 	fi
+ install-data-no: all
+ install-data-yes: all
+-	$(mkdir_p) $(DESTDIR)$(datadir)
+ 	@catalogs='$(CATALOGS)'; \
+ 	for cat in $$catalogs; do \
+ 	  cat=`basename $$cat`; \
+@@ -269,7 +275,6 @@ installdirs-data: installdirs-data-@USE_
+ 	fi
+ installdirs-data-no:
+ installdirs-data-yes:
+-	$(mkdir_p) $(DESTDIR)$(datadir)
+ 	@catalogs='$(CATALOGS)'; \
+ 	for cat in $$catalogs; do \
+ 	  cat=`basename $$cat`; \
+@@ -395,9 +400,15 @@ update-po: Makefile
+ 	tmpdir=`pwd`; \
+ 	echo "$$lang:"; \
+ 	test "$(srcdir)" = . && cdcmd="" || cdcmd="cd $(srcdir) && "; \
+-	echo "$${cdcmd}$(MSGMERGE) $$lang.po $(DOMAIN).pot -o $$lang.new.po"; \
++	echo "$${cdcmd}$(MSGMERGE) $(MSGMERGE_OPTIONS) --lang=$$lang $$lang.po $(DOMAIN).pot -o $$lang.new.po"; \
+ 	cd $(srcdir); \
+-	if $(MSGMERGE) $$lang.po $(DOMAIN).pot -o $$tmpdir/$$lang.new.po; then \
++	if { case `$(MSGMERGE) --version | sed 1q | sed -e 's,^[^0-9]*,,'` in \
++	       '' | 0.[0-9] | 0.[0-9].* | 0.1[0-7] | 0.1[0-7].*) \
++	         $(MSGMERGE) $(MSGMERGE_OPTIONS) -o $$tmpdir/$$lang.new.po $$lang.po $(DOMAIN).pot;; \
++	       *) \
++	         $(MSGMERGE) $(MSGMERGE_OPTIONS) --lang=$$lang -o $$tmpdir/$$lang.new.po $$lang.po $(DOMAIN).pot;; \
++	     esac; \
++	   }; then \
+ 	  if cmp $$lang.po $$tmpdir/$$lang.new.po >/dev/null 2>&1; then \
+ 	    rm -f $$tmpdir/$$lang.new.po; \
+ 	  else \
+@@ -418,9 +429,13 @@ $(DUMMYPOFILES):
+ update-gmo: Makefile $(GMOFILES)
+ 	@:
+ 
++# Recreate Makefile by invoking config.status. Explicitly invoke the shell,
++# because execution permission bits may not work on the current file system.
++# Use @SHELL@, which is the shell determined by autoconf for the use by its
++# scripts, not $(SHELL) which is hardwired to /bin/sh and may be deficient.
+ Makefile: Makefile.in.in Makevars $(top_builddir)/config.status @POMAKEFILEDEPS@
+ 	cd $(top_builddir) \
+-	  && $(SHELL) ./config.status $(subdir)/$@.in po-directories
++	  && @SHELL@ ./config.status $(subdir)/$@.in po-directories
+ 
+ force:
+ 
