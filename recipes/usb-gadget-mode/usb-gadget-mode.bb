@@ -37,5 +37,5 @@ pkg_postrm_${PN}() {
 	update-rc.d -f usb-gadget remove
 }
 
-PACKAGE_ARCH_pn-${PN} = "${MACHINE_ARCH}"
+PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
 

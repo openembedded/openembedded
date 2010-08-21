@@ -4,7 +4,7 @@ LICENSE = "GPL"
 
 # SERIAL_CONSOLE is generally defined by the MACHINE .conf.
 # Set PACKAGE_ARCH appropriately.
-PACKAGE_ARCH_pn-${PN} = "${MACHINE_ARCH}"
+PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
 
 SRC_URI = "file://rcS file://inittab"
 

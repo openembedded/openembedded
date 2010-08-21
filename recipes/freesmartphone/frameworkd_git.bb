@@ -78,7 +78,7 @@ RRECOMMENDS_${PN} += "\
 "
 
 PACKAGES =+ "${PN}-config"
-PACKAGE_ARCH_pn-${PN}-config = "${MACHINE_ARCH}"
+PACKAGE_ARCH_${PN}-config = "${MACHINE_ARCH}"
 
 # machine specific stuff, should ideally be elsewhere
 # - recommend MUXer on platforms that require one

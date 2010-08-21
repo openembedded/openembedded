@@ -17,7 +17,7 @@ do_install() {
     install -m 644 ${S}/stereoout.state ${D}${sysconfdir}/asound.state
 }
 
-PACKAGE_ARCH_pn-${PN} = "${MACHINE_ARCH}"
+PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
 
 FILES_${PN} += "${datadir}/shr"
 

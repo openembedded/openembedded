@@ -60,7 +60,7 @@ do_install_append() {
         install -m 0644 ${CONF_PATH}/*.wav ${D}${datadir}/sounds/
 }
 
-PACKAGE_ARCH_pn-${PN} = "${MACHINE_ARCH}"
+PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
 
 # - add wmiconfig for wireless configuration
 RDEPENDS_${PN}_append_om-gta02 = " wmiconfig"

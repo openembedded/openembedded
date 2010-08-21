@@ -8,7 +8,7 @@ PR = "r7"
 
 # The RESOLUTION is defined at compile time which makes
 # this package MACHINE specific.
-PACKAGE_ARCH_pn-${PN} = "${MACHINE_ARCH}"
+PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
 
 SRC_URI = "http://www.fbreader.org/obsolete/fbreader-sources-${PV}.tgz \
 	   file://fbreader-0.8.2a_buildsys_oe.patch \

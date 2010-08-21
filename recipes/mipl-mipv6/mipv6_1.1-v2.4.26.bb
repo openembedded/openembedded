@@ -6,7 +6,7 @@ DEPENDS = "virtual/kernel"
 LICENSE = "GPL"
 CFLAGS =+ "-I${S}/include -I${STAGING_KERNEL_DIR}/include"
 
-PACKAGE_ARCH_pn-${PN} = "${MACHINE_ARCH}"
+PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
 
 PR ="r3"
 
