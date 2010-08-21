@@ -4,7 +4,7 @@ DEPENDS = "eet"
 LICENSE = "MIT BSD"
 SRCREV = "285e2f0a92fc47d9a739c5a1a936124b6e6fa819"
 PV = "1.2+gitr${SRCPV}"
-PR = "r3"
+PR = "r4"
 
 inherit e
 
