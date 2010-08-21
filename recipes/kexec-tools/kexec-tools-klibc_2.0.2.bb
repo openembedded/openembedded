@@ -1,8 +1,8 @@
 # the binaries are statically linked against klibc
 require kexec-tools_${PV}.inc
 
-PR = "r1"
-DEPENDS = "klibc"
+PR = "r2"
+inherit klibc
 
 FILESPATHPKG =. "kexec-tools-${PV}:"
 
@@ -17,12 +17,6 @@ SRC_URI += "file://headers.patch \
 S = "${WORKDIR}/kexec-tools-${PV}"
 
 EXTRA_OECONF = " --without-zlib"
-export CC=${TARGET_PREFIX}klcc
-
-# reset inherited OE flags to avoid e.g. ggdb3 and keep size small
-export CFLAGS=""
-export CPPFLAGS=""
-export LDFLAGS=""
 
 PACKAGES =+ "kexec-klibc kdump-klibc"
 
