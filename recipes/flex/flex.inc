@@ -6,6 +6,8 @@ DEPENDS = "gettext"
 
 INC_PR = "r5"
 
+BBCLASSEXTEND = "native"
+
 S = "${WORKDIR}/flex-${PV}"
 
 inherit autotools gettext
