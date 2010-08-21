@@ -1,9 +1,10 @@
 DESCRIPTION = "User support binary for the uvesafb kernel module"
 SRC_URI = "http://dev.gentoo.org/~spock/projects/uvesafb/archive/v86d-${PV}.tar.bz2 \
            file://fbsetup"
-DEPENDS = "virtual/kernel klibc"
+DEPENDS = "virtual/kernel klcc-cross"
+
 LICENSE = "GPLv2"
-PR = "r0"
+PR = "r1"
 
 RRECOMMENDS_${PN} = "kernel-module-uvesafb"
 
