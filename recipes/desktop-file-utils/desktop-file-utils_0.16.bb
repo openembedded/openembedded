@@ -12,4 +12,3 @@ SRC_URI[archive.sha256sum] = "7960be4bf7aa4b4698e8ea333cfa0bbfa7a169029e85d6a8b5
 inherit autotools
 
 BBCLASSEXTEND = "native"
-NATIVE_INSTALL_WORKS = "1"
