@@ -6,7 +6,6 @@ DEPENDS = "gst-plugins-base gst-plugins-bad gst-plugins-good gst-plugins-ugly"
 
 GST_CODEC_ELEMENT = " \
 	gstreamer-ti \
-	gstreamer-ti-demo-script \
 "
 
 GST_CODEC_ELEMENT_am3517-evm = "\
