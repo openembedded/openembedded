@@ -1,11 +1,11 @@
 DESCRIPTION = "Framebuffer splash utilities."
 SECTION = "media-gfx"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://dev.gentoo.org/~spock/projects/gensplash/archive/splashutils-${PV}.tar.bz2"
 
-DEPENDS = "jpeg klibc"
+DEPENDS = "jpeg klcc-cross"
 
 inherit autotools
 
