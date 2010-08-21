@@ -1,5 +1,6 @@
 LICENSE = "GPL"
 DEPENDS = "guile libggz ggz-client-libs python-pygtk gtk+ libgnome libgnomeui librsvg gnome-vfs gconf libglade gnome-common gnome-python-desktop gnome-python gstreamer"
+PR = "r1"
 
 inherit gnome distutils-base gconf
 
@@ -16,6 +17,7 @@ EXTRA_OECONF = " \
                 --with-ggzcore-includes=${STAGING_INCDIR} \
                 --with-ggzcore-libraries=${STAGING_LIBDIR} \
 	        --disable-tests \
+	        --disable-scrollkeeper \
 		INTLTOOL_PERL=${STAGING_BINDIR_NATIVE}/perl \
 	       "
 
