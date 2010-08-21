@@ -12,4 +12,4 @@ SRC_URI = "git://git.clutter-project.org/clutter.git;protocol=git;branch=clutter
 S = "${WORKDIR}/git"
 
 
-
+ARM_INSTRUCTION_SET = "arm"
