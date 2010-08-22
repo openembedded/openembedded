@@ -6,6 +6,7 @@ DEPENDS = "elementary libframeworkd-glib libphone-utils eggdbus glib-2.0 dbus-gl
 SECTION = "misc/utils"
 
 PV = "1.0+svnr${SRCPV}"
+PR = "r1"
 SRCREV = "454"
 
 SRC_URI = "svn://svn.casaricci.it/openmoko/trunk;module=mokosuite;proto=svn"
@@ -18,7 +19,7 @@ EXTRA_OECONF = " --enable-callsdb-sqlite --enable-contactsdb-sqlite --with-edje-
 FILES_${PN} += "${datadir}/mokosuite ${sysconfdir}/dbus-1 ${sysconfdir}/X11 ${sysconfdir}/mokosuite.conf {$datadir}/applications"
 CONFFILES_${PN} = "${sysconfdir}/mokosuite.conf"
 
-inherit pkgconfig autotools
+inherit pkgconfig autotools update-alternatives
 
 ALTERNATIVE_PATH = "${bindir}/mokosession"
 ALTERNATIVE_NAME = "x-window-manager"
