@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.fbreader.org"
 SECTION = "x11/utils"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
-DEPENDS = "gtk+ enca expat bzip2 libgpewidget virtual/libiconv liblinebreak libfribidi"
+DEPENDS = "gtk+ enca expat bzip2 libgpewidget virtual/libiconv liblinebreak libfribidi curl"
 
 SRC_URI = "http://www.fbreader.org/fbreader-sources-${PV}.tgz \
 file://Makefile.patch \
