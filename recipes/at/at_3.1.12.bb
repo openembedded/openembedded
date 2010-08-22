@@ -5,7 +5,7 @@ DEPENDS = "flex-native flex"
 RCONFLICTS_${PN} = "atd"
 RREPLACES_${PN} = "atd"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = " \
 	${DEBIAN_MIRROR}/main/a/at/at_${PV}.orig.tar.gz \
@@ -15,6 +15,7 @@ SRC_URI = " \
 	file://at-3.1.12-0005-Makefile.in-replace-IROOT-by-DESTDIR.patch \
 	file://at-3.1.12-0006-Makefile.in-make-install-fix.patch \
 	file://at-3.1.12-0007-getloadavg-fix.patch \
+	file://at-parallel-make-fix.patch \
 	file://init \
 	"
 inherit autotools update-rc.d

@@ -1,0 +1,13 @@
+Index: at-3.1.12/Makefile.in
+===================================================================
+--- at-3.1.12.orig/Makefile.in	2010-08-22 18:48:13.000000000 +0400
++++ at-3.1.12/Makefile.in	2010-08-22 18:48:38.000000000 +0400
+@@ -80,7 +80,7 @@
+ y.tab.c y.tab.h: parsetime.y
+ 	$(YACC) -d parsetime.y
+ 
+-lex.yy.c: parsetime.l
++lex.yy.c: parsetime.l y.tab.h
+ 	$(LEX) -i parsetime.l
+ 
+ atrun: atrun.in
