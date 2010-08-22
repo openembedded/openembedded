@@ -10,6 +10,6 @@ SRC_URI[iptables-1.4.9.1.sha256sum] = "0550f7ba7a170811dcf9b2df65036999786d84040
 
 do_install_append() {
 	install -d ${D}${docdir}/xtables
-	mv ${D}${datadir}/xtables/* ${D}${docdir}/xtables/
+	mv ${D}${datadir}/xtables/* ${D}${docdir}/xtables/ || echo "No ${D}${datadir}/xtables/* here"
 	rm -fr ${D}${datadir}/xtables
 }
