@@ -1,5 +1,5 @@
 # We set INC_PR here, since a change in the kexecboot recipe will need to get picked up by *all* the kernels:
-INC_PR = "r19"
+INC_PR = "r20"
 
 LOGO_SIZE = '${@base_conditional("GUI_MACHINE_CLASS", "bigscreen", "vga", "qvga", d)}'
 SRC_URI = "file://${LOGO_SIZE}/logo_linux_clut224.ppm.bz2"
@@ -87,7 +87,7 @@ CONFIG_MODULES=n' >> ${S}/.config
         yes '' | oe_runmake oldconfig
 }
 
-do_stage() {
+do_populate_sysroot() {
 }
 
 do_install() {
