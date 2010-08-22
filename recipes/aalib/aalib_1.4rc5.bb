@@ -2,7 +2,7 @@ DEPENDS = "ncurses"
 DESCRIPTION = "An ASCII art gfx library."
 SECTION = "libs"
 LICENSE="LGPL"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/aa-project/aalib-${PV}.tar.gz \
 	   file://configure.patch"

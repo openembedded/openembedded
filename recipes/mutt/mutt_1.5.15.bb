@@ -7,7 +7,7 @@ bindings, keyboard macros, mail threading, regular expression \
 searches, and a powerful pattern matching language for selecting \
 groups of messages."
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 SRC_URI = "ftp://ftp.mutt.org/mutt/devel/mutt-${PV}.tar.gz;name=archive \
            http://mutt.org.ua/download/mutt-1.5.15/patch-1.5.15.vvv.nntp.2.gz;apply=yes;name=patch1 \
            http://mutt.org.ua/download/mutt-1.5.15/patch-1.5.15.vvv.initials.gz;apply=yes;name=patch2 \

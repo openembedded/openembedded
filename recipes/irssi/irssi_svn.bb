@@ -4,7 +4,7 @@ SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS += "ncurses glib-2.0"
 PV = "0.8.11+svn${SRCDATE}"
-PR = "r4"
+PR = "r5"
 
 DEFAULT_PREFERENCE = "-1"
 

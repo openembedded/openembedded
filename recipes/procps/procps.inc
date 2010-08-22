@@ -7,10 +7,9 @@ SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "ncurses"
-# actually RDEPENDS, but ncurses-terminfo is only in ncurses-5.7, so RRECOMMENDS for now
-RRECOMMENDS_${PN} = "ncurses-terminfo"
+RDEPENDS_${PN} = "ncurses-terminfo"
 
-INC_PR = "r11"
+INC_PR = "r12"
 
 SRC_URI = "http://procps.sourceforge.net/procps-${PV}.tar.gz;name=tarball \
 	   file://sysctl.conf \

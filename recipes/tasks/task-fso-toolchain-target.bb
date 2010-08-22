@@ -2,7 +2,7 @@ DESCRIPTION = "Packages for a standalone  SDK or external toolchain"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
-PR = "r1"
+PR = "r2"
 
 PACKAGES = "${PN}"
 

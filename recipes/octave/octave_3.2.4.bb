@@ -1,4 +1,5 @@
 DEFAULT_PREFERENCE = "-1"
+PR = "${INC_PR}.0"
 
 require octave.inc
 

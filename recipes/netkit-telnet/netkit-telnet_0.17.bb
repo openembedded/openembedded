@@ -2,7 +2,7 @@ SECTION = "base"
 DESCRIPTION = "netkit-telnet includes the telnet daemon and client."
 DEPENDS = "ncurses"
 LICENSE = "BSD"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.uk.linux.org/pub/linux/Networking/netkit/netkit-telnet-${PV}.tar.gz \
            file://netkit-telnet-debian_0.17-36.diff \

@@ -4,7 +4,7 @@ LICENSE = "GPL"
 DEPENDS = "ncurses"
 PRIORITY = "optional"
 SECTION = "console/editors"
-PR = "r1"
+PR = "r2"
 
 UV = "${@bb.data.getVar('PV', d, 1).split('+')[1]}"
 

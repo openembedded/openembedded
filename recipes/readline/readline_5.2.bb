@@ -8,7 +8,7 @@ LICENSE = "GPLv2"
 DEPENDS += "ncurses"
 RPROVIDES_${PN} += "readline"
 LEAD_SONAME = "libreadline.so"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "\
   ftp://ftp.gnu.org/gnu/readline/readline-${PV}.tar.gz \

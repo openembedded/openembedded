@@ -3,7 +3,7 @@ require lcdproc5.inc
 DEPENDS += "libg15 g15daemon libg15render"
 DEPENDS_lcdd-driver-all += "lcdd-driver-g15"
 
-PR = "r3"
+PR = "r4"
 
 do_install_append () {
 	# binaries

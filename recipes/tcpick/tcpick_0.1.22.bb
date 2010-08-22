@@ -3,6 +3,8 @@ SECTION = "console/network"
 PRIORITY = "required"
 DEPENDS = "ncurses"
 LICENSE = "GPL"
+PR = "r1"
+
 SRC_URI = "${SOURCEFORGE_MIRROR}/tcpick/tcpick-${PV}.tar.gz"
 S = "${WORKDIR}/tcpick-${PV}"
 

@@ -2,6 +2,7 @@ DESCRIPTION = "A console AIM/IRC/ICQ and Lily client"
 SECTION = "console/apps"
 LICENSE = "GPL"
 DEPENDS = "ncurses"
+PR = "r1"
 
 SRC_URI = "http://naim.googlecode.com/files/naim-0.11.8.3.1.tar.bz2"
 

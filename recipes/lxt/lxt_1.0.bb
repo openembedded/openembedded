@@ -3,7 +3,7 @@ SECTION = "console/utils"
 DESCRIPTION = "lxt ncurses filemanager xtree clone"
 PRIORITY = "optional"
 DEPENDS = "ncurses"
-FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/lxt-1.0"
+PR = "r1"
 
 SRC_URI = "http://www.xtreefanpage.org/download/lxt-1.0.tgz \
 	   file://lxt.patch"

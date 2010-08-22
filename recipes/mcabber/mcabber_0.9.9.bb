@@ -4,6 +4,7 @@ AUTHOR = "Mikael Berthe"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "ncurses openssl gpgme"
+PR = "r1"
 
 SRC_URI = "http://www.lilotux.net/~mikael/mcabber/files/mcabber-${PV}.tar.bz2"
 

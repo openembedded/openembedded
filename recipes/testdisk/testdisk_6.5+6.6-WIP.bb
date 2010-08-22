@@ -1,5 +1,6 @@
 DESCRIPTION = "TestDisk is a powerful free data recovery software! It was primarily designed to help recover lost partitions and/or make non-booting disks bootable again when these symptoms are caused by faulty software, certain types of viruses or human error (such as accidentally deleting your Partition Table)."
 LICENSE = "GPLv2"
+PR = "r1"
 
 DEPENDS = "jpeg ncurses e2fsprogs"
 

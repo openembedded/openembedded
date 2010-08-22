@@ -1,6 +1,7 @@
 DESCRIPTION = "classic basic interpreter"
 LICENSE = "GPLv2"
 DEPENDS = "ncurses"
+PR = "r1"
 
 SRC_URI = "http://www.blassic.org/bin/blassic-${PV}.tgz"
 

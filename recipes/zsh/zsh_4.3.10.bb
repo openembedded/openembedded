@@ -2,7 +2,7 @@ DESCRIPTION = "The Zsh shell"
 SECTION = "base/shell"
 PRIORITY = "optional"
 DEPENDS = "ncurses libpcre"
-PR = "r1"
+PR = "r2"
 LICENSE = "zsh"
 
 SRC_URI = "http://www.zsh.org/pub/zsh-${PV}.tar.bz2 \

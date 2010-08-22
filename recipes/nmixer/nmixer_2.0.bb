@@ -3,6 +3,7 @@ SECTION = "console/multimedia"
 PRIORITY = "optional"
 DEPENDS = "ncurses"
 LICENSE = "GPL"
+PR = "r1"
 SRC_URI = "http://www.stack.nl/~brama/projects/nmixer/src/nmixer-${PV}.tar.gz"
 
 inherit autotools

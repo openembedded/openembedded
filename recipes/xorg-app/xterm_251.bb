@@ -1,7 +1,7 @@
 require xorg-app-common.inc
 DESCRIPTION = "xterm is the standard terminal emulator for the X Window System."
 DEPENDS = "libxaw xproto xextproto libxext libxau libxpm ncurses"
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 SRC_URI = "ftp://invisible-island.net/xterm/${PN}-${PV}.tgz"
 SRC_URI[md5sum] = "343a4ce213f70c53cf65979f163bebc3"

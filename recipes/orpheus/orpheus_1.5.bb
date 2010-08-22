@@ -4,6 +4,8 @@ window-driven audio player application for CDs and files in \
 MP3 and Vorbis OGG format."
 DEPENDS = "ncurses"
 LICENSE = "GPL"
+PR = "r1"
+
 SRC_URI = "http://thekonst.net/download/orpheus-${PV}.tar.bz2 \
 	   file://m4.patch"
 S = "${WORKDIR}/orpheus-${PV}"

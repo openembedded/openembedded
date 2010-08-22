@@ -21,7 +21,7 @@ RDEPENDS_${PN}-watchquagga = "${PN}"
 # the "ip" command from busybox is not sufficient (flush by protocol flushes all routes)
 RDEPENDS_${PN}          += "iproute2"
 
-INC_PR = "r3"
+INC_PR = "r4"
 
 QUAGGASUBDIR = ""
 

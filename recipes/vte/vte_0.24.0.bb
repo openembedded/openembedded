@@ -1,7 +1,7 @@
 DESCRIPTION = "vte is a virtual terminal emulator"
 LICENSE = "LGPL"
 DEPENDS += "glib-2.0 gtk+ intltool-native ncurses"
-
+PR = "r1"
 inherit gnome
 
 SRC_URI[archive.md5sum] = "c381f6019448a6e84470ec0acfd78c63"

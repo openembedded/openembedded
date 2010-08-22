@@ -1,4 +1,6 @@
 require dialog.inc
+PR = "${INC_PR}.0"
+
 LDFLAGS += "-static"
 S="${WORKDIR}/dialog-${PV}"
 

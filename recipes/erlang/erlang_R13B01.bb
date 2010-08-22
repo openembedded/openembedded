@@ -1,7 +1,7 @@
 include erlang.inc
 DEPENDS += "erlang-native openssl"
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI += "\
             file://erts-emulator-Makefile.in.patch \

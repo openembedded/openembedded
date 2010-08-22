@@ -4,7 +4,7 @@ processes, typically interactive shells."
 LICENSE = "GPL"
 SECTION = "console/utils"
 DEPENDS = "ncurses"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${GNU_MIRROR}/screen/screen-${PV}.tar.gz \
            file://cross-compile.patch \

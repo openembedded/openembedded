@@ -4,7 +4,7 @@ connections on a specified network interface, tracks their states, and lists \
 them in a manner similar to the Unix 'top' command."
 LICENSE = "LGPL"
 DEPENDS = "ncurses libpcap"
-
+PR = "r1"
 SRC_URI = "http://www.rhythm.cx/~steve/devel/tcptrack/release/${PV}/source/tcptrack-${PV}.tar.gz \
 	   file://macros.patch"
 S = "${WORKDIR}/tcptrack-${PV}"

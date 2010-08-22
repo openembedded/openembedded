@@ -9,7 +9,7 @@ DEPENDS = "ncurses"
 LEAD_SONAME = "libreadline.so"
 
 PKGV = "${PV}+p2"
-PR = "r1"
+PR = "r2"
 
 # Don't bring it in silently because there was a switch from GPLv2
 # to GPLv3.  It might require newer ncurses 5.7 too which are not

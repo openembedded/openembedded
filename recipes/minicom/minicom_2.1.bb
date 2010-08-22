@@ -6,6 +6,8 @@ SRC_URI = "http://alioth.debian.org/download.php/123/minicom-${PV}.tar.gz \
 	file://gcc4-scope.patch \
 	file://gcc4-scope2.patch"
 
+PR = "r1"
+
 inherit autotools gettext
 
 do_install() {

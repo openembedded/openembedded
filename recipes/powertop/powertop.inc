@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.linuxpowertop.org/"
 LICENSE = "GPLv2"
 DEPENDS = "virtual/libintl ncurses"
 
-INC_PR = "r1"
+INC_PR = "r2"
 
 SRC_URI = "http://www.lesswatts.org/projects/powertop/download/powertop-${PV}.tar.gz \
 	   file://ldflags.patch \

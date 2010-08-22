@@ -2,6 +2,7 @@ DEPENDS = "ncurses"
 DESCRIPTION = "A text screen-based source browser."
 SECTION = "console/utils"
 LICENSE = "BSD"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/cscope/cscope-${PV}.tar.bz2;name=src"
 SRC_URI[src.md5sum] = "da43987622ace8c36bbf14c15a350ec1"

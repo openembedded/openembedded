@@ -1,6 +1,5 @@
-PR = "r5"
-
 require util-linux.inc
+PR = "${INC_PR}.0"
 
 SRC_URI = "http://ftp.cwi.nl/aeb/util-linux/util-linux-${PV}.tar.gz \
            file://MCONFIG \

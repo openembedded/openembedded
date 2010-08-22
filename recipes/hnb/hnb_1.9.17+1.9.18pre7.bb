@@ -2,6 +2,8 @@ DESCRIPTION = "hnb is a text-mode hierarchical outliner"
 SECTION = "console/pim"
 HOMEPAGE = "http://hnb.sf.net"
 LICENSE = "GPL"
+PR = "r1"
+
 DEPENDS = "ncurses"
 
 SRC_URI = "http://hnb.sourceforge.net/.files/hnb-1.9.18.pre7.tar.gz"

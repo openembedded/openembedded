@@ -2,7 +2,7 @@ DESCRIPTION = "SNMP Command Line Interface"
 SECTION = "console/network"
 LICENSE = "GPLv2"
 DEPENDS = "gsnmp readline libxml2 ncurses"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.ibr.cs.tu-bs.de/pub/local/scli/scli-${PV}.tar.gz"
 

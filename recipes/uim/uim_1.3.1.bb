@@ -1,7 +1,7 @@
 require uim.inc
 DEPENDS = "gtk+ uim-native anthy fontconfig libxft libxt glib-2.0 ncurses"
 SECTION_uim-gtk2.0 = "x11/inputmethods"
-PR = "r3"
+PR = "r4"
 
 SRC_URI += "file://uim-module-manager.patch"
 

@@ -1,7 +1,7 @@
 DESCRIPTION = "Lightweight console network and disk bandwidth monitor"
 LICENSE = "GPLv2"
 DEPENDS = "ncurses"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/bwmng/bwm-ng-${PV}.tar.gz"
 

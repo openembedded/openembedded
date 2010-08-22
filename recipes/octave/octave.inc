@@ -2,6 +2,8 @@ DESCRIPTION = "Matlab alternative for numerical computations"
 HOMEPAGE = "http://www.gnu.org/software/octave/"
 SECTION = "console/scientific"
 LICENSE = "GPL"
+INC_PR = "r3"
+
 DEPENDS = "gperf-native readline ncurses fftw"
 RDEPENDS_${PN} = "libfftw3"
 # fftw compiled with --disable-fortran

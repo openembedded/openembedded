@@ -1,7 +1,7 @@
 DESCRIPTION = "Heavyweight console network bandwidth monitor"
 LICENSE = "GPLv2"
 DEPENDS = "ncurses"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = " \
     ${DEBIAN_MIRROR}/main/i/iptraf/iptraf_${PV}.orig.tar.gz;name=archive \

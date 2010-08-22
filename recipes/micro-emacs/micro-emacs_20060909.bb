@@ -3,6 +3,7 @@ SECTION = "console/utils"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "ncurses"
+PR = "r1"
 
 S = "${WORKDIR}/me060909"
 

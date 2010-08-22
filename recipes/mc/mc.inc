@@ -6,7 +6,7 @@ SECTION = "console/utils"
 PRIORITY = "optional"
 DEPENDS = "ncurses glib-2.0 glib-2.0-native"
 RDEPENDS_${PN} = "ncurses-terminfo"
-INC_PR = "r5"
+INC_PR = "r6"
 
 SRC_URI = "http://www.ibiblio.org/pub/Linux/utils/file/managers/mc/mc-${PV}.tar.gz"
 

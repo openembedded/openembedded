@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.phildev.net/iptstate/"
 SECTION = "console/network"
 LICENSE = "zlib"
 DEPENDS = "ncurses libnetfilter-conntrack"
-INC_PR = "r1"
+INC_PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/iptstate/iptstate-${PV}.tar.bz2;name=iptstate-${PV}"
 

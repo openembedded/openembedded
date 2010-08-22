@@ -2,6 +2,7 @@ DESCRIPTION = "Corrects you if you type sl by mistake"
 SECTION = "console/games"
 LICENSE = "unknown"
 DEPENDS = "ncurses"
+PR = "r1"
 
 SRC_URI = "http://archive.ubuntu.com/ubuntu/pool/universe/s/sl/sl_3.03.orig.tar.gz;name=archive \
            http://archive.ubuntu.com/ubuntu/pool/universe/s/sl/sl_3.03-14.diff.gz;name=patch"

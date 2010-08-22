@@ -1,5 +1,5 @@
 require psmisc.inc
-PR = "r2"
+PR = "r3"
 SRC_URI += "file://signames-header-fix.patch"
 
 SRC_URI[md5sum] = "d6276e071c10ddf4b0d98856e5573e1a"

@@ -2,6 +2,8 @@ DESCRIPTION = "Fluidsynth is a software synthesizer"
 HOMEPAGE = "http://www.fluidsynth.org/"
 SECTION = "libs/multimedia"
 LICENSE = "GPLv2"
+PR = "r1"
+
 DEPENDS = "alsa-lib ncurses"
 
 SRC_URI = "http://savannah.nongnu.org/download/fluid/${P}.tar.gz"

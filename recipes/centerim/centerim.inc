@@ -8,5 +8,5 @@ DEPENDS = "openssl ncurses"
 inherit autotools
 
 SRC_URI = "http://www.centerim.org/download/releases/centerim-4.22.5.tar.gz "
-         
+
 EXTRA_OECONF = "--with-ssl --with-openssl=${STAGING_LIBDIR}/.."

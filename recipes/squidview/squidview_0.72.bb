@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "ncurses"
 RDEPENDS_${PN} = "squid"
-PR = "r1"
+PR = "r2"
 
 S = "${WORKDIR}/squidview-${PV}"
 

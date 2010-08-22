@@ -1,7 +1,7 @@
 DESCRIPTION = "The Linux bandwidth monitor"
 LICENSE = "GPL"
 DEPENDS = "ncurses"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/bwmon/${P}.tar.gz \
            file://makefile.patch"

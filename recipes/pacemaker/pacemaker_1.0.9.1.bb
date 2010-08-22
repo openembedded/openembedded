@@ -16,7 +16,7 @@ DEPENDS = " \
 	"
 RDEPENDS_${PN} += "openais"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = " \
 	http://hg.clusterlabs.org/pacemaker/stable-1.0/archive/Pacemaker-${PV}.tar.bz2 \

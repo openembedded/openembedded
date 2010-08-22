@@ -3,7 +3,7 @@ DESCRIPTION = "binary vi (binary file editor)"
 SECTION = "console/utils"
 DEPENDS = "ncurses"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/bvi/bvi-${PV}.src.tar.gz \
 	   file://configure.patch \

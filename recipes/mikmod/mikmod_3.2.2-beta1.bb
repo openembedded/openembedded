@@ -2,7 +2,7 @@ DESCRIPTION = "A module player based on libmikmod."
 SECTION = "console/multimedia"
 HOMEPAGE = "http://mikmod.raphnet.net"
 DEPENDS = "ncurses libmikmod"
-PR = "r1"
+PR = "r2"
 LICENSE = "GPL"
 SRC_URI = "http://mikmod.raphnet.net/files/mikmod-${PV}.tar.bz2 \
            file://m4.patch"

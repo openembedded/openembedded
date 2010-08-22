@@ -6,9 +6,6 @@ PATCHDATE = "20100501"
 PKGV = "${PV}+${PATCHDATE}"
 PR = "r11"
 
-# recipe is experimental for now...
-DEFAULT_PREFERENCE = "-99"
-
 DEPENDS = "ncurses-native unifdef-native"
 DEPENDS_virtclass-native = "unifdef-native"
 

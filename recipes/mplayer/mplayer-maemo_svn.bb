@@ -9,7 +9,7 @@ DEFAULT_PREFERENCE_avr32 = "-1"
 SRCREV = "6952"
 PV = "0.0+1.0rc1+svnr${SRCPV}"
 PE = "1"
-PR = "r1"
+PR = "r2"
 
 RCONFLICTS_${PN} = "mplayer"
 

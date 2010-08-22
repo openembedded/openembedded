@@ -5,6 +5,7 @@ HOMEPAGE = "http://www.greenwoodsoftware.com/"
 SECTION = "console/utils"
 LICENSE = "BSD"
 DEPENDS = "ncurses"
+PR = "r1"
 
 SRC_URI = "${GNU_MIRROR}/less/less-${PV}.tar.gz"
 

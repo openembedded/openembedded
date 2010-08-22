@@ -5,7 +5,7 @@ SECTION = "console/utils"
 LICENSE = "GPL"
 DEPENDS = "ncurses"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "ftp://arcana.linux.it/pub/gpm/gpm-${PV}.tar.bz2 \
 	   file://no-docs.patch \

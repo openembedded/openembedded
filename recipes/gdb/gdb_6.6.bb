@@ -1,7 +1,7 @@
 require gdb.inc
 LICENSE = "GPLv2"
 
-PR = "r6"
+PR = "r7"
 
 SRC_URI += "file://early_debug_in_nptl.patch;striplevel=0"
 

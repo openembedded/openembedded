@@ -1,6 +1,6 @@
 DESCRIPTION = "task mamona base"
 LICENSE = "MIT"
-PR = "r4"
+PR = "r5"
 ALLOW_EMPTY = "1"
 
 PACKAGES = "${PN}"

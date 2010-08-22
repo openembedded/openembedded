@@ -4,6 +4,7 @@ linear and nonlinear modelling, statistical tests, time series analysis, classif
 SECTION = "console/scientific"
 PRIORITY = "optional"
 DEPENDS = "ncurses readline less perl-native r-native"
+PR = "r1"
 
 SRC_URI = "http://www.stats.bris.ac.uk/R/src/base/R-2/R-${PV}.tar.gz \
 	file://configure.patch \

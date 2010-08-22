@@ -1,6 +1,6 @@
 require octave.inc
 
-PR = "r2"
+PR = "${INC_PR}.0"
 
 SRC_URI = "ftp://ftp.octave.org/pub/octave/${PN}-${PV}.tar.gz \
            file://configure.patch"

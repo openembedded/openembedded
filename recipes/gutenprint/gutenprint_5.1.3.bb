@@ -1,6 +1,6 @@
 require gutenprint.inc
 
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "glib-2.0 ijs ncurses cups tiff jpeg libpng gutenprint-native espgs"
 
@@ -25,7 +25,7 @@ EXTRA_OECONF = "\
 		--with-user-guide \
 		--with-samples \
 		--with-escputil \
-		 "		   		   
+		 "
 
 do_configure() {
         gnu-configize

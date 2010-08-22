@@ -1,4 +1,7 @@
 include erlang.inc
+
+PR = "r1"
+
 DEPENDS += "erlang-native openssl"
 
 SRC_URI += "file://erts-configure.in.patch \

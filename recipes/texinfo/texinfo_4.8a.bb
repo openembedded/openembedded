@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/texinfo/"
 SECTION = "console/utils"
 LICENSE = "GPL"
 DEPENDS = "ncurses"
-
+PR = "r1"
 SRC_URI = "${GNU_MIRROR}/texinfo/texinfo-${PV}.tar.bz2"
 
 inherit autotools gettext

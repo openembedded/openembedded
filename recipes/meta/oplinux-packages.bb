@@ -4,7 +4,7 @@
 DESCRIPTION = "Packages that are compatible with the OPLinux distro"
 HOMEPAGE = "http://www.digital-opsis/oplinux"
 LICENSE = "MIT"
-PR = "r2"
+PR = "r3"
 PROVIDES += "${OPLINUX_IMAGENAME}-packages"
 
 EXCLUDE_FROM_WORLD = "1"

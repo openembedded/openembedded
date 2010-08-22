@@ -6,6 +6,7 @@ LICENSE = "GPL"
 PRIORITY = "optional"
 SECTION = "utils"
 PV = "0.4.99+cvs${SRCDATE}"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 

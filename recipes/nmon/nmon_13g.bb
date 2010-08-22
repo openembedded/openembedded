@@ -3,6 +3,7 @@ HOMEPAGE = "http://nmon.sf.net"
 SECTION = "console/utils"
 LICENSE = "GPL"
 DEPENDS = "ncurses"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/nmon/lmon13g.c"
 

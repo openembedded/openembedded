@@ -4,6 +4,7 @@ HOMEPAGE = "http://moc.daper.net/"
 SECTION = "console/multimedia"
 LICENSE = "GPL"
 DEPENDS = "ncurses flac"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.daper.net/pub/soft/moc/stable/${PN}-${PV}.tar.bz2"
 

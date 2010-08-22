@@ -6,7 +6,7 @@ SRC_URI = "ftp://ftp.octave.org/pub/octave/${PN}-${PV}.tar.gz \
 SRC_URI[md5sum] = "32cb8153463ebc6ab27bee8b4e538b1a"
 SRC_URI[sha256sum] = "c888ee643451396fc2677a16577d9a2b31cac1b816769d5c915c1a82bbea3cc4"
 
-PR = "r1"
+PR = "${INC_PR}.0"
 
 PACKAGES =+ "libcruft liboctave liboctinterp octave-oct \
 	     libcruft-dev liboctave-dev liboctinterp-dev \

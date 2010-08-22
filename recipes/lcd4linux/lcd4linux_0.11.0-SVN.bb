@@ -4,7 +4,7 @@ LICENSE = "GPLv2"
 DEPENDS = "virtual/libusb0 ncurses readline virtual/libx11"
 
 PV = "0.11.0-SVN"
-PR = "r0"
+PR = "r1"
 
 EXTRA_OECONF = " --with-glib-prefix=${STAGING_LIBDIR}/.. \
 		--with-glib-exec-prefix=${STAGING_LIBDIR}/.. \

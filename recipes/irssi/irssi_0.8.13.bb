@@ -3,6 +3,7 @@ HOMEPAGE = "http://irssi.org/"
 SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS += "ncurses glib-2.0"
+PR = "r1"
 
 PACKAGES += "${PN}-common"
 FILES_${PN} = "${bindir}/irssi"

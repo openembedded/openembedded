@@ -2,6 +2,8 @@ LICENSE = "GPL"
 DESCRIPTION = "Frotz is an interpreter for Infocom games and other Z-machine games."
 HOMEPAGE = "http://www.cs.csubak.edu/~dgriffi/proj/frotz/"
 SECTION = "console/games"
+PR = "r1"
+
 DEPENDS = "ncurses"
 
 SRC_URI = "http://www.cs.csubak.edu/~dgriffi/proj/frotz/files/frotz-${PV}.tar.gz \

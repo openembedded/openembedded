@@ -2,11 +2,10 @@ SECTION = "console/utils"
 DESCRIPTION = "Console text editor with good functionality, good choice for vi-haters."
 HOMEPAGE = "http://joe-editor.sourceforge.net/"
 LICENSE ="GPL"
-# actually RDEPENDS, but ncurses-terminfo is only in ncurses-5.7, so RRECOMMENDS for now
-RRECOMMENDS_${PN} = "ncurses-terminfo"
+RDEPENDS_${PN} = "ncurses-terminfo"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/joe-editor/joe-${PV}.tar.gz"
-PR = "r2"
+PR = "r3"
 
 inherit autotools
 

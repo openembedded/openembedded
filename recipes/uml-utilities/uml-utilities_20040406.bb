@@ -2,7 +2,7 @@ SECTION = "console/utils"
 DESCRIPTION = "Utilities for User-Mode-Linux"
 LICENSE = "GPL"
 DEPENDS = "zlib ncurses readline"
-
+PR = "r1"
 SRC_URI = "http://mirror.usermodelinux.org/uml/uml_utilities_${PV}.tar.bz2 \
            file://fix-ldflags.patch"
 SRC_URI[md5sum] = "2c1ccd9efacbfb39e42d482b89b2550a"
