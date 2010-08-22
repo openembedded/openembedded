@@ -1,11 +1,11 @@
 HOMEPAGE = "http://xournal.sf.net/"
 DESCRIPTION = "Xournal is an application for notetaking, sketching, keeping a journal using a stylus."
-DEPENDS = "gtk+ libgnomecanvas libgnomeprintui"
+DEPENDS = "gtk+ libgnomecanvas libgnomeprintui poppler"
 # For pdftopnm:
 RDEPENDS_${PN} = "poppler"
 SECTION = "x11"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://xournal.sourceforge.net/xournal-${PV}.tar.gz \
            "
