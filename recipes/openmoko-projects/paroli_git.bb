@@ -4,7 +4,7 @@ LICENSE = "GPL"
 SRCREV = "bb9fb1969acdfbaa48b55902675a6d8949014c6d"
 PV = "0.2.1+gitr${SRCPV}"
 PE = "1"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "git://git.paroli-project.org/paroli.git;protocol=http;branch=shr"
 S = "${WORKDIR}/git"
