@@ -1,0 +1,12 @@
+diff -uNr trunk.orig//configure.ac trunk/configure.ac
+--- trunk.orig//configure.ac	2009-12-12 14:50:14.000000000 +0100
++++ trunk/configure.ac	2010-08-22 23:10:37.000000000 +0200
+@@ -15,7 +15,7 @@
+ 
+ AM_PROG_LIBTOOL
+ 
+-PKG_CHECK_MODULES(LAUNCHER, [elementary eina-0 sqlite3 dbus-1 edbus ecore-x])
++PKG_CHECK_MODULES(LAUNCHER, [elementary eina sqlite3 dbus-1 edbus ecore-x])
+ 
+ AC_OUTPUT([
+ Makefile
