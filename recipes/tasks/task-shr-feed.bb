@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r70"
+PR = "r71"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -304,6 +304,7 @@ RDEPENDS_${PN} += "\
 		wesnoth \
 		mokosuite2 \
 		mokowm-imf-ecore \
+		atrack \
 "
 
 # this is only usefull on gta02 and on other devices it's trying to pull mesa-dri (not respecting DEFAULT_PROVIDER for virtual/libgl)
