@@ -9,9 +9,10 @@ inherit autotools
 
 SRCREV = "25"
 PV = "0.0.1+svnr${SRCPV}"
-PR = "r5"
+PR = "r6"
 
-SRC_URI = "svn://e-tasks.googlecode.com/svn;module=trunk;proto=http"
+SRC_URI = "svn://e-tasks.googlecode.com/svn;module=trunk;proto=http \
+           file://depends.eina.patch"
 S = "${WORKDIR}/trunk"
 
 do_install_append() {
