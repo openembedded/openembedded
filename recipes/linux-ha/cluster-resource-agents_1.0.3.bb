@@ -2,7 +2,7 @@ DESCRIPTION = "OCF resource agents for use by compatible cluster managers"
 LICENSE = "GPL"
 DEPENDS = "cluster-glue"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = " \
 	http://hg.linux-ha.org/agents/archive/agents-${PV}.tar.bz2;name=tar \
@@ -79,4 +79,4 @@ FILES_ocft += " \
 	${sbindir}/ocft \
 	"
 
-FILES_${PN}-dbg += "/usr/lib/heartbeat/.debug/"
+FILES_${PN}-dbg += "${libdir}/heartbeat/.debug/ ${libdir}/ocf/resource.d/heartbeat/.debug/"
