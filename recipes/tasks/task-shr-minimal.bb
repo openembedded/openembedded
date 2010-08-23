@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r32"
+PR = "r33"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -116,8 +116,6 @@ RDEPENDS_${PN}-x = "\
   libx11-locale \
 # All localedata based on IMAGE_LINGUAS
   ${@get_rdepends(bb, d)} \
-# Make sure it's available for those who want's to play with illume2  
-  e-wm-config-illume2-shr \
 "
 
 RDEPENDS_${PN}-apps = "\

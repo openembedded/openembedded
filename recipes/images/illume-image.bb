@@ -7,6 +7,10 @@ IMAGE_LINGUAS = "en-us de-de fr-fr pt-br ca-es zh-cn zh-tw bg-bg cs-cz da-dk nl-
 # use exquisite splash
 SPLASH = "exquisite exquisite-themes exquisite-theme-illume"
 
+# Default illume theme
+ILLUME_THEME ?= "e-wm-theme-illume"
+ILLUME_CONFIG ?= "e-wm-config-illume2"
+
 # getting the base system up
 BASE_INSTALL = "\
   angstrom-libc-fixup-hack \
@@ -40,7 +44,8 @@ X_INSTALL = "\
   e-wm \
   e-wm-menu \
   e-wm-sysactions \
-  e-wm-config-illume \
+  ${ILLUME_CONFIG} \
+  ${ILLUME_THEME} \
   e-wm-config-standard \
   e-wm-config-netbook \
   e-wm-config-minimalist \

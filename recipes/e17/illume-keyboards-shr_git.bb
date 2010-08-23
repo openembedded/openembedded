@@ -1,12 +1,13 @@
 SECTION = "x11/data"
 
-SRC_URI = "git://git.shr-project.org/repo/illume-keyboards.git;protocol=http;branch=master"
+SRC_URI = "git://git.shr-project.org/repo/illume-keyboards.git;protocol=http;branch=master \
+           file://0001-Makefile-update-KEYBOARDS_DIR-for-new-illume2.patch"
 S = "${WORKDIR}/git"
 
 SRCREV = "4064489f359a1addf572089b582f317dff5f50e1"
 PV = "0.0+gitr${SRCPV}"
 PE = "1"
-PR = "r3"
+PR = "r4"
 
 
 PACKAGES = "\
@@ -28,7 +29,7 @@ illume-keyboard-persian \
 "
 
 PACKAGE_ARCH = "all"
-KEYBOARDS_DIR="${libdir}/enlightenment/modules/illume/keyboards"
+KEYBOARDS_DIR="${libdir}/enlightenment/modules/illume-keyboard/keyboards"
 
 AUTHOR_illume-keyboard-alpha = "Jesus McCloud"
 DESCRIPTION_illume-keyboard-alpha = "Illume keyboard with phone-like layout"

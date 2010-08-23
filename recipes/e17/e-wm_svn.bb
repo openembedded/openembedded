@@ -3,7 +3,7 @@ DEPENDS = "eet evas ecore edje efreet edbus"
 LICENSE = "MIT BSD"
 SRCNAME = "e"
 PV = "0.16.999.060+svnr${SRCPV}"
-PR = "r14"
+PR = "r15"
 SRCREV = "${EFL_SRCREV}"
 
 inherit e update-alternatives
@@ -13,7 +13,6 @@ SRC_URI += "\
   file://applications.menu \
   file://gsm-segfault-fix.patch;maxrev=37617 \
   file://fix-profiles.diff;maxrev=39889 \
-  file://drop-illume-keyboards.patch \
 "
 
 SRC_URI_append_openmoko = " file://illume-disable-screensaver.patch"
@@ -62,6 +61,7 @@ RREPLACES_${PN} = "systray"
 PACKAGES =+ "\
   ${PN}-config-default \
   ${PN}-config-illume \
+  ${PN}-config-illume2 \
   ${PN}-config-minimalist \
   ${PN}-config-netbook \
   ${PN}-config-scaleable \
@@ -77,6 +77,9 @@ PACKAGES =+ "\
   ${PN}-sysactions \
   ${PN}-utils \
   ${PN}-menu \
+  illume-keyboard-default-alpha \
+  illume-keyboard-default-numeric \
+  illume-keyboard-default-terminal \
 "
 
 RRECOMMENDS_${PN} = "\
@@ -90,6 +93,7 @@ RRECOMMENDS_${PN} = "\
 
 PACKAGE_ARCH_${PN}-config-default = "all"
 PACKAGE_ARCH_${PN}-config-illume = "all"
+PACKAGE_ARCH_${PN}-config-illume2 = "all"
 PACKAGE_ARCH_${PN}-config-minimalist = "all"
 PACKAGE_ARCH_${PN}-config-netbook = "all"
 PACKAGE_ARCH_${PN}-config-scaleable = "all"
@@ -104,6 +108,9 @@ PACKAGE_ARCH_${PN}-other = "all"
 PACKAGE_ARCH_${PN}-input-methods = "all"
 PACKAGE_ARCH_${PN}-sysactions = "all"
 PACKAGE_ARCH_${PN}-menu = "all"
+PACKAGE_ARCH_illume-keyboard-default-alpha = "all"
+PACKAGE_ARCH_illume-keyboard-default-numeric = "all"
+PACKAGE_ARCH_illume-keyboard-default-terminal = "all"
 
 FILES_${PN} = "\
   ${bindir}/* \
@@ -112,7 +119,6 @@ FILES_${PN} = "\
   ${libdir}/enlightenment/modules/*/*/* \
   ${libdir}/enlightenment/*plugins/*/*/* \
   ${libdir}/enlightenment/preload/e_precache.so \
-  ${datadir}/locale \
   ${datadir}/enlightenment/data/icons \
   ${datadir}/enlightenment/data/input_methods \
   ${datadir}/enlightenment/data/config/profile.cfg \
@@ -120,11 +126,11 @@ FILES_${PN} = "\
   ${datadir}/enlightenment/COPYING \
   ${datadir}/xsessions/enlightenment.desktop \
   ${sysconfdir}/xdg \
-  ${datadir}/enlightenment/data/config/illume-home \
 "
 
 FILES_${PN}-config-default = "${datadir}/enlightenment/data/config/default"
 FILES_${PN}-config-illume = "${datadir}/enlightenment/data/config/illume"
+FILES_${PN}-config-illume2 = "${datadir}/enlightenment/data/config/illume-home"
 FILES_${PN}-config-minimalist = "${datadir}/enlightenment/data/config/minimalist"
 FILES_${PN}-config-netbook = "${datadir}/enlightenment/data/config/netbook"
 FILES_${PN}-config-scaleable = "${datadir}/enlightenment/data/config/scaleable"
@@ -142,8 +148,28 @@ FILES_${PN}-sysactions = "${sysconfdir}/enlightenment/sysactions.conf"
 FILES_${PN}-utils = "${libdir}/enlightenment/utils/*"
 FILES_${PN}-menu = "${sysconfdir}/xdg/menus/applications.menu"
 
+KEYBOARDS_DIR="${libdir}/enlightenment/modules/illume-keyboard/keyboards"
+FILES_illume-keyboard-default-alpha = "\
+  ${KEYBOARDS_DIR}/Default.kbd \
+  ${KEYBOARDS_DIR}/alpha.png \
+"
+FILES_illume-keyboard-default-numeric = "\
+  ${KEYBOARDS_DIR}/Numbers.kbd \
+  ${KEYBOARDS_DIR}/numeric.png \
+"
+FILES_illume-keyboard-default-terminal = "\
+  ${KEYBOARDS_DIR}/Terminal.kbd \
+  ${KEYBOARDS_DIR}/qwerty.png \
+"
+
 RRECOMMENDS_${PN}-config-default = "${PN}-theme-default"
 RRECOMMENDS_${PN}-config-illume = "\
+  ${PN}-theme-illume \
+  illume-keyboard-default-alpha \
+  illume-keyboard-default-numeric \
+  illume-keyboard-default-terminal \
+"
+RRECOMMENDS_${PN}-config-illume2 = "\
   ${PN}-theme-illume \
   illume-keyboard-default-alpha \
   illume-keyboard-default-numeric \
