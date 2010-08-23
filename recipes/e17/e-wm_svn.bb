@@ -3,10 +3,8 @@ DEPENDS = "eet evas ecore edje efreet edbus"
 LICENSE = "MIT BSD"
 SRCNAME = "e"
 PV = "0.16.999.060+svnr${SRCPV}"
-PR = "r15"
+PR = "r16"
 SRCREV = "${EFL_SRCREV}"
-
-E17_DEFAULT_CONFIG ?= "${PN}-config-default"
 
 inherit e update-alternatives
 
@@ -85,7 +83,7 @@ PACKAGES =+ "\
 "
 
 RRECOMMENDS_${PN} = "\
-  ${E17_DEFAULT_CONFIG} \
+  ${PN}-config-default \
   ${PN}-images \
   ${PN}-icons \
   ${PN}-other \
