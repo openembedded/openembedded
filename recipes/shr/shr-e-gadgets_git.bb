@@ -7,12 +7,17 @@ SECTION = "x11/application"
 
 SRCREV = "4f94c139bd50935dbfb6524e8525d0c35200380b"
 PV = "0.0.0+gitr${SRCPV}"
-PR = "r6"
+PR = "r7"
 
 inherit autotools
 
 SRC_URI = "git://git.shr-project.org/repo/shr-e-gadgets.git;protocol=http;branch=master"
 S = "${WORKDIR}/git"
+
+do_compile_append() {
+        ${STAGING_BINDIR_NATIVE}/edje_convert src/illume-rightclick-toggle/e-module-illume-rightclick-toggle.edj
+        ${STAGING_BINDIR_NATIVE}/edje_convert src/shelf-gadgets/e-module-shr-e-gadgets.edj
+}
 
 FILES_${PN} += "\
 	${datadir}/shr_elm_softkey \
