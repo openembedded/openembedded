@@ -4,6 +4,7 @@ LICENSE = "GPL"
 DEPENDS = "ecore evas imlib2 gpsd edje-native"
 
 SRC_URI = "http://www.gps-routes.info/debian/pool/main/m/mcnavi/mcnavi_${PV}.tar.gz;name=archive"
+PR = "r1"
 
 SRC_URI[archive.md5sum] = "627d36d735b866ecb0dc3ad350fe815d"
 SRC_URI[archive.sha256sum] = "70abe699d93adfa544fb1243356b71ccc0178e23af743726ac5e707825b11e06"
