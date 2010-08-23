@@ -2,16 +2,11 @@ Index: xserver-common/X11/Xsession.d/89xTs_Calibrate_xinput_calibrator
 ===================================================================
 --- xserver-common/X11/Xsession.d/89xTs_Calibrate_xinput_calibrator	(revision 0)
 +++ xserver-common/X11/Xsession.d/89xTs_Calibrate_xinput_calibrator	(revision 0)
-@@ -0,0 +1,12 @@
+@@ -0,0 +1,6 @@
 +#!/bin/sh
 +
 +if [ -e /usr/bin/xinput_calibrator_once.sh ] ; then
 +  if [ -e /etc/pointercal.xinput ] ; then
-+    if [ -e /usr/bin/fsoraw ] ; then
-+      # because ts tap to unblank will be used as first calibration click and then store invalid calibration
-+      fsoraw -fr CPU,Display -- /usr/bin/xinput_calibrator_once.sh
-+    else
-+      /usr/bin/xinput_calibrator_once.sh
-+    fi
++    /usr/bin/xinput_calibrator_once.sh
 +  fi
 +fi
