@@ -1,0 +1,10 @@
+Index: ibrdtn-0.4.2/ibrdtn.pc.in
+===================================================================
+--- ibrdtn-0.4.2.orig/ibrdtn.pc.in	2010-08-20 15:54:02.000000000 +0200
++++ ibrdtn-0.4.2/ibrdtn.pc.in	2010-08-23 11:15:45.000000000 +0200
+@@ -8,4 +8,4 @@
+ Requires: ibrcommon
+ Version: @VERSION@
+ Libs: -L${libdir} -l@GENERIC_LIBRARY_NAME@ @ibrcommon_LIBS@
+-Cflags: -I${includedir}/@GENERIC_LIBRARY_NAME@-@GENERIC_API_VERSION@ -I${libdir}/@GENERIC_LIBRARY_NAME@-@GENERIC_API_VERSION@/include @ibrcommon_CFLAGS@
++Cflags: -I${includedir}/@GENERIC_LIBRARY_NAME@-@GENERIC_API_VERSION@ -I${libdir}/@GENERIC_LIBRARY_NAME@-@GENERIC_API_VERSION@/include
