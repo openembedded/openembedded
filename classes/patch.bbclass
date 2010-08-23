@@ -31,10 +31,8 @@ python patch_do_patch() {
 
 	path = os.getenv('PATH')
 	os.putenv('PATH', bb.data.getVar('PATH', d, 1))
-	patchset = cls(s, d)
-	patchset.Clean()
 
-	resolver = rcls(patchset)
+	classes = {}
 
 	workdir = bb.data.getVar('WORKDIR', d, 1)
 	for url in src_uri:
@@ -105,6 +103,21 @@ python patch_do_patch() {
 			if srcrev and srcrev > parm["maxrev"]:
 				bb.note("Patch '%s' applies to earlier revisions" % pname)
 				continue
+
+		if "patchdir" in parm:
+			patchdir = parm["patchdir"]
+			if not os.path.isabs(patchdir):
+				patchdir = os.path.join(s, patchdir)
+		else:
+			patchdir = s
+
+		if not patchdir in classes:
+			patchset = cls(patchdir, d)
+			resolver = rcls(patchset)
+			classes[patchdir] = (patchset, resolver)
+			patchset.Clean()
+		else:
+			patchset, resolver = classes[patchdir]
 
 		bb.note("Applying patch '%s' (%s)" % (pname, oe.path.format_display(local, d)))
 		try:
