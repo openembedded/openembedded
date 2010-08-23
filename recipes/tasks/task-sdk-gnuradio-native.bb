@@ -4,7 +4,7 @@ DEPENDS += "libusb1 guile fftw python alsa-lib jack boost cppunit sdcc swig \
             python python-numpy git util-linux-ng gsl python-cheetah git"
 
 RDEPENDS += "libusb1-dev guile-dev fftwf-dev alsa-dev alsa-lib-dev jack-dev \
-             cppunit-dev swig python-devel python-numpy-dev python-textutils \
+             cppunit-dev swig python-dev python-numpy-dev python-textutils \
              python-distutils python-re python-stringold python-lang \
              python-threading python-unittest python-shell python-pickle \
              python-pprint python-compiler python-pkgutil python-pydoc \
