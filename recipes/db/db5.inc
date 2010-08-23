@@ -43,12 +43,11 @@ B = "${WORKDIR}/db-${PV}/build_unix"
 PACKAGES += " ${PN}-bin"
 
 # Package contents
-FILES_${PN} = "${libdir}/libdb-5*so*"
+FILES_${PN} = "${libdir}/libdb-${PVM}${SOLIBSDEV}"
 FILES_${PN}-bin = "${bindir}/*"
 # The dev package has the .so link (as in db3) and the .a's -
 # it is therefore incompatible (cannot be installed at the
 # same time) as the db3 package
-FILES_${PN}-dev = "${includedir} ${libdir}/*"
 
 EXTRA_OECONF = "${DB5_CONFIG}"
 
