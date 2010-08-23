@@ -6,6 +6,8 @@ PV = "0.16.999.060+svnr${SRCPV}"
 PR = "r15"
 SRCREV = "${EFL_SRCREV}"
 
+E17_DEFAULT_CONFIG ?= "${PN}-config-default"
+
 inherit e update-alternatives
 
 SRC_URI += "\
@@ -83,7 +85,7 @@ PACKAGES =+ "\
 "
 
 RRECOMMENDS_${PN} = "\
-  ${PN}-config-default \
+  ${E17_DEFAULT_CONFIG} \
   ${PN}-images \
   ${PN}-icons \
   ${PN}-other \
