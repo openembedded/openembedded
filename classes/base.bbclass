@@ -9,26 +9,31 @@ inherit utils
 inherit utility-tasks
 inherit metadata_scm
 
-OE_IMPORTS += "oe.path oe.utils sys os time"
-
-python oe_import () {
+python sys_path_eh () {
     if isinstance(e, bb.event.ConfigParsed):
+        import sys
+        import os
+        import time
+
         bbpath = e.data.getVar("BBPATH", True).split(":")
         sys.path[0:0] = [os.path.join(dir, "lib") for dir in bbpath]
 
         def inject(name, value):
-            """Make a python object accessible from the metadata"""
+            """Make a python object accessible from everywhere for the metadata"""
             if hasattr(bb.utils, "_context"):
                 bb.utils._context[name] = value
             else:
                 __builtins__[name] = value
 
-        for toimport in e.data.getVar("OE_IMPORTS", True).split():
-            imported = __import__(toimport)
-            inject(toimport, imported)
+        import oe.path
+        import oe.utils
+        inject("bb", bb)
+        inject("sys", sys)
+        inject("time", time)
+        inject("oe", oe)
 }
 
-addhandler oe_import
+addhandler sys_path_eh
 
 die() {
 	oefatal "$*"
