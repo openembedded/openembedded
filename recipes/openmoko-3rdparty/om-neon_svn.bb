@@ -8,7 +8,7 @@ DEPENDS = "edje-native python-native"
 
 SRCREV = "68"
 PV = "1.0.0+svnr${SRCPV}"
-PR = "r3"
+PR = "r4"
 
 S = "${WORKDIR}/trunk"
 
