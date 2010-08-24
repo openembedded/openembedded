@@ -63,6 +63,24 @@ def subprocess_setup():
    # non-Python subprocesses expect.
    signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
+def oe_run(d, cmd, **kwargs):
+   """Convenience function to run a command and return its output, raising an
+   exception when the command fails"""
+   from subprocess import PIPE
+
+   options = {
+      "stdout": PIPE,
+      "stderr": PIPE,
+      "shell": True,
+   }
+   options.update(kwargs)
+   pipe = oe_popen(d, cmd, **options)
+   stdout, stderr = pipe.communicate()
+   if pipe.returncode != 0:
+      raise RuntimeError("Execution of '%s' failed with '%s':\n%s" %
+                         (cmd, pipe.returncode, stderr))
+   return stdout
+
 def oe_popen(d, cmd, **kwargs):
     """ Convenience function to call out processes with our exported
     variables in the environment.
