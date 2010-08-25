@@ -14,8 +14,9 @@ SRC_URI += " \
 	file://fix-runs-in-configure.patch \
 	"
 
-SRC_URI[squid-3.1.6.md5sum] = "e9e2e9a9b5a305ba717be93ebb85f245"
-SRC_URI[squid-3.1.6.sha256sum] = "e1de72d85a1b607e7dd477e29c4582b34f844af675211cb273421c920073f4fa"
+SRC_URI[squid-3.1.7.md5sum] = "83e7aabc1b5bb5b7c83f6dc2f32ca418"
+SRC_URI[squid-3.1.7.sha256sum] = "5252180a262bdd2cc4ab8afe40c1989c21035bdfe4eaa0bcb19589e3d316d4ac"
+
 
 do_configure_prepend() {
 	export ac_cv_epoll_ctl=yes
