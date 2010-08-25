@@ -10,13 +10,13 @@ LICENSE = "GPLv3"
 
 DEFAULT_PREFERENCE = "-1"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://www.daniel-baumann.ch/software/dosfstools/dosfstools-${PV}.tar.bz2 \
 	"
 # output of getconf LFS_CFLAGS
 #
-CLFAGS_append = ' -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64'
+CFLAGS_append = ' -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64'
 CFLAGS_append_libc-uclibc = ' ${@base_contains("DISTRO_FEATURES", "largefile", "-D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64", "", d)}'
 
 do_install () {

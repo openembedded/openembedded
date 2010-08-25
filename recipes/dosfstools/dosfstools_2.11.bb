@@ -8,13 +8,13 @@ SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.uni-erlangen.de/pub/Linux/LOCAL/dosfstools/dosfstools-${PV}.src.tar.gz \
 	   file://alignment_hack.patch \
            file://msdos_fat12_undefined.patch \
 	   file://include-linux-types.patch"
-CLFAGS_append = ' -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64'
+CFLAGS_append = ' -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64'
 CFLAGS_append_libc-uclibc = ' ${@base_contains("DISTRO_FEATURES", "largefile", "-D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64", "", d)}'
 
 do_install () {
