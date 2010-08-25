@@ -3,10 +3,10 @@ SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "GPL"
 RDEPENDS_${PN} = "python"
-RDEPENDS_virtclass_native = ""
+RDEPENDS_virtclass-native = ""
 SRCREV = "4595"
 PV = "0.0+svnr${SRCPV}"
-PR = "r4"
+PR = "r5"
 
 BBCLASSEXTEND = "native"
 
@@ -16,5 +16,3 @@ TARGET_CC_ARCH += "${LDFLAGS}"
 S = "${WORKDIR}/opkg-utils"
 
 inherit autotools
-
-S = "${WORKDIR}/opkg-utils"
