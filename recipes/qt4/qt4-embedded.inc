@@ -45,7 +45,7 @@ do_install_append() {
 	install -m 0755 ${WORKDIR}/qte.sh ${D}${sysconfdir}/profile.d/
 }
 
-FILES_qt4-embedded += " ${sysconfdir}/profile.d/qte.sh"
+FILES_${PN} += " ${sysconfdir}/profile.d/qte.sh"
 
 inherit qt4e
 
