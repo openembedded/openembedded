@@ -1,5 +1,5 @@
 DESCRIPTION = "Squid is a caching proxy for the Web supporting HTTP, HTTPS, FTP, and more"
-LICENSE = "GPLv2"
+LICENSE = "GPL"
 INC_PR = "r10"
 DEPENDS = "openssl openssl-native openldap"
 

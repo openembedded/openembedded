@@ -2,9 +2,6 @@ PR = "${INC_PR}.0"
 
 include squid.inc
 
-# GPLv2+ since 2.6.STABLE18
-LICENSE = "GPL"
-
 EXTRA_OECONF += "--enable-epoll --enable-storeio=null,ufs"
 
 SRC_URI += "file://fix_epoll_check.patch \

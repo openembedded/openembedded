@@ -2,9 +2,6 @@ PR = "${INC_PR}.0"
 
 include squid.inc
 
-# GPLv2+ since 2.6.STABLE18
-LICENSE = "GPL"
-
 EXTRA_OECONF += "--enable-epoll --enable-icap-client --with-dl --enable-linux-netfilter"
 
 EXTRA_OEMAKE += "DEFAULT_STYLESHEET=${sysconfdir}/squid/errorpage.css DEFAULT_CONFIG_DIR=${sysconfdir}/squid"
