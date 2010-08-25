@@ -1,0 +1,14 @@
+Index: nxcompsh/Misc.h
+===================================================================
+--- nxcompsh.orig/Misc.h
++++ nxcompsh/Misc.h
+@@ -18,7 +18,8 @@
+ #ifndef Misc_H
+ #define Misc_H
+ 
+-#include <iostream.h>
++#include <iostream>
++using namespace std;
+ 
+ #include <errno.h>
+ #include <string.h>
