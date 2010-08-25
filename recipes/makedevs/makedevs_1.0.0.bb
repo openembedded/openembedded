@@ -2,11 +2,10 @@ DESCRIPTION = "A tool to make device nodes"
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
+PR = "r9"
 
 SRC_URI = "file://makedevs.c"
 S = "${WORKDIR}/makedevs-${PV}"
-
-PR = "r8"
 
 inherit update-alternatives
 
@@ -16,6 +15,11 @@ do_configure() {
 
 do_compile() {
 	${CC} ${CFLAGS} ${LDFLAGS} -o ${S}/makedevs ${S}/makedevs.c
+}
+
+do_install_virtclass-native() {
+        install -d ${D}${bindir}/
+        install -m 0755 ${S}/makedevs ${D}${bindir}/
 }
 
 do_install() {
@@ -28,4 +32,6 @@ ALTERNATIVE_NAME = "makedevs"
 ALTERNATIVE_LINK = "${base_sbindir}/makedevs"
 ALTERNATIVE_PRIORITY = "50"
 
+BBCLASSEXTEND = "native"
 
+NATIVE_INSTALL_WORKS = "1"
