@@ -1,0 +1,36 @@
+gcc 4.5 reports errors when compiling this because it does not find prototypes for
+functions umask, stat etc.
+
+| cc1: warnings being treated as errors
+| acpid.c: In function 'daemonize':
+| acpid.c:369:2: error: implicit declaration of function 'umask'
+| acpid.c: In function 'locked':
+| acpid.c:494:2: error: implicit declaration of function 'stat'
+| make: *** [acpid.o] Error 1
+| make: *** Waiting for unfinished jobs....
+| FATAL: oe_runmake failed
+
+This should be submitted upstream
+
+-Khem
+
+--- acpid-1.0.10/sock.c.khem	2010-08-25 11:42:04.178133162 -0700
++++ acpid-1.0.10/sock.c	2010-08-25 11:42:18.939086065 -0700
+@@ -26,6 +26,7 @@
+ #include <stdlib.h>
+ #include <errno.h>
+ #include <grp.h>
++#include <sys/stat.h>
+ 
+ #include "acpid.h"
+ #include "event.h"
+--- acpid-1.0.10/acpid.c.khem	2010-08-25 11:40:32.073638560 -0700
++++ acpid-1.0.10/acpid.c	2010-08-25 11:41:18.457632555 -0700
+@@ -29,6 +29,7 @@
+ #include <errno.h>
+ #include <getopt.h>
+ #include <stdarg.h>
++#include <sys/stat.h>
+ 
+ #include "acpid.h"
+ #include "event.h"
