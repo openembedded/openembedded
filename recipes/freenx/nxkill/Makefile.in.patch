@@ -1,0 +1,13 @@
+Index: nxkill/Makefile.in
+===================================================================
+--- nxkill.orig/Makefile.in
++++ nxkill/Makefile.in
+@@ -12,7 +12,7 @@ LIBVERSION=@LIBVERSION@
+ #
+ CXX      = @CXX@
+ CXXFLAGS = @CXXFLAGS@ @X_CFLAGS@ @DEFS@ \
+-           -Wall -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes \
++           -Wall -Wpointer-arith \
+ 
+ CXXINCLUDES = -I. -I../nxcomp
+ 
