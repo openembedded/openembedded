@@ -6,7 +6,7 @@ PRIORITY = "optional"
 
 SRCREV = "58"
 PV = "1.0"
-PR = "r15+svnr${SRCPV}"
+PR = "r16+svnr${SRCPV}"
 
 SRC_URI = "svn://gforge.ti.com/svn/matrix_gui/;module=trunk;proto=https;user=anonymous;pswd='' \
 	file://init \
@@ -15,8 +15,8 @@ SRC_URI = "svn://gforge.ti.com/svn/matrix_gui/;module=trunk;proto=https;user=ano
 S = "${WORKDIR}/trunk"
 
 INITSCRIPT_NAME = "matrix-gui-e"
-#INITSCRIPT_PARAMS = "defaults 99"
-INITSCRIPT_PARAMS = "start 99 3 . stop 99 3 ."
+INITSCRIPT_PARAMS = "defaults 99"
+#INITSCRIPT_PARAMS = "start 99 3 . stop 99 3 ."
 
 inherit qt4e update-rc.d
 
