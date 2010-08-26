@@ -1,6 +1,6 @@
 require gnuradio-libusb-compat.inc
 
-DEPENDS += " gsl "
+DEPENDS += " gsl guile-native"
 
 PR = "${INC_PR}.1"
 

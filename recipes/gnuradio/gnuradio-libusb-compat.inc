@@ -3,7 +3,7 @@ SECTION =  "apps"
 PRIORITY = "optional"
 LICENSE = "GPLv3"
 DEPENDS = "virtual/libusb0 guile-native fftwf python virtual/libsdl alsa-lib jack boost cppunit sdcc-native swig-native python-numpy"
-INC_PR = "r7"
+INC_PR = "r8"
 
 inherit distutils-base autotools autotools pkgconfig
 
@@ -40,7 +40,7 @@ do_buildlibusb() {
     sed -e s:tests::g -i Makefile.am
     sed -e s:tests::g -i Makefile.in || true
     ./configure --build=${BUILD_SYS} --host=${HOST_SYS} --target=${TARGET_SYS} --prefix=${prefix} --exec_prefix=${exec_prefix} --bindir=${bindir} --sbindir=${sbindir} --libexecdir=${libexecdir} --datadir=${datadir} --sysconfdir=${sysconfdir} --sharedstatedir=${sharedstatedir} --localstatedir=${localstatedir} --libdir=${libdir} --includedir=${includedir} --oldincludedir=${oldincludedir} --infodir=${infodir} --mandir=${mandir} --disable-shared --disable-build-docs
-    make
+    make CFLAGS='-fPIC -DPIC'
     mv .libs/libusb.a .libs/libusb-gnur.a || true
     cd ${WORKDIR}
 }
