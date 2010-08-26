@@ -166,6 +166,13 @@ ac_cv_pwrite=${ac_cv_pwrite=no}
 php_cv_lib_cookie_io_functions_use_off64_t=${php_cv_lib_cookie_io_functions_use_off64_t=yes}
 cv_php_mbstring_stdarg=${cv_php_mbstring_stdarg=yes}
 
+# postgresql
+pgac_cv_alignof_short=2
+pgac_cv_alignof_int=4
+pgac_cv_alignof_long=4
+pgac_cv_alignof_long_long_int=8
+pgac_cv_alignof_double=8
+
 # rsync
 rsync_cv_HAVE_BROKEN_LARGEFILE=${rsync_cv_HAVE_BROKEN_LARGEFILE=no}
 rsync_cv_HAVE_SOCKETPAIR=${rsync_cv_HAVE_SOCKETPAIR=yes}
