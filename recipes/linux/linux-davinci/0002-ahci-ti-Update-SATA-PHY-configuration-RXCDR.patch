@@ -1,0 +1,29 @@
+From 37a7868b15be9415abd3f57477afc8be956666e6 Mon Sep 17 00:00:00 2001
+From: Roger Monk <r-monk@ti.com>
+Date: Wed, 25 Aug 2010 16:46:28 +0100
+Subject: [PATCH] ahci-ti:  Update SATA PHY configuration - RXCDR --> 4
+
+   * Update SATA PHY configuration for Receiver Clock/Data Recovery
+      * Set to 0x4 = 2nd order, low precision
+
+Signed-off-by: Roger Monk <r-monk@ti.com>
+---
+ drivers/ata/ahci-ti.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/ata/ahci-ti.c b/drivers/ata/ahci-ti.c
+index 674b216..853d251 100644
+--- a/drivers/ata/ahci-ti.c
++++ b/drivers/ata/ahci-ti.c
+@@ -55,7 +55,7 @@ void ata_plat_remove(struct ata_host *host);
+ #define PHY_LOS		1 /* bit6        1 */
+ #define PHY_RXINVPAIR	0 /* bit7        1 */
+ #define PHY_RXTERM	0 /* bits9:8     2 */
+-#define PHY_RXCDR	0 /* bits12:10   3 */
++#define PHY_RXCDR	4 /* bits12:10   3 */
+ #define PHY_RXEQ	1 /* bits16:13   4 */
+ #define PHY_TXINVPAIR	0 /* bit17       1 */
+ #define PHY_TXCM	0 /* bit18       1 */
+-- 
+1.6.0.4
+

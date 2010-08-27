@@ -1,0 +1,26 @@
+From b0a773f958b03ba77317f8b762d90d3c00269292 Mon Sep 17 00:00:00 2001
+From: Roger Monk <r-monk@ti.com>
+Date: Wed, 25 Aug 2010 16:45:46 +0100
+Subject: [PATCH] ahci-ti:  Fix (currently harmless) typo in SATA PHY configuration
+
+Signed-off-by: Roger Monk <r-monk@ti.com>
+---
+ drivers/ata/ahci-ti.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/ata/ahci-ti.c b/drivers/ata/ahci-ti.c
+index 9e36c9d..674b216 100644
+--- a/drivers/ata/ahci-ti.c
++++ b/drivers/ata/ahci-ti.c
+@@ -80,7 +80,7 @@ void ata_plat_init (void __iomem *base)
+ 	phy_val = PHY_MPY << 0 | PHY_LB << 4 | PHY_LOS << 6 |
+ 			PHY_RXINVPAIR << 7 | PHY_RXTERM << 8 |
+ 			PHY_RXCDR  << 10 | PHY_RXEQ << 13 |
+-			PHY_RXINVPAIR << 17 | PHY_TXCM << 18 |
++			PHY_TXINVPAIR << 17 | PHY_TXCM << 18 |
+ 			PHY_TXSWING << 19 | PHY_TXDE << 22 | 
+ 			PHY_OVERRIDE << 30 | PHY_ENPLL	<< 31;
+ 
+-- 
+1.6.0.4
+

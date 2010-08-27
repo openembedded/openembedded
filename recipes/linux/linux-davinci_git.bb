@@ -68,11 +68,15 @@ SRC_URI_append_da850-omapl138-evm = ${ARAGO_L1_URI}
 SRC_URI_append_hawkboard          = ${ARAGO_L1_URI}
 
 SRC_URI_append_da850-omapl138-evm = "file://logo_linux_clut224.ppm \
+                                     file://0001-ahci-ti-Fix-currently-harmless-typo-in-SATA-PHY.patch \
+                                     file://0002-ahci-ti-Update-SATA-PHY-configuration-RXCDR.patch \
                                      file://0001-board-da850-evm-Disable-NAND-SUBPAGE.patch \
                                      "
 
 SRC_URI_append_hawkboard          = "file://logo_linux_clut224.ppm \
                                      file://patch-2.6.33rc4-psp-to-hawkboard.patch \
+                                     file://0001-ahci-ti-Fix-currently-harmless-typo-in-SATA-PHY.patch \
+                                     file://0002-ahci-ti-Update-SATA-PHY-configuration-RXCDR.patch \
                                      file://0001-board-da850-hawk-Disable-NAND-SUBPAGE.patch \
                                      "
 
