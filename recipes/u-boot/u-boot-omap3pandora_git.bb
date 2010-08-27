@@ -5,10 +5,8 @@ COMPATIBLE_MACHINE = "omap3-pandora"
 # Latest SRCREV for the final shipping boards.
 SRCREV = "c71d8dbe09d69feda7e57745bd3909727d3cc33f"
 
-PROVIDES = "u-boot"
-
 PV = "pandora+${PR}+gitr${SRCREV}"
-PR ="r4"
+PR ="r5"
 PE = "1"
 
 SRC_URI = "git://git.openpandora.org/pandora-u-boot.git;branch=master;protocol=git \
