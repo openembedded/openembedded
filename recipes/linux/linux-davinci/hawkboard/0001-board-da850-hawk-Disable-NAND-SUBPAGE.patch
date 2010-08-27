@@ -1,0 +1,27 @@
+From 69600e5a42512204bc4eb83a3a459496b049107f Mon Sep 17 00:00:00 2001
+From: Roger Monk <r-monk@ti.com>
+Date: Wed, 25 Aug 2010 17:47:16 +0100
+Subject: [PATCH] board-da850-hawk:  Disable NAND SUBPAGE
+
+   * This was causing issues with UBI
+   * Solution/Workaround identified by Caglar Akyuz - now applied locally to board file
+---
+ arch/arm/mach-davinci/board-da850-hawk.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/mach-davinci/board-da850-hawk.c b/arch/arm/mach-davinci/board-da850-hawk.c
+index 87ed017..bbfe32a 100644
+--- a/arch/arm/mach-davinci/board-da850-hawk.c
++++ b/arch/arm/mach-davinci/board-da850-hawk.c
+@@ -118,7 +118,7 @@ static struct davinci_nand_pdata da850_hawk_nandflash_data = {
+ 	.nr_parts	= ARRAY_SIZE(da850_hawk_nandflash_partition),
+ 	.ecc_mode	= NAND_ECC_HW,
+ 	.ecc_bits	= 4,
+-	.options	= NAND_USE_FLASH_BBT,
++	.options	= NAND_USE_FLASH_BBT | NAND_NO_SUBPAGE_WRITE,
+ 	.timing		= &da850_hawk_nandflash_timing,
+ };
+ 
+-- 
+1.6.0.4
+

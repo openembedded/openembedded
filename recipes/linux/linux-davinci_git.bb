@@ -68,10 +68,13 @@ SRC_URI_append_da850-omapl138-evm = ${ARAGO_L1_URI}
 SRC_URI_append_hawkboard          = ${ARAGO_L1_URI}
 
 SRC_URI_append_da850-omapl138-evm = "file://logo_linux_clut224.ppm \
+                                     file://0001-board-da850-evm-Disable-NAND-SUBPAGE.patch \
                                      "
 
 SRC_URI_append_hawkboard          = "file://logo_linux_clut224.ppm \
-                                     file://patch-2.6.33rc4-psp-to-hawkboard.patch "
+                                     file://patch-2.6.33rc4-psp-to-hawkboard.patch \
+                                     file://0001-board-da850-hawk-Disable-NAND-SUBPAGE.patch \
+                                     "
 
 do_configure_prepend_dm355-leopard() {
 	sed -i s:2138:1381:g ${S}/arch/arm/tools/mach-types

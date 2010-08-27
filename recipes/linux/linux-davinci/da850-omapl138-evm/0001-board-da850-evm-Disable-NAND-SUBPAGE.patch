@@ -1,0 +1,29 @@
+From 2ee9f2c655710d9e60a5a9b49871edc316e5363d Mon Sep 17 00:00:00 2001
+From: Roger Monk <r-monk@ti.com>
+Date: Wed, 25 Aug 2010 17:29:14 +0100
+Subject: [PATCH] board-da850-evm:  Disable NAND SUBPAGE
+
+   * This was causing issues with UBI
+   * Solution/Workaround identified by Caglar Akyuz - now applied locally to board file
+
+Signed-off-by: Roger Monk <r-monk@ti.com>
+---
+ arch/arm/mach-davinci/board-da850-evm.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/mach-davinci/board-da850-evm.c b/arch/arm/mach-davinci/board-da850-evm.c
+index cfed439..502b914 100755
+--- a/arch/arm/mach-davinci/board-da850-evm.c
++++ b/arch/arm/mach-davinci/board-da850-evm.c
+@@ -187,7 +187,7 @@ static struct davinci_nand_pdata da850_evm_nandflash_data = {
+ 	.nr_parts	= ARRAY_SIZE(da850_evm_nandflash_partition),
+ 	.ecc_mode	= NAND_ECC_HW,
+ 	.ecc_bits	= 4,
+-	.options	= NAND_USE_FLASH_BBT,
++	.options	= NAND_USE_FLASH_BBT | NAND_NO_SUBPAGE_WRITE,
+ 	.timing		= &da850_evm_nandflash_timing,
+ };
+ 
+-- 
+1.6.0.4
+
