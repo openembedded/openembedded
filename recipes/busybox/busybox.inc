@@ -11,7 +11,7 @@ LICENSE = "GPLv2"
 SECTION = "base"
 PRIORITY = "required"
 
-INC_PR = "r33"
+INC_PR = "r34"
 
 SRC_URI = "\
   file://busybox-cron \
@@ -257,7 +257,10 @@ pkg_postinst_${PN}-syslog () {
 	else
 		OPT="-s"
 	fi
-	update-rc.d $OPT syslog defaults
+	# remove all rc.d-links potentially created from alternative
+	# syslog packages before creating new ones
+	update-rc.d $OPT -f syslog remove
+	update-rc.d $OPT syslog start 20 2 3 4 5 . stop 90 0 1 6 .
 }
 
 pkg_prerm_${PN}-syslog () {

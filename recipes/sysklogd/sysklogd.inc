@@ -1,7 +1,7 @@
 LICENSE = "GPL"
 SECTION = "base"
 DESCRIPTION = "The sysklogd package implements two system log daemons."
-INC_PR = "r3"
+INC_PR = "r4"
 
 SRC_URI = "http://www.ibiblio.org/pub/Linux/system/daemons/sysklogd-${PV}.tar.gz \
 	       file://nonrootinstall.patch \
@@ -52,7 +52,10 @@ pkg_postinst_${PN} () {
     else
 	OPT="-s"
     fi
-    update-rc.d $OPT syslog defaults
+    # remove all rc.d-links potentially created from alternative
+    # syslog packages before creating new ones
+    update-rc.d $OPT -f syslog remove
+    update-rc.d $OPT syslog start 20 2 3 4 5 . stop 90 0 1 6 .
 }
 
 pkg_prerm_${PN} () {

@@ -2,7 +2,7 @@ DESCRIPTION = "Rsyslog is an enhanced multi-threaded syslogd"
 DEPENDS = "zlib"
 HOMEPAGE = "http://www.rsyslog.com/"
 LICENSE = "GPLv3"
-INC_PR = "r1"
+INC_PR = "r2"
 
 SRC_URI = "http://www.rsyslog.com/files/download/rsyslog/${PN}-${PV}.tar.gz \
           file://rsyslog.conf \
@@ -31,7 +31,10 @@ pkg_postinst_${PN} () {
 	else
 		OPT="-s"
 	fi
-	update-rc.d $OPT syslog defaults
+	# remove all rc.d-links potentially created from alternative
+	# syslog packages before creating new ones
+	update-rc.d $OPT -f syslog remove
+	update-rc.d $OPT syslog start 20 2 3 4 5 . stop 90 0 1 6 .
 }
 
 pkg_prerm_${PN} () {
