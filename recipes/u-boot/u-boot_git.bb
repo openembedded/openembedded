@@ -77,7 +77,7 @@ SRC_URI_beagleboard = "git://www.denx.de/git/u-boot.git;protocol=git \
 SRCREV_beagleboard = "ca6e1c136ddb720c3bb2cc043b99f7f06bc46c55"
 PV_beagleboard = "2010.03+${PR}+gitr${SRCREV}"
 
-SRCREV_calamari = "1f932d68bf8c3bb5fec34dc5c5d654fc8614dd31"
+SRCREV_calamari = "b80d30546e88c70985094d81297d449b2bc59033"
 
 PV_calamari = "2010.06+${PR}+gitr${SRCREV}"
 SRC_URI_calamari = " \
