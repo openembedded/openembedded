@@ -1,0 +1,203 @@
+Index: mythplugins/programs-libs.pro
+===================================================================
+--- mythplugins.orig/programs-libs.pro
++++ mythplugins/programs-libs.pro
+@@ -4,7 +4,7 @@ INCLUDEPATH += $${SYSROOT}$${PREFIX}/inc
+ INCLUDEPATH += $${SYSROOT}$${PREFIX}/include/mythtv/libmyth
+ DEPENDPATH *= $${INCLUDEPATH}
+ 
+-LIBS += -L$${LIBDIR} $$EXTRA_LIBS -lmythdb-$$LIBVERSION
++LIBS += -L$${SYSROOT}$${LIBDIR} $$EXTRA_LIBS -lmythdb-$$LIBVERSION
+ LIBS += -lmythavutil-$$LIBVERSION -lmythavcodec-$$LIBVERSION
+ LIBS += -lmyth-$$LIBVERSION -lmythui-$$LIBVERSION -lmythupnp-$$LIBVERSION
+ 
+Index: mythplugins/configure
+===================================================================
+--- mythplugins.orig/configure
++++ mythplugins/configure
+@@ -359,24 +359,25 @@ TMPE="${TMPDIR1}/myth-conf-${RANDOM}-$$-
+ 
+ has_library()
+ {
+-    if test -f /etc/ld.so.conf ; then
+-        LIBPATHS=`cat /etc/ld.so.conf | grep -v "#" | grep -v "include"`
+-    else
+-        LIBPATHS=''
+-    fi
+-
+-    LIBPATHS="$LIBPATHS `echo $LD_LIBRARY_PATH | sed s/':'/' '/g` "
+-    # Mac OS X has a different variable for this:
+-    LIBPATHS="$LIBPATHS `echo $DYLD_LIBRARY_PATH | sed s/':'/' '/g` "
+-
+-    # recurse down just one level, should be enough in most cases
+-    if test -f /etc/ld.so.conf ; then
+-        INCL=`cat /etc/ld.so.conf | grep -v "#" | grep  "^include"`
+-        SRCH=`echo "$INCL" | sed '{ s/^include \//\//; s/^include /\/etc\//}'`
+-        for x in $SRCH ; do
+-            LP_APPEND=`cat $x | grep -v "#" | grep -v "^include"`
+-            LIBPATHS="$LIBPATHS $LP_APPEND"
+-        done
++    LIBPATHS=''
++    if test "x$sysroot" = "x" ; then
++        if test -f /etc/ld.so.conf ; then
++            LIBPATHS=`cat /etc/ld.so.conf | grep -v "#" | grep -v "include"`
++        fi
++
++        LIBPATHS="$LIBPATHS `echo $LD_LIBRARY_PATH | sed s/':'/' '/g` "
++        # Mac OS X has a different variable for this:
++        LIBPATHS="$LIBPATHS `echo $DYLD_LIBRARY_PATH | sed s/':'/' '/g` "
++
++        # recurse down just one level, should be enough in most cases
++        if test -f /etc/ld.so.conf ; then
++            INCL=`cat /etc/ld.so.conf | grep -v "#" | grep  "^include"`
++            SRCH=`echo "$INCL" | sed '{ s/^include \//\//; s/^include /\/etc\//}'`
++            for x in $SRCH ; do
++                LP_APPEND=`cat $x | grep -v "#" | grep -v "^include"`
++                LIBPATHS="$LIBPATHS $LP_APPEND"
++            done
++        fi
+     fi
+ 
+     LIBPATHS="`echo $LIBPATHS $sysroot$prefix/$libdir_name $sysroot/$libdir_name $sysroot/usr/$libdir_name $sysroot/usr/local/$libdir_name $sysroot/usr/X11R6/$libdir_name | sed s/'\/ '/' '/g` "
+@@ -393,8 +394,10 @@ has_library()
+ has_header()
+ {
+     HPATHS="$sysroot$prefix/include $sysroot/usr/local/include $sysroot/usr/include $sysroot/usr/include/g++-v3 $sysroot/usr/X11R6/include $sysroot/"
+-    INCL=`echo $DYLD_LIBRARY_PATH $LD_LIBRARY_PATH | sed s/':'/' '/g`
+-    HPATHS="$HPATHS `echo $INCL | sed s/$libdir_name/include/g` "
++    if test "x$sysroot" = "x" ; then
++        INCL=`echo $DYLD_LIBRARY_PATH $LD_LIBRARY_PATH | sed s/':'/' '/g`
++        HPATHS="$HPATHS `echo $INCL | sed s/$libdir_name/include/g` "
++    fi
+ 
+     HAS_IT="no"
+     for HPATH in $HPATHS ; do
+@@ -804,7 +807,7 @@ if test "$music" = "yes" ; then
+         if test "$sdl" = "yes" ; then
+             echo "        libvisual      support will be included in MythMusic"
+             echo "#define LIBVISUAL_SUPPORT 1" >> ./mythmusic/mythmusic/config.h
+-            echo "INCLUDEPATH += /usr/include/libvisual-0.4" >> ./mythmusic/mythmusic/config.pro
++            echo "INCLUDEPATH += ${sysroot}/usr/include/libvisual-0.4" >> ./mythmusic/mythmusic/config.pro
+             echo "LIBS += -lvisual-0.4" >> ./mythmusic/mythmusic/config.pro
+         else
+             echo "        libvisual      support will not be included in MythMusic (requires SDL support)"
+Index: mythplugins/settings.pro
+===================================================================
+--- mythplugins.orig/settings.pro
++++ mythplugins/settings.pro
+@@ -3,8 +3,8 @@ CONFIG += $$CCONFIG
+ LIBVERSION = 0.23.1
+ 
+ INCLUDEPATH += $${SYSROOT}$${PREFIX}/include
+-#INCLUDEPATH += /usr/include/cdda
+-#INCLUDEPATH += /usr/include/FLAC
++#INCLUDEPATH += $${SYSROOT}/usr/include/cdda
++#INCLUDEPATH += $${SYSROOT}/usr/include/FLAC
+ 
+ LIBS *= -L$${SYSROOT}$${PREFIX}/$${LIBDIRNAME}
+ 
+Index: mythplugins/mythgallery/mythgallery/mythgallery.pro
+===================================================================
+--- mythplugins.orig/mythgallery/mythgallery/mythgallery.pro
++++ mythplugins/mythgallery/mythgallery/mythgallery.pro
+@@ -14,7 +14,7 @@ TARGET = mythgallery
+ target.path = $${LIBDIR}/mythtv/plugins
+ INSTALLS += target
+ 
+-INCLUDEPATH += $${PREFIX}/include/mythtv
++INCLUDEPATH += $${SYSROOT}$${PREFIX}/include/mythtv
+ 
+ # Input
+ HEADERS += iconview.h          singleview.h
+Index: mythplugins/mythweather/mythweather/mythweather.pro
+===================================================================
+--- mythplugins.orig/mythweather/mythweather/mythweather.pro
++++ mythplugins/mythweather/mythweather/mythweather.pro
+@@ -13,8 +13,8 @@ INSTALLS += target
+ QMAKE_COPY_DIR = sh ../../cpsvndir
+ win32:QMAKE_COPY_DIR = sh ../../cpsimple
+ 
+-INCLUDEPATH += $${PREFIX}/include/mythtv
+-INCLUDEPATH += $${PREFIX}/include/mythtv/libmythui
++INCLUDEPATH += $${SYSROOT}$${PREFIX}/include/mythtv
++INCLUDEPATH += $${SYSROOT}$${PREFIX}/include/mythtv/libmythui
+ 
+ datafiles.path = $${PREFIX}/share/mythtv/mythweather/
+ datafiles.files = weather-screens.xml
+Index: mythplugins/mythmovies/mythmovies/mythmovies.pro
+===================================================================
+--- mythplugins.orig/mythmovies/mythmovies/mythmovies.pro
++++ mythplugins/mythmovies/mythmovies/mythmovies.pro
+@@ -10,7 +10,7 @@ TARGET = mythmovies
+ target.path = $${LIBDIR}/mythtv/plugins
+ INSTALLS += target
+ 
+-INCLUDEPATH += $${PREFIX}/include/mythtv/libmythui
++INCLUDEPATH += $${SYSROOT}$${PREFIX}/include/mythtv/libmythui
+ 
+ # Input
+ HEADERS += moviesui.h helperobjects.h moviessettings.h
+Index: mythplugins/mythzoneminder/mythzoneminder/mythzoneminder.pro
+===================================================================
+--- mythplugins.orig/mythzoneminder/mythzoneminder/mythzoneminder.pro
++++ mythplugins/mythzoneminder/mythzoneminder/mythzoneminder.pro
+@@ -9,7 +9,7 @@ TARGET = mythzoneminder
+ target.path = $${LIBDIR}/mythtv/plugins
+ INSTALLS += target
+ 
+-INCLUDEPATH += $${PREFIX}/include/mythtv/libmythui
++INCLUDEPATH += $${SYSROOT}$${PREFIX}/include/mythtv/libmythui
+ 
+ # Input
+ HEADERS += zmconsole.h zmplayer.h zmevents.h zmliveplayer.h zmdefines.h 
+Index: mythplugins/mythnews/mythnews/mythnews.pro
+===================================================================
+--- mythplugins.orig/mythnews/mythnews/mythnews.pro
++++ mythplugins/mythnews/mythnews/mythnews.pro
+@@ -10,9 +10,9 @@ TARGET = mythnews
+ target.path = $${LIBDIR}/mythtv/plugins
+ INSTALLS += target
+ 
+-INCLUDEPATH += $${PREFIX}/include/mythtv
+-INCLUDEPATH += $${PREFIX}/include/mythtv/libmythui
+-INCLUDEPATH += $${PREFIX}/include/mythtv/libmythdb
++INCLUDEPATH += $${SYSROOT}$${PREFIX}/include/mythtv
++INCLUDEPATH += $${SYSROOT}$${PREFIX}/include/mythtv/libmythui
++INCLUDEPATH += $${SYSROOT}$${PREFIX}/include/mythtv/libmythdb
+ 
+ installfiles.path = $${PREFIX}/share/mythtv/mythnews
+ installfiles.files = news-sites.xml
+Index: mythplugins/targetdep.pro
+===================================================================
+--- mythplugins.orig/targetdep.pro
++++ mythplugins/targetdep.pro
+@@ -10,10 +10,10 @@ MYTH_SHLIB_EXT=$${LIBVERSION}.$${QMAKE_E
+ MYTH_LIB_EXT  =$${LIBVERSION}.$${QMAKE_EXTENSION_LIB}
+ 
+ 
+-DEPLIBS = $${LIBDIR}
++DEPLIBS = $${SYSROOT}$${LIBDIR}
+ 
+ # On Windows, dlls were installed with exes:
+-mingw : DEPLIBS = $${PREFIX}/bin
++mingw : DEPLIBS = $${SYSROOT}$${PREFIX}/bin
+ 
+ TARGETDEPS += $${DEPLIBS}/libmyth-$${MYTH_SHLIB_EXT}
+ TARGETDEPS += $${DEPLIBS}/libmythdb-$${MYTH_SHLIB_EXT}
+Index: mythplugins/mythnetvision/mythnetvision/mythnetvision.pro
+===================================================================
+--- mythplugins.orig/mythnetvision/mythnetvision/mythnetvision.pro
++++ mythplugins/mythnetvision/mythnetvision/mythnetvision.pro
+@@ -10,9 +10,9 @@ TARGET = mythnetvision
+ target.path = $${LIBDIR}/mythtv/plugins
+ INSTALLS += target
+ 
+-INCLUDEPATH += $${PREFIX}/include/mythtv
+-INCLUDEPATH += $${PREFIX}/include/mythtv/libmythui
+-INCLUDEPATH += $${PREFIX}/include/mythtv/libmythdb
++INCLUDEPATH += $${SYSROOT}$${PREFIX}/include/mythtv
++INCLUDEPATH += $${SYSROOT}$${PREFIX}/include/mythtv/libmythui
++INCLUDEPATH += $${SYSROOT}$${PREFIX}/include/mythtv/libmythdb
+ 
+ installfiles.path = $${PREFIX}/share/mythtv/mythnetvision
+ 

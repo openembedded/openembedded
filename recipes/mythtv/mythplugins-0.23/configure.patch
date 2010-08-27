@@ -1,0 +1,13 @@
+Index: mythplugins-0.22rc1/configure
+===================================================================
+--- mythplugins-0.22rc1.orig/configure
++++ mythplugins-0.22rc1/configure
+@@ -730,7 +730,7 @@ if test "$music" = "yes" ; then
+     fi
+ 
+     if test "$taglib" = "yes" ; then
+-        echo "INCLUDEPATH += `taglib-config --prefix`/include/taglib" >> ./mythmusic/mythmusic/config.pro
++        echo "INCLUDEPATH += `taglib-config --cflags | sed 's:-I::'`" >> ./mythmusic/mythmusic/config.pro
+     fi
+ fi
+ 

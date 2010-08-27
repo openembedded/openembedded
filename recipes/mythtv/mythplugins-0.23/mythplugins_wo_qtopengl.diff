@@ -1,0 +1,115 @@
+Index: mythplugins/mytharchive/mytharchive/mytharchive.pro
+===================================================================
+--- mythplugins.orig/mytharchive/mytharchive/mytharchive.pro
++++ mythplugins/mytharchive/mytharchive/mytharchive.pro
+@@ -14,7 +14,7 @@ LIBS += -lmythavcodec-$$LIBVERSION
+ LIBS += -lmythavformat-$$LIBVERSION
+ LIBS += -lmythswscale-$$LIBVERSION
+ 
+-TEMPLATE = lib opengl
++TEMPLATE = lib
+ CONFIG += plugin thread
+ TARGET = mytharchive
+ target.path = $${LIBDIR}/mythtv/plugins
+@@ -61,6 +61,7 @@ INSTALLS +=  profilefiles burnuifiles
+ INSTALLS +=  nativeuifiles 
+ 
+ #The following line was inserted by qt3to4
+-QT += xml sql opengl 
++QT += xml sql
++using_opengl:QT += opengl
+ 
+ include ( ../../libs-targetfix.pro )
+Index: mythplugins/mytharchive/mytharchivehelper/mytharchivehelper.pro
+===================================================================
+--- mythplugins.orig/mytharchive/mytharchivehelper/mytharchivehelper.pro
++++ mythplugins/mytharchive/mytharchivehelper/mytharchivehelper.pro
+@@ -9,7 +9,8 @@ INCLUDEPATH += $${SYSROOT}$${PREFIX}/inc
+ DEPENDPATH *= $${INCLUDEPATH}
+ 
+ TEMPLATE = app
+-CONFIG += thread opengl
++CONFIG += thread
++using_opengl:CONFIG += opengl
+ 
+ target.path = $${PREFIX}/bin
+ 
+@@ -27,4 +28,5 @@ LIBS += -lmythavcodec-$$LIBVERSION
+ LIBS += -lmythavformat-$$LIBVERSION
+ LIBS += -lmythswscale-$$LIBVERSION
+ 
+-QT += xml sql opengl
++QT += xml sql
++using_opengl:QT += opengl
+Index: mythplugins/mythbrowser/mythbrowser/mythbrowser.pro
+===================================================================
+--- mythplugins.orig/mythbrowser/mythbrowser/mythbrowser.pro
++++ mythplugins/mythbrowser/mythbrowser/mythbrowser.pro
+@@ -2,10 +2,12 @@ include (../../mythconfig.mak )
+ include (../../settings.pro )
+ include (../../programs-libs.pro )
+ 
+-QT += network xml sql opengl webkit
++QT += network xml sql webkit
++using_opengl:QT += opengl
+ 
+ TEMPLATE = lib
+-CONFIG += thread opengl plugin warn_on
++CONFIG += thread plugin warn_on
++using_opengl:CONFIG += opengl
+ TARGET = mythbrowser
+ target.path = $${LIBDIR}/mythtv/plugins
+ INSTALLS += target
+Index: mythplugins/mythgallery/mythgallery/mythgallery.pro
+===================================================================
+--- mythplugins.orig/mythgallery/mythgallery/mythgallery.pro
++++ mythplugins/mythgallery/mythgallery/mythgallery.pro
+@@ -37,6 +37,7 @@ opengl {
+ 
+ 
+ #The following line was inserted by qt3to4
+-QT += network opengl sql xml
++QT += network sql xml
++using_opengl:QT += opengl
+ 
+ include ( ../../libs-targetfix.pro )
+Index: mythplugins/mythgame/mythgame/mythgame.pro
+===================================================================
+--- mythplugins.orig/mythgame/mythgame/mythgame.pro
++++ mythplugins/mythgame/mythgame/mythgame.pro
+@@ -23,6 +23,6 @@ use_hidesyms {
+ LIBS += -lz
+ 
+ #The following line was inserted by qt3to4
+-QT += xml sql opengl 
++QT += xml sql
+ 
+ include ( ../../libs-targetfix.pro )
+Index: mythplugins/mythmusic/mythmusic/mythmusic.pro
+===================================================================
+--- mythplugins.orig/mythmusic/mythmusic/mythmusic.pro
++++ mythplugins/mythmusic/mythmusic/mythmusic.pro
+@@ -3,7 +3,8 @@ include ( ../../settings.pro )
+ include ( ../../programs-libs.pro )
+ include (config.pro)
+ 
+-QT += xml sql opengl qt3support network
++QT += xml sql qt3support network
++using_opengl:QT += opengl
+ 
+ !exists( config.pro ) {
+    error(Missing config.pro: please run the configure script)
+Index: mythplugins/mythvideo/mtd/mtd.pro
+===================================================================
+--- mythplugins.orig/mythvideo/mtd/mtd.pro
++++ mythplugins/mythvideo/mtd/mtd.pro
+@@ -5,7 +5,8 @@ include ( ../../programs-libs.pro )
+ QT += sql xml network
+ 
+ TEMPLATE = app
+-CONFIG += thread opengl
++CONFIG += thread
++using_opengl:CONFIG += opengl
+ TARGET = mtd
+ target.path = $${PREFIX}/bin
+ INSTALLS += target

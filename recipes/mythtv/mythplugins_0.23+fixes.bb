@@ -1,6 +1,6 @@
 DEPENDS = "flac taglib mythtv libvorbis libexif libvisual libsdl-x11 libcdaudio cdparanoia"
-RDEPENDS_${PN} = "mytharchive mythbrowser mythflix mythgallery mythgame \
-                  mythmusic mythmovies mythnews mythvideo mythweather mythzoneminder"
+RDEPENDS_${PN} = "mytharchive mythbrowser mythgallery mythgame mythmovies  \
+                  mythmusic mythnetvision mythnews mythvideo mythweather mythzoneminder"
 RRECOMMENDS_${PN} = "mythweb_lighttpd"
 
 # the apache variant does not work yet, too many issues with apache+php+mysql"
@@ -11,6 +11,7 @@ DEPENDS_mythweb_lighttpd = "mythweb"
 RDEPENDS_mythweb_lighttpd = "lighttpd lighttpd-module-cgi lighttpd-module-fastcgi \
         lighttpd-module-rewrite php-cgi lighttpd-module-auth"
 
+RDEPENDS_mythnetvision += " python python-mysqldb "
 PR = "svnr${SRCPV}+r0"
 PV = "0.23"
 
@@ -21,7 +22,6 @@ SRC_URI = "svn://svn.mythtv.org/svn/branches/release-0-23-fixes;module=mythplugi
         file://configure.patch \
         file://mytharchive.pro.patch \
         "
-
 
 QMAKE_PROFILES = "mythplugins.pro"
 
@@ -43,6 +43,10 @@ EXTRA_OECONF = " \
 
 do_configure() {
         ${S}/configure --qmake=qmake2 ${EXTRA_OECONF}
+}
+
+do_install () {
+        oe_runmake install INSTALL_ROOT="${D}"
 }
 
 do_install_mythweb_apache () {
@@ -83,11 +87,12 @@ PACKAGES =+ " \
         mythweb_apache mythweb_lighttpd \
         mytharchive mytharchive-dbg \
         mythbrowser mythbrowser-dbg \
-        mythflix mythflix-dbg \
         mythgallery mythgallery-dbg \
         mythgame mythgame-dbg \
         mythmovies mythmovies-dbg \
         mythmusic mythmusic-dbg \
+        mythnetvision mythnetvision-dbg \
+        mythnetvision-data \
         mythnews mythnews-dbg \
         mythvideo mythvideo-dbg \
         mythweather mythweather-dbg \
@@ -126,18 +131,6 @@ FILES_mythbrowser = "${libdir}/mythtv/plugins/libmythbrowser.so \
         ${datadir}/mythtv/themes/default-wide/browser-ui.xml \
         "
 FILES_mythbrowser-dbg = "${libdir}/mythtv/plugins/.debug/libmythbrowser.so"
-
-FILES_mythflix = "${libdir}/mythtv/plugins/libmythflix.so \
-        ${datadir}/mythtv/i18n/mythflix* \
-        ${datadir}/mythtv/mythflix/* \
-        ${datadir}/mythtv/netflix_menu.xml \
-        ${datadir}/mythtv/themes/default/mythflix_background.png \
-        ${datadir}/mythtv/themes/default/netflix-ui.xml \
-        ${datadir}/mythtv/themes/default-wide/netflix-ui.xml \
-        ${datadir}/mythtv/themes/default/title_netflix.png \
-        ${datadir}/mythtv/themes/default-wide/netflix-bg.png \
-        "
-FILES_mythflix-dbg = "${libdir}/mythtv/plugins/.debug/libmythflix.so"
 
 FILES_mythgallery = "${libdir}/mythtv/plugins/libmythgallery.so \
         ${datadir}/mythtv/i18n/mythgallery* \
@@ -243,6 +236,15 @@ FILES_mythnews = "${libdir}/mythtv/plugins/libmythnews.so \
         ${datadir}/mythtv/themes/default-wide/news-ui.xml \
         "
 FILES_mythnews-dbg = "${libdir}/mythtv/plugins/.debug/libmythnews.so"
+
+FILES_mythnetvision = "${libdir}/mythtv/plugins/libmythnetvision.so \
+        ${datadir}/mythtv/mythnetvision/* \
+        ${datadir}/mythtv/i18n/mythnetvision* \
+        ${datadir}/mythtv/mythnetvision.xml\
+        ${datadir}/mythtv/themes/default/netvision-ui.xml \
+        ${datadir}/mythtv/themes/default-wide/nenetvision-ui.xml \
+        "
+#FILES_mythnetvision-dbg = "${libdir}/mythtv/plugins/.debug/libmythnetvision.so"
 
 FILES_mythvideo = "${libdir}/mythtv/plugins/libmythvideo.so \
         ${bindir}/mtd \
