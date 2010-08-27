@@ -1,5 +1,6 @@
 This is a backport of commit revision 151568 from trunk into 4.4
 the changes for config/t-slibgcc-elf-ver are already available in 4.4
+and t-slibgcc-libgcc is available in 4.4.4
 so they dont reflect in the patch as they are mentioned in the changelog
 message. 
 
@@ -20,9 +21,9 @@ which has this problem when using libtool and -Os flag.
 
 Index: gcc-4.4.4/gcc/config.gcc
 ===================================================================
---- gcc-4.4.4.orig/gcc/config.gcc	2010-02-17 20:24:04.000000000 -0800
-+++ gcc-4.4.4/gcc/config.gcc	2010-05-14 13:57:33.701847829 -0700
-@@ -1745,12 +1745,12 @@ powerpc64-*-linux*)
+--- gcc-4.4.4.orig/gcc/config.gcc	2010-08-27 21:04:18.246053928 +0000
++++ gcc-4.4.4/gcc/config.gcc	2010-08-27 21:48:06.258158384 +0000
+@@ -1745,12 +1745,12 @@
  		tm_file="rs6000/secureplt.h ${tm_file}"
  	fi
  	extra_options="${extra_options} rs6000/sysv4.opt rs6000/linux64.opt"
@@ -37,28 +38,28 @@ Index: gcc-4.4.4/gcc/config.gcc
  	;;
  powerpc-*-darwin*)
  	extra_options="${extra_options} rs6000/darwin.opt"
-@@ -1827,17 +1827,17 @@ powerpc-*-rtems*)
+@@ -1827,17 +1827,17 @@
  powerpc-*-linux*altivec*)
  	tm_file="${tm_file} dbxelf.h elfos.h svr4.h freebsd-spec.h rs6000/sysv4.h rs6000/linux.h rs6000/linuxaltivec.h"
  	extra_options="${extra_options} rs6000/sysv4.opt"
 -	tmake_file="rs6000/t-fprules rs6000/t-fprules-softfp soft-fp/t-softfp rs6000/t-ppcos ${tmake_file} rs6000/t-ppccomm"
-+	tmake_file="rs6000/t-fprules t-slibgcc-libgcc rs6000/t-fprules-softfp soft-fp/t-softfp rs6000/t-ppcos ${tmake_file} rs6000/t-ppccomm"
++	tmake_file="rs6000/t-fprules rs6000/t-fprules-softfp soft-fp/t-softfp rs6000/t-ppcos ${tmake_file} t-slibgcc-libgcc rs6000/t-ppccomm"
  	;;
  powerpc-*-linux*spe*)
  	tm_file="${tm_file} dbxelf.h elfos.h svr4.h freebsd-spec.h rs6000/sysv4.h rs6000/linux.h rs6000/linuxspe.h rs6000/e500.h"
  	extra_options="${extra_options} rs6000/sysv4.opt"
 -	tmake_file="t-dfprules rs6000/t-fprules rs6000/t-fprules-softfp soft-fp/t-softfp rs6000/t-ppcos ${tmake_file} rs6000/t-ppccomm"
-+	tmake_file="t-dfprules rs6000/t-fprules t-slibgcc-libgcc rs6000/t-fprules-softfp soft-fp/t-softfp rs6000/t-ppcos ${tmake_file} rs6000/t-ppccomm"
++	tmake_file="t-dfprules rs6000/t-fprules rs6000/t-fprules-softfp soft-fp/t-softfp rs6000/t-ppcos ${tmake_file} t-slibgcc-libgcc rs6000/t-ppccomm"
  	;;
  powerpc-*-linux*paired*)
          tm_file="${tm_file} dbxelf.h elfos.h svr4.h freebsd-spec.h rs6000/sysv4.h rs6000/linux.h rs6000/750cl.h"
          extra_options="${extra_options} rs6000/sysv4.opt"
 -        tmake_file="rs6000/t-fprules rs6000/t-fprules-softfp soft-fp/t-softfp rs6000/t-ppcos ${tmake_file} rs6000/t-ppccomm"
-+        tmake_file="rs6000/t-fprules t-slibgcc-libgcc rs6000/t-fprules-softfp soft-fp/t-softfp rs6000/t-ppcos ${tmake_file} rs6000/t-ppccomm"
++        tmake_file="rs6000/t-fprules rs6000/t-fprules-softfp soft-fp/t-softfp rs6000/t-ppcos ${tmake_file} t-slibgcc-libgcc rs6000/t-ppccomm"
          ;;
  powerpc-*-linux*)
  	tm_file="${tm_file} dbxelf.h elfos.h svr4.h freebsd-spec.h rs6000/sysv4.h"
-@@ -1856,7 +1856,7 @@ powerpc-*-linux*)
+@@ -1856,7 +1856,7 @@
  		tm_file="${tm_file} rs6000/linux.h"
  		;;
  	esac
@@ -67,7 +68,7 @@ Index: gcc-4.4.4/gcc/config.gcc
  	if test x${enable_secureplt} = xyes; then
  		tm_file="rs6000/secureplt.h ${tm_file}"
  	fi
-@@ -1864,14 +1864,14 @@ powerpc-*-linux*)
+@@ -1864,14 +1864,14 @@
  powerpc-*-gnu-gnualtivec*)
  	tm_file="${cpu_type}/${cpu_type}.h elfos.h svr4.h freebsd-spec.h gnu.h rs6000/sysv4.h rs6000/linux.h rs6000/linuxaltivec.h rs6000/gnu.h"
  	extra_options="${extra_options} rs6000/sysv4.opt"
@@ -84,43 +85,3 @@ Index: gcc-4.4.4/gcc/config.gcc
  	extra_options="${extra_options} rs6000/sysv4.opt"
  	if test x$enable_threads = xyes; then
  		thread_file='posix'
-Index: gcc-4.4.4/gcc/config/t-slibgcc-libgcc
-===================================================================
---- gcc-4.4.4.orig/gcc/config/t-slibgcc-libgcc	2010-01-04 07:13:08.000000000 -0800
-+++ gcc-4.4.4/gcc/config/t-slibgcc-libgcc	2010-05-14 13:44:41.339352736 -0700
-@@ -30,3 +30,35 @@ SHLIB_MAKE_SOLINK = \
- SHLIB_INSTALL_SOLINK = \
- 	$(INSTALL_DATA) $(SHLIB_DIR)/$(SHLIB_SOLINK) \
- 	  $$(DESTDIR)$$(slibdir)$(SHLIB_SLIBDIR_QUAL)/$(SHLIB_SOLINK)
-+# Copyright (C) 2009 Free Software Foundation, Inc.
-+#
-+# This file is part of GCC.
-+#
-+# GCC is free software; you can redistribute it and/or modify
-+# it under the terms of the GNU General Public License as published by
-+# the Free Software Foundation; either version 3, or (at your option)
-+# any later version.
-+#
-+# GCC is distributed in the hope that it will be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with GCC; see the file COPYING3.  If not see
-+# <http://www.gnu.org/licenses/>.
-+
-+# Instead of creating $(SHLIB_SOLINK) symlink create a GNU ld
-+# linker script which sources in both $(SHLIB_SONAME) and libgcc.a.
-+# This is needed on targets where libgcc.a contains routines that aren't in
-+# $(SHLIB_SONAME) and are needed for shared libraries.
-+
-+SHLIB_MAKE_SOLINK = \
-+	(echo "/* GNU ld script"; \
-+	 echo "   Use the shared library, but some functions are only in"; \
-+	 echo "   the static library.  */"; \
-+	 echo "GROUP ( $(SHLIB_SONAME) libgcc.a )" \
-+	) > $(SHLIB_DIR)/$(SHLIB_SOLINK)
-+SHLIB_INSTALL_SOLINK = \
-+	$(INSTALL_DATA) $(SHLIB_DIR)/$(SHLIB_SOLINK) \
-+	  $$(DESTDIR)$$(slibdir)$(SHLIB_SLIBDIR_QUAL)/$(SHLIB_SOLINK)
