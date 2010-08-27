@@ -329,6 +329,14 @@ Recipes:    anthy, nunome, uim*, granule, qpobox*, qte-font-unifont*
 Recipes:    qpf-unismall, qpobox, poboxserver, imkit*, scim, zten
 Recipes:    eb*, tomoe, offline-wikipedia
 
+Person:     Roman I Khimov
+Mail:       khimov@altell.ru
+Mail:       roman@khimov.ru
+Website:    http://roman.khimov.ru
+Recipes:    clamav, cluster-glue, cluster-resource-agents, conntrack-tools
+Recipes:    ethtool, libhtp, openais, pacemaker, ragel-native, squid
+Recipes:    squidguard, suricata
+
 Person:     Sergey Lapin
 Mail:       slapin@ossfans.org
 Machines:   palm*, afeb9260
