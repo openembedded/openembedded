@@ -11,7 +11,7 @@ inherit task
 DESCRIPTION_task-openmoko-base = "Openmoko: Top Panel, Application Launcher, Application Manager"
 RDEPENDS_task-openmoko-base = "\
   matchbox-panel-2 \
-  matchbox-panel-2-applets \
+#  matchbox-panel-2-applets \
 #  matchbox-keyboard-inputmethod \
 #  matchbox-keyboard-im \
 #  matchbox-keyboard-applet \

@@ -6,6 +6,5 @@ PACKAGES = "${PN}"
 
 RDEPENDS_${PN} = "\
     libcap \
-    systemtap \
     task-mamona-sdk \
 "

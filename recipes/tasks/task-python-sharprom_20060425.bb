@@ -8,13 +8,20 @@ NONWORKING = "\
 		python-crypto		\
 		python-gammu		\
 		python-gmpy		\
+		python-hmm		\
+		python-itools		\
 		python-pybluez		\
+		python-pyreverse	\
 		python-pysqlite		\
 		python-pygtk		\
 		python-pyqwt		\
+		python-snmplib		\
 		python-sgmlop		\
+		python-spyro		\
 		python-sword            \
-		python-vorbis"
+		python-urwid		\
+		python-vorbis		\
+		python-vmaps"
 
 RDEPENDS_${PN} = "\
 		python-ao 		\
@@ -23,9 +30,7 @@ RDEPENDS_${PN} = "\
 		python-fnorb		\
 		python-fpconst		\
 		python-gnosis		\
-		python-hmm		\
 		python-irclib		\
-		python-itools		\
 		python-libgmail		\
 		python-logilab-common	\
 		python-lxml		\
@@ -45,7 +50,6 @@ RDEPENDS_${PN} = "\
 		python-pylint		\
 		python-pyqt		\
 		python-pyraf		\
-		python-pyreverse	\
 		python-pyro		\
 		python-pyserial		\
 		python-pyvisa		\
@@ -55,17 +59,13 @@ RDEPENDS_${PN} = "\
 		python-scapy		\
 		python-scons		\
 		python-sip		\
-		python-snmplib		\
 		python-soappy		\
 		python-spydi		\
-		python-spyro		\
 		python-tlslite		\
-		python-urwid		\
-		python-vmaps		\
+		python-twisted		\
 		python-webpy		\
 		moin			\
 		plone			\
-		twisted			\
 		zope"
 
 #fixme add python-egenix-mx-base if brought in from nonworking

@@ -8,7 +8,7 @@ PACKAGES = "task-opie-apps task-opie-extra-apps"
 
 RDEPENDS_task-opie-apps = "opie-advancedfm opie-bartender opie-calculator \
                   opie-checkbook opie-clock \
-                  opie-console opie-dagger opie-embeddedkonsole \
+                  opie-console opie-embeddedkonsole \
                   opie-euroconv opie-eye opie-ftp opie-gutenbrowser \
                   opie-helpbrowser opie-irc opie-keypebble opie-odict \
                   opie-oxygen opie-rdesktop opie-reader opie-remote \

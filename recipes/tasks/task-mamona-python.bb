@@ -18,15 +18,12 @@ RDEPENDS_${PN} = "\
     python-gmpy	\
     python-gnosis \
     python-gst \
-    python-hmm \
     python-imaging \
     python-imdbpy \
     python-inotify \
     python-irclib \
-    python-itools \
     python-logilab-common \
     python-libgmail \
-    python-lightmediascanner \
     python-lxml	\
     python-mad \
     python-numarray	\
@@ -48,7 +45,6 @@ RDEPENDS_${PN} = "\
     python-pylint \
     python-pyqt	\
     python-pyraf \
-    python-pyreverse \
     python-pyrex \
     python-pyro \
     python-pyserial \
@@ -63,17 +59,13 @@ RDEPENDS_${PN} = "\
     python-simplejson \
     python-sip \
     python-sgmlop \
-    python-snmplib \
     python-soappy \
     python-spydi \
-    python-spyro \
     python-sqlalchemy \
     python-sqlobject \
     python-tlslite \
-    python-urwid \
-    python-vmaps \
+    python-twisted \
     python-vorbis \
     python-webpy \
     task-python-efl \
-    twisted \
 "

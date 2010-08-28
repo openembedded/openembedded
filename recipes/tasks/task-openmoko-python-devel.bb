@@ -8,5 +8,4 @@ inherit task
 RDEPENDS_task-openmoko-python-devel = "\
   task-python-efl \
   python-pygtk \
-  python-lightmediascanner \
 "
