@@ -1,6 +1,6 @@
 DESCRIPTION = "Xqt2 is an X-Server than runs within the Opie environment"
 HOMEPAGE = "http://xqt.sourceforge.jp"
-DEPENDS = "freetype libxi xmu flex-native virtual/libqte2 libqpe-opie"
+DEPENDS = "freetype libxi libxmu flex-native virtual/libqte2 libqpe-opie"
 LICENSE = "GPL"
 SECTION = "opie/applications"
 APPTYPE = "binary"
