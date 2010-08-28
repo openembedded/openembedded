@@ -1,11 +1,15 @@
 require gdb.inc
 LICENSE = "GPLv3"
 
-PR = "r3"
+PR = "r4"
+# there is a bug in GCC for SH4 it ICE's at Optlevel >O1
+# so workaround that for now.
 
+CFLAGS_append_sh4 = " -O1"
 SRC_URI += "file://gdb-6.8-fix-compile-karmic.patch \
 	    file://gdb-tcsetpgrp.patch \
 	    file://gdb-fix-sim-ppc.patch \
+	    file://renesas-sh-native-support.patch \
 	   "
 
 # Work-around problems while creating libbfd.a
