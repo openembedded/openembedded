@@ -2,7 +2,7 @@ DESCRIPTION = "Command line interface for Network Manager"
 HOMEPAGE = "http://vidner.net/martin/software/cnetworkmanager/"
 LICENSE = "GPL"
 SECTION = "console/network"
-RDEPENDS_${PN} = "python-core python-crypt python-dbus python-math python-pygobject python-re python-textutils python-uuid python-xml"
+RDEPENDS_${PN} = "python-core python-crypt python-dbus python-math python-pygobject python-re python-textutils python-xml"
 PR = "r2"
 PV = "0.8+git"
 
