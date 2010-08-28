@@ -5,8 +5,8 @@ AUTHOR = "Petr Vanek <vanous@penguin.cz>"
 SECTION = "x11/applications"
 PRIORITY = "optional"
 
-SRCREV = "123"
-PV = "0.0.80+svnr${SRCPV}"
+SRCREV = "128"
+PV = "0.0.81+svnr${SRCPV}"
 
 PACKAGE_ARCH = "all"
 
