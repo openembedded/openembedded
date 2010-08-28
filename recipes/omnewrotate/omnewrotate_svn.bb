@@ -5,7 +5,7 @@ LICENSE = "GPLv3"
 SECTION = "console/network"
 DEPENDS = "libframeworkd-glib xrandr"
 
-SRCREV = "66"
+SRCREV = "67"
 
 PV = "0.5.8+svnr${SRCPV}"
 PR = "r1"
