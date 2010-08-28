@@ -1,7 +1,7 @@
 # initramfs image with interactive boot menu allowing to select rootfs location
 # from choices of block devices, loopback images and NFS.
 
-IMAGE_INSTALL = "busybox-static initramfs-module-bootmenu initramfs-module-check-modules initramfs-module-kexecboot klibc-utils-static-modprobe"
+IMAGE_INSTALL = "busybox-static initramfs-module-bootmenu initramfs-module-check-modules initramfs-module-kexecboot klibc-static-utils-modprobe"
 IMAGE_LINGUAS = ""
 
 
