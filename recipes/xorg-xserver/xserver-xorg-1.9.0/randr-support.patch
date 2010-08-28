@@ -1,7 +1,7 @@
-diff -Nur xorg-server-1.7.0.orig/hw/xfree86/common/xf86Xinput.c xorg-server-1.7.0/hw/xfree86/common/xf86Xinput.c
---- xorg-server-1.7.0.orig/hw/xfree86/common/xf86Xinput.c	2009-09-24 07:12:00.000000000 +0200
-+++ xorg-server-1.7.0/hw/xfree86/common/xf86Xinput.c	2009-10-08 11:45:50.000000000 +0200
-@@ -95,6 +95,8 @@
+diff -uNr xorg-server-1.9.0.orig//hw/xfree86/common/xf86Xinput.c xorg-server-1.9.0/hw/xfree86/common/xf86Xinput.c
+--- xorg-server-1.9.0.orig//hw/xfree86/common/xf86Xinput.c	2010-08-13 07:53:48.000000000 +0200
++++ xorg-server-1.9.0/hw/xfree86/common/xf86Xinput.c	2010-08-28 21:31:10.000000000 +0200
+@@ -106,6 +106,8 @@
  
  #include "os.h"
  
@@ -10,7 +10,7 @@ diff -Nur xorg-server-1.7.0.orig/hw/xfree86/common/xf86Xinput.c xorg-server-1.7.
  EventListPtr xf86Events = NULL;
  
  /**
-@@ -1086,4 +1088,67 @@
+@@ -1359,4 +1361,73 @@
      EnableDevice(dev, TRUE);
  }
  
@@ -37,18 +37,24 @@ diff -Nur xorg-server-1.7.0.orig/hw/xfree86/common/xf86Xinput.c xorg-server-1.7.
 +
 +    switch (rotation & RR_Rotate_All) {
 +    case RR_Rotate_0:
++        swap_axes = 1;
++        invert[0] = 0;
++ 	 invert[1] = 0;
 +        break;
 +    case RR_Rotate_90:
-+        swap_axes = 1;
-+        invert[0] = 1;
++        swap_axes = 0;
++        invert[0] = 0;
++ 	 invert[1] = 1;
 +        break;
 +    case RR_Rotate_180:
-+        invert[0] = 1;
-+        invert[1] = 1;
++        swap_axes = 1;
++        invert[0] = 0;
++        invert[1] = 0;
 +        break;
 +    case RR_Rotate_270:
-+        swap_axes = 1;
-+        invert[1] = 1;
++        swap_axes = 0;
++        invert[0] = 0;
++ 	 invert[1] = 1;
 +        break;
 +    }
 +
@@ -78,10 +84,10 @@ diff -Nur xorg-server-1.7.0.orig/hw/xfree86/common/xf86Xinput.c xorg-server-1.7.
 +
 +
  /* end of xf86Xinput.c */
-diff -Nur xorg-server-1.7.0.orig/hw/xfree86/modes/xf86Crtc.c xorg-server-1.7.0/hw/xfree86/modes/xf86Crtc.c
---- xorg-server-1.7.0.orig/hw/xfree86/modes/xf86Crtc.c	2009-10-01 08:27:36.000000000 +0200
-+++ xorg-server-1.7.0/hw/xfree86/modes/xf86Crtc.c	2009-10-08 11:28:42.000000000 +0200
-@@ -391,6 +391,12 @@
+diff -uNr xorg-server-1.9.0.orig//hw/xfree86/modes/xf86Crtc.c xorg-server-1.9.0/hw/xfree86/modes/xf86Crtc.c
+--- xorg-server-1.9.0.orig//hw/xfree86/modes/xf86Crtc.c	2010-07-20 05:24:12.000000000 +0200
++++ xorg-server-1.9.0/hw/xfree86/modes/xf86Crtc.c	2010-08-28 21:28:48.000000000 +0200
+@@ -387,6 +387,12 @@
      if (didLock)
  	crtc->funcs->unlock (crtc);
  
