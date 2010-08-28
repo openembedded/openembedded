@@ -14,7 +14,7 @@ SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
            file://init \
 	   file://udev-compat-wrapper-patch"
 
-INC_PR = "r29"
+INC_PR = "r30"
 
 inherit update-rc.d autotools pkgconfig
 
@@ -43,22 +43,19 @@ EXTRA_OEMAKE = "-e \
 		'EXTRAS=${UDEV_EXTRAS}' \
 		'STRIP=echo'"
 
-RPROVIDES_udev_spitz += "udev-compat-wrapper"
+RPROVIDES_udev_append = " udev-compat-wrapper"
 RDEPENDS_udev_spitz += "udev-compat"
 do_unpack_append_spitz() {
 	bb.build.exec_func('do_apply_compat_wrapper', d)
 }
-RPROVIDES_udev_akita += "udev-compat-wrapper"
 RDEPENDS_udev_akita += "udev-compat"
 do_unpack_append_akita() {
 	bb.build.exec_func('do_apply_compat_wrapper', d)
 }
-RPROVIDES_udev_c7x0 += "udev-compat-wrapper"
 RDEPENDS_udev_c7x0 += "udev-compat"
 do_unpack_append_c7x0() {
 	bb.build.exec_func('do_apply_compat_wrapper', d)
 }
-RPROVIDES_udev_poodle += "udev-compat-wrapper"
 RDEPENDS_udev_poodle += "udev-compat"
 do_unpack_append_poodle() {
 	bb.build.exec_func('do_apply_compat_wrapper', d)

@@ -16,6 +16,7 @@ PROVIDES = "udev-compat"
 
 # Need udev with udev-compat-wrapper support and nothing else.
 RDEPENDS_${PN} = "udev-compat-wrapper"
+
 # Remove hotplug RPROVIDES
 RPROVIDES_${PN} = "udev-compat"
 
