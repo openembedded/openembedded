@@ -9,7 +9,7 @@ PR = "r0"
 
 SRC_URI = "git://git.debian.org/pkg-fso/omhacks.git;protocol=git;branch=master"
 
-SRCREV = "7f316203486acd3ae5902c02f20e59c805f019ab"
+SRCREV = "a278146b56b51a8590650702fc08c25aa54a3d32"
 S = "${WORKDIR}/git"
 
 inherit cmake
