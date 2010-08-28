@@ -1,6 +1,6 @@
 DESCRIPTION = "Matchbox session files for Openmoko"
 SECTION = "openmoko/base"
-RDEPENDS_${PN} = "matchbox-panel-2 matchbox-wm openmoko-today gconf"
+RDEPENDS_${PN} = "matchbox-panel-2 matchbox-wm openmoko-today2 gconf"
 PV = "0.1+svnr${SRCPV}"
 PR = "r1"
 
