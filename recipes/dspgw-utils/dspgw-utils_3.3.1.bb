@@ -2,10 +2,10 @@ DESCRIPTION = "DSP Gateway Utilities"
 HOMEPAGE = "http://dspgateway.sourceforge.net"
 LICENSE = "GPL"
 DEPENDS = "bison flex udev"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/dspgateway/dspgw-${PV}-arm.tar.bz2 \
-           file://yytext_ptr.patch;patch=1 \
+           file://yytext_ptr.patch \
            file://dsp \
            file://dsp.rules "
 
@@ -20,10 +20,6 @@ INITSCRIPT_PARAMS = "defaults"
 
 # Skipping...
 do_configure () {
-}
-
-# Skipping...
-do_stage () {
 }
 
 do_compile () {
