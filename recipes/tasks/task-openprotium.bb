@@ -4,7 +4,10 @@ ALLOW_EMPTY = "1"
 PR = "r3"
 
 inherit task
-
+DISTRO_SSH_DAEMON ?= "dropbear"
+DISTRO_DEV_MANAGER ?= ""
+DISTRO_INIT_MANAGER ?= ""
+DISTRO_LOGIN_MANAGER ?= ""
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 # be sure to build the kernel:
 DEPENDS = "virtual/kernel"
