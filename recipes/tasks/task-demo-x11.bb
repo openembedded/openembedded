@@ -8,7 +8,7 @@ ECONFIG ?= "places e-wm-config-angstrom e-wm-config-angstrom-touchscreen e-wm-co
 
 RDEPENDS_${PN} = "\
     task-base-extended \
-	task-gstreamer-ti \
+    task-gstreamer-ti \
     angstrom-x11-base-depends \
     angstrom-gpe-task-base \
     angstrom-gpe-task-settings \
@@ -20,16 +20,15 @@ RDEPENDS_${PN} = "\
     firefox midori \
     hicolor-icon-theme gnome-icon-theme \
     mplayer \
-	angstrom-gnome-icon-theme-enable \
-	picodlp-control \
-	connman-gnome \
-	gnome-bluetooth \
-	alsa-utils-aplay \
-	alsa-utils-alsamixer \
+    angstrom-gnome-icon-theme-enable \
+    picodlp-control \
+    connman-gnome \
+    gnome-bluetooth \
+    alsa-utils-aplay \
+    alsa-utils-alsamixer \
     libgles-omap3 \
-    libgles-omap3-demos \
+    libgles-omap3-x11demos \
     libgles-omap3-tests \
-    bc-cat-omap3-module-tests \
 "
 
 # Install all kernel modules
