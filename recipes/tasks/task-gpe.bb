@@ -18,7 +18,9 @@ PACKAGES = "\
     gpe-task-sectest"
 
 RDEPENDS_gpe-base-depends = "\
-    diet-x11 \
+    diet-x11"
+
+DEPENDS_gpe-base-depends = "\
     virtual/xserver"
 
 RDEPENDS_gpe-task-base = "\
@@ -102,7 +104,7 @@ RDEPENDS_gpe-task-games = "\
     xdemineur"
 
 RDEPENDS_gpe-task-connectivity = "\
-    gpe-mini-browser"
+    gpe-mini-browser2"
 #    gaim
 #    linphone-hh
 
