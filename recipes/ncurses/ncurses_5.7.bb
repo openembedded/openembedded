@@ -181,14 +181,13 @@ PACKAGES = " \
   ${PN} \
   ${PN}-static \
   ${PN}-terminfo \
+  ${PN}-terminfo-base \
 "
-RSUGGESTS_${PN} = "${PN}-terminfo"
 
 FILES_${PN} = "\
   ${bindir}/tput \
   ${bindir}/tset \
   ${datadir}/tabset \
-  ${sysconfdir}/terminfo \
 "
 
 # This keeps only tput/tset in ncurses
@@ -208,3 +207,10 @@ FILES_${PN}-tools = "\
 FILES_${PN}-terminfo = "\
   ${datadir}/terminfo \
 "
+
+FILES_${PN}-terminfo-base = "\
+  ${sysconfdir}/terminfo \
+"
+
+RSUGGESTS_${PN}-libtinfo = "${PN}-terminfo"
+RRECOMMENDS_${PN}-libtinfo = "${PN}-terminfo-base"
