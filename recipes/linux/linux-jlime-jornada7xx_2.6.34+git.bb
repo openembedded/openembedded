@@ -25,8 +25,8 @@ do_fetch () {
 		git clone git://git.kernel.org/pub/scm/linux/kernel/git/kristoffer/linux-hpc.git
 		cd linux-hpc
 		# written individual do_fetch function because I don't know how to do this in SRC_URI:
-		git-checkout --track -b v2.6.32-hpc origin/v2.6.32-hpc
-		git-checkout v2.6.32-hpc
+		git checkout --track -b v2.6.34-hpc origin/v2.6.34-hpc
+		git checkout v2.6.34-hpc
 	}
 }
 
