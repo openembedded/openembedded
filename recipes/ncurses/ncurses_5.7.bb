@@ -173,13 +173,8 @@ pkg_prerm_ncurses-tools () {
 
 BBCLASSEXTEND = "native sdk"
 
-PACKAGES = " \
-  ${PN}-dbg \
-  ${PN}-dev \
-  ${PN}-doc \
+PACKAGES += " \
   ${PN}-tools \
-  ${PN} \
-  ${PN}-static \
   ${PN}-terminfo \
   ${PN}-terminfo-base \
 "
