@@ -16,6 +16,7 @@ SRC_URI = "${GNU_MIRROR}/ncurses/ncurses-${PV}.tar.gz;name=tarball \
 \
         ftp://invisible-island.net/ncurses/5.7/ncurses-5.7-${PATCHDATE}.patch.gz;name=p20100501 \
         file://tic-hang.patch \
+        file://config.cache \
 "
 
 SRC_URI[tarball.md5sum] = "cce05daf61a64501ef6cd8da1f727ec6"
@@ -27,6 +28,7 @@ SRC_URI[p20100501.sha256sum] = "a97ccc30e4bd6fbb89564f3058db0fe84bd35cfefee83155
 
 PARALLEL_MAKE = ""
 EXTRA_AUTORECONF = "-I m4"
+CONFIG_SITE =+ "${WORKDIR}/config.cache"
 
 # Whether to enable separate widec libraries; must be 'true' or 'false'
 ENABLE_WIDEC = "true"
@@ -38,6 +40,11 @@ ENABLE_WIDEC_virtclass-native = "false"
 # patched autoconf213 to generate the configure script. This autoconf
 # is not available so that the shipped script will be used.
 do_configure() {
+        # check does not work with cross-compiling and is generally
+        # broken because it requires stdin to be pollable (which is
+        # not the case for /dev/null redirections)
+        export cf_cv_working_poll=yes
+
         for i in \
         'narrowc' \
         'widec   --enable-widec --without-progs'; do
@@ -50,6 +57,7 @@ do_configure() {
                         --disable-static \
                         --without-debug \
                         --without-ada \
+                        --without-gpm \
                         --enable-hard-tabs \
                         --enable-xmc-glitch \
                         --enable-colorfgbg \
