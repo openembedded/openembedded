@@ -152,7 +152,8 @@ do_install() {
 
 python populate_packages_prepend () {
         libdir = bb.data.expand("${libdir}", d)
-        do_split_packages(d, libdir, '^lib(.*)\.so\..*', 'ncurses-lib%s', 'ncurses %s library', prepend=True, extra_depends = '', allow_links=True)
+        pnbase = bb.data.expand("${PN}-lib%s", d)
+        do_split_packages(d, libdir, '^lib(.*)\.so\..*', pnbase, 'ncurses %s library', prepend=True, extra_depends = '', allow_links=True)
 }
 
 
@@ -173,15 +174,15 @@ pkg_prerm_ncurses-tools () {
 BBCLASSEXTEND = "native sdk"
 
 PACKAGES = " \
-  ncurses-dbg \
-  ncurses-dev \
-  ncurses-doc \
-  ncurses-tools \
-  ncurses \
-  ncurses-static \
-  ncurses-terminfo \
+  ${PN}-dbg \
+  ${PN}-dev \
+  ${PN}-doc \
+  ${PN}-tools \
+  ${PN} \
+  ${PN}-static \
+  ${PN}-terminfo \
 "
-RSUGGESTS_${PN} = "ncurses-terminfo"
+RSUGGESTS_${PN} = "${PN}-terminfo"
 
 FILES_${PN} = "\
   ${bindir}/tput \
@@ -192,7 +193,7 @@ FILES_${PN} = "\
 
 # This keeps only tput/tset in ncurses
 # clear/reset are in already busybox
-FILES_ncurses-tools = "\
+FILES_${PN}-tools = "\
   ${bindir}/tic \
   ${bindir}/toe \
   ${bindir}/infotocap \
@@ -204,6 +205,6 @@ FILES_ncurses-tools = "\
   ${bindir}/tabs \
 "
 
-FILES_ncurses-terminfo = "\
+FILES_${PN}-terminfo = "\
   ${datadir}/terminfo \
 "
