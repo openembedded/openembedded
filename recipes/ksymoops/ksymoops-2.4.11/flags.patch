@@ -1,10 +1,16 @@
-
-#
-# Patch managed by http://www.holgerschurig.de/patcher.html
-#
-
---- ksymoops-2.4.9/Makefile~flags
-+++ ksymoops-2.4.9/Makefile
+Index: ksymoops-2.4.11/Makefile
+===================================================================
+--- ksymoops-2.4.11.orig/Makefile	2002-10-13 09:13:59.000000000 +0000
++++ ksymoops-2.4.11/Makefile	2010-08-29 18:01:03.000000000 +0000
+@@ -14,7 +14,7 @@
+ # DEF_MAP := \"/boot/System.map-*r\"
+ 
+ DEF_VMLINUX :=				# default no vmlinux
+-DEF_KSYMS := \"/proc/ksyms\"		# default current ksyms
++DEF_KSYMS := \"/proc/kallsyms\"		# default current ksyms
+ DEF_LSMOD := \"/proc/modules\"		# default current lsmod
+ DEF_OBJECTS := \"/lib/modules/*r/\"	# default current modules
+ DEF_MAP := \"/usr/src/linux/System.map\"	# default current map
 @@ -57,36 +57,36 @@
  PROGS := ksymoops
  
@@ -53,3 +59,12 @@
  endif
  ifneq ($(BFD_PREFIX),)
  	CFLAGS += -I$(BFD_PREFIX)/include
+@@ -108,7 +108,7 @@
+ $(OBJECTS): $(DEFS)
+ 
+ $(PROGS): %: %.o $(DEFS) $(OBJECTS)
+-	$(CC) $(OBJECTS) $(CFLAGS) $(LDFLAGS) $(STATIC) -lbfd -liberty $(DYNAMIC) -o $@
++	$(CC) $(OBJECTS) $(CFLAGS) $(LDFLAGS) $(STATIC) -lbfd -liberty -lz $(DYNAMIC) -o $@
+ 	-@size $@
+ 
+ clean:

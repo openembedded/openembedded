@@ -14,5 +14,5 @@ do_install () {
 	install -m 0755 ksymoops.8 ${D}${mandir}/man8/ksymoops.8
 }
 
-SRC_URI[md5sum] = "231b6ea3afbc318c129ec770d10f8ec8"
-SRC_URI[sha256sum] = "125fcecc9f650dc2ec82db3194d17c0af40b48900204fedb0c695b5fcc5a99e3"
+SRC_URI[md5sum] = "4a8249e182a5dbc75e566d162e9f3314"
+SRC_URI[sha256sum] = "52d3546062681e91460013acba6150ece9139b7c2787c2f3213ad0770b72a6b4"
