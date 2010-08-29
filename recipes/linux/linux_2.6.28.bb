@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r13"
+PR = "r15"
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
@@ -14,6 +14,7 @@ DEFAULT_PREFERENCE_wrap = "1"
 DEFAULT_PREFERENCE_tx27 = "1"
 DEFAULT_PREFERENCE_nokia900 = "1"
 DEFAULT_PREFERENCE_mh355 = "2"
+DEFAULT_PREFERENCE_smartqv7 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.28.tar.bz2;name=kernel \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.10.bz2;apply=yes;name=stablepatch \
@@ -81,6 +82,18 @@ SRC_URI_nokia900 = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.28.tar.b
 		    http://repository.maemo.org/pool/maemo5.0/free/k/kernel/kernel_2.6.28-20094803.3+0m5.diff.gz;name=nokiapatch \
 		    file://defconfig"
 
+SRC_URI_smartqv7 = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.28.tar.bz2;name=kernel \
+	http://gitorious.org/mer-smartq/mer-smartq-kernel/blobs/raw/9714361dc936f8948179df93a5241c46092bde71/drivers/block/tcc/libtnftl/libtnftl_V7014_TCC8900.o_shipped;name=libtnftl \
+	file://smartqv7-git.patch \
+	file://defconfig \
+	"
+
+do_configure_append_smartqv7 () {
+	install -d ${S}/drivers/block/tcc/libtnftl/
+	install -m644 ${WORKDIR}/libtnftl_V7014_TCC8900.o_shipped ${S}/drivers/block/tcc/libtnftl/libtnftl_V7014_TCC8900.o
+	cd ${S} && rm drivers/video/tca_backlight.h && ln -sf ../char/tca_backlight.h drivers/video/tca_backlight.h
+}
+
 S = "${WORKDIR}/linux-2.6.28/"
 
 SRC_URI[kernel.md5sum] = "d351e44709c9810b85e29b877f50968a"
@@ -91,3 +104,5 @@ SRC_URI[ronetixpatch.md5sum] = "22af1c0a7bdc5d0f4e83f17f91b0c524"
 SRC_URI[ronetixpatch.sha256sum] = "da47c6e2ab51180be3b50d3cd219dbebe877121e4068aa5846fc1cd018082931"
 SRC_URI[nokiapatch.md5sum] = "fdd13af46cbaf8594b9fc3d82070aecc"
 SRC_URI[nokiapatch.sha256sum] = "78ab82b0d6647d196fe3f6185a743da4b1846730668b078beb814c717fdd0bb5"
+SRC_URI[libtnftl.md5sum] = "a79bf0f977712a215f6710a713168684"
+SRC_URI[libtnftl.sha256sum] = "a9c09bb3bd0d5d988e23568f10364dbd8025a0c14b181db065630c9a98a05fe7"
