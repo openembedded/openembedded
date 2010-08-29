@@ -31,10 +31,14 @@ EXTRA_AUTORECONF = "-I m4"
 CONFIG_SITE =+ "${WORKDIR}/config.cache"
 
 # Whether to enable separate widec libraries; must be 'true' or 'false'
+#
+# TODO: remove this variable when widec is supported in every setup?
 ENABLE_WIDEC = "true"
-# Build breaks on Ubuntu else :(
-ENABLE_WIDEC_virtclass-native = "false"
 
+# _GNU_SOURCE is required for widec stuff and is detected automatically
+# for target objects.  But it must be set manually for native and sdk
+# builds.
+BUILD_CPPFLAGS += "-D_GNU_SOURCE"
 
 # Override the function from the autotools class; ncurses requires a
 # patched autoconf213 to generate the configure script. This autoconf
@@ -74,7 +78,7 @@ do_configure() {
                         --with-build-cpp="${BUILD_CPP}" \
                         --with-build-ld="${BUILD_LD}" \
                         --with-build-cflags="${BUILD_CFLAGS}" \
-                        --with-build-cppflags='${BUILD_CPPFLAGS} -D_GNU_SOURCE' \
+                        --with-build-cppflags='${BUILD_CPPFLAGS}' \
                         --with-build-ldflags='${BUILD_LDFLAGS}' \
                         "$@"
                 cd ..
