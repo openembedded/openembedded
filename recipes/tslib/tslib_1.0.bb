@@ -3,7 +3,7 @@ SRC_URI = "http://download.berlios.de/tslib/${BP}.tar.bz2 \
            file://tslib-nopressure.patch \
            file://tslib-pluginsld.patch \
            file://newer-libtool-fix.patch "
-PR = "${INC_PR}.5"
+PR = "${INC_PR}.6"
 
 include tslib.inc
 
