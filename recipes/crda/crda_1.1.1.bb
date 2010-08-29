@@ -12,6 +12,10 @@ SRC_URI = "http://wireless.kernel.org/download/crda/${P}.tar.bz2;name=crda \
 	http://wireless.kernel.org/download/wireless-regdb/regulatory.bins/2009.11.25-regulatory.bin;name=reg \
 	"
 
+do_compile() {
+	oe_runmake all_noverify
+}
+
 do_install() {
 	oe_runmake DESTDIR=${D} install
 	install -d ${D}/usr/lib/crda/
