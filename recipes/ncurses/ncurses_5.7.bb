@@ -39,7 +39,7 @@ ENABLE_WIDEC_virtclass-native = "false"
 # is not available so that the shipped script will be used.
 do_configure() {
         for i in \
-        'narrowc --with-ticlib' \
+        'narrowc' \
         'widec   --enable-widec --without-progs'; do
                 set -- $i
                 mkdir -p $1
@@ -58,6 +58,7 @@ do_configure() {
                         --with-shared \
                         --disable-big-core \
                         --program-prefix= \
+                        --with-ticlib \
                         --with-termlib=tinfo \
                         --enable-sigwinch \
                         --enable-pc-files \
