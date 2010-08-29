@@ -16,7 +16,7 @@ WORKDIR and cannot be selectively applied on another source file.
 +UDEVADM="/sbin/udevadm"
 +# If we are running an old kernel and have a static udev present use that instead
 +if [ -e /sbin/udevd-compat ] ; then
-+	KERNELMICROVER="$(uname -r | awk -F. '{print $3}')"
++	KERNELMICROVER="$(uname -r | sed 's/^[0-9]*\.[0-9]*\.\([0-9]*\).*$/\1/')"
 +	if [ $KERNELMICROVER -lt 27 ] ; then
 +		UDEVD="/sbin/udevd-compat"
 +		UDEVADM="/sbin/udevadm-compat"
