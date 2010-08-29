@@ -198,6 +198,8 @@ FILES_${PN}-tools = "\
   ${bindir}/tack \
   ${bindir}/tabs \
 "
+# 'reset' is a symlink to 'tset' which is in the 'ncurses' package
+RDEPENDS_${PN}-tools = "${PN}"
 
 FILES_${PN}-terminfo = "\
   ${datadir}/terminfo \
