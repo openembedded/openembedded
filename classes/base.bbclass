@@ -226,14 +226,14 @@ def oe_unpack_file(file, data, url = None):
 					dest = host + os.path.dirname(path) or "."
 			else:
 				dest = "."
-			bb.mkdirhier("%s" % os.path.join(os.getcwd(),dest))
-			cmd = 'cp %s %s' % (file, os.path.join(os.getcwd(), dest))
+			bb.mkdirhier("%s" % oe.path.join(os.getcwd(),dest))
+			cmd = 'cp %s %s' % (file, oe.path.join(os.getcwd(), dest))
 	if not cmd:
 		return True
 	if not host:
-		dest = os.path.join(os.getcwd(), path)
+		dest = oe.path.join(os.getcwd(), path)
 	else:
-		dest = os.path.join(os.getcwd(), os.path.join(host, path))
+		dest = oe.path.join(os.getcwd(), oe.path.join(host, path))
 	if os.path.exists(dest):
 		if os.path.samefile(file, dest):
 			return True
