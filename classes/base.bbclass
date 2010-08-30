@@ -231,9 +231,9 @@ def oe_unpack_file(file, data, url = None):
 	if not cmd:
 		return True
 	if not host:
-		dest = os.path.join(os.getcwd(), path)
+		dest = oe.path.join(os.getcwd(), path)
 	else:
-		dest = os.path.join(os.getcwd(), os.path.join(host, path))
+		dest = oe.path.join(os.getcwd(), oe.path.join(host, path))
 	if os.path.exists(dest):
 		if os.path.samefile(file, dest):
 			return True
