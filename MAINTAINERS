@@ -362,8 +362,8 @@ Recipes:    msmcomm*
 
 Person:     Steffen Sledz
 Mail:       sledz@dresearch.de
-Machines:   oxnas, hipox
-Recipes:    forte
+Machines:   hipox
+Recipes:    forte, rsyslog
 
 Person:     Stelios Koroneos
 Mail:       skoroneos@digital-opsis.com
