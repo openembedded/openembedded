@@ -3,11 +3,11 @@ HOMEPAGE = "https://gforge.ti.com/gf/project/matrix_tui/"
 LICENSE = "BSD"
 SECTION = "multimedia"
 PRIORITY = "optional"
-DEPENDS = "libxml2"
+DEPENDS = "libxml2 zlib ncurses"
 
 SRCREV = "29"
 PV = "1.0"
-PR = "r2+svnr${SRCPV}"
+PR = "r3+svnr${SRCPV}"
 
 INSANE_SKIP_${PN} = "True"
 
@@ -24,6 +24,7 @@ S = "${WORKDIR}/trunk"
 
 do_configure() {
 	sed -i -e 's:PATH=${LINUX_DEVKIT_PATH}/arm-none-linux-gnueabi:PATH ?= ${LINUX_DEVKIT_PATH}/arm-none-linux-gnueabi:' makefile.init
+	sed -i -e 's|LIBS :=|LIBS := ${LDFLAGS} |' Release/objects.mk
 }
 
 do_compile() {
