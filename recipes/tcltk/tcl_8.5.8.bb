@@ -2,7 +2,7 @@ DESCRIPTION = "Tool Command Language"
 HOMEPAGE = "http://tcl.sourceforge.net"
 SECTION = "devel/tcltk"
 LICENSE = "tcl"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/tcl/tcl${PV}-src.tar.gz \
@@ -48,8 +48,9 @@ FILES_${PN} += "${libdir}/tcl*"
 FILES_${PN}-dev += "${libdir}/tclConfig.sh"
 
 BINCONFIG_GLOB = "*Config.sh"
+BBCLASSEXTEND = "native"
 
 tcl_sysroot() {
-        sed -i 's:/usr/include/tcl-private:${STAGING_INCDIR}/tcl-${PV}:' tclConfig.sh
+        sed -i 's:${includedir}/tcl-private:${STAGING_INCDIR}/tcl-${PV}:' tclConfig.sh
 }
 
