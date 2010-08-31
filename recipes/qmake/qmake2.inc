@@ -3,10 +3,10 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 SECTION = "devel"
 LICENSE = "GPL"
-PR = "r10"
+PR = "r11"
 
 # We call 'moc' during the build 
-DEPENDS = "uicmoc4-native"
+DEPENDS = "qt4-tools-native"
 
 QTVER = "qt-embedded-linux-opensource-src-${QTVERSION}"
 
