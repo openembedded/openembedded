@@ -1,16 +1,21 @@
 require cornucopia.inc
 inherit fso-plugin
 SRCREV = "${FSO_CORNUCOPIA_SRCREV}"
-PR = "${INC_PR}.3"
+PR = "${INC_PR}.4"
 PV = "0.5.0+gitr${SRCPV}"
 PE = "1"
 
 DEPENDS += "libfsoresource libgsm0710mux ppp"
-# DEPENDS += "msmcommd"
 
 EXTRA_OECONF_append = "\
   --enable-libgsm0710mux \
-#  --enable-modem-qualcomm-palm \
+"
+
+# On the palmpre we need the msmcomm daemon to talk to the modem
+DEPENDS_palmpre += "msmcommd-specs"
+RDEPENDS_palmpre += "msmcommd"
+EXTRA_OECONF_append_palmpre = "\
+  --enable-modem-qualcomm-palm \
 "
 
 CONFFILES_${PN} = "${sysconfdir}/freesmartphone/conf/openmoko_gta/fsogsmd.conf \
