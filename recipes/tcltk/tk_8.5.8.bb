@@ -3,7 +3,7 @@ HOMEPAGE = "http://tcl.sourceforge.net"
 SECTION = "devel/tcltk"
 LICENSE = "tcl"
 DEPENDS = "tcl virtual/libx11 libxt"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/tcl/tk${PV}-src.tar.gz \
@@ -42,4 +42,5 @@ FILES_${PN}-lib = "${libdir}/libtk8.5.so.*"
 FILES_${PN} += "${libdir}/tk*"
 
 BINCONFIG_GLOB = "*Config.sh"
+BBCLASSEXTEND = "native"
 
