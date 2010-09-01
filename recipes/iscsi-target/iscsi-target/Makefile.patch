@@ -1,0 +1,26 @@
+Index: iscsitarget-1.4.20.2/Makefile
+===================================================================
+--- iscsitarget-1.4.20.2.orig/Makefile
++++ iscsitarget-1.4.20.2/Makefile
+@@ -26,11 +26,9 @@ else
+   endif
+ endif
+ 
+-KVER := $(shell $(CC) $(CFLAGS) -E -dM $(VERSION_FILE) | \
++KVER2 := $(shell $(CC) $(CFLAGS) -E -dM $(VERSION_FILE) | \
+ 	grep UTS_RELEASE | awk '{ print $$3 }' | sed 's/\"//g')
+ 
+-KMOD := /lib/modules/$(KVER)/extra
+-
+ KMAJ := $(shell echo $(KVER) | \
+ 	sed -e 's/^\([0-9][0-9]*\)\.[0-9][0-9]*\.[0-9][0-9]*.*/\1/')
+ KMIN := $(shell echo $(KVER) | \
+@@ -185,6 +183,8 @@ integ_check:
+ $(PATCHES): .patched.$(KVER)
+ 
+ .patched.$(KVER):
++	echo "KVER: " ${KVER}
++	echo "KREV: " ${KREV}
+ 	@set -e; \
+ 	if [ ! -e .patched.* ]; then \
+ 		for p in $(PATCHES); do \
