@@ -6,7 +6,9 @@ LICENSE = "GPL"
 
 SRC_URI = "ftp://ftp.fsl.cs.sunysb.edu/pub/unionfs/OLD/unionfs-1.x/unionfs-${PV}.tar.gz"
 S = "${WORKDIR}/unionfs-${PV}"
-FILESPATHPKG =. "unionfs-${PV}:unionfs:"
 
 export UCFLAGS = '${CFLAGS} -DNODEBUG -DUNIONFS_VERSION=\\"${PV}\\"'
 CFLAGS = "${BUILD_OPTIMIZATION}"
+TARGET_CC_ARCH += "${LDFLAGS}"
+
+INC_PR = "r1"
