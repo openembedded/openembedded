@@ -12,3 +12,8 @@ SRC_URI[gpsd.sha256sum] = "832343a53921a8371efa540ba57c91dadedda445e571c1beb97c0
 PR = "${INC_PR}.0"
 
 PARALLEL_MAKE = ""
+
+do_install_append() {
+	install -d ${D}${base_libdir}/udev/
+	install -m 0755 ${S}/gpsd.hotplug.wrapper ${D}${base_libdir}/udev/
+}
