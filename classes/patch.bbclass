@@ -7,6 +7,7 @@ PATCHDEPENDENCY = "${PATCHTOOL}-native:do_populate_sysroot"
 
 python patch_do_patch() {
 	import oe.patch
+	import oe.unpack
 
 	src_uri = (bb.data.getVar('SRC_URI', d, 1) or '').split()
 	if not src_uri:
@@ -34,32 +35,24 @@ python patch_do_patch() {
 
 	classes = {}
 
+	src_uri = d.getVar("SRC_URI", True).split()
+	srcurldata = bb.fetch.init(src_uri, d, True)
 	workdir = bb.data.getVar('WORKDIR', d, 1)
-	for url in src_uri:
-		(type, host, path, user, pswd, parm) = bb.decodeurl(url)
+	for url in d.getVar("SRC_URI", True).split():
+		urldata = srcurldata[url]
 
-		local = None
-		base, ext = os.path.splitext(os.path.basename(path))
+		local = urldata.localpath
+		if not local:
+			raise bb.build.FuncFailed('Unable to locate local file for %s' % url)
+
+		base, ext = os.path.splitext(os.path.basename(local))
 		if ext in ('.gz', '.bz2', '.Z'):
-			local = os.path.join(workdir, base)
-			ext = os.path.splitext(base)[1]
+			local = oe.path.join(workdir, base)
 
-		if "apply" in parm:
-			apply = parm["apply"]
-			if apply != "yes":
-				if apply != "no":
-					bb.msg.warn(None, "Unsupported value '%s' for 'apply' url param in '%s', please use 'yes' or 'no'" % (apply, url))
-				continue
-		elif "patch" in parm:
-			bb.msg.warn(None, "Deprecated usage of 'patch' url param in '%s', please use 'apply={yes,no}'" % url)
-		elif ext not in (".diff", ".patch"):
+		if not oe.unpack.is_patch(local, urldata.parm):
 			continue
 
-		if not local:
-			bb.fetch.init([url],d)
-			url = bb.encodeurl((type, host, path, user, pswd, []))
-			local = os.path.join('/', bb.fetch.localpath(url, d))
-		local = bb.data.expand(local, d)
+		parm = urldata.parm
 
 		if "striplevel" in parm:
 			striplevel = parm["striplevel"]
