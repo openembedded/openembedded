@@ -6,8 +6,8 @@ RDEPENDS_${PN} = "iscsi-target"
 PR = "r0"
 
 SRC_URI = "http://stgt.berlios.de/releases/tgt-${PV}.tar.gz"
-SRC_URI[md5sum] = "f7d2fdc39aeadc7971d40fffe029a6f5"
-SRC_URI[sha256sum] = "708e7b8e5e7b5f6f4fea9fb9085e66ca9d967127d60fcbd136bcfd89a2c1db3b"
+SRC_URI[md5sum] = "64068d8e3addf57316101ce3e5c6019d"
+SRC_URI[sha256sum] = "a342ee49db0369027ea75815b21143422f8e8e876a942ad1b02be55455bdfbe9"
 
 EXTRA_OEMAKE += "ISCSI=1"
 
