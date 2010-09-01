@@ -84,10 +84,10 @@ Recipes:    tmut, tea
 Person:     Frans Meulenbroeks
 Mail:       fransmeulenbroeks@gmail.com
 Architectures: nios2
-Machines:   sheevaplug, openrd-client, eeepc 701, neek
+Machines:   sheevaplug, openrd-client, eeepc 701, neek, calamari
 Interests:  content sharing, media center,
 Recipes:    myth*, lirc*, python-coherence, tgt, nios2 recipes
-Recipes:    cdparanoia, cdstatus
+Recipes:    cdparanoia, cdstatus, iscsi-target
 
 Person:     Graeme Gregory
 Mail:       dp@xora.org.uk
