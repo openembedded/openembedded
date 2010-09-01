@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/grub"
 SECTION = "bootloaders"
 PRIORITY = "optional"
 RDEPENDS_${PN}-install = "diffutils"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "ftp://alpha.gnu.org/gnu/grub/grub-${PV}.tar.gz \
            file://automake-1.10.patch \
