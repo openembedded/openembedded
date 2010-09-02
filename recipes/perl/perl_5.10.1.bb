@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r9"
+PR = "r10"
 
 # Not tested enough
 DEFAULT_PREFERENCE = "-1"
@@ -104,7 +104,7 @@ do_compile() {
             sed -i -e 's|/usr/include|${STAGING_INCDIR}|g' ext/Errno/Errno_pm.PL
         fi
         cd Cross
-        oe_runmake perl LD="${TARGET_SYS}-gcc"
+        oe_runmake perl LD="${CCLD}"
 }
 do_install() {
 	oe_runmake install
