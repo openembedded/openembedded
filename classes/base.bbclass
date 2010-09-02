@@ -338,7 +338,7 @@ python () {
             this_machine = bb.data.getVar('MACHINE', d, 1)
             if this_machine and not re.match(need_machine, this_machine):
                 this_soc_family = bb.data.getVar('SOC_FAMILY', d, 1)
-                if this_soc_family and not re.match(need_machine, this_soc_family):
+                if (this_soc_family and not re.match(need_machine, this_soc_family)) or not this_soc_family:
                     raise bb.parse.SkipPackage("incompatible with machine %s" % this_machine)
 
         need_target = bb.data.getVar('COMPATIBLE_TARGET_SYS', d, 1)
