@@ -14,7 +14,8 @@ TARGET_OS .= "${@['','-gnuspe'][bb.data.getVar('TARGET_ARCH',d,1) in ['ppc', 'po
 # perl has some problems, see http://bugs.openembedded.net/show_bug.cgi?id=1616
 # [23:00] oxo: glibc (any version) on sparc does not like (repeat me) "-Os"
 
-FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2 -ggdb3"
+FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2 -ggdb2"
+FULL_OPTIMIZATION_pn-eglibc_arm = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2 -ggdb3"
 FULL_OPTIMIZATION_pn-perl = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O1"
 FULL_OPTIMIZATION_sparc = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2"
 
