@@ -87,7 +87,7 @@ Architectures: nios2
 Machines:   sheevaplug, openrd-client, eeepc 701, neek, calamari
 Interests:  content sharing, media center,
 Recipes:    myth*, lirc*, python-coherence, tgt, nios2 recipes
-Recipes:    cdparanoia, cdstatus, iscsi-target
+Recipes:    cdparanoia, cdstatus, iscsi-target urjtag
 
 Person:     Graeme Gregory
 Mail:       dp@xora.org.uk
