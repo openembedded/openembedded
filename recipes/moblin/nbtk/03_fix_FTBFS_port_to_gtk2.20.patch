@@ -1,0 +1,111 @@
+Index: nbtk-1.2.3/nbtk/nbtk-gtk-expander.c
+===================================================================
+--- nbtk-1.2.3.orig/nbtk/nbtk-gtk-expander.c	2010-04-17 14:16:07.866564625 +0800
++++ nbtk-1.2.3/nbtk/nbtk-gtk-expander.c	2010-04-17 14:18:25.454564286 +0800
+@@ -62,7 +62,7 @@
+ nbtk_gtk_expander_expose_event (GtkWidget      *widget,
+                                 GdkEventExpose *event)
+ {
+-  if (GTK_WIDGET_DRAWABLE (widget))
++  if (gtk_widget_is_drawable (widget))
+     {
+       NbtkGtkExpanderPrivate *priv = NBTK_GTK_EXPANDER (widget)->priv;
+       GtkContainer *container = GTK_CONTAINER (widget);
+@@ -180,7 +180,7 @@
+   child = gtk_bin_get_child ((GtkBin*) widget);
+   label = ((NbtkGtkExpander *) widget)->priv->label;
+ 
+-  if (label && GTK_WIDGET_VISIBLE (label))
++  if (label && gtk_widget_is_drawable (label))
+     {
+       gtk_widget_size_request (label, &label_req);
+ 
+@@ -202,7 +202,7 @@
+   else
+     label_h = priv->indicator_size;
+ 
+-  if (priv->is_open && child && GTK_WIDGET_VISIBLE (child))
++  if (priv->is_open && child && gtk_widget_get_visible (child))
+     {
+       gtk_widget_size_request (child, &child_req);
+ 
+@@ -239,7 +239,7 @@
+   requisition->width = widget->style->xthickness * 2;
+   requisition->height = widget->style->ythickness * 2;
+ 
+-  if (label && GTK_WIDGET_VISIBLE (label))
++  if (label && gtk_widget_get_visible (label))
+     {
+       gtk_widget_size_request (label, &req);
+ 
+@@ -251,7 +251,7 @@
+                              priv->indicator_size +
+                              widget->style->ythickness * 2);
+ 
+-  if (priv->is_open && child && GTK_WIDGET_VISIBLE (child))
++  if (priv->is_open && child && gtk_widget_get_visible (child))
+     {
+       gtk_widget_size_request (child, &req);
+ 
+Index: nbtk-1.2.3/nbtk/nbtk-gtk-frame.c
+===================================================================
+--- nbtk-1.2.3.orig/nbtk/nbtk-gtk-frame.c	2010-04-17 14:16:07.866564625 +0800
++++ nbtk-1.2.3/nbtk/nbtk-gtk-frame.c	2010-04-17 14:18:25.454564286 +0800
+@@ -147,7 +147,7 @@
+   cairo_clip (cairo);
+ 
+   /* initialise the background */
+-  gdk_cairo_set_source_color (cairo, &style->bg[GTK_WIDGET_STATE (widget)]);
++  gdk_cairo_set_source_color (cairo, &style->bg[gtk_widget_get_state(widget)]);
+   cairo_rectangle (cairo, widget->allocation.x, widget->allocation.y,
+                    widget->allocation.width, widget->allocation.height);
+   cairo_fill (cairo);
+@@ -177,7 +177,7 @@
+ {
+   GtkWidgetClass *grand_parent;
+ 
+-  if (GTK_WIDGET_DRAWABLE (widget))
++  if (gtk_widget_is_drawable (widget))
+     {
+       nbtk_gtk_frame_paint (widget, &event->area);
+ 
+@@ -252,7 +252,7 @@
+   child_allocation.width = allocation->width - 2 * xmargin;
+   child_allocation.height = allocation->height - 2 * ymargin - title_allocation.height;
+ 
+-  if (GTK_WIDGET_MAPPED (widget) &&
++  if (gtk_widget_get_mapped (widget) &&
+       (child_allocation.x != frame->child_allocation.x ||
+        child_allocation.y != frame->child_allocation.y ||
+        child_allocation.width != frame->child_allocation.width ||
+@@ -261,7 +261,7 @@
+       gdk_window_invalidate_rect (widget->window, &widget->allocation, FALSE);
+     }
+ 
+-  if (bin->child && GTK_WIDGET_VISIBLE (bin->child))
++  if (bin->child && gtk_widget_get_visible (bin->child))
+     {
+       gtk_widget_size_allocate (bin->child, &child_allocation);
+     }
+Index: nbtk-1.2.3/nbtk/nbtk-gtk-light-switch.c
+===================================================================
+--- nbtk-1.2.3.orig/nbtk/nbtk-gtk-light-switch.c	2010-04-17 14:16:07.866564625 +0800
++++ nbtk-1.2.3/nbtk/nbtk-gtk-light-switch.c	2010-04-17 14:18:25.454564286 +0800
+@@ -147,7 +147,7 @@
+ 
+   priv = NBTK_GTK_LIGHT_SWITCH_GET_PRIVATE (lightswitch);
+   style = lightswitch->style;
+-  state_type = GTK_WIDGET_STATE (lightswitch);
++  state_type = gtk_widget_get_state (lightswitch);
+ 
+   on_label_x = (priv->trough_width / 5) * 0.75;
+   off_label_x = (priv->trough_width / 8) * 5;
+@@ -231,7 +231,7 @@
+   /* draw the switch itself */
+   gtk_paint_box (style,
+                  lightswitch->window,
+-                 GTK_WIDGET_STATE (lightswitch),
++                 gtk_widget_get_state (lightswitch),
+                  GTK_SHADOW_OUT,
+                  NULL,
+                  NULL,

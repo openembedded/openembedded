@@ -1,13 +1,18 @@
 LICENSE = "LGPLv2.1"
 
-SRCREV = "73958e79f0ad69dd4e63cb8e697bd80ecee1cc34"
-PV = "0.8.0"
-PR = "r1"
+SRCREV = "caed93dd6ab6ae0cd7eb436357ceefa18f878981"
+PV = "1.2.3"
+PR = "r3"
 PR_append = "+git${SRCREV}"
 
-DEPENDS = "glib-2.0 gtk+ libccss clutter-0.9"
+DEPENDS = "glib-2.0 gtk+ libccss clutter clutter-imcontext"
 
-SRC_URI = "git://git.moblin.org/${PN}.git;protocol=git"
+# 03_fix_FTBFS_port_to_gtk2.20.patch grabbed from http://launchpadlibrarian.net/48166967/nbtk_1.2.3-1_1.2.3-2.diff.gz
+
+SRC_URI = "git://git.moblin.org/${PN}.git;protocol=git \
+           file://03_fix_FTBFS_port_to_gtk2.20.patch \
+"
+
 S = "${WORKDIR}/git"
 
 inherit autotools
