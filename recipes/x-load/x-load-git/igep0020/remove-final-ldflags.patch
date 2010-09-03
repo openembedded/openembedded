@@ -1,0 +1,11 @@
+--- a/Makefile	2010-09-03 09:59:12.000000000 +0200
++++ b/Makefile	2010-09-03 10:43:46.650000018 +0200
+@@ -90,7 +90,7 @@
+  
+ x-load:	$(OBJS) $(LIBS) $(LDSCRIPT)
+ 		UNDEF_SYM=`$(OBJDUMP) -x $(LIBS) |sed  -n -e 's/.*\(__u_boot_cmd_.*\)/-u\1/p'|sort|uniq`;\
+- 		$(LD) $(LDFLAGS) $$UNDEF_SYM $(OBJS) \
++ 		$(LD) $$UNDEF_SYM $(OBJS) \
+ 			--start-group $(LIBS) --end-group $(PLATFORM_LIBS) \
+ 			-Map x-load.map -o x-load
+  
