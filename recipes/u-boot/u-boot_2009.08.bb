@@ -7,7 +7,10 @@ DEFAULT_PREFERENCE_at91sam9g45ek = "1"
 DEFAULT_PREFERENCE_igep0020 = "1"
 DEFAULT_PREFERENCE_babbage  = "1"
 
-SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2 "
+SRC_URI = "\
+    ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2 \
+    file://dont-inline-weak-symbols.patch \
+"
 
 SRC_URI_append_igep0020 = " \
 	file://update-mach-types.patch \
