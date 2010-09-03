@@ -1,0 +1,15 @@
+--- 2010_0709_RT3572_Linux_STA_v2.4.0.1/os/linux/config.mk	2010-07-09 02:09:41.000000000 +0000
++++ 2010_0709_RT3572_Linux_STA_v2.4.0.1.patched/os/linux/config.mk	2010-09-02 13:49:57.000000000 +0000
+@@ -8,10 +8,10 @@
+ HAS_XLINK=n
+ 
+ # Support Wpa_Supplicant
+-HAS_WPA_SUPPLICANT=n
++HAS_WPA_SUPPLICANT=y
+ 
+ # Support Native WpaSupplicant for Network Maganger
+-HAS_NATIVE_WPA_SUPPLICANT_SUPPORT=n
++HAS_NATIVE_WPA_SUPPLICANT_SUPPORT=y
+ 
+ #Support Net interface block while Tx-Sw queue full
+ HAS_BLOCK_NET_IF=n

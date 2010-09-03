@@ -1,0 +1,11 @@
+--- 2010_0709_RT3572_Linux_STA_v2.4.0.1/Makefile	2010-07-09 02:09:41.000000000 +0000
++++ 2010_0709_RT3572_Linux_STA_v2.4.0.1.patched/Makefile	2010-09-02 13:34:02.000000000 +0000
+@@ -238,7 +238,7 @@
+ 	cp -f os/linux/Makefile.4 $(RT28xx_DIR)/os/linux/Makefile
+ 	$(MAKE) -C $(RT28xx_DIR)/os/linux/
+ 
+-	cp -f $(RT28xx_DIR)/os/linux/rt$(CHIPSET)sta.o /tftpboot
++#	cp -f $(RT28xx_DIR)/os/linux/rt$(CHIPSET)sta.o /tftpboot
+ else
+ 	cp -f os/linux/Makefile.6 $(RT28xx_DIR)/os/linux/Makefile
+ ifeq ($(PLATFORM),DM6446)
