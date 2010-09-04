@@ -5,10 +5,11 @@ ANGSTROM_BLACKLIST_pn-libiconv = "the glibc builtin iconv replacement is used"
 
 TARGET_OS = "linux"
 
-TARGET_OS .= "${@['','-gnueabi'][bb.data.getVar('TARGET_ARCH',d,1) in ['arm', 'armeb']]}"
-TARGET_OS .= "${@['','-gnuspe'][bb.data.getVar('TARGET_ARCH',d,1) in ['ppc', 'powerpc'] and bb.data.getVar('MACHINE',d) in ['calamari']]}"
+# sane-toolchain.inc has this, and explains the GNU and ABI suffices:
+#TARGET_OS = "${@compute_os_portion_of_target_triplet(d)}"
 
-#TARGET_OS = "linux-gnuspe"
+TARGET_OS .= "${@['','-gnueabi'][bb.data.getVar('TARGET_ARCH',d,1) in ['arm', 'armeb']]}"
+TARGET_OS .= "${@['','-gnuspe'][bb.data.getVar('TARGET_ARCH',d,1) in ['ppc', 'powerpc'] and bb.data.getVar('MACHINE',d) in ['calamari','p1020rdb','p2020rdb']]}"
 
 # perl has some problems, see http://bugs.openembedded.net/show_bug.cgi?id=1616
 # [23:00] oxo: glibc (any version) on sparc does not like (repeat me) "-Os"
