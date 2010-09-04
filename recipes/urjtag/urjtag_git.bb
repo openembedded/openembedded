@@ -3,10 +3,10 @@ HOMEPAGE = "http://urjtag.org/"
 LICENSE = "GPLv2"
 DEPENDS = "libftdi libusb gettext readline"
 
-SRCREV = "fc8686b8dd545f54d25e77f65e43f4d774bc46"
+SRCREV = "f43c472952f6475eb9b6ef8e64a85f65c044a939"
 
 PV = "0.10"
-PR = "r0"
+PR = "r1"
 PR_append = "+gitr${SRCPV}"
 
 S = "${WORKDIR}/git/urjtag"
