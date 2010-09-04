@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r74"
+PR = "r75"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -113,6 +113,7 @@ RDEPENDS_${PN} += "\
 		libpurple-protocol-msn \
 		libpurple-protocol-icq \
 		vagalume \
+		udev \
 		ppp \
 		bluez-hcidump \
 		kbdd \
