@@ -1,11 +1,12 @@
 DESCRIPTION = "A JavaScript engine"
 LICENSE = "GPL"
 SECTION = "libs/network"
-DEPENDS = "readline"
+DEPENDS = "readline ncurses" 
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/js/older-packages/js-1.5.tar.gz \
+	   file://libtermcap.patch \
            file://jsautocfg.h"
 S = "${WORKDIR}/js/src"
 

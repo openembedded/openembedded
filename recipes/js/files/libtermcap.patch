@@ -1,0 +1,13 @@
+Index: src/Makefile.ref
+===================================================================
+--- src.orig/Makefile.ref
++++ src/Makefile.ref
+@@ -127,7 +127,7 @@ endif
+ ifdef JS_READLINE
+ # For those platforms with the readline library installed.
+ DEFINES += -DEDITLINE
+-PROG_LIBS += -lreadline -ltermcap
++PROG_LIBS += -lreadline -lncurses
+ else
+ ifdef JS_EDITLINE
+ # Use the editline library, built locally.
