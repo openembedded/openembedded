@@ -1,0 +1,15 @@
+Upstream: http://bugs.ghostscript.com/show_bug.cgi?id=691577
+Status: pending
+
+diff --git a/apps/x11_main.c b/apps/x11_main.c
+index 395f9fd..c045863 100644
+--- a/apps/x11_main.c
++++ b/apps/x11_main.c
+@@ -198,6 +198,7 @@ void wincursor(pdfapp_t *app, int curs)
+
+ void wintitle(pdfapp_t *app, char *s)
+ {
++    XStoreName(xdpy, xwin, s);
+ #ifdef X_HAVE_UTF8_STRING
+     Xutf8SetWMProperties(xdpy, xwin, s, s, nil, 0, nil, nil, nil);
+ #else
