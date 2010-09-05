@@ -10,7 +10,7 @@ DEFAULT_PREFERENCE_simone = "1"
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/${P}.tar.bz2;name=kernel \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.1.bz2;apply=yes;name=stablepatch \
            file://fix.module.loading.16310.patch \
-           file://defconfig"
+           file://defconfig "
 
 SRC_URI_append_dockstar = "file://dockstar.patch"
 
