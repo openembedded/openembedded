@@ -8,11 +8,12 @@ LICENSE = "LGPL"
 DEPENDS = "alsa-lib virtual/libgl virtual/libx11 libxext tslib"
 DEPENDS_avr32 = "alsa-lib virtual/libx11 libxext tslib"
 PROVIDES = "virtual/libsdl"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = " \
   http://www.libsdl.org/release/SDL-${PV}.tar.gz \
   file://libtool-update.patch \
+  file://sdl_bug_894_fix.patch \
   file://sdl.m4 \
 "
 
