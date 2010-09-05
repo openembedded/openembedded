@@ -23,7 +23,7 @@ export JAVA = "${STAGING_BINDIR_NATIVE}/java"
 export JAVADOC = "true"
 
 EXTRA_OECONF = "\
-  --with-inetlib-jar=${STAGING_DIR_TARGET}${datadir_java} \
+  --with-inetlib-jar=${STAGING_DATADIR_JAVA} \
   --with-activation-jar=${STAGING_DATADIR_JAVA} \
   "
 
