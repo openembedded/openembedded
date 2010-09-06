@@ -372,6 +372,11 @@ python () {
         depends = depends + " git-native:do_populate_sysroot"
         bb.data.setVarFlag('do_fetch', 'depends', depends, d)
 
+    if "hg://" in srcuri:
+        depends = bb.data.getVarFlag('do_fetch', 'depends', d) or ""
+        depends = depends + " mercurial-native:do_populate_sysroot"
+        bb.data.setVarFlag('do_fetch', 'depends', depends, d)
+
     # unzip-native should already be staged before unpacking ZIP recipes
     need_unzip = bb.data.getVar('NEED_UNZIP_FOR_UNPACK', d, 1)
     src_uri = bb.data.getVar('SRC_URI', d, 1)
