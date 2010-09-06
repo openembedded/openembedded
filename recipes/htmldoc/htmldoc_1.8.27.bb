@@ -1,10 +1,11 @@
 require htmldoc.inc
-DEPENDS += "htmldoc-native"
-PR = "r2"
+DEPENDS_pn-htmldoc += "htmldoc-native"
+PR = "r3"
 
 
 SRC_URI = "http://ftp.rz.tu-bs.de/pub/mirror/ftp.easysw.com/ftp/pub/htmldoc/${PV}/htmldoc-${PV}-source.tar.bz2 \
-file://paths_1.8.27.patch"
+	file://paths_1.8.27.patch \
+	"
 
 
 inherit autotools pkgconfig
@@ -16,6 +17,16 @@ EXTRA_OECONF += "--disable-localpng --disable-localjpeg --disable-localzlib \
 FILES_${PN} += "${datadir}/htmldoc/fonts"
 FILES_${PN} += "${datadir}/htmldoc/data"
 
+BBCLASSEXTEND = "native"
+
+do_compile_virtclass-native() {
+	(cd htmldoc && oe_runmake all)
+}
+do_install_virtclass-native() {
+	(cd fonts && oe_runmake 'DESTDIR=${D}' install)
+	(cd data && oe_runmake 'DESTDIR=${D}' install)
+	(cd htmldoc && oe_runmake 'DESTDIR=${D}' install)
+}
 
 do_install() {
 	oe_runmake 'DESTDIR=${D}' install
