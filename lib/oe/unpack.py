@@ -63,16 +63,16 @@ def unpack_file(file, destdir, dos=False, env=None):
     elif file.endswith('.tbz') or file.endswith('.tbz2') or file.endswith('.tar.bz2'):
         cmd = 'bzip2 -dc %s | tar x --no-same-owner -f -' % file
     elif file.endswith('.gz') or file.endswith('.Z') or file.endswith('.z'):
-        base, ext = os.path.splitext(file)
-        cmd = 'gzip -dc %s > %s' % (file, base)
+        root, ext = os.path.splitext(file)
+        cmd = 'gzip -dc %s > %s' % (file, os.path.basename(root))
     elif file.endswith('.bz2'):
-        base, ext = os.path.splitext(file)
-        cmd = 'bzip2 -dc %s > %s' % (file, base)
+        root, ext = os.path.splitext(file)
+        cmd = 'bzip2 -dc %s > %s' % (file, os.path.basename(root))
     elif file.endswith('.tar.xz'):
         cmd = 'xz -dc %s | tar x --no-same-owner -f -' % file
     elif file.endswith('.xz'):
-        base, ext = os.path.splitext(file)
-        cmd = 'xz -dc %s > %s' % (file, base)
+        root, ext = os.path.splitext(file)
+        cmd = 'xz -dc %s > %s' % (file, os.path.basename(root))
     elif file.endswith('.zip') or file.endswith('.jar'):
         cmd = 'unzip -q -o'
         if dos:
