@@ -2,7 +2,7 @@ DESCRIPTION = "Simple DirectMedia Layer - native Edition"
 HOMEPAGE = "http://www.libsdl.org"
 SECTION = "libs"
 LICENSE = "LGPL"
-INC_PR = "r2"
+INC_PR = "r3"
 
 SRC_URI = "http://www.libsdl.org/release/SDL-${PV}.tar.gz \
 "
@@ -23,15 +23,11 @@ EXTRA_OECONF = "--disable-debug --disable-cdrom --enable-threads --enable-timers
                 --disable-video-picogui --disable-video-qtopia --enable-dlopen"
 
 do_configure() {
-	gnu-configize
-	oe_runconf
-	cd ${S}
-	# prevent libtool from linking libs against libstdc++, libgcc, ...
-	cat ${TARGET_PREFIX}libtool | sed -e 's/postdeps=".*"/postdeps=""/' > ${TARGET_PREFIX}libtool.tmp
-	mv ${TARGET_PREFIX}libtool.tmp ${TARGET_PREFIX}libtool
+        gnu-configize
+        oe_runconf
+        cd ${S}
+        # prevent libtool from linking libs against libstdc++, libgcc, ...
+        cat ${TARGET_PREFIX}libtool | sed -e 's/postdeps=".*"/postdeps=""/' > ${TARGET_PREFIX}libtool.tmp
+        mv ${TARGET_PREFIX}libtool.tmp ${TARGET_PREFIX}libtool
 }
 
-do_stage() {
-	autotools_stage_all
-	install -m 0644 build/libSDLmain.a ${STAGING_LIBDIR}
-}
