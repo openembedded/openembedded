@@ -42,10 +42,6 @@ do_install_append() {
 	oe_jarinstall xpp3-xpath-${PV}.jar xpp3-xpath.jar
 }
 
-do_stage_append() {
-	oe_jarinstall -s xpp3-xpath-${PV}.jar xpp3-xpath.jar
-}
-
 FILES_libxpp3-xpath-java = "${datadir}/java/xpp3-xpath*"
 
 

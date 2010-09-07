@@ -39,13 +39,6 @@ do_install_append() {
 	oe_jarinstall jaxmepm-${PV}.jar jaxmepm.jar
 }
 
-do_stage_append() {
-	oe_jarinstall -s jaxmeapi-${PV}.jar jaxmeapi.jar
-	oe_jarinstall -s jaxmejs-${PV}.jar jaxmejs.jar
-	oe_jarinstall -s jaxmexs-${PV}.jar jaxmexs.jar
-	oe_jarinstall -s jaxmepm-${PV}.jar jaxmepm.jar
-}
-
 # Compile helper
 # 1 - source dir
 # 2 - dest dir
