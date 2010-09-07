@@ -4,7 +4,7 @@ LICENSE = "MIT"
 SECTION = "libs"
 PATCHDATE = "20100501"
 PKGV = "${PV}+${PATCHDATE}"
-PR = "r12"
+PR = "r13"
 
 DEPENDS = "ncurses-native unifdef-native"
 DEPENDS_virtclass-native = "unifdef-native"
@@ -17,6 +17,7 @@ SRC_URI = "${GNU_MIRROR}/ncurses/ncurses-${PV}.tar.gz;name=tarball \
         ftp://invisible-island.net/ncurses/5.7/ncurses-5.7-${PATCHDATE}.patch.gz;name=p20100501 \
         file://tic-hang.patch \
         file://config.cache \
+        file://libtermcap.so \
 "
 
 SRC_URI[tarball.md5sum] = "cce05daf61a64501ef6cd8da1f727ec6"
@@ -161,6 +162,8 @@ do_install() {
                 mv ${D}${bindir}/clear ${D}${bindir}/clear.${PN}
                 mv ${D}${bindir}/reset ${D}${bindir}/reset.${PN}
         fi
+
+        install -p -m 0644 ${WORKDIR}/libtermcap.so ${D}${libdir}/
 }
 
 python populate_packages_prepend () {
