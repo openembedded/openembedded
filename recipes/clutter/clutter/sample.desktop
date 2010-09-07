@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=NAME
+Comment=Clutter Test
+Exec=EXEC
+Icon=star
+Type=Application
+Categories=Graphics;
+

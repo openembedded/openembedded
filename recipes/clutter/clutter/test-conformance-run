@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Simple script to run all conformance tests. 
+# Works around abortion on crash
+for i in `test-conformance -l` ; do
+	test-conformance $@ -p $i
+done
+

@@ -1,11 +1,17 @@
 DESCRIPTION = "Clutter graphics library"
 HOMEPAGE = "http://www.clutter-project.org/"
-LICENSE = "LGPL"
+LICENSE = "LGPLv2.1"
+
+INC_SRC_URI = "file://sample.desktop \
+               file://test-conformance-run \
+              "
+
+PARALLEL_MAKE = ""
 
 COMPATIBLE_MACHINE = "(zylonite|mx31litekit|omap-3430ldp|omap-3430sdp|mx31ads|qemuarm|qemux86|ipodtouch|am3517-evm|dm37x-evm|am37x-evm|beagleboard|overo|omap3evm|omap5912osk)"
 
 STDDEPENDS = "virtual/libx11 gtk-doc-native pango glib-2.0 libxfixes gtk+"
-BASE_CONF = "--disable-gtk-doc ${@get_clutter_fpu_setting(bb, d)}"
+BASE_CONF = "--disable-gtk-doc ${@get_clutter_fpu_setting(bb, d)} --enable-conformance "
 
 DEPENDS = "${STDDEPENDS} virtual/libgl"
 EXTRA_OECONF = "${BASE_CONF} --with-flavour=glx"
@@ -37,24 +43,70 @@ EXTRA_OECONF_mx31ads = "${BASE_CONF} --with-flavour=eglnative"
 PACKAGE_ARCH_mx31ads = "${MACHINE_ARCH}"
 LDFLAGS_append_mx31ads = " -lpvrNULLWSEGL -lstdc++ "
 
-INC_PR = "r1"
+INC_PR = "r2"
 
 inherit autotools pkgconfig gtk-doc
 
-PACKAGES =+ "clutter-examples"
-FILES_clutter-examples = "${bindir}/test-* ${pkgdatadir}/redhand.png"
+PACKAGES =+ "${PN}-tests"
+FILES_${PN}-tests = "${bindir}/test-* \
+                     ${datadir}/applications/test-* \
+                     ${datadir}/${PN}-tests"
 
-#check for TARGET_FPU=soft and inform configure of the result so it can disable some floating points
-require clutter-fpu.inc
+# cally is part of clutter since 1.3.8 (c0f753d108b7a2ad23dbf5a5b596f80175442927)
+PACKAGES =+ "${PN}-cally-examples"
+FILES_${PN}-cally-examples = "${bindir}/cally-*-example"
 
-#Fix up some weirdness in the docs
+require clutter-common.inc
+
 do_configure_prepend() {
-    if [ -e ${WORKDIR}/gtk-doc.make ] ; then
-        cp ${WORKDIR}/gtk-doc.make ${S}/gtk-doc.make
-    else
-        touch ${S}/gtk-doc.make
-    fi
-    sed -i s:doc/reference/Makefile::g ${S}/configure.ac
-    sed -i s:doc::g ${S}/Makefile.am
+	# Fix up some weirdness in the docs
+	copy_gtk_doc_make
+
+	# Fix up 'Requires' entries in *.pc.in to prevent from "NOTE: couldn't find pkgconfig module '${requires}' in any package"
+	for i in $(find ${S} -name '*.pc.in') ; do
+		sed -i s:'${requires}':'@CLUTTER_REQUIRES@':g $i
+	done
+	
+	make_all_execs_installable
 }
 
+# helper to (re)build shader source files from *.glsl	
+rebuild_shader_sources() {
+	if [ $# == 1 ] && [ $1 ] &&  [ -d $1 ] ; then
+		glespath=$1
+		for i in ${glespath}/*.glsl ; do 
+			# *.h
+			sh ${glespath}/stringify.sh -h $i > "${i%.glsl}.h"
+			# *.c
+			sh ${glespath}/stringify.sh $i > "${i%.glsl}.c"
+		done
+	else
+		echo Warning: "clutter.inc::rebuild_shader_sources: called with invalid parameter ${1}!"
+	fi
+}
+
+# tests are not prepared for installation - some helpers
+install_tests() {
+	install -m 755 -d ${D}${bindir}/
+	install -m 755 -d ${D}${datadir}/applications
+
+	# conformance tests script
+	install -m 0755 ${WORKDIR}/test-conformance-run ${D}${bindir}
+
+	# interactive tests desktop entries
+	for i in ${S}/tests/interactive/*.o ; do 
+		test_path=`echo ${i} | sed -e 's:\.o::' -e 's:test_interactive-::'`
+		test_name=`echo ${test_path} | sed 's:.*/::'`
+		if [ -e ${test_path} ] ; then 
+			sed -e s:NAME:${test_name}: \
+			    -e "s:EXEC:${bindir}/test-interactive ${test_name}:" \
+			     ${WORKDIR}/sample.desktop > ${D}${datadir}/applications/${test_name}.desktop
+		fi
+	done
+
+	# test data
+	install -m 755 -d ${D}${datadir}/${PN}-tests
+	for i in $(find ${S}/tests/data -name *.png -o -name *.json ) ; do
+		install -m 0755 ${i} ${D}${datadir}/${PN}-tests/
+	done
+}

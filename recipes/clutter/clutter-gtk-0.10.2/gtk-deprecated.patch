@@ -1,0 +1,29 @@
+--- a/clutter-gtk/gtk-clutter-embed.c.old	2009-06-27 16:21:06.000000000 +0200
++++ b/clutter-gtk/gtk-clutter-embed.c	2010-09-01 12:46:25.000000000 +0200
+@@ -131,7 +131,7 @@
+ {
+   GtkClutterEmbedPrivate *priv = GTK_CLUTTER_EMBED (widget)->priv;
+ 
+-  if (GTK_WIDGET_REALIZED (widget))
++  if (gtk_widget_get_realized (widget))
+     clutter_actor_show (priv->stage);
+ 
+   GTK_WIDGET_CLASS (gtk_clutter_embed_parent_class)->show (widget);
+@@ -222,7 +222,7 @@
+ 
+   clutter_actor_realize (priv->stage);
+ 
+-  if (GTK_WIDGET_VISIBLE (widget))
++  if (gtk_widget_get_visible (widget))
+     clutter_actor_show (priv->stage);
+ 
+   gtk_clutter_embed_send_configure (GTK_CLUTTER_EMBED (widget));
+@@ -246,7 +246,7 @@
+ 
+   widget->allocation = *allocation;
+ 
+-  if (GTK_WIDGET_REALIZED (widget))
++  if (gtk_widget_get_realized (widget))
+     {
+       gdk_window_move_resize (widget->window,
+                               allocation->x, allocation->y,
