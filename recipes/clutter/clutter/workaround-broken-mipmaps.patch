@@ -1,0 +1,13 @@
+--- a/clutter/cogl/pango/cogl-pango-fontmap.c.old	2010-06-08 16:19:26.000000000 +0200
++++ b/clutter/cogl/pango/cogl-pango-fontmap.c	2010-09-06 14:26:07.000000000 +0200
+@@ -173,7 +173,9 @@
+ 
+   renderer = COGL_PANGO_RENDERER (cogl_pango_font_map_get_renderer (fm));
+ 
+-  _cogl_pango_renderer_set_use_mipmapping (renderer, value);
++  /* disable mipmaps until they are fixed */
++  /* _cogl_pango_renderer_set_use_mipmapping (renderer, value); */
++  _cogl_pango_renderer_set_use_mipmapping (renderer, FALSE);
+ }
+ 
+ /**
