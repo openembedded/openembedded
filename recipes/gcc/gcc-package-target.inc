@@ -7,12 +7,18 @@ PACKAGES = "\
   objc objc-dev \
   gcov gcov-symlinks \
   libmudflap libmudflap-dev \
+  libgcc \
   libgcc-dev \
+  libstdc++ \
   libstdc++-dev \
   libg2c-dev \
   libgfortran-dev \
   ${PN}-doc \
 "
+
+# These 2 raise QA errors, but we need them to get generated
+INSANE_SKIP_libgcc = "True"
+INSANE_SKIP_libstdc++ = "True"
 
 FILES_${PN} = "\
   ${bindir}/${TARGET_PREFIX}gcc \
