@@ -1,7 +1,7 @@
 prefix=/usr
 exec_prefix=/usr
 libdir=/usr/lib
-includedir=/usr/include/firefox-3.6.6
+includedir=/usr/include/firefox-3.6.8
 
 Name: NSPR
 Description: The Netscape Portable Runtime

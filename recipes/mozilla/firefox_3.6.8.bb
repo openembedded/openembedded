@@ -16,8 +16,8 @@ SRC_URI = "ftp://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/f
 	file://nspr.pc \
 "
 
-SRC_URI[archive.md5sum] = "c9a071b31bb90d05edfb93117d0a7537"
-SRC_URI[archive.sha256sum] = "59b87271f940684f51cdd6becbcfdaf99a5a5880948ba07cefd07474c9ab06b3"
+SRC_URI[archive.md5sum] = "0ee5f14fd8be07513d16131027ebcb61"
+SRC_URI[archive.sha256sum] = "fc609cc6a0ddaa2a9ebd8511ec39ae4a404e1107a12e07b233e2afca51d9a10e"
 
 S = "${WORKDIR}/mozilla-1.9.2"
 
