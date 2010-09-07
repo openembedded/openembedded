@@ -65,7 +65,3 @@ do_install() {
 java_stage() {
   oe_jarinstall -s ${JARFILENAME} ${ALTJARFILENAMES}
 }
-
-do_stage() {
-  java_stage
-}
