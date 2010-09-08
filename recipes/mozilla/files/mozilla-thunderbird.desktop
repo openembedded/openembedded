@@ -6,6 +6,6 @@ Terminal=false
 MultipleArgs=false
 Type=Application
 Icon=mozilla-thunderbird.png
-Categories=Application;Internet;
+Categories=Application;Internet;Network;
 SingleInstance=true
 
