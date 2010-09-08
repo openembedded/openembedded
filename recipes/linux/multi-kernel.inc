@@ -20,7 +20,7 @@ MULTI_CONFIG_BASE_SUFFIX = "multi-config-"
 do_compileconfigs () {
 
   # Compile and Install additional kernel configs if found
-  if [ -e ${WORKDIR}/configs/.empty ] ; then
+  if [ -e ${WORKDIR}/configs/empty ] ; then
        echo "No configs found in configs/ directory, skipping to regular build"
   else
        echo "Multiple configs found, building those first"
