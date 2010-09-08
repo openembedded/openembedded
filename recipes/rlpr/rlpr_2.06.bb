@@ -2,11 +2,11 @@ DESCRIPTION = "rlpr makes it possible to print files on remote sites to your net
 HOMEPAGE = "http://freshmeat.net/projects/rlpr/"
 SECTION = "console/network"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r0"
 
-SRC_URI = "${DEBIAN_MIRROR}/main/r/rlpr/rlpr_2.05.orig.tar.gz"
-SRC_URI[md5sum] = "64ee8ccd94aabc90b9f40d0b2ad79e79"
-SRC_URI[sha256sum] = "6b1261c8a23a58c8e174d8ee1ad53c138ed0b9211f7ea3f3efe22d16af14ba9a"
+SRC_URI = "http://linuxfocus.org/~guido/rlpr-2.06.tar.gz"
+SRC_URI[md5sum] = "c3192d0e84ccae432e754640f6003478"
+SRC_URI[sha256sum] = "32ae5893f4b9250b7a02c98a41b5929cfdd5731b6efbd7edfc77c2c5314388f7"
 
 inherit autotools
 
