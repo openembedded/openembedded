@@ -10,8 +10,6 @@ DEPENDS += "midpath-cldc virtual/libsdl libsdl-mixer libsdl-ttf libsdl-image lib
 
 RDEPENDS_${PN} = "${PN}-jni"
 
-TARGET_CC_ARCH += "${LDFLAGS}"
-
 do_compile() {
   # Only sdljava-cldc and native SDL backend library is enabled
   midpath_build \

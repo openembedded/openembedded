@@ -1,0 +1,13 @@
+Index: midpath-0.3rc2/external/avetanabt-cldc/native/de_avetana_bluetooth_stack_BlueZ.cpp
+===================================================================
+--- midpath-0.3rc2.orig/external/avetanabt-cldc/native/de_avetana_bluetooth_stack_BlueZ.cpp	2010-09-07 18:49:11.000000000 -0700
++++ midpath-0.3rc2/external/avetanabt-cldc/native/de_avetana_bluetooth_stack_BlueZ.cpp	2010-09-07 18:51:52.877682002 -0700
+@@ -649,7 +649,7 @@ JNIEXPORT jstring JNICALL Java_de_avetan
+ 
+ 	//printf("Function called: %s, %i\n"__FILE__, __LINE__);
+ 
+-	if (hci_local_name(dd, sizeof(name_str), name_str, timeOut) < 0)
++	if (hci_read_local_name(dd, sizeof(name_str), name_str, timeOut) < 0)
+ 	{
+ 		throwException(env, "Java_de_avetana_bluetooth_stack_BlueZ_hciLocalName: Unable to read local name");
+ 		return 0;
