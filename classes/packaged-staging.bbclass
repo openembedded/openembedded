@@ -30,16 +30,8 @@ BB_STAMP_WHITELIST = "${PSTAGE_NATIVEDEPENDS}"
 
 python __anonymous() {
     pstage_allowed = True
-
-    # We need PSTAGE_PKGARCH to contain information about the target.
-    if bb.data.inherits_class('cross', d):
-        bb.data.setVar('PSTAGE_PKGARCH', "${HOST_SYS}-${PACKAGE_ARCH}-${TARGET_OS}", d)
-
-    # These classes encode staging paths data files so we must mangle them
-    # for reuse.
-    if bb.data.inherits_class('native', d) or bb.data.inherits_class('nativesdk', d) or bb.data.inherits_class('cross', d) or bb.data.inherits_class('crosssdk', d) or bb.data.inherits_class('sdk', d):
-        scan_cmd = "grep -Irl ${STAGING_DIR} ${PSTAGE_TMPDIR_STAGE}"
-        bb.data.setVar('PSTAGE_SCAN_CMD', scan_cmd, d)
+    pstage_host_mangle = False
+    pstage_is_cross = False
 
     # PSTAGE_NATIVEDEPENDS lists the packages we need before we can use
     # packaged staging. There will always be some packages we depend on.
@@ -58,6 +50,27 @@ python __anonymous() {
     bb.data.update_data(localdata)
     if localdata.getVar('PSTAGING_DISABLED', True) == "1":
         pstage_allowed = False
+
+    # libtool-cross does not inherit cross.
+    if localdata.getVar('PN', True).startswith("libtool-cross"):
+        pstage_host_mangle = True
+        pstage_is_cross = True
+
+    # We need PSTAGE_PKGARCH to contain information about the target.
+    if bb.data.inherits_class('cross', d):
+        pstage_host_mangle = True
+
+    if pstage_host_mangle:
+        bb.data.setVar('PSTAGE_PKGARCH', "${HOST_SYS}-${PACKAGE_ARCH}-${TARGET_OS}", d)
+
+    # These classes encode staging paths data files so we must mangle them
+    # for reuse.
+    if bb.data.inherits_class('native', d) or bb.data.inherits_class('nativesdk', d) or bb.data.inherits_class('cross', d) or bb.data.inherits_class('crosssdk', d) or bb.data.inherits_class('sdk', d):
+        pstage_is_cross = True
+
+    if pstage_is_cross:
+        scan_cmd = "grep -Irl ${TMPDIR} ${PSTAGE_TMPDIR_STAGE}"
+        bb.data.setVar('PSTAGE_SCAN_CMD', scan_cmd, d)
 
     # Add task dependencies if we're active, otherwise mark packaged staging
     # as inactive.
