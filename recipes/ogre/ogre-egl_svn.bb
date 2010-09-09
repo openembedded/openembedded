@@ -1,6 +1,7 @@
 DESCRIPTION = "OGRE (Object-Oriented Graphics Rendering Engine) is a scene-oriented, flexible 3D engine "
 LICENSE = "LGPL"
 DEPENDS = "gtk+ wgois cppunit zziplib boost freeimage freetype virtual/libx11 virtual/egl"
+require recipes/egl/egl.inc
 
 PR = "r3"
 

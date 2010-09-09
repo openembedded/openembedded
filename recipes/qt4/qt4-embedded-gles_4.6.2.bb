@@ -11,3 +11,4 @@ SRC_URI += "file://cursor-hack.diff"
 FILESPATHPKG .= ":qt4-embedded-${PV}:qt4-embedded"
 
 DEPENDS += "virtual/egl"
+require recipes/egl/egl.inc

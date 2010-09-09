@@ -1,6 +1,7 @@
 DESCRIPTION = "TI Texture streaming using bufferclass API demo (spinning video cube)"
 LICENSE = "TI-BSD/GPLv2"
 DEPENDS = "virtual/egl"
+require recipes/egl/egl.inc
 
 PR = "r2"
 

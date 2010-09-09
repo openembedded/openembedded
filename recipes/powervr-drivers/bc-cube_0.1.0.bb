@@ -1,6 +1,7 @@
 DESCRIPTION = "TI Texture streaming using bufferclass API demo (spinning video cube)"
 LICENSE = "TI-BSD/GPLv2"
 DEPENDS = "virtual/egl"
+require recipes/egl/egl.inc
 
 SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/apps_processors/OMAP35x_AM35x_Video_Texture_Streaming/1_0/exports/bc-cat-${PV}.tar.gz \
            file://bc-cat-0.1.0-BC_PIX_FMT_.patch;striplevel=0"
