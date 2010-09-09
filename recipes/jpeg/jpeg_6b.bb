@@ -6,7 +6,7 @@ PRIORITY = "required"
 DEPENDS = "libtool-cross"
 RPROVIDES_${PN} = "jpeg"
 
-PR = "r9"
+PR = "r10"
 
 #SRC_URI = "http://www.ijg.org/files/jpegsrc.v${PV}.tar.gz \
 SRC_URI = "ftp://aeneas.mit.edu/pub/gnu/ghostscript/jpegsrc.v${PV}.tar.gz \
@@ -19,7 +19,8 @@ S = "${WORKDIR}/jpeg-${PV}"
 inherit autotools
 
 EXTRA_OECONF="--enable-static --enable-shared"
-EXTRA_OEMAKE='"LIBTOOL=${STAGING_BINDIR_NATIVE}/${HOST_SYS}-libtool"'
+LIBTOOL = "${HOST_SYS}-libtool"
+EXTRA_OEMAKE = "'LIBTOOL=${LIBTOOL}'"
 
 CFLAGS_append = " -D_REENTRANT"
 
