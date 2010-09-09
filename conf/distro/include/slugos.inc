@@ -53,7 +53,7 @@ USE_NLS_glib-2.0 = "yes"
 USE_NLS_glib-2.0-native = "yes"
 USE_NLS_gcc-cross = "no"
 
-INHERIT += "package_ipk debian testlab packaged-staging siteinfo"
+INHERIT += "package_ipk debian testlab siteinfo"
 
 # FULL_OPTIMIZATION
 #    Optimization settings.  Os works fine and is significantly better than O2.

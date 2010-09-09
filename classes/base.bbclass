@@ -2,6 +2,7 @@ BB_DEFAULT_TASK ?= "build"
 
 inherit patch
 inherit staging
+inherit packaged-staging
 
 inherit packagedata
 inherit mirrors
