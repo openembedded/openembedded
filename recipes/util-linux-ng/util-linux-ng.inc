@@ -8,7 +8,7 @@ inherit autotools gettext
 
 DEFAULT_PREFERENCE = "-1"
 
-INC_PR = "r27"
+INC_PR = "r28"
 
 # allows for a release candidate
 RC ?= ""
@@ -51,7 +51,7 @@ FILES_util-linux-ng-losetup = "${base_sbindir}/losetup.${PN}"
 FILES_util-linux-ng-mount = "${base_bindir}/mount.${PN} ${sysconfdir}/default/mountall"
 FILES_util-linux-ng-umount = "${base_bindir}/umount.${PN}"
 # Moved to ${base_sbindir} by do_install:
-FILES_util-linux-ng-readprofile = "${base_sbindir}/readprofile.${PN}"
+FILES_util-linux-ng-readprofile = "${sbindir}/readprofile.${PN}"
 FILES_util-linux-ng-fsck = "${base_sbindir}/fsck.${PN}"
 FILES_util-linux-ng-blkid = "${base_sbindir}/blkid.${PN}"
 FILES_${PN}-mountall = "${sysconfdir}/default/mountall.${PN}"
@@ -124,8 +124,9 @@ do_install () {
 	mkdir -p ${D}${base_bindir}
 
         sbinprogs="agetty blockdev ctrlaltdel cfdisk"
-        sbinprogs_a="pivot_root hwclock mkswap shutdown mkfs.minix fsck.minix losetup swapon fdisk readprofile fsck blkid vigr vipw"
+        sbinprogs_a="pivot_root hwclock mkswap shutdown mkfs.minix fsck.minix losetup swapon fdisk fsck blkid vigr vipw"
         usrbinprogs_a="chfn chsh hexdump last logger mesg newgrp renice wall setsid chrt"
+        usrsbinprogs_a="readprofile"
         binprogs_a="dmesg kill more umount mount login reset"
 
         if [ "${base_sbindir}" != "${sbindir}" ]; then
@@ -149,6 +150,12 @@ do_install () {
         for p in $usrbinprogs_a; do
                 if [ -f "${D}${bindir}/$p" ]; then
                         mv "${D}${bindir}/$p" "${D}${bindir}/$p.${PN}"
+                fi
+        done
+
+        for p in $usrsbinprogs_a; do
+                if [ -f "${D}${sbindir}/$p" ]; then
+                        mv "${D}${sbindir}/$p" "${D}${sbindir}/$p.${PN}"
                 fi
         done
 
@@ -271,7 +278,7 @@ pkg_prerm_util-linux-ng-swaponoff () {
 }
 
 pkg_postinst_util-linux-ng-readprofile() {
-    update-alternatives --install ${base_sbindir}/readprofile readprofile readprofile.${PN} 100
+    update-alternatives --install ${sbindir}/readprofile readprofile readprofile.${PN} 100
 }
 
 pkg_prerm_util-linux-ng-readprofile () {
