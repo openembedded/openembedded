@@ -24,7 +24,7 @@ PROVIDES += "virtual/egl"
 # 
 # voila!
 
-SRC_URI = "http://install.source.dir.local/OMAP35x_Graphics_SDK_setuplinux_${SGXPV}.bin \
+SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/gfxsdk/${SGXPV}/exports/OMAP35x_Graphics_SDK_setuplinux_${SGXPV}.bin \
 		   file://cputype \
 		   file://rc.pvr \
 		   file://sample.desktop \

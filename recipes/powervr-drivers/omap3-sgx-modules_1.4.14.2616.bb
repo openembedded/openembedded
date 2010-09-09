@@ -10,12 +10,11 @@ PR_append = "c"
 TI_BIN_UNPK_CMDS="Y: qY:workdir:Y"
 require ../ti/ti-eula-unpack.inc
 
-SGXPV = "3_01_00_06"
+SGXPV = "3_01_00_07"
 IMGPV = "1.4.14.2616"
 BINFILE := "OMAP35x_Graphics_SDK_setuplinux_${SGXPV}.bin"
 
 SRC_URI = "http://install.source.dir.local/OMAP35x_Graphics_SDK_setuplinux_${SGXPV}.bin \
-           file://texture-width.patch;striplevel=2 \
 "
 
 S = "${WORKDIR}/OMAP35x_Graphics_SDK_${SGXPV}/GFX_Linux_KM"
@@ -35,6 +34,5 @@ do_install() {
 	   ${S}/services4/3rdparty/bufferclass_ti/bufferclass_ti.ko \
 	   ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/gpu/pvr
 }
-
-SRC_URI[md5sum] = "7aa37ca72f34011d353e72cc67f8aac1"
-SRC_URI[sha256sum] = "02276bc728699c36b0d2411c60f23030aa066ca6b8ed5adb7a40204563a227fb"
+SRC_URI[md5sum] = "b33a82d393ed0a6c26ad0d952542d762"
+SRC_URI[sha256sum] = "6f1720c2a8c2ce84b0020e144c2d77b56106a1fff45b44f8fcfd74d0f2559d8e"
