@@ -9,7 +9,7 @@ RCONFLICTS_${PN} = "exquisite"
 
 SRCREV = "422"
 PV = "0.0+svnr${SRCPV}"
-PR = "r32"
+PR = "r33"
 
 # You can create your own pslash-poky-img.h by doing
 # ./make-image-header.sh <file>.png POKY
