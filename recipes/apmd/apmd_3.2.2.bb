@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "required"
 DEPENDS = "libtool-cross"
 LICENSE = "GPL"
-PR = "r12"
+PR = "r13"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/a/apmd/apmd_${PV}.orig.tar.gz \
            file://debian.patch \
@@ -23,8 +23,12 @@ inherit update-rc.d
 INITSCRIPT_NAME = "apmd"
 INITSCRIPT_PARAMS = "defaults"
 
+LIBTOOL = "${HOST_SYS}-libtool"
+EXTRA_OEMAKE = "'LIBTOOL=${LIBTOOL}' 'CC=${CC}' 'CFLAGS=${CFLAGS}' \
+                'LDFLAGS=${LDFLAGS}'"
+
 do_compile() {
-	oe_runmake "LIBTOOL=${STAGING_BINDIR_NATIVE}/${TARGET_PREFIX}libtool" apm apmd
+	oe_runmake apm apmd
 }
 
 do_install() {
