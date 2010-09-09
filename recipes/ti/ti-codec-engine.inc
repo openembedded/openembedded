@@ -85,7 +85,11 @@ do_prepsources() {
                      CGTOOLS_V5T="${TOOLCHAIN_PATH}" \
                      CGTOOLS_C64P="${CODEGEN_INSTALL_DIR}" \
                      CGTOOLS_C674="${CODEGEN_INSTALL_DIR}" \
-                     .make clean
+                     clean
+		     # '.make' target was used in CE < 2.26, but its no longer
+		     # supported in CE >= 2.26. Now we are moved to >=2.26 
+		     # hence commenting out the .make target.
+                     # .make clean
         done
 }
 
