@@ -448,7 +448,7 @@ python do_package_qa () {
 
 
 # The Staging Func, to check all staging
-addtask qa_staging after do_populate_sysroot before do_build
+addtask qa_staging after do_populate_sysroot before do_package_stage
 python do_qa_staging() {
     bb.debug(2, "QA checking staging")
 
