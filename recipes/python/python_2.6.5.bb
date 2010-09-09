@@ -83,6 +83,12 @@ do_install() {
 	sed -i -e s,ccache,'$(CCACHE)', ${D}/${libdir}/python${PYTHON_MAJMIN}/config/Makefile
 }
 
+do_install_append() {
+	# remove unecessary files from python-distutils' packages
+	rm ${D}/${libdir}/python${PYTHON_MAJMIN}/config/libpython2.6.a
+	rm ${D}/${libdir}/python${PYTHON_MAJMIN}/distutils/command/win*
+}
+
 require python-${PYTHON_MAJMIN}-manifest.inc
 
 # manual dependency additions
