@@ -28,7 +28,7 @@ JDKPN = "openjdk-6"
 JDK_DIR = "java-6-openjdk"
 
 PN = "${JDKPN}-jre"
-PROVIDES += "${JDKPN}"
+PROVIDES += "${JDKPN} ${PACKAGES}"
 
 DEPENDS = "giflib libpng jpeg cups \
 	   xalan-j xerces-j rhino \
