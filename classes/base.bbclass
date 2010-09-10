@@ -177,7 +177,7 @@ def oe_unpack(d, local, urldata):
         if not urldata.host:
             urlpath = urldata.path
         else:
-            urlpath = oe.path.join(urldata.host, urldata.path)
+            urlpath = "%s%s" % (urldata.host, urldata.path)
 
         if not os.path.isabs(urlpath):
             subdirs.append(os.path.dirname(urlpath))
