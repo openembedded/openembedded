@@ -1,0 +1,30 @@
+From e9e77ee999553f9b94de0288688a0bdc60b92e0f Mon Sep 17 00:00:00 2001
+From: Chase Maupin <chase.maupin@ti.com>
+Date: Tue, 17 Aug 2010 08:30:56 -0500
+Subject: [PATCH] configure: make jpeg work with older autotools
+
+* Only use the AM_SILENT_RULES variable if it is defined.  Older
+  versions of automake don't support this option.
+
+Signed-off-by: Chase Maupin <chase.maupin@ti.com>
+---
+ configure.ac |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 96da13b..9a58c51 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -26,7 +26,8 @@ AM_INIT_AUTOMAKE([-Wall -Werror ansi2knr no-dist foreign])
+ # Make --enable-silent-rules the default.
+ # To get verbose build output you may configure
+ # with --disable-silent-rules or use "make V=1".
+-AM_SILENT_RULES([yes])
++# only use if available
++m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+ 
+ # This is required when using the de-ANSI-fication feature.
+ AM_C_PROTOTYPES
+-- 
+1.7.0.4
+
