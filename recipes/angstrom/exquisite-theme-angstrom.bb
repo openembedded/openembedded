@@ -15,7 +15,7 @@ ALTERNATIVE_LINK = "${sysconfdir}/exquisite/config"
 ALTERNATIVE_PATH = "${sysconfdir}/exquisite/config-angstrom"
 ALTERNATIVE_PRIORITY = "20"
 
-SRC_URI = "file://angstrom/*"
+SRC_URI = "file://angstrom/"
 
 S = "${WORKDIR}/angstrom"
 
