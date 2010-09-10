@@ -15,6 +15,7 @@ DEFAULT_PREFERENCE_tx27 = "1"
 DEFAULT_PREFERENCE_nokia900 = "1"
 DEFAULT_PREFERENCE_mh355 = "2"
 DEFAULT_PREFERENCE_smartqv7 = "1"
+DEFAULT_PREFERENCE_mini6410 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.28.tar.bz2;name=kernel \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.10.bz2;apply=yes;name=stablepatch \
@@ -78,6 +79,12 @@ SRC_URI_append_tx27 = " \
 	file://linux-2.6.28-karo4.diff \
 	"
 
+SRC_URI_mini6410 = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.28.tar.bz2;name=kernel \
+	${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.6.bz2;apply=yes;name=stablepatch6 \
+	file://mini6410.patch;apply=yes \
+	file://undefined.patch;apply=yes \
+	file://defconfig"
+
 SRC_URI_nokia900 = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.28.tar.bz2;name=kernel \
 		    http://repository.maemo.org/pool/maemo5.0/free/k/kernel/kernel_2.6.28-20094803.3+0m5.diff.gz;name=nokiapatch \
 		    file://defconfig"
@@ -100,6 +107,8 @@ SRC_URI[kernel.md5sum] = "d351e44709c9810b85e29b877f50968a"
 SRC_URI[kernel.sha256sum] = "ae0d97c55efe7fce01273c97f8152af0deff5541e3bbf5b9ad98689112b54380"
 SRC_URI[stablepatch.md5sum] = "64e6b226f1dc469755d82d0d8b677feb"
 SRC_URI[stablepatch.sha256sum] = "f4a2f97f59d272571a4977916392628642a8e4388f94417a723dc4bdb0e47dc2"
+SRC_URI[stablepatch6.md5sum] = "f8aa9ca3eb395f0e781cd91de5d5d86b"
+SRC_URI[stablepatch6.sha256sum] = "0da592467b8a1d3f839c4d2b6d8495d5b32f5661e96f0782c063c22e4c6393e4"
 SRC_URI[ronetixpatch.md5sum] = "22af1c0a7bdc5d0f4e83f17f91b0c524"
 SRC_URI[ronetixpatch.sha256sum] = "da47c6e2ab51180be3b50d3cd219dbebe877121e4068aa5846fc1cd018082931"
 SRC_URI[nokiapatch.md5sum] = "fdd13af46cbaf8594b9fc3d82070aecc"
