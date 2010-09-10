@@ -6,7 +6,7 @@ DEPENDS += "libxml2 \
 	libxml-namespacesupport-perl \
         zlib \
 "
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/P/PA/PAJAS/XML-LibXML-${PV}.tar.gz;name=libxml \
         file://libxml-libxml-perl-disable-libxml2-check.patch \
@@ -23,3 +23,4 @@ EXTRA_CPANFLAGS = "INC=-I${STAGING_INCDIR}/libxml2 LIBS=-L${STAGING_LIBDIR}"
 BBCLASSEXTEND = "native"
 
 CFLAGS += " -D_GNU_SOURCE "
+BUILD_CFLAGS += " -D_GNU_SOURCE "
