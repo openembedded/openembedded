@@ -1,7 +1,7 @@
 DESCRIPTION = "Client and server side SOAP implementation"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
-PR = "r1"
+PR = "r0"
 
 SRC_URI = "http://www.cpan.org/authors/id/M/MK/MKUTTER/SOAP-Lite-${PV}.tar.gz"
 
@@ -15,5 +15,6 @@ do_configure_prepend () {
 
 BBCLASSEXTEND="native"
 
-SRC_URI[md5sum] = "e7869ad91fee76cc1782fe29fe3a989d"
-SRC_URI[sha256sum] = "efe7dd9a1c6993d475ae1a653c5fa97a76a36accd468d49b030d81880ca11bef"
+SRC_URI[md5sum] = "fd71a0c0feff85f670ab4b2e571652a8"
+SRC_URI[sha256sum] = "1767494854716afde371c569cd08edc8bcb5d53360f351c87d6ddfe30c33d492"
+
