@@ -1,7 +1,6 @@
 DESCRIPTION = "Task::Weaken - Ensure that a platform has weaken support"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
-HOMEPAGE = "http://www.xmltwig.com/"
 PR = "r0"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/A/AD/ADAMK/Task-Weaken-${PV}.tar.gz"
