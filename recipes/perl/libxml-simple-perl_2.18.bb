@@ -1,9 +1,9 @@
 DESCRIPTION = "XML::Simple - Easy API to maintain XML (esp config files)"
 SECTION = "libs"
 LICENSE = "Artistic"
-DEPENDS += "libxml-parser-perl"
-RDEPENDS_${PN} += "libxml-parser-perl"
-PR = "r2"
+DEPENDS += "libxml-parser-perl libxml-sax-perl libxml-namespacesupport-perl"
+RDEPENDS_${PN} += "libxml-parser-perl libxml-sax-perl libxml-namespacesupport-perl"
+PR = "r3"
 
 SRC_URI = "http://www.cpan.org/modules/by-module/XML/XML-Simple-${PV}.tar.gz"
 
