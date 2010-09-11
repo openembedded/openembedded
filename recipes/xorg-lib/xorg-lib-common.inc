@@ -4,7 +4,7 @@ LICENSE = "MIT-X"
 DEPENDS = "util-macros xorg-headers-native"
 
 XORG_PN = "${BPN}"
-INC_PR = "r8"
+INC_PR = "r9"
 
 SRC_URI = "${XORG_MIRROR}/individual/lib/${XORG_PN}-${PV}.tar.bz2;name=archive"
 

@@ -22,9 +22,9 @@ FILES_${PN}-locale += "${datadir}/X11/locale ${libdir}/X11/locale"
 
 XORG_PN = "libX11"
 
-EXTRA_OECONF += " --with-xcb --with-keysymdef=${STAGING_INCDIR}/X11/keysymdef.h"
-EXTRA_OECONF_virtclass-native = " --without-xcb"
-EXTRA_OECONF_virtclass-nativesdk = " --without-xcb"
+EXTRA_OECONF += " --with-xcb --with-keysymdef=${STAGING_INCDIR}/X11/keysymdef.h --with-groff=no --with-ps2pdf=no"
+EXTRA_OECONF_virtclass-native = " --without-xcb --with-groff=no --with-ps2pdf=no"
+EXTRA_OECONF_virtclass-nativesdk = " --without-xcb --with-groff=no --with-ps2pdf=no"
 
 # Below option is added to overcome the GCC bug on ARM
 # see http://gcc.gnu.org/PR42981 for further details.
