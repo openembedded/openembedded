@@ -1,7 +1,6 @@
 DESCRIPTION = "Class::Inspector - Get information about a class and its structure"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
-HOMEPAGE = "http://www.xmltwig.com/"
 PR = "r0"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/A/AD/ADAMK/Class-Inspector-${PV}.tar.gz"
