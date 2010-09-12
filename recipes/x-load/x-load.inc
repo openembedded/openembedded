@@ -18,6 +18,7 @@ XLOAD_USB_SYMLINK ?= "x-load-usb-${MACHINE}.bin"
 MLO_IMAGE ?= "MLO-${MACHINE}-${PV}-${PR}"
 MLO_SYMLINK ?= "MLO-${MACHINE}"
 MLO_SYMLINK_NOMACHINE ?= "MLO"
+XLOAD_LOAD_ADDRESS ?= 0x40200800
 
 do_compile () {
 	unset LDFLAGS
@@ -29,7 +30,7 @@ do_compile () {
 }
 
 do_install () {
-	signGP ${S}/x-load.bin
+	signGP ${S}/x-load.bin ${XLOAD_LOAD_ADDRESS}
 
 	install -d ${D}/boot
 	install ${S}/x-load.bin.ift ${D}/boot/${MLO_IMAGE}
