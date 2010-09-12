@@ -1,8 +1,10 @@
 DESCRIPTION = "DateTime::Format::Builder - Create DateTime parser classes and objects"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
-DEPENDS = " libclass-factory-util-perl libdatetime-perl libdatetime-format-strptime-perl libtask-weaken-perl "
-PR = "r0"
+DEPENDS = " libclass-factory-util-perl-native libdatetime-perl-native libdatetime-format-strptime-perl-native \
+	libtask-weaken-perl-native "
+RDEPENDS_${PN} = " libclass-factory-util-perl libdatetime-perl libdatetime-format-strptime-perl libtask-weaken-perl "
+PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/DateTime-Format-Builder-${PV}.tar.gz"
 SRC_URI[md5sum] = "f6c5d5a17b5b7478ff555a2d3cce5136"
