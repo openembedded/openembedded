@@ -1,0 +1,33 @@
+Index: git/Makefile
+===================================================================
+--- git.orig/Makefile	2010-09-12 21:47:39.272215523 +0200
++++ git/Makefile	2010-09-12 21:49:13.359100591 +0200
+@@ -538,7 +538,7 @@
+ SRCS_MPLAYER-$(DXR2)         += libao2/ao_dxr2.c libvo/vo_dxr2.c
+ SRCS_MPLAYER-$(DXR3)         += libvo/vo_dxr3.c
+ SRCS_MPLAYER-$(ESD)          += libao2/ao_esd.c
+-SRCS_MPLAYER-$(FBDEV)        += libvo/vo_fbdev.c libvo/vo_fbdev2.c
++SRCS_MPLAYER-$(FBDEV)        += libvo/vo_fbdev.c libvo/vo_fbdev2.c libvo/vo_omapfb.c libvo/yuv.S
+ SRCS_MPLAYER-$(GGI)          += libvo/vo_ggi.c
+ SRCS_MPLAYER-$(GIF)          += libvo/vo_gif89a.c
+ SRCS_MPLAYER-$(GL)           += libvo/gl_common.c libvo/vo_gl.c \
+Index: git/libvo/video_out.c
+===================================================================
+--- git.orig/libvo/video_out.c	2010-09-12 21:47:49.882156069 +0200
++++ git/libvo/video_out.c	2010-09-12 21:49:13.359100591 +0200
+@@ -101,6 +101,7 @@
+ extern struct vo_driver video_out_bl;
+ extern struct vo_driver video_out_fbdev;
+ extern struct vo_driver video_out_fbdev2;
++extern struct vo_driver video_out_omapfb;
+ extern struct vo_driver video_out_svga;
+ extern struct vo_driver video_out_png;
+ extern struct vo_driver video_out_ggi;
+@@ -202,6 +203,7 @@
+ #ifdef CONFIG_FBDEV
+         &video_out_fbdev,
+         &video_out_fbdev2,
++        &video_out_omapfb,
+ #endif
+ #ifdef CONFIG_SVGALIB
+         &video_out_svga,
