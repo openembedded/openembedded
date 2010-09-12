@@ -1,8 +1,9 @@
 DESCRIPTION = "DateTime::Format::ISO8601 - Parses ISO8601 formats"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
-DEPENDS = " libdatetime-perl libdatetime-format-builder-perl "
-PR = "r0"
+DEPENDS = " libdatetime-perl-native libdatetime-format-builder-perl-native "
+RDEPENDS_${PN} = " libdatetime-perl libdatetime-format-builder-perl "
+PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/J/JH/JHOBLITT/DateTime-Format-ISO8601-${PV}.tar.gz"
 SRC_URI[md5sum] = "debb51180d0318ae09cad01c544a1d7d"
