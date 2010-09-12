@@ -1,9 +1,12 @@
 DESCRIPTION = "Client and server side SOAP implementation"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
-DEPENDS = " libmime-tools-perl libwww-perl libxml-parser-perl libtask-weaken-perl \
-             libio-socket-ssl-perl libclass-inspector-perl "
-PR = "r1"
+DEPENDS = " libmime-tools-perl-native libwww-perl-native libxml-parser-perl-native libtask-weaken-perl-native \
+             libio-socket-ssl-perl-native libclass-inspector-perl-native "
+RDEPENDS_${PN} = " libmime-tools-perl libwww-perl libxml-parser-perl libtask-weaken-perl \
+             libio-socket-ssl-perl libclass-inspector-perl \
+	     perl-module-scalar-util perl-module-constant"
+PR = "r2"
 
 SRC_URI = "http://www.cpan.org/authors/id/M/MK/MKUTTER/SOAP-Lite-${PV}.tar.gz"
 
