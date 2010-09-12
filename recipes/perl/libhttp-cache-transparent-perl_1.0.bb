@@ -1,9 +1,10 @@
 DESCRIPTION = "HTTP::Cache::Transparent - Cache the result of http get-requests persistently."
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
-PR = "r0"
+PR = "r1"
 
-DEPENDS += "libwww-perl liburi-perl libhtml-tagset-perl libhtml-parser-perl"
+DEPENDS += "libwww-perl-native"
+RDEPENDS_${PN} += "libwww-perl"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/M/MA/MATTIASH/HTTP-Cache-Transparent-${PV}.tar.gz"
 
