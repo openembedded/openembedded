@@ -1,8 +1,10 @@
 DESCRIPTION = "DateTime - A date and time object"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
-DEPENDS = "libtest-exception-perl libdatetime-timezone-perl libdatetime-locale-perl "
-PR = "r0"
+DEPENDS = "libtest-exception-perl-native libdatetime-timezone-perl-native libdatetime-locale-perl-native "
+RDEPENDS_${PN} = "libtest-exception-perl libdatetime-timezone-perl libdatetime-locale-perl  \
+	perl-module-scalar-util perl-module-pod-man perl-module-time-local"
+PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/DateTime-${PV}.tar.gz"
 SRC_URI[md5sum] = "0802efbc53eb11a09d1528223cd52e88"
