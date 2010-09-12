@@ -11,6 +11,7 @@ RDEPENDS_${PN} += "\
 	libio-stringy-perl \
 	libmailtools-perl \
 	libtest-pod-perl \
+	libtimedate-perl \
 	perl-module-file-path \
 	perl-module-file-spec \
 	perl-module-file-temp \
@@ -21,7 +22,7 @@ RDEPENDS_${PN} += "\
 	"
 BBCLASSEXTEND = "native"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/D/DO/DONEILL/MIME-tools-${PV}.tar.gz;name=mime-tools-perl-${PV}"
 SRC_URI[mime-tools-perl-5.427.md5sum] = "4333caa7238cb9eafb5f7fb39fcbd8e7"
