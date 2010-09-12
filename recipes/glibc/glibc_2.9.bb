@@ -63,6 +63,7 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-${PV}.tar.bz2;name=archive \
 	   file://glibc-2.9-use-_begin.patch \
            file://arm-lowlevellock-include-tls.patch \
            file://glibc-2.9-enable-binutils-2.2.patch \
+           file://0001-Don-t-mix-pattern-rules-with-normal-rules.patch \
            "
 
 # patches to fix libmemusage.so
