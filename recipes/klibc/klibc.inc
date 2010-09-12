@@ -6,7 +6,7 @@ minimal entaglement, and portability, not speed."
 LICENSE = "BSD-ADV"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-INC_PR = "r2"
+INC_PR = "r0"
 
 KLIBC_ARCH = '${TARGET_ARCH}'
 KLIBC_ARCH_armeb = 'arm'
