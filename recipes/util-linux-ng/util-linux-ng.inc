@@ -176,10 +176,10 @@ do_install () {
 
 	rm ${D}${sbindir}/swapoff -f
 	ln -sf ${base_sbindir}/swapon.${PN} ${D}${base_sbindir}/swapoff.${PN}
-	ln -sf ${sbindir}/shutdown ${D}${sbindir}/reboot.${PN}
-	ln -sf ${sbindir}/shutdown ${D}${sbindir}/halt.${PN}
-	ln -sf ${sbindir}/shutdown ${D}${sbindir}/fastboot
-	ln -sf ${sbindir}/shutdown ${D}${sbindir}/fasthalt
+	ln -sf ${base_sbindir}/shutdown ${D}${base_sbindir}/reboot.${PN}
+	ln -sf ${base_sbindir}/shutdown ${D}${base_sbindir}/halt.${PN}
+	ln -sf ${base_sbindir}/shutdown ${D}${base_sbindir}/fastboot
+	ln -sf ${base_sbindir}/shutdown ${D}${base_sbindir}/fasthalt
 }
 
 python populate_packages_prepend () {
