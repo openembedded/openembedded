@@ -1,14 +1,14 @@
-Index: squid-3.1.6/configure.in
+Index: squid-3.1.8/configure.in
 ===================================================================
---- squid-3.1.6.orig/configure.in	2010-08-19 23:19:52.000000000 +0400
-+++ squid-3.1.6/configure.in	2010-08-19 23:22:44.000000000 +0400
+--- squid-3.1.8.orig/configure.in	2010-09-13 17:51:04.000000000 +0400
++++ squid-3.1.8/configure.in	2010-09-13 17:53:04.000000000 +0400
 @@ -364,10 +364,6 @@
    fi
  ])
  
 -dnl Nasty hack to get autoconf 2.64 on Linux to run.
 -dnl all other uses of RUN_IFELSE are wrapped inside CACHE_CHECK which breaks on 2.64
--AC_RUN_IFELSE([AC_LANG_SOURCE([[ int main(int argc, char **argv) { return 0; } ]])],[],[],[])
+-AC_RUN_IFELSE([AC_LANG_SOURCE([[ int main(int argc, char **argv) { return 0; } ]])],[],[],[:])
 -
  dnl This is a developer only option.. developers know how to set defines
  dnl
@@ -22,7 +22,7 @@ Index: squid-3.1.6/configure.in
  #include <sys/epoll.h>
  #include <stdlib.h>
  #include <stdio.h>
-@@ -3070,7 +3066,7 @@
+@@ -3072,7 +3068,7 @@
  dnl setresuid() but doesn't implement it.
  dnl
  AC_CACHE_CHECK(if setresuid is implemented, ac_cv_func_setresuid,
@@ -31,7 +31,7 @@ Index: squid-3.1.6/configure.in
  #include <stdlib.h>
    int main(int argc, char **argv) {
      if(setresuid(-1,-1,-1)) {
-@@ -3090,7 +3086,7 @@
+@@ -3092,7 +3088,7 @@
  dnl copy that crashes with a buffer over-run!
  dnl
  AC_CACHE_CHECK(if strnstr is well implemented, ac_cv_func_strnstr,
@@ -40,7 +40,7 @@ Index: squid-3.1.6/configure.in
  #include <stdlib.h>
  #include <stdio.h>
  #include <string.h>
-@@ -3116,7 +3112,7 @@
+@@ -3118,7 +3114,7 @@
  dnl Test for va_copy
  dnl
  AC_CACHE_CHECK(if va_copy is implemented, ac_cv_func_va_copy,
@@ -49,7 +49,7 @@ Index: squid-3.1.6/configure.in
        #include <stdarg.h>
        #include <stdlib.h>
        int f (int i, ...) {
-@@ -3139,7 +3135,7 @@
+@@ -3141,7 +3137,7 @@
  dnl Some systems support __va_copy
  dnl
  AC_CACHE_CHECK(if __va_copy is implemented, ac_cv_func___va_copy,
@@ -58,10 +58,10 @@ Index: squid-3.1.6/configure.in
        #include <stdarg.h>
        #include <stdlib.h>
        int f (int i, ...) {
-Index: squid-3.1.6/helpers/negotiate_auth/squid_kerb_auth/configure.in
+Index: squid-3.1.8/helpers/negotiate_auth/squid_kerb_auth/configure.in
 ===================================================================
---- squid-3.1.6.orig/helpers/negotiate_auth/squid_kerb_auth/configure.in	2010-08-01 18:01:38.000000000 +0400
-+++ squid-3.1.6/helpers/negotiate_auth/squid_kerb_auth/configure.in	2010-08-19 23:20:34.000000000 +0400
+--- squid-3.1.8.orig/helpers/negotiate_auth/squid_kerb_auth/configure.in	2010-09-04 07:25:58.000000000 +0400
++++ squid-3.1.8/helpers/negotiate_auth/squid_kerb_auth/configure.in	2010-09-13 17:52:15.000000000 +0400
 @@ -367,13 +367,13 @@
  
  CPPFLAGS="$CPPFLAGS -I../../../ -I../../../include/ -I$squid_dir/include -I$squid_dir/src -I$squid_dir"
