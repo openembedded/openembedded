@@ -125,9 +125,9 @@ do_install () {
 
         sbinprogs="agetty blockdev ctrlaltdel cfdisk"
         sbinprogs_a="pivot_root hwclock mkswap shutdown mkfs.minix fsck.minix losetup swapon fdisk fsck blkid vigr vipw"
-        usrbinprogs_a="chfn chsh hexdump last logger mesg newgrp renice wall setsid chrt"
+        usrbinprogs_a="chfn chsh hexdump last logger mesg newgrp renice wall setsid chrt reset"
         usrsbinprogs_a="readprofile"
-        binprogs_a="dmesg kill more umount mount login reset"
+        binprogs_a="dmesg kill more umount mount login"
 
         if [ "${base_sbindir}" != "${sbindir}" ]; then
         	mkdir -p ${D}${base_sbindir}
@@ -214,7 +214,7 @@ pkg_postinst_${PN} () {
 	update-alternatives --install ${base_bindir}/login login login.${PN} 100
 	update-alternatives --install ${base_sbindir}/vipw vipw vipw.${PN} 100
 	update-alternatives --install ${base_sbindir}/vigr vigr vigr.${PN} 100
-	update-alternatives --install ${base_bindir}/reset reset reset.${PN} 100
+	update-alternatives --install ${bindir}/reset reset reset.${PN} 100
 	update-alternatives --install ${bindir}/setsid setsid setsid.${PN} 100
 	update-alternatives --install ${bindir}/chrt chrt chrt.${PN} 100
 	
