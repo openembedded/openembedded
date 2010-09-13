@@ -2,7 +2,7 @@ DESCRIPTION = "The GNU internationalization library."
 HOMEPAGE = "http://www.gnu.org/software/gettext/gettext.html"
 SECTION = "libs"
 LICENSE = "GPLv3"
-PR = "r2"
+PR = "r3"
 DEPENDS = "gettext-native virtual/libiconv ncurses expat"
 DEPENDS_virtclass-native = "libxml2-native"
 PROVIDES = "virtual/libintl"
@@ -31,6 +31,7 @@ EXTRA_OECONF += "--without-lispdir \
 		 --disable-openmp \
 		 --with-included-glib \
 		 --without-emacs \
+		 --with-included-libcroco \
 	        "
 acpaths = '-I ${S}/gnulib-local/m4/ \
 	   -I ${S}/gettext-runtime/m4 \
