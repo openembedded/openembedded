@@ -10,3 +10,9 @@ EXTRA_OECONF += "${@get_cairo_fpu_setting(bb, d)}"
 
 inherit autotools pkgconfig 
 
+PACKAGES =+ "cairo-trace cairo-trace-dev libcairo-script-interpreter libcairo-gobject"
+FILES_libcairo-gobject = "${libdir}/libcairo-gobject.so.*"
+FILES_libcairo-script-interpreter = "${libdir}/libcairo-script-interpreter.so.*"
+FILES_cairo-trace = "${bindir}/*trace ${libdir}/cairo/libcairo-trace.so.*"
+FILES_cairo-trace-dev = "${libdir}/cairo/*"
+
