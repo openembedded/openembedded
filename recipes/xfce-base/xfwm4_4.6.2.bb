@@ -2,13 +2,13 @@
 
 DESCRIPTION="Xfce4 Window Manager"
 SECTION = "x11/wm"
-PR = "r0"
+PR = "r1"
 
 inherit xfce46 update-alternatives
 
 FILES_${PN} += "${datadir}/xfwm4/defaults ${datadir}/xfwm4/themes/default.keys/*"
 
-DEPENDS = "startup-notification virtual/libx11 libxpm libxfce4util libxfcegui4"
+DEPENDS = "startup-notification virtual/libx11 libxpm libxfce4util libxfcegui4 libwnck"
 RDEPENDS_${PN} = "xfwm4-theme-default"
 
 EXTRA_OECONF += " --enable-startup-notification"
