@@ -8,7 +8,7 @@ inherit autotools gettext
 
 DEFAULT_PREFERENCE = "-1"
 
-INC_PR = "r28"
+INC_PR = "r29"
 
 # allows for a release candidate
 RC ?= ""
