@@ -4,7 +4,7 @@ require openssl.inc
 SRC_URI[src.md5sum] = "e3873edfffc783624cfbdb65e2249cbd"
 SRC_URI[src.sha256sum] = "18a9bd1fc02b8ef90dded34fafaa9089baaafef278a19fc4e89c2ab0dcf70f63"
 
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -17,6 +17,7 @@ SRC_URI += "file://configure-targets.patch \
             file://oe-ldflags.patch \
 	    file://libdeps-first.patch \
 	    file://engines-install-in-libdir-ssl.patch \
+	    file://openssl-fix-ssl3_get_key_exchange-double-free.patch \
 	   "
 
 PARALLEL_MAKE = ""
