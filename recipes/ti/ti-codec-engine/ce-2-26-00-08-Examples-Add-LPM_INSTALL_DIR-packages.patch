@@ -1,0 +1,60 @@
+diff --git a/examples/ti/sdo/ce/examples/apps/audio1_ires/rtcfg_local_evm3530_linux/makefile b/examples/ti/sdo/ce/examples/apps/audio1_ires/rtcfg_local_evm3530_linux/makefile
+index 2bbfb72..2a00d0d 100644
+--- a/examples/ti/sdo/ce/examples/apps/audio1_ires/rtcfg_local_evm3530_linux/makefile
++++ b/examples/ti/sdo/ce/examples/apps/audio1_ires/rtcfg_local_evm3530_linux/makefile
+@@ -80,6 +80,7 @@ REPO_PATH = \
+ 	$(FC_INSTALL_DIR)/packages \
+ 	$(FC_INSTALL_DIR)/examples \
+ 	$(CMEM_INSTALL_DIR)/packages \
++	$(LPM_INSTALL_DIR)/packages \
+ 	$(BIOSUTILS_INSTALL_DIR)/packages \
+ 	$(EXAMPLES_ROOTDIR)
+ 
+diff --git a/examples/ti/sdo/ce/examples/apps/speech1_copy/rtcfg_local_evm3530_linux/makefile b/examples/ti/sdo/ce/examples/apps/speech1_copy/rtcfg_local_evm3530_linux/makefile
+index f2b187a..827f6bc 100644
+--- a/examples/ti/sdo/ce/examples/apps/speech1_copy/rtcfg_local_evm3530_linux/makefile
++++ b/examples/ti/sdo/ce/examples/apps/speech1_copy/rtcfg_local_evm3530_linux/makefile
+@@ -74,6 +74,7 @@ REPO_PATH = \
+ 	$(XDAIS_INSTALL_DIR)/packages \
+ 	$(FC_INSTALL_DIR)/packages \
+ 	$(CMEM_INSTALL_DIR)/packages \
++	$(LPM_INSTALL_DIR)/packages \
+ 	$(BIOSUTILS_INSTALL_DIR)/packages \
+ 	$(EXAMPLES_ROOTDIR)
+ 
+diff --git a/examples/ti/sdo/ce/examples/apps/speech1_copy/rtcfg_remote_evm3530_linux/makefile b/examples/ti/sdo/ce/examples/apps/speech1_copy/rtcfg_remote_evm3530_linux/makefile
+index a4fe4dc..a23f991 100644
+--- a/examples/ti/sdo/ce/examples/apps/speech1_copy/rtcfg_remote_evm3530_linux/makefile
++++ b/examples/ti/sdo/ce/examples/apps/speech1_copy/rtcfg_remote_evm3530_linux/makefile
+@@ -76,6 +76,7 @@ REPO_PATH = \
+ 	$(XDAIS_INSTALL_DIR)/packages \
+ 	$(FC_INSTALL_DIR)/packages \
+ 	$(CMEM_INSTALL_DIR)/packages \
++	$(LPM_INSTALL_DIR)/packages \
+ 	$(BIOSUTILS_INSTALL_DIR)/packages \
+ 	$(EXAMPLES_ROOTDIR)
+ 
+diff --git a/examples/ti/sdo/ce/examples/apps/video1_copy/rtcfg_local_evm3530_linux/makefile b/examples/ti/sdo/ce/examples/apps/video1_copy/rtcfg_local_evm3530_linux/makefile
+index 8baa9dd..3c01c04 100644
+--- a/examples/ti/sdo/ce/examples/apps/video1_copy/rtcfg_local_evm3530_linux/makefile
++++ b/examples/ti/sdo/ce/examples/apps/video1_copy/rtcfg_local_evm3530_linux/makefile
+@@ -74,6 +74,7 @@ REPO_PATH = \
+ 	$(XDAIS_INSTALL_DIR)/packages \
+ 	$(FC_INSTALL_DIR)/packages \
+ 	$(CMEM_INSTALL_DIR)/packages \
++	$(LPM_INSTALL_DIR)/packages \
+ 	$(BIOSUTILS_INSTALL_DIR)/packages \
+ 	$(EXAMPLES_ROOTDIR)
+ 
+diff --git a/examples/ti/sdo/ce/examples/apps/video1_copy/rtcfg_remote_evm3530_linux/makefile b/examples/ti/sdo/ce/examples/apps/video1_copy/rtcfg_remote_evm3530_linux/makefile
+index 3319c06..09a6357 100644
+--- a/examples/ti/sdo/ce/examples/apps/video1_copy/rtcfg_remote_evm3530_linux/makefile
++++ b/examples/ti/sdo/ce/examples/apps/video1_copy/rtcfg_remote_evm3530_linux/makefile
+@@ -75,6 +75,7 @@ REPO_PATH = \
+ 	$(XDAIS_INSTALL_DIR)/packages \
+ 	$(FC_INSTALL_DIR)/packages \
+ 	$(CMEM_INSTALL_DIR)/packages \
++	$(LPM_INSTALL_DIR)/packages \
+ 	$(BIOSUTILS_INSTALL_DIR)/packages \
+ 	$(EXAMPLES_ROOTDIR)
+ 
