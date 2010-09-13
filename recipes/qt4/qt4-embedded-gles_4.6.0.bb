@@ -10,3 +10,4 @@ require qt-4.6.0.inc
 FILESPATHPKG .= ":qt4-embedded-${PV}:qt4-embedded"
 
 DEPENDS += "virtual/egl"
+require recipes/egl/egl.inc

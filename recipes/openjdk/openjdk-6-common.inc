@@ -24,11 +24,11 @@ SRC_URI = "\
   file://jvm.cfg \
   "
 
-JDK_PN = "openjdk-6"
+JDKPN = "openjdk-6"
 JDK_DIR = "java-6-openjdk"
 
-PN = "${JDK_PN}-jre"
-PROVIDES = "${JDK_PN}"
+PN = "${JDKPN}-jre"
+PROVIDES += "${JDKPN} ${PACKAGES}"
 
 DEPENDS = "giflib libpng jpeg cups \
 	   xalan-j xerces-j rhino \
@@ -358,21 +358,21 @@ do_stage() {
 # runtime)
 # 3) All other packages, including -jdk, are optional and not needed for normal Java apps.
 PACKAGES = " \
-            ${JDK_PN}-jre \
-            ${JDK_PN}-dbg \
-            ${JDK_PN}-demo-dbg \
-            ${JDK_PN}-demo \
-            ${JDK_PN}-source \
-            ${JDK_PN}-doc \
-            ${JDK_PN}-jdk \
-            ${JDK_PN}-java \
-            ${JDK_PN}-vm-shark \
-            ${JDK_PN}-vm-zero \
-            ${JDK_PN}-vm-cacao \
-            ${JDK_PN}-common \
+            ${JDKPN}-jre \
+            ${JDKPN}-dbg \
+            ${JDKPN}-demo-dbg \
+            ${JDKPN}-demo \
+            ${JDKPN}-source \
+            ${JDKPN}-doc \
+            ${JDKPN}-jdk \
+            ${JDKPN}-java \
+            ${JDKPN}-vm-shark \
+            ${JDKPN}-vm-zero \
+            ${JDKPN}-vm-cacao \
+            ${JDKPN}-common \
            "
 
-FILES_${JDK_PN}-dbg = "\
+FILES_${JDKPN}-dbg = "\
 	${JDK_HOME}/bin/.debug \
 	${JDK_HOME}/lib/.debug \
 	${JDK_HOME}/jre/bin/.debug \
@@ -386,9 +386,9 @@ FILES_${JDK_PN}-dbg = "\
 	${JDK_HOME}/jre/lib/${JDK_ARCH}/xawt/.debug \
        "
 
-FILES_${JDK_PN}-demo = "${JDK_HOME}/demo ${JDK_HOME}/sample"
-RDEPENDS_${JDK_PN}-demo = "java2-runtime"
-FILES_${JDK_PN}-demo-dbg = "\
+FILES_${JDKPN}-demo = "${JDK_HOME}/demo ${JDK_HOME}/sample"
+RDEPENDS_${JDKPN}-demo = "java2-runtime"
+FILES_${JDKPN}-demo-dbg = "\
 	${JDK_HOME}/demo/jvmti/gctest/lib/.debug \
 	${JDK_HOME}/demo/jvmti/heapTracker/lib/.debug \
 	${JDK_HOME}/demo/jvmti/heapViewer/lib/.debug \
@@ -400,17 +400,17 @@ FILES_${JDK_PN}-demo-dbg = "\
 	${JDK_HOME}/demo/jvmti/compiledMethodLoad/lib/.debug \
        "
 
-FILES_${JDK_PN}-source = "${JDK_HOME}/src.zip"
+FILES_${JDKPN}-source = "${JDK_HOME}/src.zip"
 
-FILES_${JDK_PN}-java = "${JDK_HOME}/jre/bin/java"
+FILES_${JDKPN}-java = "${JDK_HOME}/jre/bin/java"
 
-FILES_${JDK_PN}-vm-zero = "${JDK_HOME}/jre/lib/arm/server/"
+FILES_${JDKPN}-vm-zero = "${JDK_HOME}/jre/lib/arm/server/"
 
-FILES_${JDK_PN}-vm-shark = "${JDK_HOME}/jre/lib/arm/shark/"
+FILES_${JDKPN}-vm-shark = "${JDK_HOME}/jre/lib/arm/shark/"
 
-FILES_${JDK_PN}-vm-cacao = "${JDK_HOME}/jre/lib/arm/cacao/"
+FILES_${JDKPN}-vm-cacao = "${JDK_HOME}/jre/lib/arm/cacao/"
 
-FILES_${JDK_PN}-common = "${JDK_HOME}/jre/ASSEMBLY_EXCEPTION \
+FILES_${JDKPN}-common = "${JDK_HOME}/jre/ASSEMBLY_EXCEPTION \
                           ${JDK_HOME}/jre/THIRD_PARTY_README \
                           ${JDK_HOME}/jre/LICENSE \
                           ${JDK_HOME}/jre/lib \
@@ -429,38 +429,38 @@ FILES_openjdk-6-jre_append = " \
         ${JDK_HOME}/jre/bin/javaws \
        "
 
-RDEPENDS_${JDK_PN}-common = "librhino-java"
+RDEPENDS_${JDKPN}-common = "librhino-java"
 
-RPROVIDES_${JDK_PN}-vm-shark = "java2-vm"
-RPROVIDES_${JDK_PN}-vm-zero = "java2-vm"
-RPROVIDES_${JDK_PN}-vm-cacao = "java2-vm"
+RPROVIDES_${JDKPN}-vm-shark = "java2-vm"
+RPROVIDES_${JDKPN}-vm-zero = "java2-vm"
+RPROVIDES_${JDKPN}-vm-cacao = "java2-vm"
 
-RDEPENDS_${JDK_PN}-java = "java2-vm"
+RDEPENDS_${JDKPN}-java = "java2-vm"
 
 # For some reason shark and cacao do not automatically depends on -common.
 # So we add that manually.
-RDEPENDS_${JDK_PN}-vm-shark = "${JDK_PN}-common"
-RDEPENDS_${JDK_PN}-vm-cacao = "${JDK_PN}-common"
+RDEPENDS_${JDKPN}-vm-shark = "${JDKPN}-common"
+RDEPENDS_${JDKPN}-vm-cacao = "${JDKPN}-common"
 
 # There is a symlink to a .so but this one is valid.
-INSANE_SKIP_${JDK_PN}-vm-shark = "1"
-INSANE_SKIP_${JDK_PN}-vm-zero = "1"
-INSANE_SKIP_${JDK_PN}-vm-cacao = "1"
-INSANE_SKIP_${JDK_PN}-common = "1"
+INSANE_SKIP_${JDKPN}-vm-shark = "1"
+INSANE_SKIP_${JDKPN}-vm-zero = "1"
+INSANE_SKIP_${JDKPN}-vm-cacao = "1"
+INSANE_SKIP_${JDKPN}-common = "1"
 
-FILES_${JDK_PN}-jdk = " \
+FILES_${JDKPN}-jdk = " \
                        ${JDK_HOME}/bin \
                        ${JDK_HOME}/lib \
                        ${JDK_HOME}/include \
                       "
-RDEPENDS_${JDK_PN}-jre = "${JDK_PN}-java"
-RPROVIDES_${JDK_PN}-jre = "java2-runtime"
+RDEPENDS_${JDKPN}-jre = "${JDKPN}-java"
+RPROVIDES_${JDKPN}-jre = "java2-runtime"
 
-RDEPENDS_${JDK_PN}-jdk = "${JDK_PN}-jre"
+RDEPENDS_${JDKPN}-jdk = "${JDKPN}-jre"
 
-FILES_${JDK_PN}-doc = "${JDK_HOME}/man"
+FILES_${JDKPN}-doc = "${JDK_HOME}/man"
 
-pkg_postinst_${JDK_PN}-vm-shark () {
+pkg_postinst_${JDKPN}-vm-shark () {
         if  grep -q "\-cacao KNOWN" ${JDK_HOME}/jre/lib/arm/jvm.cfg && grep -q "\-server ERROR" ${JDK_HOME}/jre/lib/arm/jvm.cfg; then
           sed -i -e "/\-cacao KNOWN/d" ${JDK_HOME}/jre/lib/arm/jvm.cfg
           echo "-cacao KNOWN" >> ${JDK_HOME}/jre/lib/arm/jvm.cfg
@@ -469,14 +469,14 @@ pkg_postinst_${JDK_PN}-vm-shark () {
 	sed -i -e "/\-shark.*/d" -e "s|\(^\-server*\)|\-shark KNOWN\n\1|" -e "/^$/d" ${JDK_HOME}/jre/lib/arm/jvm.cfg
 }
 
-pkg_prerm_${JDK_PN}-vm-shark () {
+pkg_prerm_${JDKPN}-vm-shark () {
 	sed -i -e "/^\-shark.*/d" -e "/^$/d" ${JDK_HOME}/jre/lib/arm/jvm.cfg 
         if  grep -q "\-cacao KNOWN" ${JDK_HOME}/jre/lib/arm/jvm.cfg && grep -q "\-server ERROR" ${JDK_HOME}/jre/lib/arm/jvm.cfg; then
           sed -i -e "/\-cacao KNOWN/d" -e  "s|\(^\-server*\)|\-cacao KNOWN\n\1|" ${JDK_HOME}/jre/lib/arm/jvm.cfg
         fi
 }
 
-pkg_postinst_${JDK_PN}-vm-cacao () {
+pkg_postinst_${JDKPN}-vm-cacao () {
         if  grep -q "\-server ERROR" ${JDK_HOME}/jre/lib/arm/jvm.cfg && ! grep -q "\-shark KNOWN" ${JDK_HOME}/jre/lib/arm/jvm.cfg; then
           sed -i -e "/\-cacao.*/d" -e  "s|\(^\-server*\)|\-cacao KNOWN\n\1|" -e "/^$/d" ${JDK_HOME}/jre/lib/arm/jvm.cfg
         else 
@@ -484,7 +484,7 @@ pkg_postinst_${JDK_PN}-vm-cacao () {
         fi
 }
 
-pkg_prerm_${JDK_PN}-vm-cacao () {
+pkg_prerm_${JDKPN}-vm-cacao () {
      if  grep -q "\-server ERROR" ${JDK_HOME}/jre/lib/arm/jvm.cfg && ! grep -q "\-shark KNOWN" ${JDK_HOME}/jre/lib/arm/jvm.cfg; then
 	sed -i -e "/\-cacao.*/d" -e "/^$/d" ${JDK_HOME}/jre/lib/arm/jvm.cfg
         echo "-cacao ERROR" >> ${JDK_HOME}/jre/lib/arm/jvm.cfg
@@ -493,7 +493,7 @@ pkg_prerm_${JDK_PN}-vm-cacao () {
       fi
 }
 
-pkg_postinst_${JDK_PN}-vm-zero () {
+pkg_postinst_${JDKPN}-vm-zero () {
  if  grep -q "\-cacao KNOWN" ${JDK_HOME}/jre/lib/arm/jvm.cfg  && ! grep -q "\-shark KNOWN" ${JDK_HOME}/jre/lib/arm/jvm.cfg; then
    sed -i -e "/\-cacao KNOWN/d" ${JDK_HOME}/jre/lib/arm/jvm.cfg
    echo "-cacao KNOWN" >> ${JDK_HOME}/jre/lib/arm/jvm.cfg
@@ -502,7 +502,7 @@ pkg_postinst_${JDK_PN}-vm-zero () {
  sed -i -e "s|^\-server.*|\-server KNOWN|" -e "/^$/d" ${JDK_HOME}/jre/lib/arm/jvm.cfg
 }
 
-pkg_prerm_${JDK_PN}-vm-zero () {
+pkg_prerm_${JDKPN}-vm-zero () {
  if  grep -q "\-cacao KNOWN" ${JDK_HOME}/jre/lib/arm/jvm.cfg  && ! grep -q "\-shark KNOWN" ${JDK_HOME}/jre/lib/arm/jvm.cfg; then
    sed -i -e "/\-cacao KNOWN/d" -e  "s|\(^\-server*\)|\-cacao KNOWN\n\1|" ${JDK_HOME}/jre/lib/arm/jvm.cfg
  fi
@@ -510,18 +510,18 @@ pkg_prerm_${JDK_PN}-vm-zero () {
  sed -i -e "s|^\-server.*|\-server ERROR|" -e "/^$/d" ${JDK_HOME}/jre/lib/arm/jvm.cfg
 }
 
-pkg_postinst_${JDK_PN}-jre () {
+pkg_postinst_${JDKPN}-jre () {
 	update-alternatives --install ${bindir}/java java ${JDK_HOME}/jre/bin/java 15
 }
 
-pkg_prerm_${JDK_PN}-jre () {
+pkg_prerm_${JDKPN}-jre () {
 	update-alternatives --remove java ${JDK_HOME}/jre/bin/java
 }
 
-pkg_postinst_${JDK_PN}-jdk () {
+pkg_postinst_${JDKPN}-jdk () {
 	update-alternatives --install ${bindir}/javac javac ${JDK_HOME}/bin/javac 15
 }
 
-pkg_prerm_${JDK_PN}-jdk () {
+pkg_prerm_${JDKPN}-jdk () {
 	update-alternatives --remove javac ${JDK_HOME}/bin/javac
 }

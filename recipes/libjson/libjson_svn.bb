@@ -5,8 +5,7 @@ SECTION = "libs"
 LICENSE = "MIT/X11"
 PV = "0.9+svnr${SRCPV}"
 
-SRC_URI = "svn://svn.metaparadigm.com/svn/json-c/;module=trunk;proto=http \
-           file://json-c-longlongint.patch"
+SRC_URI = "svn://svn.metaparadigm.com/svn/json-c/;module=trunk;proto=http"
 
 SRCREV = "55"
 S = "${WORKDIR}/trunk"

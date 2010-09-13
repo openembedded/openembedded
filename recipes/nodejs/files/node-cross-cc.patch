@@ -1,0 +1,14 @@
+diff --git node-v0.2.0/wscript.orig node-v0.2.0/wscript
+index df9ef53..a55d464 100644
+--- node-v0.2.0/wscript.orig
++++ node-v0.2.0/wscript
+@@ -326,6 +326,9 @@ def v8_cmd(bld, variant):
+   arch = ""
+   if bld.env['DEST_CPU'] == 'x86_64':
+     arch = "arch=x64"
++  # XXX Better support cross-compilation
++  else:
++    arch = "arch=" + bld.env['DEST_CPU']
+ 
+   if variant == "default":
+     mode = "release"

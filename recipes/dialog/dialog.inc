@@ -12,5 +12,6 @@ SRC_URI = "ftp://invisible-island.net/dialog/dialog-${PV}.tgz"
 inherit autotools
 
 do_configure() {
+	sed -i "s:-L/lib::" "${S}/configure"
 	oe_runconf
 }

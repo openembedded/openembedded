@@ -3,7 +3,7 @@ DESCRIPTION = "udev is a daemon which dynamically creates and removes device nod
 the hotplug package and requires a kernel not older than 2.6.12."
 LICENSE = "GPLv2+"
 
-PR = "r3"
+PR = "r4"
 
 # Untested
 DEFAULT_PREFERENCE = "-1"
@@ -76,23 +76,20 @@ FILES_${PN}-dbg += "${usrbindir}/.debug ${usrsbindir}/.debug"
 FILES_${PN} += "/lib/udev* ${libdir}/ConsoleKit"
 FILES_${PN}-dbg += "/lib/udev/.debug"
 
-RPROVIDES_udev_append_spitz += "udev-compat-wrapper"
-RDEPENDS_udev_append_spitz += "udev-compat"
+RPROVIDES_udev_append = " udev-compat-wrapper"
+RDEPENDS_udev_append_spitz = " udev-compat"
 do_unpack_append_spitz() {
 	bb.build.exec_func('do_apply_compat_wrapper', d)
 }
-RPROVIDES_udev_append_akita += "udev-compat-wrapper"
-RDEPENDS_udev_append_akita += "udev-compat"
+RDEPENDS_udev_append_akita = " udev-compat"
 do_unpack_append_akita() {
 	bb.build.exec_func('do_apply_compat_wrapper', d)
 }
-RPROVIDES_udev_append_c7x0 += "udev-compat-wrapper"
-RDEPENDS_udev_append_c7x0 += "udev-compat"
+RDEPENDS_udev_append_c7x0 = " udev-compat"
 do_unpack_append_c7x0() {
 	bb.build.exec_func('do_apply_compat_wrapper', d)
 }
-RPROVIDES_udev_append_poodle += "udev-compat-wrapper"
-RDEPENDS_udev_append_poodle += "udev-compat"
+RDEPENDS_udev_append_poodle = " udev-compat"
 do_unpack_append_poodle() {
 	bb.build.exec_func('do_apply_compat_wrapper', d)
 }

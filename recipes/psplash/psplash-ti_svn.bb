@@ -12,6 +12,7 @@ ALTERNATIVE_PRIORITY = "20"
 SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=psplash;proto=http \
           file://psplash-18bpp.patch \
           file://logo-math.patch \
+          file://0001-configurability-for-rev-422.patch \
           file://psplash-poky-img.h \
           file://psplash-bar-img.h \
           file://psplash-default \

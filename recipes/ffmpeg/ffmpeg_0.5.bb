@@ -2,7 +2,7 @@ require ffmpeg.inc
 
 DEPENDS += "schroedinger libgsm"
 
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 DEFAULT_PREFERENCE = "1"
 
@@ -19,6 +19,7 @@ FULL_OPTIMIZATION_armv7a = "-fexpensive-optimizations  -ftree-vectorize -fomit-f
 BUILD_OPTIMIZATION = "${FULL_OPTIMIZATION}"
 
 EXTRA_FFCONF_armv7a = "--cpu=cortex-a8"
+CFLAGS_append_armv7a = " -fPIC -DPIC"
 EXTRA_FFCONF ?= ""
 
 EXTRA_OECONF = " \
@@ -45,7 +46,7 @@ EXTRA_OECONF = " \
         --arch=${TARGET_ARCH} \
         --enable-cross-compile \
         --extra-cflags="${TARGET_CFLAGS} ${HOST_CC_ARCH}${TOOLCHAIN_OPTIONS}" \
-        --extra-ldflags="${TARGET_LDFLAGS}" \
+        --extra-ldflags="${TARGET_LDFLAGS} ${HOST_CC_ARCH}${TOOLCHAIN_OPTIONS}" \
         --enable-hardcoded-tables \
         ${EXTRA_FFCONF} \
 "

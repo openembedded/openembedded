@@ -6,7 +6,8 @@
 #setenv defaultdisplay 'dvi'
 #setenv dvimode '640x480MR-16@60'
 
-setenv setbase 'setenv baseargs ${memmap} console=${console} mpurate=${mpurate} buddy=${buddy} vram=${vram} musb_hdrc.fifomode=${musbfifomode} omapfb.mode=${defaultdisplay}:${dvimode} omapdss.def_disp=${defaultdisplay}'
+# temp removing musb config since out of args space... musb_hdrc.fifomode=${musbfifomode}
+setenv setbase 'setenv baseargs ${memmap} console=${console} mpurate=${mpurate} buddy=${buddy} camera=${camera} vram=${vram} omapfb.mode=${defaultdisplay}:${dvimode} omapdss.def_disp=${defaultdisplay}'
 
 setenv nandroot 'root=/dev/mtdblock4 rw rootfstype=jffs2'
 setenv nandargs 'run setbase; setenv bootargs ${baseargs} ${nandroot}'
@@ -26,16 +27,22 @@ setenv musbfifomode '5'
 # mpurate is read from omap registers on omap3530 (which x-load has set to 600mhz?), on xm, uboot sets this to 1GHz
 #setenv mpurate '720'  
 setenv memmap 'mem=80M mem=384M@0x88000000'
-if "${beaglerev}" = "AxBx"; then
- setenv memmap 'mem=80M'
-fi
-if "${beaglerev}" = "Cx"; then
- setenv memmap 'mem=80M mem=128M@0x88000000'
-fi
+
+# temp remove board check until uboot fixed
+#if "${beaglerev}" = "AxBx"; then
+# setenv memmap 'mem=80M'
+#fi
+#if "${beaglerev}" = "Cx"; then
+# setenv memmap 'mem=80M mem=128M@0x88000000'
+#fi
+
 setenv vram '16M omapfb.vram=0:8M,1:4M,2:4M'
 setenv defaultdisplay 'dvi'
 setenv dvimode 'hd720'
 #setenv dvimode '1280x720MR-32@60'
+
+#setenv camera 'lbcm3m1'
+setenv camera 'lbcmvga'
 
 run mmcargs
 printenv

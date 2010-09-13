@@ -2,7 +2,7 @@ DESCRIPTION = "XFS Filesystem Utilities"
 HOMEPAGE = "http://oss.sgi.com/projects/xfs"
 LICENSE = "GPL"
 SECTION = "base"
-PR = "r2"
+PR = "r3"
 DEPENDS = "util-linux-ng"
 
 SRC_URI = "http://slackware.osuosl.org/slackware-12.0/source/a/xfsprogs/xfsprogs_2.8.16-1.tar.gz"
@@ -11,8 +11,10 @@ PARALLEL_MAKE = ""
 inherit autotools
 EXTRA_OECONF = "--enable-gettext=no"
 
+EXTRA_OEMAKE = "'LIBTOOL=${HOST_SYS}-libtool'"
+
 do_configure () {
-	export LIBTOOL="${STAGING_BINDIR_NATIVE}/${HOST_SYS}-libtool"
+	export LIBTOOL="${HOST_SYS}-libtool"
 	export DEBUG="-DNDEBUG"
 	oe_runconf
 }

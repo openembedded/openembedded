@@ -14,6 +14,9 @@
 #   - SRCIPK_PACKAGE_ARCH   = This variable allows specific recipies to
 #                             specify an architecture for the sourcetree
 #                             package is "all" is not appropriate
+#   - SRCIPK_INC_EXTRAFILES = When set to 1 this variable indicates that
+#                             the source ipk should contain extra files
+#                             such as the README file and recipe.
 #
 # The default installation directory for the sources is:
 #   /usr/src/${PN}-src
@@ -46,6 +49,9 @@ SRCIPK_INSTALL_DIR ?= "/usr/src/${PN}-src"
 
 # Default PACKAGE_ARCH for sources is "all"
 SRCIPK_PACKAGE_ARCH ?= "all"
+
+# Default SRCIPK_INCLUDE_EXTRAFILES is to include the extra files
+SRCIPK_INCLUDE_EXTRAFILES ?= "1"
 
 # Create a README file that describes the contents of the source ipk
 sourceipk_create_readme() {
@@ -91,7 +97,6 @@ sourceipk_do_create_srcipk() {
             srcuri="OpenEmbedded"
         fi
         echo "Source: $srcuri" >> $control_file
-
         #Write the control tarball
         tar -C $tmp_dir/CONTROL --owner=0 --group=0 -czf $srcipk_dir/control.tar.gz .
 
@@ -101,8 +106,12 @@ sourceipk_do_create_srcipk() {
         # Copy sources for packaging
         mkdir -p $tmp_dir/${SRCIPK_INSTALL_DIR}
         cp -rLf ${S}/* $tmp_dir/${SRCIPK_INSTALL_DIR}/
-        sourceipk_create_readme $tmp_dir/${SRCIPK_INSTALL_DIR}/
-        cp ${FILE} $tmp_dir/${SRCIPK_INSTALL_DIR}/
+
+        if [ ${SRCIPK_INCLUDE_EXTRAFILES} != "0" ]
+        then
+            sourceipk_create_readme $tmp_dir/${SRCIPK_INSTALL_DIR}/
+            cp ${FILE} $tmp_dir/${SRCIPK_INSTALL_DIR}/
+        fi
 
         #Write the data tarball
         tar -C $tmp_dir --owner=0 --group=0 -czf $srcipk_dir/data.tar.gz .

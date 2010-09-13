@@ -1,6 +1,7 @@
 DESCRIPTION = "Irrlicht 3D rendering engine "
 LICENSE = "zlib"
 DEPENDS = "virtual/libx11 libxxf86vm virtual/egl"
+require recipes/egl/egl.inc
 
 SRCREV = "2409"
 PV = "1.6+svnr${SRCPV}"

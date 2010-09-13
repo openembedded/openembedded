@@ -1,6 +1,6 @@
 require midpath-common.inc
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/midpath/midpath-0.3rc2.tar.gz"
 
@@ -41,13 +41,9 @@ do_install() {
 	oe_libinstall -C dist -so libsdljava_ttf ${D}${libdir_jni}
 	oe_libinstall -C dist -so libsdljava_image ${D}${libdir_jni}
 	oe_libinstall -C dist -so libsdljava_gfx ${D}${libdir_jni}
+
 }
 
-do_stage() {
-	install -d ${STAGING_DATADIR}/midpath
-	install -m 0644 dist/sdljava-cldc.jar ${STAGING_DATADIR}/midpath
-}
-	
 PACKAGES = "${PN} ${PN}-jni ${PN}-jni-dbg"
 
 FILES_${PN}  = "\

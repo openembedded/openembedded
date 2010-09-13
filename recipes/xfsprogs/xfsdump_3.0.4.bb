@@ -3,6 +3,7 @@ HOMEPAGE = "http://oss.sgi.com/projects/xfs"
 LICENSE = "GPL"
 SECTION = "base"
 DEPENDS = "xfsprogs"
+PR = "r1"
 
 SRC_URI = "ftp://oss.sgi.com/projects/xfs/cmd_tars/${P}.tar.gz"
 SRC_URI[md5sum] = "af6932cfcd95ce64dc583128a190ffd7"
@@ -13,9 +14,10 @@ inherit autotools
 EXTRA_OECONF = "--enable-gettext=no"
 TARGET_CC_ARCH += "${LDFLAGS}"
 
+LIBTOOL = "${HOST_SYS}-libtool"
+EXTRA_OEMAKE = "'LIBTOOL=${LIBTOOL}'"
 
 do_configure () {
-	export LIBTOOL="${STAGING_BINDIR_NATIVE}/${HOST_SYS}-libtool"
 	export DEBUG="-DNDEBUG"
 	oe_runconf
 }

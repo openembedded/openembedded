@@ -133,6 +133,7 @@ SRC_URI = "git://arago-project.org/git/people/sriram/ti-psp-omap.git;protocol=gi
            file://cam/0001-Move-sensor-rest-to-after-applying-power.patch \
            file://0001-BeagleBoard-Adjust-USER-button-pin-for-xM.patch \
            file://cam/0001-omap3beagle-Add-camera-bootarg.patch \
+           file://porches.patch \
            file://defconfig"
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \

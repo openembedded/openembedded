@@ -92,11 +92,9 @@ Recipes:    cdparanoia, cdstatus, iscsi-target urjtag
 Person:     Graeme Gregory
 Mail:       dp@xora.org.uk
 Website:    http://www.xora.org.uk
-Interests:  Multimedia in gpe and on fbdev, and gtk+ apps on PDA devices.
-Interests:  GNOME on PDA
-Recipes:    mplayer, xmms, xmms-mad, xmms-tremor, dillo, links, links-x11
-Recipes:    epdfview, sylpheed-claws, sylpheed, gqview, tightvnc
-Recipes:    gtk+_2.10.*
+Interests:  Angstrom Distribution
+Distros:    Ångström
+Recipes:    angstrom*
 
 Person:     Henning Heinold 'woglinde'
 Mail:       heinold@inf.fu-berlin.de

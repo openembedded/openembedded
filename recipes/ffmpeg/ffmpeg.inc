@@ -32,6 +32,8 @@ EXTRA_OECONF = "\
         \
 "
 
+EXTRA_OECONF_append_powerpc += "--${@['disable-altivec','enable-altivec'][bb.data.getVar('BASE_PACKAGE_ARCH',d,1) in ['ppce600']]}"
+
 FFMPEG_LIBS = "libavcodec libavdevice libavformat \
                libavutil libpostproc libswscale libavfilter"
 

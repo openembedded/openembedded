@@ -12,9 +12,10 @@ SRC_URI = "git://repo.or.cz/mplayer/glamo.git;protocol=git;branch=master \
    "
 
 SRC_URI_append_armv7a = " \
-		file://omapfb.patch \
+	   file://mplayer-git_omapfb.patch \
 	   file://vo_omapfb.c \
 	   file://yuv.S \
+	   file://omapfb_control_arguments.patch;patchdir=.. \
 	  "
 
 # This is required for the collie machine only as all stacks in that
@@ -35,7 +36,7 @@ RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
 PV = "0.0+1.0rc4+gitr${SRCPV}"
-PR = "r4"
+PR = "r5"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_shr = "2"
 

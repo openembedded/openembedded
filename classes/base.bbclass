@@ -2,6 +2,7 @@ BB_DEFAULT_TASK ?= "build"
 
 inherit patch
 inherit staging
+inherit packaged-staging
 
 inherit packagedata
 inherit mirrors
@@ -176,7 +177,7 @@ def oe_unpack(d, local, urldata):
         if not urldata.host:
             urlpath = urldata.path
         else:
-            urlpath = oe.path.join(urldata.host, urldata.path)
+            urlpath = "%s%s" % (urldata.host, urldata.path)
 
         if not os.path.isabs(urlpath):
             subdirs.append(os.path.dirname(urlpath))
@@ -337,7 +338,7 @@ python () {
             this_machine = bb.data.getVar('MACHINE', d, 1)
             if this_machine and not re.match(need_machine, this_machine):
                 this_soc_family = bb.data.getVar('SOC_FAMILY', d, 1)
-                if this_soc_family and not re.match(need_machine, this_soc_family):
+                if (this_soc_family and not re.match(need_machine, this_soc_family)) or not this_soc_family:
                     raise bb.parse.SkipPackage("incompatible with machine %s" % this_machine)
 
         need_target = bb.data.getVar('COMPATIBLE_TARGET_SYS', d, 1)

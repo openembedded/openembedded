@@ -12,7 +12,14 @@ RDEPENDS_mythweb_lighttpd = "lighttpd lighttpd-module-cgi lighttpd-module-fastcg
         lighttpd-module-rewrite php-cgi lighttpd-module-auth"
 
 RDEPENDS_mythnetvision += " python python-mysqldb "
-PR = "svnr${SRCPV}+r0"
+
+# for mythweather:
+DEPENDS_mythweather += " libxml-xpath-perl-native libxml-simple-perl-native libdatetime-format-iso8601-perl-native \
+	libsoap-lite-perl-native libimage-size-perl-native libdate-manip-perl-native "
+RDEPENDS_mythweather += " libxml-xpath-perl libxml-simple-perl libdatetime-format-iso8601-perl \
+	libsoap-lite-perl libimage-size-perl libdate-manip-perl "
+
+PR = "svnr${SRCPV}+r1"
 PV = "0.23"
 
 SRCREV = "25609"

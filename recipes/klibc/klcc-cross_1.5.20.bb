@@ -1,0 +1,19 @@
+PR = "${INC_PR}.0"
+
+require klibc.inc
+require klibc-checksums_${PV}.inc
+DEPENDS = "klibc"
+
+FILESPATHPKG =. "klibc-${PV}:"
+
+export KLCC_INST=${STAGING_DIR_TARGET}/lib/klibc
+
+inherit cross
+
+do_install() {
+         install -d ${D}${TOOLCHAIN_PATH}/bin/
+         install -m 0755 klcc/klcc ${D}${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}klcc
+}
+
+PACKAGES = "${PN}"
+FILES_${PN} = "${D}${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}klcc"

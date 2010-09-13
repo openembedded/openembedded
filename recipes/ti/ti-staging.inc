@@ -11,7 +11,4 @@ PACKAGE_STRIP = "no"
 ALLOW_EMPTY_${PN} = "1"
 ALLOW_EMPTY_${PN}-dev = "1"
 
-PACKAGES =+ "${PN}-sourcetree"
-FILES_${PN}-sourcetree = "${installdir}/*-tree"
-INSANE_SKIP_${PN}-sourcetree = "True"
 

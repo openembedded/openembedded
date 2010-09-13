@@ -1,0 +1,11 @@
+--- a/arch/arm/plat-s3c/clock.c	2010-09-09 17:17:50.000000000 +0200
++++ b/arch/arm/plat-s3c/clock.c	2010-09-08 22:55:34.000000000 +0200
+@@ -51,6 +51,8 @@
+ #include <plat/cpu.h>
+ 
+ static LIST_HEAD(clocks);
++extern int s3c_fclk_set_rate(struct clk *clk, unsigned long rate);
++extern unsigned long s3c_fclk_round_rate(struct clk *clk, unsigned long rate);
+ 
+ /* We originally used an mutex here, but some contexts (see resume)
+  * are calling functions such as clk_set_parent() with IRQs disabled

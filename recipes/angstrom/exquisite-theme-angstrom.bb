@@ -6,7 +6,7 @@ SECTION = "x11"
 DEPENDS = "edje-native"
 RRECOMMENDS_${PN} = "exquisite"
 
-PV = "1.1"
+PV = "1.2"
 
 inherit update-alternatives
 

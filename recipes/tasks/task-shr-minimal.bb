@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r33"
+PR = "r34"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -140,5 +140,6 @@ RDEPENDS_${PN}-gtk = "\
   vala-terminal \
   pyphonelog \
   matchbox-keyboard-im \
+  gtk-immodule-xim \
 "
 

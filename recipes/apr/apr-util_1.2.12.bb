@@ -3,7 +3,7 @@ SECTION = "libs"
 DEPENDS = "apr expat gdbm"
 LICENSE = "Apache License, Version 2.0"
 
-PR = "r3"
+PR = "r4"
 
 inherit autotools lib_package binconfig
 
@@ -19,12 +19,11 @@ EXTRA_OECONF = "--with-apr=${STAGING_BINDIR_CROSS} --with-dbm=gdbm \
 
 
 OE_BINCONFIG_EXTRA_MANGLE = " -e 's:location=source:location=installed:'"
-EXTRA_OEMAKE = " LIBTOOL=\"${S}/${TARGET_PREFIX}libtool\" "
 
-export LIBTOOL="${S}/${TARGET_PREFIX}libtool"
+LIBTOOL = "${HOST_SYS}-libtool"
+EXTRA_OEMAKE = "'LIBTOOL=${LIBTOOL}'"
 
 do_configure_prepend() {
-	cp ${STAGING_BINDIR_NATIVE}/${TARGET_PREFIX}libtool ${S}/
 	cp ${STAGING_DATADIR}/apr/apr_rules.mk ${S}/build/rules.mk
 	echo "AC_PROG_LIBTOOL" >> ${S}/configure.in
 	libtoolize --force

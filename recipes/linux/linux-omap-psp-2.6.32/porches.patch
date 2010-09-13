@@ -1,0 +1,55 @@
+From 00a84122fd2c1974f6dc79fce11a34154caab848 Mon Sep 17 00:00:00 2001
+From: Tasslehoff Kjappfot <tasskjapp@gmail.com>
+Date: Wed, 8 Sep 2010 12:46:14 +0200
+Subject: [PATCH] OMAP: DSS2: OMAPFB: swap front and back porches for both hsync and vsync
+
+Framebuffer's left and right margins are relative to the active pixel
+area. Front and back porches are relative to the sync area.
+
+Left margin was wrongly assigned to front porch (and right to back),
+this patch fixes it.
+
+Signed-off-by: tasskjapp@gmail.com
+Reviewed-by: Russ.Dill@gmail.com
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+---
+ drivers/video/omap2/omapfb/omapfb-main.c |   16 ++++++++--------
+ 1 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/video/omap2/omapfb/omapfb-main.c b/drivers/video/omap2/omapfb/omapfb-main.c
+index 39f53b1..bddfca6 100644
+--- a/drivers/video/omap2/omapfb/omapfb-main.c
++++ b/drivers/video/omap2/omapfb/omapfb-main.c
+@@ -714,10 +714,10 @@ int check_fb_var(struct fb_info *fbi, struct fb_var_screeninfo *var)
+ 		var->pixclock = timings.pixel_clock != 0 ?
+ 			KHZ2PICOS(timings.pixel_clock) :
+ 			0;
+-		var->left_margin = timings.hfp;
+-		var->right_margin = timings.hbp;
+-		var->upper_margin = timings.vfp;
+-		var->lower_margin = timings.vbp;
++		var->left_margin = timings.hbp;
++		var->right_margin = timings.hfp;
++		var->upper_margin = timings.vbp;
++		var->lower_margin = timings.vfp;
+ 		var->hsync_len = timings.hsw;
+ 		var->vsync_len = timings.vsw;
+ 	} else {
+@@ -2059,10 +2059,10 @@ static int omapfb_mode_to_timings(const char *mode_str,
+ 
+ 	if (r != 0) {
+ 		timings->pixel_clock = PICOS2KHZ(var.pixclock);
+-		timings->hfp = var.left_margin;
+-		timings->hbp = var.right_margin;
+-		timings->vfp = var.upper_margin;
+-		timings->vbp = var.lower_margin;
++		timings->hbp = var.left_margin;
++		timings->hfp = var.right_margin;
++		timings->vbp = var.upper_margin;
++		timings->vfp = var.lower_margin;
+ 		timings->hsw = var.hsync_len;
+ 		timings->vsw = var.vsync_len;
+ 		timings->x_res = var.xres;
+-- 
+1.6.1
+

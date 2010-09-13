@@ -2,6 +2,8 @@ PACKAGE_STRIP ?= ""
 OLD_PACKAGE_STRIP := "${PACKAGE_STRIP}"
 PACKAGE_STRIP = "no"
 
+SHLIBSDIR = "${STAGING_DIR_TARGET}/shlibs"
+
 PACKAGES = "libgcc libssp libstdc++ libg2c libgfortran"
 
 # Called from within gcc-cross, so libdir is set wrong

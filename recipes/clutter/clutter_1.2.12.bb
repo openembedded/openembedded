@@ -3,6 +3,7 @@ require clutter.inc
 PR = "${INC_PR}.1"
 
 SRC_URI = "http://source.clutter-project.org/sources/clutter/1.2/clutter-${PV}.tar.bz2 \
+           file://workaround-broken-mipmaps.patch \
            ${INC_SRC_URI} \
           "
 

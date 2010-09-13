@@ -1,0 +1,24 @@
+Index: linux-2.6.28/drivers/dsp/bridge/dynload/cload.c
+===================================================================
+--- linux-2.6.28.orig/drivers/dsp/bridge/dynload/cload.c	2010-09-12 02:03:52.106475160 +0200
++++ linux-2.6.28/drivers/dsp/bridge/dynload/cload.c	2010-09-12 02:05:30.722106026 +0200
+@@ -1475,10 +1475,6 @@
+ #if TARGET_AU_BITS <= BITS_PER_AU
+ 		/* byte-swapping issues may exist for strings on target */
+ 		*dst++ = *src++;
+-#elif TARGET_ENDIANNESS_DIFFERS(TARGET_BIG_ENDIAN)
+-		register TgtAU_t tmp;
+-		tmp = *src++;
+-		*dst++ = SWAP16BY8(tmp);  /* right for TARGET_AU_BITS == 16 */
+ #else
+ 		*dst++ = *src++;
+ #endif
+@@ -1486,8 +1482,6 @@
+ 	/*apply force to make sure that the string table has null terminator */
+ #if (BITS_PER_AU == BITS_PER_BYTE) && (TARGET_AU_BITS == BITS_PER_BYTE)
+ 	dst[-1] = 0;
+-#elif TARGET_BIG_ENDIAN
+-	dst[-1] &= ~BYTE_MASK;	/*  big-endian */
+ #else
+ 	dst[-1] &= (1 << (BITS_PER_AU - BITS_PER_BYTE)) - 1; /* little endian */
+ #endif

@@ -6,6 +6,6 @@ Terminal=false
 MultipleArgs=false
 Type=Application
 Icon=mozilla-firefox.png
-Categories=Application;Internet;
+Categories=Application;Internet;Network;
 SingleInstance=true
 

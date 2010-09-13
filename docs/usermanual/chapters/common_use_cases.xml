@@ -94,6 +94,30 @@ SRCDATE = "20061014"
         </listitem>
       </itemizedlist></para>
 
+    <para>There are also some optional variables that can be defined:
+    <itemizedlist>
+    <listitem>
+          <para><command>SOC_FAMILY</command> describes a family of processors
+            that all share common features such as kernel versions,
+            bootloaders, etc.  This is used to allow overrides for a whole
+            set of devices rather than per machine overrides being used.
+            The use of SOC_FAMILY as an override is currently a distribution
+            or local setting.
+          </para>
+          <para>
+            NOTE: SOC_FAMILY is different than MACHINE_CLASS in that 
+            MACHINE_CLASS is intended to specify a grouping of devices
+            that may have different processors but share common features.
+            For example all OMAP3 devices can be described using the SOC_FAMILY
+            "omap3" and this value can be used in overrides to prevent
+            requiring multiple machine specific overrides.  MACHINE_CLASS
+            might be used to describe a class of devices such as a cell
+            phone in which the processor may be different but the
+            features such as touchscreen, GPS, modem, etc are the same.
+          </para>
+        </listitem>
+    </itemizedlist></para>
+
     <para>Next the kernel recipe needs to be added if it doesn't already exist.
     </para>
   </section>

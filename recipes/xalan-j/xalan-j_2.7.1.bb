@@ -2,7 +2,7 @@ DESCRIPTION = "Java XSLT processor"
 LICENSE = "AL2.0"
 
 AUTHOR = "Apache Software Foundation"
-HOMEPAGE = "http://xml.apache.org/xalan-j
+HOMEPAGE = "http://xml.apache.org/xalan-j"
 PR = "r4"
 
 DEPENDS = "fastjar-native xerces-j regexp jlex cup jaxp1.3 bcel"

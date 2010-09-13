@@ -11,6 +11,8 @@ GLIBJ_ZIP = "${STAGING_DATADIR}/classpath/glibj.zip"
 
 CLDC_JAR = "${STAGING_DATADIR}/midpath-cldc/midpath-cldc1.1.jar"
 
+TARGET_CC_ARCH += "${LDFLAGS}"
+
 do_unpackpost() {
 	# Remove unneccessary binary bits.
   find lib -name "*.jar" -exec rm \{\} \;

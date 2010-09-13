@@ -1,0 +1,41 @@
+From d9b482fc3e5bef43a7845989189cf9b71915a1cb Mon Sep 17 00:00:00 2001
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Date: Wed, 12 May 2010 09:59:32 +0300
+Subject: [PATCH 01/20] s3c2410_ts: add fake pressure events
+
+Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+---
+ drivers/input/touchscreen/s3c2410_ts.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/input/touchscreen/s3c2410_ts.c b/drivers/input/touchscreen/s3c2410_ts.c
+index 6085d12..381c295 100644
+--- a/drivers/input/touchscreen/s3c2410_ts.c
++++ b/drivers/input/touchscreen/s3c2410_ts.c
+@@ -126,6 +126,7 @@ static void touch_timer_fire(unsigned long data)
+ 			input_report_abs(ts.input, ABS_Y, ts.yp);
+ 
+ 			input_report_key(ts.input, BTN_TOUCH, 1);
++			input_report_abs(ts.input, ABS_PRESSURE, 1);
+ 			input_sync(ts.input);
+ 
+ 			ts.xp = 0;
+@@ -140,6 +141,7 @@ static void touch_timer_fire(unsigned long data)
+ 		ts.count = 0;
+ 
+ 		input_report_key(ts.input, BTN_TOUCH, 0);
++		input_report_abs(ts.input, ABS_PRESSURE, 0);
+ 		input_sync(ts.input);
+ 
+ 		writel(WAIT4INT | INT_DOWN, ts.io + S3C2410_ADCTSC);
+@@ -318,6 +320,7 @@ static int __devinit s3c2410ts_probe(struct platform_device *pdev)
+ 	ts.input->keybit[BIT_WORD(BTN_TOUCH)] = BIT_MASK(BTN_TOUCH);
+ 	input_set_abs_params(ts.input, ABS_X, 0, 0x3FF, 0, 0);
+ 	input_set_abs_params(ts.input, ABS_Y, 0, 0x3FF, 0, 0);
++	input_set_abs_params(ts.input, ABS_PRESSURE, 0, 1, 0, 0);
+ 
+ 	ts.input->name = "S3C24XX TouchScreen";
+ 	ts.input->id.bustype = BUS_HOST;
+-- 
+1.7.2.2
+

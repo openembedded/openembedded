@@ -2,12 +2,15 @@ DESCRIPTION = "libjpeg is a library for handling the JPEG (JFIF) image format."
 LICENSE = "jpeg"
 SECTION = "libs"
 PRIORITY = "required"
-PR = "r0"
+PR = "r1"
 
 # TODO: really needed?
 RPROVIDES_${PN} = "jpeg"
 
-SRC_URI = "http://www.ijg.org/files/jpegsrc.v${PV}.tar.gz"
+SRC_URI = "\
+    http://www.ijg.org/files/jpegsrc.v${PV}.tar.gz \
+    file://0001-configure-make-jpeg-work-with-older-autotools.patch \
+    "
 S = "${WORKDIR}/jpeg-${PV}"
 
 inherit autotools

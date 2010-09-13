@@ -2,10 +2,14 @@ DESCRIPTION = "XML-LibXML"
 SECTION = "libs"
 LICENSE = ""
 DEPENDS += "libxml2 \
+        libxml-sax-perl-native \
+        zlib \
+"
+RDEPENDS_${PN} += "libxml2 \
         libxml-sax-perl \
         zlib \
 "
-PR = "r0"
+PR = "r3"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/P/PA/PAJAS/XML-LibXML-${PV}.tar.gz;name=libxml \
         file://libxml-libxml-perl-disable-libxml2-check.patch \
@@ -22,3 +26,4 @@ EXTRA_CPANFLAGS = "INC=-I${STAGING_INCDIR}/libxml2 LIBS=-L${STAGING_LIBDIR}"
 BBCLASSEXTEND = "native"
 
 CFLAGS += " -D_GNU_SOURCE "
+BUILD_CFLAGS += " -D_GNU_SOURCE "

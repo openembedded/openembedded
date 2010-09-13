@@ -4,7 +4,7 @@ HOMEPAGE = "http://packages.qa.debian.org/s/sg3-utils.html"
 SECTION = "console/admin"
 LICENSE = "GPLv2"
 AUTHOR = "Eric Schwartz (Skif) <emschwar@debian.org>"
-PR = "r2"
+PR = "r3"
 
 TARGET_CC_ARCH += "${LDFLAGS}"
 
@@ -15,7 +15,8 @@ S = "${WORKDIR}/sg3-utils-${PV}"
 
 inherit autotools
 
-EXTRA_OEMAKE='"LIBTOOL=${STAGING_BINDIR_NATIVE}/${HOST_SYS}-libtool"'
+LIBTOOL = "${HOST_SYS}-libtool"
+EXTRA_OEMAKE = "'LIBTOOL=${LIBTOOL}'"
 
 SRC_URI[md5sum] = "9e1b8811b013d8f97d8ea2e0942cebad"
 SRC_URI[sha256sum] = "0a06dae84a8f7f464c0c29c78a8f73f24a62894a2d3fc10b5f74a993f7b5abfe"

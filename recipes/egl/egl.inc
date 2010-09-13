@@ -1,0 +1,2 @@
+COMPATIBLE_MACHINE = "omap3"
+

@@ -2,11 +2,11 @@ DESCRIPTION = "Apache Portable Runtime (APR) library"
 SECTION = "libs"
 LICENSE = "Apache License, Version 2.0"
 
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "${APACHE_MIRROR}/apr/${P}.tar.bz2;name=apr135tarbz2 \
            file://configure_fixes.patch \
-#	   file://cleanup.patch \
+	   file://cleanup.patch \
            file://configfix.patch"
 
 inherit autotools lib_package binconfig

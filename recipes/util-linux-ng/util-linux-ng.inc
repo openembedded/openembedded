@@ -8,7 +8,7 @@ inherit autotools gettext
 
 DEFAULT_PREFERENCE = "-1"
 
-INC_PR = "r27"
+INC_PR = "r29"
 
 # allows for a release candidate
 RC ?= ""
@@ -51,7 +51,7 @@ FILES_util-linux-ng-losetup = "${base_sbindir}/losetup.${PN}"
 FILES_util-linux-ng-mount = "${base_bindir}/mount.${PN} ${sysconfdir}/default/mountall"
 FILES_util-linux-ng-umount = "${base_bindir}/umount.${PN}"
 # Moved to ${base_sbindir} by do_install:
-FILES_util-linux-ng-readprofile = "${base_sbindir}/readprofile.${PN}"
+FILES_util-linux-ng-readprofile = "${sbindir}/readprofile.${PN}"
 FILES_util-linux-ng-fsck = "${base_sbindir}/fsck.${PN}"
 FILES_util-linux-ng-blkid = "${base_sbindir}/blkid.${PN}"
 FILES_${PN}-mountall = "${sysconfdir}/default/mountall.${PN}"
@@ -124,9 +124,10 @@ do_install () {
 	mkdir -p ${D}${base_bindir}
 
         sbinprogs="agetty blockdev ctrlaltdel cfdisk"
-        sbinprogs_a="pivot_root hwclock mkswap shutdown mkfs.minix fsck.minix losetup swapon fdisk readprofile fsck blkid vigr vipw"
-        usrbinprogs_a="chfn chsh hexdump last logger mesg newgrp renice wall setsid chrt"
-        binprogs_a="dmesg kill more umount mount login reset"
+        sbinprogs_a="pivot_root hwclock mkswap shutdown mkfs.minix fsck.minix losetup swapon fdisk fsck blkid vigr vipw"
+        usrbinprogs_a="chfn chsh hexdump last logger mesg newgrp renice wall setsid chrt reset"
+        usrsbinprogs_a="readprofile"
+        binprogs_a="dmesg kill more umount mount login"
 
         if [ "${base_sbindir}" != "${sbindir}" ]; then
         	mkdir -p ${D}${base_sbindir}
@@ -152,6 +153,12 @@ do_install () {
                 fi
         done
 
+        for p in $usrsbinprogs_a; do
+                if [ -f "${D}${sbindir}/$p" ]; then
+                        mv "${D}${sbindir}/$p" "${D}${sbindir}/$p.${PN}"
+                fi
+        done
+
         for p in $binprogs_a; do
                 if [ -f "${D}${base_bindir}/$p" ]; then
                         mv "${D}${base_bindir}/$p" "${D}${base_bindir}/$p.${PN}"
@@ -169,10 +176,10 @@ do_install () {
 
 	rm ${D}${sbindir}/swapoff -f
 	ln -sf ${base_sbindir}/swapon.${PN} ${D}${base_sbindir}/swapoff.${PN}
-	ln -sf ${sbindir}/shutdown ${D}${sbindir}/reboot.${PN}
-	ln -sf ${sbindir}/shutdown ${D}${sbindir}/halt.${PN}
-	ln -sf ${sbindir}/shutdown ${D}${sbindir}/fastboot
-	ln -sf ${sbindir}/shutdown ${D}${sbindir}/fasthalt
+	ln -sf ${base_sbindir}/shutdown ${D}${base_sbindir}/reboot.${PN}
+	ln -sf ${base_sbindir}/shutdown ${D}${base_sbindir}/halt.${PN}
+	ln -sf ${base_sbindir}/shutdown ${D}${base_sbindir}/fastboot
+	ln -sf ${base_sbindir}/shutdown ${D}${base_sbindir}/fasthalt
 }
 
 python populate_packages_prepend () {
@@ -207,7 +214,7 @@ pkg_postinst_${PN} () {
 	update-alternatives --install ${base_bindir}/login login login.${PN} 100
 	update-alternatives --install ${base_sbindir}/vipw vipw vipw.${PN} 100
 	update-alternatives --install ${base_sbindir}/vigr vigr vigr.${PN} 100
-	update-alternatives --install ${base_bindir}/reset reset reset.${PN} 100
+	update-alternatives --install ${bindir}/reset reset reset.${PN} 100
 	update-alternatives --install ${bindir}/setsid setsid setsid.${PN} 100
 	update-alternatives --install ${bindir}/chrt chrt chrt.${PN} 100
 	
@@ -223,7 +230,7 @@ pkg_prerm_${PN} () {
 	test -x ${base_sbindir}/pivot_root.${PN} && \
 	update-alternatives --remove pivot_root pivot_root.${PN}
 
-	for i in dmesg kill more halt hwclock mkswap reboot shutdown sln mkfs.minix fsck.minix hecdump last logger mesg renice wall vipw vigr chfn newgrp chsh login reset; do
+	for i in dmesg kill more halt hwclock mkswap reboot shutdown sln mkfs.minix fsck.minix hexdump setsid chrt last logger mesg renice wall vipw vigr chfn newgrp chsh login reset; do
 		update-alternatives --remove $i $i.${PN}
 	done
 }
@@ -271,7 +278,7 @@ pkg_prerm_util-linux-ng-swaponoff () {
 }
 
 pkg_postinst_util-linux-ng-readprofile() {
-    update-alternatives --install ${base_sbindir}/readprofile readprofile readprofile.${PN} 100
+    update-alternatives --install ${sbindir}/readprofile readprofile readprofile.${PN} 100
 }
 
 pkg_prerm_util-linux-ng-readprofile () {

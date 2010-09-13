@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r74"
+PR = "r76"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -113,6 +113,7 @@ RDEPENDS_${PN} += "\
 		libpurple-protocol-msn \
 		libpurple-protocol-icq \
 		vagalume \
+		udev \
 		ppp \
 		bluez-hcidump \
 		kbdd \
@@ -308,6 +309,7 @@ RDEPENDS_${PN} += "\
 		minneo \
 		gnuplot \
 		galculator \
+		xterm \
 "
 
 # this is only usefull on gta02 and on other devices it's trying to pull mesa-dri (not respecting DEFAULT_PROVIDER for virtual/libgl)

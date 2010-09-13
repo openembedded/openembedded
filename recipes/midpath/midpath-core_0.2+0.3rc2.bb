@@ -1,6 +1,6 @@
 DESCRIPTION = "MIDPath is a Java library which provides a MIDP2 implementation"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/midpath/midpath-0.3rc2.tar.gz"
 
@@ -9,7 +9,8 @@ S = "${WORKDIR}/midpath-0.3rc2"
 require midpath-common.inc
 
 SRC_URI += "\
-	file://fix-openfile.patch \
+  file://fix-openfile.patch \
+  file://hci_read_local_name.patch \
   file://midpath-suitemanager \
   file://midpath-launcher-j2se \
   file://midpath-suitemanager.desktop \
@@ -46,12 +47,12 @@ do_compile() {
 do_install() {
   oe_libinstall -C dist -so libavetanabtcldc ${D}${libdir_jni}
 
-	install -d ${D}${datadir}/midpath
-	install -m 0644 dist/${JAR} ${D}${datadir}/midpath
-	install -m 0644 dist/microbackend.jar ${D}${datadir}/midpath
-	install -m 0644 dist/avetanabt-cldc.jar ${D}${datadir}/midpath
-	install -m 0644 dist/jorbis-cldc.jar ${D}${datadir}/midpath
-	install -m 0644 dist/jlayerme-cldc.jar ${D}${datadir}/midpath
+  install -d ${D}${datadir}/midpath
+  install -m 0644 dist/${JAR} ${D}${datadir}/midpath
+  install -m 0644 dist/microbackend.jar ${D}${datadir}/midpath
+  install -m 0644 dist/avetanabt-cldc.jar ${D}${datadir}/midpath
+  install -m 0644 dist/jorbis-cldc.jar ${D}${datadir}/midpath
+  install -m 0644 dist/jlayerme-cldc.jar ${D}${datadir}/midpath
 
   install -d ${D}${bindir}
   install -m 0755 ${WORKDIR}/midpath-launcher-j2se ${D}${bindir}
@@ -62,15 +63,6 @@ do_install() {
 
   install -d ${D}${datadir}/pixmaps
   install -m 0644 ${WORKDIR}/midpath.png ${D}${datadir}/pixmaps
-}
-
-do_stage() {
-	install -d ${STAGING_DATADIR}/midpath
-	install -m 0644 dist/${JAR} ${STAGING_DATADIR}/midpath
-	install -m 0644 dist/microbackend.jar ${STAGING_DATADIR}/midpath
-	install -m 0644 dist/avetanabt-cldc.jar ${STAGING_DATADIR}/midpath
-	install -m 0644 dist/jorbis-cldc.jar ${STAGING_DATADIR}/midpath
-	install -m 0644 dist/jlayerme-cldc.jar ${STAGING_DATADIR}/midpath
 }
 
 PACKAGES = "${PN}-bluetooth ${PN}-bluetooth-jni ${PN}-bluetooth-jni-dbg ${PN}-mp3 ${PN}-ogg ${PN}"

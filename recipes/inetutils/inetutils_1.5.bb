@@ -6,7 +6,7 @@ networking utilities and servers including ftp, ftpd, rcp, \
 rexec, rlogin, rlogind, rsh, rshd, syslog, syslogd, talk, \
 talkd, telnet, telnetd, tftp, tftpd, and uucpd."
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${GNU_MIRROR}/inetutils/inetutils-${PV}.tar.gz \
 "
@@ -22,21 +22,28 @@ do_configure_prepend () {
 
 do_install () {
 	autotools_do_install
+	install -d ${D}${base_sbindir}
 	mv ${D}${bindir}/tftp ${D}${bindir}/tftp.${PN}
 	mv ${D}${bindir}/telnet ${D}${bindir}/telnet.${PN}
 	mv ${D}${bindir}/logger ${D}${bindir}/logger.${PN}
+	mv ${D}${bindir}/traceroute ${D}${bindir}/traceroute.${PN}
+	mv ${D}${bindir}/ifconfig ${D}${base_sbindir}/ifconfig.${PN}
 }
 
 pkg_postinst_${PN} () {
 	update-alternatives --install ${bindir}/tftp tftp tftp.${PN} 100
 	update-alternatives --install ${bindir}/telnet telnet telnet.${PN} 100
 	update-alternatives --install ${bindir}/logger logger logger.${PN} 100
+	update-alternatives --install ${bindir}/traceroute traceroute traceroute.${PN} 100
+	update-alternatives --install ${base_sbindir}/ifconfig ifconfig ifconfig.${PN} 100
 }
 
 pkg_prerm_${PN} () {
 	update-alternatives --remove tftp tftp.${PN}
 	update-alternatives --remove telnet telnet.${PN}
 	update-alternatives --remove logger logger.${PN}
+	update-alternatives --remove traceroute traceroute.${PN}
+	update-alternatives --remove ifconfig ifconfig.${PN}
 }
 
 SRC_URI[md5sum] = "aeacd11d19bf25c89d4eff38346bdfb9"
