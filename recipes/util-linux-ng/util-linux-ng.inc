@@ -8,7 +8,7 @@ inherit autotools gettext
 
 DEFAULT_PREFERENCE = "-1"
 
-INC_PR = "r29"
+INC_PR = "r30"
 
 # allows for a release candidate
 RC ?= ""
@@ -19,7 +19,7 @@ SRC_URI_append_chinook-compat = " file://chinook_libtool.patch "
 
 PACKAGES =+ "${PN}-fdisk ${PN}-cfdisk ${PN}-sfdisk ${PN}-swaponoff \
 	     ${PN}-losetup ${PN}-umount ${PN}-mount ${PN}-readprofile \
-	     ${PN}-fsck ${PN}-blkid ${PN}-mountall"
+	     ${PN}-fsck ${PN}-blkid ${PN}-mountall ${PN}-reset"
 
 PACKAGES_virtclass-native = ""	     
 
@@ -55,12 +55,14 @@ FILES_util-linux-ng-readprofile = "${sbindir}/readprofile.${PN}"
 FILES_util-linux-ng-fsck = "${base_sbindir}/fsck.${PN}"
 FILES_util-linux-ng-blkid = "${base_sbindir}/blkid.${PN}"
 FILES_${PN}-mountall = "${sysconfdir}/default/mountall.${PN}"
+FILES_${PN}-reset = "${bindir}/reset.${PN}"
 
 RREPLACES_util-linux-ng-blkid = "e2fsprogs-blkid"
 RREPLACES_${PN}-mountall = "busybox-mountall"
 
 RRECOMMENDS_${PN} = "${PN}-fdisk ${PN}-cfdisk ${PN}-sfdisk ${PN}-mount ${PN}-readprofile"
 RDEPENDS_${PN} = "${PN}-mountall ${PN}-umount ${PN}-swaponoff ${PN}-losetup ${PN}-fsck ${PN}-blkid"
+RDEPENDS_${PN}-reset = "ncurses-tools"
 
 RRECOMMENDS_${PN}_virtclass-native = ""
 RDEPENDS_${PN}_virtclass-native = ""
@@ -214,7 +216,6 @@ pkg_postinst_${PN} () {
 	update-alternatives --install ${base_bindir}/login login login.${PN} 100
 	update-alternatives --install ${base_sbindir}/vipw vipw vipw.${PN} 100
 	update-alternatives --install ${base_sbindir}/vigr vigr vigr.${PN} 100
-	update-alternatives --install ${bindir}/reset reset reset.${PN} 100
 	update-alternatives --install ${bindir}/setsid setsid setsid.${PN} 100
 	update-alternatives --install ${bindir}/chrt chrt chrt.${PN} 100
 	
@@ -230,9 +231,17 @@ pkg_prerm_${PN} () {
 	test -x ${base_sbindir}/pivot_root.${PN} && \
 	update-alternatives --remove pivot_root pivot_root.${PN}
 
-	for i in dmesg kill more halt hwclock mkswap reboot shutdown sln mkfs.minix fsck.minix hexdump setsid chrt last logger mesg renice wall vipw vigr chfn newgrp chsh login reset; do
+	for i in dmesg kill more halt hwclock mkswap reboot shutdown sln mkfs.minix fsck.minix hexdump setsid chrt last logger mesg renice wall vipw vigr chfn newgrp chsh login; do
 		update-alternatives --remove $i $i.${PN}
 	done
+}
+
+pkg_postinst_util-linux-ng-reset() {
+	update-alternatives --install ${bindir}/reset reset reset.${PN} 100
+}
+
+pkg_prerm_util-linux-ng-reset () {
+	update-alternatives --remove reset reset.${PN}
 }
 
 pkg_postinst_util-linux-ng-fdisk () {
