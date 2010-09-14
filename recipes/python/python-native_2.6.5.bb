@@ -20,6 +20,10 @@ S = "${WORKDIR}/Python-${PV}"
 
 inherit native
 
+EXTRA_OECONF_append = '\
+  --enable-unicode=ucs4 \
+'
+
 EXTRA_OEMAKE = '\
   BUILD_SYS="" \
   HOST_SYS="" \
