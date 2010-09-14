@@ -12,6 +12,7 @@ EXTRA_OECONF_append = "\
 "
 
 # On the palmpre we need the msmcomm daemon to talk to the modem
+PACKAGE_ARCH_palmpre = "${MACHINE_ARCH}"
 DEPENDS_append_palmpre = " msmcommd-specs"
 RDEPENDS_append_palmpre = " msmcommd"
 EXTRA_OECONF_append_palmpre = " --enable-modem-qualcomm-palm"
