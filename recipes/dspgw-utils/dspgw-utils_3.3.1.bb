@@ -37,3 +37,7 @@ do_install () {
         install -m 0755 ${WORKDIR}/dsp ${D}${sysconfdir}/init.d
         install -m 0755 ${WORKDIR}/dsp.rules ${D}${sysconfdir}/udev/rules.d/
 }
+
+SRC_URI[md5sum] = "0bf037f418d5bf890bc3eef0b0e3fe6a"
+SRC_URI[sha256sum] = "6591e9b85f222df7f57855bb8afc20f6a5845e35f44198406c31649a5ce2bfd1"
+
