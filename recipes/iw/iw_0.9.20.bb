@@ -3,11 +3,14 @@ HOMEPAGE = "http://linuxwireless.org/en/users/Documentation/iw"
 SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "BSD"
-PR = "r0"
+PR = "r1"
 
 DEPENDS = "libnl pkgconfig"
 
-SRC_URI = "http://wireless.kernel.org/download/iw/${P}.tar.bz2"
+SRC_URI = " \
+	http://wireless.kernel.org/download/iw/${P}.tar.bz2 \
+	file://kill-git-version-check.patch \
+	"
 
 do_compile() {
 	oe_runmake
