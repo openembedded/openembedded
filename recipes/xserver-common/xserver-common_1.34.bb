@@ -28,7 +28,8 @@ SRC_URI_append_shr = " file://89xTs_Calibrate.xinput_calibrator.patch \
                        file://90xXWindowManager.patch \
                        file://Xserver.add.nocursor.for.gta.patch \
                        file://Xserver.add.xserver-system.patch \
-                       file://Xserver.add.dpi.for.gta.patch"
+                       file://Xserver.add.dpi.for.gta.patch \
+		       file://Xserver.n900.patch"
 
 do_install_append() {
 	install -m 0755 "${WORKDIR}/setDPI.sh" "${D}/etc/X11/Xinit.d/50setdpi"
