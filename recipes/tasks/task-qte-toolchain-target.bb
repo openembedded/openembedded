@@ -2,11 +2,12 @@ DESCRIPTION = "Target packages for Qt Embedded SDK"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
-PR = "r2"
+PR = "r3"
 
 RDEPENDS_${PN} += " \
         task-sdk-bare \
         qt4-embedded-mkspecs \
+        libqt-embeddedmultimedia4-dev \
         libqt-embeddedphonon4-dev \
         libqt-embedded3support4-dev \
         libqt-embeddedassistantclient4-dev \
@@ -32,4 +33,3 @@ RDEPENDS_${PN} += " \
         libts-dev \
         expat-dev \
         "
-
