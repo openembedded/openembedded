@@ -13,7 +13,7 @@ S = "${WORKDIR}/git/"
 
 SRCREV = "96eba42952e860f652e66a72569319dfd35756dc"
 KV = "2.6.24"
-PR="r1"
+PR="r2"
 PV = "${KV}+gitr${SRCPV}"
 
 # linux.inc overrides LOCAVERSION but we like to stay with the one used originally
