@@ -108,7 +108,7 @@ PREFERRED_VERSION_libxxf86misc ?= "1.0.2"
 PREFERRED_VERSION_liblbxutil ?= "1.1.0"
 PREFERRED_VERSION_liboldx ?= "1.0.1"
 PREFERRED_VERSION_libxkbui ?= "1.0.2"
-PREFERRED_VERSION_pixman ?= "0.16.2"
+PREFERRED_VERSION_pixman ?= "0.18.4"
 #proto
 PREFERRED_VERSION_evieext ?= "1.1.0"
 PREFERRED_VERSION_fontcacheproto ?= "0.1.3"
