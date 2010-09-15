@@ -95,7 +95,6 @@ kernel_do_compile() {
 		oenote "no modules to compile"
 	fi
 }
-kernel_do_compile[depends] = "${INITRAMFS_TASK}"
 
 kernel_do_install() {
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS MACHINE
@@ -216,6 +215,8 @@ kernel_do_configure() {
 		done
 	fi
 }
+# XXX: Once we depend on bitbake 1.10.1 or newer this can be kernel_do_...
+do_configure[depends] += "${INITRAMFS_TASK}"
 
 do_menuconfig() {
 	export TERMWINDOWTITLE="${PN} Kernel Configuration"

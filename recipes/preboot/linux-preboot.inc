@@ -16,8 +16,6 @@ PROVIDES = ""
 KERNEL_IMAGE_BASE_NAME = "${KERNEL_IMAGETYPE}-preboot-${PV}-${PR}-${MACHINE}"
 KERNEL_IMAGE_SYMLINK_NAME = "${KERNEL_IMAGETYPE}-preboot-${MACHINE}"
 
-do_configure[depends] += "${INITRAMFS_IMAGE}:do_rootfs"
-
 do_configure_append() {
 sed -i -e /CONFIG_BLK_DEV_INITRD/d \
        -e /CONFIG_KEXEC/d \

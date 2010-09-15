@@ -55,9 +55,6 @@ INITRAMFS_COMPRESSION = '${@kernel_version_less_or_equal("PV", "2.6.29", "", "CO
 INITRAMFS_COMPRESSION_SUFFIX = '${@kernel_version_less_or_equal("PV", "2.6.29", "gz", "lzma", d)}'
 RD_COMPRESSION = '${@kernel_version_less_or_equal("PV", "2.6.29", "", "CONFIG_RD_LZMA=y", d)}'
 
-do_configure[depends] += "${INITRAMFS_IMAGE}:do_rootfs"
-
-
 do_configure_append() {
 sed -i -e /CONFIG_BLK_DEV_INITRD/d \
        -e /CONFIG_KEXEC/d \
