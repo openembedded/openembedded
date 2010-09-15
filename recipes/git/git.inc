@@ -8,8 +8,6 @@ S = "${WORKDIR}/git-${PV}"
 
 inherit autotools
 
-EXTRA_OEMAKE = "NO_TCLTK=1"
-
 do_install () {
 	oe_runmake install DESTDIR="${D}" bindir=${bindir} \
 		template_dir=${datadir}/git-core/templates \

@@ -8,13 +8,13 @@ SRC_URI += "file://git-less-hardlinks.diff"
 EXTRA_OECONF += "ac_cv_snprintf_returns_bogus=no ac_cv_c_c99_format=yes"
 
 
-DEPENDS = "openssl curl zlib expat"
+DEPENDS = "openssl curl zlib expat tcl-native"
 RDEPENDS_${PN} = "findutils sed"
 
 # Dropbear ssh needs a wrapper script, so install openssh-ssh to make it work out of the box
 RRECOMMENDS_${PN} = "openssh-ssh"
 
-PR = "r9"
+PR = "r10"
 
 do_install_append() {
 	# Fix broken hardlinks
@@ -72,3 +72,21 @@ FILES_${PN}-large += " \
 #	${libexecdir}/git-core/git-remote-http \
 #"
 RDEPENDS_${PN}-large = "${PN}"
+
+# git-tk package with gitk and git-gui
+PACKAGES =+ "${PN}-tk"
+RDEPENDS_${PN}-tk = "${PN} tk tcl"
+EXTRA_OEMAKE = "TCL_PATH=${STAGING_BINDIR_CROSS}/tclsh"
+FILES_${PN}-tk = " \
+	${bindir}/gitk \
+	${datadir}/gitk \
+"
+# git gui does not start at all at this time
+#FILES_${PN}-tk += " \
+#	${libexecdir}/git-core/git-gui \
+#	${libexecdir}/git-core/git-gui--askpass \
+#	${datadir}/git-gui \
+#"
+#PACKAGES += "${PN}-tk-locale"
+#PACKAGES_DYNAMIC = "${PN}-tk-locale-*"
+#FILES_${PN}-tk-locale = "${datadir}/git-gui/lib/msgs"
