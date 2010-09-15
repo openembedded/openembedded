@@ -14,13 +14,17 @@ RDEPENDS_${PN} = "perl perl-module-file-path cpio findutils sed"
 # Dropbear ssh needs a wrapper script, so install openssh-ssh to make it work out of the box
 RRECOMMENDS_${PN} = "openssh-ssh"
 
-PR = "r7"
+PR = "r8"
 
 do_install_append() {
 	# Fix broken hardlinks
 	for gitprog in git-receive-pack git-upload-archive ; do
-		rm ${D}${bindir}/$gitprog 
+		rm ${D}${bindir}/$gitprog
 		ln -sf ${bindir}/git ${D}${bindir}/$gitprog
+	done
+	for gitprog in git-cvsserver git-shell git-upload-pack ; do
+		rm ${D}${libexecdir}/git-core/$gitprog
+		ln -sf ${bindir}/$gitprog ${D}${libexecdir}/git-core/$gitprog
 	done
 	rm ${D}${libexecdir}/git-core/git && ln -sf ${bindir}/git ${D}${libexecdir}/git-core/git
 }
