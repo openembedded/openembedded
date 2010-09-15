@@ -1,0 +1,29 @@
+--- zziplib-0.13.59/configure.ac-orig	2010-09-16 14:34:38.000000000 +0930
++++ zziplib-0.13.59/configure.ac	2010-09-16 14:36:35.000000000 +0930
+@@ -1,13 +1,11 @@
+-AC_INIT([zziplib.spec])
+ AC_PREREQ(2.61)
+-AC_COPYRIGHT([Guido Draheim <guido@gmx.de> for ZZipLib.SF.net])
++AC_INIT([zziplib], [0.13.59], [Guido Draheim <guido@gmx.de>])
++AC_CANONICAL_TARGET
++AM_INIT_AUTOMAKE([foreign 1.9 dist-bzip2])
++AC_CONFIG_SRCDIR([zzip/zip.c])
+ AC_REVISION($Revision: 1.15 $)
+-AC_CONFIG_AUX_DIR([uses])
+ AC_CONFIG_MACRO_DIR([m4])
+ # =======================================================================
+-AC_CANONICAL_SYSTEM
+-dnl AM_ENABLE_MULTILIB([Makefile],[$host])
+-AX_ENABLE_BUILDDIR_UNAME
+ AC_SET_DEFAULT_PATHS_SYSTEM
+ # -----------------------------------------------------------------------
+ AC_ARG_ENABLE([thread-safe],
+@@ -62,8 +60,6 @@
+ AC_SUBST(ZLIB_INCL)
+ AC_SUBST(ZLIB_LDIR)
+ # -----------------------------------------------------------------------
+-AX_SPEC_DEFAULTS
+-AM_INIT_AUTOMAKE($PACKAGE,$VERSION)
+ dnl test ".$CFLAGS" = "." && CFLAGS=""
+ AC_PROG_CC
+ dnl test ".$CFLAGS" = "." && test "$GCC" = "yes" && CFLAGS="-O3"
