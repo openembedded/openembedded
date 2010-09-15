@@ -1,0 +1,32 @@
+---
+ sysdeps/unix/sysv/linux/sh/Versions |    1 +
+ sysdeps/unix/sysv/linux/sh/sysdep.S |   11 +++++++++++
+ 2 files changed, 12 insertions(+)
+
+--- a/sysdeps/unix/sysv/linux/sh/Versions
++++ b/sysdeps/unix/sysv/linux/sh/Versions
+@@ -2,6 +2,7 @@
+   GLIBC_2.2 {
+     # functions used in other libraries
+     __xstat64; __fxstat64; __lxstat64;
++    __fpscr_values;
+ 
+     # a*
+     alphasort64;
+--- a/sysdeps/unix/sysv/linux/sh/sysdep.S
++++ b/sysdeps/unix/sysv/linux/sh/sysdep.S
+@@ -32,3 +32,14 @@
+ 
+ #define __syscall_error __syscall_error_1
+ #include <sysdeps/unix/sh/sysdep.S>
++
++       .data
++       .align 3
++       .globl ___fpscr_values
++       .type ___fpscr_values, @object
++       .size ___fpscr_values, 8
++___fpscr_values:
++       .long 0
++       .long 0x80000
++weak_alias (___fpscr_values, __fpscr_values)
++

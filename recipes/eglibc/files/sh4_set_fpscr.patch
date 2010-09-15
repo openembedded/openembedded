@@ -1,0 +1,23 @@
+# http://sourceware.org/ml/libc-alpha/2009-12/msg00009.html
+# http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=565369
+---
+ sysdeps/sh/sh4/fpu/fpu_control.h |    8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+--- a/sysdeps/sh/sh4/fpu/fpu_control.h
++++ b/sysdeps/sh/sh4/fpu/fpu_control.h
+@@ -45,6 +45,14 @@
+ #define _FPU_GETCW(cw) __asm__ ("sts fpscr,%0" : "=r" (cw))
+ 
+ #if defined __GNUC__
++/* Allow the use in C++ code.  */
++#ifdef __cplusplus
++extern "C" {
++#endif
++extern void __set_fpscr (unsigned long);
++#ifdef __cplusplus
++}
++#endif  /* C++ */
+ #define _FPU_SETCW(cw) __set_fpscr ((cw))
+ #else
+ #define _FPU_SETCW(cw) __asm__ ("lds %0,fpscr" : : "r" (cw))

@@ -1,0 +1,29 @@
+diff --git a/sysdeps/sh/sh4/fpu/fpu_control.h b/sysdeps/sh/sh4/fpu/fpu_control.h
+index d1be46d..3ea37d3 100644
+--- a/sysdeps/sh/sh4/fpu/fpu_control.h
++++ b/sysdeps/sh/sh4/fpu/fpu_control.h
+@@ -1,5 +1,5 @@
+ /* FPU control word definitions.  SH version.
+-   Copyright (C) 1999, 2000, 2009 Free Software Foundation, Inc.
++   Copyright (C) 1999, 2000, 2009, 2010 Free Software Foundation, Inc.
+    This file is part of the GNU C Library.
+ 
+    The GNU C Library is free software; you can redistribute it and/or
+@@ -46,7 +46,14 @@ typedef unsigned int fpu_control_t;
+ 
+ #if defined __GNUC__
+ /* GCC provides this function.  */
++/* Allow the use in C++ code.  */  
++#ifdef __cplusplus
++extern "C" {
++#endif
+ extern void __set_fpscr (unsigned long);
++#ifdef __cplusplus
++}
++#endif  /* C++ */
+ #define _FPU_SETCW(cw) __set_fpscr ((cw))
+ #else
+ #define _FPU_SETCW(cw) __asm__ ("lds %0,fpscr" : : "r" (cw))
+-- 
+1.7.1
+
