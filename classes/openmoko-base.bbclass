@@ -4,7 +4,10 @@ OPENMOKO_RELEASE ?= "OM-2007.2"
 OPENMOKO_MIRROR ?= "svn://svn.openmoko.org/trunk"
 
 def openmoko_base_get_subdir(d):
-    openmoko, section = bb.data.getVar('SECTION', d, 1).split("/")
+    if bb.data.getVar('SECTION', d, 1).find("/") != -1:
+        openmoko, section = bb.data.getVar('SECTION', d, 1).split("/")
+    else:
+        section = bb.data.getVar('SECTION', d, 1)
     if section == 'base' or section == 'libs': return ""
     elif section in 'apps tools pim'.split(): return "applications"
     elif section == "panel-plugin": return "panel-plugins"

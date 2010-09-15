@@ -5,11 +5,17 @@ OPENMOKO_RELEASE ?= "OM-2007.2"
 OPENMOKO_MIRROR ?= "svn://svn.openmoko.org/trunk"
 
 def openmoko_two_get_license(d):
-    openmoko, section = bb.data.getVar('SECTION', d, 1).split("/")
+    if bb.data.getVar('SECTION', d, 1).find("/") != -1:
+    	openmoko, section = bb.data.getVar('SECTION', d, 1).split("/")
+    else:
+        section = bb.data.getVar('SECTION', d, 1)	
     return "LGPL GPL".split()[section != "libs"]
 
 def openmoko_two_get_subdir(d):
-    openmoko, section = bb.data.getVar('SECTION', d, 1).split("/")
+    if bb.data.getVar('SECTION', d, 1).find("/") != -1:
+        openmoko, section = bb.data.getVar('SECTION', d, 1).split("/")
+    else:
+        section = bb.data.getVar('SECTION', d, 1)
     if section == 'base': return ""
     elif section == 'libs': return "libraries"
     elif section in 'apps tools pim'.split(): return "applications"
