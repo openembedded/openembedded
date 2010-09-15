@@ -1,0 +1,12 @@
+Index: libjingle-0.3.10/talk/base/Makefile.am
+===================================================================
+--- libjingle-0.3.10.orig/talk/base/Makefile.am	2006-09-01 04:31:53.000000000 -0700
++++ libjingle-0.3.10/talk/base/Makefile.am	2010-09-15 13:33:14.465210001 -0700
+@@ -62,7 +62,6 @@ libjinglebase_@LIBJINGLE_MAJORMINOR@incl
+                             winping.h \
+                             socketadapters.h \
+                             socketaddress.h \
+-                            host.h \
+                             socketaddresspair.h \
+                             Equifax_Secure_Global_eBusiness_CA-1.h \
+                             stream.h \

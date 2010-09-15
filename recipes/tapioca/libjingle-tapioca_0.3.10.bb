@@ -1,9 +1,12 @@
 LICENSE = "BERKLEY"
 DEPENDS = "openssl ortp speex expat"
 PROVIDES = "libjingle"
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/tapioca-voip/libjingle-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/tapioca-voip/libjingle-${PV}.tar.gz \
+           file://gcc-4.5-compilation-fixes.patch \
+           file://fix-host-h-double-install.patch \
+          "
 
 S = "${WORKDIR}/libjingle-${PV}"
 
