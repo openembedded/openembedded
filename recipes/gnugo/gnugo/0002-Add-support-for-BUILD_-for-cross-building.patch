@@ -1,0 +1,41 @@
+From 624322d2f2165614ab43ca2a7d66d922c203a6d1 Mon Sep 17 00:00:00 2001
+From: Yann Dirson <ydirson@altern.org>
+Date: Fri, 10 Sep 2010 22:07:20 +0200
+Subject: [PATCH 2/4] Add support for BUILD_ for cross-building.
+
+Signed-off-by: Yann Dirson <ydirson@altern.org>
+---
+ configure.in |   17 +++++++++++++++++
+ 1 files changed, 17 insertions(+), 0 deletions(-)
+
+diff --git a/configure.in b/configure.in
+index e773294..29d9a31 100644
+--- a/configure.in
++++ b/configure.in
+@@ -511,6 +511,23 @@ AM_CONDITIONAL(GCC_ONLY, test "$ac_compiler_gnu" = "yes")
+ 
+ dnl Now lines in Makefile.am can be prefixed @GCC_ONLY@.
+ 
++if test "x$BUILD_CC" = "x"; then
++  BUILD_CC="$CC"
++fi 
++if test "x$BUILD_RANLIB" = "x"; then
++  BUILD_RANLIB="$RANLIB"
++fi 
++if test "x$BUILD_CFLAGS" = "x"; then
++  BUILD_CFLAGS="$CFLAGS"
++fi 
++if test "x$BUILD_LDFLAGS" = "x"; then
++  BUILD_LDFLAGS="$LDFLAGS"
++fi 
++AC_SUBST(BUILD_CC)
++AC_SUBST(BUILD_RANLIB)
++AC_SUBST(BUILD_LDFLAGS)
++AC_SUBST(BUILD_CFLAGS)
++
+ AC_SUBST(GCC_MAJOR_VERSION)
+ AC_SUBST(GCC_MINOR_VERSION)
+ AC_SUBST(GNU_GO_WARNINGS)
+-- 
+1.7.2.3
+
