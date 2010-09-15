@@ -1,0 +1,48 @@
+Index: SDL-1.2.9/src/video/XFree86/Xxf86dga/XF86DGA.c
+===================================================================
+--- SDL-1.2.9.orig/src/video/XFree86/Xxf86dga/XF86DGA.c	2002-03-05 11:55:31.000000000 -0800
++++ SDL-1.2.9/src/video/XFree86/Xxf86dga/XF86DGA.c	2010-09-15 12:32:47.485210000 -0700
+@@ -18,7 +18,6 @@ Copyright (c) 1995,1996  The XFree86 Pro
+ #define HAS_MMAP_ANON
+ #include <sys/types.h>
+ #include <sys/mman.h>
+-#include <asm/page.h>   /* PAGE_SIZE */
+ #define HAS_SC_PAGESIZE /* _SC_PAGESIZE may be an enum for Linux */
+ #define HAS_GETPAGESIZE
+ #endif /* linux */
+Index: SDL-1.2.9/src/video/fbcon/SDL_fbvideo.c
+===================================================================
+--- SDL-1.2.9.orig/src/video/fbcon/SDL_fbvideo.c	2010-09-15 12:31:45.000000000 -0700
++++ SDL-1.2.9/src/video/fbcon/SDL_fbvideo.c	2010-09-15 12:33:01.955210000 -0700
+@@ -35,7 +35,6 @@ static char rcsid =
+ #include <unistd.h>
+ #include <sys/ioctl.h>
+ #include <sys/mman.h>
+-#include <asm/page.h>		/* For definition of PAGE_SIZE */
+ 
+ #include "SDL.h"
+ #include "SDL_error.h"
+Index: SDL-1.2.9/src/video/ps2gs/SDL_gsyuv.c
+===================================================================
+--- SDL-1.2.9.orig/src/video/ps2gs/SDL_gsyuv.c	2002-11-17 10:56:50.000000000 -0800
++++ SDL-1.2.9/src/video/ps2gs/SDL_gsyuv.c	2010-09-15 12:32:40.695210000 -0700
+@@ -33,7 +33,6 @@ static char rcsid =
+ #include <unistd.h>
+ #include <sys/ioctl.h>
+ #include <sys/mman.h>
+-#include <asm/page.h>		/* For definition of PAGE_SIZE */
+ 
+ #include "SDL_error.h"
+ #include "SDL_video.h"
+Index: SDL-1.2.9/src/video/qtopia/SDL_sysvideo.cc
+===================================================================
+--- SDL-1.2.9.orig/src/video/qtopia/SDL_sysvideo.cc	2010-09-15 12:31:45.000000000 -0700
++++ SDL-1.2.9/src/video/qtopia/SDL_sysvideo.cc	2010-09-15 12:32:54.785210001 -0700
+@@ -40,7 +40,6 @@ static char rcsid =
+ #include <sys/wait.h>
+ #include <linux/fb.h>
+ #include <sys/mman.h>
+-#include <asm/page.h>	
+ 
+ #include <qapplication.h>
+ #include <qpe/qpeapplication.h>
