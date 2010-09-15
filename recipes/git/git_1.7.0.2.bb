@@ -9,12 +9,12 @@ EXTRA_OECONF += "ac_cv_snprintf_returns_bogus=no ac_cv_c_c99_format=yes"
 
 
 DEPENDS = "openssl curl zlib expat"
-RDEPENDS_${PN} = "perl perl-module-file-path cpio findutils sed"
+RDEPENDS_${PN} = "findutils sed"
 
 # Dropbear ssh needs a wrapper script, so install openssh-ssh to make it work out of the box
 RRECOMMENDS_${PN} = "openssh-ssh"
 
-PR = "r8"
+PR = "r9"
 
 do_install_append() {
 	# Fix broken hardlinks
@@ -30,3 +30,45 @@ do_install_append() {
 }
 
 FILES_${PN}-dbg += "${libexecdir}/git-core/.debug"
+
+PACKAGES =+ "${PN}-perltools"
+FILES_${PN}-perltools += " \
+	${libexecdir}/git-core/git-add--interactive \
+	${libexecdir}/git-core/git-archimport \
+	${libexecdir}/git-core/git-cvsexportcommit \
+	${libexecdir}/git-core/git-cvsimport \
+	${libexecdir}/git-core/git-cvsserver \
+	${bindir}/git-cvsserver \
+	${libexecdir}/git-core/git-difftool \
+	${libexecdir}/git-core/git-relink \
+	${libexecdir}/git-core/git-send-email \
+	${libexecdir}/git-core/git-svn \
+	${datadir}/perl \
+"
+RDEPENDS_${PN}-perltools = "${PN} perl perl-module-file-path findutils"
+
+PACKAGES =+ "${PN}-large"
+FILES_${PN}-large += " \
+	${libexecdir}/git-core/git-http-backend \
+	${libexecdir}/git-core/git-daemon \
+	${libexecdir}/git-core/git-http-push \
+	${libexecdir}/git-core/git-quiltimport \
+	${libexecdir}/git-core/git-request-pull \
+	${libexecdir}/git-core/git-shell \
+	${bindir}/git-shell \
+	${libexecdir}/git-core/git-instaweb \
+	${libexecdir}/git-core/git-fast-import \
+	${libexecdir}/git-core/git-imap-send \
+"
+# those might be useful in a less-than-large package ?
+FILES_${PN}-large += " \
+	${libexecdir}/git-core/git-http-fetch \
+	${libexecdir}/git-core/git-upload-pack \
+	${bindir}/git-upload-pack \
+"
+# same here, but adding it causes git to depend on git-large(!)
+# see http://bugs.openembedded.net/show_bug.cgi?id=5465
+#FILES_${PN}-large += " \
+#	${libexecdir}/git-core/git-remote-http \
+#"
+RDEPENDS_${PN}-large = "${PN}"
