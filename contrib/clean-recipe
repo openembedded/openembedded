@@ -1,0 +1,50 @@
+#!/bin/bash
+# clean-recipe: a small shell script to clean unneeded patch/diff files from a recipe folder
+shopt -s extglob 
+if [ $# -eq 0 ]
+then
+    echo "usage " $0 "[-d] recipe-dir-name"
+    exit
+fi
+delete=0
+if [ $1 = "-d" ]
+then
+    delete=1
+    shift;
+fi
+dir=$1
+if [ ! -d ${dir} ]
+then
+    echo ${dir} " is not a directory"
+    exit
+fi
+if [ ${dir} = "obsolete" -o ${dir} = "nonworking" ]
+then
+    echo skipping ${dir}
+    exit
+fi
+cd ${dir}
+moved=0
+grep -q "file://.*\\$" *.+(bb|inc) && echo "cannot handle recipes with metavariables in the name" && exit
+find -name "*.diff" -o -name "*.patch" | (while  read name 
+    do
+        bname=`basename ${name}`
+        dname=`dirname ${name}`
+        grep -q ${bname} *.+(bb|inc) || \
+        if [ ${delete} -eq 0 ]
+        then
+    	    echo ${name} " in recipe dir $dir is unused"
+        else
+	    mkdir -p ../obsolete/${dir}/${dname}
+    	    git mv ${name} ../obsolete/${dir}/${dname}/
+    	    moved=1
+        fi
+    done
+    if [ ${moved} -eq 1 ]
+    then
+        for b in *.bb
+	do
+	    bitbake -cpatch -b $b || echo patch failed for $b
+	done
+        echo ${dir} ": moved unused files to obsolete dir" | git commit -s -F -
+    fi )
