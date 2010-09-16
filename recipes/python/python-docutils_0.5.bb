@@ -4,6 +4,8 @@ SECTION = "devel/python"
 LICENSE = "PSF"
 PR = "ml1"
 
+DEPENDS = "python"
+
 SRC_URI = "${SOURCEFORGE_MIRROR}/docutils/docutils-${PV}.tar.gz"
 S = "${WORKDIR}/docutils-${PV}"
 
