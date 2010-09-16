@@ -1,0 +1,39 @@
+From 908b7949544571e9acc1fe0cce918f6e338926c9 Mon Sep 17 00:00:00 2001
+From: Ranjith Lohithakshan <ranjithl@ti.com>
+Date: Fri, 28 May 2010 15:13:18 +0530
+Subject: [PATCH 1/9] OMAP3: SDRC: add 100MHz timing data for Hynix H8KDS0UN0MER-4EM
+
+Also, the refresh control value used at 200MHz was incorrect. Fixed
+that as well.
+
+Signed-off-by: Ranjith Lohithakshan <ranjithl@ti.com>
+---
+ arch/arm/mach-omap2/sdram-hynix-h8kds0un0mer-4em.h |    9 ++++++++-
+ 1 files changed, 8 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/sdram-hynix-h8kds0un0mer-4em.h b/arch/arm/mach-omap2/sdram-hynix-h8kds0un0mer-4em.h
+index 06433e6..c147586 100644
+--- a/arch/arm/mach-omap2/sdram-hynix-h8kds0un0mer-4em.h
++++ b/arch/arm/mach-omap2/sdram-hynix-h8kds0un0mer-4em.h
+@@ -19,10 +19,17 @@ static struct omap_sdrc_params h8kds0un0mer4em_sdrc_params[] = {
+ 		.rate        = 200000000,
+ 		.actim_ctrla = 0x92e1c4c6,
+ 		.actim_ctrlb = 0x0002111c,
+-		.rfr_ctrl    = 0x0004dc01,
++		.rfr_ctrl    = 0x0005e601,
+ 		.mr          = 0x00000032,
+ 	},
+ 	[1] = {
++		.rate        = 100000000,
++		.actim_ctrla = 0x49912283,
++		.actim_ctrlb = 0x0002110e,
++		.rfr_ctrl    = 0x0002da01,
++		.mr          = 0x00000032,
++    },
++	[2] = {
+ 		.rate        = 0
+ 	},
+ };
+-- 
+1.6.2.4
+

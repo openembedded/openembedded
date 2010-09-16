@@ -1,0 +1,71 @@
+From ba573a248dc8c33ff21fc4efbfea0ca85cdbc5d0 Mon Sep 17 00:00:00 2001
+From: Ranjith Lohithakshan <ranjithl@ti.com>
+Date: Tue, 7 Sep 2010 10:05:11 +0530
+Subject: [PATCH 8/9] OMAP3EVM: Set minimum throughput requirement for DSS
+
+GFX_FIFO_UNDERFLOW has been observed when the L3 rate is lowered
+below 100MHz or so. Once this underflow happens the display stops
+working.
+
+This patch puts a minimum bus throughput requirement when lcd, tv
+or dvi displays are enabled. The throughput is calculated in such
+a manner that it will translate into a minimum L3 rate of 100MHz.
+
+Signed-off-by: Ranjith Lohithakshan <ranjithl@ti.com>
+---
+ arch/arm/mach-omap2/board-omap3evm.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3evm.c b/arch/arm/mach-omap2/board-omap3evm.c
+index eb7ad1c..710a25d 100644
+--- a/arch/arm/mach-omap2/board-omap3evm.c
++++ b/arch/arm/mach-omap2/board-omap3evm.c
+@@ -422,12 +422,15 @@ static int omap3_evm_enable_lcd(struct omap_dss_device *dssdev)
+ 	else
+ 		gpio_set_value(OMAP3EVM_LCD_PANEL_BKLIGHT_GPIO, 1);
+ 
++	omap_pm_set_min_bus_tput(&dssdev->dev, OCP_INITIATOR_AGENT, 400000);
++
+ 	lcd_enabled = 1;
+ 	return 0;
+ }
+ 
+ static void omap3_evm_disable_lcd(struct omap_dss_device *dssdev)
+ {
++	omap_pm_set_min_bus_tput(&dssdev->dev, OCP_INITIATOR_AGENT, 0);
+ 	gpio_set_value(OMAP3EVM_LCD_PANEL_ENVDD, 1);
+ 
+ 	if (get_omap3_evm_rev() >= OMAP3EVM_BOARD_GEN_2)
+@@ -449,11 +452,13 @@ static struct omap_dss_device omap3_evm_lcd_device = {
+ 
+ static int omap3_evm_enable_tv(struct omap_dss_device *dssdev)
+ {
++	omap_pm_set_min_bus_tput(&dssdev->dev, OCP_INITIATOR_AGENT, 400000);
+ 	return 0;
+ }
+ 
+ static void omap3_evm_disable_tv(struct omap_dss_device *dssdev)
+ {
++	omap_pm_set_min_bus_tput(&dssdev->dev, OCP_INITIATOR_AGENT, 0);
+ }
+ 
+ static struct omap_dss_device omap3_evm_tv_device = {
+@@ -488,12 +493,15 @@ static int omap3_evm_enable_dvi(struct omap_dss_device *dssdev)
+ 		omap_mux_set_gpio(OMAP_MUX_MODE3, 3);
+ 	}
+ 
++	omap_pm_set_min_bus_tput(&dssdev->dev, OCP_INITIATOR_AGENT, 400000);
++
+ 	dvi_enabled = 1;
+ 	return 0;
+ }
+ 
+ static void omap3_evm_disable_dvi(struct omap_dss_device *dssdev)
+ {
++	omap_pm_set_min_bus_tput(&dssdev->dev, OCP_INITIATOR_AGENT, 0);
+ 	gpio_set_value(OMAP3EVM_DVI_PANEL_EN_GPIO, 0);
+ 
+ 	dvi_enabled = 0;
+-- 
+1.6.2.4
+

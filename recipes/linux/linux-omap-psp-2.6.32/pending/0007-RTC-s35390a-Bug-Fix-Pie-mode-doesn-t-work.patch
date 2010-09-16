@@ -1,0 +1,68 @@
+From 243e09d50e7a03eb9fc8e7313784f2ed96602890 Mon Sep 17 00:00:00 2001
+From: Vaibhav Hiremath <hvaibhav@ti.com>
+Date: Fri, 13 Aug 2010 19:23:23 +0530
+Subject: [PATCH 7/9] RTC:s35390a:Bug Fix: Pie mode doesn't work
+
+Due to some race condition between Work and ISR, somehow interrupt
+is not getting enabled and because of this RTC interrupt was not working.
+---
+ drivers/rtc/rtc-s35390a.c |   21 ++++++++++-----------
+ 1 files changed, 10 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/rtc/rtc-s35390a.c b/drivers/rtc/rtc-s35390a.c
+index de597c1..b30a57c 100644
+--- a/drivers/rtc/rtc-s35390a.c
++++ b/drivers/rtc/rtc-s35390a.c
+@@ -230,11 +230,15 @@ static int s35390a_freq_irq_enable(struct i2c_client *client, unsigned enabled)
+ 		return err;
+ 	}
+ 
+-	buf[0] = s35390a->rtc->irq_freq;
+-	/* This chip expects the bits of each byte to be in reverse order */
+-	buf[0] = bitrev8(buf[0]);
++	if (enabled) {
++		buf[0] = s35390a->rtc->irq_freq;
+ 
+-	return s35390a_set_reg(s35390a, S35390A_CMD_INT1_REG1, buf, sizeof(buf));
++		buf[0] = bitrev8(buf[0]);
++		err = s35390a_set_reg(s35390a, S35390A_CMD_INT1_REG1, buf,
++				sizeof(buf));
++	}
++
++	return err;
+ }
+ 
+ static int s35390a_rtc_freq_irq_enable(struct device *dev, int enabled)
+@@ -419,20 +423,14 @@ static void s35390a_work(struct work_struct *work)
+ 		/* Notify RTC core on event */
+ 		rtc_update_irq(s35390a->rtc, 1, RTC_IRQF | RTC_AF);
+ 		s35390a_alarm_irq_enable(client, 0);
+-		enable_irq(client->irq);
+ 	} else if (buf[0] & BIT(0)) {
+ 		/* Notify RTC core on event */
+ 		rtc_update_irq(s35390a->rtc, 1, RTC_PF | RTC_IRQF);
+-		s35390a_freq_irq_enable(client, 0);
+-		enable_irq(client->irq);
+-		s35390a_freq_irq_enable(client, 1);
+ 	} else if (buf[0] & BIT(1)) {
+ 		/* Notify RTC core on event */
+ 		rtc_update_irq(s35390a->rtc, 1, RTC_UF | RTC_IRQF);
+-		s35390a_update_irq_enable(client, 0);
+-		enable_irq(client->irq);
+-		s35390a_update_irq_enable(client, 1);
+ 	}
++	enable_irq(client->irq);
+ out:
+ 	return;
+ }
+@@ -559,6 +557,7 @@ static int s35390a_probe(struct i2c_client *client,
+ 	}
+ 	s35390a->rtc->irq_freq = 0;
+ 	s35390a->rtc->max_user_freq = 16;
++
+ 	return 0;
+ 
+ exit_intr:
+-- 
+1.6.2.4
+

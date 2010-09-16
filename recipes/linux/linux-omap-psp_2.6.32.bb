@@ -134,6 +134,15 @@ SRC_URI = "git://arago-project.org/git/people/sriram/ti-psp-omap.git;protocol=gi
            file://0001-BeagleBoard-Adjust-USER-button-pin-for-xM.patch \
            file://cam/0001-omap3beagle-Add-camera-bootarg.patch \
            file://porches.patch \
+           file://pending/0001-OMAP3-SDRC-add-100MHz-timing-data-for-Hynix-H8KDS0.patch \
+           file://pending/0002-omap3-Fix-voltage-and-frequency-scaling-order-when.patch \
+           file://pending/0003-OMAP3-PM-Introduce-Smartreflex-support-on-OMAP3630.patch \
+           file://pending/0004-OMAP3630-PM-implement-Foward-Body-Bias-for-OPP1G.patch \
+           file://pending/0005-Revert-Revert-OMAP-DSS2-FIFI-UNDERFLOW-issue-fix.patch \
+           file://pending/0006-modules-Skip-empty-sections-when-exporting-section.patch \
+           file://pending/0007-RTC-s35390a-Bug-Fix-Pie-mode-doesn-t-work.patch \
+           file://pending/0008-OMAP3EVM-Set-minimum-throughput-requirement-for-DSS.patch \
+           file://pending/0009-ehci-fix-device-detect-issue-with-modules.patch \
            file://defconfig"
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
