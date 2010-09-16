@@ -1,23 +1,23 @@
 # This is the latest set of TI components
 #
 
-PREFERRED_VERSION_ti-codec-engine = "2_25_02_11"
-PREFERRED_VERSION_ti-codec-engine-examples = "2_25_02_11"
+PREFERRED_VERSION_ti-codec-engine = "2_26_00_08"
+PREFERRED_VERSION_ti-codec-engine-examples = "2_26_00_08"
 
 PREFERRED_VERSION_ti-biosutils = "1_02_02"
 PREFERRED_VERSION_ti-cgt6x = "6_1_14"
-PREFERRED_VERSION_ti-dspbios = "5_41_03_17"
-PREFERRED_VERSION_ti-dsplink = "1_65_00_02"
-PREFERRED_VERSION_ti-dsplink-examples = "1_65_00_02"
-PREFERRED_VERSION_ti-dsplink-module = "1_65_00_02"
+PREFERRED_VERSION_ti-dspbios = "5_41_07_24"
+PREFERRED_VERSION_ti-dsplink = "1_65_00_03"
+PREFERRED_VERSION_ti-dsplink-examples = "1_65_00_03"
+PREFERRED_VERSION_ti-dsplink-module = "1_65_00_03"
 PREFERRED_VERSION_ti-edma3lld = "01_11_00_03"
-PREFERRED_VERSION_ti-framework-components = "2_25_01_05"
-PREFERRED_VERSION_ti-linuxutils = "2_25_02_08"
+PREFERRED_VERSION_ti-framework-components = "2_25_03_07"
+PREFERRED_VERSION_ti-linuxutils = "2_25_05_11"
 PREFERRED_VERSION_ti-local-power-manager = "1_24_02_09"
 PREFERRED_VERSION_ti-lpm-module = "1_24_02_09"
 PREFERRED_VERSION_ti-lpm-utils = "1_24_02_09"
-PREFERRED_VERSION_ti-xdais = "6_25_02_11"
-PREFERRED_VERSION_ti-xdctools = "3_16_03_36"
+PREFERRED_VERSION_ti-xdais = "6_26_00_02"
+PREFERRED_VERSION_ti-xdctools = "3_20_03_63"
 
 PREFERRED_VERSION_ti-codecs-dm355 = "1_13_000"
 PREFERRED_VERSION_ti-codecs-dm355-server = "1_13_000"
