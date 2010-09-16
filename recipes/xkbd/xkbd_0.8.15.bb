@@ -4,9 +4,10 @@ SRC_URI = "http://www.angstrom-distribution.org/unstable/sources/xkbd-${PV}-CVS.
 	   file://fix-circumkey.patch \
 	   file://add-default-common-slides.patch \
 	   file://differentiate-desktop-name.patch \
+	   file://xkbd-0.8.15-fix-geometry.patch \
 	   file://xkbd.png"
 LICENSE = "GPL"
-PR = "r4"
+PR = "r5"
 
 SECTION = "x11"
 DEPENDS = "libxpm libxtst libxft"
