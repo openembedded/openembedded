@@ -10,6 +10,7 @@ S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
 
+DEPENDS = "python"
 RDEPENDS_${PN} = "python-pickle python-pprint"
 
 NATIVE_INSTALL_WORKS = "1"
