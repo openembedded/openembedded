@@ -13,12 +13,6 @@ Proposed by:    person which want entry to be removed
 
 -----------------------------------------------------------------------------
 
-Package Name:   Maemo
-Removal Date:   2006-12-15
-Maintainer:     none
-Reason:         Unfetchable, obsoleted by IT2006 release.
-Proposed by:    Marcin 'Hrw' Juszkiewicz
-
 Package Name:   task-bootstrap*
 Removal Date:   2006-12-22
 Maintainer:     None
