@@ -1,13 +1,11 @@
 [Desktop Entry]
 Name=Duke3D
 Comment=first person shooter
-Encoding=UTF-8
-Version=0.1.1
 Type=Application
 Exec=duke3d
 Icon=duke3d
 Terminal=false
-Categories=GTK;Application
-SingleInstance=true
+Categories=GTK;Game;
+X-SingleInstance=true
 StartupNotify=true
 

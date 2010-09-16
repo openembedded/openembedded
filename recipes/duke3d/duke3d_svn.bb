@@ -2,7 +2,7 @@ DESCRIPTION = "Duke Nukem 3D game engine"
 LICENSE = "GPLv2"
 DEPENDS = "virtual/libsdl libsdl-mixer"
 
-SRCREV = "185"
+SRCREV = "187"
 PV = "0.0+svnr${SRCPV}"
 
 SRC_URI = "svn://svn.icculus.org/duke3d/;module=trunk \
@@ -11,6 +11,8 @@ SRC_URI = "svn://svn.icculus.org/duke3d/;module=trunk \
 S = "${WORKDIR}/trunk/source"
 
 PARALLEL_MAKE = ""
+
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 do_compile() {
 	for i in $(find ${S} -name 'Makefile') ; do
