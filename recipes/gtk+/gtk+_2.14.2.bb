@@ -1,11 +1,22 @@
 require gtk+.inc
 
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 SRC_URI += "file://smallscreen_filechooser.patch \
           "
 
+SRC_URI_append_virtclass-native = " file://no-demos.patch \
+"
+
+BBCLASSEXTEND = "native"
+
+DEPENDS_virtclass-native = "libpng-native atk-native pango-native cairo-native libxrender-native libxext-native libgcrypt-native"
+RRECOMMENDS_${PN}_virtclass-native = ""
+PROVIDES_virtclass-native = "gdk-pixbuf-csource-native"
+
 EXTRA_OECONF = "--with-libtiff --disable-xkb --disable-glibtest --enable-display-migration gio_can_sniff=yes"
+
+EXTRA_OECONF_append_virtclass-native = " --without-libtiff --without-libjpeg --without-libjasper --disable-cups"
 
 PACKAGES_DYNAMIC = "gtk-module-* gdk-pixbuf-loader-* gtk-immodule-* gtk-printbackend-*"
 
