@@ -46,6 +46,8 @@ RPROVIDES_tslib-conf = "libts-0.0-conf"
 
 # Machines with machine specific patches
 PACKAGE_ARCH_mnci = "${MACHINE_ARCH}"
+PACKAGE_ARCH_palmpre = "${MACHINE_ARCH}"
+
 # Machines with machine specific config files (tslib.sh)
 PACKAGE_ARCH_tslib-conf_a780 = "${MACHINE_ARCH}"
 PACKAGE_ARCH_tslib-conf_collie = "${MACHINE_ARCH}"
