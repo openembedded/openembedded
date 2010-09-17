@@ -88,6 +88,7 @@ Machines:   sheevaplug, openrd-client, eeepc 701, neek, calamari
 Interests:  content sharing, media center,
 Recipes:    myth*, lirc*, python-coherence, tgt, nios2 recipes
 Recipes:    cdparanoia, cdstatus, iscsi-target urjtag
+Recipes:    lib*perl recipes needed for mythplugins
 
 Person:     Graeme Gregory
 Mail:       dp@xora.org.uk
