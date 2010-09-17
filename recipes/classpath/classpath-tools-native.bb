@@ -5,9 +5,12 @@
 DESCRIPTION = "Provides working jar, javah etc. from the GNU Classpath project"
 
 DEPENDS = "virtual/java-native classpath-native"
+PR = "r1"
 
 inherit native
 
-do_stage() {
-	:
+do_install() {
+        :
 }
+
+NATIVE_INSTALL_WORKS = "1"
