@@ -1,5 +1,5 @@
 require busybox.inc
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.3"
 
 SRC_URI = "\
   http://www.busybox.net/downloads/busybox-${PV}.tar.bz2;name=tarball \
@@ -15,6 +15,7 @@ SRC_URI = "\
   file://busybox-1.13.2-top24.patch \
   file://busybox-1.13.2-unzip.patch \
   file://busybox-1.13.2-wget.patch \
+  file://busybox-1.13.2-make382.patch \
   file://fdisk_nios2.patch \
   \
   file://udhcpscript.patch \
