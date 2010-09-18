@@ -8,6 +8,9 @@ DEFAULT_PREFERENCE = "-1"
 
 # move this to tslib.inc when upstream releases a new version which includes support for
 # the palmpre machine
+SRC_URI_append_palmpre = " \
+  file://include-cy8mrln-header.patch \
+"
 EXTRA_OECONF_palmpre = " \
    --enable-shared \
    --enable-cy8mrln-palmpre \
