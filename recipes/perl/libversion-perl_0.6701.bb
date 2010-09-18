@@ -3,6 +3,8 @@ SECTION = "libs"
 LICENSE = "Artistic|GPL"
 PR = "r9"
 
+DEFAULT_PREFERENCE = "-1"
+
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/J/JP/JPEACOCK/version-${PV}.tar.gz"
 
 S = "${WORKDIR}/version-${PV}"
