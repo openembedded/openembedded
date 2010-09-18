@@ -3,7 +3,9 @@ in a style similar to the original SuperMario games."
 SECTION = "games"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
+
+RDEPENDS += "libmikmod"
 
 APPIMAGE = "${WORKDIR}/supertux.png"
 APPDESKTOP = "${WORKDIR}/supertux.desktop"
