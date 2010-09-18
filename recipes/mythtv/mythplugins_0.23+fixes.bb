@@ -13,13 +13,16 @@ RDEPENDS_mythweb_lighttpd = "lighttpd lighttpd-module-cgi lighttpd-module-fastcg
 
 RDEPENDS_mythnetvision += " python python-mysqldb "
 
+DEPENDS += " fftw fftwf "
+RDEPENDS_mythmusic += " libfftw libfftwf "
+
 # for mythweather:
-DEPENDS_mythweather += " libxml-xpath-perl-native libxml-simple-perl-native libdatetime-format-iso8601-perl-native \
+DEPENDS += " libxml-xpath-perl-native libxml-simple-perl-native libdatetime-format-iso8601-perl-native \
 	libsoap-lite-perl-native libimage-size-perl-native libdate-manip-perl-native "
 RDEPENDS_mythweather += " libxml-xpath-perl libxml-simple-perl libdatetime-format-iso8601-perl \
 	libsoap-lite-perl libimage-size-perl libdate-manip-perl "
 
-PR = "svnr${SRCPV}+r1"
+PR = "svnr${SRCPV}+r2"
 PV = "0.23"
 
 SRCREV = "25609"
@@ -248,10 +251,11 @@ FILES_mythnetvision = "${libdir}/mythtv/plugins/libmythnetvision.so \
         ${datadir}/mythtv/mythnetvision/* \
         ${datadir}/mythtv/i18n/mythnetvision* \
         ${datadir}/mythtv/mythnetvision.xml\
+        ${datadir}/mythtv/netvisionmenu.xml\
         ${datadir}/mythtv/themes/default/netvision-ui.xml \
-        ${datadir}/mythtv/themes/default-wide/nenetvision-ui.xml \
+        ${datadir}/mythtv/themes/default-wide/netvision-ui.xml \
         "
-#FILES_mythnetvision-dbg = "${libdir}/mythtv/plugins/.debug/libmythnetvision.so"
+FILES_mythnetvision-dbg = "${libdir}/mythtv/plugins/.debug/libmythnetvision.so"
 
 FILES_mythvideo = "${libdir}/mythtv/plugins/libmythvideo.so \
         ${bindir}/mtd \
