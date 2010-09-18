@@ -4,9 +4,9 @@ LICENSE = "Artistic|GPL"
 RDEPENDS_${PN} += "perl-module-file-temp perl-module-test-more"
 PR = "r0"
 
-SRC_URI = "http://search.cpan.org/CPAN/authors/id/J/JP/JPEACOCK/version-${PV}.tar.gz;name=version-perl-${PV}"
-SRC_URI[version-perl-0.80.md5sum] = "0add2a0132d582ad81d62b4e38fd3f92"
-SRC_URI[version-perl-0.80.sha256sum] = "256d7dec1f3ac8f5fe44919ec07c9a7b940916234c03d2f6b3762dd8a5ff2208"
+SRC_URI = "http://search.cpan.org/CPAN/authors/id/J/JP/JPEACOCK/version-${PV}.tar.gz"
+SRC_URI[md5sum] = "c073f079557297003d805b535711c5d1"
+SRC_URI[sha256sum] = "973e29dd82c4bb49ee1724d61f3cdd3c26052db7911aeb2852224acda8ba80bf"
 
 BBCLASSEXTEND = "native"
 
