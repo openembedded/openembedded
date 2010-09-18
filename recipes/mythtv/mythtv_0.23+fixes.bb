@@ -1,14 +1,19 @@
-require mythtv.inc
-
-DEPENDS_{PN} += "libmyth"
-DEPENDS_libmyth = "libmythdb libmythavutil libmythavcodec libmythavformat libmythswscale libmythhdhomerun \
-        libmythtv libmythui libmythfreemheg libmythupnp libmythlivemedia"
-
-RDEPENDS_${PN} = "mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mythtv-database \
-mysql5-server mysql5-client libmysqlclient qt4-plugin-sqldriver-sqlmysql xmltv"
+DESCRIPTION = "A full featured personal video recorder system."
+HOMEPAGE = "http://www.mythtv.org"
+LICENSE = "GPL"
+SECTION = "x11/multimedia"
+DEPENDS = "jack alsa-lib libxinerama libxv libxxf86vm libxvmc lirc \
+           ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'lame', d)}"
+RDEPENDS_${PN} = "libmyth mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mythtv-database \
+	   mysql5-server mysql5-client libmysqlclient qt4-plugin-sqldriver-sqlmysql xmltv"
+#RDEPENDS_${PN} = "qt-x11-plugins-sqldrivers qt-x11-plugins-imageformats"
 RDEPENDS_${PN}_append_libc-glibc = " glibc-gconv-utf-16"
 
-PR = "svnr${SRCPV}+r0"
+ARM_INSTRUCTION_SET = "arm"
+
+QMAKE_PROFILES = "mythtv.pro"
+
+PR = "svnr${SRCPV}+r1"
 PV = "0.23"
 
 # REALPV is here to support release candidates
@@ -70,9 +75,12 @@ do_install() {
         install -m 0644 ${S}/database/mc.sql ${D}${datadir}/mythtv/sql
 }
 
-PACKAGES =+ "mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mythtv-database"
+PACKAGES =+ "libmyth mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mythtv-database"
 PACKAGES_DYNAMIC = "mythtv-theme-*"
 
+FILES_libmyth = "${libdir}/lib*.so.*"
+FILES_libmyth-dev = "${libdir}/lib*.so ${libdir}/lib*.a ${incdir}/*"
+FILES_libmyth-dbg = "${libdir}/.debug
 FILES_${PN}-dbg += "${libdir}/mythtv/filters/.debug"
 FILES_mythtv-backend = "${bindir}/mythbackend ${bindir}/mythcommflag ${bindir}/mythfilldatabase ${bindir}/mythtranscode"
 FILES_mythtv-frontend = "${bindir}/mythfrontend ${datadir}/mythtv/i18n/mythfrontend_* ${datadir}/mythtv/*.ttf"
@@ -84,16 +92,6 @@ RRECOMMENDS_mythtv-frontend += "mythtv-theme-defaultmenu mythtv-theme-terra"
 
 mythlibs = "mythdb mythavutil mythavcodec mythavformat mythswscale mythhdhomerun myth mythtv mythui mythfreemheg mythupnp mythlivemedia"
 
-python __anonymous () {
-    import bb
-    mythlibs = bb.data.getVar('mythlibs', d).split()
-    pv = bb.data.expand(bb.data.getVar("REALPV", d), d)
-    for m in mythlibs:
-        bb.data.setVar("FILES_lib%s%s" % (m, pv), "${libdir}/lib%s-%s.so.*" % (m, pv), d)
-        bb.data.setVar("FILES_lib%s%s-dev" % (m, pv), "${libdir}/lib%s-%s.*" % (m, pv), d)
-    packages = " ".join(map(lambda x: "lib%s%s lib%s%s-dev" % (x, pv, x, pv), mythlibs) + bb.data.getVar("PACKAGES", d).split())
-    bb.data.setVar("PACKAGES", packages, d)
-}
 python populate_packages_prepend () {
         new_packages = []
         def the_hook(file, pkg, pattern, format, basename):
