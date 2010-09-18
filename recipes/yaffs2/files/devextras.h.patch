@@ -1,0 +1,22 @@
+Index: yaffs2/devextras.h
+===================================================================
+--- yaffs2.orig/devextras.h
++++ yaffs2/devextras.h
+@@ -170,6 +170,8 @@ static __inline__ int ylist_empty(struct
+ #define ATTR_MTIME	32
+ #define ATTR_CTIME	64
+ 
++#endif
++
+ struct iattr {
+ 	unsigned int ia_valid;
+ 	unsigned ia_mode;
+@@ -182,8 +184,6 @@ struct iattr {
+ 	unsigned int ia_attr_flags;
+ };
+ 
+-#endif
+-
+ #else
+ 
+ #include <linux/types.h>

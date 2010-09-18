@@ -3,15 +3,17 @@ SECTION = "base"
 HOMEPAGE = "http://www.yaffs.net"
 LICENSE = "GPLv2"
 PV = "0.0.0+cvs${SRCDATE}"
-PR = "r0"
+PR = "r2"
 DEPENDS = "mtd-utils"
 
 SRC_URI = "cvs://anonymous@cvs.aleph1.co.uk/home/aleph1/cvs;module=yaffs2 \
-           file://mkyaffs2image.patch"
+           file://mkyaffs2image.patch \
+	   file://devextras.h.patch"
+
 S = "${WORKDIR}/yaffs2"
 
-CFLAGS += "-I.. -DCONFIG_YAFFS_UTIL"
-CFLAGS_append_virtclass-native = " -I.. -DCONFIG_YAFFS_UTIL"
+CFLAGS += "-I.. -DCONFIG_YAFFS_UTIL "
+CFLAGS_append_virtclass-native = " -I.. -DCONFIG_YAFFS_UTIL "
 
 do_compile() {
 	cd utils && oe_runmake

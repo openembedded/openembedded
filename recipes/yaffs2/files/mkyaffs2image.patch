@@ -18,10 +18,11 @@
  * And BTW, what was one supposed to do with that file that this horror
  * occasionally managed to generate?
  */
-diff -urN yaffs2.orig/utils/mkyaffs2image.c yaffs2/utils/mkyaffs2image.c
---- yaffs2.orig/utils/mkyaffs2image.c   2005-12-12 16:34:58.000000000 -0800
-+++ yaffs2/utils/mkyaffs2image.c    2006-02-10 16:56:13.000000000 -0800
-@@ -31,10 +47,10 @@
+Index: yaffs2/utils/mkyaffs2image.c
+===================================================================
+--- yaffs2.orig/utils/mkyaffs2image.c
++++ yaffs2/utils/mkyaffs2image.c
+@@ -29,10 +29,10 @@
  #include <dirent.h>
  #include <string.h>
  #include <unistd.h>
@@ -33,13 +34,14 @@ diff -urN yaffs2.orig/utils/mkyaffs2image.c yaffs2/utils/mkyaffs2image.c
  #include "yaffs_packedtags2.h"
  
  unsigned yaffs_traceMask=0;
-@@ -43,9 +59,45 @@
+@@ -41,9 +41,46 @@ unsigned yaffs_traceMask=0;
  
  #define chunkSize 2048
  #define spareSize 64
+-
 +#define PT2_BYTES 25
- 
- const char * mkyaffsimage_c_version = "$Id: mkyaffs2image.c,v 1.4 2007-02-14 01:09:06 wookey Exp $";
++ 
+ const char * mkyaffsimage_c_version = "$Id: mkyaffs2image.c,v 1.5 2010-01-11 21:43:18 charles Exp $";
  
 +static int	layout_no;
 +
@@ -76,10 +78,11 @@ diff -urN yaffs2.orig/utils/mkyaffs2image.c yaffs2/utils/mkyaffs2image.c
 +                .useecc = -1,
 +        }
 +};
++
  
  typedef struct
  {
-@@ -59,7 +111,7 @@
+@@ -57,7 +94,7 @@ static objItem obj_list[MAX_OBJECTS];
  static int n_obj = 0;
  static int obj_id = YAFFS_NOBJECT_BUCKETS + 1;
  
@@ -88,7 +91,7 @@ diff -urN yaffs2.orig/utils/mkyaffs2image.c yaffs2/utils/mkyaffs2image.c
  
  static int outFile;
  
-@@ -123,6 +175,11 @@
+@@ -121,6 +158,11 @@ static int find_obj_in_list(dev_t dev, i
  	return -1;
  }
  
@@ -100,7 +103,7 @@ diff -urN yaffs2.orig/utils/mkyaffs2image.c yaffs2/utils/mkyaffs2image.c
  /* This little function converts a little endian tag to a big endian tag.
   * NOTE: The tag is not usable after this other than calculating the CRC
   * with.
-@@ -155,11 +212,56 @@
+@@ -153,11 +195,56 @@ static void little_to_big_endian(yaffs_T
      tags->asBytes[7] = temp.asBytes[7];
  #endif
  }
@@ -157,7 +160,7 @@ diff -urN yaffs2.orig/utils/mkyaffs2image.c yaffs2/utils/mkyaffs2image.c
  
  	error = write(outFile,data,chunkSize);
  	if(error < 0) return error;
-@@ -177,18 +279,27 @@
+@@ -175,18 +262,27 @@ static int write_chunk(__u8 *data, __u32
  // added NCB **CHECK**
  	t.chunkUsed = 1;
  
@@ -165,31 +168,33 @@ diff -urN yaffs2.orig/utils/mkyaffs2image.c yaffs2/utils/mkyaffs2image.c
 +#if 0
  	if (convert_endian)
  	{
-     	    little_to_big_endian(&t);
+-    	    little_to_big_endian(&t);
++		little_to_big_endian(&t);
  	}
 +#endif
  
  	nPages++;
  
- 	yaffs_PackTags2(&pt,&t);
+-	yaffs_PackTags2(&pt,&t,1);
 -	
 -//	return write(outFile,&pt,sizeof(yaffs_PackedTags2));
 -	return write(outFile,&pt,spareSize);
 -	
++	yaffs_PackTags2(&pt,&t,1);
 +
-+        memset(spare_buf, 0xff, sizeof(spare_buf));
-+        
-+        if (layout_no == 0) {
-+                memcpy(spare_buf, &pt, sizeof(yaffs_PackedTags2));
-+        } else {
-+                nandmtd2_pt2buf(spare_buf, &pt);
-+        }	
++	memset(spare_buf, 0xff, sizeof(spare_buf));
++
++	if (layout_no == 0) {
++		memcpy(spare_buf, &pt, sizeof(yaffs_PackedTags2));
++	} else {
++		nandmtd2_pt2buf(spare_buf, &pt);
++	}
 +
 +	return write(outFile,spare_buf,spareSize);
  }
  
  #define SWAP32(x)   ((((x) & 0x000000FF) << 24) | \
-@@ -199,6 +310,8 @@
+@@ -197,6 +293,8 @@ static int write_chunk(__u8 *data, __u32
  #define SWAP16(x)   ((((x) & 0x00FF) << 8) | \
                       (((x) & 0xFF00) >> 8))
          
@@ -198,7 +203,7 @@ diff -urN yaffs2.orig/utils/mkyaffs2image.c yaffs2/utils/mkyaffs2image.c
  // This one is easier, since the types are more standard. No funky shifts here.
  static void object_header_little_to_big_endian(yaffs_ObjectHeader* oh)
  {
-@@ -256,6 +369,7 @@
+@@ -254,6 +352,7 @@ static void object_header_little_to_big_
      oh->roomToGrow[11] = SWAP32(oh->roomToGrow[11]);
  #endif
  }
@@ -206,7 +211,7 @@ diff -urN yaffs2.orig/utils/mkyaffs2image.c yaffs2/utils/mkyaffs2image.c
  
  static int write_object_header(int objId, yaffs_ObjectType t, struct stat *s, int parent, const char *name, int equivalentObj, const char * alias)
  {
-@@ -300,10 +414,13 @@
+@@ -298,10 +397,13 @@ static int write_object_header(int objId
  		strncpy(oh->alias,alias,YAFFS_MAX_ALIAS_LENGTH);
  	}
  
@@ -220,7 +225,7 @@ diff -urN yaffs2.orig/utils/mkyaffs2image.c yaffs2/utils/mkyaffs2image.c
  	
  	return write_chunk(bytes,objId,0,0xffff);
  	
-@@ -319,7 +436,7 @@
+@@ -317,7 +419,7 @@ static int process_directory(int parent,
  	nDirectories++;
  	
  	dir = opendir(path);
@@ -229,7 +234,7 @@ diff -urN yaffs2.orig/utils/mkyaffs2image.c yaffs2/utils/mkyaffs2image.c
  	if(dir)
  	{
  		while((entry = readdir(dir)) != NULL)
-@@ -403,12 +520,12 @@
+@@ -401,12 +503,12 @@ static int process_directory(int parent,
  									   error = nBytes;
  									   
  									printf("%d data chunks written\n",chunk);
@@ -243,7 +248,7 @@ diff -urN yaffs2.orig/utils/mkyaffs2image.c yaffs2/utils/mkyaffs2image.c
  								
  							}							
  														
-@@ -448,58 +565,82 @@
+@@ -446,58 +548,82 @@ static int process_directory(int parent,
  				}
  			}
  		}
