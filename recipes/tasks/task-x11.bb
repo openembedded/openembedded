@@ -2,7 +2,7 @@ DESCRIPTION = "The X Window System -- install this task to get a client/server b
 SECTION = "x11/server"
 LICENSE = "MIT"
 PV = "1.0"
-PR = "r6"
+PR = "r7"
 
 # WORK IN PROGRESS
 
