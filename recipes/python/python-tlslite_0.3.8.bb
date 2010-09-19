@@ -6,7 +6,7 @@ HOMEPAGE = "http://trevp.net/tlslite/"
 PRIORITY = "optional"
 LICENSE = "PD"
 SRCNAME = "tlslite"
-PR = "ml1"
+PR = "ml2"
 
 # original url is dead, so it has been replaced with the gentoo one
 #SRC_URI = "http://trevp.net/${SRCNAME}/${SRCNAME}-${PV}.tar.gz"
