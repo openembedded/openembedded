@@ -1,4 +1,4 @@
-DEPENDS_prepend = "${@["qt4-embedded ", ""][(bb.data.getVar('PN', d, 1) == 'qt4-embedded')]}"
+DEPENDS_prepend = "${@["qt4-embedded ", ""][(bb.data.getVar('PN', d, 1)[:12] == 'qt4-embedded')]}"
 inherit qmake2
 
 QT_DIR_NAME = "qtopia"
