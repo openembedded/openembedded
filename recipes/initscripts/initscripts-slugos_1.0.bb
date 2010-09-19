@@ -17,14 +17,14 @@ RDEPENDS_${PN} = "update-rc.d"
 # All other standard definitions inherited from initscripts
 # Except the PR which is hacked here.  The format used is
 # a suffix
-PR := "${PR}.24"
+PR := "${PR}.25"
 
 # Avoid a clash on /etc/device_table by ensuring that it gets removed
 # from the list of configuration files handled specially by opkg.
 CONFFILES_${PN} = ""
 
 # We wish to search the same file paths as does the initscripts recipe.
-FILESPATHPKG =. "initscripts-${PV}:"
+FILESPATHPKG =. "initscripts-${PV}/slugos:initscripts-${PV}:"
 
 PACKAGES = "${PN}-dbg ${PN}"
 
