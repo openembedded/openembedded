@@ -1,0 +1,104 @@
+Index: fam-2.7.0/lib/Client.c++
+===================================================================
+--- fam-2.7.0.orig/lib/Client.c++	2010-09-19 15:38:46.498582001 -0700
++++ fam-2.7.0/lib/Client.c++	2010-09-19 15:47:27.998582001 -0700
+@@ -29,12 +29,12 @@
+ #include <rpc/rpc.h>
+ #include <rpc/pmap_clnt.h>
+ #include <rpc/pmap_prot.h>
+-#include <string.h>  // for memset
++#include <cstring>  // for memset
+ #include <ctype.h>
+ #include <syslog.h>
+ #include <errno.h>
+ 
+-#include <iostream.h>
++#include <iostream>
+ 
+ #include "fam.h"
+ #include "Client.h"
+Index: fam-2.7.0/src/Interest.h
+===================================================================
+--- fam-2.7.0.orig/src/Interest.h	2010-09-19 15:40:40.708582002 -0700
++++ fam-2.7.0/src/Interest.h	2010-09-19 15:53:04.778582001 -0700
+@@ -27,6 +27,7 @@
+ #include <sys/types.h>
+ #include <sys/time.h>
+ #include <netinet/in.h>  //  for in_addr
++#include <cstdlib>
+ 
+ #include "Boolean.h"
+ 
+@@ -81,7 +82,7 @@ public:
+ protected:
+ 
+     bool do_stat();
+-    virtual void post_event(const Event&, const char * = NULL) = 0;
++    virtual void post_event(const Event&, const char * = 0) = 0;
+     char& ci_bits()			{ return ci_char; }
+     char& dir_bits()			{ return dir_char; }
+     const char& ci_bits() const		{ return ci_char; }
+Index: fam-2.7.0/src/IMon.c++
+===================================================================
+--- fam-2.7.0.orig/src/IMon.c++	2010-09-19 15:42:56.468582002 -0700
++++ fam-2.7.0/src/IMon.c++	2010-09-19 15:48:29.028582002 -0700
+@@ -40,7 +40,7 @@
+ #include "Interest.h"
+ #include "Log.h"
+ #include "Scheduler.h"
+-#include "alloc.h"
++#include <memory>
+ 
+ int		   IMon::imonfd = -2;
+ IMon::EventHandler IMon::ehandler = NULL;
+Index: fam-2.7.0/include/BTree.h
+===================================================================
+--- fam-2.7.0.orig/include/BTree.h	2010-09-19 15:49:02.658582001 -0700
++++ fam-2.7.0/include/BTree.h	2010-09-19 15:49:59.288582001 -0700
+@@ -271,7 +271,7 @@ BTree<K, V>::Node::join(const Closure& i
+     n += that->n + 1;
+     link[n] = that->link[that->n];
+     that->n = 0;
+-    that->link[0] = NULL;
++    that->link[0] = 0;
+ }
+ 
+ ///////////////////////////////////////////////////////////////////////////////
+@@ -280,7 +280,7 @@ BTree<K, V>::Node::join(const Closure& i
+ 
+ template <class K, class V>
+ BTree<K, V>::BTree()
+-    : root(NULL), npairs(0)
++    : root(0), npairs(0)
+ {
+     assert(!(fanout % 2));
+ }
+@@ -407,7 +407,7 @@ template <class Key, class Value>
+ typename BTree<Key, Value>::Closure
+ BTree<Key, Value>::insert(Node *p, const Key& key, const Value& value)
+ {
+-    if (!p) return Closure(key, value, NULL);
++    if (!p) return Closure(key, value, 0);
+     //  If you're running Purify on a client linking with libfam, and it says
+     //  that line is causing a 3-byte UMR for BTree<int, bool>::insert() in
+     //  FAMNextEvent() ("Reading 8 bytes from 0x... on the stack (3 bytes at
+@@ -475,7 +475,7 @@ BTree<Key, Value>::remove(const Key& key
+     case UNDER:
+ 	if (root->n == 0)
+ 	{   Node *nr = root->link[0];
+-	    root->link[0] = NULL;	// don't delete subtree
++	    root->link[0] = 0;	// don't delete subtree
+ 	    delete root;
+ 	    root = nr;
+ 	}
+@@ -507,8 +507,8 @@ BTree<Key, Value>::underflow(Node *p, un
+     Node *cp = p->link[i];
+     assert(cp);
+     
+-    Node *rp = i < p->n ? p->link[i + 1] : NULL;
+-    Node *lp = i > 0    ? p->link[i - 1] : NULL;
++    Node *rp = i < p->n ? p->link[i + 1] : 0;
++    Node *lp = i > 0    ? p->link[i - 1] : 0;
+     assert(!rp || rp->n >= fanout / 2);
+     assert(!lp || lp->n >= fanout / 2);
+ 
