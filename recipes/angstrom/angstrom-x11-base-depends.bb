@@ -10,8 +10,6 @@ XSERVER ?= "xserver-xorg \
             xf86-video-fbdev \
             xf86-input-keyboard"
 
-xserver-kdrive-fbdev"
-
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 DEPENDS = "virtual/xserver"
