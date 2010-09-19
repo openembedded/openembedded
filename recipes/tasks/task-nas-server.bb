@@ -1,7 +1,7 @@
 DESCRIPTION = "Tasks for a Network Attached Storage server"
 LICENSE = "MIT"
 PROVIDES = "task-nas-server-everything"
-PR = "r2"
+PR = "r3"
 
 inherit task
 
@@ -21,6 +21,7 @@ NAS_SERVER_PACKAGES = "\
 	task-nas-server-ntfs \
 	task-nas-server-ext3 \
 	task-nas-server-reiserfs \
+	task-nas-server-tgt \
 "
 
 RDEPENDS_task-nas-server-everything = "${NAS_SERVER_PACKAGES}"
@@ -91,4 +92,11 @@ DESCRIPTION_task-nas-server-reiserfs = "NAS-Server: ReiserFS Filesystem"
 RDEPENDS_task-nas-server-reiserfs = "\
 "
 RRECOMMENDS_task-nas-server-reiserfs = "\
+"
+
+DESCRIPTION_task-nas-server-tgt = "NAS-Server: SCSI target"
+RDEPENDS_task-nas-server-tgt = "\
+	tgt \
+"
+RRECOMMENDS_task-nas-server-tgt = "\
 "
