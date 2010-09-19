@@ -3,6 +3,7 @@ SECTION = "libs"
 PROVIDES = "linux-libc-headers"
 
 INHIBIT_DEFAULT_DEPS = "1"
+EXCLUDE_FROM_WORLD = "1"
 
 # note: see iphone-sources script to get/generate the tarballs
 SRC_URI = "\

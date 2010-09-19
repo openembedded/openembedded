@@ -4,6 +4,7 @@ PROVIDES = "virtual/${TARGET_PREFIX}libc-for-gcc virtual/libc virtual/libiconv v
 
 INHIBIT_DEFAULT_DEPS = "1"
 EXCLUDE_FROM_SHLIBS = "1"
+EXCLUDE_FROM_WORLD = "1"
 
 # note: see iphone-sources script to get/generate the tarballs
 SRC_URI = "file://iphone-rootfs-${PV}.tar.bz2"
