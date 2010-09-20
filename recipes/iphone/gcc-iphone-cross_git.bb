@@ -3,6 +3,7 @@ DEPENDS = "iphone-sdks"
 PV = "4.2.1+git${SRCREV}"
 
 INHIBIT_DEFAULT_DEPS = "1"
+COMPATIBLE_MACHINE = "(iphone)"
 
 PROVIDES = "virtual/${TARGET_PREFIX}gcc virtual/${TARGET_PREFIX}g++"
 PROVIDES += "virtual/${TARGET_PREFIX}gcc-initial virtual/${TARGET_PREFIX}gcc-intermediate"

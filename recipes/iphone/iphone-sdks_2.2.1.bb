@@ -3,8 +3,7 @@ SECTION = "libs"
 PROVIDES = "linux-libc-headers"
 
 INHIBIT_DEFAULT_DEPS = "1"
-EXCLUDE_FROM_WORLD = "1"
-
+COMPATIBLE_MACHINE = "(iphone)"
 # note: see iphone-sources script to get/generate the tarballs
 SRC_URI = "\
 	file://iphone-sdks-${PV}.tar.bz2 \
