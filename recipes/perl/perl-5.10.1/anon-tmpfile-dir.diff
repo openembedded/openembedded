@@ -1,0 +1,102 @@
+From: Niko Tyni <ntyni@debian.org>
+Subject: Honor TMPDIR when open()ing an anonymous temporary file
+Bug-Debian: http://bugs.debian.org/528544
+Bug: http://rt.perl.org/rt3/Public/Bug/Display.html?id=66452
+
+[perl #66452]
+
+As reported by Norbert Buchmuller <norbi@nix.hu>, opening an anonymous
+temporary file with the magical open($fh, '+>', undef) ignores TMPDIR.
+
+
+---
+ perlio.c      |   20 ++++++++++++++++----
+ t/io/perlio.t |   15 ++++++++++++++-
+ 2 files changed, 30 insertions(+), 5 deletions(-)
+
+diff --git a/perlio.c b/perlio.c
+index 3803247..3ce579f 100644
+--- a/perlio.c
++++ b/perlio.c
+@@ -5167,18 +5167,30 @@ PerlIO_tmpfile(void)
+ 	  f = PerlIO_fdopen(fd, "w+b");
+ #else /* WIN32 */
+ #    if defined(HAS_MKSTEMP) && ! defined(VMS) && ! defined(OS2)
+-     SV * const sv = newSVpvs("/tmp/PerlIO_XXXXXX");
++     int fd = -1;
++     char tempname[] = "/tmp/PerlIO_XXXXXX";
++     const char * const tmpdir = PL_tainting ? NULL : PerlEnv_getenv("TMPDIR");
++     SV * const sv = tmpdir && *tmpdir ? newSVpv(tmpdir, 0) : NULL;
+      /*
+       * I have no idea how portable mkstemp() is ... NI-S
+       */
+-     const int fd = mkstemp(SvPVX(sv));
++     if (sv) {
++	 /* if TMPDIR is set and not empty, we try that first */
++	 sv_catpv(sv, tempname + 4);
++	 fd = mkstemp(SvPVX(sv));
++     }
++     if (fd < 0) {
++	 /* else we try /tmp */
++	 fd = mkstemp(tempname);
++     }
+      if (fd >= 0) {
+ 	  f = PerlIO_fdopen(fd, "w+");
+ 	  if (f)
+ 	       PerlIOBase(f)->flags |= PERLIO_F_TEMP;
+-	  PerlLIO_unlink(SvPVX_const(sv));
++	  PerlLIO_unlink(sv ? SvPVX_const(sv) : tempname);
+      }
+-     SvREFCNT_dec(sv);
++     if (sv)
++	 SvREFCNT_dec(sv);
+ #    else	/* !HAS_MKSTEMP, fallback to stdio tmpfile(). */
+      FILE * const stdio = PerlSIO_tmpfile();
+ 
+diff --git a/t/io/perlio.t b/t/io/perlio.t
+index c145945..c1eebec 100755
+--- a/t/io/perlio.t
++++ b/t/io/perlio.t
+@@ -8,13 +8,14 @@ BEGIN {
+ 	}
+ }
+ 
+-use Test::More tests => 37;
++use Test::More tests => 39;
+ 
+ use_ok('PerlIO');
+ 
+ my $txt = "txt$$";
+ my $bin = "bin$$";
+ my $utf = "utf$$";
++my $nonexistent = "nex$$";
+ 
+ my $txtfh;
+ my $binfh;
+@@ -89,6 +90,17 @@ ok(close($utffh));
+     # report after STDOUT is restored
+     ok($status, '       re-open STDOUT');
+     close OLDOUT;
++
++    SKIP: {
++      skip("TMPDIR not honored on this platform", 2)
++        if !$Config{d_mkstemp}
++        || $^O eq 'VMS' || $^O eq 'MSwin32' || $^O eq 'os2';
++      local $ENV{TMPDIR} = $nonexistent;
++      ok( open(my $x,"+<",undef), 'TMPDIR honored by magic temp file via 3 arg open with undef - works if TMPDIR points to a non-existent dir');
++
++      mkdir $ENV{TMPDIR};
++      ok(open(my $x,"+<",undef), 'TMPDIR honored by magic temp file via 3 arg open with undef - works if TMPDIR points to an existent dir');
++    }
+ }
+ 
+ # in-memory open
+@@ -136,5 +148,6 @@ END {
+     1 while unlink $txt;
+     1 while unlink $bin;
+     1 while unlink $utf;
++    rmdir $nonexistent;
+ }
+ 
+-- 
+tg: (daf8b46..) fixes/anon-tmpfile-dir (depends on: upstream)

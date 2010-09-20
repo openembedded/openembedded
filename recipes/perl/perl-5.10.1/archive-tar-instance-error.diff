@@ -1,0 +1,109 @@
+From: Niko Tyni <ntyni@debian.org>
+Subject: Separate Archive::Tar instance error strings from each other
+Bug-Debian: http://bugs.debian.org/539355
+Bug: http://rt.cpan.org/Public/Bug/Display.html?id=48879
+
+Included upstream in Archive-Tar-1.54.
+
+
+---
+ lib/Archive/Tar.pm           |   17 +++++++++++++++--
+ lib/Archive/Tar/t/06_error.t |   39 +++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 54 insertions(+), 2 deletions(-)
+
+diff --git a/lib/Archive/Tar.pm b/lib/Archive/Tar.pm
+index 022a172..bc97c0e 100644
+--- a/lib/Archive/Tar.pm
++++ b/lib/Archive/Tar.pm
+@@ -117,7 +117,7 @@ sub new {
+ 
+     ### copying $tmpl here since a shallow copy makes it use the
+     ### same aref, causing for files to remain in memory always.
+-    my $obj = bless { _data => [ ], _file => 'Unknown' }, $class;
++    my $obj = bless { _data => [ ], _file => 'Unknown', _error => '' }, $class;
+ 
+     if (@_) {
+         unless ( $obj->read( @_ ) ) {
+@@ -1445,6 +1445,10 @@ method call instead.
+         my $self    = shift;
+         my $msg     = $error = shift;
+         $longmess   = Carp::longmess($error);
++        if (ref $self) {
++            $self->{_error} = $error;
++            $self->{_longmess} = $longmess;
++        }
+ 
+         ### set Archive::Tar::WARN to 0 to disable printing
+         ### of errors
+@@ -1457,7 +1461,11 @@ method call instead.
+ 
+     sub error {
+         my $self = shift;
+-        return shift() ? $longmess : $error;
++        if (ref $self) {
++            return shift() ? $self->{_longmess} : $self->{_error};
++        } else {
++            return shift() ? $longmess : $error;
++        }
+     }
+ }
+ 
+@@ -1817,6 +1825,11 @@ use is very much discouraged. Use the C<error()> method instead:
+ 
+     warn $tar->error unless $tar->extract;
+ 
++Note that in older versions of this module, the C<error()> method
++would return an effectively global value even when called an instance
++method as above. This has since been fixed, and multiple instances of
++C<Archive::Tar> now have separate error strings.
++
+ =head2 $Archive::Tar::INSECURE_EXTRACT_MODE
+ 
+ This variable indicates whether C<Archive::Tar> should allow
+diff --git a/lib/Archive/Tar/t/06_error.t b/lib/Archive/Tar/t/06_error.t
+new file mode 100644
+index 0000000..5c728bc
+--- /dev/null
++++ b/lib/Archive/Tar/t/06_error.t
+@@ -0,0 +1,39 @@
++BEGIN {
++    if( $ENV{PERL_CORE} ) {
++        chdir '../lib/Archive/Tar' if -d '../lib/Archive/Tar';
++    }       
++    use lib '../../..';
++}
++
++BEGIN { chdir 't' if -d 't' }
++
++use Test::More 'no_plan';
++use strict;
++use lib '../lib';
++
++use Archive::Tar;
++use File::Spec;
++
++$Archive::Tar::WARN = 0;
++
++my $t1 = Archive::Tar->new;
++my $t2 = Archive::Tar->new;
++
++is($Archive::Tar::error, "", "global error string is empty");
++is($t1->error, "", "error string of object 1 is empty");
++is($t2->error, "", "error string of object 2 is empty");
++
++ok(!$t1->read(), "can't read without a file");
++
++isnt($t1->error, "", "error string of object 1 is set");
++is($Archive::Tar::error, $t1->error, "global error string equals that of object 1");
++is($Archive::Tar::error, Archive::Tar->error, "the class error method returns the global error");
++is($t2->error, "", "error string of object 2 is still empty");
++
++my $src = File::Spec->catfile( qw[src short b] );
++ok(!$t2->read($src), "error when opening $src");
++
++isnt($t2->error, "", "error string of object 1 is set");
++isnt($t2->error, $t1->error, "error strings of objects 1 and 2 differ");
++is($Archive::Tar::error, $t2->error, "global error string equals that of object 2");
++is($Archive::Tar::error, Archive::Tar->error, "the class error method returns the global error");
+-- 
+tg: (daf8b46..) fixes/archive-tar-instance-error (depends on: upstream)

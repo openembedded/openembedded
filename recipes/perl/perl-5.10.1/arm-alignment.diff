@@ -1,0 +1,39 @@
+From: Niko Tyni <ntyni@debian.org>
+Subject: Prevent gcc from optimizing the alignment test away on armel
+Bug-Debian: http://bugs.debian.org/289884
+Author: Marc Pignat <marc.pignat@hevs.ch>
+Origin: upstream, http://perl5.git.perl.org/perl.git/commit/f1c7503b9028d20741c9a01345ba8704998ea381
+
+As hunted down by Marc Pignat, gcc optimizations make the check for
+u32align (U32_ALIGNMENT_REQUIRED) a no-op on armel, breaking the MD5
+module.
+
+---
+ Configure |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/Configure b/Configure
+index 01fa3c0..f39b2f9 100755
+--- a/Configure
++++ b/Configure
+@@ -18533,6 +18533,7 @@ $cat <<EOM
+ 
+ Checking to see whether you can access character data unalignedly...
+ EOM
++: volatile so that the compiler does not optimize the test away
+ case "$d_u32align" in
+ '')   $cat >try.c <<EOCP
+ #include <stdio.h>
+@@ -18549,8 +18550,8 @@ $signal_t bletch(int s) { exit(4); }
+ #endif
+ int main() {
+ #if BYTEORDER == 0x1234 || BYTEORDER == 0x4321
+-    U8 buf[8];
+-    U32 *up;
++    $volatile U8 buf[8];
++    $volatile U32 *up;
+     int i;
+ 
+     if (sizeof(U32) != 4) {
+-- 
+tg: (daf8b46..) fixes/arm-alignment (depends on: upstream)

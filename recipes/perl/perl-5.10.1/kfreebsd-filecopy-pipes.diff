@@ -1,0 +1,68 @@
+From: Niko Tyni <ntyni@debian.org>
+Subject: Fix File::Copy::copy with pipes on GNU/kFreeBSD
+Bug-Debian: http://bugs.debian.org/537555
+Origin: upstream, http://perl5.git.perl.org/perl.git/commit/16f708c9bc0dc48713b200031295a40bed83bbfc
+
+Quoting Petr Salinger:
+The Copy tries to detect whether source and dest are the same files.
+Unfortunately, on the GNU/kFreeBSD the kernel returns for all pipes
+as device and inode numbers just zero. See pipe_stat() in
+http://www.freebsd.org/cgi/cvsweb.cgi/src/sys/kern/sys_pipe.c
+
+Patch by Petr Salinger, tests by Niko Tyni.
+
+Backported from blead change 16f708c9bc0dc48713b200031295a40bed83bbfc
+
+---
+ lib/File/Copy.pm |    2 +-
+ lib/File/Copy.t  |   15 ++++++++++++++-
+ 2 files changed, 15 insertions(+), 2 deletions(-)
+
+diff --git a/lib/File/Copy.pm b/lib/File/Copy.pm
+index e1d7724..1da5437 100644
+--- a/lib/File/Copy.pm
++++ b/lib/File/Copy.pm
+@@ -115,7 +115,7 @@ sub copy {
+ 	my @fs = stat($from);
+ 	if (@fs) {
+ 	    my @ts = stat($to);
+-	    if (@ts && $fs[0] == $ts[0] && $fs[1] == $ts[1]) {
++	    if (@ts && $fs[0] == $ts[0] && $fs[1] == $ts[1] && !-p $from) {
+ 		carp("'$from' and '$to' are identical (not copied)");
+                 return 0;
+ 	    }
+diff --git a/lib/File/Copy.t b/lib/File/Copy.t
+index bcfa207..2e5ce9c 100755
+--- a/lib/File/Copy.t
++++ b/lib/File/Copy.t
+@@ -14,7 +14,7 @@ use Test::More;
+ 
+ my $TB = Test::More->builder;
+ 
+-plan tests => 115;
++plan tests => 117;
+ 
+ # We're going to override rename() later on but Perl has to see an override
+ # at compile time to honor it.
+@@ -272,6 +272,19 @@ for my $cross_partition_test (0..1) {
+     }
+ }
+ 
++SKIP: {
++    skip("fork required to test pipe copying", 2)
++        if (!$Config{'d_fork'});
++
++    open(my $IN, "-|") || exec $^X, '-e', 'print "Hello, world!\n"';
++    open(my $OUT, "|-") || exec $^X, '-ne', 'exit(/Hello/ ? 55 : 0)';
++
++    ok(copy($IN, $OUT), "copy pipe to another");
++    close($OUT);
++    is($? >> 8, 55, "content copied through the pipes");
++    close($IN);
++}
++
+ END {
+     1 while unlink "file-$$";
+     1 while unlink "lib/file-$$";
+-- 
+tg: (daf8b46..) fixes/kfreebsd-filecopy-pipes (depends on: upstream)

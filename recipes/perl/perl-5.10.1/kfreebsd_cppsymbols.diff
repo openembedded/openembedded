@@ -1,0 +1,28 @@
+From: Niko Tyni <ntyni@debian.org>
+Subject: Add gcc predefined macros to $Config{cppsymbols} on GNU/kFreeBSD.
+Bug-Debian: http://bugs.debian.org/533098
+Origin: upstream, http://perl5.git.perl.org/perl.git/commit/3b910a06633f63976a6da223b122193040fbe96d
+
+This is needed at least by h2ph, otherwise the generated .ph files
+choke on missing __LONG_MAX__ and similar definitions.
+
+
+---
+ Configure |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/Configure b/Configure
+index 01fa3c0..5e863b3 100755
+--- a/Configure
++++ b/Configure
+@@ -21375,7 +21375,7 @@ $eunicefix Cppsym.try
+ ./Cppsym < Cppsym.know > Cppsym.true
+ : Add in any linux cpp "predefined macros":
+ case "$osname::$gccversion" in
+-  *linux*::*.*)
++  *linux*::*.*|*gnukfreebsd*::*.*)
+     tHdrH=_tmpHdr
+     rm -f $tHdrH'.h' $tHdrH
+     touch $tHdrH'.h'
+-- 
+tg: (daf8b46..) fixes/kfreebsd_cppsymbols (depends on: upstream)

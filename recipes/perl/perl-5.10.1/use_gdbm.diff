@@ -1,0 +1,39 @@
+Subject: Explicitly link against -lgdbm_compat in ODBM_File/NDBM_File. 
+
+Explicitly link against -lgdbm_compat.
+
+
+---
+ ext/NDBM_File/hints/linux.pl |    5 +----
+ ext/ODBM_File/hints/linux.pl |    8 +-------
+ 2 files changed, 2 insertions(+), 11 deletions(-)
+
+diff --git a/ext/NDBM_File/hints/linux.pl b/ext/NDBM_File/hints/linux.pl
+index 174f913..652b75b 100644
+--- a/ext/NDBM_File/hints/linux.pl
++++ b/ext/NDBM_File/hints/linux.pl
+@@ -2,7 +2,4 @@
+ # Prefer gdbm to avoid the broken ndbm in some distributions
+ # (no null key support)
+ # Jonathan Stowe <gellyfish@gellyfish.com>
+-use Config;
+-use ExtUtils::Liblist;
+-($self->{LIBS}) = ExtUtils::Liblist->ext('-lgdbm -lgdbm_compat')
+-	if $Config{libs} =~ /(?:^|\s)-lgdbm(?:\s|$)/;
++$self->{LIBS} = ['-lgdbm_compat'];
+diff --git a/ext/ODBM_File/hints/linux.pl b/ext/ODBM_File/hints/linux.pl
+index f8ca492..2cf6b02 100644
+--- a/ext/ODBM_File/hints/linux.pl
++++ b/ext/ODBM_File/hints/linux.pl
+@@ -1,8 +1,2 @@
+ # uses GDBM dbm compatibility feature - at least on SuSE 8.0
+-$self->{LIBS} = ['-lgdbm'];
+-
+-# Debian/Ubuntu have /usr/lib/libgdbm_compat.so.3* but not this file,
+-# so linking may fail
+-if (-e '/usr/lib/libgdbm_compat.so' or -e '/usr/lib64/libgdbm_compat.so') {
+-    $self->{LIBS}->[0] .= ' -lgdbm_compat';
+-}
++$self->{LIBS} = ['-lgdbm_compat'];
+-- 
+tg: (daf8b46..) debian/use_gdbm (depends on: upstream)

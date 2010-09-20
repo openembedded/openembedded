@@ -1,0 +1,85 @@
+Author: David Mitchell <davem@iabyn.com>
+Author: Nicholas Clark <nick@ccl4.org>
+Subject: fix an errno stringification bug in taint mode
+Bug-Debian: http://bugs.debian.org/574129
+Bug: http://rt.perl.org/rt3/Public/Bug/Display.html?id=61976
+Origin: http://perl5.git.perl.org/perl.git/commit/0097b436152452e403cc71b4f1a1cfd30ec0ba1a 
+Origin: http://perl5.git.perl.org/perl.git/commit/be1cf43c8dab9dd236839206d53611f7e7d2d856
+
+Hopefully fixes $! stringification problems seen with spamassassin (#574129).
+
+---
+ mg.c         |    2 ++
+ t/op/magic.t |    8 +++++++-
+ t/op/taint.t |   13 ++++++++++++-
+ 3 files changed, 21 insertions(+), 2 deletions(-)
+
+diff --git a/mg.c b/mg.c
+index 5502e90..70ebb0b 100644
+--- a/mg.c
++++ b/mg.c
+@@ -1041,6 +1041,8 @@ Perl_magic_get(pTHX_ SV *sv, MAGIC *mg)
+ 	else
+ #endif
+ 	sv_setpv(sv, errno ? Strerror(errno) : "");
++	if (SvPOKp(sv))
++	    SvPOK_on(sv);    /* may have got removed during taint processing */
+ 	RESTORE_ERRNO;
+ 	}
+ #endif
+diff --git a/t/op/magic.t b/t/op/magic.t
+index bfb68a7..d51a22b 100755
+--- a/t/op/magic.t
++++ b/t/op/magic.t
+@@ -12,7 +12,7 @@ use warnings;
+ use Config;
+ 
+ 
+-plan (tests => 59);
++plan (tests => 60);
+ 
+ $Is_MSWin32  = $^O eq 'MSWin32';
+ $Is_NetWare  = $^O eq 'NetWare';
+@@ -475,3 +475,9 @@ SKIP: {
+     is $@, '', 'Assign a shared key to a magic hash';
+     $@ and print "# $@";
+ }
++
++{
++    $! = 9999;
++    is int $!, 9999, q{[perl #72850] Core dump in bleadperl from perl -e '$! = 9999; $a = $!;'};
++
++}
+diff --git a/t/op/taint.t b/t/op/taint.t
+index 0ac02a6..6511fa5 100755
+--- a/t/op/taint.t
++++ b/t/op/taint.t
+@@ -17,7 +17,7 @@ use Config;
+ use File::Spec::Functions;
+ 
+ BEGIN { require './test.pl'; }
+-plan tests => 301;
++plan tests => 302;
+ 
+ $| = 1;
+ 
+@@ -1316,6 +1316,17 @@ foreach my $ord (78, 163, 256) {
+     ok(tainted($zz), "pack a*a* preserves tainting");
+ }
+ 
++# Bug RT #61976 tainted $! would show numeric rather than string value
++
++{
++    my $tainted_path = substr($^X,0,0) . "/no/such/file";
++    my $err;
++    # $! is used in a tainted expression, so gets tainted
++    open my $fh, $tainted_path or $err= "$!";
++    unlike($err, qr/^\d+$/, 'tainted $!');
++}
++
++
+ # This may bomb out with the alarm signal so keep it last
+ SKIP: {
+     skip "No alarm()"  unless $Config{d_alarm};
+-- 
+tg: (daf8b46..) fixes/tainted-errno (depends on: upstream)

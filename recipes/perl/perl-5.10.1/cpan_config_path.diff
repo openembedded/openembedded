@@ -1,0 +1,22 @@
+Subject: Set location of CPAN::Config to /etc/perl as /usr may not be writable.
+
+
+---
+ lib/CPAN/HandleConfig.pm |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/CPAN/HandleConfig.pm b/lib/CPAN/HandleConfig.pm
+index 903b414..ba7dae8 100644
+--- a/lib/CPAN/HandleConfig.pm
++++ b/lib/CPAN/HandleConfig.pm
+@@ -541,7 +541,7 @@ sub load {
+         $configpm = $INC{"CPAN/MyConfig.pm"};
+         $redo++;
+     } else {
+-        my($path_to_cpan) = File::Basename::dirname($INC{"CPAN.pm"});
++        my($path_to_cpan) = '/etc/perl';
+         my($configpmdir) = File::Spec->catdir($path_to_cpan,"CPAN");
+         my($configpmtest) = File::Spec->catfile($configpmdir,"Config.pm");
+         my $inc_key;
+-- 
+tg: (daf8b46..) debian/cpan_config_path (depends on: upstream)

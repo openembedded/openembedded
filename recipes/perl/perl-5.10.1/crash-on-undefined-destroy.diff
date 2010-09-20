@@ -1,0 +1,58 @@
+From: Niko Tyni <ntyni@debian.org>
+Subject: Fix a NULL pointer dereference when looking for a DESTROY method
+Bug-Debian: http://bugs.debian.org/564074
+Bug: http://rt.perl.org/rt3/Public/Bug/Display.html?id=71952
+Origin: upstream, http://perl5.git.perl.org/perl.git/commit/1f15e670edb515b744e9021b4a42a7955da83093
+ 
+The empty DESTROY method optimization introduced by upstream commit
+fbb3ee5af3d would crash the interpreter if a DESTROY method was declared
+but not actually defined.
+
+
+---
+ sv.c          |    3 ++-
+ t/op/method.t |   11 ++++++++++-
+ 2 files changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/sv.c b/sv.c
+index d2fcb0c..ec1ac82 100644
+--- a/sv.c
++++ b/sv.c
+@@ -5419,7 +5419,8 @@ Perl_sv_clear(pTHX_ register SV *sv)
+ 		if (destructor
+ 			/* Don't bother calling an empty destructor */
+ 			&& (CvISXSUB(destructor)
+-			|| CvSTART(destructor)->op_next->op_type != OP_LEAVESUB))
++			|| (CvSTART(destructor)
++			    && (CvSTART(destructor)->op_next->op_type != OP_LEAVESUB))))
+ 		{
+ 		    SV* const tmpref = newRV(sv);
+ 	            SvREADONLY_on(tmpref);   /* DESTROY() could be naughty */
+diff --git a/t/op/method.t b/t/op/method.t
+index 46c4642..8e91c48 100755
+--- a/t/op/method.t
++++ b/t/op/method.t
+@@ -10,7 +10,7 @@ BEGIN {
+     require "test.pl";
+ }
+ 
+-print "1..78\n";
++print "1..79\n";
+ 
+ @A::ISA = 'B';
+ @B::ISA = 'C';
+@@ -293,3 +293,12 @@ EOT
+ 	"check if UNIVERSAL::AUTOLOAD works",
+     );
+ }
++{
++    fresh_perl_is(<<'EOT',
++sub M::DESTROY; bless {}, "M" ; print "survived\n";
++EOT
++    "survived",
++    {},
++	"no crash with a declared but missing DESTROY method"
++    );
++}
+-- 
+tg: (daf8b46..) fixes/crash-on-undefined-destroy (depends on: upstream)

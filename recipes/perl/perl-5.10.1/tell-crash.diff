@@ -1,0 +1,33 @@
+From: Niko Tyni <ntyni@debian.org>
+Subject: Fix a tell() crash on bad arguments.
+Bug-Debian: http://bugs.debian.org/578577
+Origin: upstream, http://perl5.git.perl.org/perl.git/commit/f03173f2c707a804ec3e9c291d2ab1adb9db4abc
+Origin: upstream, http://perl5.git.perl.org/perl.git/commit/f4817f32b1c5f1cefe556cf79f36f874b67cad16
+
+Fix a crash with things like
+ perl -e 'tell (fileno(*STDOUT))'
+
+
+---
+ pp_sys.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+diff --git a/pp_sys.c b/pp_sys.c
+index a1f8c7a..74004b9 100644
+--- a/pp_sys.c
++++ b/pp_sys.c
+@@ -2081,6 +2081,12 @@ PP(pp_tell)
+ 	    RETURN;
+ 	}
+     }
++    else if (!gv) {
++	if (!errno)
++	    SETERRNO(EBADF,RMS_IFI);
++	PUSHi(-1);
++	RETURN;
++    }
+ 
+ #if LSEEKSIZE > IVSIZE
+     PUSHn( do_tell(gv) );
+-- 
+tg: (daf8b46..) fixes/tell-crash (depends on: upstream)

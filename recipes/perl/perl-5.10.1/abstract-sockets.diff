@@ -1,0 +1,122 @@
+Author: Lubomir Rintel <lkundrak@v3.sk>
+Subject: Add support for Abstract namespace sockets.
+Bug-Debian: http://bugs.debian.org/490660
+Bug-Debian: http://bugs.debian.org/329291
+Origin: upstream, http://perl5.git.perl.org/perl.git/commit/99f13d4c3419e967e95c5ac6a3af61e9bb0fd3c0
+Origin: upstream, http://perl5.git.perl.org/perl.git/commit/89904c08923161afd23c629d5c2c7472a09c16bb
+
+trivially backported for 5.10.1 by Niko Tyni <ntyni@debian.org>
+
+
+---
+ ext/Socket/Socket.xs  |   33 ++++++++++++++++++++++++---------
+ ext/Socket/t/Socket.t |   14 ++++++++++++--
+ 2 files changed, 36 insertions(+), 11 deletions(-)
+
+diff --git a/ext/Socket/Socket.xs b/ext/Socket/Socket.xs
+index 076297f..3522303 100644
+--- a/ext/Socket/Socket.xs
++++ b/ext/Socket/Socket.xs
+@@ -303,6 +303,7 @@ pack_sockaddr_un(pathname)
+ 	struct sockaddr_un sun_ad; /* fear using sun */
+ 	STRLEN len;
+ 	char * pathname_pv;
++	int addr_len;
+ 
+ 	Zero( &sun_ad, sizeof sun_ad, char );
+ 	sun_ad.sun_family = AF_UNIX;
+@@ -336,7 +337,17 @@ pack_sockaddr_un(pathname)
+ 	Copy( pathname_pv, sun_ad.sun_path, len, char );
+ #  endif
+ 	if (0) not_here("dummy");
+-	ST(0) = sv_2mortal(newSVpvn((char *)&sun_ad, sizeof sun_ad));
++	if (len > 1 && sun_ad.sun_path[0] == '\0') {
++		/* Linux-style abstract-namespace socket.
++		 * The name is not a file name, but an array of arbitrary
++		 * character, starting with \0 and possibly including \0s,
++		 * therefore the length of the structure must denote the
++		 * end of that character array */
++		addr_len = (void *)&sun_ad.sun_path - (void *)&sun_ad + len;
++	} else {
++		addr_len = sizeof sun_ad;
++	}
++	ST(0) = sv_2mortal(newSVpvn((char *)&sun_ad, addr_len));
+ #else
+ 	ST(0) = (SV *) not_here("pack_sockaddr_un");
+ #endif
+@@ -352,7 +363,7 @@ unpack_sockaddr_un(sun_sv)
+ 	struct sockaddr_un addr;
+ 	STRLEN sockaddrlen;
+ 	char * sun_ad = SvPVbyte(sun_sv,sockaddrlen);
+-	char * e;
++	int addr_len;
+ #   ifndef __linux__
+ 	/* On Linux sockaddrlen on sockets returned by accept, recvfrom,
+ 	   getpeername and getsockname is not equal to sizeof(addr). */
+@@ -371,13 +382,17 @@ unpack_sockaddr_un(sun_sv)
+ 			addr.sun_family,
+ 			AF_UNIX);
+ 	}
+-	e = (char*)addr.sun_path;
+-	/* On Linux, the name of abstract unix domain sockets begins
+-	 * with a '\0', so allow this. */
+-	while ((*e || (e == addr.sun_path && e[1] && sockaddrlen > 1))
+-		&& e < (char*)addr.sun_path + sizeof addr.sun_path)
+-	    ++e;
+-	ST(0) = sv_2mortal(newSVpvn(addr.sun_path, e - (char*)addr.sun_path));
++
++	if (addr.sun_path[0] == '\0') {
++		/* Linux-style abstract socket address begins with a nul
++		 * and can contain nuls. */
++		addr_len = (void *)&addr - (void *)&addr.sun_path + sockaddrlen;
++	} else {
++		for (addr_len = 0; addr.sun_path[addr_len]
++		     && addr_len < sizeof addr.sun_path; addr_len++);
++	}
++
++	ST(0) = sv_2mortal(newSVpvn(addr.sun_path, addr_len));
+ #else
+ 	ST(0) = (SV *) not_here("unpack_sockaddr_un");
+ #endif
+diff --git a/ext/Socket/t/Socket.t b/ext/Socket/t/Socket.t
+index f707999..d1e7447 100755
+--- a/ext/Socket/t/Socket.t
++++ b/ext/Socket/t/Socket.t
+@@ -14,7 +14,7 @@ BEGIN {
+ 	
+ use Socket qw(:all);
+ 
+-print "1..17\n";
++print "1..18\n";
+ 
+ $has_echo = $^O ne 'MSWin32';
+ $alarmed = 0;
+@@ -152,7 +152,7 @@ print (($@ =~ /^Bad arg length for Socket::sockaddr_family, length is 0, should
+ 
+ if ($^O eq 'linux') {
+     # see if we can handle abstract sockets
+-    my $test_abstract_socket = chr(0) . '/tmp/test-perl-socket';
++    my $test_abstract_socket = chr(0) . '/org/perl/hello'. chr(0) . 'world';
+     my $addr = sockaddr_un ($test_abstract_socket);
+     my ($path) = sockaddr_un ($addr);
+     if ($test_abstract_socket eq $path) {
+@@ -163,7 +163,17 @@ if ($^O eq 'linux') {
+ 	print "# got <$path>\n";
+         print "not ok 17\n";
+     }
++
++    # see if we calculate the address structure length correctly
++    if (length ($test_abstract_socket) + 2 == length $addr) {
++        print "ok 18\n";
++    } else {
++	print "# got ".(length $addr)."\n";
++        print "not ok 18\n";
++    }
++
+ } else {
+     # doesn't have abstract socket support
+     print "ok 17 - skipped on this platform\n";
++    print "ok 18 - skipped on this platform\n";
+ }
+-- 
+tg: (daf8b46..) fixes/abstract-sockets (depends on: upstream)

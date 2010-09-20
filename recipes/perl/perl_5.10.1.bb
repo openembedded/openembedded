@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r10"
+PR = "r11"
 
 # Not tested enough
 DEFAULT_PREFERENCE = "-1"
@@ -14,7 +14,52 @@ DEFAULT_PREFERENCE = "-1"
 PVM = "5.10"
 
 SRC_URI = "ftp://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz;name=perl-${PV} \
-	file://perl_${PV}-8.diff.gz \
+	file://arm_thread_stress_timeout.diff \
+	file://cpan_config_path.diff \
+	file://cpan_definstalldirs.diff \
+	file://db_file_ver.diff \
+	file://doc_info.diff \
+	file://enc2xs_inc.diff \
+	file://errno_ver.diff \
+	file://extutils_hacks.diff \
+	file://fakeroot.diff \
+	file://instmodsh_doc.diff \
+	file://ld_run_path.diff \
+	file://libnet_config_path.diff \
+	file://m68k_thread_stress.diff \
+	file://mod_paths.diff \
+	file://module_build_man_extensions.diff \
+	file://perl_synopsis.diff \
+	file://prune_libs.diff \
+	file://use_gdbm.diff \
+	file://assorted_docs.diff \
+	file://net_smtp_docs.diff \
+	file://processPL.diff \
+	file://perlivp.diff \
+	file://pod2man-index-backslash.diff \
+	file://disable-zlib-bundling.diff \
+	file://kfreebsd_cppsymbols.diff \
+	file://cpanplus_definstalldirs.diff \
+	file://cpanplus_config_path.diff \
+	file://kfreebsd-filecopy-pipes.diff \
+	file://anon-tmpfile-dir.diff \
+	file://abstract-sockets.diff \
+	file://hurd_cppsymbols.diff \
+	file://autodie-flock.diff \
+	file://archive-tar-instance-error.diff \
+	file://positive-gpos.diff \
+	file://devel-ppport-ia64-optim.diff \
+	file://trie-logic-match.diff \
+	file://hppa-thread-eagain.diff \
+	file://crash-on-undefined-destroy.diff \
+	file://tainted-errno.diff \
+	file://safe-upgrade.diff \
+	file://tell-crash.diff \
+	file://format-write-crash.diff \
+	file://arm-alignment.diff \
+	file://fcgi-test.diff \
+	file://hurd-ccflags.diff \
+	\
         file://Makefile.patch \
         file://Makefile.SH.patch \
         file://installperl.patch \

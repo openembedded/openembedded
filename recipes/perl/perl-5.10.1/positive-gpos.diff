@@ -1,0 +1,36 @@
+From: Niko Tyni <ntyni@debian.org>
+Subject: Fix \G crash on first match
+Bug-Debian: http://bugs.debian.org/545234
+Bug: http://rt.perl.org/rt3/Public/Bug/Display.html?id=69056
+Origin: upstream, http://perl5.git.perl.org/perl.git/commit/c584a96ef5d541fd119f21c2c77f6ffe2b2c0370
+
+
+---
+ regexec.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+diff --git a/regexec.c b/regexec.c
+index 7a42c4f..5beb8ca 100644
+--- a/regexec.c
++++ b/regexec.c
+@@ -1853,6 +1853,8 @@ Perl_regexec_flags(pTHX_ REGEXP * const prog, char *stringarg, register char *st
+ 	        if (s > reginfo.ganch)
+ 		    goto phooey;
+ 		s = reginfo.ganch - prog->gofs;
++		if (s < strbeg)
++		    goto phooey;
+ 	    }
+ 	}
+ 	else if (data) {
+@@ -1928,7 +1930,8 @@ Perl_regexec_flags(pTHX_ REGEXP * const prog, char *stringarg, register char *st
+            is bogus -- we set it above, when prog->extflags & RXf_GPOS_SEEN 
+            and we only enter this block when the same bit is set. */
+         char *tmp_s = reginfo.ganch - prog->gofs;
+-	if (regtry(&reginfo, &tmp_s))
++
++	if (tmp_s >= strbeg && regtry(&reginfo, &tmp_s))
+ 	    goto got_it;
+ 	goto phooey;
+     }
+-- 
+tg: (daf8b46..) fixes/positive-gpos (depends on: upstream)

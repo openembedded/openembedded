@@ -1,0 +1,117 @@
+Subject: Tweak @INC ordering for Debian
+
+Our order is:
+
+    etc (for config files)
+    site (5.8.1)
+    vendor (all)
+    core (5.8.1)
+    site (version-indep)
+    site (pre-5.8.1)
+
+The rationale being that an admin (via site), or module packager
+(vendor) can chose to shadow core modules when there is a newer
+version than is included in core.
+
+
+---
+ perl.c |   62 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 62 insertions(+), 0 deletions(-)
+
+diff --git a/perl.c b/perl.c
+index 94f2b13..5a6744a 100644
+--- a/perl.c
++++ b/perl.c
+@@ -4879,9 +4879,14 @@ S_init_perllib(pTHX)
+     incpush(APPLLIB_EXP, TRUE, TRUE, TRUE, TRUE);
+ #endif
+ 
++#ifdef DEBIAN
++    /* for configuration where /usr is mounted ro (CPAN::Config, Net::Config) */
++    incpush("/etc/perl", FALSE, FALSE, FALSE, FALSE);
++#else
+ #ifdef ARCHLIB_EXP
+     incpush(ARCHLIB_EXP, FALSE, FALSE, TRUE, TRUE);
+ #endif
++#endif
+ #ifdef MACOS_TRADITIONAL
+     {
+ 	Stat_t tmpstatbuf;
+@@ -4906,11 +4911,13 @@ S_init_perllib(pTHX)
+ #ifndef PRIVLIB_EXP
+ #  define PRIVLIB_EXP "/usr/local/lib/perl5:/usr/local/lib/perl"
+ #endif
++#ifndef DEBIAN
+ #if defined(WIN32)
+     incpush(PRIVLIB_EXP, TRUE, FALSE, TRUE, TRUE);
+ #else
+     incpush(PRIVLIB_EXP, FALSE, FALSE, TRUE, TRUE);
+ #endif
++#endif
+ 
+ #ifdef SITEARCH_EXP
+     /* sitearch is always relative to sitelib on Windows for
+@@ -4954,6 +4961,61 @@ S_init_perllib(pTHX)
+     incpush(PERL_VENDORLIB_STEM, FALSE, TRUE, TRUE, TRUE);
+ #endif
+ 
++#ifdef DEBIAN
++    incpush(ARCHLIB_EXP, FALSE, FALSE, TRUE, FALSE);
++    incpush(PRIVLIB_EXP, FALSE, FALSE, TRUE, FALSE);
++
++    /* Non-versioned site directory for local modules and for
++       compatability with the previous packages' site dirs */
++    incpush("/usr/local/lib/site_perl", TRUE, FALSE, FALSE, FALSE);
++
++#ifdef PERL_INC_VERSION_LIST
++    {
++	struct stat s;
++
++	/* add small buffer in case old versions are longer than the
++	   current version */
++	char sitearch[sizeof(SITEARCH_EXP)+16] = SITEARCH_EXP;
++	char sitelib[sizeof(SITELIB_EXP)+16] = SITELIB_EXP;
++	char const *vers[] = { PERL_INC_VERSION_LIST };
++	char const **p;
++
++	char *arch_vers = strrchr(sitearch, '/');
++	char *lib_vers = strrchr(sitelib, '/');
++
++	if (arch_vers && isdigit(*++arch_vers))
++	    *arch_vers = 0;
++	else
++	    arch_vers = 0;
++
++	if (lib_vers && isdigit(*++lib_vers))
++	    *lib_vers = 0;
++	else
++	    lib_vers = 0;
++
++	/* there is some duplication here as incpush does something
++	   similar internally, but required as sitearch is not a
++	   subdirectory of sitelib */
++	for (p = vers; *p; p++)
++	{
++	    if (arch_vers)
++	    {
++		strcpy(arch_vers, *p);
++		if (PerlLIO_stat(sitearch, &s) >= 0 && S_ISDIR(s.st_mode))
++		    incpush(sitearch, FALSE, FALSE, FALSE, FALSE);
++	    }
++
++	    if (lib_vers)
++	    {
++		strcpy(lib_vers, *p);
++		if (PerlLIO_stat(sitelib, &s) >= 0 && S_ISDIR(s.st_mode))
++		    incpush(sitelib, FALSE, FALSE, FALSE, FALSE);
++	    }
++	}
++    }
++#endif
++#endif
++
+ #ifdef PERL_OTHERLIBDIRS
+     incpush(PERL_OTHERLIBDIRS, TRUE, TRUE, TRUE, TRUE);
+ #endif
+-- 
+tg: (daf8b46..) debian/mod_paths (depends on: upstream)

@@ -1,0 +1,55 @@
+Subject: Replace generic man(1) instructions with Debian-specific information.
+
+Indicate that the user needs to install the perl-doc package.
+
+
+---
+ pod/perl.pod |   30 +++++++-----------------------
+ 1 files changed, 7 insertions(+), 23 deletions(-)
+
+diff --git a/pod/perl.pod b/pod/perl.pod
+index 939c683..134bb77 100644
+--- a/pod/perl.pod
++++ b/pod/perl.pod
+@@ -227,32 +227,16 @@ For ease of access, the Perl manual has been split up into several sections.
+     perlwin32		Perl notes for Windows
+ 
+ 
+-By default, the manpages listed above are installed in the 
+-F</usr/local/man/> directory.  
++On Debian systems, you need to install the B<perl-doc> package which
++contains the majority of the standard Perl documentation and the
++F<perldoc> program.
+ 
+-Extensive additional documentation for Perl modules is available.  The
+-default configuration for perl will place this additional documentation
+-in the F</usr/local/lib/perl5/man> directory (or else in the F<man>
+-subdirectory of the Perl library directory).  Some of this additional
+-documentation is distributed standard with Perl, but you'll also find
+-documentation for third-party modules there.
++Extensive additional documentation for Perl modules is available, both
++those distributed with Perl and third-party modules which are packaged
++or locally installed.
+ 
+ You should be able to view Perl's documentation with your man(1)
+-program by including the proper directories in the appropriate start-up
+-files, or in the MANPATH environment variable.  To find out where the
+-configuration has installed the manpages, type:
+-
+-    perl -V:man.dir
+-
+-If the directories have a common stem, such as F</usr/local/man/man1>
+-and F</usr/local/man/man3>, you need only to add that stem
+-(F</usr/local/man>) to your man(1) configuration files or your MANPATH
+-environment variable.  If they do not share a stem, you'll have to add
+-both stems.
+-
+-If that doesn't work for some reason, you can still use the
+-supplied F<perldoc> script to view module information.  You might
+-also look into getting a replacement man program.
++program or perldoc(1).
+ 
+ If something strange has gone wrong with your program and you're not
+ sure where you should look for help, try the B<-w> switch first.  It
+-- 
+tg: (daf8b46..) debian/doc_info (depends on: upstream)

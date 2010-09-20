@@ -1,0 +1,54 @@
+From: Niko Tyni <ntyni@debian.org>
+Subject: Escape backslashes in .IX entries
+Bug-Debian: http://bugs.debian.org/521256
+Origin: upstream, http://git.eyrie.org/?p=perl/podlators.git;a=commit;h=8de2177170c79800d81d480227643c1c2ce84a0a
+
+Applicable parts of podlators upstream git commit
+release/2.2.2-6-g8de2177 
+
+
+---
+ lib/Pod/Man.pm  |    1 +
+ lib/Pod/t/man.t |   11 ++++++++++-
+ 2 files changed, 11 insertions(+), 1 deletions(-)
+
+diff --git a/lib/Pod/Man.pm b/lib/Pod/Man.pm
+index 71a4d7a..7662935 100644
+--- a/lib/Pod/Man.pm
++++ b/lib/Pod/Man.pm
+@@ -712,6 +712,7 @@ sub outindex {
+     for (@output) {
+         my ($type, $entry) = @$_;
+         $entry =~ s/\"/\"\"/g;
++        $entry =~ s/\\/\\\\/g;
+         $self->output (".IX $type " . '"' . $entry . '"' . "\n");
+     }
+ }
+diff --git a/lib/Pod/t/man.t b/lib/Pod/t/man.t
+index 419cce3..c4588bc 100755
+--- a/lib/Pod/t/man.t
++++ b/lib/Pod/t/man.t
+@@ -17,7 +17,7 @@ BEGIN {
+     }
+     unshift (@INC, '../blib/lib');
+     $| = 1;
+-    print "1..25\n";
++    print "1..26\n";
+ }
+ 
+ END {
+@@ -482,3 +482,12 @@ Some raw nroff.
+ .PP
+ More text.
+ ###
++=head1 INDEX
++
++Index entry matching a whitespace escape.X<\n>
++###
++.SH "INDEX"
++.IX Header "INDEX"
++Index entry matching a whitespace escape.
++.IX Xref "\\n"
++###
+-- 
+tg: (daf8b46..) fixes/pod2man-index-backslash (depends on: upstream)

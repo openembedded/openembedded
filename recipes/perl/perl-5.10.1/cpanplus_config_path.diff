@@ -1,0 +1,43 @@
+From: Niko Tyni <ntyni@debian.org>
+Subject: Save local versions of CPANPLUS::Config::System into /etc/perl.
+    
+This is a configuration file and needs to go in /etc by policy.
+Besides, /usr may not even be writable.
+    
+This mirrors the Debian setup of CPAN.pm in debian/cpan_config_path.
+
+See #533707.
+
+---
+ lib/CPANPLUS/Configure.pm           |    1 +
+ lib/CPANPLUS/Internals/Constants.pm |    3 +++
+ 2 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/lib/CPANPLUS/Configure.pm b/lib/CPANPLUS/Configure.pm
+index 2d249e5..bbed1b8 100644
+--- a/lib/CPANPLUS/Configure.pm
++++ b/lib/CPANPLUS/Configure.pm
+@@ -276,6 +276,7 @@ Saves the configuration to the package name you provided.
+ If this package is not C<CPANPLUS::Config::System>, it will
+ be saved in your C<.cpanplus> directory, otherwise it will
+ be attempted to be saved in the system wide directory.
++(On Debian systems, this system wide directory is /etc/perl.)
+ 
+ If no argument is provided, it will default to your personal
+ config.
+diff --git a/lib/CPANPLUS/Internals/Constants.pm b/lib/CPANPLUS/Internals/Constants.pm
+index 1d05c98..7a5cef8 100644
+--- a/lib/CPANPLUS/Internals/Constants.pm
++++ b/lib/CPANPLUS/Internals/Constants.pm
+@@ -194,6 +194,9 @@ use constant CONFIG_USER_FILE    => sub {
+                                     ) . '.pm';
+                                 };
+ use constant CONFIG_SYSTEM_FILE  => sub {
++                                    # Debian-specific shortcut
++                                    return '/etc/perl/CPANPLUS/Config/System.pm';
++                                    
+                                     require CPANPLUS::Internals;
+                                     require File::Basename;
+                                     my $dir = File::Basename::dirname(
+-- 
+tg: (daf8b46..) debian/cpanplus_config_path (depends on: upstream)

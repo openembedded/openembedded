@@ -1,0 +1,31 @@
+From: Niko Tyni <ntyni@debian.org>
+Subject: Fix a failure in CGI/t/fast.t when FCGI is installed
+Origin: upstream
+
+Cherry picked from CGI-3.48.
+
+The test is skipped in clean build environments because FCGI is not in
+the core.
+
+Upstream has dropped the whole test from the Perl core distribution for
+the 5.12 series because it relies on external modules. Possibly we should
+do that instead.
+
+---
+ lib/CGI/t/fast.t |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/CGI/t/fast.t b/lib/CGI/t/fast.t
+index 45f8e12..264e047 100755
+--- a/lib/CGI/t/fast.t
++++ b/lib/CGI/t/fast.t
+@@ -32,6 +32,6 @@ SKIP: {
+ 
+ 	# if this is false, the package var will be empty
+ 	$ENV{FCGI_SOCKET_PATH} = 0;
+-	is( $CGI::Fast::Ext_Request, '', 'checking no active request' );
++	is( $CGI::Fast::Ext_Request, undef, 'checking no active request' );
+ 
+ }
+-- 
+tg: (daf8b46..) fixes/fcgi-test (depends on: upstream)

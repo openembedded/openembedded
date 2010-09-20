@@ -1,0 +1,25 @@
+From: Samuel Thibault <sthibault@debian.org>
+Subject: Add gcc predefined macros to $Config{cppsymbols} on GNU/Hurd.
+Bug-Debian: http://bugs.debian.org/544307
+Origin: http://perl5.git.perl.org/perl.git/commit/eeb92b76fda504cc34bcd98ba2dbc73d933c0208
+
+
+---
+ Configure |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/Configure b/Configure
+index 5e863b3..eed6f9b 100755
+--- a/Configure
++++ b/Configure
+@@ -21375,7 +21375,7 @@ $eunicefix Cppsym.try
+ ./Cppsym < Cppsym.know > Cppsym.true
+ : Add in any linux cpp "predefined macros":
+ case "$osname::$gccversion" in
+-  *linux*::*.*|*gnukfreebsd*::*.*)
++  *linux*::*.*|*gnukfreebsd*::*.*|gnu::*.*)
+     tHdrH=_tmpHdr
+     rm -f $tHdrH'.h' $tHdrH
+     touch $tHdrH'.h'
+-- 
+tg: (89dcf0f..) fixes/hurd_cppsymbols (depends on: fixes/kfreebsd_cppsymbols)
