@@ -11,7 +11,7 @@ diff --git a/edje/edje.c_edje_object.pxi b/edje/edje.c_edje_object.pxi
 index 0f4da68..21c237e 100644
 --- a/edje/edje.c_edje_object.pxi
 +++ b/edje/edje.c_edje_object.pxi
-@@ -391,17 +391,20 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
+@@ -415,17 +415,20 @@
          else:
              raise TypeError("func must be callable or None")
  
@@ -26,7 +26,7 @@ index 0f4da68..21c237e 100644
      def part_text_get(self, char *part):
 -        "@rtype: str"
 +        "@rtype: unicode"
-         cdef char *s
+         cdef const_char_ptr s
          s = edje_object_part_text_get(self.obj, part)
          if s == NULL:
              return None
@@ -34,8 +34,5 @@ index 0f4da68..21c237e 100644
 -            return s
 +            return s.decode("utf8")
  
-     def part_swallow(self, char *part, c_evas.Object obj):
-         """Swallows an object into the edje
--- 
-1.5.6.3
-
+     def part_text_select_all(self, char *part):
+         edje_object_part_text_select_all(self.obj, part)

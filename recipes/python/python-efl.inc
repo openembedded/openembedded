@@ -10,10 +10,19 @@ RDEPENDS_${PN} += "python-lang"
 PV = "0.3.1+svnr${SRCPV}"
 PR = "ml1"
 
-inherit setuptools
+# necessary to let the call for python-config succeed
+export BUILD_SYS
+export HOST_SYS
+
+inherit autotools pkgconfig distutils-base
 
 SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/BINDINGS/python;module=${PN};proto=http"
 S = "${WORKDIR}/${PN}"
+
+do_configure_prepend() {
+	# prefix CYTHON_.*_INCLUDEDIR with path to STAGING_DIR_HOST also use $PKG_CONFIG instead of pkg-config directly
+        sed -i "s#\`\$PKG_CONFIG --variable=includedir \"python-evas#${STAGING_DIR_HOST}\`\$PKG_CONFIG --variable=includedir \"python-evas#g" ${S}/configure.ac
+}
 
 do_install_append() {
 	if [ -e examples ]; then
@@ -27,8 +36,7 @@ do_install_append() {
 		cd ${S}
 		install -d ${D}${datadir}/${PN}/
 		cp -a examples ${D}${datadir}/${PN}/
-		find ${D}${datadir}/${PN}/examples -name "CVS" | xargs rm -rf
-		find ${D}${datadir}/${PN}/examples -name ".cvsignore" | xargs rm -f
+		find ${D}${datadir}/${PN}/examples -name ".svn" | xargs rm -rf
 	fi
 }
 
