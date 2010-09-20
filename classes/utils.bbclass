@@ -54,7 +54,7 @@ def is_machine_specific(d):
     urldatadict = bb.fetch.init(d.getVar("SRC_URI", True).split(), d, True)
     for urldata in (urldata for urldata in urldatadict.itervalues()
                     if urldata.type == "file"):
-        if any(urldata.path.startswith(mp + "/") for mp in machinepaths):
+        if any(urldata.localpath.startswith(mp + "/") for mp in machinepaths):
             return True
 
 def subprocess_setup():
