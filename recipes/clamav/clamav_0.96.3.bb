@@ -1,10 +1,10 @@
 require clamav.inc
 
-SRC_URI += "file://fix-llvm-cross-configure.patch \
-	    file://fix-libclamav.pc.in.patch"
+SRC_URI += " file://fix-llvm-cross-configure.patch \
+	file://fix-libclamav.pc.in.patch"
 
-SRC_URI[clamav-0.96.2.md5sum] = "a2c2555d86868f91a01d0e2c2403bbec"
-SRC_URI[clamav-0.96.2.sha256sum] = "6aa0b0d96ed25ffb4b5aca53f6348978c94771503c299f86e480fef475abcefa"
+SRC_URI[clamav-0.96.3.md5sum] = "663274565c4da17abb112ff88895e510"
+SRC_URI[clamav-0.96.3.sha256sum] = "db324d50a2d4e71a9b647198a607e56b952eb480f75ad6a28231d1f713736c8b"
 
 PR = "${INC_PR}.0"
 
