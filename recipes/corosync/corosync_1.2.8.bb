@@ -1,19 +1,20 @@
 DESCRIPTION = "OSI Certified implementation of a complete cluster engine"
 LICENSE = "BSD"
+DEPENDS = "groff-native"
 
 PR = "r0"
 
 SRC_URI = " \
 	ftp://ftp@corosync.org/downloads/corosync-${PV}/corosync-${PV}.tar.gz \
 	file://fix-lcrso-linkage.patch \
+	file://corosync-docs.patch \
 	file://init \
 	file://corosync.conf \
 	file://volatiles \
 	file://fix-define-semun-union.patch \
 	"
-SRC_URI[md5sum] = "a1f5b03512977d495819e2ed05ba645b"
-SRC_URI[sha256sum] = "0f774cee5d9f5d3e20b146c8719115c029815015952b48de1b99b61b462367d1"
-
+SRC_URI[md5sum] = "43e97ef0d964ccb4063f40a4478eb679"
+SRC_URI[sha256sum] = "424b0590e52a08cf9066f9edbac4edf84e9d9bff54dd5036fb681d917db02bc8"
 
 inherit autotools update-rc.d
 
