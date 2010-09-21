@@ -1,7 +1,7 @@
-From 53e2489c536fc9e382be71be84800cb532acbf73 Mon Sep 17 00:00:00 2001
+From 1b8efb3ae35ba6a3dfcf03b28bab9ce945a9b294 Mon Sep 17 00:00:00 2001
 From: Radek Polak <psonek2@seznam.cz>
 Date: Fri, 9 Apr 2010 09:15:40 +0200
-Subject: [PATCH 1/4] accels.patch
+Subject: [PATCH 11/17] accels.patch
 
 adds support for accelerometers. You will need include/linux/lis302dl.h and
 drivers/input/misc/lis302dl.c from andy-tracking. The patch needs
@@ -39,7 +39,7 @@ index dcef228..8eedc9c 100644
  
  
 diff --git a/arch/arm/mach-s3c2440/mach-gta02.c b/arch/arm/mach-s3c2440/mach-gta02.c
-index e8ac76b..795b9f4 100644
+index 9a9461d..1fa93b4 100644
 --- a/arch/arm/mach-s3c2440/mach-gta02.c
 +++ b/arch/arm/mach-s3c2440/mach-gta02.c
 @@ -62,6 +62,7 @@
@@ -1755,5 +1755,5 @@ index 3274c50..6dc9b8b 100644
  /* start or stop queue processing */
  extern int spi_bitbang_start(struct spi_bitbang *spi);
 -- 
-1.7.1
+1.7.3
 

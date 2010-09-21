@@ -1,0 +1,25 @@
+From e8e48bd0e3aa263ecf68e71d1e4d25a8d727f50d Mon Sep 17 00:00:00 2001
+From: Gennady Kupava <gb@bsdmn.com>
+Date: Tue, 21 Sep 2010 11:11:35 +0200
+Subject: [PATCH 17/17] mach-gta02: fix PR2349, do not manage down
+
+---
+ arch/arm/mach-s3c2440/mach-gta02.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/mach-s3c2440/mach-gta02.c b/arch/arm/mach-s3c2440/mach-gta02.c
+index 08e9dcc..e639cac 100644
+--- a/arch/arm/mach-s3c2440/mach-gta02.c
++++ b/arch/arm/mach-s3c2440/mach-gta02.c
+@@ -715,7 +715,7 @@ struct pcf50633_platform_data gta02_pcf_pdata = {
+ 				.min_uV = 3300000,
+ 				.max_uV = 3300000,
+ 				.valid_modes_mask = REGULATOR_MODE_NORMAL,
+-				.always_on = 1,
++				.always_on = 0,
+ 				.apply_uV = 1,
+ 				.state_mem = {
+ 					.enabled = 1,
+-- 
+1.7.3
+

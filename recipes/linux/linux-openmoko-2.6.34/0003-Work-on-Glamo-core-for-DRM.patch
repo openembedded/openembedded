@@ -1,7 +1,7 @@
-From 21469ba33747fef2625bf20c72cbbe776d8c59b7 Mon Sep 17 00:00:00 2001
+From 5e4ad788f6692865a17dcf4e870c20a9dc04651c Mon Sep 17 00:00:00 2001
 From: Thomas White <taw@bitwiz.org.uk>
 Date: Tue, 17 Nov 2009 23:45:29 +0100
-Subject: [PATCH 3/8] Work on Glamo-core for DRM
+Subject: [PATCH 05/17] Work on Glamo-core for DRM
 
 This adds modifications to the core of the Glamo driver to expose functionality
 to support DRM and KMS.
@@ -15,10 +15,10 @@ Signed-off-by: Thomas White <taw@bitwiz.org.uk>
  4 files changed, 69 insertions(+), 21 deletions(-)
 
 diff --git a/drivers/mfd/glamo-core.c b/drivers/mfd/glamo-core.c
-index 135856a..da32b77 100644
+index 8880263..3d57d2b 100644
 --- a/drivers/mfd/glamo-core.c
 +++ b/drivers/mfd/glamo-core.c
-@@ -221,10 +221,25 @@ static struct resource glamo_fb_resources[] = {
+@@ -190,10 +190,25 @@ static struct resource glamo_fb_resources[] = {
  		.flags	= IORESOURCE_MEM,
  	}, {
  		.name	= "glamo-fb-mem",
@@ -47,7 +47,7 @@ index 135856a..da32b77 100644
  };
  
  static struct resource glamo_mmc_resources[] = {
-@@ -235,9 +250,9 @@ static struct resource glamo_mmc_resources[] = {
+@@ -204,9 +219,9 @@ static struct resource glamo_mmc_resources[] = {
  		.flags	= IORESOURCE_MEM
  	}, {
  		.name	= "glamo-mmc-mem",
@@ -61,7 +61,7 @@ index 135856a..da32b77 100644
  	}, {
  		.start	= GLAMO_IRQ_MMC,
 diff --git a/include/linux/mfd/glamo-core.h b/include/linux/mfd/glamo-core.h
-index 34ec7c4..25bd94d 100644
+index 8275a2f..66cd7a5 100644
 --- a/include/linux/mfd/glamo-core.h
 +++ b/include/linux/mfd/glamo-core.h
 @@ -3,18 +3,30 @@
@@ -139,10 +139,10 @@ index 59848e1..8b2fd47 100644
 +
  #endif /* _GLAMO_REGS_H */
 diff --git a/include/linux/mfd/glamo.h b/include/linux/mfd/glamo.h
-index 529d4f0..ea91a06 100644
+index ae52f3d..99114aa 100644
 --- a/include/linux/mfd/glamo.h
 +++ b/include/linux/mfd/glamo.h
-@@ -41,12 +41,9 @@ enum glamo_engine {
+@@ -43,12 +43,9 @@ enum glamo_engine {
  	GLAMO_ENGINE_RISC = 11,
  	GLAMO_ENGINE_MICROP1_MPEG_ENC = 12,
  	GLAMO_ENGINE_MICROP1_MPEG_DEC = 13,
@@ -158,5 +158,5 @@ index 529d4f0..ea91a06 100644
 +
  #endif
 -- 
-1.7.1
+1.7.3
 

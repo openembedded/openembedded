@@ -1,7 +1,7 @@
-From cf82ca72810135babe7493bdd7c1cc63ed2ebac6 Mon Sep 17 00:00:00 2001
+From ffb224c021cd7b2c320cccab59588f2002cfbca1 Mon Sep 17 00:00:00 2001
 From: Thomas White <taw@bitwiz.org.uk>
 Date: Thu, 6 May 2010 05:40:33 -0700
-Subject: [PATCH 6/8] Debug statements for testing
+Subject: [PATCH 08/17] Debug statements for testing
 
 Signed-off-by: Thomas White <taw@bitwiz.org.uk>
 ---
@@ -10,7 +10,7 @@ Signed-off-by: Thomas White <taw@bitwiz.org.uk>
  2 files changed, 10 insertions(+), 1 deletions(-)
 
 diff --git a/drivers/gpu/drm/glamo/glamo-display.c b/drivers/gpu/drm/glamo/glamo-display.c
-index a058b40..c54dd49 100644
+index ef7e8c8..6f25326 100644
 --- a/drivers/gpu/drm/glamo/glamo-display.c
 +++ b/drivers/gpu/drm/glamo/glamo-display.c
 @@ -258,6 +258,8 @@ static int glamo_crtc_mode_set_base(struct drm_crtc *crtc, int x, int y,
@@ -74,5 +74,5 @@ index 91651e7..56a3e3a 100644
  }
  EXPORT_SYMBOL_GPL(jbt6k74_setpower);
 -- 
-1.7.1
+1.7.3
 

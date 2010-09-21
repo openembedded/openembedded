@@ -1,7 +1,7 @@
-From 2114f9008abe39b8ed914f650d50775e39f53cca Mon Sep 17 00:00:00 2001
+From 2c92aeeb0924bfcae13879f530de253cd1f9143b Mon Sep 17 00:00:00 2001
 From: Thomas White <taw@bitwiz.org.uk>
 Date: Thu, 6 May 2010 05:40:15 -0700
-Subject: [PATCH 5/8] Fix dynamic command queue allocation
+Subject: [PATCH 07/17] Fix dynamic command queue allocation
 
 (Not tested...)
 
@@ -13,7 +13,7 @@ Signed-off-by: Thomas White <taw@bitwiz.org.uk>
  3 files changed, 14 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/gpu/drm/glamo/glamo-cmdq.c b/drivers/gpu/drm/glamo/glamo-cmdq.c
-index 3ce970e..4b0d55f 100644
+index 71eb53c..4947ec7 100644
 --- a/drivers/gpu/drm/glamo/glamo-cmdq.c
 +++ b/drivers/gpu/drm/glamo/glamo-cmdq.c
 @@ -497,10 +497,11 @@ int glamo_cmdq_setup(struct glamodrm_handle *gdrm)
@@ -64,7 +64,7 @@ index 510d195..6d7f184 100644
  extern void glamo_cmdq_suspend(struct glamodrm_handle *gdrm);
  extern void glamo_cmdq_resume(struct glamodrm_handle *gdrm);
 diff --git a/drivers/gpu/drm/glamo/glamo-drm-drv.c b/drivers/gpu/drm/glamo/glamo-drm-drv.c
-index 224c857..9f74983 100644
+index 8a41b18..1867983 100644
 --- a/drivers/gpu/drm/glamo/glamo-drm-drv.c
 +++ b/drivers/gpu/drm/glamo/glamo-drm-drv.c
 @@ -129,7 +129,7 @@ static int glamodrm_load(struct drm_device *dev, unsigned long flags)
@@ -119,5 +119,5 @@ index 224c857..9f74983 100644
  	/* Release 2D engine  */
  	iounmap(gdrm->twod_base);
 -- 
-1.7.1
+1.7.3
 

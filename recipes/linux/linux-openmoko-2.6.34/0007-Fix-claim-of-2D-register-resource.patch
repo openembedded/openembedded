@@ -1,7 +1,7 @@
-From 2f8fb0d0308960e53395428873549ae2961469ca Mon Sep 17 00:00:00 2001
+From 3e47dbb5e8cc60618fcca74bcbb24d46a7a4dee5 Mon Sep 17 00:00:00 2001
 From: Thomas White <taw@bitwiz.org.uk>
 Date: Thu, 6 May 2010 08:37:04 -0700
-Subject: [PATCH 7/8] Fix claim of 2D register resource
+Subject: [PATCH 09/17] Fix claim of 2D register resource
 
 Signed-off-by: Thomas White <taw@bitwiz.org.uk>
 ---
@@ -9,7 +9,7 @@ Signed-off-by: Thomas White <taw@bitwiz.org.uk>
  1 files changed, 2 insertions(+), 1 deletions(-)
 
 diff --git a/drivers/gpu/drm/glamo/glamo-drm-drv.c b/drivers/gpu/drm/glamo/glamo-drm-drv.c
-index 9f74983..2a7f600 100644
+index 1867983..eb0827a 100644
 --- a/drivers/gpu/drm/glamo/glamo-drm-drv.c
 +++ b/drivers/gpu/drm/glamo/glamo-drm-drv.c
 @@ -273,7 +273,8 @@ static int glamodrm_probe(struct platform_device *pdev)
@@ -23,5 +23,5 @@ index 9f74983..2a7f600 100644
  		dev_err(&pdev->dev, "Unable to find 2D registers.\n");
  		rc = -ENOENT;
 -- 
-1.7.1
+1.7.3
 

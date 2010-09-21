@@ -1,7 +1,7 @@
-From 32dcde00ad05fa148ba96f46427afe9af226ffb7 Mon Sep 17 00:00:00 2001
+From ecbd0e7d09f2058486f8a2b389744d1da116cc6b Mon Sep 17 00:00:00 2001
 From: Radek Polak <psonek2@seznam.cz>
 Date: Fri, 9 Apr 2010 09:18:02 +0200
-Subject: [PATCH 3/4] ar6000_delay.patch
+Subject: [PATCH 13/17] ar6000_delay.patch
 
 patch from https://docs.openmoko.org/trac/ticket/2327 - wifi is working good
 (100% until now) for me with this patch.
@@ -25,5 +25,5 @@ index 386d96e..90178d0 100644
  	if (ret == A_OK)
  		return 0;
 -- 
-1.7.1
+1.7.3
 

@@ -1,7 +1,7 @@
-From 784ad85c80030910862e5b7f655eb69a6f980e4f Mon Sep 17 00:00:00 2001
+From c49bfa4677fc1f161330165657122375d46c71d1 Mon Sep 17 00:00:00 2001
 From: Radek Polak <psonek2@seznam.cz>
 Date: Fri, 9 Apr 2010 09:22:23 +0200
-Subject: [PATCH 4/4] save_regs.patch
+Subject: [PATCH 14/17] save_regs.patch
 
 With this patch wifi can survive suspend.
 ---
@@ -136,5 +136,5 @@ index e4898e9..b49d674 100644
  extern int mmc_wait_for_cmd(struct mmc_host *, struct mmc_command *, int);
  extern int mmc_wait_for_app_cmd(struct mmc_host *, struct mmc_card *,
 -- 
-1.7.1
+1.7.3
 

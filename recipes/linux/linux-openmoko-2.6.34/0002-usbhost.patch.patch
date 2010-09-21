@@ -1,7 +1,7 @@
-From 65954829e9732060a734e977817dbaa611b6c42b Mon Sep 17 00:00:00 2001
+From ffddb76b59aaaccd48524460dd5ebf91b5796c2b Mon Sep 17 00:00:00 2001
 From: Radek Polak <psonek2@seznam.cz>
 Date: Fri, 9 Apr 2010 09:17:28 +0200
-Subject: [PATCH 2/4] usbhost.patch
+Subject: [PATCH 12/17] usbhost.patch
 
 adds support for usb host mode and adds usb host pm sysfs node. I just copied
 and modified how modem is powered up and backported changes in ohci-s3c2410.c.
@@ -214,7 +214,7 @@ index 0000000..233340a
 +MODULE_AUTHOR("Harald Welte <laforge@openmoko.org>");
 +MODULE_DESCRIPTION("Openmoko Freerunner USBHOST Power Management");
 diff --git a/arch/arm/mach-s3c2440/mach-gta02.c b/arch/arm/mach-s3c2440/mach-gta02.c
-index 795b9f4..e7d0b82 100644
+index 1fa93b4..08e9dcc 100644
 --- a/arch/arm/mach-s3c2440/mach-gta02.c
 +++ b/arch/arm/mach-s3c2440/mach-gta02.c
 @@ -202,6 +202,10 @@ static struct platform_device gta02_pm_gsm_dev = {
@@ -309,7 +309,7 @@ index 795b9f4..e7d0b82 100644
 @@ -1301,7 +1342,7 @@ static struct platform_device* gta02_hdq_children[] = {
  static struct gta02_device_children gta02_device_children[] = {
  	{
- 		.dev_name = "pcf50633-gpio",
+ 		.dev_name = "pcf50633-gpio.0",
 -		.num_children = 1,
 +		.num_children = 2,
  		.children = gta02_pcf50633_gpio_children,
@@ -410,5 +410,5 @@ index a68af2d..02bd7b0 100644
  	s3c2410_stop_hc(dev);
  	iounmap(hcd->regs);
 -- 
-1.7.1
+1.7.3
 

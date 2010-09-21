@@ -1,7 +1,7 @@
-From 16722526979959805c493deabaac8cf9ba2f8ef6 Mon Sep 17 00:00:00 2001
+From d23270c39a5cd1af8df119c51645b6b0ed21f012 Mon Sep 17 00:00:00 2001
 From: Martin Jansa <Martin.Jansa@gmail.com>
 Date: Sat, 7 Nov 2009 20:33:06 +0100
-Subject: [PATCH 01/14] wm8753: fix build with gcc-4.4.2, which works ok with 4.1.2
+Subject: [PATCH 01/17] wm8753: fix build with gcc-4.4.2, which works ok with 4.1.2
 
 Signed-off-by: Martin Jansa <Martin.Jansa@gmail.com>
 ---
@@ -9,7 +9,7 @@ Signed-off-by: Martin Jansa <Martin.Jansa@gmail.com>
  1 files changed, 3 insertions(+), 1 deletions(-)
 
 diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
-index 5ad677c..e148406 100644
+index 613199a..e270b9f 100644
 --- a/sound/soc/codecs/wm8753.c
 +++ b/sound/soc/codecs/wm8753.c
 @@ -710,7 +710,9 @@ static void pll_factors(struct _pll_div *pll_div, unsigned int target,
@@ -24,5 +24,5 @@ index 5ad677c..e148406 100644
  	K = Kpart & 0xFFFFFFFF;
  
 -- 
-1.7.1
+1.7.3
 

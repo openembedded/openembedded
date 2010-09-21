@@ -1,7 +1,7 @@
-From 1cc704d6777a97bc55f3822c218fd49e12561347 Mon Sep 17 00:00:00 2001
+From 1f722e3bf68126afd3266d4a3f8b7fdbd87c4068 Mon Sep 17 00:00:00 2001
 From: Thomas White <taw@bitwiz.org.uk>
 Date: Sat, 21 Nov 2009 21:42:16 +0100
-Subject: [PATCH 4/8] JBT6k74 work for KMS
+Subject: [PATCH 06/17] JBT6k74 work for KMS
 
 This simplifies the JBT6k74 driver, and adds hooks for the Glamo driver to cooperate
 more closely with it.
@@ -536,5 +536,5 @@ index 75488c4..2010bdc 100644
  	int gpio_reset;
  };
 -- 
-1.7.1
+1.7.3
 

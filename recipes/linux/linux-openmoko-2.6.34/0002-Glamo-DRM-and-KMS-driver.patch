@@ -1,7 +1,7 @@
-From b47b5c8042832424555cecda7a2ab21f8e57f9d4 Mon Sep 17 00:00:00 2001
+From 9231014c2f79c75aa1358b36e0c576ec1c97c2bc Mon Sep 17 00:00:00 2001
 From: Thomas White <taw@bitwiz.org.uk>
 Date: Sat, 22 May 2010 19:01:00 +0200
-Subject: [PATCH 2/8] Glamo DRM and KMS driver
+Subject: [PATCH 04/17] Glamo DRM and KMS driver
 
 This adds the Glamo DRM and KMS driver, but note that modifications are needed
 elsewhere to support it.
@@ -3878,5 +3878,5 @@ index 0000000..4c194dc
 +
 +#endif
 -- 
-1.7.1
+1.7.3
 

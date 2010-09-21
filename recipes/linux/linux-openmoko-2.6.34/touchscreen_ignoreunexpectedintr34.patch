@@ -1,3 +1,12 @@
+From a3704a5bd991e0cc9ae72d6fd3c35880e6e28aad Mon Sep 17 00:00:00 2001
+From: Gennady Kupava <gb@bsdmn.com>
+Date: Sat, 26 Jun 2010 00:15:02 +0200
+Subject: [PATCH 02/17] touchscreen: ignore unexpected interrupts
+
+---
+ drivers/input/touchscreen/s3c2410_ts.c |   29 ++++++++++++++++++++++++-----
+ 1 files changed, 24 insertions(+), 5 deletions(-)
+
 diff --git a/drivers/input/touchscreen/s3c2410_ts.c b/drivers/input/touchscreen/s3c2410_ts.c
 index 98a7d12..8fba8a8 100644
 --- a/drivers/input/touchscreen/s3c2410_ts.c
@@ -91,3 +100,6 @@ index 98a7d12..8fba8a8 100644
  	writel(WAIT4INT | INT_DOWN, ts.io + S3C2410_ADCTSC);
  
  	return 0;
+-- 
+1.7.3
+

@@ -1,7 +1,7 @@
-From 660579bd6333e7e33cfb176f849bcc098e33af38 Mon Sep 17 00:00:00 2001
+From 49a7aaa93557318d985b87ee865285a2ca4f65cc Mon Sep 17 00:00:00 2001
 From: Martin Jansa <Martin.Jansa@gmail.com>
 Date: Mon, 19 Jul 2010 13:39:06 +0200
-Subject: [PATCH] glamo-display: Enable FIFO stage for the LCD engine's memory access
+Subject: [PATCH 15/17] glamo-display: Enable FIFO stage for the LCD engine's memory access
 
 ---
  drivers/gpu/drm/glamo/glamo-display.c |    2 +-
@@ -21,5 +21,5 @@ index 6f25326..4e85906 100644
  	{ GLAMO_REG_LCD_B_BASE2, 0x0009 }, /* display B base address 22:16 */
  	{ GLAMO_REG_LCD_CURSOR_BASE1, 0xC000 }, /* cursor base address 15:0 */
 -- 
-1.7.1.1
+1.7.3
 
