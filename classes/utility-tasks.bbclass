@@ -38,18 +38,6 @@ python do_rebuild() {
 	"""rebuild a package"""
 }
 
-addtask mrproper
-do_mrproper[dirs] = "${TOPDIR}"
-do_mrproper[nostamp] = "1"
-python do_mrproper() {
-	"""clear downloaded sources, build and temp directories"""
-	dir = bb.data.expand("${DL_DIR}", d)
-	if dir == '/': bb.build.FuncFailed("wrong DATADIR")
-	bb.debug(2, "removing " + dir)
-	os.system('rm -rf ' + dir)
-	bb.build.exec_func('do_clean', d)
-}
-
 addtask distclean
 do_distclean[dirs] = "${TOPDIR}"
 do_distclean[nostamp] = "1"
