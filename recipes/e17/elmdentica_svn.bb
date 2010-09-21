@@ -9,4 +9,6 @@ inherit e
 
 PV = "0.9.9+svnr${SRCPV}"
 PR = "r1"
-SRCREV = "${EFL_SRCREV}"
+#temporary bump SRCREV above EFL_SRCREV to fix build after 55b3912f14b1919bf2cd330e48546f11c179794f
+#SRCREV = "${EFL_SRCREV}"
+SRCREV = "52153"
