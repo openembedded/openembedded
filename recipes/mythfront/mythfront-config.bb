@@ -1,11 +1,12 @@
 PV = "1.10"
-PR = "r0"
+PR = "r1"
 
 RDEPENDS_${PN} = "font-misc-misc"
 LICENSE = "MIT"
-SRC_URI = "file://tftp.sh file://xorg.conf"
+SRC_URI = "file://tftp.sh"
 
-SRC_URI_append_epia = " file://serial.sh"
+SRC_URI_append_epia = " file://serial.sh \
+			file://xorg.conf"
 
 do_install() {
 	install -d ${D}${sysconfdir}/udhcpc.d/
@@ -13,9 +14,6 @@ do_install() {
 
 	install -d ${D}${sysconfdir}/mythtv
 	ln -sf /var/lib/config/mysql.txt ${D}${sysconfdir}/mythtv
-
-	install -d ${D}${sysconfdir}/X11
-	install -m 0644 ${WORKDIR}/xorg.conf ${D}${sysconfdir}/X11
 
 	ln -sf /var/lib/config/lircd.conf ${D}${sysconfdir}/lircd.conf
 
@@ -30,3 +28,7 @@ do_install() {
 	fi
 }
 
+do_install_append_epia() {
+	install -d ${D}${sysconfdir}/X11
+	install -m 0644 ${WORKDIR}/xorg.conf ${D}${sysconfdir}/X11
+}
