@@ -5,13 +5,11 @@ LICENSE = "GPLv3"
 SECTION = "console/network"
 DEPENDS = "libframeworkd-glib xrandr"
 
-SRCREV = "67"
+SRCREV = "69"
 
-PV = "0.5.8+svnr${SRCPV}"
-PR = "r1"
+PV = "0.5.9+svnr${SRCPV}"
 
-SRC_URI = "svn://omnewrotate.googlecode.com/svn;module=trunk;proto=http \
-           file://xsession.script.patch"
+SRC_URI = "svn://omnewrotate.googlecode.com/svn;module=trunk;proto=http"
 
 S = "${WORKDIR}/trunk"
 
