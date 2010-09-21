@@ -1,0 +1,28 @@
+--- ppp-2.4.4/pppd/Makefile.linux.orig	2009-08-24 14:28:02.000000000 -0400
++++ ppp-2.4.4/pppd/Makefile.linux	2009-08-24 14:42:58.000000000 -0400	
+@@ -117,10 +117,10 @@
+ #LIBS     += -lshadow $(LIBS)
+ endif
+ 
+-ifneq ($(wildcard /usr/include/crypt.h),)
++#ifneq ($(wildcard /usr/include/crypt.h),)
+ CFLAGS  += -DHAVE_CRYPT_H=1
+ LIBS	+= -lcrypt
+-endif
++#endif
+ 
+ ifdef NEEDDES
+ ifndef USE_CRYPT
+@@ -169,10 +169,10 @@
+ endif
+ 
+ ifdef FILTER
+-ifneq ($(wildcard /usr/include/pcap-bpf.h),)
++#ifneq ($(wildcard /usr/include/pcap-bpf.h),)
+ LIBS    += -lpcap
+ CFLAGS  += -DPPP_FILTER
+-endif
++#endif
+ endif
+ 
+ ifdef HAVE_INET6

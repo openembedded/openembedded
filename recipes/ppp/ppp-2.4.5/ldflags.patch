@@ -1,0 +1,48 @@
+diff --git a/pppd/plugins/Makefile.linux b/pppd/plugins/Makefile.linux
+index 0a7ec7b..391921b 100644
+--- a/pppd/plugins/Makefile.linux
++++ b/pppd/plugins/Makefile.linux
+@@ -1,7 +1,7 @@
+ #CC	= gcc
+ COPTS	= -O2 -g
+ CFLAGS	= $(COPTS) -I.. -I../../include -fPIC
+-LDFLAGS	= -shared
++#LDFLAGS	+= -shared
+ INSTALL	= install
+ 
+ DESTDIR = $(INSTROOT)@DESTDIR@
+@@ -23,7 +23,7 @@ all:	$(PLUGINS)
+ 	for d in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $$d all; done
+ 
+ %.so: %.c
+-	$(CC) -o $@ $(LDFLAGS) $(CFLAGS) $^
++	$(CC) -o $@ $(LDFLAGS) $(CFLAGS) -shared $^
+ 
+ VERSION = $(shell awk -F '"' '/VERSION/ { print $$2; }' ../patchlevel.h)
+ 
+diff --git a/pppd/plugins/pppoatm/Makefile.linux b/pppd/plugins/pppoatm/Makefile.linux
+index 20f62e6..7150251 100644
+--- a/pppd/plugins/pppoatm/Makefile.linux
++++ b/pppd/plugins/pppoatm/Makefile.linux
+@@ -1,7 +1,7 @@
+ #CC	= gcc
+ COPTS	= -O2 -g
+ CFLAGS	= $(COPTS) -I../.. -I../../../include -fPIC
+-LDFLAGS	= -shared
++#LDFLAGS	+= -shared
+ INSTALL	= install
+ 
+ #***********************************************************************
+diff --git a/pppd/plugins/pppol2tp/Makefile.linux b/pppd/plugins/pppol2tp/Makefile.linux
+index 19eff67..5b0dfcc 100644
+--- a/pppd/plugins/pppol2tp/Makefile.linux
++++ b/pppd/plugins/pppol2tp/Makefile.linux
+@@ -1,7 +1,7 @@
+ #CC	= gcc
+ COPTS	= -O2 -g
+ CFLAGS	= $(COPTS) -I. -I../.. -I../../../include -fPIC
+-LDFLAGS	= -shared
++#LDFLAGS	+= -shared
+ INSTALL	= install
+ 
+ #***********************************************************************
