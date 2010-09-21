@@ -2,6 +2,7 @@
 
 # Lets see how many pppds are running....
 set -- `cat /var/run/ppp*.pid 2>/dev/null`
+set -- `pidof pppd`
 
 case $# in
   0) # pppd only creates a pid file once ppp is up, so let's try killing pppd
