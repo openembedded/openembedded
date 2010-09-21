@@ -1,15 +1,15 @@
 DESCRIPTION = "Ecore input method for the Mokosuite window manager"
-HOMEPAGE = "http://wiki.openmoko.org/"
+HOMEPAGE = "http://gitorious.org/mokosuite2"
 AUTHOR = "Daniele Ricci"
 LICENSE = "GPLv3"
 DEPENDS = "ecore eina"
 SECTION = "misc/utils"
 
-PV = "1.0+svnr${SRCPV}"
-SRCREV = "457"
+PV = "1.0.99+gitr${SRCPV}"
+SRCREV = "59c1afe3c347a4da38fa7a5f4f7dd080a65d0858"
 
-SRC_URI = "svn://svn.casaricci.it/openmoko/trunk;module=mokowm-imf-ecore;proto=svn"
-S = "${WORKDIR}/mokowm-imf-ecore"
+SRC_URI = "git://gitorious.org/mokosuite2/mokowm-imf-ecore.git;protocol=git"
+S = "${WORKDIR}/git"
 
 FILES_${PN}-dbg += "${libdir}/ecore/immodules/.debug"
 FILES_${PN} += "${libdir}/ecore/immodules"
