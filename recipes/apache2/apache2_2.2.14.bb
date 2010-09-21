@@ -1,6 +1,6 @@
 SECTION = "net"
 DESCRIPTION = "The apache v2 web server"
-DEPENDS = "apache2-native openssl expat pcre"
+DEPENDS = "libtool-native apache2-native openssl expat pcre"
 RDEPENDS_${PN} += "openssl"
 
 PR = "r2"
@@ -89,6 +89,11 @@ EXTRA_OECONF = "--enable-ssl \
 #
 # here we over-ride the autotools provided do_configure.
 #
+
+do_configure_prepend() {
+	sed -e 's,libtool libtool15,${TARGET_PREFIX}libtool libtool115,' -i ${S}/srclib/apr/build/buildcheck.sh
+}
+
 do_configure() {
 	( cd srclib/apr; ./buildconf ) 
 	oe_runconf
