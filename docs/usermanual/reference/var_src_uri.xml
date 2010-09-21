@@ -229,7 +229,7 @@ SRC_URI[sha256sum] = &quot;36bdb85c97b39ac604bc58cb7857ee08295242c78a12848ef8a31
     <para>The following example shows the specification of a patch
     file:<screen>file://ospfd-no-opaque-lsa-fix.patch</screen></para>
 
-    <para>Patch files are be copied to the patches subdirectory of the source
+    <para>Patch files are copied to the patches subdirectory of the source
     directory, <command>${S}/patches</command>, and then applied from the
     source directory. The patches are searched for along the path specified
     via the file path variable, <command>${FILESPATH},</command> and if not
