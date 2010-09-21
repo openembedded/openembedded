@@ -31,3 +31,4 @@ do_install () {
   DESTDIR=${D} oe_runmake install
 }
 
+BBCLASSEXTEND = "native"
