@@ -1,0 +1,68 @@
+From d7275f4a6089d0485572e946cc6698c384e741b9 Mon Sep 17 00:00:00 2001
+From: Cliff Brake <cbrake@bec-systems.com>
+Date: Sat, 14 Nov 2009 18:54:40 -0500
+Subject: [PATCH] qt-embedded patch
+
+---
+ commonrenderer.h |    2 +-
+ main.cpp         |    3 ++-
+ qglgears.cpp     |    3 ++-
+ qglgears.h       |    3 ++-
+ 4 files changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/commonrenderer.h b/commonrenderer.h
+index 2972bdf..ba3813a 100644
+--- a/commonrenderer.h
++++ b/commonrenderer.h
+@@ -42,7 +42,7 @@ protected:
+     void gearsRender(QPainter *p);
+ 
+     void setup(int w, int h);
+-    void animate(double *pts, double *deltas,
++    void animate(qreal *pts, qreal *deltas,
+                  int index, int limit);
+     void animateStep(int w, int h);
+     void printFrameRate();
+diff --git a/main.cpp b/main.cpp
+index 133d09a..fa9307c 100644
+--- a/main.cpp
++++ b/main.cpp
+@@ -56,7 +56,8 @@ int main(int argc, char **argv)
+ 
+     switch (renderer) {
+     case OpenGL:
+-#ifndef QT_NO_OPENGL
++//#ifndef QT_NO_OPENGL
++#if 0
+         widget = new QGLGears();
+ #else
+         qWarning("OpenGL not supported!");
+diff --git a/qglgears.cpp b/qglgears.cpp
+index a8bf34b..0a95e51 100644
+--- a/qglgears.cpp
++++ b/qglgears.cpp
+@@ -1,5 +1,6 @@
+ #include "qglgears.h"
+-#ifndef QT_NO_OPENGL
++//#ifndef QT_NO_OPENGL
++#if 0
+ #include <QTimer>
+ 
+ QGLGears::QGLGears()
+diff --git a/qglgears.h b/qglgears.h
+index 1556da2..1af8101 100644
+--- a/qglgears.h
++++ b/qglgears.h
+@@ -1,7 +1,8 @@
+ #ifndef QGLGEARS_H
+ #define QGLGEARS_H
+ 
+-#ifndef QT_NO_OPENGL
++//#ifndef QT_NO_OPENGL
++#if 0
+ #include <QGLWidget>
+ 
+ 
+-- 
+1.6.0.4
+
