@@ -6,7 +6,7 @@ SRC_URI = "http://files.chumby.com/resources/chumby_fw_1_2.zip"
 S = ${WORKDIR}
 
 PACKAGE_ARCH = "chumby"
-COMPATIBLE_MACHINES = "chumby"
+COMPATIBLE_MACHINE = "(chumby)"
 
 do_install () {
         cd ${S}/update1 && unzip k2.bin.zip
