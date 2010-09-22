@@ -3,11 +3,12 @@
 #------------------------------------------------------
 
 PV = "2.0"
-PR = "r14"
+PR = "r15"
 
 DEPENDS += "task-shr-minimal"
 IMAGE_LOGIN_MANAGER = "shadow"
 IMAGE_DEV_MANAGER = ""
+IMAGE_DEV_MANAGER_nokia900 = "udev"
 
 RDEPENDS_${PN} += "\
   task-shr-minimal-base \
