@@ -3,18 +3,23 @@ require gst-plugins-package.inc
 DESCRIPTION = "GStreamer OpenGL/GLES2 plugins"
 LICENSE = "LGPL"
 
-SRCREV = "3d5ba149ee8c290bf9995cd2f6826b0ff2920adf"
+SRCREV = "eebd5c7587530521741155b6cc01c71d5d3c1bf5"
+#"15f8e2d17a61bf505c2c6fcd1296f776cd48dfee"
 
-PR = "r3"
+PR = "r0"
 PR_append = "+gitr${SRCREV}"
-PV = "0.10"
+PV = "0.10.1.1"
 
 DEPENDS = "virtual/libsdl libgles-omap3 gstreamer gst-plugins-base"
 
 
 SRC_URI = "git://anongit.freedesktop.org/gstreamer/gst-plugins-gl;protocol=git \
-           http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.10.23.tar.bz2 \
+           http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.10.29.tar.bz2 \
 "
+
+SRC_URI[md5sum] = "c92d6bce4fc65fa9d5a3ad35cdd1a466"
+SRC_URI[sha256sum] = "e44a737c016ccab56d646718ecf24b9393babde2c417ac7dd5bd218e5c609ef9"
+
 
 S = "${WORKDIR}/git"
 
@@ -23,8 +28,8 @@ inherit autotools pkgconfig
 EXTRA_OECONF = "   --disable-rpath --disable-tests --disable-examples"
 
 do_configure_prepend () {
-	cp -rf ${WORKDIR}/gstreamer-0.10.23/common/* ${S}/common/
-	cp -rf ${WORKDIR}/gstreamer-0.10.23/po/* ${S}/po/
+	cp -rf ${WORKDIR}/gstreamer-0.10.29/common/* ${S}/common/
+	cp -rf ${WORKDIR}/gstreamer-0.10.29/po/* ${S}/po/
 	autopoint --force
 	sed -i -e '/po /d' ${S}/Makefile.am
 }
@@ -49,6 +54,3 @@ do_install() {
 # bad rpaths we can't get rid off..
 INSANE_SKIP_gst-plugin-opengl = True
 
-
-SRC_URI[md5sum] = "f7b2e300d2d85756407ec529424ab237"
-SRC_URI[sha256sum] = "cf750821040102d2c9fbfed56472a86fd0d8c24ada37901c41867c88438a776d"
