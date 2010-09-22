@@ -1,7 +1,7 @@
 require binutils.inc
 LICENSE = "GPLv3"
 
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 #COMPATIBLE_TARGET_SYS = "."
 
@@ -15,6 +15,7 @@ SRC_URI = "\
      file://binutils-uclibc-gas-needs-libm.patch \
      file://binutils-x86_64_i386_biarch.patch \
      file://libtool-update.patch \
+     file://binutils-2.19.1-ld-sysroot.patch \
      "
 
 SRC_URI_append_nios2 =" \
