@@ -3,10 +3,7 @@ SECTION = "libs/network"
 LICENSE = "LGPL"
 HOMEPAGE = "http://www.infradead.org/~tgr/libnl/"
 
-# If you get errors like : undefined reference to `nl_handle_alloc
-# do a bitbake -c clean libnl2
-
-PR = "r3"
+PR = "r4"
 
 inherit autotools pkgconfig
 
@@ -18,6 +15,7 @@ SRC_URI = "\
   file://fix-includes.patch \
   file://respect-ldflags.patch \
   file://netlink-local-fix.patch \
+  file://dont-link-libnl-from-sysroot.patch \
 "
 
 
