@@ -21,3 +21,4 @@ EXTRA_OECONF = "${NEON} --disable-gtk"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "2"
+DEFAULT_PREFERENCE_shr = "2"
