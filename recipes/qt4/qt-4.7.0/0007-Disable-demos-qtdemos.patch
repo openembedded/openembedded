@@ -1,0 +1,25 @@
+From 6a4b829736399fef4a6f1d3223cf0d813caf7062 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Matthias=20G=C3=BCnther?= <matgnt@gmail.com>
+Date: Thu, 13 May 2010 16:00:06 +0200
+Subject: [PATCH 7/9] Disable demos/qtdemos
+
+---
+ demos/demos.pro |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/demos/demos.pro b/demos/demos.pro
+index 8008ccb..a0691bc 100644
+--- a/demos/demos.pro
++++ b/demos/demos.pro
+@@ -51,7 +51,7 @@ wince*|symbian|embedded|x11: SUBDIRS += demos_embedded
+ 
+ !cross_compile:{
+ contains(QT_BUILD_PARTS, tools):{
+-!wince*:SUBDIRS += demos_sqlbrowser demos_qtdemo
++!wince*:SUBDIRS += demos_sqlbrowser
+ wince*:SUBDIRS += demos_sqlbrowser
+ }
+ }
+-- 
+1.7.0.4
+

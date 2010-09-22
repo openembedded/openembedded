@@ -1,0 +1,24 @@
+From 82aaf21a465d0d693916c4b82932371a090482a7 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Matthias=20G=C3=BCnther?= <matgnt@gmail.com>
+Date: Wed, 12 May 2010 20:33:11 +0200
+Subject: [PATCH 3/9] Disable examples/designer
+
+---
+ examples/examples.pro |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/examples/examples.pro b/examples/examples.pro
+index 43cad55..785c35c 100644
+--- a/examples/examples.pro
++++ b/examples/examples.pro
+@@ -53,7 +53,6 @@ contains(QT_CONFIG, script): SUBDIRS += script
+ contains(QT_CONFIG, phonon):!static: SUBDIRS += phonon
+ embedded:SUBDIRS += qws
+ !wince*:!symbian: {
+-    !contains(QT_EDITION, Console):!contains(QT_CONFIG, no-gui):contains(QT_BUILD_PARTS, tools):SUBDIRS += designer
+     contains(QT_BUILD_PARTS, tools):!contains(QT_CONFIG, no-gui):SUBDIRS += qtestlib help
+ } else {
+     contains(QT_BUILD_PARTS, tools):!contains(QT_CONFIG, no-gui):SUBDIRS += qtestlib
+-- 
+1.7.0.4
+
