@@ -60,11 +60,11 @@ python populate_packages_prepend () {
 		bb.data.update_data(localdata)
 
 		postinst = '#!/bin/sh\n'
-		postinst += bb.data.getVar('updatercd_postinst', localdata, 1)
 		try:
 			postinst += bb.data.getVar('pkg_postinst', localdata, 1)
 		except:
 			pass
+		postinst += bb.data.getVar('updatercd_postinst', localdata, 1)
 		bb.data.setVar('pkg_postinst_%s' % pkg, postinst, d)
 		prerm = bb.data.getVar('pkg_prerm', localdata, 1)
 		if not prerm:
