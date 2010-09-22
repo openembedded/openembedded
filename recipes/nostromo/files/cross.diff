@@ -1,0 +1,119 @@
+diff --git a/src/libbsd/GNUmakefile b/src/libbsd/GNUmakefile
+index e2d01a3..b380e1d 100644
+--- a/src/libbsd/GNUmakefile
++++ b/src/libbsd/GNUmakefile
+@@ -1,12 +1,12 @@
+-CCFLAGS = -O2 -pipe -Wall -Werror -Wstrict-prototypes -c
++CCFLAGS := -O2 -pipe -Wall -Werror -Wstrict-prototypes -c
+ 
+ libbsd.a:	strlcpy.o strlcat.o
+-		ar -r libbsd.a strlcpy.o strlcat.o
+-		ranlib libbsd.a
++		$(AR) -r libbsd.a strlcpy.o strlcat.o
++		$(RANLIB) libbsd.a
+ 
+ strlcpy.o:	strlcpy.c
+-		cc ${CCFLAGS} strlcpy.c
++		$(CC) $(CCFLAGS) strlcpy.c
+ strlcat.o:	strlcat.c
+-		cc ${CCFLAGS} strlcat.c
++		$(CC) $(CCFLAGS) strlcat.c
+ clean:
+ 		rm -f libbsd.a *.o
+diff --git a/src/libmy/GNUmakefile b/src/libmy/GNUmakefile
+index ce90dd9..674ffe3 100644
+--- a/src/libmy/GNUmakefile
++++ b/src/libmy/GNUmakefile
+@@ -1,30 +1,30 @@
+-CCFLAGS = -O2 -Wall -Werror -Wstrict-prototypes -c
++CCFLAGS := -O2 -Wall -Werror -Wstrict-prototypes -c
+ 
+ libmy.a:	strcutl.o strcutw.o strcuts.o strcuti.o strcutf.o flog.o flogd.o fparse.o strlower.o strb64d.o
+-		ar -r libmy.a strcutl.o strcutw.o strcuts.o strcuti.o strcutf.o flog.o flogd.o fparse.o strlower.o strb64d.o
+-		ranlib libmy.a
++		$(AR) -r libmy.a strcutl.o strcutw.o strcuts.o strcuti.o strcutf.o flog.o flogd.o fparse.o strlower.o strb64d.o
++		$(RANLIB) libmy.a
+ 
+ strcutl.o:	strcutl.c
+-		cc ${CCFLAGS} strcutl.c
++		$(CC) $(CCFLAGS) strcutl.c
+ strcutw.o:	strcutw.c
+-		cc ${CCFLAGS} strcutw.c
++		$(CC) $(CCFLAGS) strcutw.c
+ strcuts.o:	strcuts.c
+-		cc ${CCFLAGS} strcuts.c
++		$(CC) $(CCFLAGS) strcuts.c
+ strcuti.o:	strcuti.c
+-		cc ${CCFLAGS} strcuti.c
++		$(CC) $(CCFLAGS) strcuti.c
+ strcutf.o:	strcutf.c
+-		cc ${CCFLAGS} strcutf.c
++		$(CC) $(CCFLAGS) strcutf.c
+ strlower.o:	strlower.c
+-		cc ${CCFLAGS} strlower.c
++		$(CC) $(CCFLAGS) strlower.c
+ strb64d.o:	strb64d.c
+-		cc ${CCFLAGS} strb64d.c
++		$(CC) $(CCFLAGS) strb64d.c
+ 
+ flog.o:		flog.c
+-		cc ${CCFLAGS} flog.c
++		$(CC) $(CCFLAGS) flog.c
+ flogd.o:	flogd.c
+-		cc ${CCFLAGS} flogd.c
++		$(CC) $(CCFLAGS) flogd.c
+ fparse.o:	fparse.c
+-		cc ${CCFLAGS} fparse.c
++		$(CC) $(CCFLAGS) fparse.c
+ 
+ clean:
+ 		rm -f libmy.a *.o
+diff --git a/src/nhttpd/GNUmakefile b/src/nhttpd/GNUmakefile
+index c1887cf..9febc5b 100644
+--- a/src/nhttpd/GNUmakefile
++++ b/src/nhttpd/GNUmakefile
+@@ -1,18 +1,18 @@
+-CCFLAGS = -O2 -pipe -Wall -Werror -Wstrict-prototypes -c
++CCFLAGS := -O2 -pipe -Wall -Werror -Wstrict-prototypes -c
+ 
+ nhttpd:	main.o http.o sys.o
+-	cc -L../libmy -L../libbsd -o nhttpd main.o http.o sys.o -lmy -lbsd -lssl -lcrypt
+-	strip nhttpd
++	$(CC) -L../libmy -L../libbsd -o nhttpd main.o http.o sys.o -lmy -lbsd -lssl -lcrypt
++	$(STRIP) nhttpd
+ 	nroff -Tascii -c -mandoc nhttpd.8 > nhttpd.cat8
+ 
+ main.o:	main.c
+-	cc ${CCFLAGS} main.c
++	$(CC) $(CCFLAGS) main.c
+ 
+ http.o:	http.c
+-	cc ${CCFLAGS} http.c
++	$(CC) $(CCFLAGS) http.c
+ 
+ sys.o:	sys.c
+-	cc ${CCFLAGS} sys.c
++	$(CC) $(CCFLAGS) sys.c
+ 
+ clean:
+ 	rm -f nhttpd nhttpd.cat8 *.o
+diff --git a/src/tools/GNUmakefile b/src/tools/GNUmakefile
+index 15bea61..a6e28c6 100644
+--- a/src/tools/GNUmakefile
++++ b/src/tools/GNUmakefile
+@@ -1,11 +1,11 @@
+-CCFLAGS = -O2 -pipe -Wall -Werror -Wstrict-prototypes -c
++CCFLAGS := -O2 -pipe -Wall -Werror -Wstrict-prototypes
+ 
+ crypt:		crypt.o
+-		cc -o crypt crypt.o -lcrypt
+-		strip crypt
++		$(CC) $(CCFLAGS) -o crypt crypt.o -lcrypt
++		$(STRIP) crypt
+ 
+ crypt.o:	crypt.c
+-		cc ${CCFLAGS} crypt.c
++		$(CC) $(CCFLAGS) -c crypt.c
+ 
+ clean:
+ 		rm -f crypt *.o
