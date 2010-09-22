@@ -2,6 +2,7 @@ DESCRIPTION = "Touchscreen calibration data from xinput-calibrator"
 LICENSE = "MIT/X11"
 SECTION = "base"
 
+PR = "r1"
 SRC_URI = "file://pointercal.xinput"
 S = "${WORKDIR}"
 
