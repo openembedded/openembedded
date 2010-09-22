@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.nongnu.org/libunwind"
 LICENSE = "MIT"
 INC_PR = "r1"
 
-SRC_URI = "http://download.savannah.nongnu.org/releases/libunwind/${PN}-${PV}.tar.gz;name=archive"
+SRC_URI = "http://download.savannah.nongnu.org/releases/${BPN}/${BPN}-${PV}.tar.gz;name=archive"
 
 S = "${WORKDIR}/${PN}-${PV}"
 
