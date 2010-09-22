@@ -1,0 +1,28 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 01_configure_ac.dpatch by Floris Bruynooghe <floris.bruynooghe@gmail.com>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Enable AM_MAINTAINER_MODE to stop make from rebuilding configure in
+## DP: case of timestamp skew (as created by dpkg-source).
+
+@DPATCH@
+diff -urNad plotutils-2.5~/configure.ac plotutils-2.5/configure.ac
+--- plotutils-2.5~/configure.ac	2009-05-03 14:28:26.000000000 +0000
++++ plotutils-2.5/configure.ac	2009-05-03 14:33:24.000000000 +0000
+@@ -8,6 +8,8 @@
+ AM_INIT_AUTOMAKE([plotutils],[2.5])
+ AM_CONFIG_HEADER(config.h:config.hin)
+ 
++AM_MAINTAINER_MODE
++
+ # The following will be defined in config.h, if appropriate.
+ 
+ # Miscellaneous.
+@@ -64,6 +66,7 @@
+ # Note: this can apparently alter CFLAGS, on a few platforms, e.g., on
+ # SCO OpenServer 5 (i.e. *-*-sco3.2v5*), "-belf" is added.
+ AC_PROG_LIBTOOL
++AC_PROG_CXX
+ 
+ # Determine extension (e.g. ".exe") on executables, if any.
+ AC_EXEEXT
