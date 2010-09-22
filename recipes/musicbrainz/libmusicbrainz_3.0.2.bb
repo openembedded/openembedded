@@ -2,7 +2,8 @@ require ${PN}.inc
 
 PR = "r1"
 
-SRC_URI_append = " file://libmusicbrainz-3.0.2-gcc-4.4-fix.patch"
+SRC_URI_append = " file://libmusicbrainz-3.0.2-gcc-4.4-fix.patch \
+	file://libmusicbrainz-3.0.2-cmake-neon.patch"
 
 
 SRC_URI[md5sum] = "648ecd43f7b80852419aaf73702bc23f"

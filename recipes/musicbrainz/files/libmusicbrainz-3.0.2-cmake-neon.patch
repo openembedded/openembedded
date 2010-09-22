@@ -1,0 +1,37 @@
+Upstream: not yet
+
+Fix build when prefix = "".
+
+musicbrainz is looking for ne_request.h under ${includedir}. It should be
+looking for neon/ne_request.h under ${includedir}, and -I${includedir}/neon
+should be added to the compiler flags, as specified by pkg-config. The
+existing FindNeon.cmake had a special case to find
+/usr/include/neon/ne_request.h so it worked if prefix = "/usr".
+
+--- libmusicbrainz-3.0.2/cmake/modules/FindNeon.cmake.orig	2007-05-12 07:09:24.000000000 -0400
++++ libmusicbrainz-3.0.2/cmake/modules/FindNeon.cmake	2010-09-22 18:09:29.000000000 -0400
+@@ -1,10 +1,10 @@
+ INCLUDE(UsePkgConfig)
+ PKGCONFIG(neon _NeonIncDir _NeonLinkDir _NeonLinkFlags _NeonCflags)
+ 
+-FIND_PATH(NEON_INCLUDE_DIR ne_request.h
++FIND_PATH(NEON_INCLUDE_DIR neon/ne_request.h
+     ${_NeonIncDir}
+-    /usr/include/neon
+-    /usr/local/include/neon
++    /usr/include
++    /usr/local/include
+ )
+ 
+ FIND_LIBRARY(NEON_LIBRARIES neon
+--- libmusicbrainz-3.0.2/src/CMakeLists.txt.orig	2007-07-13 17:16:58.000000000 -0400
++++ libmusicbrainz-3.0.2/src/CMakeLists.txt	2010-09-22 18:28:46.000000000 -0400
+@@ -1,6 +1,8 @@
+ SET(CMAKE_INCLUDE_CURRENT_DIR ON)
+ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/.. ${CMAKE_CURRENT_SOURCE_DIR}/../include ${NEON_INCLUDE_DIR})
+ 
++ADD_DEFINITIONS(${_NeonCflags})
++
+ FILE(GLOB _sources ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/xmlParser/*.cpp)
+ ADD_LIBRARY(musicbrainz3 SHARED ${_sources})
+ 
