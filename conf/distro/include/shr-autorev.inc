@@ -11,3 +11,8 @@ SRCREV_pn-libphone-utils = "${AUTOREV}"
 SRCREV_pn-opimd-utils = "${AUTOREV}"
 SRCREV_pn-shr-installer = "${AUTOREV}"
 SRCREV_pn-shr-wizard = "${AUTOREV}"
+
+# mokosuite2 + deps
+SRCREV_pn-mokosuite2 = "${AUTOREV}"
+SRCREV_pn-mokowm = "${AUTOREV}"
+SRCREV_pn-mokowm-imf-ecore = "${AUTOREV}"
