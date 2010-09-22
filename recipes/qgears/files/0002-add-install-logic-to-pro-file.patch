@@ -1,0 +1,23 @@
+From b42d1a44681e7f66169c3238135f86d65fe765c3 Mon Sep 17 00:00:00 2001
+From: Cliff Brake <cbrake@bec-systems.com>
+Date: Sat, 14 Nov 2009 19:07:39 -0500
+Subject: [PATCH] add install logic to pro file
+
+---
+ qgears.pro |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/qgears.pro b/qgears.pro
+index b5436a8..8a3e7a0 100644
+--- a/qgears.pro
++++ b/qgears.pro
+@@ -12,3 +12,6 @@ HEADERS += qgears.h qglgears.h fdclock.h composite.h text.h rawpixmap.h
+ SOURCES += main.cpp qgears.cpp commonrenderer.cpp qglgears.cpp \
+ 	fdclock.cpp composite.cpp text.cpp rawpixmap.cpp
+ 
++target.path = /usr/bin
++INSTALLS += target
++
+-- 
+1.6.0.4
+
