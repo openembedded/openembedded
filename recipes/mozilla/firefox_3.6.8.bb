@@ -1,5 +1,5 @@
 DEPENDS += "cairo sqlite3 libnotify"
-PR = "r1"
+PR = "r2"
 
 # The .pc files below have "3.6" hardcoded, fix that before using them in a newer FF version!
 SRC_URI = "ftp://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/firefox-${PV}.source.tar.bz2;name=archive \
@@ -12,6 +12,7 @@ SRC_URI = "ftp://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/f
 	file://0001-Remove-Werror-from-build.patch \
 	file://0002-Fix-security-cross-compile-cpu-detection-error.patch \
 	file://plugins-dir.patch \
+	file://Add-nanojit-support-for-ARMv4T.patch \
 	file://firefox-plugin.pc \
 	file://firefox-xpcom.pc \
 	file://nspr.pc \
