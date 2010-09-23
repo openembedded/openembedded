@@ -15,7 +15,7 @@
 
 # TODO: 
 # * log information to a server for safekeeping
-# * use mtn certs to record this info into the scm
+# * use git notes to record this info into the scm
 # * add test suite to run on the target device 
 
 
@@ -64,6 +64,19 @@ if [ -e  ${IMAGE_ROOTFS}/etc/opkg ] && [ "${ONLINE_PACKAGE_MANAGEMENT}" = "full"
 	for file in $(cat ${TESTLAB_DIR}/installed-packages.txt) ; do 
      		du -k $(find ${DEPLOY_DIR_IPK} -name "$file") | head -n1
 	done | grep "\.ipk" | sed -e s:${DEPLOY_DIR_IPK}::g | sort -n -r | awk '{print $1 "\tKiB " $2}' > ${TESTLAB_DIR}/installed-package-sizes.txt
+
+	# Log results to a git controlled directory structure than can be pushed to a remote location
+	if [ "${TESTLABLOG}" = "remote" ] && [ -n "${TESTLABREMOTEDIR}" ] ; then
+		TESTLABLOGDIR="${MACHINE_ARCH}/${IMAGE_BASENAME}"
+		mkdir -p ${TESTLABREMOTEDIR}/${TESTLABLOGDIR}
+		cp ${TESTLAB_DIR}/*package* ${TESTLAB_DIR}/depends.dot ${TESTLABREMOTEDIR}/${TESTLABLOGDIR}
+		# force change to record builds where the testlab contents didn't change, but other things (e.g. git rev) did
+		echo "${MACHINE}: ${IMAGE_BASENAME} configured for ${DISTRO} ${DISTRO_VERSION} using branch ${METADATA_BRANCH} and revision ${METADATA_REVISION} " > ${TESTLABREMOTEDIR}/${TESTLABLOGDIR}/build-id
+		# This runs inside fakeroot, so the git author is listed as root (or whatever root configured it to be) :(
+		( cd ${TESTLABREMOTEDIR}/
+		  git add ${TESTLABLOGDIR}/*
+		  git commit ${TESTLABLOGDIR}/ -m "${MACHINE}: ${IMAGE_BASENAME} configured for ${DISTRO} ${DISTRO_VERSION} using branch ${METADATA_BRANCH} and revision ${METADATA_REVISION}" --author "testlab <testlab@${DISTRO}>" || true)
+	fi
 fi
 }
 
