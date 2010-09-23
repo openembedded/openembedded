@@ -5,6 +5,8 @@ HOMEPAGE = "http://www.trolltech.com"
 PRIORITY = "optional"
 LICENSE = "LGPLv2.1 GPLv3"
 
+PR = "r1"
+
 DEFAULT_PREFERENCE = "-1"
 inherit sdk
 
