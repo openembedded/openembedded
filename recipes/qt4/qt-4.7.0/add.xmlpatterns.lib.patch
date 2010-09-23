@@ -20,3 +20,59 @@ diff -uNr qt-everywhere-opensource-src-4.7.0-beta1.orig//examples/xmlpatterns/qo
  SOURCES     += qobjectxmlmodel.cpp main.cpp mainwindow.cpp ../shared/xmlsyntaxhighlighter.cpp
  HEADERS     += qobjectxmlmodel.h  mainwindow.h ../shared/xmlsyntaxhighlighter.h
  RESOURCES   = queries.qrc
+--- /OE/tmpdir-dev-shr/work/armv4t-oe-linux-gnueabi/qt4-x11-free-4.7.0-r18.0/qt-everywhere-opensource-src-4.7.0/examples/webkit/domtraversal/domtraversal.pro.orig	2010-09-23 12:43:56.000000000 +0200
++++ /OE/tmpdir-dev-shr/work/armv4t-oe-linux-gnueabi/qt4-x11-free-4.7.0-r18.0/qt-everywhere-opensource-src-4.7.0/examples/webkit/domtraversal/domtraversal.pro	2010-09-23 12:42:38.000000000 +0200
+@@ -1,4 +1,4 @@
+-QT       += webkit network
++QT       += webkit network mediaservices phonon
+ FORMS     = window.ui
+ HEADERS   = window.h
+ SOURCES   = main.cpp \
+--- /OE/tmpdir-dev-shr/work/armv4t-oe-linux-gnueabi/qt4-x11-free-4.7.0-r18.0/qt-everywhere-opensource-src-4.7.0/examples/webkit/formextractor/formextractor.pro.orig	2010-09-23 13:05:20.000000000 +0200
++++ /OE/tmpdir-dev-shr/work/armv4t-oe-linux-gnueabi/qt4-x11-free-4.7.0-r18.0/qt-everywhere-opensource-src-4.7.0/examples/webkit/formextractor/formextractor.pro	2010-09-23 13:05:08.000000000 +0200
+@@ -1,4 +1,4 @@
+-QT          +=  webkit network
++QT          +=  webkit network mediaservices phonon
+ TARGET       =  formextractor
+ TEMPLATE     =  app
+ SOURCES     +=  main.cpp \
+--- /OE/tmpdir-dev-shr/work/armv4t-oe-linux-gnueabi/qt4-x11-free-4.7.0-r18.0/qt-everywhere-opensource-src-4.7.0/examples/webkit/fancybrowser/fancybrowser.pro.orig	2010-09-23 13:11:41.000000000 +0200
++++ /OE/tmpdir-dev-shr/work/armv4t-oe-linux-gnueabi/qt4-x11-free-4.7.0-r18.0/qt-everywhere-opensource-src-4.7.0/examples/webkit/fancybrowser/fancybrowser.pro	2010-09-23 13:11:50.000000000 +0200
+@@ -1,4 +1,4 @@
+-QT      +=  webkit network
++QT      +=  webkit network mediaservices phonon
+ HEADERS =   mainwindow.h
+ SOURCES =   main.cpp \
+             mainwindow.cpp
+--- /OE/tmpdir-dev-shr/work/armv4t-oe-linux-gnueabi/qt4-x11-free-4.7.0-r18.0/qt-everywhere-opensource-src-4.7.0/examples/webkit/previewer/previewer.pro.orig	2010-09-23 13:18:04.000000000 +0200
++++ /OE/tmpdir-dev-shr/work/armv4t-oe-linux-gnueabi/qt4-x11-free-4.7.0-r18.0/qt-everywhere-opensource-src-4.7.0/examples/webkit/previewer/previewer.pro	2010-09-23 13:18:13.000000000 +0200
+@@ -1,4 +1,4 @@
+-QT      +=  webkit network
++QT      +=  webkit network mediaservices phonon
+ HEADERS =   previewer.h \
+             mainwindow.h
+ SOURCES =   main.cpp \
+--- /OE/tmpdir-dev-shr/work/armv4t-oe-linux-gnueabi/qt4-x11-free-4.7.0-r18.0/qt-everywhere-opensource-src-4.7.0/examples/webkit/framecapture/framecapture.pro.orig	2010-09-23 13:28:07.000000000 +0200
++++ /OE/tmpdir-dev-shr/work/armv4t-oe-linux-gnueabi/qt4-x11-free-4.7.0-r18.0/qt-everywhere-opensource-src-4.7.0/examples/webkit/framecapture/framecapture.pro	2010-09-23 13:28:20.000000000 +0200
+@@ -1,4 +1,4 @@
+-QT      += webkit network
++QT      += webkit network mediaservices phonon
+ 
+ HEADERS = framecapture.h
+ SOURCES = main.cpp \
+--- /OE/tmpdir-dev-shr/work/armv4t-oe-linux-gnueabi/qt4-x11-free-4.7.0-r18.0/qt-everywhere-opensource-src-4.7.0/examples/webkit/simpleselector/simpleselector.pro.orig	2010-09-23 13:33:08.000000000 +0200
++++ /OE/tmpdir-dev-shr/work/armv4t-oe-linux-gnueabi/qt4-x11-free-4.7.0-r18.0/qt-everywhere-opensource-src-4.7.0/examples/webkit/simpleselector/simpleselector.pro	2010-09-23 13:33:17.000000000 +0200
+@@ -1,4 +1,4 @@
+-QT       += webkit network
++QT       += webkit network mediaservices phonon
+ FORMS     = window.ui
+ HEADERS   = window.h
+ SOURCES   = main.cpp \
+--- /OE/tmpdir-dev-shr/work/armv4t-oe-linux-gnueabi/qt4-x11-free-4.7.0-r18.0/qt-everywhere-opensource-src-4.7.0/examples/webkit/googlechat/googlechat.pro.orig	2010-09-23 13:37:44.000000000 +0200
++++ /OE/tmpdir-dev-shr/work/armv4t-oe-linux-gnueabi/qt4-x11-free-4.7.0-r18.0/qt-everywhere-opensource-src-4.7.0/examples/webkit/googlechat/googlechat.pro	2010-09-23 13:37:53.000000000 +0200
+@@ -1,4 +1,4 @@
+-QT      +=  webkit network
++QT      +=  webkit network mediaservices phonon
+ HEADERS =   googlechat.h
+ SOURCES =   main.cpp \
+             googlechat.cpp
