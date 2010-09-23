@@ -1,7 +1,0 @@
-[Desktop Entry]
-Name=Matrix GUI
-Comment=Start the Matrix GUI application
-Exec=/usr/bin/matrix_gui /usr/share/matrix/html/menu_main.html
-Terminal=false
-Type=Application
-X-GNOME-Autostart-enabled=true

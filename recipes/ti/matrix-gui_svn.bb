@@ -4,17 +4,25 @@ LICENSE = "BSD"
 SECTION = "multimedia"
 PRIORITY = "optional"
 
-SRCREV = "58"
-PV = "1.0"
-PR = "r14+svnr${SRCPV}"
+SRCREV = "136"
+PV = "1.1"
+PR = "r16+svnr${SRCPV}"
 
-SRC_URI = "svn://gforge.ti.com/svn/matrix_gui/;module=trunk;proto=https;user=anonymous;pswd='' \
-    file://0001-Disable-cursor-override-for-X11.patch \
-	file://init \
-    file://matrix-gui.desktop \
-"
+PLATFORM_dm365 = "dm365"
+PLATFORM_da850-omapl138-evm = "omapl138"
+PLATFORM_omap3evm = "omap3530"
+PLATFORM_dm37x-evm = "dm3730"
+PLATFORM_am37x-evm = "am3715"
+PLATFORM_beagleboard = "am3715"
+PLATFORM ?= "<UNDEFINED>"
+
+SRC_URI = "svn://gforge.ti.com/svn/matrix_gui/;module=trunk;proto=https;user=anonymous;pswd='' "
 
 S = "${WORKDIR}/trunk"
+
+CXXFLAGS_da850-omapl138-evm_append = " -DPlatform_omapl138 "
+CXXFLAGS_dm365_append = " -DPlatform_dm365 "
+PACKAGE_ARCH = ${MACHINE_ARCH}
 
 inherit qt4x11
 
@@ -22,9 +30,9 @@ do_install() {
 	install -d ${D}/${bindir}
 	install -m 0755 ${S}/matrix_gui ${D}/${bindir}
 	install -d ${D}${sysconfdir}/init.d/
-	install -c -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/matrix-gui
-    install -d ${D}/${sysconfdir}/xdg/autostart
-    install -m 0755 ${WORKDIR}/matrix-gui.desktop ${D}/${sysconfdir}/xdg/autostart
+	install -c -m 0755 ${S}/${PLATFORM}/etc/x11/init ${D}${sysconfdir}/init.d/matrix-gui
+	install -d ${D}/${sysconfdir}/xdg/autostart
+	install -m 0755 ${S}/${PLATFORM}/etc/x11/matrix-gui.desktop ${D}/${sysconfdir}/xdg/autostart
 }
 
 FILES_${PN}-autostart = "${sysconfdir}/xdg/autostart/matrix-gui.desktop"
