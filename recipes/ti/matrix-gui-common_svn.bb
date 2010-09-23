@@ -4,44 +4,34 @@ LICENSE = "BSD"
 SECTION = "multimedia"
 PRIORITY = "optional"
 
-SRCREV = "58"
-PV = "1.0"
-PR = "r1+svnr${SRCPV}"
+SRCREV = "136"
+PV = "1.1"
+PR = "r3+svnr${SRCPV}"
+
+PLATFORM_dm365 = "dm365"
+PLATFORM_da850-omapl138-evm = "omapl138"
+PLATFORM_omap3evm = "omap3530"
+PLATFORM_dm37x-evm = "dm3730"
+PLATFORM_am37x-evm = "am3715"
+PLATFORM_beagleboard = "am3715"
+PLATFORM ?= "<UNDEFINED>"
 
 #Checkout the project repository to get access to the scripts and data
 #files.
-SRC_URI = "svn://gforge.ti.com/svn/matrix_gui/;module=trunk;proto=https;user=anonymous;pswd='' \
-    file://browser \
-"
+SRC_URI = "svn://gforge.ti.com/svn/matrix_gui/;module=trunk;proto=https;user=anonymous;pswd='' "
 
 S = "${WORKDIR}/trunk"
 
-MATRIX_EXTRA_BINS = " \
-    memInfo \
-    networkSettings \
-    runOGLES2Coverflow \
-    runOGLES2Shaders \
-    runOGLESChameleonMan \
-    runOGLESVase \
-    setopp1 \
-    setopp2 \
-    setopp3 \
-    setopp4 \
-    standby \
-    sysSettings \
-    taskInfo \
-"
+PACKAGE_ARCH = ${MACHINE_ARCH}
 
 do_install() {
     install -d ${D}/${bindir}
-    for i in ${MATRIX_EXTRA_BINS}; do
-        install -m 0755 ${S}/bin/${i} ${D}/${bindir}
-    done
-    install -m 0755 ${WORKDIR}/browser ${D}/${bindir}
+    install -m 0755 ${S}/${PLATFORM}/bin/* ${D}/${bindir}/
     install -d ${D}/${datadir}/matrix/html
-    install -m 0644 ${S}/*.html ${D}/${datadir}/matrix/html/
+    install -m 0644 ${S}/${PLATFORM}/html/* ${D}/${datadir}/matrix/html
     install -d ${D}/${datadir}/matrix/images
     install -m 0644 ${S}/images/*.png ${D}/${datadir}/matrix/images/
+
 }
 
 FILES_${PN} += "${datadir}/matrix/*"
