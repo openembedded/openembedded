@@ -4,6 +4,7 @@ SRC_URI_append_virtclass-native = " file://no-demos.patch \
 "
 SRC_URI_append = "file://gtk-dnd-grab-deadlock-fix.patch \
 		  file://cross-nm.patch \
+		  file://xkb-ifdef.patch \
 		 "
 
 SRC_URI[gtk.md5sum] = "53e6f3a93bd22934878fc4a4a34c68aa"
