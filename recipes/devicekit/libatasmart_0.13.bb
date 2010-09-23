@@ -1,3 +1,4 @@
+DEPENDS = "udev"
 LICENSE = "LGPL"
 
 SRCREV = "a80d7d5c25e88adea7b8e843cdb57143e6cfb46b"
