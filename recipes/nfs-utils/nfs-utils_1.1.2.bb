@@ -37,12 +37,6 @@ EXTRA_OECONF = "--with-statduser=nobody \
 		--disable-gss \
 		--with-statedir=/var/lib/nfs"
 
-do_ccompile() {
-	# UGLY HACK ALERT
-	cat ${WORKDIR}/forgotten-defines >> ${S}/support/include/config.h
-	oe_runmake 'BUILD=1'
-}
-
 INHIBIT_AUTO_STAGE = "1"
 
 do_install_append() {
