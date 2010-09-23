@@ -2,14 +2,15 @@ DESCRIPTION = "GNU tar saves many files together into a single tape \
 or disk archive, and can restore individual files from the archive."
 SECTION = "base"
 LICENSE = "GPLv3"
+INC_PR = "r1"
 BBCLASSEXTEND = "native"
 
 SRC_URI = "${GNU_MIRROR}/tar/tar-${PV}.tar.bz2"
 
 inherit autotools gettext
 
-do_install () {
-	autotools_do_install
+# We only want rename for update-alternatives on the target
+do_install_append_pn-tar () {
 	install -d ${D}${base_bindir}
 	mv ${D}${bindir}/tar ${D}${base_bindir}/tar.${PN}
 	mv ${D}${libexecdir}/rmt ${D}${libexecdir}/rmt.${PN}
