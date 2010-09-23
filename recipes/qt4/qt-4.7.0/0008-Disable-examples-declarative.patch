@@ -1,0 +1,24 @@
+From 1b855a946a1d060c52ddb04f308fb25f1d391b6a Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Matthias=20G=C3=BCnther?= <matgnt@gmail.com>
+Date: Thu, 13 May 2010 19:49:45 +0200
+Subject: [PATCH 8/9] Disable examples/declarative
+
+---
+ examples/examples.pro |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/examples/examples.pro b/examples/examples.pro
+index e37f580..8681a41 100644
+--- a/examples/examples.pro
++++ b/examples/examples.pro
+@@ -60,7 +60,6 @@ embedded:SUBDIRS += qws
+ contains(QT_CONFIG, opengl): SUBDIRS += opengl
+ contains(QT_CONFIG, openvg): SUBDIRS += openvg
+ contains(QT_CONFIG, dbus): SUBDIRS += dbus
+-contains(QT_CONFIG, declarative): SUBDIRS += declarative
+ win32: SUBDIRS += activeqt
+ contains(QT_CONFIG, xmlpatterns):!contains(QT_CONFIG, no-gui): SUBDIRS += xmlpatterns
+ contains(DEFINES, QT_NO_CURSOR): SUBDIRS -= mainwindows
+-- 
+1.7.0.4
+

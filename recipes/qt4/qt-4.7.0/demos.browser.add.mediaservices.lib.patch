@@ -1,0 +1,12 @@
+Index: qt-everywhere-opensource-src-4.7.0-beta1/demos/browser/browser.pro
+===================================================================
+--- qt-everywhere-opensource-src-4.7.0-beta1.orig/demos/browser/browser.pro
++++ qt-everywhere-opensource-src-4.7.0-beta1/demos/browser/browser.pro
+@@ -1,6 +1,6 @@
+ TEMPLATE = app
+ TARGET = browser
+-QT += webkit network
++QT += webkit network mediaservices
+ 
+ CONFIG += qt warn_on
+ contains(QT_BUILD_PARTS, tools):!embedded: CONFIG += uitools
