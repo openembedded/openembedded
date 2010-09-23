@@ -1,6 +1,6 @@
 DESCRIPTION = "Freetype font rendering library"
 SECTION = "libs"
-LICENSE = "freetype"
+LICENSE = "freetype GPLv2"
 PR = "r2"
 DEPENDS = "zlib"
 
