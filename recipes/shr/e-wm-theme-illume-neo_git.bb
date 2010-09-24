@@ -8,7 +8,7 @@ RSUGGESTS_${PN} = "elementary-theme-neo gtk-theme-neo gpe-theme-neo icon-theme-n
 PACKAGE_ARCH = "all"
 LICENCE = "unknown"
 
-SRCREV = "820f4d41531ad6f790615b6a7312a60e30e99fdc"
+SRCREV = "bed3a9ac381b88717b153012fa4b9da0c860c6b0"
 PV = "0.1-${EFL_SRCREV}+gitr${SRCPV}"
 PR = "r4"
 

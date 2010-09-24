@@ -7,7 +7,7 @@ RRECOMMENDS_${PN} = "elementary-theme-gry"
 PACKAGE_ARCH = "all"
 LICENCE = "unknown"
 
-SRCREV = "a0a974b1e1150aefdf29e8f0ac471a2a60e62532"
+SRCREV = "bed3a9ac381b88717b153012fa4b9da0c860c6b0"
 PV = "0.3-${EFL_SRCREV}+gitr${SRCPV}"
 PR = "r2"
 
