@@ -9,12 +9,8 @@ DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_igep0020 = "1"
 DEFAULT_PREFERENCE_igep0030 = "1"
 
-KV = "${PV}-0"
-
-SRC_URI = "http://downloads.igep.es/sources/linux-omap-${KV}.tar.gz \
+SRC_URI = "git://git.igep.es/pub/scm/linux-omap-2.6.git;protocol=git;tag=v${PV} \
 	   file://defconfig"
 
-S = "${WORKDIR}/linux-omap-${KV}"
+S = "${WORKDIR}/git"
 
-SRC_URI[md5sum] = "61ce79815d2778d45082a33d9ebac779"
-SRC_URI[sha256sum] = "a14af39dbb8f4c7d0748e858943069dc9a34a87a27f5147df5881195142d6ea4"
