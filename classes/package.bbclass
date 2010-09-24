@@ -356,15 +356,20 @@ python package_do_split_locales() {
 }
 
 python perform_packagecopy () {
-	dest = bb.data.getVar('D', d, True)
-	dvar = bb.data.getVar('PKGD', d, True)
+	import shutil
 
-	bb.mkdirhier(dvar)
+	installdest = bb.data.getVar('D', d, True)
+	pkgcopy = bb.data.getVar('PKGD', d, True)
 
-	# Start by package population by taking a copy of the installed 
-	# files to operate on
-	os.system('rm -rf %s/*' % (dvar))
-	os.system('cp -pPR %s/* %s/' % (dest, dvar))
+	# Start package population by taking a copy of the installed 
+	# files to operate on. Create missing parent directories of
+	# pkgcopy first (shutil.copytree() does this automatically but only
+	# in Python 2.5+).
+	bb.mkdirhier(pkgcopy)
+	shutil.rmtree(pkgcopy, True)
+
+	# Preserve symlinks.
+	shutil.copytree(installdest, pkgcopy, symlinks=True)
 }
 
 python populate_packages () {
