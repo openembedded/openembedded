@@ -1,11 +1,12 @@
 require networkmanager-0.7.inc
 
-PR = "r1"
+PR = "r2"
 
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI += " \
     file://remove-gtk-doc-make.patch \
+    file://10-dont_require_ifup_for_lo.patch \ 
     file://nm-system-settings.conf \
     file://NetworkManager \
     file://gtk-doc.make \
@@ -14,6 +15,11 @@ SRC_URI += " \
 SRC_URI[md5sum] = "96e551149dda8f6e0a5621f77468ba79"
 SRC_URI[sha256sum] = "dc126fbe3199d47899c4781e4fff32cee404dc7c728c6ade9eaa899bd80f19fa"
 
+S = "${WORKDIR}/NetworkManager-${PV}"
+
+EXTRA_OECONF += " --with-dhclient=${base_sbindir}/dhclient \
+                  --with-iptables=${sbindir}/iptables \
+"
 
 do_configure_prepend() {
     cp ${WORKDIR}/gtk-doc.make ${S}/
@@ -22,13 +28,9 @@ do_configure_prepend() {
     sed -i -e /^docs/d ${S}/configure.ac
 }
 
-FILES_${PN} += "  ${datadir}/polkit-1/"
-
-S = "${WORKDIR}/NetworkManager-${PV}"
-
 do_install_append () {
 	install -d ${D}/etc/NetworkManager/
-	install -m 0644 ${WORKDIR}/nm-system-settings.conf ${D}/etc/NetworkManager/
+	install -m 0644 ${WORKDIR}/nm-system-settings.conf ${D}/etc/NetworkManager/NetworkManager.conf
 	install -m 0755 ${WORKDIR}/NetworkManager ${D}/etc/init.d
 	
 	# Install an empty VPN folder as nm-connection-editor will happily segfault without it :o.
@@ -36,4 +38,6 @@ do_install_append () {
 	install -d ${D}/etc/NetworkManager/VPN
 }
 
+FILES_${PN} += " ${datadir}/polkit-1/"
+RRECOMMENDS_${PN} += "iptables"
 
