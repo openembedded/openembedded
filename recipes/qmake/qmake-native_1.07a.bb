@@ -3,7 +3,7 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 SECTION = "devel"
 LICENSE = "GPL QPL"
-PR = "r5"
+PR = "r6"
 
 QTEVER = "qt-embedded-free-3.3.5"
 
@@ -35,15 +35,14 @@ do_compile() {
 	:
 }
 
-do_stage() {
-	install -m 0755 bin/qmake ${STAGING_BINDIR}
-	install -d ${QMAKE_MKSPEC_PATH}
-	cp -fPR mkspecs/* ${QMAKE_MKSPEC_PATH}
-}
-
 do_install() {
-        :
+        install -d ${D}${bindir}
+        install -m 0755 bin/qmake ${D}${bindir}
+        install -d ${D}${datadir}/qmake
+        cp -fPR mkspecs/* ${D}${datadir}/qmake
 }
 
 SRC_URI[md5sum] = "022d7a3c572b554f3c47b12cae71a8a4"
 SRC_URI[sha256sum] = "a97656796c0ef8e87dd83e6138bc406e31830d08f9b213e039d8be39ea65c8e4"
+
+NATIVE_INSTALL_WORKS = "1"
