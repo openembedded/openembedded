@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.speex.org"
 DEPENDS = "libogg"
 BETA = "1.2rc1"
 PV = "1.1+${BETA}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://downloads.us.xiph.org/releases/speex/speex-${BETA}.tar.gz"
 S = "${WORKDIR}/speex-${BETA}"
@@ -29,8 +29,8 @@ LEAD_SONAME = "libspeex.so"
 require speex-fpu.inc
 EXTRA_OECONF += "${@get_speex_fpu_setting(bb, d)}"
 
-ARMASM_armv4t = "--enable-arm4-asm"
-ARMASM_armv5te = "--enable-arm5e-asm"
+#ARMASM_armv4t = "--enable-arm4-asm"
+#ARMASM_armv5te = "--enable-arm5e-asm"
 ARMASM ?= ""
 
 EXTRA_OECONF += "${ARMASM}"
