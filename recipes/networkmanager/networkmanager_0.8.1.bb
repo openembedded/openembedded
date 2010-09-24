@@ -1,5 +1,7 @@
 require networkmanager-0.7.inc
 
+PR = "r1"
+
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI += " \
