@@ -4,6 +4,7 @@ HOMEPAGE = "http://jmccloud.jm.funpic.de"
 AUTHOR = "Jesus McCloud <bernd.pruenster@gmail.com"
 DEPENDS = "edje-native"
 RRECOMMENDS_${PN} = "elementary-theme-gry"
+PACKAGE_ARCH = "all"
 LICENCE = "unknown"
 
 SRCREV = "a0a974b1e1150aefdf29e8f0ac471a2a60e62532"
