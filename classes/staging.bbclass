@@ -73,7 +73,7 @@ sysroot_stage_dirs() {
 		sysroot_stage_dir $from${sysconfdir} $to${STAGING_DIR_HOST}${sysconfdir}
 		if [ "${prefix}/lib" != "${libdir}" ]; then
 			# python puts its files in here, make sure they are staged as well
-			autotools_stage_dir $from/${prefix}/lib $to${STAGING_DIR_HOST}${prefix}/lib
+			sysroot_stage_dir $from/${prefix}/lib $to${STAGING_DIR_HOST}${prefix}/lib
 		fi
 	fi
 	if [ -d $from${libdir} ]
