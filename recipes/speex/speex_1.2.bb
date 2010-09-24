@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.speex.org"
 DEPENDS = "libogg"
 BETA = "1.2rc1"
 PV = "1.1+${BETA}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://downloads.us.xiph.org/releases/speex/speex-${BETA}.tar.gz"
 S = "${WORKDIR}/speex-${BETA}"
@@ -25,13 +25,15 @@ LEAD_SONAME = "libspeex.so"
 #       --disable-float-api --disable-vbr (must disable-vbr if disable-float-api)
 #
 
-EXTRA_OECONF_append_openmn = " --enable-arm5e-asm --enable-fixed-point --disable-float-api --disable-vbr "
-EXTRA_OECONF_append_amsdelta = " --enable-arm4-asm --enable-fixed-point --disable-float-api --disable-vbr "
-EXTRA_OECONF_append_bfin = " --enable-blackfin-asm --enable-fixed-point --disable-float-api --disable-vbr "
-EXTRA_OECONF_append_arm = " --enable-fixed-point --disable-float-api --disable-vbr "
-EXTRA_OECONF_append_dht-walnut = " --enable-fixed-point --disable-float-api --disable-vbr "
+#check for TARGET_FPU=soft and inform configure of the result so it can disable some floating points
+require speex-fpu.inc
+EXTRA_OECONF += "${@get_speex_fpu_setting(bb, d)}"
 
+ARMASM_armv4t = "--enable-arm4-asm"
+ARMASM_armv5te = "--enable-arm5e-asm"
+ARMASM ?= ""
 
+EXTRA_OECONF += "${ARMASM}"
 
 do_configure_append() {
 	sed -i s/"^OGG_CFLAGS.*$"/"OGG_CFLAGS = "/g Makefile */Makefile */*/Makefile
