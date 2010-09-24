@@ -6,6 +6,7 @@ DEPENDS = "mokowm elementary libfreesmartphone-glib libphone-utils eggdbus glib-
 SECTION = "misc/utils"
 
 PV = "1.0.99+gitr${SRCPV}"
+PR = "r1"
 SRCREV = "b06f0d5ee9a8b3aef1be9c084975a8a08a3b3213"
 
 SRC_URI = "git://gitorious.org/mokosuite2/appbunch.git;protocol=git"
