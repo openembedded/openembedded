@@ -8,7 +8,7 @@ LICENSE = "GPLv3"
 DEPENDS = "mpfr gmp"
 NATIVEDEPS = "mpfr-native gmp-native"
 
-INC_PR = "r0.1"
+INC_PR = "r1"
 
 
 SRC_URI = "http://launchpad.net/gcc-linaro/4.4/4.4-2010.09-1/+download/gcc-linaro-4.4-2010.09-1.tar.bz2;name=gcc444tarbz2 \
