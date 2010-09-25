@@ -33,6 +33,9 @@ SRC_URI = "svn://gcc.gnu.org/svn/gcc/branches;module=${BRANCH} \
 	   file://Makefile.in.patch \
 	  "
 
+SRC_URI_append_mips64 = " file://mips64-nomultilib.patch"
+SRC_URI_append_mips64el = " file://mips64-nomultilib.patch"
+
 # Language Overrides
 FORTRAN = ""
 JAVA = ""
@@ -55,3 +58,6 @@ EXTRA_OECONF_INTERMEDIATE = "--disable-libmudflap --disable-libgomp --disable-li
 EXTRA_OECONF_append_linux-uclibc = " --disable-decimal-float "
 EXTRA_OECONF_append_linux-uclibceabi = " --disable-decimal-float "
 EXTRA_OECONF_append_linux-uclibcspe = " --disable-decimal-float "
+
+EXTRA_OECONF_append_mips64 = " --with-arch-64=mips64 --with-tune-64=mips64"
+EXTRA_OECONF_append_mips64el = " --with-arch-64=mips64 --with-tune-64=mips64"
