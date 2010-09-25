@@ -62,7 +62,8 @@ export STRIP = "${HOST_PREFIX}strip"
 base_prefix = "${STAGING_DIR_NATIVE}"
 prefix = "${STAGING_DIR_NATIVE}${prefix_native}"
 exec_prefix = "${STAGING_DIR_NATIVE}${prefix_native}"
-
+libdir = ${base_prefix}${libdir_native}
+base_libdir = ${base_prefix}${base_libdir_native}
 # Since we actually install these into situ there is no staging prefix
 STAGING_DIR_HOST = ""
 STAGING_DIR_TARGET = ""
