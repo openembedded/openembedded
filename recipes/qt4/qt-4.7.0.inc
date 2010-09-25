@@ -9,14 +9,6 @@ SRC_URI = "\
     file://hack-out-pg2-4.7.0.patch \
 	file://0006-freetype-host-includes.patch \
 	file://0001-Added-Openembedded-crossarch-option.patch \
-	file://0002-Disable-tools-assistant.patch \
-	file://0003-Disable-examples-designer.patch \
-	file://0004-Disable-exaqmples-dbus-remotecontrolledcar.patch \
-	file://0005-Disable-examples-help.patch \
-	file://0007-Disable-demos-qtdemos.patch \
-	file://0008-Disable-examples-declarative.patch \
-	file://demos.browser.add.mediaservices.lib.patch \
-	file://add.xmlpatterns.lib.patch \
 	file://g++.conf \
 	file://linux.conf \
            "
