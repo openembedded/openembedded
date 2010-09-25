@@ -248,6 +248,7 @@ python populate_packages_prepend() {
         qtopia_split('script',        'script',        '^libqtscript(.*)\.so$')
         qtopia_split('styles',        'style',         '^libq(.*)\.so$')
         qtopia_split('phonon_backend','phonon-backend','^libphonon_(.*)\.so$')
+        qtopia_split('bearer',        'bearer',        '^libq(.*)bearer\.so$')
 }
 
 do_install() {
