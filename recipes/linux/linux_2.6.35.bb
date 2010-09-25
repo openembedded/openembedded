@@ -6,6 +6,7 @@ PR = "r2"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_dockstar = "1"
 DEFAULT_PREFERENCE_simone = "1"
+DEFAULT_PREFERENCE_qemumips64 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/${P}.tar.bz2;name=kernel \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.1.bz2;apply=yes;name=stablepatch \
