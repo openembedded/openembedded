@@ -1,4 +1,5 @@
-FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/binutils-cvs"
+FILESPATHPKG =. "binutils-cvs:"
+SRCDATE = "20100913"
 PV = "2.20+cvs${SRCDATE}"
 
 require binutils.inc
