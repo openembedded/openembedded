@@ -1,7 +1,7 @@
 DEFAULT_PREFERENCE = "-1"
 LICENSE = "LGPLv2.1 GPLv3"
 
-FILESPATHPKG .= ":qt-${PV}"
+FILESPATHPKG =. "qt-${PV}:"
 
 SRC_URI = "\
 	ftp://ftp.trolltech.com/qt/source/qt-everywhere-opensource-src-${PV}.tar.gz \
