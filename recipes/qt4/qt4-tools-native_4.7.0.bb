@@ -5,8 +5,11 @@ LICENSE = "LGPLv2.1 GPLv3"
 
 DEPENDS += "libxau-native libxdmcp-native"
 
-PR = "${INC_PR}.0"
 
+PR = "${INC_PR}.1"
+
+# Find the g++.conf/linux.conf in the right directory.
+FILESPATHPKG =. "qt-${PV}:"
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-everywhere-opensource-src-${PV}.tar.gz \
            file://fix.xlib-test.libs.patch \
            file://qt-config.patch \
