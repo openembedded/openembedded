@@ -1,0 +1,26 @@
+From 30b1d92216154c9da2c9c33b6add9c458f98df44 Mon Sep 17 00:00:00 2001
+From: Alistair Buxton <a.j.buxton@gmail.com>
+Date: Wed, 8 Sep 2010 11:51:21 +0100
+Subject: [PATCH] Fix CPU frequency driver so that it loads *before* the things that use it.
+
+Signed-off-by: Alistair Buxton <a.j.buxton@gmail.com>
+---
+ arch/arm/plat-omap/cpu-omap.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/plat-omap/cpu-omap.c b/arch/arm/plat-omap/cpu-omap.c
+index 3974680..033a2bb 100644
+--- a/arch/arm/plat-omap/cpu-omap.c
++++ b/arch/arm/plat-omap/cpu-omap.c
+@@ -188,7 +188,7 @@ static int __init omap_cpufreq_init(void)
+ 	return cpufreq_register_driver(&omap_driver);
+ }
+ 
+-late_initcall(omap_cpufreq_init);
++arch_initcall(omap_cpufreq_init);
+ 
+ /*
+  * if ever we want to remove this, upon cleanup call:
+-- 
+1.7.0.4
+

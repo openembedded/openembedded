@@ -57,7 +57,10 @@ SRC_URI_mini6410 = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.28.tar.b
 SRC_URI_nokia900 = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.28.tar.bz2;name=kernel \
 		    http://repository.maemo.org/pool/maemo5.0/free/k/kernel/kernel_2.6.28-20101501+0m5.diff.gz;name=nokiapatch \
 	            file://gcc_4.4_endianess_macros.patch \
-		    file://defconfig"
+	            file://inconsistent-mmc-fix-2.6.28-20094803.3.diff \	
+	            file://0001-Fix-CPU-frequency-driver-so-that-it-loads-before-the.patch \
+	            file://bq27x00_readings.patch \    	
+	            file://defconfig"
 
 SRC_URI_smartqv7 = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.28.tar.bz2;name=kernel \
 	http://gitorious.org/mer-smartq/mer-smartq-kernel/blobs/raw/9714361dc936f8948179df93a5241c46092bde71/drivers/block/tcc/libtnftl/libtnftl_V7014_TCC8900.o_shipped;name=libtnftl \
@@ -72,6 +75,8 @@ do_configure_append_smartqv7 () {
 }
 
 S = "${WORKDIR}/linux-2.6.28/"
+
+CMDLINE_nokia900_shr = "snd-soc-rx51.hp_lim=42 snd-soc-tlv320aic3x.hp_dac_lim=6 console=tty1 root=/dev/mmcblk1p1 rootdelay=10 panic=20"
 
 SRC_URI[kernel.md5sum] = "d351e44709c9810b85e29b877f50968a"
 SRC_URI[kernel.sha256sum] = "ae0d97c55efe7fce01273c97f8152af0deff5541e3bbf5b9ad98689112b54380"
