@@ -1,0 +1,132 @@
+Source: http://sourceware.org/ml/libc-alpha/2008-03/msg00105.html
+Status: Not applied upstream
+
+After reconfiguring, the value of slibdir changes from ${exec_prefix}/lib32 or
+${exec_prefix}/lib64 to ${exec_prefix}/lib.
+
+This is because the code that sets libdir is only executed if libc_cv_slibdir
+is unset (this is to provide an override mechanism for subtargets).  If the
+value of libc_cv_slibdir is read from the config cache the value of libdir is
+never adjusted.  Or:
+
+  $ rm config.cache 
+  $ ~/src/glibc/configure --host=mips64-unknown-linux-gnu --build=i686-linux --prefix=/usr --cache-file=config.cache &>/dev/null
+  $ grep libdir config.make 
+  libdir = ${exec_prefix}/lib32
+  slibdir = /lib32
+  $ ~/src/glibc/configure --host=mips64-unknown-linux-gnu --build=i686-linux --prefix=/usr --cache-file=config.cache &>/dev/null
+  $ grep libdir config.make 
+  libdir = ${exec_prefix}/lib
+  slibdir = /lib32
+
+With the current logic, either both libdir and slibdir should be cached or
+neither.  This patch renames slibdir so that it is no longer cached.
+
+The patch has been in our tree for a few weeks now and produced no regressions
+with glibc testing (make check).
+
+Please apply if OK.
+
+Adam
+
+	* config.make.in (libc_cv_slibdir): Rename to slibdir.
+	* configure.in: Rename libc_cv_slibdir to slibdir.
+	* sysdeps/unix/sysv/linux/configure.in: Likewise.
+	* ports/sysdeps/unix/sysv/linux/mips/configure.in: Likewise
+	* configure: Regenerate.
+	* sysdeps/unix/sysv/linux/configure: Likewise.
+	* ports/sysdeps/unix/sysv/linux/mips/configure: Likewise.
+
+Index: libc/config.make.in
+===================================================================
+--- libc.orig/config.make.in	2010-08-25 00:26:33.000000000 -0700
++++ libc/config.make.in	2010-09-25 12:31:21.460933356 -0700
+@@ -10,7 +10,7 @@
+ exec_prefix = @exec_prefix@
+ datadir = @datadir@
+ libdir = @libdir@
+-slibdir = @libc_cv_slibdir@
++slibdir = @slibdir@
+ localedir = @libc_cv_localedir@
+ sysconfdir = @libc_cv_sysconfdir@
+ libexecdir = @libexecdir@
+Index: libc/configure.in
+===================================================================
+--- libc.orig/configure.in	2010-08-25 00:26:33.000000000 -0700
++++ libc/configure.in	2010-09-25 12:31:21.484430729 -0700
+@@ -2337,7 +2337,7 @@
+ fi
+ AC_SUBST(old_glibc_headers)
+ 
+-AC_SUBST(libc_cv_slibdir)
++AC_SUBST(slibdir)
+ AC_SUBST(libc_cv_localedir)
+ AC_SUBST(libc_cv_sysconfdir)
+ AC_SUBST(libc_cv_rootsbindir)
+Index: libc/sysdeps/unix/sysv/linux/configure.in
+===================================================================
+--- libc.orig/sysdeps/unix/sysv/linux/configure.in	2010-08-25 00:25:11.000000000 -0700
++++ libc/sysdeps/unix/sysv/linux/configure.in	2010-09-25 12:31:21.500430612 -0700
+@@ -147,12 +147,12 @@
+ case "$prefix" in
+ /usr | /usr/)
+   # 64-bit libraries on bi-arch platforms go in /lib64 instead of /lib.
+-  # Allow earlier configure scripts to handle libc_cv_slibdir, libdir,
++  # Allow earlier configure scripts to handle slibdir, libdir,
+   # and libc_cv_localedir.
+-  test -n "$libc_cv_slibdir" || \
++  test -n "$slibdir" || \
+   case $machine in
+   sparc/sparc64 | x86_64 | powerpc/powerpc64 | s390/s390-64)
+-    libc_cv_slibdir="/lib64"
++    slibdir="/lib64"
+     if test "$libdir" = '${exec_prefix}/lib'; then
+       libdir='${exec_prefix}/lib64';
+       # Locale data can be shared between 32bit and 64bit libraries
+@@ -160,7 +160,7 @@
+     fi
+     ;;
+   *)
+-    libc_cv_slibdir="/lib"
++    slibdir="/lib"
+     ;;
+   esac
+   # Allow the user to override the path with --sysconfdir
+Index: libc/ports/sysdeps/unix/sysv/linux/mips/configure.in
+===================================================================
+--- libc.orig/ports/sysdeps/unix/sysv/linux/mips/configure.in	2010-08-25 00:24:01.000000000 -0700
++++ libc/ports/sysdeps/unix/sysv/linux/mips/configure.in	2010-09-25 12:31:21.500430612 -0700
+@@ -80,12 +80,12 @@
+ case "$prefix" in
+ /usr | /usr/)
+   # 64-bit libraries on bi-arch platforms go in /lib64 instead of /lib.
+-  # Allow earlier configure scripts to handle libc_cv_slibdir, libdir,
++  # Allow earlier configure scripts to handle slibdir, libdir,
+   # and libc_cv_localedir.
+-  test -n "$libc_cv_slibdir" || \
++  test -n "$slibdir" || \
+   case $machine in
+   mips/mips64/n64/* )
+-    libc_cv_slibdir="/lib64"
++    slibdir="/lib64"
+     if test "$libdir" = '${exec_prefix}/lib'; then
+       libdir='${exec_prefix}/lib64';
+       # Locale data can be shared between 32bit and 64bit libraries
+@@ -93,7 +93,7 @@
+     fi
+     ;;
+   mips/mips64/n32/* )
+-    libc_cv_slibdir="/lib32"
++    slibdir="/lib32"
+     if test "$libdir" = '${exec_prefix}/lib'; then
+       libdir='${exec_prefix}/lib32';
+       # Locale data can be shared between 32bit and 64bit libraries
+@@ -101,7 +101,7 @@
+     fi
+     ;;
+   *)
+-    libc_cv_slibdir="/lib"
++    slibdir="/lib"
+     ;;
+   esac
+ esac

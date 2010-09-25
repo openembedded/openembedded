@@ -88,7 +88,10 @@ do_configure_prepend() {
 }
 
 do_install() {
-	oe_runmake install_root=${D} install
+	oe_runmake install_root=${D} \
+	libdir='${libdir}' slibdir='${base_libdir}' \
+	localedir='${libdir}/locale' \
+	install
 	for r in ${rpcsvc}; do
 		h=`echo $r|sed -e's,\.x$,.h,'`
 		install -m 0644 ${S}/sunrpc/rpcsvc/$h ${D}/${includedir}/rpcsvc/
