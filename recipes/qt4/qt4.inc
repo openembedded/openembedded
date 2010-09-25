@@ -89,6 +89,7 @@ OTHER_PACKAGES = "\
              ${QT_BASE_NAME}-mkspecs \
              ${QT_BASE_NAME}-pixeltool \
              ${QT_BASE_NAME}-qmlviewer \
+             ${QT_BASE_NAME}-xmlpatterns \
              ${QT_BASE_NAME}-qt3to4"
 
 PACKAGES += "${LIB_PACKAGES} ${DEV_PACKAGES} ${DBG_PACKAGES} ${OTHER_PACKAGES}"
@@ -138,6 +139,8 @@ FILES_${QT_BASE_NAME}-qmlviewer-dbg        = "${bindir}/.debug/qmlviewer"
 FILES_${QT_BASE_NAME}-makeqpf              = "${bindir}/makeqpf"
 FILES_${QT_BASE_NAME}-makeqpf-dbg          = "${bindir}/.debug/makeqpf"
 FILES_${QT_BASE_NAME}-mkspecs              = "${datadir}/${QT_DIR_NAME}/mkspecs/*"
+FILES_${QT_BASE_NAME}-xmlpatterns          = "${bindir}/xmlpatterns*"
+FILES_${QT_BASE_NAME}-xmlpatterns-dbg      = "${bindir}/.debug/xmlpatterns*"
 
 
 do_configure() {
