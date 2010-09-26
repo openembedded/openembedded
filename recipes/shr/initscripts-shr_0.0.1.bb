@@ -5,7 +5,7 @@ DEPENDS = ""
 RDEPENDS_${PN} = "procps"
 LICENSE = "GPL"
 PV = "0.0.1"
-PR = "r17"
+PR = "r18"
 
 RCONFLICTS_${PN} = "initscripts"
 

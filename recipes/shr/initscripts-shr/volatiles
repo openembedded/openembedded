@@ -37,4 +37,5 @@ f root root 0644 /var/log/lastlog none
 f root root 0664 /var/run/utmp none
 l root root 0644 /etc/resolv.conf /var/run/resolv.conf
 f root root 0644 /var/run/resolv.conf none
+d root root 0755 /var/volatile/appshadow none
 
