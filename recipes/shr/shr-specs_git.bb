@@ -2,7 +2,7 @@ DESCRIPTION = "The SHR DBus API Specification"
 HOMEPAGE = "http://shr-project.org/"
 LICENSE = "BSD"
 SECTION = "devel/specifications"
-SRCREV = "53ad1e858eb85eeb3d7c32e7402e93264072e347"
+SRCREV = "161a4186a2f53976add7033fd39c8056797d68f7"
 PV = "0.0.0+gitr${SRCPV}"
 PR = "r0"
 
