@@ -1,5 +1,5 @@
 ANGSTROM_MESA_VERSION = "7.8.2"
-ANGSTROM_QT_VERSION ?= "4.6.3"
+ANGSTROM_QT_VERSION ?= "4.7.0"
 CE_VERSION ?= "2.25.01"
 
 require conf/distro/include/angstrom-codec-engine-${CE_VERSION}-preferred-versions.inc
@@ -39,6 +39,7 @@ PREFERRED_VERSION_mythtv        = "0.22"
 PREFERRED_VERSION_mplayer       = "0.0+1.0rc3+svnr30165"
 PREFERRED_VERSION_network-manager-applet = "0.8.1"
 PREFERRED_VERSION_networkmanager = "0.8.1"
+PREFERRED_VERSION_networkmanager-openvpn = "0.8.1"
 PREFERRED_VERSION_openssl = "1.0.0a"
 PREFERRED_VERSION_openssl-native = "1.0.0a"
 PREFERRED_VERSION_pango 	= "1.24.4"
