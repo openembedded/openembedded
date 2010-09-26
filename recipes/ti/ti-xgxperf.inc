@@ -17,6 +17,8 @@ do_install() {
     install -m 0644 ${S}/widgetlib/libwidget.so.1.0.0 ${D}${libdir}
 
     install -m 0755 ${S}/applicationmanager/xgxperf_app/xgxperf_app ${D}${bindir}
+    install -m 0755 ${S}/applicationmanager/xgxperf_launcher/xgxperf_launcher ${D}${bindir}
+
     install -m 0755 ${S}/xgxperfserver/xgxperfserver ${D}${bindir}
 
     install -m 0755 ${WORKDIR}/trunk/Packages/OMAP3_Graphics_SDK/xgxperf/server/* ${D}${bindir}
