@@ -1,7 +1,7 @@
 DESCRIPTION = "SHR default module for the Phone UI daemon"
 SECTION = "e/apps"
 DEPENDS += " dbus-glib libframeworkd-glib libfsoframework libphone-ui evas ecore edje edje-native elementary"
-SRCREV = "be5a4b0f48ce5df67bdf01f88979c93c7d9a59d3"
+SRCREV = "cced1441a94b08af7576c58f3c7ee29a679ecfeb"
 PV = "0.0.1+gitr${SRCPV}"
 PR = "r1"
 
