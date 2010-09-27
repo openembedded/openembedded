@@ -1,33 +1,46 @@
-From 72ad63c5ce9f2d25a119612065d86bd317bf80ed Mon Sep 17 00:00:00 2001
-From: Sebastian Krzyszkowiak <seba.dos1@gmail.com>
-Date: Wed, 7 Jul 2010 15:01:59 +0200
-Subject: [PATCH] oeventsd: workaround buggy kernel to get full vibration power.
- This patch should be disabled as soon as fixed kernel arrives.
+From 98d2ad06b8b4680fa2c68e1647a749baed4ba845 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marco=20Trevisan=20(Trevi=C3=B1o)?= <mail@3v1n0.net>
+Date: Sun, 26 Sep 2010 22:32:04 +0200
+Subject: [PATCH] oeventsd: workaround buggy 2.6.32 kernels to get full vibration power.
+ This patch should be disabled as soon as fixed kernel arrives; it doesn't affect anymore
+ SHR running a 2.6.34 kernel
 
 ---
- framework/subsystems/oeventsd/fso_actions.py |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ framework/subsystems/oeventsd/fso_actions.py |    9 +++++++--
+ 1 files changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/framework/subsystems/oeventsd/fso_actions.py b/framework/subsystems/oeventsd/fso_actions.py
-index c0a29dd..b9a2104 100644
+index c0a29dd..1b937f7 100644
 --- a/framework/subsystems/oeventsd/fso_actions.py
 +++ b/framework/subsystems/oeventsd/fso_actions.py
-@@ -162,13 +162,13 @@ class VibratorAction(Action):
+@@ -155,6 +155,11 @@ class VibratorAction(Action):
+     def __init__(self, target = 0, mode = "continuous"):
+         self.mode = mode
+         self.target = target
++        self.vibrate_power = 90
++        
++        import re
++        if (re.match("2\.6\.32\.*", os.uname()[2])):
++        	self.vibrate_power = 25
+ 
+     def trigger(self, **kargs):
+         if self.mode == "continuous":
+@@ -162,13 +167,13 @@ class VibratorAction(Action):
                          'org.freesmartphone.odeviced',
                          '/org/freesmartphone/Device/Vibrator/%s' % self.target,
                          'org.freesmartphone.Device.Vibrator',
 -                        'VibratePattern', 999, 300, 700, 90).trigger()
-+                        'VibratePattern', 999, 300, 700, 25).trigger()
++                        'VibratePattern', 999, 300, 700, self.vibrate_power).trigger()
          elif self.mode == "oneshot":
              DBusAction(dbus.SystemBus(),
                          'org.freesmartphone.odeviced',
                          '/org/freesmartphone/Device/Vibrator/%s' % self.target,
                          'org.freesmartphone.Device.Vibrator',
 -                        'Vibrate', 400, 90).trigger()
-+                        'Vibrate', 400, 25).trigger()
++                        'Vibrate', 400, self.vibrate_power).trigger()
          else:
              logger.warning( "invalid vibration mode '%s', valid are 'continuous' or 'oneshot'" )
  
 -- 
-1.7.1
+1.7.0.4
 

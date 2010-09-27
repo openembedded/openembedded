@@ -6,7 +6,7 @@ DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
 SRCREV = "5ed055335b251b290179928bd0d56b5476759876"
 PV = "0.9.5.9+gitr${SRCPV}"
-PR = "r5"
+PR = "r6"
 PE = "1"
 
 inherit distutils update-rc.d python-dir
