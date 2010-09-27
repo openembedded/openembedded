@@ -14,11 +14,6 @@ inherit autotools
 SRC_URI = "git://git.shr-project.org/repo/shr-e-gadgets.git;protocol=http;branch=master"
 S = "${WORKDIR}/git"
 
-do_compile_append() {
-        ${STAGING_BINDIR_NATIVE}/edje_convert src/illume-rightclick-toggle/e-module-illume-rightclick-toggle.edj
-        ${STAGING_BINDIR_NATIVE}/edje_convert src/shelf-gadgets/e-module-shr-e-gadgets.edj
-}
-
 FILES_${PN} += "\
 	${datadir}/shr_elm_softkey \
 	${libdir}/enlightenment/modules/*/*.desktop \
