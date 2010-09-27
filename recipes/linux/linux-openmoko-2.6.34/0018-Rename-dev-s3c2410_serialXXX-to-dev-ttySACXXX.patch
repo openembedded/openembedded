@@ -1,0 +1,29 @@
+From e6fe7275578d6b22adbb5cbd2d0d225ccac1221b Mon Sep 17 00:00:00 2001
+From: Radek Polak <psonek2@seznam.cz>
+Date: Tue, 21 Sep 2010 20:55:41 +0200
+Subject: [PATCH 18/19] Rename /dev/s3c2410_serialXXX to /dev/ttySACXXX
+
+It's nice that devtmpfs now creates the serial port with well known
+name.
+
+http://docs.openmoko.org/trac/ticket/2338
+---
+ drivers/serial/samsung.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/serial/samsung.c b/drivers/serial/samsung.c
+index f7b80ae..cda5e88 100644
+--- a/drivers/serial/samsung.c
++++ b/drivers/serial/samsung.c
+@@ -878,7 +878,7 @@ static struct uart_ops s3c24xx_serial_ops = {
+ 
+ static struct uart_driver s3c24xx_uart_drv = {
+ 	.owner		= THIS_MODULE,
+-	.dev_name	= "s3c2410_serial",
++	.dev_name	= S3C24XX_SERIAL_NAME,
+ 	.nr		= CONFIG_SERIAL_SAMSUNG_UARTS,
+ 	.cons		= S3C24XX_SERIAL_CONSOLE,
+ 	.driver_name	= S3C24XX_SERIAL_NAME,
+-- 
+1.7.3
+
