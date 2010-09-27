@@ -8,6 +8,8 @@ LICENSE = "GPLv3"
 DEPENDS = "mpfr gmp"
 NATIVEDEPS = "mpfr-native gmp-native"
 
+FILESDIR = "${FILE_DIRNAME}/gcc-4.4.4"
+
 INC_PR = "r1"
 
 
