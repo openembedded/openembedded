@@ -7,6 +7,8 @@ AUTHOR = "seabra"
 
 inherit e
 
+EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc"
+
 PV = "0.9.9+svnr${SRCPV}"
 PR = "r1"
 SRCREV = "${EFL_SRCREV}"
