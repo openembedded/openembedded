@@ -1,0 +1,50 @@
+From fa4a89103998631989a32c8e620a1bc94683d781 Mon Sep 17 00:00:00 2001
+From: Radek Polak <psonek2@seznam.cz>
+Date: Thu, 16 Sep 2010 07:36:50 +0200
+Subject: [PATCH 27/28] Enable powering off after 8s POWER press
+
+Signed-off-by: Martin Jansa <Martin.Jansa@gmail.com>
+---
+ arch/arm/mach-s3c2442/mach-gta02.c |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/arch/arm/mach-s3c2442/mach-gta02.c b/arch/arm/mach-s3c2442/mach-gta02.c
+index 5ecc57b..8a7d3ea 100644
+--- a/arch/arm/mach-s3c2442/mach-gta02.c
++++ b/arch/arm/mach-s3c2442/mach-gta02.c
+@@ -569,6 +569,11 @@ static struct pcf50633_bl_platform_data gta02_backlight_data = {
+ 	.ramp_time = 3,
+ };
+ 
++static void gta02_poweroff(void)
++{
++	pcf50633_reg_set_bit_mask(gta02_pcf, PCF50633_REG_OOCSHDWN, 1, 1);
++}
++
+ struct pcf50633_platform_data gta02_pcf_pdata = {
+ 	.resumers = {
+ 		[0] =	PCF50633_INT1_USBINS |
+@@ -717,6 +722,7 @@ struct pcf50633_platform_data gta02_pcf_pdata = {
+ 	},
+ 	.probe_done = gta02_pmu_attach_child_devices,
+ 	.mbc_event_callback = gta02_pmu_event_callback,
++	.force_shutdown = gta02_poweroff,
+ };
+ 
+ 
+@@ -1348,12 +1354,6 @@ static void gta02_pmu_attach_child_devices(struct pcf50633 *pcf)
+ 			     ARRAY_SIZE(gta02_devices_pmu_children));
+ }
+ 
+-static void gta02_poweroff(void)
+-{
+-	pcf50633_reg_set_bit_mask(gta02_pcf, PCF50633_REG_OOCSHDWN, 1, 1);
+-}
+-
+-
+ struct gta02_device_children {
+ 	const char *dev_name;
+ 	size_t num_children;
+-- 
+1.7.3
+
