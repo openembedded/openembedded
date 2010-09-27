@@ -20,6 +20,8 @@ SRC_URI = "\
 	file://g++.conf \
 	file://linux.conf \
            "
+# Set necessary variables in the profile
+SRC_URI += "file://qte.sh"
 
 S = "${WORKDIR}/qt-everywhere-opensource-src-${PV}"
 
