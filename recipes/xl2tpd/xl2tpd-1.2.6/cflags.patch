@@ -1,0 +1,36 @@
+diff -rupN xl2tpd-1.2.4/Makefile new/Makefile
+--- xl2tpd-1.2.4/Makefile	2009-03-09 02:25:30.000000000 +0300
++++ new/Makefile	2010-09-16 16:02:33.000000000 +0400
+@@ -62,7 +62,7 @@ OSFLAGS?= -DLINUX -I$(KERNELSRC)/include
+ # are packages seperately (eg kernel-headers on Fedora)
+ # Note: 2.6.23+ support still needs some changes in the xl2tpd source
+ #
+-#OSFLAGS+= -DUSE_KERNEL
++OSFLAGS+= -DUSE_KERNEL
+ #
+ #
+ # Uncomment the next line for FreeBSD
+@@ -90,7 +90,6 @@ OSFLAGS?= -DLINUX -I$(KERNELSRC)/include
+ 
+ FFLAGS= -DIP_ALLOCATION
+ 
+-CFLAGS+= $(DFLAGS) -O2 -fno-builtin -Wall -DSANITY $(OSFLAGS) $(FFLAGS)
+ HDRS=l2tp.h avp.h misc.h control.h call.h scheduler.h file.h aaa.h md5.h
+ OBJS=xl2tpd.o pty.o misc.o control.o avp.o call.o network.o avpsend.o scheduler.o file.o aaa.o md5.o
+ SRCS=${OBJS:.o=.c} ${HDRS}
+@@ -108,11 +107,14 @@ all: $(EXEC) pfc
+ clean:
+ 	rm -f $(OBJS) $(EXEC) pfc.o pfc
+ 
++%.o: %.c
++	$(CC) $(CFLAGS) $(DFLAGS) -DSANITY $(OSFLAGS) $(FFLAGS) -o $@ -c $<
++
+ $(EXEC): $(OBJS) $(HDRS)
+ 	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(LDLIBS)
+ 
+ pfc:
+-	$(CC) $(CFLAGS) -c contrib/pfc.c
++	$(CC) $(CFLAGS) $(DFLAGS) -DSANITY $(OSFLAGS) $(FFLAGS) -c contrib/pfc.c
+ 	$(CC) $(LDFLAGS) -lpcap $(LDLIBS) -o pfc pfc.o
+ 
+ romfs:

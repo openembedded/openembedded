@@ -4,14 +4,16 @@ LICENSE = "GPLv2"
 HOMEPAGE = "http://www.xelerance.com/software/xl2tpd/"
 SECTION = "network"
 
-INC_PR  = "r0"
+INC_PR  = "r1"
+
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 SRC_URI = "http://www.xelerance.com/software/xl2tpd/xl2tpd-${PV}.tar.gz"
 
 S = "${WORKDIR}/xl2tpd-${PV}"
 
 do_compile () {
-	oe_runmake CFLAGS="${CFLAGS} -DLINUX" LDFLAGS="${LDFLAGS}" PREFIX="${prefix}" all
+	oe_runmake CFLAGS="${CFLAGS} -DLINUX" LDFLAGS="${LDFLAGS}" PREFIX="/usr" KERNELSRC=${STAGING_KERNEL_DIR} all
 }
 
 do_install () { 
@@ -25,3 +27,5 @@ do_install () {
 }
 
 CONFFILES_${PN} += "${sysconfdir}/xl2tpd.conf ${sysconfdir}/default/xl2tpd"
+FILES_${PN} += "${bindir} ${sbindir}"
+FILES_${PN}-doc += "${sharedir}"
