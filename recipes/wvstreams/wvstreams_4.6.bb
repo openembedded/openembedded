@@ -3,6 +3,8 @@ LICENSE = "LGPL"
 DESCRIPTION = "WvStreams is a network programming library in C++"
 DEPENDS = "zlib openssl (>= 0.9.8)"
 
+PR = "r1"
+
 SRC_URI = "http://wvstreams.googlecode.com/files/${PN}-${PV}.tar.gz \
 	"
 
@@ -10,7 +12,8 @@ inherit autotools pkgconfig
 
 LDFLAGS_append = " -Wl,-rpath-link,${TOOLCHAIN_PATH}/${TARGET_SYS}/lib"
 
-EXTRA_OECONF = " --without-tcl --without-qt --without-pam"
+# dbus detection currently broken in configure.ac; remember to add "dbus (>= 1.2.14)" to DEPENDS  when fixed
+EXTRA_OECONF = " --without-tcl --without-qt --without-pam --without-dbus"
 
 PACKAGES_prepend = "libuniconf libuniconf-dbg "
 PACKAGES_prepend = "uniconfd uniconfd-dbg "
