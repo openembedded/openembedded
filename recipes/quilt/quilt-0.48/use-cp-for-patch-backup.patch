@@ -1,0 +1,22 @@
+--- quilt-0.48/quilt.quiltrc.org	2010-09-28 15:00:34.552922490 -0700
++++ quilt-0.48/quilt.quiltrc	2010-09-28 15:00:52.582375166 -0700
+@@ -24,7 +24,7 @@ QUILT_REFRESH_ARGS="--no-timestamps --ba
+ #QUILT_PATCHES=patches
+ 
+ # Prefix all patch names with the relative path to the patch?
+-QUILT_PATCHES_PREFIX=yes
++#QUILT_PATCHES_PREFIX=yes
+ 
+ # Use a specific editor for quilt (defaults to the value of $EDITOR before
+ # sourcing this configuration file, or vi if $EDITOR wasn't set).
+--- quilt-0.48/quilt/refresh.in.org	2010-09-28 14:58:31.844417642 -0700
++++ quilt-0.48/quilt/refresh.in	2010-09-28 14:59:19.944017265 -0700
+@@ -317,7 +317,7 @@ if [ -e $patch_file ] && \
+ then
+ 	printf $"Patch %s is unchanged\n" "$(print_patch $patch)"
+ elif ( [ -z "$QUILT_BACKUP" -o ! -e $patch_file ] || \
+-       mv $patch_file $patch_file~ ) && \
++       cp -a $patch_file $patch_file~ ) && \
+      cat_to_new_file $patch_file < $tmp_result
+ then
+ 	if [ -n "$opt_fork" ]
