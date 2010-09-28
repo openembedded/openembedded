@@ -1,0 +1,6 @@
+require qt4-tools-sdk.inc
+
+DEFAULT_PREFERENCE = "-1"
+
+SRC_URI[md5sum] = "3a2f25b9b115037277f4fb759194a7a5"
+SRC_URI[sha256sum] = "e05256d560ca7d674cd4310bb791748900ad14ad662cbfe22b6d72ada43e7955"
