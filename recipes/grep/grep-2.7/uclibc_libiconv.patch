@@ -1,0 +1,18 @@
+# Needed to get grep to build with uclibc.
+# Patch submitted by Bruno Haible to the grep ML on 2010-09-23.
+#
+# Signed-off-by: Scott Garman <sgarman@zenlinux.com>
+diff -ur grep-2.7.orig/src/Makefile.am grep-2.7/src/Makefile.am
+--- grep-2.7.orig/src/Makefile.am	2010-04-04 05:22:24.000000000 -0700
++++ grep-2.7/src/Makefile.am	2010-09-27 21:07:39.370222501 -0700
+@@ -36,7 +36,9 @@
+ # must precede $(LIBINTL) in order to ensure we use GNU getopt.
+ # But libgreputils.a must also follow $(LIBINTL), since libintl uses
+ # replacement functions defined in libgreputils.a.
+-LDADD = libgrep.a ../lib/libgreputils.a $(LIBINTL) ../lib/libgreputils.a
++LDADD = \
++	libgrep.a \
++	../lib/libgreputils.a $(LIBINTL) ../lib/libgreputils.a $(LIBICONV)
+ 
+ grep_LDADD = $(LDADD) $(LIB_PCRE)
+ localedir = $(datadir)/locale

@@ -1,19 +1,24 @@
-LICENSE = "GPL"
-SECTION = "console/utils"
 DESCRIPTION = "grep GNU utility"
-PR = "r2"
+SECTION = "console/utils"
+HOMEPAGE = "http://savannah.gnu.org/projects/grep/"
+LICENSE = "GPLv3"
+
+PR = "r0"
 
 SRC_URI = "${GNU_MIRROR}/grep/grep-${PV}.tar.gz \
-           file://uclibc-fix.patch"
+           file://uclibc_libiconv.patch"
+
+SRC_URI[md5sum] = "e848f07e3e79aa7899345d17c7e4115e"
+SRC_URI[sha256sum] = "ad14831015a79cea36785aa47415f6c0653a6ac4eaf9c15456f0d9d09c9e1bad"
 
 inherit autotools gettext
 
-EXTRA_OECONF = "--disable-perl-regexp --disable-ncurses"
-EXTRA_OECONF_virtclass-native = "--with-included-regex --disable-ncurses"
+BBCLASSEXTEND = "native"
 
-do_configure () {
+EXTRA_OECONF = "--disable-perl-regexp"
+
+do_configure_prepend () {
 	rm -f ${S}/m4/init.m4
-	autotools_do_configure
 }
 
 do_install () {
@@ -22,10 +27,6 @@ do_install () {
 	mv ${D}${bindir}/grep ${D}${base_bindir}/grep.${PN}
 	mv ${D}${bindir}/egrep ${D}${base_bindir}/egrep.${PN}
 	mv ${D}${bindir}/fgrep ${D}${base_bindir}/fgrep.${PN}
-}
-
-do_install_virtclass-native () {
-	autotools_do_install
 }
 
 pkg_postinst_${PN} () {
@@ -39,7 +40,3 @@ pkg_prerm_${PN} () {
 	update-alternatives --remove egrep egrep.${PN}
 	update-alternatives --remove fgrep fgrep.${PN}
 }
-
-BBCLASSEXTEND = "native"
-SRC_URI[md5sum] = "3095b57837b312f087c0680559de7f13"
-SRC_URI[sha256sum] = "a340e5d1544d9a964072196be627bad3e434ff7a87f3a57ea15aaccbbea4d666"
