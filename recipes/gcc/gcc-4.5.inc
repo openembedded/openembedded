@@ -117,6 +117,7 @@ SRC_URI = "svn://gcc.gnu.org/svn/gcc/branches;module=${BRANCH} \
 	   file://linaro/gcc-4.5-linaro-r99396.patch \
 	   file://linaro/gcc-4.5-linaro-r99397.patch \
 	   file://linaro/gcc-4.5-linaro-r99398.patch \
+	   file://gcc-vmovl-PR45805.patch \
 	  "
 
 SRC_URI_append_mips64 = " file://mips64-nomultilib.patch"
