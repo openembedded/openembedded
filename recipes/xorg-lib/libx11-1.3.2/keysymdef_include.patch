@@ -8,9 +8,9 @@ Index: libX11-1.1.5/configure.ac
  AC_MSG_CHECKING([keysymdef.h])
 -dir=`pkg-config --variable=includedir xproto`
 -KEYSYMDEF="$dir/X11/keysymdef.h"
-+AC_ARG_WITH(keysymdef,
-+	AC_HELP_STRING([--with-keysymdef=DIR/keysymdef.h], [The location of keysymdef.h]),
-+	KEYSYMDEF=$withval, KEYSYMDEF="")
++AC_ARG_WITH(keysymdefdir,
++	AC_HELP_STRING([--with-keysymdefdir=DIR], [The location of keysymdef.h]),
++	KEYSYMDEF=$withval/keysymdef.h, KEYSYMDEF="")
 +
 +if test x$KEYSYMDEF = x; then
 +	dir=`pkg-config --variable=includedir xproto`

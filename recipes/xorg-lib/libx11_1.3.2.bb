@@ -1,5 +1,5 @@
 require libx11.inc
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 # gcc 4.5 ends up ICEing with thumb and -O1 with -fno-omit-framepointer
 # therefore if we are in thumb mode then we use -Os instead of -O1 for
 # DEBUG_OPTIMIZATION
