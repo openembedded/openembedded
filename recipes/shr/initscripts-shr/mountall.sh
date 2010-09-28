@@ -41,7 +41,7 @@ fi
 
 if test -e /etc/passwd
 then
-	ROOT_HOME="`grep root /etc/passwd | cut -d: -f6`"
+	ROOT_HOME="`grep \"^root:\" /etc/passwd | cut -d: -f6`"
 
 	if test -n "$ROOT_HOME"
 	then
