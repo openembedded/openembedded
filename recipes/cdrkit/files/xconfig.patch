@@ -13,3 +13,13 @@
  #define	HAVE_C_BIGENDIAN	/* Flag that WORDS_BIGENDIAN test was done */
  #define	HAVE_C_BITFIELDS	/* Flag that BITFIELDS_HTOL test was done  */
  
+--- cdrkit-1.1.9/include/CMakeLists.txt.orig	2010-09-27 23:17:34.000000000 +0000
++++ cdrkit-1.1.9/include/CMakeLists.txt	2010-09-27 23:17:58.000000000 +0000
+@@ -35,7 +35,6 @@
+ INCLUDE(TestBigEndian)
+ TEST_BIG_ENDIAN(WORDS_BIGENDIAN)
+ 
+-TRY_RUN(BITFIELDS_HTOL TEST_DUMMY ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/test_BITFIELDS_HTOL.c)
+ 
+ INCLUDE(CheckIncludeFiles)
+ 
