@@ -1,0 +1,22 @@
+--- Tremor/configure.in	2006-09-03 01:19:30.000000000 +0200
++++ Tremor-fixed/configure.in	2006-09-03 12:13:33.339593728 +0200
+@@ -106,4 +106,4 @@
+ AC_SUBST(DEBUG)
+ AC_SUBST(PROFILE)
+ 
+-AC_OUTPUT(Makefile)
++AC_OUTPUT([Makefile vorbisidec.pc])
+--- Tremor/vorbisidec.pc.in	1970-01-01 01:00:00.000000000 +0100
++++ Tremor-fixed/vorbisidec.pc.in	2006-09-03 12:16:38.313473424 +0200
+@@ -0,0 +1,11 @@
++prefix=@prefix@
++exec_prefix=@exec_prefix@
++libdir=@libdir@
++includedir=@includedir@
++
++Name: vorbisidec
++Description: Vorbis audio decoder
++Requires:
++Version: 20041119
++Libs: -L${libdir} -lvorbisidec
++Cflags: -I${includedir}
