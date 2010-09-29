@@ -56,6 +56,10 @@ python do_package_prepend () {
          postinst = 'update-alternatives --install %sfirstuse.jpg opie-firstuse-pixmap %sfirstuse-%s.jpg 50\n' % (dir,dir,res)
          postinst += 'update-alternatives --install %sopie-background.jpg opie-background-pixmap %sopie-background-%s.jpg 50\n' % (dir,dir,res)
          bb.data.setVar('pkg_postinst_%s-%s' % (pn,res),postinst, d)
+         prerm = ''
+         prerm = 'update-alternatives --remove opie-firstuse-pixmap %sfirstuse-%s.jpg 50\n' % (dir,res)
+         prerm += 'update-alternatives --remove opie-background-pixmap %sopie-background-%s.jpg 50\n' % (dir,res)
+         bb.data.setVar('pkg_prerm_%s-%s' % (pn,res),prerm, d)
 }
 
 PACKAGE_ARCH = "all"
