@@ -121,7 +121,12 @@ kernel_do_install() {
                 oe_runmake SUBDIRS="scripts/genksyms"
         fi
 
-	kerneldir=${D}/kernel/
+
+}
+
+sysroot_stage_all_append() {
+
+	kerneldir=${SYSROOT_DESTDIR}${STAGING_KERNEL_DIR}
 
 	if [ -e include/asm ] ; then
 		# This link is generated only in kernel before 2.6.33-rc1, don't stage it for newer kernels
@@ -198,11 +203,6 @@ kernel_do_install() {
 	[ -e Module.symvers ] && install -m 0644 Module.symvers $kerneldir/
 
 	cp -fR scripts $kerneldir/
-}
-
-sysroot_stage_all_append() {
-	sysroot_stage_dir ${D}/kernel ${SYSROOT_DESTDIR}${STAGING_KERNEL_DIR}
-	cp -fpPR ${D}/kernel/.config ${SYSROOT_DESTDIR}${STAGING_KERNEL_DIR}
 }
 
 kernel_do_configure() {
