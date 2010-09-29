@@ -1,7 +1,7 @@
 require gdb-cross.inc
 LICENSE = "GPLv3"
 
-PR = "r1"
+PR = "${INC_PR}.1"
 
 SRC_URI += " \
             file://gdb-6.8-fix-compile-karmic.patch \

@@ -1,8 +1,6 @@
 require gdb-cross.inc
 LICENSE = "GPLv3"
 
-INC_PR = "r7"
-
 inherit sdk
 
 DEPENDS = "ncurses-sdk zlib-sdk flex-native"
