@@ -101,7 +101,21 @@ def setup_checksum_deps(d):
             d.setVarFlag("do_fetch", "depends", "%s %s" %
                          (depends, "shasum-native:do_populate_sysroot"))
 
-def base_chk_file_checksum(localpath, src_uri, expected_md5sum, expected_sha256sum, data):
+def base_get_hash_flags(params):
+    try:
+        name = params["name"]
+    except KeyError:
+        name = ""
+    if name:
+        md5flag = "%s.md5sum" % name
+        sha256flag = "%s.sha256sum" % name
+    else:
+        md5flag = "md5sum"
+        sha256flag = "sha256sum"
+
+    return (md5flag, sha256flag)
+
+def base_chk_file_checksum(localpath, src_uri, expected_md5sum, expected_sha256sum, params, data):
     strict_checking = True
     if bb.data.getVar("OE_STRICT_CHECKSUMS", data, True) != "1":
         strict_checking = False
@@ -136,17 +150,19 @@ def base_chk_file_checksum(localpath, src_uri, expected_md5sum, expected_sha256s
         if not ufile:
             raise Exception("Creating %s.sum failed" % uname)
 
-        ufile.write("SRC_URI[md5sum] = \"%s\"\nSRC_URI[sha256sum] = \"%s\"\n" % (md5data, sha256data))
+        (md5flag, sha256flag) = base_get_hash_flags(params)
+        ufile.write("SRC_URI[%s] = \"%s\"\nSRC_URI[%s] = \"%s\"\n" % (md5flag, md5data, sha256flag, sha256data))
         ufile.close()
         bb.note("This package has no checksums, please add to recipe")
-        bb.note("\nSRC_URI[md5sum] = \"%s\"\nSRC_URI[sha256sum] = \"%s\"\n" % (md5data, sha256data))
+        bb.note("\nSRC_URI[%s] = \"%s\"\nSRC_URI[%s] = \"%s\"\n" % (md5flag, md5data, sha256flag, sha256data))
 
         # fail for strict, continue for disabled strict checksums
         return not strict_checking
 
     if (expected_md5sum and expected_md5sum != md5data) or (expected_sha256sum and expected_sha256sum != sha256data):
+        (md5flag, sha256flag) = base_get_hash_flags(params)
         bb.note("The checksums for '%s' did not match.\nExpected MD5: '%s' and Got: '%s'\nExpected SHA256: '%s' and Got: '%s'" % (localpath, expected_md5sum, md5data, expected_sha256sum, sha256data))
-        bb.note("Your checksums:\nSRC_URI[md5sum] = \"%s\"\nSRC_URI[sha256sum] = \"%s\"\n" % (md5data, sha256data))
+        bb.note("Your checksums:\nSRC_URI[%s] = \"%s\"\nSRC_URI[%s] = \"%s\"\n" % (md5flag, md5data, sha256flag, sha256data))
         return False
 
     return True
@@ -155,16 +171,7 @@ def base_get_checksums(pn, pv, src_uri, localpath, params, data):
     # Try checksum from recipe and then parse checksums.ini
     # and try PN-PV-SRC_URI first and then try PN-SRC_URI
     # we rely on the get method to create errors
-    try:
-        name = params["name"]
-    except KeyError:
-        name = ""
-    if name:
-        md5flag = "%s.md5sum" % name
-        sha256flag = "%s.sha256sum" % name
-    else:
-        md5flag = "md5sum"
-        sha256flag = "sha256sum"
+    (md5flag, sha256flag) = base_get_hash_flags(params)
     expected_md5sum = bb.data.getVarFlag("SRC_URI", md5flag, data)
     expected_sha256sum = bb.data.getVarFlag("SRC_URI", sha256flag, data)
 
@@ -215,7 +222,7 @@ def base_get_checksums(pn, pv, src_uri, localpath, params, data):
 
 def base_chk_file(pn, pv, src_uri, localpath, params, data):
     (expected_md5sum, expected_sha256sum) = base_get_checksums(pn, pv, src_uri, localpath, params, data)
-    return base_chk_file_checksum(localpath, src_uri, expected_md5sum, expected_sha256sum, data)
+    return base_chk_file_checksum(localpath, src_uri, expected_md5sum, expected_sha256sum, params, data)
 
 oedebug() {
 	test $# -ge 2 || {
