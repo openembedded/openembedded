@@ -3,7 +3,7 @@ SECTION = "console/utils"
 LICENSE = "GPL"
 
 PR = "r1"
-SRC_URI = "${GNU_MIRROR}/recode/recode-${PV}.tar.gz \
+SRC_URI = "${DEBIAN_MIRROR}/main/r/recode/recode_${PV}.orig.tar.gz \
 	file://recode-bitfield-width.patch"
 
 inherit autotools
