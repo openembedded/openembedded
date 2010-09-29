@@ -16,9 +16,9 @@ COMPATIBLE_MACHINE = "(da850-omapl138-evm|omap3evm|dm37x-evm)"
 
 PROVIDES += "ti-c6accel-apps"
 
-PR = "r8"
+PR = "r12"
 
-S = "${WORKDIR}/c6accel_${PV}/c6accel_${PV}"
+S = "${WORKDIR}/c6accel_${PV}"
 
 SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/c6000/web/c6accel/latest/exports//c6accel_${PV}_Linux-x86_Setup.bin;name=c6accelbin "
 
@@ -30,9 +30,10 @@ DEPENDS += "ti-edma3lld ti-cgt6x ti-xdctools ti-framework-components"
 DEPENDS += "ti-biosutils" 
 
 do_compile() {
+    unset VERBOSE
     # Build C6Accel package
     cd ${S}
-    PLATFORM="${PLATFORM}" make \
+    make \
     PLATFORM="${PLATFORM}" \
     CE_INSTALL_DIR="${CE_INSTALL_DIR}" \
     XDAIS_INSTALL_DIR="${XDAIS_INSTALL_DIR}" \
@@ -46,9 +47,9 @@ do_compile() {
     BIOSUTILS_INSTALL_DIR="${BIOSUTILS_INSTALL_DIR}" \
     LPM_INSTALL_DIR="${LPM_INSTALL_DIR}" \
     SERVER_INSTALL_DIR="${CODEC_INSTALL_DIR}" \
-    C6ACCEL_INSTALL_DIR="${S}/soc" \
+    C6ACCEL_INSTALL_DIR="${S}" \
     CSTOOL_DIR="${TOOLCHAIN_PATH}" \
-    CSTOOLS_PREFIX="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}" \
+    CSTOOL_PREFIX="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}" \
     all
 
 }
@@ -56,23 +57,19 @@ do_compile() {
 do_install() {
     install -d ${D}${C6ACCEL_INSTALL_DIR_RECIPE}
     cp -pPrf ${S}/* ${D}${C6ACCEL_INSTALL_DIR_RECIPE}
-    
+
+    # update linker.cmd file to point to sysroot 
+    sed -i ${i} -e s=${S}=${C6ACCEL_INSTALL_DIR}=g ${D}${C6ACCEL_INSTALL_DIR_RECIPE}/soc/app/c6accel_app_config/linker.cmd
+
     cd ${S} 
     make \
       PLATFORM="${PLATFORM}" \
       CMEM_INSTALL_DIR="${CMEM_INSTALL_DIR}" \
       LINK_INSTALL_DIR="${LINK_INSTALL_DIR}" \
       LPM_INSTALL_DIR="${LPM_INSTALL_DIR}" \
-      C6ACCEL_INSTALL_DIR="${S}/soc" \
+      C6ACCEL_INSTALL_DIR="${S}" \
       EXEC_DIR_C6ACCEL="${D}/${installdir}/c6accel-apps" \
       install
-
-    # replace insmod with modprobe
-    sed -i 's/insmod/modprobe/g' ${D}/${installdir}/c6accel-apps/loadmodules_${PLATFORM}_c6accel.sh
-    sed -i 's/.ko//g' ${D}/${installdir}/c6accel-apps/loadmodules_${PLATFORM}_c6accel.sh
-    # remove prebuilt *.ko files
-    rm -rf ${D}/${installdir}/c6accel-apps/*.ko
-
 }
 
 PACKAGES += "ti-c6accel-apps"
