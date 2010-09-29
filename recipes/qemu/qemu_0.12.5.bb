@@ -1,7 +1,7 @@
 LICENSE = "GPL"
-DEPENDS = "zlib"
+DEPENDS = "zlib ncurses gnutls"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "\
     http://download.savannah.gnu.org/releases/qemu/qemu-${PV}.tar.gz \
