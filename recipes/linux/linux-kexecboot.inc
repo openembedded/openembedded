@@ -4,7 +4,7 @@ INC_PR = "r20"
 LOGO_SIZE = '${@base_conditional("GUI_MACHINE_CLASS", "bigscreen", "vga", "qvga", d)}'
 SRC_URI = "file://${LOGO_SIZE}/logo_linux_clut224.ppm.bz2"
 
-require ../linux/linux.inc
+require linux.inc
 
 INITRAMFS_IMAGE = "initramfs-kexecboot-image"
 

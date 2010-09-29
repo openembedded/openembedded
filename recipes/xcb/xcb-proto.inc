@@ -5,6 +5,8 @@ HOMEPAGE = "http://xcb.freedesktop.org"
 
 SRC_URI = "http://xcb.freedesktop.org/dist/xcb-proto-${PV}.tar.bz2"
 
+BBCLASSEXTEND = "native nativesdk"
+
 inherit autotools pkgconfig
 
 INC_PR = "r2"

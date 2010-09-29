@@ -4,5 +4,5 @@ DEPENDS += " xineramaproto xf86miscproto drm xf86driproto"
 PE = "1"
 PR = "${INC_PR}.0"
 
-SRC_URI[archive.md5sum] = "d65ae11cc66146c7006dbf5acebde413"
-SRC_URI[archive.sha256sum] = "f9b12482165d99acf58c3b0ada925f7939cc0553f645db9f483e41db66a08b59"
+SRC_URI[archive.md5sum] = "a8f92fe3c458e511f4e2ead7f92c02b0"
+SRC_URI[archive.sha256sum] = "d85f60081e5b71bf19da4ca48bce95a9e9df3635c8540dd2640785bedfbc36ee"
