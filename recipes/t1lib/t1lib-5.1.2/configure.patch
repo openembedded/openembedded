@@ -26,7 +26,7 @@
  AC_CACHE_CHECK("whether external symbols need an underscore prefix",
                 ac_cv_c_extern_prefix,
  [saved_libs=$LIBS
-@@ -178,64 +179,46 @@
+@@ -178,68 +179,48 @@
    AC_DEFINE(NEED_UNDERSCORE_PREFIX)
  fi
  
@@ -36,6 +36,7 @@
 +for type in short int; do
 +	if test x"`eval echo \\$ac_cv_sizeof_$type`" = "x2"; then
 +		T1_AA_TYPE16="-DT1_AA_TYPE16=$type"
++		T1_INT16="$type"
 +		break
 +	fi
 +done
@@ -53,8 +54,10 @@
 -if test "$ac_16bit_type" = "short"
 -then
 -  T1_AA_TYPE16="-DT1_AA_TYPE16=short"
+-  T1_INT16="short"
 -else
 -  T1_AA_TYPE16="-DT1_AA_TYPE16=int"
+-  T1_INT16="int"
 +if test x"$T1_AA_TYPE16" = "x"; then
 +	AC_MSG_ERROR("Unable to determine which integer type is 16 bit.")
  fi
@@ -65,6 +68,7 @@
 +for type in int long; do
 +	if test x"`eval echo \\$ac_cv_sizeof_$type`" = "x4"; then
 +		T1_AA_TYPE32="-DT1_AA_TYPE32=$type"
++		T1_INT32="$type"
 +		break
 +	fi
 +done
@@ -82,8 +86,10 @@
 -if test "$ac_32bit_type" = "int"
 -then
 -  T1_AA_TYPE32="-DT1_AA_TYPE32=int"
+-  T1_INT32="int"
 -else
 -  T1_AA_TYPE32="-DT1_AA_TYPE32=long"
+-  T1_INT32="long"
 +if test x"$T1_AA_TYPE32" = "x"; then
 +	AC_MSG_ERROR("Unable to determine which integer type is 32 bit.")
  fi
