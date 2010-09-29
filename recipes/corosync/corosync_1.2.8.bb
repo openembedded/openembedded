@@ -2,7 +2,7 @@ DESCRIPTION = "OSI Certified implementation of a complete cluster engine"
 LICENSE = "BSD"
 DEPENDS = "groff-native"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = " \
 	ftp://ftp@corosync.org/downloads/corosync-${PV}/corosync-${PV}.tar.gz \

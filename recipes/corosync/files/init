@@ -26,11 +26,6 @@ prog="corosync"
 lockfile="/var/lock/subsys/$prog"
 configfile="/etc/corosync/corosync.conf"
 
-if [ ! -f "$configfile" ]; then
-	echo "Error: corosync is not configured ($configfile missing)"
-	exit 1
-fi
-
 internal_status() {
     killall -0 corosync > /dev/null 2>&1
     return $?
@@ -49,6 +44,11 @@ status() {
 }
 
 start() {
+    if [ ! -f "$configfile" ]; then
+	echo "Error: corosync is not configured ($configfile missing)"
+	exit 1
+    fi
+
     echo -n $"Starting Corosync Cluster Engine ($prog): "
     if
 	! internal_status
@@ -128,6 +128,11 @@ stop() {
 }
 
 restart() {
+    if [ ! -f "$configfile" ]; then
+	echo "Error: corosync is not configured ($configfile missing)"
+	exit 1
+    fi
+
     stop
     start
 }
