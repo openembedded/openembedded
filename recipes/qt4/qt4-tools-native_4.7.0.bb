@@ -3,15 +3,11 @@ DEFAULT_PREFERENCE = "-1"
 require qt4-tools-native.inc
 LICENSE = "LGPLv2.1 GPLv3"
 
-DEPENDS += "libxau-native libxdmcp-native"
-
-
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 # Find the g++.conf/linux.conf in the right directory.
 FILESPATHPKG =. "qt-${PV}:"
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-everywhere-opensource-src-${PV}.tar.gz \
-           file://fix.xlib-test.libs.patch \
            file://qt-config.patch \
            file://g++.conf \
            file://linux.conf"

@@ -1,11 +1,11 @@
 DESCRIPTION = "Native tools for Qt/[X11|Mac|Embedded] version 4.x"
-DEPENDS = "zlib-native dbus-native libsm-native"
+DEPENDS = "zlib-native dbus-native"
 SECTION = "libs"
 HOMEPAGE = "http://www.trolltech.com"
 PRIORITY = "optional"
 LICENSE = "GPL"
 
-INC_PR = "r7"
+INC_PR = "r8"
 
 inherit native
 
@@ -26,6 +26,7 @@ EXTRA_OECONF = "-prefix ${prefix} \
                 -no-nas-sound \
                 -no-nis \
                 -verbose -release -static \
+                -embedded \
                 -qt3support"
 
 # yank default -e, otherwise we get the following error:
