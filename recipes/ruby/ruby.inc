@@ -6,7 +6,7 @@ LICENSE = "GPL"
 DEPENDS = "ruby-native zlib openssl"
 DEPENDS_virtclass-native = ""
 
-INC_PR = "r1"
+INC_PR = "r2"
 
 SHRT_VER = "${@bb.data.getVar('PV',d,1).split('.')[0]}.${@bb.data.getVar('PV',d,1).split('.')[1]}"
 SRC_URI = "ftp://ftp.ruby-lang.org/pub/ruby/${SHRT_VER}/ruby-${PV}.tar.gz \
@@ -17,6 +17,9 @@ SRC_URI = "ftp://ftp.ruby-lang.org/pub/ruby/${SHRT_VER}/ruby-${PV}.tar.gz \
 S = "${WORKDIR}/ruby-${PV}"
 
 inherit autotools
+
+# fix building of socket extension
+EXTRA_OECONF = "--enable-wide-getaddrinfo"
 
 # This snippet lets compiled extensions which rely on external libraries,
 # such as zlib, compile properly.  If we don't do this, then when extmk.rb
