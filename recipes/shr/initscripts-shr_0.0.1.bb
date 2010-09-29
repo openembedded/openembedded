@@ -5,7 +5,7 @@ DEPENDS = ""
 RDEPENDS_${PN} = "procps"
 LICENSE = "GPL"
 PV = "0.0.1"
-PR = "r19"
+PR = "r20"
 
 RCONFLICTS_${PN} = "initscripts"
 
@@ -31,7 +31,6 @@ SRC_URI = "file://alignment.sh \
 	   file://umountfs \
 	   file://umountnfs.sh \
 	   "
-SRC_URI_append_palmpre = " file://usb-gadget.sh"
 
 inherit base
 
@@ -74,11 +73,6 @@ do_install () {
 	install -m 0755	${WORKDIR}/sendsigs		${D}${sysconfdir}/init.d
 	install -m 0755	${WORKDIR}/umountfs		${D}${sysconfdir}/init.d
 	install -m 0755	${WORKDIR}/umountnfs.sh		${D}${sysconfdir}/init.d
-
-	if [ "${MACHINE}" == "palmpre" ]; then
-		install -m 0755 ${WORKDIR}/usb-gadget.sh ${D}${sysconfdir}/init.d
-		ln -sf ../init.d/usb-gadget.sh ${D}${sysconfdir}/rcS.d/S00usb-gadget.sh
-	fi
 
 #
 # Create runlevel links
