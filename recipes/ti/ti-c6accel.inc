@@ -16,7 +16,9 @@ COMPATIBLE_MACHINE = "(da850-omapl138-evm|omap3evm|dm37x-evm)"
 
 PROVIDES += "ti-c6accel-apps"
 
-PR = "r12"
+# This recipe links statically against kernel dependant stuff, use kernel PR as base and append a local version
+PR = "${MACHINE_KERNEL_PR}"
+PR_append = "a"
 
 S = "${WORKDIR}/c6accel_${PV}"
 
