@@ -5,9 +5,6 @@ LICENSE = "TI"
 
 # TODO :: Move to common .inc
 
-# Not available publically, so disable for now:
-DEFAULT_PREFERNCE = "-1"
-
 PV = "3_10_00_00"
 
 SRC_URI[dm355codecsbin.md5sum] = "4754892642d44aea67f43dee446ea1f7"
