@@ -1,6 +1,6 @@
 ANGSTROM_MESA_VERSION = "7.8.2"
 ANGSTROM_QT_VERSION ?= "4.7.0"
-CE_VERSION ?= "2.25.01"
+CE_VERSION ?= "latest"
 
 require conf/distro/include/angstrom-codec-engine-${CE_VERSION}-preferred-versions.inc
 require conf/distro/include/preferred-xorg-versions-live.inc
