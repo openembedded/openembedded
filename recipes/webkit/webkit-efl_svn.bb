@@ -4,9 +4,8 @@ DEPENDS = "icu libxslt sqlite3 gperf-native bison-native flex-native jpeg \
            libpng libxt fontconfig cairo freetype glib-2.0 libsoup-2.4 \
            libxml2 pango eina ecore evas edje"
 
-SRCREV = "65655"
-PV = "1.1.11+svnr${SRCPV}"
-PR = "r9"
+SRCREV = "68777"
+PV = "1.3.4+svnr${SRCPV}"
 
 SRCREV_FORMAT = "webcore-rwebkit"
 
@@ -20,7 +19,6 @@ SRC_URI = "\
   svn://svn.webkit.org/repository/webkit/trunk/;module=cmake;proto=http;subdir=src \
   file://cmakeconfig.h.cmake \
   file://CMakeLists.txt \
-  file://install-efl-launcher.patch \
  "
 
 S = "${WORKDIR}/src"
