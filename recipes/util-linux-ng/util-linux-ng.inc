@@ -8,7 +8,7 @@ inherit autotools gettext
 
 DEFAULT_PREFERENCE = "-1"
 
-INC_PR = "r30"
+INC_PR = "r31"
 
 # allows for a release candidate
 RC ?= ""
@@ -127,7 +127,7 @@ do_install () {
 
         sbinprogs="agetty blockdev ctrlaltdel cfdisk"
         sbinprogs_a="pivot_root hwclock mkswap shutdown mkfs.minix fsck.minix losetup swapon fdisk fsck blkid vigr vipw"
-        usrbinprogs_a="chfn chsh hexdump last logger mesg newgrp renice wall setsid chrt reset"
+        usrbinprogs_a="chfn chsh hexdump last logger mesg newgrp renice wall setsid chrt reset cal script"
         usrsbinprogs_a="readprofile"
         binprogs_a="dmesg kill more umount mount login"
 
