@@ -3,6 +3,7 @@ SECTION = "kde/devel"
 PRIORITY    = "optional"
 LICENSE     = "GPL"
 DEPENDS     = "uicmoc3-native"
+PR          = "r1"
 
 SRC_URI     = "ftp://download.kde.org/pub/kde/stable/${PV}/src/kdelibs-${PV}.tar.bz2"
 #\
@@ -22,9 +23,11 @@ do_configure_prepend() {
 }
 
 do_stage() {
-     install -d ${STAGING_BINDIR}
-     install -m 0755 dcopidl2cpp ${STAGING_BINDIR}
+     install -d ${D}${bindir}
+     install -m 0755 dcopidl2cpp ${D}${bindir}
 }
 
 SRC_URI[md5sum] = "acaa37e79e840d10dca326277a20863c"
 SRC_URI[sha256sum] = "779f563fdf0385b973f2238f04d82b5729aefe1c949e4d29482b6bb170aa3fe6"
+
+NATIVE_INSTALL_WORKS = "1"
