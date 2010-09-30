@@ -1,5 +1,5 @@
 SECTION = "x11/network"
-PR = "r5"
+PR = "r6"
 
 PACKAGES = "${PN}-dbg prismstumbler prismstumbler-frontend prismstumbler-doc"
 DESCRIPTION = "Prismstumbler wireless LAN scanner"
@@ -15,7 +15,9 @@ SRC_URI = "http://projects.linuxtogo.org/frs/download.php/14/${PN}-0.7.4pre1.tar
            file://gpsapi.patch \
       ${@['', 'file://wireless.patch'][bb.data.getVar('PREFERRED_VERSION_linux-libc-headers', d, 1) and bb.data.getVar('PREFERRED_VERSION_linux-libc-headers', d, 1).split('.')[2] < '30']} \
            file://fix-includes.patch;striplevel=0 \
-           file://libgps-check.patch"
+           file://libgps-check.patch \
+           file://replace-gps_query.patch \
+           "
 
 S = "${WORKDIR}/${PN}-0.7.4pre1"
 

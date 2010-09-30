@@ -1,0 +1,17 @@
+As per http://gpsd.berlios.de/protocol-transition.html#_virtue_is_rewarded
+gps_query should be replace with gps_stream
+
+Thanks
+-Khem
+Index: prismstumbler-0.7.4pre1/src/daemon/gpsctl.c
+===================================================================
+--- prismstumbler-0.7.4pre1.orig/src/daemon/gpsctl.c
++++ prismstumbler-0.7.4pre1/src/daemon/gpsctl.c
+@@ -41,6 +41,5 @@ update_gpsdata ()
+ {
+ 	if(!gps_conn)
+ 		return;
+-
+-	gps_query (gps_conn, "p");
++	gps_stream(gps_conn, WATCH_ENABLE, NULL);
+ }
