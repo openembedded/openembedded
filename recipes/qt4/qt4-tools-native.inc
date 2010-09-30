@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.trolltech.com"
 PRIORITY = "optional"
 LICENSE = "GPL"
 
-INC_PR = "r8"
+INC_PR = "r9"
 
 inherit native
 
@@ -26,7 +26,7 @@ EXTRA_OECONF = "-prefix ${prefix} \
                 -no-nas-sound \
                 -no-nis \
                 -verbose -release -static \
-                -embedded \
+                -embedded -no-freetype \
                 -qt3support"
 
 # yank default -e, otherwise we get the following error:
