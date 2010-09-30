@@ -19,5 +19,5 @@ SRC_URI_append_omap3 = " file://loadmodules.sh "
 
 # apply omapdmaifbsink patch on omap3 platform
 # NOTE: this patch need's X11 header/libs
-#SRC_URI_append_omap3 = " file://0001-add-omapdmaifbsink.patch"
+SRC_URI_append_omap3 = " file://0001-add-omapdmaifbsink.patch"
 
