@@ -5,13 +5,13 @@ LICENSE = "TI"
 require ti-paths.inc
 require ti-staging.inc
 
-PR="r2"
+PR="r9"
 
 PV="4_00_00_00"
 
 CODEC_SUITE_NAME="${WORKDIR}/${PN}_${PV}"
 
-SRCREV = "48f81f72c214ce9126d719c01737378c24de9db5"
+SRCREV = "4dd14941ff514f30aaaeeebcde446e11de62e075"
 
 require ti-eula-unpack.inc
 
@@ -147,7 +147,7 @@ do_compile() {
              XDC_INSTALL_DIR=${XDC_INSTALL_DIR} \
              CODEC_INSTALL_DIR="${S}" \
              XDCARGS="prod" \
-             C6ACCEL_INSTALL_DIR=${C6ACCEL_INSTALL_DIR}/soc \
+             C6ACCEL_INSTALL_DIR=${C6ACCEL_INSTALL_DIR} \
              clean
 
     make \
@@ -161,7 +161,7 @@ do_compile() {
              XDC_INSTALL_DIR=${XDC_INSTALL_DIR} \
              CODEC_INSTALL_DIR="${S}" \
              XDCARGS="prod" \
-             C6ACCEL_INSTALL_DIR=${C6ACCEL_INSTALL_DIR}/soc \
+             C6ACCEL_INSTALL_DIR=${C6ACCEL_INSTALL_DIR} \
              all
 }
 
