@@ -1,0 +1,13 @@
+upstream: OE-only
+comment: Same patch is present in Linux kernel ≥ 2.6.25 and was committed in <http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=040922c04cf2c8ac70be2e88a8a9614ecdb41d2e>
+
+--- a/include/linux/Kbuild	2010-09-27 16:04:29.000000000 +0200
++++ b/include/linux/Kbuild	2010-09-27 15:59:06.000000000 +0200
+@@ -61,6 +61,7 @@
+ header-y += elf.h
+ header-y += elf-em.h
+ header-y += fadvise.h
++header-y += falloc.h
+ header-y += fd.h
+ header-y += fdreg.h
+ header-y += fib_rules.h
