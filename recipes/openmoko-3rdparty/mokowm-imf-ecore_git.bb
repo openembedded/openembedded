@@ -6,7 +6,7 @@ DEPENDS = "ecore eina"
 SECTION = "misc/utils"
 
 PV = "1.0.99+gitr${SRCPV}"
-SRCREV = "59c1afe3c347a4da38fa7a5f4f7dd080a65d0858"
+SRCREV = "7ce10c69038c664a08fa345270865ddcd7445cf1"
 
 SRC_URI = "git://gitorious.org/mokosuite2/mokowm-imf-ecore.git;protocol=git"
 S = "${WORKDIR}/git"
