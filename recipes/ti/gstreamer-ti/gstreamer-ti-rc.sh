@@ -5,8 +5,8 @@
 
 load_module() {
     echo 
-    echo -n "Running /usr/share/ti/gst/<platform>/loadmodule.sh"
-    /usr/share/ti/gst/<platform>/loadmodule.sh
+    echo -n "Running /usr/share/ti/gst/<platform>/loadmodules.sh"
+    /usr/share/ti/gst/<platform>/loadmodules.sh
 }
 
 case "$1" in

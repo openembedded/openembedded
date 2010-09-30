@@ -15,7 +15,7 @@ require ti-paths.inc
 require ti-staging.inc
 
 # Rebuild on kernel change since it links statically to ti-dmai, ti-codec-engine, etc
-PR = "r72+${MACHINE_KERNEL_PR}"
+PR = "r75+${MACHINE_KERNEL_PR}"
 
 DEPENDS = "ti-dmai gstreamer gst-plugins-base"
 
@@ -86,12 +86,12 @@ do_install_prepend () {
     # copy gstreamer demo scripts
     cp -r ${WORKDIR}/gstreamer_ti/gstreamer_demo/shared ${D}/${installdir}/gst
 
-    # If we have loadmodule.sh in WORKDIR then give preference to this over
+    # If we have loadmodules.sh in WORKDIR then give preference to this over
     # the default gst-ti loadmdules.sh
     if [ -f ${WORKDIR}/loadmodules.sh ]; then
        cp ${WORKDIR}/loadmodules.sh ${D}/${installdir}/gst/${PLATFORM}
     else
-        cp -r ${WORKDIR}/gstreamer_ti/gstreamer_demo/${PLATFORM} ${D}/${installdir}/gst
+       cp -r ${WORKDIR}/gstreamer_ti/gstreamer_demo/${PLATFORM} ${D}/${installdir}/gst
     fi   
 
     # delete .svn files
@@ -101,7 +101,7 @@ do_install_prepend () {
     install -d ${D}${sysconfdir}/init.d/
     install -m 0755  ${WORKDIR}/gstreamer-ti-rc.sh ${D}${sysconfdir}/init.d/gstti-init
 
-    sed -i -e 's|\<platform\>|${PLATFORM}|g' ${D}${sysconfdir}/init.d/gstti-init
+    sed -i -e 's|<platform>|${PLATFORM}|g' ${D}${sysconfdir}/init.d/gstti-init
 }
 
 RRECOMMENDS_${PN}_append_dm6446    += "ti-codecs-dm6446-server   ti-cmem-module ti-dsplink-module"

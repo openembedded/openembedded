@@ -42,7 +42,7 @@ diff -uNr ticodecplugin/src/Makefile.am ticodecplugin.new/src/Makefile.am
  
  # sources used to compile this plug-in
 -libgstticodecplugin_la_SOURCES = gstticodecplugin.c gsttiauddec1.c gsttividdec2.c gsttiimgenc1.c gsttiimgdec1.c gsttidmaibuffertransport.c gsttidmaibuftab.c gstticircbuffer.c gsttidmaivideosink.c gstticodecs.c gstticodecs_platform.c  gsttiquicktime_aac.c gsttiquicktime_h264.c gsttividenc1.c gsttiaudenc1.c gstticommonutils.c gsttividresize.c gsttidmaiperf.c gsttiquicktime_mpeg4.c $(C6ACCEL_SRC)
-+libgstticodecplugin_la_SOURCES = gstticodecplugin.c gsttiauddec1.c gsttividdec2.c gsttiimgenc1.c gsttiimgdec1.c gsttidmaibuffertransport.c gsttidmaibuftab.c gstticircbuffer.c gsttidmaivideosink.c gstticodecs.c gstticodecs_platform.c  gsttiquicktime_aac.c gsttiquicktime_h264.c gsttividenc1.c gsttiaudenc1.c gstticommonutils.c gsttividresize.c gsttidmaiperf.c gsttiquicktime_mpeg4.c $(C6ACCEL_SRC) omapfb.c yuv
++libgstticodecplugin_la_SOURCES = gstticodecplugin.c gsttiauddec1.c gsttividdec2.c gsttiimgenc1.c gsttiimgdec1.c gsttidmaibuffertransport.c gsttidmaibuftab.c gstticircbuffer.c gsttidmaivideosink.c gstticodecs.c gstticodecs_platform.c  gsttiquicktime_aac.c gsttiquicktime_h264.c gsttividenc1.c gsttiaudenc1.c gstticommonutils.c gsttividresize.c gsttidmaiperf.c gsttiquicktime_mpeg4.c $(C6ACCEL_SRC) omapfb.c yuv.S
  
  # flags used to compile this plugin
  # add other _CFLAGS and _LIBS as needed
