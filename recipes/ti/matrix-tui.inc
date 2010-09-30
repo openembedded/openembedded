@@ -5,10 +5,6 @@ SECTION = "multimedia"
 PRIORITY = "optional"
 DEPENDS = "libxml2 zlib ncurses"
 
-SRCREV = "29"
-PV = "1.0"
-PR = "r3+svnr${SRCPV}"
-
 INSANE_SKIP_${PN} = "True"
 
 SRC_URI = "svn://gforge.ti.com/svn/matrix_tui/;module=trunk;proto=https;user=anonymous;pswd='' \
