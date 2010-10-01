@@ -1,6 +1,7 @@
 require htmldoc.inc
 BBCLASSEXTEND = "native"
-DEPENDS_pn-htmldoc += "htmldoc-native"
+DEPENDS += "htmldoc-native"
+DEPENDS_virtclass-native = ""
 PR = "r3"
 
 
