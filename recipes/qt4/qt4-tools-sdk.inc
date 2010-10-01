@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.trolltech.com"
 PRIORITY = "optional"
 LICENSE = "LGPLv2.1 GPLv3"
 
-INC_PR = "r1"
+INC_PR = "r2"
 
 FILESPATHPKG =. "qt-${PV}:"
 inherit sdk
@@ -22,13 +22,14 @@ S = "${WORKDIR}/qt-everywhere-opensource-src-${PV}"
 # FIXME: make it work with "${STAGING_BINDIR_NATIVE}/pkg-config --cflags dbus-1"
 EXTRA_OECONF = "-prefix ${prefix} \
                 -qt-libjpeg -qt-gif -system-zlib \
-                -no-libjpeg -no-libpng \
+                -no-libjpeg -no-libpng -no-libmng -no-libtiff \
                 -no-accessibility \
                 -no-cups \
                 -no-exceptions  \
                 -no-nas-sound \
-                -no-nis \
+                -no-nis -no-openssl \
                 -verbose -release -fast -static \
+                -embedded -no-freetype -no-glib -no-iconv \
                 -qt3support \
                 -I${STAGING_DIR_NATIVE}/usr/include \
                 -I${STAGING_DIR_NATIVE}/usr/include/dbus-1.0 \
