@@ -466,6 +466,8 @@ python do_qa_configure() {
     configs = []
     bb.debug(1, "Checking sanity of the config.log file")
     for root, dirs, files in os.walk(bb.data.getVar('WORKDIR', d, True)):
+        if ".pc" in root:
+            continue
         statement = "grep 'CROSS COMPILE Badness:' %s > /dev/null" % \
                     os.path.join(root,"config.log")
         if "config.log" in files:
