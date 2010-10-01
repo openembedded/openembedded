@@ -5,7 +5,8 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "GPL"
 SRCNAME = "Pyrex"
-DEPENDS_pn-python-pyrex-native = "python-native"
+DEPENDS += "python"
+DEPENDS_virtclass-native += "python-native"
 PR = "ml2"
 
 SRC_URI = "\
