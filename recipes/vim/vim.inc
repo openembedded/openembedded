@@ -5,7 +5,7 @@ DEPENDS = "ncurses"
 RSUGGESTS_${PN} = "diffutils"
 LICENSE = "vim"
 
-INC_PR = "r7"
+INC_PR = "r8"
 
 SRC_URI = "ftp://ftp.vim.org/pub/vim/unix/vim-${PV}.tar.bz2;name=vim${PV}tarbz2 \
            ftp://ftp.vim.org/pub/vim/extra/vim-${PV}-extra.tar.gz;name=vim${PV}extratargz \
