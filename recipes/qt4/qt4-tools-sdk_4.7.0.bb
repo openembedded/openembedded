@@ -1,5 +1,7 @@
 require qt4-tools-sdk.inc
 
+PR = "${INC_PR}.2"
+
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI[md5sum] = "3a2f25b9b115037277f4fb759194a7a5"

@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.trolltech.com"
 PRIORITY = "optional"
 LICENSE = "LGPLv2.1 GPLv3"
 
-PR = "r1"
+INC_PR = "r1"
 
 FILESPATHPKG =. "qt-${PV}:"
 inherit sdk
