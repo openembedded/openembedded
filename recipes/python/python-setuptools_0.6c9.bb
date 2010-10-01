@@ -5,7 +5,8 @@ PRIORITY = "optional"
 LICENSE = "MIT"
 SRCNAME = "setuptools"
 PR = "ml2"
-DEPENDS_pn-python-setuptools-native = "python-native"
+DEPENDS += "python"
+DEPENDS_virtclass-native += "python-native"
 
 SRC_URI = "\
   http://cheeseshop.python.org/packages/source/s/setuptools/${SRCNAME}-${PV}.tar.gz\
