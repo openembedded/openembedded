@@ -459,6 +459,10 @@ create_wrapper () {
 
    cmd=$1
    shift
+
+   # run echo via env to test syntactic validity of the variable arguments
+   env $@ echo "Generating wrapper script for $cmd"
+
    mv $cmd $cmd.real
    cmdname=`basename $cmd`.real
    cat <<END >$cmd
