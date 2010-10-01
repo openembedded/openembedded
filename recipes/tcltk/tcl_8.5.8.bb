@@ -25,10 +25,14 @@ inherit autotools binconfig
 
 EXTRA_OECONF = "--enable-threads"
 
-do_compile_prepend() {
+do_configure_append() {
         echo > ../compat/fixstrtod.c
+}
+
+do_compile_prepend_pn-tcl () {
         sed -i -e 's:./tclsh :tclsh :g' Makefile
 }
+
 do_install() {
         autotools_do_install
         # Stage a few extra headers to make tk happy
