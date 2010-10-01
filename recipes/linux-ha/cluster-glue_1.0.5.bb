@@ -6,11 +6,12 @@ is not the cluster messaging layer (Heartbeat), nor the cluster resource manager
 LICENSE = "GPL"
 DEPENDS = "libxml2 libtool glib-2.0 bzip2 util-linux-ng"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = " \
 	http://hg.linux-ha.org/glue/archive/glue-${PV}.tar.bz2;name=tar \
 	file://glue-remove-getpid-check.patch \
+	file://fix-const-cast.patch \
 	file://volatiles \
 	"
 SRC_URI_append_libc-uclibc = " file://kill-stack-protector.patch"

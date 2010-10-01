@@ -1,0 +1,27 @@
+This patch gets rid of new warning introduced with gcc 4.5
+Warning is explained here
+http://gcc.gnu.org/viewcvs/trunk/gcc/doc/invoke.texi?r1=148037&r2=148053&diff_format=h
+
+
+Index: Reusable-Cluster-Components-glue-1.0.5/lib/plugins/stonith/apcsmart.c
+===================================================================
+--- Reusable-Cluster-Components-glue-1.0.5.orig/lib/plugins/stonith/apcsmart.c
++++ Reusable-Cluster-Components-glue-1.0.5/lib/plugins/stonith/apcsmart.c
+@@ -708,7 +708,6 @@ apcsmart_status(StonithPlugin * s)
+ /*
+  * return the list of hosts configured for this device 
+  */
+-
+ static char **
+ apcsmart_hostlist(StonithPlugin * s)
+ {
+@@ -719,7 +718,8 @@ apcsmart_hostlist(StonithPlugin * s)
+ 	}
+ 	ERRIFNOTCONFIGED(s,NULL);
+ 
+-	return OurImports->CopyHostList((const char **)ad->hostlist);
++/*	return OurImports->CopyHostList((const char **)(ad->hostlist));*/
++	return OurImports->CopyHostList((__extension__(union {char ** a; const char** b;})(ad->hostlist)).b);
+ }
+ 
+ static gboolean
