@@ -2,9 +2,9 @@ DESCRIPTION = "OmniORB High Performance ORB"
 SECTION = "devel"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-DEPENDS_pn-omniorb = "omniorb-native"
-DEPENDS_pn-omniorb-native += "python-native"
-PR = "r1"
+DEPENDS += "omniorb-native"
+DEPENDS_virtclass-native += "python-native"
+PR = "r2"
 
 SRC_URI = "http://downloads.sourceforge.net/omniorb/omniORB-4.1.4.tar.gz;name=omniORB414targz \
 file://omniorb_4.1.4.patch \ 
