@@ -20,7 +20,7 @@ PR = "r75+${MACHINE_KERNEL_PR}"
 DEPENDS = "ti-dmai gstreamer gst-plugins-base"
 
 # enable c6accel elements on omapl138
-DEPENDS_append_da850-omapl138-evm = " ti-c6accel "
+DEPENDS_append_omapl138 = " ti-c6accel "
 EXTRA_OECONF_omapl138 = "--enable-c6accel"
 export C6ACCEL_INSTALL_DIR
 

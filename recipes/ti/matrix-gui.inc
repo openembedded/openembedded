@@ -18,7 +18,7 @@ SRC_URI = "svn://gforge.ti.com/svn/matrix_gui/;module=trunk;proto=https;user=ano
 
 S = "${WORKDIR}/trunk"
 
-CXXFLAGS_da850-omapl138-evm_append = " -DPlatform_omapl138 "
+CXXFLAGS_omapl138_append = " -DPlatform_omapl138 "
 CXXFLAGS_dm365_append = " -DPlatform_dm365 "
 PACKAGE_ARCH = ${MACHINE_ARCH}
 

@@ -22,7 +22,7 @@ INITSCRIPT_NAME = "matrix-gui-e"
 INITSCRIPT_PARAMS = "defaults 99"
 #INITSCRIPT_PARAMS = "start 99 3 . stop 99 3 ."
 
-CXXFLAGS_da850-omapl138-evm_append = " -DPlatform_omapl138 "
+CXXFLAGS_omapl138_append = " -DPlatform_omapl138 "
 CXXFLAGS_dm365_append = " -DPlatform_dm365 "
 PACKAGE_ARCH = ${MACHINE_ARCH}
 
