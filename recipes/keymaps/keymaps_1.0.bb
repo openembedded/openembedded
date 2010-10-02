@@ -3,7 +3,7 @@ SECTION = "base"
 RDEPENDS_${PN} = "console-tools"
 LICENSE = "GPL"
 PACKAGE_ARCH = "${MACHINE}"
-PR = "r25"
+PR = "r26"
 
 inherit update-rc.d
 
@@ -29,6 +29,7 @@ SRC_URI_append_jornada6xx   = " file://keymap-uk-620-660.map \
 				file://keymap-sp.map \
 				file://keymap-uk.map \
 				"
+SRC_URI_append_nokia900     = " file://keymap-2.6.map"
 
 
 INITSCRIPT_NAME = "keymap"
@@ -39,7 +40,7 @@ do_install () {
     install -m 0755 ${WORKDIR}/keymap ${D}${sysconfdir}/init.d/
 
     case ${MACHINE} in
-        c7x0 | tosa | spitz | akita | borzoi | collie | poodle | jornada6xx | h2200 | h4000 | hx4700 | htcuniversal | qemux86 | omap3-pandora )
+        c7x0 | tosa | spitz | akita | borzoi | collie | poodle | jornada6xx | h2200 | h4000 | hx4700 | htcuniversal | qemux86 | omap3-pandora | nokia900 )
             install -m 0644 ${WORKDIR}/keymap-*.map	${D}${sysconfdir}
             ;;
         *)
