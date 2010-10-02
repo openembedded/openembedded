@@ -1,7 +1,7 @@
 From e3bfd272cf813b8419757a3b59128b3568e5f800 Mon Sep 17 00:00:00 2001
 From: Siarhei Siamashka <siarhei.siamashka@nokia.com>
 Date: Mon, 20 Sep 2010 19:07:33 +0300
-Subject: [PATCH 2/6] Don't discriminate PAD and REFLECT repeat in standard fast paths
+Subject: [PATCH 2/9] Don't discriminate PAD and REFLECT repeat in standard fast paths
 
 Without this fix, setting PAD repeat on a source image prevents
 the use of any nonscaled standard fast paths, affecting performance

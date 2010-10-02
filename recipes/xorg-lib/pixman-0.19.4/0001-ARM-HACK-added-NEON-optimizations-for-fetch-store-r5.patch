@@ -1,7 +1,7 @@
 From 38aabb3be87ea68e37f34256c778d07f62680ec6 Mon Sep 17 00:00:00 2001
 From: Siarhei Siamashka <siarhei.siamashka@nokia.com>
 Date: Thu, 10 Dec 2009 00:51:50 +0200
-Subject: [PATCH 1/6] ARM: HACK: added NEON optimizations for fetch/store r5g6b5 scanline
+Subject: [PATCH 1/9] ARM: HACK: added NEON optimizations for fetch/store r5g6b5 scanline
 
 ---
  pixman/pixman-access.c       |   23 ++++++++++++++++++++++-
