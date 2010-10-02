@@ -4,7 +4,7 @@ LICENSE = "MIT"
 SECTION = "libs"
 PATCHDATE = "20100501"
 PKGV = "${PV}+${PATCHDATE}"
-PR = "r14"
+PR = "r15"
 
 DEPENDS = "ncurses-native unifdef-native"
 DEPENDS_virtclass-native = "unifdef-native"
@@ -74,6 +74,7 @@ do_configure() {
                         --with-termlib=tinfo \
                         --enable-sigwinch \
                         --enable-pc-files \
+                        --disable-rpath-hack \
                         --with-build-cc="${BUILD_CC}" \
                         --with-build-cpp="${BUILD_CPP}" \
                         --with-build-ld="${BUILD_LD}" \
