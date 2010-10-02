@@ -14,7 +14,7 @@ Index: Python-2.6.1/Makefile.pre.in
  
  # The task to run while instrument when building the profile-opt target
  PROFILE_TASK=	$(srcdir)/Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
-@@ -205,7 +206,7 @@ GRAMMAR_INPUT=	$(srcdir)/Grammar/Grammar
+@@ -206,7 +207,7 @@ GRAMMAR_INPUT=	$(srcdir)/Grammar/Grammar
  ##########################################################################
  # Parser
  PGEN=		Parser/pgen$(EXE)
@@ -23,7 +23,7 @@ Index: Python-2.6.1/Makefile.pre.in
  POBJS=		\
  		Parser/acceler.o \
  		Parser/grammar1.o \
-@@ -394,8 +395,8 @@ platform: $(BUILDPYTHON)
+@@ -395,8 +396,8 @@ platform: $(BUILDPYTHON)
  # Build the shared modules
  sharedmods: $(BUILDPYTHON)
  	@case $$MAKEFLAGS in \
@@ -34,16 +34,16 @@ Index: Python-2.6.1/Makefile.pre.in
  	esac
  
  # Build static library
-@@ -513,7 +514,7 @@ Modules/python.o: $(srcdir)/Modules/pyth
+@@ -531,7 +532,7 @@ $(GRAMMAR_H) $(GRAMMAR_C): $(GRAMMAR_STAMP)
  
- $(GRAMMAR_H) $(GRAMMAR_C): $(PGEN) $(GRAMMAR_INPUT)
+ $(GRAMMAR_STAMP): $(PGEN) $(GRAMMAR_INPUT)
  		-@$(INSTALL) -d Include
 -		-$(PGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
 +		-$(HOSTPGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
+ 		touch $(GRAMMAR_STAMP)
  
  $(PGEN):	$(PGENOBJS)
- 		$(CC) $(OPT) $(LDFLAGS) $(PGENOBJS) $(LIBS) -o $(PGEN)
-@@ -879,23 +880,23 @@ libinstall:	build_all $(srcdir)/Lib/$(PL
+@@ -902,23 +903,23 @@ libinstall:	build_all $(srcdir)/Lib/$(PL
  	done
  	$(INSTALL_DATA) $(srcdir)/LICENSE $(DESTDIR)$(LIBDEST)/LICENSE.txt
  	PYTHONPATH=$(DESTDIR)$(LIBDEST)  $(RUNSHARED) \
@@ -72,7 +72,7 @@ Index: Python-2.6.1/Makefile.pre.in
  
  # Create the PLATDIR source directory, if one wasn't distributed..
  $(srcdir)/Lib/$(PLATDIR):
-@@ -993,7 +994,7 @@ libainstall:	all
+@@ -1016,7 +1017,7 @@ libainstall:	all
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
  sharedinstall:
