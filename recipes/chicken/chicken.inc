@@ -5,7 +5,7 @@ PRIORITY = "optional"
 LICENSE = "BSD"
 INC_PR = "r3"
 
-SRC_URI = "http://chicken.wiki.br/releases/${PV}/chicken-${PV}.tar.gz \
+SRC_URI = "http://code.call-cc.org/releases/${PV}/chicken-${PV}.tar.gz \
            file://soname.patch \
            file://translator-cross.patch"
 

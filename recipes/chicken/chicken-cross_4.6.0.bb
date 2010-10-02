@@ -1,10 +1,9 @@
 require chicken.inc
 
-SRC_URI[md5sum] = "598e7ea036807a67297c3e2bf4a454c4"
-SRC_URI[sha256sum] = "2578dcd041d864f8c6d83c1f84023cd1be8287a9c71c3f4d91679186231e6cfd"
-
-PR = "${INC_PR}.1"
-
+PR = "${INC_PR}.0"
+SRC_URI = "http://code.call-cc.org/releases/${PV}/chicken-${PV}.tar.gz"
+SRC_URI[md5sum] = "538a93e786e550ad848a040bcd902184"
+SRC_URI[sha256sum] = "c55d1dadf9941b3efbc7be9181d5c7cbc304a20c614625fbf710c0acaa1cd245"
 inherit cross
 
 do_compile() {
