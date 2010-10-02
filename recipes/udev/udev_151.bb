@@ -3,7 +3,7 @@ DESCRIPTION = "udev is a daemon which dynamically creates and removes device nod
 the hotplug package and requires a kernel not older than 2.6.12."
 LICENSE = "GPLv2+"
 
-PR = "r19"
+PR = "r20"
 
 # Untested
 DEFAULT_PREFERENCE = "-1"
@@ -40,6 +40,13 @@ SRC_URI_append_bug = " \
        file://30-BUG.rules \
        file://10-mx31.rules \
        file://bmi_eventpipe.sh "
+
+SRC_URI_append_nokia900 = " \
+       file://10-cmt_speech.rules \
+       file://udev-rules-nokia-n900-hacks.rules \
+       file://udev-rules-nokia-n900-snd.rules \
+       file://nokia-n900-mac-hack.sh \
+"
 
 PACKAGE_ARCH_bug = "bug"
 
@@ -143,6 +150,13 @@ do_install_append_bug() {
 	install -m 0644 ${WORKDIR}/30-BUG.rules ${D}${sysconfdir}/udev/rules.d/30-BUG.rules
 	install -m 0644 ${WORKDIR}/10-mx31.rules ${D}${sysconfdir}/udev/rules.d/10-mx31.rules
 	install -m 0644 ${WORKDIR}/bmi_eventpipe.sh ${D}${sysconfdir}/udev/scripts/bmi_eventpipe.sh
+}
+
+do_install_append_nokia900() {
+	install -m 0644 ${WORKDIR}/10-cmt_speech.rules ${D}${sysconfdir}/udev/rules.d/10-cmt_speech.rules
+	install -m 0644 ${WORKDIR}/udev-rules-nokia-n900-hacks.rules ${D}${sysconfdir}/udev/rules.d/udev-rules-nokia-n900-hacks.rules
+	install -m 0644 ${WORKDIR}/udev-rules-nokia-n900-snd.rules ${D}${sysconfdir}/udev/rules.d/udev-rules-nokia-n900-snd.rules
+	install -m 0755 ${WORKDIR}/nokia-n900-mac-hack.sh ${D}${sysconfdir}/udev/scripts/nokia-n900-mac-hack.sh
 }
 
 # Create the cache after checkroot has run
