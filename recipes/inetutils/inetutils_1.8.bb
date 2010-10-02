@@ -23,7 +23,7 @@ do_configure_prepend () {
 
 do_install () {
 	autotools_do_install
-	install -d ${D}${base_sbindir}
+	install -d ${D}${base_sbindir} ${D}${base_bindir}
 	mv ${D}${bindir}/tftp ${D}${bindir}/tftp.${PN}
 	mv ${D}${bindir}/telnet ${D}${bindir}/telnet.${PN}
 	mv ${D}${bindir}/logger ${D}${bindir}/logger.${PN}
