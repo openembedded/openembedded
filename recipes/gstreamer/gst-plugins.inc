@@ -5,7 +5,7 @@ DESCRIPTION = "Plugins for GStreamer"
 DEPENDS = "libcdio wavpack libvisual gstreamer jack virtual/libsdl libvpx x264 libmms libmusicbrainz schroedinger faac faad2 libmikmod liboil libogg tremor libvorbis"
 DEPENDS += "${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad libid3tag', d)}"
 
-INC_PR = "r10"
+INC_PR = "r11"
 
 PACKAGES_DYNAMIC = "gst-plugin-*"
 
