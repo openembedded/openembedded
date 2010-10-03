@@ -3,7 +3,8 @@ HOMEPAGE = "http://libcddb.sourceforge.net"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPLv2"
-MAINTAINER = "Andreas Frisch <andreas.frisch@multimedia-labs.de>"
+
+DEPENDS = "libcdio"
 
 SRC_URI = "http://downloads.sourceforge.net/${PN}/${P}.tar.bz2"
 

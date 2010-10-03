@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/libcdio/"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPLv3+"
-DEPENDS = "libcddb ncurses"
+DEPENDS = "ncurses"
 INC_PR = "r1"
 
 SRC_URI = "${GNU_MIRROR}/${PN}/${P}.tar.gz"
