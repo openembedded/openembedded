@@ -1,0 +1,33 @@
+From: Matthew Garrett <mjg@redhat.com>
+To: linux-acpi@vger.kernel.org
+Subject: [PATCH] ACPI: Don't report current_now if battery reports in mWh
+Date: Mon, 23 Aug 2010 16:25:32 -0400
+Message-Id: <1282595132-5026-1-git-send-email-mjg@redhat.com>
+
+ACPI batteries can report in units of either current or energy. Right
+now we expose the current_now file even if the battery is reporting
+energy units, resulting in a file that should contain mA instead
+containing mW. Don't expose this value unless the battery is reporting
+current.
+
+Signed-off-by: Matthew Garrett <mjg@redhat.com>
+Cc: Arjan van de Ven <arjan@linux.intel.com>
+---
+ drivers/acpi/battery.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/acpi/battery.c b/drivers/acpi/battery.c
+index dc58402..9841720 100644
+--- a/drivers/acpi/battery.c
++++ b/drivers/acpi/battery.c
+@@ -273,7 +273,6 @@ static enum power_supply_property energy_battery_props[] = {
+ 	POWER_SUPPLY_PROP_CYCLE_COUNT,
+ 	POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN,
+ 	POWER_SUPPLY_PROP_VOLTAGE_NOW,
+-	POWER_SUPPLY_PROP_CURRENT_NOW,
+ 	POWER_SUPPLY_PROP_POWER_NOW,
+ 	POWER_SUPPLY_PROP_ENERGY_FULL_DESIGN,
+ 	POWER_SUPPLY_PROP_ENERGY_FULL,
+-- 
+1.7.2.1
+

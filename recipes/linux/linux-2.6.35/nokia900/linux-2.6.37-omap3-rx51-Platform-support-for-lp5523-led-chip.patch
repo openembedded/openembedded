@@ -1,0 +1,127 @@
+From 918726de27c3a817f1f2ae27a802ad74762d60eb Mon Sep 17 00:00:00 2001
+From: Ameya Palande <ameya.palande@nokia.com>
+Date: Wed, 18 Aug 2010 17:50:23 +0300
+Subject: [PATCH] omap3: rx51: Platform support for lp5523 led chip
+
+Signed-off-by: Ameya Palande <ameya.palande@nokia.com>
+---
+ arch/arm/mach-omap2/board-rx51-peripherals.c |   83 ++++++++++++++++++++++++++-
+ 1 file changed, 82 insertions(+), 1 deletion(-)
+
+--- a/arch/arm/mach-omap2/board-rx51-peripherals.c
++++ b/arch/arm/mach-omap2/board-rx51-peripherals.c
+@@ -46,6 +46,7 @@
+ 
+ #include <sound/tlv320aic3x.h>
+ #include <sound/tpa6130a2-plat.h>
++#include <linux/leds-lp5523.h>
+ 
+ #include "mux.h"
+ #include "hsmmc.h"
+@@ -68,6 +69,8 @@
+ #define LIS302_IRQ1_GPIO 181
+ #define LIS302_IRQ2_GPIO 180  /* Not yet in use */
+ 
++#define RX51_LP5523_CHIP_EN_GPIO        41
++
+ /* list all spi devices here */
+ enum {
+ 	RX51_SPI_WL1251,
+@@ -155,6 +158,79 @@
+ };
+ #endif
+ 
++#if defined(CONFIG_LEDS_LP5523) || defined(CONFIG_LEDS_LP5523_MODULE)
++static struct lp5523_led_config rx51_lp5523_led_config[] = {
++	{
++		.chan_nr	= 0,
++		.led_current	= 50,
++	}, {
++		.chan_nr	= 1,
++		.led_current	= 50,
++	}, {
++		.chan_nr	= 2,
++		.led_current	= 50,
++	}, {
++		.chan_nr	= 3,
++		.led_current	= 50,
++	}, {
++		.chan_nr	= 4,
++		.led_current	= 50,
++	}, {
++		.chan_nr	= 5,
++		.led_current	= 50,
++	}, {
++		.chan_nr	= 6,
++		.led_current	= 50,
++	}, {
++		.chan_nr	= 7,
++		.led_current	= 50,
++	}, {
++		.chan_nr	= 8,
++		.led_current	= 50,
++	}
++};
++
++static int rx51_lp5523_setup(void)
++{
++	int err;
++
++	err = gpio_request(RX51_LP5523_CHIP_EN_GPIO, "lp5523_enable");
++	if (err < 0) {
++		pr_err("Unable to get lp5523_enable GPIO\n");
++		return err;
++	}
++
++	err = gpio_direction_output(RX51_LP5523_CHIP_EN_GPIO, 1);
++	if (err < 0) {
++		pr_err("Failed to change direction for %d GPIO\n",
++				RX51_LP5523_CHIP_EN_GPIO);
++	}
++	return err;
++}
++
++static void rx51_lp5523_release(void)
++{
++	gpio_free(RX51_LP5523_CHIP_EN_GPIO);
++}
++
++static void rx51_lp5523_enable(bool state)
++{
++	if (state)
++		gpio_set_value(RX51_LP5523_CHIP_EN_GPIO, 1);
++	else
++		gpio_set_value(RX51_LP5523_CHIP_EN_GPIO, 0);
++}
++
++static struct lp5523_platform_data rx51_lp5523_platform_data = {
++	.led_config		= rx51_lp5523_led_config,
++	.num_channels		= ARRAY_SIZE(rx51_lp5523_led_config),
++	.clock_mode		= LP5523_CLOCK_AUTO,
++	.setup_resources	= rx51_lp5523_setup,
++	.release_resources 	= rx51_lp5523_release,
++	.enable			= rx51_lp5523_enable,
++};
++#endif
++
+ static struct omap2_mcspi_device_config wl1251_mcspi_config = {
+ 	.turbo_mode	= 0,
+ 	.single_channel	= 1,
+@@ -886,6 +962,12 @@
+ 		.platform_data = &rx51_tsl2563_platform_data,
+ 	},
+ #endif
++#if defined(CONFIG_LEDS_LP5523) || defined(CONFIG_LEDS_LP5523_MODULE)
++	{
++		I2C_BOARD_INFO("lp5523", 0x32),
++		.platform_data  = &rx51_lp5523_platform_data,
++	},
++#endif
+ 	{
+ 		I2C_BOARD_INFO("tpa6130a2", 0x60),
+ 		.platform_data = &rx51_tpa6130a2_data,
+@@ -1235,4 +1317,3 @@
+ 				ARRAY_SIZE(rx51_peripherals_spi_board_info));
+ 	omap2_hsmmc_init(mmc);
+ }
+-

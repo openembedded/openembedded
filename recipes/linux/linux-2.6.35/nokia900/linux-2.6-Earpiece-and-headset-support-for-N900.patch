@@ -1,0 +1,577 @@
+From 3a00b962f5d60f67b0c447a47ed173d8826ffa0b Mon Sep 17 00:00:00 2001
+From: Jarkko Nikula <jhnikula@gmail.com>
+Date: Tue, 29 Jun 2010 14:44:50 +0300
+Subject: [PATCH 09/11] Earpiece and headset support for N900
+
+This patch is combination of following patches:
+
+1. ASoC: RX-51: Add aic34b_dummy driver only for the RX-51
+
+Only purpose of this dummy driver is to support a few audio connections
+on Nokia RX-51/N900 HW. Currently ASoC framework supports only single audio
+codec per card. The RX-51 has two of them since the TLV320AIC34 audio codec
+used in RX-51 integrates basically two TLV320AIC33 codecs into a same chip.
+These instances are called as AIC34A and AIC34B. The AIC34A is used as an
+audio codec and the AIC34B is used kind of audio amplifier and mic bias
+driver.
+
+Ideally features of this driver are supported by the tlv320aic3x codec
+driver but as only single instance of it can exist currently, this driver
+registers needed features as additional controls and widgets for the card.
+
+This driver should vanish as soon as the ASoC multi-component framework
+maturises and gets integrated into mainline.
+
+Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+
+2. omap: rx51: Add second instance of the TLV320AIC34 codec
+
+TLV320AIC34 integrates basically two TLV320AIC33 audio codecs. The AIC34A
+is found from I2C address 0x18 and AIC34B from 0x19.
+
+Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+
+3. ASoC: RX-51: Add support for earpiece
+
+Earpiece is connected to HPL pins of the second TLV320AIC34 codec instance.
+Audio routings between AIC34A, AIC34B and earpiece is following
+
+	AIC34A MONO_LOUT -> AIC34B LINE2R -> AIC34B HPL -> earpiece
+
+Add support for this routing by using the aic34b_dummy driver.
+
+As the aic34b_dummy should vanish after the ASoC multi-component is ready,
+also this patch must be edited by modifying the audio_map accordingly.
+
+Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+
+4. ASoC: RX-51: Add mic input to AV jack
+
+Mic input is connected to LINE1L of the AIC34A via ECI_SW2 (name took from
+the Maemo 2.6.28 kernel sources) switch. This patch adds the headset feature
+to AV jack. Headset is combination of headphone stereo output with mic
+input.
+
+This patch doesn't drive the mic bias so signal will be too weak to be
+usable. The mic bias feature will be introduced by another patch.
+
+Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+
+5. SoC: RX-51: Add route for AIC34B generated mic bias
+
+This patch adds support for headset mic bias by using a feature provided
+by the aic34b_dummy driver.
+
+As the aic34b_dummy should vanish after the ASoC multi-component is ready,
+also this patch must be edited by modifying the audio_map accordingly.
+
+Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+---
+ arch/arm/mach-omap2/board-rx51-peripherals.c |    3 +
+ sound/soc/omap/Makefile                      |    2 +-
+ sound/soc/omap/aic34b_dummy.c                |  260 ++++++++++++++++++++++++++
+ sound/soc/omap/aic34b_dummy.h                |   29 +++
+ sound/soc/omap/rx51.c                        |   62 ++++++-
+ 5 files changed, 353 insertions(+), 3 deletions(-)
+ create mode 100644 sound/soc/omap/aic34b_dummy.c
+ create mode 100644 sound/soc/omap/aic34b_dummy.h
+
+diff --git a/arch/arm/mach-omap2/board-rx51-peripherals.c b/arch/arm/mach-omap2/board-rx51-peripherals.c
+index 0aab1a0..0d98752 100644
+--- a/arch/arm/mach-omap2/board-rx51-peripherals.c
++++ b/arch/arm/mach-omap2/board-rx51-peripherals.c
+@@ -853,6 +853,9 @@ static struct i2c_board_info __initdata rx51_peripherals_i2c_board_info_2[] = {
+ 		I2C_BOARD_INFO("tlv320aic3x", 0x18),
+ 		.platform_data = &rx51_aic3x_data,
+ 	},
++	{
++		I2C_BOARD_INFO("aic34b_dummy", 0x19),
++	},
+ #if defined(CONFIG_SENSORS_TSL2563) || defined(CONFIG_SENSORS_TSL2563_MODULE)
+ 	{
+ 		I2C_BOARD_INFO("tsl2563", 0x29),
+diff --git a/sound/soc/omap/Makefile b/sound/soc/omap/Makefile
+index ba9fc65..0a7374f 100644
+--- a/sound/soc/omap/Makefile
++++ b/sound/soc/omap/Makefile
+@@ -24,7 +24,7 @@ snd-soc-zoom2-objs := zoom2.o
+ snd-soc-igep0020-objs := igep0020.o
+ 
+ obj-$(CONFIG_SND_OMAP_SOC_N810) += snd-soc-n810.o
+-obj-$(CONFIG_SND_OMAP_SOC_RX51) += snd-soc-rx51.o
++obj-$(CONFIG_SND_OMAP_SOC_RX51) += snd-soc-rx51.o aic34b_dummy.o
+ obj-$(CONFIG_SND_OMAP_SOC_AMS_DELTA) += snd-soc-ams-delta.o
+ obj-$(CONFIG_SND_OMAP_SOC_OSK5912) += snd-soc-osk5912.o
+ obj-$(CONFIG_SND_OMAP_SOC_OVERO) += snd-soc-overo.o
+diff --git a/sound/soc/omap/aic34b_dummy.c b/sound/soc/omap/aic34b_dummy.c
+new file mode 100644
+index 0000000..bace5fc
+--- /dev/null
++++ b/sound/soc/omap/aic34b_dummy.c
+@@ -0,0 +1,260 @@
++/*
++ * aic34b_dummy.c  --  Dummy driver for AIC34 block B parts used in Nokia RX51
++ *
++ * Purpose for this driver is to cover few audio connections on Nokia RX51 HW
++ * which are connected into block B of TLV320AIC34 dual codec.
++ *
++ * Copyright (C) 2008 Nokia Corporation
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
++ * 02110-1301 USA
++ *
++ * TODO:
++ * - Get rid of this driver, at least when ASoC multi-component is merged into
++ *   mainline.
++ *   This driver is hacked only for Nokia RX51 HW.
++ */
++
++#include <linux/module.h>
++#include <linux/errno.h>
++#include <linux/device.h>
++#include <linux/i2c.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <sound/tlv.h>
++
++#include "../codecs/tlv320aic3x.h"
++
++struct i2c_client *aic34b_client;
++
++static int aic34b_read(struct i2c_client *client, unsigned int reg)
++{
++	int val;
++
++	val = i2c_smbus_read_byte_data(client, reg);
++
++	return val;
++}
++
++static int aic34b_write(struct i2c_client *client, unsigned int reg,
++			u8 value)
++{
++	u8 data[2];
++
++	data[0] = reg & 0xff;
++	data[1] = value & 0xff;
++
++	return (i2c_master_send(client, data, 2) == 2) ? 0 : -EIO;
++}
++
++static int aic34b_get_volsw(struct snd_kcontrol *kcontrol,
++			    struct snd_ctl_elem_value *ucontrol)
++{
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
++	unsigned int reg = mc->reg;
++	unsigned int shift = mc->shift;
++	int max = mc->max;
++	unsigned int mask = (1 << fls(max)) - 1;
++	unsigned int invert = mc->invert;
++	int val;
++
++	if (aic34b_client == NULL)
++		return 0;
++
++	val = (aic34b_read(aic34b_client, reg) >> shift) & mask;
++	if (invert)
++		val = max - val;
++	ucontrol->value.integer.value[0] = val;
++
++	return 0;
++}
++
++static int aic34b_put_volsw(struct snd_kcontrol *kcontrol,
++			    struct snd_ctl_elem_value *ucontrol)
++{
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
++	unsigned int reg = mc->reg;
++	unsigned int shift = mc->shift;
++	int max = mc->max;
++	unsigned int mask = (1 << fls(max)) - 1;
++	unsigned int invert = mc->invert;
++	unsigned int val = (ucontrol->value.integer.value[0] & mask);
++	int val_reg;
++
++	if (aic34b_client == NULL)
++		return 0;
++
++	if (invert)
++		val = max - val;
++
++	val_reg = aic34b_read(aic34b_client, reg);
++	if (((val_reg >> shift) & mask) == val) {
++		return 0;
++	}
++
++	val_reg &= ~(mask << shift);
++	val_reg |= val << shift;
++	aic34b_write(aic34b_client, reg, val_reg);
++
++	return 1;
++}
++
++static int aic34b_bypass_event(struct snd_soc_dapm_widget *w,
++			       struct snd_kcontrol *kcontrol, int event)
++{
++	int val;
++
++	if (aic34b_client == NULL)
++		return 0;
++
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		/* Connect LINE2R to RADC in differential mode and 0 dB gain */
++		aic34b_write(aic34b_client, LINE2R_2_RADC_CTRL, 0x80);
++		/* Unmute Right ADC-PGA */
++		aic34b_write(aic34b_client, RADC_VOL, 0x00);
++		/* Right PGA -> HPLOUT */
++		val = aic34b_read(aic34b_client, PGAR_2_HPLOUT_VOL);
++		aic34b_write(aic34b_client, PGAR_2_HPLOUT_VOL, val | 0x80);
++		/* Unmute HPLOUT with 1 dB gain */
++		aic34b_write(aic34b_client, HPLOUT_CTRL, 0x19);
++		/* Unmute HPLCOM with 1 dB gain */
++		aic34b_write(aic34b_client, HPLCOM_CTRL, 0x19);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		/* Disconnect LINE2R from RADC */
++		aic34b_write(aic34b_client, LINE2R_2_RADC_CTRL, 0xF8);
++		/* Mute Right ADC-PGA */
++		aic34b_write(aic34b_client, RADC_VOL, 0x80);
++		/* Detach Right PGA from HPLOUT */
++		val = aic34b_read(aic34b_client, PGAR_2_HPLOUT_VOL);
++		aic34b_write(aic34b_client, PGAR_2_HPLOUT_VOL, val & 0x7f);
++		/* Power down HPLOUT */
++		aic34b_write(aic34b_client, HPLOUT_CTRL, 0x06);
++		/* Power down HPLCOM */
++		aic34b_write(aic34b_client, HPLCOM_CTRL, 0x06);
++		break;
++	}
++
++	return 0;
++}
++
++static int aic34b_mic_bias_event(struct snd_soc_dapm_widget *w,
++				 struct snd_kcontrol *kcontrol, int event)
++{
++	if (aic34b_client == NULL)
++		return 0;
++
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		aic34b_write(aic34b_client, MICBIAS_CTRL, 2 << 6);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		aic34b_write(aic34b_client, MICBIAS_CTRL, 0);
++		break;
++	}
++
++	return 0;
++}
++
++static DECLARE_TLV_DB_SCALE(output_stage_tlv, -5900, 50, 1);
++
++static const struct snd_kcontrol_new aic34b_snd_controls[] = {
++	SOC_SINGLE_EXT_TLV("34B HPL PGAR Bypass Playback Volume",
++			   PGAR_2_HPLOUT_VOL, 0, 118, 1,
++			   aic34b_get_volsw, aic34b_put_volsw,
++			   output_stage_tlv),
++};
++
++static const struct snd_soc_dapm_widget aic34b_dapm_widgets[] = {
++	SND_SOC_DAPM_PGA_E("34B LINE2R HPL Bypass", SND_SOC_NOPM,
++			   0, 0, NULL, 0, aic34b_bypass_event,
++			   SND_SOC_DAPM_POST_PMU|SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MICBIAS_E("34B Mic Bias 2.5V", SND_SOC_NOPM,
++			   0, 0, aic34b_mic_bias_event,
++			   SND_SOC_DAPM_POST_PMU|SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_OUTPUT("34B_HPLOUT"),
++	SND_SOC_DAPM_OUTPUT("34B_HPLCOM"),
++	SND_SOC_DAPM_INPUT("34B_LINE2R"),
++};
++
++static const struct snd_soc_dapm_route audio_map[] = {
++	{"34B LINE2R HPL Bypass", NULL, "34B_LINE2R"},
++	{"34B_HPLOUT", NULL, "34B LINE2R HPL Bypass"},
++	{"34B_HPLCOM", NULL, "34B LINE2R HPL Bypass"},
++};
++
++int aic34b_add_controls(struct snd_soc_codec *codec)
++{
++	snd_soc_dapm_new_controls(codec, aic34b_dapm_widgets,
++				  ARRAY_SIZE(aic34b_dapm_widgets));
++	snd_soc_dapm_add_routes(codec, audio_map, ARRAY_SIZE(audio_map));
++	return snd_soc_add_controls(codec, aic34b_snd_controls,
++				    ARRAY_SIZE(aic34b_snd_controls));
++}
++EXPORT_SYMBOL_GPL(aic34b_add_controls);
++
++static int aic34b_dummy_probe(struct i2c_client *client,
++			const struct i2c_device_id *id)
++{
++	if (aic34b_read(client, AIC3X_PLL_PROGA_REG) != 0x10) {
++		/* Chip not present */
++		return -ENODEV;
++	}
++	aic34b_client = client;
++
++	return 0;
++}
++
++static int aic34b_dummy_remove(struct i2c_client *client)
++{
++	aic34b_client = NULL;
++
++	return 0;
++}
++
++static const struct i2c_device_id aic34b_dummy_id[] = {
++	{ "aic34b_dummy", 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, aic34b_dummy_id);
++
++static struct i2c_driver aic34b_dummy_driver = {
++	.driver = {
++		.name	= "aic34b_dummy"
++	},
++	.probe		= aic34b_dummy_probe,
++	.remove		= aic34b_dummy_remove,
++	.id_table	= aic34b_dummy_id,
++};
++
++static int __init aic34b_dummy_init(void)
++{
++	return i2c_add_driver(&aic34b_dummy_driver);
++}
++
++static void __exit aic34b_dummy_exit(void)
++{
++	i2c_del_driver(&aic34b_dummy_driver);
++}
++
++MODULE_AUTHOR();
++MODULE_DESCRIPTION("Dummy driver for AIC34 block B parts used on Nokia RX51");
++MODULE_LICENSE("GPL");
++
++module_init(aic34b_dummy_init);
++module_exit(aic34b_dummy_exit);
+diff --git a/sound/soc/omap/aic34b_dummy.h b/sound/soc/omap/aic34b_dummy.h
+new file mode 100644
+index 0000000..d37588a
+--- /dev/null
++++ b/sound/soc/omap/aic34b_dummy.h
+@@ -0,0 +1,29 @@
++/*
++ * aic34b_dummy.h
++ *
++ * Copyright (C) 2008 Nokia Corporation
++ *
++ * Contact: Jarkko Nikula <jarkko.nikula@nokia.com>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
++ * 02110-1301 USA
++ *
++ */
++
++#ifndef __AIC34B_DUMMY__
++#define __AIC34B_DUMMY__
++
++int aic34b_add_controls(struct snd_soc_codec *codec);
++
++#endif
+diff --git a/sound/soc/omap/rx51.c b/sound/soc/omap/rx51.c
+index 9b536da..5171428 100644
+--- a/sound/soc/omap/rx51.c
++++ b/sound/soc/omap/rx51.c
+@@ -38,9 +38,11 @@
+ #include "omap-pcm.h"
+ #include "../codecs/tlv320aic3x.h"
+ #include "../codecs/tpa6130a2.h"
++#include "aic34b_dummy.h"
+ 
+ #define RX51_TVOUT_SEL_GPIO		40
+ #define RX51_JACK_DETECT_GPIO		177
++#define RX51_ECI_SW2_GPIO		182
+ /*
+  * REVISIT: TWL4030 GPIO base in RX-51. Now statically defined to 192. This
+  * gpio is reserved in arch/arm/mach-omap2/board-rx51-peripherals.c
+@@ -51,18 +53,22 @@ enum {
+ 	RX51_JACK_DISABLED,
+ 	RX51_JACK_TVOUT,		/* tv-out with stereo audio */
+ 	RX51_JACK_HP,			/* stereo output, no mic */
++	RX51_JACK_HS,			/* stereo output with mic input */
+ };
+ 
+ static int rx51_spk_func;
+ static int rx51_dmic_func;
+ static int rx51_jack_func;
+ static int rx51_fmtx_func;
++static int rx51_ear_func;
+ 
+ static void rx51_ext_control(struct snd_soc_codec *codec)
+ {
+-	int hp = 0;
++	int hp = 0, mic = 0;
+ 
+ 	switch (rx51_jack_func) {
++	case RX51_JACK_HS:
++		mic = 1;
+ 	case RX51_JACK_TVOUT:
+ 	case RX51_JACK_HP:
+ 		hp = 1;
+@@ -85,6 +91,14 @@ static void rx51_ext_control(struct snd_soc_codec *codec)
+ 		snd_soc_dapm_enable_pin(codec, "FM Transmitter");
+ 	else
+ 		snd_soc_dapm_disable_pin(codec, "FM Transmitter");
++	if (rx51_ear_func)
++		snd_soc_dapm_enable_pin(codec, "Earpiece");
++	else
++		snd_soc_dapm_disable_pin(codec, "Earpiece");
++	if (mic)
++		snd_soc_dapm_enable_pin(codec, "Mic Jack");
++	else
++		snd_soc_dapm_disable_pin(codec, "Mic Jack");
+ 
+ 	gpio_set_value(RX51_TVOUT_SEL_GPIO,
+ 		       rx51_jack_func == RX51_JACK_TVOUT);
+@@ -238,6 +252,28 @@ static int rx51_set_fmtx(struct snd_kcontrol *kcontrol,
+ 	return 1;
+ }
+ 
++static int rx51_get_ear(struct snd_kcontrol *kcontrol,
++			struct snd_ctl_elem_value *ucontrol)
++{
++	ucontrol->value.integer.value[0] = rx51_ear_func;
++
++	return 0;
++}
++
++static int rx51_set_ear(struct snd_kcontrol *kcontrol,
++			struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
++
++	if (rx51_ear_func == ucontrol->value.integer.value[0])
++		return 0;
++
++	rx51_ear_func = ucontrol->value.integer.value[0];
++	rx51_ext_control(codec);
++
++	return 1;
++}
++
+ static struct snd_soc_jack rx51_av_jack;
+ 
+ static struct snd_soc_jack_gpio rx51_av_jack_gpios[] = {
+@@ -255,6 +291,8 @@ static const struct snd_soc_dapm_widget aic34_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MIC("DMic", NULL),
+ 	SND_SOC_DAPM_HP("Headphone Jack", NULL),
+ 	SND_SOC_DAPM_LINE("FM Transmitter", NULL),
++	SND_SOC_DAPM_SPK("Earpiece", NULL),
++	SND_SOC_DAPM_MIC("Mic Jack", NULL),
+ };
+ 
+ static const struct snd_soc_dapm_route audio_map[] = {
+@@ -271,18 +309,27 @@ static const struct snd_soc_dapm_route audio_map[] = {
+ 
+ 	{"FM Transmitter", NULL, "LLOUT"},
+ 	{"FM Transmitter", NULL, "RLOUT"},
++
++	{"34B_LINE2R", NULL, "MONO_LOUT"},
++	{"Earpiece", NULL, "34B_HPLOUT"},
++	{"Earpiece", NULL, "34B_HPLCOM"},
++
++	{"LINE1L", NULL, "34B Mic Bias 2.5V"},
++	{"34B Mic Bias 2.5V", NULL, "Mic Jack"}
+ };
+ 
+ static const char *spk_function[] = {"Off", "On"};
+ static const char *input_function[] = {"ADC", "Digital Mic"};
+-static const char *jack_function[] = {"Off", "TV-OUT", "Headphone"};
++static const char *jack_function[] = {"Off", "TV-OUT", "Headphone", "Headset"};
+ static const char *fmtx_function[] = {"Off", "On"};
++static const char *ear_function[] = {"Off", "On"};
+ 
+ static const struct soc_enum rx51_enum[] = {
+ 	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(spk_function), spk_function),
+ 	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(input_function), input_function),
+ 	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(jack_function), jack_function),
+ 	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(fmtx_function), fmtx_function),
++	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(ear_function), ear_function),
+ };
+ 
+ static const struct snd_kcontrol_new aic34_rx51_controls[] = {
+@@ -294,6 +341,8 @@ static const struct snd_kcontrol_new aic34_rx51_controls[] = {
+ 		     rx51_get_jack, rx51_set_jack),
+ 	SOC_ENUM_EXT("FMTX Function", rx51_enum[3],
+ 		     rx51_get_fmtx, rx51_set_fmtx),
++	SOC_ENUM_EXT("Earpiece Function",  rx51_enum[4],
++		     rx51_get_ear, rx51_set_ear),
+ };
+ 
+ static int rx51_aic34_init(struct snd_soc_codec *codec)
+@@ -319,6 +368,8 @@ static int rx51_aic34_init(struct snd_soc_codec *codec)
+ 	tpa6130a2_add_controls(codec);
+ 	snd_soc_limit_volume(codec, "TPA6130A2 Headphone Playback Volume", 42);
+ 
++	aic34b_add_controls(codec);
++
+ 	/* Set up RX-51 specific audio path audio_map */
+ 	snd_soc_dapm_add_routes(codec, audio_map, ARRAY_SIZE(audio_map));
+ 
+@@ -382,6 +433,10 @@ static int __init rx51_soc_init(void)
+ 	if (err)
+ 		goto err_gpio_tvout_sel;
+ 	gpio_direction_output(RX51_TVOUT_SEL_GPIO, 0);
++	err = gpio_request(RX51_ECI_SW2_GPIO, "eci_sw2");
++	if (err)
++		goto err_gpio_eci_sw2;
++	gpio_direction_output(RX51_ECI_SW2_GPIO, 1);
+ 
+ 	rx51_snd_device = platform_device_alloc("soc-audio", -1);
+ 	if (!rx51_snd_device) {
+@@ -401,6 +456,8 @@ static int __init rx51_soc_init(void)
+ err2:
+ 	platform_device_put(rx51_snd_device);
+ err1:
++	gpio_free(RX51_ECI_SW2_GPIO);
++err_gpio_eci_sw2:
+ 	gpio_free(RX51_TVOUT_SEL_GPIO);
+ err_gpio_tvout_sel:
+ 
+@@ -413,6 +470,7 @@ static void __exit rx51_soc_exit(void)
+ 				rx51_av_jack_gpios);
+ 
+ 	platform_device_unregister(rx51_snd_device);
++	gpio_free(RX51_ECI_SW2_GPIO);
+ 	gpio_free(RX51_TVOUT_SEL_GPIO);
+ }
+ 
+-- 
+1.7.0.4
+

@@ -1,0 +1,42 @@
+From 5a73bcd7e510891edf7964cd8ea7e1c0d1a7ec8a Mon Sep 17 00:00:00 2001
+From: Heikki Krogerus <ext-heikki.krogerus@nokia.com>
+Date: Thu, 9 Sep 2010 16:55:21 +0300
+Subject: [PATCH 3/5] usb: musb: ignore spurious SESSREQ interrupts
+
+The charger detection may cause spurious SESSREQ interrupts.
+This will ignore any SESSREQ interrupt if musb is B-device.
+
+Signed-off-by: Heikki Krogerus <ext-heikki.krogerus@nokia.com>
+---
+ drivers/usb/musb/musb_core.c |   15 ++++++++++-----
+ 1 files changed, 10 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/usb/musb/musb_core.c b/drivers/usb/musb/musb_core.c
+index 9504484..e4d0582 100644
+--- a/drivers/usb/musb/musb_core.c
++++ b/drivers/usb/musb/musb_core.c
+@@ -559,11 +559,16 @@ static irqreturn_t musb_stage0_irq(struct musb *musb, u8 int_usb,
+ 		 *  - ... to A_WAIT_BCON.
+ 		 * a_wait_vrise_tmout triggers VBUS_ERROR transitions
+ 		 */
+-		musb_writeb(mbase, MUSB_DEVCTL, MUSB_DEVCTL_SESSION);
+-		musb->ep0_stage = MUSB_EP0_START;
+-		musb->xceiv->state = OTG_STATE_A_IDLE;
+-		MUSB_HST_MODE(musb);
+-		musb_set_vbus(musb, 1);
++		if ((devctl & MUSB_DEVCTL_VBUS)
++				&& !(devctl & MUSB_DEVCTL_BDEVICE)) {
++			musb_writeb(mbase, MUSB_DEVCTL, MUSB_DEVCTL_SESSION);
++			musb->ep0_stage = MUSB_EP0_START;
++			musb->xceiv->state = OTG_STATE_A_IDLE;
++			MUSB_HST_MODE(musb);
++			musb_set_vbus(musb, 1);
++		} else {
++			DBG(5, "discarding SESSREQ INT\n");
++		}
+ 
+ 		handled = IRQ_HANDLED;
+ 	}
+-- 
+1.7.0.4
+

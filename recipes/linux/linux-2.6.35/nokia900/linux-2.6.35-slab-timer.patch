@@ -1,0 +1,38 @@
+From 1889a44e1ae886cc6bf1ddc903251d4c8cd2b909 Mon Sep 17 00:00:00 2001
+From: arjan <arjan@localhost.localdomain>
+Date: Wed, 6 Jan 2010 10:52:08 -0500
+Subject: [PATCH] slab: use deferred timers for its periodic housekeeping
+
+slab has a "once every 2 second" timer for its housekeeping.
+As the number of logical processors is growing, its more and more
+common that this 2 second timer becomes the primary wakeup source.
+
+This patch turns this housekeeping timer into a deferred timer,
+which means that the timer does not interrupt idle, but just runs
+at the next event that wakes the cpu up.
+
+The impact is that the timer likely runs a bit later, but during the
+delay no code is running so there's not all that much reason for
+a difference in housekeeping to occur because of this delay.
+
+Signed-off-by: Arjan van de Ven <arjan@linux.intel.com>
+---
+ mm/slab.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/mm/slab.c b/mm/slab.c
+index 7451bda..ef3cd3d 100644
+--- a/mm/slab.c
++++ b/mm/slab.c
+@@ -884,7 +884,7 @@ static void __cpuinit start_cpu_timer(int cpu)
+ 	 */
+ 	if (keventd_up() && reap_work->work.func == NULL) {
+ 		init_reap_node(cpu);
+-		INIT_DELAYED_WORK(reap_work, cache_reap);
++		INIT_DELAYED_WORK_DEFERRABLE(reap_work, cache_reap);
+ 		schedule_delayed_work_on(cpu, reap_work,
+ 					__round_jiffies_relative(HZ, cpu));
+ 	}
+-- 
+1.6.1.3
+

@@ -1,0 +1,148 @@
+From: Arjan van de Ven <arjan@linux.intel.com>
+Subject: Make the GMA600 driver work on IA platform kernels
+
+The GMA600 driver does not currently compile on IA kernels;
+this patch adds a few strategic ifdefs to make it at least compile
+so that people can test with it.
+
+Signed-off-by: Arjan van de Ven <arjan@linux.intel.com>
+
+diff --git a/drivers/staging/mrst/drv/psb_intel_dsi.c b/drivers/staging/mrst/drv/psb_intel_dsi.c
+index 30a3770..0e10a23 100644
+--- a/drivers/staging/mrst/drv/psb_intel_dsi.c
++++ b/drivers/staging/mrst/drv/psb_intel_dsi.c
+@@ -2236,10 +2236,12 @@ void mrst_dsi_init(struct drm_device *dev,
+ 	struct drm_connector *connector;
+ 	struct drm_encoder *encoder;
+ 
++#ifdef CONFIG_X86_MRST
+ 	if (mrst_platform_id() == MRST_PLATFORM_AAVA_SC) {
+ 		aava_koski_dsi_init(dev, mode_dev);
+ 		return;
+ 	}
++#endif
+ 
+ 	psb_intel_output = kzalloc(sizeof(struct psb_intel_output), GFP_KERNEL);
+ 	if (!psb_intel_output)
+diff --git a/drivers/staging/mrst/drv/psb_intel_dsi2.c b/drivers/staging/mrst/drv/psb_intel_dsi2.c
+index cca74d0..3de2699 100644
+--- a/drivers/staging/mrst/drv/psb_intel_dsi2.c
++++ b/drivers/staging/mrst/drv/psb_intel_dsi2.c
+@@ -3521,13 +3521,13 @@ void mid_dsi_init(struct drm_device *dev,
+ 		/* GPIO control to reset MIP */
+ 		gpio_request(128, "gfx");
+ 		gpio_direction_output(128, 1);
+-		__gpio_get_value(128);
++		gpio_get_value(128);
+ 		mode_dev->panel_fixed_mode = panel_fixed_mode;
+ 	} else {
+ 		/* GPIO control to reset MIP */
+ 		gpio_request(34, "gfx");
+ 		gpio_direction_output(34, 1);
+-		__gpio_get_value(128);
++		gpio_get_value(128);
+ 		mode_dev->panel_fixed_mode2 = panel_fixed_mode;
+ 	}
+ 
+diff --git a/drivers/staging/mrst/drv/psb_intel_dsi_aava.c b/drivers/staging/mrst/drv/psb_intel_dsi_aava.c
+index 6c27305..3ea8637 100644
+--- a/drivers/staging/mrst/drv/psb_intel_dsi_aava.c
++++ b/drivers/staging/mrst/drv/psb_intel_dsi_aava.c
+@@ -152,6 +152,7 @@ static int dsi_wait_hs_ctrl_fifo(struct drm_device *dev)
+ 
+ static void dsi_set_backlight_state(int state)
+ {
++#ifdef CONFIG_X86_MRST
+          u8 addr[2], value[2];
+ 
+          addr[0] = 0x2a;
+@@ -171,6 +172,7 @@ static void dsi_set_backlight_state(int state)
+ 
+          intel_scu_ipc_iowrite8(addr[0], value[0]);
+          intel_scu_ipc_iowrite8(addr[1], value[1]);
++#endif
+ }
+ 
+ 
+@@ -225,10 +227,12 @@ static void dsi_set_panel_reset_state(int state)
+ 		
+ 		        value &= 0xbf;
+ 		#endif /*AAVA_EV_0_5*/
++#ifdef CONFIG_X86_MRST
+ 			if(intel_scu_ipc_iowrite8(addr, value)) {
+ 		                printk("panel_reset_on: failed to write pmic reg 0xf4!\n");
+ 		                return;
+ 			} 
++#endif
+ 		#endif /*LINUX_VERSION_CODE*/
+ 		/* Minimum active time to trigger reset is 10us */
+ 		udelay(10);
+@@ -271,9 +275,11 @@ static void dsi_set_panel_reset_state(int state)
+ 		
+ 			value |= 0x40;
+ 		#endif
++#ifdef CONFIG_X86_MRST
+ 			if (intel_scu_ipc_iowrite8(addr, value)) {
+ 		                printk("panel_reset_off: failed to write pmic reg 0xe6!\n");
+ 		        }
++#endif
+ 		#endif	
+ 		/* Maximum startup time from reset is 120ms */
+ 		msleep(120);		
+diff --git a/drivers/staging/mrst/pvr/services4/3rdparty/linux_framebuffer_mrst/mrstlfb_displayclass.c b/drivers/staging/mrst/pvr/services4/3rdparty/linux_framebuffer_mrst/mrstlfb_displayclass.c
+index 8b457c4..2feef07 100644
+--- a/drivers/staging/mrst/pvr/services4/3rdparty/linux_framebuffer_mrst/mrstlfb_displayclass.c
++++ b/drivers/staging/mrst/pvr/services4/3rdparty/linux_framebuffer_mrst/mrstlfb_displayclass.c
+@@ -1990,7 +1990,7 @@ PVRSRV_ERROR MRSTLFBPrePowerState(IMG_HANDLE 		 hDevHandle,
+ 	MRSTLFB_DEVINFO* psDevInfo = (MRSTLFB_DEVINFO *)hDevHandle;
+ 	struct drm_device* dev = psDevInfo->psDrmDevice;
+ 	struct drm_psb_private *dev_priv = dev->dev_private;
+-	int pp_stat, ret;
++	int pp_stat;
+ 
+ 	if ((eNewPowerState == eCurrentPowerState) ||
+ 	    (eNewPowerState == PVRSRV_DEV_POWER_STATE_ON))
+@@ -2021,6 +2021,8 @@ PVRSRV_ERROR MRSTLFBPrePowerState(IMG_HANDLE 		 hDevHandle,
+ 		/*turn off PLLs*/
+ 		PSB_WVDC32(0, MRST_DPLL_A);
+ 	} else {
++#ifdef CONFIG_X86_MRST
++		int ret;
+ 		if (dev_priv->dsi_prePowerState == NULL) {
+ 			PSB_WVDC32(DPI_SHUT_DOWN, DPI_CONTROL_REG);
+ 			PSB_WVDC32(0x0, PIPEACONF);
+@@ -2040,6 +2042,7 @@ PVRSRV_ERROR MRSTLFBPrePowerState(IMG_HANDLE 		 hDevHandle,
+ 		#endif
+ 			if (ret)
+                                 printk(KERN_WARNING "IPC 0xE9 failed to turn off pnl pwr. Error is: %x\n", ret);
++#endif
+ 	}
+ 
+ 	return PVRSRV_OK;
+@@ -2054,7 +2057,6 @@ PVRSRV_ERROR MRSTLFBPostPowerState(IMG_HANDLE 		  hDevHandle,
+ 	struct drm_device* dev = psDevInfo->psDrmDevice;
+ 	struct drm_psb_private *dev_priv = dev->dev_private;
+ 	struct psb_gtt *pg = dev_priv->pg;
+-	int ret;
+ 
+ 	if ((eNewPowerState == eCurrentPowerState) ||
+ 	    (eNewPowerState == PVRSRV_DEV_POWER_STATE_OFF))
+@@ -2072,6 +2074,8 @@ PVRSRV_ERROR MRSTLFBPostPowerState(IMG_HANDLE 		  hDevHandle,
+ 	/*psb_gtt_init(dev_priv->pg, 1);*/
+ 
+ 	if (!dev_priv->iLVDS_enable) {
++#ifdef CONFIG_X86_MRST
++		int ret;
+ 		#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,34))
+ 			/* turn on mipi panel power */
+ 			ret = lnw_ipc_single_cmd(IPC_MSG_PANEL_ON_OFF, IPC_CMD_PANEL_ON, 0, 0);
+@@ -2081,8 +2085,8 @@ PVRSRV_ERROR MRSTLFBPostPowerState(IMG_HANDLE 		  hDevHandle,
+ 			if (ret)
+ 				printk(KERN_WARNING "IPC 0xE9 failed to turn on pnl pwr.  Error is: %x\n", ret);
+ 			msleep(2000); /* wait 2 seconds */
++#endif
+ 	}
+-
+ 	restore_display_registers(dev);
+ 
+ 	if (!dev_priv->iLVDS_enable && dev_priv->dsi_postPowerState != NULL)

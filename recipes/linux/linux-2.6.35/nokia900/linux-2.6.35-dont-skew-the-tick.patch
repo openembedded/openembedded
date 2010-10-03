@@ -1,0 +1,33 @@
+Subject: [patch] Remove the per cpu tick skew
+
+Historically, Linux has tried to make the regular timer tick on the various
+CPUs not happen at the same time, to avoid contention on xtime_lock.
+
+Nowadays, with the tickless kernel, this contention no longer happens
+since time keeping and updating are done differently. In addition,
+this skew is actually hurting power consumption in a measurable
+way on many-core systems.
+
+Signed-off-by: Arjan van de Ven <arjan@linux.intel.com>
+
+--- linux.trees.git/kernel/time/tick-sched.c~	2010-07-16 09:40:50.000000000 -0400
++++ linux.trees.git/kernel/time/tick-sched.c	2010-07-26 11:18:51.138003329 -0400
+@@ -780,7 +780,6 @@
+ {
+ 	struct tick_sched *ts = &__get_cpu_var(tick_cpu_sched);
+ 	ktime_t now = ktime_get();
+-	u64 offset;
+ 
+ 	/*
+ 	 * Emulate tick processing via per-CPU hrtimers:
+@@ -790,10 +789,6 @@
+ 
+ 	/* Get the next period (per cpu) */
+ 	hrtimer_set_expires(&ts->sched_timer, tick_init_jiffy_update());
+-	offset = ktime_to_ns(tick_period) >> 1;
+-	do_div(offset, num_possible_cpus());
+-	offset *= smp_processor_id();
+-	hrtimer_add_expires_ns(&ts->sched_timer, offset);
+ 
+ 	for (;;) {
+ 		hrtimer_forward(&ts->sched_timer, now, tick_period);

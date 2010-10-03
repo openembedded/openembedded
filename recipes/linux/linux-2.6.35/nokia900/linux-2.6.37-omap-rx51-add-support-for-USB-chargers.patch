@@ -1,0 +1,34 @@
+From 5f4f847f1b506f45f7e64eb2add20e29f496b0cb Mon Sep 17 00:00:00 2001
+From: Heikki Krogerus <ext-heikki.krogerus@nokia.com>
+Date: Thu, 19 Aug 2010 14:09:37 +0200
+Subject: [PATCH 2/2] omap: rx51: add support for USB chargers
+
+This enables isp1704 power supply driver on RX51, allowing
+USB charger detection with N900.
+
+Backported to 2.6.35 by: Ameya Palande <ameya.palande@nokia.com>
+
+Signed-off-by: Heikki Krogerus <ext-heikki.krogerus@nokia.com>
+---
+ arch/arm/mach-omap2/board-rx51-peripherals.c |    5 +++++
+ 1 file changed, 5 insertions(+)
+
+--- a/arch/arm/mach-omap2/board-rx51-peripherals.c
++++ b/arch/arm/mach-omap2/board-rx51-peripherals.c
+@@ -274,6 +274,10 @@
+ 	},
+ };
+ 
++static struct platform_device rx51_charger_device = {
++	.name = "isp1704_charger",
++};
++
+ #if defined(CONFIG_KEYBOARD_GPIO) || defined(CONFIG_KEYBOARD_GPIO_MODULE)
+ 
+ #define RX51_GPIO_CAMERA_LENS_COVER	110
+@@ -1316,4 +1320,5 @@
+ 	spi_register_board_info(rx51_peripherals_spi_board_info,
+ 				ARRAY_SIZE(rx51_peripherals_spi_board_info));
+ 	omap2_hsmmc_init(mmc);
++	platform_device_register(&rx51_charger_device);
+ }

@@ -1,0 +1,86 @@
+From: Ameya Palande <ameya.palande@nokia.com>
+Date: Fri, 13 Aug 2010 10:32:08 +0300
+Subject: [PATCH] EEM support for g_nokia
+
+Signed-off-by: Ameya Palande <ameya.palande@nokia.com>
+---
+ drivers/usb/gadget/Kconfig |   16 ++++++++++++++++
+ drivers/usb/gadget/nokia.c |   21 ++++++++++++++++++---
+ 2 files changed, 34 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/usb/gadget/Kconfig b/drivers/usb/gadget/Kconfig
+index 591ae9f..9f3031c 100644
+--- a/drivers/usb/gadget/Kconfig
++++ b/drivers/usb/gadget/Kconfig
+@@ -860,6 +860,22 @@ config USB_G_NOKIA
+ 	  It's only really useful for N900 hardware. If you're building
+ 	  a kernel for N900, say Y or M here. If unsure, say N.
+ 
++config USB_G_NOKIA_EEM
++       bool "Ethernet Emulation Model (EEM) support"
++       depends on USB_G_NOKIA
++       default n
++       help
++         CDC EEM is a newer USB standard that is somewhat simpler than CDC ECM
++         and therefore can be supported by more hardware.  Technically ECM and
++         EEM are designed for different applications.  The ECM model extends
++         the network interface to the target (e.g. a USB cable modem), and the
++         EEM model is for mobile devices to communicate with hosts using
++         ethernet over USB.  For Linux gadgets, however, the interface with
++         the host is the same (a usbX device), so the differences are minimal.
++
++         If you say "y" here, the Ethernet gadget driver will use the EEM
++         protocol rather than ECM.  If unsure, say "n".
++
+ config USB_G_MULTI
+ 	tristate "Multifunction Composite Gadget (EXPERIMENTAL)"
+ 	depends on BLOCK && NET
+diff --git a/drivers/usb/gadget/nokia.c b/drivers/usb/gadget/nokia.c
+index 7d6b66a..f1c2647 100644
+--- a/drivers/usb/gadget/nokia.c
++++ b/drivers/usb/gadget/nokia.c
+@@ -46,6 +46,7 @@
+ #include "u_serial.c"
+ #include "f_acm.c"
+ #include "f_ecm.c"
++#include "f_eem.c"
+ #include "f_obex.c"
+ #include "f_serial.c"
+ #include "f_phonet.c"
+@@ -97,6 +98,14 @@ static struct usb_device_descriptor device_desc = {
+ 
+ /*-------------------------------------------------------------------------*/
+ 
++#ifdef CONFIG_USB_G_NOKIA_EEM
++static int use_eem = 1;
++#else
++static int use_eem;
++#endif
++module_param(use_eem, bool, 0);
++MODULE_PARM_DESC(use_eem, "use CDC EEM mode");
++
+ /* Module */
+ MODULE_DESCRIPTION("Nokia composite gadget driver for N900");
+ MODULE_AUTHOR("Felipe Balbi");
+@@ -126,9 +135,15 @@ static int __init nokia_bind_config(struct usb_configuration *c)
+ 	if (status)
+ 		printk(KERN_DEBUG "could not bind acm config\n");
+ 
+-	status = ecm_bind_config(c, hostaddr);
+-	if (status)
+-		printk(KERN_DEBUG "could not bind ecm config\n");
++	if (use_eem) {
++		status = eem_bind_config(c);
++		if (status)
++			printk(KERN_DEBUG "could not bind eem config\n");
++	} else {
++		status = ecm_bind_config(c, hostaddr);
++		if (status)
++			printk(KERN_DEBUG "could not bind ecm config\n");
++	}
+ 
+ 	return status;
+ }
+-- 
+1.7.0.4
+

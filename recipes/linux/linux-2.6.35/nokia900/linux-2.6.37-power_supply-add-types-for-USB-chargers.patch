@@ -1,0 +1,47 @@
+From e4516f4634cdef198063b399108bbeee15fc37b6 Mon Sep 17 00:00:00 2001
+From: Heikki Krogerus <ext-heikki.krogerus@nokia.com>
+Date: Thu, 9 Sep 2010 14:37:15 +0200
+Subject: [PATCH 4/5] power_supply: add types for USB chargers
+
+This adds power supply types for USB chargers defined in
+Battery Charging Specification 1.1.
+
+Signed-off-by: Heikki Krogerus <ext-heikki.krogerus@nokia.com>
+---
+ drivers/power/power_supply_sysfs.c |    3 ++-
+ include/linux/power_supply.h       |    5 ++++-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/power/power_supply_sysfs.c b/drivers/power/power_supply_sysfs.c
+index 9d30eeb..88f5e43 100644
+--- a/drivers/power/power_supply_sysfs.c
++++ b/drivers/power/power_supply_sysfs.c
+@@ -42,7 +42,8 @@ static ssize_t power_supply_show_property(struct device *dev,
+ 					  struct device_attribute *attr,
+ 					  char *buf) {
+ 	static char *type_text[] = {
+-		"Battery", "UPS", "Mains", "USB"
++		"Battery", "UPS", "Mains", "USB",
++		"USB_DCP", "USB_CDP", "USB_ACA"
+ 	};
+ 	static char *status_text[] = {
+ 		"Unknown", "Charging", "Discharging", "Not charging", "Full"
+diff --git a/include/linux/power_supply.h b/include/linux/power_supply.h
+index 30083a8..d37fef6 100644
+--- a/include/linux/power_supply.h
++++ b/include/linux/power_supply.h
+@@ -125,7 +125,10 @@ enum power_supply_type {
+ 	POWER_SUPPLY_TYPE_BATTERY = 0,
+ 	POWER_SUPPLY_TYPE_UPS,
+ 	POWER_SUPPLY_TYPE_MAINS,
+-	POWER_SUPPLY_TYPE_USB,
++	POWER_SUPPLY_TYPE_USB,		/* Standard Downstream Port */
++	POWER_SUPPLY_TYPE_USB_DCP,	/* Dedicated Charging Port */
++	POWER_SUPPLY_TYPE_USB_CDP,	/* Charging Downstream Port */
++	POWER_SUPPLY_TYPE_USB_ACA,	/* Accessory Charger Adapters */
+ };
+ 
+ union power_supply_propval {
+-- 
+1.7.0.4
+

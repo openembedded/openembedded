@@ -1,0 +1,13 @@
+Index: linux-2.6.34/drivers/bluetooth/btusb.c
+===================================================================
+--- linux-2.6.34.orig/drivers/bluetooth/btusb.c
++++ linux-2.6.34/drivers/bluetooth/btusb.c
+@@ -1020,6 +1020,8 @@ static int btusb_probe(struct usb_interf
+ 		return err;
+ 	}
+ 
++	usb_enable_autosuspend(data->udev);
++
+ 	usb_set_intfdata(intf, data);
+ 
+ 	return 0;

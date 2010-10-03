@@ -1,0 +1,28 @@
+From: Arjan van de Ven <arjan@linux.intel.com>
+Subject: mrst: fix argument inverstion
+
+ipc_simple_command takes "subsystem, command" as arguments
+not "command, subsystem".
+
+Signed-off-by: Arjan van de Ven <arjan@linux.intel.com>
+
+--- linux-2.6.35/drivers/rtc/rtc-mrst.c~	2010-08-24 11:58:41.000000000 -0400
++++ linux-2.6.35/drivers/rtc/rtc-mrst.c	2010-08-24 12:41:01.150003160 -0400
+@@ -123,7 +123,7 @@
+ 
+ 	spin_unlock_irqrestore(&rtc_lock, flags);
+ 
+-	ret = intel_scu_ipc_simple_command(IPC_CMD_VRTC_SETTIME, IPCMSG_VRTC);
++	ret = intel_scu_ipc_simple_command(IPCMSG_VRTC, IPC_CMD_VRTC_SETTIME);
+ 	return ret;
+ }
+ 
+@@ -223,7 +223,7 @@
+ 
+ 	spin_unlock_irq(&rtc_lock);
+ 
+-	ret = intel_scu_ipc_simple_command(IPC_CMD_VRTC_SETALARM, IPCMSG_VRTC);
++	ret = intel_scu_ipc_simple_command(IPCMSG_VRTC, IPC_CMD_VRTC_SETALARM);
+ 	if (ret)
+ 		return ret;
+ 

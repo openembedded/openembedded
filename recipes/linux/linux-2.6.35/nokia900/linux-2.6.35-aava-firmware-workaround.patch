@@ -1,0 +1,39 @@
+From 70d63e7fbc48b7f93b605fcbf9096eb4b8fa441c Mon Sep 17 00:00:00 2001
+From: Jiang, Chao <chao.jiang@intel.com>
+Date: Thu, 29 Jul 2010 11:17:28 +0800
+Subject: [PATCH] add cy8ctmg110 board info
+
+The current batch of Aava devices have a firmware bug where the
+touch screen is not present in the SFI tables.
+This patch manually fake-inserts this entry from the mrst
+code; and will be dropped once the fixed firmware becomes available.
+
+
+Signed-off-by: Jiang, Chao <chao.jiang@intel.com>
+---
+ arch/x86/kernel/mrst.c |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
+
+diff --git a/arch/x86/kernel/mrst.c b/arch/x86/kernel/mrst.c
+index 88ca4cf..211b134 100644
+--- a/arch/x86/kernel/mrst.c
++++ b/arch/x86/kernel/mrst.c
+@@ -1121,6 +1121,15 @@ static int __init sfi_parse_i2cb(struct sfi_table_header *table)
+ 		i2c_register_board_info(busnum, &info, 1);
+ 	}
+ 
++	if (mrst_platform_id() == MRST_PLATFORM_AAVA_SC) {
++		/*Add AAVA SC touch screen*/
++		info.irq = 59;
++		info.addr = 0x38;
++		info.platform_data = NULL;
++		strcpy(info.type, "cy8ctmg110");
++		i2c_register_board_info(0, &info, 1);
++	}
++
+ 	return 0;
+ }
+ 
+-- 
+1.6.2.5
+

@@ -1,0 +1,66 @@
+From: Arjan van de Ven <arjan@linux.intel.com>
+Subject: workaround for an initialization bug in the Aava firmware
+
+based on code from James Ausmus <james.ausmus@intel.com> and 
+Chao Jiang <chao.jiang@intel.com>; wiggle the power lines on the wifi
+on aava devices because the firmware forgot to do that during system power on.
+
+Signed-off-by: Arjan van de Ven <arjan@linux.intel.com>
+
+
+
+diff --git a/arch/x86/kernel/mrst.c b/arch/x86/kernel/mrst.c
+index 7263cd9..e6999b3 100644
+--- a/arch/x86/kernel/mrst.c
++++ b/arch/x86/kernel/mrst.c
+@@ -1074,6 +1074,41 @@ static struct pca953x_platform_data max7315_pdata;
+ static struct pca953x_platform_data max7315_pdata_2;
+ static struct lis3lv02d_platform_data lis3lv02d_pdata;
+ 
++static int intel_mrst_sdio_8688_power_up(void)
++{
++	u8 temp = 0;
++
++	if (mrst_platform_id() == MRST_PLATFORM_AAVA_SC) {
++		/* Set GYMXIOCNT for Marvell 8688 */
++		intel_scu_ipc_iowrite8(0x4a, 0x3f);
++		/* Set GYMX33CNT for Marvell 8688 */
++		intel_scu_ipc_iowrite8(0x4e, 0x3f);
++
++		/* WLAN/BT power-up sequence: */
++		/* 1. power (GPO4) & reset (GPO3) low */
++		/* 2. power (GPO4) high */
++		/* 3. reset (GPO3) high */
++
++		/* WLAN POWER and RESET low */
++		intel_scu_ipc_ioread8(0xf4, &temp);
++		temp &= ~0x18;
++		intel_scu_ipc_iowrite8(0xf4, temp);
++
++		/* Enable V1p8_VWYMXARF for MRVL8688 */
++		intel_scu_ipc_iowrite8(0x4c, 0x27);
++
++		/* WLAN POWER high */
++		temp |= 0x10;
++		intel_scu_ipc_iowrite8(0xf4, temp);
++
++		/* WLAN RESET high */
++		temp |= 0x8;
++		intel_scu_ipc_iowrite8(0xf4, temp);
++	}
++	return 0;
++}
++
++
+ static int __init sfi_parse_i2cb(struct sfi_table_header *table)
+ {
+ 	struct sfi_table_simple *sb;
+@@ -1139,6 +1174,8 @@ static int __init sfi_parse_i2cb(struct sfi_table_header *table)
+ 		info.platform_data = NULL;
+ 		strcpy(info.type, "cy8ctmg110");
+ 		i2c_register_board_info(0, &info, 1);
++
++		intel_mrst_sdio_8688_power_up();		
+ 	}
+ 
+ 	return 0;

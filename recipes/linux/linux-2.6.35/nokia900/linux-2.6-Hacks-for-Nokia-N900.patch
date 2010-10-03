@@ -1,0 +1,651 @@
+From df0b24d1e5fcb0a409debf3f9f1fcfd32f6cb2e8 Mon Sep 17 00:00:00 2001
+From: Felipe Balbi <felipe.balbi@nokia.com>
+Date: Mon, 4 Jan 2010 15:05:37 +0200
+Subject: [PATCH 01/11] Hacks for Nokia N900
+
+This patch is combination of following hacks:
+
+1. usb: musb: add mA and charger sysfs entries
+
+   This is the same mA entry and charger entry used in Fremantle program.
+   We are adding it as __deprecated because it will change and this is
+   done just for us to be able to test USB charging funtionality.
+
+   One difference from Fremantle is that we now issue
+   sysfs_notify() when that value changes.
+
+   Signed-off-by: Felipe Balbi <felipe.balbi@nokia.com>
+   Signed-off-by: Ameya Palande <ameya.palande@nokia.com>
+
+2. usb: musb: add suspend sysfs entry
+
+   This patch is combination of following patches:
+   1. usb: musb: suspend notification only when needed
+   2. usb: musb: Notify sysfs on suspend
+   3. usb: musb: fix build with MUSB Host only mode
+
+   Signed-off-by: Niilo Minkkinen <ext-niilo.1.minkkinen@nokia.com>
+   Signed-off-by: Heikki Krogerus <ext-heikki.krogerus@nokia.com>
+   Signed-off-by: Felipe Balbi <felipe.balbi@nokia.com>
+   Signed-off-by: Roger Quadros <ext-roger.quadros@nokia.com>
+   Signed-off-by: Jouni Hogander <jouni.hogander@nokia.com>
+   Signed-off-by: Ameya Palande <ameya.palande@nokia.com>
+
+3. usb: otg: add detect_charger field to otg_transceiver
+
+   Then we can allow musb to kick charger detection on transceiver.
+   This is added as __deprecated because it only exists to mimic
+   the behavior we had in Fremantle.
+
+   Signed-off-by: Felipe Balbi <felipe.balbi@nokia.com>
+
+4. OMAP2/3 clock: implement clock rate/parent change notifiers
+
+   Patch-Mainline: Not sure
+
+   This patch allows core code and driver code to register for
+   notification when a clock's rate or parent changes.  These are useful
+   because drivers don't have exclusive control over a clock's rate:
+   power management code (e.g., CPUFreq) may cause rate changes across
+   large parts of the clock tree.
+
+   There are three notifier messages:
+
+   1. a pre-change notifier, called before the change;
+
+   2. a post-change notifier, called after the change; and
+
+   3. an abort notifier, called if the change fails for any reason after
+      the pre-change notifier callbacks have run.
+
+   Since the implementation uses a blocking notifier, notifier code may
+   block waiting for devices to quiesce; but long delays here will reduce
+   the effectiveness of DVFS.  Since notifier callbacks are called with
+   clocks_mutex held, callback code must not re-enter the clock framework.
+
+   Pre-change notifiers are passed the current clock rate and the
+   post-change notifiers the new clock rate. The notifiers are called even
+   if the clock rate is the same before and after the change.  This is
+   because reprogramming a clock's parent or rate may briefly disrupt the
+   clock.
+
+   There are likely to be few users of these notifiers, compared to the
+   total number of clocks.  So, rather than storing one notifier per
+   struct clk, notifiers are stored in a separate, dynamically allocated
+   list, effectively trading execution speed (in terms of a sequential
+   scan of the notifier list) for memory savings.  The implementation is
+   completely hidden from the callbacks and can be easily changed.
+
+   Until prototypes for these functions are made available in
+   include/linux/clk.h, drivers should pass function pointers to
+   clk_notifier_register() and clk_notifier_unregister() via their
+   platform_data struct.
+
+   This patch is a collaboration between Tero Kristo
+   <tero.kristo@nokia.com> and Paul Walmsley <paul@pwsan.com> and several
+   others. Hiroshi Doyu <Hiroshi.DOYU@nokia.com> tracked down and fixed a
+   bug where blocking_notifier_chain_*() were called while interrupts
+   were disabled.  Nishanth Menon <nm@ti.com> found and fixed a bug in
+   the clk_notifier_unregister() path, where a list_del() was missing.
+   And thanks to Jouni Hogander <jouni.hogander@nokia.com> for comments
+   and review during the evolution of these patches.
+
+   Signed-off-by: Paul Walmsley <paul@pwsan.com>
+   Signed-off-by: Tero Kristo <tero.kristo@nokia.com>
+
+5. PM: export missing symbols
+
+   Patch-Mainline: never as this is a temporary hack
+
+   Needed by the PVR driver.
+
+   This patch is combined version of the following patches
+
+   1. PM: export clk_notifier_{register/unregister}
+   2. PM: export omap_pm_set_min_bus_tput
+
+   Signed-off-by: Imre Deak <imre.deak@nokia.com>
+   Signed-off-by: Roger Quadros <roger.quadros@nokia.com>
+---
+ arch/arm/plat-omap/clock.c              |  208 +++++++++++++++++++++++++++++++
+ arch/arm/plat-omap/include/plat/clock.h |   63 +++++++++-
+ arch/arm/plat-omap/omap-pm-noop.c       |    1 +
+ drivers/usb/musb/musb_core.c            |   47 +++++++-
+ drivers/usb/musb/musb_core.h            |    2 +
+ drivers/usb/musb/musb_gadget.c          |    9 ++
+ include/linux/usb/otg.h                 |   11 ++
+ 7 files changed, 339 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/plat-omap/clock.c b/arch/arm/plat-omap/clock.c
+index 7190cbd..f17e433 100644
+--- a/arch/arm/plat-omap/clock.c
++++ b/arch/arm/plat-omap/clock.c
+@@ -21,6 +21,7 @@
+ #include <linux/cpufreq.h>
+ #include <linux/debugfs.h>
+ #include <linux/io.h>
++#include <linux/slab.h>
+ 
+ #include <plat/clock.h>
+ 
+@@ -29,6 +30,78 @@ static DEFINE_MUTEX(clocks_mutex);
+ static DEFINE_SPINLOCK(clockfw_lock);
+ 
+ static struct clk_functions *arch_clock;
++static LIST_HEAD(clk_notifier_list);
++
++/*
++ * _clk_free_notifier_chain - safely remove struct clk_notifier
++ * @cn: struct clk_notifier *
++ *
++ * Removes the struct clk_notifier @cn from the clk_notifier_list and
++ * frees it.
++ */
++static void _clk_free_notifier_chain(struct clk_notifier *cn)
++{
++	list_del(&cn->node);
++	kfree(cn);
++}
++
++/*
++ * omap_clk_notify - call clk notifier chain
++ * @clk: struct clk * that is changing rate
++ * @msg: clk notifier type (i.e., CLK_POST_RATE_CHANGE; see mach/clock.h)
++ * @old_rate: old rate
++ * @new_rate: new rate
++ *
++ * Triggers a notifier call chain on the post-clk-rate-change notifier
++ * for clock 'clk'.  Passes a pointer to the struct clk and the
++ * previous and current rates to the notifier callback.  Intended to be
++ * called by internal clock code only.  No return value.
++ */
++static void omap_clk_notify(struct clk *clk, unsigned long msg)
++{
++	struct clk_notifier *cn;
++	struct clk_notifier_data cnd;
++
++	cnd.clk = clk;
++	cnd.rate = clk->rate;
++
++	list_for_each_entry(cn, &clk_notifier_list, node) {
++		if (cn->clk == clk) {
++			blocking_notifier_call_chain(&cn->notifier_head, msg,
++						     &cnd);
++			break;
++		}
++	}
++}
++
++/*
++ * omap_clk_notify_downstream - trigger clock change notifications
++ * @clk: struct clk * to start the notifications with
++ * @msg: notifier msg - see "Clk notifier callback types" in mach/clock.h
++ *
++ * Call clock change notifiers on clocks starting with @clk and including
++ * all of @clk's downstream children clocks.  Returns NOTIFY_DONE.
++ */
++static int omap_clk_notify_downstream(struct clk *clk, unsigned long msg)
++{
++	struct clk *child;
++	int ret;
++
++	if (!clk->notifier_count)
++		return NOTIFY_DONE;
++
++	omap_clk_notify(clk, msg);
++
++	if (list_empty(&clk->children))
++		return NOTIFY_DONE;
++
++	list_for_each_entry(child, &clk->children, sibling) {
++		ret = omap_clk_notify_downstream(child, msg);
++		if (ret)
++			break;
++	}
++	return ret;
++}
+ 
+ /*
+  * Standard clock functions defined in include/linux/clk.h
+@@ -115,10 +188,16 @@ int clk_set_rate(struct clk *clk, unsigned long rate)
+ {
+ 	unsigned long flags;
+ 	int ret = -EINVAL;
++	int msg;
+ 
+ 	if (clk == NULL || IS_ERR(clk))
+ 		return ret;
+ 
++	mutex_lock(&clocks_mutex);
++
++	if (clk->notifier_count)
++		omap_clk_notify_downstream(clk, CLK_PRE_RATE_CHANGE);
++
+ 	spin_lock_irqsave(&clockfw_lock, flags);
+ 	if (arch_clock->clk_set_rate)
+ 		ret = arch_clock->clk_set_rate(clk, rate);
+@@ -129,6 +208,12 @@ int clk_set_rate(struct clk *clk, unsigned long rate)
+ 	}
+ 	spin_unlock_irqrestore(&clockfw_lock, flags);
+ 
++	msg = (ret) ? CLK_ABORT_RATE_CHANGE : CLK_POST_RATE_CHANGE;
++
++	omap_clk_notify_downstream(clk, msg);
++
++	mutex_unlock(&clocks_mutex);
++
+ 	return ret;
+ }
+ EXPORT_SYMBOL(clk_set_rate);
+@@ -137,10 +222,16 @@ int clk_set_parent(struct clk *clk, struct clk *parent)
+ {
+ 	unsigned long flags;
+ 	int ret = -EINVAL;
++	int msg;
+ 
+ 	if (clk == NULL || IS_ERR(clk) || parent == NULL || IS_ERR(parent))
+ 		return ret;
+ 
++	mutex_lock(&clocks_mutex);
++
++	if (clk->notifier_count)
++		omap_clk_notify_downstream(clk, CLK_PRE_RATE_CHANGE);
++
+ 	spin_lock_irqsave(&clockfw_lock, flags);
+ 	if (clk->usecount == 0) {
+ 		if (arch_clock->clk_set_parent)
+@@ -154,6 +245,12 @@ int clk_set_parent(struct clk *clk, struct clk *parent)
+ 		ret = -EBUSY;
+ 	spin_unlock_irqrestore(&clockfw_lock, flags);
+ 
++	msg = (ret) ? CLK_ABORT_RATE_CHANGE : CLK_POST_RATE_CHANGE;
++
++	omap_clk_notify_downstream(clk, msg);
++
++	mutex_unlock(&clocks_mutex);
++
+ 	return ret;
+ }
+ EXPORT_SYMBOL(clk_set_parent);
+@@ -384,9 +481,120 @@ void clk_exit_cpufreq_table(struct cpufreq_frequency_table **table)
+ }
+ #endif
+ 
++/* Clk notifier implementation */
++
++/*
++ * clk_notifier_register - add a clock parameter change notifier
++ * @clk: struct clk * to watch
++ * @nb: struct notifier_block * with callback info
++ *
++ * Request notification for changes to the clock 'clk'.  This uses a
++ * blocking notifier.  Callback code must not call into the clock
++ * framework, as clocks_mutex is held.  Pre-notifier callbacks will be
++ * passed the previous and new rate of the clock.
++ *
++ * clk_notifier_register() must be called from process
++ * context.  Returns -EINVAL if called with null arguments, -ENOMEM
++ * upon allocation failure; otherwise, passes along the return value
++ * of blocking_notifier_chain_register().
++ */
++int clk_notifier_register(struct clk *clk, struct notifier_block *nb)
++{
++	struct clk_notifier *cn = NULL, *cn_new = NULL;
++	int r;
++	struct clk *clkp;
++
++	if (!clk || !nb)
++		return -EINVAL;
++
++	mutex_lock(&clocks_mutex);
++
++	list_for_each_entry(cn, &clk_notifier_list, node)
++		if (cn->clk == clk)
++			break;
++
++	if (cn->clk != clk) {
++		cn_new = kzalloc(sizeof(struct clk_notifier), GFP_KERNEL);
++		if (!cn_new) {
++			r = -ENOMEM;
++			goto cnr_out;
++		};
++
++		cn_new->clk = clk;
++		BLOCKING_INIT_NOTIFIER_HEAD(&cn_new->notifier_head);
++
++		list_add(&cn_new->node, &clk_notifier_list);
++		cn = cn_new;
++	}
++
++	r = blocking_notifier_chain_register(&cn->notifier_head, nb);
++	if (!IS_ERR_VALUE(r)) {
++		clkp = clk;
++		do {
++			clkp->notifier_count++;
++		} while ((clkp = clkp->parent));
++	} else {
++		if (cn_new)
++			_clk_free_notifier_chain(cn);
++	}
++
++cnr_out:
++	mutex_unlock(&clocks_mutex);
++
++	return r;
++}
++EXPORT_SYMBOL(clk_notifier_register);
++
+ /*
++ * clk_notifier_unregister - remove a clock change notifier
++ * @clk: struct clk *
++ * @nb: struct notifier_block * with callback info
+  *
++ * Request no further notification for changes to clock 'clk'.
++ * Returns -EINVAL if called with null arguments; otherwise, passes
++ * along the return value of blocking_notifier_chain_unregister().
+  */
++int clk_notifier_unregister(struct clk *clk, struct notifier_block *nb)
++{
++	struct clk_notifier *cn = NULL;
++	struct clk *clkp;
++	int r = -EINVAL;
++
++	if (!clk || !nb)
++		return -EINVAL;
++
++	mutex_lock(&clocks_mutex);
++
++	list_for_each_entry(cn, &clk_notifier_list, node)
++		if (cn->clk == clk)
++			break;
++
++	if (cn->clk != clk) {
++		r = -ENOENT;
++		goto cnu_out;
++	};
++
++	r = blocking_notifier_chain_unregister(&cn->notifier_head, nb);
++	if (!IS_ERR_VALUE(r)) {
++		clkp = clk;
++		do {
++			clkp->notifier_count--;
++		} while ((clkp = clkp->parent));
++	}
++
++	/*
++	 * XXX ugh, layering violation.  There should be some
++	 * support in the notifier code for this.
++	 */
++	if (!cn->notifier_head.head)
++		_clk_free_notifier_chain(cn);
++
++cnu_out:
++	mutex_unlock(&clocks_mutex);
++
++	return r;
++}
++EXPORT_SYMBOL(clk_notifier_unregister);
+ 
+ #ifdef CONFIG_OMAP_RESET_CLOCKS
+ /*
+diff --git a/arch/arm/plat-omap/include/plat/clock.h b/arch/arm/plat-omap/include/plat/clock.h
+index dfc472c..2f584c8 100644
+--- a/arch/arm/plat-omap/include/plat/clock.h
++++ b/arch/arm/plat-omap/include/plat/clock.h
+@@ -15,6 +15,8 @@
+ 
+ #include <linux/list.h>
+ 
++#include <linux/notifier.h>
++
+ struct module;
+ struct clk;
+ struct clockdomain;
+@@ -116,6 +118,37 @@ struct dpll_data {
+ 
+ #endif
+ 
++/*
++ * struct clk_notifier - associate a clk with a notifier
++ * @clk: struct clk * to associate the notifier with
++ * @notifier_head: a blocking_notifier_head for this clk
++ * @node: linked list pointers
++ *
++ * A list of struct clk_notifier is maintained by the notifier code.
++ * An entry is created whenever code registers the first notifier on a
++ * particular @clk.  Future notifiers on that @clk are added to the
++ * @notifier_head.
++ */
++struct clk_notifier {
++	struct clk			*clk;
++	struct blocking_notifier_head	notifier_head;
++	struct list_head		node;
++};
++
++/*
++ * struct clk_notifier_data - rate data to pass to the notifier callback
++ * @clk: struct clk * being changed
++ * @rate: current rate of this clock
++ *
++ * This struct is passed as parameter to the clock notifier callbacks when
++ * a clock is changed. Current rate of the clock is passed along with the
++ * call in pre-notifier, and the new rate in post-notifier.
++ */
++struct clk_notifier_data {
++	struct clk			*clk;
++	unsigned long			rate;
++};
++
+ struct clk {
+ 	struct list_head	node;
+ 	const struct clkops	*ops;
+@@ -129,6 +162,7 @@ struct clk {
+ 	int			(*set_rate)(struct clk *, unsigned long);
+ 	long			(*round_rate)(struct clk *, unsigned long);
+ 	void			(*init)(struct clk *);
++	u16			notifier_count;
+ 	__u8			enable_bit;
+ 	__s8			usecount;
+ 	u8			fixed_div;
+@@ -178,6 +212,8 @@ extern void recalculate_root_clocks(void);
+ extern unsigned long followparent_recalc(struct clk *clk);
+ extern void clk_enable_init_clocks(void);
+ unsigned long omap_fixed_divisor_recalc(struct clk *clk);
++extern int clk_notifier_register(struct clk *clk, struct notifier_block *nb);
++extern int clk_notifier_unregister(struct clk *clk, struct notifier_block *nb);
+ #ifdef CONFIG_CPU_FREQ
+ extern void clk_init_cpufreq_table(struct cpufreq_frequency_table **table);
+ extern void clk_exit_cpufreq_table(struct cpufreq_frequency_table **table);
+@@ -204,7 +240,32 @@ extern struct clk dummy_ck;
+ #define RATE_IN_4430		(1 << 5)
+ 
+ #define RATE_IN_24XX		(RATE_IN_242X | RATE_IN_243X)
+-
+ #define RATE_IN_3430ES2PLUS	(RATE_IN_3430ES2 | RATE_IN_36XX)
+ 
++/*
++ * Clk notifier callback types
++ *
++ * Since the notifier is called with interrupts disabled, any actions
++ * taken by callbacks must be extremely fast and lightweight.
++ *
++ * CLK_PRE_RATE_CHANGE - called immediately before the clock rate is
++ *     changed. Drivers must immediately terminate any operations that
++ *     will be affected by the rate change.  Callbacks must always
++ *     return NOTIFY_DONE.
++ *
++ * CLK_ABORT_RATE_CHANGE: called if the rate change failed for some
++ *     reason after CLK_PRE_RATE_CHANGE.  In this case, all registered
++ *     notifiers on the clock will be called with
++ *     CLK_ABORT_RATE_CHANGE. Callbacks must always return
++ *     NOTIFY_DONE.
++ *
++ * CLK_POST_RATE_CHANGE - called after the clock rate change has
++ *     successfully completed.  Callbacks must always return
++ *     NOTIFY_DONE.
++ *
++ */
++#define CLK_PRE_RATE_CHANGE		1
++#define CLK_ABORT_RATE_CHANGE		2
++#define CLK_POST_RATE_CHANGE		3
++
+ #endif
+diff --git a/arch/arm/plat-omap/omap-pm-noop.c b/arch/arm/plat-omap/omap-pm-noop.c
+index 186bca8..9418f56 100644
+--- a/arch/arm/plat-omap/omap-pm-noop.c
++++ b/arch/arm/plat-omap/omap-pm-noop.c
+@@ -84,6 +84,7 @@ void omap_pm_set_min_bus_tput(struct device *dev, u8 agent_id, unsigned long r)
+ 	 * TI CDP code can call constraint_set here on the VDD2 OPP.
+ 	 */
+ }
++EXPORT_SYMBOL(omap_pm_set_min_bus_tput);
+ 
+ void omap_pm_set_max_dev_wakeup_lat(struct device *dev, long t)
+ {
+diff --git a/drivers/usb/musb/musb_core.c b/drivers/usb/musb/musb_core.c
+index 3b795c5..9504484 100644
+--- a/drivers/usb/musb/musb_core.c
++++ b/drivers/usb/musb/musb_core.c
+@@ -1789,8 +1789,38 @@ musb_vbus_show(struct device *dev, struct device_attribute *attr, char *buf)
+ }
+ static DEVICE_ATTR(vbus, 0644, musb_vbus_show, musb_vbus_store);
+ 
++static ssize_t
++musb_ma_show(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	struct musb	*musb = dev_to_musb(dev);
++
++	return snprintf(buf, PAGE_SIZE, "%d\n", musb->power_draw);
++}
++static DEVICE_ATTR(mA, 0444, musb_ma_show, NULL);
++
++static ssize_t
++musb_charger_show(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	struct musb	*musb = dev_to_musb(dev);
++	int		charger;
++
++	charger = otg_detect_charger(musb->xceiv);
++
++	return snprintf(buf, PAGE_SIZE, "%d\n", charger);
++}
++static DEVICE_ATTR(charger, 0444, musb_charger_show, NULL);
++
+ #ifdef CONFIG_USB_GADGET_MUSB_HDRC
+ 
++static ssize_t
++musb_suspend_show(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	struct musb *musb = dev_to_musb(dev);
++
++	return sprintf(buf, "%d\n", musb->is_suspended);
++}
++static DEVICE_ATTR(suspend, 0444, musb_suspend_show, NULL);
++
+ /* Gadget drivers can't know that a host is connected so they might want
+  * to start SRP, but users can.  This allows userspace to trigger SRP.
+  */
+@@ -1819,7 +1849,10 @@ static DEVICE_ATTR(srp, 0644, NULL, musb_srp_store);
+ static struct attribute *musb_attributes[] = {
+ 	&dev_attr_mode.attr,
+ 	&dev_attr_vbus.attr,
++	&dev_attr_mA.attr,
++	&dev_attr_charger.attr,
+ #ifdef CONFIG_USB_GADGET_MUSB_HDRC
++	&dev_attr_suspend.attr,
+ 	&dev_attr_srp.attr,
+ #endif
+ 	NULL
+@@ -1835,12 +1868,24 @@ static const struct attribute_group musb_attr_group = {
+ static void musb_irq_work(struct work_struct *data)
+ {
+ 	struct musb *musb = container_of(data, struct musb, irq_work);
+-	static int old_state;
++	static int old_state, old_suspend;
++	static int old_power_draw;
+ 
+ 	if (musb->xceiv->state != old_state) {
+ 		old_state = musb->xceiv->state;
+ 		sysfs_notify(&musb->controller->kobj, NULL, "mode");
+ 	}
++
++	if (musb->power_draw != old_power_draw) {
++		old_power_draw = musb->power_draw;
++		sysfs_notify(&musb->controller->kobj, NULL, "mA");
++	}
++#ifdef CONFIG_USB_GADGET_MUSB_HDRC
++	if (old_suspend != musb->is_suspended) {
++		old_suspend = musb->is_suspended;
++		sysfs_notify(&musb->controller->kobj, NULL, "suspend");
++	}
++#endif
+ }
+ 
+ /* --------------------------------------------------------------------------
+diff --git a/drivers/usb/musb/musb_core.h b/drivers/usb/musb/musb_core.h
+index 91d6779..52e4b6a 100644
+--- a/drivers/usb/musb/musb_core.h
++++ b/drivers/usb/musb/musb_core.h
+@@ -401,6 +401,8 @@ struct musb {
+ 
+ 	u8			min_power;	/* vbus for periph, in mA/2 */
+ 
++	unsigned		power_draw __deprecated; /* current power drawn, gadget only */
++
+ 	bool			is_host;
+ 
+ 	int			a_wait_bcon;	/* VBUS timeout in msecs */
+diff --git a/drivers/usb/musb/musb_gadget.c b/drivers/usb/musb/musb_gadget.c
+index 6fca870..ca10aef 100644
+--- a/drivers/usb/musb/musb_gadget.c
++++ b/drivers/usb/musb/musb_gadget.c
+@@ -1521,8 +1521,17 @@ static int musb_gadget_vbus_draw(struct usb_gadget *gadget, unsigned mA)
+ {
+ 	struct musb	*musb = gadget_to_musb(gadget);
+ 
++	/* REVISIT we shouldn't need to be passing
++	 * this kind of value to userland. We have
++	 * now the blocking notifier for transceivers
++	 * which could very well handle this
++	 */
++	musb->power_draw = mA;
++	schedule_work(&musb->irq_work);
++
+ 	if (!musb->xceiv->set_power)
+ 		return -EOPNOTSUPP;
++
+ 	return otg_set_power(musb->xceiv, mA);
+ }
+ 
+diff --git a/include/linux/usb/otg.h b/include/linux/usb/otg.h
+index f8302d0..685943f 100644
+--- a/include/linux/usb/otg.h
++++ b/include/linux/usb/otg.h
+@@ -117,6 +117,8 @@ struct otg_transceiver {
+ 	/* start or continue HNP role switch */
+ 	int	(*start_hnp)(struct otg_transceiver *otg);
+ 
++	/* detect a charger */
++	int	(*detect_charger)(struct otg_transceiver *otg) __deprecated;
+ };
+ 
+ 
+@@ -226,6 +228,15 @@ otg_start_srp(struct otg_transceiver *otg)
+ 	return otg->start_srp(otg);
+ }
+ 
++static inline int
++otg_detect_charger(struct otg_transceiver *otg)
++{
++	if (otg->detect_charger)
++		return otg->detect_charger(otg);
++
++	return 0;
++}
++
+ /* notifiers */
+ static inline int
+ otg_register_notifier(struct otg_transceiver *otg, struct notifier_block *nb)
+-- 
+1.7.0.4
+
