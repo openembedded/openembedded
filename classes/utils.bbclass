@@ -467,7 +467,7 @@ create_wrapper () {
    cmdname=`basename $cmd`.real
    cat <<END >$cmd
 #!/bin/sh
-exec env $@ \`dirname \$0\`/$cmdname
+exec env $@ \`dirname \$0\`/$cmdname "\$@"
 END
    chmod +x $cmd
 }
