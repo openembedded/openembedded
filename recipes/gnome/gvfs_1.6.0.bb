@@ -2,7 +2,7 @@ DESCRIPTION = "gvfs is a userspace virtual filesystem"
 LICENSE = "LGPL"
 DEPENDS = "libcdio gawk-native libimobiledevice gnome-keyring glib-2.0 obexftp fuse avahi fuse hal gconf samba gphoto2"
 
-PR = "r1"
+PR = "r2"
 
 inherit gnome
 
