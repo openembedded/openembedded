@@ -4,8 +4,9 @@ LICENSE = "MIT"
 HOMEPAGE = "http://www.lua.org/"
 
 DEPENDS += "readline"
-PR = "r5"
+PR = "r6"
 SRC_URI = "http://www.lua.org/ftp/lua-${PV}.tar.gz \
+           file://bitwise_operators.patch \
            file://lua5.1.pc"
 S = "${WORKDIR}/lua-${PV}"
 
