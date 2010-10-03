@@ -4,7 +4,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPLv3+"
 DEPENDS = "ncurses"
-INC_PR = "r1"
+INC_PR = "r2"
 
 SRC_URI = "${GNU_MIRROR}/${PN}/${P}.tar.gz"
 
@@ -14,7 +14,7 @@ EXTRA_OECONF = "ac_cv_member_struct_tm_tm_gmtoff=no"
 
 PACKAGES += "${PN}-utils"
 
-FILES_${PN} = "${libdir}/lib${PN}${SOLIB}"
+FILES_${PN} = "${libdir}/${PN}${SOLIB}"
 FILES_${PN}-utils = "${bindir}/*"
 
 python populate_packages_prepend () {
