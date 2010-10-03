@@ -8,5 +8,4 @@ APP_INSTALL = ""
 # fso+zhone
 ZHONE_INSTALL = "\
   task-fso-compliance \
-  paroli \
 "

@@ -100,7 +100,6 @@ RDEPENDS_task-openmoko-feed = "\
   gzip \
   zip \
   firefox \
-  paroli \
   pidgin \
   epdfview \
   midori \

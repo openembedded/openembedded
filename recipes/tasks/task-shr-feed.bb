@@ -158,7 +158,6 @@ RDEPENDS_${PN} += "\
 		synergy \
 		irssi \
 		zhone \
-		paroli \
 		cu \
 		net-tools \
 		iproute2 \

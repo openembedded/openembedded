@@ -77,7 +77,6 @@ ZHONE_INSTALL = "\
 
 # additional apps
 APPS_INSTALL = "\
-  paroli \
   gpe-gallery \
   gpe-sketchbook \
   gpe-filemanager \
