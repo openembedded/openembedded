@@ -1,0 +1,17 @@
+Index: chicken-4.6.0/defaults.make
+===================================================================
+--- chicken-4.6.0.orig/defaults.make
++++ chicken-4.6.0/defaults.make
+@@ -274,10 +274,12 @@ POSIXFILE ?= posixunix
+ CHICKEN_CONFIG_H = chicken-config.h
+ 
+ ifneq ($(ARCH),)
++ifneq ($(ARCH),arm)
+ HACKED_APPLY ?= 1
+ APPLY_HACK_SRC ?= apply-hack.$(ARCH)$(ASM)
+ APPLY_HACK_OBJECT ?= apply-hack.$(ARCH)$(O)
+ endif
++endif
+ 
+ ifeq ($(HACKED_APPLY),)
+ APPLY_HACK_OBJECT =

@@ -8,8 +8,9 @@
 DESCRIPTION = "The fbset console tool"
 LICENSE = "GPLv2"
 RRECOMMENDS_${PN} = "fbset-modes"
+DEPENDS = "bison-native"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://ftp.debian.org/debian/pool/main/f/fbset/fbset_2.1.orig.tar.gz \
            file://makefile.patch"

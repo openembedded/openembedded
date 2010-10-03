@@ -13,7 +13,7 @@ PROVIDES += "virtual/libintl virtual/libiconv"
 COMPATIBLE_TARGET_SYS ?= "(?!nios2)"
 
 # INC_PR for glibc.inc, glibc-initial.inc and glibc-stage.inc
-INC_PR = "r36"
+INC_PR = "r37"
 
 inherit autotools
 

@@ -60,7 +60,7 @@ python ti_bin_do_unpack() {
     tarfile  = bb.data.getVar('TARFILE', localdata)    
     if bool(tarfile) == True:
         tarfile  = bb.data.expand(tarfile, localdata)
-        tcmd = 'tar xz --no-same-owner -f %s -C %s' % (tarfile, workdir)
+        tcmd = 'tar x --no-same-owner -f %s -C %s' % (tarfile, workdir)
         if os.system(tcmd) != 0:
             print "ERROR: ti-eula-unpack: failed to extract tarfile"
             raise bb.build.FuncFailed()

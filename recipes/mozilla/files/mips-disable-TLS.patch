@@ -1,0 +1,12 @@
+# See https://bugzilla.mozilla.org/show_bug.cgi?id=528687
+# The bug report's configure.in patch not usable as we dont autoconf.
+--- mozilla-1.9.2/configure.orig	2010-09-24 10:18:43.000000000 +0930
++++ mozilla-1.9.2/configure	2010-09-24 10:19:47.000000000 +0930
+@@ -12659,6 +12659,7 @@
+ rm -f conftest*
+ fi
+ 
++ac_cv_thread_keyword=no
+ echo "$ac_t""$ac_cv_thread_keyword" 1>&6
+ LDFLAGS=$_SAVE_LDFLAGS
+ if test "$ac_cv_thread_keyword" = yes; then

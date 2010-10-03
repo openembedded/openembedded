@@ -6,7 +6,7 @@ DEPENDS = "glib-2.0 ecore evas edje"
 SECTION = "x11/clients"
 
 PV = "1.0.99+gitr${SRCPV}"
-SRCREV = "fc51f730414aa9efd716849ac64ce582e53cfaf1"
+SRCREV = "9e637a52cf470162600439c1dcb3814fe4a325e9"
 
 SRC_URI = "git://gitorious.org/mokosuite2/mokowm.git;protocol=git"
 S = "${WORKDIR}/git"

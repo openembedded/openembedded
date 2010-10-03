@@ -1,27 +1,17 @@
---- free42-orig/gtk/Makefile	2007-01-06 09:37:55.000000000 -0800
-+++ free42gtk/gtk/Makefile	2007-09-02 23:54:34.000000000 -0700
-@@ -35,20 +35,14 @@
- 	core_math2.o core_phloat.o core_sto_rcl.o core_tables.o \
- 	core_variables.o
- 
--ifdef BCD_MATH
- CXXFLAGS += -DBCD_MATH
- SRCS += bcdfloat.cc bcd.cc bcdmath.cc
- OBJS += bcdfloat.o bcd.o bcdmath.o
- EXE = free42dec
--else
--EXE = free42bin
--endif
- 
- $(EXE): $(OBJS)
- 	$(CXX) -o $(EXE) $(LDFLAGS) $(OBJS) $(LIBS)
+Index: free42/gtk/Makefile
+===================================================================
+--- free42.orig/gtk/Makefile
++++ free42/gtk/Makefile
+@@ -57,8 +57,6 @@ ifdef OLPC
+ 	rm -rf Free42.activity
+ endif
  
 -$(SRCS): symlinks
 -
  .cc.o:
  	$(CXX) $(CXXFLAGS) -c -o $@ $<
  
-@@ -64,74 +58,18 @@
+@@ -74,74 +72,18 @@ keymap2cc: keymap2cc.cc
  keymap.cc: keymap2cc keymap.txt
  	./keymap2cc
  

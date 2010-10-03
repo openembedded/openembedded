@@ -7,9 +7,11 @@ LICENSE = "GPL"
 DEPENDS = "sqlite3"
 APPTYPE = "binary"
 APPDESKTOP = "${WORKDIR}/zbedic/misc"
-PR = "r4"
+PR = "r5"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/bedic/libbedic_${PV}-0.tgz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/bedic/libbedic_${PV}-0.tgz \
+           file://include-cstdio.patch \
+          "
 
 S = "${WORKDIR}"
 

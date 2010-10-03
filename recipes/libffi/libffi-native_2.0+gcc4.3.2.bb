@@ -20,11 +20,13 @@ install_libffi_headers() {
 	:
 }
 
-do_stage () {
-	oe_libinstall -so -C .libs libffi ${STAGING_LIBDIR}
+do_install () {
+	install -d ${D}${libdir} ${D}${includedir}
+	oe_libinstall -so -C .libs libffi ${D}${libdir}
 
-	mkdir -p ${STAGING_INCDIR}/
 	for i in ${ffi_include}; do
-		install -m 0644 include/$i ${STAGING_INCDIR}/
+		install -m 0644 include/$i ${D}${includedir}/
 	done
 }
+
+NATIVE_INSTALL_WORKS = "1"

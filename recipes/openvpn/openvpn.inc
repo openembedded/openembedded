@@ -4,7 +4,9 @@ SECTION = "console/network"
 LICENSE = "GPLv2"
 PRIORITY = "optional"
 DEPENDS = "lzo openssl"
-RDEPENDS_${PN} = "kernel-module-tun"
+RRECOMMENDS_${PN} = "kernel-module-tun"
+
+INC_PR = "r2"
 
 SRC_URI = "http://openvpn.net/release/openvpn-${PV}.tar.gz \
 	file://openvpn"

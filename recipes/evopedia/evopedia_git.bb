@@ -3,28 +3,22 @@ AUTHOR = "Christian Reitwießner"
 HOMEPAGE = "http://www.reitwiessner.de/openmoko/evopedia.html"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS_${PN} = "python python-xml python-shell python-netclient python-mime \
-            python-netserver python-io python-compression"
 RRECOMMENDS_${PN} = "midori"
-RRECOMMENDS_shr = "ventura"
+RRECOMMENDS_${PN}_shr = "eve"
 
-PV = "0.3.0-rc3+gitr${SRCPV}"
-PR = "r2"
+PV = "0.4.0+gitr${SRCPV}"
 
-SRC_URI = "git://github.com/crei/evopedia.git;protocol=http;branch=master"
+SRC_URI = "git://gitorious.org/evopedia/evopedia.git;protocol=git;branch=master"
 
-SRCREV = "2e92cc7b4b709c7551337e7a2c76e6737c241e38"
-S = "${WORKDIR}/git/evopedia"
+SRCREV = "f5d159c75106680a8b39137ad100d7e3a531f0b2"
+S = "${WORKDIR}/git"
 
-inherit distutils
+inherit qt4x11
 
-do_configure_append_shr() {
-  sed -i "s#/usr/bin/midori#/usr/bin/ventura#g" ${S}/evopedia.sh
+EXTRA_QMAKEVARS_PRE += " PREFIX=/usr"
+
+FILES_${PN}-dbg += "${bindir}/.debug"
+
+do_install() {
+       oe_runmake install INSTALL_ROOT=${D}
 }
-
-PACKAGE_ARCH = "all"
-
-FILES_${PN} += "${datadir}/applications \
-                ${datadir}/evopedia \
-                ${datadir}/pixmaps \
-                "

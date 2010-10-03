@@ -3,23 +3,6 @@
 #the symlink to be preserved (resulting in the file the link is pointing to
 #to be refreshed).
 
---- quilt-0.48.orig/quilt/scripts/patchfns.in.org	2010-07-09 11:35:07.992300000 -0700
-+++ quilt-0.48/quilt/scripts/patchfns.in	2010-07-09 11:41:01.312300001 -0700
-@@ -783,7 +783,13 @@ cat_to_new_file()
- {
- 	local filename="$1"
- 
--	[ -e "$filename" ] && rm -f "$filename"
-+	if [ -e "$filename" ]
-+	then
-+	    if [ "$QUILT_NO_RM_SYMLINKS" != "yes" ]
-+	    then
-+		rm -f "$filename"
-+	    fi
-+	fi
- 
- 	case "$filename" in
- 	*.gz)
 --- quilt-0.48.orig/quilt.quiltrc.org	2010-07-09 11:45:07.582300001 -0700
 +++ quilt-0.48/quilt.quiltrc	2010-07-09 11:46:35.222300001 -0700
 @@ -29,3 +29,9 @@ QUILT_PATCHES_PREFIX=yes
@@ -32,3 +15,17 @@
 +#to be refreshed).
 +QUILT_NO_RM_SYMLINKS=yes
 +
+--- quilt-0.48/quilt/scripts/patchfns.in.org	2010-09-24 23:18:14.055834001 -0700
++++ quilt-0.48/quilt/scripts/patchfns.in	2010-09-24 23:20:07.365834001 -0700
+@@ -783,7 +783,10 @@ cat_to_new_file()
+ {
+ 	local filename="$1"
+ 
+-	[ -e "$filename" ] && rm -f "$filename"
++	if [ -L "$filename" -a "$QUILT_NO_RM_SYMLINKS" != "yes" ]
++	then
++	   rm -f "$filename"
++        fi
+ 
+ 	case "$filename" in
+ 	*.gz)

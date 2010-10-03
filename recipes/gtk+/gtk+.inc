@@ -16,7 +16,7 @@ SRC_URI = "http://download.gnome.org/sources/gtk+/${MAJ_VER}/gtk+-${PV}.tar.bz2;
 	file://xsettings.patch \
 	"
 
-INC_PR = "r8"
+INC_PR = "r9"
 
 inherit autotools pkgconfig
 
@@ -79,8 +79,12 @@ do_install_virtclass-native () {
 	install -d ${D}${sysconfdir}/gtk-2.0
 	rm -f ${D}${libdir}/gtk-2.0/*/*.la ${D}${libdir}/gtk-2.0/${LIBV}/*/*.la
 
-	mkdir -p "${D}${sysconfdir}/gtk-2.0"
-	${B}/gdk-pixbuf/gdk-pixbuf-query-loaders ${B}/gdk-pixbuf/.libs/*.so | sed 's:${B}/gdk-pixbuf/.libs:${STAGING_LIBDIR}/gtk-2.0/${LIBV}/loaders:' > "${D}${sysconfdir}/gtk-2.0/gdk-pixbuf.loaders"
+	create_wrapper ${D}${bindir}/gdk-pixbuf-query-loaders \
+		'"GDK_PIXBUF_MODULEDIR=${STAGING_LIBDIR}/gtk-2.0/${LIBV}/loaders"'
+	${D}${bindir}/gdk-pixbuf-query-loaders > \
+		"${D}${sysconfdir}/gtk-2.0/gdk-pixbuf.loaders"
+	create_wrapper ${D}${bindir}/gdk-pixbuf-csource \
+		'"GDK_PIXBUF_MODULE_FILE=${D}${sysconfdir}/gtk-2.0/gdk-pixbuf.loaders"'
 }
 
 postinst_prologue() {

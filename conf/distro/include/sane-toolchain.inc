@@ -5,14 +5,14 @@
 #############################################################################
 
 # Base line versions, good for most things
-PREFERRED_GCC_VERSION                ?= "4.4.4"
+PREFERRED_GCC_VERSION                ?= "4.5"
 PREFERRED_BINUTILS                   ?= "2.20.1"
 
 # Prefer glibc 2.6 and uclibc 0.9.30, these have had the most testing.
 PREFERRED_VERSION_glibc             ?= "2.10.1"
 PREFERRED_VERSION_glibc-initial     ?= "2.10.1"
-PREFERRED_VERSION_eglibc             ?= "2.11"
-PREFERRED_VERSION_eglibc-initial     ?= "2.11"
+PREFERRED_VERSION_eglibc             ?= "2.12"
+PREFERRED_VERSION_eglibc-initial     ?= "2.12"
 PREFERRED_UCLIBC_VERSION            ?= "0.9.31"
 
 # Some systems need a special gcc version

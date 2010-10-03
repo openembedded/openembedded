@@ -2,6 +2,8 @@ require docbook-sgml-dtd-native.inc
 
 DTD_VERSION = "4.1"
 
+PR = "${INC_PR}.0"
+
 SRC_URI = "http://docbook.org/sgml/4.1/docbk41.zip"
 
 do_compile() {

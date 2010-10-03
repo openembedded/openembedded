@@ -6,9 +6,9 @@ LICENSE = "TI BSD"
 require ti-paths.inc
 require ti-staging.inc
 
-COMPATIBLE_MACHINE = "(da830-omapl137-evm|da850-omapl138-evm)"
+COMPATIBLE_MACHINE = "(omapl137|omapl138)"
 
-PR = "r2"
+PR = "r3"
 
 S = "${WORKDIR}/pspdrivers_${PV}"
 

@@ -1,0 +1,63 @@
+Index: libspiff-0.8.2/examples/read/read.cpp
+===================================================================
+--- libspiff-0.8.2.orig/examples/read/read.cpp
++++ libspiff-0.8.2/examples/read/read.cpp
+@@ -40,6 +40,7 @@
+ 
+ #include <spiff/Spiff.h>
+ #include <stdio.h>
++#include <cstdlib>
+ using namespace Spiff;
+ 
+ 
+Index: libspiff-0.8.2/src/ProjectOpus/ProjectOpusPlaylistExtensionReader.cpp
+===================================================================
+--- libspiff-0.8.2.orig/src/ProjectOpus/ProjectOpusPlaylistExtensionReader.cpp
++++ libspiff-0.8.2/src/ProjectOpus/ProjectOpusPlaylistExtensionReader.cpp
+@@ -47,7 +47,8 @@
+ #include <spiff/ProjectOpus/ProjectOpusPlaylistExtension.h>
+ #include <spiff/SpiffReader.h>
+ #include <spiff/SpiffStack.h>
+-#include <stdio.h>
++#include <cstdio>
++#include <cstring>
+ 
+ namespace Spiff {
+ namespace ProjectOpus {
+Index: libspiff-0.8.2/src/SpiffPropsWriter.cpp
+===================================================================
+--- libspiff-0.8.2.orig/src/SpiffPropsWriter.cpp
++++ libspiff-0.8.2/src/SpiffPropsWriter.cpp
+@@ -49,6 +49,8 @@
+ #include <spiff/SpiffExtension.h>
+ #include <spiff/SpiffExtensionWriter.h>
+ #include <spiff/SpiffToolbox.h>
++#include <cstdio>
++#include <cstdlib>
+ using namespace std;
+ using namespace Spiff::Toolbox;
+ 
+Index: libspiff-0.8.2/src/SpiffWriter.cpp
+===================================================================
+--- libspiff-0.8.2.orig/src/SpiffWriter.cpp
++++ libspiff-0.8.2/src/SpiffWriter.cpp
+@@ -47,6 +47,7 @@
+ #include <spiff/SpiffXmlFormatter.h>
+ #include <spiff/SpiffTrackWriter.h>
+ #include <spiff/SpiffPropsWriter.h>
++#include <cstdio>
+ using namespace std;
+ 
+ namespace Spiff {
+Index: libspiff-0.8.2/src/SpiffXmlFormatter.cpp
+===================================================================
+--- libspiff-0.8.2.orig/src/SpiffXmlFormatter.cpp
++++ libspiff-0.8.2/src/SpiffXmlFormatter.cpp
+@@ -46,6 +46,7 @@
+ #include <spiff/SpiffXmlFormatter.h>
+ #include <spiff/SpiffToolbox.h>
+ #include <sstream>
++#include <cstdio>
+ using namespace std;
+ using namespace Spiff::Toolbox;
+ 

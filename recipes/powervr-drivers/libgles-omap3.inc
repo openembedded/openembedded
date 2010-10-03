@@ -3,7 +3,7 @@ LICENSE = "proprietary-binary"
 
 PR = "r6"
 
-COMPATIBLE_MACHINE = "(dm37x-evm|am37x-evm|am3517-evm|beagleboard|cm-t35|igep0020|omap3-pandora|omap3-touchbook|omap3evm|omapzoom|omapzoom2|overo|palmpre)"
+COMPATIBLE_MACHINE = "(omap3)"
 
 DEPENDS = "virtual/libx11 libxau libxdmcp"
 

@@ -1,0 +1,14 @@
+This patch assumes that the installation tree is <prefix>/usr/bin
+which is usually the case.
+
+--- quilt-0.48/bin/quilt.in.org	2010-09-28 12:58:21.136446572 -0700
++++ quilt-0.48/bin/quilt.in	2010-09-28 13:16:36.984446032 -0700
+@@ -14,7 +14,7 @@ export QUILT_DIR QUILT_LIB
+ 
+ if [ -z "$QUILTRC" ]
+ then
+-	for QUILTRC in $HOME/.quiltrc /etc/quilt.quiltrc; do
++	for QUILTRC in $HOME/.quiltrc $QUILT_DIR/../../../etc/quilt.quiltrc; do
+ 		[ -e $QUILTRC ] && break
+ 	done
+ 	export QUILTRC

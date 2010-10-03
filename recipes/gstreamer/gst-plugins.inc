@@ -21,9 +21,11 @@ do_configure_prepend() {
 	sed -i -e 's:`$PKG_CONFIG --variable=includedir gstreamer-0.10`:${STAGING_INCDIR}/gstreamer-0.10:g' ${S}/configure.ac
 }
 
+# orc.m4 calls pkg-config ----variable=orcc orc-0.4 to get the path to orcc,
+# resulting in /usr/bin/orcc. Force it to use the staged orcc.
 do_configure_append() {
 	for i in $(find ${S} -name "Makefile") ; do
-		sed -i -e s:/usr/bin/orcc:${STAGING_BINDIR_NATIVE}/orcc:g $i
+		sed -i -e s:${bindir}/orcc:${STAGING_BINDIR_NATIVE}/orcc:g $i
 	done
 }
 

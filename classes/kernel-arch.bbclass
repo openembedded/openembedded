@@ -23,7 +23,7 @@ def map_kernel_arch(a, d):
 	if   re.match('(i.86|athlon)$', a):	return 'i386'
 	elif re.match('arm26$', a):		return 'arm26'
 	elif re.match('armeb$', a):		return 'arm'
-	elif re.match('mipsel$', a):		return 'mips'
+	elif re.match('mips(el|64|64el)$', a):	return 'mips'
 	elif re.match('sh(3|4)$', a):		return 'sh'
 	elif re.match('bfin', a):               return 'blackfin'
 	elif a in valid_archs:			return a

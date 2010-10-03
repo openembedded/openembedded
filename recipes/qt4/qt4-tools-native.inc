@@ -1,11 +1,11 @@
 DESCRIPTION = "Native tools for Qt/[X11|Mac|Embedded] version 4.x"
-DEPENDS = "zlib-native dbus-native libsm-native"
+DEPENDS = "zlib-native dbus-native"
 SECTION = "libs"
 HOMEPAGE = "http://www.trolltech.com"
 PRIORITY = "optional"
 LICENSE = "GPL"
 
-INC_PR = "r7"
+INC_PR = "r10"
 
 inherit native
 
@@ -19,13 +19,14 @@ EXTRA_OECONF = "-prefix ${prefix} \
                 -L ${STAGING_LIBDIR_NATIVE} \
                 -I ${STAGING_INCDIR_NATIVE} \
                 -qt-libjpeg -qt-gif -system-zlib \
-                -no-libjpeg -no-libpng \
+                -no-libjpeg -no-libpng -no-libmng -no-libtiff \
                 -no-accessibility \
                 -no-cups \
                 -no-exceptions  \
                 -no-nas-sound \
-                -no-nis \
+                -no-nis -no-openssl \
                 -verbose -release -static \
+                -embedded -no-freetype -no-glib -no-iconv \
                 -qt3support"
 
 # yank default -e, otherwise we get the following error:

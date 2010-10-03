@@ -60,6 +60,7 @@ do_install() {
 		mv ${WORKDIR}/SUPPORTED.tmp ${WORKDIR}/SUPPORTED
 	done
 	rm -f ${D}{sysconfdir}/rpc
+	rm -rf ${D}${datadir}/zoneinfo
 	install -d ${D}${sysconfdir}/init.d
 	install -m 0644 ${S}/nscd/nscd.conf ${D}${sysconfdir}/
 	install ${S}/nscd/nscd.init ${D}${sysconfdir}/init.d/nscd

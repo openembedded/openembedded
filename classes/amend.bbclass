@@ -10,23 +10,23 @@
 python () {
     import bb, os
 
-    filespath = d.getVar("FILESPATH", 1).split(":")
-    amendfiles = [os.path.join(fpath, "amend.inc")
-                  for fpath in filespath]
+    seen = set()
+    def __amendfiles():
+        for base in d.getVar("FILESPATHBASE", True).split(":"):
+            for pkg in d.getVar("FILESPATHPKG", True).split(":"):
+                path = os.path.join(base, pkg, "amend.inc")
+                if path not in seen:
+                    seen.add(path)
+                    yield path
 
     newdata = []
-    seen = set()
-    for file in amendfiles:
-        if file in seen:
-            continue
-        seen.add(file)
-
-        if os.path.exists(file):
-            bb.parse.handle(file, d, 1)
+    for amend in __amendfiles():
+        if os.path.exists(amend):
+            bb.parse.handle(amend, d, 1)
         else:
-            # Manually add amend.inc files that don't exist to the __depends, to
-            # ensure that creating them invalidates the bitbake cache for that recipe.
-            newdata.append((file, 0))
+            # Manually add amend.inc files that don't exist to the __depends,
+            # to ensure that creating them invalidates the bitbake cache
+            newdata.append((amend, 0))
 
     if not newdata:
         return

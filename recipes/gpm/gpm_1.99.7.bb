@@ -9,6 +9,7 @@ PR = "r1"
 
 SRC_URI = "ftp://arcana.linux.it/pub/gpm/gpm-${PV}.tar.bz2 \
 	   file://no-docs.patch \
+	   file://processcreds.patch \
 	   file://init"
 
 inherit autotools update-rc.d

@@ -1,7 +1,7 @@
 require gdb-cross.inc
 LICENSE = "GPLv2"
 
-PR = "r4"
+PR = "${INC_PR}.4"
 
 SRC_URI += "file://early_debug_in_nptl.patch;striplevel=0"
 

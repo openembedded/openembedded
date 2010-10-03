@@ -22,7 +22,7 @@ FULL_OPTIMIZATION_ep9312 = "-fexpensive-optimizations -fomit-frame-pointer -fren
 BUILD_OPTIMIZATION = "-O2 -g"
 BUILD_OPTIMIZATION_pn-perl-native = "-O1 -g"
 
-TARGET_LINK_HASH_STYLE = "${@['-Wl,--hash-style=gnu',''][bb.data.getVar('TARGET_ARCH',d,1) in ['mips', 'mipsel']]}"
+TARGET_LINK_HASH_STYLE = "${@['-Wl,--hash-style=gnu',''][bb.data.getVar('TARGET_ARCH',d,1) in ['mips', 'mipsel', 'mips64', 'mips64el']]}"
 
 # Disable -Wl,as-needed for now till all the test come back OK
 #require conf/distro/include/angstrom-ldflags.inc

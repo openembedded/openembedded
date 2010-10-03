@@ -177,7 +177,7 @@ def base_chk_file_checksum(localpath, src_uri, expected_md5sum, expected_sha256s
     return True
 
 def base_get_checksums(pn, pv, src_uri, localpath, params, data):
-    # Try checksum from recipe and then parse checksums.ini 
+    # Try checksum from recipe and then parse checksums.ini
     # and try PN-PV-SRC_URI first and then try PN-SRC_URI
     # we rely on the get method to create errors
     try:
@@ -228,7 +228,7 @@ def base_get_checksums(pn, pv, src_uri, localpath, params, data):
             expected_sha256sum = parser.get(src_uri, "sha256")
         else:
             return (None,None)
-        
+
         if name:
             bb.note("This package has no checksums in corresponding recipe '%s', please consider moving its checksums from checksums.ini file \
                 \nSRC_URI[%s.md5sum] = \"%s\"\nSRC_URI[%s.sha256sum] = \"%s\"\n" % (bb.data.getVar("FILE", data, True), name, expected_md5sum, name, expected_sha256sum))
@@ -447,6 +447,29 @@ oe_machinstall() {
 		oenote $3 NOT present, touching empty $4
 		touch $4
 	fi
+}
+
+create_wrapper () {
+   # Create a wrapper script
+   #
+   # These are useful to work around relocation issues, by setting environment
+   # variables which point to paths in the filesystem.
+   #
+   # Usage: create_wrapper FILENAME [[VAR=VALUE]..]
+
+   cmd=$1
+   shift
+
+   # run echo via env to test syntactic validity of the variable arguments
+   env $@ echo "Generating wrapper script for $cmd"
+
+   mv $cmd $cmd.real
+   cmdname=`basename $cmd`.real
+   cat <<END >$cmd
+#!/bin/sh
+exec env $@ \`dirname \$0\`/$cmdname
+END
+   chmod +x $cmd
 }
 
 def check_app_exists(app, d):

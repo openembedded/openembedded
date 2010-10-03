@@ -1,0 +1,12 @@
+Index: zbedic/src/shcm.cpp
+===================================================================
+--- zbedic/src/shcm.cpp
++++ zbedic/src/shcm.cpp
+@@ -20,6 +20,7 @@
+ 
+ #include <stdio.h>
+ #include <vector>
++#include <cstdlib>
+ 
+ #include "shcm.h"
+ #include "shc.h"

@@ -4,6 +4,8 @@ LICENSE="GPL"
 SECTION = "devel"
 PRIORITY = "optional"
 
+INC_PR = "r8"
+
 inherit autotools
 
 SRC_URI = "${GNU_MIRROR}/gdb/gdb-${PV}.tar.gz"
@@ -31,7 +33,12 @@ do_install_append() {
 
 	# We use libiberty from binutils
 	rm -f ${D}${prefix}/${TARGET_SYS}/lib/libiberty.a
-	rm -f ${D}${libdir}/libiberty.a
+	rm -f ${D}${prefix}/lib{,64}/libiberty.a
 
+	# Use libbfd from binutils.
+	rm -f ${D}${prefix}/lib/libbfd.{,l}a
+
+	# Use libopcodes from binutils.
+	rm -f ${D}${prefix}/lib/libopcodes.{,l}a
 }
 

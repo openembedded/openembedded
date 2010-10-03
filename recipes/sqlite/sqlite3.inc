@@ -12,6 +12,8 @@ S = "${WORKDIR}/sqlite-${PV}"
 
 inherit autotools pkgconfig
 
+BBCLASSEXTEND = "native"
+
 EXTRA_OECONF = "--disable-tcl --enable-shared \
 		--enable-threadsafe"
 export config_BUILD_CC = "${BUILD_CC}"

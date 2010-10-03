@@ -1,0 +1,11 @@
+--- library/mediaplayerplugininterface.h	3 Mar 2002 17:13:17 -0000	1.5
++++ library/mediaplayerplugininterface.h	4 Oct 2008 16:45:38 -0000	1.6
+@@ -65,7 +65,7 @@
+     virtual int audioSamples( int stream ) = 0;
+     virtual bool audioSetSample( long sample, int stream ) = 0;
+     virtual long audioGetSample( int stream ) = 0;
+-    virtual bool audioReadSamples( short *samples, int channels, long samples, long& samplesRead, int stream ) = 0;
++    virtual bool audioReadSamples( short *output, int channels, long samples, long& samplesRead, int stream ) = 0;
+ 
+     // If decoder doesn't support video then return 0 here
+     virtual int videoStreams() = 0;

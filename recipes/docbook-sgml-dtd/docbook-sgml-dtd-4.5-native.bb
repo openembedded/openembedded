@@ -2,6 +2,8 @@ require docbook-sgml-dtd-native.inc
 
 DTD_VERSION = "4.5"
 
+PR = "${INC_PR}.0"
+
 do_compile() {
     # Refer to http://www.linuxfromscratch.org/blfs/view/stable/pst/sgml-dtd.html
     # for details.

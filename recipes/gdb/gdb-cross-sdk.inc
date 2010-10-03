@@ -1,8 +1,6 @@
 require gdb-cross.inc
 LICENSE = "GPLv3"
 
-INC_PR = "r7"
-
 inherit sdk
 
 DEPENDS = "ncurses-sdk zlib-sdk flex-native"
@@ -15,5 +13,5 @@ do_configure_append () {
 	sed -e 's,-lz, ${STAGING_LIBDIR_NATIVE}/libz.a ,g' -i ${B}/gdb/Makefile
 	sed -e 's,-lexpat, ${STAGING_LIBDIR_NATIVE}/libexpat.a ,g' -i ${B}/gdb/Makefile
 	sed -e 's,libexpat.so,libexpat.a ,g' -i ${B}/gdb/Makefile
-	sed -e 's,-lz, ${STAGING_LIBDIR_NATIVE}/libz.a ,g' -i ${B}/sim/arm/Makefile
+	sed -e 's,-lz, ${STAGING_LIBDIR_NATIVE}/libz.a ,g' -i ${B}/sim/*/Makefile
 }

@@ -1,7 +1,7 @@
 DESCRIPTION = "GNU roff"
 SECTION = "base"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r2"
 
 SRC_URI = "http://ftp.gnu.org/gnu/groff/groff-${PV}.tar.gz \
           "
@@ -10,15 +10,19 @@ SRC_URI[sha256sum] = "b645878135cb620c6c417c5601bfe96172245af12045540d7344938b4c
 
 inherit autotools
 
+PARALLEL_MAKE = ""
+
 do_configure_prepend(){
- sed -i \
-	-e '/^GROFFBIN=/s:=.*:=echo:' \
-	-e '/^TROFFBIN=/s:=.*:=echo:' \
-	-e '/^GROFF_BIN_PATH=/s:=.*:=:' \
-	-e '/^GROFF_BIN_DIR=/s:=.*:=:' \
-	${S}/contrib/*/Makefile.sub \
-	${S}/doc/Makefile.in \
-	${S}/doc/Makefile.sub
+	if [ "${BUILD_SYS}" != "${HOST_SYS}" ]; then
+		sed -i \
+		    -e '/^GROFFBIN=/s:=.*:=echo:' \
+		    -e '/^TROFFBIN=/s:=.*:=echo:' \
+		    -e '/^GROFF_BIN_PATH=/s:=.*:=:' \
+		    -e '/^GROFF_BIN_DIR=/s:=.*:=:' \
+		    ${S}/contrib/*/Makefile.sub \
+		    ${S}/doc/Makefile.in \
+		    ${S}/doc/Makefile.sub
+	fi
 }
 
 BBCLASSEXTEND = "native"

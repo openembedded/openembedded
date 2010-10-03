@@ -1,7 +1,7 @@
 LICENSE = "MIT"
 
 include nylon-feed.inc
-DEPENDS = "${NYLON_FEED} \
+RDEPENDS = "${NYLON_FEED} \
     boost \
     db3 \
     dhcp \

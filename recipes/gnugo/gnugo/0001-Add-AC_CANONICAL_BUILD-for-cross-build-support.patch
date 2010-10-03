@@ -1,0 +1,25 @@
+From d8cd51026264b5e08d12eec25722abc3156066cc Mon Sep 17 00:00:00 2001
+From: Yann Dirson <ydirson@altern.org>
+Date: Fri, 10 Sep 2010 21:45:41 +0200
+Subject: [PATCH 1/4] Add AC_CANONICAL_BUILD for cross-build support.
+
+Signed-off-by: Yann Dirson <ydirson@altern.org>
+---
+ configure.in |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/configure.in b/configure.in
+index 66ea5cd..e773294 100644
+--- a/configure.in
++++ b/configure.in
+@@ -28,6 +28,7 @@ GNU_PACKAGE="GNU $PACKAGE"
+ AC_DEFINE_UNQUOTED(GNU_PACKAGE, "$GNU_PACKAGE")
+ 
+ AM_MAINTAINER_MODE
++AC_CANONICAL_BUILD
+ 
+ dnl See if user has expressed a preference for use of curses and/or color
+ dnl These set variables $enable_color and $with_curses to "no" if disabled
+-- 
+1.7.2.3
+

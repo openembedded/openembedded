@@ -1,0 +1,194 @@
+From 46a97af4e0bf6f097a5d02277bcc6aefd206d952 Mon Sep 17 00:00:00 2001
+From: Brijesh Singh <bksingh@ti.com>
+Date: Mon, 1 Mar 2010 22:13:57 -0600
+Subject: [PATCH] linux-davinci-example: add make install target
+
+---
+ h3a/dm355/Makefile          |    8 ++++++++
+ h3a/dm365/Makefile          |    7 +++++++
+ imp-prev-rsz/dm355/Makefile |    9 ++++++++-
+ imp-prev-rsz/dm365/Makefile |   14 +++++++++++++-
+ media_ti/Makefile           |   10 +++++++++-
+ v4l2/Makefile               |   13 +++++++++++++
+ vdce/Makefile               |   10 ++++++++++
+ 7 files changed, 68 insertions(+), 3 deletions(-)
+
+diff --git a/h3a/dm355/Makefile b/h3a/dm355/Makefile
+index 5713bf2..4aee484 100644
+--- a/h3a/dm355/Makefile
++++ b/h3a/dm355/Makefile
+@@ -2,6 +2,7 @@
+ # Change the path for the include files appropriately
+ 
+ #CC = $(CROSS_COMPILE)gcc
++EXEC_DIR=${HOME}/install
+ CC = $(CROSS_COMPILE)gcc -I $(KERNEL_PATH) 
+ 
+ all: aew_example af_example
+@@ -17,3 +18,10 @@ af_example:af_example.o
+ 
+ clean:
+ 	rm -f *.o *~ core aew_example af_example
++
++install:
++	install -d ${EXEC_DIR}/h3a/dm355
++	install -m 0755 aew_example ${EXEC_DIR}/h3a/dm355
++	install -m 0755 af_example ${EXEC_DIR}/h3a/dm355
++	install -m 0755 readme.txt ${EXEC_DIR}/h3a/dm355
++
+diff --git a/h3a/dm365/Makefile b/h3a/dm365/Makefile
+index 89a1e09..b02cb64 100644
+--- a/h3a/dm365/Makefile
++++ b/h3a/dm365/Makefile
+@@ -1,6 +1,7 @@
+ # Makefile for h3a applications
+ # Change the path for the include files appropriately
+ 
++EXEC_DIR=${HOME}/install
+ CC = $(CROSS_COMPILE)gcc -I$(KERNEL_PATH)
+ 
+ all: aew_example_dm365 af_example_dm365
+@@ -16,3 +17,9 @@ af_example_dm365:af_example.o
+ 
+ clean:
+ 	rm -f *.o *~ core aew_example_dm365 af_example_dm365
++
++install:
++	install -d ${EXEC_DIR}/h3a/dm365
++	install -m 0755 aew_example_dm365 ${EXEC_DIR}/h3a/dm365
++	install -m 0755 af_example_dm365 ${EXEC_DIR}/h3a/dm365
++	install -m 0755 readme.txt ${EXEC_DIR}/h3a/dm365
+diff --git a/imp-prev-rsz/dm355/Makefile b/imp-prev-rsz/dm355/Makefile
+index 9a1955f..6095885 100644
+--- a/imp-prev-rsz/dm355/Makefile
++++ b/imp-prev-rsz/dm355/Makefile
+@@ -1,7 +1,8 @@
+ # Makefile for IPIPE applications
+ KERNEL_PATH=/local/mkaricheri/davinci_git/prev_rsz/linux-davinci-staging/include
+-
++EXEC_DIR = ${HOME}/install
+ CROSS_COMPILE=arm-none-linux-gnueabi-
++EXEC_DIR=$(HOME)/install
+ CMEMLIB=cmem.a470uC
+ 
+ 
+@@ -18,3 +19,9 @@ clean:
+ 	rm -f *.o *~
+ 	rm -f capture_prev_rsz_onthe_fly_bayer \
+ 	rm -f capture_prev_rsz_ss_raw_bayer
++
++install:
++	install -d ${EXEC_DIR}/ipipe/dm355/
++	install -m 0755 capture_prev_rsz_onthe_fly_bayer  ${EXEC_DIR}/ipipe/dm355/
++	install -m 0755 capture_prev_rsz_ss_raw_bayer  ${EXEC_DIR}/ipipe/dm355/
++	install -m 0755 readme.txt	${EXEC_DIR}/ipipe/dm355/
+diff --git a/imp-prev-rsz/dm365/Makefile b/imp-prev-rsz/dm365/Makefile
+index a3b21ea..484217f 100644
+--- a/imp-prev-rsz/dm365/Makefile
++++ b/imp-prev-rsz/dm365/Makefile
+@@ -2,7 +2,7 @@
+ KERNEL_PATH=/local/mkaricheri/davinci_git/11_09/linux-davinci-staging/include
+ CROSS_COMPILE=arm-none-linux-gnueabi-
+ CMEMLIB=cmem.a470uC
+-
++EXEC_DIR=$(HOME)/install/
+ 
+ CC = $(CROSS_COMPILE)gcc -I$(KERNEL_PATH)
+ 
+@@ -44,3 +44,15 @@ clean:
+ 	do_resize_420_420 \
+ 	do_resize \
+ 	display
++
++install:
++	install -d ${EXEC_DIR}/ipipe/dm365
++	install -m 0755 capture_prev_rsz_onthe_fly_yuv ${EXEC_DIR}/ipipe/dm365
++	install -m 0755 capture_prev_rsz_onthe_fly_bayer ${EXEC_DIR}/ipipe/dm365
++	install -m 0755 capture_prev_rsz_ss_raw_yuv ${EXEC_DIR}/ipipe/dm365
++	install -m 0755 do_preview_resize ${EXEC_DIR}/ipipe/dm365
++	install -m 0755 do_resize_420_420 ${EXEC_DIR}/ipipe/dm365
++	install -m 0755 do_resize ${EXEC_DIR}/ipipe/dm365
++	install -m 0755 display ${EXEC_DIR}/ipipe/dm365
++	install -m 0755 readme.txt ${EXEC_DIR}/ipipe/dm365
++
+diff --git a/media_ti/Makefile b/media_ti/Makefile
+index 46e6858..929f679 100644
+--- a/media_ti/Makefile
++++ b/media_ti/Makefile
+@@ -9,7 +9,7 @@ fbdev.o:
+ 	
+ 
+ h3a.o:
+-	cd h3a/dm355; $(MAKE)
++	cd h3a/dm355; $(MAKE) 
+ 	cd h3a/dm365; $(MAKE)
+ 
+ vdce.o:
+@@ -32,3 +32,11 @@ clean:
+ 	cd imp-prev-rsz/dm355; $(MAKE) clean
+ 	cd imp-prev-rsz/dm365; $(MAKE) clean
+ 
++install:
++	cd h3a/dm355; $(MAKE) install
++	cd h3a/dm365; $(MAKE) install
++	cd vdce; $(MAKE) install
++	cd v4l2; $(MAKE) install
++	cd imp-prev-rsz/dm355; $(MAKE) install
++	cd imp-prev-rsz/dm365; $(MAKE) install
++	
+diff --git a/v4l2/Makefile b/v4l2/Makefile
+index e7e8e7e..0cb2b57 100644
+--- a/v4l2/Makefile
++++ b/v4l2/Makefile
+@@ -2,6 +2,7 @@
+ # Change the kernel patch to point to personal Linux Tree
+ KERNEL_PATH=linux-davinci/include
+ CROSS_COMPILE=arm-none-linux-gnueabi-
++EXEC_DIR=$(HOME)/install
+ 
+ CMEMLIB=cmem.a470uC
+ CC = $(CROSS_COMPILE)gcc -I$(KERNEL_PATH)
+@@ -37,3 +38,15 @@ v4l2_userptr_loopback_hd: v4l2_userptr_loopback_hd.o
+ 
+ clean:
+ 	rm -f *.o *~ core vpif_mmap_loopback vpif_userptr_loopback vpif_userptr_loopback_vdce vpif_userptr_loopback_cmem v4l2_mmap_loopback v4l2_userptr_loopback v4l2_userptr_loopback_hd vpif_userptr_loopback_vdce_resize
++
++install:
++	install -d ${EXEC_DIR}/v4l2
++	install -m 0755 vpif_mmap_loopback ${EXEC_DIR}/v4l2
++	install -m 0755 vpif_userptr_loopback ${EXEC_DIR}/v4l2
++	install -m 0755 vpif_userptr_loopback_vdce ${EXEC_DIR}/v4l2
++	install -m 0755 vpif_userptr_loopback_vdce_resize ${EXEC_DIR}/v4l2
++	install -m 0755 vpif_userptr_loopback_cmem ${EXEC_DIR}/v4l2
++	install -m 0755 v4l2_mmap_loopback ${EXEC_DIR}/v4l2
++	install -m 0755 v4l2_userptr_loopback ${EXEC_DIR}/v4l2
++	install -m 0755 v4l2_userptr_loopback_hd ${EXEC_DIR}/v4l2
++
+diff --git a/vdce/Makefile b/vdce/Makefile
+index dc940d7..bcb17ac 100644
+--- a/vdce/Makefile
++++ b/vdce/Makefile
+@@ -2,6 +2,7 @@
+ # Change the kernel patch to point to personal Linux Tree
+ KERNEL_PATH=linux-davinci/include
+ CROSS_COMPILE=arm-none-linux-gnueabi-
++EXEC_DIR = ${HOME}/install/
+ 
+ CMEMLIB=cmem.a470uC
+ CC = $(CROSS_COMPILE)gcc -I$(KERNEL_PATH)
+@@ -24,3 +25,12 @@ saCCV420_422: saCCV420_422.o
+ 
+ clean:
+ 	rm -f *.o *~ core saResize saResize_mod saBlending saCCV420_422
++
++install:
++	install -d ${EXEC_DIR}/vdce
++	install -m 0755 saResize ${EXEC_DIR}/vdce
++	install -m 0755 saResize_mod ${EXEC_DIR}/vdce
++	install -m 0755 saBlending ${EXEC_DIR}/vdce
++	install -m 0755 saCCV420_422 ${EXEC_DIR}/vdce
++	cp *.yuv ${EXEC_DIR}/vdce
++
+-- 
+1.5.4.3
+

@@ -1,0 +1,263 @@
+From 6518714ff787c077ce3e9ba816359e05ad9fd852 Mon Sep 17 00:00:00 2001
+From: Yann Dirson <ydirson@altern.org>
+Date: Tue, 14 Sep 2010 21:40:18 +0200
+Subject: [PATCH 3/4] Make libs also generate native versions, use them when needed.
+
+When cross-compiling, correct values for the four BUILD_* variables
+have to be provided, we do not check for the host toolchain ourselves.
+In the case of the openembedded build system those are already provided
+by the "autoconf" recipe.
+
+Since native and non-native targets have different needs for some
+variables, we must use per-target variable values.  But since those
+are confusing autoconf into thinking we are *overriding* the library
+link rules, we need to lure it, and we do so with the $(EMPTY) trick
+which prevents it to parse those lines.
+
+It is possible that some (non-)native are slightly unoptimized, and
+that some object files are used only in one of the two versions, but
+introducing another mess for such a little gain seems useless.
+---
+ configure.in         |   19 +++++++++++++++++
+ engine/Makefile.am   |   18 +++++++++++++++-
+ patterns/Makefile.am |   53 +++++++++++++++++++++++++++++++++++++++++--------
+ sgf/Makefile.am      |   17 +++++++++++++++-
+ utils/Makefile.am    |   11 +++++++++-
+ 5 files changed, 105 insertions(+), 13 deletions(-)
+
+diff --git a/configure.in b/configure.in
+index 29d9a31..397ecdb 100644
+--- a/configure.in
++++ b/configure.in
+@@ -528,6 +528,25 @@ AC_SUBST(BUILD_RANLIB)
+ AC_SUBST(BUILD_LDFLAGS)
+ AC_SUBST(BUILD_CFLAGS)
+ 
++if test "$cross_compiling" != no; then
++  NATIVE=native
++  NATIVESGF=libnativesgf.a
++  NATIVEPATTERNS=libnativepatterns.a
++  NATIVEUTILS=libnativeutils.a
++  NATIVEENGINE="libnativeengine.a libnativeboard.a"
++else
++  NATIVE=
++  NATIVESGF=
++  NATIVEPATTERNS=
++  NATIVEUTILS=
++  NATIVEENGINE=
++fi
++AC_SUBST(NATIVE)
++AC_SUBST(NATIVESGF)
++AC_SUBST(NATIVEPATTERNS)
++AC_SUBST(NATIVEUTILS)
++AC_SUBST(NATIVEENGINE)
++
+ AC_SUBST(GCC_MAJOR_VERSION)
+ AC_SUBST(GCC_MINOR_VERSION)
+ AC_SUBST(GNU_GO_WARNINGS)
+diff --git a/engine/Makefile.am b/engine/Makefile.am
+index e01b1f5..6c97266 100644
+--- a/engine/Makefile.am
++++ b/engine/Makefile.am
+@@ -1,4 +1,5 @@
+ EXTRA_DIST = engine.dsp board.dsp CMakeLists.txt
++EMPTY=
+ 
+ # Remove these files here... they are created locally
+ DISTCLEANFILES = *~
+@@ -14,8 +15,9 @@ noinst_HEADERS = cache.h gnugo.h hash.h clock.h readconnect.h \
+                  influence.h liberty.h move_reasons.h board.h
+ 
+ # preconfigured settings for various configurations
+-noinst_LIBRARIES = libengine.a libboard.a
+-
++noinst_LIBRARIES = libengine.a libboard.a $(NATIVEENGINE)
++EXTRA_LIBRARIES = libnativeengine.a libnativeboard.a
++CLEANFILES = libnativeengine.a libnativeboard.a
+ libengine_a_SOURCES = \
+       aftermath.c \
+       board.c \
+@@ -55,9 +57,21 @@ libengine_a_SOURCES = \
+       utils.c \
+       value_moves.c \
+       worm.c
++libnativeengine_a_SOURCES = $(libengine_a_SOURCES)
+ 
+ libboard_a_SOURCES = \
+       board.c \
+       boardlib.c \
+       hash.c \
+       printutils.c
++libnativeboard_a_SOURCES = $(libboard_a_SOURCES)
++
++$(libnativeengine_a_OBJECTS): CC=$(BUILD_CC)
++libnativeengine_a_CFLAGS = $(BUILD_CFLAGS)
++libnativeengine$(EMPTY).a: LDFLAGS=$(BUILD_LDFLAGS)
++libnativeengine$(EMPTY).a: RANLIB=$(BUILD_RANLIB)
++
++$(libnativeboard_a_OBJECTS): CC=$(BUILD_CC)
++libnativeboard_a_CFLAGS = $(BUILD_CFLAGS)
++libnativeboard$(EMPTY).a: LDFLAGS=$(BUILD_LDFLAGS)
++libnativeboard$(EMPTY).a: RANLIB=$(BUILD_RANLIB)
+diff --git a/patterns/Makefile.am b/patterns/Makefile.am
+index 21632ba..8ae5b6c 100644
+--- a/patterns/Makefile.am
++++ b/patterns/Makefile.am
+@@ -1,5 +1,32 @@
+ noinst_PROGRAMS = mkpat joseki mkeyes uncompress_fuseki mkmcpat
+ EXTRA_PROGRAMS = extract_fuseki compress_fuseki
++EMPTY=
++
++$(mkpat_OBJECTS) $(joseki_OBJECTS) $(mkeyes_OBJECTS) \
++$(uncompress_fuseki_OBJECTS) $(mkmcpat_OBJECTS): CC=$(BUILD_CC)
++mkpat joseki mkeyes uncompress_fuseki mkmcpat: CCLD=$(BUILD_CC)
++mkpat joseki mkeyes uncompress_fuseki mkmcpat: CFLAGS=$(BUILD_CFLAGS)
++mkpat joseki mkeyes uncompress_fuseki mkmcpat: LDFLAGS=$(BUILD_LDFLAGS)
++
++mkpat_CC = $(BUILD_CC)
++mkpat_CFLAGS = $(BUILD_CFLAGS)
++mkpat_LDFLAGS = $(BUILD_LDFLAGS)
++
++joseki_CC = $(BUILD_CC)
++joseki_CFLAGS = $(BUILD_CFLAGS)
++joseki_LDFLAGS = $(BUILD_LDFLAGS)
++
++mkeyes_CC = $(BUILD_CC)
++mkeyes_CFLAGS = $(BUILD_CFLAGS)
++mkeyes_LDFLAGS = $(BUILD_LDFLAGS)
++
++uncompress_fuseki_CC = $(BUILD_CC)
++uncompress_fuseki_CFLAGS = $(BUILD_CFLAGS)
++uncompress_fuseki_LDFLAGS = $(BUILD_LDFLAGS)
++
++mkmcpat_CC = $(BUILD_CC)
++mkmcpat_CFLAGS = $(BUILD_CFLAGS)
++mkmcpat_LDFLAGS = $(BUILD_LDFLAGS)
+ 
+ DSP = dfa.dsp patterns.dsp joseki.dsp mkeyes.dsp mkpat.dsp fuseki.dsp uncompress_fuseki.dsp mkmcpat.dsp
+ DTR = aa_attackpats.dtr owl_attackpats.dtr owl_defendpats.dtr \
+@@ -49,7 +76,7 @@ EXTRA_DIST = $(DSP)\
+ 
+ mkpat_SOURCES  = mkpat.c transform.c dfa.c
+ 
+-mkpat_LDADD = ../utils/libutils.a
++mkpat_LDADD = ../utils/lib$(NATIVE)utils.a
+ 
+ if DFA_ENABLED
+ DFAFLAGS = -D -m
+@@ -58,22 +85,22 @@ DFAFLAGS =
+ endif
+ 
+ joseki_SOURCES = joseki.c 
+-joseki_LDADD = ../engine/libboard.a ../sgf/libsgf.a ../utils/libutils.a 
++joseki_LDADD = ../engine/lib$(NATIVE)board.a ../sgf/lib$(NATIVE)sgf.a ../utils/lib$(NATIVE)utils.a 
+ joseki_AM_CPPFLAGS = $(GNU_GO_WARNINGS) -I$(top_srcdir)/sgf
+ mkeyes_SOURCES = mkeyes.c
+-mkeyes_LDADD = ../utils/libutils.a
++mkeyes_LDADD = ../utils/lib$(NATIVE)utils.a
+ mkmcpat_SOURCES  = mkmcpat.c ../engine/globals.c
+-mkmcpat_LDADD = ../engine/libengine.a ../sgf/libsgf.a ../utils/libutils.a
++mkmcpat_LDADD = ../engine/lib$(NATIVE)engine.a ../sgf/lib$(NATIVE)sgf.a ../utils/lib$(NATIVE)utils.a
+ mkmcpat_AM_CPPFLAGS = $(GNU_GO_WARNINGS)
+ extract_fuseki_SOURCES  = extract_fuseki.c
+ # Yes, we currently need duplicate libengine.a and libpatterns.a.
+-extract_fuseki_LDADD = ../engine/libengine.a libpatterns.a\
+-		       ../engine/libengine.a libpatterns.a\
+-                       ../sgf/libsgf.a ../utils/libutils.a
++extract_fuseki_LDADD = ../engine/lib$(NATIVE)engine.a lib$(NATIVE)patterns.a\
++		       ../engine/lib$(NATIVE)engine.a lib$(NATIVE)patterns.a\
++                       ../sgf/lib$(NATIVE)sgf.a ../utils/lib$(NATIVE)utils.a
+ extract_fuseki_AM_CPPFLAGS = $(GNU_GO_WARNINGS) -I$(top_srcdir)/sgf
+ 
+ uncompress_fuseki_SOURCES = uncompress_fuseki.c
+-uncompress_fuseki_LDADD = ../utils/libutils.a ../engine/libboard.a ../sgf/libsgf.a
++uncompress_fuseki_LDADD = ../utils/lib$(NATIVE)utils.a ../engine/lib$(NATIVE)board.a ../sgf/lib$(NATIVE)sgf.a
+ compress_fuseki_SOURCES = compress_fuseki.c
+ 
+ noinst_HEADERS = patterns.h eyes.h dfa.h dfa-mkpat.h
+@@ -113,9 +140,17 @@ AM_CPPFLAGS = \
+ 	-I$(top_srcdir)/utils \
+ 	-I$(top_srcdir)/sgf
+ 
+-noinst_LIBRARIES = libpatterns.a
++noinst_LIBRARIES = libpatterns.a $(NATIVEPATTERNS)
++EXTRA_LIBRARIES = libnativepatterns.a
++CLEANFILES = libnativepatterns.a
+ 
+ libpatterns_a_SOURCES = connections.c helpers.c transform.c $(GGBUILTSOURCES)
++libnativepatterns_a_SOURCES = $(libpatterns_a_SOURCES)
++
++$(libnativepatterns_a_OBJECTS): CC=$(BUILD_CC)
++libnativepatterns_a_CFLAGS = $(BUILD_CFLAGS)
++libnativepatterns$(EMPTY).a: LDFLAGS=$(BUILD_LDFLAGS)
++libnativepatterns$(EMPTY).a: RANLIB=$(BUILD_RANLIB)
+ 
+ gogo.db : $(srcdir)/gogo.sgf joseki$(EXEEXT)
+ 	./joseki JG $(srcdir)/gogo.sgf >gogo.db
+diff --git a/sgf/Makefile.am b/sgf/Makefile.am
+index 33dcf14..48cce65 100644
+--- a/sgf/Makefile.am
++++ b/sgf/Makefile.am
+@@ -1,7 +1,14 @@
+ noinst_PROGRAMS = sgfgen
++EMPTY=
+ 
+ sgfgen_SOURCES = sgfgen.c
+ 
++$(sgfgen_OBJECTS): CC=$(BUILD_CC)
++sgfgen: CCLD=$(BUILD_CC)
++sgfgen_CC = $(BUILD_CC)
++sgfgen_CFLAGS = $(BUILD_CFLAGS)
++sgfgen_LDFLAGS = $(BUILD_LDFLAGS)
++
+ EXTRA_DIST = sgf_extras.def sgf_properties.def sgfgen.dsp sgf.dsp CMakeLists.txt
+ 
+ noinst_HEADERS = \
+@@ -13,12 +20,20 @@ DISTCLEANFILES = *~
+ 
+ AM_CPPFLAGS = $(GNU_GO_WARNINGS) -I$(top_srcdir)/utils
+ 
+-noinst_LIBRARIES = libsgf.a
++noinst_LIBRARIES = libsgf.a $(NATIVESGF)
++EXTRA_LIBRARIES = libnativesgf.a
++CLEANFILES = libnativesgf.a
+ 
+ libsgf_a_SOURCES = \
+ 	sgf_utils.c \
+ 	sgfnode.c \
+ 	sgftree.c
++libnativesgf_a_SOURCES = $(libsgf_a_SOURCES)
++
++$(libnativesgf_a_OBJECTS): CC=$(BUILD_CC)
++libnativesgf_a_CFLAGS = $(BUILD_CFLAGS)
++libnativesgf$(EMPTY).a: LDFLAGS=$(BUILD_LDFLAGS)
++libnativesgf$(EMPTY).a: RANLIB=$(BUILD_RANLIB)
+ 
+ # To rebuild sgf_properties.h in case sgf_properties.def or sgf_extras.def 
+ # is changed, 'make sgf_properties'. Normally this is not needed.
+diff --git a/utils/Makefile.am b/utils/Makefile.am
+index 08568f2..77f739d 100644
+--- a/utils/Makefile.am
++++ b/utils/Makefile.am
+@@ -1,8 +1,17 @@
+-noinst_LIBRARIES = libutils.a
++noinst_LIBRARIES = libutils.a $(NATIVEUTILS)
++EXTRA_LIBRARIES = libnativeutils.a
++CLEANFILES = libnativeutils.a
++EMPTY=
+ 
+ EXTRA_DIST = utils.dsp CMakeLists.txt
+ 
+ libutils_a_SOURCES = getopt.c getopt1.c random.c gg_utils.c winsocket.c
++libnativeutils_a_SOURCES = $(libutils_a_SOURCES)
++
++$(libnativeutils_a_OBJECTS): CC=$(BUILD_CC)
++libnativeutils_a_CFLAGS = $(BUILD_CFLAGS)
++libnativeutils$(EMPTY).a: LDFLAGS=$(BUILD_LDFLAGS)
++libnativeutils$(EMPTY).a: RANLIB=$(BUILD_RANLIB)
+ 
+ noinst_HEADERS = gg-getopt.h random.h gg_utils.h winsocket.h
+ 
+-- 
+1.7.2.3
+

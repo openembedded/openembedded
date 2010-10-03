@@ -4,11 +4,12 @@ LICENSE = "MIT-X"
 HOMEPAGE = "http://xcb.freedesktop.org"
 
 PARALLEL_MAKE = ""
+BBCLASSEXTEND = "native nativesdk"
 DEPENDS = "xcb-proto xproto libxau libxslt-native"
 # DEPENDS += "xsltproc-native gperf-native"
 INC_PR = "r3"
 
-SRC_URI = "http://xcb.freedesktop.org/dist/libxcb-${PV}.tar.bz2 \
+SRC_URI = "http://xcb.freedesktop.org/dist/${BPN}-${PV}.tar.bz2 \
         file://configure.patch;striplevel=0"
 
 PACKAGES =+ "libxcb-composite libxcb-damage libxcb-dpms libxcb-glx \

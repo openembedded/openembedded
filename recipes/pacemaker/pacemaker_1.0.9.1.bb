@@ -16,7 +16,7 @@ DEPENDS = " \
 	"
 RDEPENDS_${PN} += "openais"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = " \
 	http://hg.clusterlabs.org/pacemaker/stable-1.0/archive/Pacemaker-${PV}.tar.bz2 \
@@ -50,16 +50,17 @@ pkg_postinst_${PN} () {
 	grep hacluster /etc/passwd || adduser --disabled-password --home=${localstatedir}/lib/heartbeat --ingroup haclient -g "HA cluster" hacluster
 	/etc/init.d/populate-volatile.sh update
 }
-
+FILES_${PN}-doc += "${datadir}/pacemaker/crm_cli.txt ${datadir}/pacemaker/templates/"
 FILES_${PN} += " \
 	${libdir}/service_crm.so \
 	${libdir}/ocf/resource.d/pacemaker \
-	${libdir}/heartbeat/a* \
+	${libdir}/heartbeat/attrd \
 	${libdir}/heartbeat/c* \
 	${libdir}/heartbeat/pengine \
 	${libdir}/heartbeat/pingd \
 	${libdir}/heartbeat/plugins/RAExec/stonith.so \
-	${libdir}/heartbeat/s* \
+	${libdir}/heartbeat/stonithd \
+	${datadir}/pacemaker/*.rng \
 	"
 FILES_${PN}-dbg += "${libdir}/heartbeat/.debug ${libdir}/heartbeat/plugins/RAExec/.debug/ ${libdir}/heartbeat/stonithdtest/.debug/ ${libexecdir}/lcrso/.debug"
 FILES_${PN}-dev += "${libdir}/heartbeat/plugins/RAExec/*.la"
@@ -72,6 +73,6 @@ FILES_${PN}-hb2openais = "${libdir}/heartbeat/hb2openais.sh ${libdir}/heartbeat/
 RDEPENDS_${PN}-hb2openais += "python-core"
 FILES_${PN}-haresources2cib = "${libdir}/heartbeat/haresources2cib.py"
 RDEPENDS_${PN}-haresources2cib += "python-core"
-FILES_${PN}-tests = "${datadir}/pacemaker/tests"
+FILES_${PN}-tests = "${datadir}/pacemaker/tests ${datadir}/pacemaker/stonithdtest ${libdir}/heartbeat/atest ${libdir}/heartbeat/stonithdtest/*"
 RDEPENDS_${PN}-test += "python-core"
 FILES_${PN}-snmp = "${datadir}/snmp/mibs/PCMK-MIB.txt"

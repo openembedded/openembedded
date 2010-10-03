@@ -3,6 +3,7 @@ DESCRIPTION = "Console utility for padding a file (filling with 0 to reach a spe
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/pad"
 SRC_URI = "file://pad.c"
 LICENSE = "PD"
+PR = "r1"
 inherit native
 
 do_compile() {
@@ -10,6 +11,9 @@ do_compile() {
 	${CC} -I. -o pad pad.c
 }
 
-do_stage() {
-	install -m 0755 pad ${STAGING_BINDIR}/
+do_install() {
+	install -d ${D}${bindir}/
+	install -m 0755 pad ${D}${bindir}/
 }
+
+NATIVE_INSTALL_WORKS = "1"

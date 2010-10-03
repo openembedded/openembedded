@@ -1,6 +1,7 @@
 require ti-codec.inc
 
-PR = "r4"
+PR = "${MACHINE_KERNEL_PR}"
+PR_append = "a"
 CSVER = "2"
 PV = "1_00_00"
 

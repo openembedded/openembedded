@@ -1,10 +1,9 @@
 DESCRIPTION = "Tool Command Language ToolKit Extension"
-LICENSE = "tcl"
-SECTION = "devel/tcltk"
 HOMEPAGE = "http://tcl.sourceforge.net"
+SECTION = "devel/tcltk"
+LICENSE = "tcl"
 DEPENDS = "tcl virtual/libx11 libxt"
-
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/tcl/tk${PV}-src.tar.gz \
@@ -16,7 +15,6 @@ SRC_URI = "\
   file://tkprivate.diff;striplevel=2 \
   file://fix-xft.diff \
 "
-
 SRC_URI[md5sum] = "13bf90602e16fc530e05196431021dc6"
 SRC_URI[sha256sum] = "9737da5c30e631281062b6acbb4753840f9e95657c78e37657d9c520589ab2d4"
 
@@ -31,16 +29,18 @@ EXTRA_OECONF = "\
   --x-libraries=${STAGING_LIBDIR} \
 "
 
-BINCONFIG_GLOB = "*Config.sh"
-
 do_install() {
-	autotools_do_install
-	mv libtk8.5.so libtk8.5.so.0
-	oe_libinstall -so libtk8.5 ${D}${libdir}
-	ln -sf wish8.5 ${D}${bindir}/wish
+        autotools_do_install
+        mv libtk8.5.so libtk8.5.so.0
+        oe_libinstall -so libtk8.5 ${D}${libdir}
+        ln -sf wish8.5 ${D}${bindir}/wish
 }
 
 PACKAGES =+ "${PN}-lib"
+
 FILES_${PN}-lib = "${libdir}/libtk8.5.so.*"
 FILES_${PN} += "${libdir}/tk*"
+
+BINCONFIG_GLOB = "*Config.sh"
+BBCLASSEXTEND = "native"
 

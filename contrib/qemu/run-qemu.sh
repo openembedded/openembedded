@@ -145,13 +145,37 @@ case $arch in
 	kernel="bzImage"
 	image="minimalist-image"
 	;;
+    mips64)
+	address="192.168.1.107"
+	macaddr="00:16:3e:00:00:07"
+	gdbport="1238"
+	machine="malta"
+	mem="256"
+	consoleopt="console=ttyS0"
+	rootdisk="hda"
+	qemuopts="-nographic"
+	kernel="vmlinux"
+	image="minimalist-image"
+	;;
+    mips64el)
+	address="192.168.1.108"
+	macaddr="00:16:3e:00:00:08"
+	gdbport="1239"
+	machine="malta"
+	mem="256"
+	consoleopt="console=ttyS0"
+	rootdisk="hda"
+	qemuopts="-nographic"
+	kernel="vmlinux"
+	image="minimalist-image"
+	;;
     *)
 	echo "Specify one architectures out of $supported_archs to emulate."
 	exit 1
 	;;
     esac
 
-nfsserver="192.168.1.1"		# address of NFS server
+nfsserver="192.168.1.64"	# address of NFS server
 gateway="192.168.1.254"		# default gateway
 netmask="255.255.255.0"		# subnet mask
 hostname="qemu$arch"		# hostname for guest server

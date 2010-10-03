@@ -1,6 +1,7 @@
 DESCRIPTION = "Tool to optimize PNG images"
 SECTION = "console/graphics"
 HOMEPAGE = "http://pmt.sourceforge.net/pngcrush"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pmt/pngcrush-${PV}.tar.gz;name=src"
 
@@ -16,3 +17,7 @@ do_install () {
         install -d ${D}${bindir}
         install -m 755 ${BPN} ${D}${bindir}
 }
+
+BBCLASSEXTEND = "native"
+
+NATIVE_INSTALL_WORKS = "1"

@@ -1,7 +1,7 @@
 require gdb.inc
 LICENSE = "GPLv3"
 
-PR = "r4"
+PR = "${INC_PR}.4"
 # there is a bug in GCC for SH4 it ICE's at Optlevel >O1
 # so workaround that for now.
 

@@ -11,7 +11,8 @@ PV = "2_05_00_00"
 SRC_URI[dm6446codecsbin.md5sum] = "2ce99015bb1ed1df0491403c5e8d99fb"
 SRC_URI[dm6446codecsbin.sha256sum] = "6467ea4854abbff3cbc224df1f163d01c7fb387f15483129a40a1f68e6742b62"
 
-PR = "r18"
+PR = "${MACHINE_KERNEL_PR}"
+PR_append = "a"
 
 require ti-paths.inc
 require ti-staging.inc

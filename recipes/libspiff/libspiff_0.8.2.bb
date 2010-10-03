@@ -3,9 +3,12 @@ HOMEPAGE = "http://libspiff.sf.net"
 SECTION = "libs"
 LICENSE = "BSD"
 DEPENDS = "expat liburiparser"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libspiff/libspiff-${PV}.tar.bz2 \
-           file://autofoo.patch"
+           file://autofoo.patch \
+           file://gcc-4.5-compile.patch \
+          "
 S = "${WORKDIR}/libspiff-${PV}"
 
 inherit autotools pkgconfig lib_package

@@ -11,7 +11,8 @@ SRC_URI[omap3codecsbin.md5sum] = "b9483c218fddb2eaca000cf68382862a"
 SRC_URI[omap3codecsbin.sha256sum] = "ae4e786d9c343b0953dd5d411b597a5d0bf5894bc1f69be3be6e0fc7980152b2"
 
 PE = "1"
-PR = "r2"
+PR = "${MACHINE_KERNEL_PR}"
+PR_append = "a"
 
 require ti-paths.inc
 require ti-staging.inc

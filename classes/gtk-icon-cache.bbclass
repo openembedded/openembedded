@@ -1,5 +1,5 @@
 FILES_${PN} += "${datadir}/icons/hicolor"
-RDEPENDS += "hicolor-icon-theme"
+RDEPENDS_${PN} += "hicolor-icon-theme"
 
 # This could run on the host as icon cache files are architecture independent,
 # but there is no gtk-update-icon-cache built natively.

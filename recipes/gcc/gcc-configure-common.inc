@@ -53,6 +53,8 @@ EXTRA_OECONF_append_linux               = " --enable-__cxa_atexit"
 EXTRA_OECONF_append_linux-gnueabi       = " --enable-__cxa_atexit"
 EXTRA_OECONF_append_linux-uclibc        = " --disable-__cxa_atexit"
 EXTRA_OECONF_append_linux-uclibceabi    = " --disable-__cxa_atexit"
+EXTRA_OECONF_append_mips64    = " --with-abi=64"
+EXTRA_OECONF_append_mips64el    = " --with-abi=64"
 EXTRA_OECONF_FPU = "${@get_gcc_fpu_setting(bb, d)}"
 CPPFLAGS = ""
 

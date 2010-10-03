@@ -7,6 +7,8 @@ EXTRA_OECONF = "--with-sysroot=${STAGING_DIR_TARGET} \
 		--program-prefix=${TARGET_PREFIX} \
 		--disable-werror \
 	       "
+EXTRA_OECONF_append_mips64 = " --enable-64-bit-bfd"
+EXTRA_OECONF_append_mips64el = " --enable-64-bit-bfd"
 
 do_install () {
 	oe_runmake 'DESTDIR=${D}' install

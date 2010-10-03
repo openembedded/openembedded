@@ -6,11 +6,12 @@ is not the cluster messaging layer (Heartbeat), nor the cluster resource manager
 LICENSE = "GPL"
 DEPENDS = "libxml2 libtool glib-2.0 bzip2 util-linux-ng"
 
-PR = "r0"
+PR = "r2"
 
 SRC_URI = " \
 	http://hg.linux-ha.org/glue/archive/glue-${PV}.tar.bz2;name=tar \
 	file://glue-remove-getpid-check.patch \
+	file://fix-const-cast.patch \
 	file://volatiles \
 	"
 SRC_URI_append_libc-uclibc = " file://kill-stack-protector.patch"
@@ -53,7 +54,7 @@ PACKAGES += "\
 	 ${PN}-lrmtest \
 	 "
 
-FILES_${PN} += " \
+FILES_${PN} = "/etc/ /usr/lib/lib*.so.* /usr/sbin /usr/share/cluster-glue/*sh /usr/share/cluster-glue/*pl\
 	/usr/lib/heartbeat/transient-test.sh \
 	/usr/lib/heartbeat/logtest \
 	/usr/lib/heartbeat/ipctransientserver \
@@ -88,4 +89,4 @@ FILES_${PN}-plugin-interfacemgr = "/usr/lib/heartbeat/plugins/InterfaceMgr/gener
 FILES_${PN}-plugin-interfacemgr-dev = "/usr/lib/heartbeat/plugins/InterfaceMgr/generic.*a"
 FILES_${PN}-plugin-interfacemgr-dbg = "/usr/lib/heartbeat/plugins/InterfaceMgr/.debug/"
 
-FILES_${PN}-lrmtest = "/usr/share/glue/lrmtest/"
+FILES_${PN}-lrmtest = "/usr/share/cluster-glue/lrmtest/"

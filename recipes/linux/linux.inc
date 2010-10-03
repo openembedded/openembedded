@@ -227,6 +227,7 @@ FILES_kernel-headers = "${exec_prefix}/src/linux*"
 do_devicetree_image() {
     if test -n "${KERNEL_DEVICETREE}" ; then
         dtc -I dts -O dtb ${KERNEL_DEVICETREE_FLAGS} -o devicetree ${KERNEL_DEVICETREE}
+        install -d ${D}/boot
         install -m 0644 devicetree ${D}/boot/devicetree-${KERNEL_VERSION}
         install -d ${DEPLOY_DIR_IMAGE}
         install -m 0644 devicetree ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.dtb

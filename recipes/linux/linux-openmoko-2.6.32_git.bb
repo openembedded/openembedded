@@ -1,7 +1,7 @@
 require linux.inc
 require linux-openmoko.inc
 
-KERNEL_RELEASE="2.6.32.22"
+KERNEL_RELEASE="2.6.32.23"
 
 SRCREV = "a9254be10ac2294ea20165a87c09ea6afcf66d94"
 OEV = "oe3.3"
@@ -21,6 +21,9 @@ SRC_URI = "\
   file://0003-usbhost.patch.patch \
   file://0004-ar6000_delay.patch.patch \
   file://0005-save_regs.patch.patch \
+  file://0026-Rename-dev-s3c2410_serialXXX-to-dev-ttySACXXX.patch \
+  file://0027-Enable-powering-off-after-8s-POWER-press.patch \
+  file://0028-GTA02-bt-remember-state-of-bluetooth-in-variable.patch \
 # patches from Weiss's gdrm-for-merging branch
   file://0007-DRM-for-platform-devices.patch \
   file://0008-Glamo-DRM-and-KMS-driver.patch \
@@ -45,8 +48,8 @@ SRC_URI = "\
   file://defconfig \
 "
 
-SRC_URI[stablepatch.md5sum] = "da1431a1d659298c6bd11714416c840f"
-SRC_URI[stablepatch.sha256sum] = "9f04a819a6ae1ac9a4793ce229bc9a2cb095ac10a2d46955ec1e6769283c4de4"
+SRC_URI[stablepatch.md5sum] = "6eac9aebbf9e74546b7c44c0fb9348a7"
+SRC_URI[stablepatch.sha256sum] = "c252375c7c2d2557cb8d4b708bc7e3ca4d23b81afbf3278b87f8721c8ca5f8c9"
 
 
 S = "${WORKDIR}/git"

@@ -2,7 +2,7 @@ DESCRIPTION = "Target packages for Qt Embedded SDK"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
-PR = "r3"
+PR = "r5"
 
 RDEPENDS_${PN} += " \
         task-sdk-bare \
@@ -10,7 +10,6 @@ RDEPENDS_${PN} += " \
         libqt-embeddedmultimedia4-dev \
         libqt-embeddedphonon4-dev \
         libqt-embedded3support4-dev \
-        libqt-embeddedassistantclient4-dev \
         libqt-embeddedclucene4-dev \
         libqt-embeddedcore4-dev \
         libqt-embeddeddbus4-dev \
@@ -32,4 +31,9 @@ RDEPENDS_${PN} += " \
         libsqlite-dev \
         libts-dev \
         expat-dev \
+        "
+
+#Qt Declarative is new in 4.7, try to include it like this.
+RRECOMMENDS_${PN} += " \
+        libqt-embeddeddeclarative4-dev \
         "
