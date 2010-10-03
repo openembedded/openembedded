@@ -4,7 +4,7 @@ PRIORITY = "required"
 DEPENDS = "makedevs"
 RDEPENDS_${PN} = "makedevs"
 LICENSE = "GPL"
-PR = "r123"
+PR = "r124"
 
 SRC_URI = "file://functions \
            file://halt \
@@ -31,7 +31,8 @@ SRC_URI = "file://functions \
            file://device_table.txt \
            file://populate-volatile.sh \
            file://volatiles \
-           file://save-rtc.sh"
+           file://save-rtc.sh \
+           file://save-rtc-uclibc.sh"
 
 SRC_URI_append_arm = " file://alignment.sh"
 
@@ -136,4 +137,13 @@ do_install_append_angstrom () {
 # HIPOX needs /sys in reboot for kexec check
 do_install_append_hipox () {
 	ln -sf		../init.d/sysfs.sh	${D}${sysconfdir}/rc6.d/S80sysfs
+}
+
+# uclibc's date does support only SUSv3 strptime()
+do_install_append_linux-uclibc() {
+	install -m 0755    ${WORKDIR}/save-rtc-uclibc.sh ${D}${sysconfdir}/init.d/save-rtc.sh
+}
+
+do_install_append_linux-uclibceabi() {
+	install -m 0755    ${WORKDIR}/save-rtc-uclibc.sh ${D}${sysconfdir}/init.d/save-rtc.sh
 }
