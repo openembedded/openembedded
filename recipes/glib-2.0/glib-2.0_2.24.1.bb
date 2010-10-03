@@ -6,11 +6,11 @@ UNIX-like platforms, Windows, OS/2 and BeOS."
 LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "gtk-doc zlib"
+DEPENDS = "glib-2.0-native gtk-doc zlib"
 DEPENDS_virtclass-native = "gettext-native gtk-doc-native \
                             pkgconfig-native"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "\
   http://ftp.gnome.org/pub/GNOME/sources/glib/2.24/glib-${PV}.tar.bz2;name=archive \
