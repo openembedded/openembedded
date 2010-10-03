@@ -1,0 +1,23 @@
+Index: git/config
+===================================================================
+--- git.orig/config	2010-09-25 17:50:51.000000000 +0200
++++ git/config	2010-09-25 17:51:15.000000000 +0200
+@@ -1,7 +1,7 @@
+ # Installation directories
+ 
+ # Default installation prefix
+-PREFIX=/usr/local
++#PREFIX=/usr/local
+ 
+ # System's libraries directory (where binary libraries are installed)
+ LUA_LIBDIR= $(PREFIX)/lib/lua/5.1
+@@ -18,7 +18,7 @@
+ # Compilation directives
+ WARN= -O2 -Wall -fPIC -W -Waggregate-return -Wcast-align -Wmissing-prototypes -Wnested-externs -Wshadow -Wwrite-strings -pedantic
+ INCS= -I$(LUA_INC)
+-CFLAGS= $(WARN) $(INCS)
+-CC= gcc
++CFLAGS= $(WARN) $(INCS) $(MYFLAGS)
++#CC= gcc
+ 
+ # $Id: config,v 1.21 2007/10/27 22:42:32 carregal Exp $
