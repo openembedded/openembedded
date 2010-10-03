@@ -1,0 +1,22 @@
+Index: ntpclient-2007/ntpclient.c
+===================================================================
+--- ntpclient-2007.orig/ntpclient.c	2010-10-01 17:25:20.000000000 +0200
++++ ntpclient-2007/ntpclient.c	2010-10-01 17:25:38.000000000 +0200
+@@ -146,7 +146,7 @@
+ #ifdef __linux__
+ 	struct timex txc;
+ 	txc.modes=0;
+-	if (__adjtimex(&txc) < 0) {
++	if (adjtimex(&txc) < 0) {
+ 		perror("adjtimex"); exit(1);
+ 	}
+ 	return txc.freq;
+@@ -163,7 +163,7 @@
+ 	struct timex txc;
+ 	txc.modes = ADJ_FREQUENCY;
+ 	txc.freq = new_freq;
+-	if (__adjtimex(&txc) < 0) {
++	if (adjtimex(&txc) < 0) {
+ 		perror("adjtimex"); exit(1);
+ 	}
+ 	return txc.freq;
