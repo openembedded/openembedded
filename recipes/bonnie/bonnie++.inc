@@ -19,7 +19,7 @@ PACKAGES += "bonnie-scripts"
 FILES_${PN} = "/sbin"
 FILES_bonnie-scripts="/bin"
 
-S="${WORKDIR}/${PN}-${PV}"
+S="${WORKDIR}/${BPN}-${PV}"
 
 TARGET_CC_ARCH += "${LDFLAGS}"
 
