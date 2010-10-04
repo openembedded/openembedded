@@ -121,7 +121,9 @@ kernel_do_install() {
                 oe_runmake SUBDIRS="scripts/genksyms"
         fi
 
-
+	# we need to set kerneldir here as some kernels have a do_install_append
+	# which assumes kerneldir is set
+	kerneldir=${D}/kernel/
 }
 
 sysroot_stage_all_append() {
