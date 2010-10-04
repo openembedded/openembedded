@@ -5,7 +5,7 @@ LICENSE = "GPL"
 CONFLICTS = "ipkg-link"
 RDEPENDS_${PN} = "python"
 SRCDATE = "20050930"
-PR = "r27"
+PR = "r28"
 
 TARGET_CC_ARCH += "${LDFLAGS}"
 
@@ -17,6 +17,7 @@ SRC_URI = "${HANDHELDS_CVS};module=ipkg-utils \
            file://ipkg-make-index-track-stamps.patch \
            file://fields_tweaks.patch \
            file://ipkg-env.patch \
+           file://arfile_header_split.patch \
 	   "
 
 S = "${WORKDIR}/ipkg-utils"
