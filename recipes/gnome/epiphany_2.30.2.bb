@@ -1,7 +1,9 @@
 DESCRIPTION = "GNOME default webbrowser"
-DEPENDS = "libsoup-2.4 gnome-desktop gnome-vfs libgnomeui webkit-gtk iso-codes startup-notification"
+LICENSE = "GPLv2+"
+DEPENDS = "libsoup-2.4 gnome-desktop gnome-vfs libgnomeui webkit-gtk iso-codes startup-notification ca-certificates"
 RDEPENDS_${PN} = "gnome-vfs-plugin-http iso-codes"
-PR = "r2"
+RRECOMMENDS_${PN} = "ca-certificates"
+PR = "r3"
 
 inherit gnome
 
