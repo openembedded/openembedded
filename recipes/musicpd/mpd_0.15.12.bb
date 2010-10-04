@@ -5,6 +5,8 @@ LICENSE = "GPLv2"
 DEPENDS = "libvorbis libogg libao zlib libmikmod flac audiofile virtual/libiconv faad2 pulseaudio \
            ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad libid3tag lame', d)}"
 
+PR = "r1"
+
 SRC_URI = "${SOURCEFORGE_MIRROR}/musicpd/mpd-${PV}.tar.bz2 \
 	   file://mpd/mpd.conf \
            file://mpd/mpd.init"
@@ -41,6 +43,7 @@ do_compile_prepend() {
 }
 
 do_install_append() {
+    install -d ${D}/var/lib/mpd/playlists
     install -d ${D}${sysconfdir}/init.d
     install -m 755 ${WORKDIR}/mpd/mpd.init ${D}${sysconfdir}/init.d/mpd
     install -m 644 ${WORKDIR}/mpd/mpd.conf ${D}${sysconfdir}/mpd.conf
