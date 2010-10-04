@@ -1,5 +1,8 @@
 PACKAGESTRIPFUNCS += "do_strip_modules"
 
+# inherit to get get_kernelmajorversion();
+inherit linux-kernel-base
+
 # may be inherited by kernel.bbclass which sets KERNEL_MAJOR_VERSION
 KERNEL_MAJOR_VERSION ?= "${@get_kernelmajorversion('${KERNEL_VERSION}')}"
 
