@@ -11,7 +11,7 @@ LICENSE = "GPLv2"
 SECTION = "base"
 PRIORITY = "required"
 
-INC_PR = "r34"
+INC_PR = "r35"
 
 SRC_URI = "\
   file://busybox-cron \
