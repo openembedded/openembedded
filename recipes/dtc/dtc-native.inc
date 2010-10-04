@@ -2,7 +2,9 @@ require dtc.inc
 
 inherit native
 
-do_stage() {
-	install -m 755 dtc ${STAGING_BINDIR}/dtc
-}
+NATIVE_INSTALL_WORKS = "1"
 
+do_install() {
+	install -d ${D}${bindir}
+	install -m 755 dtc ${D}${bindir}/
+}
