@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.mysql.com/"
 SECTION = "libs"
 LICENSE = "GPL"
 DEPENDS = "ncurses"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://downloads.mysql.com/archives/mysql-5.1/mysql-${PV}.tar.gz \
            file://configure.in.patch \
@@ -46,8 +46,8 @@ SYSROOT_PREPROCESS_FUNCS += "mysql5_sysroot_preprocess"
 
 # We need to append this so it runs *after* binconfig's preprocess function
 mysql5_sysroot_preprocess () {
-	sed -i -es,^pkgincludedir=\'/usr/include/mysql\',pkgincludedir=\'${STAGING_INCDIR}\', ${STAGING_BINDIR_CROSS}/mysql_config
-	sed -i -es,^pkglibdir=\'/usr/lib/mysql\',pkglibdir=\'${STAGING_LIBDIR}\', ${STAGING_BINDIR_CROSS}/mysql_config
+	sed -i -es,^pkgincludedir=\'/usr/include/mysql\',pkgincludedir=\'${STAGING_INCDIR}\', ${SYSROOT_DESTDIR}${STAGING_BINDIR_CROSS}/mysql_config
+	sed -i -es,^pkglibdir=\'/usr/lib/mysql\',pkglibdir=\'${STAGING_LIBDIR}\', ${SYSROOT_DESTDIR}${STAGING_BINDIR_CROSS}/mysql_config
 }
 
 do_install() {
