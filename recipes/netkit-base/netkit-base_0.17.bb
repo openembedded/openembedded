@@ -1,11 +1,12 @@
 SECTION = "base"
 DESCRIPTION = "netkit-base includes the inetd daemon."
 LICENSE = "BSD"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.uk.linux.org/pub/linux/Networking/netkit/netkit-base-${PV}.tar.gz \
            file://configure.patch \
            file://mconfig.patch \
+           file://gcc4_buildfix.patch \
            file://init \
            file://inetd.conf"
 
@@ -17,7 +18,11 @@ INITSCRIPT_PARAMS = "start 20 2 3 4 5 . stop 20 0 1 6 ."
 EXTRA_OEMAKE = "-C inetd"
 
 do_compile () {
-	oe_runmake 'CC=${CC}' 'LD=${LD}' all
+        sed -e 's:^CC=.*:CC=${CC}:' \
+            -e 's:^CFLAGS=.*:CFLAGS=${CFLAGS}:' \
+            -e 's:^LDFLAGS=.*:LDFLAGS=${LDFLAGS}:' \
+            -i ${S}/MCONFIG
+        oe_runmake
 }
 
 do_install () {

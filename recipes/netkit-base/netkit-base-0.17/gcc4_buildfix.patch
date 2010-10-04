@@ -1,0 +1,19 @@
+upstream: unmaintained
+source: org.openembedded.dreambox fb4bee1268b9a0600fd6236ac0e9245f17b33f95
+
+| servtab.c: In function 'loadconfigent':
+| servtab.c:785:4: error: lvalue required as left operand of assignment
+[...]
+| servtab.c:798:4: error: lvalue required as left operand of assignment
+
+--- bla/inetd/servtab.c	2000-07-22 22:20:50.000000000 +0200
++++ bla/inetd/servtab.c	2006-03-01 15:26:46.000000000 +0100
+@@ -771,7 +771,7 @@
+ 			return;
+ 		}
+ 		
+-#define SWAP(type, a, b) {type c=(type)a; (type)a=(type)b; (type)b=(type)c;}
++#define SWAP(type, a, b) {type c=(type)a; a=(type)b; b=(type)c;}
+ 
+ 		/*
+ 		 * sep->se_wait may be holding the pid of a daemon
