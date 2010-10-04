@@ -16,7 +16,7 @@ SRC_URI = "http://download.gnome.org/sources/gtk+/${MAJ_VER}/gtk+-${PV}.tar.bz2;
 	file://xsettings.patch \
 	"
 
-INC_PR = "r8"
+INC_PR = "r10"
 
 inherit autotools pkgconfig
 
@@ -66,21 +66,26 @@ do_install_append () {
 	rm -f ${D}${libdir}/gtk-2.0/*/*.la ${D}${libdir}/gtk-2.0/${LIBV}/*/*.la
 }
 
-do_install_virtclass-native () {
-        autotools_do_install
+do_install_append_virtclass-native () {
+	${D}${bindir}/gdk-pixbuf-query-loaders \
+		${D}${libdir}/gtk-2.0/${LIBV}/loaders/*.so | \
+		sed -e's,${D},,' > \
+			${D}${sysconfdir}/gtk-2.0/gdk-pixbuf.loaders
+}
 
-	mkdir -p ${D}${libdir}/gtk-2.0/include
-	install -m 0644 gdk/gdkconfig.h ${D}${libdir}/gtk-2.0/include/gdkconfig.h
-	# Copy over all headers, since the maemo stuff needs access to the private api. *sigh*
-	cp gtk/*.h ${D}${includedir}/gtk-2.0/gtk/
+SYSROOT_PREPROCESS_FUNCS_append_virtclass-native = " gdk_pixbuf_fixup"
 
-	install -m 0644 m4macros/gtk-2.0.m4 ${STAGING_DATADIR}/aclocal/
-
-	install -d ${D}${sysconfdir}/gtk-2.0
-	rm -f ${D}${libdir}/gtk-2.0/*/*.la ${D}${libdir}/gtk-2.0/${LIBV}/*/*.la
-
-	mkdir -p "${D}${sysconfdir}/gtk-2.0"
-	${B}/gdk-pixbuf/gdk-pixbuf-query-loaders ${B}/gdk-pixbuf/.libs/*.so | sed 's:${B}/gdk-pixbuf/.libs:${STAGING_LIBDIR}/gtk-2.0/${LIBV}/loaders:' > "${D}${sysconfdir}/gtk-2.0/gdk-pixbuf.loaders"
+_SYSROOT_DEST = "${SYSROOT_DESTDIR}${STAGING_DIR_HOST}"
+gdk_pixbuf_fixup () {
+	create_wrapper ${_SYSROOT_DEST}${bindir}/gdk-pixbuf-query-loaders \
+		LD_LIBRARY_PATH=${STAGING_LIBDIR} \
+		GDK_PIXBUF_MODULEDIR=${libdir}/gtk-2.0/${LIBV}/loaders
+	${_SYSROOT_DEST}${bindir}/gdk-pixbuf-query-loaders \
+		${_SYSROOT_DEST}${libdir}/gtk-2.0/${LIBV}/loaders/*.so | \
+		sed -e's,${_SYSROOT_DEST},,' > \
+			${_SYSROOT_DEST}${sysconfdir}/gtk-2.0/gdk-pixbuf.loaders
+	create_wrapper ${_SYSROOT_DEST}${bindir}/gdk-pixbuf-csource \
+		GDK_PIXBUF_MODULE_FILE=${sysconfdir}/gtk-2.0/gdk-pixbuf.loaders
 }
 
 postinst_prologue() {
