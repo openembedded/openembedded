@@ -22,7 +22,7 @@ DEPENDS += " libxml-xpath-perl-native libxml-simple-perl-native libdatetime-form
 RDEPENDS_mythweather += " libxml-xpath-perl libxml-simple-perl libdatetime-format-iso8601-perl \
 	libsoap-lite-perl libimage-size-perl libdate-manip-perl "
 
-PR = "svnr${SRCPV}+r3"
+PR = "svnr${SRCPV}+r4"
 PV = "0.23"
 
 SRCREV = "25609"
@@ -85,7 +85,7 @@ pkg_postinst_mythweb-lighttpd () {
         chgrp -R www-data /var/www/pages
         chmod g+rw /var/www/pages
         grep mythweb.conf /etc/lighttpd.conf || \
-                echo "Include /etc/mythweb.conf" >>/etc/lighttpd.conf
+                echo "include \"mythweb.conf\"" >>/etc/lighttpd.conf
 }
 
 PACKAGES =+ " \
