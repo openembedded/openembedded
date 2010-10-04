@@ -43,11 +43,6 @@ do_configure () {
 #  --with-qt-includes      where the Qt includes are.
 #  --with-qt-libraries     where the Qt library is installed.
 
-do_stage () {
-	# As of 0.9.4 there is a libopagent library to compile and link against.
-	autotools_stage_all
-}
-
 OPROFILE_ARCH = "${TARGET_ARCH}"
 OPROFILE_ARCH_i586 = "i386"
 # note this excludes the ppc64 directory 
