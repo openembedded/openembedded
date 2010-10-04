@@ -7,7 +7,7 @@ DEPENDS = "virtual/kernel openssl readline flex"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ipsec-tools/ipsec-tools-${PV}.tar.bz2;name=ipsec-tools-${PV}"
 
-INC_PR = "r2"
+INC_PR = "r3"
 
 inherit autotools
 
@@ -42,6 +42,9 @@ EXTRA_OECONF = "--with-kernel-headers=${STAGING_INCDIR} \
                 --without-libradius \
                 --without-gssapi \
                 --without-libpam"
+
+# See http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=530527
+CFLAGS += "-fno-strict-aliasing"
 
 # Sometimes it attempts to use y.tab.c before it is actually
 # generated. Note that the failure case is very rare, but it does
