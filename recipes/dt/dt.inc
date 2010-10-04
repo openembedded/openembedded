@@ -7,7 +7,7 @@ LICENSE = "Public domain"
 INC_PR = "r0"
 
 SRC_URI = "http://home.comcast.net/~SCSIguy/SCSI_FAQ/RMiller_Tools/ftp/dt/dt-source.tar.gz"
-S = "${WORKDIR}/dt.d-WIP"
+S = "${WORKDIR}/dt.d"
 
 TARGET_CC_ARCH += "${LDFLAGS}"
 
