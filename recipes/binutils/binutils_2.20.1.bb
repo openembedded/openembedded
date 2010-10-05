@@ -1,7 +1,8 @@
 require binutils.inc
 LICENSE = "GPLv3"
 
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.3"
+EXTRA_OECONF += "--disable-werror"
 
 #COMPATIBLE_TARGET_SYS = "."
 
