@@ -1,0 +1,104 @@
+diff -Nurd linux-2.6.24.orig//arch/arm/mach-hipox/Kconfig linux-2.6.24/arch/arm/mach-hipox/Kconfig
+--- linux-2.6.24.orig//arch/arm/mach-hipox/Kconfig	2010-09-30 13:05:01.000000000 +0200
++++ linux-2.6.24/arch/arm/mach-hipox/Kconfig	2010-09-30 13:11:34.000000000 +0200
+@@ -255,6 +255,19 @@
+ 		This defines the GPIO used to signal power state to
+ 		HIPOX board controller.
+ 
++config HIPOX_POE_ENABLE
++	bool "Enable PoE board power switching using GPIO"
++	default y
++	help
++		Enable PoE board power switching using GPIO.
++
++config HIPOX_POE_ENABLE_GPIO
++	int "GPIO line using as power switch for PoE board"
++	depends on HIPOX_POE_ENABLE
++	default 28
++	help
++		This defines the GPIO used as power switch for the PoE board.
++
+ config HIPOX_SATA_POWER_1
+ 	bool "Allow control of SATA 1 disk power via GPIO"
+ 	default n
+diff -Nurd linux-2.6.24.orig//arch/arm/mach-hipox/hipox.c linux-2.6.24/arch/arm/mach-hipox/hipox.c
+--- linux-2.6.24.orig//arch/arm/mach-hipox/hipox.c	2010-09-30 13:05:02.000000000 +0200
++++ linux-2.6.24/arch/arm/mach-hipox/hipox.c	2010-09-30 13:13:40.000000000 +0200
+@@ -72,6 +72,30 @@
+ #define OXE_INT2_MASK (1UL << (OXE_INT2_NUM))
+ #endif // CONFIG_HIPOX_OXE_INT2_GPIO
+ 
++#ifdef CONFIG_HIPOX_POE_ENABLE_GPIO
++#if (CONFIG_HIPOX_POE_ENABLE_GPIO < 32)
++#define POE_ENABLE_NUM               CONFIG_HIPOX_POE_ENABLE_GPIO
++#define POE_ENABLE_PRISEL_REG        SYS_CTRL_GPIO_PRIMSEL_CTRL_0
++#define POE_ENABLE_SECSEL_REG        SYS_CTRL_GPIO_SECSEL_CTRL_0
++#define POE_ENABLE_TERSEL_REG        SYS_CTRL_GPIO_TERTSEL_CTRL_0
++#define POE_ENABLE_QUASEL_REG        SYS_CTRL_GPIO_PWMSEL_CTRL_0
++#define POE_ENABLE_SET_OE_REG        GPIO_A_OUTPUT_ENABLE_SET
++#define POE_ENABLE_OUTPUT_SET_REG    GPIO_A_OUTPUT_SET
++#define POE_ENABLE_OUTPUT_CLR_REG    GPIO_A_OUTPUT_CLEAR
++#else
++#define POE_ENABLE_NUM               ((CONFIG_HIPOX_POE_ENABLE_GPIO) - 32)
++#define POE_ENABLE_PRISEL_REG        SYS_CTRL_GPIO_PRIMSEL_CTRL_1
++#define POE_ENABLE_SECSEL_REG        SYS_CTRL_GPIO_SECSEL_CTRL_1
++#define POE_ENABLE_TERSEL_REG        SYS_CTRL_GPIO_TERTSEL_CTRL_1
++#define POE_ENABLE_QUASEL_REG        SYS_CTRL_GPIO_PWMSEL_CTRL_1
++#define POE_ENABLE_SET_OE_REG        GPIO_B_OUTPUT_ENABLE_SET
++#define POE_ENABLE_OUTPUT_SET_REG    GPIO_B_OUTPUT_SET
++#define POE_ENABLE_OUTPUT_CLR_REG    GPIO_B_OUTPUT_CLEAR
++#endif
++
++#define POE_ENABLE_MASK (1UL << (POE_ENABLE_NUM))
++#endif // CONFIG_HIPOX_POE_ENABLE_GPIO
++
+ #ifdef CONFIG_HIPOX_PCI_RESET_GPIO
+ #if (CONFIG_HIPOX_PCI_RESET_GPIO < 32)
+ #define PCI_RESET_NUM               CONFIG_HIPOX_PCI_RESET_GPIO
+@@ -438,6 +462,22 @@
+     writel(OXE_INT2_MASK, OXE_INT2_OUTPUT_SET_REG);
+ #endif // CONFIG_HIPOX_OXE_INT2
+ 
++#ifdef CONFIG_HIPOX_POE_ENABLE
++    printk("Enable POE_ENABLE\n");
++
++    // Disable primary, secondary and teriary GPIO functions on POE_ENABLE line
++    writel(readl(POE_ENABLE_PRISEL_REG) & ~POE_ENABLE_MASK, POE_ENABLE_PRISEL_REG);
++    writel(readl(POE_ENABLE_SECSEL_REG) & ~POE_ENABLE_MASK, POE_ENABLE_SECSEL_REG);
++    writel(readl(POE_ENABLE_TERSEL_REG) & ~POE_ENABLE_MASK, POE_ENABLE_TERSEL_REG);
++    writel(readl(POE_ENABLE_QUASEL_REG) & ~POE_ENABLE_MASK, POE_ENABLE_QUASEL_REG);
++
++    // Enable GPIO output on POE_ENABLE line
++    writel(POE_ENABLE_MASK, POE_ENABLE_SET_OE_REG);
++
++    // Set POE_ENABLE
++    writel(POE_ENABLE_MASK, POE_ENABLE_OUTPUT_SET_REG);
++#endif // CONFIG_HIPOX_POE_ENABLE
++
+ #ifdef CONFIG_ARCH_HIPOX_UART1
+     // Block reset UART1
+     *(volatile u32*)SYS_CTRL_RSTEN_SET_CTRL = (1UL << SYS_CTRL_RSTEN_UART1_BIT);
+@@ -1080,6 +1120,23 @@
+ static void hipox_poweroff(void)
+ {
+     printk("Power off OXE810.\n");
++
++#ifdef CONFIG_HIPOX_POE_ENABLE
++    printk("Disable POE_ENABLE.\n");
++
++    // Disable primary, secondary and teriary GPIO functions on POE_ENABLE line
++    writel(readl(POE_ENABLE_PRISEL_REG) & ~POE_ENABLE_MASK, POE_ENABLE_PRISEL_REG);
++    writel(readl(POE_ENABLE_SECSEL_REG) & ~POE_ENABLE_MASK, POE_ENABLE_SECSEL_REG);
++    writel(readl(POE_ENABLE_TERSEL_REG) & ~POE_ENABLE_MASK, POE_ENABLE_TERSEL_REG);
++    writel(readl(POE_ENABLE_QUASEL_REG) & ~POE_ENABLE_MASK, POE_ENABLE_QUASEL_REG);
++
++    // Enable GPIO output on POE_ENABLE line
++    writel(POE_ENABLE_MASK, POE_ENABLE_SET_OE_REG);
++
++    // Reset POE_ENABLE
++    writel(POE_ENABLE_MASK, POE_ENABLE_OUTPUT_CLR_REG);
++#endif // CONFIG_HIPOX_POE_ENABLE
++
+ #ifdef CONFIG_HIPOX_OXE_INT2
+     printk("Disable OXE_INT2.\n");
+ 

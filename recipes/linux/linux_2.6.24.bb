@@ -101,6 +101,7 @@ SRC_URI_append_hipox = " \
 	file://hipox-nand-vs-pci.patch \
 	file://hipox-nand-vs-nor.patch \
 	file://ox810-gmac-without-leon.patch \
+	file://hipox-poe-enable.patch \
 	"
 
 EXTRA_OEMAKE_smartq5 = " OBJCOPY=${OBJCOPY}"
