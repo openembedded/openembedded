@@ -1,6 +1,6 @@
 # Qt Embedded toolchain
 PR = "r4"
-TOOLCHAIN_HOST_TASK = "task-qte-toolchain-host"
+TOOLCHAIN_HOST_TASK = "task-qt-toolchain-host"
 TOOLCHAIN_TARGET_TASK = "task-qte-toolchain-target"
 
 require meta-toolchain.bb

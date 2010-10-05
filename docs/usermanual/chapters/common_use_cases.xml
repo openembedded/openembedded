@@ -327,7 +327,7 @@ SDK_SUFFIX = "toolchain-YOUR"
 
             <para>OpenEmbedded provides an easy way to create a Qt Embedded
             SDK. In
-            <filename>recipes/tasks/task-qte-toolchain-host.bb</filename> host
+            <filename>recipes/tasks/task-qt-toolchain-host.bb</filename> host
             tools like moc, uic, rcc, qmake will get installed and in <filename>
             recipes/tasks/task-qte-toolchain-target.bb</filename> the Qt4 header
             files and libraries will be installed.
