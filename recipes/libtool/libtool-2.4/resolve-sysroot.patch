@@ -1,0 +1,18 @@
+Sometimes .las have =/a/b/c.la in dependency_libs this should be
+resolved to sysroot
+-Khem
+
+Index: libtool-2.4/libltdl/config/ltmain.m4sh
+===================================================================
+--- libtool-2.4.orig/libltdl/config/ltmain.m4sh
++++ libtool-2.4/libltdl/config/ltmain.m4sh
+@@ -8480,7 +8480,8 @@ EOF
+ 	      *.la)
+ 		func_basename "$deplib"
+ 		name="$func_basename_result"
+-		eval libdir=`${SED} -n -e 's/^libdir=\(.*\)$/\1/p' $deplib`
++		func_resolve_sysroot "$deplib"
++		eval libdir=`${SED} -n -e 's/^libdir=\(.*\)$/\1/p' $func_resolve_sysroot_result`
+ 		test -z "$libdir" && \
+ 		  func_fatal_error "\`$deplib' is not a valid libtool archive"
+ 		func_append newdependency_libs " ${lt_sysroot:+=}$libdir/$name"
