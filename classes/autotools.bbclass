@@ -79,7 +79,9 @@ CONFIGUREOPTS = " --build=${BUILD_SYS} \
 
 oe_runconf () {
 	if [ -x ${S}/configure ] ; then
-		${S}/configure ${CONFIGUREOPTS} ${EXTRA_OECONF} "$@"
+		${S}/configure \
+		${@["","--with-sysroot"][bb.data.getVar('LIBTOOL_HAS_SYSROOT', d, 1) == "yes"]} \
+		${CONFIGUREOPTS} ${EXTRA_OECONF} "$@"
 	else
 		oefatal "no configure script found"
 	fi
@@ -170,8 +172,7 @@ autotools_do_install() {
 	oe_runmake 'DESTDIR=${D}' install
 }
 
-PACKAGE_PREPROCESS_FUNCS += "autotools_prepackage_lamangler"
-
+PACKAGE_PREPROCESS_FUNCS += "${@['autotools_prepackage_lamangler',''][bb.data.getVar('LIBTOOL_HAS_SYSROOT', d, 1) == "yes"]}"
 autotools_prepackage_lamangler () {
         for i in `find ${PKGD} -name "*.la"` ; do \
             sed -i -e 's:${STAGING_LIBDIR}:${libdir}:g;' \
