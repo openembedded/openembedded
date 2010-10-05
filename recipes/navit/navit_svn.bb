@@ -1,6 +1,6 @@
 require navit.inc
 
-SRCREV = "3535"
+SRCREV = "3599"
 PV = "0.1.99+svnr${SRCPV}"
 PR = "${INC_PR}.10"
 
