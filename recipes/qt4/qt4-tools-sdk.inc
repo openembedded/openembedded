@@ -12,6 +12,7 @@ inherit sdk
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-everywhere-opensource-src-${PV}.tar.gz \
            file://configure-lflags.patch \
+           file://config.tests-rpath-link.patch \
            file://qt-config.patch \
            file://g++.conf \
            file://linux.conf"
@@ -32,6 +33,7 @@ EXTRA_OECONF = "-prefix ${prefix} \
                 -embedded -no-freetype -no-glib -no-iconv \
                 -qt3support \
                 -I${STAGING_DIR_NATIVE}/usr/include \
+                -I${STAGING_DIR_NATIVE}/usr/include/freetype2 \
                 -I${STAGING_DIR_NATIVE}/usr/include/dbus-1.0 \
                 -I${STAGING_DIR_NATIVE}/usr/lib/dbus-1.0/include"
 
