@@ -1,3 +1,4 @@
+# NOTE: WIP! This recipe does not cross-compile atm., only -native
 SECTION = "libs"
 DEPENDS = "glib-2.0 libffi"
 BBCLASSEXTEND = "native"
