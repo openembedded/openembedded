@@ -33,7 +33,6 @@ EXTRA_OECONF = "-prefix ${prefix} \
                 -embedded -no-freetype -no-glib -no-iconv \
                 -qt3support \
                 -I${STAGING_DIR_NATIVE}/usr/include \
-                -I${STAGING_DIR_NATIVE}/usr/include/freetype2 \
                 -I${STAGING_DIR_NATIVE}/usr/include/dbus-1.0 \
                 -I${STAGING_DIR_NATIVE}/usr/lib/dbus-1.0/include"
 
