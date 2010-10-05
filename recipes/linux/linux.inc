@@ -24,6 +24,10 @@ CMDLINE_at91sam9263ek = "mem=64M console=ttyS0,115200 root=/dev/mmcblk0p1 rootfs
 CMDLINE_DEBUG ?= '${@base_conditional("DISTRO_TYPE", "release", "quiet", "debug", d)}'
 CMDLINE_append = " ${CMDLINE_DEBUG} "
 
+# Kernel bootlogo is distro-specific (default is OE logo).
+# Logo resolution (qvga, vga, ...) is machine-specific.
+LOGO_SIZE ?= "."
+
 # Support for binary device tree generation
 
 FILES_kernel-devicetree = "/boot/devicetree*"
@@ -76,8 +80,8 @@ do_configure_prepend() {
         #
         # logo support, if you supply logo_linux_clut224.ppm in SRC_URI, then it's going to be used
         #
-        if [ -e ${WORKDIR}/logo_linux_clut224.ppm ]; then
-                install -m 0644 ${WORKDIR}/logo_linux_clut224.ppm drivers/video/logo/logo_linux_clut224.ppm
+        if [ -e ${WORKDIR}/${LOGO_SIZE}/logo_linux_clut224.ppm ]; then
+                install -m 0644 ${WORKDIR}/${LOGO_SIZE}/logo_linux_clut224.ppm drivers/video/logo/logo_linux_clut224.ppm
                 echo "CONFIG_LOGO=y"                    >> ${S}/.config
                 echo "CONFIG_LOGO_LINUX_CLUT224=y"      >> ${S}/.config
         fi
