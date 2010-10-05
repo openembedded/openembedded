@@ -7,5 +7,5 @@ RDEPENDS_${PN} += "xserver-xorg-extension-dri \
 PE = "1"
 PR = "${INC_PR}.0"
 
-SRC_URI[archive.md5sum] = "8314def847dcdc4f2970e2d193054f96"
-SRC_URI[archive.sha256sum] = "e16b7fb91f72af825bd26693d5329e3a8f42801a0c31858836b59408f8fdffdf"
+SRC_URI[archive.md5sum] = "de2f8a5836d90c71f3175dcd46d03ec0"
+SRC_URI[archive.sha256sum] = "d8b2fae8d0c4ae372994cb7df8de8aa995b8e89b1bc5766c53ea0751752fc887"
