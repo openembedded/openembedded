@@ -13,7 +13,6 @@ LIB_DEPS = "virtual/libx11 libxext libxxf86vm libxdamage libxfixes"
 DEPENDS = "${PROTO_DEPS}  ${LIB_DEPS}"
 
 SRC_URI = "ftp://ftp.freedesktop.org/pub/mesa/${PV}/MesaLib-${PV}.tar.bz2;name=archive \
-           ftp://ftp.freedesktop.org/pub/mesa/${PV}/MesaDemos-${PV}.tar.bz2;name=demos \
           "
 S = "${WORKDIR}/Mesa-${PV}"
 
@@ -31,9 +30,8 @@ inherit glx-use-tls
 # Package contents vary according to ${MACHINE_DRI_MODULES}.
 PACKAGE_ARCH = "${MACHINE}"
 
-PACKAGES =+ "libegl libegl-dev libegl-dbg libglu libglu-dev libosmesa libosmesa-dev libgl libgl-dev ${PN}-xprogs"
+PACKAGES =+ "libegl libegl-dev libegl-dbg libglu libglu-dev libosmesa libosmesa-dev libgl libgl-dev"
 FILES_${PN} += "${libdir}/dri/*.so"
-FILES_${PN}-xprogs = "${bindir}/glxdemo ${bindir}/glxgears ${bindir}/glxheads ${bindir}/glxinfo"
 FILES_libegl = "${libdir}/libEGL.so.* ${libdir}/egl/*.so"
 FILES_libgl = "${libdir}/libGL.so.*"
 FILES_libglu = "${libdir}/libGLU.so.*"
@@ -49,10 +47,6 @@ FILES_libegl-dbg += "${libdir}/egl/.debug/*"
 
 NATIVE_INSTALL_WORKS = "1"
 do_install_append () {
-    install -d ${D}/${bindir}
-    for i in glxdemo glxgears glxheads glxinfo; do 
-        install -m 0755 ${S}/progs/xdemos/${i} ${D}/${bindir}
-    done
     install -d ${D}/${includedir}/GL
     cp -pPr ${S}/include/GL/internal* ${D}/${includedir}/GL
 }
