@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.trolltech.com"
 PRIORITY = "optional"
 LICENSE = "LGPLv2.1 GPLv3"
 
-INC_PR = "r2"
+INC_PR = "r3"
 
 FILESPATHPKG =. "qt-${PV}:"
 inherit sdk
@@ -79,9 +79,5 @@ do_install() {
 	for i in moc uic uic3 rcc lrelease lupdate qdbuscpp2xml qdbusxml2cpp; do \
 		ln -s ${i}4 ${i}; \
 	done)
-
-	# make a symbolic link to mkspecs for compatibility with Nokia's SDK
-	# and QTCreator
-	(cd ${D}${bindir}/..; ln -s ${TARGET_SYS}/usr/share/qtopia/mkspecs mkspecs;)
 }
 

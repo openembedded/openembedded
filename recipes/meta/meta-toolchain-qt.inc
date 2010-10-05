@@ -1,5 +1,5 @@
 # Common Qt toolchain
-INC_PR = "r4"
+INC_PR = "r5"
 
 do_populate_sdk_append() {
        script="${SDK_OUTPUT}/${SDKPATH}/environment-setup"
@@ -17,6 +17,11 @@ do_populate_sdk_append() {
        echo 'export OE_QMAKE_QDBUSXML2CPP=${SDKPATH}/bin/qdbusxml2cpp4' >> $script
        echo 'export OE_QMAKE_QT_CONFIG=${SDKPATH}/${TARGET_SYS}/${datadir}/${QT_DIR_NAME}/mkspecs/qconfig.pri' >> $script
        echo 'export QMAKESPEC=${SDKPATH}/${TARGET_SYS}/${datadir}/${QT_DIR_NAME}/mkspecs/linux-g++' >> $script
+
+       # make a symbolic link to mkspecs for compatibility with Nokia's SDK
+       # and QtCreator
+       cd ${SDK_OUTPUT}/${SDKPATH}
+       ln -s ${TARGET_SYS}/usr/share/${QT_DIR_NAME}/mkspecs mkspecs
 
        # Repack SDK with new environment-setup
        cd ${SDK_OUTPUT}
