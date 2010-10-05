@@ -53,13 +53,11 @@ Index: gcc-4.5/gcc/tree-vect-patterns.c
 ===================================================================
 --- gcc-4.5.orig/gcc/tree-vect-patterns.c
 +++ gcc-4.5/gcc/tree-vect-patterns.c
-@@ -410,7 +410,8 @@ vect_recog_widen_mult_pattern (gimple la
- 
+@@ -411,6 +411,7 @@ vect_recog_widen_mult_pattern (gimple la
    /* Check target support  */
    vectype = get_vectype_for_scalar_type (half_type0);
--  if (!vectype
-+  if (!vec_type
-+      || !vectype_out
+   if (!vectype
++      || !get_vectype_for_scalar_type (type);
        || !supportable_widening_operation (WIDEN_MULT_EXPR, last_stmt, vectype,
  					  &dummy, &dummy, &dummy_code,
  					  &dummy_code, &dummy_int, &dummy_vec))
