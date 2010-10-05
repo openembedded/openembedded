@@ -1,5 +1,6 @@
 FILES_${PN} += "${datadir}/icons/hicolor"
-RDEPENDS_${PN} += "hicolor-icon-theme"
+# Only add runtime dependency on hicolor-icon-theme for target recipes
+RDEPENDS_${PN} += "${@['', 'hicolor-icon-theme']['${PN}' == '${BPN}']}"
 
 # This could run on the host as icon cache files are architecture independent,
 # but there is no gtk-update-icon-cache built natively.

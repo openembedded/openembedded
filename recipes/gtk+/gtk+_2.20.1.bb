@@ -17,7 +17,6 @@ BBCLASSEXTEND = "native"
 ARM_INSTRUCTION_SET = "arm"
 
 DEPENDS_virtclass-native = "libpng-native atk-native pango-native cairo-native libxrender-native libxext-native libgcrypt-native"
-RRECOMMENDS_${PN}_virtclass-native = ""
 PROVIDES_virtclass-native = "gdk-pixbuf-csource-native"
 
 # Enable xkb selectively

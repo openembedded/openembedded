@@ -33,7 +33,6 @@ FILES_${PN} = "${bindir}/gdk-pixbuf-query-loaders \
 	${libdir}/lib*.so.* \
 	${datadir}/themes ${sysconfdir} \
 	${libdir}/gtk-2.0/${LIBV}/engines/libpixmap.so"
-RDEPENDS_${PN} = "hicolor-icon-theme"
 
 FILES_${PN}-dev += " \
 	${datadir}/gtk-2.0/include \
@@ -48,11 +47,13 @@ FILES_${PN}-dbg += " \
 	${libdir}/gtk-2.0/${LIBV}/engines/.debug/* \
 	${libdir}/gtk-2.0/${LIBV}/printbackends/.debug/*"
 
-NEATSTUFF = " ttf-dejavu-sans gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-gif gdk-pixbuf-loader-xpm "
+NEATSTUFF = "ttf-dejavu-sans gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-gif gdk-pixbuf-loader-xpm"
+NEATSTUFF_append_linux = " glibc-gconv-iso8859-1"
+NEATSTUFF_append_linux-gnueabi = " glibc-gconv-iso8859-1"
 
-RRECOMMENDS_${PN} = " ${NEATSTUFF} "
-RRECOMMENDS_${PN}_linux = " ${NEATSTUFF} glibc-gconv-iso8859-1 "
-RRECOMMENDS_${PN}_linux-gnueabi = " ${NEATSTUFF} glibc-gconv-iso8859-1"
+# Only add runtime dependencies for target recipe
+RDEPENDS_${PN} += "${@['', 'hicolor-icon-theme']['${PN}' == '${BPN}']}"
+RRECOMMENDS_${PN} += "${@['', '${NEATSTUFF}']['${PN}' == '${BPN}']}"
 
 do_install_append () {
 	mkdir -p ${D}${libdir}/gtk-2.0/include
