@@ -28,7 +28,7 @@ SRC_URI_append_at91sam9263ek = " \
 SRC_URI_append_ronetix-pm9263 = " \
            file://linux-2.6.28-at91.patch.bz2 \
            file://linux-2.6.28-exp.patch.bz2 \
-           http://download.ronetix.info/sk-eb926x/linux/kernel/2.6.28/003_linux-2.6.28-at91-ronetix-20112009.patch;name=ronetixpatch "
+           http://download.ronetix.info/boards/linux/kernel/2.6.28/003_linux-2.6.28-at91-ronetix-20112009.patch "
 
 SRC_URI_append_mh355 = " \
            file://linux-2.6.28-at91.patch.bz2 \
