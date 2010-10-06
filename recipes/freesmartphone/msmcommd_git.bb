@@ -9,6 +9,7 @@ DEPENDS = " \
  dbus \
  dbus-glib \
  libfso-glib \
+ libfsotransport \
  libgee \
  libmsmcomm \
  msmcommd-specs \
