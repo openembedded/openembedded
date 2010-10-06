@@ -1,8 +1,8 @@
-#@TYPE: Distribution
+#@TYPEi: Distribution
 #@NAME: kaeilos-2010
 #@DESCRIPTION: Release independent distribution configuration for KaeilOS 
-#@MAINTAINER: Marco Cavallini <m.cavallini@koansoftware.com>
-#@VERSION: 21-04-2010
+#@MAINTiiAINER: Marco Cavallini <m.cavallini@koansoftware.com>
+#@VERSION: 06-10-2010
 #
 # KaeilOS is a registered trade mark of KOAN - Bergamo - Italia
 # Product website : http://www.KaeilOS.com 
@@ -37,9 +37,9 @@ THUMB_INTERWORK = "yes"
 KAEILOS_URI ?= "http://www.kaeilos.com"
 
 #Use this variable to select which recipe you want to use to get feed configs (/etc/ipkg/, /etc/apt/sources.list)
-# usefull for derivative distros and local testing
+# useful for derivative distros and local testing
 # As this is runtime we can't and won't use virtual/feed-configs
-DISTRO_FEED_CONFIGS = "kaeilos-feed-configs"
+DISTRO_FEED_CONFIGS = ""
 
 #Set the default maintainer of kaeilos
 MAINTAINER = "KaeilOS Mantainer <m.cavallini@koansoftware.com>"
