@@ -342,7 +342,7 @@ def package_qa_check_staged(path,d):
             if file.endswith(".la"):
                 file_content = open(path).read()
                 # Don't check installed status for native/cross packages
-                if not iscrossnative:
+                if not iscrossnative and bb.data.getVar('LIBTOOL_HAS_SYSROOT', d, True) is "no":
                     if installed in file_content:
                         error_msg = "%s failed sanity test (installed) in path %s" % (file,root)
                         sane = package_qa_handle_error(5, error_msg, "staging", path, d)
