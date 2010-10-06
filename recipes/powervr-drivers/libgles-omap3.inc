@@ -1,9 +1,9 @@
 DESCRIPTION = "libGLES for the omap3"
 LICENSE = "proprietary-binary"
 
-PR = "r6"
+PR = "r7"
 
-COMPATIBLE_MACHINE = "(omap3)"
+COMPATIBLE_MACHINE = "(omap3|ti816x)"
 
 DEPENDS = "virtual/libx11 libxau libxdmcp"
 
@@ -41,6 +41,7 @@ BINLOCATION ?= "${S}/gfx_rel"
 ES2LOCATION ?= "${S}/gfx_rel_es2.x"
 ES3LOCATION ?= "${S}/gfx_rel_es3.x"
 ES5LOCATION ?= "${S}/gfx_rel_es5.x"
+ES6LOCATION ?= "${S}/gfx_rel_es6.x"
 
 do_configure() {
 	# Attempt to fix up the worst offenders for file permissions
@@ -165,12 +166,14 @@ do_install () {
 	echo "[default]" > ${D}${sysconfdir}/powervr.ini
 	echo "WindowSystem=libpvrPVR2D_FRONTWSEGL.so.1" >> ${D}${sysconfdir}/powervr.ini
 
-	# The ES2.x, ES3.x and ES5.x CPUs have different SGX hardware, so we need to install 2 sets of userspace
+	# The ES2.x, ES3.x, ES5.x and ES6.x CPUs have different SGX hardware, so we need to install multiple sets of userspace
 
+	install -d ${D}${libdir}/ES6.0
 	install -d ${D}${libdir}/ES5.0
 	install -d ${D}${libdir}/ES3.0
 	install -d ${D}${libdir}/ES2.0
 
+	install -d ${D}${bindir}/ES6.0
 	install -d ${D}${bindir}/ES5.0
 	install -d ${D}${bindir}/ES3.0
 	install -d ${D}${bindir}/ES2.0
@@ -186,6 +189,13 @@ do_install () {
 		cp -pPR ${ES5LOCATION}/lib*${IMGPV} ${D}${libdir}/ES5.0/
 		cp ${ES5LOCATION}/p[dv]* ${D}${bindir}/ES5.0/
 	fi
+
+	if [ -e ${ES6LOCATION} ] ; then
+		cp -pPR ${ES6LOCATION}/lib*${IMGPV} ${D}${libdir}/ES6.0/
+		cp ${ES6LOCATION}/p[dv]* ${D}${bindir}/ES6.0/
+	fi
+
+	rm ${D}${bindir}/ES*/*.h ${D}${bindir}/ES*/pdsasm ${D}${bindir}/pdsasm -f || true
 
 	install -d ${D}${prefix}/share/applications
 	cp ${WORKDIR}/*.desktop ${D}${prefix}/share/applications
