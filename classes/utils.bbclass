@@ -369,7 +369,7 @@ oe_libinstall() {
 		__runcmd install -m 0644 $dota $destpath/
 	fi
 	if [ -f "$dotlai" -a -n "$libtool" ]; then
-		if test -n "$staging_install"
+		if [ -n "$staging_install" -a "${LIBTOOL_HAS_SYSROOT}" = "no" ]
 		then
 			# stop libtool using the final directory name for libraries
 			# in staging:

@@ -42,20 +42,21 @@ SYSROOTEXTRALIBDIRSED ?= ""
 sysroot_stage_libdir() {
 	src="$1"
 	dest="$2"
-
-	olddir=`pwd`
-	cd $src
-	las=$(find . -name \*.la -type f)
-	cd $olddir
-	echo "Found la files: $las"		 
-	for i in $las
-	do
+	if [ "${LIBTOOL_HAS_SYSROOT}" = "no" ]; then
+	    olddir=`pwd`
+	    cd $src
+	    las=$(find . -name \*.la -type f)
+	    cd $olddir
+	    echo "Found la files: $las" 
+	    for i in $las
+	    do
 		sed -e 's/^installed=yes$/installed=no/' \
 		    -e '/^dependency_libs=/s,${WORKDIR}[[:alnum:]/\._+-]*/\([[:alnum:]\._+-]*\),${STAGING_LIBDIR}/\1,g' \
 		    -e "/^dependency_libs=/s,\([[:space:]']\)${libdir},\1${STAGING_LIBDIR},g" \
 		    ${SYSROOTEXTRALIBDIRSED} \
 		    -i $src/$i
-	done
+	    done
+	fi
 	sysroot_stage_dir $src $dest
 }
 
