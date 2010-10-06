@@ -2,7 +2,7 @@ DESCRIPTION = "A minimal X11 window manager for the Mokosuite"
 HOMEPAGE = "http://gitorious.org/mokosuite2"
 AUTHOR = "Daniele Ricci"
 LICENSE = "GPLv3"
-DEPENDS = "glib-2.0 ecore evas edje"
+DEPENDS = "glib-2.0 ecore evas edje libfakekey"
 SECTION = "x11/clients"
 
 PV = "1.0.99+gitr${SRCPV}"
