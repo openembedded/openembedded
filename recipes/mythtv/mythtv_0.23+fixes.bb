@@ -1,6 +1,6 @@
 DESCRIPTION = "A full featured personal video recorder system."
 HOMEPAGE = "http://www.mythtv.org"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 SECTION = "x11/multimedia"
 DEPENDS = "jack alsa-lib libxinerama libxv libxxf86vm libxvmc lirc \
            ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'lame', d)}"

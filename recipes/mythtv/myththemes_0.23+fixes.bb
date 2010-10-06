@@ -1,3 +1,7 @@
+DESCRIPTION = "Themes for mythtv: a full featured personal video recorder system."
+HOMEPAGE = "http://www.mythtv.org"
+LICENSE = "GPLv2"
+
 DEPENDS = "mythtv"
 inherit qmake2
 
