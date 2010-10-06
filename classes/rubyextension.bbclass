@@ -1,5 +1,5 @@
 DEPENDS  += "ruby-native"
-RDEPENDS += "ruby"
+RDEPENDS_${PN} += "ruby"
 
 rubyextension_do_configure() {
 	${STAGING_BINDIR_NATIVE}/ruby setup.rb config || \
