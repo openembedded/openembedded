@@ -55,8 +55,6 @@ PREFERRED_PROVIDER_virtual/libgl_spitz = "mesa-dri"
 # kernel
 ########
 
-MACHINE_KERNEL_VERSION = "2.6"
-
 PREFERRED_PROVIDER_virtual/kernel = "linux-rp"
 
 # Starting with 2.6.32 linux-rp is deprecated for some models
