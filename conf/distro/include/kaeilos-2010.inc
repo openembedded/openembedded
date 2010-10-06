@@ -1,7 +1,7 @@
-#@TYPEi: Distribution
+#@TYPE: Distribution
 #@NAME: kaeilos-2010
 #@DESCRIPTION: Release independent distribution configuration for KaeilOS 
-#@MAINTiiAINER: Marco Cavallini <m.cavallini@koansoftware.com>
+#@MAINTAINER: Marco Cavallini <m.cavallini@koansoftware.com>
 #@VERSION: 06-10-2010
 #
 # KaeilOS is a registered trade mark of KOAN - Bergamo - Italia
