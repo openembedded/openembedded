@@ -75,6 +75,8 @@ PREFERRED_PROVIDER_udev-compat_poodle = "udev-compat141"
 ZAURUS_KERNEL_IMAGETYPE ?= "zImage"
 KERNEL_IMAGETYPE = "${ZAURUS_KERNEL_IMAGETYPE}"
 
+# kernel bootlogo
+LOGO_SIZE = '${@base_conditional("GUI_MACHINE_CLASS", "bigscreen", "vga", "qvga", d)}'
 
 ################
 # machine tuning
