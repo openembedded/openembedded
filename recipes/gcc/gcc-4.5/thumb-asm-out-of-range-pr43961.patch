@@ -1,0 +1,21 @@
+gcc/
+
+2010-06-22  Mikael Pettersson  <mikpe@it.uu.se>
+
+	PR target/43961
+	* config/arm/arm.h (ADDR_VEC_ALIGN): Describe added
+	alignment for Thumb-1 compressed switch tables.
+
+--- gcc-4.6-20100619/gcc/config/arm/arm.h.~1~	2010-06-16 20:02:58.000000000 +0200
++++ gcc-4.6-20100619/gcc/config/arm/arm.h	2010-06-22 14:03:52.000000000 +0200
+@@ -2320,7 +2320,8 @@ extern int making_const_table;
+     } while (0)
+ 
+ /* Jump table alignment is explicit in ASM_OUTPUT_CASE_LABEL.  */
+-#define ADDR_VEC_ALIGN(JUMPTABLE) 0
++#define ADDR_VEC_ALIGN(JUMPTABLE)	\
++  ((TARGET_THUMB && GET_MODE (PATTERN (JUMPTABLE)) == SImode) ? 2 : 0)
+ 
+ /* This is how to output a label which precedes a jumptable.  Since
+    Thumb instructions are 2 bytes, we may need explicit alignment here.  */
+
