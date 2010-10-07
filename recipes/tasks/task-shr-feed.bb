@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r77"
+PR = "r78"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -302,6 +302,7 @@ RDEPENDS_${PN} += "\
 		wesnoth \
 		mokosuite2 \
 		mokowm-imf-ecore \
+		mokojeweled \
 		atrack \
 		minneo \
 		gnuplot \
