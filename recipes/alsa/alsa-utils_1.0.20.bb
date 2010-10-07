@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.alsa-project.org"
 SECTION = "console/utils"
 LICENSE = "GPLv2"
 DEPENDS = "alsa-lib ncurses"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "ftp://ftp.alsa-project.org/pub/utils/alsa-utils-${PV}.tar.bz2 \
 	   file://alsa-utils-remove-xmlto-1.0.19plus.patch \
@@ -11,16 +11,10 @@ SRC_URI = "ftp://ftp.alsa-project.org/pub/utils/alsa-utils-${PV}.tar.bz2 \
 
 inherit gettext autotools
 
+EXTRA_OECONF += " --with-alsa-prefix=${STAGING_LIBDIR} --with-alsa-inc-prefix=${STAGING_INCDIR}"
+
 # This are all packages that we need to make. Also, the now empty alsa-utils
 # ipk depend on them.
-
-
-do_configure_append() {
-	for i in $(find ${S} -name Makefile) ; do
-		sed -i -e s:/usr/include/ncurses:${STAGING_INCDIR}/ncurses:g $i
-		sed -i -e 's:-L/usr/lib -lncurses:-L${STAGING_LIBDIR} -lncurses:g' $i
-	done
-}
 
 PACKAGES += "\
              alsa-utils-alsamixer \
