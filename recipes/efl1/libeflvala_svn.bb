@@ -6,7 +6,9 @@ DEPENDS = "vala-native glib-2.0 dbus dbus-glib eina eet evas ecore edje elementa
 PV = "0.5.0+svnr${SRCPV}"
 PR = "r1"
 PE = "1"
-SRCREV = "${EFL_SRCREV}"
+#temporary
+#SRCREV = "${EFL_SRCREV}"
+SRCREV = "53139"
 
 SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/BINDINGS;module=vala;proto=http"
 S = "${WORKDIR}/vala"
