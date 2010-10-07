@@ -13,6 +13,8 @@ SRC_URI = "\
   file://reuseaddr02.patch \
 "            
 
+SRC_URI_append_hipox = "file://anon.patch"
+
 # This is a development version of dbus that will lead to 1.4.0
 DEFAULT_PREFERENCE = "-1"
 
