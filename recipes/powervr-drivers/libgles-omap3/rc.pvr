@@ -90,7 +90,7 @@ case $CPUTYPE in
 	devmem2 0x48180900 w 0x2
 	devmem2 0x48180920 w 0x2
 
-	ES_REVISION="$(devmem2 0x56000014 | sed -e s:0x10205:6: -e s:0x10201:3: -e s:0x10003:2: | tail -n1 | awk -F': ' '{print $2}')"
+	ES_REVISION="$(devmem2 0x56000014 | sed -e s:0x10205:5: -e s:0x10201:3: -e s:0x10003:2: | tail -n1 | awk -F': ' '{print $2}')"
 
 	if [ "${ES_REVISION}" != "${SAVED_ESREVISION}" ] ; then
 		echo -n "Starting SGX fixup for"
