@@ -1,11 +1,9 @@
 DESCRIPTION = "vpx Multi-Format Codec SDK"
 LICENSE = "BSD"
 
-INC_PR = "r4"
+INC_PR = "r5"
 
 SRC_URI = "http://webm.googlecode.com/files/libvpx-${PV}.tar.bz2"
-
-inherit autotools
 
 CFLAGS += "-fPIC"
 
@@ -23,7 +21,12 @@ CONFIGUREOPTS = " \
           --enable-libs \
           --disable-install-docs \
 "
-
+do_configure() {
+	${S}/configure ${CONFIGUREOPTS}
+}
+do_compile() {
+	oe_runmake
+}
 do_install() {
 	oe_runmake install DESTDIR=${D}
 }
