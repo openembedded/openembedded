@@ -351,7 +351,9 @@ python package_do_split_gconvs () {
 		else:
 		    glibc_name = name
 		bb.data.setVar('RDEPENDS_%s' % pkgname, legitimize_package_name('eglibc-binary-localedata-%s' % glibc_name), d)
-		bb.data.setVar('RPROVIDES_%s' % pkgname, 'glibc-binary-localedata-%s' % glibc_name, d)
+		rprovides = bb.data.getVar("RPROVIDES_%s" % pkgname, d, 1)
+		rprovides += ' glibc-binary-localedata-%s' % glibc_name
+		bb.data.setVar('RPROVIDES_%s' % pkgname, rprovides, d)
 
 	def output_locale_binary(name, pkgname, locale, encoding):
 		# This is a hack till linux-libc-headers gets patched for the missing arm syscalls and all arm device kernels as well
