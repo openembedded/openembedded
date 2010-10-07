@@ -30,7 +30,8 @@ fi
 # Try to enable triple buffering when there's enough VRAM
 fbset -vyres $(expr $YRES \* 3) 
 
-if [ $CPUTYPE = "OMAP3530" ]; then
+case $CPUTYPE in
+"OMAP3530")
 	echo Starting PVR
 	insmod $(busybox find /lib/modules/$(uname -r) -name "pvrsrvkm.ko")
 	modprobe omaplfb
@@ -64,7 +65,44 @@ if [ $CPUTYPE = "OMAP3530" ]; then
 		echo "${ES_REVISION}" > /etc/powervr-esrev
 	fi
 	/usr/bin/pvrsrvinit
-else
-	echo No SGX hardware, not starting PVR
-fi
+	;;
+"TI816x")
+	echo Starting PVR
+	insmod $(busybox find /lib/modules/$(uname -r) -name "pvrsrvkm.ko")
+	modprobe omaplfb
+	modprobe bufferclass_ti
 
+	pvr_maj=`grep "pvrsrvkm$" /proc/devices | cut -b1,2,3`
+        bc_maj=`grep "bc" /proc/devices | cut -b1,2,3`
+
+	if [ -e /dev/pvrsrvkm ] ; then 
+		rm -f /dev/pvrsrvkm
+	fi
+
+	mknod /dev/pvrsrvkm c $pvr_maj 0 
+	chmod 666 /dev/pvrsrvkm
+
+	touch /etc/powervr-esrev
+
+	SAVED_ESREVISION="$(cat /etc/powervr-esrev)"
+
+	devmem2 0x48180F04 w 0x0
+	devmem2 0x48180900 w 0x2
+	devmem2 0x48180920 w 0x2
+
+	ES_REVISION="$(devmem2 0x56000014 | sed -e s:0x10205:6: -e s:0x10201:3: -e s:0x10003:2: | tail -n1 | awk -F': ' '{print $2}')"
+
+	if [ "${ES_REVISION}" != "${SAVED_ESREVISION}" ] ; then
+		echo -n "Starting SGX fixup for"
+		echo " ES${ES_REVISION}.x"
+		cp -a /usr/lib/ES${ES_REVISION}.0/* /usr/lib
+		cp -a /usr/bin/ES${ES_REVISION}.0/* /usr/bin	
+		echo "${ES_REVISION}" > /etc/powervr-esrev
+	fi
+	/usr/bin/pvrsrvinit
+
+	;;
+*)
+	echo No SGX hardware, not starting PVR
+	;;
+esac
