@@ -1,5 +1,5 @@
 include dbus.inc
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 SRC_URI = "\
   http://dbus.freedesktop.org/releases/dbus/dbus-${PV}.tar.gz \
@@ -9,6 +9,8 @@ SRC_URI = "\
   file://fix-install-daemon.patch \
   file://add-configurable-reply-timeouts.patch \
   file://dbus-1.init \
+  file://reuseaddr01.patch \
+  file://reuseaddr02.patch \
 "            
 
 # This is a development version of dbus that will lead to 1.4.0
