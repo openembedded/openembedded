@@ -13,6 +13,7 @@ IMGPV = "1.4.14.2616"
 BINFILE := "Graphics_SDK_setuplinux_${SGXPV}.bin"
 
 SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/gfxsdk/${SGXPV}/exports/Graphics_SDK_setuplinux_${SGXPV}.bin \
+           file://0002-Compile-fixes-for-recent-kernels.patch \
 "
 
 SRC_URI[md5sum] = "a027002dcd7164df467b1a315788d5fd"

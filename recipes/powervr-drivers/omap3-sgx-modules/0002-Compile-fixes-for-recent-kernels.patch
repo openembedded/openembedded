@@ -1,0 +1,23 @@
+--- GFX_Linux_KM/services4/system/omap3630/sysutils_linux.c-orig	2010-07-30 07:15:01.000000000 -0700
++++ GFX_Linux_KM/services4/system/omap3630/sysutils_linux.c	2010-10-07 07:49:32.000000000 -0700
+@@ -32,6 +32,12 @@
+ #include <asm/bug.h>
+ #include <linux/platform_device.h>
+ 
++#if (LINUX_VERSION_CODE > KERNEL_VERSION(2,6,33))
++#include <linux/semaphore.h>
++#include <asm-generic/resource.h>
++#include <plat/omap-pm.h>
++#else
++
+ #if (LINUX_VERSION_CODE > KERNEL_VERSION(2,6,31))
+ #include <linux/semaphore.h>
+ #include <plat/resource.h>
+@@ -49,6 +55,7 @@
+ #endif
+ #endif
+ #endif
++#endif
+ 
+ #if	(LINUX_VERSION_CODE >  KERNEL_VERSION(2,6,27)) && \
+ 	(LINUX_VERSION_CODE <= KERNEL_VERSION(2,6,29))
