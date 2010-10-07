@@ -9,6 +9,7 @@ SRC_URI = "\
   file://no-hardcode.patch \
   file://fix-configure.patch \
   file://libtool-tag.patch \
+  file://configure-using-inodes.patch \
 "
 S = "${WORKDIR}/freetype-${PV}"
 

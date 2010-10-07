@@ -1,0 +1,30 @@
+http://git.savannah.gnu.org/cgit/freetype/freetype2.git/commit/?id=75eeb32a2e55ffb3e4102ee56cd913a442d1ac9a
+
+author  Werner Lemberg <wl@gnu.org>     2010-10-03 18:17:27 (GMT)
+
+Avoid `configure' issues with symbolic links.
+Based on a patch from Alexander Stohr <Alexander.Stohr@gmx.de>.
+* configure: Compare directories using `ls -id'.
+Check existence of `reference' subdirectory before creating it.
+
+--- freetype.orig/configure	2010-10-07 16:46:51.000000000 +0200
++++ freetype/configure	2010-10-07 16:49:52.000000000 +0200
+@@ -67,10 +67,15 @@
+ abs_curr_dir=`pwd`
+ abs_ft2_dir=`cd "$ft2_dir" && pwd`
+ 
+-# build a dummy Makefile if we are not building in the source tree
++# build a dummy Makefile if we are not building in the source tree;
++# we use inodes to avoid issues with symbolic links
++inode_src=`ls -id $abs_ft2_dir | sed 's/ .*//'`
++inode_dst=`ls -id $abs_curr_dir | sed 's/ .*//'`
+ 
+-if test "$abs_curr_dir" != "$abs_ft2_dir"; then
+-  mkdir reference
++if test $inode_src -ne $inode_dst; then
++  if test ! -d reference; then
++    mkdir reference
++  fi
+   echo "Copying \`modules.cfg'"
+   cp $abs_ft2_dir/modules.cfg $abs_curr_dir
+   echo "Generating \`Makefile'"
