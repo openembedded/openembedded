@@ -6,6 +6,8 @@ SECTION  = "interpreters"
 
 DEPENDS = "zlib libtool classpath cacaoh-native virtual/javac-native"
 
+PR = "r1"
+
 # Avoid version number here, otherwise dpkg will expect a package name
 # and cannot be satisfied with a package that provides classpath.
 RDEPENDS_${PN} = "classpath"
@@ -23,7 +25,7 @@ EXTRA_OECONF = "\
 	${@['','--enable-softfloat'][bb.data.getVar('TARGET_FPU',d,1) == 'soft']} \
 	--enable-debug \
 	--with-vm-zip=${datadir}/cacao/vm.zip \
-	--with-cacaoh=${STAGING_BINDIR_NATIVE}/cacaoh-${PV} \
+	--with-cacaoh=${STAGING_BINDIR_NATIVE}/cacaoh-${PV}/cacaoh \
     --with-build-java-runtime-library-classes=${STAGING_DATADIR}/classpath/glibj.zip \
     --with-java-runtime-library-classes=${datadir}/classpath/glibj.zip \
     --with-java-runtime-library-libdir=${libdir_jni}:${libdir} \
