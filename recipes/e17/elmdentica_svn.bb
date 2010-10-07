@@ -5,10 +5,14 @@ SECTION = "e/apps"
 HOMEPAGE = "http://elmdentica.googlecode.com"
 AUTHOR = "seabra"
 
-inherit e
+inherit e gettext
 
 EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc"
 
 PV = "0.9.9+svnr${SRCPV}"
 PR = "r1"
 SRCREV = "${EFL_SRCREV}"
+
+do_configure_prepend() {
+        autopoint --force
+}

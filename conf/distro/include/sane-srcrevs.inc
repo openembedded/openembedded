@@ -2,5 +2,4 @@
 # only SRCREVs included in more recipes should be here, otherwise put sane SRCREV to recipe directly
 
 OPKG_SRCREV ?= "554"
-EFL_SRCREV ?= "53084"
-# please remove SRCREV from recipes/efl1/libeflvala_svn.bb with next EFL_SRCREV bump
+EFL_SRCREV ?= "53239"
