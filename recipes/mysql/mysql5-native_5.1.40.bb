@@ -18,10 +18,6 @@ do_install() {
 
 NATIVE_INSTALL_WORKS = "1"
 
-# Mysql tries to access the ${WORKDIR} from this build..
-do_rm_work() {
-       :
-}
 PSTAGING_DISABLED = "1"
 
 SRC_URI[md5sum] = "32e7373c16271606007374396e6742ad"
