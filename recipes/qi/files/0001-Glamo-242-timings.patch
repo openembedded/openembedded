@@ -1,0 +1,52 @@
+From 9040a0a08f976e535760c23dcba74770c5368b7c Mon Sep 17 00:00:00 2001
+From: Gennady Kupava <gb@bsdmn.com>
+Date: Mon, 27 Sep 2010 15:16:38 +0200
+Subject: [PATCH] Glamo 242 timings
+
+This patch initializes glamo with better timings which will make
+graphics work faster (e.g. decoding theora video for me goes from
+17->20fps with theoram).
+
+Patch done by Ghislain
+---
+ src/cpu/s3c2410/lowlevel_init.S |    4 ++--
+ src/cpu/s3c2442/lowlevel_init.S |    6 +++---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/src/cpu/s3c2410/lowlevel_init.S b/src/cpu/s3c2410/lowlevel_init.S
+index 2b14373..d52e8c1 100644
+--- a/src/cpu/s3c2410/lowlevel_init.S
++++ b/src/cpu/s3c2410/lowlevel_init.S
+@@ -65,9 +65,9 @@
+ 
+ /* BANK1CON: Smedia Glamo 3362 (on GTA02) */
+ #define B1_Tacs		 	0x0	/*  0clk */
+-#define B1_Tcos		 	0x3	/*  4clk */
++#define B1_Tcos		 	0x2	/*  2clk */
+ #define B1_Tacc		 	0x3	/*  4clk */
+-#define B1_Tcoh		 	0x3	/*  4clk */
++#define B1_Tcoh		 	0x2	/*  2clk */
+ #define B1_Tah		 	0x0	/*  0clk */
+ #define B1_Tacp		 	0x0
+ #define B1_PMC		 	0x0
+diff --git a/src/cpu/s3c2442/lowlevel_init.S b/src/cpu/s3c2442/lowlevel_init.S
+index 2a1654c..307d8ae 100644
+--- a/src/cpu/s3c2442/lowlevel_init.S
++++ b/src/cpu/s3c2442/lowlevel_init.S
+@@ -65,10 +65,10 @@
+ 
+ /* BANK1CON: Smedia Glamo 3362 (on GTA02) */
+ #define B1_Tacs		 	0x0	/*  0clk */
+-#define B1_Tcos		 	0x3	/*  4clk */
++#define B1_Tcos		 	0x2	/*  2clk */
+ #define B1_Tacc		 	0x3	/*  4clk */
+-#define B1_Tcoh		 	0x3	/*  4clk */
+-#define B1_Tah		 		0x0	/*  0clk */
++#define B1_Tcoh		 	0x2	/*  2clk */
++#define B1_Tah		 	0x0	/*  0clk */
+ #define B1_Tacp		 	0x0
+ #define B1_PMC		 	0x0
+ 
+-- 
+1.7.3.1
+
