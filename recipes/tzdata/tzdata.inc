@@ -3,11 +3,11 @@ SECTION = "base"
 PRIORITY = "optional"
 DEPENDS = "tzcode-native"
 
-INC_PR = "r7"
+INC_PR = "r8"
 
 DEFAULT_TIMEZONE ?= "Europe/London"
 
-RCONFLICTS= "timezones timezone-africa timezone-america timezone-antarctica \
+RCONFLICTS_${PN} = "timezones timezone-africa timezone-america timezone-antarctica \
              timezone-arctic timezone-asia timezone-atlantic \
              timezone-australia timezone-europe timezone-indian \
              timezone-iso3166.tab timezone-pacific timezone-zone.tab"
