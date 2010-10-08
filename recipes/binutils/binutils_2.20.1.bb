@@ -1,7 +1,7 @@
 require binutils.inc
 LICENSE = "GPLv3"
 
-PR = "${INC_PR}.3"
+PR = "${INC_PR}.4"
 EXTRA_OECONF += "--disable-werror"
 
 #COMPATIBLE_TARGET_SYS = "."
@@ -15,7 +15,7 @@ SRC_URI = "\
      file://binutils-uclibc-300-012_check_ldrunpath_length.patch \
      file://binutils-uclibc-gas-needs-libm.patch \
      file://binutils-x86_64_i386_biarch.patch \
-     file://libtool-update.patch \
+     ${@['file://libtool-update.patch','file://libtool-2.4-update.patch'][bb.data.getVar('LIBTOOL_HAS_SYSROOT', d, 1) == 'yes']} \
      file://binutils-2.19.1-ld-sysroot.patch \
      "
 
