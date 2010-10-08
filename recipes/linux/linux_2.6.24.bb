@@ -11,7 +11,7 @@ DEFAULT_PREFERENCE_hipox = "1"
 DEFAULT_PREFERENCE_cs-e9302 = "1"
 DEFAULT_PREFERENCE_smartq5 = "1"
 
-PR = "r34"
+PR = "r35"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2;name=kernel \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.7.bz2;apply=yes;name=stablepatch \
@@ -102,6 +102,7 @@ SRC_URI_append_hipox = " \
 	file://hipox-nand-vs-nor.patch \
 	file://ox810-gmac-without-leon.patch \
 	file://hipox-poe-enable.patch \
+	file://siocoutqsnd.patch \
 	"
 
 EXTRA_OEMAKE_smartq5 = " OBJCOPY=${OBJCOPY}"
