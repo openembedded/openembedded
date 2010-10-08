@@ -1,14 +1,14 @@
-DESCRIPTION="Classic game where you control a steel ball by tilting a wooden labyrinth"
-HOMEPAGE="http://mokomaze.projects.openmoko.org/"
-SECTION="x11/games"
-PRIORITY="optional"
-LICENSE="GPLv3"
-DEPENDS="libsdl-ttf libsdl-image ode"
-RDEPENDS="ttf-liberation-mono libpng"
+DESCRIPTION = "Classic game where you control a steel ball by tilting a wooden labyrinth"
+HOMEPAGE = "http://mokomaze.projects.openmoko.org/"
+SECTION = "x11/games"
+PRIORITY = "optional"
+LICENSE = "GPLv3"
+DEPENDS = "libsdl-ttf libsdl-image ode"
+RDEPENDS_${PR} = "ttf-liberation-mono libpng"
 
 RDEPENDS_shr += "fsoraw"
 
-PR="r3"
+PR="r4"
 PV="0.5.5+git8"
 
 
