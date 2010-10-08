@@ -6,7 +6,7 @@ DEPENDS = "libol flex eventlog glib-2.0"
 DEPENDS_append = " update-rc.d update-rc.d-native"
 RDEPENDS_${PN}_append = " ${@base_conditional("ONLINE_PACKAGE_MANAGEMENT", "none", "", "update-rc.d", d)}"
 
-INC_PR = "r3"
+INC_PR = "r4"
 
 inherit autotools
 
@@ -22,7 +22,7 @@ do_install_append() {
 CONFFILES_${PN} = "${sysconfdir}/${PN}.conf"
 
 pkg_postinst_${PN} () {
-        update-alternatives --install ${sysconfdir}/init.d/syslog syslog-init syslog.${PN} 50
+        update-alternatives --install ${sysconfdir}/init.d/syslog syslog-init syslog.${PN} 200
 
         if test "x$D" != "x"; then
                 OPT="-r $D"
