@@ -1,8 +1,8 @@
 require wesnoth.inc
 
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
-RCONFLICTS = "wesnoth-wvga"
+RCONFLICTS_${PN} = "wesnoth-wvga"
 EXTRA_OECMAKE += " -DGUI=tiny "
 
 SRC_URI[md5sum] = "2dce83f835ecce1d505ea60e46b7356f"
