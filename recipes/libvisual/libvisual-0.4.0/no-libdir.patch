@@ -1,0 +1,13 @@
+Index: libvisual-0.4.0/libvisual/Makefile.am
+===================================================================
+--- libvisual-0.4.0.orig/libvisual.orig/Makefile.am
++++ libvisual-0.4.0/libvisual/Makefile.am
+@@ -19,7 +19,7 @@ lib_LTLIBRARIES = libvisual-@LIBVISUAL_V
+ 
+ DEFS = @DEFS@
+ 
+-LIBS += -L. -L$(libdir) $(LV_THREAD_LIBS) @LTLIBINTL@
++LIBS += -L. $(LV_THREAD_LIBS) @LTLIBINTL@
+ 
+ PLUGPATH = $(libdir)/libvisual
+ 

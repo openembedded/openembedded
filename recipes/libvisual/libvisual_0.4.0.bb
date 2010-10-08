@@ -3,7 +3,11 @@ HOMEPAGE = "http://libvisual.sf.net"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL GPL"
-SRC_URI = "${SOURCEFORGE_MIRROR}/libvisual/libvisual-${PV}.tar.gz"
+PR = "r1"
+
+SRC_URI = "${SOURCEFORGE_MIRROR}/libvisual/libvisual-${PV}.tar.gz \
+           file://no-libdir.patch \
+          "
 
 inherit autotools pkgconfig
 
