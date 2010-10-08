@@ -11,9 +11,9 @@ SECTION = "bootloaders"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
 DEPENDS = "virtual/kernel"
-PROVIDES = "virtual/bootloader"
-RPROVIDES = "virtual/bootloader"
-PR = "r4"
+PROVIDES_${PN} = "virtual/bootloader"
+RPROVIDES_${PN} = "virtual/bootloader"
+PR = "r5"
 
 SRC_URI = "http://files.chumby.com/source/falconwing/build2913/bootstream-1.0.tgz;name=archive              \
            http://files.chumby.com/source/falconwing/build2913/bootstream-chumby.bin;name=bootstream        \
