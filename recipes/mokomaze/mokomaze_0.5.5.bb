@@ -6,22 +6,17 @@ LICENSE = "GPLv3"
 DEPENDS = "libsdl-ttf libsdl-image ode"
 RDEPENDS_${PN} = "ttf-liberation-mono libpng"
 RDEPENDS_${PN}_shr = "ttf-liberation-mono libpng fsoraw"
+PV = "0.5.5+git8"
+PR = "r4"
 
-PR="r4"
-PV="0.5.5+git8"
-
-
-SRC_URI="http://mokomaze.projects.openmoko.org/files/${PN}-${PV}.tar.gz"
-
+SRC_URI = "http://mokomaze.projects.openmoko.org/files/${PN}-${PV}.tar.gz"
 SRC_URI_append_shr = " file://fsoraw.patch"
+SRC_URI[md5sum] = "f4e1dbd444b4049c361f9c1c3d40d32b"
+SRC_URI[sha256sum] = "515d842b79a2c34f5789fa10110bc9d7b15c65a7b1fa623131a1e03599fe7362"
 
 inherit autotools
 
-EXTRA_OECONF="FONTDIR=${datadir}/fonts/truetype --enable-rgb-swap"
+EXTRA_OECONF = "FONTDIR=${datadir}/fonts/truetype --enable-rgb-swap"
 
 # needed for ode
 LDFLAGS += "-lstdc++"
-
-
-SRC_URI[md5sum] = "f4e1dbd444b4049c361f9c1c3d40d32b"
-SRC_URI[sha256sum] = "515d842b79a2c34f5789fa10110bc9d7b15c65a7b1fa623131a1e03599fe7362"
