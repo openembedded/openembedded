@@ -4,9 +4,8 @@ SECTION = "x11/games"
 PRIORITY = "optional"
 LICENSE = "GPLv3"
 DEPENDS = "libsdl-ttf libsdl-image ode"
-RDEPENDS_${PR} = "ttf-liberation-mono libpng"
-
-RDEPENDS_shr += "fsoraw"
+RDEPENDS_${PN} = "ttf-liberation-mono libpng"
+RDEPENDS_${PN}_shr = "ttf-liberation-mono libpng fsoraw"
 
 PR="r4"
 PV="0.5.5+git8"
