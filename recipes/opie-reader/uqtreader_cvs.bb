@@ -3,11 +3,11 @@ SECTION = "x11/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
 
-RRECOMMENDS="${PN}-filter-html"
+RRECOMMENDS_${PN} = "${PN}-filter-html"
 
 SRCDATE = "20070601"
 PV = "1.2.2opie+cvs${SRCDATE}"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/apps/opie-reader \
            ${HANDHELDS_CVS};module=opie/pics \
