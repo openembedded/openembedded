@@ -19,7 +19,7 @@ EXTRA_OECONF = "--enable-sound=sdl_mixer  --disable-opengl"
 FILES_${PN} += "/usr/games/nogravity/no*"
 FILES_${PN}-data = "/usr/games/nogravity/*.RMX"
 PACKAGE_ARCH_${PN}-data = "all"
-RRECOMMENDS+${PN} = "${PN}-data"
+RRECOMMENDS_${PN} = "${PN}-data"
 
 do_install_prepend() {
 	install -d  ${D}/usr/games/nogravity/
