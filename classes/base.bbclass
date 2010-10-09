@@ -10,7 +10,7 @@ inherit utils
 inherit utility-tasks
 inherit metadata_scm
 
-OE_IMPORTS += "oe.path oe.utils sys os time"
+OE_IMPORTS += "oe.path oe.utils oe.packagegroup sys os time"
 
 python oe_import () {
     if isinstance(e, bb.event.ConfigParsed):
