@@ -1,6 +1,6 @@
 DESCRIPTION = "XML::Parser - A perl module for parsing XML documents"
 SECTION = "libs"
-LICENSE = "Artistic"
+LICENSE = "Artistic|GPLv1"
 DEPENDS += "expat expat-native"
 PR= "r3"
 
