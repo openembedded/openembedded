@@ -1,6 +1,6 @@
 DESCRIPTION = "Device::SerialPort - Linux/POSIX emulation of Win32::SerialPort functions."
 SECTION = "libs"
-LICENSE = "GPL"
+LICENSE = "Artistic"
 RDEPENDS_${PN} += "perl-module-carp perl-module-posix perl-module-io-handle \
 	     perl-module-strict perl-module-warnings perl-module-vars \
 	     perl-module-xsloader"
