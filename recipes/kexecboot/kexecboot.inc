@@ -1,23 +1,13 @@
 LICENSE = "GPL"
 
-# the binary is statically linked against klibc
-inherit klibc
-inherit autotools
-
-RDEPENDS_${PN} = "kexec-klibc"
-
-# The binary itself is not machine-specific
-# but the EXTRA_OECONF overrides have this effect 
-PACKAGE_ARCH = "${MACHINE_ARCH}"
-
 # You can create your own *-img.h by doing
 # ./make-image-header.sh <file>.png HAND
-
-SRC_URI += "file://logo-img.h \
-        file://logo.png \
-        "
-
 # Defaults as in ver 0.5+0.6b
+
+SRC_URI += "file://logo-img.h file://logo.png"
+
+inherit autotools
+
 #############################
 # Optional Features:
 #  --disable-option-checking  ignore unrecognized --enable/--with options
@@ -54,21 +44,22 @@ EXTRA_OECONF_c7x0 = "--with-zaurus"
 EXTRA_OECONF_spitz = "--with-zaurus"
 EXTRA_OECONF_poodle = "--with-zaurus"
 EXTRA_OECONF_tosa = "--with-zaurus"
-
 EXTRA_OECONF_omap3 = "--with-uimage"
 
 do_configure_prepend () {
         install -m 0644 ${WORKDIR}/logo-img.h ${S}/res/
         install -m 0644 ${WORKDIR}/logo.png ${S}/res/
 }
-
 do_install () {
         install -d ${D}${bindir}
         install -m 0755 kexecboot ${D}${bindir}/
-
         install -d ${D}/proc
         install -d ${D}/mnt
 }
+
+# The binary itself is not machine-specific
+# but the EXTRA_OECONF overrides have this effect
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 FILES_${PN} += " ${bindir}/kexecboot /init /proc /mnt"
 
