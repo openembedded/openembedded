@@ -1,6 +1,6 @@
 DESCRIPTION = "XML-SAX"
 SECTION = "libs"
-LICENSE = ""
+LICENSE = "Artistic|GPL"
 DEPENDS += "libxml-namespacesupport-perl-native"
 RDEPENDS_${PN} += "libxml-namespacesupport-perl perl-module-file-temp"
 PR = "r1"
