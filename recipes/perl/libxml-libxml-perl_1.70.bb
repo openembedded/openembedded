@@ -1,6 +1,6 @@
 DESCRIPTION = "XML-LibXML"
 SECTION = "libs"
-LICENSE = ""
+LICENSE = "Artistic|GPL"
 DEPENDS += "libxml2 \
         libxml-sax-perl-native \
         zlib \
