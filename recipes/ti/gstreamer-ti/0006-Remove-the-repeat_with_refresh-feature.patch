@@ -1,0 +1,132 @@
+From c1205a792fd519cdebc32c00a5f604ccd78d3eac Mon Sep 17 00:00:00 2001
+From: Don Darling <don.osc2@gmail.com>
+Date: Thu, 26 Aug 2010 18:30:13 -0500
+Subject: [PATCH 6/8] Remove the "repeat_with_refresh" feature.
+
+No platforms are using it any longer.
+---
+ .../ticodecplugin/src/gsttidmaivideosink.c         |   67 +-------------------
+ .../ticodecplugin/src/gsttidmaivideosink.h         |    1 -
+ 2 files changed, 1 insertions(+), 67 deletions(-)
+
+diff --git a/gstreamer_ti/ti_build/ticodecplugin/src/gsttidmaivideosink.c b/gstreamer_ti/ti_build/ticodecplugin/src/gsttidmaivideosink.c
+index 3615bfd..0125ed2 100644
+--- a/gstreamer_ti/ti_build/ticodecplugin/src/gsttidmaivideosink.c
++++ b/gstreamer_ti/ti_build/ticodecplugin/src/gsttidmaivideosink.c
+@@ -170,8 +170,6 @@ static gboolean
+  gst_tidmaivideosink_event(GstBaseSink * bsink, GstEvent * event);
+ static void 
+     gst_tidmaivideosink_init_env(GstTIDmaiVideoSink *sink);
+-static int
+-    gst_tidmaivideosink_videostd_get_refresh_latency(VideoStd_Type videoStd);
+ static gboolean
+     gst_tidmaivideosink_alloc_display_buffers(GstTIDmaiVideoSink * sink,
+         Int32 bufSize);
+@@ -441,7 +439,6 @@ static void gst_tidmaivideosink_init(GstTIDmaiVideoSink * dmaisink,
+     dmaisink->videoOutput               = NULL;
+     dmaisink->numBufs                   = -1;
+     dmaisink->framerepeat               = 0;
+-    dmaisink->repeat_with_refresh       = FALSE;
+     dmaisink->can_set_display_framerate = FALSE;
+     dmaisink->rotation                  = -1;
+     dmaisink->tempDmaiBuf               = NULL;
+@@ -755,55 +752,6 @@ static int gst_tidmaivideosink_videostd_get_attrs(VideoStd_Type videoStd,
+ 
+ 
+ /*******************************************************************************
+- * gst_tidmaivideosink_videostd_get_refresh_latency
+- *
+- *    Return the refresh latency in us for the given display standard.
+-*******************************************************************************/
+-static int gst_tidmaivideosink_videostd_get_refresh_latency(
+-               VideoStd_Type videoStd)
+-{
+-    switch (videoStd) {
+-        case VideoStd_1080P_24:
+-            return 41667;
+-
+-        case VideoStd_SIF_PAL:
+-        case VideoStd_D1_PAL:
+-        case VideoStd_1080P_25:
+-        case VideoStd_1080I_25:
+-            return 40000;
+-
+-        case VideoStd_CIF:
+-        case VideoStd_SIF_NTSC:
+-        case VideoStd_D1_NTSC:
+-            return 33367;
+-            
+-        case VideoStd_1080I_30:
+-        case VideoStd_1080P_30:
+-            return 33333;
+-
+-        case VideoStd_576P:
+-        case VideoStd_720P_50:
+-            return 20000;
+-
+-        case VideoStd_480P:
+-        case VideoStd_720P_60:
+-        #if defined(Platform_dm6467t)
+-        case VideoStd_1080P_60:
+-        #endif
+-            return 16667;
+-
+-        case VideoStd_VGA:
+-            return 16667;
+-
+-        default:
+-            break;
+-    }
+-    GST_ERROR("Unknown videoStd entered (VideoStd = %d)\n", videoStd);
+-    return 0;
+-}
+-
+-
+-/*******************************************************************************
+  * gst_tidmaivideosink_find_videostd
+  *
+  *    This function will take in a VideoStd_Attrs structure and find the
+@@ -1580,10 +1528,7 @@ static GstFlowReturn gst_tidmaivideosink_render(GstBaseSink * bsink,
+ 
+     /* Display the frame as many times as specified by framerepeat.  By
+      * default, the input buffer is copied to a display buffer for each time
+-     * it is to be repeated.  However, if repeat_with_refresh is TRUE, then
+-     * the platform doesn't have the bandwidth for multiple copies.  In this
+-     * case we copy and display the input buffer only once, but let it refresh
+-     * multiple times.
++     * it is to be repeated.  
+      */
+     for (i = 0; i < sink->framerepeat; i++) {
+ 
+@@ -1594,16 +1539,6 @@ static GstFlowReturn gst_tidmaivideosink_render(GstBaseSink * bsink,
+             goto cleanup;
+         }
+ 
+-        /* If repeat_with_refresh was specified, wait for the display to
+-         * refresh framerepeat-1 times to make sure it has finished displaying
+-         * this buffer before we write new data into it.
+-         */
+-        while (sink->repeat_with_refresh && i < (sink->framerepeat-1)) {
+-            usleep(gst_tidmaivideosink_videostd_get_refresh_latency(
+-                sink->dAttrs.videoStd) + 1);
+-            i++;
+-        }
+-
+         /* Retrieve the dimensions of the display buffer */
+         BufferGfx_getDimensions(hDispBuf, &dim);
+         GST_LOG("Display size %dx%d pitch %d\n",
+diff --git a/gstreamer_ti/ti_build/ticodecplugin/src/gsttidmaivideosink.h b/gstreamer_ti/ti_build/ticodecplugin/src/gsttidmaivideosink.h
+index 4800fcd..2a28e4f 100644
+--- a/gstreamer_ti/ti_build/ticodecplugin/src/gsttidmaivideosink.h
++++ b/gstreamer_ti/ti_build/ticodecplugin/src/gsttidmaivideosink.h
+@@ -123,7 +123,6 @@ struct _GstTIDmaiVideoSink {
+    * should be repeated to match the display output frame rate.
+    */
+   int           framerepeat;
+-  gboolean      repeat_with_refresh;
+   gboolean      can_set_display_framerate;
+   gboolean      signal_handoffs;
+ 
+-- 
+1.7.0.4
+

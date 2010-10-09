@@ -1,0 +1,119 @@
+From 0f2ef84ad320ec141a7ba6727cf18817ac42e413 Mon Sep 17 00:00:00 2001
+From: Brijesh Singh <bksingh@ti.com>
+Date: Mon, 4 Oct 2010 14:11:39 -0500
+Subject: [PATCH] replace omap3530_dv400 platform support with omap3530
+
+---
+ Makefile.external                       |   19 +++----------
+ src/gstticodecplugin_omap3530_dv400.cfg |   44 -------------------------------
+ 2 files changed, 5 insertions(+), 58 deletions(-)
+ delete mode 100644 src/gstticodecplugin_omap3530_dv400.cfg
+
+diff --git a/Makefile.external b/Makefile.external
+index 6d118d8..2a85108 100644
+--- a/Makefile.external
++++ b/Makefile.external
+@@ -8,7 +8,7 @@
+ # Copyright (C) 2009 Ridgerun 
+ #
+ 
+-.PHONY: default configure dm6446 omap3530 dm355 dm6467 dm365 omapl138 omap3530_dv400
++.PHONY: default configure dm6446 omap3530 dm355 dm6467 dm365 omapl138
+ 
+ DVSDK_PATH=undefined
+ DMAI_INSTALL_DIR=undefined
+@@ -23,7 +23,7 @@ $(error You need to define the environment variable DMAI_INSTALL_DIR)
+ endif
+ 
+ default:
+-	@echo "Please specify the target: dm6446, omap3530, dm355, dm6467, dm6467t, dm365 omapl138 omap3530_dv400"
++	@echo "Please specify the target: dm6446, omap3530, dm355, dm6467, dm6467t, dm365 omapl138"
+ 
+ export GST_TI_PLATFORM=$(MAKECMDGOALS)
+ export BIOS_INSTALL_DIR
+@@ -87,6 +87,9 @@ ifeq ($(GST_TI_PLATFORM), omap3530)
+     export MVTOOL_DIR    = $(CSTOOL_DIR)
+     export PLATFORM_XDC  = ${XDC_PLATFORM}
+     export CROSS_COMPILE = ${CSTOOL_PREFIX}
++    export LINK_XDC_ROOT = $(LINK_INSTALL_DIR)
++    export C6ACCEL_INSTALL_DIR
++    export ENABLE_C6ACCEL ="--enable-c6accel"
+ endif
+ 
+ ifeq ($(GST_TI_PLATFORM), omapl138)
+@@ -101,16 +104,6 @@ ifeq ($(GST_TI_PLATFORM), omapl138)
+     export ENABLE_C6ACCEL ="--enable-c6accel"
+ endif
+ 
+-ifeq ($(GST_TI_PLATFORM), omap3530_dv400)
+-    export XDC_TARGET    = gnu.targets.arm.GCArmv5T
+-    export XDC_PLATFORM  = ti.platforms.evm3530
+-    export MVTOOL_PREFIX = $(CSTOOL_PREFIX)
+-    export MVTOOL_DIR    = $(CSTOOL_DIR)
+-    export PLATFORM_XDC  = ${XDC_PLATFORM}
+-    export CROSS_COMPILE = ${CSTOOL_PREFIX}
+-    export LINK_XDC_ROOT = $(LINK_INSTALL_DIR)
+-endif
+-
+ CPPFLAGS=-DPlatform_$(GST_TI_PLATFORM) 
+ HOST=arm-none-linux-gnueabi
+ 
+@@ -141,5 +134,3 @@ dm365: Makefile
+ omapl138: Makefile
+ 	$(MAKE) -f Makefile
+ 
+-omap3530_dv400: Makefile
+-	$(MAKE) -f Makefile
+diff --git a/src/gstticodecplugin_omap3530_dv400.cfg b/src/gstticodecplugin_omap3530_dv400.cfg
+deleted file mode 100644
+index 90f4edf..0000000
+--- a/src/gstticodecplugin_omap3530_dv400.cfg
++++ /dev/null
+@@ -1,44 +0,0 @@
+-/*
+- * Copyright (C) 2008-2010 Texas Instruments Incorporated - http://www.ti.com/
+- *
+- * This program is free software; you can redistribute it and/or modify 
+- * it under the terms of the GNU Lesser General Public License as
+- * published by the Free Software Foundation version 2.1 of the License.
+- *
+- * This program is distributed #as is# WITHOUT ANY WARRANTY of any kind,
+- * whether express or implied; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+- * Lesser General Public License for more details.
+- *
+- */
+-
+-/* Load the Codec Engine 'Operating System Abstraction Layer' */
+-var osalGlobal = xdc.useModule('ti.sdo.ce.osal.Global');
+-
+-var os = xdc.useModule('ti.sdo.ce.osal.linux.Settings');
+-osalGlobal.os = os;
+-
+-/* Configure CE to use it's DSP Link Linux version */
+-var ipc = xdc.useModule('ti.sdo.ce.ipc.Settings');
+-ipc.commType = ipc.COMM_DSPLINK;
+-
+-/*
+- *  ======== Engine Configuration ========
+- */
+-var Engine = xdc.useModule('ti.sdo.ce.Engine');
+-var demoEngine = Engine.createFromServer(
+-    "codecServer",
+-    "./bin/cs.x64P",
+-    "ti.sdo.server.cs"
+-    );
+-
+-var combopath = "" + java.lang.System.getenv("CODEC_SERVER");
+-if (combopath != "" && combopath != "null") {
+-	demoEngine.server = java.lang.System.getenv("CODEC_SERVER");
+-}
+-
+-/* Load support for the DMAI module */
+-var DMAI = xdc.loadPackage('ti.sdo.dmai');
+-
+-var SCPY = xdc.useModule('ti.sdo.fc.scpy.SCPY');
+-var SDMA = xdc.useModule('ti.sdo.linuxutils.sdma.SDMA');
+-- 
+1.7.0.4
+

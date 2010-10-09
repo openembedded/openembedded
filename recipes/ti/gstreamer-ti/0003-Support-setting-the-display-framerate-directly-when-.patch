@@ -1,0 +1,86 @@
+From fb4dabcac144fcf1a7e9b1eba0114b2eed594d05 Mon Sep 17 00:00:00 2001
+From: Don Darling <don.osc2@gmail.com>
+Date: Thu, 26 Aug 2010 11:12:39 -0500
+Subject: [PATCH 3/8] Support setting the display framerate directly when possible.
+
+If can_set_display_framerate is set to true, TIDmaiVideoSink will attempt to
+set the display framerate directly in DMAI, instead of trying to simulate the
+desired framerate by occasionally repeating frames.
+
+Platforms that support this will need to enable it explicitly.
+---
+ .../ticodecplugin/src/gsttidmaivideosink.c         |   24 ++++++++++++++++++++
+ .../ticodecplugin/src/gsttidmaivideosink.h         |    1 +
+ 2 files changed, 25 insertions(+), 0 deletions(-)
+
+diff --git a/gstreamer_ti/ti_build/ticodecplugin/src/gsttidmaivideosink.c b/gstreamer_ti/ti_build/ticodecplugin/src/gsttidmaivideosink.c
+index c87b89c..4e327ae 100644
+--- a/gstreamer_ti/ti_build/ticodecplugin/src/gsttidmaivideosink.c
++++ b/gstreamer_ti/ti_build/ticodecplugin/src/gsttidmaivideosink.c
+@@ -442,6 +442,7 @@ static void gst_tidmaivideosink_init(GstTIDmaiVideoSink * dmaisink,
+     dmaisink->numBufs             = -1;
+     dmaisink->framerepeat         = 0;
+     dmaisink->repeat_with_refresh = FALSE;
++    dmaisink->can_set_display_framerate = FALSE;
+     dmaisink->rotation            = -1;
+     dmaisink->tempDmaiBuf         = NULL;
+     dmaisink->accelFrameCopy      = TRUE;
+@@ -952,6 +953,9 @@ static void gst_tidmaivideosink_check_set_framerate(GstTIDmaiVideoSink * sink)
+  *    then 1 is returned to indicate that there will be no frame
+  *    repeating.
+  *
++ *    If the driver supports explicit configuration of the framerate, we
++ *    don't ever need to repeat frames, and 1 is returned.
++ *
+  ******************************************************************************/
+ static int gst_tidmaivideosink_get_framerepeat(GstTIDmaiVideoSink * sink)
+ {
+@@ -959,6 +963,13 @@ static int gst_tidmaivideosink_get_framerepeat(GstTIDmaiVideoSink * sink)
+ 
+     GST_DEBUG("Begin\n");
+ 
++    /* If the display allows you to configure the frame rate, we never need
++     * to repeat a frame.
++     */
++    if (sink->can_set_display_framerate) {
++        return 1;
++    }
++
+     /* Divide the native framerate by the desired framerate.  If the result
+      * is a whole number, return it.  Otherwise return 1 -- we don't support
+      * fractional repeat rates. */
+@@ -1151,6 +1162,19 @@ static gboolean gst_tidmaivideosink_set_display_attrs(GstTIDmaiVideoSink *sink,
+     sink->dAttrs.displayDevice = sink->displayDevice == NULL ?
+         sink->dAttrs.displayDevice : sink->displayDevice;
+ 
++    /* Specify framerate if supported by DMAI and the display driver */
++    if (sink->can_set_display_framerate) {
++        #if defined (Platform_dm365)
++        sink->dAttrs.forceFrameRateNum =
++            gst_value_get_fraction_numerator(&sink->iattrs.framerate);
++        sink->dAttrs.forceFrameRateDen =
++            gst_value_get_fraction_denominator(&sink->iattrs.framerate);
++        #else
++        GST_ERROR("setting driver framerate is not supported\n");
++        return FALSE;
++        #endif
++    }
++
+     /* Set rotation on OMAP35xx */
+     if (sink->cpu_dev == Cpu_Device_OMAP3530) {
+         sink->dAttrs.rotation = sink->rotation == -1 ?
+diff --git a/gstreamer_ti/ti_build/ticodecplugin/src/gsttidmaivideosink.h b/gstreamer_ti/ti_build/ticodecplugin/src/gsttidmaivideosink.h
+index 5d13e08..4800fcd 100644
+--- a/gstreamer_ti/ti_build/ticodecplugin/src/gsttidmaivideosink.h
++++ b/gstreamer_ti/ti_build/ticodecplugin/src/gsttidmaivideosink.h
+@@ -124,6 +124,7 @@ struct _GstTIDmaiVideoSink {
+    */
+   int           framerepeat;
+   gboolean      repeat_with_refresh;
++  gboolean      can_set_display_framerate;
+   gboolean      signal_handoffs;
+ 
+   /* Hardware accelerated copy */
+-- 
+1.7.0.4
+

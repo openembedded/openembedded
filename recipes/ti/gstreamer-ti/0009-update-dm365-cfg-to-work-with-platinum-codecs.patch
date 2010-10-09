@@ -1,0 +1,26 @@
+From d5601a8beec6144fb39ebdc93778c081028a7fdd Mon Sep 17 00:00:00 2001
+From: Brijesh Singh <bksingh@ti.com>
+Date: Tue, 28 Sep 2010 19:35:14 -0500
+Subject: [PATCH] update dm365 cfg to work with platinum codecs
+
+---
+ src/gstticodecplugin_dm365.cfg |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/src/gstticodecplugin_dm365.cfg b/src/gstticodecplugin_dm365.cfg
+index d682643..43174b1 100644
+--- a/src/gstticodecplugin_dm365.cfg
++++ b/src/gstticodecplugin_dm365.cfg
+@@ -86,6 +86,9 @@ var ADDRSPACE = xdc.useModule('ti.sdo.fc.ires.addrspace.ADDRSPACE');
+ 
+ var CMEM = xdc.useModule('ti.sdo.linuxutils.cmem.CMEM');
+ 
++var MEMTCM = xdc.useModule('ti.sdo.fc.ires.memtcm.MEMTCM');
++MEMTCM.cmemBlockId = 1; //Since we use _1 in our insmod command.
++
+ /* Uncomment these lines if you wish to debug FC and enable FC trace */
+ /* 
+ /*
+-- 
+1.7.0.4
+

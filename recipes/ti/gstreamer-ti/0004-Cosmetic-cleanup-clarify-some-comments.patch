@@ -1,0 +1,73 @@
+From 03ab3ad3f790dde2dbddfeb62001e8610dbb919a Mon Sep 17 00:00:00 2001
+From: Don Darling <don.osc2@gmail.com>
+Date: Thu, 26 Aug 2010 18:25:56 -0500
+Subject: [PATCH 4/8] Cosmetic cleanup / clarify some comments.
+
+---
+ .../ticodecplugin/src/gsttidmaivideosink.c         |   42 ++++++++-----------
+ 1 files changed, 18 insertions(+), 24 deletions(-)
+
+diff --git a/gstreamer_ti/ti_build/ticodecplugin/src/gsttidmaivideosink.c b/gstreamer_ti/ti_build/ticodecplugin/src/gsttidmaivideosink.c
+index 4e327ae..1d04e1c 100644
+--- a/gstreamer_ti/ti_build/ticodecplugin/src/gsttidmaivideosink.c
++++ b/gstreamer_ti/ti_build/ticodecplugin/src/gsttidmaivideosink.c
+@@ -434,23 +434,23 @@ static void gst_tidmaivideosink_init(GstTIDmaiVideoSink * dmaisink,
+      * Anything that has a NULL value will be initialized with DMAI defaults 
+      * in the gst_tidmaivideosink_init_display function.
+      */
+-    dmaisink->displayStd          = NULL;
+-    dmaisink->displayDevice       = NULL;
+-    dmaisink->dGfxAttrs           = defaultGfxAttrs;
+-    dmaisink->videoStd            = NULL;
+-    dmaisink->videoOutput         = NULL;
+-    dmaisink->numBufs             = -1;
+-    dmaisink->framerepeat         = 0;
+-    dmaisink->repeat_with_refresh = FALSE;
++    dmaisink->displayStd                = NULL;
++    dmaisink->displayDevice             = NULL;
++    dmaisink->dGfxAttrs                 = defaultGfxAttrs;
++    dmaisink->videoStd                  = NULL;
++    dmaisink->videoOutput               = NULL;
++    dmaisink->numBufs                   = -1;
++    dmaisink->framerepeat               = 0;
++    dmaisink->repeat_with_refresh       = FALSE;
+     dmaisink->can_set_display_framerate = FALSE;
+-    dmaisink->rotation            = -1;
+-    dmaisink->tempDmaiBuf         = NULL;
+-    dmaisink->accelFrameCopy      = TRUE;
+-    dmaisink->autoselect          = FALSE;
+-    dmaisink->prevVideoStd        = 0;
+-    dmaisink->useUserptrBufs      = FALSE;
+-    dmaisink->hideOSD             = FALSE;
+-    dmaisink->hDispBufTab         = NULL;
++    dmaisink->rotation                  = -1;
++    dmaisink->tempDmaiBuf               = NULL;
++    dmaisink->accelFrameCopy            = TRUE;
++    dmaisink->autoselect                = FALSE;
++    dmaisink->prevVideoStd              = 0;
++    dmaisink->useUserptrBufs            = FALSE;
++    dmaisink->hideOSD                   = FALSE;
++    dmaisink->hDispBufTab               = NULL;
+ 
+     dmaisink->signal_handoffs = DEFAULT_SIGNAL_HANDOFFS;
+ 
+@@ -947,14 +947,8 @@ static void gst_tidmaivideosink_check_set_framerate(GstTIDmaiVideoSink * sink)
+ /******************************************************************************
+  * gst_tidmaivideosink_get_framerepeat
+  *
+- *    This function will look at the output display frame rate and the
+- *    input frame rate and determine how many times a frame should be
+- *    repeated.  If the output is not an integer multiple of the input
+- *    then 1 is returned to indicate that there will be no frame
+- *    repeating.
+- *
+- *    If the driver supports explicit configuration of the framerate, we
+- *    don't ever need to repeat frames, and 1 is returned.
++ *    Return how many times a frame should be repeated to support a 
++ *    framerate lower than the display's native speed.
+  *
+  ******************************************************************************/
+ static int gst_tidmaivideosink_get_framerepeat(GstTIDmaiVideoSink * sink)
+-- 
+1.7.0.4
+

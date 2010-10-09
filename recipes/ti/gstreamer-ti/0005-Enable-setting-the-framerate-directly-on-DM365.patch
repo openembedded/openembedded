@@ -1,0 +1,33 @@
+From 1cffa12c9ceb07558d2e4b35cc674070c7a3b8ee Mon Sep 17 00:00:00 2001
+From: Don Darling <don.osc2@gmail.com>
+Date: Thu, 26 Aug 2010 18:27:50 -0500
+Subject: [PATCH 5/8] Enable setting the framerate directly on DM365.
+
+This is supported by recent changes to the display driver.  DM365 will no
+longer use the "repeat_with_refresh" method to display frames more than once.
+---
+ .../ticodecplugin/src/gsttidmaivideosink.c         |    7 ++-----
+ 1 files changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/gstreamer_ti/ti_build/ticodecplugin/src/gsttidmaivideosink.c b/gstreamer_ti/ti_build/ticodecplugin/src/gsttidmaivideosink.c
+index 1d04e1c..3615bfd 100644
+--- a/gstreamer_ti/ti_build/ticodecplugin/src/gsttidmaivideosink.c
++++ b/gstreamer_ti/ti_build/ticodecplugin/src/gsttidmaivideosink.c
+@@ -475,12 +475,9 @@ static void gst_tidmaivideosink_init(GstTIDmaiVideoSink * dmaisink,
+     g_assert(GST_VALUE_HOLDS_FRACTION(&dmaisink->oattrs.framerate));
+     gst_value_set_fraction(&dmaisink->oattrs.framerate, 0, 1);
+ 
+-    /* On DM365, we don't have the bandwidth to copy a frame multiple times to
+-     * display them more than once.  We must put a frame to the display once
+-     * and let it be refreshed multiple times.
+-     */
++    /* DM365 supports setting the display framerate */
+     #if defined(Platform_dm365)
+-    dmaisink->repeat_with_refresh = TRUE;
++    dmaisink->can_set_display_framerate = TRUE;
+     #endif
+ 
+     gst_tidmaivideosink_init_env(dmaisink);
+-- 
+1.7.0.4
+

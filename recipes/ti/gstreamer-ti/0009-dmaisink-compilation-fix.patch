@@ -1,0 +1,26 @@
+From 721970f80e6bff0f231625f00301fa37473a2bb3 Mon Sep 17 00:00:00 2001
+From: Brijesh Singh <bksingh@ti.com>
+Date: Wed, 7 Jul 2010 19:21:01 -0500
+Subject: [PATCH 9/9] dmaisink compilation fix
+
+temporary fix - should go in svn trunk
+---
+ src/gsttidmaivideosink.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/src/gsttidmaivideosink.c b/src/gsttidmaivideosink.c
+index 99ca25d..2fb5aad 100644
+--- a/src/gsttidmaivideosink.c
++++ b/src/gsttidmaivideosink.c
+@@ -1817,7 +1817,7 @@ static gboolean gst_tidmaivideosink_alloc_display_buffers(
+         return FALSE;
+     }
+ 
+-    GST_INFO("Allocating %ld display buffers", sink->dAttrs.numBufs);
++    GST_INFO("Allocating %d display buffers", sink->dAttrs.numBufs);
+ 
+     /* Set the dimensions for the display */
+     if (VideoStd_getResolution(sink->dAttrs.videoStd, &gfxAttrs.dim.width,
+-- 
+1.7.0.4
+
