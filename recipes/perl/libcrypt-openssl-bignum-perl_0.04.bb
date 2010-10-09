@@ -1,6 +1,6 @@
 DESCRIPTION = "OpenSSL's multiprecision integer arithmetic"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 DEPENDS = "openssl"
 BBCLASSEXTEND = "native"
 

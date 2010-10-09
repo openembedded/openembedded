@@ -1,6 +1,6 @@
 DESCRIPTION = "DateTime::Format::Builder - Create DateTime parser classes and objects"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 DEPENDS = " libclass-factory-util-perl-native libdatetime-perl-native libdatetime-format-strptime-perl-native \
 	libtask-weaken-perl-native "
 RDEPENDS_${PN} = " libclass-factory-util-perl libdatetime-perl libdatetime-format-strptime-perl libtask-weaken-perl "

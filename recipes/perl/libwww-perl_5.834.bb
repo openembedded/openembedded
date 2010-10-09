@@ -1,6 +1,6 @@
 DESCRIPTION = "libwww-perl provides a simple and consistent API to the World Wide Web"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 DEPENDS = "liburi-perl-native libhtml-parser-perl-native libhtml-tagset-perl-native"
 RDEPENDS_${PN} += " \
 	libhtml-parser-perl \

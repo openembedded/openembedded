@@ -1,6 +1,6 @@
 DESCRIPTION = "Net::DNS - Perl interface to the DNS resolver"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 RDEPENDS_${PN} += " \
 	libdigest-hmac-perl \
 	libdigest-sha \

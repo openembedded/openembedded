@@ -1,6 +1,6 @@
 DESCRIPTION = "Digest::SHA1 - Perl interface to the SHA-1 algorithm"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 PR = "r14"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/Digest-SHA1-${PV}.tar.gz"

@@ -1,6 +1,6 @@
 DESCRIPTION = "MIME-tools - modules for parsing (and creating!) MIME entities"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 DEPENDS = " \
 	libio-stringy-perl-native \
 	libmailtools-perl-native \

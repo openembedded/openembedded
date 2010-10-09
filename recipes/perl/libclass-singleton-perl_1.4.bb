@@ -1,6 +1,6 @@
 DESCRIPTION = "Class::Singleton - Implementation of a "Singleton" class"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 PR = "r0"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/A/AB/ABW/Class-Singleton-${PV}.tar.gz"

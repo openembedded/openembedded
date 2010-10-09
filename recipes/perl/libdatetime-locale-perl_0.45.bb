@@ -1,6 +1,6 @@
 DESCRIPTION = "DateTime::Locale - Localization support for DateTime.pm"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 HOMEPAGE = "http://datetime.perl.org/"
 DEPENDS = "liblist-moreutils-perl-native libparams-validate-perl-native"
 RDEPENDS_${PN} = "liblist-moreutils-perl libparams-validate-perl"

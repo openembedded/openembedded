@@ -1,6 +1,6 @@
 DESCRIPTION = "Algorithm::Diff - Compute intelligent differences between two files / lists"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 RDEPENDS_${PN} += "perl-module-exporter perl-module-strict perl-module-vars \
 	     perl-module-strict perl-module-vars"
 PR = "r5"

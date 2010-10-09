@@ -1,6 +1,6 @@
 DESCRIPTION = "Test::Differences - Test strings and data structures and show differences if not ok"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 DEPENDS += "libtext-diff-perl-native"
 RDEPENDS_${PN} += "perl-module-carp perl-module-constant perl-module-exporter \
              perl-module-strict libtext-diff-perl"

@@ -1,6 +1,6 @@
 DESCRIPTION = "Term::ProgressBar - provide a progress meter on a standard terminal"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 PR = "r1"
 DEPENDS = "libtermreadkey-perl-native libclass-methodmaker-perl-native"
 RDEPENDS_${PN} = "libtermreadkey-perl libclass-methodmaker-perl"

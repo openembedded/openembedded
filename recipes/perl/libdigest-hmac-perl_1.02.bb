@@ -1,6 +1,6 @@
 DESCRIPTION = "Keyed-Hashing for Message Authentication"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 RDEPENDS_${PN} += "libdigest-sha1-perl perl-module-extutils-makemaker perl-module-digest-md5"
 
 BBCLASSEXTEND = "native"

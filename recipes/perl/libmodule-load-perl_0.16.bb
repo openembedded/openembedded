@@ -1,6 +1,6 @@
 DESCRIPTION = "A module loading thingy for perl."
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 PR = "r2"
 
 RDEPENDS_${PN} = "perl-module-test-more"

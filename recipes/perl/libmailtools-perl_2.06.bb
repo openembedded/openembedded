@@ -1,6 +1,6 @@
 DESCRIPTION = "MailTools is a set of Perl modules related to mail applications"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 DEPENDS = " \
 	libtest-pod-perl-native \
 	libtimedate-perl-native \

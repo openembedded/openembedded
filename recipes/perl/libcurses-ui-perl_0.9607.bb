@@ -1,6 +1,6 @@
 DESCRIPTION = "A curses based OO user interface framework"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 DEPENDS = "libcurses-perl-native libtermreadkey-perl-native"
 RDEPENDS_${PN} += " \
 	 libcurses-perl \

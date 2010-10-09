@@ -1,6 +1,6 @@
 DESCRIPTION = "Filesys-Df - Perl extension for filesystem disk space information"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 BBCLASSEXTEND = "native"
 PR = "r0"
 

@@ -1,6 +1,6 @@
 DESCRIPTION = "OLE::Storage_Lite - Simple Class for OLE document interface"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 BBCLASSEXTEND = "native"
 RDEPENDS_${PN} += "perl-module-extutils-makemaker"
 PR = "r0"

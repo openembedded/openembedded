@@ -1,6 +1,6 @@
 DESCRIPTION = "IPC::ShareLite - Light-weight interface to shared memory"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 PR = "r14"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/M/MA/MAURICE/IPC-ShareLite-${PV}.tar.gz"

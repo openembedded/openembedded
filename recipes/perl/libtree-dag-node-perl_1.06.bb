@@ -1,6 +1,6 @@
 DESCRIPTION = "(super)class for representing nodes in a tree"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 RDEPENDS_${PN} += "perl-module-strict"
 BBCLASSEXTEND = "native"
 

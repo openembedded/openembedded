@@ -1,6 +1,6 @@
 DESCRIPTION = "version - Perl extension for Version Objects"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 RDEPENDS_${PN} += "perl-module-file-temp perl-module-test-more"
 PR = "r0"
 

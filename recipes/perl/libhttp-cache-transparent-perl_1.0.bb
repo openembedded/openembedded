@@ -1,6 +1,6 @@
 DESCRIPTION = "HTTP::Cache::Transparent - Cache the result of http get-requests persistently."
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 PR = "r1"
 
 DEPENDS += "libwww-perl-native"

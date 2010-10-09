@@ -1,6 +1,6 @@
 DESCRIPTION = "List::MoreUtils - Provide the stuff missing in List::Util"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 HOMEPAGE = "http://datetime.perl.org/"
 PR = "r0"
 

@@ -1,6 +1,6 @@
 DESCRIPTION = "Archive::Tar - module for manipulations of tar archives"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 DEPENDS += "libio-zlib-perl-native"
 RDEPENDS_${PN} += "libio-zlib-perl"
 PR = "r6"

@@ -1,6 +1,6 @@
 DESCRIPTION = "Mail::Sendmail - Simple platform independent mailer"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 PR = "r4"
 
 SRC_URI = "http://www.cpan.org/modules/by-module/Mail/Mail-Sendmail-${PV}.tar.gz"

@@ -1,6 +1,6 @@
 DESCRIPTION = "RSA encoding and decoding, using the openSSL libraries"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 DEPENDS = "openssl"
 RDEPENDS_${PN} += " \
 	libcrypt-openssl-bignum-perl \

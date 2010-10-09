@@ -1,6 +1,6 @@
 DESCRIPTION = "Convert::BinHex - extract data from Macintosh BinHex files"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 BBCLASSEXTEND = "native"
 PR = "r0"
 

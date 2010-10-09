@@ -1,6 +1,6 @@
 DESCRIPTION = "Uses mmap to map in a file as a perl variable."
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/S/SW/SWALTERS/Sys-Mmap-${PV}.tar.gz"

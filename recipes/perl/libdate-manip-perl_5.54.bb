@@ -1,6 +1,6 @@
 DESCRIPTION = "Date and time manipulation routines."
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 PR = "r2"
 
 RDEPENDS_${PN} = "perl-module-test-more \

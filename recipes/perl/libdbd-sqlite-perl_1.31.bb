@@ -1,6 +1,6 @@
 DESCRIPTION = "PERL database interface driver for the SQLite database."
 SECTION = "libs"
-LICENSE = "Artistic GPL"
+LICENSE = "Artistic GPLv1"
 DEPENDS += "libdbi-perl-native"
 RDEPENDS_${PN} += "libdbi-perl \
          perl-module-file-spec \

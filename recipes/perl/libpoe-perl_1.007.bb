@@ -1,6 +1,6 @@
 DESCRIPTION = "Event-driven component architecture for Perl"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 PR = "r0"
 
 SRC_URI = "http://backpan.cpan.org/modules/by-module/POE/RCAPUTO/POE-${PV}.tar.gz"

@@ -1,6 +1,6 @@
 DESCRIPTION = "Programmable DNS resolver class for offline emulation of DNS"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 RDEPENDS_${PN} += " \
 	libnet-dns-perl \
 	perl-module-module-build \

@@ -1,6 +1,6 @@
 DESCRIPTION = "Error - Error/exception handling in an OO-ish way"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 RDEPENDS_${PN} = " \
 	 perl-module-scalar-util \
 	 perl-module-warnings \

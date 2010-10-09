@@ -1,6 +1,6 @@
 DESCRIPTION = "XML::Twig - A perl module for processing huge XML documents in tree mode."
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 HOMEPAGE = "http://www.xmltwig.com/"
 DEPENDS += "libxml-parser-perl-native"
 RDEPENDS_${PN} += "libxml-parser-perl"

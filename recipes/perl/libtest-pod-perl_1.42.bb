@@ -1,6 +1,6 @@
 DESCRIPTION = "Test::Pod - check for POD errors in files"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 BBCLASSEXTEND = "native"
 RDEPENDS_${PN} += "perl-module-test-more perl-module-file-spec perl-module-module-build perl-module-pod-simple"
 PR = "r0"

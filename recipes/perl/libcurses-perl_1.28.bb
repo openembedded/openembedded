@@ -1,6 +1,6 @@
 DESCRIPTION = "Terminal screen handling and optimization"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 DEPENDS = "ncurses"
 BBCLASSEXTEND = "native"
 

@@ -1,6 +1,6 @@
 DESCRIPTION = "Perl6::Junction - Perl6 style Junction operators in Perl5."
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 PR = "r3"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/C/CF/CFRANKS/Perl6-Junction-${PV}.tar.gz"

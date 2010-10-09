@@ -1,6 +1,6 @@
 DESCRIPTION = "Manipulates and accesses URI strings"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 RDEPENDS_${PN} += " perl-module-extutils-makemaker perl-module-mime-base64"
 PR = "r4"
 

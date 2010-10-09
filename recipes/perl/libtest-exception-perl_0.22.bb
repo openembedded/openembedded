@@ -1,6 +1,6 @@
 DESCRIPTION = "Test::Exception - Test exception based code"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 DEPENDS += "libsub-uplevel-perl-native"
 RDEPENDS_${PN} += "perl-module-base perl-module-carp perl-module-strict \
              libsub-uplevel-perl perl-module-test-builder \

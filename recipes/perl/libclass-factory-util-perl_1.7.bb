@@ -1,6 +1,6 @@
 DESCRIPTION = "Class::Factory::Util - Provide utility methods for factory classes"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 DEPENDS = "libmodule-build-perl-native"
 PR = "r0"
 

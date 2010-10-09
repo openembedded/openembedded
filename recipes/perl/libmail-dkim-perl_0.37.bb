@@ -1,6 +1,6 @@
 DESCRIPTION = "Mail::DKIM - Signs/verifies Internet mail with DKIM/DomainKey signatures"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 DEPENDS = " \
 	libcrypt-openssl-rsa-perl-native \
 	libdigest-sha-native \

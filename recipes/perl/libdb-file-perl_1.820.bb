@@ -1,6 +1,6 @@
 DESCRIPTION = "Perl5 access to Berkeley DB version 1.x"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 DEPENDS = "virtual/db"
 RDEPENDS_${PN} += "perl-module-extutils-makemaker"
 PR = "r0"

@@ -1,6 +1,6 @@
 DESCRIPTION = "Perl module to manage IPv4 and IPv6 addresses and subnets"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 RDEPENDS_${PN} += "perl-module-test-more"
 BBCLASSEXTEND = "native"
 

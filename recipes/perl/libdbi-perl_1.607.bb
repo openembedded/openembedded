@@ -1,6 +1,6 @@
 DESCRIPTION = "Various MIME modules."
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 PR = "r2"
 
 RDEPENDS_${PN} = "perl-module-scalar-util \

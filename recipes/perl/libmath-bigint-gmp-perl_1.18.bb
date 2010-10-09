@@ -1,6 +1,6 @@
 DESCRIPTION = "Math::BigInt::GMP - Use the GMP library for Math::BigInt routines"
 SECTION = "libs"
-LICENSE = "Artistic|GPL"
+LICENSE = "Artistic|GPLv1"
 DEPENDS += "gmp-native"
 RDEPENDS_${PN} += "gmp"
 PR = "r7"
