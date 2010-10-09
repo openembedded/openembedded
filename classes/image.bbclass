@@ -61,6 +61,7 @@ python () {
     bb.data.setVarFlag('do_rootfs', 'depends', deps, d)
 
     runtime_mapping_rename("PACKAGE_INSTALL", d)
+    runtime_mapping_rename("PACKAGE_INSTALL_ATTEMPTONLY", d)
 }
 
 #
