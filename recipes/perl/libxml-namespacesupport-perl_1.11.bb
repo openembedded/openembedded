@@ -1,6 +1,6 @@
 DESCRIPTION = "XML-NamespaceSupport"
 SECTION = "libs"
-LICENSE = ""
+LICENSE = "Artistic|GPL"
 PR = "r0"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/P/PE/PERIGRIN/XML-NamespaceSupport-${PV}.tar.gz"
