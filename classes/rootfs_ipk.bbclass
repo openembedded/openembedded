@@ -47,15 +47,6 @@ fakeroot rootfs_ipk_do_rootfs () {
 
 	opkg-cl ${IPKG_ARGS} update
 
-	# Uclibc builds don't provide this stuff...
-	if [ x${TARGET_OS} = "xlinux" ] || [ x${TARGET_OS} = "xlinux-gnueabi" ] ; then 
-		if [ ! -z "${LINGUAS_INSTALL}" ]; then
-			opkg-cl ${IPKG_ARGS} install glibc-localedata-i18n
-			for i in ${LINGUAS_INSTALL}; do
-				opkg-cl ${IPKG_ARGS} install $i 
-			done
-		fi
-	fi
 	if [ ! -z "${PACKAGE_INSTALL}" ]; then
 		opkg-cl ${IPKG_ARGS} install ${PACKAGE_INSTALL}
 	fi

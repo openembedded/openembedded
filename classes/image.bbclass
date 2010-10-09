@@ -29,11 +29,19 @@ ${IMAGE_DEV_MANAGER} \
 ${IMAGE_INIT_MANAGER} \
 ${IMAGE_LOGIN_MANAGER} "
 
+# some default locales
+IMAGE_LINGUAS ?= "de-de fr-fr en-gb"
+
+LINGUAS_INSTALL = ""
+LINGUAS_INSTALL_linux = "glibc-localedata-i18n"
+LINGUAS_INSTALL_linux += "${@' '.join(map(lambda s: 'locale-base-%s' % s, '${IMAGE_LINGUAS}'.split()))}"
+LINGUAS_INSTALL_linux-gnueabi = "${LINGUAS_INSTALL_linux}"
+
 RDEPENDS += "${PACKAGE_INSTALL}"
 
 # "export IMAGE_BASENAME" not supported at this time
 IMAGE_BASENAME[export] = "1"
-export PACKAGE_INSTALL ?= "${IMAGE_INSTALL} ${IMAGE_BOOT}"
+export PACKAGE_INSTALL ?= "${IMAGE_INSTALL} ${IMAGE_BOOT} ${LINGUAS_INSTALL}"
 
 # We need to recursively follow RDEPENDS and RRECOMMENDS for images
 do_rootfs[recrdeptask] += "do_deploy do_populate_sysroot"
@@ -102,11 +110,6 @@ def get_imagecmds(d):
 IMAGE_POSTPROCESS_COMMAND ?= ""
 MACHINE_POSTPROCESS_COMMAND ?= ""
 ROOTFS_POSTPROCESS_COMMAND ?= ""
-
-# some default locales
-IMAGE_LINGUAS ?= "de-de fr-fr en-gb"
-
-LINGUAS_INSTALL = "${@" ".join(map(lambda s: "locale-base-%s" % s, bb.data.getVar('IMAGE_LINGUAS', d, 1).split()))}"
 
 do_rootfs[nostamp] = "1"
 do_rootfs[dirs] = "${TOPDIR}"
