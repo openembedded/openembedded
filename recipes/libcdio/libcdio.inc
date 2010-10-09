@@ -4,11 +4,11 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPLv3+"
 DEPENDS = "ncurses"
-INC_PR = "r2"
+INC_PR = "r3"
 
 SRC_URI = "${GNU_MIRROR}/${PN}/${P}.tar.gz"
 
-inherit autotools
+inherit autotools pkgconfig
 
 EXTRA_OECONF = "ac_cv_member_struct_tm_tm_gmtoff=no"
 
