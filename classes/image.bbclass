@@ -37,11 +37,19 @@ LINGUAS_INSTALL_linux = "glibc-localedata-i18n"
 LINGUAS_INSTALL_linux += "${@' '.join(map(lambda s: 'locale-base-%s' % s, '${IMAGE_LINGUAS}'.split()))}"
 LINGUAS_INSTALL_linux-gnueabi = "${LINGUAS_INSTALL_linux}"
 
+PACKAGE_INSTALL = "${@oe.packagegroup.required_packages('${IMAGE_FEATURES}'.split(), d)}"
+PACKAGE_INSTALL_ATTEMPTONLY = "${@oe.packagegroup.optional_packages('${IMAGE_FEATURES}'.split(), d)}"
+
+IMAGE_FEATURES ?= ""
+IMAGE_FEATURES_prepend = "image_base "
+
+# Define our always included package group
+PACKAGE_GROUP_image_base = "${IMAGE_INSTALL} ${IMAGE_BOOT} ${LINGUAS_INSTALL}"
+
 RDEPENDS += "${PACKAGE_INSTALL}"
 
 # "export IMAGE_BASENAME" not supported at this time
 IMAGE_BASENAME[export] = "1"
-PACKAGE_INSTALL ?= "${IMAGE_INSTALL} ${IMAGE_BOOT} ${LINGUAS_INSTALL}"
 
 # We need to recursively follow RDEPENDS and RRECOMMENDS for images
 do_rootfs[recrdeptask] += "do_deploy do_populate_sysroot"
