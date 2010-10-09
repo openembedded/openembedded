@@ -1,5 +1,5 @@
 DESCRIPTION = "GMyth is a library to access MythTV backend services."
-LICENSE = "LGPLv2""
+LICENSE = "LGPLv2"
 HOMEPAGE = "http://gmyth.sourceforge.net/wiki/index.php/Main_Page"
 
 PR = "r3"
