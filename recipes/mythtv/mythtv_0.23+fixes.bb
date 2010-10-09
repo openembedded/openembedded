@@ -2,7 +2,7 @@ DESCRIPTION = "A full featured personal video recorder system."
 HOMEPAGE = "http://www.mythtv.org"
 LICENSE = "GPLv2"
 SECTION = "x11/multimedia"
-DEPENDS = "jack alsa-lib libxinerama libxv libxxf86vm libxvmc lirc \
+DEPENDS = "jack alsa-lib libxinerama libxv libxxf86vm libxvmc lirc pulseaudio \
            ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'lame', d)}"
 RDEPENDS_${PN} = "libmyth mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mythtv-database \
 	   mysql5-server mysql5-client libmysqlclient qt4-plugin-sqldriver-sqlmysql xmltv"
@@ -13,7 +13,7 @@ ARM_INSTRUCTION_SET = "arm"
 
 QMAKE_PROFILES = "mythtv.pro"
 
-PR = "svnr${SRCPV}+r1"
+PR = "svnr${SRCPV}+r2"
 PV = "0.23"
 
 # REALPV is here to support release candidates
