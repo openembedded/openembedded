@@ -41,7 +41,7 @@ RDEPENDS += "${PACKAGE_INSTALL}"
 
 # "export IMAGE_BASENAME" not supported at this time
 IMAGE_BASENAME[export] = "1"
-export PACKAGE_INSTALL ?= "${IMAGE_INSTALL} ${IMAGE_BOOT} ${LINGUAS_INSTALL}"
+PACKAGE_INSTALL ?= "${IMAGE_INSTALL} ${IMAGE_BOOT} ${LINGUAS_INSTALL}"
 
 # We need to recursively follow RDEPENDS and RRECOMMENDS for images
 do_rootfs[recrdeptask] += "do_deploy do_populate_sysroot"
