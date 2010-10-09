@@ -1,6 +1,6 @@
 DESCRIPTION = "WWW::Mechanize   	 Handy web browsing in a Perl object"
 SECTION = "libs"
-LICENSE = "Perl"
+LICENSE = "Artistic|GPLv1"
 PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/P/PE/PETDANCE/WWW-Mechanize-${PV}.tar.gz"
