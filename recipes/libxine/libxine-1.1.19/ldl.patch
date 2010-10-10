@@ -1,0 +1,23 @@
+Index: xine-lib-1.1.19/m4/dl.m4
+===================================================================
+--- xine-lib-1.1.19.orig/m4/dl.m4	2010-10-09 17:21:02.641486725 +0200
++++ xine-lib-1.1.19/m4/dl.m4	2010-10-09 17:23:32.484809340 +0200
+@@ -5,13 +5,13 @@
+ dnl
+ 
+ AC_DEFUN([AM_DL], [
+-  AC_CHECK_LIB(c, dlopen,
+-   [DYNAMIC_LD_LIBS=""
+-    have_dl=yes])
++   AC_CHECK_LIB(dl, dlopen,
++    [DYNAMIC_LD_LIBS="-ldl"
++     have_dl=yes])
+ 
+   if test x$have_dl != "xyes"; then
+-    AC_CHECK_LIB(dl, dlopen,
+-     [DYNAMIC_LD_LIBS="-ldl"
++    AC_CHECK_LIB(c, dlopen,
++     [DYNAMIC_LD_LIBS=""
+       have_dl=yes])
+   fi
+ 

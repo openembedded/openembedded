@@ -1,14 +1,14 @@
 require libxine.inc
 
-PPDIR = "1.25"
-PR = "r1"
+PR = ${INC_PR}.0
 
+PPDIR = "1.29"
 
 SRC_URI += " \
     	file://libxine-arm-configure.patch \
 	file://iconv.patch \
-	file://libpostproc.patch \
-	file://libavcodec.patch \
+	file://ffmpeg_headers.patch \
+        file://ldl.patch \
         "
 
 python populate_packages_prepend () {
@@ -38,5 +38,5 @@ FILES_${PN}-dev =+ "${libdir}/xine/plugins/${PPDIR}/*.a \
                     ${libdir}/xine/plugins/${PPDIR}/vidix/*.a \
                    "
 
-SRC_URI[md5sum] = "acd1a210c5a6444e8fd44696469352bb"
-SRC_URI[sha256sum] = "27df9c8f962797b235d69154705cfdf18d3e325f028f54e3e804f6dadb8237be"
+SRC_URI[md5sum] = "a410a0f0617e1d6309f0cbe907f73f8a"
+SRC_URI[sha256sum] = "6277c6c5343ad45027492d0b3437f1894b3d34fd9b292638da2bf4ae749d8774"

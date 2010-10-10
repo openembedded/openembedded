@@ -1,0 +1,18 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+Index: xine-lib-1.1.12/configure.ac
+===================================================================
+--- xine-lib-1.1.12.orig/configure.ac	2008-04-11 16:17:50.000000000 +0200
++++ xine-lib-1.1.12/configure.ac	2008-05-08 00:01:27.000000000 +0200
+@@ -2304,7 +2304,7 @@
+   alphaev56-* | alpha* | ia64-* | hppa*-linux-*)
+     AC_DEFINE_UNQUOTED(FPM_64BIT,,[Define to select libmad fixed point arithmetic implementation])
+     ;;
+-  armv4l-*-linux*)
++  armv-*-linux*)
+     AC_DEFINE_UNQUOTED(FPM_ARM,,[Define to select libmad fixed point arithmetic implementation])
+     enable_armv4l="yes"
+     ;;

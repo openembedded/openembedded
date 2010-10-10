@@ -3,7 +3,9 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "ffmpeg zlib libogg libvorbis tremor libmad libmodplug libpng alsa-lib virtual/libiconv virtual/libx11 \
-	   libxv libxext directfb pulseaudio"
+	   libxv libxext directfb pulseaudio libtool"
+
+INC_PR = "r2"
 
 inherit autotools gettext binconfig pkgconfig
 
@@ -24,7 +26,6 @@ EXTRA_OECONF = "--with-zlib-path=${STAGING_EXECPREFIXDIR} \
         --disable-vcd \
         --without-arts --without-sdl \
 	--disable-altivec --disable-vis --disable-mlib \
-	--without-sdl \
 	--without-v4l --disable-dxr3 --disable-libfametest\
 	--disable-rpath \
 	--enable-fb --enable-directfb \

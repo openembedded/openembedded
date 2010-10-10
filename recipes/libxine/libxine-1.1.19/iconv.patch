@@ -1,0 +1,12 @@
+Index: xine-lib-1.1.15/misc/libxine.pc.in
+===================================================================
+--- xine-lib-1.1.15.orig/misc/libxine.pc.in	2008-09-19 00:50:07.144738536 +0200
++++ xine-lib-1.1.15/misc/libxine.pc.in	2008-09-19 00:50:17.962908808 +0200
+@@ -23,6 +23,6 @@
+ Version: @XINE_MAJOR@.@XINE_MINOR@.@XINE_SUB@@XINE_PATCH@
+ Requires:
+ Libs: -L${libdir} -lxine
+-Libs.private: @ZLIB_LIBS@ @NET_LIBS@ @PTHREAD_LIBS@ @LIBICONV@ @RT_LIBS@
++Libs.private: @ZLIB_LIBS@ @NET_LIBS@ @PTHREAD_LIBS@ @LTLIBICONV@ @RT_LIBS@
+ Cflags: -I${includedir}
+ Cflags.private: @PTHREAD_CFLAGS@
