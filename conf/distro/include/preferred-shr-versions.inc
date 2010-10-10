@@ -1,6 +1,7 @@
 # Upgraded
 # use newer version then preferred by default
-PREFERRED_VERSION_dbus = "1.3.1"
+PREFERRED_VERSION_dbus = "1.4.0"
+PREFERRED_VERSION_dbus-native = "1.4.0"
 PREFERRED_VERSION_autoconf = "2.65"
 PREFERRED_VERSION_autoconf-native = "2.65"
 PREFERRED_VERSION_automake = "1.11.1"
