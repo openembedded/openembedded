@@ -1,0 +1,12 @@
+Upstream: http://sourceforge.net/mailarchive/forum.php?thread_name=4CB2549C.2030100%40gmail.com&forum_name=prboom-devel
+
+--- prboom-2.5.0/src/SDL/i_system.c.orig	2010-10-11 09:58:02.000000000 +1030
++++ prboom-2.5.0/src/SDL/i_system.c	2010-10-11 09:59:16.000000000 +1030
+@@ -33,6 +33,7 @@
+  *-----------------------------------------------------------------------------
+  */
+ 
++#define _GNU_SOURCE
+ #include <stdio.h>
+ 
+ #include <stdarg.h>

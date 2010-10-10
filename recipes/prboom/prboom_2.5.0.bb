@@ -4,10 +4,11 @@ PRIORITY = "optional"
 DEPENDS = "virtual/libsdl libsdl-mixer libsdl-net"
 LICENSE = "GPL"
 
-PR = "r2"
+PR = "r3"
 RRECOMMENDS_${PN} = "freedoom"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/prboom/prboom-${PV}.tar.gz \
+	   file://gnu_source_for_sched_h.patch \
 	   "
 
 inherit autotools
