@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "BSD-X"
 DEPENDS = "virtual/libx11"
 PV = "0.11+svn${SRCDATE}"
-PR = "r0"
+PR = "r1"
 
 inherit gpe
 
@@ -15,18 +15,17 @@ SRC_URI = "${GPE_SVN} \
 
 S = "${WORKDIR}/${PN}"
 
+headers = "xsettings-common.h"
+
 do_install () {
         gpe_do_install
         oe_runmake PREFIX=${prefix} DESTDIR=${D} install-devel
-}
-do_stage () {
-        oe_libinstall -so libXsettings ${STAGING_LIBDIR}
-        mkdir -p ${STAGING_INCDIR}/gpe
+
+        oe_libinstall -so libXsettings ${D}${libdir}
+        install -d ${D}${includedir}/gpe
         for h in ${headers}; do
-                install -m 0644 ${S}/$h ${STAGING_INCDIR}/$h
+                install -m 0644 ${S}/$h ${D}${includedir}/$h
         done
 }
-
-headers = "xsettings-common.h"
 
 DEFAULT_PREFERENCE = "-1"
