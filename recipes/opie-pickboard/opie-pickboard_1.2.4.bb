@@ -1,5 +1,5 @@
 require ${PN}.inc
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/inputmethods/pickboard"

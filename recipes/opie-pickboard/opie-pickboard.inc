@@ -25,10 +25,12 @@ ${bindir}/qcop QPE/TaskBar "reloadInputMethods()"
 }
 
 
-do_stage() {
-	install -m 0755 libqpickboard.so ${STAGING_LIBDIR}/
-	install pickboardcfg.h ${STAGING_INCDIR}/
-	install pickboardpicks.h ${STAGING_INCDIR}/
+do_install() {
+        install -d ${D}${libdir}/
+        install -d ${D}${includedir}/
+        install -m 0755 libqpickboard.so ${D}${libdir}/
+        install pickboardcfg.h ${D}${includedir}/
+        install pickboardpicks.h ${D}${includedir}/
 }
 
 # FILES plugins/inputmethods/libqpickboard.so*
