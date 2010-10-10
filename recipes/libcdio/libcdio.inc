@@ -21,3 +21,4 @@ python populate_packages_prepend () {
         glibdir = bb.data.expand('${libdir}', d)
         do_split_packages(d, glibdir, '^lib(.*)\.so\..*', 'lib%s', 'gstreamer %s library', extra_depends='', allow_links=True)
 }
+DEBUG_OPTIMIZATION_thumb = "-Os -fno-omit-frame-pointer -g"
