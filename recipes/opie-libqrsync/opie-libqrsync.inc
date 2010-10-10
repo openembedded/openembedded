@@ -7,7 +7,8 @@ S = "${WORKDIR}/rsync"
 
 inherit opie
 
-do_stage() {
-	oe_libinstall -a libqrsync ${STAGING_LIBDIR}/
-	install -m 0644 qrsync.h ${STAGING_INCDIR}/
+do_install() {
+        oe_libinstall -a libqrsync ${D}${libdir}/
+        install -d ${D}${includedir}/
+        install -m 0644 qrsync.h ${D}${includedir}/
 }
