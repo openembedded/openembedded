@@ -12,17 +12,6 @@ PACKAGE_DBG_DESC = "Debugging files for %s"
 PACKAGE_DBG_EXCLUDE = "${PN}-locale* ${PN}-doc ${PN}-dev *-dbg"
 
 
-def __find(dir):
-    """ Given a directory, recurses into that directory,
-    returning all files. """
-
-    from os import walk
-    from os.path import join
-
-    for root, dirs, files in walk(dir):
-        for file in files:
-            yield join(root, file)
-
 def __package_get_files(pkg, d):
     """ Obtains a list of files to be included in a package.
 
@@ -42,7 +31,7 @@ def __package_get_files(pkg, d):
     for globbed in (glob(join(installdir, file[1:])) for file in files):
         for path in globbed:
             if isdir(path) and not islink(path):
-                for file in __find(path):
+                for file in oe.path.find(path):
                     yield file[installdirlen:]
             else:
                 yield path[installdirlen:]
