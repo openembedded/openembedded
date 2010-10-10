@@ -4,8 +4,9 @@ def is_optional(group, d):
     return bool(d.getVarFlag("PACKAGE_GROUP_%s" % group, "optional"))
 
 def packages(groups, d):
-    return itertools.chain.from_iterable(d.getVar("PACKAGE_GROUP_%s" % group, True).split()
-                                         for group in groups)
+    for group in groups:
+        for pkg in (d.getVar("PACKAGE_GROUP_%s" % group, True) or "").split():
+            yield pkg
 
 def required_packages(groups, d):
     req = filter(lambda group: not is_optional(group, d), groups)
