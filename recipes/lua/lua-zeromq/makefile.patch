@@ -1,0 +1,37 @@
+Index: git/Makefile
+===================================================================
+--- git.orig/Makefile	2010-10-10 19:16:14.000000000 +0200
++++ git/Makefile	2010-10-10 19:13:20.000000000 +0200
+@@ -18,25 +18,25 @@
+ # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ # THE SOFTWARE.
+ 
+-CC = gcc
+-CFLAGS = `pkg-config lua5.1 --cflags` -fPIC -O3 -Wall
+-LFLAGS = -shared `pkg-config --libs --cflags libzmq`
+-INSTALL_PATH = `pkg-config lua5.1 --variable=INSTALL_CMOD`
++#CC = gcc
++CFLAGS = $(MYFLAGS) `pkg-config lua5.1 --cflags` -fPIC -Wall
++LFLAGS = $(MYFLAGS) -shared `pkg-config --libs --cflags libzmq`
++#INSTALL_PATH = `pkg-config lua5.1 --variable=INSTALL_CMOD`
+ 
+ 
+ all: zmq.so
+ 
+ 
+ zmq.lo: zmq.c
+-	$(CC) -o zmq.lo -c $(CFLAGS) zmq.c
++	$(CC) -o zmq.lo -c $(CFLAGS) -fPIC zmq.c
+ 
+ 
+ zmq.so: zmq.lo
+-	$(CC) -o zmq.so $(LFLAGS) zmq.lo
++	$(CC) -o zmq.so $(LFLAGS) -shared zmq.lo
+ 
+ 
+ install: zmq.so
+-	install -D -s zmq.so $(INSTALL_PATH)/zmq.so
++	install -D zmq.so $(PREFIX)/zmq.so
+ 
+ 
+ clean:
