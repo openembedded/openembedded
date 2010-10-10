@@ -1,4 +1,7 @@
 require libtool.inc
+
+DEFAULT_PREFERENCE = "-1"
+
 DEPENDS = "libtool-native"
 PR = "${INC_PR}.0"
 
