@@ -45,6 +45,7 @@ do_compileconfigs () {
         # Build and Install this alternative kernel
         do_configure
         kernel_do_compile
+        do_compile_kernelmodules
         kernel_do_install
 
         # Drop the resulting images in the deploy dir
