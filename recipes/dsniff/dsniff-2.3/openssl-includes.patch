@@ -1,0 +1,11 @@
+--- dsniff-2.3/sshcrypto.c.orig	2010-10-11 16:38:25.000000000 +1030
++++ dsniff-2.3/sshcrypto.c	2010-10-11 16:38:30.000000000 +1030
+@@ -14,6 +14,8 @@
+ 
+ #include <sys/types.h>
+ #include <openssl/ssl.h>
++#include <openssl/blowfish.h>
++#include <openssl/des.h>
+ 
+ #include <err.h>
+ #include <stdio.h>
