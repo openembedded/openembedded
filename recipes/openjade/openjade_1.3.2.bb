@@ -5,9 +5,10 @@ DESCRIPTION = "OpenJade is a suite of tools for validating, \
 processing, and applying DSSSL (Document Style Semantics and \
 Specification Language) stylesheets to SGML and XML documents."
 LICENSE = "BSD"
-PR = "r1"
+PR = "r2"
 SRC_URI = "${SOURCEFORGE_MIRROR}/openjade/openjade-${PV}.tar.gz \
-	   file://configure.patch"
+	   file://configure.patch \
+          "
 
 inherit autotools
 
@@ -20,15 +21,34 @@ acpaths = "-I ${S}/config"
 # up, resulting in a fail in do_configure.
 CFLAGS_prepend = "-I${S}/include "
 
-do_configure_prepend () {
-        mv config/configure.in .
+do_configure () {
+       cp config/configure.in .
+       cp config/aclocal.m4 .
+       gnu-configize
+       oe_runconf
+}
+do_install_append () {
+       # Refer to http://www.linuxfromscratch.org/blfs/view/stable/pst/openjade.html
+       # for details.
+       install -m 0755 ${S}/jade/.libs/openjade ${D}${bindir}/openjade
+       ln -sf openjade ${D}${bindir}/jade
+
+       oe_libinstall -a -so -C style libostyle ${D}${libdir}
+       oe_libinstall -a -so -C spgrove libospgrove ${D}${libdir}
+       oe_libinstall -a -so -C grove libogrove ${D}${libdir}
+
+       install -d ${D}${datadir}/sgml/openjade-${PV}
+       install -m 644 dsssl/catalog ${D}${datadir}/sgml/openjade-${PV}
+       install -m 644 dsssl/*.{dtd,dsl,sgm} ${D}${datadir}/sgml/openjade-${PV}
+
+       install-catalog --add ${sysconfdir}/sgml/openjade-${PV}.cat \
+           ${D}${datadir}/sgml/openjade-${PV}/catalog
+
+       install-catalog --add ${sysconfdir}/sgml/sgml-docbook.cat \
+           ${sysconfdir}/sgml/openjade-${PV}.cat
 }
 
-do_stage () {
-	oe_libinstall -a -so -C style libostyle ${STAGING_LIBDIR}
-	oe_libinstall -a -so -C spgrove libospgrove ${STAGING_LIBDIR}
-	oe_libinstall -a -so -C grove libogrove ${STAGING_LIBDIR}
-}
+BBCLASSEXTEND = "native"
 
 SRC_URI[md5sum] = "7df692e3186109cc00db6825b777201e"
 SRC_URI[sha256sum] = "1d2d7996cc94f9b87d0c51cf0e028070ac177c4123ecbfd7ac1cb8d0b7d322d1"
