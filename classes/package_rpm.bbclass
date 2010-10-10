@@ -10,6 +10,8 @@ RPMOPTS="--rcfile=${WORKDIR}/rpmrc --target ${TARGET_SYS}"
 RPM="rpm ${RPMOPTS}"
 
 python write_specfile() {
+	import oe.packagedata
+
 	version = bb.data.getVar('PV', d, 1)
 	version = version.replace('-', '+')
 	bb.data.setVar('RPMPV', version, d)
@@ -78,7 +80,7 @@ python write_specfile() {
 			ver = depends[dep]
 			if dep and ver:
 				if '-' in ver:
-					subd = read_subpkgdata_dict(dep, d)
+					subd = oe.packagedata.read_subpkgdata_dict(dep, d)
 					pv = subd['PV']
 					reppv = pv.replace('-', '+')
 					ver = ver.replace(pv, reppv)

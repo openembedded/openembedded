@@ -278,7 +278,9 @@ def write_package_md5sums (root, outfile, ignorepaths):
 #
 
 def get_package_mapping (pkg, d):
-	data = read_subpkgdata(pkg, d)
+	import oe.packagedata
+
+	data = oe.packagedata.read_subpkgdata(pkg, d)
 	key = "PKG_%s" % pkg
 
 	if key in data:

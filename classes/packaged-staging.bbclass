@@ -424,6 +424,8 @@ python staging_package_libtoolhack () {
 }
 
 python do_package_stage () {
+    import oe.packagedata
+
     if bb.data.getVar("PSTAGING_ACTIVE", d, 1) != "1":
         return
 
@@ -452,7 +454,7 @@ python do_package_stage () {
             pr = bb.data.getVar('PR_%s' % pkg, d, 1)
             if not pr:
                 pr = bb.data.getVar('PR', d, 1)
-            if not packaged(pkg, d):
+            if not oe.packagedata.packaged(pkg, d):
                 continue
             if bb.data.inherits_class('package_ipk', d):
                 srcname = bb.data.expand(pkgname + "_${PKGV}-" + pr + "${DISTRO_PR}" + "_" + arch + ".ipk", d)
