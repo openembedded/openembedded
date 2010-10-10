@@ -1,5 +1,9 @@
 ANGSTROM_MESA_VERSION = "7.8.2"
 ANGSTROM_QT_VERSION ?= "4.7.0"
+ANGSTROM_LIBTOOL_VERSION = "2.4"
+# Use new sysroot feature
+LIBTOOL_HAS_SYSROOT = "yes"
+
 CE_VERSION ?= "latest"
 
 require conf/distro/include/angstrom-codec-engine-${CE_VERSION}-preferred-versions.inc
@@ -25,10 +29,11 @@ PREFERRED_VERSION_hal		= "0.5.14"
 PREFERRED_VERSION_libgemwidget	= "1.0"
 PREFERRED_VERSION_libgpephone	= "0.4"
 PREFERRED_VERSION_libsdl-x11	= "1.2.14"
-PREFERRED_VERSION_libtool 	= "2.2.6b"
-PREFERRED_VERSION_libtool-native = "2.2.6b"
-PREFERRED_VERSION_libtool-cross	= "2.2.6b"
-PREFERRED_VERSION_libtool-sdk	= "2.2.6b"
+PREFERRED_VERSION_libtool           = "${ANGSTROM_LIBTOOL_VERSION}"
+PREFERRED_VERSION_libtool-native    = "${ANGSTROM_LIBTOOL_VERSION}"
+PREFERRED_VERSION_libtool-cross     = "${ANGSTROM_LIBTOOL_VERSION}"
+PREFERRED_VERSION_libtool-nativesdk = "${ANGSTROM_LIBTOOL_VERSION}"
+PREFERRED_VERSION_libtool-sdk       = "${ANGSTROM_LIBTOOL_VERSION}"
 PREFERRED_VERSION_lighttpd      = "1.4.26"
 PREFERRED_VERSION_mesa          = "${ANGSTROM_MESA_VERSION}"
 PREFERRED_VERSION_mesa-dri      = "${ANGSTROM_MESA_VERSION}"
