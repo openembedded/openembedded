@@ -25,9 +25,9 @@ IMAGE_KEEPROOTFS ?= ""
 IMAGE_KEEPROOTFS[doc] = "Set to non-empty to keep ${IMAGE_ROOTFS} around after image creation."
 
 IMAGE_BOOT ?= "${IMAGE_INITSCRIPTS} \
-${IMAGE_DEV_MANAGER} \
-${IMAGE_INIT_MANAGER} \
-${IMAGE_LOGIN_MANAGER} "
+               ${IMAGE_DEV_MANAGER} \
+               ${IMAGE_INIT_MANAGER} \
+               ${IMAGE_LOGIN_MANAGER}"
 
 # some default locales
 IMAGE_LINGUAS ?= "de-de fr-fr en-gb"
@@ -37,14 +37,41 @@ LINGUAS_INSTALL_linux = "glibc-localedata-i18n"
 LINGUAS_INSTALL_linux += "${@' '.join(map(lambda s: 'locale-base-%s' % s, '${IMAGE_LINGUAS}'.split()))}"
 LINGUAS_INSTALL_linux-gnueabi = "${LINGUAS_INSTALL_linux}"
 
-PACKAGE_INSTALL = "${@oe.packagegroup.required_packages('${IMAGE_FEATURES}'.split(), d)}"
-PACKAGE_INSTALL_ATTEMPTONLY = "${@oe.packagegroup.optional_packages('${IMAGE_FEATURES}'.split(), d)}"
+PACKAGE_INSTALL = "${@' '.join(oe.packagegroup.required_packages('${IMAGE_FEATURES}'.split(), d))}"
+PACKAGE_INSTALL_ATTEMPTONLY = "${@' '.join(oe.packagegroup.optional_packages('${IMAGE_FEATURES}'.split(), d))}"
 
 IMAGE_FEATURES ?= ""
 IMAGE_FEATURES_prepend = "image_base "
 
 # Define our always included package group
 PACKAGE_GROUP_image_base = "${IMAGE_INSTALL} ${IMAGE_BOOT} ${LINGUAS_INSTALL}"
+
+# The following package groups allow one to add debugging, development, and
+# documentation files for all packages installed in the image.
+
+def string_set(iterable):
+    return ' '.join(set(iterable))
+
+def image_features_noextras(d):
+    for f in d.getVar("IMAGE_FEATURES", True).split():
+        if not f in ('dbg', 'dev', 'doc'):
+            yield f
+
+def dbg_packages(d):
+    from itertools import chain
+
+    features = image_features_noextras(d)
+    return string_set("%s-dbg" % pkg
+                      for pkg in chain(oe.packagegroup.active_packages(features, d),
+                                       oe.packagegroup.active_recipes(features, d)))
+
+PACKAGE_GROUP_dbg = "${@dbg_packages(d)}"
+PACKAGE_GROUP_dbg[optional] = "1"
+PACKAGE_GROUP_dev = "${@string_set('%s-dev' % pn for pn in oe.packagegroup.active_recipes(image_features_noextras(d), d))}"
+PACKAGE_GROUP_dev[optional] = "1"
+PACKAGE_GROUP_doc = "${@string_set('%s-doc' % pn for pn in oe.packagegroup.active_recipes(image_features_noextras(d), d))}"
+PACKAGE_GROUP_doc[optional] = "1"
+
 
 RDEPENDS += "${PACKAGE_INSTALL}"
 
@@ -151,7 +178,7 @@ fakeroot do_rootfs () {
 	${@get_imagecmds(d)}
 
 	${IMAGE_POSTPROCESS_COMMAND}
-	
+
 	${MACHINE_POSTPROCESS_COMMAND}
 	${@['rm -rf ${IMAGE_ROOTFS}', ''][bool(d.getVar("IMAGE_KEEPROOTFS", 1))]}
 }
@@ -165,7 +192,7 @@ do_deploy_to () {
 }
 
 insert_feed_uris () {
-	
+
 	echo "Building feeds for [${DISTRO}].."
 
 	for line in ${FEED_URIS}
@@ -174,9 +201,9 @@ insert_feed_uris () {
 		line_clean="`echo "$line"|sed 's/^[ \t]*//;s/[ \t]*$//'`"
 		feed_name="`echo "$line_clean" | sed -n 's/\(.*\)##\(.*\)/\1/p'`"
 		feed_uri="`echo "$line_clean" | sed -n 's/\(.*\)##\(.*\)/\2/p'`"
-		
+
 		echo "Added $feed_name feed with URL $feed_uri"
-		
+
 		# insert new feed-sources
 		echo "src/gz $feed_name $feed_uri" >> ${IMAGE_ROOTFS}/etc/opkg/${feed_name}-feed.conf
 	done
@@ -198,9 +225,9 @@ log_check() {
 	for target in $*
 	do
 		lf_path="${WORKDIR}/temp/log.do_$target.${PID}"
-		
+
 		echo "log_check: Using $lf_path as logfile"
-		
+
 		if test -e "$lf_path"
 		then
 			rootfs_${IMAGE_PKGTYPE}_log_check $target $lf_path
@@ -219,7 +246,7 @@ log_check() {
 zap_root_password () {
 	sed 's%^root:[^:]*:%root::%' < ${IMAGE_ROOTFS}/etc/passwd >${IMAGE_ROOTFS}/etc/passwd.new
 	mv ${IMAGE_ROOTFS}/etc/passwd.new ${IMAGE_ROOTFS}/etc/passwd
-} 
+}
 
 create_etc_timestamp() {
 	date +%2m%2d%2H%2M%Y >${IMAGE_ROOTFS}/etc/timestamp
@@ -246,7 +273,7 @@ set_image_autologin () {
         sed -i 's%^AUTOLOGIN=\"false"%AUTOLOGIN="true"%g' ${IMAGE_ROOTFS}/etc/sysconfig/gpelogin
 }
 
-# Can be use to create /etc/timestamp during image construction to give a reasonably 
+# Can be use to create /etc/timestamp during image construction to give a reasonably
 # sane default time setting
 rootfs_update_timestamp () {
 	date "+%m%d%H%M%Y" >${IMAGE_ROOTFS}/etc/timestamp
