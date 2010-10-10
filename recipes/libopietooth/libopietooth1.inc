@@ -4,18 +4,12 @@ PRIORITY = "optional"
 DEPENDS = "libopie2"
 LICENSE = "LGPL"
 
-
 S = "${WORKDIR}/lib"
 
 inherit opie
 
-do_stage() {
-    install -d ${STAGING_INCDIR}/opietooth/
-    install -m 0644 *.h ${STAGING_INCDIR}/opietooth/
-    oe_libinstall -so libopietooth1 ${STAGING_LIBDIR}/
-}
-
 do_install() {
     oe_libinstall -so libopietooth1 ${D}${libdir}
+    install -d ${D}${includedir}/opietooth/
+    install -m 0644 *.h ${D}${includedir}/opietooth/
 }
-
