@@ -21,7 +21,7 @@ case "$1" in
 
        echo "Starting Xserver"
        . /etc/X11/xserver-common
-       xinit /etc/X11/Xsession -- `which $XSERVER` $ARGS >/tmp/x.log 2>&1
+       xinit /etc/X11/Xsession -- `which $XSERVER` $ARGS >/var/log/Xsession.log 2>&1
     fi 
   ;;
 

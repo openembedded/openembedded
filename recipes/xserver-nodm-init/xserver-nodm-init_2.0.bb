@@ -4,7 +4,7 @@ SECTION = "x11"
 PRIORITY = "optional"
 RDEPENDS_${PN} = "xserver-common (>= 1.30) xinit"
 DEFAULT_PREFERENCE = "-1"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "file://xserver-nodm"
 S = ${WORKDIR}
