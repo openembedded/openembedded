@@ -1,7 +1,7 @@
 DESCRIPTION = "An Internet printing system for Unix."
 SECTION = "console/utils"
 LICENSE = "GPL LGPL"
-DEPENDS = "gnutls dbus dbus-glib zlib fakeroot-native"
+DEPENDS = "gnutls libpng jpeg dbus dbus-glib zlib fakeroot-native"
 PROVIDES = "cups14"
 
 SRC_URI = "ftp://ftp.easysw.com/pub/cups/${PV}/cups-${PV}-source.tar.bz2;name=archive \
