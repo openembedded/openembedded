@@ -64,4 +64,4 @@ do_deploy () {
 	package_stagefile_shell ${DEPLOY_DIR_IMAGE}/${UBOOT_SYMLINK}
 }
 do_deploy[dirs] = "${S}"
-addtask deploy before do_build after do_compile
+addtask deploy before do_package_stage after do_compile
