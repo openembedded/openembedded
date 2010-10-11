@@ -26,5 +26,5 @@ do_stage() {
 	oe_libinstall -C bin -a -so libsmbclient ${STAGING_LIBDIR}
 }
 
-SRC_URI[src.md5sum] = "9e06d5e10f4ae84f7fafad75d1b4184c"
-SRC_URI[src.sha256sum] = "f333051eadf6ae88c30bd3d62eb94e9d6cf4a21912c4923d6ffddb029a42631c"
+SRC_URI[md5sum] = "9e06d5e10f4ae84f7fafad75d1b4184c"
+SRC_URI[sha256sum] = "f333051eadf6ae88c30bd3d62eb94e9d6cf4a21912c4923d6ffddb029a42631c"

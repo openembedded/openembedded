@@ -2,7 +2,7 @@ SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "readline virtual/libiconv"
 
-SRC_URI = "http://samba.org/samba/ftp/stable/samba-${PV}.tar.gz;name=src \
+SRC_URI = "http://samba.org/samba/ftp/stable/samba-${PV}.tar.gz \
            file://volatiles.03_samba \
            file://smb.conf \
            file://init \
