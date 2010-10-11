@@ -1,5 +1,5 @@
 require ${PN}.inc
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/apps/calibrate \
            ${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/settings/mediummount \
@@ -11,7 +11,7 @@ SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/apps/calibrate \
            file://nomax.patch;striplevel=3 \
            file://no-builtin-qss-startup.patch \
            file://kbdlocks-runtime.patch \
-	   file://restart-from-bindir.patch \
+           file://restart-from-bindir.patch \
            file://server-pro-old.patch \
-	   file://firstuse-path.patch \
+           file://firstuse-path.patch \
           "
