@@ -6,7 +6,7 @@ DEPENDS = "elementary edje-native"
 SECTION = "x11/games"
 
 PV = "0.1+gitr${SRCPV}"
-SRCREV = "9ad8c8c53ca15af9b8dcd533a51f0fa4b07ed997"
+SRCREV = "fb43d53ea3ca2cd3760c3d4296b6a7e96573dd17"
 
 SRC_URI = "git://gitorious.org/mokosuite2/mokojeweled.git;protocol=git"
 S = "${WORKDIR}/git"
