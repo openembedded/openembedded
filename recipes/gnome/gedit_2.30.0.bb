@@ -1,6 +1,6 @@
 DESCRIPTION = "GNOME editor"
 SECTION = "x11/gnome"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 
 DEPENDS = "gconf gnome-common glib-2.0 gtk+ gtksourceview2 iso-codes"
 RDEPENDS_${PN} += " gtksourceview2"
