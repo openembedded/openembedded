@@ -1,7 +1,7 @@
 DESCRIPTION = "GNOME bluetooth manager"
 LICENSE = "GPL"
 SECTION = "x11/gnome"
-DEPENDS = "gnome-doc-utils-native obexd obex-data-server gconf gtk+ dbus-glib libunique libnotify hal bluez4 gnome-keyring"
+DEPENDS = "gnome-doc-utils-native obexd obex-data-server gconf gtk+ dbus-glib libunique libnotify hal bluez4 gnome-keyring libx11 libxi"
 
 PR = "r2"
 
