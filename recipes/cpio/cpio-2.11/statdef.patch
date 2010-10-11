@@ -1,0 +1,16 @@
+# Avoid multiple stat definitions
+# Patch written by Naohiro Aota, taken from cpio mailing list:
+# http://lists.gnu.org/archive/html/bug-cpio/2010-03/msg00005.html
+#
+# Signed-off-by: Scott Garman <sgarman@zenlinux.com>
+
+diff -urN cpio-2.11.orig/src/filetypes.h cpio-2.11/src/filetypes.h
+--- cpio-2.11.orig/src/filetypes.h	2010-02-12 02:19:23.000000000 -0800
++++ cpio-2.11/src/filetypes.h	2010-07-23 13:17:25.000000000 -0700
+@@ -82,4 +82,6 @@
+ #define lstat stat
+ #endif
+ int lstat ();
++#ifndef stat
+ int stat ();
++#endif
