@@ -17,6 +17,10 @@ SRC_URI_append = " \
 
 MULTI_CONFIG_BASE_SUFFIX = "multi-config-"
 
+# bitbake.conf only prepends PARALLEL make in tasks called do_compile, which isn't the case for multiconfig
+# So explicitly enable it for compileconfigs in here
+EXTRA_OEMAKE = "${PARALLEL_MAKE} "
+
 do_compileconfigs () {
 
   # Compile and Install additional kernel configs if found
