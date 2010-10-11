@@ -5,10 +5,11 @@ DESCRIPTION = "OpenJade is a suite of tools for validating, \
 processing, and applying DSSSL (Document Style Semantics and \
 Specification Language) stylesheets to SGML and XML documents."
 LICENSE = "BSD"
-PR = "r2"
+PR = "r3"
 SRC_URI = "${SOURCEFORGE_MIRROR}/openjade/openjade-${PV}.tar.gz \
 	   file://configure.patch \
           "
+SRC_URI_append_virtclass-native = " file://oj-native-libosp-fix.patch"
 
 inherit autotools
 
@@ -23,7 +24,6 @@ CFLAGS_prepend = "-I${S}/include "
 
 do_configure () {
        cp config/configure.in .
-       cp config/aclocal.m4 .
        gnu-configize
        oe_runconf
 }
