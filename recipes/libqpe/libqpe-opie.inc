@@ -6,7 +6,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "uicmoc-native virtual/libqte2"
 PROVIDES = "virtual/libqpe1"
-INC_PR = "r7"
+INC_PR = "r8"
 S = "${WORKDIR}/library"
 
 inherit palmtop
@@ -24,44 +24,39 @@ do_compile() {
                  ${STAGING_INCDIR}/opie \
                  ${STAGING_INCDIR}/opie2 \
                  ${STAGING_INCDIR}/qtopia/private
-	for i in ${S}/*.h
-	do
-		install -m 0644 $i ${STAGING_INCDIR}/qpe/`basename $i`
-		install -m 0644 $i ${STAGING_INCDIR}/qtopia/`basename $i`
-		install -m 0644 $i ${STAGING_INCDIR}/qtopia/private/`basename $i`
-	done
-	for i in ${S}/backend/*.h
-	do
-		install -m 0644 $i ${STAGING_INCDIR}/qpe/`basename $i`
-		install -m 0644 $i ${STAGING_INCDIR}/qtopia/`basename $i`
-		install -m 0644 $i ${STAGING_INCDIR}/qtopia/private/`basename $i`
-	done
-	rm -f ${STAGING_INCDIR}/qtopia/*_p.h # remove private stuff out of qtopia
-	oe_runmake MOC=${STAGING_BINDIR_NATIVE}/moc UIC=${STAGING_BINDIR_NATIVE}/uic
-}
-
-do_stage() {
-	oe_libinstall -so libqpe ${STAGING_LIBDIR}
-	# include files already done during do_compile
+        for i in ${S}/*.h
+        do
+                install -m 0644 $i ${STAGING_INCDIR}/qpe/`basename $i`
+                install -m 0644 $i ${STAGING_INCDIR}/qtopia/`basename $i`
+                install -m 0644 $i ${STAGING_INCDIR}/qtopia/private/`basename $i`
+        done
+        for i in ${S}/backend/*.h
+        do
+                install -m 0644 $i ${STAGING_INCDIR}/qpe/`basename $i`
+                install -m 0644 $i ${STAGING_INCDIR}/qtopia/`basename $i`
+                install -m 0644 $i ${STAGING_INCDIR}/qtopia/private/`basename $i`
+        done
+        rm -f ${STAGING_INCDIR}/qtopia/*_p.h # remove private stuff out of qtopia
+        oe_runmake MOC=${STAGING_BINDIR_NATIVE}/moc UIC=${STAGING_BINDIR_NATIVE}/uic
 }
 
 do_install() {
-	oe_libinstall -so libqpe ${D}${libdir}
+        oe_libinstall -so libqpe ${D}${libdir}
 
         install -d ${D}${includedir}/qpe \
                ${D}${includedir}/qtopia/private
 
-	for i in ${S}/*.h
-	do
-		install -m 0644 $i ${D}${includedir}/qpe/`basename $i`
-		install -m 0644 $i ${D}${includedir}/qtopia/`basename $i`
-		install -m 0644 $i ${D}${includedir}/qtopia/private/`basename $i`
-	done
-	for i in ${S}/backend/*.h
-	do
-		install -m 0644 $i ${D}${includedir}/qpe/`basename $i`
-		install -m 0644 $i ${D}${includedir}/qtopia/`basename $i`
-		install -m 0644 $i ${D}${includedir}/qtopia/private/`basename $i`
-	done
-	rm -f ${D}${includedir}/qtopia/*_p.h # remove private stuff out of qtopia
+        for i in ${S}/*.h
+        do
+                install -m 0644 $i ${D}${includedir}/qpe/`basename $i`
+                install -m 0644 $i ${D}${includedir}/qtopia/`basename $i`
+                install -m 0644 $i ${D}${includedir}/qtopia/private/`basename $i`
+        done
+        for i in ${S}/backend/*.h
+        do
+                install -m 0644 $i ${D}${includedir}/qpe/`basename $i`
+                install -m 0644 $i ${D}${includedir}/qtopia/`basename $i`
+                install -m 0644 $i ${D}${includedir}/qtopia/private/`basename $i`
+        done
+        rm -f ${D}${includedir}/qtopia/*_p.h # remove private stuff out of qtopia
 }

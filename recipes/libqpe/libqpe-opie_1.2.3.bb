@@ -9,4 +9,3 @@ SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/library \
            file://citytime-path.patch \
            file://fix-sd-card-path.patch \
           "
-
