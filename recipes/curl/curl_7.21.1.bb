@@ -1,11 +1,19 @@
 require curl-common.inc
 require curl-target.inc
 
-PR = "${INC_PR}"
+PR = "${INC_PR}.1"
+
+DEPENDS_virtclass-native = "zlib-native"
+CURL_FEATURES_virtclass-native = "zlib,cookies,crypto-auth,dict,file,ftp,http,telnet,tftp"
+
+DEPENDS_virtclass-nativesdk = "zlib-sdk"
+DEPENDS_virtclass-sdk = "zlib-sdk"
+EXTRA_OECONF_virtclass-sdk = " --without-gnutls "
+EXTRA_OECONF_virtclass-nativesdk = " --without-gnutls "
 
 SRC_URI = "http://curl.haxx.se/download/curl-${PV}.tar.bz2 \
            file://off_t_abi_fix.patch;striplevel=0"
 
-BBCLASSEXTEND = "native nativesdk"
+BBCLASSEXTEND = "native nativesdk sdk"
 SRC_URI[md5sum] = "eafde5b933bce1c1dca82d1054c8d967"
 SRC_URI[sha256sum] = "653b3214005c778a8c642af4e5dea46c74f7bf51017a568bb8725ea9eda73643"
