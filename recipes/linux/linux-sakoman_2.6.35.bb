@@ -1,3 +1,5 @@
+CORTEXA8FIXUP = "no"
+
 require linux.inc
 
 DESCRIPTION = "Linux kernel for OMAP processors"

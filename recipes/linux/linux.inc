@@ -52,6 +52,8 @@ KERNEL_DEVICETREE_xilinx-ml507 = "arch/${ARCH}/boot/dts/virtex440-ml507.dts"
 
 KERNEL_DEVICETREE_FLAGS = "-R 8 -S 0x3000"
 
+CORTEXA8FIXUP ?= "yes"
+
 python __anonymous () {
 
     import bb
@@ -108,7 +110,7 @@ do_configure_prepend() {
         fi
 
         # Enable thumb2 fixup for specific issue in angstrom toolchains when used on A8 r1p[012] silicon
-        if [ "${DISTRO_NAME}" = "Angstrom" ] ; then
+        if [ "${DISTRO_NAME}" = "Angstrom" -o "${CORTEXA8FIXUP}" = "yes"] ; then
             sed -i -e /CONFIG_ARM_ERRATA_430973/d ${WORKDIR}/defconfig
             echo "CONFIG_ARM_ERRATA_430973=y" >> ${S}/.config
         fi
