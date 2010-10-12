@@ -4,6 +4,8 @@ EXTRA_OEMAKE = ""
 
 export STAGING_INCDIR
 export STAGING_LIBDIR
+# libtool 2.4 does not export with LDFLAGS but distutils need it
+LDFLAGS_prepend = "-L${STAGING_LIBDIR} "
 
 PACKAGES = "${PN}-dev ${PN}-dbg ${PN}-doc ${PN}"
 
