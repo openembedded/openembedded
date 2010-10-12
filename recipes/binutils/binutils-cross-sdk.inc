@@ -8,6 +8,9 @@ EXTRA_OECONF = "--with-sysroot=${prefix}/${TARGET_SYS} \
 
 do_install () {
         autotools_do_install
+        # delete the dir index it should be generated after installing the package
+        # for real
+        rm -rf ${D}${infodir}/dir
 
 	# Fix the ${prefix}/${TARGET_SYS}/bin/* files to be symlinks
 	rm ${D}${prefix}/${TARGET_SYS}/bin/.debug -Rf
