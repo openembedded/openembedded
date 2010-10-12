@@ -13,10 +13,6 @@ FILES_libltdl = "${libdir}/libltdl.so.*"
 FILES_libltdl-dev = "${libdir}/libltdl.* ${includedir}/ltdl.h"
 FILES_libltdl-dbg = "${libdir}/.debug/"
 
-inherit autotools
-
-EXTRA_AUTORECONF = "--exclude=libtoolize"
-
 do_stage () {
        install -d ${STAGING_INCDIR}/libltdl
        install -m 0644 libltdl/ltdl.h ${STAGING_INCDIR}/

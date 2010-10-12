@@ -6,10 +6,19 @@ HOMEPAGE = "http://www.gnu.org/software/libtool/libtool.html"
 LICENSE = "GPL"
 SECTION = "devel"
 
-INC_PR = "r25"
+INC_PR = "r26"
 
 FILESPATHPKG=. "libtool-${PV}:"
 
+# this SRC_URI is mainly for libtool 2.4 but all older
+# versions override SRC_URI so its a safe thing and at same
+# time it gives us more control over 2.4 recipes
+
+SRC_URI = "${GNU_MIRROR}/libtool/libtool-${PV}.tar.gz \
+           file://trailingslash.patch \
+           file://prefix-manpage-fix.patch \
+	   file://resolve-sysroot.patch \
+          "
 do_configure_prepend () {
 	if ${@['true', 'false'][bb.data.inherits_class('native', d) or bb.data.inherits_class('sdk', d) or (bb.data.getVar('PN', d, 1) == 'libtool-cross')]}
 	then
@@ -19,3 +28,11 @@ do_configure_prepend () {
 		export ac_cv_path_FGREP="${ac_cv_path_FGREP=${base_bindir}/grep -F}"
 	fi
 }
+do_compile_prepend () {
+        # Sometimes this file doesn't get rebuilt, force the issue
+        rm -f ${S}/libltdl/config/ltmain.sh
+        make libltdl/config/ltmain.sh
+}
+
+inherit autotools
+EXTRA_AUTORECONF = "--exclude=libtoolize"

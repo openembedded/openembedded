@@ -13,10 +13,6 @@ FILES_libltdl = "${libdir}/libltdl.so.*"
 FILES_libltdl-dev = "${libdir}/libltdl.* ${includedir}/ltdl.h"
 FILES_libltdl-dbg += "${libdir}/.debug/"
 
-inherit autotools
-
-EXTRA_AUTORECONF = "--exclude=libtoolize"
-
 do_configure () {
 	find ${S} -name acinclude.m4 | for m4 in `cat`; do
 		cat ${S}/libtool.m4 ${S}/ltdl.m4 > $m4
