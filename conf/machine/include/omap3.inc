@@ -1,4 +1,5 @@
 SOC_FAMILY = "omap3"
+TARGET_ARCH = "arm"
 
 require conf/machine/include/tune-cortexa8.inc
 PREFERRED_PROVIDER_virtual/kernel = "linux-omap"
