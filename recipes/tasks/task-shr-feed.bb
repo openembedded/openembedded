@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r78"
+PR = "r79"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -50,6 +50,7 @@ RDEPENDS_${PN} += "\
 		openmoko-agpsui \
 		openvpn \
 		pyphonelog \
+		ffphonelog \
 #		shr-config \
 		shr-today \
 		shr-theme-neo \
@@ -309,6 +310,7 @@ RDEPENDS_${PN} += "\
 		galculator \
 		xterm \
 		ca-certificates \
+		inkspill \
 "
 
 # this is only usefull on gta02 and on other devices it's trying to pull mesa-dri (not respecting DEFAULT_PROVIDER for virtual/libgl)
