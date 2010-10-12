@@ -2,9 +2,7 @@ DESCRIPTION = "User space DMA module for DM365"
 SECTION = "devel"
 LICENSE = "GPLv2"
 
-BASE_SRC_URI = "http://install.source.dir.local"
-
-SRC_URI = "${BASE_SRC_URI}/dm365mm_${PV}.tar.gz;name=dm365mmtarball"
+SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/dvsdk/DVSDK_3_10/latest/exports/dm365mm_${PV}.tar.gz;name=dm365mmtarball"
 
 S = "${WORKDIR}/dm365mm_${PV}"
 
