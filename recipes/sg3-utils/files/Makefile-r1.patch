@@ -57,7 +57,7 @@ Index: sg3-utils-1.24/Makefile
  
  libsgutils.la: sg_lib.lo sg_cmds_basic.lo sg_cmds_extra.lo sg_pt_linux.lo
 -	libtool --mode=link $(LD) -o libsgutils.la sg_lib.lo sg_cmds_basic.lo \
-+	$(LIBTOOL) $(LT_EXTRA) --mode=link $(LD) -o libsgutils.la sg_lib.lo sg_cmds_basic.lo \
++	$(LIBTOOL) $(LT_EXTRA) --mode=link $(LD) -o libsgutils.la $(LDFLAGS) sg_lib.lo sg_cmds_basic.lo \
  	sg_cmds_extra.lo sg_pt_linux.lo -rpath $(LIBDIR) \
  	-version-info $(LIB_VINFO)
  
