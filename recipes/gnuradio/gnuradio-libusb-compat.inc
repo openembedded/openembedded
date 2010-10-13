@@ -5,7 +5,7 @@ LICENSE = "GPLv3"
 DEPENDS = "virtual/libusb0 guile-native fftwf python virtual/libsdl alsa-lib jack boost cppunit sdcc-native swig-native python-numpy"
 INC_PR = "r8"
 
-inherit distutils-base autotools autotools pkgconfig
+inherit distutils-base autotools pkgconfig
 
 export BUILD_SYS
 export HOST_SYS=${MULTIMACH_TARGET_SYS}
@@ -39,6 +39,7 @@ do_buildlibusb() {
     sed -e 's/AC_LANG_CPLUSPLUS/AC_PROG_CXX/' -i configure.in
     sed -e s:tests::g -i Makefile.am
     sed -e s:tests::g -i Makefile.in || true
+
     ./configure --build=${BUILD_SYS} --host=${HOST_SYS} --target=${TARGET_SYS} --prefix=${prefix} --exec_prefix=${exec_prefix} --bindir=${bindir} --sbindir=${sbindir} --libexecdir=${libexecdir} --datadir=${datadir} --sysconfdir=${sysconfdir} --sharedstatedir=${sharedstatedir} --localstatedir=${localstatedir} --libdir=${libdir} --includedir=${includedir} --oldincludedir=${oldincludedir} --infodir=${infodir} --mandir=${mandir} --disable-shared --disable-build-docs
     make CFLAGS='-fPIC -DPIC'
     mv .libs/libusb.a .libs/libusb-gnur.a || true

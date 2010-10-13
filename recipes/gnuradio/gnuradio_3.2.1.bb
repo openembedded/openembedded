@@ -2,7 +2,7 @@ require gnuradio-libusb-compat.inc
 
 DEPENDS += " gsl guile-native"
 
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 S = "${WORKDIR}/gnuradio-3.2.1"
 
@@ -11,7 +11,8 @@ EXTRA_OECONF += "--with-boost=${STAGING_DIR_TARGET}/usr CXXFLAGS=-DBOOST_SP_USE_
 SRC_URI = "ftp://ftp.gnu.org/gnu/gnuradio/gnuradio-3.2.1.tar.gz;name=archive \
     file://no-usrp2.patch \
     file://gnuradio-neon.patch;striplevel=0 \
-     ${SOURCEFORGE_MIRROR}/libusb/libusb-0.1.12.tar.gz;name=libusb \
+    ${SOURCEFORGE_MIRROR}/libusb/libusb-0.1.12.tar.gz;name=libusb \
+    ${@['','file://libusb-libtool-2.4-update.patch;patchdir=../libusb-0.1.12'][bb.data.getVar('LIBTOOL_HAS_SYSROOT', d, 1) == 'yes']} \
 "
 
 do_compile_append() {
