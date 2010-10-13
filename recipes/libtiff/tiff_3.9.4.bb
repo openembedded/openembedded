@@ -2,15 +2,17 @@ DESCRIPTION = "This software provides support for the Tag Image File Format (TIF
 LICENSE = "${PN}"
 HOMEPAGE = "http://www.remotesensing.org/libtiff/"
 DEPENDS = "zlib jpeg lzo"
-PV = "3.9.2+4.0.0beta5"
+PV = "3.9.4+4.0.0beta6"
 
-PR = "r5"
+PR = "r0"
 
-SRC_URI = "http://download.osgeo.org/libtiff/tiff-4.0.0beta5.tar.gz;name=tiff400beta5targz"
-SRC_URI[tiff400beta5targz.md5sum] = "a0a83604e38a299fae9f0b1a39c04870"
-SRC_URI[tiff400beta5targz.sha256sum] = "64b61567782643a841e33a8d031d0d6a9b3e436108829e2e947183f8dcdc6ec7"
+SRC_URI = "http://download.osgeo.org/libtiff/tiff-4.0.0beta6.tar.gz \
+	   file://tiff-lp589145.diff;striplevel=0 \
+	   file://tiff-ojpeg-null-stripbytecount.diff;striplevel=0"
+SRC_URI[md5sum] = "6a1e51841a5a5062cc381e34a48122a0"
+SRC_URI[sha256sum] = "de016175742bcdd0cd6f326dd2e7bbc7154437d7bb09976ad4789016065061e6"
 
-S = "${WORKDIR}/tiff-4.0.0beta5"
+S = "${WORKDIR}/tiff-4.0.0beta6"
 
 inherit autotools
 
