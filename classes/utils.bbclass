@@ -57,50 +57,23 @@ def is_machine_specific(d):
         if any(urldata.localpath.startswith(mp + "/") for mp in machinepaths):
             return True
 
-def subprocess_setup():
-   import signal
-   # Python installs a SIGPIPE handler by default. This is usually not what
-   # non-Python subprocesses expect.
-   signal.signal(signal.SIGPIPE, signal.SIG_DFL)
+def oe_popen_env(d):
+    env = d.getVar("__oe_popen_env", False)
+    if env is None:
+        env = {}
+        for v in d.keys():
+            if d.getVarFlag(v, "export"):
+                env[v] = d.getVar(v, True) or ""
+        d.setVar("__oe_popen_env", env)
+    return env
 
 def oe_run(d, cmd, **kwargs):
-   """Convenience function to run a command and return its output, raising an
-   exception when the command fails"""
-   from subprocess import PIPE
-
-   options = {
-      "stdout": PIPE,
-      "stderr": PIPE,
-      "shell": True,
-   }
-   options.update(kwargs)
-   pipe = oe_popen(d, cmd, **options)
-   stdout, stderr = pipe.communicate()
-   if pipe.returncode != 0:
-      raise RuntimeError("Execution of '%s' failed with '%s':\n%s" %
-                         (cmd, pipe.returncode, stderr))
-   return stdout
+    kwargs["env"] = oe_popen_env(d)
+    return oe.process.run(cmd, **kwargs)
 
 def oe_popen(d, cmd, **kwargs):
-    """ Convenience function to call out processes with our exported
-    variables in the environment.
-    """
-    from subprocess import Popen
-
-    if kwargs.get("env") is None:
-        env = d.getVar("__oe_popen_env", False)
-        if env is None:
-            env = {}
-            for v in d.keys():
-                if d.getVarFlag(v, "export"):
-                    env[v] = d.getVar(v, True) or ""
-            d.setVar("__oe_popen_env", env)
-        kwargs["env"] = env
-
-    kwargs["close_fds"] = True
-    kwargs["preexec_fn"] = subprocess_setup
-
-    return Popen(cmd, **kwargs)
+    kwargs["env"] = oe_popen_env(d)
+    return oe.process.popen(cmd, **kwargs)
 
 def oe_system(d, cmd, **kwargs):
     """ Popen based version of os.system. """
