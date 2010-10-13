@@ -1,4 +1,6 @@
 require libgee.inc
+
+PR = "${INC_PR}.0"
 PE = "1"
 
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/libgee/0.5/${BPN}-${PV}.tar.bz2"

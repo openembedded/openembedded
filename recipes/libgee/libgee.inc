@@ -5,6 +5,7 @@ SECTION = "libs"
 DEPENDS = "glib-2.0 gobject-introspection"
 BBCLASSEXTEND = "native"
 LICENSE = "LGPL"
+INC_PR = "r4"
 PE = "1"
 
 inherit autotools vala
