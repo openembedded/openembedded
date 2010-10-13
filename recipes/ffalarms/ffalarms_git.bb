@@ -8,9 +8,10 @@ DEPENDS = "elementary libeflvala libical"
 RDEPENDS_${PN} = "atd alsa-utils-amixer ttf-dejavu-sans libical"
 RSUGGESTS_${PN} = "mplayer alsa-utils-aplay frameworkd"
 PV = "0.4+gitr${SRCPV}"
-PR = "r6"
+PR = "r7"
 
-SRC_URI = "git://git.shr-project.org/repo/ffalarms.git;protocol=http;branch=master"
+SRC_URI = "git://git.shr-project.org/repo/ffalarms.git;protocol=http;branch=master \
+           file://ical.timezone.patch"
 
 SRCREV = "4ff7daa50ca4f7093d4c331d0274d95f3171c4c6"
 S = "${WORKDIR}/git"
