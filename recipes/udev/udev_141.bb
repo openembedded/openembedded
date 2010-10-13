@@ -7,7 +7,7 @@ DEFAULT_PREFERENCE = "-1"
 
 require udev.inc
 
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 SRC_URI += "file://mount.blacklist \
 	    file://run.rules \
@@ -100,6 +100,11 @@ do_install_append_hipox() {
 
 # Create the cache after checkroot has run
 pkg_postinst_udev_append() {
+if test "x$D" != "x"; then
+	OPT="-r $D"
+else
+	OPT="-s"
+fi
 update-rc.d $OPT udev-cache start 12 S .
 
 if [ -d $D/lib/udev/rules.d ] ; then

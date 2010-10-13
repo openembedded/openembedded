@@ -3,7 +3,7 @@ DESCRIPTION = "udev is a daemon which dynamically creates and removes device nod
 the hotplug package and requires a kernel not older than 2.6.12."
 LICENSE = "GPLv2+"
 
-PR = "r17"
+PR = "r18"
 
 # Untested
 DEFAULT_PREFERENCE = "-1"
@@ -147,6 +147,11 @@ do_install_append_bug() {
 
 # Create the cache after checkroot has run
 pkg_postinst_udev_append() {
+	if test "x$D" != "x"; then
+		OPT="-r $D"
+	else
+		OPT="-s"
+	fi
 	update-rc.d $OPT udev-cache start 12 S .
 }
 
