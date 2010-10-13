@@ -3,7 +3,8 @@ LICENSE = "GPLv3"
 
 inherit sdk
 
-DEPENDS = "ncurses-sdk zlib-sdk flex-native"
+# Since we statically link these libraries, we don't dep on the -sdk version
+DEPENDS = "ncurses-native zlib-native expat-native flex-native"
 EXTRA_OEMAKE = "'SUBDIRS=intl mmalloc libiberty opcodes bfd sim gdb etc utils' LDFLAGS='${BUILD_LDFLAGS}'"
 
 do_configure_append () {
