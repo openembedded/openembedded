@@ -6,7 +6,8 @@
 # This is most useful in concert with srctree.bbclass.
 
 
-GITVER = "${@get_git_pv('${S}', d)}"
+GIT_TAGADJUST = "version"
+GITVER = "${@get_git_pv('${S}', d, tagadjust=lambda version:${GIT_TAGADJUST})}"
 
 def get_git_pv(path, d, tagadjust=None):
     import os
