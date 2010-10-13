@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r64"
+PR ="r65"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -254,6 +254,7 @@ PV_da850-omapl138-evm      = "2009.11+${PR}+gitr${SRCREV}"
 # hawkboard - master branch (hawk still .07beta)
 
 SRC_URI_hawkboard          = "git://arago-project.org/git/people/sekhar/u-boot-omapl1.git;protocol=git;branch=master"
+SRC_URI_hawkboard         += "file://dont-inline-weak-symbols.patch"
 SRCREV_hawkboard           = "0d291f2f255e6d66a78b3dc2445362a96ae39a57"
 PV_hawkboard               = "2009.08+gitr${SRCREV}"
 
