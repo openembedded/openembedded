@@ -1,0 +1,50 @@
+From b0f67cc9a4fa269db76d47ae968ed4b0341e9e59 Mon Sep 17 00:00:00 2001
+From: Asheesh Bhardwaj <asheesh@lab1.dmlab>
+Date: Tue, 30 Mar 2010 11:15:49 -0500
+Subject: [PATCH 4/7] Patch for vpif capture driver to get the right size image for the MMAP buffers
+
+---
+ drivers/media/video/davinci/vpif_capture.c |   13 ++++---------
+ 1 files changed, 4 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/media/video/davinci/vpif_capture.c b/drivers/media/video/davinci/vpif_capture.c
+index 9ba015d..d18a378 100644
+--- a/drivers/media/video/davinci/vpif_capture.c
++++ b/drivers/media/video/davinci/vpif_capture.c
+@@ -142,7 +142,7 @@ static int vpif_buffer_prepare(struct videobuf_queue *q,
+ 	if (VIDEOBUF_NEEDS_INIT == vb->state) {
+ 		vb->width = common->width;
+ 		vb->height = common->height;
+-		vb->size = vb->width * vb->height;
++		vb->size = common->fmt.fmt.pix.sizeimage;
+ 		vb->field = field;
+ 
+ 		ret = videobuf_iolock(q, vb, NULL);
+@@ -469,10 +469,8 @@ static void vpif_calculate_offsets(struct channel_obj *ch)
+ 	} else
+ 		vid_ch->buf_field = common->fmt.fmt.pix.field;
+ 
+-	if (V4L2_MEMORY_USERPTR == common->memory)
+-		sizeimage = common->fmt.fmt.pix.sizeimage;
+-	else
+-		sizeimage = config_params.channel_bufsize[ch->channel_id];
++	/*sizeimage is same for both user and MMAP allocated buffers*/
++        sizeimage = common->fmt.fmt.pix.sizeimage;
+ 
+ 	hpitch = common->fmt.fmt.pix.bytesperline;
+ 	vpitch = sizeimage / (hpitch * 2);
+@@ -630,10 +628,7 @@ static int vpif_check_format(struct channel_obj *ch,
+ 		goto exit;
+ 	}
+ 
+-	if (V4L2_MEMORY_USERPTR == common->memory)
+-		sizeimage = pixfmt->sizeimage;
+-	else
+-		sizeimage = config_params.channel_bufsize[ch->channel_id];
++	sizeimage = pixfmt->sizeimage;
+ 
+ 	vpitch = sizeimage / (hpitch * 2);
+ 
+-- 
+1.6.3.3
+

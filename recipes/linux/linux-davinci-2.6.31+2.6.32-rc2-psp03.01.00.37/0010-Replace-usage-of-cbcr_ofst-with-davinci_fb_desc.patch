@@ -1,0 +1,279 @@
+From aec8873c0aa8b3870dd1bf972319c33c7e92f9fe Mon Sep 17 00:00:00 2001
+From: Don Darling <don.osc2@gmail.com>
+Date: Wed, 11 Aug 2010 12:59:05 -0500
+Subject: [PATCH 2/3] Replace usage of cbcr_ofst with davinci_fb_desc.
+
+The value passed to VIDIOC_S_COFST is currently stored in a cbcr_ofst value in
+the display manager, and is passed directly to lower OSD levels by adding a
+cbcr_ofst parameter where needed.
+
+This change generalizes that infrastructure by creating a new davinci_fb_desc
+structure to contain frame buffer information such as cbcr_ofst, and the
+existing infrastructure that passes information the the lower OSD levels was
+updated to pass this instead.
+
+This allows re-use of this infrastructure by new ioctls to communicate
+information about the frame buffer with minimal modifications.
+---
+ drivers/media/video/davinci/davinci_display.c |   10 +++++-----
+ drivers/media/video/davinci/davinci_osd.c     |   12 ++++++------
+ drivers/video/davincifb.c                     |   22 ++++++++++------------
+ include/media/davinci/davinci_display.h       |    4 ++--
+ include/video/davinci_osd.h                   |   16 +++++++++++++++-
+ 5 files changed, 38 insertions(+), 26 deletions(-)
+
+diff --git a/drivers/media/video/davinci/davinci_display.c b/drivers/media/video/davinci/davinci_display.c
+index 5bff18a..bb3dd77 100644
+--- a/drivers/media/video/davinci/davinci_display.c
++++ b/drivers/media/video/davinci/davinci_display.c
+@@ -339,7 +339,7 @@ static void davinci_display_isr(unsigned int event, void *dispObj)
+ 			addr = videobuf_to_dma_contig(layer->nextFrm);
+ 			davinci_disp_start_layer(layer->layer_info.id,
+ 						 addr,
+-						 davinci_dm.cbcr_ofst);
++						 &davinci_dm.fb_desc);
+ 		} else {
+ 			/* Interlaced mode
+ 			 * If it is first interrupt, ignore it
+@@ -415,7 +415,7 @@ static void davinci_display_isr(unsigned int event, void *dispObj)
+ 				addr = videobuf_to_dma_contig(layer->nextFrm);
+ 				davinci_disp_start_layer(layer->layer_info.id,
+ 							addr,
+-							davinci_dm.cbcr_ofst);
++							&davinci_dm.fb_desc);
+ 			}
+ 		}
+ 	}
+@@ -442,7 +442,7 @@ static int davinci_set_video_display_params(struct display_obj *layer)
+ 	/* Set address in the display registers */
+ 	davinci_disp_start_layer(layer->layer_info.id,
+ 				 addr,
+-				 davinci_dm.cbcr_ofst);
++				 &davinci_dm.fb_desc);
+ 	davinci_disp_enable_layer(layer->layer_info.id, 0);
+ 	/* Enable the window */
+ 	layer->layer_info.enable = 1;
+@@ -1622,7 +1622,7 @@ static long vpbe_param_handler(struct file *file, void *priv,
+ 
+ 	switch (cmd) {
+ 	case VIDIOC_S_COFST:
+-		davinci_dm.cbcr_ofst = *((unsigned long *) param);
++		davinci_dm.fb_desc.cbcr_ofst = *((unsigned long *) param);
+ 		mutex_unlock(&davinci_dm.lock);
+ 		break;
+ 	default:
+@@ -1844,7 +1844,7 @@ static int davinci_release(struct file *filep)
+ 	/* unlock mutex on layer object */
+ 	mutex_unlock(&davinci_dm.lock);
+ 
+-	davinci_dm.cbcr_ofst = 0;
++	davinci_dm.fb_desc.cbcr_ofst = 0;
+ 
+ 	dev_dbg(davinci_display_dev, "</davinci_release>\n");
+ 	return 0;
+diff --git a/drivers/media/video/davinci/davinci_osd.c b/drivers/media/video/davinci/davinci_osd.c
+index 2a80125..b8095af 100644
+--- a/drivers/media/video/davinci/davinci_osd.c
++++ b/drivers/media/video/davinci/davinci_osd.c
+@@ -1401,7 +1401,7 @@ EXPORT_SYMBOL(davinci_disp_enable_layer);
+ 
+ static void _davinci_disp_start_layer(enum davinci_disp_layer layer,
+ 					unsigned long fb_base_phys,
+-					unsigned long cbcr_ofst)
++					struct davinci_fb_desc *fb_desc)
+ {
+ 	if (cpu_is_davinci_dm644x()) {
+ 		switch (layer) {
+@@ -1461,8 +1461,8 @@ static void _davinci_disp_start_layer(enum davinci_disp_layer layer,
+ 		unsigned long fb_offset_32, cbcr_offset_32;
+ 
+ 		fb_offset_32 = fb_base_phys - DAVINCI_DDR_BASE;
+-		if (cbcr_ofst)
+-			cbcr_offset_32 = cbcr_ofst;
++		if (fb_desc && fb_desc->cbcr_ofst)
++			cbcr_offset_32 = fb_desc->cbcr_ofst;
+ 		else
+ 			cbcr_offset_32 = win->lconfig.line_length *
+ 					 win->lconfig.ysize;
+@@ -1562,7 +1562,7 @@ static void _davinci_disp_start_layer(enum davinci_disp_layer layer,
+ 
+ void davinci_disp_start_layer(enum davinci_disp_layer layer,
+ 			      unsigned long fb_base_phys,
+-			      unsigned long cbcr_ofst)
++			      struct davinci_fb_desc *fb_desc)
+ {
+ 	struct davinci_window_state *win = &osd->win[layer];
+ 	unsigned long flags;
+@@ -1570,7 +1570,7 @@ void davinci_disp_start_layer(enum davinci_disp_layer layer,
+ 	spin_lock_irqsave(&osd->lock, flags);
+ 
+ 	win->fb_base_phys = fb_base_phys & ~0x1F;
+-	_davinci_disp_start_layer(layer, fb_base_phys, cbcr_ofst);
++	_davinci_disp_start_layer(layer, fb_base_phys, fb_desc);
+ 
+ 	if (layer == WIN_VID0) {
+ 		osd->pingpong =
+@@ -2212,7 +2212,7 @@ void davinci_disp_init_layer(enum davinci_disp_layer layer)
+ 	_davinci_disp_set_zoom(layer, win->h_zoom, win->v_zoom);
+ 
+ 	win->fb_base_phys = 0;
+-	_davinci_disp_start_layer(layer, win->fb_base_phys, 0);
++	_davinci_disp_start_layer(layer, win->fb_base_phys, NULL);
+ 
+ 	win->lconfig.line_length = 0;
+ 	win->lconfig.xsize = 0;
+diff --git a/drivers/video/davincifb.c b/drivers/video/davincifb.c
+index f8555fb..9ff3d63 100644
+--- a/drivers/video/davincifb.c
++++ b/drivers/video/davincifb.c
+@@ -95,8 +95,6 @@ static enum davinci_osd_layer fb_info_to_osd_enum(const struct fb_info *info)
+ #define is_display_interlaced(mode) (((mode)->vmode & FB_VMODE_INTERLACED) \
+ 	== FB_VMODE_INTERLACED)
+ 
+-static unsigned int fb_cbcr_ofst;
+-
+ /*
+  * Convert an fb_var_screeninfo struct to a Davinci display layer configuration.
+  * lconfig->xpos, lconfig->ypos, and lconfig->line_length are not modified
+@@ -577,7 +575,7 @@ static void davincifb_vsync_callback(unsigned event, void *arg)
+ 			davinci_disp_start_layer(dm->win[WIN_OSD0].layer,
+ 						 dm->win[WIN_OSD0].
+ 						 sdram_address,
+-						 fb_cbcr_ofst);
++						 NULL);
+ 			dm->win[WIN_OSD0].sdram_address = 0;
+ 		}
+ 		addr = 0;
+@@ -586,7 +584,7 @@ static void davincifb_vsync_callback(unsigned event, void *arg)
+ 			davinci_disp_start_layer(dm->win[WIN_OSD1].layer,
+ 						 dm->win[WIN_OSD1].
+ 						 sdram_address,
+-						 fb_cbcr_ofst);
++						 NULL);
+ 			dm->win[WIN_OSD1].sdram_address = 0;
+ 		}
+ 		addr = 0;
+@@ -595,7 +593,7 @@ static void davincifb_vsync_callback(unsigned event, void *arg)
+ 			davinci_disp_start_layer(dm->win[WIN_VID0].layer,
+ 						 dm->win[WIN_VID0].
+ 						 sdram_address,
+-						 fb_cbcr_ofst);
++						 NULL);
+ 			dm->win[WIN_VID0].sdram_address = 0;
+ 		}
+ 		addr = 0;
+@@ -604,7 +602,7 @@ static void davincifb_vsync_callback(unsigned event, void *arg)
+ 			davinci_disp_start_layer(dm->win[WIN_VID1].layer,
+ 						 dm->win[WIN_VID1].
+ 						 sdram_address,
+-						 fb_cbcr_ofst);
++						 NULL);
+ 			dm->win[WIN_VID1].sdram_address = 0;
+ 		}
+ 		++dm->vsync_cnt;
+@@ -618,7 +616,7 @@ static void davincifb_vsync_callback(unsigned event, void *arg)
+ 							 layer,
+ 							 dm->win[WIN_OSD0].
+ 							 sdram_address,
+-							 fb_cbcr_ofst);
++							 NULL);
+ 				dm->win[WIN_OSD0].sdram_address = 0;
+ 			}
+ 			addr = 0;
+@@ -628,7 +626,7 @@ static void davincifb_vsync_callback(unsigned event, void *arg)
+ 							 layer,
+ 							 dm->win[WIN_OSD1].
+ 							 sdram_address,
+-							 fb_cbcr_ofst);
++							 NULL);
+ 				dm->win[WIN_OSD1].sdram_address = 0;
+ 			}
+ 			addr = 0;
+@@ -638,7 +636,7 @@ static void davincifb_vsync_callback(unsigned event, void *arg)
+ 							 layer,
+ 							 dm->win[WIN_VID0].
+ 							 sdram_address,
+-							 fb_cbcr_ofst);
++							 NULL);
+ 				dm->win[WIN_VID0].sdram_address = 0;
+ 			}
+ 			addr = 0;
+@@ -648,7 +646,7 @@ static void davincifb_vsync_callback(unsigned event, void *arg)
+ 							 layer,
+ 							 dm->win[WIN_VID1].
+ 							 sdram_address,
+-							 fb_cbcr_ofst);
++							 NULL);
+ 				dm->win[WIN_VID1].sdram_address = 0;
+ 			}
+ 		} else {
+@@ -1679,7 +1677,7 @@ static int davincifb_set_par(struct fb_info *info)
+ 		+ var->yoffset * info->fix.line_length;
+ 	}
+ 	davinci_disp_set_layer_config(win->layer, &lconfig);
+-	davinci_disp_start_layer(win->layer, start, fb_cbcr_ofst);
++	davinci_disp_start_layer(win->layer, start, NULL);
+ 	if (win->display_window)
+ 		davinci_disp_enable_layer(win->layer, 0);
+ 
+@@ -1805,7 +1803,7 @@ davincifb_pan_display(struct fb_var_screeninfo *var, struct fb_info *info)
+ 	    var->yoffset * info->fix.line_length;
+ 	}
+ 	if (davinci_disp_is_second_field()) {
+-		davinci_disp_start_layer(win->layer, start, fb_cbcr_ofst);
++		davinci_disp_start_layer(win->layer, start, NULL);
+ 	} else
+ 		win->sdram_address = start;
+ 
+diff --git a/include/media/davinci/davinci_display.h b/include/media/davinci/davinci_display.h
+index e149624..4822405 100644
+--- a/include/media/davinci/davinci_display.h
++++ b/include/media/davinci/davinci_display.h
+@@ -175,8 +175,8 @@ struct davinci_display {
+ 	struct mutex lock;
+ 	/* Display mode information */
+ 	struct vid_enc_mode_info mode_info;
+-	/* C-Plane offset from start of y-plane */
+-	unsigned int cbcr_ofst;
++	/* Frame buffer information */
++	struct davinci_fb_desc fb_desc;
+ 	/* interrupt callback */
+ 	struct davinci_disp_callback event_callback;
+ 	struct display_obj *dev[DAVINCI_DISPLAY_MAX_DEVICES];
+diff --git a/include/video/davinci_osd.h b/include/video/davinci_osd.h
+index 6793f5e..7c4af2c 100644
+--- a/include/video/davinci_osd.h
++++ b/include/video/davinci_osd.h
+@@ -305,6 +305,20 @@ struct davinci_layer_config {
+ 	int interlaced;
+ };
+ 
++
++/**
++ * struct davinci_fb_desc
++ * @cbcr_ofst: offset of the cbcr data from the beginning of the frame buffer
++ *
++ * Description:
++ * A structure describing additional information about the frame buffers being
++ * passed to the display.  This may be needed when the buffers have a
++ * non-standard layout.
++ */
++struct davinci_fb_desc {
++    unsigned long cbcr_ofst;
++};
++
+ /**
+  * davinci_disp_request_layer
+  * @layer: layer id
+@@ -444,7 +458,7 @@ void davinci_disp_get_layer_config(enum davinci_disp_layer layer,
+  */
+ void davinci_disp_start_layer(enum davinci_disp_layer layer,
+ 			      unsigned long fb_base_phys,
+-			      unsigned long cbcr_ofst);
++			      struct davinci_fb_desc *fb_desc);
+ 
+ /**
+  * davinci_disp_set_interpolation_filter
+-- 
+1.7.0.4
+

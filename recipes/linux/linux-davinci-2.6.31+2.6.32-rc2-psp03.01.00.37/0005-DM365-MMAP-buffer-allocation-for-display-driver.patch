@@ -1,0 +1,165 @@
+From fcf7d6523e2f1dba5fb1ec6454cf78a86a7e77a7 Mon Sep 17 00:00:00 2001
+From: Asheesh Bhardwaj <asheesh@lab1.dmlab>
+Date: Thu, 8 Apr 2010 18:35:00 -0500
+Subject: [PATCH 5/7] DM365 MMAP buffer allocation for display driver
+
+---
+ drivers/media/video/davinci/davinci_display.c |   79 ++++++++++++++++++++++++-
+ include/media/davinci/davinci_display.h       |    1 +
+ 2 files changed, 77 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/media/video/davinci/davinci_display.c b/drivers/media/video/davinci/davinci_display.c
+index 4c4efef..8eb98c4 100644
+--- a/drivers/media/video/davinci/davinci_display.c
++++ b/drivers/media/video/davinci/davinci_display.c
+@@ -45,11 +45,15 @@
+ 
+ static u32 video2_numbuffers = 3;
+ static u32 video3_numbuffers = 3;
++static u32 cont2_bufoffset = 0;
++static u32 cont2_bufsize = 0;
++static u32 cont3_bufoffset = 0;
++static u32 cont3_bufsize = 0;
+ 
+ #define DAVINCI_DISPLAY_HD_BUF_SIZE (1280*720*2)
+ #define DAVINCI_DISPLAY_SD_BUF_SIZE (720*576*2)
+ 
+-static u32 video2_bufsize = DAVINCI_DISPLAY_SD_BUF_SIZE;
++static u32 video2_bufsize = DAVINCI_DISPLAY_HD_BUF_SIZE;
+ static u32 video3_bufsize = DAVINCI_DISPLAY_SD_BUF_SIZE;
+ 
+ module_param(video2_numbuffers, uint, S_IRUGO);
+@@ -57,15 +61,24 @@ module_param(video3_numbuffers, uint, S_IRUGO);
+ 
+ module_param(video2_bufsize, uint, S_IRUGO);
+ module_param(video3_bufsize, uint, S_IRUGO);
++module_param(cont2_bufoffset, uint, S_IRUGO);
++module_param(cont2_bufsize, uint, S_IRUGO);
++module_param(cont3_bufoffset, uint, S_IRUGO);
++module_param(cont3_bufsize, uint, S_IRUGO);
++
++MODULE_PARM_DESC(cont2_bufoffset,"Display offset(default 0)");
++MODULE_PARM_DESC(cont2_bufsize,"Display buffer size(default 0)");
++MODULE_PARM_DESC(cont3_bufoffset,"Display offset(default 0)");
++MODULE_PARM_DESC(cont3_bufsize,"Display buffer size(default 0)");
+ 
+ #define DAVINCI_DEFAULT_NUM_BUFS 3
+ static struct buf_config_params display_buf_config_params = {
+ 	.min_numbuffers = DAVINCI_DEFAULT_NUM_BUFS,
+ 	.numbuffers[0] = DAVINCI_DEFAULT_NUM_BUFS,
+ 	.numbuffers[1] = DAVINCI_DEFAULT_NUM_BUFS,
+-	.min_bufsize[0] = DAVINCI_DISPLAY_SD_BUF_SIZE,
++	.min_bufsize[0] = DAVINCI_DISPLAY_HD_BUF_SIZE,
+ 	.min_bufsize[1] = DAVINCI_DISPLAY_SD_BUF_SIZE,
+-	.layer_bufsize[0] = DAVINCI_DISPLAY_SD_BUF_SIZE,
++	.layer_bufsize[0] = DAVINCI_DISPLAY_HD_BUF_SIZE,
+ 	.layer_bufsize[1] = DAVINCI_DISPLAY_SD_BUF_SIZE,
+ };
+ 
+@@ -167,10 +180,17 @@ static int davinci_buffer_setup(struct videobuf_queue *q, unsigned int *count,
+ 		if (*size > buf_size)
+ 			*size = buf_size;
+ 
++        /*Checking if the buffer size exceeds the available buffer*/
++	if (display_buf_config_params.video_limit[layer->device_id]) {
++		while (*size * *count > ( display_buf_config_params.video_limit[layer->device_id]))
++			(*count)--;
++        }
++      
+ 	/* Store number of buffers allocated in numbuffer member */
+ 	if (*count < display_buf_config_params.min_numbuffers)
+ 		*count = layer->numbuffers = display_buf_config_params.numbuffers[layer->device_id];
+ 	dev_dbg(davinci_display_dev, "</davinci_buffer_setup>\n");
++
+ 	return 0;
+ }
+ 
+@@ -1577,6 +1597,8 @@ static __init int davinci_probe(struct device *device)
+ 	struct video_device *vbd = NULL;
+ 	struct display_obj *layer = NULL;
+ 	struct platform_device *pdev;
++	unsigned long phys_end_kernel;
++	size_t size;
+ 
+ 	davinci_display_dev = device;
+ 
+@@ -1588,6 +1610,51 @@ static __init int davinci_probe(struct device *device)
+ 		dev_err(davinci_display_dev, "probed for an unknown device\n");
+ 		return -ENODEV;
+ 	}
++
++       /* Initialising the memory from the input arguments file for contiguous memory buffers and avoid defragmentation */
++       
++	if(cont2_bufsize) {
++		/* attempt to determine the end of Linux kernel memory */
++		phys_end_kernel = virt_to_phys((void *)PAGE_OFFSET) +
++			(num_physpages << PAGE_SHIFT);
++		phys_end_kernel += cont2_bufoffset; 
++		size = cont2_bufsize;
++                       
++		err = dma_declare_coherent_memory(&pdev->dev, phys_end_kernel,
++			phys_end_kernel,
++			size,
++			DMA_MEMORY_MAP |
++			DMA_MEMORY_EXCLUSIVE);
++
++		if (!err) {
++			dev_err(&pdev->dev, "Unable to declare MMAP memory.\n");
++			err = -ENOMEM;
++			goto probe_out;
++		display_buf_config_params.video_limit[DAVINCI_DISPLAY_DEVICE_0] = size;
++		}
++	} 
++	
++	if(cont3_bufsize) {
++	    /* attempt to determine the end of Linux kernel memory */
++		phys_end_kernel = virt_to_phys((void *)PAGE_OFFSET) +
++			(num_physpages << PAGE_SHIFT);
++			phys_end_kernel += cont3_bufoffset; 
++			size = cont3_bufsize;
++                       
++		err = dma_declare_coherent_memory(&pdev->dev, phys_end_kernel,
++			phys_end_kernel,
++			size,
++			DMA_MEMORY_MAP |
++			DMA_MEMORY_EXCLUSIVE);
++
++		if (!err) {
++			dev_err(&pdev->dev, "Unable to declare MMAP memory.\n");
++			err = -ENOMEM;
++			goto probe_out;
++		display_buf_config_params.video_limit[DAVINCI_DISPLAY_DEVICE_1] = size;
++		} 
++	}
++
+ 	for (i = 0; i < DAVINCI_DISPLAY_MAX_DEVICES; i++) {
+ 		/* Get the pointer to the layer object */
+ 		layer = davinci_dm.dev[i];
+@@ -1743,6 +1810,12 @@ static __init int davinci_display_init(void)
+ 	display_buf_config_params.numbuffers[DAVINCI_DISPLAY_DEVICE_1] =
+ 		video3_numbuffers;
+ 
++	/*set size of buffers, they could come from bootargs*/
++	display_buf_config_params.layer_bufsize[DAVINCI_DISPLAY_DEVICE_0] =
++		video2_bufsize;
++	display_buf_config_params.layer_bufsize[DAVINCI_DISPLAY_DEVICE_1] =
++		video3_bufsize;
++   
+ 	if (cpu_is_davinci_dm355()) {
+ 		strcpy(davinci_display_videocap.card, DM355_EVM_CARD);
+ 	} else if (cpu_is_davinci_dm365())
+diff --git a/include/media/davinci/davinci_display.h b/include/media/davinci/davinci_display.h
+index 8524328..d62b849 100644
+--- a/include/media/davinci/davinci_display.h
++++ b/include/media/davinci/davinci_display.h
+@@ -171,6 +171,7 @@ struct buf_config_params {
+ 	u8 numbuffers[DAVINCI_DISPLAY_MAX_DEVICES];
+ 	u32 min_bufsize[DAVINCI_DISPLAY_MAX_DEVICES];
+ 	u32 layer_bufsize[DAVINCI_DISPLAY_MAX_DEVICES];
++	u32 video_limit[DAVINCI_DISPLAY_MAX_DEVICES];
+ };
+ 
+ #endif				/* End of __KERNEL__ */
+-- 
+1.6.3.3
+

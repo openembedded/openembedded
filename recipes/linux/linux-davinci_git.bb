@@ -6,6 +6,7 @@ KERNEL_IMAGETYPE = "uImage"
 COMPATIBLE_MACHINE = "(dm355-evm|dm365-evm|dm6446-evm|dm6467-evm|dm6467t-evm|da830-omapl137-evm|da850-omapl138-evm|dm355-leopard|davinci-sffsdr|hawkboard)"
 
 DEFAULT_PREFERENCE = "1"
+DEFAULT_PREFERENCE_dm365 = "-1"
 
 BRANCH = "master"
 SRC_URI = "file://defconfig "

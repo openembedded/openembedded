@@ -1,0 +1,118 @@
+From 0d969cd5b772137a419ed6fbde70e4a2ec86693c Mon Sep 17 00:00:00 2001
+From: Don Darling <don.osc2@gmail.com>
+Date: Wed, 11 Aug 2010 13:16:19 -0500
+Subject: [PATCH 3/3] dm365: Add custom display ioctl VIDIOC_S_YDOFST
+
+This ioctl specifies the offset into the Y-plane where the display should
+start.  This is useful when displaying codec output buffers that have
+padding around the edges of the frame.
+
+The offset must be 64-byte aligned.  The hardware requirement is that both
+the Y and C planes are 32-byte aligned.  However, the Y plane offset must be
+64-byte aligned in order to guarantee that the corresponding C plane offset is
+32-byte aligned.
+---
+ drivers/media/video/davinci/davinci_display.c |   14 ++++++++++++++
+ drivers/media/video/davinci/davinci_osd.c     |   13 +++++++++++++
+ include/media/davinci/davinci_display.h       |    6 ++++++
+ include/video/davinci_osd.h                   |    3 +++
+ 4 files changed, 36 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/media/video/davinci/davinci_display.c b/drivers/media/video/davinci/davinci_display.c
+index bb3dd77..d3bdeaa 100644
+--- a/drivers/media/video/davinci/davinci_display.c
++++ b/drivers/media/video/davinci/davinci_display.c
+@@ -1625,6 +1625,19 @@ static long vpbe_param_handler(struct file *file, void *priv,
+ 		davinci_dm.fb_desc.cbcr_ofst = *((unsigned long *) param);
+ 		mutex_unlock(&davinci_dm.lock);
+ 		break;
++	case VIDIOC_S_YDOFST:
++		davinci_dm.fb_desc.yd_ofst = *((unsigned long *) param);
++
++		/* The Y-plane display offset must be 64-byte aligned */
++		if (davinci_dm.fb_desc.yd_ofst & 0x3F) {
++			dev_err(davinci_display_dev, "fb_desc.yd_ofst is not "
++				"aligned to 64 bytes\n");
++			davinci_dm.fb_desc.yd_ofst = 0;
++			ret = -EINVAL;
++		}
++
++		mutex_unlock(&davinci_dm.lock);
++		break;
+ 	default:
+ 		ret = -EINVAL;
+ 	}
+@@ -1845,6 +1858,7 @@ static int davinci_release(struct file *filep)
+ 	mutex_unlock(&davinci_dm.lock);
+ 
+ 	davinci_dm.fb_desc.cbcr_ofst = 0;
++	davinci_dm.fb_desc.yd_ofst   = 0;
+ 
+ 	dev_dbg(davinci_display_dev, "</davinci_release>\n");
+ 	return 0;
+diff --git a/drivers/media/video/davinci/davinci_osd.c b/drivers/media/video/davinci/davinci_osd.c
+index b8095af..2ee202c 100644
+--- a/drivers/media/video/davinci/davinci_osd.c
++++ b/drivers/media/video/davinci/davinci_osd.c
+@@ -1467,6 +1467,19 @@ static void _davinci_disp_start_layer(enum davinci_disp_layer layer,
+ 			cbcr_offset_32 = win->lconfig.line_length *
+ 					 win->lconfig.ysize;
+ 		cbcr_offset_32 += fb_offset_32;
++
++		/* If a Y-plane display offset was specified, adjuest the fb
++		 * and cbcr offsets to reflect the desired start of the
++		 * display.  This only applies when an NV12 colorspace is being
++		 * used on the display.
++		 */
++		if (fb_desc && fb_desc->yd_ofst) {
++			if (win->lconfig.pixfmt == PIXFMT_NV12) {
++				fb_offset_32 += fb_desc->yd_ofst;
++				cbcr_offset_32 += (fb_desc->yd_ofst) >> 1;
++			}
++		}
++
+ 		fb_offset_32 = fb_offset_32 >> 5;
+ 		cbcr_offset_32 = cbcr_offset_32 >> 5;
+ 		/*
+diff --git a/include/media/davinci/davinci_display.h b/include/media/davinci/davinci_display.h
+index 4822405..8433f12 100644
+--- a/include/media/davinci/davinci_display.h
++++ b/include/media/davinci/davinci_display.h
+@@ -26,6 +26,12 @@
+  */
+ #define VIDIOC_S_COFST	_IOWR('V', 200, int)
+ 
++/* Application calls this ioctl for setting the offset into the Y-plane 
++ * that represents the beginning of the displayed image.  This is useful
++ * for cropping codec padding at the top of the Y-plane.
++ */
++#define VIDIOC_S_YDOFST	_IOWR('V', 201, int)
++
+ #ifdef __KERNEL__
+ 
+ /* Header files */
+diff --git a/include/video/davinci_osd.h b/include/video/davinci_osd.h
+index 7c4af2c..642311f 100644
+--- a/include/video/davinci_osd.h
++++ b/include/video/davinci_osd.h
+@@ -309,14 +309,17 @@ struct davinci_layer_config {
+ /**
+  * struct davinci_fb_desc
+  * @cbcr_ofst: offset of the cbcr data from the beginning of the frame buffer
++ * @yd_offset: offset into the Y-plane where the layer should start displaying
+  *
+  * Description:
+  * A structure describing additional information about the frame buffers being
+  * passed to the display.  This may be needed when the buffers have a
+  * non-standard layout.
++ * @yd_ofst must be 64-byte aligned.
+  */
+ struct davinci_fb_desc {
+     unsigned long cbcr_ofst;
++    unsigned long yd_ofst;
+ };
+ 
+ /**
+-- 
+1.7.0.4
+

@@ -1,0 +1,57 @@
+From b6a20b95729f056f285c1d9f5cdb79537dd343f3 Mon Sep 17 00:00:00 2001
+From: Prakash PM <prakash.pm@ti.com>
+Date: Fri, 16 Jul 2010 15:38:50 +0530
+Subject: [PATCH] DM365: davinci_video: Enable VENC clock for COMPONENT output
+
+In existing code VENC clock is enabled only in case of COMPOSITE
+output. So when target is booted with default output as COMPONENT,
+NOSIGNAL is observed on TV.
+
+This patch fixes the issue by enabling the clock for COMPONENT
+ouput in 480P-60, 720P-60 and 576P-60 modes.
+
+Signed-off-by: Prakash PM <prakash.pm@ti.com>
+---
+ drivers/media/video/davinci/davinci_platform.c |   12 ++++++++++++
+ 1 files changed, 12 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/media/video/davinci/davinci_platform.c b/drivers/media/video/davinci/davinci_platform.c
+index 394d6e7..baa1cad 100644
+--- a/drivers/media/video/davinci/davinci_platform.c
++++ b/drivers/media/video/davinci/davinci_platform.c
+@@ -677,6 +677,7 @@ static void davinci_enc_set_525p(struct vid_enc_mode_info *mode_info)
+ 	osd_write_upper_margin(mode_info->upper_margin);
+ 
+ 	if (cpu_is_davinci_dm365()) {
++		dispc_reg_out(VENC_CLKCTL, 0x01);
+ 		ths7303_setval(THS7303_FILTER_MODE_480P_576P);
+ 		msleep(40);
+ 		__raw_writel(0x081141EF, IO_ADDRESS(DM3XX_VDAC_CONFIG));
+@@ -717,6 +718,7 @@ static void davinci_enc_set_625p(struct vid_enc_mode_info *mode_info)
+ 	osd_write_upper_margin(mode_info->upper_margin);
+ 
+ 	if (cpu_is_davinci_dm365()) {
++		dispc_reg_out(VENC_CLKCTL, 0x01);
+ 		ths7303_setval(THS7303_FILTER_MODE_480P_576P);
+ 		msleep(40);
+ 		__raw_writel(0x081141EF, IO_ADDRESS(DM3XX_VDAC_CONFIG));
+@@ -1137,6 +1139,16 @@ void davinci_enc_priv_setmode(struct vid_enc_device_mgr *mgr)
+ 		 * THS8200
+ 		 */
+ 		if (cpu_is_davinci_dm365()) {
++			dispc_reg_out(VENC_CLKCTL, 0x01);
++			enableDigitalOutput(0);
++			dispc_reg_out(VENC_OSDCLK0, 0);
++			dispc_reg_out(VENC_OSDCLK1, 1);
++			dispc_reg_merge(VENC_VMOD,
++					VENC_VMOD_VDMD_YCBCR8 <<
++					VENC_VMOD_VDMD_SHIFT, VENC_VMOD_VDMD);
++			dispc_reg_out(VENC_YCCCTL, 0x1);
++			dispc_reg_merge(VENC_VMOD, VENC_VMOD_VENC,
++					VENC_VMOD_VENC);
+ 			davinci_enc_set_internal_hd(&mgr->current_mode);
+ 			/* changed for 720P demo */
+ 			davinci_enc_set_basep(0, 0xf0, 10);
+-- 
+1.5.6
+
