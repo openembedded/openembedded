@@ -1,7 +1,7 @@
 DESCRIPTION = "Window navigation construction toolkit"
 LICENSE = "LGPL"
 SECTION = "x11/libs"
-DEPENDS = "gtk+ gtk+-native"
+DEPENDS = "gobject-introspection-native gtk+ gtk+-native"
 
 inherit gnome
 SRC_URI[archive.md5sum] = "4162d5b96151e6d24ec02ae3a822203c"
