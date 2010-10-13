@@ -28,6 +28,9 @@ MACHINE_DISPLAY_PPI = "180"
 MACHINE_FEATURES = "alsa apm bluetooth kernel26 keyboard phone screen touchscreen usbgadget usbhost vfat"
 MACHINE_FEATURES += " iwmmxt"
 
+# Comment this out if you change to tune-iwmmxt.inc above
+PACKAGE_EXTRA_ARCHS += "iwmmxt"
+
 #
 # Software/packages selection
 #
