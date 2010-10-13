@@ -4,6 +4,8 @@ LICENSE = "BSD"
 SECTION = "multimedia"
 PRIORITY = "optional"
 
+INC_PR = "r20"
+
 COMPATIBLE_MACHINE = "(dm365|omapl138|omap3|ti816x)"
 
 PLATFORM_dm365 = "dm365"
