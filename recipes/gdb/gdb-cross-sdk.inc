@@ -2,11 +2,11 @@ require gdb-cross.inc
 LICENSE = "GPLv3"
 
 inherit sdk
-
-# Since we statically link these libraries, we don't dep on the -sdk version
 DEPENDS = "ncurses-native zlib-native expat-native flex-native"
 EXTRA_OEMAKE = "'SUBDIRS=intl mmalloc libiberty opcodes bfd sim gdb etc utils' LDFLAGS='${BUILD_LDFLAGS}'"
 
+# Since we statically link against the required host libraries we don't 
+# add a depenency on the -sdk versions of them.
 do_configure () {
 	cd ${B}
 	oe_runmake configure-host

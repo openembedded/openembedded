@@ -1,6 +1,8 @@
 require gdb-common.inc
 
-DEPENDS = "ncurses-native zlib-native flex-native"
+DEPENDS = "ncurses-native zlib-native expat-native flex-native"
+# We must have this around in order to link gdb
+DEPENDS += "virtual/${TARGET_PREFIX}gcc"
 
 EXTRA_OEMAKE = "'SUBDIRS=intl mmalloc libiberty opcodes bfd sim gdb etc utils' LDFLAGS='${BUILD_LDFLAGS}'"
 
