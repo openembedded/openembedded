@@ -2,7 +2,7 @@ DESCRIPTION = "Iliwi connects you to WiFi networks"
 HOMEPAGE = "http://github.com/Ebbe/Iliwi"
 LICENSE = "GPLv3"
 AUTHOR = "Esben Damgaard <ebbe@hvemder.dk>"
-DEPENDS = "dbus-glib elementary"
+DEPENDS = "dbus-glib elementary libgee"
 # killall and udhcpc from busybox are enough
 RDEPENDS_${PN} = "wireless-tools wpa-supplicant"
 
