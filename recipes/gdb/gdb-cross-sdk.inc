@@ -7,7 +7,7 @@ inherit sdk
 DEPENDS = "ncurses-native zlib-native expat-native flex-native"
 EXTRA_OEMAKE = "'SUBDIRS=intl mmalloc libiberty opcodes bfd sim gdb etc utils' LDFLAGS='${BUILD_LDFLAGS}'"
 
-do_configure_append () {
+do_configure () {
 	cd ${B}
 	oe_runmake configure-host
 	sed -e 's,-lncurses,${STAGING_LIBDIR_NATIVE}/libncurses.a ${STAGING_LIBDIR_NATIVE}/libtinfo.a ,g' -i ${B}/gdb/Makefile
@@ -17,4 +17,5 @@ do_configure_append () {
 	for SIM in ${B}/sim/*/Makefile; do
 		[ -f $SIM ] && sed -e 's,-lz, ${STAGING_LIBDIR_NATIVE}/libz.a ,g' -i $SIM
 	done
+	oe_runconf
 }
