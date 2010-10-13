@@ -1,7 +1,9 @@
 DESCRIPTION = "c-ares is a C library that resolves names asynchronously."
 HOMEPAGE = "http://daniel.haxx.se/projects/c-ares/"
 SECTION = "libs"
-SRC_URI = "http://daniel.haxx.se/projects/c-ares/c-ares-${PV}.tar.gz"
+SRC_URI = "http://daniel.haxx.se/projects/c-ares/c-ares-${PV}.tar.gz \
+           file://0001-fix-configure.ac.patch \
+"
 LICENSE = "MIT"
 S = "${WORKDIR}/c-ares-${PV}"
 PR = "r1"
