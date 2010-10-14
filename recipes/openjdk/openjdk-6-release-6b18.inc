@@ -11,10 +11,11 @@ EXTRA_OECONF += "\
 ARM_INSTRUCTION_SET_armv4t = "ARM"
 
 # Use IcedTea6 1.8 release.
-ICEDTEA = "icedtea6-1.8"
+ICEDTEA = "icedtea6-1.8.2"
 ICEDTEA_URI = "http://icedtea.classpath.org/download/source/${ICEDTEA}.tar.gz;name=iced"
-SRC_URI[iced.md5sum] = "e08dd0762749fb50ec6c273c366ee8ae"
-SRC_URI[iced.sha256sum] = "6823ff87969d978fe5523c729be3074142698c89acc8cc96c05b849fde54f61b"
+
+SRC_URI[iced.md5sum] = "e9559699e56e90a9d50ffae2020f5df7"
+SRC_URI[iced.sha256sum] = "93d7f427fde99f2df7b457c811405af8311e0bce4192ff99516b3227d5daa716"
 
 OPENJDK_URI = "http://download.java.net/openjdk/jdk6/promoted/b18/openjdk-6-src-b18-16_feb_2010.tar.gz;subdir=openjdk-src-dir;name=openjdk"
 SRC_URI[openjdk.md5sum] = "94db01691ab38f98b7d42b2ebf4d5c0b"
@@ -46,7 +47,6 @@ OEPATCHES = "\
 	file://fix-llvm-libs.patch \
 	file://shark-build-openjdkdir.patch \
 	file://shark-arm-linux-cpu-detection.patch \
-	file://icedtea1.8-pre1.8.1-releasebranch-fixes.patch \
 	"
 
 # Allow overriding this separately
