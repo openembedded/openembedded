@@ -3,8 +3,6 @@ DEPENDS = "glib-2.0-native perl-native"
 
 PR = "${INC_PR}.0"
 
-SRC_URI += ""
-
 inherit native
 
 do_fix_libtool_name() {
