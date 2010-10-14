@@ -7,7 +7,7 @@ EXTRA_OEMAKE = "'SUBDIRS=intl mmalloc libiberty opcodes bfd sim gdb etc utils' L
 
 # Since we statically link against the required host libraries we don't 
 # add a depenency on the -sdk versions of them.
-do_configure () {
+do_configure_append () {
 	cd ${B}
 	oe_runmake configure-host
 	sed -e 's,-lncurses,${STAGING_LIBDIR_NATIVE}/libncurses.a ${STAGING_LIBDIR_NATIVE}/libtinfo.a ,g' -i ${B}/gdb/Makefile
