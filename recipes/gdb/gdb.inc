@@ -2,7 +2,7 @@ require gdb-common.inc
 
 DEFAULT_PREFERENCE_avr32 = "-99"
 
-DEPENDS = "ncurses readline zlib flex-native"
+DEPENDS = "ncurses readline zlib flex-native bison-native"
 
 PACKAGES =+ "gdbserver"
 FILES_gdbserver = "${bindir}/gdbserver"

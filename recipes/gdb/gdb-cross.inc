@@ -1,6 +1,6 @@
 require gdb-common.inc
 
-DEPENDS = "ncurses-native zlib-native expat-native flex-native"
+DEPENDS = "ncurses-native zlib-native expat-native flex-native bison-native"
 # We must have this around in order to link gdb
 DEPENDS += "virtual/${TARGET_PREFIX}gcc"
 

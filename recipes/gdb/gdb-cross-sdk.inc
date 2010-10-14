@@ -2,7 +2,6 @@ require gdb-cross.inc
 LICENSE = "GPLv3"
 
 inherit sdk
-DEPENDS = "ncurses-native zlib-native expat-native flex-native"
 EXTRA_OEMAKE = "'SUBDIRS=intl mmalloc libiberty opcodes bfd sim gdb etc utils' LDFLAGS='${BUILD_LDFLAGS}'"
 
 # Since we statically link against the required host libraries we don't 
