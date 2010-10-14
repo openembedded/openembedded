@@ -22,8 +22,6 @@ EXTRA_OECONF = "\
   --disable-x11 \
 "
 
-LDFLAGS_append = ""
-
 LEAD_SONAME = "libdirectfb-1.2.so.0"
 
 SRC_URI[md5sum] = "ac13d21682aa368df4e177ae5b51ad2d"
