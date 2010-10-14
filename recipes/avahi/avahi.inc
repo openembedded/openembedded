@@ -17,7 +17,6 @@ SRC_URI = "http://avahi.org/download/avahi-${PV}.tar.gz \
 inherit autotools pkgconfig update-rc.d python-dir
 # handle update-rc.d RDEPENDS_${PN} manually, we don't need it on
 # anything but avahi-daemon and avahi-autoipd
-RDEPENDS_append = ""
 
 # TODO: build and enable all the extra stuff avahi offers
 EXTRA_OECONF = "--with-distro=debian  --disable-stack-protector --disable-nls --disable-gdbm ${AVAHI_GTK} --disable-mono --disable-monodoc --disable-qt3 --disable-qt4 ${AVAHI_PYTHON}"
