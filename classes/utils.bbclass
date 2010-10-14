@@ -68,10 +68,12 @@ def oe_popen_env(d):
     return env
 
 def oe_run(d, cmd, **kwargs):
+    import oe.process
     kwargs["env"] = oe_popen_env(d)
     return oe.process.run(cmd, **kwargs)
 
 def oe_popen(d, cmd, **kwargs):
+    import oe.process
     kwargs["env"] = oe_popen_env(d)
     return oe.process.popen(cmd, **kwargs)
 
