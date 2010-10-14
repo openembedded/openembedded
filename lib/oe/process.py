@@ -40,21 +40,29 @@ class ExecutionError(CmdError):
         return (CmdError.__str__(self) +
                 " with exit code %s" % self.exitcode + message)
 
-def run(cmd, **kwargs):
-    """Convenience function to run a command and return its output, raising an
-    exception when the command fails"""
-    from subprocess import PIPE, STDOUT
-
-    options = {
-        "stdout": PIPE,
-        "stderr": STDOUT,
+class Popen(subprocess.Popen):
+    defaults = {
+        "close_fds": True,
+        "preexec_fn": subprocess_setup,
+        "stdout": subprocess.PIPE,
+        "stderr": subprocess.STDOUT,
+        "stdin": subprocess.PIPE,
         "shell": False,
     }
-    if isinstance(cmd, basestring):
+
+    def __init__(self, *args, **kwargs):
+        options = dict(self.defaults)
+        options.update(kwargs)
+        subprocess.Popen.__init__(self, *args, **options)
+
+def run(cmd, **options):
+    """Convenience function to run a command and return its output, raising an
+    exception when the command fails"""
+
+    if isinstance(cmd, basestring) and not "shell" in options:
         options["shell"] = True
-    options.update(kwargs)
     try:
-        pipe = popen(cmd, **options)
+        pipe = Popen(cmd, **options)
     except OSError, exc:
         if exc.errno == 2:
             raise NotFoundError(cmd)
@@ -64,14 +72,3 @@ def run(cmd, **kwargs):
     if pipe.returncode != 0:
         raise ExecutionError(cmd, pipe.returncode, stdout, stderr)
     return stdout
-
-def popen(cmd, **kwargs):
-    """ Convenience function to call out processes with our exported
-    variables in the environment.
-    """
-    from subprocess import Popen
-
-    kwargs["close_fds"] = True
-    kwargs["preexec_fn"] = subprocess_setup
-
-    return Popen(cmd, **kwargs)
