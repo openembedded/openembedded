@@ -1,7 +1,7 @@
 require directfb.inc
 
 RV = "1.4-0"
-PR = "r1"
+PR = "r0"
 
 DEPENDS += "sysfsutils"
 
@@ -10,8 +10,7 @@ SRC_URI = " \
     file://directfb-1.2.x-fix-pkgconfig-cflags.patch \
     file://mkdfiff.patch \
     file://dont-use-linux-config.patch \
-    file://ts_lib_autotools.patch \
-"
+   "
 
 EXTRA_OECONF = "\
   --enable-freetype=yes \
@@ -22,9 +21,7 @@ EXTRA_OECONF = "\
   --disable-x11 \
 "
 
-LDFLAGS_append = ""
-
 LEAD_SONAME = "libdirectfb-1.4.so.0"
 
-SRC_URI[md5sum] = "e4376c6c5b8e27d735edb7f62a7a8e86"
-SRC_URI[sha256sum] = "051847e21e88a9c32ee78f8920014602d8b21928602075c5266433cd58addbc6"
+SRC_URI[md5sum] = "dbe1957932f81790742b58b94c1c7b84"
+SRC_URI[sha256sum] = "b18121e60e9a084ee347037a53a46cfaea1c09505bd99d673c2e65eca285e69b"
