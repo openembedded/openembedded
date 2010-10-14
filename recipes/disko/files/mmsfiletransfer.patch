@@ -1,0 +1,13 @@
+Index: disko-1.7.0/src/mmstools/mmsfiletransfer.cpp
+===================================================================
+--- disko-1.7.0.orig/src/mmstools/mmsfiletransfer.cpp	2010-10-14 22:41:29.902763049 +0200
++++ disko-1.7.0/src/mmstools/mmsfiletransfer.cpp	2010-10-14 22:42:12.168591440 +0200
+@@ -92,7 +92,7 @@
+ 
+ 
+ int progress_callback(void *pclient, double dltotal, double dlnow, double ultotal, double ulnow) {
+-	((MMSFiletransfer::MMSFiletransfer*) pclient)->progress.emit(dltotal != 0 ? (int) (.5 + 100* dlnow / dltotal) : (int) (.5 + 100* ulnow / ultotal));
++	((MMSFiletransfer*) pclient)->progress.emit(dltotal != 0 ? (int) (.5 + 100* dlnow / dltotal) : (int) (.5 + 100* ulnow / ultotal));
+ 	return 0;
+ }
+ 
