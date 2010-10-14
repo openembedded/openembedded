@@ -8,8 +8,6 @@
 require mono.inc
 require mono-mcs-intermediate.inc
 
-SRC_URI += ""
-
 PR = "${INC_PR}.0"
 
 SRC_URI[md5sum] = "b1dc21bac2c7c75814a9f32246eadadd"
