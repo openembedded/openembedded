@@ -8,5 +8,3 @@ S = "${WORKDIR}/kaffe"
 require kaffe.inc
 
 DEPENDS += "glib-2.0 gmp gtk+ pango zlib libxtst kaffeh-native"
-
-EXTRA_OECONF += ""
