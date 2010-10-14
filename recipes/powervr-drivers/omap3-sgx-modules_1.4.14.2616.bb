@@ -23,7 +23,7 @@ S = "${WORKDIR}/Graphics_SDK_${SGXPV}/GFX_Linux_KM"
 
 inherit module
 
-MACHINE_KERNEL_PR_append = "e"
+MACHINE_KERNEL_PR_append = "f"
 
 PVRBUILD = "release"
 
