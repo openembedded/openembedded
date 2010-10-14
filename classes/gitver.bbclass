@@ -5,8 +5,13 @@
 # for use in ${PV}, extracted from the ${S} git checkout, assuming it is one.
 # This is most useful in concert with srctree.bbclass.
 
+def git_drop_tag_prefix(version):
+    if re.match("v\d", version):
+        return version[1:]
+    else:
+        return version
 
-GIT_TAGADJUST = "version"
+GIT_TAGADJUST = "git_drop_tag_prefix(version)"
 GITVER = "${@get_git_pv('${S}', d, tagadjust=lambda version:${GIT_TAGADJUST})}"
 
 def get_git_pv(path, d, tagadjust=None):
