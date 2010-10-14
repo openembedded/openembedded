@@ -39,6 +39,8 @@ LINGUAS_INSTALL_linux-gnueabi = "${LINGUAS_INSTALL_linux}"
 
 PACKAGE_INSTALL = "${@' '.join(oe.packagegroup.required_packages('${IMAGE_FEATURES}'.split(), d))}"
 PACKAGE_INSTALL_ATTEMPTONLY = "${@' '.join(oe.packagegroup.optional_packages('${IMAGE_FEATURES}'.split(), d))}"
+RDEPENDS += "${@' '.join(oe.packagegroup.active_packages('${IMAGE_FEATURES}'.split(), d))}"
+
 
 IMAGE_FEATURES ?= ""
 IMAGE_FEATURES_prepend = "image_base "
@@ -71,9 +73,6 @@ PACKAGE_GROUP_dev = "${@string_set('%s-dev' % pn for pn in oe.packagegroup.activ
 PACKAGE_GROUP_dev[optional] = "1"
 PACKAGE_GROUP_doc = "${@string_set('%s-doc' % pn for pn in oe.packagegroup.active_recipes(image_features_noextras(d), d))}"
 PACKAGE_GROUP_doc[optional] = "1"
-
-
-RDEPENDS += "${PACKAGE_INSTALL}"
 
 # "export IMAGE_BASENAME" not supported at this time
 IMAGE_BASENAME[export] = "1"
