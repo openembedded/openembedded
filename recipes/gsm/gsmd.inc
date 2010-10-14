@@ -16,7 +16,6 @@ S = "${WORKDIR}/gsm"
 inherit autotools pkgconfig update-rc.d
 # handle update-rc.d RDEPENDS_${PN} manually, we don't need it on
 # anything but gsmd
-RDEPENDS_append = ""
 
 INITSCRIPT_NAME = "gsmd"
 INITSCRIPT_PARAMS = "defaults 35"
