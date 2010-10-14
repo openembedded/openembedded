@@ -6,6 +6,7 @@
 # This is most useful in concert with srctree.bbclass.
 
 def git_drop_tag_prefix(version):
+    import re
     if re.match("v\d", version):
         return version[1:]
     else:
