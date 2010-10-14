@@ -1,4 +1,6 @@
 *.sw?
 *~
 lib/oe/*.pyc
-contrib/oeaudit/*.pyc
+lib/oe/*.pyo
+contrib/*/*.pyc
+contrib/*/*.pyo
