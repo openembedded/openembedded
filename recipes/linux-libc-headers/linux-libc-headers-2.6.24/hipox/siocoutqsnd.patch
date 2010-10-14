@@ -1,0 +1,54 @@
+tcp: ioctl type SIOCOUTQNSD returns amount of data not sent
+
+In contrast to SIOCOUTQ which returns the amount of data sent
+but not yet acknowledged plus data not yet sent this patch only
+returns the data not sent.
+
+For various methods of live streaming bitrate control it may
+be helpful to know how much data are in the tcp outqueue are
+not sent yet.
+
+Signed-off-by: Mario Schuknecht <m.schuknecht@dresearch.de>
+
+diff -Nurd linux-2.6.24.orig//include/asm-arm/ioctls.h linux-2.6.24/include/asm-arm/ioctls.h
+--- linux-2.6.24.orig//include/asm-arm/ioctls.h	2010-10-08 09:03:02.000000000 +0200
++++ linux-2.6.24/include/asm-arm/ioctls.h	2010-10-08 09:09:55.000000000 +0200
+@@ -53,6 +53,8 @@
+ #define TIOCGPTN	_IOR('T',0x30, unsigned int) /* Get Pty Number (of pty-mux device) */
+ #define TIOCSPTLCK	_IOW('T',0x31, int)  /* Lock/unlock Pty */
+ 
++#define TIOCOUTQNSD	0x5437
++
+ #define FIONCLEX	0x5450  /* these numbers need to be adjusted. */
+ #define FIOCLEX		0x5451
+ #define FIOASYNC	0x5452
+diff -Nurd linux-2.6.24.orig//include/linux/sockios.h linux-2.6.24/include/linux/sockios.h
+--- linux-2.6.24.orig//include/linux/sockios.h	2010-10-08 09:03:02.000000000 +0200
++++ linux-2.6.24/include/linux/sockios.h	2010-10-08 09:10:43.000000000 +0200
+@@ -23,6 +23,7 @@
+ /* Linux-specific socket ioctls */
+ #define SIOCINQ		FIONREAD
+ #define SIOCOUTQ	TIOCOUTQ
++#define SIOCOUTQNSD	TIOCOUTQNSD
+ 
+ /* Routing table calls. */
+ #define SIOCADDRT	0x890B		/* add routing table entry	*/
+diff -Nurd linux-2.6.24.orig//net/ipv4/tcp.c linux-2.6.24/net/ipv4/tcp.c
+--- linux-2.6.24.orig//net/ipv4/tcp.c	2010-10-08 09:02:59.000000000 +0200
++++ linux-2.6.24/net/ipv4/tcp.c	2010-10-08 09:10:43.000000000 +0200
+@@ -444,6 +444,15 @@
+ 		else
+ 			answ = tp->write_seq - tp->snd_una;
+ 		break;
++	case SIOCOUTQNSD:
++		if (sk->sk_state == TCP_LISTEN)
++			return -EINVAL;
++
++		if ((1 << sk->sk_state) & (TCPF_SYN_SENT | TCPF_SYN_RECV))
++			answ = 0;
++		else
++			answ = tp->write_seq - tp->snd_nxt;
++		break;
+ 	default:
+ 		return -ENOIOCTLCMD;
+ 	}
