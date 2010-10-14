@@ -75,7 +75,7 @@ def oe_run(d, cmd, **kwargs):
 def oe_popen(d, cmd, **kwargs):
     import oe.process
     kwargs["env"] = oe_popen_env(d)
-    return oe.process.popen(cmd, **kwargs)
+    return oe.process.Popen(cmd, **kwargs)
 
 def oe_system(d, cmd, **kwargs):
     """ Popen based version of os.system. """
