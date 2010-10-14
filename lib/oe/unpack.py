@@ -9,7 +9,7 @@ class UnpackError(Exception):
         self.output = output
 
     def __str__(self):
-        return "Unable to unpack '%s' to '%s' (cmd: %s): %s" % \
+        return "Unable to unpack '%s' to '%s' (cmd: %s):\n%s" % \
                (self.filename, self.destdir, self.command, self.output)
 
 def to_boolean(string, default=None):
@@ -87,9 +87,8 @@ def unpack_file(file, destdir, dos=False, env=None):
     if not cmd:
         return
 
-    pipe = subprocess.Popen(cmd, preexec_fn=subprocess_setup, shell=True,
-                            cwd=destdir, env=env, stdout=subprocess.PIPE,
-                            stderr=subprocess.STDOUT)
-    stdout = pipe.communicate()[0]
-    if pipe.returncode != 0:
-        raise UnpackError(file, destdir, cmd, stdout)
+    import oe.process
+    try:
+        oe.process.run(cmd, env=env)
+    except oe.process.CmdError, exc:
+        raise UnpackError(file, destdir, cmd, str(exc))
