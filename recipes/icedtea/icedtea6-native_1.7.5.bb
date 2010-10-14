@@ -14,8 +14,8 @@ SRC_URI = "\
 	"
 SRC_URI[ojdk.md5sum] = "078fe0ab744c98694decc77f2456c560"
 SRC_URI[ojdk.sha256sum] = "2019a4c3d2d14620caa78d7df49fd987a041066b4631bde4fd8424033f3c1785"
-SRC_URI[iced.md5sum] = "9ad707a5edc471e883a66c882adeab46"
-SRC_URI[iced.sha256sum] = "855a7f1a1a7798e3c4c25281b89ee6906a53b226ac39e3153cc0336a6952ca6b"
+SRC_URI[iced.md5sum] = "f9e9ddf3a2c7fb917980b6a32d1566d9"
+SRC_URI[iced.sha256sum] = "1b62ac07d13f0b3a9acb503aeb38668f40bd9de8e81e0165d5d8e816bf274b4d"
 
 ICEDTEA_PATCHES = "\
 	file://icedtea-ecj-disable-compilation.patch;apply=no \
