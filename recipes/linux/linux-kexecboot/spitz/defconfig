@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux kernel version: 2.6.36-rc7
-# Thu Oct  7 08:59:24 2010
+# Linux kernel version: 2.6.36-rc8
+# Sat Oct 16 14:17:57 2010
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -1142,7 +1142,6 @@ CONFIG_FS_POSIX_ACL=y
 CONFIG_FSNOTIFY=y
 # CONFIG_DNOTIFY is not set
 CONFIG_INOTIFY_USER=y
-# CONFIG_FANOTIFY is not set
 # CONFIG_QUOTA is not set
 # CONFIG_AUTOFS_FS is not set
 # CONFIG_AUTOFS4_FS is not set
