@@ -4,8 +4,7 @@ LICENSE = "GPL LGPL"
 DEPENDS = "gnutls libpng jpeg dbus dbus-glib zlib fakeroot-native"
 PROVIDES = "cups14"
 
-SRC_URI = "ftp://ftp.easysw.com/pub/cups/${PV}/cups-${PV}-source.tar.bz2;name=archive \
-	  	  "
+SRC_URI = "ftp://ftp.easysw.com/pub/cups/${PV}/cups-${PV}-source.tar.bz2"
 
 LEAD_SONAME = "libcupsdriver.so"
 
@@ -56,14 +55,6 @@ fakeroot do_install () {
    chmod 0711 "${D}/${localstatedir}/run/cups/certs"
 }
 
-do_stage () {
-	install -d ${STAGING_INCDIR}/cups
-	install ${S}/cups/*.h ${STAGING_INCDIR}/cups/
-	install ${S}/filter/*.h ${STAGING_INCDIR}/cups/
-	oe_libinstall -C cups -so libcups ${STAGING_LIBDIR}
-	oe_libinstall -C filter -so libcupsimage ${STAGING_LIBDIR}
-}
-
 python do_package_append() {
 	# Change permissions back the way they were, they probably had a reason...
 	workdir = bb.data.getVar('WORKDIR', d, 1)
@@ -90,4 +81,3 @@ FILES_${PN} += "${datadir}/doc/cups/images \
 		${datadir}/doc/cups/*.css \
                 ${datadir}/icons/ \
 	       "
-
