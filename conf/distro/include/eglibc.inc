@@ -1,5 +1,5 @@
 # Add glibc overrides to the overrides for eglibc.
-OVERRIDES .= ":libc-glibc"
+OVERRIDES =. "libc-glibc:"
 
 # The things eglibc can provide.  We default to wanting eglibc to provide them.
 PREFERRED_PROVIDER_virtual/libiconv ?= "eglibc"

@@ -14,7 +14,7 @@ TARGET_VENDOR = "-angstrom"
 SOC_FAMILY ?= "Unknown"
 
 # Add FEED_ARCH and SOC_FAMILY to overrides
-OVERRIDES .= ":${FEED_ARCH}:${SOC_FAMILY}"
+MACHINE_OVERRIDES += "${FEED_ARCH} ${SOC_FAMILY}"
 
 # Put links to sources in deploy/sources to make it easier for people to be GPL compliant
 INHERIT += "src_distribute_local"

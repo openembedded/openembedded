@@ -1,5 +1,5 @@
 # Add uclibc overrides to the overrides.
-OVERRIDES .= ":libc-uclibc"
+OVERRIDES =. "libc-uclibc:"
 
 # The things uclibc can provide.  We default to wanting uclibc to provide them.
 PREFERRED_PROVIDER_virtual/libiconv ?= "libiconv"

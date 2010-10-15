@@ -1,5 +1,5 @@
 # Add glibc to the overrides.
-OVERRIDES .= ":libc-glibc"
+OVERRIDES =. "libc-glibc:"
 
 # The things glibc can provide.  We default to wanting glibc to provide them.
 PREFERRED_PROVIDER_virtual/libiconv ?= "external-toolchain-${TOOLCHAIN_BRAND}"
