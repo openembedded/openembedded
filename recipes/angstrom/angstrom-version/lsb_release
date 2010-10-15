@@ -9,6 +9,11 @@ case $1 in
 "-i")
 	echo "Distributor ID: Angstrom"
 	;;
+"-irc")
+	echo "Distributor ID: Angstrom"
+	echo "Release:        $VERSION"
+	echo "Codename:       $CODENAME"
+	;;
 "-d")
 	echo "Description:    Angstrom GNU/Linux $VERSION ($CODENAME)"
 	;;

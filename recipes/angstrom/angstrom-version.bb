@@ -1,7 +1,7 @@
 LICENSE = "MIT"
 
 PV = "${DISTRO_VERSION}"
-PR = "r5"
+PR = "r6"
 PE = "1"
 
 SRC_URI = "file://lsb_release"
