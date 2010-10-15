@@ -4,6 +4,9 @@ PRIORITY = "optional"
 DEPENDS = "virtual/libsdl freetype"
 LICENSE = "LGPL"
 
+# works only with libtool-2.4 and needs another libtool-update for 2.2.6b
+DEFAULT_PREFERENCE = "-1"
+
 SRC_URI = "http://www.libsdl.org/projects/SDL_ttf/release/SDL_ttf-${PV}.tar.gz \
            ${@['','file://libtool-update.patch'][bb.data.getVar('LIBTOOL_HAS_SYSROOT', d, 1) == 'yes']} \
           "
