@@ -3,19 +3,13 @@ DESCRIPTION = "Openswan is an Open Source implementation of IPsec for the \
 Linux operating system."
 HOMEPAGE = "http://www.openswan.org"
 LICENSE = "GPLv2"
-DEPENDS = "gmp flex-native"
+DEPENDS = "gmp flex-native bison-native"
 RRECOMMENDS_${PN} = "kernel-module-ipsec"
 RDEPENDS_append_nylon = "perl"
-PR = "r3"
+PR = "r0"
 
-SRC_URI = "http://www.openswan.org/download/openswan-${PV}.tar.gz \
-	   file://openswan-2.4.7-gentoo.patch \
-           file://installflags.patch \
-	   file://ld-library-path-breakage.patch \
-	   file://openswan-2.4.14-getline.patch"
-S = "${WORKDIR}/openswan-${PV}"
+SRC_URI = "http://www.openswan.org/download/openswan-${PV}.tar.gz"
 
-PARALLEL_MAKE = ""
 EXTRA_OEMAKE = "DESTDIR=${D} \
                 USERCOMPILE="${CFLAGS}" \
                 USERLINK="${LDFLAGS}" \
@@ -37,5 +31,5 @@ FILES_${PN}-dbg += "${libdir}/ipsec/.debug ${libexecdir}/ipsec/.debug"
 
 CONFFILES_${PN} = "${sysconfdir}/ipsec/ipsec.conf"
 
-SRC_URI[md5sum] = "70f22e8adc39e07a165f75eccb7cd079"
-SRC_URI[sha256sum] = "b839b024fd717a404711f5ec14ee9b9e412a080f23e90841cde14f20970dc5dd"
+SRC_URI[md5sum] = "cd6c127585ec6db63780e9a40d5387fb"
+SRC_URI[sha256sum] = "03345e7090d0e1d4b844b1205c1444db067c6e2f7c423342e052f44cf6fa12e4"
