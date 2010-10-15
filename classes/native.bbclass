@@ -94,7 +94,7 @@ DEPENDS_virtclass-native ?= "${ORIG_DEPENDS}"
 
 def native_virtclass_add_override(d):
     if "native" in (bb.data.getVar('BBCLASSEXTEND', d, True) or ""):
-        bb.data.setVar("OVERRIDES", bb.data.getVar("OVERRIDES", d, False) + ":virtclass-native", d)
+        bb.data.setVar("OVERRIDES", "virtclass-native:" + bb.data.getVar("OVERRIDES", d, False), d)
 
 OVERRIDES .= "${@native_virtclass_add_override(d)}"
 

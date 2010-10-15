@@ -52,7 +52,7 @@ export PKG_CONFIG_SYSROOT_DIR = "${STAGING_DIR_HOST}"
 ORIG_DEPENDS := "${DEPENDS}"
 DEPENDS_virtclass-nativesdk ?= "${ORIG_DEPENDS}"
 
-OVERRIDES .= ":virtclass-nativesdk"
+OVERRIDES =. "virtclass-nativesdk:"
 
 python __anonymous () {
     pn = bb.data.getVar("PN", d, True)

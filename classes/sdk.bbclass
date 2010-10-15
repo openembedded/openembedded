@@ -67,4 +67,4 @@ FILES_${PN}-dbg += "${prefix}/.debug \
 
 export PKG_CONFIG_SYSROOT_DIR = "${STAGING_DIR_HOST}"
 
-OVERRIDES .= ":virtclass-sdk"
+OVERRIDES =. "virtclass-sdk:"
