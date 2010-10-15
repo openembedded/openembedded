@@ -28,6 +28,13 @@ do_install () {
 			mv -f ${D}${prefix}/$d/* ${D}${target_libdir} || true
 		fi
 	done
+	# since we are moving the .la files to target sysroot we need to make sure that
+	# libdir points to right place within the target sysroot
+	for la in ${D}${target_libdir}/libstdc++.la ${D}${target_libdir}/libsupc++.la; do
+		if [ -f $la ]; then
+			sed -i -e "s:^libdir=.*:libdir='${target_libdir}':g;" $la
+		fi
+	done
 
 	# Manually run the target stripper since we won't get it run by
 	# the packaging.
