@@ -1,5 +1,7 @@
 inherit gpe
 
+PR = "r1"
+
 DEPENDS = "libxsettings libxsettings-client glib-2.0"
 SECTION = "gpe"
 DESCRIPTION = "GPE configuration utility"
