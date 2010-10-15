@@ -10,10 +10,9 @@ RSUGGESTS_${PN} = "mplayer alsa-utils-aplay frameworkd"
 PV = "0.4+gitr${SRCPV}"
 PR = "r7"
 
-SRC_URI = "git://git.shr-project.org/repo/ffalarms.git;protocol=http;branch=master \
-           file://ical.timezone.patch"
+SRC_URI = "git://git.shr-project.org/repo/ffalarms.git;protocol=http;branch=master"
 
-SRCREV = "4ff7daa50ca4f7093d4c331d0274d95f3171c4c6"
+SRCREV = "7dfb98bff1da11131a1eae9018f5b9916b298104"
 S = "${WORKDIR}/git"
 
 inherit vala
