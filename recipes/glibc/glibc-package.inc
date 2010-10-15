@@ -44,7 +44,7 @@ def get_glibc_fpu_setting(bb, d):
 EXTRA_OECONF += "${@get_glibc_fpu_setting(bb, d)}"
 EXTRA_OEMAKE += "rootsbindir=${base_sbindir}"
 
-OVERRIDES_append = ":${TARGET_ARCH}-${TARGET_OS}"
+OVERRIDES_prepend = "${TARGET_ARCH}-${TARGET_OS}:"
 
 do_install() {
 	oe_runmake install_root=${D} install

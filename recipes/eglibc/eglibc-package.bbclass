@@ -116,7 +116,7 @@ def get_eglibc_fpu_setting(bb, d):
 EXTRA_OECONF += "${@get_eglibc_fpu_setting(bb, d)}"
 EXTRA_OEMAKE += "rootsbindir=${base_sbindir}"
 
-OVERRIDES_append = ":${TARGET_ARCH}-${TARGET_OS}"
+OVERRIDES_prepend = "${TARGET_ARCH}-${TARGET_OS}:"
 
 do_configure_prepend() {
         sed -e "s#@BASH@#/bin/sh#" -i ${S}/elf/ldd.bash.in

@@ -7,8 +7,8 @@
 
     <para>Creating a new distribution is not complicated, however we urge you
     to try existing distributions first, because it's also very easy to do
-    wrong. The config needs to be created in $OEBASE/openembedded/conf/distro 
-    directory. So what has to be inside? 
+    wrong. The config needs to be created in $OEBASE/openembedded/conf/distro
+    directory. So what has to be inside?
       <itemizedlist>
         <listitem>
           <para><command>DISTRO_VERSION</command> so users will know which
@@ -72,8 +72,8 @@ SRCDATE = "20061014"
   <section id="commonuse_new_machine">
     <title>Adding a new Machine</title>
 
-    <para>To be able to build for a device OpenEmbedded has to know about it, 
-    so a machine config file needs to be written. All of the machine 
+    <para>To be able to build for a device OpenEmbedded has to know about it,
+    so a machine config file needs to be written. All of the machine
     configs are stored in $OEBASE/openembedded/conf/machine/ directory.</para>
 
     <para>As usual some variables are required: <itemizedlist>
@@ -97,6 +97,23 @@ SRCDATE = "20061014"
     <para>There are also some optional variables that can be defined:
     <itemizedlist>
     <listitem>
+      <para>
+        <command>MACHINE_OVERRIDES</command> lists additional items to add to
+        the <command>OVERRIDES</command> variable, between the
+        <command>DISTRO</command> and the <command>MACHINE</command>.  This is
+        utilized to add overrides which are less specific than the machine,
+        but are nonetheless related to it, allowing us to define variables a
+        certain way for a group of machines, rather than for each individual
+        one.  As an example, this variable may be used by the distribution to
+        add <command>SOC_FAMILY</command> or <command>MACHINE_CLASS</command>.
+      </para>
+      <para>
+        Note that this variable is space separated, and should always be
+        manipulated with +=, to ensure it's built up incrementally, and no
+        additions are lost.
+      </para>
+    </listitem>
+    <listitem>
           <para><command>SOC_FAMILY</command> describes a family of processors
             that all share common features such as kernel versions,
             bootloaders, etc.  This is used to allow overrides for a whole
@@ -105,7 +122,7 @@ SRCDATE = "20061014"
             or local setting.
           </para>
           <para>
-            NOTE: SOC_FAMILY is different than MACHINE_CLASS in that 
+            NOTE: SOC_FAMILY is different than MACHINE_CLASS in that
             MACHINE_CLASS is intended to specify a grouping of devices
             that may have different processors but share common features.
             For example all OMAP3 devices can be described using the SOC_FAMILY
@@ -139,7 +156,7 @@ SRCDATE = "20061014"
             <listitem><para>for cvs: add 'PV = "1.1+cvs${SRCREV}"' to your bb file.</para></listitem>
           </itemizedlist>
         Accompany either with an entry to conf/distro/include/sane-srcrevs.inc for a revision that you know
-        builds successfully.  It is also common to define the stable SRCREV 
+        builds successfully.  It is also common to define the stable SRCREV
         for your package directly in the package recipe.
         </para>
         <para>
@@ -276,7 +293,7 @@ RDEPENDS_${PN} += "\
             <title>Putting it together</title>
             <para>In the previous two sections we have prepared the host and
             target side. One thing that is missing is combining the two newly
-            created tasks and actually creating the SDK. This is what we are 
+            created tasks and actually creating the SDK. This is what we are
             going to do now.</para>
 
             <para>Create <filename>meta-toolchain-YOU.bb</filename> in the

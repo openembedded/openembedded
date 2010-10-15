@@ -16,9 +16,9 @@ THUMB_INTERWORK ?= "no"
 #    arm system and vice versa.  It is strongly recommended that DISTROs not
 #    turn this off - the actual cost is very small.
 
-OVERRIDE_THUMB = "${@['', ':thumb'][bb.data.getVar('ARM_INSTRUCTION_SET', d, 1) == 'thumb']}"
-OVERRIDE_INTERWORK = "${@['', ':thumb-interwork'][bb.data.getVar('THUMB_INTERWORK', d, 1) == 'yes']}"
-OVERRIDES_append_arm =. "${OVERRIDE_THUMB}${OVERRIDE_INTERWORK}"
+OVERRIDE_THUMB = "${@['', 'thumb:'][bb.data.getVar('ARM_INSTRUCTION_SET', d, 1) == 'thumb']}"
+OVERRIDE_INTERWORK = "${@['', 'thumb-interwork:'][bb.data.getVar('THUMB_INTERWORK', d, 1) == 'yes']}"
+OVERRIDES_prepend_arm =. "${OVERRIDE_THUMB}${OVERRIDE_INTERWORK}"
 
 #    Compiler and linker options for application code and kernel code.  These
 #    options ensure that the compiler has the correct settings for the selected
