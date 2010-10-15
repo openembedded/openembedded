@@ -1,6 +1,6 @@
 DESCRIPTION = "Libchamplain is a C library aimed to provide a Gtk+ widget to display rasterized maps. "
 LICENSE = "LGPLv2.1"
-DEPENDS = "cairo libsoup-2.4 clutter gtk+"
+DEPENDS = "cairo clutter clutter-gtk gtk+ libsoup-2.4"
 PR = "r1"
 
 inherit gnome autotools
