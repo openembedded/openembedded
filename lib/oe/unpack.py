@@ -89,6 +89,6 @@ def unpack_file(file, destdir, dos=False, env=None):
 
     import oe.process
     try:
-        oe.process.run(cmd, env=env)
+        oe.process.run(cmd, env=env, cwd=destdir)
     except oe.process.CmdError, exc:
         raise UnpackError(file, destdir, cmd, str(exc))
