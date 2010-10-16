@@ -6,9 +6,9 @@ SRC_URI = "http://curl.haxx.se/download/curl-${PV}.tar.bz2;name=tarball \
            file://pkgconfig_fix.patch"
 S = "${WORKDIR}/curl-${PV}"
 
-INC_PR = "r3"
+INC_PR = "r4"
 
-CURL_FEATURES ?= "zlib,gnutls,cookies,crypto-auth,dict,file,ftp,http,telnet,tftp"
+CURL_FEATURES = ${@['zlib,cookies,crypto-auth,dict,file,ftp,http,telnet,tftp','zlib,gnutls,cookies,crypto-auth,dict,file,ftp,http,telnet,tftp']["${BPN}" == "${PN}"]}
 # other allowed features: ipv6, ares, openssl
 
 inherit autotools pkgconfig binconfig
