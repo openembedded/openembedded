@@ -1,7 +1,9 @@
 DESCRIPTION = "OBEX Server and Client"
-DEPENDS = "openobex glib-2.0 dbus bluez4"
+DEPENDS = "openobex glib-2.0 dbus bluez4 libical"
 
 LICENSE = "GPLv2"
+
+PR = "r1"
 
 SRC_URI = "http://www.kernel.org/pub/linux/bluetooth/obexd-${PV}.tar.gz"
 SRC_URI[md5sum] = "58dd77e7a005e9f1451c0c7efddbad92"
