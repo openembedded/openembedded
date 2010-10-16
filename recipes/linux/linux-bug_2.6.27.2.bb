@@ -2,7 +2,7 @@ DESCRIPTION = "Linux kernel for bug"
 
 PV_append = "+svnr${SRCREV}"
 KV = "2.6.27.2"
-PR = "r32"
+PR = "r33"
 
 COMPATIBLE_MACHINE = "bug"
 
@@ -25,6 +25,7 @@ do_install_append() {
 }
 
 do_install_append() {
+	install -d $kerneldir/include/asm/
 	cp -fR ${S}/arch/arm/include/asm/* $kerneldir/include/asm/
 	if [ ! -e $kerneldir/include/mach ]; then
 		mkdir $kerneldir/include/mach
