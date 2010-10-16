@@ -6,9 +6,10 @@ DESCRIPTION = "X font utils."
 
 DEPENDS = "util-macros"
 RDEPENDS_${PN} = "mkfontdir mkfontscale encodings"
+BBCLASSEXTEND = "native"
 
 PE = "1"
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.3"
 
 do_configure_prepend() {
         sed -i "s#MAPFILES_PATH=\`pkg-config#MAPFILES_PATH=\`PKG_CONFIG_PATH=\"${STAGING_LIBDIR_NATIVE}/pkg-config\" pkg-config#g" fontutil.m4.in
