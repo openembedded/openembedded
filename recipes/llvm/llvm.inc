@@ -86,9 +86,9 @@ llvm_stage() {
 	install -d ${STAGING_LIBDIR}/llvm${LLVM_RELEASE}
 
 	#	Move headers into their own directory
-	cp -r ${WORKDIR}/llvm-install/${prefix}/include/llvm \
+	cp -R ${WORKDIR}/llvm-install/${prefix}/include/llvm \
 	${STAGING_INCDIR}/llvm${LLVM_RELEASE}/
-	cp -r ${WORKDIR}/llvm-install/${prefix}/include/llvm-c \
+	cp -R ${WORKDIR}/llvm-install/${prefix}/include/llvm-c \
 	${STAGING_INCDIR}/llvm${LLVM_RELEASE}/
 
 	find ${WORKDIR}/llvm-install/${prefix}/lib -name "*" -maxdepth 1 -exec \

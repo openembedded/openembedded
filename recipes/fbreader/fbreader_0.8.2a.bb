@@ -58,7 +58,7 @@ do_configure() {
 
 do_install () {
         cd fbreader/${READER_ARCH}; oe_runmake .builddir RESOLUTION=${READER_RESOLUTION}
-	cp -r data/* ${D}
+	cp -R data/* ${D}
 }
 
 SRC_URI[md5sum] = "3b4944bf0d37b42249bef84d59918ce0"

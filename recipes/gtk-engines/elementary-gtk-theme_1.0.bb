@@ -13,7 +13,7 @@ S = "${WORKDIR}/eGTK"
 do_install() {
 	rm -rf ${S}/patches
 	install -d ${D}${datadir}/themes/elementary
-	cp -r ${S}/* ${D}${datadir}/themes/elementary/
+	cp -R ${S}/* ${D}${datadir}/themes/elementary/
 }
 
 PACKAGE_ARCH = "all"

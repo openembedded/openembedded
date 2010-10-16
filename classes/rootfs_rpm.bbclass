@@ -82,7 +82,7 @@ EOF
 		# Copy the packages into the target image
 		# Ugly ugly ugly but rpm is braindead and can't see outside the chroot
 		# when installing :(
-		cp -r ${DEPLOY_DIR_RPM}/$arch ${IMAGE_ROOTFS}${DEPLOY_DIR_RPM}/
+		cp -R ${DEPLOY_DIR_RPM}/$arch ${IMAGE_ROOTFS}${DEPLOY_DIR_RPM}/
 	done
 
 	# Uclibc builds don't provide this stuff...

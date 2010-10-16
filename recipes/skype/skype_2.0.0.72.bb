@@ -9,10 +9,10 @@ do_install() {
     cp skype ${D}/usr/bin/
 
     install -d ${D}/usr/share/skype
-    cp -r sounds lang avatars ${D}/usr/share/skype
+    cp -R sounds lang avatars ${D}/usr/share/skype
 
     install -d ${D}/usr/share/pixmaps
-    cp -r icons/SkypeBlue_48x48.png ${D}/usr/share/pixmaps/skype.png
+    cp -R icons/SkypeBlue_48x48.png ${D}/usr/share/pixmaps/skype.png
 }
 
 FILES_${PN} += "${datadir}/skype"

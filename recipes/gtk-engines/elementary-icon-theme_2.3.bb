@@ -24,8 +24,8 @@ do_install() {
 	install -d ${D}${datadir}/icons/elementary/
 	install -d ${D}${datadir}/icons/elementary-monochrome/
 
-	cp -r ${S}/elementary/* ${D}${datadir}/icons/elementary/
-	cp -r ${S}/elementary-monochrome/* ${D}${datadir}/icons/elementary-monochrome/
+	cp -R ${S}/elementary/* ${D}${datadir}/icons/elementary/
+	cp -R ${S}/elementary-monochrome/* ${D}${datadir}/icons/elementary-monochrome/
 }
 
 FILES_${PN} = "${datadir}/icons/elementary*"

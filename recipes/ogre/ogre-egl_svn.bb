@@ -32,7 +32,7 @@ do_install_append() {
 	cp ${S}/Samples/Common/bin/Release/*cfg ${D}${datadir}/ogre3d/samples/Common/bin
 
 	install -d ${D}${datadir}/ogre3d/Media 
-	cp -r ${S}/Samples/Media/* ${D}${datadir}/ogre3d/Media/
+	cp -R ${S}/Samples/Media/* ${D}${datadir}/ogre3d/Media/
 	find ${D} -name ".svn" | xargs rm -rf
 }
 

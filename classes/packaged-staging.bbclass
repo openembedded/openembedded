@@ -247,7 +247,7 @@ python packagestage_scenefunc () {
         #
         # Copy the stamp files into the main stamps directoy
         #
-        cmd = bb.data.expand("cp -dpR ${WORKDIR}/tstage/stamps/* ${TMPDIR}/stamps/", d)
+        cmd = bb.data.expand("cp -PpR ${WORKDIR}/tstage/stamps/* ${TMPDIR}/stamps/", d)
         try:
             ret = oe_run(d, cmd)
         except RuntimeError:
@@ -495,7 +495,7 @@ python do_package_stage () {
     bb.mkdirhier(destdir)
     # We need to include the package_stage stamp in the staging package so create one
     bb.build.make_stamp("do_package_stage", d)
-    oe_run(d, "cp -dpR %s.do_* %s/" % (stampfn, destdir))
+    oe_run(d, "cp -PpR %s.do_* %s/" % (stampfn, destdir))
 
     pstage_set_pkgmanager(d)
     bb.build.exec_func("staging_helper", d)

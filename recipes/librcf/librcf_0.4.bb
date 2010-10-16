@@ -31,8 +31,8 @@ do_install() {
 do_stage() {
 	cd ${S}
 	install -d -m 775 ${STAGING_LIBDIR}
-	cp -dp src/RCF/libRCF[sm]t.a ${STAGING_LIBDIR}
-	cp -dp src/RCF/libRCF[sm]t.so* ${STAGING_LIBDIR}
+	cp -PpR src/RCF/libRCF[sm]t.a ${STAGING_LIBDIR}
+	cp -PpR src/RCF/libRCF[sm]t.so* ${STAGING_LIBDIR}
 	install -d -m 775 ${STAGING_INCDIR}
 	tar -C include --exclude='*.diff' -cvf - . | tar -C ${STAGING_INCDIR} -xvf -
 }

@@ -185,7 +185,7 @@ do_install() {
 
 	for F in bootstrap/icedtea/{bin,include,jre,lib}
 	do
-		cp -rL $F ${JDK_INSTALL_DIR}
+		cp -RL $F ${JDK_INSTALL_DIR}
 	done
 
 	install -d ${JDK_INSTALL_DIR}/include/hpi

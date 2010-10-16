@@ -20,7 +20,7 @@ EXTRA_OECONF = " --enable-gles2-example "
 
 # bitbake git fetcher doesn't handle git submodules currently
 do_configure_prepend () {
-	cp -rf ${WORKDIR}/gstreamer-0.10.25/common/* ${S}/common/
+	cp -Rf ${WORKDIR}/gstreamer-0.10.25/common/* ${S}/common/
 	autopoint
 }
 

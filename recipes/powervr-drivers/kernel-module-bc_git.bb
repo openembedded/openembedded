@@ -21,7 +21,7 @@ EXTRA_OECONF = " --with-kpath=${STAGING_KERNEL_DIR} --enable-module-only --with-
 # bitbake git fetcher doesn't handle git submodules currently
 do_configure_prepend () {
 	sed -i s:cp:echo:g ${S}/module/Makefile.in
-	cp -rf ${WORKDIR}/gstreamer-0.10.25/common/* ${S}/common/
+	cp -Rf ${WORKDIR}/gstreamer-0.10.25/common/* ${S}/common/
 	autopoint
 	mkdir -p ${S}/win32
 	touch ${S}/win32/MANIFEST

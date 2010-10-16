@@ -13,7 +13,7 @@ do_compile() {
 
 do_install() {
 	install -d  ${D}/lib/firmware/
-	cp -rpP * ${D}/lib/firmware/
+	cp -RpP * ${D}/lib/firmware/
 }
 
 FILES_${PN} += "/lib/firmware/*"

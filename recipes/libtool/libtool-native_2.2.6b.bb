@@ -39,6 +39,6 @@ do_install () {
 	install -c -m 0644 ${S}/libltdl/m4/argz.m4 ${D}${datadir}/aclocal/
 
 	install -d ${D}${datadir}/libtool/libltdl
-	cp -pfPr  ${S}/libltdl/* ${D}${datadir}/libtool/libltdl/
+	cp -pfPR  ${S}/libltdl/* ${D}${datadir}/libtool/libltdl/
 }
 

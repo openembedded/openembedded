@@ -29,15 +29,15 @@ do_install() {
 
 	gzip -c9 ${WORKDIR}/${P}/rox.1 >${D}${mandir}/man1/rox.1.gz
 
-	cp -r ${WORKDIR}/${P}/Choices ${D}${datadir}/rox
+	cp -R ${WORKDIR}/${P}/Choices ${D}${datadir}/rox
 	rm -rf ${D}${datadir}rox/Choices/MIME-info/
 	cp ${WORKDIR}/${P}/ROX-Filer/*.xml ${D}${datadir}/rox
 
 	cp ${WORKDIR}/${P}/ROX-Filer/Help/{Changes,README*,TODO} ${D}${datadir}/doc/rox
 	cp ${WORKDIR}/${P}/ROX-Filer/Help/*html ${D}${datadir}/doc/rox/html
 	cp ${WORKDIR}/${P}/ROX-Filer/style.css ${D}${datadir}/doc/rox/html
-	cp -r ${WORKDIR}/${P}/ROX-Filer/images ${D}${datadir}/rox
-	cp -r ${WORKDIR}/${P}/ROX-Filer/ROX ${D}${datadir}/rox
+	cp -R ${WORKDIR}/${P}/ROX-Filer/images ${D}${datadir}/rox
+	cp -R ${WORKDIR}/${P}/ROX-Filer/ROX ${D}${datadir}/rox
 
 #	cp ROX-Filer/ROX-Filer ${D}/usr/bin/rox
 	cp ${WORKDIR}/${P}/ROX-Filer/.DirIcon ${D}${datadir}/rox/.DirIcon

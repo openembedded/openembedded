@@ -23,7 +23,7 @@ do_install () {
     # for details.
     install -d -m 755 ${D}${datadir}/sgml/docbook/sgml-dtd-${DTD_VERSION}
     install docbook.cat ${D}${datadir}/sgml/docbook/sgml-dtd-${DTD_VERSION}/catalog
-    cp -dpr *.dtd *.mod *.dcl ${D}${datadir}/sgml/docbook/sgml-dtd-${DTD_VERSION}
+    cp -PpRr *.dtd *.mod *.dcl ${D}${datadir}/sgml/docbook/sgml-dtd-${DTD_VERSION}
 
     install-catalog --add ${sysconfdir}/sgml/sgml-docbook-dtd-${DTD_VERSION}.cat \
       ${D}${datadir}/sgml/docbook/sgml-dtd-${DTD_VERSION}/catalog

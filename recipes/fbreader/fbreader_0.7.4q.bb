@@ -18,7 +18,7 @@ inherit pkgconfig
 
 do_install () {
         cd fbreader/openzaurus; oe_runmake .builddir RESOLUTION=240x320
-	cp -r data/* ${D}
+	cp -R data/* ${D}
 }
 
 SRC_URI[md5sum] = "17062ae0f1d7d093e61cd002e39885ae"

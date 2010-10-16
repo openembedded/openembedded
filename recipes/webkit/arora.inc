@@ -37,8 +37,8 @@ do_install() {
 	done
 
 	oe_runmake -e INSTALL_ROOT=${D} install
-	cp -r ${D}/${D}/* ${D}/ || true
-	cp -r ${D}/usr/local/* ${D}${prefix} || true
+	cp -R ${D}/${D}/* ${D}/ || true
+	cp -R ${D}/usr/local/* ${D}${prefix} || true
 	rm -rf ${D}/usr/local ${D}/${D}
 
 	if [ "$QT_LIBINFIX" = "E" ] ; then

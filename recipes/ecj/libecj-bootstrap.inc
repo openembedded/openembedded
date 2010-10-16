@@ -38,7 +38,7 @@ do_unpackpost() {
 
   # Make a copy of the remaining source to get the embedded
   # resources.
-  cp -r source/org build/
+  cp -R source/org build/
 
   # Remove source code and other stuff.
   find build -name '*.java' -exec rm -f {} \;

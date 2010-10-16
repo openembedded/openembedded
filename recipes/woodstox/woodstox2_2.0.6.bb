@@ -19,7 +19,7 @@ do_compile() {
 		`find src/java/org -name "*.java"` \
 		`find src/java/com -name "*.java"`
 
-  cp -r src/resources/* build/META-INF/services
+  cp -R src/resources/* build/META-INF/services
 
   fastjar -C build -c -f ${JARFILENAME} .
 }

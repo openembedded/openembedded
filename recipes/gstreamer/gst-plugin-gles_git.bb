@@ -28,8 +28,8 @@ inherit autotools pkgconfig
 EXTRA_OECONF = "   --disable-rpath --disable-tests --disable-examples"
 
 do_configure_prepend () {
-	cp -rf ${WORKDIR}/gstreamer-0.10.29/common/* ${S}/common/
-	cp -rf ${WORKDIR}/gstreamer-0.10.29/po/* ${S}/po/
+	cp -Rf ${WORKDIR}/gstreamer-0.10.29/common/* ${S}/common/
+	cp -Rf ${WORKDIR}/gstreamer-0.10.29/po/* ${S}/po/
 	autopoint --force
 	sed -i -e '/po /d' ${S}/Makefile.am
 }

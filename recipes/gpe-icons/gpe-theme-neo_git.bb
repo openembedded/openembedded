@@ -20,7 +20,7 @@ ALTERNATIVE_PRIORITY = 10
 do_install() {
         install -d ${D}${datadir}/gpe/
         install -d ${D}${datadir}/gpe/pixmaps.${PN}/
-        cp -r ${S}/* "${D}${datadir}/gpe/pixmaps.${PN}/"
+        cp -R ${S}/* "${D}${datadir}/gpe/pixmaps.${PN}/"
 }
 
 FILES_${PN} = "${datadir}/gpe/pixmaps.${PN}/"

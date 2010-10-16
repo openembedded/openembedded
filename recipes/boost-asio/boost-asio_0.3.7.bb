@@ -23,13 +23,13 @@ do_compile() {
 do_install() {
 	cd ${S}
 	install -d ${D}/usr/include
-	cp -dpR boost ${D}/usr/include
+	cp -PpR boost ${D}/usr/include
 }
 
 do_stage() {
 	cd ${S}
 	install -d -m 775 ${STAGING_INCDIR}
-	cp -dpR boost ${STAGING_INCDIR}
+	cp -PpR boost ${STAGING_INCDIR}
 }
 
 FILES_${PN}-dev = "/usr/include"

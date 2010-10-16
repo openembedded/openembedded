@@ -11,8 +11,8 @@ pkg_postinst_${PN}_append () {
                 fi
                 echo "Old alternatives directory ${alternatives_dir_old} exists, moving entries to new one ${alternatives_dir_new}"
                 echo "Creating backup copy of both ${alternatives_dir_old}-backup and ${alternatives_dir_new}-backup"
-                cp -ra "${alternatives_dir_old}" "${alternatives_dir_old}-backup"
-                cp -ra "${alternatives_dir_new}" "${alternatives_dir_new}-backup"
+                cp -Ra "${alternatives_dir_old}" "${alternatives_dir_old}-backup"
+                cp -Ra "${alternatives_dir_new}" "${alternatives_dir_new}-backup"
 
                 cd ${alternatives_dir_old}
                 for alt_file in * ; do

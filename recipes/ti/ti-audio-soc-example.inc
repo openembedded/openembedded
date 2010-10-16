@@ -60,11 +60,11 @@ do_install() {
     cp -pPrf ${S}/* ${D}${AUDIO_SOC_INSTALL_DIR_RECIPE}
 
     install -d ${D}/${installdir}/ti-audio-soc-example
-    cp -rf ${S}/gpp/${BOARD} ${D}/${installdir}/ti-audio-soc-example
-    cp -rf ${S}/data/* ${D}/${installdir}/ti-audio-soc-example
+    cp -Rf ${S}/gpp/${BOARD} ${D}/${installdir}/ti-audio-soc-example
+    cp -Rf ${S}/data/* ${D}/${installdir}/ti-audio-soc-example
 
-    cp -rf ${S}/dsp/${BOARD}/Debug/audioSoc_dsp.out  ${D}/${installdir}/ti-audio-soc-example/${BOARD}/Debug
-    cp -rf ${S}/dsp/${BOARD}/Debug/audioSoc_dsp.out  ${D}/${installdir}/ti-audio-soc-example/${BOARD}/Release
+    cp -Rf ${S}/dsp/${BOARD}/Debug/audioSoc_dsp.out  ${D}/${installdir}/ti-audio-soc-example/${BOARD}/Debug
+    cp -Rf ${S}/dsp/${BOARD}/Debug/audioSoc_dsp.out  ${D}/${installdir}/ti-audio-soc-example/${BOARD}/Release
 
 }
 

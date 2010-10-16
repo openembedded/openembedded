@@ -39,7 +39,7 @@ do_install () {
         for i in whitelist blacklist; do
           install -m 644 etc/havp/$i ${D}${sysconfdir}/havp/$i
         done
-        cp -r etc/havp/templates ${D}${sysconfdir}/havp
+        cp -R etc/havp/templates ${D}${sysconfdir}/havp
         chmod -R a+rX ${D}${sysconfdir}/havp/templates
 
         # We need some /var directories

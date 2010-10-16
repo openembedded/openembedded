@@ -27,7 +27,7 @@ do_configure_prepend() {
 
 do_install_append() {
 	install -d ${D}${datadir}/pygobject/
-	cp -dpfR docs/* ${D}${datadir}/pygobject/
+	cp -PpRfR docs/* ${D}${datadir}/pygobject/
 	install -d ${D}${datadir}/gtk-doc/html/pygobject/
 	cp docs/style.css ${D}${datadir}/gtk-doc/html/pygobject/
 }

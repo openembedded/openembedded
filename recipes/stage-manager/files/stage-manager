@@ -91,7 +91,7 @@ if __name__ == "__main__":
         if options.copydir:
             copypath = os.path.join(options.copydir, path.replace(options.parentdir, '', 1))
             mkdirhier(os.path.split(copypath)[0])
-            os.system("cp -dp " + path + " " + copypath)
+            os.system("cp -Pp " + path + " " + copypath)
 
     def copydir(path, fstamp):
         if options.copydir:

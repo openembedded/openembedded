@@ -25,10 +25,10 @@ do_install() {
 	install -m 0755 ${S}/webifmetabin ${D}${bindir}/
 
 	install -d ${D}${sysconfdir}	
-	cp -dPr ${S}/package/webif/files/etc/* ${D}${sysconfdir}/
+	cp -PpR ${S}/package/webif/files/etc/* ${D}${sysconfdir}/
 
 	install -d ${D}${libdir}
-	cp -dPr ${S}/package/webif/files/usr/lib/* ${D}${libdir}/
+	cp -PpR ${S}/package/webif/files/usr/lib/* ${D}${libdir}/
 
 	find ${D} -name ".svn" | xargs rm -r || true
 }

@@ -46,7 +46,7 @@ do_compile() {
 
   mkdir -p build/org/apache/tools/ant/types/conditions
 
-  cp -r src/resources/org build/
+  cp -R src/resources/org build/
   (cd src/main && find . \( -name "*.properties" -or -name "*.xml" -or -name "*.mf" \) -exec cp {} ../../build/{} \;)
 
   echo "VERSION=${PV}" > build/org/apache/tools/ant/version.txt

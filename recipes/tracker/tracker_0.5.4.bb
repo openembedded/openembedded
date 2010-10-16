@@ -11,7 +11,7 @@ SRC_URI = "http://www.gnome.org/~jamiemcc/tracker/tracker-${PV}.tar.gz \
 inherit autotools pkgconfig
 
 do_install_append() {
-	cp -dPr ${D}${STAGING_DATADIR}/* ${D}${datadir}/ || true 
+	cp -PpR ${D}${STAGING_DATADIR}/* ${D}${datadir}/ || true
 	install -d ${D}/${sysconfdir}/X11/Xsession.d/
 	install -m 0755 ${WORKDIR}/90tracker  ${D}/${sysconfdir}/X11/Xsession.d/
 }

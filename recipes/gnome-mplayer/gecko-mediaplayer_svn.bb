@@ -21,7 +21,7 @@ EXTRA_OECONF = " --enable-new-libxul=yes "
 TARGET_CC_ARCH += " -DHAVE_NEW_XULRUNNER=1 "
 
 do_install_append() {
-	cp -dpR ${WORKDIR}/extens* ${D}${libdir}/mozilla/
+	cp -PpR ${WORKDIR}/extens* ${D}${libdir}/mozilla/
 }
 
 PACKAGES =+ "${PN}-firefox-hack"

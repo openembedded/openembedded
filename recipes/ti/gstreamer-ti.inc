@@ -86,14 +86,14 @@ do_install_prepend () {
     install -d ${D}/${installdir}/gst/${PLATFORM}
 
     # copy gstreamer demo scripts
-    cp -r ${WORKDIR}/gstreamer_ti/gstreamer_demo/shared ${D}/${installdir}/gst
+    cp -R ${WORKDIR}/gstreamer_ti/gstreamer_demo/shared ${D}/${installdir}/gst
 
     # If we have loadmodules.sh in WORKDIR then give preference to this over
     # the default gst-ti loadmdules.sh
     if [ -f ${WORKDIR}/loadmodules.sh ]; then
        cp ${WORKDIR}/loadmodules.sh ${D}/${installdir}/gst/${PLATFORM}
     else
-       cp -r ${WORKDIR}/gstreamer_ti/gstreamer_demo/${PLATFORM} ${D}/${installdir}/gst
+       cp -R ${WORKDIR}/gstreamer_ti/gstreamer_demo/${PLATFORM} ${D}/${installdir}/gst
     fi   
 
     # delete .svn files

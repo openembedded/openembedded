@@ -8,7 +8,7 @@ S = "${WORKDIR}/eyeOS"
 
 do_install() {
 	install -d ${D}/www/pages/eyeos
-	cp -r ${S}/* ${D}/www/pages/eyeos
+	cp -R ${S}/* ${D}/www/pages/eyeos
 }
 
 PACKAGE_ARCH = "all"

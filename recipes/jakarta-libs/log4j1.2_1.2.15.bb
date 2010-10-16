@@ -24,7 +24,7 @@ do_compile() {
   # Built everything but the JMS and JMX classes (like in Debian)
 	javac -sourcepath src/main/java -cp $cp -d build `find src/main/java -name "*.java" -and -not \( -iwholename "*jms*" -or -iwholename "*jmx*" \)`
 
-  cp -r src/main/resources/* build/
+  cp -R src/main/resources/* build/
 
   fastjar -C build -c -f ${JARFILENAME} .
 }

@@ -17,7 +17,7 @@ S = "${WORKDIR}/git/icons/icon-theme-neo"
 do_install() {
         install -d ${D}${datadir}/icons/
         install -d ${D}${datadir}/icons/nEo/
-        cp -r ${S}/* "${D}${datadir}/icons/nEo/"
+        cp -R ${S}/* "${D}${datadir}/icons/nEo/"
 }
 
 FILES_${PN} = "${datadir}/icons/nEo/"

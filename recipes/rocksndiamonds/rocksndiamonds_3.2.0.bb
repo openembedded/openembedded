@@ -20,7 +20,7 @@ do_install() {
 	install -d ${D}${bindir}
 	install -m 755 ${PN} ${D}${bindir}
 	install -d ${D}${datadir}/${PN}
-	cp -r graphics levels music scores sounds ${D}${datadir}/${PN}/
+	cp -R graphics levels music scores sounds ${D}${datadir}/${PN}/
 }
 
 

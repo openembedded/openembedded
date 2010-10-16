@@ -68,12 +68,12 @@ do_install () {
         install -d  ${D}${sysconfdir}/
         install -d  ${D}${sysconfdir}/apache2
         install -d  ${D}${sysconfdir}/apache2/extra
-        cp -r ${S}/mythweb/* ${D}/${datadir}/apache2/htdocs/
+        cp -R ${S}/mythweb/* ${D}/${datadir}/apache2/htdocs/
         mv ${S}/mythweb/mythweb.conf.apache ${D}${sysconfdir}/apache2/extra/mythweb.conf
         sed -i -e s:/var/www/html:/usr/share/apache2/htdocs:g ${D}${sysconfdir}/apache2/extra/mythweb.conf
         install -d  ${D}/www
         install -d  ${D}/www/pages
-        cp -r ${S}/mythweb/* ${D}/www/pages/
+        cp -R ${S}/mythweb/* ${D}/www/pages/
         mv ${S}/mythweb/mythweb.conf.lighttpd ${D}${sysconfdir}/mythweb.conf
         sed -i -e s:/var/www/html:/www/pages:g ${D}${sysconfdir}/mythweb.conf
 }

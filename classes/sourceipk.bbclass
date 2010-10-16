@@ -105,7 +105,7 @@ sourceipk_do_create_srcipk() {
 
         # Copy sources for packaging
         mkdir -p $tmp_dir/${SRCIPK_INSTALL_DIR}
-        cp -rLf ${S}/* $tmp_dir/${SRCIPK_INSTALL_DIR}/
+        cp -RLf ${S}/* $tmp_dir/${SRCIPK_INSTALL_DIR}/
 
         if [ ${SRCIPK_INCLUDE_EXTRAFILES} != "0" ]
         then

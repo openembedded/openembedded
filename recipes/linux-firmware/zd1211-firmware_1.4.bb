@@ -12,7 +12,7 @@ do_compile() {
 
 do_install() {
 	install -d  ${D}/lib/firmware/zd1211
-	cp -rpP zd1211-firmware/* ${D}/lib/firmware/zd1211
+	cp -RpP zd1211-firmware/* ${D}/lib/firmware/zd1211
 }
 
 FILES_${PN} += "/lib/firmware/zd1211/*"

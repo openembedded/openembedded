@@ -14,6 +14,6 @@ S = "${WORKDIR}/usr"
 
 do_install() {
   install -d ${D}/usr
-  cp -ra ${S}/bin ${D}/usr
-  cp -ra ${S}/share ${D}/usr
+  cp -Ra ${S}/bin ${D}/usr
+  cp -Ra ${S}/share ${D}/usr
 }

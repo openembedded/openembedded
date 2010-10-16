@@ -8,7 +8,7 @@ SRC_URI += "file://gtk-theme/gtkrc.${PN}"
 
 do_install() {
 	install -d "${D}${datadir}/themes/${PN}/gtk-2.0"
-	cp -r "${S}/./" "${D}${datadir}/themes/${PN}/gtk-2.0"
+	cp -R "${S}/./" "${D}${datadir}/themes/${PN}/gtk-2.0"
         install -d ${D}${sysconfdir}/gtk-2.0/
         install -m 0644 ${WORKDIR}/gtk-theme/gtkrc.${PN} ${D}${sysconfdir}/gtk-2.0/gtkrc.${PN}
 }

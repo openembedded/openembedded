@@ -14,7 +14,7 @@ FILES_${PN} += "${RUBY_DIR}"
 
 do_install() {
 	install -d ${D}${RUBY_DIR}
-	cp -r lib/* ${D}${RUBY_DIR}
+	cp -R lib/* ${D}${RUBY_DIR}
 }
 
 

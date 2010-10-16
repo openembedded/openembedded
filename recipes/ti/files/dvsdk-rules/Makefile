@@ -245,7 +245,7 @@ install:
 	$(MAKE) -C $(DEMO_INSTALL_DIR)/$(PLATFORM) install
 
 	@echo Copying examples..
-	@cp -rp examples/$(PLATFORM)/web $(EXEC_DIR)/
+	@cp -Rp examples/$(PLATFORM)/web $(EXEC_DIR)/
 	@cp -p examples/$(PLATFORM)/dvevmdemo $(EXEC_DIR)/
 
 	@echo Installing clips..

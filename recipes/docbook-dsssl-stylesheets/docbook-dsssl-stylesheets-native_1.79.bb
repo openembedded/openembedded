@@ -23,7 +23,7 @@ do_install () {
      
     install -d ${D}${datadir}/sgml/docbook/dsssl-stylesheets-${PV}
     install -m 0644 catalog ${D}${datadir}/sgml/docbook/dsssl-stylesheets-${PV}
-    cp -dpr common ${D}${datadir}/sgml/docbook/dsssl-stylesheets-${PV}
+    cp -PpRr common ${D}${datadir}/sgml/docbook/dsssl-stylesheets-${PV}
 
     install-catalog --add ${sysconfdir}/sgml/dsssl-docbook-stylesheets.cat \
       ${D}${datadir}/sgml/docbook/dsssl-stylesheets-${PV}/catalog
