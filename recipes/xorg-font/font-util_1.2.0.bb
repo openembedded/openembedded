@@ -6,13 +6,14 @@ DESCRIPTION = "X font utils."
 
 DEPENDS = "util-macros"
 RDEPENDS_${PN} = "mkfontdir mkfontscale encodings"
+BBCLASSEXTEND = "native"
 
 PE = "1"
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.0"
 
 do_configure_prepend() {
         sed -i "s#MAPFILES_PATH=\`pkg-config#MAPFILES_PATH=\`PKG_CONFIG_PATH=\"${STAGING_LIBDIR_NATIVE}/pkg-config\" pkg-config#g" fontutil.m4.in
 }
 
-SRC_URI[archive.md5sum] = "6a56a1a93f2e07f0323db988e4ebfcce"
-SRC_URI[archive.sha256sum] = "fc1996a9f8fcb1c038a69f30a3da70f13945e308992e6ef2c7fa3a82a1412a88"
+SRC_URI[archive.md5sum] = "1bdd8ed070e02b2165d7b0f0ed93280b"
+SRC_URI[archive.sha256sum] = "dbbac617ae6cdf6f459e602361211d217f4bad5ad8bfb6adcede6196693f9712"
