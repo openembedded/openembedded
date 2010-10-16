@@ -6,9 +6,11 @@ DEPENDS = "dbus dbus-glib glib-2.0 policykit"
 # Shadow added so there is a full adduser/deluser
 # (Gnome images tend to pull in shadow anyway)
 RDEPENDS_${PN} = "shadow"
-PR = "r1"
 
-inherit gnome pkgconfig update-rc.d
+inherit gnome pkgconfig update-rc.d gettext
+
+SRC_URI[archive.md5sum] = "bde46137761df8849d6ee176449f84f5"
+SRC_URI[archive.sha256sum] = "0c1cfdf5f0550c0ccacbbc4f00ed059ab9ea483d48138132db44b3a20575d7b4"
 
 SRC_URI += " \
             file://system-tools-backends \
@@ -18,16 +20,16 @@ SRC_URI_append_angstrom = " \
             file://add-angstrom-distro.patch \
            "
 
-SRC_URI[archive.md5sum] = "01fd8fcfbe5f68492186404c96af915a"
-SRC_URI[archive.sha256sum] = "5afea48c0c195dd3b6e0b87a586c08bf614942d4bcb60449fd9f65d95418b60d"
-
 EXTRA_OECONF = " --with-net-dbus=${libdir}/perl5 "
 
 do_configure() {
 	sed -i -e 's:CC=$(CC):CC="$(CC)":g' ${S}/Net-DBus/Makefile.am
 	sed -i -e 's:CC=$(CC):CC="$(CC)":g' ${S}/Net-DBus/Makefile.in
-	gnu-configize
+	libtoolize --force --install
+	aclocal
+    gnu-configize
 	oe_runconf
+	cp ${STAGING_BINDIR_CROSS}/${TARGET_PREFIX}libtool ${S}
 }
 
 do_install_append () {
