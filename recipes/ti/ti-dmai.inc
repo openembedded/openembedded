@@ -107,6 +107,7 @@ do_compile () {
             LINK_INSTALL_DIR="${LINK_INSTALL_DIR}" \
             CMEM_INSTALL_DIR="${CMEM_INSTALL_DIR}" \
             LPM_INSTALL_DIR="${LPM_INSTALL_DIR}" \	
+            C6ACCEL_INSTALL_DIR=${C6ACCEL_INSTALL_DIR} \
             MVTOOL_PREFIX="${TARGET_PREFIX}" \
             PLATFORM="${DMAIPLATFORM}" 
 	done
