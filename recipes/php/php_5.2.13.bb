@@ -3,7 +3,7 @@ require php.inc
 DEPENDS = "zlib libxml2 virtual/libiconv php-native lemon-native mysql5 \
            libc-client openssl"
 
-PR = "r6"
+PR = "r7"
 
 SRC_URI += "file://pear-makefile.patch \
             file://imap-fix-autofoo.patch \
@@ -15,8 +15,7 @@ SRC_URI[src.sha256sum] = "2b50a2535e3bb9a98cd4d1633f9452d877276c40b385915261f040
 export THREADS="pthread"
 export LIBS=" -lpthread "
 
-EXTRA_OECONF = "    --without-iconv \
-                    --enable-mbstring \
+EXTRA_OECONF = "    --enable-mbstring \
                     --enable-discard-path \
                     --enable-sockets \
                     --enable-shared \
