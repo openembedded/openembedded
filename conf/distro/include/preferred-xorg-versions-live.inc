@@ -1,4 +1,4 @@
-#Sun Oct 10 09:53:08 CEST 2010
+#Sat Oct 16 08:56:06 CEST 2010
 #app
 PREFERRED_VERSION_appres ?= "1.0.2"
 PREFERRED_VERSION_bdftopcf ?= "1.0.2"
@@ -230,8 +230,8 @@ PREFERRED_VERSION_font-schumacher-misc ?= "1.1.1"
 PREFERRED_VERSION_font-screen-cyrillic ?= "1.0.3"
 PREFERRED_VERSION_font-sony-misc ?= "1.0.2"
 PREFERRED_VERSION_font-sun-misc ?= "1.0.2"
-PREFERRED_VERSION_font-util ?= "1.1.2"
-PREFERRED_VERSION_font-util-native ?= "1.1.2"
+PREFERRED_VERSION_font-util ?= "1.2.0"
+PREFERRED_VERSION_font-util-native ?= "1.2.0"
 PREFERRED_VERSION_font-winitzki-cyrillic ?= "1.0.2"
 PREFERRED_VERSION_font-xfree86-type1 ?= "1.0.3"
 #lib
@@ -353,4 +353,4 @@ PREFERRED_VERSION_util-macros ?= "1.10.1"
 PREFERRED_VERSION_util-macros-native ?= "1.10.1"
 PREFERRED_VERSION_xorg-cf-files ?= "1.0.3"
 #xserver
-PREFERRED_VERSION_xserver-xorg ?= "1.9.0.901"
+PREFERRED_VERSION_xserver-xorg ?= "1.9.0.902"
