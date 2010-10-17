@@ -5,9 +5,11 @@ DESCRIPTION = "OpenJade is a suite of tools for validating, \
 processing, and applying DSSSL (Document Style Semantics and \
 Specification Language) stylesheets to SGML and XML documents."
 LICENSE = "BSD"
-PR = "r3"
+PR = "r4"
 SRC_URI = "${SOURCEFORGE_MIRROR}/openjade/openjade-${PV}.tar.gz \
 	   file://configure.patch \
+	   file://autoconf.patch \
+	   file://makefile.patch \
           "
 SRC_URI_append_virtclass-native = " file://oj-native-libosp-fix.patch"
 
@@ -22,11 +24,10 @@ acpaths = "-I ${S}/config"
 # up, resulting in a fail in do_configure.
 CFLAGS_prepend = "-I${S}/include "
 
-do_configure () {
-       cp config/configure.in .
-       gnu-configize
-       oe_runconf
+do_configure_append () {
+	cp config/configure.in .
 }
+
 do_install_append () {
        # Refer to http://www.linuxfromscratch.org/blfs/view/stable/pst/openjade.html
        # for details.
