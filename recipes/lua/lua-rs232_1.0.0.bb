@@ -2,6 +2,8 @@ DESCRIPTION = "Lua bindings for librs232 - library for serial communications ove
 HOMEPAGE = "http://github.com/ynezz/librs232"
 LICENSE = "MIT"
 
+PR = "r1"
+
 DEPENDS += "lua5.1"
 RDEPENDS_${PN} += "librs232"
 
@@ -12,7 +14,7 @@ S = "${WORKDIR}/git/"
 
 inherit autotools
 
-LUA_LIB_DIR = "/usr/local/lib/lua/5.1"
+LUA_LIB_DIR = "${libdir}/lua/5.1"
 LUA_LIB = "luars232.so"
 
 PACKAGES = "${PN} ${PN}-dbg"
