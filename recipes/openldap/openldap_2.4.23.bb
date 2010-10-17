@@ -12,7 +12,7 @@ LICENSE = "OpenLDAP"
 SECTION = "libs"
 
 LDAP_VER = "${@'.'.join(bb.data.getVar('PV',d,1).split('.')[0:2])}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release/${P}.tgz"
 SRC_URI += "file://openldap-m4-pthread.patch"
@@ -188,7 +188,12 @@ DEPENDS      += "${OPENLDAP_DEPENDS}"
 CPPFLAGS_append = " -D_GNU_SOURCE"
 
 do_configure() {
+	cp ${STAGING_DATADIR}/libtool/ltmain.sh ${S}/build
+	rm -f ${S}/libtool
+	aclocal
+	libtoolize --force --copy
 	gnu-configize
+	autoconf
 	oe_runconf
 }
 
