@@ -1,6 +1,8 @@
 require libgee.inc
 PE = "1"
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
+#autoreconf needs introspection.m4 (staged by gobject-introspection-native) after http://git.gnome.org/browse/libgee/commit/?id=d026a29b38ca1a3388981c6e75a92602212373d8
+DEPENDS += "gobject-introspection-native"
 
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/libgee/0.6/${BPN}-${PV}.tar.bz2"
 S = "${WORKDIR}/${BPN}-${PV}"
