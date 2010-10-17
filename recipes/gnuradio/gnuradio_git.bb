@@ -1,34 +1,16 @@
-require gnuradio.inc
+require recipes/gnuradio/gnuradio.inc
 
-DEFAULT_PREFERENCE = "-1"
+PR = "${INC_PR}.0"
+PV = "3.3.0-${PR}+gitr${SRCREV}"
 
-DEPENDS += " gsl "
-
-#SRCREV = "0cd478fdc090123e09b7ee21c88e5657abab8ae0"
-
-SRCREV = "bf7ad4d17514aba9fc5209bc916ce37482f77eaa"
-
-PR = "${INC_PR}.2"
-PV = "3.2.1-${PR}+gitr${SRCREV}"
-
-EXTRA_OECONF += "--with-boost=${STAGING_DIR_TARGET}/usr CXXFLAGS=-DBOOST_SP_USE_PTHREADS --disable-usrp2 --disable-usrp2-firmware --with-fusb-tech=libusb1"
+SRCREV = "068aa7f5b2591f7cc06e4495c89600101bd19b6b"
 
 # Make it easy to test against developer repos and branches
-GIT_REPO = "balister.git"
-GIT_BRANCH = "omap3-build"
+GIT_REPO = "gnuradio.git"
+GIT_BRANCH = "next"
 
 SRC_URI = "git://gnuradio.org/git/${GIT_REPO};branch=${GIT_BRANCH};protocol=http \
-     ${SOURCEFORGE_MIRROR}/libusb/libusb-0.1.12.tar.gz \
 "
 
 S="${WORKDIR}/git"
 
-do_compile_append() {
-        sed -i -e s:${STAGING_DIR_TARGET}::g \
-               -e s:/${TARGET_SYS}::g \
-                  gnuradio-core/gnuradio-core.pc
-}
-
-
-SRC_URI[md5sum] = "caf182cbc7565dac0fd72155919672e6"
-SRC_URI[sha256sum] = "37f6f7d9de74196eb5fc0bbe0aea9b5c939de7f500acba3af6fd643f3b538b44"
