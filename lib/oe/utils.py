@@ -1,3 +1,10 @@
+def uniq(iterable):
+    seen = set()
+    for i in iterable:
+        if i not in seen:
+            yield i
+        seen.add(i)
+
 def read_file(filename):
     try:
         f = file( filename, "r" )

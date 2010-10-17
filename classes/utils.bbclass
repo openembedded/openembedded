@@ -1,4 +1,8 @@
 # For compatibility
+def uniq(iterable):
+    import oe.utils
+    return oe.utils.uniq(iterable)
+
 def base_path_join(a, *p):
     return oe.path.join(a, *p)
 
