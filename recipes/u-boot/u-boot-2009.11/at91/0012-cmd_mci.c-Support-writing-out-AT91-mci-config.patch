@@ -1,0 +1,100 @@
+From f6871edd6ee8af5557543d4580c43431ddfdd167 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Sun, 14 Mar 2010 00:16:41 +0100
+Subject: [PATCH] cmd_mci.c: Support writing out AT91 mci config
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+---
+ common/Makefile  |    1 +
+ common/cmd_mci.c |   67 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 68 insertions(+), 0 deletions(-)
+ create mode 100644 common/cmd_mci.c
+
+diff --git a/common/Makefile b/common/Makefile
+index a827be8..e1a72a9 100644
+--- a/common/Makefile
++++ b/common/Makefile
+@@ -106,6 +106,7 @@ COBJS-$(CONFIG_CMD_LICENSE) += cmd_license.o
+ COBJS-y += cmd_load.o
+ COBJS-$(CONFIG_LOGBUFFER) += cmd_log.o
+ COBJS-$(CONFIG_ID_EEPROM) += cmd_mac.o
++COBJS-$(CONFIG_CMD_MCI) += cmd_mci.o
+ COBJS-$(CONFIG_CMD_MEMORY) += cmd_mem.o
+ COBJS-$(CONFIG_CMD_MFSL) += cmd_mfsl.o
+ COBJS-$(CONFIG_CMD_MG_DISK) += cmd_mgdisk.o
+diff --git a/common/cmd_mci.c b/common/cmd_mci.c
+new file mode 100644
+index 0000000..dea811b
+--- /dev/null
++++ b/common/cmd_mci.c
+@@ -0,0 +1,67 @@
++/*
++ * (C) Copyright 2000
++ * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++#include <common.h>
++#include <command.h>
++#include <debug.h>
++
++#undef	DEBUG
++#if	defined(DEBUG)
++#define pr_debug(fmt, args...) 		printf(fmt, ##args)
++#else
++#define pr_debug(...) do { } while(0)
++#endif
++
++
++int do_mci (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
++{
++	int	value;
++	char	*p;
++	struct	debug_flag	*dbg;
++	pr_debug("Arg count = %d\n",argc);
++	for (value = 0; value < argc; value++) {
++		pr_debug("argv[%d] = \"%s\"\n",value,argv[value]);
++	}
++	switch (argc) {
++	case 2:
++		if (strcmp (s, "cid") == 0) {
++			printf("cid\n");
++			return 0;
++		} else if (strcmp (s, "csd") == 0) {
++			printf("csd\n");
++			return 0;			
++		}
++	default:
++		printf ("Usage:\n%s\n", cmdtp->usage);
++		return 1;
++	}
++	return 0;
++}
++
++
++U_BOOT_CMD(
++	mci, 2, 1, do_mci,
++	"mci\t- display sd card info\n",
++	"[cid|csd]\n"
++	"    - enable or disable debug"
++);
+-- 
+1.6.0.2
+

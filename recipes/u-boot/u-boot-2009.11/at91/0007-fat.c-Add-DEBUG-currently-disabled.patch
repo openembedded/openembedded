@@ -1,0 +1,26 @@
+From db9c87b27153d55cd1818d2f1a2772b8070b3715 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Sat, 13 Mar 2010 13:32:40 +0100
+Subject: [PATCH] fat.c: Add DEBUG (currently disabled)
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+---
+ fs/fat/fat.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/fs/fat/fat.c b/fs/fat/fat.c
+index 2445f1e..87e7f08 100644
+--- a/fs/fat/fat.c
++++ b/fs/fat/fat.c
+@@ -24,7 +24,7 @@
+  * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+  * MA 02111-1307 USA
+  */
+-
++//#define DEBUG
+ #include <common.h>
+ #include <config.h>
+ #include <fat.h>
+-- 
+1.6.0.2
+

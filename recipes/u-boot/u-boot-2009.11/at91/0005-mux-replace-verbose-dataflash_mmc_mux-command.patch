@@ -1,0 +1,28 @@
+From 600ddf4971206a6c653c23ddbce48253f1e07dd2 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Sat, 13 Mar 2010 13:25:26 +0100
+Subject: [PATCH] mux: replace verbose dataflash_mmc_mux command
+
+Replace verbose 17 character command with the original thing
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+---
+ common/cmd_dataflash_mmc_mux.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/common/cmd_dataflash_mmc_mux.c b/common/cmd_dataflash_mmc_mux.c
+index 97e303e..2fc67d4 100644
+--- a/common/cmd_dataflash_mmc_mux.c
++++ b/common/cmd_dataflash_mmc_mux.c
+@@ -59,7 +59,7 @@ static int mmc_nspi (const char *s)
+ 
+ U_BOOT_CMD(
+ 	dataflash_mmc_mux, 2, 1, do_dataflash_mmc_mux,
+-	"dataflash_mmc_mux\t- enable or disable MMC or SPI\n",
++	"mux\t- enable or disable MMC or SPI\n",
+ 	"[mmc, spi]\n"
+ 	"    - enable or disable MMC or SPI"
+ );
+-- 
+1.6.0.2
+

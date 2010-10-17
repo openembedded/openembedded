@@ -1,0 +1,740 @@
+From ae5aeb4f6bd5428e69b0c6a8f25d500d82dc6cde Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Sun, 14 Mar 2010 00:24:22 +0100
+Subject: [PATCH] AT91 MCI: Add support for SD-Card
+
+Add support for at91 mci peripheral.
+This allows MMC/SD Cards to be used.
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+---
+ board/atmel/at91sam9m10g45ek/at91sam9m10g45ek.c |    8 +-
+ cpu/arm926ejs/at91/at91sam9m10g45_devices.c     |   14 +
+ cpu/arm926ejs/at91/clock.c                      |    5 +
+ drivers/mmc/atmel_mci.c                         |  393 ++++++++++++++++++++---
+ drivers/mmc/atmel_mci.h                         |   14 +
+ 5 files changed, 391 insertions(+), 43 deletions(-)
+
+diff --git a/board/atmel/at91sam9m10g45ek/at91sam9m10g45ek.c b/board/atmel/at91sam9m10g45ek/at91sam9m10g45ek.c
+index 45a14a9..dd54ccd 100644
+--- a/board/atmel/at91sam9m10g45ek/at91sam9m10g45ek.c
++++ b/board/atmel/at91sam9m10g45ek/at91sam9m10g45ek.c
+@@ -36,13 +36,14 @@
+ #include <asm/arch/hardware.h>
+ #include <lcd.h>
+ #include <atmel_lcdc.h>
++
+ #if defined(CONFIG_RESET_PHY_R) && defined(CONFIG_MACB)
+ #include <net.h>
+ #endif
+ #include <netdev.h>
+ 
+ DECLARE_GLOBAL_DATA_PTR;
+-
++extern	atmel_mci_init(void);
+ /* ------------------------------------------------------------------------- */
+ /*
+  * Miscelaneous platform dependent initialisations
+@@ -258,6 +259,11 @@ int board_init(void)
+ 	at91_spi0_hw_init(1 << 4);
+ #endif
+ 
++#if defined(CONFIG_MMC)
++	at91_mci0_hw_init();
++	atmel_mci_init();
++#endif
++
+ #ifdef CONFIG_MACB
+ 	at91sam9m10g45ek_macb_hw_init();
+ #endif
+diff --git a/cpu/arm926ejs/at91/at91sam9m10g45_devices.c b/cpu/arm926ejs/at91/at91sam9m10g45_devices.c
+index 07717ea..ad25e41 100644
+--- a/cpu/arm926ejs/at91/at91sam9m10g45_devices.c
++++ b/cpu/arm926ejs/at91/at91sam9m10g45_devices.c
+@@ -172,3 +172,17 @@ void at91_macb_hw_init(void)
+ #endif
+ }
+ #endif
++
++#if defined(CONFIG_MMC)
++void	at91_mci0_hw_init()
++{
++	at91_set_A_periph(AT91_PIN_PA0, 0);	/* MCI0_CK */
++	at91_set_A_periph(AT91_PIN_PA1, 0);	/* MCI0_CDA */
++	at91_set_A_periph(AT91_PIN_PA2, 0);	/* MCI0_DA0 */
++	at91_set_A_periph(AT91_PIN_PA3, 0);	/* MCI0_DA1 */
++	at91_set_A_periph(AT91_PIN_PA4, 0);	/* MCI0_DA2 */
++	at91_set_A_periph(AT91_PIN_PA5, 0);	/* MCI0_DA3 */
++	at91_sys_write(AT91_PMC_PCER, 1 << AT91SAM9G45_ID_MCI0);
++}
++#endif
++
+diff --git a/cpu/arm926ejs/at91/clock.c b/cpu/arm926ejs/at91/clock.c
+index 574f488..3b5e66e 100644
+--- a/cpu/arm926ejs/at91/clock.c
++++ b/cpu/arm926ejs/at91/clock.c
+@@ -39,6 +39,11 @@ unsigned long get_mck_clk_rate(void)
+ 	return mck_rate_hz;
+ }
+ 
++inline unsigned long get_mci_clk_rate(void)
++{
++	return mck_rate_hz;
++}
++
+ unsigned long get_plla_clk_rate(void)
+ {
+ 	return plla_rate_hz;
+diff --git a/drivers/mmc/atmel_mci.c b/drivers/mmc/atmel_mci.c
+index 3946ffe..959bf6a 100644
+--- a/drivers/mmc/atmel_mci.c
++++ b/drivers/mmc/atmel_mci.c
+@@ -19,8 +19,10 @@
+  * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+  * MA 02111-1307 USA
+  */
++#define	DEBUG
+ #include <common.h>
+ 
++#include <fat.h>
+ #include <part.h>
+ #include <mmc.h>
+ 
+@@ -32,8 +34,18 @@
+ 
+ #include "atmel_mci.h"
+ 
+-#ifdef DEBUG
+-#define pr_debug(fmt, args...) printf(fmt, ##args)
++#if	defined(CONFIG_CMD_DEBUG)
++#define	DEBUG
++#include	<debug.h>
++struct	debug_flag mci_debug = {
++	.debug	= 0,
++	.name	= "mci",
++};
++#define pr_debugl(level, fmt, args...) if(mci_debug.debug >=  level) printf(fmt, ##args)
++#define pr_debug(fmt, args...) if(mci_debug.debug > 0) printf(fmt, ##args)
++#elif	defined(DEBUG)
++#define pr_debugl(level, fmt, args...)	printf(fmt, ##args)
++#define pr_debug(fmt, args...) 		printf(fmt, ##args)
+ #else
+ #define pr_debug(...) do { } while(0)
+ #endif
+@@ -43,7 +55,7 @@
+ #endif
+ 
+ #ifndef CONFIG_SYS_MMC_CLK_PP
+-#define CONFIG_SYS_MMC_CLK_PP		5000000
++#define CONFIG_SYS_MMC_CLK_PP		15000000
+ #endif
+ 
+ #ifndef CONFIG_SYS_MMC_OP_COND
+@@ -53,10 +65,58 @@
+ #define MMC_DEFAULT_BLKLEN	512
+ #define MMC_DEFAULT_RCA		1
+ 
++#ifdef	DEBUG
++char *cmd_name[56] = {
++	[0] =	"GO_IDLE_STATE",
++	[1] =	"SEND_OP_COND",
++	[2] =	"ALL_SEND_CID",
++	[3] =	"SET_RELATIVE_ADDR",
++	[4] =	"SET_DSR",
++	[6] =	"SWITCH",
++	[7] =	"SELECT_CARD",
++	[8] =	"SEND_EXT_CSD",
++	[9] =	"SEND_CSD",
++	[10] =	"SEND_CID",
++	[12] =	"STOP_TRANSMISSION",
++	[13] =	"SEND_STATUS",
++	[16] =	"SET_BLOCKLEN",
++	[17] =	"READ_SINGLE_BLOCK",
++	[18] =	"READ_MULTIPLE_BLOCK",
++	[24] =	"WRITE_SINGLE_BLOCK",
++	[25] =	"WRITE_MULTIPLE_BLOCK",
++	[55] =	"APP_CMD"
++};
++#endif
++char	*month[13] = {
++	[ 1]	= "Jan",
++	[ 2]	= "Feb",
++	[ 3]	= "Mar",
++	[ 4]	= "Apr",
++	[ 5]	= "May",
++	[ 6]	= "Jun",
++	[ 7]	= "Jul",
++	[ 8]	= "Aug",
++	[ 9]	= "Sep",
++	[10]	= "Oct",
++	[11]	= "Nov",
++	[12]	= "Dec"
++};
++
++
++extern int get_mci_clk_rate(void);
++
+ static unsigned int mmc_rca;
+ static int mmc_card_is_sd;
+ static block_dev_desc_t mmc_blkdev;
+ 
++int atmel_mci_init(void)
++{
++#if	defined(CONFIG_CMD_DEBUG)
++	register_debug_variable(&mci_debug);
++#endif
++	return 0;
++}
++
+ block_dev_desc_t *mmc_get_dev(int dev)
+ {
+ 	return &mmc_blkdev;
+@@ -114,9 +174,16 @@ mmc_cmd(unsigned long cmd, unsigned long arg,
+ 	unsigned long error_flags;
+ 	u32 status;
+ 
+-	pr_debug("mmc: CMD%lu 0x%lx (flags 0x%lx)\n",
+-		 cmd, arg, flags);
++#ifdef	DEBUG
++	char	*name = NULL;
++	if(cmd <= 55)
++		name = cmd_name[cmd];
++	if (name == NULL)
++		name = "UNKNOWN";
+ 
++	pr_debugl(2,"mmc: %s [CMD%lu] 0x%lx (flags 0x%lx)\n",
++		 name, cmd, arg, flags);
++#endif
+ 	error_flags = ERROR_FLAGS;
+ 	if (!(flags & RESP_NO_CRC))
+ 		error_flags |= MMCI_BIT(RCRCE);
+@@ -135,7 +202,7 @@ mmc_cmd(unsigned long cmd, unsigned long arg,
+ 		status = mmci_readl(SR);
+ 	} while (!(status & MMCI_BIT(CMDRDY)));
+ 
+-	pr_debug("mmc: status 0x%08x\n", status);
++	pr_debugl(2,"mmc: status 0x%08x\n", status);
+ 
+ 	if (status & error_flags) {
+ 		printf("mmc: command %lu failed (status: 0x%08x)\n",
+@@ -144,13 +211,13 @@ mmc_cmd(unsigned long cmd, unsigned long arg,
+ 	}
+ 
+ 	if (response_words)
+-		pr_debug("mmc: response:");
++		pr_debugl(2,"mmc: response:");
+ 
+ 	for (i = 0; i < response_words; i++) {
+ 		response[i] = mmci_readl(RSPR);
+-		pr_debug(" %08lx", response[i]);
++		pr_debugl(2," %08lx", response[i]);
+ 	}
+-	pr_debug("\n");
++	pr_debugl(2,"\n");
+ 
+ 	return 0;
+ }
+@@ -183,6 +250,8 @@ mmc_bread(int dev, unsigned long start, lbaint_t blkcnt,
+ 	  void *buffer)
+ {
+ 	int ret, i = 0;
++
++	int		timeout;
+ 	unsigned long resp[4];
+ 	unsigned long card_status, data;
+ 	unsigned long wordcount;
+@@ -203,22 +272,32 @@ mmc_bread(int dev, unsigned long start, lbaint_t blkcnt,
+ 	ret = mmc_cmd(MMC_CMD_SET_BLOCKLEN, mmc_blkdev.blksz, resp, R1 | NCR);
+ 	if (ret) goto out;
+ 
+-	pr_debug("MCI_DTOR = %08lx\n", mmci_readl(DTOR));
++	pr_debugl(2, "MCI_DTOR = %08x\n", mmci_readl(DTOR));
+ 
+ 	for (i = 0; i < blkcnt; i++, start++) {
+ 		ret = mmc_cmd(MMC_CMD_READ_SINGLE_BLOCK,
+ 			      start * mmc_blkdev.blksz, resp,
+ 			      (R1 | NCR | TRCMD_START | TRDIR_READ
+ 			       | TRTYP_BLOCK));
+-		if (ret) goto out;
++		if (ret) {
++			pr_debugl(1,"\nmmc_bread: premature exit\n");
++			goto out;
++		}
+ 
+ 		ret = -EIO;
+ 		wordcount = 0;
+ 		do {
++			timeout = 0;
+ 			do {
+ 				status = mmci_readl(SR);
+ 				if (status & (ERROR_FLAGS | MMCI_BIT(OVRE)))
+ 					goto read_error;
++				timeout++;
++				if(timeout > 0x1000000) {
++					pr_debugl(1,"\nmmc: read timeout\n");
++					goto read_error;
++				}
++
+ 			} while (!(status & MMCI_BIT(RXRDY)));
+ 
+ 			if (status & MMCI_BIT(RXRDY)) {
+@@ -229,28 +308,50 @@ mmc_bread(int dev, unsigned long start, lbaint_t blkcnt,
+ 			}
+ 		} while(wordcount < (mmc_blkdev.blksz / 4));
+ 
+-		pr_debug("mmc: read %u words, waiting for BLKE\n", wordcount);
+-
++		pr_debugl(2,"mmc: read %u dwords, waiting for BLKE\n", (unsigned int) wordcount);
++#ifndef	CONFIG_ATMEL_HSMCI
+ 		do {
+ 			status = mmci_readl(SR);
+ 		} while (!(status & MMCI_BIT(BLKE)));
+-
+-		putc('.');
++#endif
++		if(i%10 == 1) {
++			pr_debugl(1, ".");
++		}
++		udelay(1);
+ 	}
+ 
+ out:
++	pr_debugl(1,"\nmmc_bread ready\n");
+ 	/* Put the device back into Standby state */
+ 	mmc_cmd(MMC_CMD_SELECT_CARD, 0, resp, NCR);
+ 	return i;
+ 
+ read_error:
+-	mmc_cmd(MMC_CMD_SEND_STATUS, mmc_rca << 16, &card_status, R1 | NCR);
+ 	printf("mmc: bread failed, status = %08x, card status = %08lx\n",
+ 	       status, card_status);
++	mmc_cmd(MMC_CMD_SEND_STATUS, mmc_rca << 16, &card_status, R1 | NCR);
+ 	goto out;
+ }
+ 
+-static void mmc_parse_cid(struct mmc_cid *cid, unsigned long *resp)
++#if	0
++static void mmc_parse_cid_se(struct mmc_cid *cid, unsigned long *resp)
++{
++	cid->mid = resp[0] & 0xff;
++	cid->oid = (resp[0] >> 8) & 0xffff;
++	cid->pnm[0] = resp[0] >> 24;
++	cid->pnm[1] = resp[1];
++	cid->pnm[2] = resp[1] >> 8;
++	cid->pnm[3] = resp[1] >> 16;
++	cid->pnm[4] = resp[1] >> 24;
++	cid->pnm[5] = resp[2];
++	cid->pnm[6] = 0;
++	cid->prv = resp[2] >> 8;
++	cid->psn = (resp[2] >> 16) | (resp[3] << 16);
++	cid->mdt = (resp[3] >> 16) & 0x0ffff;
++
++}
++#endif
++static void mmc_parse_cid_be(struct mmc_cid *cid, unsigned long *resp)
+ {
+ 	cid->mid = resp[0] >> 24;
+ 	cid->oid = (resp[0] >> 8) & 0xffff;
+@@ -265,8 +366,24 @@ static void mmc_parse_cid(struct mmc_cid *cid, unsigned long *resp)
+ 	cid->psn = (resp[2] << 16) | (resp[3] >> 16);
+ 	cid->mdt = resp[3] >> 8;
+ }
+-
+-static void sd_parse_cid(struct mmc_cid *cid, unsigned long *resp)
++#if	0
++static void sd_parse_cid_le(struct mmc_cid *cid, unsigned long *resp)
++{
++	cid->mid = resp[0] & 0xff;
++	cid->oid = (resp[0] >> 8) & 0xffff;
++	cid->pnm[0] = resp[0] >> 24;
++	cid->pnm[1] = resp[1];
++	cid->pnm[2] = resp[1] >> 8;
++	cid->pnm[3] = resp[1] >> 16;
++	cid->pnm[4] = resp[1] >> 24;
++	cid->pnm[5] = 0;
++	cid->pnm[6] = 0;
++	cid->prv = resp[2] & 0xff;
++	cid->psn = (resp[2] >> 8) | (resp[3] << 24);
++	cid->mdt = (resp[3] >> 8) & 0x0ffff;
++}
++#endif
++static void sd_parse_cid_be(struct mmc_cid *cid, unsigned long *resp)
+ {
+ 	cid->mid = resp[0] >> 24;
+ 	cid->oid = (resp[0] >> 8) & 0xffff;
+@@ -281,6 +398,135 @@ static void sd_parse_cid(struct mmc_cid *cid, unsigned long *resp)
+ 	cid->psn = (resp[2] << 8) | (resp[3] >> 24);
+ 	cid->mdt = (resp[3] >> 8) & 0x0fff;
+ }
++#if	0
++static void sd_parse_cid_lx(struct mmc_cid *cid, unsigned char *resp)
++{
++
++	cid->mid = resp[0];
++	cid->oid = (resp[2] << 8) | resp[0];;
++	cid->pnm[0] = resp[3];
++	cid->pnm[1] = resp[4];
++	cid->pnm[2] = resp[5];
++	cid->pnm[3] = resp[6];
++	cid->pnm[4] = resp[7];
++	cid->pnm[5] = 0;
++	cid->pnm[6] = 0;
++	cid->prv = resp[8];
++	cid->psn = 
++		(resp[ 9] *	0x00000001)	|
++		(resp[10] *	0x00000100)	|
++		(resp[11] *	0x00010000)	|
++		(resp[12] *	0x01000000);
++	cid->mdt = 
++		(resp[13] *	0x00000001)	|
++		(resp[14] *	0x00000100);
++}
++#endif
++#define	BM00	0x0000
++#define	BM01	0x0001
++#define	BM02	0x0003
++#define	BM03	0x0007
++#define	BM04	0x000f
++#define	BM05	0x001f
++#define	BM06	0x003f
++#define	BM07	0x007f
++#define	BM08	0x0ff
++#define	BM09	0x01ff
++#define	BM10	0x03ff
++#define	BM11	0x07ff
++#define	BM12	0x0fff
++
++static void mmc_parse_csd(unsigned long *resp, struct mmc_csd *csd)
++{
++	unsigned long *csd_raw = resp;
++	printf("CSD data: %08lx %08lx %08lx %08lx\n",
++	       csd_raw[0], csd_raw[1], csd_raw[2], csd_raw[3]);
++
++	csd->csd_structure		= ((resp[0] >> 30) & BM02);
++	csd->spec_vers			= ((resp[0] >> 26) & BM04);
++	csd->rsvd1			= ((resp[0] >> 24) & BM02);
++	csd->taac			= ((resp[0] >> 16) & BM08);
++	csd->nsac			= ((resp[0] >>  8) & BM08);
++	csd->tran_speed			= ((resp[0] >>  0) & BM08);
++
++	csd->ccc			= ((resp[1] >> 20) & BM12);
++	csd->read_bl_len		= ((resp[1] >> 16) & BM04);
++	csd->read_bl_partial		= ((resp[1] >> 15) & BM01);
++	csd->write_blk_misalign		= ((resp[1] >> 14) & BM01);
++	csd->read_blk_misalign		= ((resp[1] >> 13) & BM01);
++	csd->dsr_imp			= ((resp[1] >> 12) & BM01);
++	csd->rsvd2			= ((resp[1] >> 10) & BM02);
++	csd->c_size			= (((resp[1] >>  0) & BM10) << 2) |
++					   ((resp[2] >> 30) & BM02);
++	
++	csd->vdd_r_curr_min		= ((resp[2] >> 27) & BM03);
++	csd->vdd_r_curr_max		= ((resp[2] >> 24) & BM03);
++	csd->vdd_w_curr_min		= ((resp[2] >> 21) & BM03);
++	csd->vdd_w_curr_max		= ((resp[2] >> 18) & BM03);
++	csd->c_size_mult		= ((resp[2] >> 15) & BM03);
++
++	/* original: erase_blk_enable:1, sector_size:7, wp_grp_size:7 */
++	csd->sector_size		= ((resp[2] >> 12) & BM05);
++	csd->erase_grp_size		= ((resp[2] >>  6) & BM05);
++	csd->wp_grp_size		= ((resp[2] >>  0) & BM05);
++
++	csd->wp_grp_enable		= ((resp[3] >> 31) & BM01);
++
++	/* original: reserved for MultiMediaCompatability */
++	csd->default_ecc		= ((resp[3] >> 29) & BM02);
++
++	csd->r2w_factor			= ((resp[3] >> 26) & BM03);
++	csd->write_bl_len		= ((resp[3] >> 22) & BM04);
++	csd->write_bl_partial		= ((resp[3] >> 21) & BM01);
++	csd->rsvd3			= ((resp[3] >> 16) & BM05);
++	csd->file_format_grp		= ((resp[3] >> 15) & BM01);
++	csd->copy			= ((resp[3] >> 14) & BM01);
++	csd->perm_write_protect		= ((resp[3] >> 13) & BM01);
++	csd->tmp_write_protect		= ((resp[3] >> 12) & BM01);
++	csd->file_format		= ((resp[3] >> 10) & BM02);
++	csd->ecc			= ((resp[3] >>  8) & BM02);
++	csd->crc			= ((resp[3] >>  1) & BM07);
++	csd->one			= ((resp[3] >>  0) & BM01);
++
++	pr_debugl(2," csd_structure=	  2:0x%08x\n", csd->csd_structure);
++	pr_debugl(2, "spec_vers=	  4:0x%08x\n", csd->spec_vers);
++	pr_debugl(2, "rsvd1=		  2:0x%08x\n", csd->rsvd1);
++	pr_debugl(2, "taac=		  8:0x%08x\n", csd->taac);
++	pr_debugl(2, "nsac=		  8:0x%08x\n", csd->nsac);
++	pr_debugl(2, "tran_speed=	  8:0x%08x\n", csd->tran_speed);
++	pr_debugl(2, "ccc=		 12:0x%08x\n", csd->ccc);
++	pr_debugl(2, "read_bl_len=	  4:0x%08x\n", csd->read_bl_len);
++	pr_debugl(2, "read_bl_partial=	  1:0x%08x\n", csd->read_bl_partial);
++	pr_debugl(2, "write_blk_misalign= 1:0x%08x\n", csd->write_blk_misalign);
++	pr_debugl(2, "read_blk_misalign=  1:0x%08x\n", csd->read_blk_misalign);
++	pr_debugl(2, "dsr_imp=		  1:0x%08x\n", csd->dsr_imp);
++	pr_debugl(2, "rsvd2=		  1:0x%08x\n", csd->rsvd2);
++	pr_debugl(2, "c_size=		 12:0x%08x\n", csd->c_size);
++	pr_debugl(2, "vdd_r_curr_min=	  3:0x%08x\n", csd->vdd_r_curr_min);
++	pr_debugl(2, "vdd_r_curr_max=	  3:0x%08x\n", csd->vdd_r_curr_max);
++	pr_debugl(2, "vdd_w_curr_min=	  3:0x%08x\n", csd->vdd_w_curr_min);
++	pr_debugl(2, "vdd_w_curr_max=	  3:0x%08x\n", csd->vdd_w_curr_max);
++	pr_debugl(2, "c_size_mult=	  3:0x%08x\n", csd->c_size_mult);
++	pr_debugl(2, "sector_size=	  5:0x%08x\n", csd->sector_size);
++	pr_debugl(2, "erase_grp_size=	  5:0x%08x\n", csd->erase_grp_size);
++	pr_debugl(2, "wp_grp_size=	  5:0x%08x\n", csd->wp_grp_size);
++	pr_debugl(2, "wp_grp_enable=	  1:0x%08x\n", csd->wp_grp_enable);
++	pr_debugl(2, "default_ecc=	 0x%08x\n", csd->default_ecc);
++	pr_debugl(2, "r2w_factor=	 0x%08x\n", csd->r2w_factor);
++	pr_debugl(2, "write_bl_len=	 0x%08x\n", csd->write_bl_len);
++	pr_debugl(2, "write_bl_partial=	 0x%08x\n", csd->write_bl_partial);
++	pr_debugl(2, "rsvd3=		 0x%08x\n", csd->rsvd3);
++	pr_debugl(2, "file_format_grp=	  1:0x%08x\n", csd->file_format_grp);
++	pr_debugl(2, "copy=		  1:0x%08x\n", csd->copy);
++	pr_debugl(2, "perm_write_protect= 1:0x%08x\n", csd->perm_write_protect);
++	pr_debugl(2, "tmp_write_protect=  1:0x%08x\n", csd->tmp_write_protect);
++	pr_debugl(2, "file_format=	 0x%08x\n", csd->file_format);
++	pr_debugl(2, "ecc=		 0x%08x\n", csd->ecc);
++	pr_debugl(2, "crc=		 0x%08x\n", csd->crc);
++	pr_debugl(2, "one=		 0x%08x\n", csd->one);
++}
++
++
+ 
+ static void mmc_dump_cid(const struct mmc_cid *cid)
+ {
+@@ -290,15 +536,14 @@ static void mmc_dump_cid(const struct mmc_cid *cid)
+ 	printf("Product Revision:      %u.%u\n",
+ 	       cid->prv >> 4, cid->prv & 0x0f);
+ 	printf("Product Serial Number: %lu\n", cid->psn);
+-	printf("Manufacturing Date:    %02u/%02u\n",
+-	       cid->mdt >> 4, cid->mdt & 0x0f);
++	printf("Manufacturing Date:    %s %4u\n",
++	       month[cid->mdt & 0x0f], 2000u + ((cid->mdt >> 4) && 0xff));
++	pr_debug("mdt: %02x\n",cid->mdt);
+ }
+ 
+ static void mmc_dump_csd(const struct mmc_csd *csd)
+ {
+-	unsigned long *csd_raw = (unsigned long *)csd;
+-	printf("CSD data: %08lx %08lx %08lx %08lx\n",
+-	       csd_raw[0], csd_raw[1], csd_raw[2], csd_raw[3]);
++
+ 	printf("CSD structure version:   1.%u\n", csd->csd_structure);
+ 	printf("MMC System Spec version: %u\n", csd->spec_vers);
+ 	printf("Card command classes:    %03x\n", csd->ccc);
+@@ -339,14 +584,19 @@ static int mmc_idle_cards(void)
+ 		return ret;
+ 
+ 	/* Keep the bus idle for 74 clock cycles */
+-	return mmc_cmd(0, 0, NULL, INIT_CMD);
++	return mmc_cmd(MMC_CMD_GO_IDLE_STATE, 0, NULL, INIT_CMD);
+ }
+ 
+ static int sd_init_card(struct mmc_cid *cid, int verbose)
+ {
+ 	unsigned long resp[4];
+ 	int i, ret = 0;
+-
++#if	0
++	struct mmc_cid *cid_le;
++	struct mmc_cid *cid_be;
++	struct mmc_cid *cid_lx;
++#endif
++	unsigned char *p;
+ 	mmc_idle_cards();
+ 	for (i = 0; i < 1000; i++) {
+ 		ret = mmc_acmd(SD_CMD_APP_SEND_OP_COND, CONFIG_SYS_MMC_OP_COND,
+@@ -362,18 +612,45 @@ static int sd_init_card(struct mmc_cid *cid, int verbose)
+ 	ret = mmc_cmd(MMC_CMD_ALL_SEND_CID, 0, resp, R2 | NID);
+ 	if (ret)
+ 		return ret;
+-	sd_parse_cid(cid, resp);
++#if	0
++	sd_parse_cid_le(cid_le, resp);
++	if (verbose)
++		mmc_dump_cid(cid_le);
++
++	sd_parse_cid_be(cid_be, resp);
++	if (verbose)
++		mmc_dump_cid(cid_be);
++
++	sd_parse_cid_lx(cid_lx, (unsigned char *) resp);
++	if (verbose)
++		mmc_dump_cid(cid_lx);
++#endif
++	sd_parse_cid_be(cid, resp);
+ 	if (verbose)
+ 		mmc_dump_cid(cid);
+ 
++	for(i = 0; i < 4; i++) {
++		pr_debug("CID[%d]: %08x\n",i,(unsigned int) resp[i]);
++	}
++	p = (unsigned char *) resp;
++	for(i = 0; i < 15; i++) {
++		pr_debug("%2d: '%c'\n",i,*p++);
++	}
++
+ 	/* Get RCA of the card that responded */
++	/* CMD3 */
+ 	ret = mmc_cmd(SD_CMD_SEND_RELATIVE_ADDR, 0, resp, R6 | NCR);
+ 	if (ret)
+ 		return ret;
+ 
+-	mmc_rca = resp[0] >> 16;
++	pr_debug("RCA resp = 0x%08x\n",(unsigned int) resp[0]);
++	mmc_rca = 
++		(((resp[0] >> 24) & 0xff) * 0x00000100)	|
++		(((resp[0] >> 16) & 0xff) * 0x00000001);
++	
++	
+ 	if (verbose)
+-		printf("SD Card detected (RCA %u)\n", mmc_rca);
++		printf("SD Card detected (RCA %u:0x%04x)\n", mmc_rca,mmc_rca);
+ 	mmc_card_is_sd = 1;
+ 	return 0;
+ }
+@@ -399,7 +676,8 @@ static int mmc_init_card(struct mmc_cid *cid, int verbose)
+ 	ret = mmc_cmd(MMC_CMD_ALL_SEND_CID, 0, resp, R2 | NID | OPEN_DRAIN);
+ 	if (ret)
+ 		return ret;
+-	mmc_parse_cid(cid, resp);
++
++	mmc_parse_cid_be(cid, resp);
+ 	if (verbose)
+ 		mmc_dump_cid(cid);
+ 
+@@ -467,8 +745,9 @@ int mmc_legacy_init(int verbose)
+ {
+ 	struct mmc_cid cid;
+ 	struct mmc_csd csd;
+-	unsigned int max_blksz;
+ 	int ret;
++	unsigned long resp[4];
++	int	max_blksz;
+ 
+ 	/* Initialize controller */
+ 	mmci_writel(CR, MMCI_BIT(SWRST));
+@@ -488,9 +767,13 @@ int mmc_legacy_init(int verbose)
+ 		return ret;
+ 
+ 	/* Get CSD from the card */
+-	ret = mmc_cmd(MMC_CMD_SEND_CSD, mmc_rca << 16, &csd, R2 | NCR);
++	/* CMD9 */
++	ret = mmc_cmd(MMC_CMD_SEND_CSD, mmc_rca << 16, resp, R2 | NCR);
+ 	if (ret)
+ 		return ret;
++
++	mmc_parse_csd(resp, &csd);
++
+ 	if (verbose)
+ 		mmc_dump_csd(&csd);
+ 
+@@ -498,15 +781,40 @@ int mmc_legacy_init(int verbose)
+ 
+ 	/* Initialize the blockdev structure */
+ 	mmc_blkdev.if_type = IF_TYPE_MMC;
++	mmc_blkdev.dev = 1;
+ 	mmc_blkdev.part_type = PART_TYPE_DOS;
+-	mmc_blkdev.block_read = mmc_bread;
++	mmc_blkdev.target = 0;
++	mmc_blkdev.lun = 0;
++	mmc_blkdev.type = DEV_TYPE_HARDDISK;
++	mmc_blkdev.removable = 1;
++	mmc_blkdev.lba = (csd.c_size + 1) * (1 << (csd.c_size_mult + 2));
++	mmc_blkdev.blksz = MMC_DEFAULT_BLKLEN;
+ 	sprintf((char *)mmc_blkdev.vendor,
+-		"Man %02x%04x Snr %08lx",
++		"Man %02x %04x Snr %08lx",
+ 		cid.mid, cid.oid, cid.psn);
+-	strncpy((char *)mmc_blkdev.product, cid.pnm,
+-		sizeof(mmc_blkdev.product));
++	sprintf((char *)mmc_blkdev.product, "%s",cid.pnm);
+ 	sprintf((char *)mmc_blkdev.revision, "%x %x",
+ 		cid.prv >> 4, cid.prv & 0x0f);
++	mmc_blkdev.block_read = mmc_bread;
++
++	pr_debugl(2,"c_size: %d, c_size_mult: %d, lba: %d\n",
++		csd.c_size,
++		csd.c_size_mult, 
++		(int) mmc_blkdev.lba);
++
++	mci_set_mode(CONFIG_SYS_MMC_CLK_PP, mmc_blkdev.blksz);
++
++#if	0
++	pr_debugl(2,"mmc select card\n");
++	/* CMD7 */
++	ret = mmc_cmd(MMC_CMD_SELECT_CARD, mmc_rca << 16, resp, R1 | NCR);
++	if (ret) goto out;
++
++	/* CMD16 */
++	pr_debugl(2,"mmc set blocklen\n");
++	ret = mmc_cmd(MMC_CMD_SET_BLOCKLEN, mmc_blkdev.blksz, resp, R1 | NCR);
++	if (ret) goto out;
++#endif
+ 
+ 	/*
+ 	 * If we can't use 512 byte blocks, refuse to deal with the
+@@ -514,20 +822,21 @@ int mmc_legacy_init(int verbose)
+ 	 */
+ 	max_blksz = 1 << csd.read_bl_len;
+ 	if (max_blksz < 512 || (max_blksz > 512 && !csd.read_bl_partial)) {
+-		printf("Card does not support 512 byte reads, aborting.\n");
+-		return -ENODEV;
++			printf("Card does not support 512 byte reads, aborting.\n");
++			return -ENODEV;
++	} else {
++		mmc_blkdev.blksz = 512;
+ 	}
+-	mmc_blkdev.blksz = 512;
+ 	mmc_blkdev.lba = (csd.c_size + 1) * (1 << (csd.c_size_mult + 2));
+ 
+-	mci_set_mode(CONFIG_SYS_MMC_CLK_PP, mmc_blkdev.blksz);
+ 
+-#if 0
++#if 1
+ 	if (fat_register_device(&mmc_blkdev, 1))
+ 		printf("Could not register MMC fat device\n");
+ #else
++	pr_debugl(1,"mmc init part\n");
+ 	init_part(&mmc_blkdev);
+ #endif
+-
++	pr_debugl(1,"mmc init done\n");
+ 	return 0;
+ }
+diff --git a/drivers/mmc/atmel_mci.h b/drivers/mmc/atmel_mci.h
+index 5b4f5c9..2d716c0 100644
+--- a/drivers/mmc/atmel_mci.h
++++ b/drivers/mmc/atmel_mci.h
+@@ -29,6 +29,10 @@
+ #define MMCI_SDCR				0x000c
+ #define MMCI_ARGR				0x0010
+ #define MMCI_CMDR				0x0014
++#if	defined(CONFIG_ATMEL_HSMCI)
++#define MMCI_BLKR				0x0018
++#define MMCI_CSTOR				0x001c
++#endif
+ #define MMCI_RSPR				0x0020
+ #define MMCI_RSPR1				0x0024
+ #define MMCI_RSPR2				0x0028
+@@ -40,6 +44,14 @@
+ #define MMCI_IDR				0x0048
+ #define MMCI_IMR				0x004c
+ 
++#if	defined(CONFIG_ATMEL_HSMCI)
++#define MMCI_DMA				0x0050
++#define MMCI_CFG				0x0054
++#define MMCI_WPMR				0x00E4
++#define MMCI_WPSR				0x00E8
++#define MMCI_FIFO				0x0200
++#endif
++
+ /* Bitfields in CR */
+ #define MMCI_MCIEN_OFFSET			0
+ #define MMCI_MCIEN_SIZE				1
+@@ -198,4 +210,6 @@
+ #define mmci_writel(reg,value)				\
+ 	writel((value), (void *)MMCI_BASE + MMCI_##reg)
+ 
++extern int atmel_mci_init(void);
++
+ #endif /* __CPU_AT32AP_ATMEL_MCI_H__ */
+-- 
+1.6.0.2
+

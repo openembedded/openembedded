@@ -1,0 +1,59 @@
+From 430af289fc8b48a53e4b899f64025d37689191df Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Sun, 14 Mar 2010 00:20:07 +0100
+Subject: [PATCH] atmel_dataflash.c: Status printout depend on DEBUG
+
+Replace debug printf's with pr_debug, which
+only gets printed when DEBUG is set
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+---
+ drivers/spi/atmel_dataflash_spi.c |   25 +++++++++++++++----------
+ 1 files changed, 15 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/spi/atmel_dataflash_spi.c b/drivers/spi/atmel_dataflash_spi.c
+index 5307e34..f4bf916 100644
+--- a/drivers/spi/atmel_dataflash_spi.c
++++ b/drivers/spi/atmel_dataflash_spi.c
+@@ -28,6 +28,11 @@
+ #include <asm/arch/at91_spi.h>
+ 
+ #include <dataflash.h>
++#ifdef DEBUG
++#define pr_debug(fmt, args...) printf(fmt, ##args)
++#else
++#define pr_debug(...) do { } while(0)
++#endif
+ 
+ #define AT91_SPI_PCS0_DATAFLASH_CARD	0xE	/* Chip Select 0: NPCS0%1110 */
+ #define AT91_SPI_PCS1_DATAFLASH_CARD	0xD	/* Chip Select 1: NPCS1%1101 */
+@@ -91,16 +96,16 @@ void AT91F_SpiInit(void)
+ 	 * Add tempo to get SPI in a safe state.
+ 	 * Should not be needed for new silicon (Rev B)
+ 	 */
+-	printf("CPU running at %d Hz\n",get_cpu_clk_rate());
+-	printf("MCK running at %d Hz\n",get_mck_clk_rate());
+-	printf("SPI_MR		0x%08x\n",mr=readl(AT91_BASE_SPI + AT91_SPI_MR));
+-	printf("SPI_SR		0x%08x\n",sr=readl(AT91_BASE_SPI + AT91_SPI_SR));
+-	printf("SPI_IMR		0x%08x\n",imr=readl(AT91_BASE_SPI + AT91_SPI_IMR));
+-	printf("SPI_CSR0	0x%08x\n",csr0=readl(AT91_BASE_SPI + AT91_SPI_CSR(0)));
+-	printf("SPI_CSR1	0x%08x\n",csr1=readl(AT91_BASE_SPI + AT91_SPI_CSR(1)));
+-	printf("SPI_CSR2	0x%08x\n",csr2=readl(AT91_BASE_SPI + AT91_SPI_CSR(2)));
+-	printf("SPI_CSR3	0x%08x\n",csr3=readl(AT91_BASE_SPI + AT91_SPI_CSR(3)));
+-	printf("SPI SPEED = 	%d Hz\n", get_mck_clk_rate()/ ((csr0 >> 8) & 0xff));
++	pr_debug("CPU running at %d Hz\n",get_cpu_clk_rate());
++	pr_debug("MCK running at %d Hz\n",get_mck_clk_rate());
++	pr_debug("SPI_MR		0x%08x\n",mr=readl(AT91_BASE_SPI + AT91_SPI_MR));
++	pr_debug("SPI_SR		0x%08x\n",sr=readl(AT91_BASE_SPI + AT91_SPI_SR));
++	pr_debug("SPI_IMR		0x%08x\n",imr=readl(AT91_BASE_SPI + AT91_SPI_IMR));
++	pr_debug("SPI_CSR0	0x%08x\n",csr0=readl(AT91_BASE_SPI + AT91_SPI_CSR(0)));
++	pr_debug("SPI_CSR1	0x%08x\n",csr1=readl(AT91_BASE_SPI + AT91_SPI_CSR(1)));
++	pr_debug("SPI_CSR2	0x%08x\n",csr2=readl(AT91_BASE_SPI + AT91_SPI_CSR(2)));
++	pr_debug("SPI_CSR3	0x%08x\n",csr3=readl(AT91_BASE_SPI + AT91_SPI_CSR(3)));
++	pr_debug("SPI SPEED = 	%d Hz\n", get_mck_clk_rate()/ ((csr0 >> 8) & 0xff));
+ 	udelay(500000);
+ 
+ 	readl(AT91_BASE_SPI + AT91_SPI_SR);
+-- 
+1.6.0.2
+

@@ -1,0 +1,148 @@
+From 50edf2024c826048652f29a350887946fba4a509 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Sat, 13 Mar 2010 23:56:39 +0100
+Subject: [PATCH] env_dataflash.c: More robust handling.
+
+1: When u-boot environment is in dataflash, it is safe to
+   assume that this is the boot flash.
+   We can then assume we are already reloacted to DRAM
+   and have plenty of memory.
+   No need to split reads into inefficient small chunks
+2: Reread memory on CRC error
+3: Validate writes to environment, and repeat.
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+---
+ common/env_dataflash.c |   85 +++++++++++++++++++++++++++++++----------------
+ 1 files changed, 56 insertions(+), 29 deletions(-)
+
+diff --git a/common/env_dataflash.c b/common/env_dataflash.c
+index 27a3bbc..a394baa 100644
+--- a/common/env_dataflash.c
++++ b/common/env_dataflash.c
+@@ -23,11 +23,18 @@
+ #include <linux/stddef.h>
+ #include <dataflash.h>
+ 
++#ifdef DEBUG
++#define pr_debug(fmt, args...) printf(fmt, ##args)
++#else
++#define pr_debug(...) do { } while(0)
++#endif
++
+ DECLARE_GLOBAL_DATA_PTR;
+ 
+ env_t *env_ptr = NULL;
+ 
+ char * env_name_spec = "dataflash";
++static	env_t	buf;
+ 
+ extern int read_dataflash (unsigned long addr, unsigned long size, char
+ *result);
+@@ -45,54 +52,74 @@ uchar env_get_char_spec (int index)
+ 	return (c);
+ }
+ 
++
+ void env_relocate_spec (void)
+ {
+-	read_dataflash(CONFIG_ENV_ADDR, CONFIG_ENV_SIZE, (char *)env_ptr);
++	ulong	new;
++	ulong	i;
++	for(i = 0; i < 320; i++) {
++		read_dataflash(CONFIG_ENV_ADDR,sizeof(env_t), (char *)&buf);
++		new = crc32 (0, buf.data, sizeof(buf.data));
++		pr_debug("Stored CRC=[0x%08x], Read CRC=[0x%08x]\r\n",buf.crc,new);
++		if(new == buf.crc) {
++			pr_debug ("*** CRC in dataflash valid\n\n");
++			gd->env_addr  = offsetof(env_t,data);
++			gd->env_valid = 1;
++			env_ptr = &buf;
++			return;
++		}
++	}
+ }
+ 
+ int saveenv(void)
+ {
+ 	/* env must be copied to do not alter env structure in memory*/
++	int	error;
++	int	i;
+ 	unsigned char temp[CONFIG_ENV_SIZE];
+-	memcpy(temp, env_ptr, CONFIG_ENV_SIZE);
+-	return write_dataflash(CONFIG_ENV_ADDR, (unsigned long)temp, CONFIG_ENV_SIZE);
++
++	for(i = 0; i < 4; i++) {
++		memcpy(temp, env_ptr, CONFIG_ENV_SIZE);
++		error = write_dataflash(CONFIG_ENV_ADDR, (unsigned long)temp, CONFIG_ENV_SIZE);
++		read_dataflash(CONFIG_ENV_ADDR,sizeof(env_t), (char *)&temp);
++		if (memcmp(env_ptr,temp,CONFIG_ENV_SIZE) == 0) return error;
++		pr_debug("Dataflash environment verify failed, retrying...\n");
++	}
++	pr_debug("Dataflash environment verify failed, aborting...\n");
++	return error;
+ }
+ 
+ /************************************************************************
+  * Initialize Environment use
+- *
+- * We are still running from ROM, so data use is limited
+- * Use a (moderately small) buffer on the stack
++ * When environment is in dataflash, it is OK to assume that we
++ * are booting from dataflash, and then u-boot is always executing 
++ * from DRAM. Use a large buffer for faster/easier use
+  */
+ int env_init(void)
+ {
+-	ulong crc, len, new;
+-	unsigned off;
+-	uchar buf[64];
++	unsigned int crc,  new;
++	int	i;
+ 	if (gd->env_valid == 0){
+ 		AT91F_DataflashInit();	/* prepare for DATAFLASH read/write */
++		for(i = 0; i < 24; i++) {
++			read_dataflash(CONFIG_ENV_ADDR,sizeof(env_t), (char *)&buf);
++			new = crc32 (0, buf.data, sizeof(buf.data));
++			pr_debug("Stored CRC=[0x%08x], Read CRC=[0x%08x]\r\n",buf.crc,new);
++			if(new == buf.crc) {
++				pr_debug ("*** CRC in dataflash valid\n");
++				gd->env_addr  = offsetof(env_t,data);
++				gd->env_valid = 1;
++				return 0;
+ 
+-		/* read old CRC */
+-		read_dataflash(CONFIG_ENV_ADDR + offsetof(env_t, crc),
+-			sizeof(ulong), (char *)&crc);
+-		new = 0;
+-		len = ENV_SIZE;
+-		off = offsetof(env_t,data);
+-		while (len > 0) {
+-			int n = (len > sizeof(buf)) ? sizeof(buf) : len;
+-			read_dataflash(CONFIG_ENV_ADDR + off, n, (char *)buf);
+-			new = crc32 (new, buf, n);
+-			len -= n;
+-			off += n;
+-		}
+-		if (crc == new) {
+-			gd->env_addr  = offsetof(env_t,data);
+-			gd->env_valid = 1;
+-		} else {
+-			gd->env_addr  = (ulong)&default_environment[0];
+-			gd->env_valid = 0;
++			}
+ 		}
++		pr_debug("*** CRC in dataflash not valid\n\n");
++		pr_debug("Stored CRC=[0x%08x], Read CRC=[0x%08x]\r\n",crc,new);
++		pr_debug("Buffer = [0x%08x]\n\n\r", (unsigned int) &buf);
++		pr_debug("Default = [0x%08x]\n\n\r", (unsigned int) default_environment);
++		pr_debug("Environment = [0x%08x]\n\n\r", (unsigned int) env_ptr);
++		gd->env_addr  = (ulong)&default_environment[0];
++		gd->env_valid = 0;
+ 	}
+-
+ 	return (0);
+ }
+-- 
+1.6.0.2
+

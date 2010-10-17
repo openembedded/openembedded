@@ -1,0 +1,117 @@
+From 05c663921ff0fab52cafd2ff23848fa4bfabc5ec Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf@grond.atmel.com>
+Date: Sat, 27 Feb 2010 08:58:44 +0100
+Subject: [PATCH] Support running ATSAM9G45/M10 from dataflash
+
+The current at91sam9g45 targets can build for dataflash
+but the target will still use NAND flash for the environment.
+
+This patch will add the first hooks to allow use of dataflash.
+The end result will use dataflash, but there are bit errors
+during transmission, so the CRC check will always fail.
+This will be fixed by later patches.
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+---
+ Makefile                                    |    2 +-
+ board/atmel/at91sam9m10g45ek/Makefile       |    1 +
+ board/atmel/at91sam9m10g45ek/partition.c    |   40 +++++++++++++++++++++++++++
+ cpu/arm926ejs/at91/at91sam9m10g45_devices.c |    3 +-
+ 4 files changed, 43 insertions(+), 3 deletions(-)
+ create mode 100644 board/atmel/at91sam9m10g45ek/partition.c
+
+diff --git a/Makefile b/Makefile
+index f06a97c..0bfa61c 100644
+--- a/Makefile
++++ b/Makefile
+@@ -2876,7 +2876,7 @@ at91sam9g45ekes_config	:	unconfig
+ 		echo "#define CONFIG_SYS_USE_NANDFLASH 1"	>>$(obj)include/config.h ; \
+ 		$(XECHO) "... with environment variable in NAND FLASH" ; \
+ 	else \
+-		echo "#define CONFIG_ATMEL_SPI 1"	>>$(obj)include/config.h ; \
++		echo "#define CONFIG_SYS_USE_DATAFLASH 1"	>>$(obj)include/config.h ; \
+ 		$(XECHO) "... with environment variable in SPI DATAFLASH CS0" ; \
+ 	fi;
+ 	@$(MKCONFIG) -a at91sam9m10g45ek arm arm926ejs at91sam9m10g45ek atmel at91
+diff --git a/board/atmel/at91sam9m10g45ek/Makefile b/board/atmel/at91sam9m10g45ek/Makefile
+index 4caf1e4..914cc1a 100644
+--- a/board/atmel/at91sam9m10g45ek/Makefile
++++ b/board/atmel/at91sam9m10g45ek/Makefile
+@@ -31,6 +31,7 @@ LIB	= $(obj)lib$(BOARD).a
+ 
+ COBJS-y += at91sam9m10g45ek.o
+ COBJS-y += led.o
++COBJS-$(CONFIG_HAS_DATAFLASH) += partition.o
+ 
+ SRCS	:= $(SOBJS:.o=.S) $(COBJS-y:.o=.c)
+ OBJS	:= $(addprefix $(obj),$(COBJS-y))
+diff --git a/board/atmel/at91sam9m10g45ek/partition.c b/board/atmel/at91sam9m10g45ek/partition.c
+new file mode 100644
+index 0000000..2629c67
+--- /dev/null
++++ b/board/atmel/at91sam9m10g45ek/partition.c
+@@ -0,0 +1,40 @@
++/*
++ * (C) Copyright 2008
++ * Ulf Samuelsson <ulf@atmel.com>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ *
++ */
++#include <common.h>
++#include <config.h>
++#include <asm/hardware.h>
++#include <dataflash.h>
++
++AT91S_DATAFLASH_INFO dataflash_info[CONFIG_SYS_MAX_DATAFLASH_BANKS];
++
++struct dataflash_addr cs[CONFIG_SYS_MAX_DATAFLASH_BANKS] = {
++	{CONFIG_SYS_DATAFLASH_LOGIC_ADDR_CS0, 0},	/* Logical adress, CS */
++	{CONFIG_SYS_DATAFLASH_LOGIC_ADDR_CS1, 1}
++};
++
++/*define the area offsets*/
++dataflash_protect_t area_list[NB_DATAFLASH_AREA] = {
++	{0x00000000, 0x000041FF, FLAG_PROTECT_SET,   0, "Bootstrap"},
++	{0x00004200, 0x000083FF, FLAG_PROTECT_CLEAR, 0, "Environment"},
++	{0x00008400, 0x00041FFF, FLAG_PROTECT_SET,   0, "U-Boot"},
++	{0x00042000, 0x00251FFF, FLAG_PROTECT_CLEAR, 0,	"Kernel"},
++	{0x00252000, 0xFFFFFFFF, FLAG_PROTECT_CLEAR, 0,	"FS"},
++};
+diff --git a/cpu/arm926ejs/at91/at91sam9m10g45_devices.c b/cpu/arm926ejs/at91/at91sam9m10g45_devices.c
+index 98d90f2..07717ea 100644
+--- a/cpu/arm926ejs/at91/at91sam9m10g45_devices.c
++++ b/cpu/arm926ejs/at91/at91sam9m10g45_devices.c
+@@ -75,7 +75,6 @@ void at91_serial_hw_init(void)
+ #endif
+ }
+ 
+-#ifdef CONFIG_ATMEL_SPI
+ void at91_spi0_hw_init(unsigned long cs_mask)
+ {
+ 	at91_set_A_periph(AT91_PIN_PB0, 0);	/* SPI0_MISO */
+@@ -146,7 +145,7 @@ void at91_spi1_hw_init(unsigned long cs_mask)
+ 	}
+ 
+ }
+-#endif
++
+ 
+ #ifdef CONFIG_MACB
+ void at91_macb_hw_init(void)
+-- 
+1.6.0.2
+

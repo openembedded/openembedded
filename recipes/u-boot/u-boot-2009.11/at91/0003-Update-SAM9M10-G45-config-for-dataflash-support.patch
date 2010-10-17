@@ -1,0 +1,110 @@
+From 238b17ddabab0f0452c4acdf2a52e4e41ddfc3c3 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Sat, 27 Feb 2010 09:09:54 +0100
+Subject: [PATCH] Update SAM9M10/G45 config for dataflash support
+
+Signed-off-by Ulf Samuelsson <ulf.samuelsson@atmel.com>
+---
+ include/configs/at91sam9m10g45ek.h |   36 +++++++++++++++++++++++++++---------
+ 1 files changed, 27 insertions(+), 9 deletions(-)
+
+diff --git a/include/configs/at91sam9m10g45ek.h b/include/configs/at91sam9m10g45ek.h
+index b460188..a60bb6b 100644
+--- a/include/configs/at91sam9m10g45ek.h
++++ b/include/configs/at91sam9m10g45ek.h
+@@ -3,7 +3,7 @@
+  * Stelian Pop <stelian.pop@leadtechdesign.com>
+  * Lead Tech Design <www.leadtechdesign.com>
+  *
+- * Configuation settings for the AT91SAM9M10G45EK board(and AT91SAM9G45EKES).
++ * Configuration settings for the AT91SAM9M10G45EK board(and AT91SAM9G45EKES).
+  *
+  * See file CREDITS for list of people who contributed to this
+  * project.
+@@ -44,8 +44,10 @@
+ #define CONFIG_SETUP_MEMORY_TAGS 1
+ #define CONFIG_INITRD_TAG	1
+ 
++#ifndef CONFIG_SYS_USE_BOOT_NORFLASH
+ #define CONFIG_SKIP_LOWLEVEL_INIT
+ #define CONFIG_SKIP_RELOCATE_UBOOT
++#endif
+ 
+ /*
+  * Hardware drivers
+@@ -93,8 +95,8 @@
+ #undef CONFIG_CMD_FPGA
+ #undef CONFIG_CMD_IMI
+ #undef CONFIG_CMD_IMLS
+-#undef CONFIG_CMD_AUTOSCRIPT
+ #undef CONFIG_CMD_LOADS
++#undef CONFIG_CMD_SOURCE
+ 
+ #define CONFIG_CMD_PING		1
+ #define CONFIG_CMD_DHCP		1
+@@ -112,22 +114,37 @@
+ #define CONFIG_CMD_SPI
+ #define CONFIG_SPI_FLASH		1
+ #define CONFIG_SPI_FLASH_ATMEL		1
+-#define CONFIG_SYS_MAX_DATAFLASH_BANKS	1
+ #endif
+ 
++#define CONFIG_ATMEL_DATAFLASH_SPI
++#define CONFIG_HAS_DATAFLASH		1
++#define CONFIG_SYS_SPI_WRITE_TOUT		(5*CONFIG_SYS_HZ)
++#define CONFIG_SYS_MAX_DATAFLASH_BANKS		1
++#define CONFIG_SYS_DATAFLASH_LOGIC_ADDR_CS0	0xC0000000	/* CS0 */
++#define CONFIG_SYS_DATAFLASH_LOGIC_ADDR_CS1	0xD0000000	/* CS1 */
++#define AT91_SPI_CLK			15000000
++#define DATAFLASH_TCSS			(0x1a << 16)
++#define DATAFLASH_TCHS			(0x1 << 24)
++
++
+ /* NOR flash, if populated */
+ #ifndef CONFIG_CMD_NAND
+ #define CONFIG_SYS_NO_FLASH		1
+ #define CONFIG_SYS_64BIT_VSPRINTF		/* needed for nand_util.c */
+-#else
++#endif
++
++#ifdef CONFIG_SYS_USE_NORFLASH
+ #define CONFIG_SYS_FLASH_CFI		1
+ #define CONFIG_FLASH_CFI_DRIVER		1
+ #define PHYS_FLASH_1			0x10000000
+ #define CONFIG_SYS_FLASH_BASE			PHYS_FLASH_1
+ #define CONFIG_SYS_MAX_FLASH_SECT		256
+ #define CONFIG_SYS_MAX_FLASH_BANKS		1
++#else
++#define CONFIG_SYS_NO_FLASH			1
+ #endif
+ 
++
+ /* NAND flash */
+ #ifdef CONFIG_CMD_NAND
+ #define CONFIG_NAND_MAX_CHIPS			1
+@@ -170,16 +187,17 @@
+ #ifdef CONFIG_SYS_USE_DATAFLASH
+ 
+ /* bootstrap + u-boot + env + linux in dataflash on CS0 */
+-#define CONFIG_ENV_IS_IN_SPI_FLASH	1
++#define	CONFIG_ENV_IS_IN_DATAFLASH	1
++/* #define CONFIG_ENV_IS_IN_SPI_FLASH	1 */
+ #define CONFIG_SYS_MONITOR_BASE	(0xC0000000 + 0x8400)
+ #define CONFIG_ENV_OFFSET		0x4200
+ #define CONFIG_ENV_ADDR		(0xC0000000 + CONFIG_ENV_OFFSET)
+ #define CONFIG_ENV_SIZE		0x4200
+-#define CONFIG_ENV_SECT_SIZE		0x10000
+-#define CONFIG_BOOTCOMMAND	"cp.b 0xC0042000 0x22000000 0x210000; bootm"
++#define CONFIG_ENV_SECT_SIZE		0x4200
++#define CONFIG_BOOTCOMMAND	"cp.b 0xC0042000 0x72000000 0x290000; bootm 0x72000000"
+ #define CONFIG_BOOTARGS		"console=ttyS0,115200 " \
+-				"root=/dev/mtdblock0 " \
+-				"mtdparts=atmel_nand:-(root) "\
++				"root=/dev/mtdblock1 " \
++				"mtdparts=atmel_nand:4M(unused)ro,-(root) "\
+ 				"rw rootfstype=jffs2"
+ 
+ #else /* CONFIG_SYS_USE_NANDFLASH */
+-- 
+1.6.0.2
+

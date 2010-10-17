@@ -1,0 +1,34 @@
+From 1c72f37cbea8c1bb98d438108558a4e222c5ce2b Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Sat, 13 Mar 2010 13:29:34 +0100
+Subject: [PATCH] libarm/board.c: Gets overwritten - workaround!
+
+U_BOOT_VERSION gets overwritten by something.
+Workaround, but no fix for the problem, by
+adding another variable which can get overwritten
+without problems.
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+---
+ lib_arm/board.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/lib_arm/board.c b/lib_arm/board.c
+index e148739..379e39b 100644
+--- a/lib_arm/board.c
++++ b/lib_arm/board.c
+@@ -74,8 +74,9 @@ extern void dataflash_print_info(void);
+ #define CONFIG_IDENT_STRING ""
+ #endif
+ 
+-const char version_string[] =
+-	U_BOOT_VERSION" (" U_BOOT_DATE " - " U_BOOT_TIME ")"CONFIG_IDENT_STRING;
++const char dummy[] = "Is this overwritten ?";
++const char version_string[] = 
++	U_BOOT_VERSION " (" U_BOOT_DATE " - " U_BOOT_TIME ")"CONFIG_IDENT_STRING;
+ 
+ #ifdef CONFIG_DRIVER_RTL8019
+ extern void rtl8019_get_enetaddr (uchar * addr);
+-- 
+1.6.0.2
+

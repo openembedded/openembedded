@@ -1,0 +1,113 @@
+From 6002730900b2c062ce8433aba61cabbe7253eb17 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Sun, 14 Mar 2010 00:25:56 +0100
+Subject: [PATCH] sam9m10g45ek: Add configuration file
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+---
+ include/configs/at91sam9m10g45ek.h |   47 +++++++++++++++++++++++++++++++----
+ 1 files changed, 41 insertions(+), 6 deletions(-)
+
+diff --git a/include/configs/at91sam9m10g45ek.h b/include/configs/at91sam9m10g45ek.h
+index a60bb6b..6ac56ca 100644
+--- a/include/configs/at91sam9m10g45ek.h
++++ b/include/configs/at91sam9m10g45ek.h
+@@ -26,7 +26,8 @@
+ 
+ #ifndef __CONFIG_H
+ #define __CONFIG_H
+-
++#define	CONFIG_CMD_DEBUG	1
++#define	CONFIG_SYS_ROOTFS_SD	1
+ /* ARM asynchronous clock */
+ #define AT91_MAIN_CLOCK		12000000	/* from 12 MHz crystal */
+ #define CONFIG_SYS_HZ		1000
+@@ -96,13 +97,28 @@
+ #undef CONFIG_CMD_IMI
+ #undef CONFIG_CMD_IMLS
+ #undef CONFIG_CMD_LOADS
+-#undef CONFIG_CMD_SOURCE
+ 
++#define CONFIG_CMD_SOURCE
++#undef CONFIG_CMD_XIMG
++#define CONFIG_CMD_ASKENV
++#define CONFIG_CMD_EXT2
++#define CONFIG_CMD_FAT
++#undef CONFIG_CMD_JFFS2
++#define CONFIG_CMD_MMC
+ #define CONFIG_CMD_PING		1
+ #define CONFIG_CMD_DHCP		1
+ #define CONFIG_CMD_NAND		1
+ #define CONFIG_CMD_USB		1
+ 
++/* MCI */
++#define MMCI_BASE			AT91SAM9G45_BASE_MCI0
++#define CONFIG_MMC			1
++#define CONFIG_ATMEL_MCI		1
++#define	CONFIG_ATMEL_HSMCI		1
++#define CONFIG_SYS_MMC_CLK_OD		1000000
++#define CONFIG_SUPPORT_VFAT
++
++
+ /* SDRAM */
+ #define CONFIG_NR_DRAM_BANKS		1
+ #define PHYS_SDRAM			0x70000000
+@@ -122,7 +138,8 @@
+ #define CONFIG_SYS_MAX_DATAFLASH_BANKS		1
+ #define CONFIG_SYS_DATAFLASH_LOGIC_ADDR_CS0	0xC0000000	/* CS0 */
+ #define CONFIG_SYS_DATAFLASH_LOGIC_ADDR_CS1	0xD0000000	/* CS1 */
+-#define AT91_SPI_CLK			15000000
++#define AT91_SPI_CLK			1000000
++#define	AT91_SPI_MODE			AT91_SPI_MODE3
+ #define DATAFLASH_TCSS			(0x1a << 16)
+ #define DATAFLASH_TCHS			(0x1 << 24)
+ 
+@@ -179,10 +196,11 @@
+ #define CONFIG_SYS_USB_OHCI_MAX_ROOT_PORTS	2
+ #define CONFIG_USB_STORAGE		1
+ 
+-#define CONFIG_SYS_LOAD_ADDR			0x22000000	/* load address */
++
++#define CONFIG_SYS_LOAD_ADDR			0x72000000	/* load address */
+ 
+ #define CONFIG_SYS_MEMTEST_START		PHYS_SDRAM
+-#define CONFIG_SYS_MEMTEST_END			0x23e00000
++#define CONFIG_SYS_MEMTEST_END			PHYS_SDRAM + PHYS_SDRAM_SIZE
+ 
+ #ifdef CONFIG_SYS_USE_DATAFLASH
+ 
+@@ -192,13 +210,30 @@
+ #define CONFIG_SYS_MONITOR_BASE	(0xC0000000 + 0x8400)
+ #define CONFIG_ENV_OFFSET		0x4200
+ #define CONFIG_ENV_ADDR		(0xC0000000 + CONFIG_ENV_OFFSET)
++#if	1
+ #define CONFIG_ENV_SIZE		0x4200
+-#define CONFIG_ENV_SECT_SIZE		0x4200
++#define CONFIG_ENV_SECT_SIZE	0x420
++#else
++#define CONFIG_ENV_SIZE		0x420
++#define CONFIG_ENV_SECT_SIZE	0x420
++#endif
++
++#ifdef	CONFIG_SYS_ROOTFS_SD
++#define CONFIG_BOOTCOMMAND	"mmc init; fatload mmc 1:1 0x72000000 uImage; bootm 0x72000000"
++#define CONFIG_BOOTARGS		"console=ttyS0,115200 " \
++				"root=/dev/mmcblk1p2 " \
++				"rootdelay=2 "\
++				"rootfstype=rootfs rw"
++#endif
++
++#ifdef	CONFIG_SYS_ROOTFS_NAND
+ #define CONFIG_BOOTCOMMAND	"cp.b 0xC0042000 0x72000000 0x290000; bootm 0x72000000"
+ #define CONFIG_BOOTARGS		"console=ttyS0,115200 " \
+ 				"root=/dev/mtdblock1 " \
+ 				"mtdparts=atmel_nand:4M(unused)ro,-(root) "\
+ 				"rw rootfstype=jffs2"
++#endif
++
+ 
+ #else /* CONFIG_SYS_USE_NANDFLASH */
+ 
+-- 
+1.6.0.2
+

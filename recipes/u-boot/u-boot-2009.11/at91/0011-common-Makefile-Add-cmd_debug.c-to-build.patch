@@ -1,0 +1,27 @@
+From 81c5954a3932d46de7db92c7314060a491e20063 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Sun, 14 Mar 2010 00:12:35 +0100
+Subject: [PATCH] common/Makefile: Add cmd_debug.c to build
+
+Ensure cmd_debug.c is built if CONFIG_CMD_DEBUG is set
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+---
+ common/Makefile |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/common/Makefile b/common/Makefile
+index 47f6a71..a827be8 100644
+--- a/common/Makefile
++++ b/common/Makefile
+@@ -75,6 +75,7 @@ COBJS-$(CONFIG_CMD_CONSOLE) += cmd_console.o
+ COBJS-$(CONFIG_CMD_CPLBINFO) += cmd_cplbinfo.o
+ COBJS-$(CONFIG_DATAFLASH_MMC_SELECT) += cmd_dataflash_mmc_mux.o
+ COBJS-$(CONFIG_CMD_DATE) += cmd_date.o
++COBJS-$(CONFIG_CMD_DEBUG) += cmd_debug.o
+ ifdef CONFIG_4xx
+ COBJS-$(CONFIG_CMD_SETGETDCR) += cmd_dcr.o
+ endif
+-- 
+1.6.0.2
+
