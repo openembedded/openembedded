@@ -1,0 +1,196 @@
+diff -urN linux-2.6.30-0rig/arch/arm/mach-at91/Kconfig linux-2.6.30/arch/arm/mach-at91/Kconfig
+--- linux-2.6.30-0rig/arch/arm/mach-at91/Kconfig	2010-03-14 11:41:36.000000000 +0100
++++ linux-2.6.30/arch/arm/mach-at91/Kconfig	2010-03-14 12:00:27.000000000 +0100
+@@ -97,6 +97,7 @@
+ 	bool "Atmel AT91RM9200-DK Development board"
+ 	depends on ARCH_AT91RM9200
+ 	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
++	select	MTD_ALLOW_DATAFLASHCARD
+ 	help
+ 	  Select this if you are using Atmel's AT91RM9200-DK Development board.
+ 	  (Discontinued)
+@@ -104,6 +105,7 @@
+ config MACH_AT91RM9200EK
+ 	bool "Atmel AT91RM9200-EK Evaluation Kit"
+ 	depends on ARCH_AT91RM9200
++	select	MTD_ALLOW_DATAFLASHCARD
+ 	help
+ 	  Select this if you are using Atmel's AT91RM9200-EK Evaluation Kit.
+ 	  <http://www.atmel.com/dyn/products/tools_card.asp?tool_id=3507>
+@@ -172,6 +174,7 @@
+ config MACH_ECBAT91
+ 	bool "emQbit ECB_AT91 SBC"
+ 	depends on ARCH_AT91RM9200
++	select	MTD_ALLOW_DATAFLASHCARD
+ 	help
+ 	  Select this if you are using emQbit's ECB_AT91 board.
+ 	  <http://wiki.emqbit.com/free-ecb-at91>
+@@ -215,6 +218,8 @@
+ 	bool "Atmel AT91SAM9260-EK / AT91SAM9XE Evaluation Kit"
+ 	depends on ARCH_AT91SAM9260
+ 	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
++	select MTD_NAND_ALLOW_CONFIGURABLE_NAND_BUSWIDTH
++	select	MTD_ALLOW_DATAFLASHCARD
+ 	help
+ 	  Select this if you are using Atmel's AT91SAM9260-EK or AT91SAM9XE Evaluation Kit
+ 	  <http://www.atmel.com/dyn/products/tools_card.asp?tool_id=3933>
+@@ -229,6 +234,7 @@
+ config MACH_SAM9_L9260
+ 	bool "Olimex SAM9-L9260 board"
+ 	depends on ARCH_AT91SAM9260
++	select	MTD_ALLOW_DATAFLASHCARD
+ 	help
+ 	  Select this if you are using Olimex's SAM9-L9260 board based on the Atmel AT91SAM9260.
+ 	  <http://www.olimex.com/dev/sam9-L9260.html>
+@@ -281,6 +287,8 @@
+ 	bool "Atmel AT91SAM9261-EK Evaluation Kit"
+ 	depends on ARCH_AT91SAM9261
+ 	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
++	select MTD_NAND_ALLOW_CONFIGURABLE_NAND_BUSWIDTH
++	select	MTD_ALLOW_DATAFLASHCARD
+ 	help
+ 	  Select this if you are using Atmel's AT91SAM9261-EK Evaluation Kit.
+ 	  <http://www.atmel.com/dyn/products/tools_card.asp?tool_id=3820>
+@@ -297,6 +305,8 @@
+ 	bool "Atmel AT91SAM9G10-EK Evaluation Kit"
+ 	depends on ARCH_AT91SAM9G10
+ 	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
++	select MTD_NAND_ALLOW_CONFIGURABLE_NAND_BUSWIDTH
++	select	MTD_ALLOW_DATAFLASHCARD
+ 	help
+ 	  Select this if you are using Atmel's AT91SAM9G10-EK Evaluation Kit.
+ 	  <http://www.atmel.com/dyn/products/tools_card.asp?tool_id=4588>
+@@ -313,6 +323,8 @@
+ 	bool "Atmel AT91SAM9263-EK Evaluation Kit"
+ 	depends on ARCH_AT91SAM9263
+ 	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
++	select MTD_NAND_ALLOW_CONFIGURABLE_NAND_BUSWIDTH
++	select	MTD_ALLOW_DATAFLASHCARD
+ 	help
+ 	  Select this if you are using Atmel's AT91SAM9263-EK Evaluation Kit.
+ 	  <http://www.atmel.com/dyn/products/tools_card.asp?tool_id=4057>
+@@ -334,6 +346,7 @@
+ config MACH_TOTEMNOVA
+ 	bool "TotemNova Micronova industrial supervisor"
+ 	depends on ARCH_AT91SAM9263
++	select	MTD_ALLOW_DATAFLASHCARD
+ 	help
+ 	  Select this if you are using Micronova's TotemNova industrial supervisor
+ 	  <http://www.micronovasrl.com>
+@@ -341,6 +354,7 @@
+ config MACH_NEOCORE926
+ 	bool "Adeneo NEOCORE926"
+ 	depends on ARCH_AT91SAM9263
++	select	MTD_ALLOW_DATAFLASHCARD
+ 	help
+ 	  Select this if you are using the Adeneo Neocore 926 board.
+ 
+@@ -371,6 +385,8 @@
+ 	bool "Atmel AT91SAM9G20-EK Evaluation Kit"
+ 	depends on ARCH_AT91SAM9G20
+ 	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
++	select MTD_NAND_ALLOW_CONFIGURABLE_NAND_BUSWIDTH
++	select	MTD_ALLOW_DATAFLASHCARD
+ 	help
+ 	  Select this if you are using Atmel's AT91SAM9G20-EK Evaluation Kit
+ 	  that embeds only one SD/MMC slot.
+@@ -379,6 +395,7 @@
+ 	bool "Atmel AT91SAM9G20-EK Evaluation Kit with 2 SD/MMC Slots"
+ 	depends on ARCH_AT91SAM9G20
+ 	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
++	select MTD_NAND_ALLOW_CONFIGURABLE_NAND_BUSWIDTH
+ 	help
+ 	  Select this if you are using an Atmel AT91SAM9G20-EK Evaluation Kit
+ 	  with 2 SD/MMC Slots. This is the case for AT91SAM9G20-EK rev. C and
+@@ -417,13 +434,23 @@
+ 	bool "Atmel AT91SAM9G45-EKES Evaluation Kit"
+ 	depends on ARCH_AT91SAM9G45
+ 	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
++	select MTD_NAND_ALLOW_CONFIGURABLE_NAND_BUSWIDTH
+ 	help
+ 	  Select this if you are using Atmel's AT91SAM9G45-EKES Evaluation Kit.
+ 	  "ES" at the end of the name means that this board is an
+ 	  Engineering Sample.
+ 
+-endif
++config MACH_AT91SAM9M10G45EK
++	bool "Atmel AT91SAM9M10G45-EK Evaluation Kit"
++	depends on ARCH_AT91SAM9G45
++	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
++	select MTD_NAND_ALLOW_CONFIGURABLE_NAND_BUSWIDTH
++	help
++	  Select this if you are using Atmel's AT91SAM9M10G45-EK Evaluation Kit.
++	  "ES2" at the end of the name means that this board is an
++	  Engineering Sample.
+ 
++endif
+ # ----------------------------------------------------------
+ 
+ if ARCH_AT91SAM9M10
+@@ -434,11 +461,22 @@
+         bool "Atmel AT91SAM9M10-EKES Evaluation Kit"
+         depends on ARCH_AT91SAM9M10
+ 	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
++	select MTD_NAND_ALLOW_CONFIGURABLE_NAND_BUSWIDTH
+         help
+           Select this if you are using Atmel's AT91SAM9M10-EKES Evaluation Kit.
+           "ES" at the end of the name means that this board is an
+           Engineering Sample.
+ 
++config MACH_AT91SAM9M10G45EK
++	bool "Atmel AT91SAM9M10G45-EK Evaluation Kit"
++       depends on ARCH_AT91SAM9M10
++	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
++	select MTD_NAND_ALLOW_CONFIGURABLE_NAND_BUSWIDTH
++	help
++	  Select this if you are using Atmel's AT91SAM9M10G45-EK Evaluation Kit.
++	  "ES2" at the end of the name means that this board is an
++	  Engineering Sample.
++
+ endif
+ 
+ # ----------------------------------------------------------
+@@ -451,6 +489,8 @@
+ 	bool "Atmel AT91CAP9A-DK Evaluation Kit"
+ 	depends on ARCH_AT91CAP9
+ 	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
++	select MTD_NAND_ALLOW_CONFIGURABLE_NAND_BUSWIDTH
++	select	MTD_ALLOW_DATAFLASHCARD
+ 	help
+ 	  Select this if you are using Atmel's AT91CAP9A-DK Evaluation Kit.
+ 	  <http://www.atmel.com/dyn/products/tools_card.asp?tool_id=4138>
+@@ -467,6 +507,8 @@
+ 	bool "AT572D940HF-EK"
+ 	depends on ARCH_AT572D940HF
+ 	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
++	select MTD_NAND_ALLOW_CONFIGURABLE_NAND_BUSWIDTH
++	select	MTD_ALLOW_DATAFLASHCARD
+ 	help
+ 	  Select this if you are using Atmel's AT572D940HF-EK evaluation kit.
+ 	  <http://www.atmel.com/products/diopsis/default.asp>
+@@ -495,17 +537,23 @@
+ 
+ config MTD_AT91_DATAFLASH_CARD
+ 	bool "Enable DataFlash Card support"
+-	depends on (ARCH_AT91RM9200DK || MACH_AT91RM9200EK || MACH_AT91SAM9260EK || MACH_AT91SAM9261EK || MACH_AT91SAM9G10EK || MACH_AT91SAM9263EK || MACH_AT91SAM9G20EK || MACH_ECBAT91 || MACH_SAM9_L9260 || MACH_AT91CAP9ADK || MACH_AT572D940HFEB || MACH_TOTEMNOVA || MACH_NEOCORE926)
++	depends on MTD_ALLOW_DATAFLASHCARD
+ 	help
+ 	  Enable support for the DataFlash card.
+ 
++config MTD_ALLOW_DATAFLASHCARD
++	bool
++
+ config MTD_NAND_ATMEL_BUSWIDTH_16
+ 	bool "Enable 16-bit data bus interface to NAND flash"
+-	depends on (MACH_AT91SAM9260EK || MACH_AT91SAM9261EK || MACH_AT91SAM9G10EK || MACH_AT91SAM9263EK || MACH_AT91SAM9G20EK || MACH_AT91SAM9G20EK_2MMC || MACH_AT91SAM9G45EKES || MACH_AT91CAP9ADK || MACH_AT572D940HFEB)
++	depends on MTD_NAND_ALLOW_CONFIGURABLE_NAND_BUSWIDTH
+ 	help
+ 	  On AT91SAM926x boards both types of NAND flash can be present
+ 	  (8 and 16 bit data bus width).
+ 
++config MTD_NAND_ALLOW_CONFIGURABLE_NAND_BUSWIDTH
++	bool
++
+ config MTD_NAND_ATMEL_ROOTFS_SIZE
+ 	int "Size NAND rootfs in MB"
+ 	range 8 250
