@@ -28,6 +28,8 @@ SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 	file://xorg-1.4-kdrive-rotation.patch \
 	file://split_multiple_AC_SUBST.patch \
 	file://vm86_masks.patch \
+	file://at91sam9-kmode.patch \
+	file://wvga-kmode.patch \
         "
 
 S = "${WORKDIR}/xorg-server-${PV}"

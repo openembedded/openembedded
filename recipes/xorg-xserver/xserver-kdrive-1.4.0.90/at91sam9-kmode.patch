@@ -1,0 +1,18 @@
+diff -Nru xorg-server-1.4.0.90_orig/hw/kdrive/src/kmode.c xorg-server-1.4.0.90/hw/kdrive/src/kmode.c
+--- xorg-server-1.4.0.90_orig/hw/kdrive/src/kmode.c
++++ xorg-server-1.4.0.90/hw/kdrive/src/kmode.c
+@@ -69,6 +69,12 @@
+                   0,      0,      0,     KdSyncNegative,
+     },
+ 
++    /* at91sam9g45-ekes */
++    {   480,    272,    60,     0,                      /* VESA */
++               0,      0,     0,    KdSyncNegative, /* 31.469 */
++               0,      0,     0,     KdSyncNegative, /* 59.940 */
++    },
++
+     /* Other VESA modes */
+     { 640,    350,    85,     31500,                      /* VESA */
+                   32,     96,     192,    KdSyncPositive, /* 26.413 */
+
+
