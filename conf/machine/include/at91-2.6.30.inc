@@ -2,30 +2,18 @@
 
 TARGET_ARCH = "arm"
 #PACKAGE_EXTRA_ARCHS = "armv4t armv5te"
-CPU_FAMILY = "at91"
+SOC_FAMILY = "at91"
 
 PREFERRED_PROVIDER_virtual/kernel = "linux"
-PREFERRED_VERSION_linux = "2.6.32"
-
-#PREFERRED_PROVIDER_virtual/xserver = "xserver-kdrive"
-#PREFERRED_PROVIDER_virtual/xserver = "xserver-kdrive-1300"
-#PREFERRED_PROVIDER_virtual/xserver = "xserver-xorg"
-#PREFERRED_PROVIDER_xserver = "xserver-xorg"
-#PREFERRED_PROVIDER_xserver = "xserver-kdrive"
-#XSERVER = "xserver-kdrive-fbdev"
-# Angstrom defines:
-#PREFERRED_VERSION_xserver-kdrive = "1.4.0.90"
-#PREFERRED_VERSION_xserver-kdrive = "1.6.1"
+PREFERRED_VERSION_linux = "2.6.30"
 
 PREFERRED_PROVIDER_at91bootstrap = "at91bootstrap_2.13"
 PREFERRED_VERSION_at91bootstrap = "2.13"
 
-PREFERRED_PROVIDER_u-boot = "u-boot_2009.08"
-PREFERRED_VERSION_u-boot = "2009.08"
+PREFERRED_PROVIDER_u-boot = "u-boot_2009.11"
+PREFERRED_VERSION_u-boot = "2009.11"
 
 KERNEL_IMAGETYPE = "uImage"
-
-# PREFERRED_VERSION_mplayer = "svn"
 
 #don't try to access tty1
 USE_VT = "0"
