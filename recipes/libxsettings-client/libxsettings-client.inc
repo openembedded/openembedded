@@ -9,16 +9,10 @@ RDEPENDS_${PN}-dev += " libxsettings-dev"
 GPE_TARBALL_SUFFIX = "bz2"
 inherit autotools pkgconfig gpe
 
-INC_PR = "r4"
+INC_PR = "r5"
 
 SRC_URI = "${GPE_MIRROR}/libxsettings-client-${PV}.tar.bz2"
 
-headers = "xsettings-client.h"
-
-do_install () {
-        oe_libinstall -so libXsettings-client ${D}${libdir}
-        install -d ${D}${includedir}
-        for h in ${headers}; do
-               install -m 0644 ${S}/$h ${D}${includedir}/$h
-        done
+do_install_append () {
+        rm ${D}/${includedir}/xsettings-common.h
 }
