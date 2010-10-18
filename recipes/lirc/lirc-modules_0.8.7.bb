@@ -5,11 +5,6 @@ HOMEPAGE = "http://www.lirc.org"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel fakeroot-native setserial"
 
-SRCDATE=${@bb.data.getVar('PV', d, 1)[9:]}
-
-SRC_URI = "cvs://anonymous@lirc.cvs.sourceforge.net/cvsroot/lirc;module=lirc;method=pserver;cvsdate=${SRCDATE}"
-S = "${WORKDIR}/lirc"
-
 inherit autotools module
 
 require lirc-config.inc

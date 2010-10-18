@@ -17,15 +17,14 @@ RDEPENDS_lirc-nslu2example = "lirc lirc-exec"
 RRECOMMENDS_lirc = "lirc-exec"
 PR = "r0"
 
-SRCDATE=${@bb.data.getVar('PV', d, 1)[9:]}
-
-SRC_URI = "cvs://anonymous@lirc.cvs.sourceforge.net/cvsroot/lirc;module=lirc;method=pserver;cvsdate=${SRCDATE} \
-           file://lircd.init file://lircmd.init file://lircexec.init"
-SRC_URI_append_nslu2 = " file://lircd.conf_nslu2 file://lircrc_nslu2"
-
-S = "${WORKDIR}/lirc"
-
 inherit autotools module-base update-rc.d
+SRC_URI_append = " file://lircd.init \
+                   file://lircmd.init \
+                   file://lircexec.init \
+                 "
+SRC_URI_append_nslu2 = " file://lircd.conf_nslu2 \
+                         file://lircrc_nslu2 \
+                       "
 
 INITSCRIPT_PACKAGES = "lirc lirc-exec"
 INITSCRIPT_NAME = "lircd"
