@@ -1,0 +1,22 @@
+--- nail-11.21/makeconfig.orig	2010-10-19 12:16:14.000000000 +1030
++++ nail-11.21/makeconfig	2010-10-19 12:16:39.000000000 +1030
+@@ -74,7 +74,7 @@
+ 	echo '************************************************************'
+ 	msg "checking $topic ... "
+ 	echo "/* checked $topic */" >>$out
+-	cp $lib $tmp2
++#	cp $lib $tmp2
+ 	rm -f $tmp $tmp.o
+ 	echo '*** test program is'
+ 	tee $tmp.c
+@@ -86,8 +86,8 @@
+ 	then
+ 		msg "okay\\n"
+ 		echo "$define" >>$out
+-		echo "$libs" >$lib
+-		cat $tmp2 >>$lib
++		echo "$libs" >>$lib
++#		cat $tmp2 >>$lib
+ 		return 0
+ 	else
+ 		msg "no\\n"
