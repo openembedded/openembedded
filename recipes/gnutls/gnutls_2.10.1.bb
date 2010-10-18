@@ -1,6 +1,6 @@
 require gnutls.inc
 
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.3"
 
 LICENSE_${PN}-extra = "GPLv3"
 
@@ -16,9 +16,9 @@ do_configure_prepend() {
  MACROS="libtool.m4 lt~obsolete.m4 ltoptions.m4 ltsugar.m4 ltversion.m4"
 
  for i in ${MACROS}; do
-   rm m4/$i
-   rm lib/m4/$i
-   rm libextra/m4/$i
+   rm -f m4/$i
+   rm -f lib/m4/$i
+   rm -f libextra/m4/$i
  done
 
 }
