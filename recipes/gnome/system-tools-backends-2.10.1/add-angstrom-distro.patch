@@ -14,7 +14,7 @@ Index: system-tools-backends-2.8.3/Utils/Platform.pm
       "vine-3.1"         => "vine-3.0",
       "vlos-1.2"         => "gentoo",
       "nexenta-1.0"      => "solaris-2.11",
-+     "angstrom"         => "debian-3.0",
++     "angstrom"         => "debian",
       );
  
    return $metamap{$distro} if ($metamap{$distro});
