@@ -13,7 +13,7 @@ RDEPENDS_mythweb-apache = "apache2"
 
 DEPENDS_mythweb-lighttpd = "mythweb"
 RDEPENDS_mythweb-lighttpd = "lighttpd lighttpd-module-cgi lighttpd-module-fastcgi \
-        lighttpd-module-rewrite php-cgi lighttpd-module-auth"
+        lighttpd-module-rewrite php-cgi lighttpd-module-auth sed"
 
 RDEPENDS_mythnetvision += " python python-mysqldb "
 
@@ -26,7 +26,7 @@ DEPENDS += " libxml-xpath-perl-native libxml-simple-perl-native libdatetime-form
 RDEPENDS_mythweather += " libxml-xpath-perl libxml-simple-perl libdatetime-format-iso8601-perl \
 	libsoap-lite-perl libimage-size-perl libdate-manip-perl "
 
-PR = "svnr${SRCPV}+r4"
+PR = "svnr${SRCPV}+r5"
 PV = "0.23"
 
 SRCREV = "25609"
@@ -90,6 +90,11 @@ pkg_postinst_mythweb-lighttpd () {
         chmod g+rw /var/www/pages
         grep mythweb.conf /etc/lighttpd.conf || \
                 echo "include \"mythweb.conf\"" >>/etc/lighttpd.conf
+	sed -i 's:#\( *mod_cgi\):\1:' /etc/lighttpd.conf
+	sed -i 's:#\( *mod_fastcgi\):\1:' /etc/lighttpd.conf
+	sed -i 's:#\( *mod_rewrite\):\1:' /etc/lighttpd.conf
+	sed -i 's:#\( *mod_auth\):\1:' /etc/lighttpd.conf
+	sed -i 's:/var/run/lighttpd/mythtv-php-fcgi.socket:/var/run/mythtv-php-fcgi.socket:' /etc/mythweb.conf
 }
 
 PACKAGES =+ " \
