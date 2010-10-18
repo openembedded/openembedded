@@ -1,6 +1,8 @@
 DESCRIPTION = "gnome system tools backends"
 LICENSE = "GPL"
 
+PR = "r1"
+
 DEPENDS = "dbus dbus-glib glib-2.0 policykit"
 
 # Shadow added so there is a full adduser/deluser
