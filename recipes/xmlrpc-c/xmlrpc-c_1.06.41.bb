@@ -2,7 +2,7 @@ DESCRIPTION = "XML-RPC for C/C++ is programming libraries and related tools to h
 write an XML-RPC server or client in C or C++."
 LICENSE = "GPLv2+"
 DEPENDS = "curl libxml2"
-PR = "r0"
+PR = "r1"
 
 # note: this is version 1.06.47
 # there seems to be versions with higher numbers (e.g. 1.11.00)
@@ -12,7 +12,7 @@ EXTRA_OECONF = " --enable-libxml2-backend -disable-libwww-client"
 
 PARALLEL_MAKE = ""
 
-inherit autotools
+inherit autotools binconfig
 
 do_configure () {
 	gnu-configize
