@@ -35,10 +35,7 @@ EXTRA_OECONF = " \
         --disable-video-qtopia \
         --disable-video-x11 \
 "
-EXTRA_AUTORECONF += "--include=acinclude"
-
-# Skip autoheader, because it must not overwrite SDL_config.h.in.
-export AUTOHEADER = "true"
+EXTRA_AUTORECONF += "--include=acinclude --exclude=autoheader"
 
 do_configure_prepend () {
         # Remove old libtool macros.
