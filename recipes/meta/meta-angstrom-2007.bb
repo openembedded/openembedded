@@ -17,7 +17,6 @@ RDEPENDS_${PN} += " \
 RDEPENDS_${PN} += " \
          midori \
 	 minimo \
-         openmoko-browser2 \
 	 webkit-gtklauncher \
          "
 
