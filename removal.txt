@@ -25,3 +25,12 @@ Removal Date:	2009-04-15
 Maintainer:	Jamie Lenehan
 Reason:		http://www.clamav.net/lang/en/2009/10/05/eol-clamav-094/
 Proposed by:	Roman I Khimov <khimov@altell.ru>
+
+Package Name:   obsolete/*openmoko* nonworking/*openmoko*
+Removal Date:   2010-12-22
+Maintainer:     None
+Reason:         Obsoleted by SHR/FSO packages
+Proposed by:    Martin 'JaMa' Jansa
+Note:		Openmoko distribution removed 2010-08-10
+Note:		Moved to obsolete on 2010-10-19
+
