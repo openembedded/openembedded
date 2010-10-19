@@ -228,15 +228,8 @@ tmp/rootfs/proc
 tmp/rootfs/etc  
 tmp/rootfs/home 
 tmp/rootfs/tmp  
-tmp/staging     
-tmp/staging/man 
-tmp/staging/x86_64-linux
-tmp/staging/pkgdata
-tmp/staging/pkgmaps
-tmp/staging/var
-tmp/staging/sh4-linux
-tmp/staging/local
-tmp/staging/etc  
+tmp/sysroots
+tmp/pkgdata
 tmp/deploy
 tmp/deploy/addons
 tmp/deploy/ipk   

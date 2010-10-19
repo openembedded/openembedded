@@ -883,14 +883,31 @@ S = "${WORKDIR}/widgets"</screen></para>
       libraries and headers.</para>
 
       <para>Making the libraries, headers and binaries available for use by
-      other recipes on the host is called staging and is performed by the
-      <emphasis>stage</emphasis> task in the recipe. Any recipes that contain
-      items that are required to build other packages should have a
-      <emphasis>stage</emphasis> task to make sure the items are all correctly
+      other recipes on the host is called staging and is performed automatically
+      derived from task <emphasis>install</emphasis>. Any recipes that contain
+      items that are required additionally to build other packages should have a
+      <emphasis>install_append</emphasis> task to make sure the items are all correctly
       placed into the staging area. The following example from clamav shows the
-      clamav library and header being placed into the staging area:<screen>do_stage () {
-        oe_libinstall -a -so libclamav ${STAGING_LIBDIR}
-        install -m 0644 libclamav/clamav.h ${STAGING_INCDIR}
+      clamav library and header being placed into the staging area:<screen>do_install_append() {
+        install -m 0755 -d ${D}${sysconfdir}/default/volatiles \
+                           ${D}${sysconfdir}/init.d ${D}${docdir}/clamav
+
+        # Save the installed clamd.conf in the doc dir and then install our new one
+        install -m 0755 ${D}${sysconfdir}/clamd.conf ${D}${docdir}/clamav/clamd.conf.example
+        install -m 0755 ${WORKDIR}/clamd.conf ${D}${sysconfdir}/clamd.conf
+
+        # Save the installed freshclam.conf in the doc dir and then install our new one
+        install -m 0755 ${D}${sysconfdir}/freshclam.conf ${D}${docdir}/clamav/freshclam.conf.example
+
+        # Install our config files and init scripts
+        install -m 0755 ${WORKDIR}/freshclam.conf ${D}${sysconfdir}/freshclam.conf
+        install -m 0755 ${WORKDIR}/clamav-daemon.init ${D}${sysconfdir}/init.d/clamav-daemon
+        install -m 0755 ${WORKDIR}/clamav-freshclam.init ${D}${sysconfdir}/init.d/clamav-freshclam
+
+        # We need some /var directories
+        for i in 03_clamav-daemon 03_clamav-freshclam 03_clamav-data; do
+          install -m 0644 ${WORKDIR}/volatiles.$i ${D}${sysconfdir}/default/volatiles/$i
+        done
 }</screen></para>
 
       <para>The following from the p3scan recipe shows the path to the clamav

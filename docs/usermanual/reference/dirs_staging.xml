@@ -28,19 +28,17 @@
     </listitem>
 
     <listitem>
-      <para>In the <emphasis>stage</emphasis> task for libraries to specify
-      where to install the headers and libraries.</para>
+      <para>In the <emphasis>install_append</emphasis> task for libraries to specify
+      where to install the headers and libraries if not done automatically.</para>
     </listitem>
   </orderedlist>
 
   <para>The following example from libpcre shows the installation of the
   libraries and headers from the package into the staging area. Note the use
   of the <emphasis>oe_libinstall</emphasis> helper function for installation
-  of the libraries:<screen>do_stage () {
-    oe_libinstall -a -so libpcre ${STAGING_LIBDIR}
-    oe_libinstall -a -so libpcreposix ${STAGING_LIBDIR}
-    install -m 0644 pcre.h ${STAGING_INCDIR}/
-    install -m 0644 pcreposix.h ${STAGING_INCDIR}/
+  of the libraries:<screen>do_install_append () {
+    install -d ${STAGING_BINDIR}
+    install -m 0755 ${D}${bindir}/pcre-config ${STAGING_BINDIR}/
 }</screen></para>
 
   <para>The following example from the flac recipe shows the location of the
@@ -73,7 +71,7 @@
         <row>
           <entry>STAGING_DIR</entry>
 
-          <entry>${TMPDIR}/staging</entry>
+          <entry>${TMPDIR}/sysroots</entry>
         </row>
 
         <row>
