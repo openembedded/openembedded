@@ -23,6 +23,8 @@ SRC_URI = "http://download.lighttpd.net/lighttpd/releases-1.4.x/lighttpd-${PV}.t
         file://lighttpd.conf \
         file://lighttpd \
 "
+SRC_URI[src.md5sum] = "202d36efc6324adb95a3600d2826ec6a"
+SRC_URI[src.sha256sum] = "efd7623f43182723b99c51d57a24158e22a207cd90dca35aaf3b2e3bac115712"
 
 EXTRA_OECONF = " \
              --without-bzip2 \
@@ -58,3 +60,4 @@ python populate_packages_prepend () {
         lighttpd_libdir = bb.data.expand('${libdir}', d)
         do_split_packages(d, lighttpd_libdir, '^mod_(.*)\.so$', 'lighttpd-module-%s', 'Lighttpd module for %s', extra_depends='')
 }
+
