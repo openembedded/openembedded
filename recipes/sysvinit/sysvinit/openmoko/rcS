@@ -1,9 +1,0 @@
-#!/bin/sh
-#
-# rcS		Call all S??* scripts in /etc/rcS.d in
-#		numerical/alphabetical order.
-#
-# Version:	@(#)/etc/init.d/rcS  2.76  19-Apr-1999  miquels@cistron.nl
-#
-
-exec /etc/init.d/rc S
