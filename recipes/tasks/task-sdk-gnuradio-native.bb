@@ -2,7 +2,7 @@ require task-sdk-native.inc
 
 DEPENDS += "libusb1 guile fftw python alsa-lib jack boost cppunit sdcc swig \
             python python-numpy git util-linux-ng gsl python-cheetah git \
-            distcc \
+            distcc libdbd-sqlite-perl libdbix-simple-perl \
             "
 
 RDEPENDS_${PN} += "libusb1-dev guile-dev fftwf-dev alsa-dev alsa-lib-dev jack-dev \
@@ -18,7 +18,7 @@ RDEPENDS_${PN} += "libusb1-dev guile-dev fftwf-dev alsa-dev alsa-lib-dev jack-de
 
 RPROVIDES_${PN} = "task-native-gnuradio-sdk"
 
-PR = "${INC_PR}.12"
+PR = "${INC_PR}.13"
 
 ALLOW_EMPTY = "1"
 PACKAGES = "${PN}"
