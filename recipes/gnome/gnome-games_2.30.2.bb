@@ -1,11 +1,7 @@
 LICENSE = "GPL"
 DEPENDS = "guile libggz ggz-client-libs python-pygtk gtk+ libgnome libgnomeui librsvg gnome-vfs gconf libglade gnome-common gnome-python-desktop gnome-python gstreamer"
-PR = "r1"
 
 inherit gnome distutils-base gconf
-
-SRC_URI[archive.md5sum] = "324acc2f45b1d1f2000cdbd6c596a250"
-SRC_URI[archive.sha256sum] = "17f7b3bef00b26963a7155e861730aa427def70dace3358aa9fb4899603ef9da"
 
 EXTRA_OECONF = " \
                 --enable-omitgames=quadrapassel,lightsoff,swell-foop,gnibbles \
