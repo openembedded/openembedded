@@ -3,7 +3,7 @@ URL = "http://gnuradio.org"
 SECTION =  "apps"
 PRIORITY = "optional"
 LICENSE = "GPLv3"
-DEPENDS = "uhd gsl guile-native fftwf python alsa-lib boost cppunit sdcc-native swig-native python-numpy"
+DEPENDS = "uhd gsl guile-native fftwf python alsa-lib boost cppunit swig-native python-numpy"
 INC_PR = "r8"
 
 inherit distutils-base autotools pkgconfig
