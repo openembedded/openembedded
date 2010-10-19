@@ -17,7 +17,6 @@ SRC_URI += "file://qte.sh"
 
 S = "${WORKDIR}/qt-everywhere-opensource-src-${PV}"
 
-QT_LIB_NAMES += "QtDeclarative"
 FILES_${QT_BASE_NAME}-tools                += "${bindir}/qml"
 
 do_configure_prepend() {
