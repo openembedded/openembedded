@@ -269,7 +269,6 @@ do
                       openbox \
                       opencv \
                       opencv-samples \
-                      openmoko-browser2 \
                       openredalert \
                       openvpn \
                       opie-notes \
@@ -337,8 +336,6 @@ do
                       systray \
                       task-beagleboard-demo \
                       task-gpe-pim \
-                      task-openmoko-feed \
-                      task-openmoko-games \
                       task-opie-apps \
                       task-opie-games \
                       task-proper-tools \
@@ -439,7 +436,6 @@ do
             BUILD_CLEAN="qmake-native qmake2-native qt-x11-free python python-native python-pygtk gnome-icon-theme"
         BUILD_TARGETS="task-base task-boot \
                        task-opie task-opie-all \
-                       task-openmoko-base task-openmoko-debug task-openmoko-examples task-openmoko-linux task-openmoko-native-sdk task-openmoko-net task-openmoko-phone task-openmoko-pim task-openmoko-ui \
                        angstrom-x11-base-depends angstrom-gpe-task-settings \
                        xserver-xorg-conf \ 
                        "
