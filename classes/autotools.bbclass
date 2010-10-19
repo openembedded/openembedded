@@ -75,12 +75,13 @@ CONFIGUREOPTS = " --build=${BUILD_SYS} \
 		  --includedir=${includedir} \
 		  --oldincludedir=${oldincludedir} \
 		  --infodir=${infodir} \
-		  --mandir=${mandir}"
+		  --mandir=${mandir} \
+		  ${@["","--with-sysroot"][bb.data.getVar('LIBTOOL_HAS_SYSROOT', d, 1) == "yes"]} \
+		"
 
 oe_runconf () {
 	if [ -x ${S}/configure ] ; then
 		${S}/configure \
-		${@["","--with-sysroot"][bb.data.getVar('LIBTOOL_HAS_SYSROOT', d, 1) == "yes"]} \
 		${CONFIGUREOPTS} ${EXTRA_OECONF} "$@"
 	else
 		oefatal "no configure script found"
