@@ -283,25 +283,29 @@ install_linguas() {
 if [ -e ${IMAGE_ROOTFS}/usr/bin/opkg-cl ] ; then
 	OPKG="opkg-cl ${IPKG_ARGS}"
 
-	${OPKG} update || true
-	${OPKG} list_installed | awk '{print $1}' |sort | uniq > /tmp/installed-packages
+	mkdir -p ${IMAGE_ROOTFS}/tmp-locale
 
-	for i in $(cat /tmp/installed-packages | grep -v locale) ; do
+	${OPKG} update || true
+	${OPKG} list_installed | awk '{print $1}' |sort | uniq > ${IMAGE_ROOTFS}/tmp-locale/installed-packages
+
+	for i in $(cat ${IMAGE_ROOTFS}/tmp-locale/installed-packages | grep -v locale) ; do
 		for translation in ${IMAGE_LINGUAS}; do
 			translation_split=$(echo ${translation} | awk -F '-' '{print $1}')
 			echo ${i}-locale-${translation}
 			echo ${i}-locale-${translation_split}
 		done
-	done | sort | uniq > /tmp/wanted-locale-packages
+	done | sort | uniq > ${IMAGE_ROOTFS}/tmp-locale/wanted-locale-packages
 
-	${OPKG} list | awk '{print $1}' |grep locale |sort | uniq > /tmp/available-locale-packages
+	${OPKG} list | awk '{print $1}' |grep locale |sort | uniq > ${IMAGE_ROOTFS}/tmp-locale/available-locale-packages
 
-	cat /tmp/wanted-locale-packages /tmp/available-locale-packages | sort | uniq -d > /tmp/pending-locale-packages
+	cat ${IMAGE_ROOTFS}/tmp-locale/wanted-locale-packages ${IMAGE_ROOTFS}/tmp-locale/available-locale-packages | sort | uniq -d > ${IMAGE_ROOTFS}/tmp-locale/pending-locale-packages
 
-	if [ -s /tmp/pending-locale-packages ] ; then
-		cat /tmp/pending-locale-packages | xargs ${OPKG} -nodeps install
+	if [ -s ${IMAGE_ROOTFS}/tmp-locale/pending-locale-packages ] ; then
+		cat ${IMAGE_ROOTFS}/tmp-locale/pending-locale-packages | xargs ${OPKG} -nodeps install
 	fi
 	rm -f ${IMAGE_ROOTFS}${libdir}/opkg/lists/*
+
+	rm -rf ${IMAGE_ROOTFS}/tmp-locale
 
     for i in ${IMAGE_ROOTFS}${libdir}/opkg/info/*.preinst; do
         if [ -f $i ] && ! sh $i; then
