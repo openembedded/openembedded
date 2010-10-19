@@ -5,6 +5,10 @@
 # there are some hooks for uclibc in this file
 # however uclibc is not working yet
 
+TARGET_CC_ARCH = ""
+BASE_PACKAGE_ARCH = "nios2"
+FEED_ARCH = "nios2"
+
 # LIBC = "uclibc" 
 LIBC = "glibc" 
 # and for the angstrom folks
