@@ -3,7 +3,7 @@ DESCRIPTION = "The diet libc is a libc that is optimized for small size. \
 It can be used to create small statically linked binaries"
 LICENSE = "GPLv2"
 
-INC_PR = "r2"
+INC_PR = "r3"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/dietlibc/dietlibc-${PV}.tar.bz2" 
 
@@ -18,28 +18,25 @@ do_compile () {
 }
 
 #no packages needed, all binaries will be compiled with -static
-PACKAGES = " "
+PACKAGES = ""
 
 #otherwise the whole run scripts got broken
-do_install () {
-:
-}
 
-do_stage () {
+do_install () {
 	DIETLIBC_BUILD_ARCH=`echo ${BUILD_ARCH} | sed -e s'/.86/386/'`
 	DIETLIBC_TARGET_ARCH=`echo ${TARGET_ARCH} | sed -e s'/.86/386/'`
-	rm -rf ${STAGING_DIR_TARGET}/lib/dietlibc || true
-	rm ${TOOLCHAIN_PATH}/bin/diet || true
-	install -d ${STAGING_DIR_TARGET}/lib/dietlibc/lib-${DIETLIBC_TARGET_ARCH}
-	install -d ${STAGING_DIR_TARGET}/lib/dietlibc/include
-        for i in `find include -name \*.h`; do install -m 644 -D $i ${STAGING_DIR_TARGET}/lib/dietlibc/$i; done
 
-        install -m755 bin-${DIETLIBC_BUILD_ARCH}/diet-i ${TOOLCHAIN_PATH}/bin/diet
+	install -d ${D}${libdir}/dietlibc/include
+        for i in `find include -name \*.h`; do install -m 644 -D $i ${D}${libdir}/dietlibc/$i; done
+
+        install -d ${D}${bindir} 
+        install -m755 bin-${DIETLIBC_BUILD_ARCH}/diet-i ${D}${bindir}/diet
 	
 	cd bin-${DIETLIBC_TARGET_ARCH}
+	install -d ${D}${libdir}/dietlibc/lib-${DIETLIBC_TARGET_ARCH}
 	install -m 644 start.o libm.a libpthread.a librpc.a \
                        liblatin1.a libcompat.a libcrypt.a \
-		       ${STAGING_DIR_TARGET}/lib/dietlibc/lib-${DIETLIBC_TARGET_ARCH}
-        install -m 644 dietlibc.a ${STAGING_DIR_TARGET}/lib/dietlibc/lib-${DIETLIBC_TARGET_ARCH}/libc.a
+		       ${D}${libdir}/dietlibc/lib-${DIETLIBC_TARGET_ARCH}
+        install -m 644 dietlibc.a ${D}${libdir}/dietlibc/lib-${DIETLIBC_TARGET_ARCH}/libc.a
 }
 
