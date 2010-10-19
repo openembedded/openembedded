@@ -43,7 +43,6 @@ AUDIO_INSTALL = "\
 GTK_INSTALL = "\
   hicolor-icon-theme \
   tango-icon-theme \
-  openmoko-calculator2 \
   vala-terminal \
   gpe-scap \
   tangogps \
@@ -51,15 +50,6 @@ GTK_INSTALL = "\
 
 GAMES_INSTALL = "\
   numptyphysics \
-"
-
-# FIXME these should rather be part of alsa-state,
-# once Om stabilizes them...
-AUDIO_INSTALL_append_om-gta01 = "\
-  openmoko-alsa-scenarios \
-"
-AUDIO_INSTALL_append_om-gta02 = "\
-  openmoko-alsa-scenarios \
 "
 
 # python
