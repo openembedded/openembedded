@@ -6,5 +6,5 @@ DEFAULT_PREFERENCE = "-1"
 
 PR = ${INC_PR}.0
 
-#SRC_URI[archive.md5sum] = "f68358d03e46bec5704bbaa894990152"
-#SRC_URI[archive.sha256sum] = "e9b7b1fb9aad2808ee27b163dba8647f738c23513201864fa9944010b8d71670"
+SRC_URI[archive.md5sum] = "84fe15eb7e000fdc369def513299358b"
+SRC_URI[archive.sha256sum] = "c0010ee3f4d93d737da732bceb4e640dc404b0e7659980fb10dafb5bb0a83b4f"
