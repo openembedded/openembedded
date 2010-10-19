@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r3"
+PR = "r4"
 
 module_autoload_ohci-hcd_omap5912osk = "ohci-hcd"
 
@@ -43,6 +43,7 @@ SRC_URI_append_ts72xx = " \
            file://0016-ts72xx_nand_flash.patch \
            file://0017-ep93xx_spi.patch \
            file://0018-ts72xx_spi_tmp124.patch \
+           file://0019-watchdog-ts72xx_wdt-disable-watchdog-at-probe.patch \
            "
 
 SRC_URI[kernel.md5sum] = "10eebcb0178fb4540e2165bfd7efc7ad"
