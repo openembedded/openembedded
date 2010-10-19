@@ -56,7 +56,7 @@ case "$arch" in
 	"armv5teb")
 			machines="fsg3be ixp4xxbe nslu2be" ;;
 	"armv6")
-			machines="bug iphone mx31ads mx31moboard mini6410 nokia800 om-3d7k omap2420h4 omap2430sdp smartq5 smartqv7 smdk6410" ;;
+			machines="bug iphone mx31ads mx31moboard mini6410 nokia800 omap2420h4 omap2430sdp smartq5 smartqv7 smdk6410" ;;
 	"armv6-novfp")
 			machines="htcblackstone htcdiamond htcdream htckaiser htcnike htcpolaris htcraphael htctitan htcvogue" ;;
 	"armv7a")
