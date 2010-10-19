@@ -2,12 +2,15 @@ DESCRIPTION = "Console bittorrent client using libtorrent"
 HOMEPAGE = "http://libtorrent.rakshasa.no"
 SECTION = "libs/network"
 LICENSE = "GPL"
-DEPENDS = "libtorrent curl ncurses gnutls libgpg-error"
+DEPENDS = "libtorrent curl ncurses gnutls libgpg-error xmlrpc-c"
 
 SRC_URI = "http://libtorrent.rakshasa.no/downloads/rtorrent-${PV}.tar.gz \
-           file://autoconf-cross-fix.patch"
+           file://autoconf-cross-fix.patch \
+           file://checks.patch"
 
-PR = "r1"
+EXTRA_OECONF = " --with-xmlrpc-c"
+
+PR = "r2"
 
 inherit autotools
 

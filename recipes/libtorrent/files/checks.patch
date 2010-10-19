@@ -1,0 +1,22 @@
+Index: rtorrent-0.8.6/scripts/checks.m4
+===================================================================
+--- rtorrent-0.8.6.orig/scripts/checks.m4
++++ rtorrent-0.8.6/scripts/checks.m4
+@@ -379,16 +379,7 @@ AC_DEFUN([TORRENT_WITH_XMLRPC_C], [
+         CXXFLAGS="$CXXFLAGS `$xmlrpc_cc_prg --cflags server-util`"
+         LIBS="$LIBS `$xmlrpc_cc_prg server-util --libs`"
+ 
+-        AC_TRY_LINK(
+-        [ #include <xmlrpc-c/server.h>
+-        ],[ xmlrpc_registry_new(NULL); ],
+-        [
+-          AC_MSG_RESULT(ok)
+-        ], [
+-          AC_MSG_RESULT(failed)
+-          AC_MSG_ERROR(Could not compile XMLRPC-C test.)
+-        ])
+-
++        AC_MSG_RESULT(ok)
+         AC_DEFINE(HAVE_XMLRPC_C, 1, Support for XMLRPC-C.)
+ 
+       else
