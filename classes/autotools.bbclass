@@ -30,22 +30,13 @@ EXTRA_AUTORECONF = "--exclude=autopoint"
 
 autotools_do_configure() {
 	case ${PN} in
-	autoconf*)
-	;;
-	automake*)
+	autoconf*|automake*)
 	;;
 	*)
-		# WARNING: gross hack follows:
-		# An autotools built package generally needs these scripts, however only
-		# automake or libtoolize actually install the current versions of them.
-		# This is a problem in builds that do not use libtool or automake, in the case
-		# where we -need- the latest version of these scripts.  e.g. running a build
-		# for a package whose autotools are old, on an x86_64 machine, which the old
-		# config.sub does not support.  Work around this by installing them manually
-		# regardless.
-		( for ac in `find ${S} -name configure.in -o -name configure.ac`; do
-			rm -f `dirname $ac`/configure
-			done )
+		find ${S} -name configure.in -o -name configure.ac | \
+			while read fn; do
+				rm -f `dirname $fn`/configure
+			done
 		if [ -e ${S}/configure.in -o -e ${S}/configure.ac ]; then
 			olddir=`pwd`
 			cd ${S}
@@ -58,9 +49,7 @@ autotools_do_configure() {
 			else
 				acpaths="${acpaths}"
 			fi
-			AUTOV=`automake --version |head -n 1 |sed "s/.* //;s/\.[0-9]\+$//"`
-			automake --version
-			echo "AUTOV is $AUTOV"
+			AUTOV=`automake --version | head -n 1 | sed "s/.* //;s/\.[0-9]\+$//"`
 			install -d ${STAGING_DATADIR}/aclocal
 			install -d ${STAGING_DATADIR}/aclocal-$AUTOV
 			acpaths="$acpaths -I${STAGING_DATADIR}/aclocal-$AUTOV -I ${STAGING_DATADIR}/aclocal"
@@ -71,32 +60,29 @@ autotools_do_configure() {
 				rm -f aclocal.m4
 			fi
 			if [ -e configure.in ]; then
-			  CONFIGURE_AC=configure.in
+				CONFIGURE_AC=configure.in
 			else
-			  CONFIGURE_AC=configure.ac
+				CONFIGURE_AC=configure.ac
 			fi
 			if grep "^[[:space:]]*AM_GLIB_GNU_GETTEXT" $CONFIGURE_AC >/dev/null; then
-			  if grep "sed.*POTFILES" $CONFIGURE_AC >/dev/null; then
-			    : do nothing -- we still have an old unmodified configure.ac
-			  else
-			    oenote Executing glib-gettextize --force --copy
-			    echo "no" | glib-gettextize --force --copy
-			  fi
+				if grep "sed.*POTFILES" $CONFIGURE_AC >/dev/null; then
+					: do nothing -- we still have an old unmodified configure.ac
+				else
+					echo "no" | glib-gettextize --force --copy
+				fi
 			else if grep "^[[:space:]]*AM_GNU_GETTEXT" $CONFIGURE_AC >/dev/null; then
-			  if [ -e ${STAGING_DATADIR}/gettext/config.rpath ]; then
-			    cp ${STAGING_DATADIR}/gettext/config.rpath ${S}/
-			  else
-			    oenote ${STAGING_DATADIR}/gettext/config.rpath not found. gettext is not installed.
-			  fi
+				if [ -e ${STAGING_DATADIR}/gettext/config.rpath ]; then
+					cp ${STAGING_DATADIR}/gettext/config.rpath ${S}/
+				else
+					oenote ${STAGING_DATADIR}/gettext/config.rpath not found. gettext is not installed.
+				fi
 			fi
 
 			fi
 			mkdir -p m4
-			oenote Executing autoreconf --verbose --install --force ${EXTRA_AUTORECONF} $acpaths
 			autoreconf -Wcross --verbose --install --force ${EXTRA_AUTORECONF} $acpaths || oefatal "autoreconf execution failed."
 			if grep "^[[:space:]]*[AI][CT]_PROG_INTLTOOL" $CONFIGURE_AC >/dev/null; then
-			  oenote Executing intltoolize --copy --force --automake
-			  intltoolize --copy --force --automake
+				intltoolize --copy --force --automake
 			fi
 			cd $olddir
 		fi
