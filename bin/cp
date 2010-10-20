@@ -1,0 +1,62 @@
+#!/bin/sh
+#
+# - We do not allow -i due to the non-interactive nature of OE tasks
+# - We do not allow -r, as it has known problems, and is marked
+#   obsolescent in the standard
+# - We allow -a as shorthand for -RpP
+# - Otherwise, we stick to what SuSv3 defines
+
+realbin() {
+     _script=`basename $0`
+     found=
+     for bin in `which -a $_script`; do
+          if ! cmp -s $bin $0; then
+                found=$bin
+                break
+          fi
+     done
+     if [ -n "$found" ]; then
+          echo "$found"
+     else
+          return 1
+     fi
+}
+
+quote(){
+    /usr/bin/sed -e "s,','\\\\'',g; 1s,^,',; \$s,\$,',;" << EOF
+$1
+EOF
+}
+
+save () {
+    case "$1" in
+    # when a string contains a "'" we have to escape it
+    *\'*)
+        saved="$saved `quote "$1"`"
+        ;;
+    # otherwise just quote the variable
+    *)
+        saved="$saved '$1'"
+        ;;
+    esac
+}
+
+saved=""
+while getopts fpaRHLP opt; do
+    case "$opt" in
+        a)
+            opt="RpP"
+            ;;
+        \?)
+            exit 1
+            ;;
+    esac
+    save "-$opt"
+done
+shift $(($OPTIND - 1))
+for arg; do
+    save "$arg"
+done
+
+eval set -- "$saved"
+exec `realbin` "$@"

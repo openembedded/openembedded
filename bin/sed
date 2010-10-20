@@ -1,0 +1,102 @@
+#!/bin/sh
+#
+# Sed portability notes
+# - SuSv3
+#    - Only -e, -f, and -n are standard options
+# - Linux
+#    - -i argument is of the form -i[ext]
+#    - extended regular expressions argument is -r
+# - Mac OSX
+#    - -i argument is of the form -i [ext]
+#    - extended regular expressions argument is -E
+#
+# Here we support a limited subset of the available sed capabilities,
+# ensuring that all those supported by this script can be utilized
+# regardless of the current platform.
+#
+# We accept -n, -e, -f, and -i with no backup extension.  We support
+# extended regular expressions using the -r argument.  Note that extended
+# regular expressions support may not be retained, depending upon the
+# capabilities of the other platforms we wish to support, and we may need
+# to reimplement -i internally in this script on some platforms.
+
+
+realbin() {
+     _script=`basename $0`
+     found=
+     for bin in `which -a $_script`; do
+          if ! cmp -s $bin $0; then
+                found=$bin
+                break
+          fi
+     done
+     if [ -n "$found" ]; then
+          echo "$found"
+     else
+          return 1
+     fi
+}
+
+quote(){
+    /usr/bin/sed -e "s,','\\\\'',g; 1s,^,',; \$s,\$,',;" << EOF
+$1
+EOF
+}
+
+save () {
+    case "$1" in
+    # when a string contains a "'" we have to escape it
+    *\'*)
+        saved="$saved `quote "$1"`"
+        ;;
+    # otherwise just quote the variable
+    *)
+        saved="$saved '$1'"
+        ;;
+    esac
+}
+
+case `uname -s` in
+    Darwin)
+        inplace_arg="-i ''"
+        extended_re_arg="-E"
+        getopt_os="ir"
+        ;;
+    Linux)
+        inplace_arg="-i"
+        extended_re_arg="-r"
+        getopt_os="ir"
+        ;;
+esac
+
+saved=""
+while getopts ne:f:$getopt_os opt; do
+    case "$opt" in
+        n)
+            save "-$opt"
+            ;;
+        e|f)
+            save "-$opt"
+            save "$OPTARG"
+            ;;
+        i)
+            saved="$saved $inplace_arg"
+            continue
+            ;;
+        r)
+            saved="$saved $extended_re_arg"
+            continue
+            ;;
+        \?)
+            echo >&2 "Unsupported argument: $OPTARG"
+            exit 1
+            ;;
+    esac
+done
+shift $(($OPTIND - 1))
+for arg; do
+    save "$arg"
+done
+
+eval set -- "$saved"
+exec `realbin` "$@"
