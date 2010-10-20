@@ -66,7 +66,11 @@ _autoconf_trace () {
 }
 
 oe_autoreconf () {
-	aclocal "$@"
+	AUTOV=`automake --version | head -n 1 | sed "s/.* //;s/\.[0-9]\+$//"`
+	mkdir -p ${STAGING_DATADIR}/aclocal \
+	         ${STAGING_DATADIR}/aclocal-$AUTOV
+	aclocal "$@" -I${STAGING_DATADIR}/aclocal \
+	             -I${STAGING_DATADIR}/aclocal-$AUTOV
 	for subdir in $(_autoconf_trace AC_CONFIG_SUBDIRS | cut -d: -f4); do
 		pushd $subdir
 		oe_autoreconf "$@"
@@ -74,7 +78,7 @@ oe_autoreconf () {
 	done
 
 	rm -f configure
-	autoreconf --install --symlink --force --no-recursive ${EXTRA_AUTORECONF} "$@"
+	autoreconf --install --symlink --force --no-recursive ${EXTRA_AUTORECONF} "$@" $acpaths
 	if [ -n "`_autoconf_trace AM_GLIB_GNU_GETTEXT`" ]; then
 		if [ -e configure.in ]; then
 			CONFIGURE_AC=$srcdir/configure.in
@@ -115,10 +119,6 @@ autotools_do_configure() {
 			else
 				acpaths="${acpaths}"
 			fi
-			AUTOV=`automake --version | head -n 1 | sed "s/.* //;s/\.[0-9]\+$//"`
-			install -d ${STAGING_DATADIR}/aclocal
-			install -d ${STAGING_DATADIR}/aclocal-$AUTOV
-			acpaths="$acpaths -I${STAGING_DATADIR}/aclocal-$AUTOV -I ${STAGING_DATADIR}/aclocal"
 			pushd ${S}
 			oe_autoreconf $acpaths
 			popd
