@@ -12,8 +12,6 @@ SRC_URI[demos.sha256sum] = "ea7b9ebfb7a80de2b275c0c9124c8a505382ec48411a2794ab82
 PACKAGES =+ "${PN}-xprogs"
 FILES_${PN}-xprogs = "${bindir}/glxdemo ${bindir}/glxgears ${bindir}/glxheads ${bindir}/glxinfo"
 
-DEFAULT_PREFERENCE_shr = "2"
-
 EXTRA_OECONF += " --disable-gallium"
 
 do_install_append () {
