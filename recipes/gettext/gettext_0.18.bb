@@ -33,7 +33,8 @@ EXTRA_OECONF += "--without-lispdir \
 		 --without-emacs \
 		 --with-included-libcroco \
 	        "
-acpaths = '-I ${S}/gnulib-local/m4/ \
+acpaths = '-I ${S}/m4 \
+	   -I ${S}/gnulib-local/m4/ \
 	   -I ${S}/gettext-runtime/m4 \
 	   -I ${S}/gettext-tools/m4'
 

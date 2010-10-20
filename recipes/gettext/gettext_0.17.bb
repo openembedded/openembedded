@@ -36,7 +36,8 @@ EXTRA_OECONF += "--without-lispdir \
 		 --without-emacs \
 	        "
 
-acpaths = '-I ${S}/autoconf-lib-link/m4/ \
+acpaths = '-I ${S}/m4 \
+	   -I ${S}/autoconf-lib-link/m4/ \
 	   -I ${S}/gettext-runtime/m4 \
 	   -I ${S}/gettext-tools/m4'
 
