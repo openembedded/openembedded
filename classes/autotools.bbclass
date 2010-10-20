@@ -28,8 +28,8 @@ acpaths = "default"
 EXTRA_AUTORECONF = "--exclude=autopoint"
 
 gnu_configize_here() {
-	if [ -n "`autoconf -t AC_CANONICAL_BUILD`" ]; then
-		macrodir="`autoconf -t AC_CONFIG_MACRO_DIR|cut -d: -f4|tail -n 1`"
+	if [ -n "`_autoconf_trace AC_CANONICAL_BUILD`" ]; then
+		macrodir="`_autoconf_trace AC_CONFIG_MACRO_DIR|cut -d: -f4|tail -n 1`"
 		if [ -z "$macrodir" ]; then
 			macrodir="."
 		fi
@@ -45,7 +45,7 @@ gnu_configize_here() {
 }
 
 gnu_configize() {
-	subdirs="`autoconf -t AC_CONFIG_SUBDIRS|cut -d: -f4`"
+	subdirs="`_autoconf_trace AC_CONFIG_SUBDIRS|cut -d: -f4`"
 	for dir in $subdirs .; do
 		if [ ! -e "$olddir/$dir" ]; then
 			continue
@@ -61,36 +61,39 @@ do_configure_prepend () {
 	alias gnu-configize=gnu_configize
 }
 
+_autoconf_trace () {
+	autoconf -t "$@" 2>/dev/null
+}
+
 oe_autoreconf () {
-	# autoreconf is too shy to overwrite aclocal.m4 if it doesn't look
-	# like it was auto-generated.  Work around this by blowing it away
-	# by hand, unless the package specifically asked not to run aclocal.
-	if ! echo ${EXTRA_AUTORECONF} | grep -q "aclocal"; then
-		rm -f aclocal.m4
-	fi
-	if [ -e configure.in ]; then
-		CONFIGURE_AC=configure.in
-	else
-		CONFIGURE_AC=configure.ac
-	fi
-	if grep "^[[:space:]]*AM_GLIB_GNU_GETTEXT" $CONFIGURE_AC >/dev/null; then
-		if grep "sed.*POTFILES" $CONFIGURE_AC >/dev/null; then
+	aclocal "$@"
+	for subdir in $(_autoconf_trace AC_CONFIG_SUBDIRS | cut -d: -f4); do
+		pushd $subdir
+		oe_autoreconf "$@"
+		popd
+	done
+
+	rm -f configure
+	autoreconf --install --symlink --force --no-recursive ${EXTRA_AUTORECONF} "$@"
+	if [ -n "`_autoconf_trace AM_GLIB_GNU_GETTEXT`" ]; then
+		if [ -e configure.in ]; then
+			CONFIGURE_AC=$srcdir/configure.in
+		else
+			CONFIGURE_AC=$srcdir/configure.ac
+		fi
+		if grep -q "sed.*POTFILES" $CONFIGURE_AC; then
 			: do nothing -- we still have an old unmodified configure.ac
 		else
 			echo "no" | glib-gettextize --force
 		fi
-	else if grep "^[[:space:]]*AM_GNU_GETTEXT" $CONFIGURE_AC >/dev/null; then
+	elif [ -n "`_autoconf_trace AM_GNU_GETTEXT`" ]; then
 		if [ -e ${STAGING_DATADIR}/gettext/config.rpath ]; then
-			ln -sf ${STAGING_DATADIR}/gettext/config.rpath ${S}/
+			ln -sf ${STAGING_DATADIR}/gettext/config.rpath .
 		else
 			oenote ${STAGING_DATADIR}/gettext/config.rpath not found. gettext is not installed.
 		fi
 	fi
-	mkdir -p m4
-	autoreconf -Wcross --verbose --install --symlink --force ${EXTRA_AUTORECONF} "$@" \
-	        || oefatal "autoreconf execution failed."
-
-	if grep "^[[:space:]]*[AI][CT]_PROG_INTLTOOL" $CONFIGURE_AC >/dev/null; then
+	if [ -n "`_autoconf_trace AC_PROG_INTLTOOL -t IT_PROG_INTLTOOL`" ]; then
 		intltoolize --force --automake
 	fi
 
@@ -102,13 +105,7 @@ autotools_do_configure() {
 	autoconf*|automake*)
 	;;
 	*)
-		find ${S} -name configure.in -o -name configure.ac | \
-			while read fn; do
-				rm -f `dirname $fn`/configure
-			done
 		if [ -e ${S}/configure.in -o -e ${S}/configure.ac ]; then
-			olddir=`pwd`
-			cd ${S}
 			if [ x"${acpaths}" = xdefault ]; then
 				acpaths=
 				for i in `find ${S} -maxdepth 2 -name \*.m4|grep -v 'aclocal.m4'| \
@@ -122,8 +119,9 @@ autotools_do_configure() {
 			install -d ${STAGING_DATADIR}/aclocal
 			install -d ${STAGING_DATADIR}/aclocal-$AUTOV
 			acpaths="$acpaths -I${STAGING_DATADIR}/aclocal-$AUTOV -I ${STAGING_DATADIR}/aclocal"
+			pushd ${S}
 			oe_autoreconf $acpaths
-			cd $olddir
+			popd
 		fi
 	;;
 	esac
