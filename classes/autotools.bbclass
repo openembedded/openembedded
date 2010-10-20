@@ -28,6 +28,39 @@ DEPENDS_virtclass-nativesdk_prepend = "${@autotools_deps(d)}"
 acpaths = "default"
 EXTRA_AUTORECONF = "--exclude=autopoint"
 
+oe_autoreconf () {
+	# autoreconf is too shy to overwrite aclocal.m4 if it doesn't look
+	# like it was auto-generated.  Work around this by blowing it away
+	# by hand, unless the package specifically asked not to run aclocal.
+	if ! echo ${EXTRA_AUTORECONF} | grep -q "aclocal"; then
+		rm -f aclocal.m4
+	fi
+	if [ -e configure.in ]; then
+		CONFIGURE_AC=configure.in
+	else
+		CONFIGURE_AC=configure.ac
+	fi
+	if grep "^[[:space:]]*AM_GLIB_GNU_GETTEXT" $CONFIGURE_AC >/dev/null; then
+		if grep "sed.*POTFILES" $CONFIGURE_AC >/dev/null; then
+			: do nothing -- we still have an old unmodified configure.ac
+		else
+			echo "no" | glib-gettextize --force --copy
+		fi
+	else if grep "^[[:space:]]*AM_GNU_GETTEXT" $CONFIGURE_AC >/dev/null; then
+		if [ -e ${STAGING_DATADIR}/gettext/config.rpath ]; then
+			cp ${STAGING_DATADIR}/gettext/config.rpath ${S}/
+		else
+			oenote ${STAGING_DATADIR}/gettext/config.rpath not found. gettext is not installed.
+		fi
+	fi
+	mkdir -p m4
+	autoreconf -Wcross --verbose --install --force ${EXTRA_AUTORECONF} "$@" \
+	        || oefatal "autoreconf execution failed."
+	if grep "^[[:space:]]*[AI][CT]_PROG_INTLTOOL" $CONFIGURE_AC >/dev/null; then
+		intltoolize --copy --force --automake
+	fi
+}
+
 autotools_do_configure() {
 	case ${PN} in
 	autoconf*|automake*)
@@ -53,37 +86,7 @@ autotools_do_configure() {
 			install -d ${STAGING_DATADIR}/aclocal
 			install -d ${STAGING_DATADIR}/aclocal-$AUTOV
 			acpaths="$acpaths -I${STAGING_DATADIR}/aclocal-$AUTOV -I ${STAGING_DATADIR}/aclocal"
-			# autoreconf is too shy to overwrite aclocal.m4 if it doesn't look
-			# like it was auto-generated.  Work around this by blowing it away
-			# by hand, unless the package specifically asked not to run aclocal.
-			if ! echo ${EXTRA_AUTORECONF} | grep -q "aclocal"; then
-				rm -f aclocal.m4
-			fi
-			if [ -e configure.in ]; then
-				CONFIGURE_AC=configure.in
-			else
-				CONFIGURE_AC=configure.ac
-			fi
-			if grep "^[[:space:]]*AM_GLIB_GNU_GETTEXT" $CONFIGURE_AC >/dev/null; then
-				if grep "sed.*POTFILES" $CONFIGURE_AC >/dev/null; then
-					: do nothing -- we still have an old unmodified configure.ac
-				else
-					echo "no" | glib-gettextize --force --copy
-				fi
-			else if grep "^[[:space:]]*AM_GNU_GETTEXT" $CONFIGURE_AC >/dev/null; then
-				if [ -e ${STAGING_DATADIR}/gettext/config.rpath ]; then
-					cp ${STAGING_DATADIR}/gettext/config.rpath ${S}/
-				else
-					oenote ${STAGING_DATADIR}/gettext/config.rpath not found. gettext is not installed.
-				fi
-			fi
-
-			fi
-			mkdir -p m4
-			autoreconf -Wcross --verbose --install --force ${EXTRA_AUTORECONF} $acpaths || oefatal "autoreconf execution failed."
-			if grep "^[[:space:]]*[AI][CT]_PROG_INTLTOOL" $CONFIGURE_AC >/dev/null; then
-				intltoolize --copy --force --automake
-			fi
+			oe_autoreconf $acpaths
 			cd $olddir
 		fi
 	;;
