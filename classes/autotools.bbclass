@@ -36,10 +36,11 @@ gnu_configize_here() {
 		if [ ! -e ${STAGING_DATADIR_NATIVE}/gnu-config/config.sub ]; then
 			oefatal "gnu-config data files missing"
 		fi
-		oenote Updating config.sub and config.guess in $macrodir
-		rm -f $macrodir/config.sub $macrodir/config.guess
-		cp ${STAGING_DATADIR_NATIVE}/gnu-config/config.sub $macrodir/config.sub
-		cp ${STAGING_DATADIR_NATIVE}/gnu-config/config.guess $macrodir/config.guess
+		oenote "Updating config.sub and config.guess in $macrodir"
+		ln -sf ${STAGING_DATADIR_NATIVE}/gnu-config/config.sub \
+		    $macrodir/config.sub
+		ln -sf ${STAGING_DATADIR_NATIVE}/gnu-config/config.guess \
+		    $macrodir/config.guess
 	fi
 }
 
@@ -76,21 +77,21 @@ oe_autoreconf () {
 		if grep "sed.*POTFILES" $CONFIGURE_AC >/dev/null; then
 			: do nothing -- we still have an old unmodified configure.ac
 		else
-			echo "no" | glib-gettextize --force --copy
+			echo "no" | glib-gettextize --force
 		fi
 	else if grep "^[[:space:]]*AM_GNU_GETTEXT" $CONFIGURE_AC >/dev/null; then
 		if [ -e ${STAGING_DATADIR}/gettext/config.rpath ]; then
-			cp ${STAGING_DATADIR}/gettext/config.rpath ${S}/
+			ln -sf ${STAGING_DATADIR}/gettext/config.rpath ${S}/
 		else
 			oenote ${STAGING_DATADIR}/gettext/config.rpath not found. gettext is not installed.
 		fi
 	fi
 	mkdir -p m4
-	autoreconf -Wcross --verbose --install --force ${EXTRA_AUTORECONF} "$@" \
+	autoreconf -Wcross --verbose --install --symlink --force ${EXTRA_AUTORECONF} "$@" \
 	        || oefatal "autoreconf execution failed."
 
 	if grep "^[[:space:]]*[AI][CT]_PROG_INTLTOOL" $CONFIGURE_AC >/dev/null; then
-		intltoolize --copy --force --automake
+		intltoolize --force --automake
 	fi
 
 	gnu_configize_here
