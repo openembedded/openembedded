@@ -42,7 +42,7 @@ B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
 EXTRA_OECONF = "--program-prefix=${TARGET_PREFIX} \
 		--enable-shared"
-
+CONFIGUREOPTS := "${@oe_filter_out('--with-sysroot', '${CONFIGUREOPTS}', d)}"
 # This is necessary due to a bug in the binutils Makefiles
 EXTRA_OEMAKE = "configure-build-libiberty all"
 
