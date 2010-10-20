@@ -1,0 +1,201 @@
+From ca0ced6d80c32dd7eed1c3ea2e539a38692a4fd7 Mon Sep 17 00:00:00 2001
+From: Gennady Kupava <gb@bsdmn.com>
+Date: Wed, 20 Oct 2010 20:26:40 +0200
+Subject: [PATCH] s3c2410_ts: jitter less version for glamo
+
+---
+ arch/arm/mach-s3c2440/mach-gta02.c     |    4 +-
+ drivers/input/touchscreen/s3c2410_ts.c |   28 +++++++++++++++++++-
+ drivers/mfd/glamo-core.c               |   44 +++++++++++++++++++++++++++++++-
+ include/linux/mfd/glamo-core.h         |    4 +++
+ 4 files changed, 75 insertions(+), 5 deletions(-)
+
+diff --git a/arch/arm/mach-s3c2440/mach-gta02.c b/arch/arm/mach-s3c2440/mach-gta02.c
+index 702b80a..a0d7334 100644
+--- a/arch/arm/mach-s3c2440/mach-gta02.c
++++ b/arch/arm/mach-s3c2440/mach-gta02.c
+@@ -945,9 +945,9 @@ static struct s3c2410_hcd_info gta02_usb_info __initdata = {
+ 
+ /* Touchscreen */
+ static struct s3c2410_ts_mach_info gta02_ts_info = {
+-       .delay = 10000,
++       .delay = 1000,
+        .presc = 0xff, /* slow as we can go */
+-	   .oversampling_shift = 2,
++       .oversampling_shift = 0,
+ };
+ 
+ /* Buttons */
+diff --git a/drivers/input/touchscreen/s3c2410_ts.c b/drivers/input/touchscreen/s3c2410_ts.c
+index ed5b437..1ebe220 100644
+--- a/drivers/input/touchscreen/s3c2410_ts.c
++++ b/drivers/input/touchscreen/s3c2410_ts.c
+@@ -41,6 +41,10 @@
+ #include <mach/regs-gpio.h>
+ #include <mach/ts.h>
+ 
++#ifdef CONFIG_MACH_NEO1973_GTA02
++#include <linux/mfd/glamo-core.h>
++#endif
++
+ #define TSC_SLEEP  (S3C2410_ADCTSC_PULL_UP_DISABLE | S3C2410_ADCTSC_XY_PST(0))
+ 
+ #define INT_DOWN	(0)
+@@ -92,6 +96,22 @@ static struct s3c2410ts ts;
+ #define WAITFORINT_DOWN (1)
+ #define WAITFORINT_NOTHING (2)
+ 
++
++static inline void before_adc_hook(void) 
++{
++#ifdef CONFIG_MACH_NEO1973_GTA02
++  glamo_pixclock_slow();
++#endif
++}
++
++static inline void after_adc_hook(void) 
++{
++#ifdef CONFIG_MACH_NEO1973_GTA02
++  glamo_pixclock_fast();
++#endif
++}
++
++
+ /**
+  * s3c2410_ts_connect - configure gpio for s3c2410 systems
+  *
+@@ -152,6 +172,7 @@ static void touch_timer_fire(unsigned long data)
+ 			ts.count = 0;
+ 		}
+ 
++		before_adc_hook();
+ 		s3c_adc_start(ts.client, 0, 1 << ts.shift);
+ 	} else {
+ 		ts.xp = 0;
+@@ -201,7 +222,7 @@ static irqreturn_t stylus_irq(int irq, void *dev_id)
+ 	ts.expectedintr = WAITFORINT_NOTHING;
+ 
+ 	if (down)
+-		s3c_adc_start(ts.client, 0, 1 << ts.shift);
++		mod_timer(&touch_timer, jiffies + 2);
+ 	else
+ 		dev_info(ts.dev, "%s: count=%d\n", __func__, ts.count);
+ 
+@@ -228,6 +249,9 @@ static void s3c24xx_ts_conversion(struct s3c_adc_client *client,
+ 
+ 	ts.count++;
+ 
++	if (!*left) 
++		after_adc_hook();
++
+ 	/* From tests, it seems that it is unlikely to get a pen-up
+ 	 * event during the conversion process which means we can
+ 	 * ignore any pen-up events with less than the requisite
+@@ -251,7 +275,7 @@ static void s3c24xx_ts_select(struct s3c_adc_client *client, unsigned select)
+ 		writel(S3C2410_ADCTSC_PULL_UP_DISABLE | AUTOPST,
+ 		       ts.io + S3C2410_ADCTSC);
+ 	} else {
+-		mod_timer(&touch_timer, jiffies+1);
++		mod_timer(&touch_timer, jiffies + 3);
+ 		ts.expectedintr = WAITFORINT_UP;
+ 		writel(WAIT4INT | INT_UP, ts.io + S3C2410_ADCTSC);
+ 	}
+diff --git a/drivers/mfd/glamo-core.c b/drivers/mfd/glamo-core.c
+index 3d57d2b..e558adc 100644
+--- a/drivers/mfd/glamo-core.c
++++ b/drivers/mfd/glamo-core.c
+@@ -104,6 +104,8 @@ static const struct reg_range reg_range[] = {
+ /*	{ 0x1b00, 0x900,	"3D Unit",	0 }, */
+ };
+ 
++struct glamo_core *default_glamo = 0;
++
+ static inline void __reg_write(struct glamo_core *glamo,
+ 				uint16_t reg, uint16_t val)
+ {
+@@ -169,6 +171,44 @@ static inline void __reg_set_bit(struct glamo_core *glamo,
+ 	__reg_write(glamo, reg, tmp);
+ }
+ 
++void glamo_pixclock_slow () {
++	
++	int x,lastx=0;
++	int timeout=1000000;
++	int threshold=5;
++	int fa;
++
++ 	int evcnt=0;
++
++	//int phase=0; //wait for value changing, then for non-changing
++
++	for (fa=0;fa<timeout;fa++) {
++		x = __reg_read(default_glamo, 0x1100 + GLAMO_REG_LCD_STATUS1) & 0x3ff;
++
++
++		if (x == lastx) {
++			evcnt++;
++			if (evcnt == threshold)
++				break;
++		} else
++			evcnt = 0;
++		
++		lastx=x;
++	}
++	if (fa==timeout) {
++		printk (KERN_WARNING "Error waiting\n");
++	}
++
++	//then, make glamo slower
++	reg_set_bit_mask (default_glamo, 0x36, 0xFF, 0xFF);
++}
++
++void glamo_pixclock_fast () {
++	reg_set_bit_mask (default_glamo, 0x36, 0xFF, 0x02);
++}
++
++
++
+ static inline void __reg_clear_bit(struct glamo_core *glamo,
+ 					uint16_t reg, uint16_t bit)
+ {
+@@ -938,6 +978,8 @@ static int __devinit glamo_probe(struct platform_device *pdev)
+ 	for (n = 0; n < __NUM_GLAMO_ENGINES; n++)
+ 		glamo->engine_state[n] = GLAMO_ENGINE_DISABLED;
+ 
++	default_glamo = glamo;
++
+ 	spin_lock_init(&glamo->lock);
+ 
+ 	glamo->pdev = pdev;
+@@ -980,7 +1022,7 @@ static int __devinit glamo_probe(struct platform_device *pdev)
+ 		goto err_free;
+ 	}
+ 
+-	glamo->base = ioremap(glamo->mem->start, resource_size(glamo->mem));
++	glamo->base = ioremap(glamo->mem->start, resource_size(glamo->mem)+0x1100);
+ 	if (!glamo->base) {
+ 		dev_err(&pdev->dev, "Failed to ioremap() memory region\n");
+ 		goto err_release_mem_region;
+diff --git a/include/linux/mfd/glamo-core.h b/include/linux/mfd/glamo-core.h
+index 66cd7a5..d5c11be 100644
+--- a/include/linux/mfd/glamo-core.h
++++ b/include/linux/mfd/glamo-core.h
+@@ -54,6 +54,8 @@ struct glamo_core {
+ #endif
+ };
+ 
++extern struct glamo_core *default_glamo;
++
+ struct glamo_script {
+ 	uint16_t reg;
+ 	uint16_t val;
+@@ -67,4 +69,6 @@ int glamo_engine_disable(struct glamo_core *glamo, enum glamo_engine engine);
+ void glamo_engine_reset(struct glamo_core *glamo, enum glamo_engine engine);
+ int glamo_engine_reclock(struct glamo_core *glamo,
+ 			 enum glamo_engine engine, int ps);
++void glamo_pixclock_slow ();
++void glamo_pixclock_fast ();
+ #endif /* __GLAMO_CORE_H */
+-- 
+1.7.3.1
+
