@@ -1,4 +1,4 @@
-#Sat Oct 16 08:56:06 CEST 2010
+#Wed Oct 20 18:13:56 CEST 2010
 #app
 PREFERRED_VERSION_appres ?= "1.0.2"
 PREFERRED_VERSION_bdftopcf ?= "1.0.2"
@@ -237,8 +237,8 @@ PREFERRED_VERSION_font-xfree86-type1 ?= "1.0.3"
 #lib
 PREFERRED_VERSION_libapplewm ?= "1.4.0"
 PREFERRED_VERSION_libfs ?= "1.0.2"
-PREFERRED_VERSION_libice ?= "1.0.6"
-PREFERRED_VERSION_libice-native ?= "1.0.6"
+PREFERRED_VERSION_libice ?= "1.0.7"
+PREFERRED_VERSION_libice-native ?= "1.0.7"
 PREFERRED_VERSION_libsm ?= "1.1.1"
 PREFERRED_VERSION_libsm-native ?= "1.1.1"
 PREFERRED_VERSION_libwindowswm ?= "1.0.1"
