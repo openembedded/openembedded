@@ -4,7 +4,7 @@ DEPENDS = "glib-2.0 gnutls"
 RDEPENDS_${PN} = "libgaim-plugins"
 LICENSE = "GPL"
 HOMEPAGE = "http://gaim.sourceforge.net/"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gaim/gaim-${PV}.tar.bz2 \
 	   file://dont-look-for-gtk.patch        \
@@ -21,7 +21,7 @@ EXTRA_OE_CONF = "--disable-audio --disable-gtkspell --disable-perl \
 		 --disable-x --without-x --without-gtk --disable-gtk \
 		 --enable-gnutls=y"
 
-CFLAGS_append = " -I${STAGING_INCDIR}/glib-2.0"
+CFLAGS_append = " -I${STAGING_INCDIR}/glib-2.0 -I${STAGING_LIBDIR}/glib-2.0/include"
 
 do_stage() {
 	oe_libinstall -so -C src libgaim ${QTDIR}/lib
