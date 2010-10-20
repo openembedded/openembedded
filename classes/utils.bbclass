@@ -346,7 +346,7 @@ oe_libinstall() {
 		eval `cat $lafile|grep "^library_names="`
 		libtool=1
 	else
-		library_names="$libname.so* $libname.dll.a"
+		library_names="$libname.so* $libname.dll.a $libname.*.dylib"
 	fi
 
 	__runcmd install -d $destpath/
