@@ -29,3 +29,9 @@ ac_cv_alignof_CORBA_long_double=8
 ac_cv_alignof_CORBA_pointer=4
 ac_cv_alignof_CORBA_struct=1
 
+# postgresql
+pgac_cv_alignof_short=2
+pgac_cv_alignof_int=4
+pgac_cv_alignof_long=4
+pgac_cv_alignof_long_long_int=8
+pgac_cv_alignof_double=8
