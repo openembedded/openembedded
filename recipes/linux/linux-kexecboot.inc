@@ -1,12 +1,13 @@
 # We set INC_PR here, since a change in the kexecboot recipe will need to get picked up by *all* the kernels:
-INC_PR = "r21"
+INC_PR = "r22"
 
 LOGO_SIZE ?= "."
 SRC_URI = "file://${LOGO_SIZE}/logo_linux_clut224.ppm.bz2"
 
 require linux.inc
 
-INITRAMFS_IMAGE = "initramfs-kexecboot-image"
+# we want the smallest size
+INITRAMFS_IMAGE = "initramfs-kexecboot-klibc-image"
 
 # here we set master console on serial
 CMDLINE = "console=tty1 console=ttyS0,115200n8"
