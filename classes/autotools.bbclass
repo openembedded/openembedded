@@ -137,11 +137,11 @@ oe_autoreconf () {
 		if grep "sed.*POTFILES" $CONFIGURE_AC >/dev/null; then
 			: do nothing -- we still have an old unmodified configure.ac
 		else
-			echo "no" | glib-gettextize --force --copy
+			echo "no" | glib-gettextize --force
 		fi
 	else if grep "^[[:space:]]*AM_GNU_GETTEXT" $CONFIGURE_AC >/dev/null; then
 		if [ -e ${STAGING_DATADIR}/gettext/config.rpath ]; then
-			cp ${STAGING_DATADIR}/gettext/config.rpath ${S}/
+			ln -sf ${STAGING_DATADIR}/gettext/config.rpath ${S}/
 		else
 			oenote ${STAGING_DATADIR}/gettext/config.rpath not found. gettext is not installed.
 		fi
@@ -151,9 +151,9 @@ oe_autoreconf () {
 	for aux in m4 `sed -n -e '/^[[:space:]]*AC_CONFIG_MACRO_DIR/s|[^(]*([[]*\([^])]*\)[]]*)|\1|p' $CONFIGURE_AC`; do
 		mkdir -p ${aux}
 	done
-	autoreconf -Wcross --verbose --install --force ${EXTRA_AUTORECONF} $acpaths || oefatal "autoreconf execution failed."
+	autoreconf -Wcross --verbose --install --symlink --force ${EXTRA_AUTORECONF} $acpaths || oefatal "autoreconf execution failed."
 	if grep "^[[:space:]]*[AI][CT]_PROG_INTLTOOL" $CONFIGURE_AC >/dev/null; then
-		intltoolize --copy --force --automake
+		intltoolize --force --automake
 	fi
 }
 
