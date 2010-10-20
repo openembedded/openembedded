@@ -1,0 +1,215 @@
+From c52969e6e305d83edb489f46a6985008a0b3f1cb Mon Sep 17 00:00:00 2001
+From: Timo Juhani Lindfors <timo.lindfors@iki.fi>
+Date: Mon, 18 Oct 2010 21:17:42 +0200
+Subject: [PATCH] Openmoko resume reason sysfs node ported from 2.6.29
+
+Signed-off-by: Martin Jansa <Martin.Jansa@gmail.com>
+---
+ arch/arm/mach-s3c2440/mach-gta02.c      |    5 +
+ drivers/misc/Kconfig                    |    7 ++
+ drivers/misc/Makefile                   |    1 +
+ drivers/misc/neo1973_pm_resume_reason.c |  142 +++++++++++++++++++++++++++++++
+ 4 files changed, 155 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/misc/neo1973_pm_resume_reason.c
+
+diff --git a/arch/arm/mach-s3c2440/mach-gta02.c b/arch/arm/mach-s3c2440/mach-gta02.c
+index 6b57c42..702b80a 100644
+--- a/arch/arm/mach-s3c2440/mach-gta02.c
++++ b/arch/arm/mach-s3c2440/mach-gta02.c
+@@ -152,6 +152,10 @@ static long gta02_panic_blink(long count)
+ 	return delay;
+ }
+ 
++struct platform_device gta02_resume_reason_device = {
++	.name 		= "neo1973-resume",
++	.num_resources	= 0,
++};
+ 
+ static struct map_desc gta02_iodesc[] __initdata = {
+ 	{
+@@ -1289,6 +1293,7 @@ static struct platform_device *gta02_devices[] __initdata = {
+ static struct platform_device *gta02_devices_pmu_children[] = {
+     &gta02_hdq_device,
+ 	&gta02_platform_bat,
++	&gta02_resume_reason_device,
+ };
+ 
+ /*
+diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+index 0d0d625..1baeedd 100644
+--- a/drivers/misc/Kconfig
++++ b/drivers/misc/Kconfig
+@@ -327,6 +327,13 @@ config VMWARE_BALLOON
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called vmware_balloon.
+ 
++config OPENMOKO_RESUME_REASON
++	tristate "Openmoko resume reason driver"
++	depends on SYSFS
++	help
++	  This driver adds a sysfs entry for accessing the resume reason
++          of the openmoko board.
++
+ source "drivers/misc/c2port/Kconfig"
+ source "drivers/misc/eeprom/Kconfig"
+ source "drivers/misc/cb710/Kconfig"
+diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
+index 7b6f7ee..57b6984 100644
+--- a/drivers/misc/Makefile
++++ b/drivers/misc/Makefile
+@@ -30,3 +30,4 @@ obj-$(CONFIG_IWMC3200TOP)      += iwmc3200top/
+ obj-y				+= eeprom/
+ obj-y				+= cb710/
+ obj-$(CONFIG_VMWARE_BALLOON)	+= vmware_balloon.o
++obj-$(CONFIG_OPENMOKO_RESUME_REASON)	+= neo1973_pm_resume_reason.o
+diff --git a/drivers/misc/neo1973_pm_resume_reason.c b/drivers/misc/neo1973_pm_resume_reason.c
+new file mode 100644
+index 0000000..5bcc818
+--- /dev/null
++++ b/drivers/misc/neo1973_pm_resume_reason.c
+@@ -0,0 +1,142 @@
++/*
++ * Resume reason sysfs for the FIC Neo1973 GSM Phone
++ *
++ * (C) 2008 by Openmoko Inc.
++ * Author: Andy Green <andy@openmoko.com>
++ * All rights reserved.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License resume_reason 2 as
++ * published by the Free Software Foundation
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/platform_device.h>
++#include <linux/io.h>
++
++#include <mach/hardware.h>
++#include <asm/mach-types.h>
++
++#ifdef CONFIG_MACH_NEO1973_GTA02
++#include <mach/gta02.h>
++#include <linux/mfd/pcf50633/core.h>
++#endif
++
++static unsigned int *gstatus4_mapped;
++static char *resume_reasons[][17] = { { /* GTA01 */
++	"EINT00_NULL",
++	"EINT01_GSM",
++	"EINT02_NULL",
++	"EINT03_NULL",
++	"EINT04_JACK",
++	"EINT05_SDCARD",
++	"EINT06_AUXKEY",
++	"EINT07_HOLDKEY",
++	"EINT08_NULL",
++	"EINT09_NULL",
++	"EINT10_NULL",
++	"EINT11_NULL",
++	"EINT12_NULL",
++	"EINT13_NULL",
++	"EINT14_NULL",
++	"EINT15_NULL",
++	NULL
++}, { /* GTA02 */
++	"EINT00_ACCEL1",
++	"EINT01_GSM",
++	"EINT02_BLUETOOTH",
++	"EINT03_DEBUGBRD",
++	"EINT04_JACK",
++	"EINT05_WLAN",
++	"EINT06_AUXKEY",
++	"EINT07_HOLDKEY",
++	"EINT08_ACCEL2",
++	"EINT09_PMU",
++	"EINT10_NULL",
++	"EINT11_NULL",
++	"EINT12_GLAMO",
++	"EINT13_NULL",
++	"EINT14_NULL",
++	"EINT15_NULL",
++	NULL
++} };
++
++static ssize_t resume_reason_read(struct device *dev,
++				  struct device_attribute *attr,
++				  char *buf)
++{
++	int bit = 0;
++	char *end = buf;
++	int gta = !!machine_is_neo1973_gta02();
++
++	for (bit = 0; resume_reasons[gta][bit]; bit++) {
++		if ((*gstatus4_mapped) & (1 << bit))
++			end += sprintf(end, "* %s\n", resume_reasons[gta][bit]);
++		else
++			end += sprintf(end, "  %s\n", resume_reasons[gta][bit]);
++	}
++
++	return end - buf;
++}
++
++
++static DEVICE_ATTR(resume_reason, 0644, resume_reason_read, NULL);
++
++static struct attribute *neo1973_resume_reason_sysfs_entries[] = {
++	&dev_attr_resume_reason.attr,
++	NULL
++};
++
++static struct attribute_group neo1973_resume_reason_attr_group = {
++	.name	= NULL,
++	.attrs	= neo1973_resume_reason_sysfs_entries,
++};
++
++static int __init neo1973_resume_reason_probe(struct platform_device *pdev)
++{
++	dev_info(&pdev->dev, "starting\n");
++
++	gstatus4_mapped = ioremap(0x560000BC /* GSTATUS4 */, 0x4);
++	if (!gstatus4_mapped) {
++		dev_err(&pdev->dev, "failed to ioremap() memory region\n");
++		return -EINVAL;
++	}
++
++	return sysfs_create_group(&pdev->dev.kobj,
++					    &neo1973_resume_reason_attr_group);
++}
++
++static int neo1973_resume_reason_remove(struct platform_device *pdev)
++{
++	sysfs_remove_group(&pdev->dev.kobj, &neo1973_resume_reason_attr_group);
++	iounmap(gstatus4_mapped);
++	return 0;
++}
++
++static struct platform_driver neo1973_resume_reason_driver = {
++	.probe		= neo1973_resume_reason_probe,
++	.remove		= neo1973_resume_reason_remove,
++	.driver		= {
++		.name		= "neo1973-resume",
++	},
++};
++
++static int __devinit neo1973_resume_reason_init(void)
++{
++	return platform_driver_register(&neo1973_resume_reason_driver);
++}
++
++static void neo1973_resume_reason_exit(void)
++{
++	platform_driver_unregister(&neo1973_resume_reason_driver);
++}
++
++module_init(neo1973_resume_reason_init);
++module_exit(neo1973_resume_reason_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Andy Green <andy@openmoko.com>");
++MODULE_DESCRIPTION("Neo1973 resume_reason");
+-- 
+1.7.3.1
+

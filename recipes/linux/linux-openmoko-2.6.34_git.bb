@@ -4,7 +4,7 @@ require linux-openmoko.inc
 KERNEL_RELEASE="2.6.34.7"
 
 SRCREV = "e4182f3551f1b8e8f8bd07a2d68e49a0ec4cd04a"
-OEV = "oe6"
+OEV = "oe7"
 PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCPV}"
 
 SRC_URI = "\
@@ -35,6 +35,7 @@ SRC_URI = "\
   file://0019-Enable-powering-off-after-8s-POWER-press.patch \
   file://0020-GTA02-bt-remember-state-of-bluetooth-in-variable.patch \
   file://0021-tslib-relies-on-ts-pressures-events-so-this-hack-is-.patch \
+  file://0022-Openmoko-resume-reason-sysfs-node-ported-from-2.6.29.patch \
 # fix PR2349  
   file://0010-mach-gta02-fix-PR2349-do-not-manage-down.patch \
   file://defconfig \
