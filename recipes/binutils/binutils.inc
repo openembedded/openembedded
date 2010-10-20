@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/binutils/"
 SECTION = "devel"
 LICENSE = "GPL"
 
-INC_PR = "r10"
+INC_PR = "r11"
 
 COMPATIBLE_TARGET_SYS ?= "(?!nios2)"
 
