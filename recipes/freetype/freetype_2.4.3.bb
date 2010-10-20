@@ -1,7 +1,7 @@
 DESCRIPTION = "Freetype font rendering library"
 SECTION = "libs"
 LICENSE = "freetype GPLv2"
-PR = "r0"
+PR = "r1"
 DEPENDS = "zlib"
 
 SRC_URI = "\
@@ -19,13 +19,11 @@ inherit autotools pkgconfig binconfig
 
 LIBTOOL = "${HOST_SYS}-libtool"
 EXTRA_OEMAKE = "'LIBTOOL=${LIBTOOL}'"
+EXTRA_AUTORECONF += "--exclude=autoheader"
 
 do_configure() {
 	cd builds/unix
-	libtoolize --force --copy
-	gnu-configize --force
-	aclocal -I .
-	autoconf
+	oe_autoreconf -I .
 	cd ${S}
 	oe_runconf
 }
