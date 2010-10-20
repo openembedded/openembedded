@@ -5,16 +5,15 @@ require xorg-xserver-common.inc
 
 DESCRIPTION = "the X.Org X server"
 DEPENDS += "pixman libpciaccess openssl dri2proto glproto xorg-minimal-fonts font-util-native"
-PV = "1.8.99.906"
-PR = "${INC_PR}.4"
+PV = "1.9.99.1"
+PR = "${INC_PR}.0"
 PR_append = "+gitr${SRCPV}"
 PE = "2"
 
 DEFAULT_PREFERENCE = "-1"
 
-SRCREV = "71af1f71c0492c365707c6b3810f94642ff39352"
+SRCREV = "d738175eaf1098e29b8afb6de8e99b5098e366a7"
 SRC_URI = "git://anongit.freedesktop.org/xorg/xserver;protocol=git;branch=master \
-           file://dolt-fix.patch \
            file://randr-support.patch \
 	   file://hack-fbdev-ignore-return-mode.patch \
            "
