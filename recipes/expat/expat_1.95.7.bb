@@ -1,5 +1,5 @@
 require expat.inc
-PR = "r3"
+PR = "${INC_PR}.0"
 
 SRC_URI += "file://autotools.patch \
 	    file://expat-XMLCALL.patch \

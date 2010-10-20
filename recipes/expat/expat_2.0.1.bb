@@ -1,5 +1,5 @@
 require expat.inc
-PR = "r3"
+PR = "${INC_PR}.0"
 
 BBCLASSEXTEND = "native nativesdk"
 

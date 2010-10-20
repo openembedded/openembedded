@@ -1,6 +1,5 @@
 require expat.inc
-
-PR = "r2"
+PR = "${INC_PR}.0"
 
 do_install () {
 	oe_runmake prefix="${D}${prefix}" \
