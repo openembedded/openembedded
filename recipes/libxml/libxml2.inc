@@ -7,14 +7,13 @@ DEPENDS_virtclass-native = "python-native"
 SRC_URI = "ftp://xmlsoft.org/libxml2/libxml2-${PV}.tar.gz;name=archive"
 S = "${WORKDIR}/${BPN}-${PV}"
 
-INC_PR = "r8"
+INC_PR = "r9"
 
 BBCLASSEXTEND = "native"
 
 inherit autotools pkgconfig binconfig
 
 EXTRA_OECONF = "\
- --without-debug \
  --without-legacy \
  --with-catalog \
  --with-docbook \
