@@ -1,6 +1,7 @@
 # use autotools_stage_all for native packages
 AUTOTOOLS_NATIVE_STAGE_INSTALL = "1"
 
+DEPENDS_prepend = "${@['gnu-config-native ', ''][bool(d.getVar('INHIBIT_AUTOTOOLS_DEPS', 1))]}"
 EXTRA_OEMAKE = ""
 
 inherit siteinfo
@@ -63,6 +64,10 @@ oe_runconf () {
 
 autotools_base_do_configure () {
 	if [ -e ${S}/configure ]; then
+		find ${S} -name config.guess -exec \
+		    ln -sf ${STAGING_DATADIR_NATIVE}/gnu-config/config.guess "{}" \;
+		find ${S} -name config.sub -exec \
+		    ln -sf ${STAGING_DATADIR_NATIVE}/gnu-config/config.sub "{}" \;
 		oe_runconf $@
 	else
 		oenote "nothing to configure"

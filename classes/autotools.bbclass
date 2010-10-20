@@ -18,8 +18,7 @@ def autotools_deps(d):
                         and not bb.data.inherits_class('sdk', d) \
                         and not bb.data.getVar('INHIBIT_DEFAULT_DEPS', d, 1):
                     deps += 'libtool-cross '
-
-	return deps + 'gnu-config-native '
+	return deps
 
 DEPENDS_prepend = "${@autotools_deps(d)}"
 DEPENDS_virtclass-native_prepend = "${@autotools_deps(d)}"
@@ -27,6 +26,39 @@ DEPENDS_virtclass-nativesdk_prepend = "${@autotools_deps(d)}"
 
 acpaths = "default"
 EXTRA_AUTORECONF = "--exclude=autopoint"
+
+gnu_configize_here() {
+	if [ -n "`autoconf -t AC_CANONICAL_BUILD`" ]; then
+		macrodir="`autoconf -t AC_CONFIG_MACRO_DIR|cut -d: -f4|tail -n 1`"
+		if [ -z "$macrodir" ]; then
+			macrodir="."
+		fi
+		if [ ! -e ${STAGING_DATADIR_NATIVE}/gnu-config/config.sub ]; then
+			oefatal "gnu-config data files missing"
+		fi
+		oenote Updating config.sub and config.guess in $macrodir
+		rm -f $macrodir/config.sub $macrodir/config.guess
+		cp ${STAGING_DATADIR_NATIVE}/gnu-config/config.sub $macrodir/config.sub
+		cp ${STAGING_DATADIR_NATIVE}/gnu-config/config.guess $macrodir/config.guess
+	fi
+}
+
+gnu_configize() {
+	subdirs="`autoconf -t AC_CONFIG_SUBDIRS|cut -d: -f4`"
+	for dir in $subdirs .; do
+		if [ ! -e "$olddir/$dir" ]; then
+			continue
+		fi
+
+		pushd $dir
+		gnu_configize_here
+		popd
+	done
+}
+
+do_configure_prepend () {
+	alias gnu-configize=gnu_configize
+}
 
 oe_autoreconf () {
 	# autoreconf is too shy to overwrite aclocal.m4 if it doesn't look
@@ -56,9 +88,12 @@ oe_autoreconf () {
 	mkdir -p m4
 	autoreconf -Wcross --verbose --install --force ${EXTRA_AUTORECONF} "$@" \
 	        || oefatal "autoreconf execution failed."
+
 	if grep "^[[:space:]]*[AI][CT]_PROG_INTLTOOL" $CONFIGURE_AC >/dev/null; then
 		intltoolize --copy --force --automake
 	fi
+
+	gnu_configize_here
 }
 
 autotools_do_configure() {
@@ -91,7 +126,11 @@ autotools_do_configure() {
 		fi
 	;;
 	esac
-	autotools_base_do_configure
+	if [ -e ${S}/configure ]; then
+		oe_runconf $@
+	else
+		oenote "nothing to configure"
+	fi
 }
 
 EXPORT_FUNCTIONS do_configure

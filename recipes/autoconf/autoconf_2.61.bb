@@ -2,12 +2,11 @@ require autoconf.inc
 
 LICENSE = "GPLv2+"
 
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 SRC_URI += "file://autoreconf-include.patch \
 	   file://autoreconf-exclude.patch \
 	   file://autoreconf-foreign.patch \
-	   file://autoreconf-gnuconfigize.patch \
 	   file://autoheader-nonfatal-warnings.patch \
 	   file://config-site.patch \
 	   file://autoconf-dont-execute-perl.patch \

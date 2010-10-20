@@ -1,11 +1,10 @@
 require autoconf.inc
 
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 SRC_URI += "file://autoreconf-exclude.patch \
 	    file://autoreconf-foreign.patch \
 	    file://autoheader-nonfatal-warnings.patch \
-	    file://autoreconf-gnuconfigize.patch \
 	    file://config-site.patch"
 
 SRC_URI_append_virtclass-native = " file://fix_path_xtra.patch"
