@@ -4,7 +4,7 @@ LICENSE = "MIT"
 HOMEPAGE = "http://www.lua.org/"
 
 DEPENDS += "readline"
-PR = "r7"
+PR = "r8"
 SRC_URI = "http://www.lua.org/ftp/lua-${PV}.tar.gz \
            file://bitwise_operators.patch \
            file://lua5.1.pc \
@@ -19,6 +19,10 @@ SRC_URI_append_linux-uclibceabi = "${UCLIBC_PATCHES}"
 
 TARGET_CC_ARCH += " -fPIC ${LDFLAGS}"
 EXTRA_OEMAKE = "'CC=${CC} -fPIC' 'MYCFLAGS=${CFLAGS} -DLUA_USE_LINUX -fPIC' MYLDFLAGS='${LDFLAGS}'"
+
+do_configure_prepend() {                                                                                                                                     
+	sed -i -e s:/usr/local:${prefix}:g src/luaconf.h
+}
 
 do_compile () {
 	cp ${WORKDIR}/lua5.1.pc ${S}/
