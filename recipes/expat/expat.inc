@@ -11,5 +11,5 @@ export LTCC = "${CC}"
 
 inherit autotools
 
-acpaths =+ "-I${S}/conftools"
+acpaths = "-I${S}/conftools"
 INC_PR = "r3"
