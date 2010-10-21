@@ -3,7 +3,7 @@ which provides many useful data types, macros, \
 type conversions, string utilities, file utilities, a main \
 loop abstraction, and so on. It works on many \
 UNIX-like platforms, Windows, OS/2 and BeOS."
-LICENSE = "LGPL"
+LICENSE = "LGPLv2+"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "glib-2.0-native gtk-doc virtual/libiconv virtual/libintl zlib"
