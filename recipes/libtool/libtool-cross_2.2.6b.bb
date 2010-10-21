@@ -1,5 +1,5 @@
 require libtool_${PV}.bb
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 SRC_URI += "\
   file://cross_compile.patch \
@@ -27,10 +27,11 @@ do_install () {
 	install -d ${D}${bindir}/
 	install -m 0755 ${HOST_SYS}-libtool ${D}${bindir}/${HOST_SYS}-libtool
 	install -d ${D}${datadir}/libtool/
+	install -d ${D}${datadir}/libtool/config/
 	install -d ${D}${datadir}/aclocal/
-	install -c ${S}/libltdl/config/config.guess ${D}${datadir}/libtool/
-	install -c ${S}/libltdl/config/config.sub ${D}${datadir}/libtool/
-	install -c -m 0644 ${S}/libltdl/config/ltmain.sh ${D}${datadir}/libtool/
+	install -c ${S}/libltdl/config/config.guess ${D}${datadir}/libtool/config/
+	install -c ${S}/libltdl/config/config.sub ${D}${datadir}/libtool/config/
+	install -c -m 0644 ${S}/libltdl/config/ltmain.sh ${D}${datadir}/libtool/config/
 	install -c -m 0644 ${S}/libltdl/m4/libtool.m4 ${D}${datadir}/aclocal/
 	install -c -m 0644 ${S}/libltdl/m4/ltdl.m4 ${D}${datadir}/aclocal/
 	if [ -e ${WORKDIR}/dolt.m4 ] ; then
