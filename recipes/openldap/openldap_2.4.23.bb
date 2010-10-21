@@ -188,7 +188,7 @@ DEPENDS      += "${OPENLDAP_DEPENDS}"
 CPPFLAGS_append = " -D_GNU_SOURCE"
 
 do_configure() {
-	cp ${STAGING_DATADIR}/libtool/ltmain.sh ${S}/build
+	cp ${STAGING_DATADIR}/libtool/config/ltmain.sh ${S}/build
 	rm -f ${S}/libtool
 	aclocal
 	libtoolize --force --copy
