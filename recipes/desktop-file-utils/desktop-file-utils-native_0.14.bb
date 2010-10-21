@@ -1,7 +1,7 @@
 SECTION = "console/utils"
 HOMEPAGE = "http://www.freedesktop.org/wiki/Software/desktop-file-utils"
 DESCRIPTION = "command line utilities to work with *.desktop files"
-LICENSE = "GPL"
+LICENSE = "GPLv2+"
 
 DEPENDS = "glib-2.0-native"
 
