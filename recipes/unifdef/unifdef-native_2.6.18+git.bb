@@ -1,6 +1,6 @@
 DESCRIPTION = "Kernel header preprocessor"
 SECTION = "devel"
-LICENSE = "GPL"
+LICENSE = "FreeBSD"
 
 SRC_URI = "file://unifdef.c"
 
