@@ -1,3 +1,5 @@
+LICENSE = "MIT"
+
 PR = "r2"
 
 SRC_URI = "file://X11"
