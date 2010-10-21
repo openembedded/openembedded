@@ -115,10 +115,9 @@ python patch_do_patch() {
 		bb.note("Applying patch '%s' (%s)" % (pname, oe.path.format_display(local, d)))
 		try:
 			patchset.Import({"file":local, "remote":url, "strippath": striplevel}, True)
-		except Exception:
-			import sys
-			raise bb.build.FuncFailed(str(sys.exc_value))
-		resolver.Resolve()
+			resolver.Resolve()
+		except Exception, exc:
+			bb.fatal(str(exc))
 }
 
 addtask patch after do_unpack
