@@ -1,6 +1,6 @@
 DESCRIPTION = "Sanitized set of 2.6 kernel headers for the C library's use."
 SECTION = "devel"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 NATIVE_INSTALL_WORKS = "1"
 BBCLASSEXTEND = "native"
 
