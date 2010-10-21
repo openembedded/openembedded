@@ -1,6 +1,6 @@
 DESCRIPTION = "GNU Project parser generator (yacc replacement)."
 HOMEPAGE = "http://www.gnu.org/software/bison/"
-LICENSE = "GPL"
+LICENSE = "GPLv2+"
 SECTION = "devel"
 PRIORITY = "optional"
 DEPENDS = "virtual/libintl flex-native"
