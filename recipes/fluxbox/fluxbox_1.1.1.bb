@@ -3,10 +3,12 @@ HOMEPAGE = "http://www.fluxbox.org"
 LICENSE = "MIT"
 DEPENDS = "fontconfig virtual/libx11"
 
+PR = "r1"
 PE = "1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/fluxbox/fluxbox-${PV}.tar.gz \
            file://fluxbox-wm \
+           file://remove-duplicate-fbrun.1.patch \
           "
 
 inherit autotools update-alternatives
