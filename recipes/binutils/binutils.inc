@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/binutils/"
 SECTION = "devel"
 LICENSE = "GPL"
 
-INC_PR = "r12"
+INC_PR = "r13"
 
 COMPATIBLE_TARGET_SYS ?= "(?!nios2)"
 
@@ -42,10 +42,6 @@ B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
 EXTRA_OECONF = "--program-prefix=${TARGET_PREFIX} \
 		--enable-shared"
-python __anonymous () {
-       cfg = oe_filter_out('--with-sysroot$' , bb.data.getVar('CONFIGUREOPTS', d, 1) or "", d)
-       bb.data.setVar('CONFIGUREOPTS', cfg, d)
-}
 
 # This is necessary due to a bug in the binutils Makefiles
 EXTRA_OEMAKE = "configure-build-libiberty all"

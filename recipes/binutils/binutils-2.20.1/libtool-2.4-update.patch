@@ -7262,26 +7262,26 @@ Index: binutils-2.20.1/libtool.m4
 +AC_DEFUN([_LT_WITH_SYSROOT],
 +[AC_MSG_CHECKING([for sysroot])
 +AC_ARG_WITH([sysroot],
-+[  --with-sysroot[=DIR] Search for dependent libraries within DIR
++[  --with-libtool-sysroot[=DIR] Search for dependent libraries within DIR
 +                        (or the compiler's sysroot if not specified).],
-+[], [with_sysroot=no])
++[], [with_libtool_sysroot=no])
 +
 +dnl lt_sysroot will always be passed unquoted.  We quote it here
 +dnl in case the user passed a directory name.
 +lt_sysroot=
-+case ${with_sysroot} in #(
++case ${with_libtool_sysroot} in #(
 + yes)
 +   if test "$GCC" = yes; then
 +     lt_sysroot=`$CC --print-sysroot 2>/dev/null`
 +   fi
 +   ;; #(
 + /*)
-+   lt_sysroot=`echo "$with_sysroot" | sed -e "$sed_quote_subst"`
++   lt_sysroot=`echo "$with_libtool_sysroot" | sed -e "$sed_quote_subst"`
 +   ;; #(
 + no|'')
 +   ;; #(
 + *)
-+   AC_MSG_RESULT([${with_sysroot}])
++   AC_MSG_RESULT([${with_libtool_sysroot}])
 +   AC_MSG_ERROR([The sysroot must be an absolute path.])
 +   ;;
 +esac
@@ -10159,7 +10159,7 @@ Index: binutils-2.20.1/bfd/configure
  with_pic
  enable_fast_install
  with_gnu_ld
-+with_sysroot
++with_libtool_sysroot
  enable_libtool_lock
  enable_plugins
  enable_largefile
@@ -10167,7 +10167,7 @@ Index: binutils-2.20.1/bfd/configure
    --with-pic              try to use only PIC/non-PIC objects [default=use
                            both]
    --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
-+  --with-sysroot=DIR Search for dependent libraries within DIR
++  --with-libtool-sysroot=DIR Search for dependent libraries within DIR
 +                        (or the compiler's sysroot if not specified).
    --with-mmap             try using mmap for BFD input files if available
    --with-separate-debug-dir=DIR
@@ -11076,29 +11076,29 @@ Index: binutils-2.20.1/bfd/configure
 +{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for sysroot" >&5
 +$as_echo_n "checking for sysroot... " >&6; }
 +
-+# Check whether --with-sysroot was given.
-+if test "${with_sysroot+set}" = set; then :
-+  withval=$with_sysroot;
++# Check whether --with-libtool-sysroot was given.
++if test "${with_libtool_sysroot+set}" = set; then :
++  withval=$with_libtool_sysroot;
 +else
-+  with_sysroot=no
++  with_libtool_sysroot=no
 +fi
 +
 +
 +lt_sysroot=
-+case ${with_sysroot} in #(
++case ${with_libtool_sysroot} in #(
 + yes)
 +   if test "$GCC" = yes; then
 +     lt_sysroot=`$CC --print-sysroot 2>/dev/null`
 +   fi
 +   ;; #(
 + /*)
-+   lt_sysroot=`echo "$with_sysroot" | sed -e "$sed_quote_subst"`
++   lt_sysroot=`echo "$with_libtool_sysroot" | sed -e "$sed_quote_subst"`
 +   ;; #(
 + no|'')
 +   ;; #(
 + *)
-+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: ${with_sysroot}" >&5
-+$as_echo "${with_sysroot}" >&6; }
++   { $as_echo "$as_me:${as_lineno-$LINENO}: result: ${with_libtool_sysroot}" >&5
++$as_echo "${with_libtool_sysroot}" >&6; }
 +   as_fn_error "The sysroot must be an absolute path." "$LINENO" 5
 +   ;;
 +esac
@@ -13709,7 +13709,7 @@ Index: binutils-2.20.1/binutils/configure
  with_pic
  enable_fast_install
  with_gnu_ld
-+with_sysroot
++with_libtool_sysroot
  enable_libtool_lock
  enable_targets
  enable_werror
@@ -13717,7 +13717,7 @@ Index: binutils-2.20.1/binutils/configure
    --with-pic              try to use only PIC/non-PIC objects [default=use
                            both]
    --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
-+  --with-sysroot=DIR Search for dependent libraries within DIR
++  --with-libtool-sysroot=DIR Search for dependent libraries within DIR
 +                        (or the compiler's sysroot if not specified).
    --with-gnu-ld           assume the C compiler uses GNU ld default=no
    --with-libiconv-prefix[=DIR]  search for libiconv in DIR/include and DIR/lib
@@ -14639,29 +14639,29 @@ Index: binutils-2.20.1/binutils/configure
 +{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for sysroot" >&5
 +$as_echo_n "checking for sysroot... " >&6; }
 +
-+# Check whether --with-sysroot was given.
-+if test "${with_sysroot+set}" = set; then :
-+  withval=$with_sysroot;
++# Check whether --with-libtool-sysroot was given.
++if test "${with_libtool_sysroot+set}" = set; then :
++  withval=$with_libtool_sysroot;
 +else
-+  with_sysroot=no
++  with_libtool_sysroot=no
 +fi
 +
 +
 +lt_sysroot=
-+case ${with_sysroot} in #(
++case ${with_libtool_sysroot} in #(
 + yes)
 +   if test "$GCC" = yes; then
 +     lt_sysroot=`$CC --print-sysroot 2>/dev/null`
 +   fi
 +   ;; #(
 + /*)
-+   lt_sysroot=`echo "$with_sysroot" | sed -e "$sed_quote_subst"`
++   lt_sysroot=`echo "$with_libtool_sysroot" | sed -e "$sed_quote_subst"`
 +   ;; #(
 + no|'')
 +   ;; #(
 + *)
-+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: ${with_sysroot}" >&5
-+$as_echo "${with_sysroot}" >&6; }
++   { $as_echo "$as_me:${as_lineno-$LINENO}: result: ${with_libtool_sysroot}" >&5
++$as_echo "${with_libtool_sysroot}" >&6; }
 +   as_fn_error "The sysroot must be an absolute path." "$LINENO" 5
 +   ;;
 +esac
@@ -17293,7 +17293,7 @@ Index: binutils-2.20.1/gas/configure
  with_pic
  enable_fast_install
  with_gnu_ld
-+with_sysroot
++with_libtool_sysroot
  enable_libtool_lock
  enable_targets
  enable_checking
@@ -17301,7 +17301,7 @@ Index: binutils-2.20.1/gas/configure
    --with-pic              try to use only PIC/non-PIC objects [default=use
                            both]
    --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
-+  --with-sysroot=DIR Search for dependent libraries within DIR
++  --with-libtool-sysroot=DIR Search for dependent libraries within DIR
 +                        (or the compiler's sysroot if not specified).
  
  Some influential environment variables:
@@ -18224,29 +18224,29 @@ Index: binutils-2.20.1/gas/configure
 +{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for sysroot" >&5
 +$as_echo_n "checking for sysroot... " >&6; }
 +
-+# Check whether --with-sysroot was given.
-+if test "${with_sysroot+set}" = set; then :
-+  withval=$with_sysroot;
++# Check whether --with-libtool-sysroot was given.
++if test "${with_libtool_sysroot+set}" = set; then :
++  withval=$with_libtool_sysroot;
 +else
-+  with_sysroot=no
++  with_libtool_sysroot=no
 +fi
 +
 +
 +lt_sysroot=
-+case ${with_sysroot} in #(
++case ${with_libtool_sysroot} in #(
 + yes)
 +   if test "$GCC" = yes; then
 +     lt_sysroot=`$CC --print-sysroot 2>/dev/null`
 +   fi
 +   ;; #(
 + /*)
-+   lt_sysroot=`echo "$with_sysroot" | sed -e "$sed_quote_subst"`
++   lt_sysroot=`echo "$with_libtool_sysroot" | sed -e "$sed_quote_subst"`
 +   ;; #(
 + no|'')
 +   ;; #(
 + *)
-+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: ${with_sysroot}" >&5
-+$as_echo "${with_sysroot}" >&6; }
++   { $as_echo "$as_me:${as_lineno-$LINENO}: result: ${with_libtool_sysroot}" >&5
++$as_echo "${with_libtool_sysroot}" >&6; }
 +   as_fn_error "The sysroot must be an absolute path." "$LINENO" 5
 +   ;;
 +esac
@@ -20847,7 +20847,7 @@ Index: binutils-2.20.1/gprof/configure
  with_pic
  enable_fast_install
  with_gnu_ld
-+with_sysroot
++with_libtool_sysroot
  enable_libtool_lock
  enable_nls
  enable_maintainer_mode
@@ -20855,7 +20855,7 @@ Index: binutils-2.20.1/gprof/configure
    --with-pic              try to use only PIC/non-PIC objects [default=use
                            both]
    --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
-+  --with-sysroot=DIR Search for dependent libraries within DIR
++  --with-libtool-sysroot=DIR Search for dependent libraries within DIR
 +                        (or the compiler's sysroot if not specified).
  
  Some influential environment variables:
@@ -21786,29 +21786,29 @@ Index: binutils-2.20.1/gprof/configure
 +{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for sysroot" >&5
 +$as_echo_n "checking for sysroot... " >&6; }
 +
-+# Check whether --with-sysroot was given.
-+if test "${with_sysroot+set}" = set; then :
-+  withval=$with_sysroot;
++# Check whether --with-libtool-sysroot was given.
++if test "${with_libtool_sysroot+set}" = set; then :
++  withval=$with_libtool_sysroot;
 +else
-+  with_sysroot=no
++  with_libtool_sysroot=no
 +fi
 +
 +
 +lt_sysroot=
-+case ${with_sysroot} in #(
++case ${with_libtool_sysroot} in #(
 + yes)
 +   if test "$GCC" = yes; then
 +     lt_sysroot=`$CC --print-sysroot 2>/dev/null`
 +   fi
 +   ;; #(
 + /*)
-+   lt_sysroot=`echo "$with_sysroot" | sed -e "$sed_quote_subst"`
++   lt_sysroot=`echo "$with_libtool_sysroot" | sed -e "$sed_quote_subst"`
 +   ;; #(
 + no|'')
 +   ;; #(
 + *)
-+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: ${with_sysroot}" >&5
-+$as_echo "${with_sysroot}" >&6; }
++   { $as_echo "$as_me:${as_lineno-$LINENO}: result: ${with_libtool_sysroot}" >&5
++$as_echo "${with_libtool_sysroot}" >&6; }
 +   as_fn_error "The sysroot must be an absolute path." "$LINENO" 5
 +   ;;
 +esac
@@ -24363,7 +24363,7 @@ Index: binutils-2.20.1/ld/configure
    --with-pic              try to use only PIC/non-PIC objects [default=use
                            both]
    --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
-+  --with-sysroot=DIR Search for dependent libraries within DIR
++  --with-libtool-sysroot=DIR Search for dependent libraries within DIR
 +                        (or the compiler's sysroot if not specified).
  
  Some influential environment variables:
@@ -25288,29 +25288,29 @@ Index: binutils-2.20.1/ld/configure
 +{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for sysroot" >&5
 +$as_echo_n "checking for sysroot... " >&6; }
 +
-+# Check whether --with-sysroot was given.
-+if test "${with_sysroot+set}" = set; then :
-+  withval=$with_sysroot;
++# Check whether --with-libtool-sysroot was given.
++if test "${with_libtool_sysroot+set}" = set; then :
++  withval=$with_libtool_sysroot;
 +else
-+  with_sysroot=no
++  with_libtool_sysroot=no
 +fi
 +
 +
 +lt_sysroot=
-+case ${with_sysroot} in #(
++case ${with_libtool_sysroot} in #(
 + yes)
 +   if test "$GCC" = yes; then
 +     lt_sysroot=`$CC --print-sysroot 2>/dev/null`
 +   fi
 +   ;; #(
 + /*)
-+   lt_sysroot=`echo "$with_sysroot" | sed -e "$sed_quote_subst"`
++   lt_sysroot=`echo "$with_libtool_sysroot" | sed -e "$sed_quote_subst"`
 +   ;; #(
 + no|'')
 +   ;; #(
 + *)
-+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: ${with_sysroot}" >&5
-+$as_echo "${with_sysroot}" >&6; }
++   { $as_echo "$as_me:${as_lineno-$LINENO}: result: ${with_libtool_sysroot}" >&5
++$as_echo "${with_libtool_sysroot}" >&6; }
 +   as_fn_error "The sysroot must be an absolute path." "$LINENO" 5
 +   ;;
 +esac
@@ -27826,7 +27826,7 @@ Index: binutils-2.20.1/opcodes/configure
  with_pic
  enable_fast_install
  with_gnu_ld
-+with_sysroot
++with_libtool_sysroot
  enable_libtool_lock
  enable_targets
  enable_werror
@@ -27834,7 +27834,7 @@ Index: binutils-2.20.1/opcodes/configure
    --with-pic              try to use only PIC/non-PIC objects [default=use
                            both]
    --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
-+  --with-sysroot=DIR Search for dependent libraries within DIR
++  --with-libtool-sysroot=DIR Search for dependent libraries within DIR
 +                        (or the compiler's sysroot if not specified).
  
  Some influential environment variables:
@@ -28744,29 +28744,29 @@ Index: binutils-2.20.1/opcodes/configure
 +{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for sysroot" >&5
 +$as_echo_n "checking for sysroot... " >&6; }
 +
-+# Check whether --with-sysroot was given.
-+if test "${with_sysroot+set}" = set; then :
-+  withval=$with_sysroot;
++# Check whether --with-libtool-sysroot was given.
++if test "${with_libtool_sysroot+set}" = set; then :
++  withval=$with_libtool_sysroot;
 +else
-+  with_sysroot=no
++  with_libtool_sysroot=no
 +fi
 +
 +
 +lt_sysroot=
-+case ${with_sysroot} in #(
++case ${with_libtool_sysroot} in #(
 + yes)
 +   if test "$GCC" = yes; then
 +     lt_sysroot=`$CC --print-sysroot 2>/dev/null`
 +   fi
 +   ;; #(
 + /*)
-+   lt_sysroot=`echo "$with_sysroot" | sed -e "$sed_quote_subst"`
++   lt_sysroot=`echo "$with_libtool_sysroot" | sed -e "$sed_quote_subst"`
 +   ;; #(
 + no|'')
 +   ;; #(
 + *)
-+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: ${with_sysroot}" >&5
-+$as_echo "${with_sysroot}" >&6; }
++   { $as_echo "$as_me:${as_lineno-$LINENO}: result: ${with_libtool_sysroot}" >&5
++$as_echo "${with_libtool_sysroot}" >&6; }
 +   as_fn_error "The sysroot must be an absolute path." "$LINENO" 5
 +   ;;
 +esac
