@@ -1,5 +1,5 @@
 DESCRIPTION = "A simple, small, portable, fast, and secure HTTP server."
-LICENSE = "BSD"
+LICENSE = "FreeBSD"
 HOMEPAGE = "http://www.acme.com/software/thttpd/"
 PR ="r8"
 
