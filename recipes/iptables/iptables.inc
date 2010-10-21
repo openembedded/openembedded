@@ -1,7 +1,7 @@
 DESCRIPTION = "iptables network filtering tools"
 HOMEPAGE = "http://www.netfilter.org/"
 SECTION = "console/utils"
-LICENSE = "GPL"
+LICENSE = "GPLv2+"
 
 SRC_URI = "http://netfilter.org/projects/iptables/files/iptables-${PV}.tar.bz2;name=iptables-${PV}"
 S = "${WORKDIR}/iptables-${PV}"
