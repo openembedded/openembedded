@@ -1,7 +1,7 @@
 DESCRIPTION = "x-load bootloader loader"
 SECTION = "bootloaders"
 PRIORITY = "optional"
-LICENSE = "GPL"
+LICENSE = "GPLv2+"
 
 DEPENDS = "signgp-native"
 

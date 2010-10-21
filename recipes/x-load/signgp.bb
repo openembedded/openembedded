@@ -1,4 +1,4 @@
-LICENSE = "BSD"
+LICENSE = "NewBSD"
 DESCRIPTION = "Tool to sign omap3 x-loader images"
 
 PR = "r4"
