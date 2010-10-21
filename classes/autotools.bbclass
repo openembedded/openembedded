@@ -76,7 +76,7 @@ CONFIGUREOPTS = " --build=${BUILD_SYS} \
 		  --oldincludedir=${oldincludedir} \
 		  --infodir=${infodir} \
 		  --mandir=${mandir} \
-		  ${@["","--with-sysroot"][bb.data.getVar('LIBTOOL_HAS_SYSROOT', d, 1) == "yes"]} \
+		  ${@["","--with-libtool-sysroot"][bb.data.getVar('LIBTOOL_HAS_SYSROOT', d, 1) == "yes"]} \
 		"
 
 oe_runconf () {
