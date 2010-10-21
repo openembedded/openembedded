@@ -10,7 +10,7 @@ S = "${WORKDIR}/diffstat-${PV}"
 
 inherit autotools
 
-PR = "1"
+PR = "r1"
 
 do_configure () {
 	if [ ! -e acinclude.m4 ]; then
