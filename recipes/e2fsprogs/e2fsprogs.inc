@@ -1,6 +1,6 @@
 DESCRIPTION = "EXT2 Filesystem Utilities"
 HOMEPAGE = "http://e2fsprogs.sf.net"
-LICENSE = "GPL"
+LICENSE = "GPLv2+|LGPLv2+|NewBSD|MIT"
 SECTION = "base"
 DEPENDS = "gettext-native util-linux-ng"
 DEPENDS_virtclass-native = "gettext-native util-linux-ng-native"
