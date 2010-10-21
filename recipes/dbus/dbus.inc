@@ -1,7 +1,7 @@
 DESCRIPTION = "A message bus system for inter-process communication"
 HOMEPAGE = "http://dbus.freedesktop.org"
 SECTION = "base"
-LICENSE = "GPL"
+LICENSE = "GPLv2+ AFLv2.1"
 DEPENDS = "expat glib-2.0 virtual/libintl libsm libice virtual/libx11"
 
 INC_PR = "r19"

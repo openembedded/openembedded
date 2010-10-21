@@ -1,5 +1,5 @@
 DESCRIPTION = "dbus forwarding daemon"
-LICENSE = "GPL"
+LICENSE = "LGPLv2.1+"
 DEPENDS = "dbus dbus-glib"
 SRCREV = "1226a0a1374628ff191f6d8a56000be5e53e7608"
 PV = "0.0.0+gitr${SRCPV}"

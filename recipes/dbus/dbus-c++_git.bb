@@ -1,5 +1,5 @@
 DESCRIPTION = "C++ bindings for dbus"
-LICENSE = "LGPL"
+LICENSE = "LGPLv2.1+"
 SECTION = "libs"
 DEPENDS = "dbus dbus-c++-native expat"
 SRCREV = "530a887913d3b0dd7091eabb8eef8e3c279e3bb8"

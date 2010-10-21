@@ -1,7 +1,7 @@
 DESCRIPTION = "GLib bindings for the dbus message bus system"
 HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
 SECTION = "libs"
-LICENSE = "GPL"
+LICENSE = "GPLv2+ AFLv2.1"
 
 DEPENDS = "expat glib-2.0 virtual/libintl dbus-glib-native dbus"
 DEPENDS_virtclass-native = "expat-native glib-2.0-native dbus-native"
