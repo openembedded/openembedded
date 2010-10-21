@@ -1,7 +1,7 @@
 SECTION = "base"
 PRIORITY = "standard"
 DESCRIPTION = "Manage symlinks in /etc/rcN.d"
-LICENSE = "GPL"
+LICENSE = "GPLv2+"
 S = "${WORKDIR}/update-rc.d"
 INHIBIT_DEFAULT_DEPS = "1"
 PR = "r1"
