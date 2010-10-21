@@ -1,11 +1,16 @@
-From 2500e39a54c9c37abbddd1ad552575b24420e1a8 Mon Sep 17 00:00:00 2001
+From 4c1ed6eb94871a4d343459a8548c03626df0e3a7 Mon Sep 17 00:00:00 2001
 From: Matthieu Crapet <mcrapet@gmail.com>
 Date: Sat, 19 Jun 2010 11:25:31 +0200
-Subject: [PATCH 09/18] ts72xx_pata
+Subject: [PATCH 09/25] ts72xx_pata
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 Support:
 TS-7200 - Compact flash
 TS-9600 - IDE interface PC/104 peripheral
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
 ---
  drivers/ata/Kconfig          |   20 +++++
  drivers/ata/Makefile         |    3 +
@@ -428,5 +433,5 @@ index 0000000..7a70550
 +MODULE_LICENSE("GPL");
 +MODULE_VERSION(DRV_VERSION);
 -- 
-1.7.1
+1.7.0.4
 

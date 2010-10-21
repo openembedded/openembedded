@@ -1,9 +1,14 @@
-From c1515f196bfc70cad5f9a755bf0038f190fd8c22 Mon Sep 17 00:00:00 2001
+From 1c9a9e85890e1dd904f6e3a873d3c783a9b94228 Mon Sep 17 00:00:00 2001
 From: Matthieu Crapet <mcrapet@gmail.com>
 Date: Sat, 19 Jun 2010 14:44:32 +0200
-Subject: [PATCH 11/18] ts72xx_dio_keypad
+Subject: [PATCH 11/25] ts72xx_dio_keypad
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 Depends of "matrix-keypad" driver.
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
 ---
  drivers/input/keyboard/Kconfig          |   30 ++++++++
  drivers/input/keyboard/Makefile         |    2 +
@@ -302,5 +307,5 @@ index 0000000..790abd5
 +MODULE_DESCRIPTION("Platform device 4x4 keypad");
 +MODULE_LICENSE("GPL");
 -- 
-1.7.1
+1.7.0.4
 

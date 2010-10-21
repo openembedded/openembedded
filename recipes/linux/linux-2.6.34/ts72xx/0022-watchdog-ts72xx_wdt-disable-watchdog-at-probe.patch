@@ -1,7 +1,7 @@
-From 0e901bed4e053098f1c8411dcbf21324b7f61775 Mon Sep 17 00:00:00 2001
+From 6b9e31a908ff68610a2703dcb44f991a43fd9be5 Mon Sep 17 00:00:00 2001
 From: Mika Westerberg <mika.westerberg@iki.fi>
 Date: Sun, 29 Aug 2010 13:53:14 +0300
-Subject: [PATCH] watchdog: ts72xx_wdt: disable watchdog at probe
+Subject: [PATCH 22/25] watchdog: ts72xx_wdt: disable watchdog at probe
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit

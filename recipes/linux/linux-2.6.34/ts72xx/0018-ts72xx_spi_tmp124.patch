@@ -1,9 +1,14 @@
-From 314f5d55f44d63c4ff418260580b93727eee00dc Mon Sep 17 00:00:00 2001
+From 42f34f87ef137187464b30f85953823ac445a47c Mon Sep 17 00:00:00 2001
 From: Matthieu Crapet <mcrapet@gmail.com>
 Date: Tue, 22 Jun 2010 15:48:27 +0200
-Subject: [PATCH 18/18] ts72xx_spi_tmp124
+Subject: [PATCH 18/25] ts72xx_spi_tmp124
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 It's an option. A 3-wire spi temperature sensor can be populated on TS-72XX sbc.
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
 ---
  arch/arm/mach-ep93xx/ts72xx.c |   61 ++++++++++++++++
  drivers/spi/Kconfig           |    7 ++
@@ -13,7 +18,7 @@ It's an option. A 3-wire spi temperature sensor can be populated on TS-72XX sbc.
  create mode 100644 drivers/spi/tmp124.c
 
 diff --git a/arch/arm/mach-ep93xx/ts72xx.c b/arch/arm/mach-ep93xx/ts72xx.c
-index 475559e..bf3a666 100644
+index 1c7baba..22e5e53 100644
 --- a/arch/arm/mach-ep93xx/ts72xx.c
 +++ b/arch/arm/mach-ep93xx/ts72xx.c
 @@ -23,7 +23,9 @@
@@ -100,7 +105,7 @@ index 475559e..bf3a666 100644
  		platform_device_register(&ts72xx_max197_device);
  	}
 diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index 2b2f4c3..9f40a43 100644
+index 2b2f4c3..3507bf1 100644
 --- a/drivers/spi/Kconfig
 +++ b/drivers/spi/Kconfig
 @@ -372,6 +372,13 @@ config SPI_TLE62X0
@@ -294,5 +299,5 @@ index 0000000..e41ec8c
 +MODULE_ALIAS("spi:tmp124");
 +MODULE_VERSION("0.2");
 -- 
-1.7.1
+1.7.0.4
 

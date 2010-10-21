@@ -1,12 +1,17 @@
-From 3da21c5a4384f9853fd75cb9fed204402072d280 Mon Sep 17 00:00:00 2001
+From 7ac580b72363f51c008eee00b92c66e8bb113d14 Mon Sep 17 00:00:00 2001
 From: Matthieu Crapet <mcrapet@gmail.com>
 Date: Sun, 20 Jun 2010 10:46:15 +0200
-Subject: [PATCH 15/18] ts72xx_sdcard
+Subject: [PATCH 15/25] ts72xx_sdcard
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 SD Card support for TS-7260. Device name is "tssda".
 Patch based on work of Breton Saunders:
 http://tech.groups.yahoo.com/group/ts-7000/message/15787
 http://tech.groups.yahoo.com/group/ts-7000/message/16028
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
 ---
  arch/arm/mach-ep93xx/ts72xx.c |   24 +
  drivers/block/Kconfig         |    7 +
@@ -19,11 +24,11 @@ http://tech.groups.yahoo.com/group/ts-7000/message/16028
  create mode 100644 drivers/block/sdcore2.h
  create mode 100644 drivers/block/tssdcard.c
 
-Index: linux-2.6.34/arch/arm/mach-ep93xx/ts72xx.c
-===================================================================
---- linux-2.6.34.orig/arch/arm/mach-ep93xx/ts72xx.c	2010-10-13 23:55:37.000000000 +0200
-+++ linux-2.6.34/arch/arm/mach-ep93xx/ts72xx.c	2010-10-16 11:17:20.000000000 +0200
-@@ -178,6 +178,29 @@
+diff --git a/arch/arm/mach-ep93xx/ts72xx.c b/arch/arm/mach-ep93xx/ts72xx.c
+index ba27d9d..ec2ab8e 100644
+--- a/arch/arm/mach-ep93xx/ts72xx.c
++++ b/arch/arm/mach-ep93xx/ts72xx.c
+@@ -178,6 +178,29 @@ static void __init ts72xx_register_flash(void)
  }
  
  /*************************************************************************
@@ -45,7 +50,7 @@ Index: linux-2.6.34/arch/arm/mach-ep93xx/ts72xx.c
 +
 +static void __init ts72xx_register_sdcard(void)
 +{
-+	if (board_is_ts7260() || board_is_ts7400())
++	if (board_is_ts7260() || board_is_ts7400() || board_is_ts7300())
 +		platform_device_register(&ts72xx_sdcard);
 +}
 +
@@ -53,7 +58,7 @@ Index: linux-2.6.34/arch/arm/mach-ep93xx/ts72xx.c
   * RTC
   *************************************************************************/
  static unsigned char ts72xx_rtc_readbyte(unsigned long addr)
-@@ -278,6 +301,7 @@
+@@ -278,6 +301,7 @@ static void __init ts72xx_init_machine(void)
  {
  	ep93xx_init_devices();
  	ts72xx_register_flash();
@@ -61,11 +66,11 @@ Index: linux-2.6.34/arch/arm/mach-ep93xx/ts72xx.c
  	platform_device_register(&ts72xx_rtc_device);
  	platform_device_register(&ts72xx_wdt_device);
  
-Index: linux-2.6.34/drivers/block/Kconfig
-===================================================================
---- linux-2.6.34.orig/drivers/block/Kconfig	2010-05-16 23:17:36.000000000 +0200
-+++ linux-2.6.34/drivers/block/Kconfig	2010-10-13 23:55:37.000000000 +0200
-@@ -488,4 +488,11 @@
+diff --git a/drivers/block/Kconfig b/drivers/block/Kconfig
+index 77bfce5..fc8fae5 100644
+--- a/drivers/block/Kconfig
++++ b/drivers/block/Kconfig
+@@ -488,4 +488,11 @@ config BLK_DEV_HD
  
  	  If unsure, say N.
  
@@ -77,11 +82,11 @@ Index: linux-2.6.34/drivers/block/Kconfig
 +	  TS-7260 SBC.
 +
  endif # BLK_DEV
-Index: linux-2.6.34/drivers/block/Makefile
-===================================================================
---- linux-2.6.34.orig/drivers/block/Makefile	2010-05-16 23:17:36.000000000 +0200
-+++ linux-2.6.34/drivers/block/Makefile	2010-10-13 23:55:37.000000000 +0200
-@@ -34,8 +34,10 @@
+diff --git a/drivers/block/Makefile b/drivers/block/Makefile
+index aff5ac9..a4d0579 100644
+--- a/drivers/block/Makefile
++++ b/drivers/block/Makefile
+@@ -34,8 +34,10 @@ obj-$(CONFIG_VIODASD)		+= viodasd.o
  obj-$(CONFIG_BLK_DEV_SX8)	+= sx8.o
  obj-$(CONFIG_BLK_DEV_UB)	+= ub.o
  obj-$(CONFIG_BLK_DEV_HD)	+= hd.o
@@ -92,10 +97,11 @@ Index: linux-2.6.34/drivers/block/Makefile
  
  swim_mod-objs	:= swim.o swim_asm.o
 +ts72xx_sdcard-objs	:= tssdcard.o sdcore2.o
-Index: linux-2.6.34/drivers/block/sdcore2.c
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.34/drivers/block/sdcore2.c	2010-10-13 23:55:37.000000000 +0200
+diff --git a/drivers/block/sdcore2.c b/drivers/block/sdcore2.c
+new file mode 100644
+index 0000000..6dadee1
+--- /dev/null
++++ b/drivers/block/sdcore2.c
 @@ -0,0 +1,2391 @@
 +/*
 + * Copyright (c) 2006-2009, Technologic Systems
@@ -2488,10 +2494,11 @@ Index: linux-2.6.34/drivers/block/sdcore2.c
 +	return 0;
 +}
 +#endif
-Index: linux-2.6.34/drivers/block/sdcore2.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.34/drivers/block/sdcore2.h	2010-10-13 23:55:37.000000000 +0200
+diff --git a/drivers/block/sdcore2.h b/drivers/block/sdcore2.h
+new file mode 100644
+index 0000000..38d5b96
+--- /dev/null
++++ b/drivers/block/sdcore2.h
 @@ -0,0 +1,372 @@
 +/*
 + * Copyright (c) 2006-2008, Technologic Systems
@@ -2865,10 +2872,11 @@ Index: linux-2.6.34/drivers/block/sdcore2.h
 +	      unsigned char *);
 +
 +#endif
-Index: linux-2.6.34/drivers/block/tssdcard.c
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.34/drivers/block/tssdcard.c	2010-10-13 23:55:37.000000000 +0200
+diff --git a/drivers/block/tssdcard.c b/drivers/block/tssdcard.c
+new file mode 100644
+index 0000000..c76d9a7
+--- /dev/null
++++ b/drivers/block/tssdcard.c
 @@ -0,0 +1,415 @@
 +/*
 + * TS SD Card device driver
@@ -3285,3 +3293,6 @@ Index: linux-2.6.34/drivers/block/tssdcard.c
 +MODULE_LICENSE("GPL");
 +MODULE_ALIAS_BLOCKDEV_MAJOR(SCSI_DISK0_MAJOR);
 +MODULE_ALIAS("tssd");
+-- 
+1.7.0.4
+

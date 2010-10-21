@@ -1,9 +1,14 @@
-From 116d99d9f45c30d3b1c80b54fed8bf406aa590f7 Mon Sep 17 00:00:00 2001
+From 49be95acfe134c476ed8aaa1f57feebaabf5924b Mon Sep 17 00:00:00 2001
 From: Matthieu Crapet <mcrapet@gmail.com>
 Date: Sat, 19 Jun 2010 16:56:48 +0200
-Subject: [PATCH 14/18] ts7200_nor_flash
+Subject: [PATCH 14/25] ts7200_nor_flash
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 Deal with 8mb or 16mb NOR Flash (TS-7200 only)
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
 ---
  drivers/mtd/maps/Kconfig        |   15 +++++
  drivers/mtd/maps/Makefile       |    1 +
@@ -172,5 +177,5 @@ index 0000000..94fb4f4
 +MODULE_DESCRIPTION("MTD map driver for TS-7200 board");
 +MODULE_VERSION("0.1");
 -- 
-1.7.1
+1.7.0.4
 

@@ -1,9 +1,14 @@
-From 6f231c654139e014473ccf0e79725dd313435c8c Mon Sep 17 00:00:00 2001
+From d7c51b7f17a61af71ad3018d755ed0c49825d4e1 Mon Sep 17 00:00:00 2001
 From: Matthieu Crapet <mcrapet@gmail.com>
 Date: Thu, 10 Jun 2010 17:00:12 +0200
-Subject: [PATCH 06/18] ts72xx_rs485
+Subject: [PATCH 06/25] ts72xx_rs485
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 Crude hack...
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
 ---
  arch/arm/include/asm/ioctls.h |    3 +
  drivers/serial/Kconfig        |    8 +++
@@ -214,5 +219,5 @@ index b09a638..a12922a 100644
  			uart_unregister_driver(&amba_reg);
  	}
 -- 
-1.7.1
+1.7.0.4
 

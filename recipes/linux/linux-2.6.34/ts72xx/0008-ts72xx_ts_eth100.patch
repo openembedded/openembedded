@@ -1,9 +1,14 @@
-From 9a9465369f2fdbd22b68e545b4744b8dca1608ff Mon Sep 17 00:00:00 2001
+From c8adb8a465e0c7e3af7f2eb031064a07bef2c623 Mon Sep 17 00:00:00 2001
 From: Matthieu Crapet <mcrapet@gmail.com>
 Date: Fri, 18 Jun 2010 17:39:09 +0200
-Subject: [PATCH 08/18] ts72xx_ts_eth100
+Subject: [PATCH 08/25] ts72xx_ts_eth100
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 TS-ETH100 - 10/100 Ethernet PC/104 peripheral
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
 ---
  drivers/net/Kconfig             |   10 ++
  drivers/net/Makefile            |    1 +
@@ -269,5 +274,5 @@ index 0000000..448b3e3
 +MODULE_LICENSE("GPL");
 +MODULE_VERSION("0.21");
 -- 
-1.7.1
+1.7.0.4
 

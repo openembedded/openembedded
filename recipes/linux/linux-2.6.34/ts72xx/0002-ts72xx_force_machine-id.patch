@@ -1,8 +1,12 @@
-From 453060da6afa4c32d2e2704e69ad32f200d4d240 Mon Sep 17 00:00:00 2001
+From aa694357a2b206488ebd31b9e4ebf734e377d749 Mon Sep 17 00:00:00 2001
 From: Matthieu Crapet <mcrapet@gmail.com>
 Date: Thu, 10 Jun 2010 10:51:39 +0200
-Subject: [PATCH 02/18] ts72xx_force_machine-id
+Subject: [PATCH 02/25] ts72xx_force_machine-id
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
 ---
  arch/arm/kernel/head.S       |    3 +++
  arch/arm/mach-ep93xx/Kconfig |    7 +++++++
@@ -41,5 +45,5 @@ index b6be37e..bd463a0 100644
  
  endif
 -- 
-1.7.1
+1.7.0.4
 

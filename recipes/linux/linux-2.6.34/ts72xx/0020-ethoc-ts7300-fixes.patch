@@ -1,0 +1,217 @@
+From f209c092df80c68231336072f0fc21f7f57a799d Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Petr=20=C5=A0tetiar?= <ynezz@true.cz>
+Date: Thu, 21 Oct 2010 11:54:27 +0200
+Subject: [PATCH 20/25] ethoc: ts7300 fixes
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Ian Thompson <ian.thompson@pgs.com>
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ drivers/net/ethoc.c |   73 +++++++++++++++++++++++++++-----------------------
+ 1 files changed, 39 insertions(+), 34 deletions(-)
+
+diff --git a/drivers/net/ethoc.c b/drivers/net/ethoc.c
+index a8d9250..f84d95a 100644
+--- a/drivers/net/ethoc.c
++++ b/drivers/net/ethoc.c
+@@ -21,7 +21,11 @@
+ #include <linux/slab.h>
+ #include <net/ethoc.h>
+ 
++#ifndef CONFIG_MACH_TS72XX
+ static int buffer_size = 0x8000; /* 32 KBytes */
++#else
++static int buffer_size = 0x2000; /* 8 KBytes */
++#endif
+ module_param(buffer_size, int, 0);
+ MODULE_PARM_DESC(buffer_size, "DMA buffer allocation size");
+ 
+@@ -495,6 +499,7 @@ static void ethoc_tx(struct net_device *dev)
+ 
+ 	ethoc_ack_irq(priv, INT_MASK_TX);
+ 	spin_unlock(&priv->lock);
++	return;
+ }
+ 
+ static irqreturn_t ethoc_interrupt(int irq, void *dev_id)
+@@ -512,11 +517,6 @@ static irqreturn_t ethoc_interrupt(int irq, void *dev_id)
+ 
+ 	ethoc_ack_irq(priv, pending);
+ 
+-	if (pending & INT_MASK_BUSY) {
+-		dev_err(&dev->dev, "packet dropped\n");
+-		priv->stats.rx_dropped++;
+-	}
+-
+ 	if (pending & INT_MASK_RX) {
+ 		if (napi_schedule_prep(&priv->napi))
+ 			__napi_schedule(&priv->napi);
+@@ -580,10 +580,8 @@ static int ethoc_mdio_read(struct mii_bus *bus, int phy, int reg)
+ 			ethoc_write(priv, MIICOMMAND, 0);
+ 			return data;
+ 		}
+-
+ 		schedule();
+ 	}
+-
+ 	return -EBUSY;
+ }
+ 
+@@ -620,21 +618,12 @@ static int ethoc_mdio_probe(struct net_device *dev)
+ {
+ 	struct ethoc *priv = netdev_priv(dev);
+ 	struct phy_device *phy;
+-	int i;
++	int err;
+ 
+-	for (i = 0; i < PHY_MAX_ADDR; i++) {
+-		phy = priv->mdio->phy_map[i];
+-		if (phy) {
+-			if (priv->phy_id != -1) {
+-				/* attach to specified PHY */
+-				if (priv->phy_id == phy->addr)
+-					break;
+-			} else {
+-				/* autoselect PHY if none was specified */
+-				if (phy->addr != 0)
+-					break;
+-			}
+-		}
++	if (priv->phy_id != -1) {
++		phy = priv->mdio->phy_map[priv->phy_id];
++	} else {
++		phy = phy_find_first(priv->mdio);
+ 	}
+ 
+ 	if (!phy) {
+@@ -642,14 +631,16 @@ static int ethoc_mdio_probe(struct net_device *dev)
+ 		return -ENXIO;
+ 	}
+ 
+-	phy = phy_connect(dev, dev_name(&phy->dev), ethoc_mdio_poll, 0,
++	err = phy_connect_direct(dev, phy, ethoc_mdio_poll, 0,
+ 			PHY_INTERFACE_MODE_GMII);
+-	if (IS_ERR(phy)) {
++	if (err) {
+ 		dev_err(&dev->dev, "could not attach to PHY\n");
+-		return PTR_ERR(phy);
++		return err;
+ 	}
+ 
+ 	priv->phy = phy;
++	
++	
+ 	return 0;
+ }
+ 
+@@ -664,22 +655,21 @@ static int ethoc_open(struct net_device *dev)
+ 			dev->name, dev);
+ 	if (ret)
+ 		return ret;
+-
+ 	/* calculate the number of TX/RX buffers, maximum 128 supported */
+ 	num_bd = min_t(unsigned int,
+ 		128, (dev->mem_end - dev->mem_start + 1) / ETHOC_BUFSIZ);
+ 	priv->num_tx = max(min_tx, num_bd / 4);
+ 	priv->num_rx = num_bd - priv->num_tx;
+ 	ethoc_write(priv, TX_BD_NUM, priv->num_tx);
+-
++	
+ 	ethoc_init_ring(priv);
+ 	ethoc_reset(priv);
+-
++	
+ 	if (netif_queue_stopped(dev)) {
+-		dev_dbg(&dev->dev, " resuming queue\n");
++		dev_err(&dev->dev, " resuming queue\n");
+ 		netif_wake_queue(dev);
+ 	} else {
+-		dev_dbg(&dev->dev, " starting queue\n");
++		dev_err(&dev->dev, " starting queue\n");
+ 		netif_start_queue(dev);
+ 	}
+ 
+@@ -690,7 +680,6 @@ static int ethoc_open(struct net_device *dev)
+ 		dev_info(&dev->dev, "I/O: %08lx Memory: %08lx-%08lx\n",
+ 				dev->base_addr, dev->mem_start, dev->mem_end);
+ 	}
+-
+ 	return 0;
+ }
+ 
+@@ -804,6 +793,7 @@ static void ethoc_tx_timeout(struct net_device *dev)
+ {
+ 	struct ethoc *priv = netdev_priv(dev);
+ 	u32 pending = ethoc_read(priv, INT_SOURCE);
++	
+ 	if (likely(pending))
+ 		ethoc_interrupt(dev->irq, dev);
+ }
+@@ -837,10 +827,10 @@ static netdev_tx_t ethoc_start_xmit(struct sk_buff *skb, struct net_device *dev)
+ 		bd.stat &= ~TX_BD_PAD;
+ 
+ 	dest = phys_to_virt(bd.addr);
+-	memcpy_toio(dest, skb->data, skb->len);
++	memcpy_toio(dest, skb->data, skb->len + 2);
+ 
+ 	bd.stat &= ~(TX_BD_STATS | TX_BD_LEN_MASK);
+-	bd.stat |= TX_BD_LEN(skb->len);
++	bd.stat |= TX_BD_LEN(skb->len + 2);
+ 	ethoc_write_bd(priv, entry, &bd);
+ 
+ 	bd.stat |= TX_BD_READY;
+@@ -980,9 +970,13 @@ static int ethoc_probe(struct platform_device *pdev)
+ 	if (pdev->dev.platform_data) {
+ 		struct ethoc_platform_data *pdata =
+ 			(struct ethoc_platform_data *)pdev->dev.platform_data;
++		
+ 		memcpy(netdev->dev_addr, pdata->hwaddr, IFHWADDRLEN);
+ 		priv->phy_id = pdata->phy_id;
+ 	}
++	else {
++		priv->phy_id = 1;
++	}
+ 
+ 	/* Check that the given MAC address is valid. If it isn't, read the
+ 	 * current MAC from the controller. */
+@@ -993,7 +987,17 @@ static int ethoc_probe(struct platform_device *pdev)
+ 	 * program a random one. */
+ 	if (!is_valid_ether_addr(netdev->dev_addr))
+ 		random_ether_addr(netdev->dev_addr);
+-
++	/* take this out for more general usage */
++	netdev->dev_addr[0] = 0x00;
++	netdev->dev_addr[1] = 0x88;
++	netdev->dev_addr[2] = 0x88;
++	netdev->dev_addr[3] = 0x88;
++	netdev->dev_addr[4] = 0x88;
++	netdev->dev_addr[5] = 0x01;
++	
++	printk("ethoc: setting MAC address to %2.2x:%2.2x:%2.2x:%2.2x:%2.2x:%2.2x\n",netdev->dev_addr[0],
++			netdev->dev_addr[1],netdev->dev_addr[2],netdev->dev_addr[3],netdev->dev_addr[4],
++			netdev->dev_addr[5]); 
+ 	ethoc_set_mac_address(netdev, netdev->dev_addr);
+ 
+ 	/* register MII bus */
+@@ -1028,7 +1032,7 @@ static int ethoc_probe(struct platform_device *pdev)
+ 
+ 	ret = ethoc_mdio_probe(netdev);
+ 	if (ret) {
+-		dev_err(&netdev->dev, "failed to probe MDIO bus\n");
++		dev_err(&netdev->dev, "MDIO bus probe failed\n");
+ 		goto error;
+ 	}
+ 
+@@ -1125,6 +1129,7 @@ static struct platform_driver ethoc_driver = {
+ 
+ static int __init ethoc_init(void)
+ {
++	printk("ethoc driver version 0.0.1\n");
+ 	return platform_driver_register(&ethoc_driver);
+ }
+ 
+-- 
+1.7.0.4
+

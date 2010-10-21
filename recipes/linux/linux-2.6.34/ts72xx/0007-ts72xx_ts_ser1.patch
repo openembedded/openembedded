@@ -1,9 +1,14 @@
-From f5b0dc2b5e15d83cbc51404d2a754ea8ea8961b5 Mon Sep 17 00:00:00 2001
+From 9b05d681f209a1ab5c2e1d0ad531488c02dc4e9e Mon Sep 17 00:00:00 2001
 From: Matthieu Crapet <mcrapet@gmail.com>
 Date: Wed, 16 Jun 2010 14:44:44 +0200
-Subject: [PATCH 07/18] ts72xx_ts_ser1
+Subject: [PATCH 07/25] ts72xx_ts_ser1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 TS-SER1 - Serial Port PC/104 peripheral
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
 ---
  drivers/serial/8250_ts_ser1.c |  197 +++++++++++++++++++++++++++++++++++++++++
  drivers/serial/Kconfig        |   17 ++++
@@ -255,5 +260,5 @@ index 6aa4723..a3b1cf2 100644
  obj-$(CONFIG_SERIAL_AMBA_PL011) += amba-pl011.o
  obj-$(CONFIG_SERIAL_CLPS711X) += clps711x.o
 -- 
-1.7.1
+1.7.0.4
 

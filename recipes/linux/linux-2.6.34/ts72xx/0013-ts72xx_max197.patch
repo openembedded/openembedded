@@ -1,8 +1,12 @@
-From 93aa4fc5d32534422e80bbb7d1929f533c4ce65f Mon Sep 17 00:00:00 2001
+From b1c198b48cc14958bec8dfc5a7fc56964acbcd47 Mon Sep 17 00:00:00 2001
 From: Matthieu Crapet <mcrapet@gmail.com>
 Date: Sat, 19 Jun 2010 15:49:34 +0200
-Subject: [PATCH 13/18] ts72xx_max197
+Subject: [PATCH 13/25] ts72xx_max197
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
 ---
  arch/arm/mach-ep93xx/ts72xx.c |   30 +++++
  drivers/misc/Kconfig          |   21 ++++
@@ -343,5 +347,5 @@ index 0000000..4121ae5
 +module_init(ts72xx_max197_init);
 +module_exit(ts72xx_max197_exit);
 -- 
-1.7.1
+1.7.0.4
 

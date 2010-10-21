@@ -1,22 +1,27 @@
-From 9a60df856b54ba2f09dc0bbe4229627372f0a122 Mon Sep 17 00:00:00 2001
+From 370a47d42411dfafd224714eea88c7312a53ed18 Mon Sep 17 00:00:00 2001
 From: Matthieu Crapet <mcrapet@gmail.com>
 Date: Thu, 10 Jun 2010 10:43:24 +0200
-Subject: [PATCH 01/18] ts72xx_base
+Subject: [PATCH 01/25] ts72xx_base
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 - patch: allow to force nF bit in control reg
 - register pwm1
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
 ---
  arch/arm/Kconfig                                |    1 +
  arch/arm/mach-ep93xx/Kconfig                    |    9 ++
  arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h |    8 ++
- arch/arm/mach-ep93xx/include/mach/memory.h      |   28 +++++
- arch/arm/mach-ep93xx/include/mach/ts72xx.h      |  147 ++++++++++++++++++++---
+ arch/arm/mach-ep93xx/include/mach/memory.h      |   28 ++++
+ arch/arm/mach-ep93xx/include/mach/ts72xx.h      |  153 ++++++++++++++++++++---
  arch/arm/mach-ep93xx/ts72xx.c                   |   40 ++++++-
  arch/arm/mm/proc-arm920.S                       |    5 +-
- 7 files changed, 218 insertions(+), 20 deletions(-)
+ 7 files changed, 224 insertions(+), 20 deletions(-)
 
 diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 92622eb..ab19836 100644
+index 811dedc..0675f74 100644
 --- a/arch/arm/Kconfig
 +++ b/arch/arm/Kconfig
 @@ -321,6 +321,7 @@ config ARCH_EP93XX
@@ -128,7 +133,7 @@ index 554064e..78eaacf 100644
 +
  #endif
 diff --git a/arch/arm/mach-ep93xx/include/mach/ts72xx.h b/arch/arm/mach-ep93xx/include/mach/ts72xx.h
-index 93107d8..83ed0e6 100644
+index 93107d8..71c80fd 100644
 --- a/arch/arm/mach-ep93xx/include/mach/ts72xx.h
 +++ b/arch/arm/mach-ep93xx/include/mach/ts72xx.h
 @@ -8,38 +8,40 @@
@@ -199,7 +204,7 @@ index 93107d8..83ed0e6 100644
  
  #define TS72XX_RTC_INDEX_VIRT_BASE	0xfebf9000
  #define TS72XX_RTC_INDEX_PHYS_BASE	0x10800000
-@@ -68,32 +71,140 @@
+@@ -68,32 +71,146 @@
  #define TS72XX_WDT_CONTROL_PHYS_BASE	0x23800000
  #define TS72XX_WDT_FEED_PHYS_BASE	0x23c00000
  
@@ -305,6 +310,12 @@ index 93107d8..83ed0e6 100644
 -	return __raw_readb(TS72XX_MODEL_VIRT_BASE) == TS72XX_MODEL_TS7260;
 +	return (__raw_readb(TS72XX_MODEL_VIRT_BASE) &
 +			TS7XXX_MODEL_MASK) == TS7XXX_MODEL_TS7260;
++}
++
++static inline int board_is_ts7300(void)
++{
++	return (__raw_readb(TS72XX_MODEL_VIRT_BASE) &
++			TS7XXX_MODEL_MASK) == TS7XXX_MODEL_TS7300;
 +}
 +
 +static inline int board_is_ts7400(void)
@@ -441,5 +452,5 @@ index 8be8199..a4f123d 100644
  	.size	__arm920_setup, . - __arm920_setup
  
 -- 
-1.7.1
+1.7.0.4
 

@@ -1,7 +1,10 @@
-From 45a115b858cf82a35e51a7541a3f83c4dd4e08ea Mon Sep 17 00:00:00 2001
+From 366781f33629fd2dff00c009a1519c7ccb1668f6 Mon Sep 17 00:00:00 2001
 From: Matthieu Crapet <mcrapet@gmail.com>
 Date: Sun, 20 Jun 2010 11:31:22 +0200
-Subject: [PATCH 16/18] ts72xx_nand_flash
+Subject: [PATCH 16/25] ts72xx_nand_flash
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 This is Hartley Sweeten's patch:
 Update the ts72xx platform's nand driver support.
@@ -10,13 +13,15 @@ It's available since 2.6.35-rc1
 
 Only one concern here, it's the size of TS72XX_BOOTROM_PART_SIZE,
 defined here to SZ_16K but can be SZ_128K for boards with 128mb flash.
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
 ---
  arch/arm/mach-ep93xx/ts72xx.c |  186 ++++++++++++++++++++++++++++-------------
  drivers/mtd/nand/Kconfig      |    2 +-
  2 files changed, 129 insertions(+), 59 deletions(-)
 
 diff --git a/arch/arm/mach-ep93xx/ts72xx.c b/arch/arm/mach-ep93xx/ts72xx.c
-index 7fd8f80..475559e 100644
+index ec2ab8e..1c7baba 100644
 --- a/arch/arm/mach-ep93xx/ts72xx.c
 +++ b/arch/arm/mach-ep93xx/ts72xx.c
 @@ -10,6 +10,8 @@
@@ -266,5 +271,5 @@ index 42e5ea4..952ae85 100644
  	help
  	  Support for NAND flash on Technologic Systems TS-7250 platform.
 -- 
-1.7.1
+1.7.0.4
 

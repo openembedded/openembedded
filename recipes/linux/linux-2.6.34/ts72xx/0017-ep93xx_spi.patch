@@ -1,7 +1,10 @@
-From be8b82a083b6df32a1016b327730ce16be7c2b24 Mon Sep 17 00:00:00 2001
+From 28193e416e604f321105637dde53e408b75fbcd8 Mon Sep 17 00:00:00 2001
 From: Matthieu Crapet <mcrapet@gmail.com>
 Date: Tue, 22 Jun 2010 11:21:05 +0200
-Subject: [PATCH 17/18] ep93xx_spi
+Subject: [PATCH 17/25] ep93xx_spi
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 Include Mika Westerberg's driver:
 
@@ -13,6 +16,8 @@ http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=4fec
 
 spi/ep93xx: implemented driver for Cirrus EP93xx SPI controller:
 http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=011f23a3c2f20ae15b7664d3942493af107fe39b
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
 ---
  Documentation/spi/ep93xx_spi                   |   95 +++
  arch/arm/mach-ep93xx/clock.c                   |   13 +
@@ -1308,5 +1313,5 @@ index 0000000..0ba35df
 +MODULE_LICENSE("GPL");
 +MODULE_ALIAS("platform:ep93xx-spi");
 -- 
-1.7.1
+1.7.0.4
 

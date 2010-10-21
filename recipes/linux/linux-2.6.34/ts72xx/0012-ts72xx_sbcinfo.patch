@@ -1,8 +1,12 @@
-From b663f02d95027d89b42f57072adf6ea83adb78dd Mon Sep 17 00:00:00 2001
+From 54dd4037caa8deed5848b8efd1e39fe67c3d9952 Mon Sep 17 00:00:00 2001
 From: Matthieu Crapet <mcrapet@gmail.com>
 Date: Sat, 19 Jun 2010 15:08:58 +0200
-Subject: [PATCH 12/18] ts72xx_sbcinfo
+Subject: [PATCH 12/25] ts72xx_sbcinfo
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
 ---
  arch/arm/mach-ep93xx/Kconfig          |    7 +
  arch/arm/mach-ep93xx/Makefile         |    1 +
@@ -259,5 +263,5 @@ index 0000000..cbb485f
 +MODULE_LICENSE("GPL");
 +MODULE_VERSION("1.04");
 -- 
-1.7.1
+1.7.0.4
 
