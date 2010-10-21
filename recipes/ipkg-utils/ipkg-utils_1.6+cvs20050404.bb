@@ -1,7 +1,7 @@
 DESCRIPTION = "Itsy Package Manager utilities"
 SECTION = "base"
 PRIORITY = "optional"
-LICENSE = "GPL"
+LICENSE = "GPLv2+"
 CONFLICTS = "ipkg-link"
 RDEPENDS_${PN} = "python"
 SRCDATE = "20050930"

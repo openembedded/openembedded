@@ -1,6 +1,6 @@
 SECTION = "base"
 DESCRIPTION = "Itsy Package Manager utilities link script"
-LICENSE = "GPL"
+LICENSE = "GPLv2+"
 CONFLICTS = "ipkg-utils"
 SRCDATE = "20050930"
 PR = "r4"
