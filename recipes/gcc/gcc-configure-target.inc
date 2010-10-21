@@ -5,4 +5,3 @@ EXTRA_OECONF_PATHS = " \
     --with-gxx-include-dir=${includedir}/c++/${BINV} \
     --with-build-sysroot=${STAGING_DIR_HOST} \
    "
-CONFIGUREOPTS := "${@oe_filter_out('--with-sysroot', '${CONFIGUREOPTS}', d)}"
