@@ -1,5 +1,7 @@
 require autoconf.inc
 
+LICENSE = "GPLv2+"
+
 PR = "${INC_PR}.1"
 
 SRC_URI += "file://autoreconf-include.patch \
