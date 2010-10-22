@@ -10,8 +10,9 @@ DEPENDS = "alsa-lib"
 
 PR = "r2"
 
-SRC_URI = "http://jackaudio.org/downloads/jack-audio-connection-kit-${PV}.tar.gz \
-          "
+# Original has disappeared. Use Angstrom mirror for now.
+#SRC_URI = "http://jackaudio.org/downloads/jack-audio-connection-kit-${PV}.tar.gz"
+SRC_URI = "http://www.angstrom-distribution.org/unstable/sources/jack-audio-connection-kit-${PV}.tar.gz"
 SRC_URI[md5sum] = "d58e29a55f285d54e75134cec8e02a10"
 SRC_URI[sha256sum] = "6aadf38ca98104772fd675bba7adecf72d2a600e17cccfc5d1f7c50f19b722c2"
 
