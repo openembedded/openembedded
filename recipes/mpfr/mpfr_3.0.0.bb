@@ -3,10 +3,10 @@ require mpfr.inc
 DEPENDS = "gmp"
 S = "${WORKDIR}/mpfr-${PV}"
 NATIVE_INSTALL_WORKS = "1"
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 SRC_URI = "http://www.mpfr.org/mpfr-${PV}/mpfr-${PV}.tar.bz2 \
-           file://p3.patch"
+           file://p4.patch"
 
 # fix build in thumb mode for armv4t
 SRC_URI_append_thumb = " file://long-long-thumb.patch"
