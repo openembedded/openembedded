@@ -55,7 +55,7 @@ class Popen(subprocess.Popen):
         options.update(kwargs)
         subprocess.Popen.__init__(self, *args, **options)
 
-def run(cmd, **options):
+def run(cmd, input=None, **options):
     """Convenience function to run a command and return its output, raising an
     exception when the command fails"""
 
@@ -68,7 +68,7 @@ def run(cmd, **options):
             raise NotFoundError(cmd)
         else:
             raise
-    stdout, stderr = pipe.communicate()
+    stdout, stderr = pipe.communicate(input)
     if pipe.returncode != 0:
         raise ExecutionError(cmd, pipe.returncode, stdout, stderr)
     return stdout
