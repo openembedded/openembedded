@@ -57,6 +57,14 @@ def autotools_set_crosscompiling(d):
 		return " cross_compiling=yes"
 	return ""
 
+def append_libtool_sysroot(d):
+	if bb.data.getVar('LIBTOOL_HAS_SYSROOT', d, 1) == "yes":
+		if bb.data.getVar('BUILD_SYS', d, 1) == bb.data.getVar('HOST_SYS', d, 1):
+			return '--with-libtool-sysroot'
+		else:
+			return '--with-libtool-sysroot=${STAGING_DIR}/${MULTIMACH_HOST_SYS}'
+	return ''
+
 # EXTRA_OECONF_append = "${@autotools_set_crosscompiling(d)}"
 
 CONFIGUREOPTS = " --build=${BUILD_SYS} \
@@ -76,7 +84,7 @@ CONFIGUREOPTS = " --build=${BUILD_SYS} \
 		  --oldincludedir=${oldincludedir} \
 		  --infodir=${infodir} \
 		  --mandir=${mandir} \
-		  ${@["","--with-libtool-sysroot"][bb.data.getVar('LIBTOOL_HAS_SYSROOT', d, 1) == "yes"]} \
+		  ${@append_libtool_sysroot(d)} \
 		"
 
 oe_runconf () {
