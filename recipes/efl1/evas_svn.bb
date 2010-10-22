@@ -8,8 +8,10 @@ EVAS_CPU_TWEAKS = ""
 EXTRA_OECONF = "\
 		--x-includes=${STAGING_INCDIR}/X11  \
 		--x-libraries=${STAGING_LIBDIR} \
-        --enable-evas-magic-debug \
-        \
+		--enable-evas-magic-debug \
+		--enable-pthreads \
+		--enable-async-events \
+		--enable-async-preload \
 		--enable-fb					\
 		--disable-directfb			\
 		--disable-sdl				\
