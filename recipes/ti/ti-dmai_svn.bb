@@ -23,6 +23,6 @@ SRCREV_omap3          = "570"
 SRCREV_dm355          = "424"
 SRCREV_dm365          = "570"
 SRCREV_omapl137       = "482"
-SRCREV_omapl138       = "482"
+SRCREV_omapl138       = "570"
 SRCREV               ?= "<UNDEFINED_SRCREV>"
 
