@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.cacaojvm.org/"
 LICENSE = "GPL"
 DEPENDS = "libtool-native zlib-native virtual/javac-native classpath-native"
 
-INC_PR = "r2"
+INC_PR = "r3"
 
 S = "${WORKDIR}/cacao-${PV}"
 
@@ -24,7 +24,7 @@ do_compile() {
 
 do_install() {
   install -d ${D}${bindir}/cacaoh-${PV}
-  install -m 0755 src/cacaoh/.libs/cacaoh ${D}${bindir}/cacaoh-${PV}
+  install -m 0755 src/cacaoh/cacaoh ${D}${bindir}/cacaoh-${PV}
 }
 
 NATIVE_INSTALL_WORKS = "1"
