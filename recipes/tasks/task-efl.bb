@@ -13,7 +13,9 @@ RDEPENDS_${PN} = "\
   efreet \
   ewl \
   epdf \
+  ethumb \
+  elementary \
 "
-PR = "r2"
+PR = "r3"
 
 ALLOW_EMPTY = "1"
