@@ -12,7 +12,7 @@ RDEPENDS_angstrom-e-base-depends := "\
     angstrom-x11-base-depends \
     rxvt-unicode xstroke xtscal xrandr xmodmap xdpyinfo \
     ttf-bitstream-vera \
-    entrance e-wm \
+    e-wm \
     glibc-charmap-utf-8 glibc-localedata-i18n"
 #xserver-kdrive-fbdev 
 

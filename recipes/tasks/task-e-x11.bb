@@ -17,7 +17,7 @@ RDEPENDS_task-e-x11-core = "rxvt-unicode xstroke xtscal xrandr xmodmap xdpyinfo 
 #
 # E-core
 #
-RDEPENDS_task-e-x11-core += "entrance e-wm"
+RDEPENDS_task-e-x11-core += "e-wm"
 
 
 RDEPENDS_task-e-x11  = "task-e-x11-core"
