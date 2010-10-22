@@ -1,6 +1,6 @@
-From 139abce63c08a18d94b00af03c3cf39d9fcac507 Mon Sep 17 00:00:00 2001
+From af4ddffd012071cf1bb721a5d37573544efc34f3 Mon Sep 17 00:00:00 2001
 From: Simon Busch <morphis@gravedo.de>
-Date: Sat, 18 Sep 2010 11:41:43 +0200
+Date: Fri, 22 Oct 2010 19:37:07 +0200
 Subject: [PATCH] cy8mrln-palmpre: ship cy8mrln header file with tslib
 
 ---
@@ -10,19 +10,14 @@ Subject: [PATCH] cy8mrln-palmpre: ship cy8mrln header file with tslib
  create mode 100644 plugins/cy8mrln.h
 
 diff --git a/plugins/cy8mrln-palmpre.c b/plugins/cy8mrln-palmpre.c
-index fe94d21..a02add2 100644
+index ebb4968..8b78fff 100644
 --- a/plugins/cy8mrln-palmpre.c
 +++ b/plugins/cy8mrln-palmpre.c
-@@ -24,12 +24,12 @@
+@@ -25,7 +25,7 @@
  #include <sys/stat.h>
  #include <sys/types.h>
  #include <unistd.h>
 -#include <linux/spi/cy8mrln.h>
- #include <stdint.h>
- #include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
- #include <stddef.h>
 +#include "cy8mrln.h"
  #include "config.h"
  #include "tslib-private.h"
