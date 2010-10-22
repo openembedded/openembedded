@@ -1,5 +1,5 @@
 DESCRIPTION = "Tasks for Enlightenment/X11"
-PR = "r10"
+PR = "r11"
 
 inherit task
 
@@ -17,7 +17,7 @@ RDEPENDS_task-e-x11-core = "rxvt-unicode xstroke xtscal xrandr xmodmap xdpyinfo 
 #
 # E-core
 #
-RDEPENDS_task-e-x11-core += "e-wm"
+RDEPENDS_task-e-x11-core += "elementary-tests expedite e-wm"
 
 
 RDEPENDS_task-e-x11  = "task-e-x11-core"
