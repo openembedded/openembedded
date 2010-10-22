@@ -29,7 +29,7 @@ ECORE_OECONF = "\
   --disable-ecore-x-xcb \
   --disable-ecore-directfb \
   --disable-ecore-sdl \
-  --enable-ecore-evas-x11-gl \
+  --enable-ecore-evas-opengl-x11 \
   --disable-ecore-evas-dfb \
   --disable-ecore-evas-sdl \
   --disable-openssl \
