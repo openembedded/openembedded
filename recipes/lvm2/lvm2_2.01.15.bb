@@ -1,5 +1,7 @@
 require lvm2.inc
 
+SRC_URI += "file://eglibc-2.12.patch"
+
 PR = "${INC_PR}.0"
 
 SRC_URI[md5sum] = "c71654baff263254fb5a226624ee8ef3"
