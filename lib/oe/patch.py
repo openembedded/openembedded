@@ -80,11 +80,10 @@ class PatchTree(PatchSet):
         if not run:
             return subprocess.list2cmdline(shellcmd)
 
-        patch = open(patch['file'], "r")
-        if not force:
-            oe.process.run(shellcmd + ["--dry-run"], cwd=self.dir, stdin=patch)
-            patch.seek(0)
+        if force:
+            shellcmd.append('-f')
 
+        patch = open(patch['file'], "r")
         return oe.process.run(shellcmd, cwd=self.dir, env=self.env, stdin=patch)
 
     def Push(self, force = False, all = False, run = True):
