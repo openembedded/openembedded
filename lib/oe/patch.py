@@ -133,7 +133,7 @@ class GitApplyTree(PatchTree):
 class QuiltTree(PatchSet):
     def _runcmd(self, args, run = True):
         quiltrc = bb.data.getVar('QUILTRCFILE', self.d, 1)
-        cmdline = ["quilt", "--quiltrc", quiltrc] + args
+        cmdline = ["quilt", "--quiltrc=%s" % quiltrc] + args
         if not run:
             return subprocess.list2cmdline(cmdline)
         oe.process.run(cmdline, cwd=self.dir, env=self.env)
