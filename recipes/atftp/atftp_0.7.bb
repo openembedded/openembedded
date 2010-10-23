@@ -15,8 +15,6 @@ inherit autotools update-rc.d
 INITSCRIPT_NAME = "atftpd"
 INITSCRIPT_PARAMS = "defaults 80"
 
-EXTRA_OECONF = ""
-
 do_install_append() {
 	install -d ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/atftpd.init ${D}${sysconfdir}/init.d/atftpd
