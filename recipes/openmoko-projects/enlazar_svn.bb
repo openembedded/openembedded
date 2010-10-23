@@ -13,5 +13,3 @@ SRC_URI = "svn://svn.projects.openmoko.org/svnroot/enlazar;module=trunk;proto=ht
 S = "${WORKDIR}/trunk"
 
 inherit autotools pkgconfig
-
-EXTRA_OECONF = ""
