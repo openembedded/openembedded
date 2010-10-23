@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.36
-# Sat Oct 23 00:53:04 2010
+# Sat Oct 23 18:18:29 2010
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -558,7 +558,26 @@ CONFIG_BLK_DEV_LOOP=y
 # CONFIG_MG_DISK is not set
 # CONFIG_MISC_DEVICES is not set
 CONFIG_HAVE_IDE=y
-# CONFIG_IDE is not set
+CONFIG_IDE=y
+
+#
+# Please see Documentation/ide/ide.txt for help/info on IDE drives
+#
+# CONFIG_BLK_DEV_IDE_SATA is not set
+CONFIG_IDE_GD=y
+CONFIG_IDE_GD_ATA=y
+# CONFIG_IDE_GD_ATAPI is not set
+CONFIG_BLK_DEV_IDECS=y
+# CONFIG_BLK_DEV_IDECD is not set
+# CONFIG_BLK_DEV_IDETAPE is not set
+# CONFIG_IDE_TASK_IOCTL is not set
+# CONFIG_IDE_PROC_FS is not set
+
+#
+# IDE chipset support/bugfixes
+#
+# CONFIG_BLK_DEV_PLATFORM is not set
+# CONFIG_BLK_DEV_IDEDMA is not set
 
 #
 # SCSI device support
@@ -574,7 +593,7 @@ CONFIG_SCSI_PROC_FS=y
 #
 # SCSI support type (disk, tape, CD-ROM)
 #
-CONFIG_BLK_DEV_SD=y
+# CONFIG_BLK_DEV_SD is not set
 # CONFIG_CHR_DEV_ST is not set
 # CONFIG_CHR_DEV_OSST is not set
 # CONFIG_BLK_DEV_SR is not set
@@ -601,41 +620,7 @@ CONFIG_SCSI_LOWLEVEL=y
 # CONFIG_SCSI_LOWLEVEL_PCMCIA is not set
 # CONFIG_SCSI_DH is not set
 # CONFIG_SCSI_OSD_INITIATOR is not set
-CONFIG_ATA=y
-# CONFIG_ATA_NONSTANDARD is not set
-# CONFIG_ATA_VERBOSE_ERROR is not set
-CONFIG_SATA_PMP=y
-
-#
-# Controllers with non-SFF native interface
-#
-# CONFIG_SATA_AHCI_PLATFORM is not set
-CONFIG_ATA_SFF=y
-
-#
-# SFF controllers with custom DMA interface
-#
-CONFIG_ATA_BMDMA=y
-
-#
-# SATA SFF controllers with BMDMA
-#
-# CONFIG_SATA_MV is not set
-
-#
-# PATA SFF controllers with BMDMA
-#
-CONFIG_PATA_PXA=y
-
-#
-# PIO-only SFF controllers
-#
-CONFIG_PATA_PCMCIA=y
-CONFIG_PATA_PLATFORM=y
-
-#
-# Generic fallback / legacy drivers
-#
+# CONFIG_ATA is not set
 # CONFIG_MD is not set
 # CONFIG_PHONE is not set
 
@@ -1071,6 +1056,7 @@ CONFIG_LEDS_TRIGGERS=y
 # LED Triggers
 #
 CONFIG_LEDS_TRIGGER_TIMER=y
+# CONFIG_LEDS_TRIGGER_IDE_DISK is not set
 CONFIG_LEDS_TRIGGER_HEARTBEAT=y
 # CONFIG_LEDS_TRIGGER_BACKLIGHT is not set
 # CONFIG_LEDS_TRIGGER_GPIO is not set
