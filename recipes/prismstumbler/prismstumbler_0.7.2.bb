@@ -13,7 +13,6 @@ S = "${WORKDIR}/${PN}-${PV}"
 
 inherit autotools pkgconfig
 
-EXTRA_OECONF = ""
 CFLAGS =+ "-I${S}/include"
 
 FILES_${PN} = "${bindir}/prismstumbler"
