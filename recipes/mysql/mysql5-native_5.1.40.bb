@@ -8,7 +8,6 @@ SRC_URI = "http://downloads.mysql.com/archives/mysql-5.1/mysql-${PV}.tar.gz \
 RDEPENDS_${PN} = ""
 PACKAGES = ""
 DEPENDS = "ncurses-native"
-EXTRA_OEMAKE = ""
 EXTRA_OECONF = " --with-embedded-server "
 
 do_install() {
