@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Fat Image Feed"
-PR = "r9"
+PR = "r10"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -25,7 +25,6 @@ RDEPENDS_${PN}-gtk = "\
 RDEPENDS_${PN}-apps += "\
    task-shr-minimal-apps \
 	opimd-utils-notes \
-	iliwi \
 	eve \
 	intone \
 "
