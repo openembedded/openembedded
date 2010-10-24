@@ -2,7 +2,6 @@ require libvpx.inc
 
 PR = "${INC_PR}.0"
 
-SRC_URI = "http://webm.googlecode.com/files/libvpx-v${PV}.tar.bz2"
 SRC_URI += "file://libvpx-configure-support-blank-prefix.patch;apply=yes"
 
 SRC_URI[md5sum] = "609370925b274aeaa29e94fc34c74957"
