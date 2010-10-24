@@ -5,7 +5,7 @@ PR = "r1"
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_mx31ads = "1"
-DEFAULT_PREFERENCE_ts72xx = "-1"
+DEFAULT_PREFERENCE_ts72xx = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/${P}.tar.bz2;name=kernel \
            file://defconfig "
