@@ -1,7 +1,7 @@
 DESCRIPTION = "Evas is the Enlightenment canvas API"
 LICENSE = "MIT BSD"
 # can also depend on valgrind, libsdl-x11, directfb
-DEPENDS = "librsvg eina eet freetype jpeg libpng virtual/libx11 libxext libxrender fontconfig libfribidi"
+DEPENDS = "librsvg eina eet freetype jpeg libpng virtual/libx11 libxext libxrender fontconfig libfribidi giflib"
 SRCREV = "${EFL_SRCREV}"
 PV = "0.9.9.060+svnr${SRCPV}"
 PR = "r1"
@@ -47,6 +47,7 @@ RRECOMMENDS_${PN} = "\
   evas-loader-png \
   evas-loader-jpeg \
   evas-loader-eet \
+  evas-loader-gif \
 "
 
 # Some upgrade path tweaking

@@ -25,7 +25,7 @@ EXTRA_OECONF = "\
 		--disable-glitz-x11			\
 		--enable-image-loader-eet	\
 		--disable-image-loader-edb	\
-		--disable-image-loader-gif	\
+		--enable-image-loader-gif	\
 		--enable-image-loader-png	\
 		--enable-image-loader-jpeg	\
 		--enable-image-loader-tiff	\
