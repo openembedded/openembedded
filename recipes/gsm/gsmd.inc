@@ -51,7 +51,7 @@ RDEPENDS_${BASEPN}-plugins = "\
   ${BASEPN}-plugin-vendor-tihtc \
 "
 
-RDEPENDS_${PN} += "update-rc.d initscripts"
+RDEPENDS_${PN} += "update-rc.d"
 RRECOMMENDS_${PN} += "${BASEPN}-plugins"
 
 FILES_${PN}-dbg += "${libdir}/gsmd/.debug/*"
