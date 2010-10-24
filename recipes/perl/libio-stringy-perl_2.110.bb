@@ -1,6 +1,6 @@
 DESCRIPTION = "IO-stringy - I/O on in-core objects like strings and arrays"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/D/DS/DSKOLL/IO-stringy-${PV}.tar.gz"

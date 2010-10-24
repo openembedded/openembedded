@@ -1,6 +1,6 @@
 DESCRIPTION = "Net::Ident - lookup the username on the remote end of a TCP/IP connection"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 BBCLASSEXTEND = "native"
 
 PR = "r0"

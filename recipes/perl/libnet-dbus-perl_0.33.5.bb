@@ -1,6 +1,6 @@
 DESCRIPTION = "Net::DBus - Perl extension for the DBus message system"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 PR = "r1"
 
 RDEPENDS_${PN} = "perl-module-vars perl-module-locale perl-module-io-handle \

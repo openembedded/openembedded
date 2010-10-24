@@ -1,6 +1,6 @@
 DESCRIPTION = "NetServer::Generic is a perl module that implements an object-oriented interface for developing internet servers."
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 PR = "r4"
 
 SRC_URI = "http://www.cpan.org/modules/by-module/NetServer/NetServer-Generic-${PV}.tar.gz"

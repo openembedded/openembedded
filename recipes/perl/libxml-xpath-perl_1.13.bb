@@ -1,6 +1,6 @@
 DESCRIPTION ="XML::XPath - a set of modules for parsing and evaluating XPath statement"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 PR = "r0"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/M/MS/MSERGEANT/XML-XPath-${PV}.tar.gz"

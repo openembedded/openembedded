@@ -1,6 +1,6 @@
 DESCRIPTION = "Client and server side SOAP implementation"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 DEPENDS = " libmime-tools-perl-native libwww-perl-native libxml-parser-perl-native libtask-weaken-perl-native \
              libio-socket-ssl-perl-native libclass-inspector-perl-native "
 RDEPENDS_${PN} = " libmime-tools-perl libwww-perl libxml-parser-perl libtask-weaken-perl \

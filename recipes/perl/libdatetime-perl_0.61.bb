@@ -1,6 +1,6 @@
 DESCRIPTION = "DateTime - A date and time object"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 DEPENDS = "libtest-exception-perl-native libdatetime-timezone-perl-native libdatetime-locale-perl-native "
 RDEPENDS_${PN} = "libtest-exception-perl libdatetime-timezone-perl libdatetime-locale-perl  \
 	perl-module-scalar-util perl-module-pod-man perl-module-time-local"

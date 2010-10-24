@@ -1,6 +1,6 @@
 DESCRIPTION = "Net::CIDR - Manipulate IPv4/IPv6 netblocks in CIDR notation"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 RDEPENDS_${PN} += "perl-module-carp"
 
 BBCLASSEXTEND = "native"

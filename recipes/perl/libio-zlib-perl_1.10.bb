@@ -1,6 +1,6 @@
 DESCRIPTION = "IO::Zlib - IO:: style interface to Compress::Zlib"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 DEPENDS = "libcompress-zlib-perl-native"
 RDEPENDS_${PN} += "libcompress-zlib-perl perl-module-tie-handle"
 PR = "r2"

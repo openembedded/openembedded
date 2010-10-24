@@ -1,6 +1,6 @@
 DESCRIPTION = "Perl: random routines for Crypt::OpenSSL::RSA"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 DEPENDS = "openssl"
 BBCLASSEXTEND = "native"
 

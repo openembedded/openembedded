@@ -1,6 +1,6 @@
 DESCRIPTION = "Interface to secure pseudo ttys"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 PR = "r0"
 
 SRC_URI = "http://www.cpan.org/modules/by-module/IO/IO-Stty-.02.tar.gz"

@@ -1,6 +1,6 @@
 DESCRIPTION = "XML::Generator - Perl extension for generating XML"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/B/BH/BHOLZMAN/XML-Generator-${PV}.tar.gz;name=xml-generator-perl-${PV}"
 SRC_URI[xml-generator-perl-1.03.md5sum] = "789d60259eed4517a9989768100abede"

@@ -1,6 +1,6 @@
 DESCRIPTION = "Compress::Raw::Zlib - Low-Level Interface to zlib compression library"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 DEPENDS += "expat expat-native"
 PR = "r0"
 

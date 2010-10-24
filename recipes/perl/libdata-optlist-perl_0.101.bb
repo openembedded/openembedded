@@ -1,6 +1,6 @@
 DESCRIPTION = "Data::OptList - parse and validate simple name/value option pairs"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 DEPENDS += "libsub-install-perl-native libparams-util-perl-native"
 RDEPENDS_${PN} += "perl-module-list-util libparams-util-perl perl-module-strict \
              libsub-install-perl perl-module-warnings "

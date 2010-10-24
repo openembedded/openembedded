@@ -1,6 +1,6 @@
 DESCRIPTION = "Digest::SHA - Perl extension for SHA-1/224/256/384/512"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 DEPENDS += "expat expat-native"
 BBCLASSEXTEND = "native"
 PR = "r0"

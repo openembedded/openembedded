@@ -1,6 +1,6 @@
 DESCRIPTION = "Test::Output - Utilities to test STDOUT and STDERR messages"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 DEPENDS += "libsub-exporter-perl-native"
 RDEPENDS_${PN} += "libsub-exporter-perl"
 PR = "r4"

@@ -1,6 +1,6 @@
 DESCRIPTION = "Easy-to-use OO interface to DBI"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 DEPENDS += "libdbi-perl-native"
 RDEPENDS_${PN} += "libdbi-perl \
          perl-module-file-spec \

@@ -1,6 +1,6 @@
 DESCRIPTION = "Generic Configuration Module"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 PR = "r0"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/T/TL/TLINDEN/Config-General-${PV}.tar.gz"

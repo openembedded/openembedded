@@ -1,6 +1,6 @@
 DESCRIPTION = "IP::Country - fast lookup of country codes from IP addresses"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 RDEPENDS_${PN} += "perl-module-extutils-makemaker"
 BBCLASSEXTEND = "native"
 PR = "r0"

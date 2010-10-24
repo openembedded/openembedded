@@ -1,6 +1,6 @@
 DESCRIPTION = "DateTime::TimeZone - Time zone object base class and factory"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 HOMEPAGE = "http://datetime.perl.org/"
 DEPENDS = "libclass-singleton-perl-native libparams-validate-perl-native"
 RDEPENDS_${PN} = "libclass-singleton-perl libparams-validate-perl \

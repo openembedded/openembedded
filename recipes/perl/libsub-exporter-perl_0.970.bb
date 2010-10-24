@@ -1,6 +1,6 @@
 DESCRIPTION = "Sub::Exporter - a sophisticated exporter for custom-built routines"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 DEPENDS += "libdata-optlist-perl-native libsub-install-perl-native \
             libparams-util-perl-native"
 RDEPENDS_${PN} += "perl-module-carp libdata-optlist-perl libparams-util-perl \

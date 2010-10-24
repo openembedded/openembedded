@@ -1,6 +1,6 @@
 DESCRIPTION = "File::Slurp - Efficient Reading/Writing of Complete Files"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 HOMEPAGE = "http://search.cpan.org/~uri/"
 PR = "r2"
 

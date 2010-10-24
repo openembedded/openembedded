@@ -1,6 +1,6 @@
 DESCRIPTION = "Archive::Zip - Provide an interface to ZIP archive files."
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 
 DEPENDS += "libio-zlib-perl-native"
 RDEPENDS_${PN} += "libio-zlib-perl"

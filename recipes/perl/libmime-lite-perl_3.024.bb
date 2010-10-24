@@ -1,6 +1,6 @@
 DESCRIPTION = "Simple standalone module for generating MIME messages."
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 PR = "r2"
 
 RDEPENDS_${PN} = "perl-module-file-spec \

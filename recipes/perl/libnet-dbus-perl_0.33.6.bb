@@ -1,6 +1,6 @@
 DESCRIPTION = "Net::DBus - Perl D-Bus module"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 
 RDEPENDS_${PN} = "perl-module-vars perl-module-locale perl-module-io-handle \
             perl-module-symbol perl-module-selectsaver perl-module-io \

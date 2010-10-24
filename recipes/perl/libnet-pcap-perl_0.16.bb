@@ -1,6 +1,6 @@
 DESCRIPTION = "Interface to pcap(3) LBL packet capture library"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 DEPENDS = "libpcap"
 RDEPENDS_${PN} += " \
 	perl-module-socket \

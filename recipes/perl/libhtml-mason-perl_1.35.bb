@@ -1,6 +1,6 @@
 DESCRIPTION = "Mason - High-performance, dynamic web site authoring system"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 DEPENDS = "libexception-class-perl-native libparams-validate-perl-native \
            libcache-cache-perl-native libclass-container-perl-native"
 RDEPENDS_${PN} = "libexception-class-perl libparams-validate-perl \

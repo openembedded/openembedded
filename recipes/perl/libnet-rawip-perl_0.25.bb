@@ -1,6 +1,6 @@
 DESCRIPTION = "Perl extension to manipulate raw IP packets with interface to libpcap"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 DEPENDS = "libpcap"
 RDEPENDS_${PN} = " \
 	 perl-module-class-struct \

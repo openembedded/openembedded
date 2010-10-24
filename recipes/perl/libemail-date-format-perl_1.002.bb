@@ -1,6 +1,6 @@
 DESCRIPTION = "Various MIME modules."
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 PR = "r2"
 
 RDEPENDS_${PN} = "perl-module-test-more \

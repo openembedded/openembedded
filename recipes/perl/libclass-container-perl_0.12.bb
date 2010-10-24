@@ -1,6 +1,6 @@
 DESCRIPTION = "Class::Container - Glues object frameworks together transparently"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 DEPENDS = "libparams-validate-perl-native"
 RDEPENDS_${PN} = "libparams-validate-perl"
 PR = "r8"

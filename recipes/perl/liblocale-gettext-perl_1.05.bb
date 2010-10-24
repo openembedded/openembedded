@@ -1,6 +1,6 @@
 DESCRIPTION = "Locale::gettext - message handling functions"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 DEPENDS = "virtual/libintl"
 BBCLASSEXTEND = "native"
 PR = "r9"

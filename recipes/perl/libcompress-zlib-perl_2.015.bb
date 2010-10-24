@@ -1,6 +1,6 @@
 DESCRIPTION = "Compress::Zlib - Interface to zlib compression library"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 PR = "r12"
 RDEPENDS_${PN} += "libio-compress-base-perl libcompress-raw-zlib-perl libio-compress-zlib-perl"
 

@@ -1,6 +1,6 @@
 DESCRIPTION = "IO::Socket::SSL -- Nearly transparent SSL encapsulation for IO::Socket::INET"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 RDEPENDS_${PN} += "perl-module-scalar-util libnet-ssleay-perl"
 BBCLASSEXTEND = "native"
 PR = "r0"

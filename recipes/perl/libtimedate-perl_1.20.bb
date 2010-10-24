@@ -1,7 +1,7 @@
 DESCRIPTION = "TimeDate - parser for absolute times"
 SECTION = "libs"
 # You can redistribute it and/or modify it under the same terms as Perl itself.
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 PR = "r2"
 
 

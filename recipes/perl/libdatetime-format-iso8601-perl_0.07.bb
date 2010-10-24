@@ -1,6 +1,6 @@
 DESCRIPTION = "DateTime::Format::ISO8601 - Parses ISO8601 formats"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 DEPENDS = " libdatetime-perl-native libdatetime-format-builder-perl-native "
 RDEPENDS_${PN} = " libdatetime-perl libdatetime-format-builder-perl "
 PR = "r1"

@@ -1,6 +1,6 @@
 DESCRIPTION = "Sys::Hostname::Long - Try every conceivable way to get full hostname"
 SECTION = "libs"
-LICENSE = "Artistic|GPLv1"
+LICENSE = "Artistic|GPLv1+"
 BBCLASSEXTEND = "native"
 
 PR = "r0"
