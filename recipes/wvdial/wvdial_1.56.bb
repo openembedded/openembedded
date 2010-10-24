@@ -10,7 +10,6 @@ SRC_URI = "http://www.alumnit.ca/download/wvdial-1.56.tar.gz \
 DEPENDS = "wvstreams"
 RDEPENDS_${PN} = "ppp"
 
-EXTRA_OEMAKE = ""
 export WVLINK="${LD}"
 LDFLAGS_append = " -luniconf"
 
