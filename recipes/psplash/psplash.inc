@@ -2,14 +2,13 @@ DESCRIPTION = "Userspace framebuffer boot logo based on usplash."
 HOMEPAGE = "http://projects.o-hand.com/psplash"
 SECTION = "base"
 LICENSE = "GPL"
-RDEPENDS_${PN} = "initscripts"
 PROVIDES = "virtual/psplash"
 RPROVIDES_${PN} = "virtual-psplash"
 RCONFLICTS_${PN} = "exquisite"
 
 SRCREV = "422"
 PV = "0.0+svnr${SRCPV}"
-PR = "r33"
+PR = "r34"
 
 # You can create your own pslash-poky-img.h by doing
 # ./make-image-header.sh <file>.png POKY
