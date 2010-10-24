@@ -1,0 +1,93 @@
+From 65cd401ec17f4a9791297e413e5954f25c71b2b0 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Petr=20=C5=A0tetiar?= <ynezz@true.cz>
+Date: Sat, 23 Oct 2010 19:49:21 +0200
+Subject: [PATCH 18/24] ethoc: ts7300 fixes
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Ian Thompson <ian.thompson@pgs.com>
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ drivers/net/ethoc.c |   27 ++++++++++++++++++++-------
+ 1 files changed, 20 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/net/ethoc.c b/drivers/net/ethoc.c
+index 6d653c4..a0f62eb 100644
+--- a/drivers/net/ethoc.c
++++ b/drivers/net/ethoc.c
+@@ -21,7 +21,11 @@
+ #include <linux/slab.h>
+ #include <net/ethoc.h>
+ 
++#ifndef CONFIG_MACH_TS72XX
+ static int buffer_size = 0x8000; /* 32 KBytes */
++#else
++static int buffer_size = 0x2000; /* 8 KBytes */
++#endif
+ module_param(buffer_size, int, 0);
+ MODULE_PARM_DESC(buffer_size, "DMA buffer allocation size");
+ 
+@@ -525,11 +529,6 @@ static irqreturn_t ethoc_interrupt(int irq, void *dev_id)
+ 
+ 	ethoc_ack_irq(priv, pending);
+ 
+-	if (pending & INT_MASK_BUSY) {
+-		dev_err(&dev->dev, "packet dropped\n");
+-		dev->stats.rx_dropped++;
+-	}
+-
+ 	if (pending & INT_MASK_RX) {
+ 		if (napi_schedule_prep(&priv->napi))
+ 			__napi_schedule(&priv->napi);
+@@ -834,10 +833,10 @@ static netdev_tx_t ethoc_start_xmit(struct sk_buff *skb, struct net_device *dev)
+ 		bd.stat &= ~TX_BD_PAD;
+ 
+ 	dest = priv->vma[entry];
+-	memcpy_toio(dest, skb->data, skb->len);
++	memcpy_toio(dest, skb->data, skb->len + 2);
+ 
+ 	bd.stat &= ~(TX_BD_STATS | TX_BD_LEN_MASK);
+-	bd.stat |= TX_BD_LEN(skb->len);
++	bd.stat |= TX_BD_LEN(skb->len + 2);
+ 	ethoc_write_bd(priv, entry, &bd);
+ 
+ 	bd.stat |= TX_BD_READY;
+@@ -992,6 +991,8 @@ static int __devinit ethoc_probe(struct platform_device *pdev)
+ 			(struct ethoc_platform_data *)pdev->dev.platform_data;
+ 		memcpy(netdev->dev_addr, pdata->hwaddr, IFHWADDRLEN);
+ 		priv->phy_id = pdata->phy_id;
++	} else {
++		priv->phy_id = 1;
+ 	}
+ 
+ 	/* Check that the given MAC address is valid. If it isn't, read the
+@@ -1004,6 +1005,17 @@ static int __devinit ethoc_probe(struct platform_device *pdev)
+ 	if (!is_valid_ether_addr(netdev->dev_addr))
+ 		random_ether_addr(netdev->dev_addr);
+ 
++	/* take this out for more general usage */
++	netdev->dev_addr[0] = 0x00;
++	netdev->dev_addr[1] = 0x88;
++	netdev->dev_addr[2] = 0x88;
++	netdev->dev_addr[3] = 0x88;
++	netdev->dev_addr[4] = 0x88;
++	netdev->dev_addr[5] = 0x01;
++	
++	printk("ethoc: setting MAC address to %2.2x:%2.2x:%2.2x:%2.2x:%2.2x:%2.2x\n",netdev->dev_addr[0],
++			netdev->dev_addr[1],netdev->dev_addr[2],netdev->dev_addr[3],netdev->dev_addr[4],
++			netdev->dev_addr[5]); 
+ 	ethoc_set_mac_address(netdev, netdev->dev_addr);
+ 
+ 	/* register MII bus */
+@@ -1131,6 +1143,7 @@ static struct platform_driver ethoc_driver = {
+ 
+ static int __init ethoc_init(void)
+ {
++	printk("ethoc driver with ts73xx fixes initialized\n");
+ 	return platform_driver_register(&ethoc_driver);
+ }
+ 
+-- 
+1.7.0.4
+

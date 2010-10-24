@@ -1,0 +1,886 @@
+From 619f5711bc905176dc23de3e646686bee36f1601 Mon Sep 17 00:00:00 2001
+From: Matthieu Crapet <mcrapet@gmail.com>
+Date: Thu, 10 Jun 2010 16:40:16 +0200
+Subject: [PATCH 05/24] ep93xx: m2m DMA support
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ arch/arm/mach-ep93xx/Makefile           |    2 +-
+ arch/arm/mach-ep93xx/dma-m2m.c          |  753 +++++++++++++++++++++++++++++++
+ arch/arm/mach-ep93xx/include/mach/dma.h |   65 +++
+ 3 files changed, 819 insertions(+), 1 deletions(-)
+ create mode 100644 arch/arm/mach-ep93xx/dma-m2m.c
+
+diff --git a/arch/arm/mach-ep93xx/Makefile b/arch/arm/mach-ep93xx/Makefile
+index 33ee2c8..ea652c2 100644
+--- a/arch/arm/mach-ep93xx/Makefile
++++ b/arch/arm/mach-ep93xx/Makefile
+@@ -1,7 +1,7 @@
+ #
+ # Makefile for the linux kernel.
+ #
+-obj-y			:= core.o clock.o dma-m2p.o gpio.o
++obj-y			:= core.o clock.o dma-m2p.o dma-m2m.o gpio.o
+ obj-m			:=
+ obj-n			:=
+ obj-			:=
+diff --git a/arch/arm/mach-ep93xx/dma-m2m.c b/arch/arm/mach-ep93xx/dma-m2m.c
+new file mode 100644
+index 0000000..8b0d720
+--- /dev/null
++++ b/arch/arm/mach-ep93xx/dma-m2m.c
+@@ -0,0 +1,753 @@
++/*
++ * arch/arm/mach-ep93xx/dma-m2m.c
++ * M2M DMA handling for Cirrus EP93xx chips.
++ * Copyright (C) 2007 Metasoft <prylowski@xxxxxxxxxxx>
++ *
++ * Based on dma-m2p.c by:
++ * Copyright (C) 2006 Lennert Buytenhek <buytenh@xxxxxxxxxxxxxx>
++ * Copyright (C) 2006 Applied Data Systems
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or (at
++ * your option) any later version.
++ */
++
++#define pr_fmt(fmt) "ep93xx " KBUILD_MODNAME ": " fmt
++
++#include <linux/kernel.h>
++#include <linux/clk.h>
++#include <linux/err.h>
++#include <linux/interrupt.h>
++#include <linux/module.h>
++#include <linux/string.h>
++#include <linux/io.h>
++
++#include <mach/dma.h>
++#include <mach/hardware.h>
++
++/* TEMP */
++#define DPRINTK(fmt, args...)
++
++#define M2M_CONTROL	0x00
++#define M2M_INTERRUPT	0x04
++#define M2M_STATUS	0x0c
++#define M2M_BCR0	0x10
++#define M2M_BCR1	0x14
++#define M2M_SAR_BASE0	0x18
++#define M2M_SAR_BASE1	0x1c
++#define M2M_SAR_CURR0	0x24
++#define M2M_SAR_CURR1	0x28
++#define M2M_DAR_BASE0	0x2c
++#define M2M_DAR_BASE1	0x30
++#define M2M_DAR_CURR0	0x34
++#define M2M_DAR_CURR1	0x3c
++
++
++/* control register bits */
++#define CTRL_STALL_INT_EN	0x00000001	/* stall interrupt enable */
++#define CTRL_SCT		0x00000002	/* source copy transfer
++						   (1 elem. from source fills
++						   destination block */
++#define CTRL_DONE_INT_EN	0x00000004	/* done interrupt enable */
++#define CTRL_ENABLE		0x00000008	/* channel enable / disable,
++						   should be set after
++						   write to SAR/DAR/BCR
++						   registers */
++#define CTRL_NFB_INT_EN		0x00200000	/* nfb (next frame buffer)
++						   interrupt enable */
++
++
++#define CTRL_START		0x00000010	/* software triggered
++						   dma start, not used
++						   for M2P/P2M/IDE/SSP */
++#define CTRL_BWC_MASK		0x000001e0	/* bandwidth control (number
++						   of bytes in a block
++						   transfer, only M2M */
++#define CTRL_BWC_SHIFT		5
++
++#define BWC_FULL		0x0	/* full bandwidth utilized */
++#define BWC_16			0x1	/* 16 bytes per block */
++#define BWC_32			0x5
++#define BWC_64			0x6
++#define BWC_128			0x7
++#define BWC_256			0x8
++#define BWC_512			0x9
++#define BWC_1024		0xa
++#define BWC_2048		0xb
++#define BWC_4096		0xc
++#define BWC_8192		0xd
++#define BWC_16384		0xe
++#define BWC_32768		0xf
++
++#define CTRL_PW_MASK		0x00000600	/* peripheral width,
++						   only M2P/P2M */
++#define CTRL_PW_SHIFT		9
++
++#define PW_BYTE			0x0	/* one byte width */
++#define PW_HALFWORD		0x1	/* 16 bits */
++#define PW_WORD			0x2	/* 32 bits */
++#define PW_NOT_USED		0x3
++
++#define CTRL_DAH		0x00000800	/* destination address
++						   hold, for M2P */
++#define CTRL_SAH		0x00001000	/* source address
++						   hold, for P2M */
++#define CTRL_TM_MASK		0x00006000	/* transfer mode */
++#define CTRL_TM_SHIFT		13
++
++#define TM_M2M			0x0	/* software initiated M2M transfer */
++#define TM_M2P			0x1	/* memory to ext. peripheral
++					   or IDE/SSP */
++#define TM_P2M			0x2	/* ext. peripheral or IDE/SSP
++					   to memory */
++#define TM_NOT_USED		0x3
++
++#define CTRL_ETDP_MASK		0x00018000	/* end of transfer/terminal
++						   count pin direction
++						   & polarity */
++#define CTRL_ETDP_SHIFT		15
++
++#define ETDP_ACT_LOW_EOT	0x0	/* pin programmed as active
++					 * low end-of-transfer input */
++#define ETDP_ACT_HIGH_EOT	0x1	/* active high eot input */
++#define ETDP_ACT_LOW_TC		0x2	/* active low terminal count output */
++#define ETDP_ACT_HIGH_TC	0x3	/* active high tc output */
++
++#define CTRL_DACKP		0x00020000	/* dma acknowledge pin
++						   polarity */
++#define CTRL_DREQP_MASK		0x00180000	/* dma request pin polarity */
++#define CTRL_DREQP_SHIFT	19
++
++#define DREQP_ACT_LOW_LEVEL	0x0	/* DREQ is active low, level
++					   sensitive */
++#define DREQP_ACT_HIGH_LEVEL	0x1	/* active high, level sensitive */
++#define DREQP_ACT_LOW_EDGE	0x2	/* active low, edge sensitive */
++#define DREQP_ACT_HIGH_EDGE	0x3	/* active high, edge sensitive */
++
++
++#define CTRL_RSS_MASK		0x00c00000	/* request source selection */
++#define CTRL_RSS_SHIFT		22
++
++#define RSS_EXT			0x0	/* external dma request */
++#define RSS_SSP_RX		0x1	/* internal SSPRx */
++#define RSS_SSP_TX		0x2	/* internal SSPTx */
++#define RSS_IDE			0x3	/* internal IDE */
++
++#define CTRL_NO_HDSK		0x01000000	/* no handshake, required for
++						   SSP/IDE, optional for
++						   ext. M2P/P2M */
++
++/* interrupt register bits */
++#define INTR_STALL		0x1
++#define INTR_DONE		0x2
++#define INTR_NFB		0x4
++#define INTR_ALL		0x7
++
++/* status register bits */
++#define STAT_STALL		0x0001	/* waiting for software start
++					   or device request */
++#define STAT_CTL_STATE_MASK	0x000e	/* control fsm state */
++#define STAT_CTL_STATE_SHIFT	1
++
++#define CTL_STATE_IDLE		0x0
++#define CTL_STATE_STALL		0x1
++#define CTL_STATE_MEM_RD	0x2
++#define CTL_STATE_MEM_WR	0x3
++#define CTL_STATE_BWC_WAIT	0x4
++
++#define STAT_BUF_STATE_MASK	0x0030	/* buffer fsm state */
++#define STAT_BUF_STATE_SHIFT	4
++
++#define BUF_STATE_NO_BUF	0x0
++#define BUF_STATE_BUF_ON	0x1
++#define BUF_STATE_BUF_NEXT	0x2
++
++#define STAT_DONE		0x0040	/* transfer completed successfully
++					   (by device or BCR is 0) */
++
++#define STAT_TCS_MASK		0x0018	/* terminal count status */
++#define STAT_TCS_SHIFT		7
++
++#define TCS_NONE		0x0	/* terminal count not reached
++					   for buffer0 and buffer1 */
++#define TCS_BUF0		0x1	/* terminal count reached
++					   for buffer0 */
++#define TCS_BUF1		0x2
++#define TCS_BOTH		0x3	/* terminal count reached
++					   for both buffers */
++
++#define STAT_EOTS_MASK		0x0060	/* end of transfer status */
++#define STAT_EOTS_SHIFT		9
++
++#define EOTS_NONE		0x0	/* end of transfer has not been
++					   requested by ext. periph. for
+++					   any buffer */
++#define EOTS_BUF0		0x1	/* eot requested for buffer0 */
++#define EOTS_BUF1		0x2
++#define EOTS_BOTH		0x3	/* eot requested for both buffers */
++
++#define STAT_NFB		0x0800	/* next frame buffer interrupt */
++#define STAT_NB			0x1000	/* next buffer status, inform which
++					   buffer is free for update */
++#define STAT_DREQS		0x2000	/* status of dma request signal from
++					   ext. periph or IDE/SSP request */
++
++/* IDE/SSP support */
++#define IDE_UDMA_DATAOUT	0x20
++#define IDE_UDMA_DATAIN		0x24
++
++#ifndef SSPDR
++#define SSPDR			0x08
++#endif
++
++struct m2m_channel {
++	char				*name;
++	void __iomem			*base;
++	int				irq;
++
++	struct clk			*clk;
++	spinlock_t			lock;
++
++	void				*client;
++	unsigned			next_slot:1;
++	struct ep93xx_dma_buffer	*buffer_xfer;
++	struct ep93xx_dma_buffer	*buffer_next;
++	struct list_head		buffers_pending;
++};
++
++static struct m2m_channel m2m_rxtx[] = {
++	{"m2m0", EP93XX_DMA_BASE + 0x0100, IRQ_EP93XX_DMAM2M0},
++	{"m2m1", EP93XX_DMA_BASE + 0x0140, IRQ_EP93XX_DMAM2M1},
++	{NULL},
++};
++
++
++static void feed_buf(struct m2m_channel *ch, struct ep93xx_dma_buffer *buf)
++{
++	struct ep93xx_dma_m2m_client *cl = ch->client;
++	u32 src_addr, dst_addr;
++
++	if ((cl->flags & EP93XX_DMA_M2M_DIR_MASK) == EP93XX_DMA_M2M_TX) {
++		src_addr = buf->bus_addr;
++		switch (cl->flags & EP93XX_DMA_M2M_DEV_MASK) {
++		case EP93XX_DMA_M2M_DEV_IDE:
++			dst_addr = EP93XX_IDE_PHYS_BASE + IDE_UDMA_DATAOUT;
++			break;
++		case EP93XX_DMA_M2M_DEV_SSP:
++			dst_addr = EP93XX_SPI_PHYS_BASE + SSPDR;
++			break;
++		default:
++			dst_addr = buf->bus_addr2;
++			break;
++		}
++	} else {
++		switch (cl->flags & EP93XX_DMA_M2M_DEV_MASK) {
++		case EP93XX_DMA_M2M_DEV_IDE:
++			src_addr = EP93XX_IDE_PHYS_BASE + IDE_UDMA_DATAIN;
++			break;
++		case EP93XX_DMA_M2M_DEV_SSP:
++			src_addr = EP93XX_SPI_PHYS_BASE + SSPDR;
++			break;
++		default:
++			src_addr = buf->bus_addr2;
++			break;
++		}
++		dst_addr = buf->bus_addr;
++	}
++
++	if (ch->next_slot == 0) {
++		DPRINTK("Writing src_addr: %08x\n", src_addr);
++		DPRINTK("Writing dest_addr: %08x\n", dst_addr);
++		DPRINTK("Writing size: %08x\n", buf->size);
++		writel(src_addr, ch->base + M2M_SAR_BASE0);
++		writel(dst_addr, ch->base + M2M_DAR_BASE0);
++		writel(buf->size, ch->base + M2M_BCR0);
++	} else {
++		writel(src_addr, ch->base + M2M_SAR_BASE1);
++		writel(dst_addr, ch->base + M2M_DAR_BASE1);
++		writel(buf->size, ch->base + M2M_BCR1);
++	}
++	ch->next_slot ^= 1;
++	DPRINTK("data size = %d, slot %d\n", buf->size, ch->next_slot ^ 1);
++}
++
++static void choose_buffer_xfer(struct m2m_channel *ch)
++{
++	struct ep93xx_dma_buffer *buf;
++
++	ch->buffer_xfer = NULL;
++	if (!list_empty(&ch->buffers_pending)) {
++		buf = list_entry(ch->buffers_pending.next,
++				 struct ep93xx_dma_buffer, list);
++		list_del(&buf->list);
++		feed_buf(ch, buf);
++		ch->buffer_xfer = buf;
++	}
++}
++
++static void choose_buffer_next(struct m2m_channel *ch)
++{
++	struct ep93xx_dma_buffer *buf;
++
++	ch->buffer_next = NULL;
++	if (!list_empty(&ch->buffers_pending)) {
++		buf = list_entry(ch->buffers_pending.next,
++				 struct ep93xx_dma_buffer, list);
++		list_del(&buf->list);
++		feed_buf(ch, buf);
++		ch->buffer_next = buf;
++	}
++}
++
++static irqreturn_t m2m_irq(int irq, void *dev_id)
++{
++	struct m2m_channel *ch = dev_id;
++	struct ep93xx_dma_m2m_client *cl;
++	u32 irq_status, dma_state, buf_state, ctl_state;
++
++	spin_lock(&ch->lock);
++	irq_status = readl(ch->base + M2M_INTERRUPT);
++	/*if ((irq_status & INTR_ALL) == 0) {
++		spin_unlock(&ch->lock);
++		return IRQ_NONE;
++		}*/
++	dma_state = readl(ch->base + M2M_STATUS);
++	cl = ch->client;
++
++	//printk("intr status: %08x, dma state: %08x\n", irq_status, dma_state);
++
++	DPRINTK("intr status %d, dma state %x\n",
++		irq_status, dma_state);
++
++	buf_state = (dma_state & STAT_BUF_STATE_MASK) >> STAT_BUF_STATE_SHIFT;
++	ctl_state = (dma_state & STAT_CTL_STATE_MASK) >> STAT_CTL_STATE_SHIFT;
++	/*printk("STAT_CTL_STATE: %d, STAT_BUF_STATE: %d\n",
++	 * ctl_state, buf_state);*/
++	if (ctl_state == CTL_STATE_STALL &&
++	    buf_state == BUF_STATE_NO_BUF &&
++	    dma_state & STAT_DONE) {
++	  /* transfer completed successfully (done) */
++
++
++	  /* send client the done command */
++	  if (cl->buffer_finished) {
++	    cl->buffer_finished(cl->cookie, ch->buffer_xfer, ch->buffer_xfer->size, 0);
++	  }
++
++	  writel(0, ch->base + M2M_INTERRUPT);
++	  choose_buffer_xfer(ch);
++	  choose_buffer_next(ch);
++	  if (ch->buffer_xfer != NULL) {
++	    /* retrigger if more buffers exist */
++	    if ((cl->flags & EP93XX_DMA_M2M_DEV_MASK) ==
++		EP93XX_DMA_M2M_DEV_MEM) {
++	      DPRINTK("Writing start1 to M2M control\n");
++	      writel(readl(ch->base + M2M_CONTROL) |
++		     CTRL_START, ch->base + M2M_CONTROL);
++	      readl(ch->base + M2M_CONTROL);
++	    }
++	  } else {
++	    DPRINTK("DISABLING DMA: dreqs state: %d\n", dma_state & STAT_DREQS);
++
++	    writel(readl(ch->base + M2M_CONTROL)
++		   & ~CTRL_ENABLE, ch->base + M2M_CONTROL);
++	    readl(ch->base + M2M_CONTROL);
++	  }
++	} else if (ctl_state == CTL_STATE_MEM_RD &&
++		   buf_state == BUF_STATE_BUF_ON &&
++		   dma_state & STAT_NFB) {
++	  /* next frame buffer */
++	  if (cl->buffer_finished) {
++	    cl->buffer_finished(cl->cookie, ch->buffer_xfer, 0, 0);
++	  }
++	  ch->buffer_xfer = ch->buffer_next;
++	  choose_buffer_next(ch);
++	}
++
++	if (cl->buffer_started && ch->buffer_xfer != NULL) {
++	  cl->buffer_started(cl->cookie, ch->buffer_xfer);
++	}
++
++	spin_unlock(&ch->lock);
++	return IRQ_HANDLED;
++}
++
++static struct m2m_channel *find_free_channel(struct ep93xx_dma_m2m_client *cl, int channel_spec)
++{
++	struct m2m_channel *ch = m2m_rxtx;
++	int i;
++
++#if 0
++	/* BMS: This code isn't particularly clear; look like it asserts
++	 * that a requested channel must not share the same data direction
++	 * as a previously requested channel - which makes sense for the SSP,
++	 * but not at all for direct hardware transferrs
++	*/
++	for (i = 0; ch[i].base; i++) {
++		struct ep93xx_dma_m2m_client *cl2;
++
++		cl2 = ch[i].client;
++		if (cl2 != NULL) {
++			int port;
++
++			/* two the same devices in the same direction
++	 are not allowed
++	 (two "memory devices" should be allowed) */
++			port = cl2->flags & (EP93XX_DMA_M2M_DEV_MASK |
++					EP93XX_DMA_M2M_DIR_MASK);
++			if (port == (cl->flags & (EP93XX_DMA_M2M_DEV_MASK |
++							EP93XX_DMA_M2M_DIR_MASK)))
++				return NULL;
++		}
++	}
++#endif
++
++	if (channel_spec == EP93XX_DMA_M2M_REQUIRES_CH_ANY) {
++		for (i = 0; ch[i].base; i++) {
++			if (ch[i].client == NULL)
++				return ch + i;
++		}
++	} else if (channel_spec == EP93XX_DMA_M2M_REQUIRES_CH_0) {
++		if (ch[0].client == NULL) {
++			return &(ch[0]);
++		}
++	} else if (channel_spec == EP93XX_DMA_M2M_REQUIRES_CH_1) {
++		if (ch[1].client == NULL) {
++			return &(ch[1]);
++		}
++	} else {
++		printk(KERN_ERR "ep93xx-m2m dma channel request: unknown channel spec\n");
++	}
++	return NULL;
++}
++
++static u32 set_direction_reg(u32 outv, u32 flags)
++{
++	switch (flags & EP93XX_DMA_M2M_DEV_MASK) {
++		case EP93XX_DMA_M2M_DEV_EXT:
++			outv &= ~(CTRL_SAH | CTRL_DAH | CTRL_TM_MASK);
++
++			if (flags & EP93XX_DMA_M2M_EXT_FIFO)
++				outv |= (flags & EP93XX_DMA_M2M_DIR_MASK) ==
++					EP93XX_DMA_M2M_TX ? CTRL_DAH : CTRL_SAH;
++
++			outv |= (((flags & EP93XX_DMA_M2M_DIR_MASK) ==
++						EP93XX_DMA_M2M_TX) ? TM_M2P : TM_P2M) <<
++				CTRL_TM_SHIFT;
++
++			break;
++		case EP93XX_DMA_M2M_DEV_IDE:
++			outv &= ~(CTRL_SAH | CTRL_DAH | CTRL_TM_MASK | CTRL_PWSC_MASK);
++			if ((flags & EP93XX_DMA_M2M_DIR_MASK) == EP93XX_DMA_M2M_TX) {
++				outv |= (2 << CTRL_PWSC_SHIFT) & CTRL_PWSC_MASK;
++				outv |= CTRL_DAH;
++				outv |= TM_M2P << CTRL_TM_SHIFT;
++			} else {
++				outv |= (1 << CTRL_PWSC_SHIFT) & CTRL_PWSC_MASK;
++				outv |= CTRL_SAH;
++				outv |= TM_P2M << CTRL_TM_SHIFT;
++			}
++			break;
++		case EP93XX_DMA_M2M_DEV_SSP:
++			outv &= ~(CTRL_SAH | CTRL_DAH | CTRL_TM_MASK | CTRL_RSS_MASK);
++			if ((flags & EP93XX_DMA_M2M_DIR_MASK) == EP93XX_DMA_M2M_TX) {
++				outv |= TM_M2P << CTRL_TM_SHIFT;
++				outv |= CTRL_DAH;
++				outv |= RSS_SSP_TX << CTRL_RSS_SHIFT;
++			} else {
++				outv |= TM_P2M << CTRL_TM_SHIFT;
++				outv |= CTRL_SAH;
++				outv |= RSS_SSP_RX << CTRL_RSS_SHIFT;
++			}
++			break;
++		case EP93XX_DMA_M2M_DEV_MEM:
++			break;
++	}
++	return outv;
++}
++
++static void channel_enable(struct m2m_channel *ch)
++{
++	struct ep93xx_dma_m2m_client *cl = ch->client;
++	u32 outv = 0;
++
++	clk_enable(ch->clk);
++
++	/* set peripheral wait state mask - IFF specified in control word */
++	outv |= (cl->flags & CTRL_PWSC_MASK);
++	outv |= (cl->flags & EP93XX_DREQ_MASK);
++
++	DPRINTK("Set outv to: %08x\n",outv);
++
++	switch (cl->flags & EP93XX_DMA_M2M_DEV_MASK) {
++	case EP93XX_DMA_M2M_DEV_EXT:
++		switch (cl->flags & EP93XX_DMA_M2M_EXT_WIDTH_MASK) {
++		case EP93XX_DMA_M2M_EXT_WIDTH_BYTE:
++			outv |= PW_BYTE << CTRL_PW_SHIFT;
++			break;
++		case EP93XX_DMA_M2M_EXT_WIDTH_2BYTES:
++			outv |= PW_HALFWORD << CTRL_PW_SHIFT;
++			break;
++		case EP93XX_DMA_M2M_EXT_WIDTH_4BYTES:
++			outv |= PW_WORD << CTRL_PW_SHIFT;
++			break;
++		}
++		/* if NO_HDSK then PWSC, if not, then DREQ, DACK, TC/DEOT */
++		if (cl->flags & EP93XX_DMA_M2M_EXT_NO_HDSK) {
++			outv |= CTRL_NO_HDSK;
++			/* TODO: wait states */
++		} else {
++			/* TODO: regular handshaking */
++		}
++		outv |= RSS_EXT << CTRL_RSS_SHIFT;
++		break;
++	case EP93XX_DMA_M2M_DEV_IDE:
++		/* NO_HDSK, PWSC, PW, SAH, DAH */
++		outv |= CTRL_NO_HDSK;
++		outv |= PW_WORD << CTRL_PW_SHIFT;
++		/* PWSC = 1 for read, PWSC = 2 for write in UDMA */
++		outv |= RSS_IDE << CTRL_RSS_SHIFT;
++		break;
++	case EP93XX_DMA_M2M_DEV_SSP:
++		outv |= CTRL_NO_HDSK;
++		outv |= PW_HALFWORD << CTRL_PW_SHIFT;
++		outv |= (8 << CTRL_PWSC_SHIFT) & CTRL_PWSC_MASK;
++		break;
++	case EP93XX_DMA_M2M_DEV_MEM:
++		switch (cl->flags & EP93XX_DMA_M2M_MEM_SPEED_MASK) {
++		case EP93XX_DMA_M2M_MEM_SPEED_FULL:
++			outv |= BWC_FULL << CTRL_BWC_SHIFT;
++			break;
++		case EP93XX_DMA_M2M_MEM_SPEED_HALF:
++			outv |= BWC_32768 << CTRL_BWC_SHIFT;
++			break;
++		case EP93XX_DMA_M2M_MEM_SPEED_QUART:
++			outv |= BWC_16384 << CTRL_BWC_SHIFT;
++			break;
++		case EP93XX_DMA_M2M_MEM_SPEED_SLOW:
++			outv |= BWC_16 << CTRL_BWC_SHIFT;
++			break;
++		}
++		outv |= (cl->flags & EP93XX_DMA_M2M_MEM_FILL) ? CTRL_SCT : 0;
++		outv |= TM_M2M << CTRL_TM_SHIFT;
++		break;
++	}
++
++	// debug code
++	DPRINTK("PRE-Enable, status is: %08x\n", readl(ch->base+M2M_STATUS));
++
++	outv = set_direction_reg(outv, cl->flags);
++	/* STALL interrupt must be enabled */
++	outv |= CTRL_NFB_INT_EN | CTRL_DONE_INT_EN | CTRL_STALL_INT_EN;
++
++	writel(outv, ch->base + M2M_CONTROL);
++	outv = readl(ch->base + M2M_CONTROL);
++	DPRINTK("channel enable, writing control reg = %08x\n", outv);
++}
++
++static void channel_disable(struct m2m_channel *ch)
++{
++	u32 v;
++
++	DPRINTK("Disabling channel\n");
++	v = readl(ch->base + M2M_CONTROL);
++
++	writel(v & ~(CTRL_NFB_INT_EN | CTRL_DONE_INT_EN | CTRL_STALL_INT_EN),
++	       ch->base + M2M_CONTROL);
++
++	v = readl(ch->base + M2M_CONTROL);
++
++	while (readl(ch->base + M2M_STATUS) & STAT_NFB) {
++	  cpu_relax();
++	}
++
++	writel(0, ch->base + M2M_CONTROL);
++
++	v = readl(ch->base + M2M_CONTROL);
++
++	while (readl(ch->base + M2M_STATUS) & STAT_STALL) {
++	  cpu_relax();
++	}
++
++	clk_disable(ch->clk);
++}
++
++void ep93xx_dma_m2m_set_direction(struct ep93xx_dma_m2m_client *cl,
++		int direction)
++{
++	struct m2m_channel *ch = cl->channel;
++	u32 outv;
++	unsigned long flags;
++
++	direction &= EP93XX_DMA_M2M_DIR_MASK;
++
++	spin_lock_irqsave(&ch->lock, flags);
++
++	cl->flags &= ~EP93XX_DMA_M2M_DIR_MASK;
++	cl->flags |= direction;
++
++	outv = readl(ch->base + M2M_CONTROL);
++	outv = set_direction_reg(outv, cl->flags);
++	writel(outv, ch->base + M2M_CONTROL);
++	outv = readl(ch->base + M2M_CONTROL);
++	DPRINTK("set_direction: configured control reg = %08x\n", outv);
++
++	spin_unlock_irqrestore(&ch->lock, flags);
++}
++EXPORT_SYMBOL_GPL(ep93xx_dma_m2m_set_direction);
++
++int ep93xx_dma_m2m_client_register(struct ep93xx_dma_m2m_client *cl, int channel_spec)
++{
++	struct m2m_channel *ch;
++	int err;
++
++	ch = find_free_channel(cl, channel_spec);
++	if (ch == NULL)
++		return -1;
++
++	err = request_irq(ch->irq, m2m_irq, IRQF_DISABLED, cl->name ? : "dma-m2m", ch);
++	if (err)
++		return err;
++
++	ch->client = cl;
++	ch->next_slot = 0;
++	ch->buffer_xfer = NULL;
++	ch->buffer_next = NULL;
++	INIT_LIST_HEAD(&ch->buffers_pending);
++
++	cl->channel = ch;
++
++	channel_enable(ch);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(ep93xx_dma_m2m_client_register);
++
++void ep93xx_dma_m2m_client_unregister(struct ep93xx_dma_m2m_client *cl)
++{
++	struct m2m_channel *ch = cl->channel;
++
++	channel_disable(ch);
++	free_irq(ch->irq, ch);
++	ch->client = NULL;
++}
++EXPORT_SYMBOL_GPL(ep93xx_dma_m2m_client_unregister);
++
++void ep93xx_dma_m2m_submit(struct ep93xx_dma_m2m_client *cl,
++		struct ep93xx_dma_buffer *buf)
++{
++	struct m2m_channel *ch = cl->channel;
++	unsigned long flags;
++
++	spin_lock_irqsave(&ch->lock, flags);
++
++	if (ch->buffer_xfer == NULL) {
++		ch->buffer_xfer = buf;
++		feed_buf(ch, buf);
++		if (readl(ch->base + M2M_CONTROL) & CTRL_ENABLE) {
++		  DPRINTK("CTRL_ENABLE\n");
++			if ((cl->flags & EP93XX_DMA_M2M_DEV_MASK) ==
++			    EP93XX_DMA_M2M_DEV_MEM) {
++			  DPRINTK("WRITING START2 TO M2M control\n");
++				writel(readl(ch->base + M2M_CONTROL) |
++				       CTRL_START, ch->base + M2M_CONTROL);
++				readl(ch->base + M2M_CONTROL);
++			}
++		}
++	} else if (ch->buffer_next == NULL) {
++		ch->buffer_next = buf;
++		feed_buf(ch, buf);
++	} else
++		list_add_tail(&buf->list, &ch->buffers_pending);
++	spin_unlock_irqrestore(&ch->lock, flags);
++}
++EXPORT_SYMBOL_GPL(ep93xx_dma_m2m_submit);
++
++void ep93xx_dma_m2m_start(struct ep93xx_dma_m2m_client *cl)
++{
++	struct m2m_channel *ch = cl->channel;
++	u32 v;
++
++	unsigned long flags;
++
++	spin_lock_irqsave(&ch->lock, flags);
++
++	writel(readl(ch->base + M2M_STATUS), ch->base+M2M_STATUS);
++	//printk("At start, status is: %08x\n", readl(ch->base + M2M_STATUS));
++
++	v = readl(ch->base + M2M_CONTROL) | CTRL_ENABLE;
++	writel(v, ch->base + M2M_CONTROL);
++	v = readl(ch->base + M2M_CONTROL);
++	if (ch->buffer_xfer != NULL) {
++		if (((cl->flags & EP93XX_DMA_M2M_DEV_MASK) ==
++					EP93XX_DMA_M2M_DEV_MEM)) {
++			DPRINTK("WRITING START3 to M2M controller\n");
++			v |= CTRL_START;
++			writel(v, ch->base + M2M_CONTROL);
++			v = readl(ch->base + M2M_CONTROL);
++		}
++	}
++
++	spin_unlock_irqrestore(&ch->lock, flags);
++}
++EXPORT_SYMBOL_GPL(ep93xx_dma_m2m_start);
++
++void ep93xx_dma_m2m_stop(struct ep93xx_dma_m2m_client *cl)
++{
++	struct m2m_channel *ch = cl->channel;
++	u32 v;
++	unsigned long flags;
++
++	spin_lock_irqsave(&ch->lock, flags);
++
++	DPRINTK("Stopping DMA by disabling CTRL_ENABLE\n");
++	v = readl(ch->base + M2M_CONTROL) & ~CTRL_ENABLE;
++	writel(v, ch->base + M2M_CONTROL);
++	readl(ch->base + M2M_CONTROL);
++	DPRINTK("configured control reg = %08x\n", v);
++
++	spin_unlock_irqrestore(&ch->lock, flags);
++}
++EXPORT_SYMBOL_GPL(ep93xx_dma_m2m_stop);
++
++void ep93xx_dma_m2m_flush(struct ep93xx_dma_m2m_client *cl)
++{
++	struct m2m_channel *ch = cl->channel;
++
++	channel_disable(ch);
++	ch->next_slot = 0;
++	ch->buffer_xfer = NULL;
++	ch->buffer_next = NULL;
++	INIT_LIST_HEAD(&ch->buffers_pending);
++	channel_enable(ch);
++}
++EXPORT_SYMBOL_GPL(ep93xx_dma_m2m_flush);
++
++static int init_channel(struct m2m_channel *ch)
++{
++	ch->clk = clk_get(NULL, ch->name);
++	if (IS_ERR(ch->clk))
++		return PTR_ERR(ch->clk);
++
++	spin_lock_init(&ch->lock);
++	ch->client = NULL;
++
++	return 0;
++}
++
++static int __init ep93xx_dma_m2m_init(void)
++{
++	int i;
++	int ret;
++
++	for (i = 0; m2m_rxtx[i].base; i++) {
++		ret = init_channel(m2m_rxtx + i);
++		if (ret)
++			return ret;
++	}
++
++	pr_info("M2M DMA subsystem initialized\n");
++	return 0;
++}
++arch_initcall(ep93xx_dma_m2m_init);
+diff --git a/arch/arm/mach-ep93xx/include/mach/dma.h b/arch/arm/mach-ep93xx/include/mach/dma.h
+index 3a5961d..6a3552b 100644
+--- a/arch/arm/mach-ep93xx/include/mach/dma.h
++++ b/arch/arm/mach-ep93xx/include/mach/dma.h
+@@ -11,6 +11,7 @@
+ struct ep93xx_dma_buffer {
+ 	struct list_head	list;
+ 	u32			bus_addr;
++	u32			bus_addr2; /* only used by M2M */
+ 	u16			size;
+ };
+ 
+@@ -28,6 +29,7 @@ struct ep93xx_dma_m2p_client {
+ 	void			*channel;
+ };
+ 
++/* flags (m2p client) */
+ #define EP93XX_DMA_M2P_PORT_I2S1	0x00
+ #define EP93XX_DMA_M2P_PORT_I2S2	0x01
+ #define EP93XX_DMA_M2P_PORT_AAC1	0x02
+@@ -45,6 +47,58 @@ struct ep93xx_dma_m2p_client {
+ #define EP93XX_DMA_M2P_IGNORE_ERROR	0x40
+ #define EP93XX_DMA_M2P_ERROR_MASK	0x60
+ 
++
++struct ep93xx_dma_m2m_client {
++	char			*name;
++	u32			flags;
++	void			*cookie;
++	void			(*buffer_started)(void *cookie,
++					struct ep93xx_dma_buffer *buf);
++	void			(*buffer_finished)(void *cookie,
++					struct ep93xx_dma_buffer *buf,
++					int bytes, int error);
++
++	/* Internal to the DMA code.  */
++	void			*channel;
++};
++
++/* flags (m2m client) */
++#define EP93XX_DMA_M2M_RX		0x000	/* read from periph./memory */
++#define EP93XX_DMA_M2M_TX		0x004	/* write to periph./memory */
++#define EP93XX_DMA_M2M_DIR_MASK		0x004	/* direction mask */
++#define EP93XX_DMA_M2M_DEV_EXT		0x000	/* external peripheral */
++#define EP93XX_DMA_M2M_DEV_SSP		0x001	/* internal SSP */
++#define EP93XX_DMA_M2M_DEV_IDE		0x002	/* internal IDE */
++#define EP93XX_DMA_M2M_DEV_MEM		0x003	/* memory to memory transfer */
++#define EP93XX_DMA_M2M_DEV_MASK		0x003   /* device mask */
++#define EP93XX_DMA_M2M_EXT_FIFO		0x008	/* external peripheral is one location fifo */
++#define EP93XX_DMA_M2M_EXT_NO_HDSK	0x010	/* external peripheral doesn't require regular handshaking protocol */
++#define EP93XX_DMA_M2M_EXT_WIDTH_MASK	0x300
++#define EP93XX_DMA_M2M_EXT_WIDTH_BYTE	0x000	/* external peripheral transfer is one byte width */
++#define EP93XX_DMA_M2M_EXT_WIDTH_2BYTES	0x100
++#define EP93XX_DMA_M2M_EXT_WIDTH_4BYTES	0x200
++#define EP93XX_DMA_M2M_MEM_SPEED_FULL	0x000	/* M2M bandwidth control */
++#define EP93XX_DMA_M2M_MEM_SPEED_HALF	0x040	/* half bus bandwidth */
++#define EP93XX_DMA_M2M_MEM_SPEED_QUART	0x080	/* quarter bus bandwidth */
++#define EP93XX_DMA_M2M_MEM_SPEED_SLOW	0x0c0	/* slowest speed */
++#define EP93XX_DMA_M2M_MEM_SPEED_MASK	0x0c0   /* memory speed mask */
++#define EP93XX_DMA_M2M_MEM_FILL		0x020	/* M2M is one location to block fill */
++
++/* FIXME */
++#define CTRL_PWSC_MASK		0xfe000000	/* peripheral wait states count */
++#define CTRL_PWSC_SHIFT		25
++#define EP93XX_DREQ_SHIFT	19
++#define EP93XX_DREQ_MASK	0x00180000
++#define EP93XX_DMA_M2M_DREQ_LS_L	(00 << EP93XX_DREQ_SHIFT)
++#define EP93XX_DMA_M2M_DREQ_LS_H	(01 << EP93XX_DREQ_SHIFT)
++#define EP93XX_DMA_M2M_DREQ_ES_L	(10 << EP93XX_DREQ_SHIFT)
++#define EP93XX_DMA_M2M_DREQ_ES_H	(11 << EP93XX_DREQ_SHIFT)
++
++/* See ep93xx_dma_m2m_client_register (channel_spec) */
++#define EP93XX_DMA_M2M_REQUIRES_CH_ANY	0
++#define EP93XX_DMA_M2M_REQUIRES_CH_0	1
++#define EP93XX_DMA_M2M_REQUIRES_CH_1	2
++
+ int  ep93xx_dma_m2p_client_register(struct ep93xx_dma_m2p_client *m2p);
+ void ep93xx_dma_m2p_client_unregister(struct ep93xx_dma_m2p_client *m2p);
+ void ep93xx_dma_m2p_submit(struct ep93xx_dma_m2p_client *m2p,
+@@ -53,4 +107,15 @@ void ep93xx_dma_m2p_submit_recursive(struct ep93xx_dma_m2p_client *m2p,
+ 				     struct ep93xx_dma_buffer *buf);
+ void ep93xx_dma_m2p_flush(struct ep93xx_dma_m2p_client *m2p);
+ 
++int  ep93xx_dma_m2m_client_register(struct ep93xx_dma_m2m_client *m2m,
++				    int channel_spec);
++void ep93xx_dma_m2m_client_unregister(struct ep93xx_dma_m2m_client *m2m);
++void ep93xx_dma_m2m_submit(struct ep93xx_dma_m2m_client *m2m,
++			   struct ep93xx_dma_buffer *buf);
++void ep93xx_dma_m2m_flush(struct ep93xx_dma_m2m_client *m2m);
++void ep93xx_dma_m2m_start(struct ep93xx_dma_m2m_client *m2m);
++void ep93xx_dma_m2m_stop(struct ep93xx_dma_m2m_client *m2m);
++void ep93xx_dma_m2m_set_direction(struct ep93xx_dma_m2m_client *m2m,
++				  int direction);
++
+ #endif /* __ASM_ARCH_DMA_H */
+-- 
+1.7.0.4
+

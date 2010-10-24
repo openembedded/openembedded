@@ -1,0 +1,305 @@
+From 6e1298e3647a7eea65fe323ee0181ab2373fd78d Mon Sep 17 00:00:00 2001
+From: Matthieu Crapet <mcrapet@gmail.com>
+Date: Tue, 22 Jun 2010 15:48:27 +0200
+Subject: [PATCH 16/24] ts72xx_spi_tmp124
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+It's an option. A 3-wire spi temperature sensor can be populated on TS-72XX sbc.
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ arch/arm/mach-ep93xx/ts72xx.c |   63 ++++++++++++++++
+ drivers/spi/Kconfig           |    7 ++
+ drivers/spi/Makefile          |    1 +
+ drivers/spi/tmp124.c          |  158 +++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 229 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/spi/tmp124.c
+
+diff --git a/arch/arm/mach-ep93xx/ts72xx.c b/arch/arm/mach-ep93xx/ts72xx.c
+index c99f112..941eeac 100644
+--- a/arch/arm/mach-ep93xx/ts72xx.c
++++ b/arch/arm/mach-ep93xx/ts72xx.c
+@@ -23,7 +23,11 @@
+ #include <linux/gpio.h>
+ #include <linux/i2c.h>
+ #include <linux/i2c-gpio.h>
++#include <linux/mtd/nand.h>
++#include <linux/mtd/partitions.h>
++#include <linux/spi/spi.h>
+ 
++#include <mach/ep93xx_spi.h>
+ #include <mach/hardware.h>
+ #include <mach/ts72xx.h>
+ 
+@@ -352,6 +356,60 @@ static struct i2c_gpio_platform_data ts72xx_i2c_gpio_data = {
+ static struct i2c_board_info __initdata ts72xx_i2c_board_info[] = {
+ };
+ 
++/*************************************************************************
++ * SPI
++ *************************************************************************/
++#if defined(CONFIG_SPI_TMP124) || defined(CONFIG_SPI_TMP124_MODULE)
++
++/* this is our GPIO line used for chip select */
++#define TMP124_CHIP_SELECT_GPIO EP93XX_GPIO_LINE_MCCD2
++
++static int ts72xx_tmp124_setup(struct spi_device *spi)
++{
++	int err;
++
++	err = gpio_request(TMP124_CHIP_SELECT_GPIO, spi->modalias);
++	if (err)
++		return err;
++
++	gpio_direction_output(TMP124_CHIP_SELECT_GPIO, 1);
++
++	return 0;
++}
++
++static void ts72xx_tmp124_cleanup(struct spi_device *spi)
++{
++	gpio_set_value(TMP124_CHIP_SELECT_GPIO, 1);
++	gpio_direction_input(TMP124_CHIP_SELECT_GPIO);
++	gpio_free(TMP124_CHIP_SELECT_GPIO);
++}
++
++static void ts72xx_tmp124_cs_control(struct spi_device *spi, int value)
++{
++	gpio_set_value(TMP124_CHIP_SELECT_GPIO, value);
++}
++
++static struct ep93xx_spi_chip_ops ts72xx_tmp124_ops = {
++	.setup		= ts72xx_tmp124_setup,
++	.cleanup	= ts72xx_tmp124_cleanup,
++	.cs_control	= ts72xx_tmp124_cs_control,
++};
++
++static struct spi_board_info ts72xx_spi_devices[] = {
++	{
++		.modalias		= "tmp124",
++		.max_speed_hz		= 2 * 1000 * 1000,
++		.bus_num		= 0,
++		.chip_select		= 0,
++		.controller_data	= &ts72xx_tmp124_ops,
++	},
++};
++
++static struct ep93xx_spi_info ts72xx_spi_info = {
++	.num_chipselect	= ARRAY_SIZE(ts72xx_spi_devices),
++};
++#endif
++
+ static void __init ts72xx_init_machine(void)
+ {
+ 	ep93xx_init_devices();
+@@ -365,6 +423,11 @@ static void __init ts72xx_init_machine(void)
+ 			ts72xx_i2c_board_info,
+ 			ARRAY_SIZE(ts72xx_i2c_board_info));
+ 
++	#if defined(CONFIG_SPI_TMP124) || defined(CONFIG_SPI_TMP124_MODULE)
++	ep93xx_register_spi(&ts72xx_spi_info, ts72xx_spi_devices,
++			ARRAY_SIZE(ts72xx_spi_devices));
++	#endif
++
+ 	if (is_max197_installed()) {
+ 		platform_device_register(&ts72xx_max197_device);
+ 	}
+diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
+index 91c2f4f..05b78ca 100644
+--- a/drivers/spi/Kconfig
++++ b/drivers/spi/Kconfig
+@@ -379,6 +379,13 @@ config SPI_TLE62X0
+ 	  sysfs interface, with each line presented as a kind of GPIO
+ 	  exposing both switch control and diagnostic feedback.
+ 
++config SPI_TMP124
++	tristate "Texas Instruments TMP1224, TMP124"
++	depends on SPI_MASTER && SYSFS
++	help
++	  SPI driver for TMP12X temperature sensor chips.
++	  This provides a sysfs entry for temperature reading (2�C accurate).
++
+ #
+ # Add new SPI protocol masters in alphabetical order above this line
+ #
+diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
+index e9cbd18..c8f85ea 100644
+--- a/drivers/spi/Makefile
++++ b/drivers/spi/Makefile
+@@ -57,6 +57,7 @@ spi_s3c24xx_hw-$(CONFIG_SPI_S3C24XX_FIQ) += spi_s3c24xx_fiq.o
+ # SPI protocol drivers (device/link on bus)
+ obj-$(CONFIG_SPI_SPIDEV)	+= spidev.o
+ obj-$(CONFIG_SPI_TLE62X0)	+= tle62x0.o
++obj-$(CONFIG_SPI_TMP124)	+= tmp124.o
+ # 	... add above this line ...
+ 
+ # SPI slave controller drivers (upstream link)
+diff --git a/drivers/spi/tmp124.c b/drivers/spi/tmp124.c
+new file mode 100644
+index 0000000..e41ec8c
+--- /dev/null
++++ b/drivers/spi/tmp124.c
+@@ -0,0 +1,158 @@
++/*
++ *  TMP124 SPI protocol driver
++ *
++ * (c) Copyright 2008-2010  Matthieu Crapet <mcrapet@gmail.com>
++ * Based on tle62x0.c by Ben Dooks, <ben@simtec.co.uk>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * Note: The chip uses a '3-wire SPI' (miso and mosi are the same pin).
++ */
++
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/spi/spi.h>
++#include <linux/slab.h>
++#include <linux/sched.h>
++
++struct tmp124_state {
++	struct spi_device *bus;
++	u8 tx_buff[2];
++	u8 rx_buff[2];
++};
++
++static inline int tmp124_write_then_read(struct tmp124_state *st)
++{
++	struct spi_message msg;
++	struct spi_transfer xfer[2] = {
++		{
++			.tx_buf		= st->tx_buff,
++			.rx_buf		= NULL,
++			.len		= 2,
++		}, {
++			.tx_buf		= NULL,
++			.rx_buf		= st->rx_buff,
++			.len		= 2,
++		}
++	};
++
++	spi_message_init(&msg);
++	spi_message_add_tail(&xfer[0], &msg);
++	spi_sync(st->bus, &msg);
++
++	/* SPI_3WIRE is not handled by ep93xx_spi, the 2 messages must be
++	 * splitted. We must wait to not confuse driver with read/write. */
++	schedule_timeout(usecs_to_jiffies(1000));
++
++	spi_message_init(&msg);
++	spi_message_add_tail(&xfer[1], &msg);
++	return spi_sync(st->bus, &msg);
++}
++
++static ssize_t tmp124_temperature_show(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	struct tmp124_state *st = dev_get_drvdata(dev);
++	int ret;
++
++	((short *)st->tx_buff)[0] = 0x8000;
++
++	ret = tmp124_write_then_read(st);
++	if (ret < 0) {
++		dev_err(&st->bus->dev, "tmp124_write_then_read\n");
++		ret = 0;
++	} else {
++		signed long val = ((short *)st->rx_buff)[0];
++
++		val = val >> 3;
++
++		/* 2 digit precision (0.0625*100) */
++		val = (val * 50) / 8;
++		ret = snprintf(buf, PAGE_SIZE, "%ld.%02ld\n", val/100, abs(val%100));
++	}
++	return ret;
++}
++
++static DEVICE_ATTR(temperature, S_IRUGO, tmp124_temperature_show, NULL);
++
++static int __devinit tmp124_probe(struct spi_device *spi)
++{
++	struct tmp124_state *st;
++	int ret;
++
++	st = kzalloc(sizeof(struct tmp124_state), GFP_KERNEL);
++	if (st == NULL) {
++		dev_err(&spi->dev, "no memory for device state\n");
++		return -ENOMEM;
++	}
++
++	/* required config */
++	spi->bits_per_word = 16;
++        spi->mode = SPI_MODE_0;
++
++	ret = spi_setup(spi);
++	if (ret) {
++		dev_err(&spi->dev, "setup device\n");
++		goto err;
++	}
++
++	ret = device_create_file(&spi->dev, &dev_attr_temperature);
++	if (ret) {
++		dev_err(&spi->dev, "cannot create temperature attribute\n");
++		goto err;
++	}
++
++	st->bus = spi;
++	spi_set_drvdata(spi, st);
++	return 0;
++
++err:
++	kfree(st);
++	return ret;
++}
++
++static int __devexit tmp124_remove(struct spi_device *spi)
++{
++	struct tmp124_state *st = spi_get_drvdata(spi);
++
++	device_remove_file(&spi->dev, &dev_attr_temperature);
++	kfree(st);
++	return 0;
++}
++
++static struct spi_driver tmp124_driver = {
++	.driver = {
++		.name	= "tmp124",
++		.owner	= THIS_MODULE,
++	},
++	.probe	= tmp124_probe,
++	.remove	= __devexit_p(tmp124_remove),
++};
++
++static __init int tmp124_init(void)
++{
++	return spi_register_driver(&tmp124_driver);
++}
++
++static __exit void tmp124_exit(void)
++{
++	spi_unregister_driver(&tmp124_driver);
++}
++
++module_init(tmp124_init);
++module_exit(tmp124_exit);
++
++MODULE_AUTHOR("Matthieu Crapet <mcrapet@gmail.com>");
++MODULE_DESCRIPTION("TMP124 SPI Protocol Driver");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("spi:tmp124");
++MODULE_VERSION("0.2");
+-- 
+1.7.0.4
+

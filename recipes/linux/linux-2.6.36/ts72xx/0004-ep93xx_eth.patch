@@ -1,0 +1,555 @@
+From 802fa6d7ec0d57684912b39f0fb0341698cda4e3 Mon Sep 17 00:00:00 2001
+From: Matthieu Crapet <mcrapet@gmail.com>
+Date: Thu, 10 Jun 2010 13:34:14 +0200
+Subject: [PATCH 04/24] ep93xx_eth
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ drivers/net/arm/Kconfig      |    1 +
+ drivers/net/arm/ep93xx_eth.c |  346 ++++++++++++++++++++++++++++++++++--------
+ 2 files changed, 280 insertions(+), 67 deletions(-)
+
+diff --git a/drivers/net/arm/Kconfig b/drivers/net/arm/Kconfig
+index 39e1c0d..55c0dd4 100644
+--- a/drivers/net/arm/Kconfig
++++ b/drivers/net/arm/Kconfig
+@@ -52,6 +52,7 @@ config EP93XX_ETH
+ 	tristate "EP93xx Ethernet support"
+ 	depends on ARM && ARCH_EP93XX
+ 	select MII
++	select PHYLIB
+ 	help
+ 	  This is a driver for the ethernet hardware included in EP93xx CPUs.
+ 	  Say Y if you are building a kernel for EP93xx based devices.
+diff --git a/drivers/net/arm/ep93xx_eth.c b/drivers/net/arm/ep93xx_eth.c
+index 4a5ec94..7e60c4d 100644
+--- a/drivers/net/arm/ep93xx_eth.c
++++ b/drivers/net/arm/ep93xx_eth.c
+@@ -2,6 +2,7 @@
+  * EP93xx ethernet network device driver
+  * Copyright (C) 2006 Lennert Buytenhek <buytenh@wantstofly.org>
+  * Dedicated to Marija Kulikova.
++ * Copyright (C) 2007 Herbert Valerio Riedel <hvr@gnu.org>
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+@@ -16,6 +17,7 @@
+ #include <linux/kernel.h>
+ #include <linux/netdevice.h>
+ #include <linux/mii.h>
++#include <linux/phy.h>
+ #include <linux/etherdevice.h>
+ #include <linux/ethtool.h>
+ #include <linux/init.h>
+@@ -27,8 +29,8 @@
+ 
+ #include <mach/hardware.h>
+ 
+-#define DRV_MODULE_NAME		"ep93xx-eth"
+-#define DRV_MODULE_VERSION	"0.1"
++#define DRV_NAME		"ep93xx-eth"
++#define DRV_VERSION		"0.13"
+ 
+ #define RX_QUEUE_ENTRIES	64
+ #define TX_QUEUE_ENTRIES	8
+@@ -40,6 +42,8 @@
+ #define  REG_RXCTL_DEFAULT	0x00073800
+ #define REG_TXCTL		0x0004
+ #define  REG_TXCTL_ENABLE	0x00000001
++#define REG_TESTCTL		0x0008
++#define  REG_TESTCTL_MFDX	0x00000040
+ #define REG_MIICMD		0x0010
+ #define  REG_MIICMD_READ	0x00008000
+ #define  REG_MIICMD_WRITE	0x00004000
+@@ -48,6 +52,9 @@
+ #define  REG_MIISTS_BUSY	0x00000001
+ #define REG_SELFCTL		0x0020
+ #define  REG_SELFCTL_RESET	0x00000001
++#define  REG_SELFCTL_MDCDIV_MSK	0x00007e00
++#define  REG_SELFCTL_MDCDIV_OFS	9
++#define  REG_SELFCTL_PSPRS	0x00000100
+ #define REG_INTEN		0x0024
+ #define  REG_INTEN_TX		0x00000008
+ #define  REG_INTEN_RX		0x00000007
+@@ -177,8 +184,14 @@ struct ep93xx_priv
+ 
+ 	struct net_device_stats	stats;
+ 
+-	struct mii_if_info	mii;
+ 	u8			mdc_divisor;
++	int     phy_supports_mfps:1;
++
++	struct mii_bus    mii_bus;
++	struct phy_device *phy_dev;
++	int     speed;
++	int     duplex;
++	int     link;
+ };
+ 
+ #define rdb(ep, off)		__raw_readb((ep)->base_addr + (off))
+@@ -188,46 +201,78 @@ struct ep93xx_priv
+ #define wrw(ep, off, val)	__raw_writew((val), (ep)->base_addr + (off))
+ #define wrl(ep, off, val)	__raw_writel((val), (ep)->base_addr + (off))
+ 
+-static int ep93xx_mdio_read(struct net_device *dev, int phy_id, int reg)
++/* common MII transactions should take < 100 iterations */
++#define EP93XX_PHY_TIMEOUT 2000
++
++static int ep93xx_mdio_wait(struct mii_bus *bus)
+ {
+-	struct ep93xx_priv *ep = netdev_priv(dev);
+-	int data;
+-	int i;
++	struct ep93xx_priv *ep = bus->priv;
++	unsigned int timeout = EP93XX_PHY_TIMEOUT;
+ 
+-	wrl(ep, REG_MIICMD, REG_MIICMD_READ | (phy_id << 5) | reg);
++	while ((rdl(ep, REG_MIISTS) & REG_MIISTS_BUSY)
++			&& timeout--)
++		cpu_relax();
+ 
+-	for (i = 0; i < 10; i++) {
+-		if ((rdl(ep, REG_MIISTS) & REG_MIISTS_BUSY) == 0)
+-			break;
+-		msleep(1);
++	if (timeout <= 0) {
++		dev_err(&bus->dev, "MII operation timed out\n");
++		return -ETIMEDOUT;
+ 	}
+ 
+-	if (i == 10) {
+-		pr_info("mdio read timed out\n");
+-		data = 0xffff;
+-	} else {
+-		data = rdl(ep, REG_MIIDATA);
+-	}
++	return 0;
++}
++
++static int ep93xx_mdio_read(struct mii_bus *bus, int mii_id, int reg)
++{
++	struct ep93xx_priv *ep = bus->priv;
++	u32 selfctl;
++	u32 data;
++
++	if (ep93xx_mdio_wait(bus) < 0)
++		return -ETIMEDOUT;
++
++	selfctl = rdl(ep, REG_SELFCTL);
+ 
+-	return data;
++	if (ep->phy_supports_mfps)
++		wrl(ep, REG_SELFCTL, selfctl | REG_SELFCTL_PSPRS);
++	else
++		wrl(ep, REG_SELFCTL, selfctl & ~REG_SELFCTL_PSPRS);
++
++	wrl(ep, REG_MIICMD, REG_MIICMD_READ | (mii_id << 5) | reg);
++
++	if (ep93xx_mdio_wait(bus) < 0)
++		return -ETIMEDOUT;
++
++	data =  rdl(ep, REG_MIIDATA);
++
++	wrl(ep, REG_SELFCTL, selfctl);
++
++ 	return data;
+ }
+ 
+-static void ep93xx_mdio_write(struct net_device *dev, int phy_id, int reg, int data)
++static int ep93xx_mdio_write(struct mii_bus *bus, int mii_id, int reg, u16 data)
+ {
+-	struct ep93xx_priv *ep = netdev_priv(dev);
+-	int i;
++	struct ep93xx_priv *ep = bus->priv;
++	u32 selfctl;
++
++	if (ep93xx_mdio_wait(bus) < 0)
++		return -ETIMEDOUT;
++
++	selfctl = rdl(ep, REG_SELFCTL);
++
++	if (ep->phy_supports_mfps)
++		wrl(ep, REG_SELFCTL, selfctl | REG_SELFCTL_PSPRS);
++	else
++		wrl(ep, REG_SELFCTL, selfctl & ~REG_SELFCTL_PSPRS);
+ 
+ 	wrl(ep, REG_MIIDATA, data);
+-	wrl(ep, REG_MIICMD, REG_MIICMD_WRITE | (phy_id << 5) | reg);
++	wrl(ep, REG_MIICMD, REG_MIICMD_WRITE | (mii_id << 5) | reg);
+ 
+-	for (i = 0; i < 10; i++) {
+-		if ((rdl(ep, REG_MIISTS) & REG_MIISTS_BUSY) == 0)
+-			break;
+-		msleep(1);
+-	}
++	if (ep93xx_mdio_wait(bus) < 0)
++		return -ETIMEDOUT;
+ 
+-	if (i == 10)
+-		pr_info("mdio write timed out\n");
++	wrl(ep, REG_SELFCTL, selfctl);
++
++	return 0;
+ }
+ 
+ static struct net_device_stats *ep93xx_get_stats(struct net_device *dev)
+@@ -557,6 +602,22 @@ err:
+ 	return 1;
+ }
+ 
++static int ep93xx_mdio_reset(struct mii_bus *bus)
++{
++	struct ep93xx_priv *ep = bus->priv;
++
++	u32 selfctl = rdl(ep, REG_SELFCTL);
++
++	selfctl &= ~(REG_SELFCTL_MDCDIV_MSK | REG_SELFCTL_PSPRS);
++
++	selfctl |= (ep->mdc_divisor - 1) << REG_SELFCTL_MDCDIV_OFS;
++	selfctl |= REG_SELFCTL_PSPRS;
++
++	wrl(ep, REG_SELFCTL, selfctl);
++
++	return 0;
++}
++
+ static int ep93xx_start_hw(struct net_device *dev)
+ {
+ 	struct ep93xx_priv *ep = netdev_priv(dev);
+@@ -575,11 +636,8 @@ static int ep93xx_start_hw(struct net_device *dev)
+ 		return 1;
+ 	}
+ 
+-	wrl(ep, REG_SELFCTL, ((ep->mdc_divisor - 1) << 9));
+-
+-	/* Does the PHY support preamble suppress?  */
+-	if ((ep93xx_mdio_read(dev, ep->mii.phy_id, MII_BMSR) & 0x0040) != 0)
+-		wrl(ep, REG_SELFCTL, ((ep->mdc_divisor - 1) << 9) | (1 << 8));
++	/* The reset cleared REG_SELFCTL, so set the MDC divisor again */
++	ep93xx_mdio_reset(&ep->mii_bus);
+ 
+ 	/* Receive descriptor ring.  */
+ 	addr = ep->descs_dma_addr + offsetof(struct ep93xx_descs, rdesc);
+@@ -688,6 +746,8 @@ static int ep93xx_open(struct net_device *dev)
+ 
+ 	wrl(ep, REG_GIINTMSK, REG_GIINTMSK_ENABLE);
+ 
++	phy_start(ep->phy_dev);
++
+ 	netif_start_queue(dev);
+ 
+ 	return 0;
+@@ -700,6 +760,9 @@ static int ep93xx_close(struct net_device *dev)
+ 	napi_disable(&ep->napi);
+ 	netif_stop_queue(dev);
+ 
++	if (ep->phy_dev)
++		phy_stop(ep->phy_dev);
++
+ 	wrl(ep, REG_GIINTMSK, 0);
+ 	free_irq(ep->irq, dev);
+ 	ep93xx_stop_hw(dev);
+@@ -711,47 +774,44 @@ static int ep93xx_close(struct net_device *dev)
+ static int ep93xx_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
+ {
+ 	struct ep93xx_priv *ep = netdev_priv(dev);
+-	struct mii_ioctl_data *data = if_mii(ifr);
+ 
+-	return generic_mii_ioctl(&ep->mii, data, cmd, NULL);
++	return phy_mii_ioctl(ep->phy_dev, ifr, cmd);
+ }
+ 
+ static void ep93xx_get_drvinfo(struct net_device *dev, struct ethtool_drvinfo *info)
+ {
+-	strcpy(info->driver, DRV_MODULE_NAME);
+-	strcpy(info->version, DRV_MODULE_VERSION);
++        strlcpy(info->driver, DRV_NAME, sizeof(info->driver));
++        strlcpy(info->version, DRV_VERSION, sizeof(info->version));
++        strlcpy(info->bus_info, dev_name(dev->dev.parent), sizeof(info->bus_info));
+ }
+ 
+ static int ep93xx_get_settings(struct net_device *dev, struct ethtool_cmd *cmd)
+ {
+ 	struct ep93xx_priv *ep = netdev_priv(dev);
+-	return mii_ethtool_gset(&ep->mii, cmd);
++	struct phy_device *phydev = ep->phy_dev;
++
++	if (!phydev)
++		return -ENODEV;
++
++	return phy_ethtool_gset(phydev, cmd);
+ }
+ 
+ static int ep93xx_set_settings(struct net_device *dev, struct ethtool_cmd *cmd)
+ {
+ 	struct ep93xx_priv *ep = netdev_priv(dev);
+-	return mii_ethtool_sset(&ep->mii, cmd);
+-}
++	struct phy_device *phydev = ep->phy_dev;
+ 
+-static int ep93xx_nway_reset(struct net_device *dev)
+-{
+-	struct ep93xx_priv *ep = netdev_priv(dev);
+-	return mii_nway_restart(&ep->mii);
+-}
++	if (!phydev)
++		return -ENODEV;
+ 
+-static u32 ep93xx_get_link(struct net_device *dev)
+-{
+-	struct ep93xx_priv *ep = netdev_priv(dev);
+-	return mii_link_ok(&ep->mii);
++	return phy_ethtool_sset(phydev, cmd);
+ }
+ 
+ static const struct ethtool_ops ep93xx_ethtool_ops = {
+ 	.get_drvinfo		= ep93xx_get_drvinfo,
+ 	.get_settings		= ep93xx_get_settings,
+ 	.set_settings		= ep93xx_set_settings,
+-	.nway_reset		= ep93xx_nway_reset,
+-	.get_link		= ep93xx_get_link,
++	.get_link		= ethtool_op_get_link,
+ };
+ 
+ static const struct net_device_ops ep93xx_netdev_ops = {
+@@ -813,6 +873,113 @@ static int ep93xx_eth_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static void ep93xx_adjust_link(struct net_device *dev)
++{
++	struct ep93xx_priv *ep = netdev_priv(dev);
++	struct phy_device *phydev = ep->phy_dev;
++
++	int status_change = 0;
++
++	if (phydev->link) {
++		if ((ep->speed != phydev->speed) ||
++				(ep->duplex != phydev->duplex)) {
++			/* speed and/or duplex state changed */
++			u32 testctl = rdl(ep, REG_TESTCTL);
++
++			if (DUPLEX_FULL == phydev->duplex)
++				testctl |= REG_TESTCTL_MFDX;
++			else
++				testctl &= ~(REG_TESTCTL_MFDX);
++
++			wrl(ep, REG_TESTCTL, testctl);
++
++			ep->speed = phydev->speed;
++			ep->duplex = phydev->duplex;
++			status_change = 1;
++		}
++	}
++
++	/* test for online/offline link transition */
++	if (phydev->link != ep->link) {
++		if (phydev->link) /* link went online */
++			netif_tx_schedule_all(dev);
++		else { /* link went offline */
++			ep->speed = 0;
++			ep->duplex = -1;
++		}
++		ep->link = phydev->link;
++
++		status_change = 1;
++	}
++
++	if (status_change)
++		phy_print_status(phydev);
++}
++
++static int ep93xx_mii_probe(struct net_device *dev, int phy_addr)
++{
++	struct ep93xx_priv *ep = netdev_priv(dev);
++	struct phy_device *phydev = NULL;
++	int val;
++
++	if (phy_addr >= 0 && phy_addr < PHY_MAX_ADDR)
++		phydev = ep->mii_bus.phy_map[phy_addr];
++
++	if (!phydev) {
++		pr_info("PHY not found at specified address,"
++				" trying autodetection\n");
++
++		/* find the first phy */
++		for (phy_addr = 0; phy_addr < PHY_MAX_ADDR; phy_addr++) {
++			if (ep->mii_bus.phy_map[phy_addr]) {
++				phydev = ep->mii_bus.phy_map[phy_addr];
++				break;
++			}
++		}
++	}
++
++	if (!phydev) {
++		pr_err("no PHY found\n");
++		return -ENODEV;
++	}
++
++	phydev = phy_connect(dev, dev_name(&phydev->dev),
++			ep93xx_adjust_link, 0, PHY_INTERFACE_MODE_MII);
++
++	if (IS_ERR(phydev)) {
++		pr_err("Could not attach to PHY\n");
++		return PTR_ERR(phydev);
++	}
++
++	ep->phy_supports_mfps = 0;
++
++	val = phy_read(phydev, MII_BMSR);
++	if (val < 0) {
++		pr_err("failed to read MII register\n");
++		return val;
++	}
++
++	if (val & 0x0040) {
++		pr_info("PHY supports MII frame preamble suppression\n");
++		ep->phy_supports_mfps = 1;
++	}
++
++	phydev->supported &= PHY_BASIC_FEATURES;
++
++	phydev->advertising = phydev->supported;
++
++	ep->link = 0;
++	ep->speed = 0;
++	ep->duplex = -1;
++	ep->phy_dev = phydev;
++
++	pr_info("attached PHY driver [%s] "
++			"(mii_bus:phy_addr=%s, irq=%d)\n",
++			phydev->drv->name, dev_name(&phydev->dev), phydev->irq);
++
++	return 0;
++}
++
+ static int ep93xx_eth_probe(struct platform_device *pdev)
+ {
+ 	struct ep93xx_eth_data *data;
+@@ -820,7 +987,7 @@ static int ep93xx_eth_probe(struct platform_device *pdev)
+ 	struct ep93xx_priv *ep;
+ 	struct resource *mem;
+ 	int irq;
+-	int err;
++	int err, i;
+ 
+ 	if (pdev == NULL)
+ 		return -ENODEV;
+@@ -847,24 +1014,43 @@ static int ep93xx_eth_probe(struct platform_device *pdev)
+ 	if (ep->res == NULL) {
+ 		dev_err(&pdev->dev, "Could not reserve memory region\n");
+ 		err = -ENOMEM;
+-		goto err_out;
++		goto err_out_request_mem_region;
+ 	}
+ 
+ 	ep->base_addr = ioremap(mem->start, resource_size(mem));
+ 	if (ep->base_addr == NULL) {
+ 		dev_err(&pdev->dev, "Failed to ioremap ethernet registers\n");
+ 		err = -EIO;
+-		goto err_out;
++		goto err_out_ioremap;
+ 	}
+ 	ep->irq = irq;
+ 
+-	ep->mii.phy_id = data->phy_id;
+-	ep->mii.phy_id_mask = 0x1f;
+-	ep->mii.reg_num_mask = 0x1f;
+-	ep->mii.dev = dev;
+-	ep->mii.mdio_read = ep93xx_mdio_read;
+-	ep->mii.mdio_write = ep93xx_mdio_write;
++	/* mdio/mii bus */
++	ep->mii_bus.state = MDIOBUS_ALLOCATED; /* see mdiobus_alloc */
++	ep->mii_bus.name = "ep93xx_mii_bus";
++	snprintf(ep->mii_bus.id, MII_BUS_ID_SIZE, "0");
++
++	ep->mii_bus.read = ep93xx_mdio_read;
++	ep->mii_bus.write = ep93xx_mdio_write;
++	ep->mii_bus.reset = ep93xx_mdio_reset;
++
++	ep->mii_bus.phy_mask = 0;
++
++	ep->mii_bus.priv = ep;
++	ep->mii_bus.dev = dev->dev;
++
++	ep->mii_bus.irq = kmalloc(sizeof(int)*PHY_MAX_ADDR, GFP_KERNEL);
++	if (NULL == ep->mii_bus.irq) {
++		dev_err(&pdev->dev, "Could not allocate memory\n");
++		err = -ENOMEM;
++		goto err_out_mii_bus_irq_kmalloc;
++	}
++
++	for (i = 0; i < PHY_MAX_ADDR; i++)
++		ep->mii_bus.irq[i] = PHY_POLL;
++
+ 	ep->mdc_divisor = 40;	/* Max HCLK 100 MHz, min MDIO clk 2.5 MHz.  */
++	ep->phy_supports_mfps = 0;	/* probe without preamble suppression */
+ 
+ 	if (is_zero_ether_addr(dev->dev_addr))
+ 		random_ether_addr(dev->dev_addr);
+@@ -872,14 +1058,39 @@ static int ep93xx_eth_probe(struct platform_device *pdev)
+ 	err = register_netdev(dev);
+ 	if (err) {
+ 		dev_err(&pdev->dev, "Failed to register netdev\n");
+-		goto err_out;
++		goto err_out_register_netdev;
++	}
++
++	err = mdiobus_register(&ep->mii_bus);
++	if (err) {
++		dev_err(&dev->dev, "Could not register MII bus\n");
++		goto err_out_mdiobus_register;
++	}
++
++	err = ep93xx_mii_probe(dev, data->phy_id);
++	if (err) {
++		dev_err(&dev->dev, "failed to probe MII bus\n");
++		goto err_out_mii_probe;
+ 	}
+ 
+-	printk(KERN_INFO "%s: ep93xx on-chip ethernet, IRQ %d, %pM\n",
+-			dev->name, ep->irq, dev->dev_addr);
++	dev_info(&dev->dev, "ep93xx on-chip ethernet, IRQ %d, %pM\n",
++			ep->irq, dev->dev_addr);
+ 
+ 	return 0;
+ 
++err_out_mii_probe:
++	mdiobus_unregister(&ep->mii_bus);
++err_out_mdiobus_register:
++	unregister_netdev(dev);
++err_out_register_netdev:
++	kfree(ep->mii_bus.irq);
++err_out_mii_bus_irq_kmalloc:
++	iounmap(ep->base_addr);
++err_out_ioremap:
++	release_resource(ep->res);
++	kfree(ep->res);
++err_out_request_mem_region:
++	free_netdev(dev);
+ err_out:
+ 	ep93xx_eth_remove(pdev);
+ 	return err;
+@@ -897,7 +1108,6 @@ static struct platform_driver ep93xx_eth_driver = {
+ 
+ static int __init ep93xx_eth_init_module(void)
+ {
+-	printk(KERN_INFO DRV_MODULE_NAME " version " DRV_MODULE_VERSION " loading\n");
+ 	return platform_driver_register(&ep93xx_eth_driver);
+ }
+ 
+@@ -908,5 +1118,7 @@ static void __exit ep93xx_eth_cleanup_module(void)
+ 
+ module_init(ep93xx_eth_init_module);
+ module_exit(ep93xx_eth_cleanup_module);
++
+ MODULE_LICENSE("GPL");
+-MODULE_ALIAS("platform:ep93xx-eth");
++MODULE_DESCRIPTION("EP93XX Ethernet driver");
++MODULE_ALIAS("platform:" DRV_NAME);
+-- 
+1.7.0.4
+

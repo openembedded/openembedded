@@ -1,0 +1,53 @@
+From dc31543df131eeeadf4f36fbca25b89eeda1de53 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Petr=20=C5=A0tetiar?= <ynezz@true.cz>
+Date: Thu, 21 Oct 2010 20:00:49 +0200
+Subject: [PATCH 17/24] ts72xx: use CPLD watchdog for reset
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ arch/arm/mach-ep93xx/include/mach/system.h |   13 +++++++++++++
+ 1 files changed, 13 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-ep93xx/include/mach/system.h b/arch/arm/mach-ep93xx/include/mach/system.h
+index 6d661fe..b657a9a 100644
+--- a/arch/arm/mach-ep93xx/include/mach/system.h
++++ b/arch/arm/mach-ep93xx/include/mach/system.h
+@@ -3,6 +3,10 @@
+  */
+ 
+ #include <mach/hardware.h>
++#ifdef CONFIG_MACH_TS72XX
++#include <linux/io.h>
++#include <mach/ts72xx.h>
++#endif
+ 
+ static inline void arch_idle(void)
+ {
+@@ -13,11 +17,20 @@ static inline void arch_reset(char mode, const char *cmd)
+ {
+ 	local_irq_disable();
+ 
++#ifdef CONFIG_MACH_TS72XX
++	/* It's more reliable to use CPLD watchdog to perform reset */
++	if (board_is_ts7200() || board_is_ts7250() || board_is_ts7260() ||
++	    board_is_ts7300() || board_is_ts7400()) {
++		__raw_writeb(0x5, TS72XX_WDT_FEED_PHYS_BASE);
++		__raw_writeb(0x1, TS72XX_WDT_CONTROL_PHYS_BASE);
++	}
++#else
+ 	/*
+ 	 * Set then clear the SWRST bit to initiate a software reset
+ 	 */
+ 	ep93xx_devcfg_set_bits(EP93XX_SYSCON_DEVCFG_SWRST);
+ 	ep93xx_devcfg_clear_bits(EP93XX_SYSCON_DEVCFG_SWRST);
++#endif
+ 
+ 	while (1)
+ 		;
+-- 
+1.7.0.4
+

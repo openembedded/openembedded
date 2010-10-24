@@ -1,0 +1,100 @@
+From f483d4e7564786a26343900277ee9ebd2405217e Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Petr=20=C5=A0tetiar?= <ynezz@true.cz>
+Date: Sun, 7 Nov 2010 18:34:39 +0100
+Subject: [PATCH 24/24] ts72xx: add GPIO keys
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ arch/arm/mach-ep93xx/Kconfig  |    6 ++++++
+ arch/arm/mach-ep93xx/ts72xx.c |   36 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 42 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-ep93xx/Kconfig b/arch/arm/mach-ep93xx/Kconfig
+index 2bfb01e..185c5a9 100644
+--- a/arch/arm/mach-ep93xx/Kconfig
++++ b/arch/arm/mach-ep93xx/Kconfig
+@@ -219,6 +219,12 @@ config MACH_TS72XX_SBCINFO
+ 	  Say 'Y' to add a procfs entry containing some information
+ 	  related to Technologic Systems TS-72xx SBC.
+ 
++config MACH_TS72XX_GPIO_KEYS
++	bool "Enable GPIO keys"
++	depends on MACH_TS72XX
++	help
++	  Say 'Y' here to enable GPIO keys on DIO connector.
++	  Current config is KEY_UP for DIO_1 and KEY_DOWN for DIO_2.
+ endmenu
+ 
+ endif
+diff --git a/arch/arm/mach-ep93xx/ts72xx.c b/arch/arm/mach-ep93xx/ts72xx.c
+index 0c07bd8..f7b82dd 100644
+--- a/arch/arm/mach-ep93xx/ts72xx.c
++++ b/arch/arm/mach-ep93xx/ts72xx.c
+@@ -21,11 +21,13 @@
+ #include <linux/mtd/partitions.h>
+ #include <linux/mtd/physmap.h>
+ #include <linux/gpio.h>
++#include <linux/gpio_keys.h>
+ #include <linux/i2c.h>
+ #include <linux/i2c-gpio.h>
+ #include <linux/mtd/nand.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/spi/spi.h>
++#include <linux/input.h>
+ 
+ #include <mach/ep93xx_spi.h>
+ #include <mach/hardware.h>
+@@ -437,6 +439,36 @@ static struct ep93xx_spi_info ts72xx_spi_info = {
+ };
+ #endif
+ 
++#if defined(CONFIG_MACH_TS72XX_GPIO_KEYS)
++#define INIT_KEY(_code, _gpio, _desc)	\
++	{				\
++		.code   = KEY_##_code,	\
++		.gpio   = _gpio,	\
++		.desc   = _desc,	\
++		.wakeup = 1,		\
++		.active_low = 1,	\
++		.type   = EV_KEY,	\
++	}
++
++static struct gpio_keys_button ts72xx_button_table[] = {
++	INIT_KEY(UP,	EP93XX_GPIO_LINE_EGPIO11,	"Up button - DIO_2"),
++	INIT_KEY(DOWN,	EP93XX_GPIO_LINE_EGPIO12,	"Down button - DIO_3"),
++};
++
++static struct gpio_keys_platform_data gpio_keys_data = {
++	.buttons  = ts72xx_button_table,
++	.nbuttons = ARRAY_SIZE(ts72xx_button_table),
++};
++
++static struct platform_device ts72xx_gpio_keys = {
++	.name = "gpio-keys",
++	.dev  = {
++		.platform_data = &gpio_keys_data,
++	},
++	.id   = -1,
++};
++#endif
++
+ static void __init ts72xx_init_machine(void)
+ {
+ 	ep93xx_init_devices();
+@@ -445,6 +477,10 @@ static void __init ts72xx_init_machine(void)
+ 	platform_device_register(&ts72xx_rtc_device);
+ 	platform_device_register(&ts72xx_wdt_device);
+ 
++#if defined(CONFIG_MACH_TS72XX_GPIO_KEYS)
++	platform_device_register(&ts72xx_gpio_keys);
++#endif
++
+ 	ep93xx_register_eth(&ts72xx_eth_data, 1);
+ 	ep93xx_register_i2c(&ts72xx_i2c_gpio_data,
+ 			ts72xx_i2c_board_info,
+-- 
+1.7.0.4
+

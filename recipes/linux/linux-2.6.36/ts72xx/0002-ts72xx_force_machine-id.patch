@@ -1,0 +1,49 @@
+From 841896f3124d3493f5bb1b98370a1d5fcdcaedb4 Mon Sep 17 00:00:00 2001
+From: Matthieu Crapet <mcrapet@gmail.com>
+Date: Thu, 10 Jun 2010 10:51:39 +0200
+Subject: [PATCH 02/24] ts72xx_force_machine-id
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ arch/arm/kernel/head.S       |    3 +++
+ arch/arm/mach-ep93xx/Kconfig |    7 +++++++
+ 2 files changed, 10 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/kernel/head.S b/arch/arm/kernel/head.S
+index eb62bf9..543eccf 100644
+--- a/arch/arm/kernel/head.S
++++ b/arch/arm/kernel/head.S
+@@ -82,6 +82,9 @@ ENTRY(stext)
+ 	bl	__lookup_processor_type		@ r5=procinfo r9=cpuid
+ 	movs	r10, r5				@ invalid processor (r5=0)?
+ 	beq	__error_p			@ yes, error 'p'
++#ifdef CONFIG_MACH_TS72XX_FORCE_MACHINEID
++	ldr	r1, =0x2a1
++#endif
+ 	bl	__lookup_machine_type		@ r5=machinfo
+ 	movs	r8, r5				@ invalid machine (r5=0)?
+ 	beq	__error_a			@ yes, error 'a'
+diff --git a/arch/arm/mach-ep93xx/Kconfig b/arch/arm/mach-ep93xx/Kconfig
+index b6be37e..bd463a0 100644
+--- a/arch/arm/mach-ep93xx/Kconfig
++++ b/arch/arm/mach-ep93xx/Kconfig
+@@ -205,6 +205,13 @@ config EP93XX_EARLY_UART3
+ 
+ endchoice
+ 
++config MACH_TS72XX_FORCE_MACHINEID
++	bool "Force Machine ID"
++	depends on MACH_TS72XX
++	help
++	  Say 'Y' here to force Machine ID to 0x2A1 (MACH_TYPE_TS72XX legacy value)
++	  In early days Technologic Systems fixed the 0x163 value in redboot.
++
+ endmenu
+ 
+ endif
+-- 
+1.7.0.4
+

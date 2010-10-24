@@ -1,0 +1,63 @@
+From 675ef8ec55abd042e7d725bb5a7963ac6e715acb Mon Sep 17 00:00:00 2001
+From: Matthieu Crapet <mcrapet@gmail.com>
+Date: Sat, 19 Jun 2010 11:45:39 +0200
+Subject: [PATCH 10/24] ts72xx_gpio_i2c
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ arch/arm/mach-ep93xx/ts72xx.c |   22 ++++++++++++++++++++++
+ 1 files changed, 22 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-ep93xx/ts72xx.c b/arch/arm/mach-ep93xx/ts72xx.c
+index 345ce18..e8a2489 100644
+--- a/arch/arm/mach-ep93xx/ts72xx.c
++++ b/arch/arm/mach-ep93xx/ts72xx.c
+@@ -19,6 +19,10 @@
+ #include <linux/m48t86.h>
+ #include <linux/mtd/nand.h>
+ #include <linux/mtd/partitions.h>
++#include <linux/mtd/physmap.h>
++#include <linux/gpio.h>
++#include <linux/i2c.h>
++#include <linux/i2c-gpio.h>
+ 
+ #include <mach/hardware.h>
+ #include <mach/ts72xx.h>
+@@ -279,6 +283,21 @@ static struct ep93xx_eth_data __initdata ts72xx_eth_data = {
+ 	.phy_id		= 1,
+ };
+ 
++/*************************************************************************
++ * I2C (make access through TS-72XX "DIO" 2x8 header)
++ *************************************************************************/
++static struct i2c_gpio_platform_data ts72xx_i2c_gpio_data = {
++	.sda_pin		= EP93XX_GPIO_LINE_EGPIO14, // DIO_6
++	.sda_is_open_drain	= 0,
++	.scl_pin		= EP93XX_GPIO_LINE_EGPIO15, // DIO_7
++	.scl_is_open_drain	= 0,
++	.udelay			= 0,	/* default is 100 kHz */
++	.timeout		= 0,	/* default is 100 ms */
++};
++
++static struct i2c_board_info __initdata ts72xx_i2c_board_info[] = {
++};
++
+ static void __init ts72xx_init_machine(void)
+ {
+ 	ep93xx_init_devices();
+@@ -287,6 +306,9 @@ static void __init ts72xx_init_machine(void)
+ 	platform_device_register(&ts72xx_wdt_device);
+ 
+ 	ep93xx_register_eth(&ts72xx_eth_data, 1);
++	ep93xx_register_i2c(&ts72xx_i2c_gpio_data,
++			ts72xx_i2c_board_info,
++			ARRAY_SIZE(ts72xx_i2c_board_info));
+ 
+ 	/* PWM1 is DIO_6 on TS-72xx header */
+ 	ep93xx_register_pwm(0, 1);
+-- 
+1.7.0.4
+
