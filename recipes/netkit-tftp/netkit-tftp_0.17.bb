@@ -4,7 +4,6 @@ LICENSE = "BSD"
 SRC_URI = "ftp://ftp.uk.linux.org/pub/linux/Networking/netkit/netkit-tftp-${PV}.tar.gz \
 	   file://mconfig.patch"
 
-EXTRA_OEMAKE = ""
 do_compile () {
 	oe_runmake 'CC=${CC}' 'LD=${LD}' all
 }
