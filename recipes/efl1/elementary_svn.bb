@@ -29,6 +29,10 @@ RDEPENDS_${PN} = "\
 "
 RSUGGESTS_${PN} = "elementary-tests"
 
+FILES_${PN} += "\
+  ${libdir}/edje/modules/elm \
+"
+
 FILES_${PN}-themes = "\
   ${datadir}/elementary/themes \
 "
@@ -39,6 +43,7 @@ FILES_${PN}-configs = "\
 
 FILES_${PN}-dbg += "\
   ${libdir}/elementary/modules/test_entry/*/.debug \
+  ${libdir}/edje/modules/elm/*/.debug \
 "
 
 FILES_${PN}-tests = "\
