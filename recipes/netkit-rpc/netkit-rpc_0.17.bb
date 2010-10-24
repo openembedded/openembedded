@@ -7,7 +7,6 @@ SRC_URI = "ftp://ftp.uk.linux.org/pub/linux/Networking/netkit/netkit-rpc-${PV}.t
 	   file://install.patch"
 S = "${WORKDIR}/netkit-rpc-${PV}"
 
-EXTRA_OEMAKE = ""
 do_configure () {
 	cat <<END >MCONFIG
 BINDIR=${bindir}
