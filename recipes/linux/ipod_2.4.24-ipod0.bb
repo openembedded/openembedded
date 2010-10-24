@@ -14,7 +14,6 @@ COMPATIBLE_MACHINE = "ipod"
 
 inherit kernel
 
-EXTRA_OEMAKE = ""
 do_configure_prepend() {
         install -m 0644 ${S}/arch/armnommu/def-configs/ipod ${S}/.config
 }
