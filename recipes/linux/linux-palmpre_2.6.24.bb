@@ -3,9 +3,11 @@ require linux.inc
 DESCRIPTION = "Linux kernel for Palm Pre. Original version of Palm, Inc."
 KERNEL_IMAGETYPE = "uImage"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
-           http://palm.cdnetworks.net/opensource/1.1.0/linux-2.6.24-patch.gz;apply=yes;name=patch \
-           "
+SRC_URI = " \
+ ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
+ http://palm.cdnetworks.net/opensource/1.1.0/linux-2.6.24-patch.gz;apply=yes;name=patch \
+"
+DEPENDS += "kbd-native"
 
 S = "${WORKDIR}/linux-2.6.24"
 
