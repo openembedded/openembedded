@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r35"
+PR = "r36"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -133,6 +133,7 @@ RDEPENDS_${PN}-apps = "\
   shr-theme \
   calc \
   iliwi \
+  ca-certificates \
 "
 
 
