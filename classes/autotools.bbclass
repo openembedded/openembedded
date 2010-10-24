@@ -62,7 +62,7 @@ def append_libtool_sysroot(d):
 		if bb.data.getVar('BUILD_SYS', d, 1) == bb.data.getVar('HOST_SYS', d, 1):
 			return '--with-libtool-sysroot'
 		else:
-			return '--with-libtool-sysroot=${STAGING_DIR}/${MULTIMACH_HOST_SYS}'
+			return '--with-libtool-sysroot=${STAGING_DIR_HOST}'
 	return ''
 
 # EXTRA_OECONF_append = "${@autotools_set_crosscompiling(d)}"
