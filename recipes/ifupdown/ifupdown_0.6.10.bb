@@ -12,8 +12,6 @@ SRC_URI = "${DEBIAN_MIRROR}/main/i/ifupdown/ifupdown_${PV}.tar.gz;name=ifupdown 
            file://zeroconf.patch \
            file://init "
 
-EXTRA_OEMAKE = ""
-
 inherit update-rc.d
 
 do_compile () {
