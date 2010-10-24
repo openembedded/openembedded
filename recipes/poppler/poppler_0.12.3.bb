@@ -1,5 +1,7 @@
 require poppler.inc
 
+DEPENDS += "lcms"
+
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "1"
 DEFAULT_PREFERENCE_minimal = "1"
