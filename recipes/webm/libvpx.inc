@@ -3,7 +3,8 @@ LICENSE = "BSD"
 
 INC_PR = "r5"
 
-SRC_URI = "http://webm.googlecode.com/files/libvpx-${PV}.tar.bz2"
+SRC_URI = "git://review.webmproject.org/libvpx.git;protocol=git;tag=v${PV}"
+S = "${WORKDIR}/git"
 
 CFLAGS += "-fPIC"
 
