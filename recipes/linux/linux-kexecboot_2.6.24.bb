@@ -1,7 +1,7 @@
 require linux-kexecboot.inc
 require ../linux/linux-rp.checksums.inc
 
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_collie = "-1"
