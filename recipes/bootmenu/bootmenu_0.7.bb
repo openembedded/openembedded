@@ -5,8 +5,6 @@ LICENSE = "GPL"
 
 SRC_URI = "http://www.cosmicpenguin.net/pub/bootmenu/bootmenu-${PV}.tar.gz"
 
-EXTRA_OEMAKE = ""
-
 do_compile () {
 	oe_runmake -C src 'CC=${CC}' 'CFLAGS=${CFLAGS}' 'LDFLAGS=${LDFLAGS}'
 }
