@@ -20,8 +20,6 @@ SRC_URI = "http://dl.bytesex.org/releases/fbida/fbida-${PV}.tar.gz \
 	   file://sys_siglist.patch \
 	  "
 
-EXTRA_OEMAKE = ""
-
 do_compile() {
 	oe_runmake
 }
