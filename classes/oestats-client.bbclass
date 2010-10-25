@@ -181,11 +181,12 @@ python oestats_eventhandler () {
 		return
 
 	server = bb.data.getVar('OESTATS_SERVER', e.data, True)
-	if not server.startswith('http://') and not server.startswith('https://'):
-		server = "http://%s" %(server)
 	builder = bb.data.getVar('OESTATS_BUILDER', e.data, True)
 	if not server or not builder:
 		return
+
+	if not server.startswith('http://') and not server.startswith('https://'):
+		server = "http://%s" %(server)
 
 	if getName(e) == 'BuildStarted':
 		oestats_start(server, builder, e.data)
