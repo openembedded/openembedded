@@ -13,6 +13,8 @@ inherit native
 
 CFLAGS += "-DLINUX_PPDEV"
 
+NATIVE_INSTALL_WORKS = "1"
+
 do_compile() {
 	oe_runmake
 }
@@ -20,10 +22,6 @@ do_compile() {
 do_deploy() {
         install -d ${DEPLOY_DIR_TOOLS}
         install -m 0755 sjf2410 ${DEPLOY_DIR_TOOLS}/sjf2410-${PV}
-}
-
-do_install() {
-	:
 }
 
 addtask deploy before do_package after do_install
