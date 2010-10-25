@@ -5,7 +5,7 @@ DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_nios2 = "1"
 INHIBIT_DEFAULT_DEPS = "1"
 DEPENDS += "unifdef-native"
-PR = "r1"
+PR = "r2"
 
 COMPATIBLE_TARGET_SYS = "."
 
@@ -39,4 +39,5 @@ do_compile () {
 
 do_install() {
 	oe_runmake headers_install INSTALL_HDR_PATH=${D}${exec_prefix} ARCH=$ARCH
+	rm -f ${D}${exec_prefix}/include/scsi/scsi.h
 }
