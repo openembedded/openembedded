@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r80"
+PR = "r81"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -65,6 +65,7 @@ RDEPENDS_${PN} += "\
 		shr-splash-theme-handy \
 		shr-splash-theme-tux \
 		shr-splash-theme-logo \
+		shr-splash-theme-openmoko \
 		vagalume \
 		wireshark \
 		x11vnc \
