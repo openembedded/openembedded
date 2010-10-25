@@ -1,0 +1,65 @@
+Index: mjpegtools-1.9.0rc3/lavtools/Makefile.am
+===================================================================
+--- mjpegtools-1.9.0rc3.orig/lavtools/Makefile.am	2008-04-09 00:44:57.000000000 +0200
++++ mjpegtools-1.9.0rc3/lavtools/Makefile.am	2008-04-09 01:03:10.000000000 +0200
+@@ -2,7 +2,7 @@
+ 
+ MAINTAINERCLEANFILES = Makefile.in
+ 
+-AM_CPPFLAGS = -I$(top_srcdir) -I$(includedir) -I$(top_srcdir)/utils $(LIBQUICKTIME_CFLAGS)
++AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/utils $(LIBQUICKTIME_CFLAGS)
+ 
+ LIBMJPEGUTILS = $(top_builddir)/utils/libmjpegutils.la
+ if HAVE_ALTIVEC
+Index: mjpegtools-1.9.0rc3/yuvcorrect/Makefile.am
+===================================================================
+--- mjpegtools-1.9.0rc3.orig/yuvcorrect/Makefile.am	2008-04-09 01:01:15.000000000 +0200
++++ mjpegtools-1.9.0rc3/yuvcorrect/Makefile.am	2008-04-09 01:01:21.000000000 +0200
+@@ -2,7 +2,7 @@
+ 
+ MAINTAINERCLEANFILES = Makefile.in
+ 
+-AM_CPPFLAGS = -I$(top_srcdir) -I$(includedir) -I$(top_srcdir)/utils
++AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/utils
+ 
+ LIBMJPEGUTILS = $(top_builddir)/utils/libmjpegutils.la
+ if HAVE_ALTIVEC
+Index: mjpegtools-1.9.0rc3/yuvscaler/Makefile.am
+===================================================================
+--- mjpegtools-1.9.0rc3.orig/yuvscaler/Makefile.am	2008-04-09 01:01:43.000000000 +0200
++++ mjpegtools-1.9.0rc3/yuvscaler/Makefile.am	2008-04-09 01:01:50.000000000 +0200
+@@ -2,7 +2,7 @@
+ 
+ MAINTAINERCLEANFILES = Makefile.in
+ 
+-AM_CPPFLAGS = -I$(top_srcdir) -I$(includedir) -I$(top_srcdir)/utils
++AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/utils
+ 
+ 
+ LIBMJPEGUTILS = $(top_builddir)/utils/libmjpegutils.la
+Index: mjpegtools-1.9.0rc3/y4mdenoise/Makefile.am
+===================================================================
+--- mjpegtools-1.9.0rc3.orig/y4mdenoise/Makefile.am	2008-04-09 01:03:16.000000000 +0200
++++ mjpegtools-1.9.0rc3/y4mdenoise/Makefile.am	2008-04-09 01:03:25.000000000 +0200
+@@ -7,7 +7,7 @@
+ AM_CFLAGS = -DNDEBUG -finline-functions @PROGRAM_NOPIC@
+ AM_CXXFLAGS = -DNDEBUG -finline-functions @PROGRAM_NOPIC@
+ 
+-INCLUDES =  -I$(top_srcdir) -I$(includedir) -I$(top_srcdir)/utils
++INCLUDES =  -I$(top_srcdir) -I$(top_srcdir)/utils
+ 
+ LIBMJPEGUTILS = $(top_builddir)/utils/libmjpegutils.la
+ if HAVE_ALTIVEC
+Index: mjpegtools-1.9.0rc3/y4mutils/Makefile.am
+===================================================================
+--- mjpegtools-1.9.0rc3.orig/y4mutils/Makefile.am	2008-04-09 01:03:43.000000000 +0200
++++ mjpegtools-1.9.0rc3/y4mutils/Makefile.am	2008-04-09 01:03:48.000000000 +0200
+@@ -3,7 +3,7 @@
+ MAINTAINERCLEANFILES = Makefile.in
+ 
+ AM_CFLAGS   = @PROGRAM_NOPIC@
+-AM_CPPFLAGS = -I$(top_srcdir) -I$(includedir) -I$(top_srcdir)/utils
++AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/utils
+ 
+ LIBMJPEGUTILS = $(top_builddir)/utils/libmjpegutils.la
+ if HAVE_ALTIVEC

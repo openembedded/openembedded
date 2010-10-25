@@ -1,0 +1,15 @@
+Index: mjpegtools-1.9.0rc3/configure.ac
+===================================================================
+--- mjpegtools-1.9.0rc3.orig/configure.ac	2008-04-09 00:35:08.000000000 +0200
++++ mjpegtools-1.9.0rc3/configure.ac	2008-04-09 00:35:18.000000000 +0200
+@@ -275,10 +275,6 @@
+ dnl Check for the SDL library (for software playback)
+ dnl   (defines SDL_CFLAGS and SDL_LIBS)
+ dnl ********************************************************************
+-AM_PATH_SDL(1.1.3,
+-            [have_sdl=true
+-             AC_DEFINE(HAVE_SDL, 1, [SDL library present]) ],
+-            [have_sdl=false])
+ AM_CONDITIONAL(HAVE_SDL, test x$have_sdl = xtrue)
+ 
+ dnl ***
