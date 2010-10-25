@@ -4,7 +4,7 @@ AUTHOR = "Harald Welte <laforge@openmoko.org>"
 LICENSE = "GPL"
 SRCREV = "4268"
 PV = "0.1+svnr${SRCPV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/host/;module=sjf2410-linux;proto=http"
 S = "${WORKDIR}/sjf2410-linux"
@@ -20,10 +20,6 @@ do_compile() {
 do_deploy() {
         install -d ${DEPLOY_DIR_TOOLS}
         install -m 0755 sjf2410 ${DEPLOY_DIR_TOOLS}/sjf2410-${PV}
-}
-
-do_stage() {
-	:
 }
 
 do_install() {
