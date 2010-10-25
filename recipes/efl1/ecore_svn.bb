@@ -1,5 +1,9 @@
 require ecore.inc
-SRCREV = "${EFL_SRCREV}"
+#SRCREV = "${EFL_SRCREV}"
+#Temporary for fix of bug introduced in 53810
+#typedef enum _Ecore_File_Event Ecore_File_Event;
+#was defined before enum itself and ie webkit-efl fails to rebuild with it
+SRCREV = "53869"
 PR = "r12"
 
 SRC_URI += "\
