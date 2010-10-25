@@ -6,6 +6,7 @@ PR = "r2"
 RRECOMMENDS_${PN} = "man"
 PACKAGE_ARCH = "all"
 
+EXTRA_OEMAKE = ""
 do_compile () {
 	:
 }
