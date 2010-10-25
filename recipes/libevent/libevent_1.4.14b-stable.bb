@@ -5,8 +5,7 @@ HOMEPAGE = "http://www.monkey.org/~provos/libevent/"
 SECTION = "libs"
 AUTHOR = "Niels Provos <provos@citi.umich.edu>"
 LICENSE = "BSD"
-
-DEFAULT_PREFERENCE = "-1"
+PR = "r1"
 
 SRC_URI = "http://monkey.org/~provos/libevent-${PV}.tar.gz"
 
