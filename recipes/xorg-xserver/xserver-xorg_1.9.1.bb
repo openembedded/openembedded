@@ -6,18 +6,15 @@ require xorg-xserver-common.inc
 DESCRIPTION = "the X.Org X server"
 DEPENDS += "pixman libpciaccess openssl dri2proto glproto xorg-minimal-fonts font-util-native"
 PE = "2"
-PR = "${INC_PR}.4"
-
-DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_shr = "1"
+PR = "${INC_PR}.0"
 
 SRC_URI += " \
             file://dolt-fix.patch \
             file://randr-support.patch \
             file://hack-fbdev-ignore-return-mode.patch \
            "
-SRC_URI[archive.md5sum] = "9bb3d015995150b49836dc0b89442f22"
-SRC_URI[archive.sha256sum] = "bbb48daf562f6b046b649a592490de86ea2d5c7608c792a8d6103ddf950d753a"
+SRC_URI[archive.md5sum] = "64f2a021667ac3a2bc007f2567170f03"
+SRC_URI[archive.sha256sum] = "33e7624a52a21762c9dfdabde7b7bd1221c5298fd1b429f7c6b683145710114e"
 
 SRC_URI_append_angstrom = " file://hack-assume-pixman-supports-overlapped-blt.patch"
 SRC_URI_append_shr = " file://hack-assume-pixman-supports-overlapped-blt.patch"
