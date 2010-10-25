@@ -7,6 +7,7 @@ SRC_URI = "ftp://ftp.uk.linux.org/pub/linux/Networking/netkit/netkit-ftp-${PV}.t
 
 PR = "r2"
 
+EXTRA_OEMAKE = ""
 do_compile () {
 	oe_runmake 'CC=${CC}' 'LD=${LD}' 'LDFLAGS=${LDFLAGS}' all
 }
