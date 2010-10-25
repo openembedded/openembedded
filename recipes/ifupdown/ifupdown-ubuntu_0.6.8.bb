@@ -18,6 +18,8 @@ SRC_URI = "http://archive.ubuntu.com/ubuntu/pool/main/i/ifupdown/ifupdown_0.6.8u
 SRC_URI[ifupdown.md5sum] = "9c4533a289bd55316a9981b1fe41fad4"
 SRC_URI[ifupdown.sha256sum] = "4c86cc0534061896c1f825766a29fe5282607123b8978b623f5c6f1fa5458b4d"
 
+EXTRA_OEMAKE = ""
+
 S = "${WORKDIR}/ifupdown-${PV}ubuntu15"
 
 do_compile () {
