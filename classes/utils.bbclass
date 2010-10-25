@@ -179,50 +179,7 @@ def base_get_checksums(pn, pv, src_uri, localpath, params, data):
     expected_md5sum = bb.data.getVarFlag("SRC_URI", md5flag, data)
     expected_sha256sum = bb.data.getVarFlag("SRC_URI", sha256flag, data)
 
-    if (expected_md5sum and expected_sha256sum):
-        return (expected_md5sum,expected_sha256sum)
-    else:
-        # missing checksum, parse checksums.ini
-
-        # Verify the SHA and MD5 sums we have in OE and check what do
-        # in
-        checksum_paths = bb.data.getVar('BBPATH', data, True).split(":")
-
-        # reverse the list to give precedence to directories that
-        # appear first in BBPATH
-        checksum_paths.reverse()
-
-        checksum_files = ["%s/conf/checksums.ini" % path for path in checksum_paths]
-        try:
-            parser = base_chk_load_parser(checksum_files)
-        except ValueError:
-            bb.note("No conf/checksums.ini found, not checking checksums")
-            return (None,None)
-        except:
-            bb.note("Creating the CheckSum parser failed: %s:%s" % (sys.exc_info()[0], sys.exc_info()[1]))
-            return (None,None)
-        pn_pv_src = "%s-%s-%s" % (pn,pv,src_uri)
-        pn_src    = "%s-%s" % (pn,src_uri)
-        if parser.has_section(pn_pv_src):
-            expected_md5sum    = parser.get(pn_pv_src, "md5")
-            expected_sha256sum = parser.get(pn_pv_src, "sha256")
-        elif parser.has_section(pn_src):
-            expected_md5sum    = parser.get(pn_src, "md5")
-            expected_sha256sum = parser.get(pn_src, "sha256")
-        elif parser.has_section(src_uri):
-            expected_md5sum    = parser.get(src_uri, "md5")
-            expected_sha256sum = parser.get(src_uri, "sha256")
-        else:
-            return (None,None)
-
-        if name:
-            bb.note("This package has no checksums in corresponding recipe '%s', please consider moving its checksums from checksums.ini file \
-                \nSRC_URI[%s.md5sum] = \"%s\"\nSRC_URI[%s.sha256sum] = \"%s\"\n" % (bb.data.getVar("FILE", data, True), name, expected_md5sum, name, expected_sha256sum))
-        else:
-            bb.note("This package has no checksums in corresponding recipe '%s', please consider moving its checksums from checksums.ini file \
-                \nSRC_URI[md5sum] = \"%s\"\nSRC_URI[sha256sum] = \"%s\"\n" % (bb.data.getVar("FILE", data, True), expected_md5sum, expected_sha256sum))
-
-        return (expected_md5sum, expected_sha256sum)
+    return (expected_md5sum, expected_sha256sum)
 
 def base_chk_file(pn, pv, src_uri, localpath, params, data):
     (expected_md5sum, expected_sha256sum) = base_get_checksums(pn, pv, src_uri, localpath, params, data)
