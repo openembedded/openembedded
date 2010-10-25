@@ -4,7 +4,7 @@ LICENSE = "MIT"
 HOMEPAGE = "http://www.lua.org/"
 
 DEPENDS += "readline"
-PR = "r8"
+PR = "r9"
 SRC_URI = "http://www.lua.org/ftp/lua-${PV}.tar.gz \
            file://bitwise_operators.patch \
            file://lua5.1.pc \
@@ -25,7 +25,6 @@ do_configure_prepend() {
 }
 
 do_compile () {
-	cp ${WORKDIR}/lua5.1.pc ${S}/
 	oe_runmake linux
 }
 
@@ -37,6 +36,8 @@ do_install () {
 		'INSTALL_MAN=${D}${mandir}/man1' \
 		'INSTALL_SHARE=${D}${datadir}/lua' \
 		install
+	install -d ${D}${libdir}/pkgconfig
+	install -m 0644 ${WORKDIR}/lua5.1.pc ${D}${libdir}/pkgconfig/lua5.1.pc
 }
 NATIVE_INSTALL_WORKS = 1
 BBCLASSEXTEND = "native"
