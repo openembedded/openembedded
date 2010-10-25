@@ -14,6 +14,7 @@ S = "${WORKDIR}/netkit-tftp-${PV}"
 
 PR = "r8"
 
+EXTRA_OEMAKE = ""
 do_compile () {
 	oe_runmake 'CC=${CC}' 'LD=${LD}' all
 }
