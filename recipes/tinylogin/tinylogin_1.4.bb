@@ -14,6 +14,8 @@ SRC_URI = "http://limpens.net/trac/at91-kit-trac/export/4/trunk/sources/tinylogi
 	file://adduser-empty_pwd.patch \
 	file://remove-index.patch"
 
+EXTRA_OEMAKE = ""
+
 do_compile () {
 	oe_runmake 'CC=${CC}' 'CROSS=${HOST_PREFIX}'
 }
