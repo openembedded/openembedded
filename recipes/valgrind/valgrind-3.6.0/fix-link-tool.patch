@@ -1,0 +1,26 @@
+diff -rupN valgrind-3.6.0/coregrind/link_tool_exe_linux.in new/coregrind/link_tool_exe_linux.in
+--- valgrind-3.6.0/coregrind/link_tool_exe_linux.in	2010-10-21 00:19:45.000000000 +0400
++++ new/coregrind/link_tool_exe_linux.in	2010-10-25 17:11:47.000000000 +0400
+@@ -60,20 +60,13 @@ my $ala = $ARGV[0];
+ die "Bogus alt-load address"
+     if (length($ala) < 3 || index($ala, "0x") != 0);
+ 
+-# The cc invokation to do the final link
+-my $cc = $ARGV[1];
+-
+-# and the 'restargs' are argv[2 ..]
+-
+-# so, build up the complete command here:
+-# 'cc' -static -Ttext='ala' 'restargs'
+-
+-my $cmd="$cc -static -Wl,-Ttext=$ala";
++my $cmd="";
+ 
+ # Add the rest of the parameters
+ foreach my $n (2 .. $#ARGV) {
+    $cmd = "$cmd $ARGV[$n]";
+ }
++$cmd = "$cmd -static -Wl,-Ttext=$ala";
+ 
+ #print "link_tool_exe_linux: $cmd\n";
+ 
