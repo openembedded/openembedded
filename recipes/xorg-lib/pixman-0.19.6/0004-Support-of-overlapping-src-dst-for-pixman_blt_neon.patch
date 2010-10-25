@@ -1,17 +1,17 @@
-From ea0f7b1ae605bb57ca23e88b38b9c19390596723 Mon Sep 17 00:00:00 2001
+From a913cc05a1a1c5a813cf06d248334edede9caab7 Mon Sep 17 00:00:00 2001
 From: Siarhei Siamashka <siarhei.siamashka@nokia.com>
 Date: Wed, 18 Nov 2009 06:08:48 +0200
-Subject: [PATCH 6/9] Support of overlapping src/dst for pixman_blt_neon
+Subject: [PATCH 4/8] Support of overlapping src/dst for pixman_blt_neon
 
 ---
  pixman/pixman-arm-neon.c |   62 +++++++++++++++++++++++++++++++++++++--------
  1 files changed, 51 insertions(+), 11 deletions(-)
 
 diff --git a/pixman/pixman-arm-neon.c b/pixman/pixman-arm-neon.c
-index e0d2001..db1c2df 100644
+index be5d403..cbfd7cf 100644
 --- a/pixman/pixman-arm-neon.c
 +++ b/pixman/pixman-arm-neon.c
-@@ -172,26 +172,66 @@ pixman_blt_neon (uint32_t *src_bits,
+@@ -176,26 +176,66 @@ pixman_blt_neon (uint32_t *src_bits,
                   int       width,
                   int       height)
  {

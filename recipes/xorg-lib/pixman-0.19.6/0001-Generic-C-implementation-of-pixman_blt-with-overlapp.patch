@@ -1,7 +1,7 @@
-From c5099dabb417cab343185d6e22ae4925e53a756f Mon Sep 17 00:00:00 2001
+From 97b2bb933455f222b392b5c60a8bde82d7d6329f Mon Sep 17 00:00:00 2001
 From: Siarhei Siamashka <siarhei.siamashka@nokia.com>
 Date: Tue, 16 Mar 2010 16:55:28 +0100
-Subject: [PATCH 3/9] Generic C implementation of pixman_blt with overlapping support
+Subject: [PATCH 1/8] Generic C implementation of pixman_blt with overlapping support
 
 Uses memcpy/memmove functions to copy pixels, can handle the
 case when both source and destination areas are in the same
@@ -51,7 +51,7 @@ index 4d234a0..c4d2c14 100644
  
  static pixman_bool_t
 diff --git a/pixman/pixman-private.h b/pixman/pixman-private.h
-index 440ae7a..aac2067 100644
+index c43172b..f980454 100644
 --- a/pixman/pixman-private.h
 +++ b/pixman/pixman-private.h
 @@ -10,6 +10,7 @@
@@ -62,7 +62,7 @@ index 440ae7a..aac2067 100644
  #include <assert.h>
  #include <stdio.h>
  #include <string.h>
-@@ -883,4 +884,46 @@ void pixman_timer_register (pixman_timer_t *timer);
+@@ -873,4 +874,46 @@ void pixman_timer_register (pixman_timer_t *timer);
  
  #endif /* PIXMAN_TIMERS */
  
