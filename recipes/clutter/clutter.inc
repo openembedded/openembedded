@@ -70,7 +70,7 @@ do_configure_prepend() {
 
 # helper to (re)build shader source files from *.glsl	
 rebuild_shader_sources() {
-	if [ $# == 1 ] && [ $1 ] &&  [ -d $1 ] ; then
+	if [ $# = 1 ] && [ $1 ] &&  [ -d $1 ] ; then
 		glespath=$1
 		for i in ${glespath}/*.glsl ; do 
 			# *.h
