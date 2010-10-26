@@ -2,7 +2,7 @@ DESCRIPTION = "Gutenprint printer drivers"
 HOMEPAGE = "http://gimp-print.sourceforge.net/"
 LICENSE = "GPL"
 
-DEPENDS = "glib-2.0 cups tiff jpeg libpng gutenprint-native espgs"
+DEPENDS = "glib-2.0 cups tiff jpeg libpng gutenprint-native gs"
 
 
 inherit autotools pkgconfig

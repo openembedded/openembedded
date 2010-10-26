@@ -2,7 +2,7 @@ require gutenprint.inc
 
 PR = "r2"
 
-DEPENDS = "glib-2.0 ijs ncurses cups tiff jpeg libpng gutenprint-native espgs"
+DEPENDS = "glib-2.0 ijs ncurses cups tiff jpeg libpng gutenprint-native gs"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gimp-print/gutenprint-5.1.3.tar.bz2"
 S = "${WORKDIR}/gutenprint-${PV}"
