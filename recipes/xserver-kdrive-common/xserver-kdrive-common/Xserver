@@ -132,7 +132,7 @@ case `module_id` in
                          ARGS="$ARGS -nocursor"
                      fi
                      ARGS="$ARGS -dpi ${DPI} vt1"
-                elif [ `module_id` == "GTA02" ] ; then
+                elif [ `module_id` = "GTA02" ] ; then
                      ARGS="$ARGS -dpi ${DPI} -screen ${SCREEN_SIZE} -mouse tslib -hide-cursor ${PPM} vt1" 
                      XSERVER=/usr/bin/Xglamo 
                 fi
