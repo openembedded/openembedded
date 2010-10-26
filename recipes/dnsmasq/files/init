@@ -24,7 +24,7 @@ case "$1" in
 	echo -n "dnsmasq "
 	start-stop-daemon -q -K -t -x $DAEMON
 	RET=$?
-	if [ "$RET" == "0" ]; then
+	if [ "$RET" = "0" ]; then
 		PID=`cat /var/run/dnsmasq.pid`
 		echo "($PID) is running"
 	else
