@@ -370,7 +370,7 @@ staging_packager () {
 
 	# Protect against empty SRC_URI
 	srcuri="${SRC_URI}"
-	if [ "$srcuri" == "" ]; then
+	if [ "$srcuri" = "" ]; then
 		srcuri="OpenEmbedded"
 	fi
 	echo "Source: $srcuri"               >> ${PSTAGE_TMPDIR_STAGE}/CONTROL/control
