@@ -24,7 +24,8 @@ EXTRA_OECONF = "--disable-debug"
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.6/glib-${PV}.tar.bz2 \
            file://glibinclude.patch;striplevel=2 \
            file://glibconfig-sysdefs.h \
-           file://configure-libtool.patch"
+           file://configure-libtool.patch \
+           file://glib-2.6.4-fix-autotools-fiac.patch"
 
 S = "${WORKDIR}/glib-${PV}"
 

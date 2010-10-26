@@ -1,0 +1,12 @@
+diff -Nru glib-2.6.4.orig/acglib.m4 glib-2.6.4/acglib.m4
+--- glib-2.6.4.orig/acglib.m4	2004-02-27 01:57:25.000000000 +0100
++++ glib-2.6.4/acglib.m4	2010-10-26 14:06:54.000000000 +0200
+@@ -117,7 +117,7 @@
+       [$2],
+       [echo "$as_me: failed program was:" >&AS_MESSAGE_LOG_FD
+ cat conftest.$ac_ext >&AS_MESSAGE_LOG_FD
+-m4_ifvaln([$3],[$3])dnl])dnl
++m4_ifvaln([$3],[$3])dnl])
+ ac_compile="$glib_ac_compile_save"
+ rm -f conftest.$ac_objext conftest.err m4_ifval([$1], [conftest.$ac_ext])[]dnl
+ ])# GLIB_CHECK_COMPILE_WARNINGS
