@@ -33,7 +33,7 @@ show_menu() {
     cnt=0
     echo -e $list | \
     while read l; do
-        if [ $cnt == $num ]; then
+        if [ $cnt = $num ]; then
 	    echo -e -n "${E}1m" >$CONSOLE
 	fi
         echo -e "$cnt: $l${E}0m" >$CONSOLE
@@ -46,7 +46,7 @@ get_menu_selection()
     cnt=0
     sel=`echo -e $list | \
     while read l; do
-    if [ $cnt == $num ]; then
+    if [ $cnt = $num ]; then
 	    echo $l
 	    break
 	fi
@@ -76,7 +76,7 @@ scan_for_loopimgs()
 
 # Scan all available device/partitions
 while read maj min nblk dev; do
-    if [ -z "$maj" -o "$maj" == "major" ]; then
+    if [ -z "$maj" -o "$maj" = "major" ]; then
 	continue;
     fi
 
@@ -87,7 +87,7 @@ while read maj min nblk dev; do
 	true
     fi
     
-    if [ "$fstype" == "vfat" ]; then
+    if [ "$fstype" = "vfat" ]; then
 	scan_for_loopimgs
 	continue
     fi
@@ -146,7 +146,7 @@ dev=`expr "$sel" : '\([^ /]*\)'`
 path=`expr "$sel" : '[^/]*\([^ ]*\).*'`
 fstype=`expr "$sel" : '[^ ]* *\(.*\)'`
 
-if [ "$dev" == "Shell" ]; then
+if [ "$dev" = "Shell" ]; then
     if [ -x /usr/sbin/dropbear ]; then
 	modprobe g_ether
 	ifconfig usb0 192.168.2.202
@@ -158,7 +158,7 @@ if [ "$dev" == "Shell" ]; then
     fi
 
     exec /bin/sh
-elif [ "$dev" == "NFS" ]; then
+elif [ "$dev" = "NFS" ]; then
     ROOT_DEVICE="/dev/nfs"
     CMDLINE="$CMDLINE root=/dev/nfs nfsroot=192.168.2.200:/srv/nfs/oe/image"
 elif [ -n "$path" ]; then
@@ -167,7 +167,7 @@ elif [ -n "$path" ]; then
 else
     ROOT_DEVICE="/dev/$dev"
     # jffs2 is not recognized by mount automagically
-    if [ "$fstype" == "(jffs2)" ]; then
+    if [ "$fstype" = "(jffs2)" ]; then
 	ROOT_FSTYPE="jffs2"
     fi
     CMDLINE="$CMDLINE root=$ROOT_DEVICE"
