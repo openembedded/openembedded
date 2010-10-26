@@ -32,7 +32,7 @@ EXTRA_OEMAKE_append = " CROSS_COMPILE=${TOOLCHAIN_PATH}/bin/${HOST_PREFIX}"
 oe_runmake() {
 	mv ${S}/config.h ${S}/config.h.orig
 	# NSLU2
-	if [ ${SITEINFO_ENDIANNESS} == "be" ] ; then
+	if [ ${SITEINFO_ENDIANNESS} = "be" ] ; then
 		sed -e 's|//#define FORCE_BIGENDIAN|#define FORCE_BIGENDIAN|' \
 			${WORKDIR}/config-nslu2.h > ${S}/config.h
 	else
@@ -44,7 +44,7 @@ oe_runmake() {
 	oenote make ${PARALLEL_MAKE} CROSS_COMPILE=${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-nslu2
 	make ${PARALLEL_MAKE} CROSS_COMPILE=${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-nslu2 || die "oe_runmake failed"
 	# NAS100d
-	if [ ${SITEINFO_ENDIANNESS} == "be" ] ; then
+	if [ ${SITEINFO_ENDIANNESS} = "be" ] ; then
 		sed -e 's|//#define FORCE_BIGENDIAN|#define FORCE_BIGENDIAN|' \
 			${WORKDIR}/config-nas100d.h > ${S}/config.h
 	else
@@ -56,7 +56,7 @@ oe_runmake() {
 	oenote make ${PARALLEL_MAKE} CROSS_COMPILE=${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-nas100d
 	make ${PARALLEL_MAKE} CROSS_COMPILE=${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-nas100d || die "oe_runmake failed"
 	# DSMG-600
-	if [ ${SITEINFO_ENDIANNESS} == "be" ] ; then
+	if [ ${SITEINFO_ENDIANNESS} = "be" ] ; then
 		sed -e 's|//#define FORCE_BIGENDIAN|#define FORCE_BIGENDIAN|' \
 			${WORKDIR}/config-dsmg600.h > ${S}/config.h
 	else
@@ -68,7 +68,7 @@ oe_runmake() {
 	oenote make ${PARALLEL_MAKE} CROSS_COMPILE=${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-dsmg600
 	make ${PARALLEL_MAKE} CROSS_COMPILE=${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX} PACKAGE=arm-kernel-shim-dsmg600 || die "oe_runmake failed"
 	# FSG-3
-	if [ ${SITEINFO_ENDIANNESS} == "be" ] ; then
+	if [ ${SITEINFO_ENDIANNESS} = "be" ] ; then
 		sed -e 's|//#define FORCE_BIGENDIAN|#define FORCE_BIGENDIAN|' \
 			${WORKDIR}/config-fsg3.h > ${S}/config.h
 	else
