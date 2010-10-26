@@ -39,7 +39,7 @@ do_install () {
         install -d ${D}${prefix} ${D}${datadir}/zoneinfo
         cp -pPR ${WORKDIR}/build${prefix}/* ${D}${prefix}
         # Only eglibc is removing zoneinfo files from package
-        if [ "${LIBC}"x == "eglibc"x ] ; then
+        if [ "${LIBC}"x = "eglibc"x ] ; then
           cp -pP "${WORKDIR}/zone.tab" ${D}${datadir}/zoneinfo
           cp -pP "${WORKDIR}/iso3166.tab" ${D}${datadir}/zoneinfo
         fi
