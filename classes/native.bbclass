@@ -73,7 +73,7 @@ PKG_CONFIG_DIR = "${libdir}/pkgconfig"
 do_stage_native () {
 	# If autotools is active, use the autotools staging function, else 
 	# use our "make install" equivalent
-	if [ "${AUTOTOOLS_NATIVE_STAGE_INSTALL}" == "1" ]
+	if [ "${AUTOTOOLS_NATIVE_STAGE_INSTALL}" = "1" ]
 	then
 		autotools_stage_all
 	else
