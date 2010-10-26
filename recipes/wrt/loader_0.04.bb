@@ -1,6 +1,8 @@
 SRC_URI = "http://wl500g.dyndns.org/loader/loader-${PV}.tar.gz \
 	file://toolchain.patch"
 
+COMPATIBLE_HOST = '(mips|mipsel.*)'
+
 S = "${WORKDIR}/${P}"
 
 do_compile() {
