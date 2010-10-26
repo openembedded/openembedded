@@ -45,7 +45,7 @@ do_install() {
 
  	for f in ${WORKDIR}/${P}/ROX-Filer/Messages/*.gmo;  do
  	    export ROXTMP=`basename $f .gmo` ;
- 	    if [ $ROXTMP == "sp" ]; then
+ 	    if [ $ROXTMP = "sp" ]; then
  		export ROXTMP="es" ;
  	    fi
  	    install -d ${D}${datadir}/locale/$ROXTMP/LC_MESSAGES;
