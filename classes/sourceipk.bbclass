@@ -92,7 +92,7 @@ sourceipk_do_create_srcipk() {
         echo "License: ${LICENSE}" >> $control_file
         echo "Architecture: ${SRCIPK_PACKAGE_ARCH}" >> $control_file
         srcuri="${SRC_URI}"
-        if [ "$srcuri" == "" ]
+        if [ "$srcuri" = "" ]
         then
             srcuri="OpenEmbedded"
         fi
