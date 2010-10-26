@@ -30,7 +30,7 @@ EXTRA_OECONF = "--disable-static --disable-debug --enable-cdrom --enable-threads
                 --disable-video-picogui --enable-video-qtopia --enable-dlopen"
 
 do_compile_prepend() {
-	if [ "${PALMTOP_USE_MULTITHREADED_QT}" == "yes" ]
+	if [ "${PALMTOP_USE_MULTITHREADED_QT}" = "yes" ]
 	then
 		sed -i s,-lqte\([^-]\),-lqte-mt, src/Makefile
 	fi
