@@ -1,6 +1,6 @@
 require gst-plugins.inc
 
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 DEPENDS += "gst-plugins-base mpeg2dec libsidplay"
 

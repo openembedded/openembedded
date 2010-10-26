@@ -36,7 +36,7 @@ RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
 PV = "0.0+1.0rc4+gitr${SRCPV}"
-PR = "r5"
+PR = "r6"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_shr = "2"
 
