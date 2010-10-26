@@ -6,7 +6,7 @@ is not the cluster messaging layer (Heartbeat), nor the cluster resource manager
 LICENSE = "GPL"
 DEPENDS = "libxml2 libtool glib-2.0 bzip2 util-linux-ng"
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI = " \
 	http://hg.linux-ha.org/glue/archive/glue-${PV}.tar.bz2;name=tar \
