@@ -22,7 +22,7 @@ ALLOW_EMPTY = "1"
 do_configure() {
         cp arch/arm/configs/neon_defconfig .config || die "No default configuration for ${MACHINE} available."
 
-#        if [ "${TARGET_OS}" == "linux-gnueabi" -o  "${TARGET_OS}" == "linux-uclibceabi" ]; then
+#        if [ "${TARGET_OS}" = "linux-gnueabi" -o  "${TARGET_OS}" = "linux-uclibceabi" ]; then
 #                echo "CONFIG_AEABI=y"                   >> ${S}/.config
 #                echo "CONFIG_OABI_COMPAT=y"             >> ${S}/.config
 #        else

@@ -59,7 +59,7 @@ MTX_KERNEL_NON_PCI_OHCI = "yes"
 
 do_configure_prepend() {
         install -m 0644 ${WORKDIR}/defconfig-mtx-1 ${S}/.config
-	if [ "x${MTX_KERNEL_NON_PCI_OHCI}" == "xyes" ]; then
+	if [ "x${MTX_KERNEL_NON_PCI_OHCI}" = "xyes" ]; then
 		echo "CONFIG_USB_NON_PCI_OHCI=y" >> ${S}/.config
 	fi
 }

@@ -5680,10 +5680,10 @@ diff -urN linux-2.6.19.old/fs/mini_fo/mini_fo-merge linux-2.6.19.dev/fs/mini_fo/
 +COMMAND=
 +exec_command()
 +{
-+    if [ x$DRYRUN == "xset" ]; then
++    if [ x$DRYRUN = "xset" ]; then
 +	echo "  would run: $COMMAND"
 +    elif ! [ x$DRYRUN == "xset" ]; then
-+	if [ x$VERBOSE == "xset" ]; then
++	if [ x$VERBOSE = "xset" ]; then
 +	    echo "  running: $COMMAND"
 +	fi
 +	eval $COMMAND
@@ -5737,7 +5737,7 @@ diff -urN linux-2.6.19.old/fs/mini_fo/mini_fo-merge linux-2.6.19.dev/fs/mini_fo/
 +  esac
 +done
 +
-+if [ "x$HELP" == "xset" ]; then
++if [ "x$HELP" = "xset" ]; then
 +    usage
 +    exit -1
 +fi
@@ -5908,7 +5908,7 @@ diff -urN linux-2.6.19.old/fs/mini_fo/mini_fo-overlay linux-2.6.19.dev/fs/mini_f
 +
 +BASE="$1"
 +
-+if [ "x$HELP" == "xset" ]; then
++if [ "x$HELP" = "xset" ]; then
 +    usage
 +    exit -1
 +fi

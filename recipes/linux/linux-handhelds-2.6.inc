@@ -50,7 +50,7 @@ do_configure() {
 		echo "CONFIG_INITRAMFS_SOURCE=\"${WORKDIR}/initramfs.cpio\"" >> ${S}/.config
 	fi
 
-	if [ "${TARGET_OS}" == "linux-gnueabi" -o  "${TARGET_OS}" == "linux-uclibceabi" ]; then
+	if [ "${TARGET_OS}" = "linux-gnueabi" -o  "${TARGET_OS}" = "linux-uclibceabi" ]; then
 		echo "CONFIG_AEABI=y"                   >> ${S}/.config
 		echo "CONFIG_OABI_COMPAT=y"             >> ${S}/.config
 	else
@@ -74,7 +74,7 @@ do_deploy_append() {
 	echo "${MACHINE}-kernel-${DATETIME} ${KERNEL_IMAGE_BASE_NAME} - kernel" >> ${DEPLOY_DIR_IMAGE}/reflash.ctl
 	gen_haret_startup
 
-	if [ -n "${KERNEL_INITRAMFS_PATH}" -a "${ANGSTROMLIBC}" == "glibc" ]; then
+	if [ -n "${KERNEL_INITRAMFS_PATH}" -a "${ANGSTROMLIBC}" = "glibc" ]; then
 		cp ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.bin ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-$(basename ${KERNEL_INITRAMFS_PATH} | awk -F. '{print $1}')-${PV}-${PR}-${MACHINE}.bin 
 	fi
 }   
