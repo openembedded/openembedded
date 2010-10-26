@@ -1,6 +1,6 @@
 SECTION = "console/network"
 DESCRIPTION = "Aircrack is a set of tools for wep key statistical cracking"
-HOMEPAGE = "http://www.cr0.net:8040/code/network/aircrack/"
+HOMEPAGE = "http://www.wirelessdefence.org/Contents/AircrackMain.htm"
 LICENSE = "GPLv2"
 DEPENDS = ""
 PR ="r1"
