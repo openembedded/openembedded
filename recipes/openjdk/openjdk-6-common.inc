@@ -191,7 +191,7 @@ do_configure_prepend() {
   # can happen if icedtea6-native is not ready at this point. The recipe
   # should make sure this is not the case but a little sanity checking
   # in such a complicated build can't be wrong.
-  if [ x$symlinked == xfalse ]
+  if [ x$symlinked = xfalse ]
   then
     oefatal "Build b0rken! Have not created any symlinks for fake-jdk!"
   else
