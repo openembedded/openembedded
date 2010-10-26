@@ -2,10 +2,12 @@ DESCRIPTION = "Daemon to allow scratchbox to use your device as a CPU tranparenc
 HOMEPAGE = "http://scratchbox.org"
 LICENSE = "GPLv2"
 DEPENDS = "fakeroot"
-PR = "r2"
+PR = "r3"
 RRECOMMENDS_${PN} = "kernel-module-nfs"
 
-SRC_URI = "http://scratchbox.org/download/files/sbox-releases/1.0/src/${P}.tar.gz"
+SRC_URI = "http://scratchbox.org/download/files/sbox-releases/1.0/src/${P}.tar.gz \
+           file://add-limits.h.patch \
+          "
 
 do_install() {
 	install -d ${D}${sbindir}

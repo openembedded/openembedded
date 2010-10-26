@@ -1,0 +1,13 @@
+Index: sbrsh-7.1/client.c
+===================================================================
+--- sbrsh-7.1.orig/client.c
++++ sbrsh-7.1/client.c
+@@ -31,7 +31,7 @@
+ #include <sys/time.h>
+ #include <sys/stat.h>
+ #include <netinet/in.h>
+-
++#include <limits.h>
+ 
+ #define REQUIRED_VERSION 6
+ 
