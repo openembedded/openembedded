@@ -40,7 +40,7 @@ do_install() {
 	install -m 0755 ${WORKDIR}/session ${D}/${sysconfdir}/pulse/session.pulseaudio-meta
 	install -m 0644 ${WORKDIR}/asound.conf ${D}/${sysconfdir}/asound.conf.pulseaudio-meta
 
-    if [ "x${TARGET_PFPU}" == "xsoft" ] ; then
+    if [ "x${TARGET_PFPU}" = "xsoft" ] ; then
          sed -i -e s:resample-method=sinc-fastest:resample-method=trivial: ${D}${sysconfdir}/init.d/pulseaudio
     fi
 }
