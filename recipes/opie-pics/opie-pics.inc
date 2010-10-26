@@ -20,7 +20,7 @@ do_install() {
 	install -m 0664 pics/todo/*.png ${D}${palmtopdir}/pics/todo/	
 	install -m 0664 pics/opie/*.png ${D}${palmtopdir}/pics/opie/	
 
-	if [ "${SHIP_INLINE_PICS}" == "yes" ]; then
+	if [ "${SHIP_INLINE_PICS}" = "yes" ]; then
 		install -m 0664 ${INLINE_PICS}/*.png ${D}${palmtopdir}/pics/
 	fi
 }
