@@ -12,7 +12,7 @@ if [ -f /etc/default/suricata ]; then
 	. /etc/default/suricata
 fi
 
-if [ "x$SURICATA_PARAMS" == "x" ]; then
+if [ "x$SURICATA_PARAMS" = "x" ]; then
 	echo "No SURICATA_PARAMS defined in default file, won't run Suricata" >&2
 	exit 1
 fi

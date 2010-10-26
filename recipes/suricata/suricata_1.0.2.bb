@@ -3,7 +3,7 @@ LICENSE = "GPLv2"
 HOMEPAGE = "http://openinfosecfoundation.org/"
 DEPENDS = "libhtp libyaml libprelude libnetfilter-queue libnet libpcap libpcre libpfring"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = " \
 	http://www.openinfosecfoundation.org/download/suricata-${PV}.tar.gz \
