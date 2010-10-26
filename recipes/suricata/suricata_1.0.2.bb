@@ -3,7 +3,7 @@ LICENSE = "GPLv2"
 HOMEPAGE = "http://openinfosecfoundation.org/"
 DEPENDS = "libhtp libyaml libprelude libnetfilter-queue libnet libpcap libpcre libpfring"
 
-PR = "r1"
+PR = "r0"
 
 SRC_URI = " \
 	http://www.openinfosecfoundation.org/download/suricata-${PV}.tar.gz \
@@ -12,8 +12,8 @@ SRC_URI = " \
 	file://default \
 	file://init \
 	"
-SRC_URI[md5sum] = "ad42b854ef2b44499f0f1d1531b1ca36"
-SRC_URI[sha256sum] = "7fbc8fe89a0a30171eddb8b066ab7e6ec811d14a73aa6bc9cea26fc1f36f4be4"
+SRC_URI[md5sum] = "57c93a22602ecc9bbe5857beeb79cb5d"
+SRC_URI[sha256sum] = "26865e48cbc15bfed2c7148bc1e8985abe6b01e32f69e61fd3f3e5213f891022"
 
 EXTRA_OECONF = " \
 	--enable-nfqueue \
