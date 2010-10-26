@@ -12,7 +12,7 @@ if [ -z "$1" ]; then
     exit
 fi
 
-if [ "$1" == "-l" ]; then
+if [ "$1" = "-l" ]; then
     if [ -n "$2" ]; then
 	extra="-name *$2*"
     fi
@@ -39,9 +39,9 @@ rm -rf $NFS_ROOT/$basename
 
 mkdir -p $NFS_ROOT/$basename
 
-if [ "$ext" == "tar.bz2" ]; then
+if [ "$ext" = "tar.bz2" ]; then
     tar -xj -f $1 -C $NFS_ROOT/$basename
-elif [ "$ext" == "tar.gz" ]; then
+elif [ "$ext" = "tar.gz" ]; then
     tar -xz -f $1 -C $NFS_ROOT/$basename
 else
     FPATH=`pwd`
