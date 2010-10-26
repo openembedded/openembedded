@@ -9,7 +9,7 @@ ext=`echo $1 | sed -r -e 's/.+\.([^.]+\.[^.]+)/\1/'`
 base=$(basename $1 .$ext)
 dir=$(dirname $1)
 
-if [ "$ext" == "tar.bz2" ]; then
+if [ "$ext" = "tar.bz2" ]; then
     uncompress=j
 else
     uncompress=z
