@@ -3,7 +3,7 @@ in a style similar to the original SuperMario games."
 SECTION = "games"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r4"
+PR = "r5"
 
 RDEPENDS_${PN} += "libmikmod"
 
@@ -14,6 +14,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/super-tux/supertux-${PV}.tar.bz2 \
 #           http://ssel.vub.ac.be/Members/DennisWagelaar/download/zaurus/supertux-0.1.2-fp.patch.gz \
 	   file://supertux.png \
 	   file://install-no-overwrite.patch \
+	   file://compilation-fixes.patch \
 	   file://supertux.desktop \
 	   "
 
