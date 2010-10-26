@@ -22,7 +22,7 @@ def cpan_build_deps(d):
 DEPENDS_prepend = "${@cpan_build_deps(d)}"
 
 cpan_build_do_configure () {
-	if [ ${@is_target(d)} == "yes" ]; then
+	if [ ${@is_target(d)} = "yes" ]; then
 		# build for target
 		. ${STAGING_LIBDIR}/perl/config.sh
 		perl Build.PL --installdirs vendor \
@@ -44,7 +44,7 @@ cpan_build_do_compile () {
 }
 
 cpan_build_do_install () {
-	if [ ${@is_target(d)} == "yes" ]; then
+	if [ ${@is_target(d)} = "yes" ]; then
 		perl Build install
 	else
 		perl Build install destdir="${WORKDIR}/image"
