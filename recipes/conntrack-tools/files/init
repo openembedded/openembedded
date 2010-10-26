@@ -38,7 +38,7 @@ case "$1" in
 	done
 	start-stop-daemon --start --quiet --make-pidfile --pidfile "/var/run/${NAME}.pid" --background --exec "${DAEMON}"
 	RET=$?
-	if [ "$?" == "0" ]; then
+	if [ "$?" = "0" ]; then
 		sleep 2
 		# Sync with other server
 		conntrackd -n
@@ -56,7 +56,7 @@ case "$1" in
 	echo -n "conntrackd "
 	start-stop-daemon -q -K -t -x $DAEMON
 	RET=$?
-	if [ "$RET" == "0" ]; then
+	if [ "$RET" = "0" ]; then
                 PID=`cat $PIDFILE`
 		echo "($PID) is running"
 	else
