@@ -6,6 +6,7 @@ SRC_URI[archive.sha256sum] = "1bc9f0b00de69e3aeab3525012506608ea3d913eb452d0134c
 PR = "${INC_PR}.0"
 
 SRC_URI += "\
+           file://0000-Add-pixman_bits_override_accessors.patch \
            file://0001-Generic-C-implementation-of-pixman_blt-with-overlapp.patch \
            file://0002-Support-of-overlapping-src-dst-for-pixman_blt_mmx.patch \
            file://0003-Support-of-overlapping-src-dst-for-pixman_blt_sse2.patch \
