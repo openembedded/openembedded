@@ -157,9 +157,9 @@ do_install() {
 		{
 		pwd
 		cd ${D}/${installdir}/ti-codec-engine-examples/$i
-		if [ $(basename $i) == "audio1_ires" ] ; then 
+		if [ $(basename $i) = "audio1_ires" ] ; then 
 			ln -s ../servers/audio1_ires/audio1_ires.${DSPSUFFIX}
-		elif [ $(basename $i) == "server_api_example" ] ; then
+		elif [ $(basename $i) = "server_api_example" ] ; then
 			ln -s ../servers/server_api_example/audio_copy.${DSPSUFFIX}
                 elif [ $(basename $i) != "." ] ; then
 			ln -s ../servers/all_codecs/all.${DSPSUFFIX}

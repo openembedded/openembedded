@@ -53,7 +53,7 @@ do_install () {
       EXEC_DIR="${D}${installdir}/ti-linuxutils-app/cmem-app" \
       install
     # Install EDMA
-    if [ ${SOC_FAMILY} == "dm365" ] ; then
+    if [ ${SOC_FAMILY} = "dm365" ] ; then
         cd ${S}/packages/ti/sdo/linuxutils/edma/apps
         make \
          LINUXKERNEL_INSTALL_DIR="${STAGING_KERNEL_DIR}" \
