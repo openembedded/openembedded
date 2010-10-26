@@ -66,7 +66,7 @@ if [ -n "${XILINX_BSP_PATH}" ]; then
 			dts=`find "${XILINX_BSP_PATH}" -name *.dts -print`
 			if [ -e "$dts" ]; then
 				oenote "Replacing device tree to match hardware model"
-				if [ "${TARGET_ARCH}" == "powerpc" ]; then
+				if [ "${TARGET_ARCH}" = "powerpc" ]; then
 					cp -pP ${dts} ${S}/arch/powerpc/boot/dts/virtex${TARGET_BOARD}.dts
 				else
 					cp -pP ${dts} ${S}/arch/microblaze/platform/generic/${TARGET_BOARD}.dts
@@ -77,7 +77,7 @@ if [ -n "${XILINX_BSP_PATH}" ]; then
 			fi
 		elif [ -d "${S}/board/xilinx" ]; then
 			oenote "Replacing xparameters header to match hardware model"
-			if [ "${TARGET_ARCH}" == "powerpc" ]; then
+			if [ "${TARGET_ARCH}" = "powerpc" ]; then
 				xparam="${XILINX_BSP_PATH}/ppc${TARGET_CPU}_0/include/xparameters.h"
 				cpu="PPC`echo ${TARGET_CPU} | tr '[:lower:]' '[:upper:]'`"
 			else
