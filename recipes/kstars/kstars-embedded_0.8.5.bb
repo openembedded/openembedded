@@ -5,9 +5,11 @@ LICENSE = "GPL"
 APPNAME = "kstars"
 APPTYPE = "binary"
 APPDESKTOP = "${WORKDIR}/apps/Applications"
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "http://kstars.sourceforge.net/kstars-embedded-${PV}.tar.gz"
+SRC_URI = "http://kstars.sourceforge.net/kstars-embedded-${PV}.tar.gz \
+           file://gcc45-compilation-fixes.patch \
+          "
 S = "${WORKDIR}/kstars"
 
 inherit opie

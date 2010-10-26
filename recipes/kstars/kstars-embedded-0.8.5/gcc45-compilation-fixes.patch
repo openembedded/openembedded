@@ -1,0 +1,34 @@
+Index: kstars/kstars.cpp
+===================================================================
+--- kstars.orig/kstars.cpp
++++ kstars/kstars.cpp
+@@ -37,9 +37,9 @@
+ #include <qpe/mimetype.h>
+ #include <qpe/applnk.h>
+ 
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <stream.h>
++#include <cstdio>
++#include <cstdlib>
++#include <iostream>
+ 
+ #include "timedialog.h"
+ #include "locationdialog.h"
+Index: kstars/skymap.cpp
+===================================================================
+--- kstars.orig/skymap.cpp
++++ kstars/skymap.cpp
+@@ -36,9 +36,9 @@
+ #include <qpe/mimetype.h>
+ #include <qpe/applnk.h>
+ 
+-#include <math.h>
+-#include <stdlib.h>
+-#include <stream.h>
++#include <cmath>
++#include <cstdlib>
++#include <iostream>
+ #include <unistd.h>
+ 
+ #include "kstars.h"
