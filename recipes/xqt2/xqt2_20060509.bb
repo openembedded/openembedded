@@ -67,7 +67,7 @@ do_configure() {
 	echo "#define BuildLBX YES" >> config/cf/host.def
 
 	# change standard defines
-	if [ ${TARGET_ARCH} == "arm" ]; then
+	if [ ${TARGET_ARCH} = "arm" ]; then
 		echo "#define StandardDefines -Dlinux -D__arm__ -D_POSIX_SOURCE -D_BSD_SOURCE -D_GNU_SOURCE" >> config/cf/host.def
 		echo "#define Arm32Architecture" >> config/cf/host.def
 	fi
