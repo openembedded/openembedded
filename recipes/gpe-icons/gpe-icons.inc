@@ -30,7 +30,7 @@ pkg_postinst_shr() {
         pixmap_dirs_root="${datadir}/gpe/"
         cd ${pixmap_dirs_root}
         for pixmap_dir in pixmaps.*; do
-                if [ "${pixmap_dir}"x == "pixmaps.${PN}"x ] ; then
+                if [ "${pixmap_dir}"x = "pixmaps.${PN}"x ] ; then
                           continue;
                 fi
                 for pixmap in `find ${pixmap_dir}`; do
