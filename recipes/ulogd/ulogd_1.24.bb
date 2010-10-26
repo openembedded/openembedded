@@ -1,6 +1,7 @@
 DESCRIPTION = "Userspace logging daemon for netfilter/iptables related logging"
 LICENSE = "GPL"
 DEPENDS = "libpcap"
+PR = "r1"
 
 SRC_URI = " \
 	http://www.netfilter.org/projects/ulogd/files/ulogd-${PV}.tar.bz2;name=tar \
