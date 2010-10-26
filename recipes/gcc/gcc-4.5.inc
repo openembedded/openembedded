@@ -8,7 +8,7 @@ DEPENDS = "mpfr gmp libmpc libelf"
 NATIVEDEPS = "mpfr-native gmp-native libmpc-native"
 
 
-INC_PR = "r14"
+INC_PR = "r15"
 
 SRCREV = "164562"
 PV = "4.5"
@@ -117,6 +117,20 @@ SRC_URI = "svn://gcc.gnu.org/svn/gcc/branches;module=${BRANCH} \
 	   file://linaro/gcc-4.5-linaro-r99396.patch \
 	   file://linaro/gcc-4.5-linaro-r99397.patch \
 	   file://linaro/gcc-4.5-linaro-r99398.patch \
+	   file://linaro/gcc-4.5-linaro-r99402.patch \
+	   file://linaro/gcc-4.5-linaro-r99403.patch \
+	   file://linaro/gcc-4.5-linaro-r99404.patch \
+	   file://linaro/gcc-4.5-linaro-r99405.patch \
+	   file://linaro/gcc-4.5-linaro-r99406.patch \
+	   file://linaro/gcc-4.5-linaro-r99407.patch \
+	   file://linaro/gcc-4.5-linaro-r99408.patch \
+	   file://linaro/gcc-4.5-linaro-r99409.patch \
+	   file://linaro/gcc-4.5-linaro-r99410.patch \
+	   file://linaro/gcc-4.5-linaro-r99411.patch \
+	   file://linaro/gcc-4.5-linaro-r99412.patch \
+	   file://linaro/gcc-4.5-linaro-r99413.patch \
+	   file://linaro/gcc-4.5-linaro-r99414.patch \
+	   file://linaro/gcc-4.5-linaro-r99415.patch \
 	   file://gcc-vmovl-PR45805.patch \
 	   file://gcc-scalar-widening-pr45847.patch \
 	   file://gcc-linaro-fix-lp-653316.patch \
