@@ -8,7 +8,6 @@ DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_at91sam9263ek = "28"
 DEFAULT_PREFERENCE_ronetix-pm9263 = "29"
 DEFAULT_PREFERENCE_stb225 = "28"
-DEFAULT_PREFERENCE_collie = "1"
 DEFAULT_PREFERENCE_gamecube = "1"
 DEFAULT_PREFERENCE_wrap = "1"
 DEFAULT_PREFERENCE_tx27 = "1"
@@ -41,36 +40,6 @@ SRC_URI_append_stb225 = " \
            file://enable-uart.patch \
            file://ip3902.patch"
 
-SRC_URI_append_collie = " \
-	file://0001-collie-start-scoop-converton-to-new-api.patch \
-	file://0002-add-locomo_spi-driver.patch \
-	file://0003-enable-cpufreq-for-collie.patch \
-	file://0004-fix-dma-for-SA1100.patch \
-	file://0005-fix-collie-keyboard-bug.patch \
-	file://0006-add-collie-flash-hack.patch \
-	file://0007-hostap-workaround-for-buggy-sa1100-pcmcia-driver.patch \
-	file://0008-fix-collie-suspend-hack.patch \
-	file://0009-add-sa1100-usb-gadget-driver-hack.patch \
-	file://0010-mmc_spi-add-suspend-and-resume-callbacks.patch \
-	file://0011-move-drivers-mfd-.h-to-include-linux-mfd.patch \
-	file://0012-move-ucb1200-ts-driver.patch \
-	file://0013-add-collie-touchscreen-driver.patch \
-	file://0014-collie-locomo-led-change-default-trigger.patch \
-	file://0015-SA1100-make-gpio_to_irq-and-reverse-a-macro.patch \
-	file://0016-add-gpiolib-support-to-ucb1x00.patch \
-	file://0017-collie-convert-to-gpiolib-for-ucb1x00.patch \
-	file://0018-collie-add-battery-driver.patch \
-	file://0019-collie-support-pda_power-driver.patch \
-	file://0020-remove-collie_pm.c.patch \
-	file://0021-mmc-trivial-annotation-of-blocks.patch \
-	file://0022-mmc_block-print-better-error-messages.patch \
-	file://0023-mmc_block-ensure-all-sectors-that-do-not-have-error.patch " 
-
-SRC_URI_append_tosa = " \
-	file://commit-31c9b28;apply=yes \
-	file://commit-ddfb33c;apply=yes \
-	file://commit-f34ee79;apply=yes \
-	"
 SRC_URI_append_gamecube = " \
 	file://patch-2.6.28-gc;apply=yes \
 	"
