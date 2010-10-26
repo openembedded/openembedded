@@ -34,7 +34,7 @@ do_configure() {
 
 do_compile () {
 	. ${CONFIG_SITE}
-	if [ X"$ac_cv_uint" == X"yes" ]; then
+	if [ X"$ac_cv_uint" = X"yes" ]; then
 		CFLAGS="${CFLAGS} -DHAVE_uint"
 	fi
 	install -d ${S}/bin/${TARGET_SYS}
