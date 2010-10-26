@@ -1,0 +1,109 @@
+Index: ubahnnav-0.4.1/src/libsubwaymap/baseclasses.cpp
+===================================================================
+--- ubahnnav-0.4.1.orig/src/libsubwaymap/baseclasses.cpp
++++ ubahnnav-0.4.1/src/libsubwaymap/baseclasses.cpp
+@@ -493,7 +493,7 @@ int String::strnicmp(const char *rval, i
+ 
+ 
+ 
+-ostream& operator<<(ostream& os, const String& s)
++std::ostream& operator<<(std::ostream& os, const String& s)
+ {
+   return os << s._string;
+ }
+Index: ubahnnav-0.4.1/src/libsubwaymap/baseclasses.h
+===================================================================
+--- ubahnnav-0.4.1.orig/src/libsubwaymap/baseclasses.h
++++ ubahnnav-0.4.1/src/libsubwaymap/baseclasses.h
+@@ -36,12 +36,14 @@
+ #include <time.h>
+ #include <stdio.h>
+ 
+-#include <iostream.h>
++#include <iostream>
+ 
+ #ifdef MPATROL
+ #include <mp/mpatrol.h>
+ #endif
+ 
++using namespace std;
++
+ class ObjectList;
+ class ObjectListIterator;
+ class ObjectListContainer;
+Index: ubahnnav-0.4.1/src/libsubwaymap/debug.h
+===================================================================
+--- ubahnnav-0.4.1.orig/src/libsubwaymap/debug.h
++++ ubahnnav-0.4.1/src/libsubwaymap/debug.h
+@@ -21,7 +21,7 @@
+ #ifndef __DEBUG_H__
+ #define __DEBUG_H__
+ 
+-
++using namespace std;
+ #include "baseclasses.h"
+ 
+ class Debug : public Object
+Index: ubahnnav-0.4.1/src/libsubwaymap/subwaymap/SMXMLWriter.h
+===================================================================
+--- ubahnnav-0.4.1.orig/src/libsubwaymap/subwaymap/SMXMLWriter.h
++++ ubahnnav-0.4.1/src/libsubwaymap/subwaymap/SMXMLWriter.h
+@@ -23,15 +23,15 @@
+ 
+ #include "baseclasses.h"
+ #include "SMError.h"
+-#include <iostream.h>
+-#include <fstream.h>
++#include <iostream>
++#include <fstream>
+ 
+ 
+-class SMXMLWriter : public ofstream
++class SMXMLWriter : public std::ofstream
+ {
+  public:
+-  SMXMLWriter(const char *filename) : ofstream(filename) {
+-	*this<< "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>" << endl <<endl;
++  SMXMLWriter(const char *filename) : std::ofstream(filename) {
++	*this<< "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>" << std::endl <<std::endl;
+   }
+  protected:
+ 
+Index: ubahnnav-0.4.1/src/libsubwaymap/subwaymap/SubwayMap.h
+===================================================================
+--- ubahnnav-0.4.1.orig/src/libsubwaymap/subwaymap/SubwayMap.h
++++ ubahnnav-0.4.1/src/libsubwaymap/subwaymap/SubwayMap.h
+@@ -25,6 +25,7 @@
+ #include "SMError.h"
+ #include "SMXMLWriter.h"
+ 
++using namespace std;
+ 
+ enum eDirection {
+   both=0,			// search in both directions
+Index: ubahnnav-0.4.1/src/libsubwaymap/subwaymap/XMLBase.h
+===================================================================
+--- ubahnnav-0.4.1.orig/src/libsubwaymap/subwaymap/XMLBase.h
++++ ubahnnav-0.4.1/src/libsubwaymap/subwaymap/XMLBase.h
+@@ -21,7 +21,7 @@
+ #ifndef __XMLBASE_H__
+ #define __XMLBASE_H__
+ 
+-#include <iostream.h>
++#include <iostream>
+ #include "baseclasses.h"
+ 
+ 
+Index: ubahnnav-0.4.1/src/ubahnnav/UBahnNavMain.cpp
+===================================================================
+--- ubahnnav-0.4.1.orig/src/ubahnnav/UBahnNavMain.cpp
++++ ubahnnav-0.4.1/src/ubahnnav/UBahnNavMain.cpp
+@@ -18,7 +18,7 @@
+ #########################################################################
+ */
+ 
+-#include <iostream.h>
++#include <iostream>
+ #include <qmessagebox.h>
+ #include <qdatetime.h>
+ 
