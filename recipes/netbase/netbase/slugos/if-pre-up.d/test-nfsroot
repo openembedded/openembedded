@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-if [ X"$IFACE" == "Xeth0" ] ; then
+if [ X"$IFACE" = "Xeth0" ] ; then
   nfsroot=`grep ' / nfs ' /proc/mounts`
   if [ -n "$nfsroot" ]; then
     echo "WARNING: Refusing to ifup eth0 when booted to a nfs-mounted rootfs."
