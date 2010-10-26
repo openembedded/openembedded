@@ -1,0 +1,12 @@
+diff -uNr estardict-0.4.orig//src/gui/estardict-gui-definitionPage.c estardict-0.4/src/gui/estardict-gui-definitionPage.c
+--- estardict-0.4.orig//src/gui/estardict-gui-definitionPage.c	2010-10-26 11:01:23.000000000 +0200
++++ estardict-0.4/src/gui/estardict-gui-definitionPage.c	2010-10-26 11:00:51.000000000 +0200
+@@ -186,7 +186,7 @@
+     li = elm_list_add(win);
+     evas_object_size_hint_weight_set(li, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+     evas_object_size_hint_align_set(li, EVAS_HINT_FILL, EVAS_HINT_FILL);
+-    elm_list_horizontal_mode_set(li, ELM_LIST_LIMIT);
++    elm_list_mode_set(li, ELM_LIST_LIMIT);
+     elm_box_pack_end(suggestedBox, li);
+     evas_object_show(li);
+     
