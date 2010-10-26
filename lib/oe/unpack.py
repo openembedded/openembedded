@@ -73,6 +73,11 @@ def unpack_file(file, destdir, dos=False, env=None):
     elif file.endswith('.xz'):
         root, ext = os.path.splitext(file)
         cmd = 'xz -dc %s > %s' % (file, os.path.basename(root))
+    elif file.endswith('.tar.lz'):
+        cmd = 'lzip -dc %s | tar x --no-same-owner -f -' % file
+    elif file.endswith('.lz'):
+        root, ext = os.path.splitext(file)
+        cmd = 'lzip -dc %s > %s' % (file, os.path.basename(root))
     elif file.endswith('.zip') or file.endswith('.jar'):
         cmd = 'unzip -q -o'
         if dos:

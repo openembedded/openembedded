@@ -386,6 +386,11 @@ python () {
         depends = depends + " unzip-native:do_populate_sysroot"
         bb.data.setVarFlag('do_unpack', 'depends', depends, d)
 
+    if ".lz" in src_uri:
+        depends = bb.data.getVarFlag('do_unpack', 'depends', d) or ""
+        depends = depends + " lzip-native:do_populate_sysroot"
+        bb.data.setVarFlag('do_unpack', 'depends', depends, d)
+
     # 'multimachine' handling
     mach_arch = bb.data.getVar('MACHINE_ARCH', d, 1)
     pkg_arch = bb.data.getVar('PACKAGE_ARCH', d, 1)
