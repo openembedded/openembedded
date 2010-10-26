@@ -34,7 +34,7 @@ trumpet(){
 
 case "$1" in
 start)	leds "$(state "$runlevel")"
-	if [ "$(state "$runlevel")" == "user" ]; then
+	if [ "$(state "$runlevel")" = "user" ]; then
 		trumpet "k"
 	fi
 	;;
