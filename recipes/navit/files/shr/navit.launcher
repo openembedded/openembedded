@@ -24,7 +24,7 @@
 pgrep '^navit$'
 not_running=$?
 
-if [ $not_running == 0 ]; then
+if [ $not_running = 0 ]; then
         echo "navit already running !!"
 else
         echo "ok starting navit ..."
