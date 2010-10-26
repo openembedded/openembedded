@@ -227,7 +227,7 @@ else
 	netopt="-net none"
 fi
 
-if [ "x$3" == "xsingle" ]; then
+if [ "x$3" = "xsingle" ]; then
     init="init=/bin/sh"
 else
     init=""
