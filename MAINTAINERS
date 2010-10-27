@@ -37,7 +37,8 @@ Machines:   simpad
 Person:     Christopher Larson
 Mail:       clarson@kergoth.com
 Recipes:    autoconf, automake, libtool, gnu-config
-Recipes:    autotools*.bbclass, gzip, lzip, ed, genromfs
+Recipes:    gzip, lzip, ed, genromfs, which
+Classes:    autotools.bbclass
 
 Person:     Cliff Brake
 Mail:       cbrake@bec-systems.com
