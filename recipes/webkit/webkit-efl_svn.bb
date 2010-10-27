@@ -40,6 +40,6 @@ do_move_files() {
 LEAD_SONAME = "libewebkit.so"
 PACKAGES =+ "${PN}launcher-dbg ${PN}launcher"
 
-FILES_${PN} += "${datadir}/webkit-1.0/theme/default.edj ${datadir}/ewebkit-0/theme/default.edj"
+FILES_${PN} += "${datadir}/webkit-1.0/theme/default.edj ${datadir}/ewebkit-0/themes/default.edj"
 FILES_${PN}launcher = "${bindir}/EWebLauncher"
 FILES_${PN}launcher-dbg = "${bindir}/.debug/EWebLauncher"
