@@ -1,7 +1,7 @@
 DESCRIPTION = "Lzip is a lossless data compressor based on the LZMA algorithm"
 HOMEPAGE = "http://lzip.nongnu.org/lzip.html"
 LICENSE = "GPLv3+"
-PR = "0"
+PR = "1"
 
 SRC_URI = "${SAVANNAH_MIRROR}/releases/lzip/lzip-${PV}.tar.gz"
 SRC_URI[md5sum] = "ba9d0a705e47bcd2b73145d238aa7b58"
@@ -25,6 +25,10 @@ EXTRA_OEMAKE = ""
 B = "${S}/obj"
 do_configure () {
     ${S}/configure ${CONFIGUREOPTS}
+}
+
+do_install () {
+    oe_runmake 'DESTDIR=${D}' install
 }
 
 BBCLASSEXTEND += "native nativesdk"
