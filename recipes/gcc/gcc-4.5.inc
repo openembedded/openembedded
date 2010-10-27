@@ -8,7 +8,7 @@ DEPENDS = "mpfr gmp libmpc libelf"
 NATIVEDEPS = "mpfr-native gmp-native libmpc-native"
 
 
-INC_PR = "r15"
+INC_PR = "r16"
 
 SRCREV = "165931"
 PV = "4.5"
@@ -75,7 +75,7 @@ SRC_URI = "svn://gcc.gnu.org/svn/gcc/branches;module=${BRANCH} \
 	   file://linaro/gcc-4.5-linaro-r99347.patch \
 	   file://linaro/gcc-4.5-linaro-r99348.patch \
 	   file://linaro/gcc-4.5-linaro-r99349.patch \
-	   file://linaro/gcc-4.5-linaro-r99350.patch \
+#	   file://linaro/gcc-4.5-linaro-r99350.patch \
 	   file://linaro/gcc-4.5-linaro-r99351.patch \
 	   file://linaro/gcc-4.5-linaro-r99352.patch \
 	   file://linaro/gcc-4.5-linaro-r99353.patch \

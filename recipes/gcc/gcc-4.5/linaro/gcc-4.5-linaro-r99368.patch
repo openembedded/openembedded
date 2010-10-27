@@ -16,20 +16,22 @@
  	Backport from mainline:
 
 === modified file 'gcc/config/arm/constraints.md'
---- old/gcc/config/arm/constraints.md	2010-08-13 10:59:06 +0000
-+++ new/gcc/config/arm/constraints.md	2010-08-23 14:29:45 +0000
+Index: gcc-4.5/gcc/config/arm/constraints.md
+===================================================================
+--- gcc-4.5.orig/gcc/config/arm/constraints.md
++++ gcc-4.5/gcc/config/arm/constraints.md
 @@ -29,7 +29,7 @@
  ;; in Thumb-1 state: I, J, K, L, M, N, O
  
  ;; The following multi-letter normal constraints have been used:
--;; in ARM/Thumb-2 state: D0, Da, Db, Dc, Di, Dn, Dl, DL, Dv, Dy
-+;; in ARM/Thumb-2 state: D0, Da, Db, Dc, Di, Dn, Dl, DL, Dv, Dy, Dz
+-;; in ARM/Thumb-2 state: Da, Db, Dc, Dn, Dl, DL, Dv, Dy, Di
++;; in ARM/Thumb-2 state: Da, Db, Dc, Dn, Dl, DL, Dv, Dy, Di, Dz
  ;; in Thumb-1 state: Pa, Pb
  ;; in Thumb-2 state: Ps, Pt, Pv
  
-@@ -180,6 +180,12 @@
+@@ -173,6 +173,12 @@
   (and (match_code "const_double")
-       (match_test "TARGET_NEON && op == CONST0_RTX (mode)")))
+       (match_test "TARGET_32BIT && neg_const_double_rtx_ok_for_fpa (op)")))
  
 +(define_constraint "Dz"
 + "@internal
@@ -40,10 +42,10 @@
  (define_constraint "Da"
   "@internal
    In ARM/Thumb-2 state a const_int, const_double or const_vector that can
-
-=== modified file 'gcc/config/arm/neon.md'
---- old/gcc/config/arm/neon.md	2010-08-20 16:21:01 +0000
-+++ new/gcc/config/arm/neon.md	2010-08-23 14:29:45 +0000
+Index: gcc-4.5/gcc/config/arm/neon.md
+===================================================================
+--- gcc-4.5.orig/gcc/config/arm/neon.md
++++ gcc-4.5/gcc/config/arm/neon.md
 @@ -141,7 +141,9 @@
     (UNSPEC_VUZP2		202)
     (UNSPEC_VZIP1		203)
@@ -338,4 +340,3 @@
  (define_insn "neon_vcage<mode>"
    [(set (match_operand:<V_cmp_result> 0 "s_register_operand" "=w")
          (unspec:<V_cmp_result> [(match_operand:VCVTF 1 "s_register_operand" "w")
-
