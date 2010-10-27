@@ -7,8 +7,8 @@ PR = "r15"
 
 DEPENDS += "task-shr-minimal"
 IMAGE_LOGIN_MANAGER = "shadow"
-IMAGE_DEV_MANAGER = ""
-IMAGE_DEV_MANAGER_nokia900 = "udev"
+IMAGE_DEV_MANAGER_om-gta01 = ""
+IMAGE_DEV_MANAGER_om-gta02 = ""
 
 RDEPENDS_${PN} += "\
   task-shr-minimal-base \
