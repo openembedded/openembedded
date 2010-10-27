@@ -1,6 +1,6 @@
 DESCRIPTION = "GNU ed is a line-oriented text editor"
 HOMEPAGE = "http://www.gnu.org/software/ed/"
-INC_PR = "0"
+INC_PR = "1"
 
 CONFIGUREOPTS = "\
     '--srcdir=${S}' \
@@ -10,7 +10,7 @@ CONFIGUREOPTS = "\
     '--datadir=${datadir}' \
     '--infodir=${infodir}' \
     '--sysconfdir=${sysconfdir}' \
-    'CXX=${CXX}' \
+    'CC=${CC}' \
     'CPPFLAGS=${CPPFLAGS}' \
     'CXXFLAGS=${CXXFLAGS}' \
     'LDFLAGS=${LDFLAGS}' \
@@ -20,6 +20,10 @@ EXTRA_OEMAKE = ""
 B = "${S}/obj"
 do_configure () {
     ${S}/configure ${CONFIGUREOPTS}
+}
+
+do_install () {
+    oe_runmake 'DESTDIR=${D}' install
 }
 
 BBCLASSEXTEND += "native nativesdk"
