@@ -8,7 +8,7 @@ PROVIDES = "virtual/xserver"
 
 # Config manager for xserver, options are: hal, udev, empty (for configuration in xorg.conf)
 DISTRO_XORG_CONFIG_MANAGER ?= "hal"
-DISTRO_XORG_CONFIG_MANAGER_shr ?= ""
+DISTRO_XORG_CONFIG_MANAGER_shr ?= "udev"
 
 # default none, enabled by DISTRO_XORG_CONFIG_MANAGER setting
 CONFIG_MANAGER_OPTION += "${@['--disable-config-hal','--enable-config-hal',''][bb.data.getVar('DISTRO_XORG_CONFIG_MANAGER',d) in ['hal']]}"
