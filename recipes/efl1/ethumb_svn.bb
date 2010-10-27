@@ -20,6 +20,4 @@ AUTO_LIBNAME_PKGS = ""
 FILES_${PN} += "\
     ${bindir}/ethumbd \
     ${libexecdir}/ethumbd_slave \
-    ${libdir}/plugins/*.so \
-    ${libdir}/plugins/data/*.edj \
 "

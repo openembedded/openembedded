@@ -29,10 +29,16 @@ do_install_prepend () {
 # This construction is stupid, someone with more E knowledge should change it to =+ or something
 PACKAGES = "${PN}-dbg ${PN} ${PN}-themes ${PN}-dev ${PN}-doc ${PN}-tests ${PN}-static"
 
-FILES_${PN} = "${libdir}/*.so.*"
+FILES_${PN} = "${libdir}/*.so.* \
+               ${libdir}/edje/modules/${PN}/*/module.so \
+               ${libdir}/${PN}/plugins/*.so \
+               ${datadir}/dbus-1/services/* \
+"
+
 
 FILES_${PN}-themes = "${datadir}/${PN}/themes \
                       ${datadir}/${PN}/data \
+                      ${libdir}/${PN}/plugins/data/*.edj \
                       ${datadir}/${PN}/fonts \
                       ${datadir}/${PN}/pointers \
                       ${datadir}/${PN}/images \
@@ -47,6 +53,7 @@ FILES_${PN}-dev   += "${bindir}/${PN}-config \
                       ${libdir}/${PN}/*.la \
                       ${libdir}/${PN}/*/*.la \
                       ${datadir}/${PN}/edje_externals \
+                      ${libdir}/edje/modules/${PN}/*/module.la \
 "
 
 FILES_${PN}-static += "${libdir}/${PN}/*.a \
@@ -54,9 +61,10 @@ FILES_${PN}-static += "${libdir}/${PN}/*.a \
 "
 
 FILES_${PN}-dbg +=   "${libdir}/${PN}/.debug \
-                      ${libdir}/${PN}/*/.debug"
+                      ${libdir}/${PN}/*/.debug \
+                      ${libdir}/edje/modules/${PN}/*/.debug/module.so \
+"
 
 FILES_${PN}-tests  = "${bindir}/${PN} \
                       ${bindir}/*_* \
                       ${datadir}"
-
