@@ -3,7 +3,7 @@ DEPENDS = "eet evas ecore edje efreet edbus eeze"
 LICENSE = "MIT BSD"
 SRCNAME = "e"
 PV = "0.16.999.060+svnr${SRCPV}"
-PR = "r17"
+PR = "r18"
 SRCREV = "${EFL_SRCREV}"
 
 inherit e update-alternatives
@@ -39,6 +39,17 @@ do_configure_prepend() {
 do_install_append() {
     # customising - should rather make this simple upstream
     install -m 755 ${WORKDIR}/enlightenment_start.oe ${D}/${bindir}
+
+    install -d ${D}/${datadir}/applications/
+    install -m 644 ${S}/src/modules/fileman/module.desktop ${D}/${datadir}/applications/efm.desktop
+    sed "s#Type=Link#Type=Application#g" -i ${D}/${datadir}/applications/efm.desktop
+    echo "Exec=enlightenment_remote -efm-open-dir" >> ${D}/${datadir}/applications/efm.desktop
+    echo "Terminal=false" >> ${D}/${datadir}/applications/efm.desktop
+    echo "Categories=Application;" >> ${D}/${datadir}/applications/efm.desktop
+    echo "StartupNotify=true" >> ${D}/${datadir}/applications/efm.desktop
+    install -d ${D}/${datadir}/icons/
+    install -m 644 ${S}/data/themes/images/icon_icon_theme.png ${D}/${datadir}/icons/e-module-fileman.png
+
     install -d ${D}/${sysconfdir}/xdg/menus
     install -m 644 ${WORKDIR}/applications.menu ${D}/${sysconfdir}/xdg/menus/
     for I in `find ${D}/${libdir}/enlightenment -name "*.a" -print`; do rm -f $I; done
@@ -77,6 +88,7 @@ PACKAGES =+ "\
   ${PN}-sysactions \
   ${PN}-utils \
   ${PN}-menu \
+  efm-desktop-icon \
   illume-keyboard-default-alpha \
   illume-keyboard-default-numeric \
   illume-keyboard-default-terminal \
@@ -108,6 +120,7 @@ PACKAGE_ARCH_${PN}-other = "all"
 PACKAGE_ARCH_${PN}-input-methods = "all"
 PACKAGE_ARCH_${PN}-sysactions = "all"
 PACKAGE_ARCH_${PN}-menu = "all"
+PACKAGE_ARCH_efm-desktop-icon = "all"
 PACKAGE_ARCH_illume-keyboard-default-alpha = "all"
 PACKAGE_ARCH_illume-keyboard-default-numeric = "all"
 PACKAGE_ARCH_illume-keyboard-default-terminal = "all"
@@ -147,6 +160,11 @@ FILES_${PN}-input-methods = "${datadir}/enlightenment/data/input_methods"
 FILES_${PN}-sysactions = "${sysconfdir}/enlightenment/sysactions.conf"
 FILES_${PN}-utils = "${libdir}/enlightenment/utils/*"
 FILES_${PN}-menu = "${sysconfdir}/xdg/menus/applications.menu"
+
+FILES_efm-desktop-icon = "\
+  ${datadir}/applications/efm.desktop \
+  ${datadir}/icons/e-module-fileman.png \
+"
 
 KEYBOARDS_DIR="${libdir}/enlightenment/modules/illume-keyboard/keyboards"
 FILES_illume-keyboard-default-alpha = "\
