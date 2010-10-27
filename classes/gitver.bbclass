@@ -32,17 +32,16 @@ def get_git_pv(path, d, tagadjust=None):
     # if the active branch is switched, or if the branch changes.
     mark_dependency(d, os.path.join(gitdir, "HEAD"))
 
-    ref = git(["symbolic-ref", "HEAD"])
-    if ref:
-        reffile = os.path.join(gitdir, ref)
-        if os.path.exists(reffile):
-            mark_dependency(d, reffile)
-        else:
-            mark_dependency(d, os.path.join(gitdir, "index"))
+    # Force a reparse if anything in the index changes.
+    mark_dependency(d, os.path.join(gitdir, "index"))
+
+    try:
+        ref = oe_run(d, ["git", "symbolic-ref", "-q", "HEAD"], cwd=gitdir).rstrip()
+    except oe.process.CmdError:
+        pass
     else:
-        # The ref might be hidden in packed-refs. Force a reparse if anything
-        # in the working copy changes.
-        mark_dependency(d, os.path.join(gitdir, "index"))
+        if ref:
+            mark_dependency(d, os.path.join(gitdir, ref))
 
     # Catch new tags.
     tagdir = os.path.join(gitdir, "refs", "tags")
