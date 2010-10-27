@@ -44,5 +44,6 @@ RREPLACES_${PN} = "libedje-ver-pre-svn-00-0 libedje-ver-pre-svn-01-0"
 
 FILES_${PN}-utils = "\
   ${bindir}/edje_* \
+  ${bindir}/inkscape2edc \
   ${datadir}/edje/include/edje.inc \
 "
