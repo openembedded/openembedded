@@ -5,8 +5,6 @@ SRCNAME = "e"
 PV = "0.16.999.060+svnr${SRCPV}"
 PR = "r18"
 SRCREV = "${EFL_SRCREV}"
-# temporary, I'll bump EFL_SRCREV as soon as there are updated vala bindings (for libeflvala)
-SRCREV = "54140"
 
 inherit e update-alternatives
 
