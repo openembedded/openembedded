@@ -144,9 +144,6 @@ APPS_INSTALL = "\
 #   elementary-alarm \
    expedite \
    expedite-themes \
-#   libefso \
-#   essential-dialer \
-#   elementary-sms \
 "
 
 IMAGE_INSTALL = "\
