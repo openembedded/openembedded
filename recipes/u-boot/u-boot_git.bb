@@ -241,15 +241,15 @@ SRC_URI_dm6467t-evm  = "git://arago-project.org/git/projects/u-boot-dm646x.git;p
 SRCREV_dm6467t-evm   = "98b31e3aae3e3fb772f8d06c18ccdd6265aa0d38"
 PV_dm6467t-evm       = "2009.08+${PR}+gitr${SRCREV}"
 
-# OMAPL1 da380-omapl137/da850-omapl138-evm - PSP 3.20.0.11
+# OMAPL1 omapl137/omapl138 - PSP 3.20.0.11
 
-SRC_URI_da830-omapl137-evm = "git://arago-project.org/git/projects/u-boot-omapl1.git;protocol=git"
-SRCREV_da830-omapl137-evm  = "5f16b8551b125f16cd8d58f278cb25b94272fd9f"
-PV_da830-omapl137-evm      = "2009.11+${PR}+gitr${SRCREV}"
+SRC_URI_omapl137 = "git://arago-project.org/git/projects/u-boot-omapl1.git;protocol=git"
+SRCREV_omapl137  = "5f16b8551b125f16cd8d58f278cb25b94272fd9f"
+PV_omapl137      = "2009.11+${PR}+gitr${SRCREV}"
 
-SRC_URI_da850-omapl138-evm = "git://arago-project.org/git/projects/u-boot-omapl1.git;protocol=git"
-SRCREV_da850-omapl138-evm  = "5f16b8551b125f16cd8d58f278cb25b94272fd9f"
-PV_da850-omapl138-evm      = "2009.11+${PR}+gitr${SRCREV}"
+SRC_URI_omapl138 = "git://arago-project.org/git/projects/u-boot-omapl1.git;protocol=git"
+SRCREV_omapl138  = "5f16b8551b125f16cd8d58f278cb25b94272fd9f"
+PV_omapl138      = "2009.11+${PR}+gitr${SRCREV}"
 
 # hawkboard - master branch (hawk still .07beta)
 
