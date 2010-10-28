@@ -2,7 +2,7 @@ DESCRIPTION = "DBus and HAL convenience wrappers for EFL"
 DEPENDS = "dbus ecore"
 LICENSE = "MIT BSD"
 PV = "0.5.0.060+svnr${SRCPV}"
-PR = "r2"
+PR = "r3"
 SRCREV = "${EFL_SRCREV}"
 
 inherit efl
@@ -24,3 +24,11 @@ FILES_${PN}-ebluez = "${libdir}/libebluez.so.*"
 FILES_${PN}-test-gui = "${bindir}/e_dbus_hal"
 
 RREPLACES_${PN}-enotify = "libenotify1"
+RREPLACES_${PN}-edbus = "edbus"
+RREPLACES_${PN}-enm = "edbus"
+RREPLACES_${PN}-ehal = "edbus"
+RREPLACES_${PN}-econnman = "edbus"
+RREPLACES_${PN}-eofono = "edbus"
+RREPLACES_${PN}-eukit = "edbus"
+RREPLACES_${PN}-ebluez = "edbus"
+
