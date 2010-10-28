@@ -19,7 +19,7 @@ def clean_stamps(d):
 		except OSError:
 			pass
 
-def clean_workdir(d):
+def remove_workdir(d):
 	from shutil import rmtree
 	from bb import note
 
@@ -54,7 +54,7 @@ python do_clean () {
 		bb.note("Removing staging package %s" % base_path_out(stagepkg, d))
 		os.system('rm -rf ' + stagepkg)
 	clean_stamps(d)
-	clean_workdir(d)
+	remove_workdir(d)
 	clean_builddir(d)
 	clean_make(d)
 }
