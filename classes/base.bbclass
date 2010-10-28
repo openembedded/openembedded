@@ -237,22 +237,13 @@ python base_eventhandler() {
 	from bb import note, error, data
 	from bb.event import getName
 
-
-	name = getName(e)
-	if name == "TaskCompleted":
-		msg = "package %s: task %s is complete." % (data.getVar("PF", e.data, 1), e.task)
-	elif name == "UnsatisfiedDep":
-		msg = "package %s: dependency %s %s" % (e.pkg, e.dep, name[:-3].lower())
-	else:
-		return
-
 	# Only need to output when using 1.8 or lower, the UI code handles it
 	# otherwise
 	if (int(bb.__version__.split(".")[0]) <= 1 and int(bb.__version__.split(".")[1]) <= 8):
 		if msg:
 			note(msg)
 
-	if name.startswith("BuildStarted"):
+	if isinstance(e, bb.event.BuildStarted):
 		bb.data.setVar( 'BB_VERSION', bb.__version__, e.data )
 		statusvars = bb.data.getVar("BUILDCFG_VARS", e.data, 1).split()
 		statuslines = ["%-17s = \"%s\"" % (i, bb.data.getVar(i, e.data, 1) or '') for i in statusvars]
@@ -267,27 +258,6 @@ python base_eventhandler() {
 				pesteruser.append(v)
 		if pesteruser:
 			bb.fatal('The following variable(s) were not set: %s\nPlease set them directly, or choose a MACHINE or DISTRO that sets them.' % ', '.join(pesteruser))
-
-	#
-	# Handle removing stamps for 'rebuild' task
-	#
-	if name.startswith("StampUpdate"):
-		for (fn, task) in e.targets:
-			#print "%s %s" % (task, fn)
-			if task == "do_rebuild":
-				dir = "%s.*" % e.stampPrefix[fn]
-				bb.note("Removing stamps: " + dir)
-				os.system('rm -f '+ dir)
-				os.system('touch ' + e.stampPrefix[fn] + '.needclean')
-
-	if not data in e.__dict__:
-		return
-
-	log = data.getVar("EVENTLOG", e.data, 1)
-	if log:
-		logfile = file(log, "a")
-		logfile.write("%s\n" % msg)
-		logfile.close()
 }
 
 addtask configure after do_unpack do_patch

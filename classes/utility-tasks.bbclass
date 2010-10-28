@@ -31,13 +31,6 @@ python do_cleanall() {
 do_cleanall[recrdeptask] = "do_clean"
 addtask cleanall after do_clean
 
-addtask rebuild after do_${BB_DEFAULT_TASK}
-do_rebuild[dirs] = "${TOPDIR}"
-do_rebuild[nostamp] = "1"
-python do_rebuild() {
-	"""rebuild a package"""
-}
-
 addtask distclean
 do_distclean[dirs] = "${TOPDIR}"
 do_distclean[nostamp] = "1"
