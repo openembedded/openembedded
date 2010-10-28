@@ -4,7 +4,7 @@ LICENSE = "libffi"
 PRIORITY = "optional"
 PR = "r1"
 
-inherit autotools gettext
+inherit autotools_base gettext
 
 PACKAGES = "${PN}-dbg ${PN} ${PN}-dev"
 
@@ -42,11 +42,6 @@ EXTRA_OECONF = "--with-gnu-ld \
 
 EXTRA_OECONF_PATHS = "--with-local-prefix=${prefix}/local \
                       --with-gxx-include-dir=${includedir}/c++/${PV}"
-
-do_configure () {
-	(cd ${S}/.. && gnu-configize) || die "failure running gnu-configize"
-	oe_runconf
-}
 
 do_install_append() {
 	# follow debian and move this to $includedir

@@ -92,8 +92,6 @@ do_configure () {
 	sed -i 's/^LDFLAGS = $/LDFLAGS = @LDFLAGS@/' ${S}/Makefile.in
 	sed -i 's/^LDFLAGS = $/LDFLAGS = @LDFLAGS@/' ${S}/Makefile.tpl
 
-	(cd ${S} && gnu-configize) || die "failure running gnu-configize"
-
 	if [ "${HOST_SYS}" != "${TARGET_SYS}" ]; then
 		# splice our idea of where the headers live into gcc's world
 		echo "NATIVE_SYSTEM_HEADER_DIR = ${target_includedir}" > ${T}/t-oe
@@ -107,7 +105,7 @@ do_configure () {
 		mv ${S}/gcc/defaults.h.new ${S}/gcc/defaults.h
 	fi
 
-	oe_runconf
+	autotools_base_do_configure
 
 	# make sure that no @LDFLAG@ is left in the generated Makefile
   	sed -i "s/@LDFLAGS@//g" ${B}/Makefile

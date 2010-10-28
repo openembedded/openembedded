@@ -19,7 +19,7 @@ CONFLICTS = "db3 db4"
 
 SRC_URI = "ftp://ftp.freebsd.org/pub/FreeBSD/distfiles/bdb/db-${PV}.tar.gz"
 
-inherit autotools
+inherit autotools_base
 
 # Put virtual/db in any appropriate provider of a
 # relational database, use it as a dependency in
@@ -65,11 +65,6 @@ EXTRA_OECONF += "${MUTEX}"
 # Cancel the site stuff - it's set for db3 and destroys the
 # configure.
 CONFIG_SITE = ""
-do_configure() {
-	( cd ${WORKDIR}/db-${PV}/dist ; gnu-configize ) 
-	oe_runconf
-}
-
 
 do_install_append() {
 	# The docs end up in /usr/docs - not right.

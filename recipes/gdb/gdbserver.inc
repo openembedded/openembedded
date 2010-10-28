@@ -31,8 +31,8 @@ export CFLAGS_append=" -L${STAGING_LIBDIR}"
 do_configure () {
     # override this function to avoid the autoconf/automake/aclocal/autoheader
     # calls for now
-    (cd ${S}/gdb/gdbserver && gnu-configize) || die "failure in running gnu-configize"
-        CPPFLAGS="" oe_rungdbserverconf
+    gnu_configize
+    CPPFLAGS="" oe_rungdbserverconf
 }
 
 do_install () {

@@ -8,7 +8,7 @@ PACKAGES_DYNAMIC = ""
 do_configure () {
 	sed -ie 's,{ (exit 1); exit 1; }; },{ (exit 0); }; },g' ${S}/configure
 	chmod +x ${S}/configure
-        (cd ${S} && gnu-configize) || die "failure in running gnu-configize"
+        (cd ${S} && gnu_configize) || die "failure in running gnu-configize"
         find ${S} -name "configure" | xargs touch
 	${S}/configure --host=${TARGET_SYS} --build=${BUILD_SYS} \
 		--prefix=/usr \

@@ -136,12 +136,11 @@ do_configure () {
 # calls for now
 # don't pass CPPFLAGS into configure, since it upsets the kernel-headers
 # version check and doesn't really help with anything
-	if [ -z "`which rpcgen`" ]; then
-		echo "rpcgen not found.  Install glibc-devel."
+	if ! which rpcgen >/dev/null; then
+		echo >&2 "rpcgen not found.  Install glibc-devel."
 		exit 1
 	fi
-	(cd ${S} && gnu-configize) || die "failure in running gnu-configize"
-	CPPFLAGS="" oe_runconf
+	CPPFLAGS="" autotools_base_do_configure
 }
 
 rpcsvc = "bootparam_prot.x nlm_prot.x rstat.x \

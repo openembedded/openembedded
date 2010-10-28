@@ -4,7 +4,7 @@ DESCRIPTION = "Foreign Function Interface library"
 LICENSE = "libffi"
 PRIORITY = "optional"
 
-inherit autotools gettext
+inherit autotools_base gettext
 
 PR = "r1"
 
@@ -56,12 +56,6 @@ EXTRA_OECONF_FPU = "${@get_gcc_fpu_setting(bb, d)}"
 #Somehow gcc doesn't set __SOFTFP__ when passing -mfloatabi=softp :(
 TARGET_CC_ARCH_append_armv6 = " -D__SOFTFP__"
 TARGET_CC_ARCH_append_armv7a = " -D__SOFTFP__"
-
-
-do_configure () {
-	(cd ${S}/.. && gnu-configize) || die "failure running gnu-configize"
-	oe_runconf
-}
 
 do_install_append() {
 	install_libffi_headers

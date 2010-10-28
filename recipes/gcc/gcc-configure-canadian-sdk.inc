@@ -78,8 +78,8 @@ do_configure () {
         sed -i 's/^\(HOST_PPLLIBS =\) \(.*\)$/\1 -Wl,-Bstatic \2 -Wl,-Bdynamic/' ${S}/Makefile.in
         sed -i 's/^\(HOST_LIBELFLIBS =\) \(.*\)$/\1 -Wl,-Bstatic \2 -Wl,-Bdynamic/' ${S}/Makefile.tpl
         sed -i 's/^\(HOST_LIBELFLIBS =\) \(.*\)$/\1 -Wl,-Bstatic \2 -Wl,-Bdynamic/' ${S}/Makefile.in
-	(cd ${S} && gnu-configize) || die "failure running gnu-configize"
-	(cd ${S}/libstdc++-v3 && autoreconf)
+        gnu_configize
+	(cd ${S}/libstdc++-v3 && oe_autoreconf)
 	canadian_sdk_runconf
 }
 

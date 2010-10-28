@@ -1,6 +1,6 @@
 SECTION = "devel"
 LICENSE = "GPL"
-inherit autotools gettext
+inherit autotools_base gettext
 
 INC_PR = "r5"
 PR = "${INC_PR}.1"
@@ -82,13 +82,8 @@ export CC_FOR_BUILD = "${BUILD_CC}"
 
 export CC = "${CCACHE} ${HOST_PREFIX}gcc"
 
-do_configure () {
-	(cd ${S}; gnu-configize) || die "Failed to run gnu-configize"
-	oe_runconf
-}
-
 do_install () {
-	autotools_do_install
+	autotools_base_do_install
 
 	# We don't really need these, so we'll remove them...
 	rm -rf ${D}${libdir}/ldscripts

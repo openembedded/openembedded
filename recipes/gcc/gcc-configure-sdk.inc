@@ -43,8 +43,7 @@ do_configure () {
         sed -i 's/^\(HOST_LIBELFLIBS =\) \(.*\)$/\1 -Wl,-Bstatic \2 -Wl,-Bdynamic/' ${S}/Makefile.tpl
         sed -i 's/^\(HOST_LIBELFLIBS =\) \(.*\)$/\1 -Wl,-Bstatic \2 -Wl,-Bdynamic/' ${S}/Makefile.in
 
-	(cd ${S} && gnu-configize) || die "failure running gnu-configize"
-	oe_runconf
+	autotools_base_do_configure
 }
 
 do_compile () {
