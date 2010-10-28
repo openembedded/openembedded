@@ -1,7 +1,6 @@
 DESCRIPTION = "Twin is a text-mode windowing environment: it draws and manages text windows on a text-mode display, like X11 does for graphical windows. It has a built-in window manager and terminal emulator, and can be used as server for remote clients in the same style as X11. It can display on Linux console, on X11 and inside itself."
 SECTION = "console/utils"
 
-DEPENDS = "coreutils-native"
 LICENSE = "GPL LGPL"
 SRC_URI = "http://linuz.sns.it/~max/twin/twin-0.4.6.tar.gz \
 	   file://cross_compile.patch"

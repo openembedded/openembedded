@@ -1,0 +1,28 @@
+#!/bin/sh
+
+source $(dirname $0)/wrapper.sh
+
+saved=""
+while getopts dbCcMpSsvB:f:g:m:o: opt; do
+    case "$opt" in
+        s)
+            # Ignore strip argument
+            ;;
+        B|f|g|m|o)
+            save "-$opt"
+            save "$OPTARG"
+            ;;
+        \?)
+            exit 1
+            ;;
+        *)
+            save "-$opt"
+            ;;
+    esac
+done
+shift $(($OPTIND - 1))
+for arg; do
+    save "$arg"
+done
+
+exec_real
