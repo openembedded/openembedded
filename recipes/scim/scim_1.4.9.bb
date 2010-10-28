@@ -1,9 +1,9 @@
 DESCRIPTION = "Smart Common Input Method (SCIM) platform"
 HOMEPAGE = "http://www.scim-im.org"
 SECTION = "libs/inputmethod"
-LICENSE = "LGPL"
-DEPENDS = "gtk+"
-PR = "r1"
+LICENSE = "LGPLv2.1+"
+DEPENDS = "gtk+ cairo"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}.tar.gz \
            file://gcc-4.4-const-char.dpatch;apply=yes \
@@ -19,7 +19,6 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}.tar.gz \
            "
 
 inherit autotools pkgconfig
-
 EXTRA_OECONF = " --without-doxygen "
 LEAD_SONAME = "libscim-1.0.so"
 
@@ -35,7 +34,15 @@ do_configure_append () {
 	sed -i "s/${SEDL}.*/${SEDR}/" Makefile.in.in
 	sed -i "s/${SEDL}.*/${SEDR}/" Makefile.in
 	sed -i "s/${SEDL}.*/${SEDR}/" Makefile
+	# the below sed is done to prevent an infinite loop when make enters po/
+	# since intltoolize is not a knobbable operation in autotools do_configure
+	# good old sed comes to our rescue
+	# this is equivalent of a patch to Makefile.in.in which would be
+	#-       $(SHELL) ./config.status
+	#+       $(SHELL) ./config.status
+	#+       touch stamp-it
 
+        sed -i 's/^[ \t]*\$(SHELL).*$/\t\$(SHELL) .\/config.status\n\ttouch stamp-it/g' Makefile.in.in
 	# Fix unset @INTLTOOL_LIBDIR@
 	#   Only needed for a check to see if charmap.alias is present,
 	#   not really needed, so we fail that test by having it look
