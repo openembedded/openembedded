@@ -21,7 +21,7 @@
 # to reimplement -i internally in this script on some platforms.
 
 
-source $(dirname $0)/wrapper.sh
+source $(dirname $0)/../wrapper.sh
 
 case `uname -s` in
     Darwin)

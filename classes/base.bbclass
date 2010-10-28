@@ -57,33 +57,23 @@ oe_runmake() {
 }
 
 def base_deps(d):
-	#
-	# Ideally this will check a flag so we will operate properly in
-	# the case where host == build == target, for now we don't work in
-	# that case though.
-	#
-	deps = "coreutils-native"
-	if bb.data.getVar('PN', d, True) in ("shasum-native", "coreutils-native"):
-		deps = ""
-
 	# INHIBIT_DEFAULT_DEPS doesn't apply to the patch command.  Whether or  not
 	# we need that built is the responsibility of the patch function / class, not
 	# the application.
 	if not bb.data.getVar('INHIBIT_DEFAULT_DEPS', d):
 		if (bb.data.getVar('HOST_SYS', d, 1) !=
-	     	    bb.data.getVar('BUILD_SYS', d, 1)):
-			deps += " virtual/${TARGET_PREFIX}gcc virtual/libc "
+		    bb.data.getVar('BUILD_SYS', d, 1)):
+			return "virtual/${TARGET_PREFIX}gcc virtual/libc"
 		elif bb.data.inherits_class('native', d) and \
 				bb.data.getVar('PN', d, True) not in \
 				("linux-libc-headers-native", "quilt-native",
-				 "unifdef-native", "shasum-native",
-				 "coreutils-native"):
-			deps += " linux-libc-headers-native"
-	return deps
+				 "unifdef-native", "shasum-native"):
+			return "linux-libc-headers-native"
+	return ""
 
-DEPENDS_prepend="${@base_deps(d)} "
-DEPENDS_virtclass-native_prepend="${@base_deps(d)} "
-DEPENDS_virtclass-nativesdk_prepend="${@base_deps(d)} "
+DEPENDS_prepend = "${@base_deps(d)} "
+DEPENDS_virtclass-native_prepend = "${@base_deps(d)} "
+DEPENDS_virtclass-nativesdk_prepend = "${@base_deps(d)} "
 
 
 SCENEFUNCS += "base_scenefunction"
@@ -92,7 +82,7 @@ SCENEFUNCS[type] = "list"
 python base_scenefunction () {
 	stamp = bb.data.getVar('STAMP', d, 1) + ".needclean"
 	if os.path.exists(stamp):
-	        bb.build.exec_func("do_clean", d)
+		bb.build.exec_func("do_clean", d)
 }
 
 python base_do_setscene () {

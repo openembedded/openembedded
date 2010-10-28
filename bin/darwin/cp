@@ -7,7 +7,7 @@
 # - Otherwise, we stick to what SuSv3 defines
 
 
-source $(dirname $0)/wrapper.sh
+source $(dirname $0)/../wrapper.sh
 
 saved=""
 while getopts fpaRHLP opt; do
