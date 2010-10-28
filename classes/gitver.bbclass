@@ -14,11 +14,13 @@ def git_drop_tag_prefix(version):
 
 GIT_TAGADJUST = "git_drop_tag_prefix(version)"
 GITVER = "${@get_git_pv('${S}', d, tagadjust=lambda version:${GIT_TAGADJUST})}"
+GITSHA = "${@get_git_hash('${S}', d)}"
+
+def get_git_hash(path, d):
+    return oe_run(d, ["git", "rev-parse", "--short", "HEAD"], cwd=path).rstrip()
 
 def get_git_pv(path, d, tagadjust=None):
     import os
-    from bb import error
-    from bb.parse import mark_dependency
     import oe.process
 
     gitdir = os.path.abspath(os.path.join(d.getVar("S", True), ".git"))
@@ -27,6 +29,31 @@ def get_git_pv(path, d, tagadjust=None):
             return oe_run(d, ["git"] + cmd, cwd=gitdir).rstrip()
         except oe.process.CmdError, exc:
             bb.fatal(str(exc))
+
+    try:
+        ver = oe_run(d, ["git", "describe", "--tags"], cwd=gitdir).rstrip()
+    except Exception, exc:
+        bb.fatal(str(exc))
+
+    if not ver:
+        try:
+            ver = get_git_hash(gitdir, d)
+        except Exception, exc:
+            bb.fatal(str(exc))
+
+        if ver:
+            return "0.0+%s" % ver
+        else:
+            return "0.0"
+    else:
+        if tagadjust:
+            ver = tagadjust(ver)
+        return ver
+
+def mark_recipe_dependencies(path, d):
+    from bb.parse import mark_dependency
+
+    gitdir = os.path.join(path, ".git")
 
     # Force the recipe to be reparsed so the version gets bumped
     # if the active branch is switched, or if the branch changes.
@@ -48,14 +75,6 @@ def get_git_pv(path, d, tagadjust=None):
     if os.path.exists(tagdir):
         mark_dependency(d, tagdir)
 
-    ver = git(["describe", "--tags"])
-    if not ver:
-        ver = git(["rev-parse", "--short", "HEAD"])
-        if ver:
-            return "0.0-%s" % ver
-        else:
-            return "0.0"
-    else:
-        if tagadjust:
-            ver = tagadjust(ver)
-        return ver
+python () {
+    mark_recipe_dependencies(d.getVar("S", True), d)
+}
