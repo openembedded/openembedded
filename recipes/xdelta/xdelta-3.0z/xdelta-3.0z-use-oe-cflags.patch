@@ -1,0 +1,167 @@
+--- xdelta3.0z/Makefile.orig	2010-08-02 21:53:02.000000000 -0400
++++ xdelta3.0z/Makefile	2010-10-28 08:33:49.000000000 -0400
+@@ -53,7 +53,7 @@
+ WIXDIR = "/cygdrive/c/Program Files/wix2.0.4820"
+ 
+ # -arch x86_64
+-CFLAGS= -Wall -Wshadow -fno-builtin
++XDELTA_CFLAGS= -Wall -Wshadow -fno-builtin
+ WFLAGS= -Wextra -Wsign-compare -Wconversion -Wextra -Wno-unused-parameter
+ 
+ # $Format: "REL=$Xdelta3Version$" $
+@@ -125,7 +125,7 @@
+ 	$(WIXDIR)/light.exe xdelta3.wixobj -out xdelta3.msi
+ 
+ xdelta3: $(SOURCES)
+-	$(CC) $(CFLAGS) -O3 xdelta3.c -lm -o xdelta3 \
++	$(CC) $(CFLAGS) $(XDELTA_CFLAGS) $(LDFLAGS) xdelta3.c -lm -o xdelta3 \
+ 	      -DGENERIC_ENCODE_TABLES=0 \
+ 	      -DREGRESSION_TEST=1 \
+ 	      -DSECONDARY_DJW=1 \
+@@ -136,7 +136,7 @@
+ 	      -DXD3_USE_LARGEFILE64=1
+ 
+ xdelta3-debug: $(SOURCES)
+-	$(CC) -g $(CFLAGS) xdelta3.c -lm -o xdelta3-debug \
++	$(CC) -g $(XDELTA_CFLAGS) xdelta3.c -lm -o xdelta3-debug \
+ 		-DGENERIC_ENCODE_TABLES=1 \
+ 		-DREGRESSION_TEST=1 \
+ 		-DSECONDARY_DJW=1 \
+@@ -147,7 +147,7 @@
+ 		-DXD3_USE_LARGEFILE64=1
+ 
+ xdelta3-warnings: $(SOURCES)
+-	$(CC) -g $(CFLAGS) $(WFLAGS) xdelta3.c -lm -o xdelta3-warnings \
++	$(CC) -g $(XDELTA_CFLAGS) $(WFLAGS) xdelta3.c -lm -o xdelta3-warnings \
+ 		-DGENERIC_ENCODE_TABLES=1 \
+ 		-DREGRESSION_TEST=1 \
+ 		-DSECONDARY_DJW=1 \
+@@ -158,7 +158,7 @@
+ 		-DXD3_USE_LARGEFILE64=1
+ 
+ xdelta3-32: $(SOURCES)
+-	$(CC) -g $(CFLAGS) xdelta3.c -lm -o xdelta3-32 \
++	$(CC) -g $(XDELTA_CFLAGS) xdelta3.c -lm -o xdelta3-32 \
+ 	      -DXD3_DEBUG=1 \
+ 	      -DXD3_USE_LARGEFILE64=0 \
+ 	      -DREGRESSION_TEST=1 \
+@@ -168,7 +168,7 @@
+ 	      -DXD3_POSIX=1
+ 
+ xdelta3-debug2: $(SOURCES)
+-	$(CC) -g $(CFLAGS) \
++	$(CC) -g $(XDELTA_CFLAGS) \
+ 		xdelta3.c -o xdelta3-debug2 \
+ 		-DXD3_DEBUG=2 \
+ 		-DXD3_MAIN=1 \
+@@ -181,7 +181,7 @@
+ 		-lm
+ 
+ xdelta3-debugstdio: $(SOURCES)
+-	$(CC) -g $(CFLAGS) xdelta3.c -o xdelta3-debugstdio \
++	$(CC) -g $(XDELTA_CFLAGS) xdelta3.c -o xdelta3-debugstdio \
+ 		-DXD3_MAIN=1 \
+ 		-DGENERIC_ENCODE_TABLES=1 \
+ 		-DXD3_USE_LARGEFILE64=1 \
+@@ -199,10 +199,10 @@
+ 	swig -python xdelta3.swig
+ 
+ xdelta3.o: $(SOURCES)
+-	$(CC) -O3 $(CFLAGS) -c xdelta3.c $(SWIG_FLAGS) -o xdelta3.o
++	$(CC) -O3 $(XDELTA_CFLAGS) -c xdelta3.c $(SWIG_FLAGS) -o xdelta3.o
+ 
+ xdelta3_wrap.o: xdelta3_wrap.c
+-	$(CC) -O3 $(CFLAGS) $(SWIG_FLAGS) \
++	$(CC) -O3 $(XDELTA_CFLAGS) $(SWIG_FLAGS) \
+ 	      -DHAVE_CONFIG_H \
+ 	      -I/usr/include/python$(PYVER) \
+ 	      -I/usr/lib/python$(PYVER)/config \
+@@ -227,7 +227,7 @@
+ else
+ xdelta3module.so: xdelta3_wrap.o xdelta3.o
+ 	gcc-4.2 -Wl,-F. -bundle -undefined dynamic_lookup \
+-		-arch x86_64 $(CFLAGS) \
++		-arch x86_64 $(XDELTA_CFLAGS) \
+ 		xdelta3.o xdelta3_wrap.o -o xdelta3module.so
+ endif
+ 
+@@ -244,7 +244,7 @@
+ 	strip xdelta3-decoder-nomain.o
+ 
+ xdelta3-O++: $(SOURCES)
+-	$(CXX) -g -O3 $(CFLAGS) xdelta3.c \
++	$(CXX) -g -O3 $(XDELTA_CFLAGS) xdelta3.c \
+ 		-o xdelta3-O++ \
+ 		-DXD3_MAIN=1 \
+ 		-DSECONDARY_DJW=1 \
+@@ -252,7 +252,7 @@
+ 		-lm
+ 
+ xdelta3-Op: $(SOURCES)
+-	$(CC) -g -O3 $(CFLAGS) xdelta3.c \
++	$(CC) -g -O3 $(XDELTA_CFLAGS) xdelta3.c \
+ 		-o xdelta3-Op \
+ 		-DXD3_POSIX=1 \
+ 		-DXD3_MAIN=1 \
+@@ -260,7 +260,7 @@
+ 		-lm
+ 
+ xdelta3-64: $(SOURCES)
+-	$(CC) -g $(CFLAGS) \
++	$(CC) -g $(XDELTA_CFLAGS) \
+ 		xdelta3.c \
+ 		-o xdelta3-64 \
+ 		-DXD3_POSIX=1 \
+@@ -271,7 +271,7 @@
+ 		-lm
+ 
+ xdelta3-64-O: $(SOURCES)
+-	$(CC) -O3 $(CFLAGS) \
++	$(CC) -O3 $(XDELTA_CFLAGS) \
+ 		xdelta3.c \
+ 		-o xdelta3-64-O \
+ 		-DXD3_POSIX=1 \
+@@ -280,7 +280,7 @@
+ 		-lm
+ 
+ xdelta3-everything: $(SOURCES)
+-	$(CC) -g $(CFLAGS) \
++	$(CC) -g $(XDELTA_CFLAGS) \
+ 		xdelta3.c \
+ 		-o xdelta3-everything \
+ 		-DXD3_MAIN=1 \
+@@ -296,7 +296,7 @@
+ 		-lm
+ 
+ xdelta3-Opg: $(SOURCES)
+-	$(CC) -pg -g -O3 $(CFLAGS) \
++	$(CC) -pg -g -O3 $(XDELTA_CFLAGS) \
+ 		xdelta3.c \
+ 		-o xdelta3-Opg \
+ 		-DXD3_MAIN=1 \
+@@ -307,19 +307,19 @@
+ 		-DREGRESSION_TEST=1
+ 
+ xdelta3-nosec.o: $(SOURCES)
+-	$(CC) -O3 $(CFLAGS) -c xdelta3.c -DSECONDARY_FGK=0 -DSECONDARY_DJW=0 -o xdelta3-nosec.o
++	$(CC) -O3 $(XDELTA_CFLAGS) -c xdelta3.c -DSECONDARY_FGK=0 -DSECONDARY_DJW=0 -o xdelta3-nosec.o
+ 
+ xdelta3-all.o: $(SOURCES)
+-	$(CC) -O3 $(CFLAGS) -c xdelta3.c -DSECONDARY_FGK=1 -DSECONDARY_DJW=1 -o xdelta3-all.o
++	$(CC) -O3 $(XDELTA_CFLAGS) -c xdelta3.c -DSECONDARY_FGK=1 -DSECONDARY_DJW=1 -o xdelta3-all.o
+ 
+ xdelta3-fgk.o: $(SOURCES)
+-	$(CC) -O3 $(CFLAGS) -c xdelta3.c -DSECONDARY_FGK=1 -DSECONDARY_DJW=0 -o xdelta3-fgk.o
++	$(CC) -O3 $(XDELTA_CFLAGS) -c xdelta3.c -DSECONDARY_FGK=1 -DSECONDARY_DJW=0 -o xdelta3-fgk.o
+ 
+ xdelta3-noext: $(SOURCES)
+-	$(CC) -O3 $(CFLAGS) xdelta3.c -DXD3_MAIN=1 -DEXTERNAL_COMPRESSION=0 -o xdelta3-noext
++	$(CC) -O3 $(XDELTA_CFLAGS) xdelta3.c -DXD3_MAIN=1 -DEXTERNAL_COMPRESSION=0 -o xdelta3-noext
+ 
+ xdelta3-tools: $(SOURCES)
+-	$(CC) -O3 $(CFLAGS) xdelta3.c -DXD3_MAIN=1 -o xdelta3-tools
++	$(CC) -O3 $(XDELTA_CFLAGS) xdelta3.c -DXD3_MAIN=1 -o xdelta3-tools
+ 
+ xdelta3-notools: $(SOURCES)
+-	$(CC) -O3 $(CFLAGS) xdelta3.c -DXD3_MAIN=1 -DVCDIFF_TOOLS=0 -o xdelta3-notools
++	$(CC) -O3 $(XDELTA_CFLAGS) xdelta3.c -DXD3_MAIN=1 -DVCDIFF_TOOLS=0 -o xdelta3-notools

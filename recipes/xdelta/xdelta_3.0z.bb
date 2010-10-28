@@ -1,7 +1,8 @@
 DESCRIPTION = "utilities for creating binary deltas"
 LICENSE = "GPLv2+"
-PR = "r0"
-SRC_URI = "http://xdelta.googlecode.com/files/xdelta${PV}.tar.gz"
+PR = "r1"
+SRC_URI = "http://xdelta.googlecode.com/files/xdelta${PV}.tar.gz \
+        file://xdelta-3.0z-use-oe-cflags.patch;apply=yes"
 
 S = "${WORKDIR}/${PN}${PV}"
 
