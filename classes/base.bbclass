@@ -61,8 +61,7 @@ def base_deps(d):
 	# that case though.
 	#
 	deps = "coreutils-native"
-	if bb.data.getVar('PN', d, True) in ("shasum-native", "stagemanager-native",
-	                                     "coreutils-native"):
+	if bb.data.getVar('PN', d, True) in ("shasum-native", "coreutils-native"):
 		deps = ""
 
 	# INHIBIT_DEFAULT_DEPS doesn't apply to the patch command.  Whether or  not
@@ -76,7 +75,7 @@ def base_deps(d):
 				bb.data.getVar('PN', d, True) not in \
 				("linux-libc-headers-native", "quilt-native",
 				 "unifdef-native", "shasum-native",
-				 "stagemanager-native", "coreutils-native"):
+				 "coreutils-native"):
 			deps += " linux-libc-headers-native"
 	return deps
 

@@ -151,6 +151,3 @@ if __name__ == "__main__":
     if found_difference:
         sys.exit(5)
     sys.exit(0)
-
-
-

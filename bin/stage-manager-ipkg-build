@@ -68,7 +68,7 @@ You probably want to chown these to a system user: " >&2
 		ls -ld $large_uid_files
 		echo >&2
 	fi
-	    
+
 
 	if [ ! -f "$CONTROL/control" ]; then
 		echo "*** Error: Control file $pkg_dir/$CONTROL/control not found." >&2
@@ -109,7 +109,7 @@ You probably want to chown these to a system user: " >&2
 	source=`required_field Source`
 	[ "$?" -ne 0 ] && PKG_ERROR=1
 	if [ -z "$source" ]; then
-	    echo "The Source field contain the URL's or filenames of the source code and any patches" 
+	    echo "The Source field contain the URL's or filenames of the source code and any patches"
 	    echo "used to build this package.  Either gnu-style tarballs or Debian source packages "
 	    echo "are acceptable.  Relative filenames may be used if they are distributed in the same"
 	    echo "directory as the .ipk file."
@@ -196,7 +196,7 @@ case $# in
 	;;
 *)
 	echo $usage >&2
-	exit 1 
+	exit 1
 	;;
 esac
 
