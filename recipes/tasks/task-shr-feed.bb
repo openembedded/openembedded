@@ -172,10 +172,6 @@ RDEPENDS_${PN} += "\
 		wmiconfig \
 		netkit-telnet \
 		bind-utils \
-		bubble-keyboard \
-		intuition \
-		gridpad \
-#		essential-dialer \
 		font-adobe-100dpi \
 		font-adobe-75dpi \
 		font-adobe-utopia-100dpi \
