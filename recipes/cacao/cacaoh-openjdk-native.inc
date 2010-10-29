@@ -25,5 +25,5 @@ do_compile() {
 }
 
 do_install() {
-	libtool --mode=install install -m 0755 src/cacaoh/cacaoh ${STAGING_BINDIR}/cacaoh-openjdk-${PV}
+	${STAGING_BINDIR_NATIVE}/${HOST_SYS}-libtool --mode=install install -m 0755 src/cacaoh/cacaoh ${STAGING_BINDIR}/cacaoh-openjdk-${PV}
 }

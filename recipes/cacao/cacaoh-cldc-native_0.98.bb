@@ -5,7 +5,7 @@ SRC_URI = "\
   "
 
 do_stage() {
-	libtool --mode=install install -m 0755 src/cacaoh/cacaoh ${STAGING_BINDIR}/cacaoh-cldc-${PV}
+	${STAGING_BINDIR_NATIVE}/${HOST_SYS}-libtool --mode=install install -m 0755 src/cacaoh/cacaoh ${STAGING_BINDIR}/cacaoh-cldc-${PV}
 }
 
 SRC_URI[md5sum] = "8b8907c8b925761c9410bcadb9705346"
