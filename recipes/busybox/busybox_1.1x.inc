@@ -23,6 +23,7 @@ SRC_URI = "\
   file://defconfig \
   file://mdev \
   file://mdev.conf \
+  file://usb.sh \
 "
 
 EXTRA_OEMAKE += "V=1 ARCH=${TARGET_ARCH} CROSS_COMPILE=${TARGET_PREFIX}"
@@ -38,6 +39,7 @@ do_install_append() {
     install -d ${D}${sysconfdir}/init.d/
     install -d ${D}${sysconfdir}/mdev
     install -m 0755 ${WORKDIR}/find-touchscreen.sh ${D}${sysconfdir}/mdev/
+    install -m 0755 ${WORKDIR}/usb.sh ${D}${sysconfdir}/mdev/
     install -m 0755 ${WORKDIR}/mdev ${D}${sysconfdir}/init.d/
 
     if grep "CONFIG_UDHCPD=y" ${WORKDIR}/defconfig; then
