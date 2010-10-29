@@ -4,8 +4,8 @@ DEPENDS += "libsm virtual/libx11 kbproto"
 PE = "1"
 PR = "${INC_PR}.0"
 
-SRC_URI[archive.md5sum] = "fb7d2aa5b24cd5fe9b238a26d88030e7"
-SRC_URI[archive.sha256sum] = "70f52c81258661811c8eae86a7a6dc910d0bf84cd48aeeed85ba430ad6b2037c"
+SRC_URI[archive.md5sum] = "8a414f8f2327aaa616ca2dcac1f5d8c3"
+SRC_URI[archive.sha256sum] = "eab91b594b801f7f07a20f936dda70a629028858cbcf541becf94f2786ae6b01"
 
 EXTRA_OECONF += "--disable-install-makestrs --disable-xkb"
 

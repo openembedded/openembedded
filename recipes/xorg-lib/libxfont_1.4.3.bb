@@ -5,8 +5,8 @@ DEPENDS += "freetype fontcacheproto xtrans fontsproto libfontenc"
 PE = "1"
 PR = "${INC_PR}.0"
 
-SRC_URI[archive.md5sum] = "503911759734998f9235b926eed82eb8"
-SRC_URI[archive.sha256sum] = "d05f5a8599cbfd29f683768b037a5a4b8c9065578e6ac4d6323e89ef604e495b"
+SRC_URI[archive.md5sum] = "6fb689cfe13d8d9460f4abb5bd88588d"
+SRC_URI[archive.sha256sum] = "f79245652901d20092092e942155d32b8dde15527637db3c09a1adc83672e9cc"
 
 # disable docs
 EXTRA_OECONF += " --disable-devel-docs "
