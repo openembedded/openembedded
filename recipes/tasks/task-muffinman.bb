@@ -1,0 +1,15 @@
+DESCRIPTION = "All packages required for the Jlime Muffinman userland"
+LICENSE = "MIT"
+PR = "r0"
+
+inherit task
+
+RDEPENDS_${PN} = "echinus ourico dzen2 matchbox-desktop net-tools xinit \
+		  ttf-dejavu-sans xcursor-transparent-theme libxcursor \
+		  alsa-utils-alsamixer alsa-utils-amixer xset xmodmap \
+		  fnkey rxvt-unicode xdialog gtkedit gtk-engine-industrial \
+		  gmu tzdata-africa tzdata-australia tzdata-antarctica \
+		  tzdata-americas tzdata-arctic tzdata-atlantic tzdata-asia \
+		  tzdata-europe tzdata-pacific gcalc wmctrl ttf-inconsolata \
+		  fileselector feh imlib2-loaders mupdf stppc2x mplayer \
+		  psplash jlime-extras"
