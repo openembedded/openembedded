@@ -1,7 +1,7 @@
 require coreutils-${PV}.inc
 require coreutils-target.inc
 
-PR = "r4"
+PR = "${INC_PR}.0"
 
 SRC_URI += "\
   file://man.patch \

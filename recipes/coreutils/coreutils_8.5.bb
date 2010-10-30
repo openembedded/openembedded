@@ -1,4 +1,4 @@
 require coreutils-${PV}.inc
 require coreutils-target.inc
 
-PR = "r0"
+PR = "${INC_PR}.0"
