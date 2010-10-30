@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Text Editor
+Comment=Simple text editor
+Exec=gtkedit %f
+Icon=text-editor
+Terminal=false
+MimeType=text/plain
+Categories=Application;Utility;TextEditor;GTK;
