@@ -17,7 +17,6 @@ case "$ACTION" in
       bus=`basename $(dirname $device)`
       for uevent in /sys/class/usb_device/usbdev?.*/*/uevent; do
         . $uevent
-        echo $dev $DEVNUM $bus $BUSNUM >> /tmp/rem.txt
         if [ $dev -eq $DEVNUM ] && [ $bus -eq $BUSNUM ]; then
           REMOVED=0
           break;
