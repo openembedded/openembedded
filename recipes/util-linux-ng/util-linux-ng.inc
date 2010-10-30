@@ -6,9 +6,7 @@ DEPENDS_virtclass-native = "zlib-native ncurses-native lzo-native gettext-native
 
 inherit autotools gettext
 
-DEFAULT_PREFERENCE = "-1"
-
-INC_PR = "r32"
+INC_PR = "r33"
 
 # allows for a release candidate
 RC ?= ""
@@ -127,7 +125,7 @@ do_install () {
 
         sbinprogs="agetty blockdev ctrlaltdel cfdisk"
         sbinprogs_a="pivot_root hwclock mkswap shutdown mkfs.minix fsck.minix losetup swapon fdisk fsck blkid vigr vipw"
-        usrbinprogs_a="chfn chsh hexdump last logger mesg newgrp renice wall setsid chrt reset cal script"
+        usrbinprogs_a="chfn chsh hexdump last logger mesg newgrp renice wall setsid chrt reset cal script flock"
         usrsbinprogs_a="readprofile"
         binprogs_a="dmesg kill more umount mount login"
 
@@ -213,6 +211,9 @@ pkg_postinst_${PN} () {
 	update-alternatives --install ${bindir}/chfn chfn chfn.${PN} 100
 	update-alternatives --install ${bindir}/newgrp newgrp newgrp.${PN} 100
 	update-alternatives --install ${bindir}/chsh chsh chsh.${PN} 100
+	update-alternatives --install ${bindir}/cal cal cal.${PN} 100
+	update-alternatives --install ${bindir}/script script script.${PN} 100
+	update-alternatives --install ${bindir}/flock flock flock.${PN} 100
 	update-alternatives --install ${base_bindir}/login login login.${PN} 100
 	update-alternatives --install ${base_sbindir}/vipw vipw vipw.${PN} 100
 	update-alternatives --install ${base_sbindir}/vigr vigr vigr.${PN} 100
@@ -231,7 +232,7 @@ pkg_prerm_${PN} () {
 	test -x ${base_sbindir}/pivot_root.${PN} && \
 	update-alternatives --remove pivot_root pivot_root.${PN}
 
-	for i in dmesg kill more halt hwclock mkswap reboot shutdown sln mkfs.minix fsck.minix hexdump setsid chrt last logger mesg renice wall vipw vigr chfn newgrp chsh login; do
+	for i in dmesg kill more halt hwclock mkswap reboot shutdown sln mkfs.minix fsck.minix hexdump setsid chrt last logger mesg renice wall vipw vigr chfn newgrp chsh login cal script flock; do
 		update-alternatives --remove $i $i.${PN}
 	done
 }
