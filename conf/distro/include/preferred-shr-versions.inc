@@ -13,6 +13,7 @@ PREFERRED_VERSION_emacs-x11 = "23.1"
 PREFERRED_VERSION_ncurses = "5.7"
 PREFERRED_VERSION_ncurses-native = "5.7"
 PREFERRED_VERSION_python-pycairo = "1.8.0"
+PREFERRED_VERSION_busybox = "1.17.3"
 
 # we need new headers for libc, now OLDEST_KERNEL_linux-gnueabi = "2.6.24"
 # and 2.6.31 for fsodeviced
