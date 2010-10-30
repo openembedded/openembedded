@@ -2,7 +2,6 @@ export IMAGE_BASENAME = "muffinman-image"
 
 IMAGE_LINGUAS = ""
 IMAGE_DEVICE_TABLES = ""
-PACKAGE_FORCE_OVERWRITE = "1"
 
 XSERVER ?= "xserver-xorg \
             xf86-input-evdev \
