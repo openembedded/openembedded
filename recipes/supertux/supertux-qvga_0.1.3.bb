@@ -1,41 +1,19 @@
-DESCRIPTION = "SuperTux is a classic 2D jump'n'run sidescroller game \
-in a style similar to the original SuperMario games (QVGA, size-optimized version)"
-SECTION = "games"
-PRIORITY = "optional"
-LICENSE = "GPL"
-DEPENDS = "libsdl-gfx imagemagick-native pngcrush-native"
-PR = "r0.21"
+require supertux_${PV}.bb
 
-APPIMAGE = "${WORKDIR}/supertux.png"
-APPDESKTOP = "${WORKDIR}/supertux.desktop"
+DESCRIPTION += "(QVGA, size-optimized version)"
+DEPENDS += "imagemagick-native pngcrush-native"
 
-PACKAGES_prepend = " ${PN}-levels-bonus1 ${PN}-levels-bonus2 "
-
-SRC_URI = "${SOURCEFORGE_MIRROR}/super-tux/supertux-${PV}.tar.bz2 \
-#           file://supertux-qvga-gfx.tar.bz2 \
-           file://install-no-overwrite.patch \
+SRC_URI += " \
            file://supertux-smallsize-data.tar.bz2 \
 	   file://gp2x.patch \
 	   file://img-resize.sh \
-	   file://supertux.png \
-	   file://supertux.desktop \
-#	   file://letters-black.png \
-#	   file://letters-blue.png \
-#	   file://letters-gold.png \
-#	   file://mousecursor.png \
-#	   file://credits.mod \
 	   "
+
 S = "${WORKDIR}/supertux-${PV}"
 
-export SDL_CONFIG = "${STAGING_BINDIR_CROSS}/sdl-config"
-EXTRA_OECONF = "--enable-320x240 --disable-opengl"
-
-inherit autotools sdl
+EXTRA_OECONF += " --enable-320x240 "
 
 do_compile_prepend() {
-#    for f in letters-black.png letters-blue.png letters-gold.png mousecursor.png; do
-#	cp ${WORKDIR}/$f ${S}/data/images/status/
-#    done
     for d in background shared tilesets title worldmap; do
 	cd ${S}/data/images/$d
 	sh ${WORKDIR}/img-resize.sh
@@ -52,10 +30,3 @@ do_install_prepend() {
     rm -f ${S}/data/music/*.ogg
 #    cp ${WORKDIR}/*.mod ${S}/data/music/
 }
-
-FILES_${PN}-levels-bonus1 = "${datadir}/supertux/levels/bonus1 ${datadir}/supertux/levels/worldmaps/bonusisland1.stwm"
-FILES_${PN}-levels-bonus2 = "${datadir}/supertux/levels/bonus2 ${datadir}/supertux/levels/worldmaps/bonusisland2.stwm"
-FILES_${PN} += "${datadir}/supertux"
-
-SRC_URI[md5sum] = "f2fc288459f33d5cd8f645fbca737a63"
-SRC_URI[sha256sum] = "0092588351776626955339caaa62d12ce5954bb80c5f6952f60a122f53c2ad97"
