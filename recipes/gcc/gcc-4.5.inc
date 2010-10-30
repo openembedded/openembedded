@@ -8,7 +8,7 @@ DEPENDS = "mpfr gmp libmpc libelf"
 NATIVEDEPS = "mpfr-native gmp-native libmpc-native"
 
 
-INC_PR = "r16"
+INC_PR = "r17"
 
 SRCREV = "165931"
 PV = "4.5"

@@ -14,6 +14,7 @@ FILES_libssp = "${target_libdir}/libssp.so.*"
 FILES_libgfortran = "${target_libdir}/libgfortran.so.*"
 
 FILES_libgcc = "${target_base_libdir}/libgcc_s.so.1"
+FILES_libgcc-dev = "${target_libdir}/libgcc_s.so"
 
 FILES_libstdc++ = "${target_libdir}/libstdc++.so.*"
 
