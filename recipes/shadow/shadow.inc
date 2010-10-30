@@ -13,7 +13,7 @@ DEPENDS += "${@base_contains('DISTRO_FEATURES', 'pam', 'libpam', '', d)}"
 
 PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
 
-INC_PR = "r17"
+INC_PR = "r18"
 
 # Additional Policy files for PAM
 PAM_SRC_URI = " \
@@ -57,7 +57,7 @@ CFLAGS += "-I../include"
 PACKAGES =+ "${PN}-group"
 RDEPENDS_${PN} += "${PN}-group"
 
-FILES_${PN}-group = "${bindir}/gpasswd ${bindir}/newgrp.shadow ${bindir}/sg ${bindir}/groups"
+FILES_${PN}-group = "${bindir}/gpasswd ${bindir}/newgrp.shadow ${bindir}/sg ${bindir}/groups.shadow"
 
 do_configure_prepend () {
     export CONFIG_SITE="${CONFIG_SITE} ${B}/cachedpaths"
@@ -100,7 +100,7 @@ do_install_append() {
   sed -i 's/MAIL_CHECK_ENAB/#MAIL_CHECK_ENAB/g' ${D}${sysconfdir}/login.defs
 
   install -d ${D}${sbindir} ${D}${base_sbindir} ${D}${base_bindir} 
-  for i in passwd chfn newgrp chsh ; do
+  for i in passwd chfn newgrp groups chsh ; do
     mv ${D}${bindir}/$i ${D}${bindir}/$i.${PN}
   done
 
@@ -145,9 +145,11 @@ pkg_prerm_${PN} () {
 pkg_postinst_${PN}-group () {
    touch /etc/login.defs
    update-alternatives --install ${bindir}/newgrp newgrp newgrp.${PN} 200
+   update-alternatives --install ${bindir}/groups groups groups.${PN} 200
 }
 
 pkg_prerm_${PN}-group () {
     update-alternatives --remove newgrp newgrp.${PN}
+    update-alternatives --remove groups groups.${PN}
 }
 
