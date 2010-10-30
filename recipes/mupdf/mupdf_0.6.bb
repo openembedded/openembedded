@@ -10,6 +10,8 @@ SRC_URI = "http://mupdf.com/download/source/${PN}-${PV}.tar.gz \
            file://mupdf_fix_endianness.patch \
            file://Makerules"
 
+SRC_URI_append_jlime = " file://keybindings.patch "
+
 S = "${WORKDIR}/mupdf"
 
 PACKAGES =+ "${PN}-tools ${PN}-tools-doc "
@@ -21,6 +23,9 @@ FILES_${PN}-tools-doc = "${mandir}/man1/pdfclean.1 ${mandir}/man1/pdfdraw.1 \
 # mupdf crashes (at least on arm) when built with high level of optimization
 # so we need to provide some safe settings
 FULL_OPTIMIZATION = "-O2"
+
+# Compilation is broken with ccache so we disable it.
+CCACHE = ""
 
 do_configure() {
     cp ${WORKDIR}/Makerules ${S}/Makerules

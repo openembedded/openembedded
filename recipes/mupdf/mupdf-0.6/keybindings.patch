@@ -1,0 +1,77 @@
+diff -ru mupdf.orig/apps/pdfapp.c mupdf/apps/pdfapp.c
+--- mupdf.orig/apps/pdfapp.c	2010-05-27 19:31:10.000000000 +0300
++++ mupdf/apps/pdfapp.c	2010-10-18 16:20:24.709000664 +0300
+@@ -444,7 +444,8 @@
+ 		 * Back and forth ...
+ 		 */
+ 
+-	case 'p':
++	case 'b':
++	case '\b':
+ 		panto = PAN_TO_BOTTOM;
+ 		if (app->numberlen > 0)
+ 			app->pageno -= atoi(app->number);
+@@ -452,7 +453,8 @@
+ 			app->pageno--;
+ 		break;
+ 
+-	case 'n':
++	case 'f':
++	case ' ':
+ 		panto = PAN_TO_TOP;
+ 		if (app->numberlen > 0)
+ 			app->pageno += atoi(app->number);
+@@ -460,8 +462,7 @@
+ 			app->pageno++;
+ 		break;
+ 
+-	case 'b':
+-	case '\b':
++	case 'p':
+ 		panto = DONT_PAN;
+ 		if (app->numberlen > 0)
+ 			app->pageno -= atoi(app->number);
+@@ -469,8 +470,7 @@
+ 			app->pageno--;
+ 		break;
+ 
+-	case 'f':
+-	case ' ':
++	case 'n':
+ 		panto = DONT_PAN;
+ 		if (app->numberlen > 0)
+ 			app->pageno += atoi(app->number);
+@@ -480,7 +480,7 @@
+ 
+ 	case 'B':
+ 		panto = PAN_TO_TOP;	app->pageno -= 10; break;
+-	case 'F':
++	case 'N':
+ 		panto = PAN_TO_TOP;	app->pageno += 10; break;
+ 
+ 		/*
+diff -ru mupdf.orig/apps/x11_main.c mupdf/apps/x11_main.c
+--- mupdf.orig/apps/x11_main.c	2010-05-31 01:27:37.000000000 +0300
++++ mupdf/apps/x11_main.c	2010-10-18 16:14:21.891309637 +0300
+@@ -639,17 +639,17 @@
+ 					break;
+ 
+ 				case XK_Left:
+-					len = 1; buf[0] = 'p';
++					len = 1; buf[0] = ',';
+ 					break;
+ 				case XK_Right:
+-					len = 1; buf[0] = 'n';
++					len = 1; buf[0] = '.';
+ 					break;
+ 
+ 				case XK_Page_Up:
+-					len = 1; buf[0] = 'b';
++					len = 1; buf[0] = '+';
+ 					break;
+ 				case XK_Page_Down:
+-					len = 1; buf[0] = ' ';
++					len = 1; buf[0] = '-';
+ 					break;
+ 				}
+ 				if (len)
