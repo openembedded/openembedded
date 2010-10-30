@@ -1,0 +1,11 @@
+diff -ru Xdialog-2.3.1.orig/doc/Makefile.in Xdialog-2.3.1/doc/Makefile.in
+--- Xdialog-2.3.1.orig/doc/Makefile.in	2006-08-18 19:20:19.000000000 +0300
++++ Xdialog-2.3.1/doc/Makefile.in	2010-10-01 11:15:13.230652789 +0300
+@@ -310,7 +310,6 @@
+ uninstall: uninstall-am
+ 
+ install-am: all-am
+-	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+ 
+ installcheck: installcheck-am
+ install-strip:
