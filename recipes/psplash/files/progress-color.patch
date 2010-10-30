@@ -1,0 +1,14 @@
+diff -ru psplash.orig/psplash.h psplash/psplash.h
+--- psplash.orig/psplash.h	2010-10-26 21:47:53.243740823 +0300
++++ psplash/psplash.h	2010-10-26 21:48:26.323739001 +0300
+@@ -59,8 +59,8 @@
+ #define PSPLASH_BACKGROUND_COLOR_G    0x00
+ #define PSPLASH_BACKGROUND_COLOR_B    0x00
+ 
+-#define PSPLASH_PROGRESS_COLOR_R    0xe3
+-#define PSPLASH_PROGRESS_COLOR_G    0x71
++#define PSPLASH_PROGRESS_COLOR_R    0x00
++#define PSPLASH_PROGRESS_COLOR_G    0x00
+ #define PSPLASH_PROGRESS_COLOR_B    0x00
+ 
+ #define PSPLASH_TEXT_COLOR_R    0xff

@@ -13,6 +13,7 @@ S = "${WORKDIR}/psplash"
 
 # This really should be default, but due yo openmoko hack below, can't be easily
 SRC_URI_append_angstrom = " file://logo-math.patch "
+SRC_URI_append_jlime = " file://configurability.patch file://progress-color.patch "
 SRC_URI_append_openmoko = " file://configurability.patch "
 SRC_URI_append_boc01 = " file://psplash_grayscale.patch "
 

@@ -1,7 +1,6 @@
-Index: psplash/psplash.c
-===================================================================
---- psplash.orig/psplash.c	2007-12-06 11:14:23.000000000 +0000
-+++ psplash/psplash.c	2007-12-06 11:19:12.000000000 +0000
+diff -ru psplash.orig/psplash.c psplash/psplash.c
+--- psplash.orig/psplash.c	2010-09-14 15:51:55.000000000 +0300
++++ psplash/psplash.c	2010-10-26 21:34:50.390854814 +0300
 @@ -44,17 +44,17 @@
  
    /* Clear */
@@ -14,8 +13,7 @@ Index: psplash/psplash.c
 +			fb->height - (fb->height/PSPLASH_TEXT_DIVIDER) - h,
  			fb->width,
  			h,
--			0xec, 0xec, 0xe1);
-+			PSPLASH_BACKGROUND_COLOR_R, PSPLASH_BACKGROUND_COLOR_G, PSPLASH_BACKGROUND_COLOR_B);
+ 			0xec, 0xec, 0xe1);
  
    psplash_fb_draw_text (fb,
 -			(fb->width-w)/2, 
@@ -75,14 +73,7 @@ Index: psplash/psplash.c
  {
    char *command;
    int   parsed=0;
-@@ -103,21 +103,21 @@
-   parsed = strlen(string)+1;
- 
-   DBG("got cmd %s", string);
--	
-+
-   if (strcmp(string,"QUIT") == 0)
-     return 1;
+@@ -109,15 +109,15 @@
  
    command = strtok(string," ");
  
@@ -90,15 +81,13 @@ Index: psplash/psplash.c
 +  if (!strcmp(command,"PROGRESS"))
      {
        psplash_draw_progress (fb, atoi(strtok(NULL,"\0")));
--    } 
+     } 
 -  else if (!strcmp(command,"MSG")) 
-+    }
 +  else if (!strcmp(command,"MSG"))
      {
        psplash_draw_msg (fb, strtok(NULL,"\0"));
--    } 
+     } 
 -  else if (!strcmp(command,"QUIT")) 
-+    }
 +  else if (!strcmp(command,"QUIT"))
      {
        return 1;
@@ -126,19 +115,14 @@ Index: psplash/psplash.c
  	err = select(pipe_fd+1, &descriptors, NULL, NULL, &tv);
        else
  	err = select(pipe_fd+1, &descriptors, NULL, NULL, NULL);
--      
+       
 -      if (err <= 0) 
-+
 +      if (err <= 0)
  	{
  	  /*
  	  if (errno == EINTR)
-@@ -158,29 +158,29 @@
- 	  */
- 	  return;
- 	}
--      
-+
+@@ -161,7 +161,7 @@
+       
        length += read (pipe_fd, end, sizeof(command) - (end - command));
  
 -      if (length == 0) 
@@ -146,12 +130,11 @@ Index: psplash/psplash.c
  	{
  	  /* Reopen to see if there's anything more for us */
  	  close(pipe_fd);
- 	  pipe_fd = open(PSPLASH_FIFO,O_RDONLY|O_NONBLOCK);
+@@ -169,19 +169,19 @@
  	  goto out;
  	}
--      
+       
 -      if (command[length-1] == '\0') 
-+
 +      if (command[length-1] == '\0')
  	{
 -	  if (parse_command(fb, command, strlen(command))) 
@@ -159,19 +142,21 @@ Index: psplash/psplash.c
  	    return;
  	  length = 0;
 -	} 
+-      else if (command[length-1] == '\n') 
 +	}
++      else if (command[length-1] == '\n')
+ 	{
+ 	  command[length-1] = '\0';
+-	  if (parse_command(fb, command, strlen(command))) 
++	  if (parse_command(fb, command, strlen(command)))
+ 	    return;
+ 	  length = 0;
+-	} 
++	}
+ 
+ 
      out:
-       end = &command[length];
--    
-+
-       tv.tv_sec = timeout;
-       tv.tv_usec = 0;
--      
-+
-       FD_ZERO(&descriptors);
-       FD_SET(pipe_fd,&descriptors);
-     }
-@@ -188,14 +188,14 @@
+@@ -197,14 +197,14 @@
    return;
  }
  
@@ -181,7 +166,7 @@ Index: psplash/psplash.c
 +main (int argc, char** argv)
  {
    char      *tmpdir;
-   int        pipe_fd, i = 0, angle = 0;
+   int        pipe_fd, i = 0, angle = 0, ret = 0;
    PSplashFB *fb;
    bool       disable_console_switch = FALSE;
 -  
@@ -189,12 +174,9 @@ Index: psplash/psplash.c
    signal(SIGHUP, psplash_exit);
    signal(SIGINT, psplash_exit);
    signal(SIGQUIT, psplash_exit);
-@@ -214,10 +214,10 @@
- 	  angle = atoi(argv[i]);
- 	  continue;
+@@ -225,8 +225,8 @@
  	}
--      
-+
+       
      fail:
 -      fprintf(stderr, 
 -	      "Usage: %s [-n|--no-console-switch][-a|--angle <0|90|180|270>]\n", 
@@ -203,7 +185,7 @@ Index: psplash/psplash.c
  	      argv[0]);
        exit(-1);
      }
-@@ -231,7 +231,7 @@
+@@ -240,7 +240,7 @@
  
    if (mkfifo(PSPLASH_FIFO, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP))
      {
@@ -212,7 +194,7 @@ Index: psplash/psplash.c
  	{
  	  perror("mkfifo");
  	  exit(-1);
-@@ -239,8 +239,8 @@
+@@ -248,8 +248,8 @@
      }
  
    pipe_fd = open (PSPLASH_FIFO,O_RDONLY|O_NONBLOCK);
@@ -223,8 +205,8 @@ Index: psplash/psplash.c
      {
        perror("pipe open");
        exit(-2);
-@@ -253,29 +253,29 @@
-     exit(-1);
+@@ -264,29 +264,29 @@
+   }
  
    /* Clear the background with #ecece1 */
 -  psplash_fb_draw_rect (fb, 0, 0, fb->width, fb->height, 0xec, 0xec, 0xe1);
@@ -233,7 +215,7 @@ Index: psplash/psplash.c
    /* Draw the OH logo  */
 -  psplash_fb_draw_image (fb, 
 -			 (fb->width  - POKY_IMG_WIDTH)/2, 
--			 ((fb->height * 5) / 6 - POKY_IMG_HEIGHT)/2, 
+-			 (fb->height - POKY_IMG_HEIGHT)/2, 
 +  psplash_fb_draw_image (fb,
 +                         (fb->width  - POKY_IMG_WIDTH)/2,
 +                         (fb->height - POKY_IMG_HEIGHT)/2,
@@ -262,11 +244,10 @@ Index: psplash/psplash.c
  
    psplash_main (fb, pipe_fd, 0);
  
-Index: psplash/psplash.h
-===================================================================
---- psplash.orig/psplash.h	2007-12-06 11:15:35.000000000 +0000
-+++ psplash/psplash.h	2007-12-06 11:15:45.000000000 +0000
-@@ -54,6 +54,21 @@
+diff -ru psplash.orig/psplash.h psplash/psplash.h
+--- psplash.orig/psplash.h	2010-09-14 15:51:55.000000000 +0300
++++ psplash/psplash.h	2010-10-26 21:35:17.734271186 +0300
+@@ -55,6 +55,21 @@
  #define TRUE 1
  #endif
  
