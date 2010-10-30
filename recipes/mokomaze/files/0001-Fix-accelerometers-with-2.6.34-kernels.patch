@@ -1,0 +1,38 @@
+From 1075e429b7905ee5a3ecef4315697d057b1e0208 Mon Sep 17 00:00:00 2001
+From: Sebastian Krzyszkowiak <seba.dos1@gmail.com>
+Date: Sat, 30 Oct 2010 17:33:40 +0200
+Subject: [PATCH] Fix accelerometers with 2.6.34+ kernels
+
+---
+ src/accelerometers.c |    8 +++++++-
+ 1 files changed, 7 insertions(+), 1 deletions(-)
+
+diff --git a/src/accelerometers.c b/src/accelerometers.c
+index 8dc0b9b..b704077 100644
+--- a/src/accelerometers.c
++++ b/src/accelerometers.c
+@@ -117,6 +117,12 @@ static FILE *accelerometer_freerunner_open_threshold(const char *mode)
+ 		return fh;
+ 	}
+ 
++	/* Try 2.6.34+ method */
++	fh = fopen("/sys/devices/platform/spi_s3c24xx_gpio.0/spi3.1/threshold", mode);
++	if ( fh != NULL ) {
++		return fh;
++	}
++
+         return NULL;
+ }
+ 
+@@ -270,7 +276,7 @@ AccelHandle *accelerometer_open()
+ 
+         if ( !((arguments.accel_set) && (arguments.accel != ACCEL_FREERUNNER)) )
+         {
+-            #define FREERUNNER_FILE "/dev/input/event3"
++            #define FREERUNNER_FILE "/dev/input/event4"
+             if (stat(FREERUNNER_FILE, &st) == 0)
+             {
+                 accel->fd = open(FREERUNNER_FILE, O_RDONLY, O_NONBLOCK); //, O_RDONLY, 0);
+-- 
+1.7.2.3
+
