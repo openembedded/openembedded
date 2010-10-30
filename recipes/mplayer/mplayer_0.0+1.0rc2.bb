@@ -29,6 +29,7 @@ SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-1.0rc2.tar.bz2 \
            file://pxa_configure.patch \
            file://pxa-video_out.patch \
            file://motion-comp-pld.patch \
+           file://mipsel-support.patch \
 	   file://ivtv-fix.patch "
 
 # This is required for the collie machine only as all stacks in that

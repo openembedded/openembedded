@@ -1,0 +1,46 @@
+diff -ru MPlayer-1.0rc2.orig/configure MPlayer-1.0rc2/configure
+--- MPlayer-1.0rc2.orig/configure	2007-10-07 22:49:33.000000000 +0300
++++ MPlayer-1.0rc2/configure	2010-10-19 19:28:37.126493496 +0300
+@@ -1233,7 +1233,7 @@
+   # host's CPU/instruction set
+    host_arch=`uname -p 2>&1`
+    case "$host_arch" in
+-   i386|sparc|ppc|alpha|arm|sh3|mips|vax)
++   i386|sparc|ppc|alpha|arm|sh3|mips|mipsel|vax)
+      ;;
+    powerpc) # Darwin returns 'powerpc'
+      host_arch=ppc
+@@ -1266,6 +1266,7 @@
+       s390) host_arch=s390 ;;
+       s390x) host_arch=s390x ;;
+       mips*) host_arch=mips ;;
++      mipsel*) host_arch=mipsel ;;
+       vax) host_arch=vax ;;
+       *) host_arch=UNKNOWN ;;
+     esac
+@@ -1631,7 +1632,7 @@
+ fi
+ 
+ 
+-_arch_all='X86 X86_32 X86_64 IA64 SPARC ARM ARMV4L SH3 POWERPC PPC ALPHA SGI_MIPS PA_RISC S390 S390X VAX BFIN GENERIC'
++_arch_all='X86 X86_32 X86_64 IA64 SPARC ARM ARMV4L SH3 POWERPC PPC ALPHA SGI_MIPS MIPSEL PA_RISC S390 S390X VAX BFIN GENERIC'
+ case "$host_arch" in
+   i[3-9]86|x86|x86pc|k5|k6|k6-2|k6-3|pentium*|athlon*|i586-i686)
+   _arch='X86 X86_32'
+@@ -2206,6 +2207,16 @@
+ 
+     ;;
+ 
++  mipsel)
++    _arch='MIPSEL'
++    _target_arch='ARCH_MIPSEL = yes'
++    iproc='mipsel'
++    proc=''
++    _march='-march=mips32'
++    _mcpu=''
++    _optimizing=''
++    ;;
++
+   hppa)
+     _arch='PA_RISC'
+     _target_arch='ARCH_PA_RISC = yes'
