@@ -10,7 +10,7 @@ SRC_URI = "http://mupdf.com/download/source/${PN}-${PV}.tar.gz \
            file://mupdf_fix_endianness.patch \
            file://Makerules"
 
-SRC_URI_append_jlime = " file://keybindings.patch "
+SRC_URI_append_jlime = " file://keybindings.patch file://mupdf.desktop "
 
 S = "${WORKDIR}/mupdf"
 
@@ -34,6 +34,10 @@ do_configure() {
     # comment out following two lines if you need support for CJK
     sed -i 's:^\t\$.GENDIR./font_cjk.c::g' ${S}/Makefile
     echo "CFLAGS += -DNOCJK" >> ${S}/Makerules
+}
+
+do_configure_append_jlime() {
+    mv ${WORKDIR}/mupdf.desktop ${S}/debian/
 }
 
 do_compile() {

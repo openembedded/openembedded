@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=MuPDF
+GenericName=PDF File Viewer
+Comment=PDF File Viewer
+Exec=mupdf-loader
+Icon=mupdf.png
+Terminal=false
+Type=Application
+MimeType=application/pdf;pplication/x-pdf;
+Categories=Viewer;Graphics;
