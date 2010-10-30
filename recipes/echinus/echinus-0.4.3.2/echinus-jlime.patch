@@ -1,0 +1,203 @@
+diff -ru echinus-0.4.3.2.orig/config.h echinus-0.4.3.2/config.h
+--- echinus-0.4.3.2.orig/config.h	2010-04-10 16:53:08.000000000 +0300
++++ echinus-0.4.3.2/config.h	2010-10-26 16:03:13.089263340 +0300
+@@ -1,33 +1,32 @@
+ /* See LICENSE file for copyright and license details. */
+ #define BARPOS			StrutsOn /* BarTop, BarOff */
+ #define BORDERPX		"3"
+-#define NF_OPACITY "0.9"
+-#define FONT		"fixed-9"
+-#define NORMBORDERCOLOR		"#cccccc"
+-#define NORMBUTTONCOLOR		"#cccccc"
+-#define NORMBGCOLOR		"#cccccc"
+-#define NORMFGCOLOR		"#000000"
+-#define SELBORDERCOLOR		"#0066ff"
+-#define SELBUTTONCOLOR		"#0066ff"
+-#define SELBGCOLOR		"#0066ff"
++#define NF_OPACITY 		"0.9"
++#define FONT			"fixed-9"
++#define NORMBORDERCOLOR		"#000000"
++#define NORMBUTTONCOLOR		"#ffffff"
++#define NORMBGCOLOR		"#000000"
++#define NORMFGCOLOR		"#ffffff"
++#define SELBORDERCOLOR		"#000000"
++#define SELBUTTONCOLOR		"#ffffff"
++#define SELBGCOLOR		"#000000"
+ #define SELFGCOLOR		"#ffffff"
+-#define ICONPIXMAP "iconify.xbm"
+-#define MAXPIXMAP "max.xbm"
+-#define CLOSEPIXMAP "close.xbm"
+-#define MINWIDTH 12
+-#define MINHEIGHT 12
+-#define TITLEHEIGHT "0"
+-#define COMMAND "xterm"
++#define ICONPIXMAP 		"iconify.xbm"
++#define MAXPIXMAP		"max.xbm"
++#define CLOSEPIXMAP 		"close.xbm"
++#define MINWIDTH 		12
++#define MINHEIGHT 		12
++#define TITLEHEIGHT 		"0"
++#define COMMAND 		"rxvt"
+ #define MWFACT			0.6	/* master width factor [0.1 .. 0.9] */
+ #define SNAP			5	/* snap pixel */
++
+ Layout layouts[] = {
+ 	/* symbol		function */
+-	{ "i",		ifloating }, /* first entry is default */
+-	{ "t",		tile }, 
+ 	{ "m",		monocle }, 
+-	{ "b",		bstack }, 
+ 	{ "f",		floating },
+ };
++
+ #define NMASTER 1 /* number of windows in master area */
+ #define MODKEY Mod1Mask /* key to press while moving */
+ #define DECORATETILED "0" /* set to 1 to draw titles in tiled layouts */
+diff -ru echinus-0.4.3.2.orig/echinus.c echinus-0.4.3.2/echinus.c
+--- echinus-0.4.3.2.orig/echinus.c	2010-04-10 16:53:08.000000000 +0300
++++ echinus-0.4.3.2/echinus.c	2010-10-26 16:03:13.089263340 +0300
+@@ -2000,7 +2000,7 @@
+ 
+ 	/* init resource database */
+ 	XrmInitialize();
+-	snprintf(conf, 255, "%s/%s", getenv("HOME"), "/.echinus");
++	snprintf(conf, 255, "%s", "/etc/echinus");
+ 	chdir(conf);
+ 	xrdb = XrmGetFileDatabase("echinusrc");
+ 	if(!xrdb) {
+diff -ru echinus-0.4.3.2.orig/echinusrc echinus-0.4.3.2/echinusrc
+--- echinus-0.4.3.2.orig/echinusrc	2010-04-10 16:53:08.000000000 +0300
++++ echinus-0.4.3.2/echinusrc	2010-10-26 16:03:34.809262037 +0300
+@@ -1,12 +1,12 @@
+-Echinus*selected.border: #262626
+-Echinus*selected.button: #d3d7cf
+-Echinus*selected.bg: #262626
+-Echinus*selected.fg: #d3d7cf
+-
+-Echinus*normal.border: #262626
+-Echinus*normal.button: #262626
+-Echinus*normal.bg: #262626
+-Echinus*normal.fg: #b0b4ac
++Echinus*selected.border: #000000
++Echinus*selected.button: #ffffff
++Echinus*selected.bg: #000000
++Echinus*selected.fg: #ffffff
++
++Echinus*normal.border: #000000
++Echinus*normal.button: #ffffff
++Echinus*normal.bg: #000000
++Echinus*normal.fg: #ffffff
+ 
+ Echinus*border: 1
+ 
+@@ -16,82 +16,43 @@
+ 
+ Echinus*sloppy: 0
+ Echinus*opacity: 0.8
+-Echinus*decoratetiled: 0
+-Echinus*hidebastards: 0
+-Echinus*mwfact: 0.6
+-Echinus*nmaster: 1
++Echinus*hidebastards: 1
+ 
+ Echinus*font: fixed-9
+ Echinus*modkey: A
+ 
+-Echinus*deflayout: i
++Echinus*deflayout: m
+ 
+-Echinus*tags.number: 7
++Echinus*tags.number: 2
+ Echinus*tags.name0: main
+-Echinus*tags.name1: web
+-Echinus*tags.name2: doc
+-Echinus*tags.name3: dev
+-Echinus*tags.name4: scr
+-Echinus*tags.name5: gfx
+-Echinus*tags.name6: misc
+-
+-Echinus*tags.layout1: m
+-Echinus*tags.layout3: b
++Echinus*tags.name1: desk
+ 
+ Echinus*togglestruts: A + b
+-Echinus*togglemonitor: A + grave
+-Echinus*focusnext: A + j
+-Echinus*focusprev: A + k
+-Echinus*viewprevtag: A + Tab
+-Echinus*viewlefttag: AS + Left
+-Echinus*viewrighttag: AS + Right
++Echinus*focusnext: C + Tab
++Echinus*focusprev: CS + Tab
+ Echinus*quit: CA + q
+ Echinus*restart: AS + q = echinus
+-Echinus*killclient: AS + c
++Echinus*killclient: A + F8
+ Echinus*togglefloating: A + space
+-Echinus*zoom: A + Return
+ 
+-Echinus*view0: A + F1
+-Echinus*view1: A + F2
+-Echinus*view2: A + F3
+-Echinus*view3: A + F4
+-Echinus*view4: A + F5
+-Echinus*view5: A + F6
+-
+-Echinus*tag0: AS + 1
+-Echinus*tag1: AS + 2
+-Echinus*tag2: AS + 3
+-Echinus*tag3: AS + 4
+-Echinus*tag4: AS + 5
+-Echinus*tag5: AS + 6
+-
+-Echinus*toggleview4: W + F4
+-Echinus*focusview6: A + s
+-
+-Echinus*setlayoutm: A + m
+-Echinus*setlayoutf: A + f
+-Echinus*setlayouti: A + i
+-Echinus*setlayoutt: A + r
+-Echinus*setlayoutb: A + w
+-
+-Echinus*moveright: A + d = 5
+-Echinus*moveleft: A + a = -5
+-Echinus*moveup: A + w = 0 -5
+-Echinus*movedown: A + s = 0 5
+-Echinus*resizedecx: AS + a = 0 0 -5 0
+-Echinus*resizedecy: AS + s = 0 0 0 -5
+-Echinus*resizeincx: AS + d = 0 0 5 0
+-Echinus*resizeincy: AS + w = 0 0 0 5
+-
+-Echinus*spawn0: A + t = xterm
+-
+-Echinus*decmwfact: A + h = -0.05
+-Echinus*incmwfact: A + l = +0.05
+-Echinus*decnmaster: AS + j = -1
+-Echinus*incnmaster: AS + k = +1
+-
+-Echinus*command: xterm
+-
+-Echinus*rule0: Firefox.* web 0 1
+-Echinus*rule4: Mplayer.* NULL 1 1
+-Echinus*rule5: Gimp.* gfx 1 1
++Echinus*moveright: A + Right = 5
++Echinus*moveleft: A + Left = -5
++Echinus*moveup: A + Up = 0 -5
++Echinus*movedown: A + Down = 0 5
++Echinus*resizedecx: AS + Left = 0 0 -5 0
++Echinus*resizedecy: AS + Down = 0 0 0 -5
++Echinus*resizeincx: AS + Right = 0 0 5 0
++Echinus*resizeincy: AS + Up = 0 0 0 5
++
++Echinus*spawn0: A + t = rxvt
++Echinus*spawn1: S + Execute = jlime-config poweroff
++Echinus*spawn2: Execute = echo mem > /sys/power/state
++Echinus*spawn3: Super_L = if [ `wmctrl -d | head -1 | cut -d" " -f3` = "-" ]; then wmctrl -s 0; else wmctrl -s 1; fi
++
++Echinus*command: rxvt
++
++# Slightly hackish, we ensure all windows end up in workspace 1
++# leaving workspace 2 free for matchbox-desktop.
++Echinus*rule0: .* main 0 0
++Echinus*rule1: Desktop.* main 1 0
++Echinus*rule2: floating.* main 1 0

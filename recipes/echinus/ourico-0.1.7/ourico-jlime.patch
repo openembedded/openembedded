@@ -1,0 +1,174 @@
+diff -ru ourico-0.1.7.orig/config.h ourico-0.1.7/config.h
+--- ourico-0.1.7.orig/config.h	2010-03-06 18:05:36.000000000 +0200
++++ ourico-0.1.7/config.h	2010-09-29 21:36:05.645988788 +0300
+@@ -2,9 +2,9 @@
+ 
+ /* appearance */
+ #define FONT			"fixed-9"
+-#define NORMBGCOLOR             "#262626"
+-#define NORMFGCOLOR             "#a0a39c"
+-#define NORMBORDERCOLOR             "#a0a39c"
+-#define SELBGCOLOR              "#262626"
+-#define SELFGCOLOR              "#d3d7cf"
+-#define SELBORDERCOLOR              "#d3d7cf"
++#define NORMBGCOLOR             "#000000"
++#define NORMFGCOLOR             "#EEEEEC"
++#define NORMBORDERCOLOR         "#000000"
++#define SELBGCOLOR              "#000000"
++#define SELFGCOLOR              "#EEEEEC"
++#define SELBORDERCOLOR          "#000000"
+diff -ru ourico-0.1.7.orig/ourico.c ourico-0.1.7/ourico.c
+--- ourico-0.1.7.orig/ourico.c	2010-03-06 18:05:36.000000000 +0200
++++ ourico-0.1.7/ourico.c	2010-09-30 12:13:57.017977658 +0300
+@@ -223,8 +223,6 @@
+ 	}
+ 	if(w > dc.w)
+ 		return; /* too long */
+-        if(center)
+-                x = dc.x + dc.w/2 - w/2;
+         while(x <= 0)
+                 x = dc.x++;
+         XftColor *c;
+@@ -327,8 +325,8 @@
+ 	XFreeModifiermap(modmap);
+         /* init resources */
+         XrmInitialize();
+-        chdir(getenv("HOME"));
+-        xrdb = XrmGetFileDatabase(".ouricorc");
++        chdir("/etc/echinus");
++        xrdb = XrmGetFileDatabase("ouricorc");
+         if(!xrdb)
+             eprint("echinus: cannot open configuration file\n");
+ 
+@@ -502,23 +500,6 @@
+     deskname = getutf8prop(root, net_desktop_names, &ndesknames); 
+ }
+ 
+-int
+-drawclock() {
+-	time_t t;
+-	time(&t);
+-	struct tm *tp = localtime(&t);
+-	char s[20];
+-	if(!showclock)
+-	    return 0;
+-	bzero(s, 20);
+-	strftime(s, 20, clockformat, tp);
+-	dc.w = textw(s);
+-	dc.x = mw - dc.w;
+-	drawtext(s, dc.desk, False, border);
+-	XCopyArea(dpy, dc.drawable, win, dc.gc, dc.x, dc.y, mw, mh, dc.x, dc.y);
+-	return dc.w;
+-}
+-
+ void
+ drawme(){
+     int ww = mw;
+@@ -534,7 +515,7 @@
+     int *wcd;
+     int wn = 0;
+     drawtext(NULL, dc.norm, False, False);
+-    ww = mw - drawclock();
++    ww = mw;
+     dc.x = 0;
+     for(i = 0; i < nclients && list[i]; i++){
+         if(list[i] == win)
+@@ -547,27 +528,10 @@
+         XFree(wcd);
+ 	XSelectInput(dpy, list[i], PropertyChangeMask);
+     }
+-    if(showtagbar && seltags){
+-        for(i = 0; i < ndesknames; i++){
+-            dc.w = textw(deskname[i]);
+-            if(seltags[i])
+-                drawtext(deskname[i], dc.sel, False, border);
+-            else
+-                drawtext(deskname[i], dc.norm, False, border);
+-            dc.x += dc.w;
+-        }
+-    }
+-    else
+-        if(showdesk) {
+-            dc.w = textw(deskname[*curdesk]);
+-            drawtext(deskname[*curdesk], dc.desk, False, border);
+-            dc.x += dc.w;
+-        }
+     if(wn)
+         dc.w = (ww-dc.x)/wn;
+     else
+         nclients = 0;
+-    if(focusonly && wn)
+         wn = 1;
+     for(i = 0; i < nclients && list[i] && w; i++){
+         wcd = getatom(list[i], net_window_desktop, NULL);
+@@ -680,26 +644,6 @@
+     wcd = 0;
+     wn = 0;
+     x = 0;
+-    if(showtagbar && seltags){
+-        for(i = 0; i < ndesknames ; i++){
+-            x += textw(deskname[i]);
+-            if(ev.x < x){
+-                    switchdesktop(i);
+-                    return;
+-            }
+-        }
+-    }
+-    else
+-    if(showdesk){
+-        x += textw(deskname[*curdesk]);
+-        if(ev.x < x){
+-            if(ev.button == Button1 && *curdesk < *ndesk-1)
+-                switchdesktop(*curdesk+1);
+-            if(ev.button == Button3 && *curdesk)
+-                switchdesktop(*curdesk-1);
+-            return;
+-        }
+-    }
+     for(i = 0; i < nclients && list[i]; i++){
+         if(list[i] == win)
+             continue;
+@@ -772,7 +716,6 @@
+                                 continue;
+                         eprint("select failed\n");
+                 }
+-		drawclock();
+ 	}
+ }
+ 
+--- ourico-0.1.7.orig/ouricorc	2010-03-06 18:05:36.000000000 +0200
++++ ourico-0.1.7/ouricorc	2010-09-30 14:41:33.000000000 +0300
+@@ -1,21 +1,20 @@
+-Ourico*selected.border: #676365
+-Ourico*selected.fg: #d3d7cf
+-Ourico*selected.bg: #3e4446
+-Ourico*normal.border: #555753
+-Ourico*normal.bg: #2e3436
+-Ourico*normal.fg: #d3d7cf
++Ourico*selected.border: #000000
++Ourico*selected.fg: #EEEEEC
++Ourico*selected.bg: #000000
++Ourico*normal.border: #000000
++Ourico*normal.bg: #000000
++Ourico*normal.fg: #EEEEEC
+ 
+-Ourico*deskname.bg: #3e4446
+-Ourico*deskname.fg: #d3d7cf
+-Ourico*deskname.border: #555753
++Ourico*deskname.bg: #000000
++Ourico*deskname.fg: #EEEEEC
++Ourico*deskname.border: #000000
+ 
+-Ourico*font: snap
++Ourico*font: "DejaVu Sans:size=11"
+ 
+-Ourico*height: 13
++Ourico*height: 16
+ Ourico*width: 0
+ Ourico*borderpx: 0
+ 
+-Ourico*showdesktop: 1
+-Ourico*showtagbar: 0
++Ourico*seltags: 1
+ Ourico*focusonly: 0
+ Ourico*bottom: 0
