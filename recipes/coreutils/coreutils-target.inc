@@ -2,17 +2,17 @@ EXTRA_AUTORECONF += "-I ${S}/m4"
 SRC_URI += "file://onceonly.m4"
 
 # [ gets a special treatment and is not included in this
-bindir_progs = "basename cksum comm csplit cut df dir dircolors dirname du \
+bindir_progs = "basename cksum comm csplit cut dir dircolors dirname du \
 		env expand expr factor fmt fold groups head hostid id install \
-		join link logname md5sum mkfifo nice nl nohup od paste pathchk \
+		join link logname md5sum mkfifo nl nohup od paste pathchk \
 		pinky pr printenv printf ptx readlink seq sha1sum shred sort \
 		split stat sum tac tail tee test tr tsort tty unexpand uniq \
 		unlink users vdir wc who whoami yes sha256sum sha512sum timeout \
 		"
 
 # hostname gets a special treatment and is not included in this
-base_bindir_progs = "cat chgrp chmod chown cp date dd echo false kill \
-		     ln ls mkdir mknod mv pwd rm rmdir sleep stty sync touch \
+base_bindir_progs = "cat chgrp chmod chown cp date dd df echo false kill \
+		     ln ls mkdir mknod mv nice pwd rm rmdir sleep stty sync touch \
 		     true uname \
 		     "
 
