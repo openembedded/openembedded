@@ -1,0 +1,21 @@
+diff -ru gmu-0.7.1.orig/src/hw_nanonote.c gmu-0.7.1/src/hw_nanonote.c
+--- gmu-0.7.1.orig/src/hw_nanonote.c	2010-03-28 19:44:15.000000000 +0300
++++ gmu-0.7.1/src/hw_nanonote.c	2010-10-24 23:51:16.761573283 +0300
+@@ -46,7 +46,7 @@
+ 	FILE *f;
+ 
+ 	printf("hw_nanonote: Display off requested.\n");
+-	if ((f = fopen("/sys/class/lcd/gpm940b0-lcd/lcd_power", "w"))) {
++	if ((f = fopen("/sys/class/lcd/ili8960-lcd/lcd_power", "w"))) {
+ 		fprintf(f, "4\n");
+ 		fclose(f);
+ 	}
+@@ -57,7 +57,7 @@
+ 	FILE *f;
+ 
+ 	printf("hw_nanonote: Display on requested.\n");
+-	if ((f = fopen("/sys/class/lcd/gpm940b0-lcd/lcd_power", "w"))) {
++	if ((f = fopen("/sys/class/lcd/ili8960-lcd/lcd_power", "w"))) {
+ 		fprintf(f, "0\n");
+ 		fclose(f);
+ 	}

@@ -1,0 +1,16 @@
+diff -ru gmu-0.7.1.orig/src/core.c gmu-0.7.1/src/core.c
+--- gmu-0.7.1.orig/src/core.c	2010-07-01 10:49:43.000000000 +0300
++++ gmu-0.7.1/src/core.c	2010-10-03 21:18:03.458979081 +0300
+@@ -556,9 +556,9 @@
+ 	hw_detect_device_model();
+ 	printf("gmu: Detected device: %s\n", hw_get_device_model_name());
+ 
+-	if (!getcwd(base_dir, 255)) snprintf(base_dir, 255, ".");
+-	sys_config_dir = base_dir;
+-	config_dir = base_dir;
++	strcpy(base_dir, "/usr/lib/gmu");
++	sys_config_dir = "/etc/gmu";
++	config_dir = "/etc/gmu";
+ 
+ 	for (i = 1; argv[i]; i++) {
+ 		if (argv[i][0] == '-') {

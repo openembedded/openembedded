@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=GMU
+GenericName=Music Player
+Icon=audio-player
+Categories=AudioVideo;Audio;Player;GTK;
+Exec=gmu
+Terminal=false
+MimeType=application/x-ogg;audio/mp3;audio/mpeg;audio/ogg;audio/x-flac;audio/x-mp3;audio/x-mpeg;application/ogg;audio/x-vorbis+ogg;
