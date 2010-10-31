@@ -5,7 +5,7 @@ PRIORITY = "optional"
 LICENSE = "GPLv3"
 DEPENDS = "libsdl-ttf libsdl-image ode"
 RDEPENDS_${PN} = "ttf-liberation-mono libpng"
-RDEPENDS_${PN}_shr = "ttf-liberation-mono libpng fsoraw"
+RRECOMMENDS_${PN}_shr = "fsoraw"
 PV = "0.5.5+git8"
 PR = "r6"
 
