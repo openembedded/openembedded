@@ -4,7 +4,7 @@ require linux-openmoko.inc
 KERNEL_RELEASE="2.6.34.7"
 
 SRCREV = "e4182f3551f1b8e8f8bd07a2d68e49a0ec4cd04a"
-OEV = "oe8"
+OEV = "oe9"
 PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCPV}"
 
 SRC_URI = "\
@@ -26,6 +26,7 @@ SRC_URI = "\
   file://0008-Use-unlocked_ioctl-rather-than-ioctl.patch \
   file://0001-glamo-display-Enable-FIFO-stage-for-the-LCD-engine-s.patch \
   file://0009-glamo-display-fix-WSOD-for-242-timming.patch \
+  file://0001-Enable-3D-engine.patch \
 # patches from Radek Polak used in qtmoko
   file://0001-accels.patch.patch \
   file://0002-usbhost.patch.patch \

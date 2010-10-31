@@ -1,0 +1,101 @@
+From 8199fde74f278d013d50e293d1cbcf284db27a61 Mon Sep 17 00:00:00 2001
+From: Thomas White <taw@bitwiz.org.uk>
+Date: Sun, 6 Jun 2010 21:36:01 +0200
+Subject: [PATCH] Enable 3D engine
+
+Turns out, this makes Mesa work a lot better.
+
+Signed-off-by: Thomas White <taw@bitwiz.org.uk>
+Signed-off-by: Martin Jansa <Martin.Jansa@gmail.com>
+---
+ drivers/gpu/drm/glamo/glamo-cmdq.c |    6 +++++-
+ drivers/mfd/glamo-core.c           |   25 +++++++++++++++++++++++++
+ 2 files changed, 30 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/gpu/drm/glamo/glamo-cmdq.c b/drivers/gpu/drm/glamo/glamo-cmdq.c
+index c425e46..05d3c20 100644
+--- a/drivers/gpu/drm/glamo/glamo-cmdq.c
++++ b/drivers/gpu/drm/glamo/glamo-cmdq.c
+@@ -462,10 +462,14 @@ int glamo_cmdq_init(struct glamodrm_handle *gdrm)
+ 
+ 	init_MUTEX(&gdrm->add_to_ring);
+ 
+-	/* Enable 2D and 3D */
++	/* Enable 2D */
+ 	glamo_engine_enable(gdrm->glamo_core, GLAMO_ENGINE_2D);
+ 	glamo_engine_reset(gdrm->glamo_core, GLAMO_ENGINE_2D);
+ 
++	/* Enable 3D */
++	glamo_engine_enable(gdrm->glamo_core, GLAMO_ENGINE_3D);
++	glamo_engine_reset(gdrm->glamo_core, GLAMO_ENGINE_3D);
++
+ 	/* Start by zeroing the command queue memory */
+ 	for ( i=0; i<GLAMO_CMDQ_SIZE; i+=2 ) {
+ 		iowrite16(0x0000, gdrm->cmdq_base+i);
+diff --git a/drivers/mfd/glamo-core.c b/drivers/mfd/glamo-core.c
+index e558adc..51101f5 100644
+--- a/drivers/mfd/glamo-core.c
++++ b/drivers/mfd/glamo-core.c
+@@ -522,6 +522,23 @@ static const struct glamo_engine_reg_set glamo_2d_regs[] = {
+ 	}
+ };
+ 
++static const struct glamo_engine_reg_set glamo_3d_regs[] = {
++	{ GLAMO_REG_CLOCK_3D,
++	GLAMO_CLOCK_3D_EN_M8CLK |
++	GLAMO_CLOCK_3D_DG_M8CLK,
++
++	GLAMO_CLOCK_3D_EN_ECLK |
++	GLAMO_CLOCK_3D_DG_ECLK,
++
++	GLAMO_CLOCK_3D_EN_RCLK |
++	GLAMO_CLOCK_3D_DG_RCLK
++	},
++	{ GLAMO_REG_CLOCK_GEN5_1,
++	0,
++	GLAMO_CLOCK_GEN51_EN_DIV_GCLK,
++	}
++};
++
+ static const struct glamo_engine_reg_set glamo_cmdq_regs[] = {
+ 	{ GLAMO_REG_CLOCK_2D,
+ 	GLAMO_CLOCK_2D_EN_M6CLK,
+@@ -543,6 +560,8 @@ static const struct glamo_engine_desc glamo_engines[] = {
+ 					glamo_mmc_regs),
+ 	[GLAMO_ENGINE_2D] = GLAMO_ENGINE("2D", GLAMO_HOSTBUS2_MMIO_EN_2D,
+ 					glamo_2d_regs),
++	[GLAMO_ENGINE_3D] = GLAMO_ENGINE("3D", GLAMO_HOSTBUS2_MMIO_EN_3D,
++					glamo_3d_regs),
+ 	[GLAMO_ENGINE_CMDQ] = GLAMO_ENGINE("CMDQ", GLAMO_HOSTBUS2_MMIO_EN_CQ,
+ 					glamo_cmdq_regs),
+ };
+@@ -566,6 +585,7 @@ int __glamo_engine_enable(struct glamo_core *glamo, enum glamo_engine engine)
+ 	case GLAMO_ENGINE_LCD:
+ 	case GLAMO_ENGINE_MMC:
+ 	case GLAMO_ENGINE_2D:
++	case GLAMO_ENGINE_3D:
+ 	case GLAMO_ENGINE_CMDQ:
+ 		break;
+ 	default:
+@@ -612,6 +632,7 @@ int __glamo_engine_disable(struct glamo_core *glamo, enum glamo_engine engine)
+ 	case GLAMO_ENGINE_MMC:
+ 	case GLAMO_ENGINE_2D:
+ 	case GLAMO_ENGINE_CMDQ:
++	case GLAMO_ENGINE_3D:
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -704,6 +725,10 @@ static const struct glamo_script reset_regs[] = {
+ 	[GLAMO_ENGINE_2D] = {
+ 		GLAMO_REG_CLOCK_2D, GLAMO_CLOCK_2D_RESET
+ 	},
++	[GLAMO_ENGINE_3D] = {
++		GLAMO_REG_CLOCK_3D, GLAMO_CLOCK_3D_BACK_RESET |
++		                    GLAMO_CLOCK_3D_FRONT_RESET
++	},
+ 	[GLAMO_ENGINE_JPEG] = {
+ 		GLAMO_REG_CLOCK_JPEG, GLAMO_CLOCK_JPEG_RESET
+ 	},
+-- 
+1.7.3.2
+
