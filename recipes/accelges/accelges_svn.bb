@@ -9,7 +9,7 @@ PR = "r4"
 PE = "1"
 SRCREV = "206"
 
-DEPENDS = "dbus dbus-glib libxrandr libnotify notification-daemon curl gtk+"
+DEPENDS = "curl dbus dbus-glib gtk+ libnotify libxrandr notification-daemon"
 RDEPENDS_${PN} = "notification-daemon"
 
 SRC_URI = "svn://accelges.googlecode.com/svn/;module=trunk;proto=http"
