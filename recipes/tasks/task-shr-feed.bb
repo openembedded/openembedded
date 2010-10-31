@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r82"
+PR = "r83"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -312,6 +312,7 @@ RDEPENDS_${PN} += "\
 		efm-nav \
 		efm-path \
 		efm-pathbar \
+		setxkbmap \
 "
 
 # this is only usefull on gta02 and on other devices it's trying to pull mesa-dri (not respecting DEFAULT_PROVIDER for virtual/libgl)
