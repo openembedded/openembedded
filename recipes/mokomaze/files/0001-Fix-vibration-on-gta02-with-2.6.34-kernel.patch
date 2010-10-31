@@ -1,0 +1,26 @@
+From a423e4ec58be48a603ab672c3e5d0921b4fff095 Mon Sep 17 00:00:00 2001
+From: Sebastian Krzyszkowiak <seba.dos1@gmail.com>
+Date: Sun, 31 Oct 2010 15:29:12 +0100
+Subject: [PATCH] Fix vibration on gta02 with 2.6.34 kernel
+
+---
+ src/vibro.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/src/vibro.c b/src/vibro.c
+index 97ef0da..aa025d4 100644
+--- a/src/vibro.c
++++ b/src/vibro.c
+@@ -47,6 +47,9 @@ int init_vibro()
+     fvibro = fopen("/sys/devices/platform/neo1973-vibrator.0/leds/neo1973:vibrator/brightness", "w");
+     if (fvibro != NULL) return 0;
+ 
++    fvibro = fopen("/sys/class/leds/gta02::vibrator/brightness", "w");
++    if (fvibro != NULL) return 0;
++
+     fprintf(stderr, "Vibro: can't init.\n");
+     return 1;
+ }
+-- 
+1.7.2.3
+
