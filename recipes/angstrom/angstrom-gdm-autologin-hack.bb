@@ -1,4 +1,5 @@
 DESCRIPTION = "Append Autologin to GDM config (custom.conf)"
+LICENSE = "MIT"
 PR = "r1"
 
 PACKAGE_ARCH = "all"

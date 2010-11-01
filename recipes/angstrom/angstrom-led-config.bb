@@ -1,4 +1,5 @@
 DESCRIPTION = "Configuration files for runtime LED configuration" 
+LICENSE = "MIT"
 
 #PV = "${DISTRO_VERSION}"
 PR = "r9"

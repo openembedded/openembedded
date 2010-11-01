@@ -1,4 +1,5 @@
 DESCRIPTION = "Configuration files for online package repositories aka feeds"
+LICENSE = "MIT"
 
 RRECOMMENDS_${PN} += "opkg"
 

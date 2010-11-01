@@ -1,4 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
+LICENSE = "MIT"
 PR = "r1"
 ALLOW_EMPTY = "1"
 

@@ -1,4 +1,5 @@
 DESCRIPTION="Format a card for omap3 booting"
+LICENSE = "GPLv2"
 SRC_URI = "file://omap3-mkcard.sh"
 
 do_install() {

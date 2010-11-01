@@ -1,4 +1,5 @@
 DESCRIPTION = "Meta package to enable zeroconf audio with pulseaudio"
+LICENSE = "MIT"
 DEPENDS = "avahi pulseaudio"
 RDEPENDS_${PN} = " \
   avahi-daemon \

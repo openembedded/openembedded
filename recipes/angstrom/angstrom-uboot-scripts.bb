@@ -1,4 +1,5 @@
 DESCRIPTION = "Various uboot scripts"
+LICENSE = "MIT"
 
 PR = "r11"
 
