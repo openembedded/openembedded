@@ -8,6 +8,7 @@ EXTRA_OEMAKE = "'SUBDIRS=intl mmalloc libiberty opcodes bfd sim gdb etc utils' L
 # add a depenency on the -sdk versions of them.
 do_configure_append () {
 	cd ${B}
+	oe_runconf
 	oe_runmake configure-host
 	sed -e 's,-lncurses,${STAGING_LIBDIR_NATIVE}/libncurses.a ${STAGING_LIBDIR_NATIVE}/libtinfo.a ,g' -i ${B}/gdb/Makefile
 	sed -e 's,-lz, ${STAGING_LIBDIR_NATIVE}/libz.a ,g' -i ${B}/gdb/Makefile
@@ -16,5 +17,4 @@ do_configure_append () {
 	for SIM in ${B}/sim/*/Makefile; do
 		[ -f $SIM ] && sed -e 's,-lz, ${STAGING_LIBDIR_NATIVE}/libz.a ,g' -i $SIM
 	done
-	oe_runconf
 }
