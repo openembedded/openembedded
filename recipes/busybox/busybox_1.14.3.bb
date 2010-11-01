@@ -1,7 +1,0 @@
-require busybox_1.1x.inc
-PR = "${INC_PR}.1"
-
-DEFAULT_PREFERENCE = "-1"
-
-SRC_URI[md5sum] = "d170bf5f97a41aec3a505eab690d5699"
-SRC_URI[sha256sum] = "e94df4f9063a1951b4e94e76148ed80e921737a89d97bc2c310a2a8927982e90"
