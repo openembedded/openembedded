@@ -431,7 +431,7 @@ ipkg_status_matching() {
 ipkg_status_installed_sd() {
 	local sd="$1"
 	local pkg="$2"
-	ipkg_status_sd $sd $pkg Status | grep -q "Status: install ok installed"
+	ipkg_status_sd $sd $pkg Status | grep -q "Status: install user installed"
 }
 
 ipkg_status_installed_all() {
