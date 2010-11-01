@@ -1,5 +1,5 @@
 # We set INC_PR here, since a change in the kexecboot recipe will need to get picked up by *all* the kernels:
-INC_PR = "r23"
+INC_PR = "r24"
 
 LOGO_SIZE ?= "."
 SRC_URI = "file://${LOGO_SIZE}/logo_linux_clut224.ppm.bz2"
@@ -10,12 +10,13 @@ require linux.inc
 INITRAMFS_IMAGE = "initramfs-kexecboot-klibc-image"
 
 # here we set master console on serial
-CMDLINE = "console=tty1 console=ttyS0,115200n8"
-CMDLINE_poodle = "console=tty1 console=ttyS0,115200n8 fbcon=rotate:1"
-CMDLINE_akita = "console=tty1 console=ttyS0,115200n8 fbcon=rotate:1"
-CMDLINE_collie = "console=tty1 console=ttySA0,115200n8 fbcon=rotate:1 mem=64M"
-CMDLINE_spitz = "console=tty1 console=ttyS0,115200n8 fbcon=rotate:1"
-CMDLINE_hx4700 = "console=tty1 console=ttyS0,115200n8 fbcon=rotate:1"
+CMDLINE_c7x0 = "console=tty1 console=ttyS0,115200n8 ${CMDLINE_DEBUG}"
+CMDLINE_tosa = "console=tty1 console=ttyS0,115200n8 ${CMDLINE_DEBUG}"
+CMDLINE_poodle = "console=tty1 console=ttyS0,115200n8 fbcon=rotate:1 ${CMDLINE_DEBUG}"
+CMDLINE_akita = "console=tty1 console=ttyS0,115200n8 fbcon=rotate:1 ${CMDLINE_DEBUG}"
+CMDLINE_collie = "console=tty1 console=ttySA0,115200n8 fbcon=rotate:1 mem=64M ${CMDLINE_DEBUG}"
+CMDLINE_spitz = "console=tty1 console=ttyS0,115200n8 fbcon=rotate:1 ${CMDLINE_DEBUG}"
+CMDLINE_hx4700 = "console=tty1 console=ttyS0,115200n8 fbcon=rotate:1 ${CMDLINE_DEBUG}"
 
 PACKAGES = ""
 PROVIDES = ""
