@@ -1,0 +1,12 @@
+Index: tasks-0.13/libkoto/ical-util.c
+===================================================================
+--- tasks-0.13.orig/libkoto/ical-util.c	2010-11-01 17:20:30.966937170 +0300
++++ tasks-0.13/libkoto/ical-util.c	2010-11-01 17:20:55.370936493 +0300
+@@ -33,6 +33,7 @@
+     }                                                                   \
+   }
+ 
++#include <config.h>
+ #include "ical-util.h"
+ 
+ #include <glib.h>
