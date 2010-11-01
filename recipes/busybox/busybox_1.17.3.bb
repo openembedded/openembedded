@@ -1,7 +1,5 @@
 require busybox_1.1x.inc
-PR = "${INC_PR}.0"
-
-DEFAULT_PREFERENCE = "-1"
+PR = "${INC_PR}.1"
 
 SRC_URI += "\
   file://busybox-1.17.3-sort.patch  \
