@@ -1,6 +1,6 @@
 DESCRIPTION = "Gabble: a Jabber/XMPP connection manager"
 HOMEPAGE = "http://telepathy.freedesktop.org/wiki/"
-DEPENDS = "glib-2.0 dbus loudmouth telepathy-glib"
+DEPENDS = "glib-2.0 dbus loudmouth telepathy-glib libsoup-2.4"
 LICENSE = "LGPL"
 
 # gabble.manager needs to get regenerated every release, so please don't copy it over blindly
