@@ -26,7 +26,7 @@ ac_cv_alignof_CORBA_long_long=8
 ac_cv_alignof_CORBA_float=4
 ac_cv_alignof_CORBA_double=8
 ac_cv_alignof_CORBA_long_double=8
-ac_cv_alignof_CORBA_pointer=4
+ac_cv_alignof_CORBA_pointer=8
 ac_cv_alignof_CORBA_struct=1
 
 # postgresql
@@ -35,3 +35,9 @@ pgac_cv_alignof_int=4
 pgac_cv_alignof_long=8
 pgac_cv_alignof_long_long_int=8
 pgac_cv_alignof_double=8
+
+# apache
+ac_cv_func_pthread_key_delete=${ac_cv_func_pthread_key_delete=yes}
+apr_cv_process_shared_works=${apr_cv_process_shared_works=no}
+ac_cv_sizeof_ssize_t=${ac_cv_sizeof_ssize_t=4}
+apr_cv_tcp_nodelay_with_cork=${apr_cv_tcp_nodelay_with_cork=yes}
