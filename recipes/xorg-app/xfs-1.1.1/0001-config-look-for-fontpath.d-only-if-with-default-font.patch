@@ -1,0 +1,50 @@
+From 994364d923c32e5b56c0348cc46c7782e9749e8f Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Mon, 1 Nov 2010 10:08:41 +0100
+Subject: [PATCH] config: look for fontpath.d only if --with-default-font-path wasn't specified
+
+* AC_CHECK_FILE doesn't work when cross compiling
+* https://bugs.freedesktop.org/show_bug.cgi?id=31290
+---
+ configure.ac |   24 +++++++++++++-----------
+ 1 files changed, 13 insertions(+), 11 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 99a1ce3..4403e17 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -83,18 +83,20 @@ XORG_FONTROOTDIR
+ # Determine font path to put in config file
+ # Uses --default-font-path if set, otherwise checks for /etc/X11/fontpath.d,
+ # otherwise uses default path copied from xserver configure.ac
+-AC_CHECK_FILE([${sysconfdir}/X11/fontpath.d],
+-	[DEFAULT_FONT_PATH='catalogue:$(sysconfdir)/X11/fontpath.d'],
+-	[
+-	DEFAULT_FONT_PATH='$(FONTROOTDIR)/misc/,$(FONTROOTDIR)/TTF/,$(FONTROOTDIR)/OTF/,$(FONTROOTDIR)/Type1/,$(FONTROOTDIR)/100dpi/,$(FONTROOTDIR)/75dpi/'
+-	case $host_os in
+-        	darwin*)    DEFAULT_FONT_PATH="${DEFAULT_FONT_PATH},/Library/Fonts,/System/Library/Fonts" ;;
+-	esac
+-])
+-
+ AC_ARG_WITH(default-font-path, AS_HELP_STRING([--with-default-font-path=PATH], [Comma separated list of font path entries]),
+-                                [ FONTPATH="$withval" ],
+-                                [ FONTPATH="${DEFAULT_FONT_PATH}" ])
++                                [ FONTPATH="$withval" ], [])
++
++if test "x$FONTPATH" = "x"; then
++	AC_CHECK_FILE([${sysconfdir}/X11/fontpath.d],
++		[FONT_PATH='catalogue:$(sysconfdir)/X11/fontpath.d'],
++		[
++		FONT_PATH='$(FONTROOTDIR)/misc/,$(FONTROOTDIR)/TTF/,$(FONTROOTDIR)/OTF/,$(FONTROOTDIR)/Type1/,$(FONTROOTDIR)/100dpi/,$(FONTROOTDIR)/75dpi/'
++		case $host_os in
++	        	darwin*)    FONT_PATH="${DEFAULT_FONT_PATH},/Library/Fonts,/System/Library/Fonts" ;;
++		esac
++	])
++fi
++
+ AC_SUBST([FONTPATH])
+ 
+ # Option to enable support for starting from inetd
+-- 
+1.7.3.2
+

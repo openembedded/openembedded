@@ -1,0 +1,18 @@
+AC_CHECK_FILE([$srcdir/xkbparse.c] fails while cross compiling
+  | checking for ./xkbparse.c... configure: error: cannot check for file existence when cross compiling
+later found bugreport with similar patch
+https://bugs.freedesktop.org/show_bug.cgi?id=31264
+
+--- xkbcomp-1.2.0.orig/configure.ac	2010-10-30 18:59:33.000000000 +0200
++++ xkbcomp-1.2.0/configure.ac	2010-11-01 08:56:36.000000000 +0100
+@@ -36,9 +36,7 @@
+ 
+ AC_PROG_YACC
+ AC_PATH_PROG([YACC_INST], $YACC)
+-AC_CHECK_FILE([$srcdir/xkbparse.c], [],
+-              [test -z "$YACC_INST" && AC_MSG_ERROR([yacc not found - unable to compile xkbparse.y])])
+-
++test ! -e $srcdir/xkbparse.c -a -z "$YACC_INST" && AC_MSG_ERROR([yacc not found - unable to compile xkbparse.y])
+ 
+ AC_CHECK_FUNCS([strdup strcasecmp])
+ 
