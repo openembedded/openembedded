@@ -1,0 +1,45 @@
+#!/bin/sh
+#
+# Init script to start Apache Felix on BUG devices.
+#
+
+# Location of Java program
+JVM_PATH=/usr/bin/java
+
+# Where OSGi runtime is located
+RUN_DIR=/usr/share/java
+
+# Where log output is directed
+LOG_FILE=/var/log/felix.log
+
+# Where Java JNI libraries are located
+JNI_DIR=/usr/lib/jni
+
+# Max memory JVM should use.
+JVM_MEMORY="-Xmx64M"
+
+# Name and location of OSGi framework to launch
+OSGI_FRAMEWORK_JAR_NAME=/usr/share/java/felix.jar
+
+# Configuration properties used when launching OSGi framework
+OSGI_FRAMEWORK_CONFIG=/usr/share/java/conf/config.properties
+
+EXTRA_ARGS=" $JVM_MEMORY -Dfelix.config.properties=file://$OSGI_FRAMEWORK_CONFIG -jar $OSGI_FRAMEWORK_JAR_NAME"
+
+if [ "$1" = "stop" -o "$1" = "restart" ]; then
+    echo "Stopping Felix."
+    if test -f /var/run/felix.pid ; then
+      start-stop-daemon --oknodo --quiet --stop --retry 5 -p /var/run/felix.pid
+    fi
+fi
+
+if [ "$1" = "start" -o "$1" = "restart" ]; then
+    echo "Starting Apache Felix.  Logging output to $LOG_FILE."
+    cd $RUN_DIR
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$JNI_DIR
+    export DISPLAY=:0.0
+    `start-stop-daemon -S \
+      --make-pidfile --pidfile /var/run/felix.pid \
+          --exec "$JVM_PATH" -- $EXTRA_ARGS > $LOG_FILE 2>&1 &`
+fi
+
