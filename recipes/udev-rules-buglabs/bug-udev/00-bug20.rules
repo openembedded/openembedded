@@ -1,0 +1,23 @@
+# Internal Ethernet lacks EEPROM for MAC address so each reboot it gets
+# random one. In effect it appears as usb0 but we prefer to have it as eth0
+
+ACTION=="add", KERNEL=="omap-backlight", SUBSYSTEM=="platform", RUN+="/sbin/modprobe bug_backlight"
+KERNEL=="ttyS1", SUBSYSTEMS=="tty", RUN+="/etc/udev/scripts/bt_init.sh"
+ACTION=="add", SUBSYSTEM=="bmi", RUN+="/bin/sh /etc/udev/scripts/bmi_eventpipe.sh"
+ACTION=="remove", SUBSYSTEM=="bmi", RUN+="/bin/sh /etc/udev/scripts/bmi_eventpipe.sh"
+KERNEL=="ttyS0", SUBSYSTEMS=="platform",   SYMLINK+="ttyBMI2"
+KERNEL=="ttySC0", SUBSYSTEMS=="platform", SYMLINK+="ttyBMI0"
+KERNEL=="ttySC1", SUBSYSTEMS=="platform", SYMLINK+="ttyBMI3"
+# Whenever the second SD card gets inserted export them as usb-storage
+ACTION=="add" KERNEL=="mmcblk1*", RUN+="/sbin/modprobe g_file_storage file=/dev/%k removable=1"
+ACTION=="remove" KERNEL=="mmcblk1*", RUN+="/sbin/modprobe -r g_file_storage"
+# For Novatel USB 3G (CDMA) Dongle
+ATTRS{idVendor}=="1410", ATTRS{idProduct}=="5030", RUN+="/usr/bin/eject %k"
+ATTRS{idVendor}=="1410", ATTRS{idProduct}=="6000", RUN+="/sbin/modprobe usbserial vendor=0x1410 product=0x6000"
+# For Sprint U301 3g/4g
+ATTRS{idVendor}=="1a40", ATTRS{idProduct}=="0101", RUN+="/usr/bin/eject %k" 
+ATTRS{idVendor}=="16d8", ATTRS{idProduct}=="6008" RUN+="/sbin/modprobe usbserial vendor=0x16d8 product=0x6008"
+# For libertas_sdio named eth1
+SUBSYSTEMS=="sdio", DRIVERS=="libertas_sdio", NAME="wlan0"
+KERNEL=="event*",ATTRS{name}=="twl4030_pwrbutton",SYMLINK+="input/power_button"
+KERNEL=="event*",ATTRS{name}=="omap_twl4030keypad",SYMLINK+="input/user_button"
