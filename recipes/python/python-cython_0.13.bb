@@ -3,10 +3,11 @@ It's designed to bridge the gap between the nice, high-level, easy-to-use world 
 and the messy, low-level world of C."
 SECTION = "devel/python"
 PRIORITY = "optional"
-LICENSE = "GPL"
+LICENSE = "Apache-2.0"
 SRCNAME = "Cython"
 BBCLASSEXTEND = "native"
 NATIVE_INSTALL_WORKS = "1"
+DEPENDS = "python"
 
 SRC_URI = "http://www.cython.org/release/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
