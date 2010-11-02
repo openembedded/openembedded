@@ -43,7 +43,7 @@ do_configure() {
 	gnu-configize --force
 	libtoolize --force
 	#autoreconf --force -i
-	cp ${STAGING_DATADIR}/libtool/config.* ${S}/autotools/
+	cp ${STAGING_DATADIR}/libtool/config.* ${S}/autotools/ || true
 	oe_runconf
 	rm config.log
 	sed -i -e s:-L/usr/lib:-L${STAGING_LIBDIR}/:g vlc-config
@@ -55,4 +55,5 @@ FILES_${PN} += "${bindir}/vlc \
 	${datadir}/vlc/ \
 	"
 
-FILES_${PN}-dbg	+= "${libdir}/vlc/*/.debug"
+FILES_${PN} += "${datadir}/icons"
+FILES_${PN}-dbg	+= "${libdir}/vlc/*/.debug ${libdir}/vlc/plugins/*/.debug"
