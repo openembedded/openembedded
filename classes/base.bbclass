@@ -237,12 +237,6 @@ python base_eventhandler() {
 	from bb import note, error, data
 	from bb.event import getName
 
-	# Only need to output when using 1.8 or lower, the UI code handles it
-	# otherwise
-	if (int(bb.__version__.split(".")[0]) <= 1 and int(bb.__version__.split(".")[1]) <= 8):
-		if msg:
-			note(msg)
-
 	if isinstance(e, bb.event.BuildStarted):
 		bb.data.setVar( 'BB_VERSION', bb.__version__, e.data )
 		statusvars = bb.data.getVar("BUILDCFG_VARS", e.data, 1).split()
