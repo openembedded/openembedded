@@ -49,7 +49,7 @@ def remove(path, recurse=True):
     try:
         os.unlink(path)
     except OSError, exc:
-        if recurse and exc.errno == errno.EISDIR:
+        if recurse and exc.errno in (errno.EISDIR, errno.EPERM):
             shutil.rmtree(path)
         elif exc.errno != errno.ENOENT:
             raise
