@@ -134,6 +134,7 @@ do_install() {
         ! ${ENABLE_WIDEC} || \
             oe_runmake -C widec ${_install_opts}
 
+        rm -f ${D}${libdir}/terminfo
 
         cd narrowc
 

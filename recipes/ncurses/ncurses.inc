@@ -40,12 +40,12 @@ export LD_LIBRARY_PATH = "${STAGING_LIBDIR_NATIVE}"
 
 do_install() {
 	autotools_do_install
+	rm -f ${D}${libdir}/terminfo
 
 	# our ncurses has termcap support
-	ln -sf libncurses.so ${D}${libdir}/libtermcap.so
+	ln -sf libncurses${SOLIBSDEV} ${D}${libdir}/libtermcap${SOLIBSDEV}
 	ln -sf libncurses.a ${D}${libdir}/libtermcap.a
     ln -sf curses.h ${D}${includedir}/ncurses.h
-
 
 	# include some basic terminfo files
 	# stolen ;) from gentoo and modified a bit
@@ -58,8 +58,8 @@ do_install() {
                 then
                         install -d ${D}${sysconfdir}/terminfo/$basedir
                         mv $termfile ${D}${sysconfdir}/terminfo/$basedir/
-                        ln -s /etc/terminfo/$basedir/${x} \
-                                ${D}${datadir}/terminfo/$basedir/${x}
+                        ln -sf ${sysconfdir}/terminfo/$basedir/$x \
+                               ${D}${datadir}/terminfo/$basedir/$x
                 fi
         done
 	# i think we can use xterm-color as default xterm
@@ -94,7 +94,7 @@ PACKAGES =+ "${PN}-tools ${PN}-terminfo"
 FILES_${PN} = "\
   ${bindir}/tput \
   ${bindir}/tset \
-  ${libdir}/lib*.so.* \
+  ${libdir}/lib*${SOLIBS} \
   ${datadir}/tabset \
   ${sysconfdir}/terminfo \
 "
