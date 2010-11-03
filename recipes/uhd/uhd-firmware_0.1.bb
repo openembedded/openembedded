@@ -15,3 +15,6 @@ do_install() {
 PACKAGES = "${PN}"
 FILES_${PN} = ${datadir}/uhd/images
 
+SRC_URI[md5sum] = "8945f57993da07f18568145f17bb5927"
+SRC_URI[sha256sum] = "2a19fa33d5461b44ab25c2f80f4916269d320b8f58988d2d72a0865c1da93132"
+
