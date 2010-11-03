@@ -10,7 +10,7 @@ SRC_URI[sha256sum] = "61c9ea30a17ea40c6ccbfd507026e5c83ad9e0691f221d3667c8e49696
 
 # ffmpeg from git (library version => 52) is required
 # libtool-native must be >= 2.2.4
-DEPENDS += "libdvdcss libdvdread"
+DEPENDS += "libdvdcss libdvdread lua"
 
 EXTRA_OECONF += "\
 	--enable-dvdread \
