@@ -1,17 +1,25 @@
 ##############################################################
 # kernel image parameters. It resides on a seperate flash partition
 #
-KERNEL_IMAGETYPE = "uImage"
-UBOOT_ENTRYPOINT = "30008000"
-
 COMPATIBLE_HOST = "arm.*-linux"
-COMPATIBLE_MACHINE = "om-gta01|om-gta02|om-3d7k"
+COMPATIBLE_MACHINE = "om-gta01|om-gta02"
+
+FILESPATHPKG .= ":linux-${PV}"
+
+# add extra PR for linux-openmoko kernels
+# because we expect OM/SHR patches to be updated quite often and don't want to
+# force everybody using same linux recipe to upgrade
+# make sure PR is set before appending to it
+OM-PR ?= "0"
+PR ?= "r0"
+PR_append = "-oe${OM-PR}"
+
+S = "${WORKDIR}/linux-${PV}"
 
 DESCRIPTION_${PN} = "Linux kernel for the Openmoko Neo GSM Smartphones"
 
 KERNEL_IMAGE_SYMLINK_NAME_om-gta01 = "uImage-GTA01.bin"
 KERNEL_IMAGE_SYMLINK_NAME_om-gta02 = "uImage-GTA02.bin"
-KERNEL_IMAGE_SYMLINK_NAME_om-3d7k  = "uImage-OM3D7K.bin"
 
 CMDLINE = "unused -- bootloader passes ATAG list"
 
@@ -38,21 +46,6 @@ module_autoload_s3cmci = "s3cmci"
 ################################################################
 # extra stuff we need for openmoko that is not in linux.inc
 #
-
-# fix deconfig if we're on GTA01
-do_configure_prepend() {
-        install -m 0644 ${WORKDIR}/defconfig-oe ${WORKDIR}/defconfig
-        if [ ${MACHINE} == "om-gta01" ]; then
-                echo -n "fixing up configuration for Openmoko GTA01..."
-                sed -i -e s,CONFIG_S3C_LOWLEVEL_UART_PORT=2,CONFIG_S3C_LOWLEVEL_UART_PORT=0, ${WORKDIR}/defconfig
-                sed -i -e s,CONFIG_DEBUG_S3C_UART=2,CONFIG_DEBUG_S3C_UART=0, ${WORKDIR}/defconfig
-                echo "done"
-        fi
-        if [ ${MACHINE} == "om-gta02" ]; then
-                echo -n "fixing up configuration for Openmoko GTA02..."
-                echo "done"
-        fi                                                                       
-}
 
 # symlink the latest uImage (should go to linux.inc IMO)
 do_deploy_append() {
