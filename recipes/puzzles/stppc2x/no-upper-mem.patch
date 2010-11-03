@@ -1,0 +1,12 @@
+diff -ru trunk.orig/smalloc.c trunk/smalloc.c
+--- trunk.orig/smalloc.c	2010-10-13 01:03:15.985141137 +0300
++++ trunk/smalloc.c	2010-10-13 01:02:37.993637339 +0300
+@@ -7,7 +7,7 @@
+ // Define this to use nearly 32Mb of upper memory available on the GP2X
+ // which isn't normally accessible (or to fake such memory being available
+ // on non-GP2X hardware).
+-#define OPTION_USE_UPPER_MEMORY
++// #define OPTION_USE_UPPER_MEMORY
+ 
+ // Define this to pretend that "lower memory" is full and see what happens.
+ // #define DEBUG_PRETEND_MEMORY_FULL

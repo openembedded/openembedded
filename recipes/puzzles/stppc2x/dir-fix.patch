@@ -1,0 +1,72 @@
+diff -ru stppc2x-read-only.orig/sdl.c stppc2x-read-only/sdl.c
+--- stppc2x-read-only.orig/sdl.c	2010-10-12 23:52:57.437389988 +0300
++++ stppc2x-read-only/sdl.c	2010-10-12 23:52:22.024060570 +0300
+@@ -193,52 +193,52 @@
+ #define MAX_MOUSE_ACCELERATION          (30)
+ 
+ // Filename of a Truetype, Unicode-capable, monospaced font
+-#define FIXED_FONT_FILENAME	        "fonts/DejaVuSansMono-Bold.ttf"
++#define FIXED_FONT_FILENAME	        "/usr/share/fonts/truetype/DejaVuSansCondensed-Bold.ttf"
+ 
+ // Filename of a Truetype, Unicode-capable, variable-spaced font
+-#define VARIABLE_FONT_FILENAME	        "fonts/DejaVuSansCondensed-Bold.ttf"
++#define VARIABLE_FONT_FILENAME	        "/usr/share/fonts/truetype/DejaVuSansCondensed-Bold.ttf"
+ 
+ // Filename of a bitmap for the inital loading screen
+-#define LOADING_SCREEN_FILENAME         "images/loading.png"
++#define LOADING_SCREEN_FILENAME         "/usr/share/games/stppc2x/images/loading.png"
+ 
+ // Filename of a bitmap for the menu background image
+-#define MENU_BACKGROUND_IMAGE           "images/background.png"
++#define MENU_BACKGROUND_IMAGE           "/usr/share/games/stppc2x/images/background.png"
+ 
+ // Filename of a bitmap for the music credits image
+-#define MENU_MUSIC_CREDITS_IMAGE        "images/music.png"
++#define MENU_MUSIC_CREDITS_IMAGE        "/usr/share/games/stppc2x/images/music.png"
+ 
+ // Filename of a bitmap for the additional credits image
+-#define MENU_ADDITIONAL_CREDITS_IMAGE   "images/elisa.png"
++#define MENU_ADDITIONAL_CREDITS_IMAGE   "/usr/share/games/stppc2x/images/elisa.png"
+ 
+ // Filename of a bitmap for the menu "about" dialog
+-#define MENU_ABOUT_IMAGE                "images/about.png"
++#define MENU_ABOUT_IMAGE                "/usr/share/games/stppc2x/images/about.png"
+ 
+ // Filespec of bitmaps for the game previews
+-#define MENU_PREVIEW_IMAGES             "images/%s.png"
++#define MENU_PREVIEW_IMAGES             "/usr/share/games/stppc2x/images/%s.png"
+ 
+ // Filespec of helpfiles
+-#define MENU_HELPFILES                  "help/%s.txt"
++#define MENU_HELPFILES                  "/usr/share/games/stppc2x/help/%s.txt"
+ 
+ // Filespec of helpfiles
+-#define MENU_KEY_HELPFILE               "help/keys.txt"
++#define MENU_KEY_HELPFILE               "/usr/share/games/stppc2x/help/keys.txt"
+ 
+ // Filespec of helpfiles
+-#define MENU_INGAME_KEY_HELPFILE        "help/ingamekeys.txt"
++#define MENU_INGAME_KEY_HELPFILE        "/usr/share/games/stppc2x/help/ingamekeys.txt"
+ 
+ // Filename of the menu "game description" data
+-#define MENU_DATA_FILENAME              "stppc2x.data"
++#define MENU_DATA_FILENAME              "/usr/share/games/stppc2x/stppc2x.data"
+ 
+ // Filename of the global configuration INI file
+-#define GLOBAL_CONFIG_FILENAME          "stppc2x.ini"
++#define GLOBAL_CONFIG_FILENAME          "/usr/share/games/stppc2x/stppc2x.ini"
+ 
+ // Filename of the credits file.
+-#define MENU_CREDITS_FILENAME           "credits.txt"
++#define MENU_CREDITS_FILENAME           "/usr/share/games/stppc2x/credits.txt"
+ 
+ // Filespec of a saved screenshot
+-#define SCREENSHOT_FILENAME             "screenshots/screenshot%04u.bmp"
++#define SCREENSHOT_FILENAME             "/usr/share/games/stppc2x/screenshots/screenshot%04u.bmp"
+ 
+ // Path for music files
+-#define MUSIC_PATH                      "music/"
++#define MUSIC_PATH                      "/usr/share/games/stppc2x/music/"
+ 
+ // The longest internal name of any game to crop all filenames
+ // etc. to.  Longest name is "Black Box" or "Rectangles" at the

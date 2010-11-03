@@ -1,0 +1,8 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Puzzles
+Exec=/usr/bin/stppc2x
+Icon=stppc2x.png
+Terminal=false
+Type=Application
+Categories=Game

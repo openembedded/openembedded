@@ -1,0 +1,12 @@
+diff -ru trunk.orig/sdl.c trunk/sdl.c
+--- trunk.orig/sdl.c	2010-10-19 00:27:38.799005417 +0300
++++ trunk/sdl.c	2010-10-19 00:33:52.958999818 +0300
+@@ -42,7 +42,7 @@
+ // ==============================
+ 
+ // Software - works perfectly, if a little slowly
+-#define SDL_SURFACE_FLAGS SDL_SWSURFACE
++#define SDL_SURFACE_FLAGS (SDL_SWSURFACE | SDL_FULLSCREEN)
+ 
+ // Hardware - flickers but works
+ // #define SDL_SURFACE_FLAGS SDL_HWSURFACE

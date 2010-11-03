@@ -1,0 +1,12 @@
+diff -ru trunk.orig/sdl.c trunk/sdl.c
+--- trunk.orig/sdl.c	2010-10-13 00:06:42.000000000 +0300
++++ trunk/sdl.c	2010-10-13 01:17:47.776880717 +0300
+@@ -16,7 +16,7 @@
+ // #define DEBUG_FUNCTIONS     // Function calls
+ 
+ //#define SCALELARGESCREEN
+-#define BACKGROUND_MUSIC
++//#define BACKGROUND_MUSIC
+ 
+ // Define this to implement kludges for certain game-specific options
+ // (Usually the ones that require floating point numbers but don't tell us)

@@ -1,0 +1,193 @@
+diff -ru stppc2x-read-only.orig/sdl.c stppc2x-read-only/sdl.c
+--- stppc2x-read-only.orig/sdl.c	2010-10-12 23:33:27.107507323 +0300
++++ stppc2x-read-only/sdl.c	2010-10-12 23:39:15.560805458 +0300
+@@ -85,7 +85,6 @@
+ // SDL library includes
+ // ====================
+ #include <SDL/SDL.h>
+-#include <SDL/SDL_gp2x.h>
+ #include <SDL/SDL_gfxPrimitives.h>
+ #include <SDL/SDL_rotozoom.h>
+ #include <SDL/SDL_ttf.h>
+@@ -3262,43 +3261,43 @@
+                 case SDL_KEYDOWN:
+                     switch(event.key.keysym.sym)
+                     {
+-                        case SDLK_z:
++                        case SDLK_BACKSPACE:
+                             // Simulate pressing the Select key
+                             emulate_event(SDL_JOYBUTTONDOWN, 0, 0, GP2X_BUTTON_SELECT);
+                             break;
+ 
+-                        case SDLK_y:
++                        case SDLK_w:
+                             // Simulate pressing the Y key
+                             emulate_event(SDL_JOYBUTTONDOWN, 0, 0, GP2X_BUTTON_Y);
+                             break;
+ 
+-                        case SDLK_u:
++                        case SDLK_F4:
+                             // Simulate pressing the Vol- key
+                             emulate_event(SDL_JOYBUTTONDOWN, 0, 0, GP2X_BUTTON_VOLDOWN);
+                             break;
+ 
+-                        case SDLK_i:
++                        case SDLK_F5:
+                             // Simulate pressing the Vol+ key
+                             emulate_event(SDL_JOYBUTTONDOWN, 0, 0, GP2X_BUTTON_VOLUP);
+                             break;
+ 
+-                        case SDLK_p:
++                        case SDLK_RETURN:
+                             // Simulate pressing the Start key
+                             emulate_event(SDL_JOYBUTTONDOWN, 0, 0, GP2X_BUTTON_START);
+                             break;
+ 
+-                        case SDLK_q:
++                        case SDLK_F8:
+                             clear_statusbar(fe);
+                             sdl_status_bar(fe,"Quitting...");
+                             cleanup_and_exit(fe, EXIT_SUCCESS);
+                             break;
+ 
+-                        case SDLK_e:
++                        case SDLK_z:
+                             // Simulate pressing stick-click
+                             emulate_event(SDL_JOYBUTTONDOWN, 0, 0, GP2X_BUTTON_CLICK);
+                             break;
+ 
+-                        case SDLK_s:
++                        case SDLK_F6:
+                             // Simulate pressing the Vol+ and Vol- keys
+                             emulate_event(SDL_JOYBUTTONDOWN, 0, 0, GP2X_BUTTON_VOLUP);
+                             emulate_event(SDL_JOYBUTTONDOWN, 0, 0, GP2X_BUTTON_VOLDOWN);
+@@ -3306,7 +3305,7 @@
+                             emulate_event(SDL_JOYBUTTONUP, 0, 0, GP2X_BUTTON_VOLDOWN);
+                             break;
+ 
+-                        case SDLK_l:
++                        case SDLK_q:
+                             // Simulate pressing the L key
+                             emulate_event(SDL_JOYBUTTONDOWN, 0, 0, GP2X_BUTTON_L);
+                             break;
+@@ -3316,17 +3315,17 @@
+                             emulate_event(SDL_JOYBUTTONDOWN, 0, 0, GP2X_BUTTON_A);
+                             break;
+ 
+-                        case SDLK_b:
++                        case SDLK_s:
+                             // Simulate pressing the B key
+                             emulate_event(SDL_JOYBUTTONDOWN, 0, 0, GP2X_BUTTON_B);
+                             break;
+ 
+-                        case SDLK_x:
++                        case SDLK_d:
+                             // Simulate pressing the X key
+                             emulate_event(SDL_JOYBUTTONDOWN, 0, 0, GP2X_BUTTON_X);
+                             break;
+ 
+-                        case SDLK_r:
++                        case SDLK_p:
+                             // Simulate pressing the R key
+                             emulate_event(SDL_JOYBUTTONDOWN, 0, 0, GP2X_BUTTON_R);
+                             break;
+@@ -3359,26 +3358,26 @@
+                 case SDL_KEYUP:
+                     switch(event.key.keysym.sym)
+                     {
+-                        case SDLK_z:
++                        case SDLK_BACKSPACE:
+                             // Simulate pressing the Select key
+                             emulate_event(SDL_JOYBUTTONUP, 0, 0, GP2X_BUTTON_SELECT);
+                             break;
+ 
+-                        case SDLK_p:
++                        case SDLK_RETURN:
+                             emulate_event(SDL_JOYBUTTONUP, 0, 0, GP2X_BUTTON_START);
+                             break;
+ 
+-                        case SDLK_u:
++                        case SDLK_F4:
+                             // Simulate releasing the Vol- key
+                             emulate_event(SDL_JOYBUTTONUP, 0, 0, GP2X_BUTTON_VOLDOWN);
+                             break;
+ 
+-                        case SDLK_i:
++                        case SDLK_F5:
+                             // Simulate releasing the Vol+ key
+                             emulate_event(SDL_JOYBUTTONUP, 0, 0, GP2X_BUTTON_VOLUP);
+                             break;
+ 
+-                        case SDLK_l:
++                        case SDLK_q:
+                             emulate_event(SDL_JOYBUTTONUP, 0, 0, GP2X_BUTTON_L);
+                             break;
+ 
+@@ -3386,19 +3385,19 @@
+                             emulate_event(SDL_JOYBUTTONUP, 0, 0, GP2X_BUTTON_A);
+                             break;
+ 
+-                        case SDLK_b:
++                        case SDLK_s:
+                             emulate_event(SDL_JOYBUTTONUP, 0, 0, GP2X_BUTTON_B);
+                             break;
+ 
+-                        case SDLK_y:
++                        case SDLK_w:
+                             emulate_event(SDL_JOYBUTTONUP, 0, 0, GP2X_BUTTON_Y);
+                             break;
+ 
+-                        case SDLK_x:
++                        case SDLK_d:
+                             emulate_event(SDL_JOYBUTTONUP, 0, 0, GP2X_BUTTON_X);
+                             break;
+ 
+-                        case SDLK_r:
++                        case SDLK_p:
+                             emulate_event(SDL_JOYBUTTONUP, 0, 0, GP2X_BUTTON_R);
+                             break;
+ 
+diff -ru trunk.orig/sdl.c trunk/sdl.c
+--- trunk.orig/sdl.c	2010-10-13 18:49:21.789215058 +0300
++++ trunk/sdl.c	2010-10-13 18:48:03.772555218 +0300
+@@ -2981,12 +2981,12 @@
+                                         if((digit_to_input > 9) && (digit_to_input < 36))
+                                         {
+                                             // 65 = ASCII value of "A"
+-                                            sprintf(digit_to_input_as_string, "Press X to enter a \'%c\'", digit_to_input + 65 - 10);
++                                            sprintf(digit_to_input_as_string, "Press D to enter a \'%c\'", digit_to_input + 65 - 10);
+                                         }
+                                         else
+                                         {
+                                             // 48 = ASCII value of "0"
+-                                            sprintf(digit_to_input_as_string, "Press X to enter a \'%c\'", digit_to_input + 48);
++                                            sprintf(digit_to_input_as_string, "Press D to enter a \'%c\'", digit_to_input + 48);
+                                         };
+                                         sdl_status_bar(fe,digit_to_input_as_string);
+                                     }
+@@ -3044,11 +3044,11 @@
+                                         if((digit_to_input > 9) && (digit_to_input < 36))
+                                         {
+                                             // 65 = ASCII value of "a"
+-                                            sprintf(digit_to_input_as_string, "Press X to enter a \'%c\'", digit_to_input + 65 - 10);
++                                            sprintf(digit_to_input_as_string, "Press D to enter a \'%c\'", digit_to_input + 65 - 10);
+                                         }
+                                         else
+                                         {
+-                                            sprintf(digit_to_input_as_string, "Press X to enter a \'%u\'", digit_to_input);
++                                            sprintf(digit_to_input_as_string, "Press D to enter a \'%u\'", digit_to_input);
+                                         };
+                                         sdl_status_bar(fe,digit_to_input_as_string);
+                                     }
+diff -ru trunk.orig/sdl.c trunk/sdl.c
+--- trunk.orig/sdl.c	2010-10-19 02:26:24.719001658 +0300
++++ trunk/sdl.c	2010-10-19 02:27:37.879000527 +0300
+@@ -5449,7 +5449,7 @@
+     global_config->screenshots_enabled=FALSE;
+     global_config->screenshots_include_cursor=FALSE;
+     global_config->screenshots_include_statusbar=FALSE;
+-    global_config->control_system=FALSE;
++    global_config->control_system=TRUE;
+     global_config->music_volume=MIX_MAX_VOLUME;
+     for(i=0;i<10;i++)
+         global_config->tracks_to_play[i]=FALSE;
