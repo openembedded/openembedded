@@ -1,5 +1,5 @@
 # Qt Embedded toolchain
-PR = "r4"
+PR = "r5"
 TOOLCHAIN_HOST_TASK = "task-qte-toolchain-host"
 TOOLCHAIN_TARGET_TASK = "task-qte-toolchain-target"
 
@@ -15,6 +15,7 @@ do_populate_sdk_append() {
        echo 'export OE_QMAKE_CC=${TARGET_SYS}-gcc' >> $script
        echo 'export OE_QMAKE_CXX=${TARGET_SYS}-g++' >> $script
        echo 'export OE_QMAKE_LINK=${TARGET_SYS}-g++' >> $script
+       echo 'export OE_QMAKE_AR=${TARGET_SYS}-ar' >> $script
        echo 'export OE_QMAKE_LIBDIR_QT=${SDKPATH}/${TARGET_SYS}/${libdir}' >> $script
        echo 'export OE_QMAKE_INCDIR_QT=${SDKPATH}/${TARGET_SYS}/${includedir}/${QT_DIR_NAME}' >> $script
        echo 'export OE_QMAKE_MOC=${SDKPATH}/bin/moc4' >> $script
