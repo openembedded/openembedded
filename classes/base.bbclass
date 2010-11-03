@@ -232,8 +232,7 @@ python base_do_unpack() {
             oe_unpack(d, local, urldata)
 }
 
-addhandler base_eventhandler
-python base_eventhandler() {
+python build_summary() {
 	from bb import note, error, data
 	from bb.event import getName
 
@@ -253,6 +252,7 @@ python base_eventhandler() {
 		if pesteruser:
 			bb.fatal('The following variable(s) were not set: %s\nPlease set them directly, or choose a MACHINE or DISTRO that sets them.' % ', '.join(pesteruser))
 }
+addhandler build_summary
 
 addtask configure after do_unpack do_patch
 do_configure[dirs] = "${S} ${B}"
