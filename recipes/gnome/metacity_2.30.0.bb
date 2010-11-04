@@ -1,9 +1,9 @@
 SECTION = "x11/wm"
 DESCRIPTION = "Metacity is the boring window manager for the adult in you."
 LICENSE = "GPL"
-DEPENDS = "libcanberra libwnck startup-notification gtk+ gconf gdk-pixbuf-csource-native"
+DEPENDS = "libcanberra libwnck startup-notification gtk+ gconf gdk-pixbuf-csource-native gnome-doc-utils"
 
-PR = "r1"
+PR = "r2"
 
 inherit gnome update-alternatives
 
