@@ -1,5 +1,5 @@
 SECTION = "console/network"
-DEPENDS = "openssl"
+DEPENDS = "openssl readline"
 DESCRIPTION = "Socat is a relay for bidirectional data \
 transfer between two independent data channels."
 LICENSE = "GPL"
