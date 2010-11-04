@@ -1,7 +1,7 @@
 DESCRIPTION = "A tool to display dialogs from the command line and shell scripts."
 LICENSE = "GPL"
 
-DEPENDS = "gtk+ libglade glib-2.0 libnotify"
+DEPENDS = "gtk+ libglade glib-2.0 libnotify gnome-doc-utils"
 
 inherit gnome
 
