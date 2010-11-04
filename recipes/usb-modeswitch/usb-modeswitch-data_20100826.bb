@@ -1,5 +1,10 @@
 DESCRIPTION = "Data files for usbmodeswitch"
 LICENSE = "GPLv2"
+RDEPENDS_${PN} = "\
+    usb-modeswitch \
+    tcl \
+"
+PR="r1"
 
 SRC_URI = "http://www.draisberghof.de/usb_modeswitch/usb-modeswitch-data-${PV}.tar.bz2"
 SRC_URI[md5sum] = "85c16bb87a6f05c2d04b93a22fe87e91"
@@ -10,3 +15,4 @@ do_install() {
 }
 
 PACKAGE_ARCH = "all"
+FILES_${PN} += "${base_libdir}/udev/rules.d/40-usb_modeswitch.rules"
