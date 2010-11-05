@@ -1,0 +1,12 @@
+diff -r 245acecec991 extend.c
+--- a/extend.c	Sat Oct 16 01:51:01 2010 +0200
++++ b/extend.c	Sat Oct 16 01:54:45 2010 +0200
+@@ -707,7 +707,7 @@
+ 	long	 nl;
+ #ifdef	FKEYS
+ 	int	 bind;
+-	KEYMAP	*curmap;
++	KEYMAP	*curmap = NULL;
+ #define BINDARG		0  /* this arg is key to bind (local/global set key) */
+ #define	BINDNO		1  /* not binding or non-quoted BINDARG */
+ #define BINDNEXT	2  /* next arg " (define-key) */

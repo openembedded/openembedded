@@ -1,0 +1,35 @@
+diff -r 10f7754e3ab7 Makefile.in
+--- a/Makefile.in	Sat Oct 16 02:00:48 2010 +0200
++++ b/Makefile.in	Sat Oct 16 02:02:06 2010 +0200
+@@ -7,20 +7,20 @@
+ 
+ name=		mg
+ 
+-prefix=		/usr/local
+-bindir=		$(prefix)/bin
+-libdir=		$(prefix)/lib
+-includedir=	$(prefix)/include
+-mandir=		$(prefix)/man
++prefix?=	/usr/local
++bindir?=	$(prefix)/bin
++libdir?=	$(prefix)/lib
++includedir?=	$(prefix)/include
++mandir?=	$(prefix)/man
+ 
+ 
+-CC=		gcc
+-CFLAGS?=	-O2 -pipe
+-CFLAGS+=	-g -Wall -Werror
+-LDFLAGS= 	-lncurses
++CC?=		gcc
++CFLAGS?=	-O2 -pipe -g
++CFLAGS+=	-Wall -Werror
++LDFLAGS+= 	-lncurses
+ 
+-INSTALL=	/usr/bin/install
+-STRIP=		/usr/bin/strip
++INSTALL?=	/usr/bin/install
++STRIP?=		/usr/bin/strip
+ 
+ 
+ OBJS= 	autoexec.o \
