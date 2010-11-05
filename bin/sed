@@ -47,12 +47,10 @@ while getopts ne:f:$getopt_os opt; do
             save "$OPTARG"
             ;;
         i)
-            save "$inplace_arg"
-            continue
+            saved="$saved $inplace_arg"
             ;;
         r)
-            save "$extended_re_arg"
-            continue
+            saved="$saved $extended_re_arg"
             ;;
         \?)
             exit 1
