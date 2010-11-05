@@ -1,0 +1,29 @@
+--- Makefile
++++ Makefile
+@@ -28,23 +28,18 @@
+ prefix=/
+
+ .c.o:
+-	$(CC) $(CFLAGS) -c $<
+-	$(CC) $(CFLAGS) -fPIC -c $< -o pic/$@
++	$(CC) $(CFLAGS) -fPIC -c $< -o $@
+
+ SRCS = termcap.c tparam.c version.c
+ OBJS= $(SRCS:.c=.o)
+
+-all lib: pic .depend $(TARGETS) info
++all lib: .depend $(TARGETS) info
+
+ $(STATIC_LIB): $(OBJS)
+	$(AR) $(ARFLAGS) $@ $(OBJS)
+
+ $(SHARED_LIB): $(OBJS)
+-	cd pic; \
+-	$(CC) -shared -o ../$@ -Wl,-soname,$(SONAME_SHARED_LIB) $(OBJS) -lc
+-
+-pic:
+-	-if [ ! -d pic ]; then mkdir pic; fi
++	$(CC) -shared -o $@ -Wl,-soname,$(SONAME_SHARED_LIB) $(OBJS) -lc
+
+ install: lib install-dirs install-data
+	-if [ -f $(prefix)/lib/$(SHARED_LIB) ]; then \

@@ -1,0 +1,43 @@
+--- termcap-2.0.8/termcap.c~
++++ termcap-2.0.8/termcap.c
+@@ -339,13 +339,17 @@
+   struct tc_ent *l = NULL;
+   int first = 1;
+   int loop = 0;
++  int tc_set = 0;
+
+   *tcp = NULL;
+
+   /* See if we have a TERMCAP environment variable. */
+   if ((tc = getenv("TERMCAP")) != NULL) {
+	if (*tc == '/')
++	{
+		tc_file = tc;
++		tc_set=1;
++	}
+	else {
+		/* check if TERMCAP is term */
+		if (tc_comp(tc, term)) {
+@@ -366,8 +370,21 @@
+   printf("Using file %s\n", tc_file);
+ #endif
+
++  if(tc_set)
++  {
++  	setfsuid(getuid());
++  	setfsgid(getgid());
++  }
+   /* Now read the termcap file. */
+-  if ((fp = fopen(tc_file, "r")) == NULL) return(NULL);
++  fp = fopen(tc_file, "r");
++
++  if(tc_set)
++  {
++  	setfsuid(geteuid());
++  	setfsgid(getegid());
++  }
++  if (fp == NULL)
++  	return(NULL);
+
+   while(term) {
+	if (++loop > 16) {
