@@ -6,7 +6,7 @@ DEPENDS = "zlib"
 PROVIDES = "ssh sshd"
 RPROVIDES_${PN} = "ssh sshd"
 
-INC_PR = "r5"
+INC_PR = "r6"
 
 SRC_URI = "\
   http://matt.ucc.asn.au/dropbear/dropbear-${PV}.tar.bz2 \
@@ -15,8 +15,6 @@ SRC_URI = "\
   file://fix-2kb-keys.patch \
   file://allow-nopw.patch;apply=no \
   file://init \
-"
-SRC_URI_append_openmoko = "\
   file://default \
 "
 
@@ -82,4 +80,4 @@ pkg_postrm_append () {
 	update-alternatives --remove scp ${bindir}/dropbearmulti
 }
 
-CONFFILES_${PN}_openmoko += "${sysconfdir}/default/dropbear"
+CONFFILES_${PN} += "${sysconfdir}/default/dropbear"
