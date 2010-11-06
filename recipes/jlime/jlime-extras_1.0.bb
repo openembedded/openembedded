@@ -1,7 +1,7 @@
 DESCRIPTION = "Various extras for the Jlime userlands"
 PR = "r0"
 
-RDEPENDS = "jlime-extras-${MACHINE}"
+RRECOMMENDS = "jlime-extras-${MACHINE}"
 
 PACKAGE_ARCH = "all"
 SRC_URI = "http://jlime.com/downloads/development/software/jlime-extras-1.0.tar.gz"
