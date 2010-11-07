@@ -4,7 +4,7 @@ SECTION = "base"
 LICENSE = "GPLv2"
 DEPENDS = "flex-native bison-native"
 
-INC_PR = "r3"
+INC_PR = "r4"
 
 # Set the DATE in the .bb file
 SRC_URI = "http://developer.osdl.org/dev/iproute2/download/${P}-${DATE}.tar.gz"
@@ -25,6 +25,7 @@ do_install () {
         install -d ${D}${datadir}
         mv ${D}/share/* ${D}${datadir}/ || true
 	rm ${D}/share -rf || true
+	rm -rf ${D}/var/lib/arpd
 }
 
 FILES_${PN} += "/usr/lib/tc/*"
