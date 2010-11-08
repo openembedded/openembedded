@@ -29,6 +29,8 @@ def remove_tasks(deltasks, d):
                 deps.remove(preptask)
         d.setVarFlag(task, "deps", deps)
 
+addtask configure after do_setscene
+
 def merge_tasks(d):
     """
     Merges all of the operations that occur prior to do_populate_sysroot
