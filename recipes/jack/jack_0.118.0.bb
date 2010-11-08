@@ -11,7 +11,7 @@ DEPENDS = "alsa-lib"
 PR = "r2"
 
 SVNPV = "${@'${PV}'.replace('.', '_')}"
-SRCREV = "${AUTOREV}"
+SRCREV = "4084"
 SRC_URI = "svn://subversion.jackaudio.org/jack/tags;module=RELEASE_${SVNPV};proto=http"
 
 # This is not omap3 specific, but there is a strong correlation between using twl4030 and using omap3
