@@ -33,7 +33,8 @@ IMAGE_BOOT ?= "${IMAGE_INITSCRIPTS} \
 IMAGE_LINGUAS ?= "de-de fr-fr en-gb"
 
 LINGUAS_INSTALL = ""
-LINGUAS_INSTALL_linux = "glibc-localedata-i18n"
+LINGUAS_INSTALL_linux = "${@base_ifelse(d.getVar('IMAGE_LINGUAS', True), \
+                                        'glibc-localedata-i18n', '')}"
 LINGUAS_INSTALL_linux += "${@' '.join(map(lambda s: 'locale-base-%s' % s, '${IMAGE_LINGUAS}'.split()))}"
 LINGUAS_INSTALL_linux-gnueabi = "${LINGUAS_INSTALL_linux}"
 
