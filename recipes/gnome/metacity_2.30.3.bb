@@ -3,18 +3,15 @@ DESCRIPTION = "Metacity is the boring window manager for the adult in you."
 LICENSE = "GPL"
 DEPENDS = "libcanberra libwnck startup-notification gtk+ gconf gdk-pixbuf-csource-native gnome-doc-utils"
 
-PR = "r2"
-
 inherit gnome update-alternatives
 
 SRC_URI += "file://crosscompile.patch "
 
-SRC_URI[archive.md5sum] = "7c8a4c8f3b667efcc60f286adb445d4c"
-SRC_URI[archive.sha256sum] = "5c4e2af2216de022181f692f15427361a1dae3d30756ef89b97a11ff5bd50b22"
+SRC_URI[archive.md5sum] = "553784f376d96b902e19ff437cd5b339"
+SRC_URI[archive.sha256sum] = "08f887018fa5e447cf184d03bae3fe2c05fdb7583bed6768e3b4d66392fc18dd"
 
 EXTRA_OECONF += "--disable-verbose \
                  --disable-xinerama \
-                 --without-introspectiom \
 "
 
 do_configure_prepend() {
