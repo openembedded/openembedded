@@ -5,7 +5,11 @@ DEPENDS = "libcanberra libwnck startup-notification gtk+ gconf gdk-pixbuf-csourc
 
 inherit gnome update-alternatives
 
-SRC_URI += "file://crosscompile.patch "
+PR = "r1"
+
+SRC_URI += "file://crosscompile.patch;apply=yes \
+	file://add-disable-canberra-flag.patch;apply=yes \
+"
 
 SRC_URI[archive.md5sum] = "553784f376d96b902e19ff437cd5b339"
 SRC_URI[archive.sha256sum] = "08f887018fa5e447cf184d03bae3fe2c05fdb7583bed6768e3b4d66392fc18dd"
