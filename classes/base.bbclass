@@ -86,6 +86,7 @@ DEPENDS_virtclass-nativesdk_prepend="${@base_deps(d)} "
 
 
 SCENEFUNCS += "base_scenefunction"
+SCENEFUNCS[type] = "list"
 
 python base_scenefunction () {
 	stamp = bb.data.getVar('STAMP', d, 1) + ".needclean"
