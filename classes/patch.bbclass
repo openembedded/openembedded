@@ -5,6 +5,11 @@ QUILTRCFILE ?= "${STAGING_BINDIR_NATIVE}/quiltrc"
 
 PATCHDEPENDENCY = "${PATCHTOOL}-native:do_populate_sysroot"
 
+PATCHTOOL[type] = "choice"
+PATCHTOOL[choices] = "patch quilt git"
+PATCHRESOLVE[type] = "choice"
+PATCHRESOLVE[choices] = "noop user"
+
 python patch_do_patch() {
 	import oe.patch
 	import oe.unpack
