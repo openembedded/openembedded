@@ -3,12 +3,14 @@
 
 DESCRIPTION = "FreeRDP RDP client"
 HOMEPAGE = "http://freerdp.sourceforge.net"
-DEPENDS = "virtual/libx11 openssl"
+DEPENDS = "virtual/libx11 openssl libxcursor cups alsa-lib"
 SECTION = "x11/network"
 LICENSE = "GPL"
 
-INC_PR = "r1"
+INC_PR = "r4"
 
 inherit pkgconfig autotools
 
-FILES_${PN}-dev += "${libdir}/freerdp/*.a ${libdir}/freerdp/*.la"
+do_install_append() {
+	rm ${D}${libdir}/freerdp/*.a ${D}${libdir}/freerdp/*.la
+}
