@@ -7,15 +7,17 @@ PROVIDES = "smpeg"
 PV = "0.4.5+svnr${SRCPV}"
 PE = "2"
 SRCREV = "387"
+PR = "r1"
 
-SRC_URI = "svn://svn.icculus.org/smpeg/;module=trunk"
+SRC_URI = "svn://svn.icculus.org/smpeg/;module=trunk \
+	file://add-disable-rpath.patch"
 
 S = "${WORKDIR}/trunk"
 
 inherit autotools binconfig
 
 EXTRA_OECONF = "--disable-gtktest --disable-opengl-player --without-x \
-		--without-gtk --disable-gtk-player"
+		--without-gtk --disable-gtk-player --disable-rpath"
 
 do_configure_prepend () {
 	touch NEWS AUTHORS ChangeLog
