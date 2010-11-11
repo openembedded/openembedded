@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Reboot
+Comment=Reboot the BUG.
+Exec=/sbin/reboot
+Icon=system-restart.png
+Terminal=false
+Categories=Utility;
+StartupNotify=false

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Suspend
+Comment=Suspend the BUG.
+Exec=/usr/bin/apm -s
+Icon=system-suspend.png
+Terminal=false
+Categories=Utility;
+StartupNotify=false

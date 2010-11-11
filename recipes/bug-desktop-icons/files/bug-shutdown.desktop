@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Shutdown
+Comment=Shutdown the BUG.
+Exec=/sbin/shutdown 0 -h
+Icon=system-shutdown.png
+Terminal=false
+Categories=Utility;
+StartupNotify=false
