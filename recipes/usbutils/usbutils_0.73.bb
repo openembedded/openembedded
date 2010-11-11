@@ -3,7 +3,6 @@ SECTION = "base"
 DEPENDS += "virtual/libusb0"
 LICENSE = "GPLv2"
 PRIORITY = "optional"
-DEFAULT_PREFERENCE = "1"
 
 PR = "r0"
 
