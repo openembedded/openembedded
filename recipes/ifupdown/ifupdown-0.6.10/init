@@ -2,9 +2,9 @@
 
 case "$1" in
 	start|restart)
-		if [ -e /etc/network/ifstate ]; then
-			echo -n "Cleaning: /etc/network/ifstate"
-			echo -n >/etc/network/ifstate
+		if [ -e /etc/network/run/ifstate ]; then
+			echo -n "Cleaning: /etc/network/run/ifstate"
+			echo -n >/etc/network/run/ifstate
 			echo "."
 		fi
 		;;
