@@ -3,8 +3,10 @@
 # This script helps in launching QEMU to emulate OE based target systems
 # It accepts 2 arguments
 # First argument is the target architectures
-# second argument is empty if you want to do a complete init or
-# 'single' if booting into /bin/sh
+# Second argument is empty if your distribution does not encode the libc
+# into the deploy subdirectory structure.
+# Third argument is empty if you wish to boot the system up fully or
+# 'single' if you wish to use /bin/sh as init.
 # It assumes that bridge is setup on the eth0 device on the host systems
 
 # on debian-like systems
@@ -54,12 +56,13 @@
 #		from dhcp server. Note that this option is not entertained if networking
 #		is disabled
 
-supported_archs="{arm mips mipsel ppc sh4 x86}"
+supported_archs="{arm mips mips64 mipsel mips64el ppc sh4 x86}"
 if [ $# -lt 2 ]; then
     echo -en "
-    Usage: `basename $0` <arch> <libc>
+    Usage: `basename $0` <arch> <libc> [single|empty]
     where <arch> is one $supported_archs
-    libc is uclibc glibc or eglibc
+    libc is uclibc glibc or eglibc (used in the deploy directory)
+    single may be passed to use /bin/sh as init or omitted.
     Example: `basename $0` arm eglibc
 "
     exit 0
