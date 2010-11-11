@@ -1,0 +1,9 @@
+#!/bin/sh
+
+SHOWCURSOR="no"
+
+matchbox-desktop-2 &
+
+matchbox-panel-2 --titlebar --start-applets showdesktop,windowselector --end-applets clock,battery,systray,startup-notify,notify &
+
+exec matchbox-window-manager -theme Bug-Dark -use_desktop_mode decorated -use_cursor $SHOWCURSOR $@
