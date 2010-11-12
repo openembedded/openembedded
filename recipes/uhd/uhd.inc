@@ -2,7 +2,7 @@ DESCRIPTION = "Universal Hardware Driver for Ettus Research products."
 HOMEPAGE = "http://www.ettus.com"
 LICENSE = "GPLV3+"
 
-DEPENDS = "python-cheetah-native boost libusb1 uhd-firmware"
+DEPENDS = "git-native python-cheetah-native boost libusb1 uhd-firmware"
 RDEPENDS += "uhd-firmware"
 
 INC_PR = "r2"
