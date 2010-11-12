@@ -44,8 +44,8 @@ install: all
 	@cp -f dzen-launcher ${DESTDIR}${PREFIX}/bin
 	@chmod 755 ${DESTDIR}${PREFIX}/bin/dzen-launcher
 	@echo installing scripts to ${DESTDIR}${PREFIX}/share/dzen
-	@mkdir -p ${DESTDIR}${PREFIX}/share/dzen
-	@cp -f scripts/* ${DESTDIR}${PREFIX}/share/dzen
+	@mkdir -p ${DESTDIR}${PREFIX}/share/dzen/scripts
+	@cp -f scripts/* ${DESTDIR}${PREFIX}/share/dzen/scripts
 	@echo installing images to ${DESTDIR}${PREFIX}/share/dzen/images
 	@mkdir -p ${DESTDIR}${PREFIX}/share/dzen/images
 	@cp -f images/* ${DESTDIR}${PREFIX}/share/dzen/images

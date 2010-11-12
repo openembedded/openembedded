@@ -1,10 +1,11 @@
 DESCRIPTION = "dzen is a general purpose messaging, notification and menu program."
 LICENSE = "MIT"
 DEPENDS = "virtual/libx11 libxft"
+RDEPENDS = "ttf-dejavu-sans xrandr"
 
 SRCREV = "271"
 PV = "0.8.5+svnr${SRCPV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "svn://dzen.googlecode.com/svn/;module=trunk;proto=http \
 	   file://dzen-extras.tar.gz \
