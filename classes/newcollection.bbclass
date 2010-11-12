@@ -50,9 +50,8 @@ def __newcollection_get_fileuris(d):
 
         (scheme, netloc, path, params, query, frag) = o
 
-        if not path:
-            path = netloc
-            netloc = ""
+        if netloc:
+            path = netloc + path
 
         try:
             spath = path.split(";")
