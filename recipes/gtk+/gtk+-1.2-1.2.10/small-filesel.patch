@@ -1,6 +1,6 @@
 diff -ru gtk+-1.2.10.orig/gtk/gtkfilesel.c gtk+-1.2.10/gtk/gtkfilesel.c
---- gtk+-1.2.10.orig/gtk/gtkfilesel.c	2010-11-04 16:17:41.090000835 +0200
-+++ gtk+-1.2.10/gtk/gtkfilesel.c	2010-11-04 16:26:58.366667501 +0200
+--- gtk+-1.2.10.orig/gtk/gtkfilesel.c	2001-02-16 06:36:19.000000000 +0200
++++ gtk+-1.2.10/gtk/gtkfilesel.c	2010-11-09 21:43:15.000000000 +0200
 @@ -56,10 +56,10 @@
  #include "gtkdialog.h"
  #include "gtkintl.h"
@@ -10,21 +10,13 @@ diff -ru gtk+-1.2.10.orig/gtk/gtkfilesel.c gtk+-1.2.10/gtk/gtkfilesel.c
 -#define FILE_LIST_WIDTH  180
 -#define FILE_LIST_HEIGHT 180
 +#define DIR_LIST_WIDTH   120
-+#define DIR_LIST_HEIGHT  130
++#define DIR_LIST_HEIGHT  140
 +#define FILE_LIST_WIDTH  120
-+#define FILE_LIST_HEIGHT 130
++#define FILE_LIST_HEIGHT 140
  
  /* The Hurd doesn't define either PATH_MAX or MAXPATHLEN, so we put this
   * in here, since the rest of the code in the file does require some
-@@ -83,7 +83,6 @@
-   GtkWidget *menu_item;
- };
- 
--
- typedef struct _CompletionState    CompletionState;
- typedef struct _CompletionDir      CompletionDir;
- typedef struct _CompletionDirSent  CompletionDirSent;
-@@ -328,9 +327,6 @@
+@@ -328,9 +328,6 @@
  					      gint                   try_complete);
  static void gtk_file_selection_abort         (GtkFileSelection      *fs);
  
@@ -34,7 +26,7 @@ diff -ru gtk+-1.2.10.orig/gtk/gtkfilesel.c gtk+-1.2.10/gtk/gtkfilesel.c
  static void gtk_file_selection_create_dir (GtkWidget *widget, gpointer data);
  static void gtk_file_selection_delete_file (GtkWidget *widget, gpointer data);
  static void gtk_file_selection_rename_file (GtkWidget *widget, gpointer data);
-@@ -383,10 +379,8 @@
+@@ -383,10 +380,8 @@
  gtk_file_selection_init (GtkFileSelection *filesel)
  {
    GtkWidget *entry_vbox;
@@ -45,21 +37,22 @@ diff -ru gtk+-1.2.10.orig/gtk/gtkfilesel.c gtk+-1.2.10/gtk/gtkfilesel.c
    GtkWidget *scrolled_win;
  
    char *dir_title [2];
-@@ -395,8 +389,8 @@
+@@ -395,8 +390,8 @@
    filesel->cmpl_state = cmpl_init_state ();
  
    /* The dialog-sized vertical box  */
 -  filesel->main_vbox = gtk_vbox_new (FALSE, 10);
 -  gtk_container_set_border_width (GTK_CONTAINER (filesel), 10);
-+  filesel->main_vbox = gtk_vbox_new (FALSE, 1);
++  filesel->main_vbox = gtk_vbox_new (FALSE, 2);
 +  gtk_container_set_border_width (GTK_CONTAINER (filesel), 5);
    gtk_container_add (GTK_CONTAINER (filesel), filesel->main_vbox);
    gtk_widget_show (filesel->main_vbox);
  
-@@ -409,17 +403,6 @@
+@@ -408,21 +403,10 @@
+ 		      FALSE, FALSE, 0);
    gtk_widget_show (filesel->button_area);
    
-   gtk_file_selection_show_fileop_buttons(filesel);
+-  gtk_file_selection_show_fileop_buttons(filesel);
 -
 -  /* hbox for pulldown menu */
 -  pulldown_hbox = gtk_hbox_new (TRUE, 5);
@@ -71,15 +64,39 @@ diff -ru gtk+-1.2.10.orig/gtk/gtkfilesel.c gtk+-1.2.10/gtk/gtkfilesel.c
 -  gtk_widget_show (filesel->history_pulldown);
 -  gtk_box_pack_start (GTK_BOX (pulldown_hbox), filesel->history_pulldown, 
 -		      FALSE, FALSE, 0);
++  gtk_file_selection_hide_fileop_buttons(filesel);
      
    /*  The horizontal box containing the directory and file listboxes  */
-   list_hbox = gtk_hbox_new (FALSE, 5);
-@@ -491,15 +474,10 @@
+-  list_hbox = gtk_hbox_new (FALSE, 5);
++  list_hbox = gtk_hbox_new (FALSE, 0);
+   gtk_box_pack_start (GTK_BOX (filesel->main_vbox), list_hbox, TRUE, TRUE, 0);
+   gtk_widget_show (list_hbox);
+ 
+@@ -440,7 +424,7 @@
+   gtk_container_add (GTK_CONTAINER (scrolled_win), filesel->dir_list);
+   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_win),
+ 				  GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
+-  gtk_container_set_border_width (GTK_CONTAINER (scrolled_win), 5);
++  gtk_container_set_border_width (GTK_CONTAINER (scrolled_win), 3);
+   gtk_box_pack_start (GTK_BOX (list_hbox), scrolled_win, TRUE, TRUE, 0);
+   gtk_widget_show (filesel->dir_list);
+   gtk_widget_show (scrolled_win);
+@@ -459,7 +443,7 @@
+   gtk_container_add (GTK_CONTAINER (scrolled_win), filesel->file_list);
+   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_win),
+ 				  GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
+-  gtk_container_set_border_width (GTK_CONTAINER (scrolled_win), 5);
++  gtk_container_set_border_width (GTK_CONTAINER (scrolled_win), 3);
+   gtk_box_pack_start (GTK_BOX (list_hbox), scrolled_win, TRUE, TRUE, 0);
+   gtk_widget_show (filesel->file_list);
+   gtk_widget_show (scrolled_win);
+@@ -491,15 +475,11 @@
    gtk_widget_show (filesel->cancel_button);
  
    /*  The selection entry widget  */
 -  entry_vbox = gtk_vbox_new (FALSE, 2);
-+  entry_vbox = gtk_vbox_new (FALSE, 1);
++  entry_vbox = gtk_vbox_new (FALSE, 0);
++  gtk_container_set_border_width (GTK_CONTAINER (entry_vbox), 3);
    gtk_box_pack_end (GTK_BOX (filesel->main_vbox), entry_vbox, FALSE, FALSE, 0);
    gtk_widget_show (entry_vbox);
  
@@ -91,15 +108,30 @@ diff -ru gtk+-1.2.10.orig/gtk/gtkfilesel.c gtk+-1.2.10/gtk/gtkfilesel.c
    filesel->selection_entry = gtk_entry_new ();
    gtk_signal_connect (GTK_OBJECT (filesel->selection_entry), "key_press_event",
  		      (GtkSignalFunc) gtk_file_selection_key_press, filesel);
-@@ -509,7 +487,6 @@
-   gtk_signal_connect_object (GTK_OBJECT (filesel->selection_entry), "activate",
-                              (GtkSignalFunc) gtk_button_clicked,
-                              GTK_OBJECT (filesel->ok_button));
--  gtk_box_pack_start (GTK_BOX (entry_vbox), filesel->selection_entry, TRUE, TRUE, 0);
+@@ -512,20 +492,12 @@
+   gtk_box_pack_start (GTK_BOX (entry_vbox), filesel->selection_entry, TRUE, TRUE, 0);
    gtk_widget_show (filesel->selection_entry);
  
-   if (!cmpl_state_okay (filesel->cmpl_state))
-@@ -1124,107 +1101,6 @@
+-  if (!cmpl_state_okay (filesel->cmpl_state))
+-    {
+-      gchar err_buf[256];
+-
+-      sprintf (err_buf, _("Directory unreadable: %s"), cmpl_strerror (cmpl_errno));
+-
+-      gtk_label_set_text (GTK_LABEL (filesel->selection_text), err_buf);
+-    }
+-  else
++  if (cmpl_state_okay (filesel->cmpl_state))
+     {
+       gtk_file_selection_populate (filesel, "", FALSE);
+     }
+ 
+-  gtk_widget_grab_focus (filesel->selection_entry);
++  gtk_widget_grab_focus (filesel->dir_list);
+ }
+ 
+ GtkWidget*
+@@ -1124,107 +1096,6 @@
    return FALSE;
  }
  
@@ -207,30 +239,47 @@ diff -ru gtk+-1.2.10.orig/gtk/gtkfilesel.c gtk+-1.2.10/gtk/gtkfilesel.c
  static void
  gtk_file_selection_file_button (GtkWidget *widget,
  			       gint row, 
-@@ -1296,8 +1172,10 @@
+@@ -1296,9 +1167,10 @@
  	    gtk_entry_set_text (GTK_ENTRY (fs->selection_entry), filename);
  	    break;
  	  }
 -      else
 +      else {
  	gtk_entry_set_text (GTK_ENTRY (fs->selection_entry), filename);
+-
 +	gtk_file_selection_populate (fs, filename, FALSE);
 +      }
- 
        g_free (filename);
      }
-@@ -1458,14 +1336,8 @@
- 				  cmpl_reference_position (cmpl_state),
- 				  NULL);
- 
+ }
+@@ -1313,7 +1185,6 @@
+   gchar* filename;
+   gint row;
+   gchar* rem_path = rel_path;
+-  gchar* sel_text;
+   gchar* text[2];
+   gint did_recurse = FALSE;
+   gint possible_count = 0;
+@@ -1451,22 +1322,6 @@
+     {
+       if (fs->selection_entry)
+ 	gtk_entry_set_position (GTK_ENTRY (fs->selection_entry), selection_index);
+-
+-      if (fs->selection_entry)
+-	{
+-	  sel_text = g_strconcat (_("Selection: "),
+-				  cmpl_reference_position (cmpl_state),
+-				  NULL);
+-
 -	  gtk_label_set_text (GTK_LABEL (fs->selection_text), sel_text);
- 	  g_free (sel_text);
- 	}
+-	  g_free (sel_text);
+-	}
 -
 -      if (fs->history_pulldown) 
 -	{
 -	  gtk_file_selection_update_history_menu (fs, cmpl_reference_position (cmpl_state));
 -	}
-       
+-      
      }
  }
+ 
