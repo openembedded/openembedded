@@ -7,8 +7,13 @@ PR = "r3"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_dockstar = "1"
 DEFAULT_PREFERENCE_simone = "1"
-DEFAULT_PREFERENCE_qemumips64 = "1"
 DEFAULT_PREFERENCE_sh7785lcr = "1"
+DEFAULT_PREFERENCE_qemuarm = "1"
+DEFAULT_PREFERENCE_qemumips = "1"
+DEFAULT_PREFERENCE_qemumipsel = "1"
+DEFAULT_PREFERENCE_qemumips64 = "1"
+DEFAULT_PREFERENCE_qemuppc = "1"
+DEFAULT_PREFERENCE_qemux86 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/${P}.tar.bz2;name=kernel \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.${STABLEV}.bz2;apply=yes;name=stablepatch \
