@@ -108,7 +108,7 @@ case "$arch" in
 			machines="colinux" ;;
 esac
 
-if [ $(find . -name  "*.ipk"| grep $arch | wc -l) -gt 0 ] ; then
+if [ $(find . -name  "*_$arch.ipk"| wc -l) -gt 0 ] ; then
 	export SORTFEED=1
 else
 	export SORTFEED=0

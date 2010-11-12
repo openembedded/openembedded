@@ -33,6 +33,18 @@ do_install () {
 	install -m 0644 ifup.8 ${D}${mandir}/man8
 	install -m 0644 interfaces.5 ${D}${mandir}/man5
 	cd ${D}${mandir}/man8 && ln -s ifup.8 ifdown.8
+	mv ${D}${base_sbindir}/ifup ${D}${base_sbindir}/ifup.${PN}
+	mv ${D}${base_sbindir}/ifdown ${D}${base_sbindir}/ifdown.${PN}
+}
+
+pkg_postinst_${PN} () {
+	update-alternatives --install ${base_sbindir}/ifup ifup ifup.${PN} 100
+	update-alternatives --install ${base_sbindir}/ifdown ifdown ifdown.${PN} 100
+}
+
+pkg_prerm_${PN} () {
+	update-alternatives --remove ifup ifup.${PN}
+	update-alternatives --remove ifdown ifdown.${PN}
 }
 
 INITSCRIPT_NAME = "ifup"
