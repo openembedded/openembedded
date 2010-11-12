@@ -1,0 +1,12 @@
+diff -ru greq-0.9.4.orig/src/okay_cancel.c greq-0.9.4/src/okay_cancel.c
+--- greq-0.9.4.orig/src/okay_cancel.c	2002-03-16 19:25:40.000000000 +0200
++++ greq-0.9.4/src/okay_cancel.c	2010-11-07 12:59:59.633333893 +0200
+@@ -26,7 +26,7 @@
+       
+       /* if there are more widgets with output values, separate them */
+       if (current)
+-	putchar ('\v');
++	putchar ('\t');
+    }
+    quit(RETURN_OK);
+ }

@@ -1,0 +1,31 @@
+diff -ru greq-0.9.4.orig/src/greq.c greq-0.9.4/src/greq.c
+--- greq-0.9.4.orig/src/greq.c	2002-04-19 21:44:02.000000000 +0300
++++ greq-0.9.4/src/greq.c	2010-11-07 15:57:14.393333895 +0200
+@@ -52,12 +52,15 @@
+    if (!win) quit (RETURN_ERROR_NOMEM);
+    gtk_signal_connect ((GtkObject *)win, "delete_event", // quit if window
+ 		       GTK_SIGNAL_FUNC (cancel_cb), NULL);// gets closed
++   gtk_window_set_position(GTK_WINDOW(win), GTK_WIN_POS_CENTER);
++   gtk_window_set_default_size(GTK_WINDOW(win), 200, 100);
++
+    msgbox = gtk_vbox_new (FALSE, 2);
+    if (!msgbox) quit (RETURN_ERROR_NOMEM);
+    gtk_container_set_border_width((GtkContainer *)msgbox, 5);
+    gtk_box_pack_start_defaults ((GtkBox*)(((GtkDialog*)win)->vbox), msgbox);
+  
+-   while ((c = getopt (argc, argv, "h?m:t:p:E::e::d:c:C:a::o:")) != -1)
++   while ((c = getopt (argc, argv, "h?m:t:p:E::e::d:c:C:a:w::o:")) != -1)
+      {
+ 	extern char *optarg;
+ 	extern int optind;
+@@ -100,6 +103,10 @@
+ 		cancel_label = (gchar *)win;
+ 	     } 
+ 	     break;
++	   case 'w':
++	     if (optarg)
++		gtk_window_set_wmclass((GtkWindow *)win, (gchar *)optarg, (gchar *)optarg);
++	     break;
+ 	   case '?':
+ 	   case 'h':
+ 	     fputs(GREQ_VERSION, stderr);
