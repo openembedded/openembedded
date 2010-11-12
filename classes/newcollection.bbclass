@@ -40,6 +40,7 @@ def __newcollection_get_recipedeps(d):
 
 def __newcollection_get_fileuris(d):
     from urlparse import urlparse, urlunparse
+    from glob import glob
     from os.path import isabs, join, exists
 
     files = []
@@ -60,10 +61,16 @@ def __newcollection_get_fileuris(d):
         except ValueError:
             params = {}
 
-        for fp in d.getVar("FILESPATH", 1).split(":"):
+        globbing = "*" in path
+        filespath = reversed(d.getVar("FILESPATH", True).split(":"))
+        for fp in filespath:
             newpath = join(fp, path)
-            if exists(newpath):
-                files.append(newpath)
+            if globbing:
+                globbed = filter(lambda f: exists(f), glob(newpath))
+                files.extend(globbed)
+            else:
+                if exists(newpath):
+                    files.append(newpath)
 
     return files
 
@@ -77,14 +84,7 @@ def __newcollection_populate_file(src, dest, d):
     if not exists(src):
         return
 
-    try:
-        makedirs(dirname(dest))
-    except OSError, e:
-        if e.errno != EEXIST:
-            bb.error("Unable to create %s:\n%s" % dirname(dest))
-            bb.error(str(e))
-            return
-
+    bb.mkdirhier(dirname(dest))
     try:
         if isdir(src):
             copytree(src, dest, True)
