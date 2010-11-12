@@ -2,6 +2,7 @@ DESCRIPTION = "Return the canonicalized absolute pathname"
 SECTION = "utility"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
+PR = "r1"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/r/realpath/realpath_${PV}.tar.gz;name=realpath \
            file://makefile.patch"
@@ -13,5 +14,13 @@ CFLAGS += "-DVERSION=${PV}"
 
 do_install () {
 	install -d ${D}${bindir}
-	install -p -m 0755 ${S}/realpath ${D}${bindir}
+	install -p -m 0755 ${S}/realpath ${D}${bindir}/realpath.${PN}
+}
+
+pkg_postinst_${PN} () {
+	update-alternatives --install ${bindir}/realpath realpath realpath.${PN} 100
+}
+
+pkg_prerm_${PN} () {
+	update-alternatives --remove realpath realpath.${PN}
 }
