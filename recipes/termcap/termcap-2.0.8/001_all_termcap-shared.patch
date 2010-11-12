@@ -1,0 +1,11 @@
+--- termcap-2.0.8/Makefile.ewt
++++ termcap-2.0.8/Makefile
+@@ -41,7 +41,7 @@
+
+ $(SHARED_LIB): $(OBJS)
+	cd pic; \
+-	$(CC) -shared -o ../$@ -Wl,-soname,$(SONAME_SHARED_LIB) $(OBJS)
++	$(CC) -shared -o ../$@ -Wl,-soname,$(SONAME_SHARED_LIB) $(OBJS) -lc
+
+ pic:
+	-if [ ! -d pic ]; then mkdir pic; fi

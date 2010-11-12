@@ -6,7 +6,7 @@ PV = "4.4.0+svnr${SRCPV}"
 
 S = "${WORKDIR}/kernel"
 
-SRCREV = "4326"
+SRCREV = "4384"
 SRC_URI = "svn://svn.ntop.org/svn/ntop/trunk/PF_RING;module=kernel;proto=https"
 
 inherit module

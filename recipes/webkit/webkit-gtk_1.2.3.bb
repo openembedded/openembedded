@@ -47,6 +47,6 @@ PACKAGES =+ "${PN}-webinspector ${PN}launcher-dbg ${PN}launcher libjavascriptcor
 FILES_${PN}launcher = "${bindir}/GtkLauncher"
 FILES_${PN}launcher-dbg = "${bindir}/.debug/GtkLauncher"
 FILES_libjavascriptcore = "${libdir}/libJavaScriptCore.so.*"
-FILES_${PN}-webinspector = "${datadir}/webkit-1.0/webinspector/"
-FILES_${PN} += "${datadir}/webkit-1.0/resources/error.html ${datadir}/webkit-1.0/images"
+FILES_${PN}-webinspector = "${datadir}/webkit*/webinspector/"
+FILES_${PN} += "${datadir}/webkit*/resources/error.html ${datadir}/webkit*/images"
 

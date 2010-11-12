@@ -1,0 +1,34 @@
+--- termcap-2.0.8/Makefile.nochown
++++ termcap-2.0.8/Makefile
+@@ -53,11 +53,7 @@
+		$(prefix)/lib/backup/$(SHARED_LIB).$$$$; \
+	fi
+	cp $(SHARED_LIB) $(prefix)/lib
+-	chown $(OWNER) $(prefix)/lib/$(SHARED_LIB)
+-	if [ -x /sbin/ldconfig -o -x /etc/ldconfig ]; then \
+-	  ldconfig; \
+-	fi
+	-if [ $(prefix) = "/" ]; then \
+	  cp -f $(STATIC_LIB) /usr/lib; \
+	  rm -f /lib/libtermcap.so; \
+	  rm -f /usr/lib/libtermcap.so; \
+@@ -75,10 +74,6 @@
+	  ln -s $(prefix)/lib/$(SHARED_LIB) \
+		$(prefix)/lib/libtermcap.so; \
+	  cp -f termcap.h $(prefix)/include; \
+-	  chown $(OWNER) \
+-		$(prefix)/lib/$(STATIC_LIB) \
+-		$(prefix)/lib/libtermcap.so \
+-		$(prefix)/include/termcap.h; \
+	fi
+
+ install-dirs:
+@@ -89,7 +84,7 @@
+ install-data:
+	-if [ $(prefix) = "/" ]; then \
+	  cp termcap.src /etc/termcap; \
+-	  chown $(OWNER) /etc/termcap; \
++	  #chown $(OWNER) /etc/termcap; \
+	fi
+
+ info: termcap.info

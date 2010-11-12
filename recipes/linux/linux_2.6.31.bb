@@ -14,6 +14,7 @@ DEFAULT_PREFERENCE_qemux86 = "1"
 DEFAULT_PREFERENCE_iei-nanogx-466 = "1"
 DEFAULT_PREFERENCE_cm-x300 = "1"
 DEFAULT_PREFERENCE_babbage = "1"
+DEFAULT_PREFERENCE_mx25-3stack = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.12.bz2;apply=yes;name=stablepatch \
@@ -75,6 +76,10 @@ SRC_URI_append_cm-x300 = "\
 SRC_URI_append_babbage = " \
            http://download.berlios.de/mx25patches/linux-2.6.31.12-imx-09.12.00.patch.bz2;patch=1;name=patchbabbage \
 	   file://0001-Revert-ENGR00119267-revert-to-gcc-4.1.2-toolchain.patch;patch=1 \
+           file://defconfig \
+           "
+SRC_URI_append_mx25-3stack = " \
+           http://download.berlios.de/mx25patches/linux-2.6.31.12-imx-09.12.00.patch.bz2;patch=1;name=patchbabbage \
            file://defconfig \
            "
 

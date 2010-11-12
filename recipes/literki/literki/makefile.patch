@@ -1,0 +1,61 @@
+commit d2ad0f4591619aa176edfb618971d0c8ff608a69
+Author: Yann Dirson <ydirson@altern.org>
+Date:   Tue Aug 3 22:35:25 2010 +0200
+
+    Make the Makefile suitable for packaging and cross-compiling.
+    
+    This includes normalisation of variable names to minimize packaging
+    work, as well as an install target.
+    
+    Signed-off-by: Yann Dirson <ydirson@altern.org>
+
+diff --git a/Makefile b/Makefile
+index f300953..834e6f6 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,18 +1,39 @@
++DESTDIR=
++prefix=/usr
++bindir=$(prefix)/bin
++datadir=$(prefix)/share
++sysconfdir=/etc
++
+ PLIKI=display.o keymap.o keys.o keyboard.o applet.o launcher.o logger.o slider.o image_cache.o touchpad.o switcher.o vibrator.o
+ 
+ LIBS=-lX11 -lXext -lXtst -lpthread -lXrandr -lpng -lfakekey
+ 
+-CXXCOMPILE=g++
++CXX=g++
++
++MYCFLAGS = -g $(shell freetype-config --cflags)
++MYLDFLAGS = -g $(shell freetype-config --libs)
+ 
+-CFLAGS=-g `freetype-config --cflags`
+-LDFLAGS=-g `freetype-config --libs`
++all: literki
+ 
+ %.o: %.cpp
+-	$(CXXCOMPILE) $(CFLAGS) -c $<
++	$(CXX) $(CXXFLAGS) $(MYCFLAGS) -c $<
+ 
+-all:	$(PLIKI)
+-	g++ $(LIBS) $(LDFLAGS) -o literki $(PLIKI)
++literki: $(PLIKI)
++	$(CXX) $(LDFLAGS) $(LIBS) $(MYLDFLAGS) -o $@ $^
+ 
+ clean:	
+ 	rm *.o
+ 	rm literki
++
++install:
++	install -d -m755 \
++		$(DESTDIR)$(bindir) \
++		$(DESTDIR)$(sysconfdir)/literki \
++		$(DESTDIR)$(datadir)/applications \
++		$(DESTDIR)$(datadir)/pixmaps \
++		$(DESTDIR)$(datadir)/literki/png
++	install -m755 literki $(DESTDIR)$(bindir)/
++	install -m755 literki.conf *layout.conf $(DESTDIR)$(sysconfdir)/literki/
++	install -m644 png/* $(DESTDIR)$(datadir)/literki/png/
++	install -m644 literki.desktop $(DESTDIR)$(datadir)/applications/
++	install -m644 literki.png $(DESTDIR)$(datadir)/pixmaps/

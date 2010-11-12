@@ -9,10 +9,6 @@ SRC_URI = "file://lsb_release"
 PACKAGES = "${PN}"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
-export METADATA_REVISION
-export METADATA_BRANCH
-export TARGET_SYS
-
 do_install() {
 	install -d ${D}${sysconfdir}
 	echo "Angstrom ${DISTRO_VERSION}" > ${D}${sysconfdir}/angstrom-version

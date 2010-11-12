@@ -5,9 +5,9 @@ HOMEPAGE = "http://xcb.freedesktop.org"
 
 PARALLEL_MAKE = ""
 BBCLASSEXTEND = "native nativesdk"
-DEPENDS = "xcb-proto xproto libxau libxslt-native"
+DEPENDS = "xcb-proto xcb-proto-native xproto libxau libxslt-native"
 # DEPENDS += "xsltproc-native gperf-native"
-INC_PR = "r3"
+INC_PR = "r4"
 
 SRC_URI = "http://xcb.freedesktop.org/dist/${BPN}-${PV}.tar.bz2 \
         file://configure.patch;striplevel=0"

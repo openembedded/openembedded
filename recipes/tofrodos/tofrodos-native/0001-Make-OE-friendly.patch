@@ -1,0 +1,71 @@
+From 7ae01e1346c9645e27d49427679b2fd521534588 Mon Sep 17 00:00:00 2001
+From: Jason Kridner <jkridner@beagleboard.org>
+Date: Thu, 19 Aug 2010 08:17:17 -0500
+Subject: [PATCH] Make OE friendly
+
+Pulled changes from OE's cross.patch, but added portions to create
+directories on install.
+
+Signed-off-by: Jason Kridner <jkridner@beagleboard.org>
+---
+ src/Makefile |   16 ++++++++--------
+ 1 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/src/Makefile b/src/Makefile
+index db9c2a4..f82afcf 100644
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -23,13 +23,11 @@ VERSTR = 0.0
+ endif
+ 
+ # programs
+-CC = gcc
+ CD = cd
+ CP = cp
+ GZIP = gzip
+ INSTALL = install
+ LN = ln
+-LD = gcc
+ MAKE = make
+ MKDIR = mkdir
+ MV = mv
+@@ -38,7 +36,7 @@ TAR = tar
+ ZIP = zip
+ 
+ # flags
+-CFLAGS = $(DEFINES) $(TFLAG) $(CDEBUG) -c -Wall
++CCFLAGS = $(DEFINES) $(TFLAG) $(CDEBUG) -c -Wall
+ GZIPFLAGS = -9
+ INSTALLBINFLAGS = -m 755
+ INSTALLDATAFLAGS = -m 644
+@@ -96,7 +94,7 @@ OBJS =	emsg.o \
+ 
+ # implicit rules
+ .c.o:
+-	$(CC) $(CFLAGS) $<
++	$(CC) $(CCFLAGS) $(CFLAGS) $<
+ 
+ # user visible rules
+ all: $(FROMDOS) $(TODOS)
+@@ -119,12 +117,14 @@ distclean: clobber
+ 	$(RM) $(RMRECURFLAGS) $(DISTDIR)
+ 
+ install: installman
+-	$(INSTALL) $(INSTALLBINFLAGS) $(FROMDOS) $(BINDIR)
+-	($(CD) $(BINDIR) ; $(LN) $(LNFLAGS) fromdos todos)
++	$(INSTALL) -d $(DESTDIR)$(BINDIR)
++	$(INSTALL) $(INSTALLBINFLAGS) $(FROMDOS) $(DESTDIR)$(BINDIR)
++	($(CD) $(DESTDIR)$(BINDIR) ; $(LN) $(LNFLAGS) fromdos todos)
+ 
+ installman: $(FROMDOSMAN)
+-	$(INSTALL) $(INSTALLDATAFLAGS) $(FROMDOSMAN) $(MANDIR)
+-	($(CD) $(MANDIR) ; $(LN) $(LNFLAGS) fromdos.1 todos.1)
++	$(INSTALL) -d $(DESTDIR)$(MANDIR)
++	$(INSTALL) $(INSTALLDATAFLAGS) $(FROMDOSMAN) $(DESTDIR)$(MANDIR)
++	($(CD) $(DESTDIR)$(MANDIR) ; $(LN) $(LNFLAGS) fromdos.1 todos.1)
+ 
+ save:
+ 	$(ZIP) $(ZIPSRCFLAGS) $(ZIPSRCNAME) *
+-- 
+1.5.6.4
+

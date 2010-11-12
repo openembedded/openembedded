@@ -38,7 +38,7 @@ Person:     Christopher Larson
 Mail:       clarson@kergoth.com
 Recipes:    autoconf, automake, libtool, gnu-config
 Recipes:    gzip, lzip, ed, genromfs, which, cwautomacros
-Recipes:    unifdef
+Recipes:    unifdef, termcap
 Classes:    autotools.bbclass
 
 Person:     Cliff Brake

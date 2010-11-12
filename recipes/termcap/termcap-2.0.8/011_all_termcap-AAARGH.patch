@@ -1,0 +1,57 @@
+--- termcap-2.0.8/termcap.c.aaargh
++++ termcap-2.0.8/termcap.c
+@@ -469,10 +469,12 @@
+   if (is_malloced && term_entry) free(term_entry);
+
+   /* Do we already have a buffer? */
+-  if (sp) {
+-	maxlen = tgetent_bufsize - 1;
+-	is_malloced = 0;
+-  } else {
++  /* No we don't. I don't care if they pass us a few gigabytes
++   * of storage. We're ignoring it. */
++  /* if (sp) {
++   *	maxlen = tgetent_bufsize - 1;
++   *	is_malloced = 0;
++   * } else { */
+	/* Count how many bytes we need. */
+	count = strlen(s) + 1;
+	for(i = l; i; i = i->next)
+@@ -483,7 +485,7 @@
+	sp = xmalloc(count);
+	maxlen = count + 32; /* Just a lot. */
+	is_malloced = 1;
+-  }
++/*  } */
+
+   /* Save buffer into static variable (yuk!) */
+   term_entry = sp;
+@@ -587,14 +589,16 @@
+   s = find_cap(term_entry, cap, '=');
+   if (s == NULL) return(s);
+
++  /* Yawn. Let's ignore bufp, too. */
+   /* Where to put the result. */
+-  if (bufp == (char **)NULL) {
++  /* if (bufp == (char **)NULL) { */
+	for(sp = s; *sp != ':' && *sp; sp++) {
+		if (*sp =='\\' && sp[1] == ':') sp++;
+	}
+	ret = xmalloc(sp - s + 1);
+-  } else
+-	ret = *bufp;
++  /* } else
++   *	ret = *bufp;
++   */
+   r = ret;
+
+   /* Translate escaped characters and hat-notation. */
+@@ -628,7 +632,7 @@
+   *r++ = 0;
+
+   /* Do we need to update bufp? */
+-  if (bufp) *bufp = r;
++ /*  if (bufp) *bufp = r; */
+
+   return(ret);
+ }

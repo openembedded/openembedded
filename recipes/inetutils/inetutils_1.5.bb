@@ -1,12 +1,12 @@
 SECTION = "libs"
-DEPENDS = "ncurses"
+DEPENDS = "ncurses fakeroot-native"
 LICENSE = "GPL"
 DESCRIPTION = "The GNU inetutils are a collection of common \
 networking utilities and servers including ftp, ftpd, rcp, \
 rexec, rlogin, rlogind, rsh, rshd, syslog, syslogd, talk, \
 talkd, telnet, telnetd, tftp, tftpd, and uucpd."
 
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "${GNU_MIRROR}/inetutils/inetutils-${PV}.tar.gz \
 "
@@ -20,7 +20,7 @@ do_configure_prepend () {
 	rm -f ${S}/glob/configure*
 }
 
-do_install () {
+fakeroot do_install () {
 	autotools_do_install
 	install -d ${D}${base_sbindir} ${D}${base_bindir}
 	mv ${D}${bindir}/tftp ${D}${bindir}/tftp.${PN}

@@ -2,7 +2,7 @@ DESCRIPTION = "Debian's start-stop-daemon utility"
 SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "PD"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "file://start-stop-daemon.c"
 
@@ -18,5 +18,13 @@ do_compile() {
 
 do_install () {
 	install -d ${D}/${base_sbindir}
-	install -m 0755 ${S}/start-stop-daemon ${D}/${base_sbindir}/start-stop-daemon
+	install -m 0755 ${S}/start-stop-daemon ${D}/${base_sbindir}/start-stop-daemon.${PN}
+}
+
+pkg_postinst_${PN} () {
+	update-alternatives --install ${base_sbindir}/start-stop-daemon start-stop-daemon start-stop-daemon.${PN} 100
+}
+
+pkg_prerm_${PN} () {
+	update-alternatives --remove start-stop-daemon start-stop-daemon.${PN}
 }

@@ -21,40 +21,7 @@
 # to reimplement -i internally in this script on some platforms.
 
 
-realbin() {
-     _script=`basename $0`
-     found=
-     for bin in `which -a $_script`; do
-          if ! cmp -s $bin $0; then
-                found=$bin
-                break
-          fi
-     done
-     if [ -n "$found" ]; then
-          echo "$found"
-     else
-          return 1
-     fi
-}
-
-quote(){
-    /usr/bin/sed -e "s,','\\\\'',g; 1s,^,',; \$s,\$,',;" << EOF
-$1
-EOF
-}
-
-save () {
-    case "$1" in
-    # when a string contains a "'" we have to escape it
-    *\'*)
-        saved="$saved `quote "$1"`"
-        ;;
-    # otherwise just quote the variable
-    *)
-        saved="$saved '$1'"
-        ;;
-    esac
-}
+source $(dirname $0)/wrapper.sh
 
 case `uname -s` in
     Darwin)
@@ -81,14 +48,11 @@ while getopts ne:f:$getopt_os opt; do
             ;;
         i)
             saved="$saved $inplace_arg"
-            continue
             ;;
         r)
             saved="$saved $extended_re_arg"
-            continue
             ;;
         \?)
-            echo >&2 "Unsupported argument: $OPTARG"
             exit 1
             ;;
     esac
@@ -98,5 +62,4 @@ for arg; do
     save "$arg"
 done
 
-eval set -- "$saved"
-exec `realbin` "$@"
+exec_real

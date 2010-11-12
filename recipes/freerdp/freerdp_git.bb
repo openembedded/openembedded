@@ -3,9 +3,10 @@
 
 include freerdp.inc
 
-PR = "${INC_PR}.1"
-PV = "0.7.0+gitr${SRCPV}"
+PR = "${INC_PR}.2"
+PV = "0.8.1-${PR}+gitr${SRCREV}"
 S = "${WORKDIR}/git"
 
-SRCREV = "fe0c56a36522ff8f64f1ad111efe4cfd572e2e53"
+SRCREV = "210fa972d96ecf927b75ca983b4551858a091ae7"
+
 SRC_URI = "git://freerdp.git.sourceforge.net/gitroot/freerdp/freerdp.git;protocol=git"

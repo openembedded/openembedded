@@ -160,6 +160,12 @@ do_install_append_netbook-pro () {
 	mkdir -p ${D}/initrd
 }
 
+do_install_append_tb5200l() {
+	rmdir ${D}/tmp
+	ln -s var/tmp ${D}/tmp
+}
+
+
 PACKAGES = "${PN}-dbg ${PN}-doc ${PN}"
 FILES_${PN} = "/*"
 FILES_${PN}-doc = "${docdir} ${datadir}/common-licenses"

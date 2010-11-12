@@ -4,7 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "virtual/libsdl flac libmikmod libvorbis libmad"
 LICENSE = "LGPL"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-${PV}.tar.gz \
            file://fix-flac-madness.diff"
@@ -20,7 +20,7 @@ inherit autotools
 # Add support for runtime linking with libmad so we can use that for fixed point MP3 decoding.
 # Add support for runtime linking with libtremor so we can use that for fixed point OGG Vorbis decoding.
 
-EXTRA_OECONF = "--disable-music-mp3 --enable-music-ogg --enable-music-ogg-tremor --enable-music-mp3-mad-gpl"
+EXTRA_OECONF = "--disable-music-mp3 --enable-music-ogg --enable-music-ogg-tremor --enable-music-mp3-mad-gpl LIBS=-L${STAGING_LIBDIR}"
 
 do_compile() {
 	# Override SDL_LIBS to include a linker rpath so the linker

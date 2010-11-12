@@ -1,14 +1,10 @@
 require xextproto_7.0.5.bb
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 EXTRA_OECONF += "--includedir=${includedir}/xextproto-70"
 
 do_install_append() {
         rm -r ${D}${libdir}
-}
-# xorg-proto-common.inc would stage all. We need to overwrite it.
-do_stage() {
-        autotools_stage_includes
 }
 
 # Build of xserver-kdrive is not possible with xextproto >= 7.1.

@@ -10,6 +10,9 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v1.2/gtk+-${PV}.tar.gz \
            file://timezone-fix.patch \
            file://gtk+1.2-reconf-fix;apply=yes \
            file://no-xwc;apply=yes"
+
+SRC_URI_append_jlime = " file://small-filesel.patch "
+
 S = "${WORKDIR}/gtk+-${PV}"
 
 inherit autotools pkgconfig flow-lossage

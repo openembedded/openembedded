@@ -14,7 +14,11 @@ do_configure_append () {
 	sed -e 's,-lz, ${STAGING_LIBDIR_NATIVE}/libz.a ,g' -i ${B}/gdb/Makefile
 	sed -e 's,-lexpat, ${STAGING_LIBDIR_NATIVE}/libexpat.a ,g' -i ${B}/gdb/Makefile
 	sed -e 's,libexpat.so,libexpat.a ,g' -i ${B}/gdb/Makefile
-	for SIM in ${B}/sim/*/Makefile; do
-		[ -f $SIM ] && sed -e 's,-lz, ${STAGING_LIBDIR_NATIVE}/libz.a ,g' -i $SIM
+	for SIM in ${B}/sim/*/Makefile
+	do
+		if [ -f $SIM ]
+		then
+			sed -e 's,-lz, ${STAGING_LIBDIR_NATIVE}/libz.a ,g' -i $SIM
+		fi
 	done
 }

@@ -7,7 +7,7 @@ DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_boc01 = "1"
 DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
 DEFAULT_PREFERENCE_canyonlands = "1"
-DEFAULT_PREFERENCE_topas910 = "1"
+DEFAULT_PREFERENCE_topas910 = "-1"
 
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.26.tar.bz2;name=kernel \
@@ -37,7 +37,9 @@ SRC_URI_append_mpc8313e-rdb = "\
 	file://mpc8313e-rdb-eth-fixed.patch \
 	"
 
-SRC_URI_append_topas910 = "http://www.bplan-gmbh.org/data/toshiba/topas/linux/2.6.26.5/patch_2.6.26.5_topas910.bz2;apply=yes;name=topaspatch"
+SRC_URI_append_topas910 = " \
+	http://www.bplan-gmbh.org/data/toshiba/topas/linux/2.6.26.5/patch_2.6.26.5_topas910.bz2;apply=yes;name=topaspatch \
+	"
 
 # see http://bugzilla.kernel.org/show_bug.cgi?id=11143
 do_install_append() {

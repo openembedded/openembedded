@@ -1,0 +1,118 @@
+diff -ruN matchbox-common-0.9.1.orig/data/vfolders-pda/Games.directory matchbox-common-0.9.1/data/vfolders-pda/Games.directory
+--- matchbox-common-0.9.1.orig/data/vfolders-pda/Games.directory	2004-12-01 13:22:30.000000000 +0200
++++ matchbox-common-0.9.1/data/vfolders-pda/Games.directory	2010-10-02 12:03:27.000000000 +0300
+@@ -1,9 +1,8 @@
+ [Desktop Entry]
+-Name=Games
+-Name[de]=Spiele
+-Comment=Games of all kind
+-Comment[de]=Spiele aller Art
+-Icon=mbfolder.png
++Version=1.0
++Encoding=UTF-8
+ Type=Directory
++Icon=applications-games
++Name=Games
++Comment=Games, puzzles, and other fun software
+ Match=Game
+-
+diff -ruN matchbox-common-0.9.1.orig/data/vfolders-pda/Makefile.am matchbox-common-0.9.1/data/vfolders-pda/Makefile.am
+--- matchbox-common-0.9.1.orig/data/vfolders-pda/Makefile.am	2010-10-30 14:21:07.861132604 +0300
++++ matchbox-common-0.9.1/data/vfolders-pda/Makefile.am	2010-10-30 14:22:04.873032724 +0300
+@@ -3,7 +3,7 @@
+                 Media.directory        \
+                 Other.directory        \
+                 Root.directory         \
+-                Settings.directory     \
++                System.directory     \
+                 Utilities.directory    \
+                 Root.order             
+ 
+diff -ruN matchbox-common-0.9.1.orig/data/vfolders-pda/Makefile.in matchbox-common-0.9.1/data/vfolders-pda/Makefile.in
+--- matchbox-common-0.9.1.orig/data/vfolders-pda/Makefile.in	2005-01-12 15:34:43.000000000 +0200
++++ matchbox-common-0.9.1/data/vfolders-pda/Makefile.in	2010-10-30 14:23:39.451122838 +0300
+@@ -115,7 +115,7 @@
+                 Games.directory        \
+                 Other.directory        \
+                 Root.directory         \
+-                Settings.directory     \
++                System.directory     \
+                 Utilities.directory    \
+                 Root.order             
+ 
+diff -ruN matchbox-common-0.9.1.orig/data/vfolders-pda/Media.directory matchbox-common-0.9.1/data/vfolders-pda/Media.directory
+--- matchbox-common-0.9.1.orig/data/vfolders-pda/Media.directory	2010-10-30 14:21:07.861132604 +0300
++++ matchbox-common-0.9.1/data/vfolders-pda/Media.directory	2010-10-17 14:54:44.000000000 +0300
+@@ -1,8 +1,8 @@
+ [Desktop Entry]
+-Name=Media
+-Name[de]=Medien
+-Comment=View media files
+-Comment[de]=Programme zur Wiedergabe von audiovisuellen Medien
+-Icon=mbfolder.png
++Version=1.0
++Encoding=UTF-8
+ Type=Directory
+-Match=AudioVideo;Graphics;Media;Viewer;
++Icon=applications-multimedia
++Name=Media
++Comment=Audio and video players and editors
++Match=AudioVideo;Audio;Video;Graphics;
+diff -ruN matchbox-common-0.9.1.orig/data/vfolders-pda/Other.directory matchbox-common-0.9.1/data/vfolders-pda/Other.directory
+--- matchbox-common-0.9.1.orig/data/vfolders-pda/Other.directory	2004-12-01 13:22:30.000000000 +0200
++++ matchbox-common-0.9.1/data/vfolders-pda/Other.directory	2010-10-02 12:06:19.000000000 +0300
+@@ -1,8 +1,8 @@
+ [Desktop Entry]
+-Name=Other
+-Name[de]=Anderes
+-Comment=Other applications and tools
+-Comment[de]=Andere Anwendungen und Werkzeuge
+-Icon=mbfolder.png
++Version=1.0
++Encoding=UTF-8
+ Type=Directory
++Icon=applications-other
++Name=Other
++Comment=Applications that don't fit into other categories
+ Match=fallback
+diff -ruN matchbox-common-0.9.1.orig/data/vfolders-pda/Root.order matchbox-common-0.9.1/data/vfolders-pda/Root.order
+--- matchbox-common-0.9.1.orig/data/vfolders-pda/Root.order	2010-10-30 14:21:07.861132604 +0300
++++ matchbox-common-0.9.1/data/vfolders-pda/Root.order	2010-10-18 01:03:46.000000000 +0300
+@@ -1,4 +1,5 @@
+-Media
++Utilities
+ Games
+-Settings
++Media
+ Other
++System
+diff -ruN matchbox-common-0.9.1.orig/data/vfolders-pda/System.directory matchbox-common-0.9.1/data/vfolders-pda/System.directory
+--- matchbox-common-0.9.1.orig/data/vfolders-pda/System.directory	1970-01-01 02:00:00.000000000 +0200
++++ matchbox-common-0.9.1/data/vfolders-pda/System.directory	2010-10-18 01:04:34.000000000 +0300
+@@ -0,0 +1,8 @@
++[Desktop Entry]
++Version=1.0
++Encoding=UTF-8
++Type=Directory
++Icon=applications-system
++Name=System
++Comment=Desktop and system settings applications
++Match=Settings;System;
+diff -ruN matchbox-common-0.9.1.orig/data/vfolders-pda/Utilities.directory matchbox-common-0.9.1/data/vfolders-pda/Utilities.directory
+--- matchbox-common-0.9.1.orig/data/vfolders-pda/Utilities.directory	2004-12-01 13:22:30.000000000 +0200
++++ matchbox-common-0.9.1/data/vfolders-pda/Utilities.directory	2010-10-17 15:12:18.000000000 +0300
+@@ -1,8 +1,8 @@
+ [Desktop Entry]
+-Name=Utilities
+-Name[de]=Einstellungen
+-Comment=Various utilities
+-Comment[de]=Verschiedene Hilfsprogramme
+-Icon=mbfolder.png
++Version=1.0
++Encoding=UTF-8
+ Type=Directory
+-Match=Utility
++Icon=applications-accessories
++Name=Utilities
++Comment=Common desktop tools and applications
++Match=Accessibility;Core;Legacy;Utility;Office;

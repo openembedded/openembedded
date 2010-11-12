@@ -6,7 +6,7 @@ PR = "r0"
 
 DEPENDS = "openjpeg-native jbig2dec-native jpeg-native freetype-native libpng-native openjpeg jbig2dec jpeg zlib virtual/libx11 libxext freetype"
 
-SRC_URI = "http://mupdf.com/download/source/${PN}-${PV}.tar.gz \
+SRC_URI = "http://mupdf.com/download/archive/${PN}-${PV}.tar.gz \
            file://mupdf_fix_endianness.patch \
            file://Makerules"
 

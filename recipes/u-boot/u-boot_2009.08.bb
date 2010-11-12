@@ -6,6 +6,7 @@ DEFAULT_PREFERENCE_at91sam9g20ek = "1"
 DEFAULT_PREFERENCE_at91sam9g45ek = "1"
 DEFAULT_PREFERENCE_igep0020 = "1"
 DEFAULT_PREFERENCE_babbage  = "1"
+DEFAULT_PREFERENCE_mx25-3stack	 = "1"
 
 SRC_URI = "\
     ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2 \
@@ -16,7 +17,10 @@ SRC_URI_append_igep0020 = " \
 	file://update-mach-types.patch \
 	file://add-board-support-for-IGEP-v2-series-rev-B.patch \
 "
-SRC_URI_append_babbage ="\
+SRC_URI_append_babbage = " \
+           http://download.berlios.de/mx25patches/u-boot-v2009.08-imx-09.12.00.patch.bz2;patch=1;name=ubootbabbage \
+           "
+SRC_URI_append_mx25-3stack = " \
            http://download.berlios.de/mx25patches/u-boot-v2009.08-imx-09.12.00.patch.bz2;patch=1;name=ubootbabbage \
            "
 

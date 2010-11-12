@@ -1,6 +1,7 @@
 DESCRIPTION = "Target packages for a standalone Arago SDK or external toolchain"
 ALLOW_EMPTY = "1"
 PR = "r24"
+EXCLUDE_FROM_WORLD = "1"
 
 PACKAGES = "${PN}"
 

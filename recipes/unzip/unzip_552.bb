@@ -1,7 +1,7 @@
 DESCRIPTION = "A (de)compression library for the ZIP format"
 SECTION = "console/utils"
 LICENSE = "Info-ZIP"
-PR = "r1"
+PR = "r2"
 SRC_URI = "${SOURCEFORGE_MIRROR}/project/infozip/UnZip%205.x%20and%20earlier/5.52/unzip${PV}.tar.gz"
 S = "${WORKDIR}/unzip-5.52"
 
@@ -19,6 +19,15 @@ do_install() {
         oe_runmake -f unix/Makefile install prefix=${D}${prefix}
 	install -d ${D}${mandir}
 	mv ${D}${prefix}/man/* ${D}${mandir}
+	mv ${D}${bindir}/unzip ${D}${bindir}/unzip.${PN}
+}
+
+pkg_postinst_${PN} () {
+	update-alternatives --install ${bindir}/unzip unzip unzip.${PN} 100
+}
+
+pkg_prerm_${PN} () {
+	update-alternatives --remove unzip unzip.${PN}
 }
 
 SRC_URI[md5sum] = "9d23919999d6eac9217d1f41472034a9"

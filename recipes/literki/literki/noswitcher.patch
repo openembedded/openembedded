@@ -1,0 +1,21 @@
+commit 4134b39a3297f1a4316fc4ea9b21226450db0307
+Author: Yann Dirson <ydirson@altern.org>
+Date:   Tue Aug 3 23:30:55 2010 +0200
+
+    Disable author's switcher in config file.
+    
+    Signed-off-by: Yann Dirson <ydirson@altern.org>
+
+diff --git a/literki.conf b/literki.conf
+index 3322509..3c47bda 100644
+--- a/literki.conf
++++ b/literki.conf
+@@ -22,7 +22,7 @@ landscape_touchpad_width 440
+ landscape_touchpad_height 180
+ 
+ 
+-switcher_on yes
++switcher_on no
+ switcher_width 400
+ switcher_height 230
+ 

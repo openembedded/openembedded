@@ -5,24 +5,42 @@ LICENSE = "LGPLv2"
 
 S = "${WORKDIR}/${BPN}-${PV}"
 
-INC_PR = "r0"
+INC_PR = "r1"
 
 BBCLASSEXTEND = "native"
 
 inherit autotools pkgconfig binconfig
 
-export LDFLAGS += "-ldl"
-
 do_install_append_virtclass-native() {
 	:
 }
 
-DEBIANNAME_${PN} = "lksctp"
+RREPLACES = "lksctp"
 
-PACKAGES =+ "${PN}-tools"
+LEAD_SONAME = "libsctp.so"
+
+PACKAGES =+ "${PN}-withsctp ${PN}-utils"
+
 FILES_${PN} = "${libexecdir}/* ${libdir}/lib*${SOLIBS} \
             ${sysconfdir} ${sharedstatedir} ${localstatedir} \
             ${base_libdir}/*${SOLIBS}"
 
-FILES_${PN}-dev += "${bindir}/*-config"
-FILES_${PN}-utils = ""
+FILES_${PN}-withsctp = " \
+  ${libdir}/lksctp-tools/lib*"
+
+FILES_${PN}-dev += " \
+  ${datadir}/lksctp-tools/checksctp.c \
+  ${datadir}/lksctp-tools/sctp_socket.c \
+  ${datadir}/lksctp-tools/sctp_bind.c \
+  ${datadir}/lksctp-tools/sctp_darn.c \
+  ${datadir}/lksctp-tools/sctp_load_libs.c \
+  ${datadir}/lksctp-tools/sctp_sockopt.c \
+  ${datadir}/lksctp-tools/sctp_socket.h \
+  ${datadir}/lksctp-tools/sctp_test.c \
+  ${datadir}/lksctp-tools/sctp_darn.h"
+
+FILES_${PN}-utils = " \
+  ${bindir}/sctp_test \
+  ${bindir}/sctp_darn \
+  ${bindir}/checksctp \
+  ${bindir}/withsctp"

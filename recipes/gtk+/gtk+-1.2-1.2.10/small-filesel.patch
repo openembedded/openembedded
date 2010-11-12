@@ -1,0 +1,236 @@
+diff -ru gtk+-1.2.10.orig/gtk/gtkfilesel.c gtk+-1.2.10/gtk/gtkfilesel.c
+--- gtk+-1.2.10.orig/gtk/gtkfilesel.c	2010-11-04 16:17:41.090000835 +0200
++++ gtk+-1.2.10/gtk/gtkfilesel.c	2010-11-04 16:26:58.366667501 +0200
+@@ -56,10 +56,10 @@
+ #include "gtkdialog.h"
+ #include "gtkintl.h"
+ 
+-#define DIR_LIST_WIDTH   180
+-#define DIR_LIST_HEIGHT  180
+-#define FILE_LIST_WIDTH  180
+-#define FILE_LIST_HEIGHT 180
++#define DIR_LIST_WIDTH   120
++#define DIR_LIST_HEIGHT  130
++#define FILE_LIST_WIDTH  120
++#define FILE_LIST_HEIGHT 130
+ 
+ /* The Hurd doesn't define either PATH_MAX or MAXPATHLEN, so we put this
+  * in here, since the rest of the code in the file does require some
+@@ -83,7 +83,6 @@
+   GtkWidget *menu_item;
+ };
+ 
+-
+ typedef struct _CompletionState    CompletionState;
+ typedef struct _CompletionDir      CompletionDir;
+ typedef struct _CompletionDirSent  CompletionDirSent;
+@@ -328,9 +327,6 @@
+ 					      gint                   try_complete);
+ static void gtk_file_selection_abort         (GtkFileSelection      *fs);
+ 
+-static void gtk_file_selection_update_history_menu (GtkFileSelection       *fs,
+-						    gchar                  *current_dir);
+-
+ static void gtk_file_selection_create_dir (GtkWidget *widget, gpointer data);
+ static void gtk_file_selection_delete_file (GtkWidget *widget, gpointer data);
+ static void gtk_file_selection_rename_file (GtkWidget *widget, gpointer data);
+@@ -383,10 +379,8 @@
+ gtk_file_selection_init (GtkFileSelection *filesel)
+ {
+   GtkWidget *entry_vbox;
+-  GtkWidget *label;
+   GtkWidget *list_hbox;
+   GtkWidget *confirm_area;
+-  GtkWidget *pulldown_hbox;
+   GtkWidget *scrolled_win;
+ 
+   char *dir_title [2];
+@@ -395,8 +389,8 @@
+   filesel->cmpl_state = cmpl_init_state ();
+ 
+   /* The dialog-sized vertical box  */
+-  filesel->main_vbox = gtk_vbox_new (FALSE, 10);
+-  gtk_container_set_border_width (GTK_CONTAINER (filesel), 10);
++  filesel->main_vbox = gtk_vbox_new (FALSE, 1);
++  gtk_container_set_border_width (GTK_CONTAINER (filesel), 5);
+   gtk_container_add (GTK_CONTAINER (filesel), filesel->main_vbox);
+   gtk_widget_show (filesel->main_vbox);
+ 
+@@ -409,17 +403,6 @@
+   gtk_widget_show (filesel->button_area);
+   
+   gtk_file_selection_show_fileop_buttons(filesel);
+-
+-  /* hbox for pulldown menu */
+-  pulldown_hbox = gtk_hbox_new (TRUE, 5);
+-  gtk_box_pack_start (GTK_BOX (filesel->main_vbox), pulldown_hbox, FALSE, FALSE, 0);
+-  gtk_widget_show (pulldown_hbox);
+-  
+-  /* Pulldown menu */
+-  filesel->history_pulldown = gtk_option_menu_new ();
+-  gtk_widget_show (filesel->history_pulldown);
+-  gtk_box_pack_start (GTK_BOX (pulldown_hbox), filesel->history_pulldown, 
+-		      FALSE, FALSE, 0);
+     
+   /*  The horizontal box containing the directory and file listboxes  */
+   list_hbox = gtk_hbox_new (FALSE, 5);
+@@ -491,15 +474,10 @@
+   gtk_widget_show (filesel->cancel_button);
+ 
+   /*  The selection entry widget  */
+-  entry_vbox = gtk_vbox_new (FALSE, 2);
++  entry_vbox = gtk_vbox_new (FALSE, 1);
+   gtk_box_pack_end (GTK_BOX (filesel->main_vbox), entry_vbox, FALSE, FALSE, 0);
+   gtk_widget_show (entry_vbox);
+ 
+-  filesel->selection_text = label = gtk_label_new ("");
+-  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+-  gtk_box_pack_start (GTK_BOX (entry_vbox), label, FALSE, FALSE, 0);
+-  gtk_widget_show (label);
+-
+   filesel->selection_entry = gtk_entry_new ();
+   gtk_signal_connect (GTK_OBJECT (filesel->selection_entry), "key_press_event",
+ 		      (GtkSignalFunc) gtk_file_selection_key_press, filesel);
+@@ -509,7 +487,6 @@
+   gtk_signal_connect_object (GTK_OBJECT (filesel->selection_entry), "activate",
+                              (GtkSignalFunc) gtk_button_clicked,
+                              GTK_OBJECT (filesel->ok_button));
+-  gtk_box_pack_start (GTK_BOX (entry_vbox), filesel->selection_entry, TRUE, TRUE, 0);
+   gtk_widget_show (filesel->selection_entry);
+ 
+   if (!cmpl_state_okay (filesel->cmpl_state))
+@@ -1124,107 +1101,6 @@
+   return FALSE;
+ }
+ 
+-
+-static void
+-gtk_file_selection_history_callback (GtkWidget *widget, gpointer data)
+-{
+-  GtkFileSelection *fs = data;
+-  HistoryCallbackArg *callback_arg;
+-  GList *list;
+-
+-  g_return_if_fail (fs != NULL);
+-  g_return_if_fail (GTK_IS_FILE_SELECTION (fs));
+-
+-  list = fs->history_list;
+-  
+-  while (list) {
+-    callback_arg = list->data;
+-    
+-    if (callback_arg->menu_item == widget)
+-      {
+-	gtk_file_selection_populate (fs, callback_arg->directory, FALSE);
+-	break;
+-      }
+-    
+-    list = list->next;
+-  }
+-}
+-
+-static void 
+-gtk_file_selection_update_history_menu (GtkFileSelection *fs,
+-					gchar *current_directory)
+-{
+-  HistoryCallbackArg *callback_arg;
+-  GtkWidget *menu_item;
+-  GList *list;
+-  gchar *current_dir;
+-  gint dir_len;
+-  gint i;
+-  
+-  g_return_if_fail (fs != NULL);
+-  g_return_if_fail (GTK_IS_FILE_SELECTION (fs));
+-  g_return_if_fail (current_directory != NULL);
+-  
+-  list = fs->history_list;
+-
+-  if (fs->history_menu) 
+-    {
+-      while (list) {
+-	callback_arg = list->data;
+-	g_free (callback_arg->directory);
+-	g_free (callback_arg);
+-	list = list->next;
+-      }
+-      g_list_free (fs->history_list);
+-      fs->history_list = NULL;
+-      
+-      gtk_widget_destroy (fs->history_menu);
+-    }
+-  
+-  fs->history_menu = gtk_menu_new();
+-
+-  current_dir = g_strdup (current_directory);
+-
+-  dir_len = strlen (current_dir);
+-
+-  for (i = dir_len; i >= 0; i--)
+-    {
+-      /* the i == dir_len is to catch the full path for the first 
+-       * entry. */
+-      if ( (current_dir[i] == '/') || (i == dir_len))
+-	{
+-	  /* another small hack to catch the full path */
+-	  if (i != dir_len) 
+-		  current_dir[i + 1] = '\0';
+-	  menu_item = gtk_menu_item_new_with_label (current_dir);
+-	  
+-	  callback_arg = g_new (HistoryCallbackArg, 1);
+-	  callback_arg->menu_item = menu_item;
+-	  
+-	  /* since the autocompletion gets confused if you don't 
+-	   * supply a trailing '/' on a dir entry, set the full
+-	   * (current) path to "" which just refreshes the filesel */
+-	  if (dir_len == i) {
+-	    callback_arg->directory = g_strdup ("");
+-	  } else {
+-	    callback_arg->directory = g_strdup (current_dir);
+-	  }
+-	  
+-	  fs->history_list = g_list_append (fs->history_list, callback_arg);
+-	  
+-	  gtk_signal_connect (GTK_OBJECT (menu_item), "activate",
+-			      (GtkSignalFunc) gtk_file_selection_history_callback,
+-			      (gpointer) fs);
+-	  gtk_menu_append (GTK_MENU (fs->history_menu), menu_item);
+-	  gtk_widget_show (menu_item);
+-	}
+-    }
+-
+-  gtk_option_menu_set_menu (GTK_OPTION_MENU (fs->history_pulldown), 
+-			    fs->history_menu);
+-  g_free (current_dir);
+-}
+-
+ static void
+ gtk_file_selection_file_button (GtkWidget *widget,
+ 			       gint row, 
+@@ -1296,8 +1172,10 @@
+ 	    gtk_entry_set_text (GTK_ENTRY (fs->selection_entry), filename);
+ 	    break;
+ 	  }
+-      else
++      else {
+ 	gtk_entry_set_text (GTK_ENTRY (fs->selection_entry), filename);
++	gtk_file_selection_populate (fs, filename, FALSE);
++      }
+ 
+       g_free (filename);
+     }
+@@ -1458,14 +1336,8 @@
+ 				  cmpl_reference_position (cmpl_state),
+ 				  NULL);
+ 
+-	  gtk_label_set_text (GTK_LABEL (fs->selection_text), sel_text);
+ 	  g_free (sel_text);
+ 	}
+-
+-      if (fs->history_pulldown) 
+-	{
+-	  gtk_file_selection_update_history_menu (fs, cmpl_reference_position (cmpl_state));
+-	}
+       
+     }
+ }
