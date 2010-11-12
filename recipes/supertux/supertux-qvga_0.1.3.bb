@@ -1,7 +1,9 @@
-require supertux_${PV}.bb
+require supertux.inc
+
+PR = "${INC_PR}.0"
 
 DESCRIPTION += "(QVGA, size-optimized version)"
-DEPENDS += "imagemagick-native pngcrush-native"
+DEPENDS += "imagemagick-native pngcrush-native libsdl-gfx"
 
 SRC_URI += " \
            file://supertux-smallsize-data.tar.bz2 \
@@ -11,7 +13,7 @@ SRC_URI += " \
 
 S = "${WORKDIR}/supertux-${PV}"
 
-EXTRA_OECONF += " --enable-320x240 "
+EXTRA_OECONF += " --enable-320x240 LIBS=-L${STAGING_LIBDIR}"
 
 do_compile_prepend() {
     for d in background shared tilesets title worldmap; do
