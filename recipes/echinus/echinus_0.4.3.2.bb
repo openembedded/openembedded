@@ -1,9 +1,9 @@
 DESCRIPTION = "echinus is a simple and lightweight tiling and floating window manager for X11."
 SECTION = "x11/wm"
 LICENSE = "MIT"
-PR = "r0"
+PR = "r1"
 
-DEPENDS = "virtual/libx11 libxft"
+DEPENDS = "virtual/libx11 libxft libxrandr"
 
 SRC_URI = "http://plhk.ru/static/echinus/echinus-${PV}.tar.gz \
 	   file://Makefile"
@@ -23,8 +23,8 @@ PREFIX = /usr
 MANPREFIX = /usr/share/man
 CONF = /etc/echinus
 
-INCS = -I. `pkg-config --cflags xft` -Wall -DVERSION=\"${PV}\" -DSYSCONFPATH=\"${sysconfdir}/${PACKAGE}\"
-LIBS = -lc -lX11 `pkg-config --libs xft`
+INCS = -I. `pkg-config --cflags xft` -Wall -DXRANDR=1 -DVERSION=\"${PV}\" -DSYSCONFPATH=\"${sysconfdir}/${PACKAGE}\"
+LIBS = -lc -lX11 -lXrandr `pkg-config --libs xft`
 EOF
 }
 

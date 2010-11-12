@@ -9,6 +9,8 @@ PR = "r0"
 
 DEPENDS = "openjpeg-native jbig2dec-native jpeg-native freetype-native libpng-native openjpeg jbig2dec jpeg zlib virtual/libx11 libxext freetype"
 
+DEFAULT_PREFERENCE = "-1"
+
 SRC_URI = "git://mupdf.com/repos/mupdf.git;protocol=http \
 		file://wintitle.patch"
 

@@ -2,13 +2,14 @@ DESCRIPTION = "Libprelude is a library that guarantees secure connections betwee
 SECTION = "net"
 DEPENDS = "gnutls libgcrypt zlib perl perl-native"
 LICENSE = "GPLv2"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = " \
 	http://www.prelude-ids.com/download/releases/libprelude/${PN}-${PV}.tar.gz \
 	file://libprelude-dont-regenerate-perl-makefile.patch \
 	file://libprelude-perl-build-with-gnu-hash.patch \
 	file://libprelude-fix-uid-gid-conflicting-types.patch \
+	file://fix-ltdl-hack.patch \
 	"
 SRC_URI[md5sum] = "a5bb76538d240e5fac5f6ab0b7fabfe5"
 SRC_URI[sha256sum] = "e16d83a6a7bcc43a02d6f2bd40c91a03a258a9a86bab42262cbb5adaba8c4640"

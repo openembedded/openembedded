@@ -1,0 +1,11 @@
+--- termcap-2.0.8/termcap.c.colon
++++ termcap-2.0.8/termcap.c
+@@ -136,7 +136,7 @@
+		c = *s++ & 0x1f;
+
+	/* See if we want to translate. */
+-	if ((c & 0x7f) > 31)
++	if ((c & 0x7f) > 31 && c != ':')
+		*r++ = c;
+	else {
+		len = s - start;

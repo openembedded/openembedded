@@ -1,0 +1,28 @@
+--- termcap-2.0.8/termcap.h.compat21
++++ termcap-2.0.8/termcap.h
+@@ -34,7 +34,11 @@
+
+ __BEGIN_DECLS
+
++#if defined(__PMT)	/* XXX glibc-2.1 wants this */
++typedef int (*outfuntype) __PMT((int));
++#else
+ typedef int (*outfuntype) __P((int));
++#endif
+
+ extern int tgetent __P((void *__buffer, __const char *__termtype));
+ extern int tgetflag __P((__const char *__name));
+@@ -44,8 +48,14 @@
+	int __vpos));
+ extern char *tparam __P((__const char *__ctlstring, void *__buffer,
+	int __size, ...));
++
++#if defined(__PMT)	/* XXX glibc-2.1 wants this */
++extern void tputs __P((__const char *__string, int __nlines,
++	int (*) __PMT((int))));
++#else
+ extern void tputs __P((__const char *__string, int __nlines,
+	int (*) __P((int))));
++#endif
+
+ __END_DECLS

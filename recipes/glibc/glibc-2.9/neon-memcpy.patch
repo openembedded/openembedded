@@ -1,0 +1,237 @@
+Path: news.gmane.org!not-for-mail
+From: Siarhei Siamashka <siarhei.siamashka@nokia.com>
+Newsgroups: gmane.comp.lib.glibc.ports
+Subject: [PATCHv2] ARM: NEON optimized implementation of memcpy.
+Date: Sun, 5 Jul 2009 18:21:03 +0300
+Lines: 186
+Approved: news@gmane.org
+Message-ID: <200907051821.04030.siarhei.siamashka@nokia.com>
+NNTP-Posting-Host: lo.gmane.org
+Mime-Version: 1.0
+Content-Type: text/plain;   charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Trace: ger.gmane.org 1246807588 31551 80.91.229.12 (5 Jul 2009 15:26:28 GMT)
+X-Complaints-To: usenet@ger.gmane.org
+NNTP-Posting-Date: Sun, 5 Jul 2009 15:26:28 +0000 (UTC)
+To: libc-ports@sourceware.org
+Original-X-From: libc-ports-return-1291-gclgp-libc-ports=m.gmane.org@sourceware.org Sun Jul 05 17:26:21 2009
+Return-path: <libc-ports-return-1291-gclgp-libc-ports=m.gmane.org@sourceware.org>
+Envelope-to: gclgp-libc-ports@gmane.org
+Original-Received: from sourceware.org ([209.132.176.174])
+	by lo.gmane.org with smtp (Exim 4.50)
+	id 1MNTbf-0002TZ-TX
+	for gclgp-libc-ports@gmane.org; Sun, 05 Jul 2009 17:26:20 +0200
+Original-Received: (qmail 17968 invoked by alias); 5 Jul 2009 15:26:16 -0000
+Original-Received: (qmail 17958 invoked by uid 22791); 5 Jul 2009 15:26:14 -0000
+X-SWARE-Spam-Status: No, hits=-2.3 required=5.0 	tests=AWL,BAYES_00
+X-Spam-Check-By: sourceware.org
+Original-Received: from smtp.nokia.com (HELO mgw-mx03.nokia.com) (192.100.122.230)     by sourceware.org (qpsmtpd/0.43rc1) with ESMTP; Sun, 05 Jul 2009 15:26:06 +0000
+Original-Received: from esebh105.NOE.Nokia.com (esebh105.ntc.nokia.com [172.21.138.211]) 	by mgw-mx03.nokia.com (Switch-3.3.3/Switch-3.3.3) with ESMTP id n65FPtVq004170 	for <libc-ports@sourceware.org>; Sun, 5 Jul 2009 18:25:57 +0300
+Original-Received: from esebh102.NOE.Nokia.com ([172.21.138.183]) by esebh105.NOE.Nokia.com with Microsoft SMTPSVC(6.0.3790.3959); 	 Sun, 5 Jul 2009 18:25:15 +0300
+Original-Received: from esdhcp03533.research.nokia.com ([172.21.35.33]) by esebh102.NOE.Nokia.com over TLS secured channel with Microsoft SMTPSVC(6.0.3790.3959); 	 Sun, 5 Jul 2009 18:25:15 +0300
+User-Agent: KMail/1.9.9
+Content-Disposition: inline
+X-Nokia-AV: Clean
+X-IsSubscribed: yes
+Mailing-List: contact libc-ports-help@sourceware.org; run by ezmlm
+Precedence: bulk
+List-Id: <libc-ports.sourceware.org>
+List-Unsubscribe: <mailto:libc-ports-unsubscribe-gclgp-libc-ports=m.gmane.org@sourceware.org>
+List-Subscribe: <mailto:libc-ports-subscribe@sourceware.org>
+List-Post: <mailto:libc-ports@sourceware.org>
+List-Help: <mailto:libc-ports-help@sourceware.org>, <http://sourceware.org/lists.html#faqs>
+Original-Sender: libc-ports-owner@sourceware.org
+Delivered-To: mailing list libc-ports@sourceware.org
+Xref: news.gmane.org gmane.comp.lib.glibc.ports:300
+Archived-At: <http://permalink.gmane.org/gmane.comp.lib.glibc.ports/300>
+
+NEON optimizations provide ~1.5x speedup when copying memory blocks,
+that are much larger than L2 cache size. Performance improvement
+varies for the other block sizes, but is always better than the
+code used for older ARM cores.
+
+In order to get NEON code enabled, ASFLAGS needs to be defined as
+something like "-mcpu=cortex-a8 -mfloat-abi=softfp -mfpu=neon"
+when building glibc.
+
+This is an updated patch, now tuned for all the memory block sizes,
+including very small ones. The code improvements are mostly a result
+of a discussion on #beagleboard irc channel with Mans Rullgard, the
+author of the following ARM NEON related blog post:
+http://hardwarebug.org/2008/12/31/arm-neon-memory-hazards/
+
+Crossover between ARM and NEON parts of the function is carefully
+taken into account.
+
+The patch now also optionally supports a configuration with using
+unaligned loads and stores, they are quite a bit faster on Cortex-A8.
+But the code does not use unaligned memory accesses by default.
+The intention is to have an absolutely safe drop-in replacement for
+the existing memcpy function, guaranteed not to cause any problems.
+Maybe this can be tweaked later.
+---
+ sysdeps/arm/memcpy.S |  132 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 132 insertions(+), 0 deletions(-)
+
+diff --git a/sysdeps/arm/memcpy.S b/sysdeps/arm/memcpy.S
+index 61cf33c..d562ef2 100644
+--- a/ports/sysdeps/arm/memcpy.S
++++ b/ports/sysdeps/arm/memcpy.S
+@@ -2,6 +2,7 @@
+    This file is part of the GNU C Library.
+ 
+    Contributed by MontaVista Software, Inc. (written by Nicolas Pitre)
++   NEON code contributed by Nokia Corporation (written by Siarhei Siamashka)
+ 
+    The GNU C Library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+@@ -20,6 +21,139 @@
+ 
+ #include <sysdep.h>
+ 
++#ifdef __ARM_NEON__
++		.text
++		.fpu	neon
++
++/*
++ * ENABLE_UNALIGNED_MEM_ACCESSES macro can be defined to permit the use
++ * of unaligned load/store memory accesses supported since ARMv6. This
++ * will further improve performance, but can purely theoretically cause
++ * problems if somebody decides to set SCTLR.A bit in the OS kernel
++ * (to trap each unaligned memory access) or somehow mess with strongly
++ * ordered/device memory.
++ */
++
++#define NEON_MAX_PREFETCH_DISTANCE 320
++
++ENTRY(memcpy)
++		mov	ip, r0
++		cmp	r2, #16
++		blt     4f	@ Have less than 16 bytes to copy
++
++		@ First ensure 16 byte alignment for the destination buffer
++		vpush	{d0-d3}
++		tst	r0, #0xF
++		beq	2f
++		tst	r0, #1
++		ldrneb	r3, [r1], #1
++		strneb	r3, [ip], #1
++		subne	r2, r2, #1
++		tst	ip, #2
++#ifdef ENABLE_UNALIGNED_MEM_ACCESSES
++		ldrneh	r3, [r1], #2
++		strneh	r3, [ip], #2
++#else
++		ldrneb	r3, [r1], #1
++		strneb	r3, [ip], #1
++		ldrneb	r3, [r1], #1
++		strneb	r3, [ip], #1
++#endif
++		subne	r2, r2, #2
++
++		tst	ip, #4
++		beq	1f
++		vld4.8	{d0[0], d1[0], d2[0], d3[0]}, [r1]!
++		vst4.8	{d0[0], d1[0], d2[0], d3[0]}, [ip, :32]!
++		sub	r2, r2, #4
++1:
++		tst	ip, #8
++		beq	2f
++		vld1.8	{d0}, [r1]!
++		vst1.8	{d0}, [ip, :64]!
++		sub	r2, r2, #8
++2:
++		subs	r2, r2, #32
++		blt	3f
++		mov	r3, #32
++
++		@ Main copy loop, 32 bytes are processed per iteration.
++		@ ARM instructions are used for doing fine-grained prefetch,
++		@ increasing prefetch distance progressively up to
++		@ NEON_MAX_PREFETCH_DISTANCE at runtime
++1:
++		vld1.8	{d0-d3}, [r1]!
++		cmp	r3, #(NEON_MAX_PREFETCH_DISTANCE - 32)
++		pld	[r1, r3]
++		addle	r3, r3, #32
++		vst1.8	{d0-d3}, [ip, :128]!
++		sub	r2, r2, #32
++		cmp	r2, r3
++		bge	1b
++		cmp	r2, #0
++		blt	3f
++1:		@ Copy the remaining part of the buffer (already prefetched)
++		vld1.8	{d0-d3}, [r1]!
++		subs	r2, r2, #32
++		vst1.8	{d0-d3}, [ip, :128]!
++		bge	1b
++3:		@ Copy up to 31 remaining bytes
++		tst	r2, #16
++		beq	5f
++		vld1.8	{d0, d1}, [r1]!
++		vst1.8	{d0, d1}, [ip, :128]!
++
++5:
++		vpop	{d0-d3}
++4:
++		@ Use ARM instructions exclusively for the final trailing part
++		@ not fully fitting into full 16 byte aligned block in order
++		@ to avoid "ARM store after NEON store" hazard. Also NEON
++		@ pipeline will be (mostly) flushed by the time when the
++		@ control returns to the caller, making the use of NEON mostly
++		@ transparent (and avoiding hazards in the caller code)
++
++#ifdef ENABLE_UNALIGNED_MEM_ACCESSES
++		movs	r3, r2, lsl #29
++		ldrcs	r3, [r1], #4
++		strcs	r3, [ip], #4
++		ldrcs	r3, [r1], #4
++		strcs	r3, [ip], #4
++		ldrmi	r3, [r1], #4
++		strmi	r3, [ip], #4
++		movs	r2, r2, lsl #31
++		ldrcsh	r3, [r1], #2
++		strcsh	r3, [ip], #2
++		ldrmib	r3, [r1], #1
++		strmib	r3, [ip], #1
++#else
++		movs	r3, r2, lsl #29
++		bcc	1f
++	.rept	8
++		ldrcsb	r3, [r1], #1
++		strcsb	r3, [ip], #1
++	.endr
++1:
++		bpl	1f
++	.rept	4
++		ldrmib	r3, [r1], #1
++		strmib	r3, [ip], #1
++	.endr
++1:
++		movs	r2, r2, lsl #31
++		ldrcsb	r3, [r1], #1
++		strcsb	r3, [ip], #1
++		ldrcsb	r3, [r1], #1
++		strcsb	r3, [ip], #1
++		ldrmib	r3, [r1], #1
++		strmib	r3, [ip], #1
++#endif
++		bx	lr
++END(memcpy)
++libc_hidden_builtin_def (memcpy)
++
++#else
++
+ /*
+  * Data preload for architectures that support it (ARM V5TE and above)
+  */
+@@ -225,3 +355,5 @@ ENTRY(memcpy)
+ 
+ END(memcpy)
+ libc_hidden_builtin_def (memcpy)
++
++#endif
+-- 
+1.5.6.5
+
+

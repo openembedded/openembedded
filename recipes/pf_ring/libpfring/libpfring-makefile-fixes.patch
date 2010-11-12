@@ -1,7 +1,7 @@
 Index: Makefile
 ===================================================================
---- Makefile.orig	2010-08-02 17:31:55.000000000 +0400
-+++ Makefile	2010-08-03 12:56:31.000000000 +0400
+--- Makefile.orig	2010-11-03 13:37:30.000000000 +0300
++++ Makefile	2010-11-03 13:39:18.000000000 +0300
 @@ -8,7 +8,7 @@
  #
  # Installation directory
@@ -11,16 +11,16 @@ Index: Makefile
  
  #
  # Search directories
-@@ -29,6 +29,8 @@
+@@ -32,6 +32,8 @@
  #
- # C compiler and flags
+ # CROSS_COMPILE=arm-mv5sft-linux-gnueabi-
  #
 +AR        = ar
 +RANLIB    = ranlib
- CC        = gcc
- CFLAGS    = -g -O2 -Wall -fPIC ${INCLUDE} ${DNA_DEFINE}
- LDFLAGS   = -shared
-@@ -44,26 +46,29 @@
+ CC        = ${CROSS_COMPILE}gcc
+ CFLAGS    = -g  -Wall -fPIC ${INCLUDE} ${DNA_DEFINE}
+ LDFLAGS   = -g -shared
+@@ -47,26 +49,29 @@
  # Main targets
  #
  STATICLIB  = libpfring.a

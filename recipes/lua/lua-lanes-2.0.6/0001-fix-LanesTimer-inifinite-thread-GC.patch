@@ -1,0 +1,31 @@
+From 69583ec6fc6cd18a0248d1233193bb2407dbda04 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Petr=20=C5=A0tetiar?= <ynezz@true.cz>
+Date: Sun, 31 Oct 2010 23:02:49 +0100
+Subject: [PATCH] fix LanesTimer inifinite thread GC
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+threading.c 394: pthread_cond_destroy(ref) failed, 16 EBUSY
+
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ src/lanes.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/src/lanes.c b/src/lanes.c
+index c02c540..54cfa7a 100644
+--- a/src/lanes.c
++++ b/src/lanes.c
+@@ -1559,7 +1559,7 @@ LUAG_FUNC( thread_gc ) {
+ 
+     // We can read 's->status' without locks, but not wait for it
+     //
+-    if (s->status < DONE) {
++    if (s->status < DONE && strcmp(s->threadName, "LanesTimer")) {
+         //
+         selfdestruct_add(s);
+         assert( s->selfdestruct_next );
+-- 
+1.7.0.4
+

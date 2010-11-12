@@ -2,7 +2,7 @@ DESCRIPTION = "ISC Internet Domain Name Server"
 SECTION = "console/network"
 HOMEPAGE = "http://www.isc.org/sw/bind/"
 LICENSE = "BSD"
-PR = "r0"
+PR = "r1"
 
 DEPENDS = "openssl"
 
@@ -24,6 +24,7 @@ FILES_${PN}-utils = "${bindir}/host ${bindir}/dig ${bindir}/nslookup"
 FILES_${PN}-dev += "${bindir}/isc-config.h"
 
 do_install_append() {
+	rm "${D}/usr/bin/nslookup"
 	install -d "${D}/etc/bind"
 	install -d "${D}/etc/init.d"
 	install -m 644 ${S}/conf/* "${D}/etc/bind"

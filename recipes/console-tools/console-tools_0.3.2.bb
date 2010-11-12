@@ -1,7 +1,7 @@
 SECTION = "base"
 LICENSE = "GPL"
 DESCRIPTION = "Allows you to set-up and manipulate the Linux console."
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lct/console-tools-${PV}.tar.gz \
            file://codepage.patch \
@@ -25,6 +25,7 @@ acpaths = "-I ${WORKDIR}/config"
 
 do_install () {
 	autotools_do_install
+	mv ${D}${bindir}/fgconsole ${D}${bindir}/fgconsole.${PN}
 	mv ${D}${bindir}/chvt ${D}${bindir}/chvt.${PN}
 	mv ${D}${bindir}/deallocvt ${D}${bindir}/deallocvt.${PN}
 	mv ${D}${bindir}/openvt ${D}${bindir}/openvt.${PN}
@@ -32,6 +33,7 @@ do_install () {
 }
 
 pkg_postinst_${PN} () {
+	update-alternatives --install ${bindir}/fgconsole fgconsole fgconsole.${PN} 100
 	update-alternatives --install ${bindir}/chvt chvt chvt.${PN} 100
 	update-alternatives --install ${bindir}/deallocvt deallocvt deallocvt.${PN} 100
 	update-alternatives --install ${bindir}/openvt openvt openvt.${PN} 100
@@ -39,6 +41,7 @@ pkg_postinst_${PN} () {
 }
 
 pkg_prerm_${PN} () {
+	update-alternatives --remove fgconsole fgconsole.${PN}
 	update-alternatives --remove chvt chvt.${PN}
 	update-alternatives --remove deallocvt deallocvt.${PN}
 	update-alternatives --remove openvt openvt.${PN}

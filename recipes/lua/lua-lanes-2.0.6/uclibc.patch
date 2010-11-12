@@ -1,0 +1,13 @@
+Index: lanes-2.0.6/src/threading.h
+===================================================================
+--- lanes-2.0.6.orig/src/threading.h	2010-10-10 09:35:20.000000000 +0200
++++ lanes-2.0.6/src/threading.h	2010-10-10 09:35:32.000000000 +0200
+@@ -112,7 +112,7 @@
+   #ifdef PLATFORM_OSX
+     #define YIELD() pthread_yield_np()
+   #else
+-    #define YIELD() pthread_yield()
++    #define YIELD() sched_yield()
+   #endif
+ #endif
+ 

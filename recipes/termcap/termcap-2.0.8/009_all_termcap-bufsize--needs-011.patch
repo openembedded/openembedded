@@ -1,0 +1,22 @@
+--- termcap-2.0.8/termcap.c.bufsize
++++ termcap-2.0.8/termcap.c
+@@ -46,7 +46,10 @@
+ speed_t ospeed;
+ int tputs_baud_rate;
+ char PC;
+-int tgetent_bufsize = 1024;
++#if !defined(TGETENT_BUFSIZE)
++#define	TGETENT_BUFSIZE	1536	/* XXX used to be 1024 */
++#endif
++int tgetent_bufsize = TGETENT_BUFSIZE;
+
+ /* We store a terminal description in a linked list. */
+ struct tc_ent {
+@@ -692,7 +695,7 @@
+ /*ARGSUSED*/
+ int main(int argc, char **argv)
+ {
+-  char buf[1024];
++  char buf[TGETENT_BUFSIZE];
+   char *s;
+   char *ts;

@@ -1,0 +1,10 @@
+# tb5200l filesystem, mount / read-only, mount /opt read-write
+
+rootfs		/		jffs2		defaults		1  1
+#/dev/mtdblock4 	/opt 		jffs2		defaults		0  0
+proc 		/proc 		proc		defaults		0  0
+devpts 		/dev/pts 	devpts		mode=0620,gid=5		0  0
+usbfs 		/proc/bus/usb 	usbfs		defaults		0  0
+tmpfs 		/var/volatile 	tmpfs		defaults		0  0
+tmpfs 		/dev/shm 	tmpfs		mode=0777		0  0
+tmpfs 		/media/ram 	tmpfs		defaults		0  0

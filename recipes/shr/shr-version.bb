@@ -5,9 +5,6 @@ PV = "1.0${DISTRO_VERSION}"
 PACKAGES = "${PN}"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
-export METADATA_REVISION
-export METADATA_BRANCH
-
 do_install() {
 	mkdir -p ${D}${sysconfdir}
 	echo "SHR ${DISTRO_VERSION}" > ${D}${sysconfdir}/shr-version

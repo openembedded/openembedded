@@ -1,0 +1,11 @@
+--- termcap-2.0.8/termcap.texi~
++++ termcap-2.0.8/termcap.texi
+@@ -2612,7 +2612,7 @@
+ @samp{so} magic cookie on the screen.  (It may also be possible to remove a
+ cookie which is not at the beginning of a line by clearing that line.)  The
+ @samp{xt} capability also has implications for the use of tab characters,
+-but in that regard it is obsolete (@xref{Cursor Motion}).
++but in that regard it is obsolete (@xref{Cursor Motion}. ).
+
+ @table @samp
+ @item so

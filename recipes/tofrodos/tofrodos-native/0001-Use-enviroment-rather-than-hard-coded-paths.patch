@@ -1,0 +1,83 @@
+From e170432a8c2b9d86f4bcd90399c9e4649ac57b7e Mon Sep 17 00:00:00 2001
+From: Jason Kridner <jkridner@beagleboard.org>
+Date: Thu, 19 Aug 2010 09:45:00 -0500
+Subject: [PATCH] Use enviroment, rather than hard coded paths
+
+
+Signed-off-by: Jason Kridner <jkridner@beagleboard.org>
+---
+ src/Makefile |   28 +++++++++++++++-------------
+ 1 files changed, 15 insertions(+), 13 deletions(-)
+
+diff --git a/src/Makefile b/src/Makefile
+index f82afcf..c87ab30 100644
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -23,11 +23,13 @@ VERSTR = 0.0
+ endif
+ 
+ # programs
++CC := gcc
+ CD = cd
+ CP = cp
+ GZIP = gzip
+ INSTALL = install
+ LN = ln
++LD := ld
+ MAKE = make
+ MKDIR = mkdir
+ MV = mv
+@@ -47,11 +49,11 @@ TARFLAGS = cvf
+ ZIPSRCFLAGS = -r -9
+ 
+ # directories
+-BINDIR = /usr/bin
++bindir := /usr/bin
+ DISTDIR = tofrodos-$(VERSTR)
+-LIBDIR = lib
++libdir := lib
+ LIBDISTDIR = $(DISTDIR)/lib
+-MANDIR = /usr/man/man1
++mandir := /usr/man/man1
+ 
+ # filenames
+ FROMDOS = fromdos
+@@ -83,10 +85,10 @@ DISTFILES = config.h \
+ 	utility.h \
+ 	version.h \
+ 	$(FROMDOSMAN)
+-LIBDISTFILES = $(LIBDIR)/getopt.c \
+-	$(LIBDIR)/getopt.h \
+-	$(LIBDIR)/mktemp.c \
+-	$(LIBDIR)/mktemp.h
++LIBDISTFILES = $(libdir)/getopt.c \
++	$(libdir)/getopt.h \
++	$(libdir)/mktemp.c \
++	$(libdir)/mktemp.h
+ OBJS =	emsg.o \
+ 	init.o \
+ 	tofrodos.o \
+@@ -117,14 +119,14 @@ distclean: clobber
+ 	$(RM) $(RMRECURFLAGS) $(DISTDIR)
+ 
+ install: installman
+-	$(INSTALL) -d $(DESTDIR)$(BINDIR)
+-	$(INSTALL) $(INSTALLBINFLAGS) $(FROMDOS) $(DESTDIR)$(BINDIR)
+-	($(CD) $(DESTDIR)$(BINDIR) ; $(LN) $(LNFLAGS) fromdos todos)
++	$(INSTALL) -d $(bindir)
++	$(INSTALL) $(INSTALLBINFLAGS) $(FROMDOS) $(bindir)
++	($(CD) $(bindir) ; $(LN) $(LNFLAGS) fromdos todos)
+ 
+ installman: $(FROMDOSMAN)
+-	$(INSTALL) -d $(DESTDIR)$(MANDIR)
+-	$(INSTALL) $(INSTALLDATAFLAGS) $(FROMDOSMAN) $(DESTDIR)$(MANDIR)
+-	($(CD) $(DESTDIR)$(MANDIR) ; $(LN) $(LNFLAGS) fromdos.1 todos.1)
++	$(INSTALL) -d $(mandir)
++	$(INSTALL) $(INSTALLDATAFLAGS) $(FROMDOSMAN) $(mandir)
++	($(CD) $(mandir) ; $(LN) $(LNFLAGS) fromdos.1 todos.1)
+ 
+ save:
+ 	$(ZIP) $(ZIPSRCFLAGS) $(ZIPSRCNAME) *
+-- 
+1.5.6.4
+

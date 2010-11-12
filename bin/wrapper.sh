@@ -2,6 +2,8 @@ path_remove () {
     echo $PATH | tr ':' '\n' | grep -v "^$1\$" | tr '\n' ':'
 }
 
+PATH="$(path_remove $(dirname $0))"
+
 quote(){
     sed -e "s,','\\\\'',g; 1s,^,',; \$s,\$,',;" << EOF
 $1
@@ -23,7 +25,5 @@ save () {
 
 exec_real () {
     eval set -- "$saved"
-    scriptdir="$(dirname $0)"
-    PATH="$(path_remove $scriptdir)"
     exec "$(basename $0)" "$@"
 }

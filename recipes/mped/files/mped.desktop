@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Encoding=UTF-8
+Name=MP editor
+Exec=/usr/bin/mp-5
+Icon=mped
+Terminal=false
+MimeType=text/plain;
+Categories=GTK;Utility;TextEditor;

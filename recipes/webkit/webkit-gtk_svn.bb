@@ -3,7 +3,7 @@ DEPENDS = "geoclue enchant gtk-doc-native gtk-doc gnome-keyring libsoup-2.4 curl
 
 SRCREV_FORMAT = "webcore-rwebkit"
 
-PR = "r0"
+PR = "r1"
 SRCREV = "68244"
 PV = "1.3.4+svnr${SRCPV}"
 
@@ -68,6 +68,6 @@ PACKAGES =+ "${PN}-webinspector ${PN}launcher-dbg ${PN}launcher libjavascriptcor
 FILES_${PN}launcher = "${bindir}/GtkLauncher"
 FILES_${PN}launcher-dbg = "${bindir}/.debug/GtkLauncher"
 FILES_libjavascriptcore = "${libdir}/libJavaScriptCore.so.*"
-FILES_${PN}-webinspector = "${datadir}/webkitgtk-1.0/webinspector/"
-FILES_${PN} += "${datadir}/webkitgtk-1.0/resources/error.html ${datadir}/webkitgtk-1.0/images"
+FILES_${PN}-webinspector = "${datadir}/webkit*/webinspector/"
+FILES_${PN} += "${datadir}/webkit*/resources/error.html ${datadir}/webkit*/images"
 

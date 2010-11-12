@@ -1,0 +1,13 @@
+--- termcap-2.0.8-clean/tparam.c
++++ termcap-2.0.8/tparam.c
+@@ -299,6 +299,10 @@
+	    case 'D':		/* %D means weird Delta Data transformation.  */
+	      argp[0] -= 2 * (tem % 16);
+	      break;
++
++	    case 'p':		/* %p means push nth arg - ignore.  */
++	      *p++;
++	      break;
+	    }
+	}
+       else

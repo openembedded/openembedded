@@ -8,6 +8,7 @@ SRC_URI = " \
 git://git.freesmartphone.org/linux-2.6.git;protocol=git;branch=palmpre/master \
 file://defconfig \
 "
+DEPENDS += "kbd-native"
 
 S = "${WORKDIR}/git/"
 

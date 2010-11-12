@@ -4,7 +4,7 @@ the standard compression program for its system."
 SECTION = "console/utils"
 PRIORITY = "required"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${GNU_MIRROR}/gzip/gzip-${PV}.tar.gz"
 SRC_URI[md5sum] = "e381b8506210c794278f5527cba0e765"
@@ -33,7 +33,6 @@ do_install_append_pn-gzip () {
 
 pkg_prerm_pn-gzip () {
     for alternative in ${alternatives}; do
-        mv ${D}${base_bindir}/$alternative ${D}${base_bindir}/$alternative.${PN}
         update-alternatives --remove $alternative $alternative.${PN}
     done
 }

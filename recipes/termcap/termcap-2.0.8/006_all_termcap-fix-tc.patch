@@ -1,0 +1,131 @@
+--- termcap-2.0.8-clean/termcap.c
++++ termcap-2.0.8/termcap.c
+@@ -26,6 +26,9 @@
+ #include <termios.h>
+ #include <termcap.h>
+
++/* Maximum terminal type includes (tc=) */
++#define MAX_TERMS 16
++
+ /* Escape sequences we know about. */
+ static char *escapes = "E\033r\rn\nb\bt\tf\f\\\\";
+
+@@ -71,6 +74,28 @@
+   return(x);
+ }
+
++/* Add a copy of a string to the end of a list */
++static int add_to_list(char **list, char *s, int max_entries)
++{
++  int i;
++  int done = 0;
++
++  if (! list)
++	return(0);
++
++  for(i = 0; i < max_entries; i++)
++	if (list[i] == NULL) {
++		list[i] = strsave (s);
++		list[i + 1] = NULL;
++		done = 1;
++		break;
++	} else if (strcmp (s, list[i]) == 0) {
++		done = 1;
++		break;
++	}
++  return(done);
++}
++
+ /*
+  *	Try to shrink a capability.
+  */
+@@ -120,12 +145,11 @@
+ }
+
+ /* Build a linked list with capabilities. */
+-static char *build_list(struct tc_ent **listp, char *buf)
++static void build_list(struct tc_ent **listp, char *buf, char **term_list)
+ {
+   struct tc_ent *i, *last = NULL, *list = *listp;
+   char *s, *sp, *bp;
+   int len;
+-  char *tc_next = NULL;
+
+   /* Skip name field. */
+   for(sp = buf; *sp && *sp != ':'; sp++)
+@@ -148,8 +172,8 @@
+	if (*bp == 0 || *bp == ':' || *bp == '.') continue;
+
+	/* Is this the "tc" capability? */
+-	if (!tc_next && strncmp(bp, "tc=", 3) == 0) {
+-		tc_next = strsave(bp + 3);
++	if (strncmp(bp, "tc=", 3) == 0) {
++		add_to_list(term_list, bp + 3, MAX_TERMS);
+		continue;
+	}
+
+@@ -184,7 +208,6 @@
+   }
+   /* Done. */
+   *listp = list;
+-  return(tc_next);
+ }
+
+ /* Add OR change a capability (hardcoded for li# and co#) */
+@@ -337,9 +360,9 @@
+   char *desc = NULL;
+   char *tc_file = "/etc/termcap";
+   struct tc_ent *l = NULL;
+-  int first = 1;
+-  int loop = 0;
++  int index;
+   int tc_set = 0;
++  char *term_list[MAX_TERMS + 1];
+
+   *tcp = NULL;
+
+@@ -358,8 +381,7 @@
+ #endif
+			/* Just read the TERMCAP variable. */
+			sp = strsave(tc);
+-			tc = build_list(&l, sp);
+-			if (tc) free(tc);
++			build_list(&l, sp, NULL);
+			*tcp = l;
+			return(sp);
+		}
+@@ -386,24 +408,21 @@
+   if (fp == NULL)
+	return(NULL);
+
+-  while(term) {
+-	if (++loop > 16) {
+-		write(2, "tgetent: loop detected, check your termcap\n", 43);
+-		break;
+-	}
++  desc = term;
++  term_list[0] = term;
++  term_list[1] = NULL;
++  for(index = 0; (index < MAX_TERMS) && term_list[index]; index++) {
+ #if DEBUG
+-	printf("LOOKUP: term %s\n", term);
++	printf("LOOKUP: term %s\n", term_list[index]);
+ #endif
+-	sp = get_one_entry(fp, term);
++	sp = get_one_entry(fp, term_list[index]);
+	if (sp == NULL) break;
+-	term = build_list(&l, sp);
+-	if (first)
+-		desc = sp;
+-	else
+-		free(sp);
+-	first = 0;
++	build_list(&l, sp, term_list);
+   }
+   fclose(fp);
++
++  for(index = 1; term_list[index] != NULL; index++)
++    free (term_list[index]);
+
+   /* Done. */
+   *tcp = l;
