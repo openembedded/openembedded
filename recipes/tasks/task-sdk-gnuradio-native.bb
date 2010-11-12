@@ -11,7 +11,7 @@ RDEPENDS_${PN} += "libusb1-dev guile-dev fftwf-dev alsa-dev alsa-lib-dev jack-de
              python-threading python-unittest python-shell python-pickle \
              python-pprint python-compiler python-pkgutil python-pydoc \
              python-mmap python-netclient python-difflib python-compile \
-             python-cheetah python-netserver cmake \
+             python-cheetah python-netserver python-xml cmake \
              boost boost-dev gsl-dev sdcc git distcc \
              util-linux-ng util-linux-ng-swaponoff \
              "
