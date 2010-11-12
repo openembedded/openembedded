@@ -11,7 +11,7 @@ VIMX ?= "--without-x"
 
 require vim.inc
 
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.3"
 
 # 001-411.diff contains 411 patches fetched from upstream
 SRC_URI += "file://001-411.diff;apply=no"
@@ -28,7 +28,7 @@ do_applypatch() {
 addtask applypatch after do_unpack before do_patch
 
 do_install_append() {
-    install -m 0644 ${FILESDIR}/vimrc ${D}/${datadir}/vim
+    install -m 0644 ${WORKDIR}/vimrc ${D}/${datadir}/vim
 }
 
 RCONFLICTS_${PN} = "gvim vim-tiny"
