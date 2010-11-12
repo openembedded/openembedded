@@ -3,8 +3,7 @@ HOMEPAGE = "http://wejp.k.vu/projects/gmu/"
 LICENSE = "GPLv2"
 PR = "r0"
 
-DEPENDS = "virtual/libsdl libsdl-image libsdl-gfx"
-RDEPENDS = "tremor flac mpg123"
+DEPENDS = "virtual/libsdl libsdl-image libsdl-gfx tremor flac mpg123"
 
 SRC_URI = "http://wejp.k.vu/files/gmu-${PV}.tar.gz \
 	   file://nanonote-lcd-blank.patch \
