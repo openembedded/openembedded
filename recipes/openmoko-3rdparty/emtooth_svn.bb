@@ -8,7 +8,7 @@ RDEPENDS_${PN} = "bluez4 obexd"
 
 SRCREV = "78"
 PV = "0.1+svnr${SRCPV}"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "svn://emtooth.googlecode.com/svn/trunk;module=app;proto=http"
 

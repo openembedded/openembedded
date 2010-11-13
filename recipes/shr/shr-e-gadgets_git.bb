@@ -7,7 +7,7 @@ SECTION = "x11/application"
 
 SRCREV = "64e4f00291097d43ee974ee9d09317d349035a3b"
 PV = "0.0.0+gitr${SRCPV}"
-PR = "r8"
+PR = "r9"
 
 inherit autotools
 

@@ -6,7 +6,7 @@ SECTION = "e/apps"
 RDEPENDS_${PN} = "elementary sqlite3 python-sqlalchemy python-mysqldb python-netserver"
 
 PV = "0.0.1+svnr${SRCPV}"
-PR = "r7"
+PR = "r8"
 SRCREV = "21"
 SRC_URI = "svn://ebrainy.googlecode.com/svn/trunk;module=.;proto=http"
 S = "${WORKDIR}"
