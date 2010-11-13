@@ -9,7 +9,7 @@ inherit autotools
 
 SRCREV = "25"
 PV = "0.0.1+svnr${SRCPV}"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "svn://e-tasks.googlecode.com/svn;module=trunk;proto=http \
            file://depends.eina.patch"

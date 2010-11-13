@@ -2,7 +2,7 @@ DESCRIPTION = "Free GPS navigation for car and outdoor with OpenStreetMap maps"
 HOMEPAGE = "http://www.gps-routes.info/index.php?name=Content&pa=showpage&pid=1"
 LICENSE = "GPL"
 DEPENDS = "ecore evas imlib2 gpsd edje-native"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "http://www.gps-routes.info/debian/pool/main/m/mcnavi/mcnavi_${PV}.tar.gz;name=archive \
            file://gpsd-2.90.patch"

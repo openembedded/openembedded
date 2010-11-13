@@ -4,7 +4,7 @@ AUTHOR = "Luca Vaudano"
 LICENSE = "GPLv3"
 SECTION = "e/apps"
 DEPENDS = "elementary"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://www.vaudano.eu/projects/${PN}/${PN}-${PV}.tar.gz \
            file://update.for.efl.api.change.53640.patch \

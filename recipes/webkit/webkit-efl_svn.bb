@@ -6,6 +6,7 @@ DEPENDS = "icu libxslt sqlite3 gperf-native bison-native flex-native jpeg \
 
 SRCREV = "70645"
 PV = "1.3.4+svnr${SRCPV}"
+PR = "r1"
 
 SRCREV_FORMAT = "webcore-rwebkit"
 

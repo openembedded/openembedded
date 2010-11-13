@@ -7,7 +7,7 @@ PRIORITY = "optional"
 
 SRCREV = "174"
 PV = "1.6.1+svnr${SRCPV}"
-PR = "r2"
+PR = "r3"
 
 PACKAGE_ARCH = "all"
 

@@ -7,7 +7,7 @@ SRC_URI = "http://www.gps-routes.info/debian/pool/main/m/mcnavi/mcnavi_${PV}.tar
 SRC_URI[md5sum] = "d222351cdb3db9cd040b4666fa1b5f2a"
 SRC_URI[sha256sum] = "1ebe5e5be5ccc0ce2dde9adbcc7ec733efa91310da51a8f65b65ccca87692b16"
 
-PR = "r0"
+PR = "r1"
 
 S = "${WORKDIR}/${PN}"
 

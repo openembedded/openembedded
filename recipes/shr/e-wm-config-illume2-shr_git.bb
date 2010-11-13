@@ -5,7 +5,7 @@ LICENSE = "MIT BSD"
 RDEPENDS_${PN} = "shr-e-gadgets"
 SRCREV = "bed3a9ac381b88717b153012fa4b9da0c860c6b0"
 PV = "1.2+gitr${SRCPV}"
-PR = "r5"
+PR = "r6"
 
 inherit e
 
