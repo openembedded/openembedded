@@ -11,7 +11,7 @@ PACKAGE_ARCH = "all"
 DEFAULT_PREFERENCE = "-1"
 SRCREV = "296"
 PV = "2.0.9-bzrr${SRCPV}"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "bzr://bazaar.launchpad.net/~vaudano/babiloo/efl"
 
