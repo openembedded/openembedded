@@ -20,3 +20,8 @@ do_install() {
 }
 
 FILES_${PN} = "${palmtopdir}/plugins/obex/ ${palmtopdir}/pics/obex/"
+FILES_${PN}-dev = "${palmtopdir}/plugins/obex/lib*.so"
+FILES_${PN}-dbg = "${palmtopdir}/plugins/obex/.debug"
+
+
+
