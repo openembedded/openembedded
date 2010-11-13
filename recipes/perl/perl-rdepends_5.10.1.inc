@@ -27,6 +27,8 @@ RDEPENDS_perl-module-utf8-heavy += "perl-module-unicore-exact "
 RDEPENDS_perl-module-pod-simple-blackbox += "perl-module-universal"
 RDEPENDS_perl-module-file-temp += "perl-module-io-seekable"
 
+RDEPENDS_perl-module-storable += "perl-module-carp-heavy "
+
 # Auto-generated dependencies
 RDEPENDS_perl-module-app-prove += "perl-module-app-prove-state "
 RDEPENDS_perl-module-app-prove += "perl-module-carp "
