@@ -4,7 +4,7 @@ DEPENDS = "icu libxslt sqlite3 gperf-native bison-native flex-native jpeg \
            libpng libxt fontconfig cairo freetype glib-2.0 libsoup-2.4 \
            libxml2 pango eina ecore evas edje"
 
-SRCREV = "70645"
+SRCREV = "71965"
 PV = "1.3.4+svnr${SRCPV}"
 PR = "r1"
 
@@ -26,7 +26,14 @@ S = "${WORKDIR}/src"
 
 inherit cmake lib_package pkgconfig
 
-#EXTRA_OECMAKE = "-DPORT=Efl"
+# Wants to jump too far for THUMB on armv4t
+# in WebCore::DocTypeStringsHash::doctype_hash_function(char const*, unsigned int)':
+# DocTypeStrings.cpp:(.text._ZN7WebCore18DocTypeStringsHash21doctype_hash_functionEPKcj[WebCore::DocTypeStringsHash::doctype_hash_function(char const*, unsigned int)]+0x12): relocation truncated to fit: R_ARM_THM_CALL against symbol `__gnu_thumb1_case_uhi' defined in .text section in x86_64-linux/usr/armv4t/lib/gcc/arm-oe-linux-gnueabi/4.5.2/libgcc.a(_thumb1_case_uhi.o)
+# the same in WebCore::CSSValueKeywordsHash::value_hash_function(char const*, unsigned int)':
+#             WebCore::CSSPropertyNamesHash::propery_hash_function(char const*, unsigned int)':
+#             WebCore::ColorDataHash::colordata_hash_function(char const*, unsigned int)':
+ARM_INSTRUCTION_SET = "ARM"
+
 EXTRA_OECMAKE = "-DPORT=Efl -DSHARED_CORE=ON"
 
 do_unpack_append() {
