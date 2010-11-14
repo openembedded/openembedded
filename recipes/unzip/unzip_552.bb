@@ -19,6 +19,7 @@ do_install() {
         oe_runmake -f unix/Makefile install prefix=${D}${prefix}
 	install -d ${D}${mandir}
 	mv ${D}${prefix}/man/* ${D}${mandir}
+}
 
 do_install_append_pn-unzip() {
 	mv ${D}${bindir}/unzip ${D}${bindir}/unzip.${PN}
