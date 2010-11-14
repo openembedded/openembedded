@@ -10,7 +10,7 @@ PV = "0.1+gitr${SRCPV}"
 
 SRC_URI = "git://git.shr-project.org/repo/ffphonelog.git;protocol=http;branch=master"
 
-SRCREV = "d59853f8f777d943c0e3791c1d17af82d794040c"
+SRCREV = "f257edad1b046d5efcc83f80c1bef314773c2bc2"
 S = "${WORKDIR}/git"
 
 FILES_${PN} += "${datadir}/applications ${datadir}/pixmaps"
