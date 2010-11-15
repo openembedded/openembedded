@@ -1,9 +1,13 @@
 #!/bin/sh
+#
+# Portability notes:
+# - We allow what SuSv3 defines
+# - We implement -D internally
 
 source $(dirname $0)/wrapper.sh
 
 saved=""
-while getopts dbCcMpSsvB:f:g:m:o: opt; do
+while getopts dbCcMpSsvB:f:g:m:o:D opt; do
     case "$opt" in
         s)
             # Ignore strip argument
@@ -11,6 +15,9 @@ while getopts dbCcMpSsvB:f:g:m:o: opt; do
         B|f|g|m|o)
             save "-$opt"
             save "$OPTARG"
+            ;;
+        D)
+            createleading="1"
             ;;
         \?)
             exit 1
@@ -24,5 +31,9 @@ shift $(($OPTIND - 1))
 for arg; do
     save "$arg"
 done
+
+if [ $# == 2 -a -n "$createleading" ]; then
+    install -d $(dirname $2)
+fi
 
 exec_real
