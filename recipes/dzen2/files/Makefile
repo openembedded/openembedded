@@ -6,7 +6,7 @@ include config.mk
 SRC = draw.c main.c util.c action.c
 OBJ = ${SRC:.c=.o}
 
-all: options dzen2
+all: options dzen2 dzen-battery
 
 options:
 	@echo dzen2 build options:
@@ -23,6 +23,10 @@ ${OBJ}: dzen.h action.h config.mk
 dzen2: ${OBJ}
 	@echo CC -o $@
 	@${CC} -o $@ ${OBJ} ${LDFLAGS} ${LIBS}
+
+dzen-battery: dzen-battery.c
+	@${CC} -c ${CFLAGS} dzen-battery.c
+	@${CC} -o dzen-battery dzen-battery.o ${LDFLAGS}
 
 clean:
 	@echo cleaning
@@ -43,6 +47,8 @@ install: all
 	@chmod 755 ${DESTDIR}${PREFIX}/bin/dzen2
 	@cp -f dzen-launcher ${DESTDIR}${PREFIX}/bin
 	@chmod 755 ${DESTDIR}${PREFIX}/bin/dzen-launcher
+	@cp -f dzen-battery ${DESTDIR}${PREFIX}/bin
+	@chmod 755 ${DESTDIR}${PREFIX}/bin/dzen-battery
 	@echo installing scripts to ${DESTDIR}${PREFIX}/share/dzen
 	@mkdir -p ${DESTDIR}${PREFIX}/share/dzen/scripts
 	@cp -f scripts/* ${DESTDIR}${PREFIX}/share/dzen/scripts

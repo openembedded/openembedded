@@ -5,7 +5,7 @@ RDEPENDS = "ttf-dejavu-sans xrandr"
 
 SRCREV = "271"
 PV = "0.8.5+svnr${SRCPV}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "svn://dzen.googlecode.com/svn/;module=trunk;proto=http \
 	   file://dzen-extras.tar.gz \
