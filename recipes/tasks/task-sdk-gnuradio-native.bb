@@ -18,7 +18,7 @@ RDEPENDS_${PN} += "libusb1-dev guile-dev fftwf-dev alsa-dev alsa-lib-dev jack-de
 
 RPROVIDES_${PN} = "task-native-gnuradio-sdk"
 
-PR = "${INC_PR}.13"
+PR = "${INC_PR}.14"
 
 ALLOW_EMPTY = "1"
 PACKAGES = "${PN}"
