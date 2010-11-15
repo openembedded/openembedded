@@ -19,6 +19,8 @@ PREFERRED_UCLIBC_VERSION            ?= "0.9.31"
 PREFERRED_GCC_VERSION_486sx          ?= "4.3.2"
 PREFERRED_GCC_VERSION_avr32          ?= "4.2.2"
 PREFERRED_GCC_VERSION_bfin           ?= "4.1.2"
+PREFERRED_GCC_VERSION_sh3            ?= "4.4.4"
+PREFERRED_GCC_VERSION_sh4            ?= "4.4.4"
 PREFERRED_GCC_VERSION_xilinx-ml403   ?= "4.1.1"
 PREFERRED_GCC_VERSION_xilinx-ml403   ?= "4.1.1"
 
