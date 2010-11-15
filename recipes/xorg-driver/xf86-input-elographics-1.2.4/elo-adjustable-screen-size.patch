@@ -1,0 +1,83 @@
+upstream: https://bugs.freedesktop.org/show_bug.cgi?id=31397
+
+Allow limiting the "touchable" area of the display.
+
+The intel driver only allows for one X screen in dual-head mode, and
+elographics normally uses the size of the entire screen to calculate
+touch event locations.
+
+This patch adds ScreenWidth and ScreenHeight configuration options to
+override the screen size, and ScreenXOffset and ScreenYOffset in case
+the touchscreen covers part of the screen that doesn't begin at (0,0).
+
+
+--- xf86-input-elographics-1.2.3/src/xf86Elo.c.orig	2008-10-13 19:52:10.000000000 -0400
++++ xf86-input-elographics-1.2.3/src/xf86Elo.c	2009-07-14 01:50:21.000000000 -0400
+@@ -196,6 +196,8 @@
+   int		screen_no;		/* Screen associated with the device		*/
+   int		screen_width;		/* Width of the associated X screen		*/
+   int		screen_height;		/* Height of the screen				*/
++  int		screen_x_offset;	/* X offset within the screen			*/
++  int		screen_y_offset;	/* Y offset within the screen			*/
+   Bool		inited;			/* The controller has already been configured ?	*/
+   Bool		is_a_2310;		/* Set if the smartset is a 2310.		*/
+   int		checksum;		/* Current checksum of data in assembly buffer	*/
+@@ -355,9 +357,11 @@
+     input_x = v0;
+     input_y = v1;
+   }
+-  *x = (priv->screen_width * (input_x - priv->min_x)) / width;
++  *x = (priv->screen_width * (input_x - priv->min_x)) / width
++       + priv->screen_x_offset;
+   *y = (priv->screen_height -
+-	(priv->screen_height * (input_y - priv->min_y)) / height);
++	(priv->screen_height * (input_y - priv->min_y)) / height)
++       + priv->screen_y_offset;
+ 
+   /*
+    * MHALAS: Based on the description in xf86XInputSetScreen
+@@ -791,8 +795,14 @@
+ 	  priv->screen_no < 0) {
+ 	priv->screen_no = 0;
+       }
+-      priv->screen_width = screenInfo.screens[priv->screen_no]->width;
+-      priv->screen_height = screenInfo.screens[priv->screen_no]->height;
++      if (priv->screen_width == -1) {
++        priv->screen_width = screenInfo.screens[priv->screen_no]->width;
++      }
++      if (priv->screen_height == -1) {
++        priv->screen_height = screenInfo.screens[priv->screen_no]->height;
++      }
++      xf86Msg(X_CONFIG, "Elographics screen dimensions: %dx%d\n",
++              priv->screen_width, priv->screen_height);
+ 
+       /*
+        * Device reports button press for up to 1 button.
+@@ -996,6 +1006,8 @@
+   priv->screen_no = 0;
+   priv->screen_width = -1;
+   priv->screen_height = -1;
++  priv->screen_x_offset = 0;
++  priv->screen_y_offset = 0;
+   priv->inited = 0;
+   priv->is_a_2310 = 0;
+   priv->checksum = ELO_INIT_CHECKSUM;
+@@ -1104,8 +1116,18 @@
+ 
+   local->name = xf86SetStrOption(local->options, "DeviceName", XI_TOUCHSCREEN);
+   xf86Msg(X_CONFIG, "Elographics X device name: %s\n", local->name);
++
+   priv->screen_no = xf86SetIntOption(local->options, "ScreenNo", 0);
+   xf86Msg(X_CONFIG, "Elographics associated screen: %d\n", priv->screen_no);
++
++  priv->screen_width = xf86SetIntOption(local->options, "ScreenWidth", -1);
++  priv->screen_height = xf86SetIntOption(local->options, "ScreenHeight", -1);
++
++  priv->screen_x_offset = xf86SetIntOption(local->options, "ScreenXOffset", 0);
++  priv->screen_y_offset = xf86SetIntOption(local->options, "ScreenYOffset", 0);
++  xf86Msg(X_CONFIG, "Elographics screen offset: (%d,%d)\n",
++          priv->screen_x_offset, priv->screen_y_offset);
++
+   priv->untouch_delay = xf86SetIntOption(local->options, "UntouchDelay", ELO_UNTOUCH_DELAY);
+   xf86Msg(X_CONFIG, "Elographics untouch delay: %d ms\n", priv->untouch_delay*10);
+   priv->report_delay = xf86SetIntOption(local->options, "ReportDelay", ELO_REPORT_DELAY);
