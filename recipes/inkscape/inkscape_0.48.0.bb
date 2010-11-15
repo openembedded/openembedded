@@ -2,8 +2,10 @@ SECTION = "x11/utils"
 DESCRIPTION = "Inkscape is an SVG-based graphics editor featuring alpha \
 blending, node editing, SVG to PNG export, and more. Its goal is for features \
 similar to Illustrator, CorelDraw, Visio, etc."
-DEPENDS = "poppler gsl libgc intltool-native gtk+ gtkmm glibmm libart-lgpl libxslt librsvg libxml2 libsigc++-1.2 popt"
+DEPENDS = "poppler gsl libgc intltool-native gtk+ gtkmm glibmm libart-lgpl libxslt librsvg libxml2 libsigc++-1.2 popt boost"
 LICENSE = "GPLv2"
+
+PR = "r1"
 
 #we know that GC version is 6.5, so we patch out the version check, since gc_open was already detected
 SRC_URI = "${SOURCEFORGE_MIRROR}/inkscape/inkscape-${PV}.tar.bz2 \
