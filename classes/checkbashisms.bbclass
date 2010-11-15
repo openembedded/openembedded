@@ -21,6 +21,8 @@ python do_checkbashisms () {
                 if not errors:
                     errors = True
                 bb.note(str(exc))
+            except oe.process.NotFoundError, exc:
+                bb.fatal("checkbashisms not found, please install it in your PATH")
 
     if errors:
         bb.fatal("bashisms were identified, aborting")
