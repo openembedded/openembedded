@@ -4,9 +4,10 @@ DEPENDS += "libdrm"
 RDEPENDS_${PN} = "xserver-xorg-extension-dri xserver-xorg-extension-dri2 xserver-xorg-extension-glx mesa-dri"
 PE = "2"
 PV = "1.0.0+gitr${SRCPV}"
-PR = "${INC_PR}.4"
+PR = "${INC_PR}.5"
 
 SRC_URI = "git://git.openmoko.org/git/xf86-video-glamo.git;protocol=git;branch=master \
+           file://0001-glamo-drm-define-GLAMO_CMDQ_MAX_COUNT-instead-of-mag.patch \
           "
 
 S = "${WORKDIR}/git"
