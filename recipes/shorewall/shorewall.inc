@@ -1,4 +1,3 @@
-AUTHOR = "Dvorkin Dmitry dvorkin@tibbo.com"
 DESCRIPTION = "Shorewall is a high-level tool for configuring Netfilter."
 HOMEPAGE = "http://www.shorewall.net/"
 LICENSE = "GPLv2"

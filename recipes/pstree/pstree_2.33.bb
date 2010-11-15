@@ -1,4 +1,3 @@
-AUTHOR = "Dvorkin Dmitry dvorkin@tibbo.com"
 SECTION = "base"
 DESCRIPTION = "pstree cli tool to nicely show processes tree"
 LICENSE = "GPL"
