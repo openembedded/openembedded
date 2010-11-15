@@ -2,11 +2,12 @@ DESCRIPTION = "Astronomical application which displays the night sky"
 HOMEPAGE    = "http://projects.openmoko.org/projects/orrery/"
 SECTION = "x11/scientific"
 PV = "2.7"
-PR = "r0"
+PR = "r1"
 inherit autotools
 
 SRC_URI = "http://projects.openmoko.org/frs/download.php/923/orrery_2.7_clean.tar.gz;name=tarball \
            file://orrery.png \
+           file://use.GdkPixbuf.patch \
           "
 
 SRC_URI[tarball.md5sum]    = "bd62a33e7554ee1030313dfcdefcda8b"
