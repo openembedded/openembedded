@@ -3,9 +3,9 @@ HOMEPAGE = "http://www.ettus.com"
 LICENSE = "GPLV3+"
 
 DEPENDS = "git-native python-cheetah-native boost libusb1 uhd-firmware"
-RDEPENDS += "uhd-firmware"
+RDEPENDS_${PN} += "uhd-firmware"
 
-INC_PR = "r2"
+INC_PR = "r3"
 
 inherit cmake
 
