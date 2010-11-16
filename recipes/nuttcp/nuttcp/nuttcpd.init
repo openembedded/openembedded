@@ -1,0 +1,33 @@
+#! /bin/sh
+#
+# This is an init script for openembedded
+# Copy it to /etc/init.d/nuttcpd and type
+# > update-rc.d nuttcpd defaults 60
+#
+
+
+test -f /usr/sbin/nuttcp || exit 0
+
+case "$1" in
+  start)
+    echo -n "Starting nuttcp background daemon"
+    nuttcp -S
+    echo "."
+    ;;
+  stop)
+    echo -n "Stopping nuttcp background daemon"
+    killall nuttcp
+    echo "."
+    ;;
+  restart)
+    stop
+    sleep 1
+    start
+    echo "."
+    ;;
+  *)
+    echo "Usage: /etc/init.d/nuttcpd {start|stop|restart}"
+    exit 1
+esac
+
+exit 0
