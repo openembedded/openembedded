@@ -2,7 +2,7 @@ require gtkmm.inc
 
 DEPENDS += "pangomm"
 
-PR = "r0"
+PR = "${INC_PR}.0"
 
 # Hack! Remove once gtkmm likes libtool 2x
 do_cconfigure() {

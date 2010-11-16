@@ -2,7 +2,7 @@ require gtkmm.inc
 
 DEPENDS += "pangomm"
 
-PR = "r1"
+PR = "${INC_PR}.0"
 
 EXTRA_OECONF = " --disable-documentation "
 

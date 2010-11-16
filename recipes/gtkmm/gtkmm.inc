@@ -7,6 +7,8 @@ DEPENDS = "atk glibmm gtk+ cairomm"
 
 inherit gnome autotools pkgconfig flow-lossage
 
+INC_PR = "r2"
+
 LIBV = "2.4.0"
 
 do_install_append () {
@@ -15,5 +17,8 @@ do_install_append () {
         install -m 0644 gtk/gtkmmconfig.h ${D}${includedir}/gtkmm-2.4
 }
 
+PACKAGES =+ "${PN}-demo"
+
 FILES_${PN} = "${libdir}/lib*.so.*"
 FILES_${PN}-dev += "${libdir}/*/include ${libdir}/*/proc/m4"
+FILES_${PN}-demo += "${datadir}/*/demo/"
