@@ -2,11 +2,11 @@ DESCRIPTION = "stppc2x is an SDL port of Simon Tatham's Portable Puzzle Collecti
 LICENSE = "GPLv2"
 
 DEPENDS = "virtual/libsdl libsdl-image libsdl-ttf"
-RDEPENDS = "ttf-dejavu-sans-condensed"
+RDEPENDS_${PN} = "ttf-dejavu-sans-condensed"
 
 SRCREV = "185"
 PV = "1.0+svnr${SRCPV}"
-PR = "r0"
+PR = "r1"
 
 FILES_${PN} = "/usr/bin /usr/share"
 
