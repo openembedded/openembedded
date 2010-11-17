@@ -2,7 +2,7 @@ HOMEPAGE = "http://www.x.org"
 SECTION = "x11/fonts"
 LICENSE = "MIT-X"
 
-DEPENDS = " encodings font-alias font-util-native mkfontdir-native mkfontscale-native"
+DEPENDS = " encodings font-alias font-util-native mkfontdir-native mkfontscale-native bdftopcf-native"
 RDEPENDS_${PN} = "encodings font-util font-alias"
 
 INC_PR = "r2"
