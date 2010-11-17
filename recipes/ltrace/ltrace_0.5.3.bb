@@ -6,6 +6,9 @@ LICENSE = "GPLv2"
 
 PR = "r2"
 
+# ltrace is not ported to sh3/sh4 targets at this time
+COMPATIBLE_TARGET_SYS = (?!sh[34])
+
 SRC_URI = "\
   ${DEBIAN_MIRROR}/main/l/ltrace/ltrace_${PV}.orig.tar.gz;name=archive \
   ${DEBIAN_MIRROR}/main/l/ltrace/ltrace_${PV}-2.diff.gz;name=patch \

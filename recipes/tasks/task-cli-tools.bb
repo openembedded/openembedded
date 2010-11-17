@@ -9,6 +9,11 @@ inherit task
 
 PACKAGES += "${PN}-debug"
 
+def get_ltrace(bb, d):
+    if bb.data.getVar('TARGET_ARCH', d, 1) in [ 'sh4', 'sh3' ] :
+        return ""
+    return "ltrace"
+
 RDEPENDS_${PN} = "\
   dbus-daemon-proxy \
   dosfstools \
@@ -33,7 +38,7 @@ RDEPENDS_${PN}-debug = "\
   devmem2 \
   i2c-tools \
   gdb \
-  ltrace \
+  ${@get_ltrace(bb, d)} \
   mkdump \
   mioctl \
   procps \
