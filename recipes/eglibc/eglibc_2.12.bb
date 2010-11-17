@@ -6,7 +6,7 @@ FILESPATHPKG =. "eglibc-svn:"
 PV = "2.12"
 PR = "${INC_PR}.7"
 PR_append = "+svnr${SRCPV}"
-SRCREV="11762"
+SRCREV="11982"
 EGLIBC_BRANCH="eglibc-2_12"
 SRC_URI = "svn://svn.eglibc.org/branches;module=${EGLIBC_BRANCH};proto=svn \
            file://eglibc-svn-arm-lowlevellock-include-tls.patch \
