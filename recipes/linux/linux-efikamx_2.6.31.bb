@@ -23,6 +23,7 @@ efikamx_kernel_do_unpack () {
        mkdir -p ${S}
        tar xf ${DL_DIR}/${PN}-${PV}.tar.lzma --strip-components=1 -C ${S}
        tar xf ${DL_DIR}/patch-${PV}.tar.lzma -C ${S}
+       (cd ${S}/patches; ln -s ${FILESPATHBASE}/${PN}-${PV}/remove-localversion.patch .)
 }
 
 python do_patch () {
@@ -36,6 +37,7 @@ efikamx_kernel_do_patch (){
 
 SRC_URI += "http://www.powerdeveloper.org/asset/by-id/73;name=kernel \
             http://www.powerdeveloper.org/asset/by-id/83;name=patch \
+	    file://remove-localversion.patch;apply=no \
            "
 
 SRC_URI[kernel.md5sum] = "c70ce0549cf85de79d5b28db7b552868"

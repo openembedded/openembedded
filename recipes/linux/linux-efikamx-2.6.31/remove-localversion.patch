@@ -1,0 +1,7 @@
+Index: linux-efikamx-2.6.31/localversion
+===================================================================
+--- linux-efikamx-2.6.31.orig/localversion
++++ linux-efikamx-2.6.31/localversion
+@@ -1 +1 @@
+--ER1
++-er1
