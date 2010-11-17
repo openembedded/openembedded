@@ -1,8 +1,8 @@
 DESCRIPTION = "Emulates Fn key by simulating multiple keypresses."
 LICENSE = "GPLv2"
-PR = "r0"
+PR = "r1"
 
-RDEPENDS = "xdotool"
+RDEPENDS_${PN} = "xdotool"
 
 SRC_URI = "file://fnkey.c"
 

@@ -3,7 +3,7 @@ require multi-kernel.inc
 DESCRIPTION = "Linux kernel for DaVinci processors"
 KERNEL_IMAGETYPE = "uImage"
 
-COMPATIBLE_MACHINE = "(dm355-evm|dm365-evm|dm6446-evm|dm6467-evm|dm6467t-evm|da830-omapl137-evm|da850-omapl138-evm|dm355-leopard|davinci-sffsdr|hawkboard)"
+COMPATIBLE_MACHINE = "(dm355-evm|dm365-evm|dm6446-evm|dm6467-evm|dm6467t-evm|omapl137|omapl138|dm355-leopard|davinci-sffsdr|hawkboard)"
 
 DEFAULT_PREFERENCE = "1"
 DEFAULT_PREFERENCE_dm365 = "-1"
@@ -52,34 +52,29 @@ ARAGO_L1_BR  = "master"
 ARAGO_L1_PV  = "2.6.32+2.6.33-rc4-${PR}+gitr${SRCREV}"
 ARAGO_L1_URI = "git://arago-project.org/git/projects/linux-omapl1.git;protocol=git;branch=${BRANCH} "
 
-SRCREV_da830-omapl137-evm         = ${ARAGO_L1_REV}
-SRCREV_da850-omapl138-evm         = ${ARAGO_L1_REV}
+SRCREV_omapl137         = ${ARAGO_L1_REV}
+SRCREV_omapl138         = ${ARAGO_L1_REV}
 SRCREV_hawkboard                  = ${ARAGO_L1_REV}
 
-PV_da830-omapl137-evm             = ${ARAGO_L1_PV}
-PV_da850-omapl138-evm             = ${ARAGO_L1_PV}
-PV_hawkboard                      = ${ARAGO_L1_PV}
+PV_omapl137             = ${ARAGO_L1_PV}
+PV_omapl138             = ${ARAGO_L1_PV}
 
-BRANCH_da830-omapl137-evm         = ${ARAGO_L1_BR}
-BRANCH_da850-omapl138-evm         = ${ARAGO_L1_BR}
-BRANCH_hawkboard                  = ${ARAGO_L1_BR}
+BRANCH_omapl137         = ${ARAGO_L1_BR}
+BRANCH_omapl138         = ${ARAGO_L1_BR}
 
-SRC_URI_append_da830-omapl137-evm = ${ARAGO_L1_URI}
-SRC_URI_append_da850-omapl138-evm = ${ARAGO_L1_URI}
-SRC_URI_append_hawkboard          = ${ARAGO_L1_URI}
+SRC_URI_append_omapl137 = ${ARAGO_L1_URI}
+SRC_URI_append_omapl138 = ${ARAGO_L1_URI}
 
-SRC_URI_append_da850-omapl138-evm = "file://logo_linux_clut224.ppm \
+SRC_URI_append_omapl138 = "file://logo_linux_clut224.ppm \
                                      file://0001-ahci-ti-Fix-currently-harmless-typo-in-SATA-PHY.patch \
                                      file://0002-ahci-ti-Update-SATA-PHY-configuration-RXCDR.patch \
                                      file://0001-board-da850-evm-Disable-NAND-SUBPAGE.patch \
                                      "
 
-SRC_URI_append_hawkboard          = "file://logo_linux_clut224.ppm \
+SRC_URI_append_hawkboard          = " \
                                      file://patch-2.6.33rc4-psp-to-hawkboard.patch \
-                                     file://0001-ahci-ti-Fix-currently-harmless-typo-in-SATA-PHY.patch \
-                                     file://0002-ahci-ti-Update-SATA-PHY-configuration-RXCDR.patch \
                                      file://0001-board-da850-hawk-Disable-NAND-SUBPAGE.patch \
-                                     "
+                                    "
 
 do_configure_prepend_dm355-leopard() {
 	sed -i s:2138:1381:g ${S}/arch/arm/tools/mach-types

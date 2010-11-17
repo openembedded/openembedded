@@ -1,0 +1,33 @@
+From affc2488a7f2660a74dc8354fc3e0bff2c4f879c Mon Sep 17 00:00:00 2001
+From: Dan Nicholson <dbn.lists@gmail.com>
+Date: Sat, 06 Nov 2010 21:58:09 +0000
+Subject: config: Fix architecture check for OS/2 to skip nios2 cpu
+
+The OS/2 platform requires some utility functions as well as having a
+non-32 bit wchar_t. Fix the configure check so that it doesn't also
+affect the nios2 cpu, which wouldn't influence these operating system
+issues.
+
+Signed-off-by: Dan Nicholson <dbn.lists@gmail.com>
+Tested-by: Frans Meulenbroeks <fransmeulenbroeks@gmail.com>
+Reviewed-by: Alan Coopersmith <alan.coopersmith@oracle.com>
+Reviewed-by: Julien Cristau <jcristau@debian.org>
+Signed-off-by: Alan Coopersmith <alan.coopersmith@oracle.com>
+---
+diff --git a/configure.ac b/configure.ac
+index 1b4a8b7..01f43fb 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -246,8 +246,8 @@ dnl AC_PATH_XTRA
+ 
+ # arch specific things
+ WCHAR32="1"
+-case $target_alias in
+-  *os2*) os2="true" ; WCHAR32="0" ;;
++case $target_os in
++  os2*) os2="true" ; WCHAR32="0" ;;
+   *) ;;
+ esac
+ AC_SUBST(WCHAR32)
+--
+cgit v0.8.3-6-g21f6

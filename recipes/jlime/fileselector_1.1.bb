@@ -1,9 +1,9 @@
 DESCRIPTION = "Fileselector is an SDL-based file chooser dialog"
 LICENSE = "GPLv2"
-PR = "r0"
+PR = "r1"
 
 DEPENDS = "virtual/libsdl libsdl-ttf"
-RDEPENDS = "ttf-dejavu-sans-condensed"
+RDEPENDS_${PN} = "ttf-dejavu-sans-condensed"
 
 SRC_URI = "http://jlime.com/downloads/development/software/fileselector-${PV}.tar.gz"
 
