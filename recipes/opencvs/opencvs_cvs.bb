@@ -9,7 +9,7 @@ SRCDATE = "20060814"
 PV = "0.0+cvs${SRCDATE}"
 PR = "r1"
 
-SRC_URI = "cvs://anoncvs@anoncvs.ca.openbsd.org/cvs;method=ext;module=src/usr.bin/cvs \
+SRC_URI = "cvs://anoncvs@anoncvs.ca.openbsd.org/cvs;module=src/usr.bin/cvs;method=ext \
 	   file://linux.patch"
 S = "${WORKDIR}/cvs"
 
