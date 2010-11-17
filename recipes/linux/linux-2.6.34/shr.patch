@@ -1,6 +1,6 @@
 All patches from shr kernel repository
 
-http://gitorious.org/~jama/htc-msm-2-6-32/openmoko-kernel/commits/om-gta02-2.6.34
+http://gitorious.org/~jama/htc-msm-2-6-32/openmoko-kernel/commits/shr-2.6.34
 
 7f7f2f7 wm8753: use snd_soc_jack on neo1973
 73a9539 Fix printk level of s3c touchscreen release message
@@ -5954,10 +5954,10 @@ index 0000000..1960e76
 +
 +#endif /* __GLAMO_KMS_FB_H */
 diff --git a/drivers/input/misc/Kconfig b/drivers/input/misc/Kconfig
-index 23140a3..d8d0932 100644
+index c75d165..29248b0 100644
 --- a/drivers/input/misc/Kconfig
 +++ b/drivers/input/misc/Kconfig
-@@ -340,4 +340,13 @@ config INPUT_PCAP
+@@ -347,4 +347,13 @@ config INPUT_PCAP
  	  To compile this driver as a module, choose M here: the
  	  module will be called pcap_keys.
  
@@ -5972,10 +5972,10 @@ index 23140a3..d8d0932 100644
 +
  endif
 diff --git a/drivers/input/misc/Makefile b/drivers/input/misc/Makefile
-index 7e95a5d..5b810db 100644
+index a70c9cf..2632143 100644
 --- a/drivers/input/misc/Makefile
 +++ b/drivers/input/misc/Makefile
-@@ -32,4 +32,5 @@ obj-$(CONFIG_INPUT_WINBOND_CIR)		+= winbond-cir.o
+@@ -33,4 +33,5 @@ obj-$(CONFIG_INPUT_WINBOND_CIR)		+= winbond-cir.o
  obj-$(CONFIG_INPUT_WISTRON_BTNS)	+= wistron_btns.o
  obj-$(CONFIG_INPUT_WM831X_ON)		+= wm831x-on.o
  obj-$(CONFIG_INPUT_YEALINK)		+= yealink.o

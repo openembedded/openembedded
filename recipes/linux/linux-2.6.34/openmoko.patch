@@ -1,6 +1,6 @@
 All patches from openmoko repository
 
-http://git.openmoko.org/?p=kernel.git;a=commit;h=e4182f3551f1b8e8f8bd07a2d68e49a0ec4cd04a 
+http://git.openmoko.org/?p=kernel.git;a=commit;h=e94595a0f57fba054eadb1926a0143598f71cfec
 
 diff --git a/arch/arm/boot/compressed/head.S b/arch/arm/boot/compressed/head.S
 index c5191b1..7e5e893 100644
@@ -15,6 +15,1870 @@ index c5191b1..7e5e893 100644
  		.macro loadsp, rb, tmp
  		mov	\rb, #0x50000000
  		add	\rb, \rb, #0x4000 * CONFIG_S3C_LOWLEVEL_UART_PORT
+diff --git a/arch/arm/configs/gta01_defconfig b/arch/arm/configs/gta01_defconfig
+new file mode 100644
+index 0000000..7cac1db
+--- /dev/null
++++ b/arch/arm/configs/gta01_defconfig
+@@ -0,0 +1,1858 @@
++#
++# Automatically generated make config: don't edit
++# Linux kernel version: 2.6.34
++# Wed Nov 17 23:53:50 2010
++#
++CONFIG_ARM=y
++CONFIG_HAVE_PWM=y
++CONFIG_SYS_SUPPORTS_APM_EMULATION=y
++CONFIG_GENERIC_GPIO=y
++CONFIG_HAVE_PROC_CPU=y
++CONFIG_NO_IOPORT=y
++CONFIG_GENERIC_HARDIRQS=y
++CONFIG_STACKTRACE_SUPPORT=y
++CONFIG_HAVE_LATENCYTOP_SUPPORT=y
++CONFIG_LOCKDEP_SUPPORT=y
++CONFIG_TRACE_IRQFLAGS_SUPPORT=y
++CONFIG_HARDIRQS_SW_RESEND=y
++CONFIG_GENERIC_IRQ_PROBE=y
++CONFIG_RWSEM_GENERIC_SPINLOCK=y
++CONFIG_ARCH_HAS_CPUFREQ=y
++CONFIG_GENERIC_HWEIGHT=y
++CONFIG_GENERIC_CALIBRATE_DELAY=y
++CONFIG_NEED_DMA_MAP_STATE=y
++CONFIG_GENERIC_HARDIRQS_NO__DO_IRQ=y
++CONFIG_VECTORS_BASE=0xffff0000
++CONFIG_DEFCONFIG_LIST="/lib/modules/$UNAME_RELEASE/.config"
++CONFIG_CONSTRUCTORS=y
++
++#
++# General setup
++#
++CONFIG_EXPERIMENTAL=y
++CONFIG_BROKEN_ON_SMP=y
++CONFIG_INIT_ENV_ARG_LIMIT=32
++CONFIG_LOCALVERSION=""
++# CONFIG_LOCALVERSION_AUTO is not set
++CONFIG_HAVE_KERNEL_GZIP=y
++CONFIG_HAVE_KERNEL_LZO=y
++CONFIG_KERNEL_GZIP=y
++# CONFIG_KERNEL_BZIP2 is not set
++# CONFIG_KERNEL_LZMA is not set
++# CONFIG_KERNEL_LZO is not set
++CONFIG_SWAP=y
++CONFIG_SYSVIPC=y
++CONFIG_SYSVIPC_SYSCTL=y
++# CONFIG_POSIX_MQUEUE is not set
++# CONFIG_BSD_PROCESS_ACCT is not set
++# CONFIG_TASKSTATS is not set
++# CONFIG_AUDIT is not set
++
++#
++# RCU Subsystem
++#
++CONFIG_TREE_RCU=y
++# CONFIG_TREE_PREEMPT_RCU is not set
++# CONFIG_TINY_RCU is not set
++# CONFIG_RCU_TRACE is not set
++CONFIG_RCU_FANOUT=32
++# CONFIG_RCU_FANOUT_EXACT is not set
++# CONFIG_TREE_RCU_TRACE is not set
++# CONFIG_IKCONFIG is not set
++CONFIG_LOG_BUF_SHIFT=18
++# CONFIG_CGROUPS is not set
++CONFIG_SYSFS_DEPRECATED=y
++CONFIG_SYSFS_DEPRECATED_V2=y
++# CONFIG_RELAY is not set
++CONFIG_NAMESPACES=y
++# CONFIG_UTS_NS is not set
++# CONFIG_IPC_NS is not set
++# CONFIG_USER_NS is not set
++# CONFIG_PID_NS is not set
++# CONFIG_NET_NS is not set
++CONFIG_BLK_DEV_INITRD=y
++CONFIG_INITRAMFS_SOURCE=""
++CONFIG_RD_GZIP=y
++CONFIG_RD_BZIP2=y
++CONFIG_RD_LZMA=y
++# CONFIG_RD_LZO is not set
++# CONFIG_CC_OPTIMIZE_FOR_SIZE is not set
++CONFIG_SYSCTL=y
++CONFIG_ANON_INODES=y
++CONFIG_EMBEDDED=y
++CONFIG_UID16=y
++CONFIG_SYSCTL_SYSCALL=y
++CONFIG_KALLSYMS=y
++CONFIG_KALLSYMS_ALL=y
++CONFIG_KALLSYMS_EXTRA_PASS=y
++CONFIG_HOTPLUG=y
++CONFIG_PRINTK=y
++CONFIG_BUG=y
++CONFIG_ELF_CORE=y
++CONFIG_BASE_FULL=y
++CONFIG_FUTEX=y
++CONFIG_EPOLL=y
++CONFIG_SIGNALFD=y
++CONFIG_TIMERFD=y
++CONFIG_EVENTFD=y
++CONFIG_SHMEM=y
++CONFIG_AIO=y
++CONFIG_HAVE_PERF_EVENTS=y
++CONFIG_PERF_USE_VMALLOC=y
++
++#
++# Kernel Performance Events And Counters
++#
++# CONFIG_PERF_EVENTS is not set
++# CONFIG_PERF_COUNTERS is not set
++CONFIG_VM_EVENT_COUNTERS=y
++CONFIG_COMPAT_BRK=y
++CONFIG_SLAB=y
++# CONFIG_SLUB is not set
++# CONFIG_SLOB is not set
++# CONFIG_PROFILING is not set
++CONFIG_HAVE_OPROFILE=y
++# CONFIG_KPROBES is not set
++CONFIG_HAVE_KPROBES=y
++CONFIG_HAVE_KRETPROBES=y
++CONFIG_HAVE_CLK=y
++
++#
++# GCOV-based kernel profiling
++#
++# CONFIG_SLOW_WORK is not set
++CONFIG_HAVE_GENERIC_DMA_COHERENT=y
++CONFIG_SLABINFO=y
++CONFIG_RT_MUTEXES=y
++CONFIG_BASE_SMALL=0
++CONFIG_MODULES=y
++# CONFIG_MODULE_FORCE_LOAD is not set
++CONFIG_MODULE_UNLOAD=y
++CONFIG_MODULE_FORCE_UNLOAD=y
++# CONFIG_MODVERSIONS is not set
++# CONFIG_MODULE_SRCVERSION_ALL is not set
++CONFIG_BLOCK=y
++# CONFIG_LBDAF is not set
++# CONFIG_BLK_DEV_BSG is not set
++# CONFIG_BLK_DEV_INTEGRITY is not set
++
++#
++# IO Schedulers
++#
++CONFIG_IOSCHED_NOOP=y
++CONFIG_IOSCHED_DEADLINE=y
++# CONFIG_IOSCHED_CFQ is not set
++CONFIG_DEFAULT_DEADLINE=y
++# CONFIG_DEFAULT_CFQ is not set
++# CONFIG_DEFAULT_NOOP is not set
++CONFIG_DEFAULT_IOSCHED="deadline"
++# CONFIG_INLINE_SPIN_TRYLOCK is not set
++# CONFIG_INLINE_SPIN_TRYLOCK_BH is not set
++# CONFIG_INLINE_SPIN_LOCK is not set
++# CONFIG_INLINE_SPIN_LOCK_BH is not set
++# CONFIG_INLINE_SPIN_LOCK_IRQ is not set
++# CONFIG_INLINE_SPIN_LOCK_IRQSAVE is not set
++CONFIG_INLINE_SPIN_UNLOCK=y
++# CONFIG_INLINE_SPIN_UNLOCK_BH is not set
++CONFIG_INLINE_SPIN_UNLOCK_IRQ=y
++# CONFIG_INLINE_SPIN_UNLOCK_IRQRESTORE is not set
++# CONFIG_INLINE_READ_TRYLOCK is not set
++# CONFIG_INLINE_READ_LOCK is not set
++# CONFIG_INLINE_READ_LOCK_BH is not set
++# CONFIG_INLINE_READ_LOCK_IRQ is not set
++# CONFIG_INLINE_READ_LOCK_IRQSAVE is not set
++CONFIG_INLINE_READ_UNLOCK=y
++# CONFIG_INLINE_READ_UNLOCK_BH is not set
++CONFIG_INLINE_READ_UNLOCK_IRQ=y
++# CONFIG_INLINE_READ_UNLOCK_IRQRESTORE is not set
++# CONFIG_INLINE_WRITE_TRYLOCK is not set
++# CONFIG_INLINE_WRITE_LOCK is not set
++# CONFIG_INLINE_WRITE_LOCK_BH is not set
++# CONFIG_INLINE_WRITE_LOCK_IRQ is not set
++# CONFIG_INLINE_WRITE_LOCK_IRQSAVE is not set
++CONFIG_INLINE_WRITE_UNLOCK=y
++# CONFIG_INLINE_WRITE_UNLOCK_BH is not set
++CONFIG_INLINE_WRITE_UNLOCK_IRQ=y
++# CONFIG_INLINE_WRITE_UNLOCK_IRQRESTORE is not set
++# CONFIG_MUTEX_SPIN_ON_OWNER is not set
++CONFIG_FREEZER=y
++
++#
++# System Type
++#
++CONFIG_MMU=y
++# CONFIG_ARCH_AAEC2000 is not set
++# CONFIG_ARCH_INTEGRATOR is not set
++# CONFIG_ARCH_REALVIEW is not set
++# CONFIG_ARCH_VERSATILE is not set
++# CONFIG_ARCH_AT91 is not set
++# CONFIG_ARCH_BCMRING is not set
++# CONFIG_ARCH_CLPS711X is not set
++# CONFIG_ARCH_GEMINI is not set
++# CONFIG_ARCH_EBSA110 is not set
++# CONFIG_ARCH_EP93XX is not set
++# CONFIG_ARCH_FOOTBRIDGE is not set
++# CONFIG_ARCH_MXC is not set
++# CONFIG_ARCH_STMP3XXX is not set
++# CONFIG_ARCH_NETX is not set
++# CONFIG_ARCH_H720X is not set
++# CONFIG_ARCH_IOP13XX is not set
++# CONFIG_ARCH_IOP32X is not set
++# CONFIG_ARCH_IOP33X is not set
++# CONFIG_ARCH_IXP23XX is not set
++# CONFIG_ARCH_IXP2000 is not set
++# CONFIG_ARCH_IXP4XX is not set
++# CONFIG_ARCH_L7200 is not set
++# CONFIG_ARCH_DOVE is not set
++# CONFIG_ARCH_KIRKWOOD is not set
++# CONFIG_ARCH_LOKI is not set
++# CONFIG_ARCH_MV78XX0 is not set
++# CONFIG_ARCH_ORION5X is not set
++# CONFIG_ARCH_MMP is not set
++# CONFIG_ARCH_KS8695 is not set
++# CONFIG_ARCH_NS9XXX is not set
++# CONFIG_ARCH_W90X900 is not set
++# CONFIG_ARCH_NUC93X is not set
++# CONFIG_ARCH_PNX4008 is not set
++# CONFIG_ARCH_PXA is not set
++# CONFIG_ARCH_MSM is not set
++# CONFIG_ARCH_SHMOBILE is not set
++# CONFIG_ARCH_RPC is not set
++# CONFIG_ARCH_SA1100 is not set
++CONFIG_ARCH_S3C2410=y
++# CONFIG_ARCH_S3C64XX is not set
++# CONFIG_ARCH_S5P6440 is not set
++# CONFIG_ARCH_S5P6442 is not set
++# CONFIG_ARCH_S5PC1XX is not set
++# CONFIG_ARCH_S5PV210 is not set
++# CONFIG_ARCH_SHARK is not set
++# CONFIG_ARCH_LH7A40X is not set
++# CONFIG_ARCH_U300 is not set
++# CONFIG_ARCH_U8500 is not set
++# CONFIG_ARCH_NOMADIK is not set
++# CONFIG_ARCH_DAVINCI is not set
++# CONFIG_ARCH_OMAP is not set
++CONFIG_PLAT_SAMSUNG=y
++
++#
++# Boot options
++#
++# CONFIG_S3C_BOOT_WATCHDOG is not set
++CONFIG_S3C_BOOT_ERROR_RESET=y
++CONFIG_S3C_BOOT_UART_FORCE_FIFO=y
++CONFIG_S3C_LOWLEVEL_UART_PORT=0
++CONFIG_SAMSUNG_GPIO_EXTRA=0
++CONFIG_S3C_GPIO_SPACE=0
++CONFIG_S3C_ADC=y
++CONFIG_S3C_DEV_USB_HOST=y
++CONFIG_S3C_DEV_NAND=y
++CONFIG_S3C_DMA=y
++
++#
++# Power management
++#
++# CONFIG_SAMSUNG_PM_DEBUG is not set
++# CONFIG_SAMSUNG_PM_CHECK is not set
++CONFIG_PLAT_S3C24XX=y
++CONFIG_CPU_LLSERIAL_S3C2410_ONLY=y
++CONFIG_CPU_LLSERIAL_S3C2410=y
++CONFIG_S3C2410_CLOCK=y
++CONFIG_S3C24XX_PWM=y
++CONFIG_S3C24XX_GPIO_EXTRA=0
++CONFIG_S3C2410_DMA=y
++# CONFIG_S3C2410_DMA_DEBUG is not set
++
++#
++# S3C2400 Machines
++#
++CONFIG_CPU_S3C2410=y
++CONFIG_CPU_S3C2410_DMA=y
++CONFIG_S3C2410_PM=y
++CONFIG_S3C2410_GPIO=y
++
++#
++# S3C2410 Machines
++#
++# CONFIG_ARCH_SMDK2410 is not set
++# CONFIG_ARCH_H1940 is not set
++# CONFIG_MACH_N30 is not set
++# CONFIG_ARCH_BAST is not set
++# CONFIG_MACH_OTOM is not set
++# CONFIG_MACH_AML_M5900 is not set
++# CONFIG_MACH_TCT_HAMMER is not set
++# CONFIG_MACH_VR1000 is not set
++# CONFIG_MACH_QT2410 is not set
++CONFIG_MACH_NEO1973_GTA01=y
++
++#
++# S3C2412 Machines
++#
++# CONFIG_MACH_JIVE is not set
++# CONFIG_MACH_SMDK2413 is not set
++# CONFIG_MACH_SMDK2412 is not set
++# CONFIG_MACH_VSTMS is not set
++
++#
++# S3C2440 and S3C2442 Machines
++#
++# CONFIG_MACH_ANUBIS is not set
++# CONFIG_MACH_NEO1973_GTA02 is not set
++# CONFIG_MACH_OSIRIS is not set
++# CONFIG_MACH_RX3715 is not set
++# CONFIG_ARCH_S3C2440 is not set
++# CONFIG_MACH_NEXCODER_2440 is not set
++# CONFIG_SMDK2440_CPU2440 is not set
++# CONFIG_SMDK2440_CPU2442 is not set
++# CONFIG_MACH_AT2440EVB is not set
++# CONFIG_MACH_MINI2440 is not set
++
++#
++# S3C2443 Machines
++#
++# CONFIG_MACH_SMDK2443 is not set
++
++#
++# Processor Type
++#
++CONFIG_CPU_ARM920T=y
++CONFIG_CPU_32v4T=y
++CONFIG_CPU_ABRT_EV4T=y
++CONFIG_CPU_PABRT_LEGACY=y
++CONFIG_CPU_CACHE_V4WT=y
++CONFIG_CPU_CACHE_VIVT=y
++CONFIG_CPU_COPY_V4WB=y
++CONFIG_CPU_TLB_V4WBI=y
++CONFIG_CPU_CP15=y
++CONFIG_CPU_CP15_MMU=y
++
++#
++# Processor Features
++#
++CONFIG_ARM_THUMB=y
++# CONFIG_CPU_ICACHE_DISABLE is not set
++# CONFIG_CPU_DCACHE_DISABLE is not set
++# CONFIG_CPU_DCACHE_WRITETHROUGH is not set
++CONFIG_ARM_L1_CACHE_SHIFT=5
++
++#
++# Bus support
++#
++# CONFIG_PCI_SYSCALL is not set
++# CONFIG_ARCH_SUPPORTS_MSI is not set
++# CONFIG_PCCARD is not set
++
++#
++# Kernel Features
++#
++CONFIG_VMSPLIT_3G=y
++# CONFIG_VMSPLIT_2G is not set
++# CONFIG_VMSPLIT_1G is not set
++CONFIG_PAGE_OFFSET=0xC0000000
++CONFIG_PREEMPT_NONE=y
++# CONFIG_PREEMPT_VOLUNTARY is not set
++# CONFIG_PREEMPT is not set
++CONFIG_HZ=200
++# CONFIG_AEABI is not set
++# CONFIG_ARCH_SPARSEMEM_DEFAULT is not set
++# CONFIG_ARCH_SELECT_MEMORY_MODEL is not set
++# CONFIG_HIGHMEM is not set
++CONFIG_SELECT_MEMORY_MODEL=y
++CONFIG_FLATMEM_MANUAL=y
++# CONFIG_DISCONTIGMEM_MANUAL is not set
++# CONFIG_SPARSEMEM_MANUAL is not set
++CONFIG_FLATMEM=y
++CONFIG_FLAT_NODE_MEM_MAP=y
++CONFIG_PAGEFLAGS_EXTENDED=y
++CONFIG_SPLIT_PTLOCK_CPUS=999999
++# CONFIG_PHYS_ADDR_T_64BIT is not set
++CONFIG_ZONE_DMA_FLAG=0
++CONFIG_VIRT_TO_BUS=y
++# CONFIG_KSM is not set
++CONFIG_DEFAULT_MMAP_MIN_ADDR=4096
++CONFIG_ALIGNMENT_TRAP=y
++# CONFIG_UACCESS_WITH_MEMCPY is not set
++
++#
++# Boot options
++#
++CONFIG_ZBOOT_ROM_TEXT=0x0
++CONFIG_ZBOOT_ROM_BSS=0x0
++CONFIG_CMDLINE="unused -- bootloader passes ATAG list"
++# CONFIG_XIP_KERNEL is not set
++# CONFIG_KEXEC is not set
++
++#
++# CPU Power Management
++#
++# CONFIG_CPU_FREQ is not set
++CONFIG_CPU_IDLE=y
++CONFIG_CPU_IDLE_GOV_LADDER=y
++
++#
++# Floating point emulation
++#
++
++#
++# At least one emulation must be selected
++#
++CONFIG_FPE_NWFPE=y
++# CONFIG_FPE_NWFPE_XP is not set
++# CONFIG_FPE_FASTFPE is not set
++
++#
++# Userspace binary formats
++#
++CONFIG_BINFMT_ELF=y
++# CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
++CONFIG_HAVE_AOUT=y
++# CONFIG_BINFMT_AOUT is not set
++# CONFIG_BINFMT_MISC is not set
++# CONFIG_ARTHUR is not set
++
++#
++# Power management options
++#
++CONFIG_PM=y
++# CONFIG_PM_DEBUG is not set
++CONFIG_PM_SLEEP=y
++CONFIG_SUSPEND=y
++CONFIG_SUSPEND_FREEZER=y
++# CONFIG_APM_EMULATION is not set
++# CONFIG_PM_RUNTIME is not set
++CONFIG_PM_OPS=y
++CONFIG_ARCH_SUSPEND_POSSIBLE=y
++CONFIG_NET=y
++
++#
++# Networking options
++#
++CONFIG_PACKET=y
++CONFIG_UNIX=y
++# CONFIG_NET_KEY is not set
++CONFIG_INET=y
++CONFIG_IP_MULTICAST=y
++CONFIG_IP_ADVANCED_ROUTER=y
++CONFIG_ASK_IP_FIB_HASH=y
++# CONFIG_IP_FIB_TRIE is not set
++CONFIG_IP_FIB_HASH=y
++CONFIG_IP_MULTIPLE_TABLES=y
++# CONFIG_IP_ROUTE_MULTIPATH is not set
++# CONFIG_IP_ROUTE_VERBOSE is not set
++CONFIG_IP_PNP=y
++# CONFIG_IP_PNP_DHCP is not set
++# CONFIG_IP_PNP_BOOTP is not set
++# CONFIG_IP_PNP_RARP is not set
++# CONFIG_NET_IPIP is not set
++# CONFIG_NET_IPGRE is not set
++CONFIG_IP_MROUTE=y
++# CONFIG_IP_PIMSM_V1 is not set
++# CONFIG_IP_PIMSM_V2 is not set
++# CONFIG_ARPD is not set
++CONFIG_SYN_COOKIES=y
++# CONFIG_INET_AH is not set
++# CONFIG_INET_ESP is not set
++# CONFIG_INET_IPCOMP is not set
++# CONFIG_INET_XFRM_TUNNEL is not set
++# CONFIG_INET_TUNNEL is not set
++# CONFIG_INET_XFRM_MODE_TRANSPORT is not set
++# CONFIG_INET_XFRM_MODE_TUNNEL is not set
++# CONFIG_INET_XFRM_MODE_BEET is not set
++# CONFIG_INET_LRO is not set
++CONFIG_INET_DIAG=y
++CONFIG_INET_TCP_DIAG=y
++CONFIG_TCP_CONG_ADVANCED=y
++# CONFIG_TCP_CONG_BIC is not set
++# CONFIG_TCP_CONG_CUBIC is not set
++CONFIG_TCP_CONG_WESTWOOD=y
++# CONFIG_TCP_CONG_HTCP is not set
++# CONFIG_TCP_CONG_HSTCP is not set
++# CONFIG_TCP_CONG_HYBLA is not set
++# CONFIG_TCP_CONG_VEGAS is not set
++# CONFIG_TCP_CONG_SCALABLE is not set
++# CONFIG_TCP_CONG_LP is not set
++# CONFIG_TCP_CONG_VENO is not set
++# CONFIG_TCP_CONG_YEAH is not set
++# CONFIG_TCP_CONG_ILLINOIS is not set
++# CONFIG_DEFAULT_BIC is not set
++# CONFIG_DEFAULT_CUBIC is not set
++# CONFIG_DEFAULT_HTCP is not set
++# CONFIG_DEFAULT_VEGAS is not set
++CONFIG_DEFAULT_WESTWOOD=y
++# CONFIG_DEFAULT_RENO is not set
++CONFIG_DEFAULT_TCP_CONG="westwood"
++CONFIG_TCP_MD5SIG=y
++# CONFIG_IPV6 is not set
++# CONFIG_NETWORK_SECMARK is not set
++CONFIG_NETFILTER=y
++# CONFIG_NETFILTER_DEBUG is not set
++CONFIG_NETFILTER_ADVANCED=y
++CONFIG_BRIDGE_NETFILTER=y
++
++#
++# Core Netfilter Configuration
++#
++# CONFIG_NETFILTER_NETLINK_QUEUE is not set
++# CONFIG_NETFILTER_NETLINK_LOG is not set
++# CONFIG_NF_CONNTRACK is not set
++# CONFIG_NETFILTER_XTABLES is not set
++# CONFIG_IP_VS is not set
++
++#
++# IP: Netfilter Configuration
++#
++# CONFIG_NF_DEFRAG_IPV4 is not set
++# CONFIG_IP_NF_QUEUE is not set
++# CONFIG_IP_NF_IPTABLES is not set
++# CONFIG_IP_NF_ARPTABLES is not set
++# CONFIG_BRIDGE_NF_EBTABLES is not set
++# CONFIG_IP_DCCP is not set
++# CONFIG_IP_SCTP is not set
++# CONFIG_RDS is not set
++# CONFIG_TIPC is not set
++# CONFIG_ATM is not set
++CONFIG_STP=y
++CONFIG_BRIDGE=y
++CONFIG_BRIDGE_IGMP_SNOOPING=y
++# CONFIG_NET_DSA is not set
++# CONFIG_VLAN_8021Q is not set
++# CONFIG_DECNET is not set
++CONFIG_LLC=y
++# CONFIG_LLC2 is not set
++# CONFIG_IPX is not set
++# CONFIG_ATALK is not set
++# CONFIG_X25 is not set
++# CONFIG_LAPB is not set
++# CONFIG_ECONET is not set
++# CONFIG_WAN_ROUTER is not set
++# CONFIG_PHONET is not set
++# CONFIG_IEEE802154 is not set
++CONFIG_NET_SCHED=y
++
++#
++# Queueing/Scheduling
++#
++# CONFIG_NET_SCH_CBQ is not set
++# CONFIG_NET_SCH_HTB is not set
++# CONFIG_NET_SCH_HFSC is not set
++# CONFIG_NET_SCH_PRIO is not set
++# CONFIG_NET_SCH_MULTIQ is not set
++# CONFIG_NET_SCH_RED is not set
++# CONFIG_NET_SCH_SFQ is not set
++# CONFIG_NET_SCH_TEQL is not set
++# CONFIG_NET_SCH_TBF is not set
++# CONFIG_NET_SCH_GRED is not set
++# CONFIG_NET_SCH_DSMARK is not set
++# CONFIG_NET_SCH_NETEM is not set
++# CONFIG_NET_SCH_DRR is not set
++
++#
++# Classification
++#
++CONFIG_NET_CLS=y
++CONFIG_NET_CLS_BASIC=y
++# CONFIG_NET_CLS_TCINDEX is not set
++# CONFIG_NET_CLS_ROUTE4 is not set
++# CONFIG_NET_CLS_FW is not set
++# CONFIG_NET_CLS_U32 is not set
++# CONFIG_NET_CLS_RSVP is not set
++# CONFIG_NET_CLS_RSVP6 is not set
++# CONFIG_NET_CLS_FLOW is not set
++# CONFIG_NET_EMATCH is not set
++# CONFIG_NET_CLS_ACT is not set
++CONFIG_NET_SCH_FIFO=y
++# CONFIG_DCB is not set
++
++#
++# Network testing
++#
++# CONFIG_NET_PKTGEN is not set
++# CONFIG_HAMRADIO is not set
++# CONFIG_CAN is not set
++# CONFIG_IRDA is not set
++# CONFIG_BT is not set
++# CONFIG_AF_RXRPC is not set
++CONFIG_FIB_RULES=y
++CONFIG_WIRELESS=y
++# CONFIG_CFG80211 is not set
++# CONFIG_LIB80211 is not set
++
++#
++# CFG80211 needs to be enabled for MAC80211
++#
++# CONFIG_WIMAX is not set
++CONFIG_RFKILL=y
++CONFIG_RFKILL_LEDS=y
++CONFIG_RFKILL_INPUT=y
++# CONFIG_NET_9P is not set
++
++#
++# Device Drivers
++#
++
++#
++# Generic Driver Options
++#
++CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
++CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
++CONFIG_STANDALONE=y
++CONFIG_PREVENT_FIRMWARE_BUILD=y
++CONFIG_FW_LOADER=y
++# CONFIG_FIRMWARE_IN_KERNEL is not set
++CONFIG_EXTRA_FIRMWARE=""
++# CONFIG_DEBUG_DRIVER is not set
++# CONFIG_DEBUG_DEVRES is not set
++# CONFIG_SYS_HYPERVISOR is not set
++# CONFIG_CONNECTOR is not set
++CONFIG_MTD=y
++# CONFIG_MTD_DEBUG is not set
++# CONFIG_MTD_TESTS is not set
++CONFIG_MTD_CONCAT=y
++CONFIG_MTD_PARTITIONS=y
++# CONFIG_MTD_REDBOOT_PARTS is not set
++CONFIG_MTD_CMDLINE_PARTS=y
++# CONFIG_MTD_AFS_PARTS is not set
++# CONFIG_MTD_AR7_PARTS is not set
++
++#
++# User Modules And Translation Layers
++#
++CONFIG_MTD_CHAR=y
++CONFIG_MTD_BLKDEVS=y
++CONFIG_MTD_BLOCK=y
++# CONFIG_FTL is not set
++# CONFIG_NFTL is not set
++# CONFIG_INFTL is not set
++# CONFIG_RFD_FTL is not set
++# CONFIG_SSFDC is not set
++# CONFIG_MTD_OOPS is not set
++
++#
++# RAM/ROM/Flash chip drivers
++#
++CONFIG_MTD_CFI=y
++# CONFIG_MTD_JEDECPROBE is not set
++CONFIG_MTD_GEN_PROBE=y
++# CONFIG_MTD_CFI_ADV_OPTIONS is not set
++CONFIG_MTD_MAP_BANK_WIDTH_1=y
++CONFIG_MTD_MAP_BANK_WIDTH_2=y
++CONFIG_MTD_MAP_BANK_WIDTH_4=y
++# CONFIG_MTD_MAP_BANK_WIDTH_8 is not set
++# CONFIG_MTD_MAP_BANK_WIDTH_16 is not set
++# CONFIG_MTD_MAP_BANK_WIDTH_32 is not set
++CONFIG_MTD_CFI_I1=y
++CONFIG_MTD_CFI_I2=y
++# CONFIG_MTD_CFI_I4 is not set
++# CONFIG_MTD_CFI_I8 is not set
++CONFIG_MTD_CFI_INTELEXT=y
++# CONFIG_MTD_CFI_AMDSTD is not set
++# CONFIG_MTD_CFI_STAA is not set
++CONFIG_MTD_CFI_UTIL=y
++# CONFIG_MTD_RAM is not set
++CONFIG_MTD_ROM=y
++CONFIG_MTD_ABSENT=y
++
++#
++# Mapping drivers for chip access
++#
++# CONFIG_MTD_COMPLEX_MAPPINGS is not set
++CONFIG_MTD_PHYSMAP=y
++# CONFIG_MTD_PHYSMAP_COMPAT is not set
++# CONFIG_MTD_ARM_INTEGRATOR is not set
++# CONFIG_MTD_PLATRAM is not set
++
++#
++# Self-contained MTD device drivers
++#
++# CONFIG_MTD_DATAFLASH is not set
++# CONFIG_MTD_M25P80 is not set
++# CONFIG_MTD_SST25L is not set
++# CONFIG_MTD_SLRAM is not set
++# CONFIG_MTD_PHRAM is not set
++# CONFIG_MTD_MTDRAM is not set
++# CONFIG_MTD_BLOCK2MTD is not set
++
++#
++# Disk-On-Chip Device Drivers
++#
++# CONFIG_MTD_DOC2000 is not set
++# CONFIG_MTD_DOC2001 is not set
++# CONFIG_MTD_DOC2001PLUS is not set
++CONFIG_MTD_NAND=y
++# CONFIG_MTD_NAND_VERIFY_WRITE is not set
++# CONFIG_MTD_NAND_ECC_SMC is not set
++# CONFIG_MTD_NAND_MUSEUM_IDS is not set
++# CONFIG_MTD_NAND_GPIO is not set
++CONFIG_MTD_NAND_IDS=y
++CONFIG_MTD_NAND_S3C2410=y
++# CONFIG_MTD_NAND_S3C2410_DEBUG is not set
++CONFIG_MTD_NAND_S3C2410_HWECC=y
++# CONFIG_MTD_NAND_S3C2410_CLKSTOP is not set
++# CONFIG_MTD_NAND_DISKONCHIP is not set
++# CONFIG_MTD_NAND_NANDSIM is not set
++# CONFIG_MTD_NAND_PLATFORM is not set
++# CONFIG_MTD_ALAUDA is not set
++# CONFIG_MTD_ONENAND is not set
++
++#
++# LPDDR flash memory drivers
++#
++# CONFIG_MTD_LPDDR is not set
++
++#
++# UBI - Unsorted block images
++#
++# CONFIG_MTD_UBI is not set
++# CONFIG_PARPORT is not set
++CONFIG_BLK_DEV=y
++# CONFIG_BLK_DEV_COW_COMMON is not set
++# CONFIG_BLK_DEV_LOOP is not set
++
++#
++# DRBD disabled because PROC_FS, INET or CONNECTOR not selected
++#
++# CONFIG_BLK_DEV_NBD is not set
++# CONFIG_BLK_DEV_UB is not set
++CONFIG_BLK_DEV_RAM=y
++CONFIG_BLK_DEV_RAM_COUNT=16
++CONFIG_BLK_DEV_RAM_SIZE=4096
++# CONFIG_BLK_DEV_XIP is not set
++# CONFIG_CDROM_PKTCDVD is not set
++# CONFIG_ATA_OVER_ETH is not set
++# CONFIG_MG_DISK is not set
++# CONFIG_MISC_DEVICES is not set
++CONFIG_HAVE_IDE=y
++# CONFIG_IDE is not set
++
++#
++# SCSI device support
++#
++CONFIG_SCSI_MOD=y
++# CONFIG_RAID_ATTRS is not set
++# CONFIG_SCSI is not set
++# CONFIG_SCSI_DMA is not set
++# CONFIG_SCSI_NETLINK is not set
++# CONFIG_ATA is not set
++# CONFIG_MD is not set
++CONFIG_NETDEVICES=y
++# CONFIG_DUMMY is not set
++# CONFIG_BONDING is not set
++# CONFIG_MACVLAN is not set
++# CONFIG_EQUALIZER is not set
++# CONFIG_TUN is not set
++# CONFIG_VETH is not set
++# CONFIG_NET_ETHERNET is not set
++# CONFIG_NETDEV_1000 is not set
++# CONFIG_NETDEV_10000 is not set
++CONFIG_WLAN=y
++# CONFIG_USB_ZD1201 is not set
++# CONFIG_HOSTAP is not set
++
++#
++# Enable WiMAX (Networking options) to see the WiMAX drivers
++#
++
++#
++# USB Network Adapters
++#
++# CONFIG_USB_CATC is not set
++# CONFIG_USB_KAWETH is not set
++# CONFIG_USB_PEGASUS is not set
++# CONFIG_USB_RTL8150 is not set
++# CONFIG_USB_USBNET is not set
++# CONFIG_USB_HSO is not set
++# CONFIG_USB_IPHETH is not set
++# CONFIG_WAN is not set
++# CONFIG_PPP is not set
++# CONFIG_SLIP is not set
++# CONFIG_NETCONSOLE is not set
++# CONFIG_NETPOLL is not set
++# CONFIG_NET_POLL_CONTROLLER is not set
++# CONFIG_ISDN is not set
++# CONFIG_PHONE is not set
++
++#
++# Input device support
++#
++CONFIG_INPUT=y
++# CONFIG_INPUT_FF_MEMLESS is not set
++# CONFIG_INPUT_POLLDEV is not set
++# CONFIG_INPUT_SPARSEKMAP is not set
++
++#
++# Userland interfaces
++#
++CONFIG_INPUT_MOUSEDEV=y
++# CONFIG_INPUT_MOUSEDEV_PSAUX is not set
++CONFIG_INPUT_MOUSEDEV_SCREEN_X=480
++CONFIG_INPUT_MOUSEDEV_SCREEN_Y=640
++# CONFIG_INPUT_JOYDEV is not set
++CONFIG_INPUT_EVDEV=y
++# CONFIG_INPUT_EVBUG is not set
++
++#
++# Input Device Drivers
++#
++CONFIG_INPUT_KEYBOARD=y
++# CONFIG_KEYBOARD_ADP5588 is not set
++# CONFIG_KEYBOARD_ATKBD is not set
++# CONFIG_QT2160 is not set
++# CONFIG_KEYBOARD_LKKBD is not set
++CONFIG_KEYBOARD_GPIO=y
++# CONFIG_KEYBOARD_MATRIX is not set
++# CONFIG_KEYBOARD_LM8323 is not set
++# CONFIG_KEYBOARD_MAX7359 is not set
++# CONFIG_KEYBOARD_NEWTON is not set
++# CONFIG_KEYBOARD_OPENCORES is not set
++# CONFIG_KEYBOARD_STOWAWAY is not set
++# CONFIG_KEYBOARD_SUNKBD is not set
++# CONFIG_KEYBOARD_XTKBD is not set
++# CONFIG_INPUT_MOUSE is not set
++# CONFIG_INPUT_JOYSTICK is not set
++# CONFIG_INPUT_TABLET is not set
++CONFIG_INPUT_TOUCHSCREEN=y
++# CONFIG_TOUCHSCREEN_ADS7846 is not set
++# CONFIG_TOUCHSCREEN_AD7877 is not set
++# CONFIG_TOUCHSCREEN_AD7879_I2C is not set
++# CONFIG_TOUCHSCREEN_AD7879_SPI is not set
++# CONFIG_TOUCHSCREEN_AD7879 is not set
++# CONFIG_TOUCHSCREEN_DYNAPRO is not set
++# CONFIG_TOUCHSCREEN_EETI is not set
++# CONFIG_TOUCHSCREEN_FUJITSU is not set
++# CONFIG_TOUCHSCREEN_S3C2410 is not set
++# CONFIG_TOUCHSCREEN_GUNZE is not set
++# CONFIG_TOUCHSCREEN_ELO is not set
++# CONFIG_TOUCHSCREEN_WACOM_W8001 is not set
++# CONFIG_TOUCHSCREEN_MCS5000 is not set
++# CONFIG_TOUCHSCREEN_MTOUCH is not set
++# CONFIG_TOUCHSCREEN_INEXIO is not set
++# CONFIG_TOUCHSCREEN_MK712 is not set
++# CONFIG_TOUCHSCREEN_PENMOUNT is not set
++# CONFIG_TOUCHSCREEN_TOUCHRIGHT is not set
++# CONFIG_TOUCHSCREEN_TOUCHWIN is not set
++# CONFIG_TOUCHSCREEN_USB_COMPOSITE is not set
++# CONFIG_TOUCHSCREEN_TOUCHIT213 is not set
++# CONFIG_TOUCHSCREEN_TSC2007 is not set
++# CONFIG_TOUCHSCREEN_W90X900 is not set
++CONFIG_INPUT_MISC=y
++# CONFIG_INPUT_ATI_REMOTE is not set
++# CONFIG_INPUT_ATI_REMOTE2 is not set
++# CONFIG_INPUT_KEYSPAN_REMOTE is not set
++# CONFIG_INPUT_POWERMATE is not set
++# CONFIG_INPUT_YEALINK is not set
++# CONFIG_INPUT_CM109 is not set
++# CONFIG_INPUT_UINPUT is not set
++CONFIG_INPUT_PCF50606_PMU=y
++# CONFIG_INPUT_GPIO_ROTARY_ENCODER is not set
++
++#
++# Hardware I/O ports
++#
++CONFIG_SERIO=y
++# CONFIG_SERIO_SERPORT is not set
++# CONFIG_SERIO_LIBPS2 is not set
++# CONFIG_SERIO_RAW is not set
++# CONFIG_SERIO_ALTERA_PS2 is not set
++# CONFIG_GAMEPORT is not set
++
++#
++# Character devices
++#
++CONFIG_VT=y
++CONFIG_CONSOLE_TRANSLATIONS=y
++CONFIG_VT_CONSOLE=y
++CONFIG_HW_CONSOLE=y
++CONFIG_VT_HW_CONSOLE_BINDING=y
++# CONFIG_DEVKMEM is not set
++# CONFIG_SERIAL_NONSTANDARD is not set
++
++#
++# Serial drivers
++#
++# CONFIG_SERIAL_8250 is not set
++
++#
++# Non-8250 serial port support
++#
++CONFIG_SERIAL_SAMSUNG=y
++CONFIG_SERIAL_SAMSUNG_UARTS=3
++CONFIG_SERIAL_SAMSUNG_CONSOLE=y
++CONFIG_SERIAL_S3C2410=y
++# CONFIG_SERIAL_MAX3100 is not set
++CONFIG_SERIAL_CORE=y
++CONFIG_SERIAL_CORE_CONSOLE=y
++# CONFIG_SERIAL_TIMBERDALE is not set
++CONFIG_UNIX98_PTYS=y
++# CONFIG_DEVPTS_MULTIPLE_INSTANCES is not set
++# CONFIG_LEGACY_PTYS is not set
++# CONFIG_IPMI_HANDLER is not set
++# CONFIG_HW_RANDOM is not set
++# CONFIG_R3964 is not set
++# CONFIG_RAW_DRIVER is not set
++# CONFIG_TCG_TPM is not set
++CONFIG_I2C=y
++CONFIG_I2C_BOARDINFO=y
++CONFIG_I2C_COMPAT=y
++CONFIG_I2C_CHARDEV=y
++# CONFIG_I2C_HELPER_AUTO is not set
++# CONFIG_I2C_SMBUS is not set
++
++#
++# I2C Algorithms
++#
++# CONFIG_I2C_ALGOBIT is not set
++# CONFIG_I2C_ALGOPCF is not set
++# CONFIG_I2C_ALGOPCA is not set
++
++#
++# I2C Hardware Bus support
++#
++
++#
++# I2C system bus drivers (mostly embedded / system-on-chip)
++#
++# CONFIG_I2C_DESIGNWARE is not set
++# CONFIG_I2C_GPIO is not set
++# CONFIG_I2C_OCORES is not set
++CONFIG_I2C_S3C2410=y
++# CONFIG_I2C_SIMTEC is not set
++# CONFIG_I2C_XILINX is not set
++
++#
++# External I2C/SMBus adapter drivers
++#
++# CONFIG_I2C_PARPORT_LIGHT is not set
++# CONFIG_I2C_TAOS_EVM is not set
++# CONFIG_I2C_TINY_USB is not set
++
++#
++# Other I2C/SMBus bus drivers
++#
++# CONFIG_I2C_PCA_PLATFORM is not set
++# CONFIG_I2C_STUB is not set
++# CONFIG_I2C_DEBUG_CORE is not set
++# CONFIG_I2C_DEBUG_ALGO is not set
++# CONFIG_I2C_DEBUG_BUS is not set
++CONFIG_SPI=y
++# CONFIG_SPI_DEBUG is not set
++CONFIG_SPI_MASTER=y
++
++#
++# SPI Master Controller Drivers
++#
++CONFIG_SPI_BITBANG=y
++CONFIG_SPI_GPIO=y
++# CONFIG_SPI_S3C24XX is not set
++# CONFIG_SPI_S3C24XX_GPIO is not set
++# CONFIG_SPI_XILINX is not set
++# CONFIG_SPI_DESIGNWARE is not set
++
++#
++# SPI Protocol Masters
++#
++# CONFIG_SPI_SPIDEV is not set
++# CONFIG_SPI_TLE62X0 is not set
++
++#
++# PPS support
++#
++# CONFIG_PPS is not set
++CONFIG_ARCH_REQUIRE_GPIOLIB=y
++CONFIG_GPIOLIB=y
++# CONFIG_DEBUG_GPIO is not set
++CONFIG_GPIO_SYSFS=y
++
++#
++# Memory mapped GPIO expanders:
++#
++# CONFIG_GPIO_IT8761E is not set
++
++#
++# I2C GPIO expanders:
++#
++# CONFIG_GPIO_MAX7300 is not set
++# CONFIG_GPIO_MAX732X is not set
++# CONFIG_GPIO_PCA953X is not set
++# CONFIG_GPIO_PCF857X is not set
++# CONFIG_GPIO_ADP5588 is not set
++
++#
++# PCI GPIO expanders:
++#
++
++#
++# SPI GPIO expanders:
++#
++# CONFIG_GPIO_MAX7301 is not set
++# CONFIG_GPIO_MCP23S08 is not set
++# CONFIG_GPIO_MC33880 is not set
++
++#
++# AC97 GPIO expanders:
++#
++# CONFIG_W1 is not set
++CONFIG_POWER_SUPPLY=y
++# CONFIG_POWER_SUPPLY_DEBUG is not set
++# CONFIG_PDA_POWER is not set
++# CONFIG_BATTERY_DS2760 is not set
++# CONFIG_BATTERY_DS2782 is not set
++# CONFIG_BATTERY_BQ27x00 is not set
++# CONFIG_BATTERY_MAX17040 is not set
++CONFIG_CHARGER_PCF50606=y
++# CONFIG_HWMON is not set
++# CONFIG_THERMAL is not set
++CONFIG_WATCHDOG=y
++# CONFIG_WATCHDOG_NOWAYOUT is not set
++
++#
++# Watchdog Device Drivers
++#
++# CONFIG_SOFT_WATCHDOG is not set
++CONFIG_S3C2410_WATCHDOG=y
++CONFIG_PCF50606_WATCHDOG=y
++# CONFIG_MAX63XX_WATCHDOG is not set
++
++#
++# USB-based Watchdog Cards
++#
++# CONFIG_USBPCWATCHDOG is not set
++CONFIG_SSB_POSSIBLE=y
++
++#
++# Sonics Silicon Backplane
++#
++# CONFIG_SSB is not set
++
++#
++# Multifunction device drivers
++#
++# CONFIG_MFD_CORE is not set
++# CONFIG_MFD_88PM860X is not set
++# CONFIG_MFD_SM501 is not set
++# CONFIG_MFD_ASIC3 is not set
++# CONFIG_HTC_EGPIO is not set
++# CONFIG_HTC_PASIC3 is not set
++# CONFIG_HTC_I2CPLD is not set
++# CONFIG_TPS65010 is not set
++# CONFIG_TWL4030_CORE is not set
++# CONFIG_MFD_TMIO is not set
++# CONFIG_MFD_T7L66XB is not set
++# CONFIG_MFD_TC6387XB is not set
++# CONFIG_MFD_TC6393XB is not set
++# CONFIG_PMIC_DA903X is not set
++# CONFIG_PMIC_ADP5520 is not set
++# CONFIG_MFD_MAX8925 is not set
++# CONFIG_MFD_WM8400 is not set
++# CONFIG_MFD_WM831X is not set
++# CONFIG_MFD_WM8350_I2C is not set
++# CONFIG_MFD_WM8994 is not set
++# CONFIG_MFD_PCF50633 is not set
++# CONFIG_MFD_MC13783 is not set
++# CONFIG_AB3100_CORE is not set
++# CONFIG_EZX_PCAP is not set
++# CONFIG_AB4500_CORE is not set
++CONFIG_MFD_PCF50606=y
++CONFIG_PCF50606_ADC=y
++CONFIG_REGULATOR=y
++# CONFIG_REGULATOR_DEBUG is not set
++# CONFIG_REGULATOR_DUMMY is not set
++# CONFIG_REGULATOR_FIXED_VOLTAGE is not set
++# CONFIG_REGULATOR_VIRTUAL_CONSUMER is not set
++# CONFIG_REGULATOR_USERSPACE_CONSUMER is not set
++# CONFIG_REGULATOR_BQ24022 is not set
++# CONFIG_REGULATOR_MAX1586 is not set
++# CONFIG_REGULATOR_MAX8649 is not set
++# CONFIG_REGULATOR_MAX8660 is not set
++# CONFIG_REGULATOR_LP3971 is not set
++# CONFIG_REGULATOR_TPS65023 is not set
++# CONFIG_REGULATOR_TPS6507X is not set
++CONFIG_REGULATOR_PCF50606=y
++# CONFIG_MEDIA_SUPPORT is not set
++
++#
++# Graphics support
++#
++# CONFIG_VGASTATE is not set
++CONFIG_VIDEO_OUTPUT_CONTROL=y
++CONFIG_FB=y
++# CONFIG_FIRMWARE_EDID is not set
++# CONFIG_FB_DDC is not set
++# CONFIG_FB_BOOT_VESA_SUPPORT is not set
++CONFIG_FB_CFB_FILLRECT=y
++CONFIG_FB_CFB_COPYAREA=y
++CONFIG_FB_CFB_IMAGEBLIT=y
++# CONFIG_FB_CFB_REV_PIXELS_IN_BYTE is not set
++# CONFIG_FB_SYS_FILLRECT is not set
++# CONFIG_FB_SYS_COPYAREA is not set
++# CONFIG_FB_SYS_IMAGEBLIT is not set
++# CONFIG_FB_FOREIGN_ENDIAN is not set
++# CONFIG_FB_SYS_FOPS is not set
++# CONFIG_FB_SVGALIB is not set
++# CONFIG_FB_MACMODES is not set
++# CONFIG_FB_BACKLIGHT is not set
++# CONFIG_FB_MODE_HELPERS is not set
++# CONFIG_FB_TILEBLITTING is not set
++
++#
++# Frame buffer hardware drivers
++#
++# CONFIG_FB_S1D13XXX is not set
++CONFIG_FB_S3C2410=y
++# CONFIG_FB_S3C2410_DEBUG is not set
++# CONFIG_FB_VIRTUAL is not set
++# CONFIG_FB_METRONOME is not set
++# CONFIG_FB_MB862XX is not set
++# CONFIG_FB_BROADSHEET is not set
++CONFIG_BACKLIGHT_LCD_SUPPORT=y
++CONFIG_LCD_CLASS_DEVICE=y
++# CONFIG_LCD_L4F00242T03 is not set
++# CONFIG_LCD_LMS283GF05 is not set
++# CONFIG_LCD_LTV350QV is not set
++# CONFIG_LCD_ILI9320 is not set
++# CONFIG_LCD_TDO24M is not set
++# CONFIG_LCD_VGG2432A4 is not set
++# CONFIG_LCD_PLATFORM is not set
++CONFIG_LCD_JBT6K74=y
++CONFIG_BACKLIGHT_CLASS_DEVICE=y
++# CONFIG_BACKLIGHT_GENERIC is not set
++CONFIG_BACKLIGHT_PWM=y
++
++#
++# Display device support
++#
++# CONFIG_DISPLAY_SUPPORT is not set
++
++#
++# Console display driver support
++#
++# CONFIG_VGA_CONSOLE is not set
++CONFIG_DUMMY_CONSOLE=y
++CONFIG_FRAMEBUFFER_CONSOLE=y
++# CONFIG_FRAMEBUFFER_CONSOLE_DETECT_PRIMARY is not set
++# CONFIG_FRAMEBUFFER_CONSOLE_ROTATION is not set
++CONFIG_FONTS=y
++# CONFIG_FONT_8x8 is not set
++# CONFIG_FONT_8x16 is not set
++CONFIG_FONT_6x11=y
++# CONFIG_FONT_7x14 is not set
++# CONFIG_FONT_PEARL_8x8 is not set
++# CONFIG_FONT_ACORN_8x8 is not set
++# CONFIG_FONT_MINI_4x6 is not set
++# CONFIG_FONT_SUN8x16 is not set
++# CONFIG_FONT_SUN12x22 is not set
++# CONFIG_FONT_10x18 is not set
++CONFIG_LOGO=y
++# CONFIG_LOGO_LINUX_MONO is not set
++# CONFIG_LOGO_LINUX_VGA16 is not set
++# CONFIG_LOGO_LINUX_CLUT224 is not set
++CONFIG_SOUND=y
++# CONFIG_SOUND_OSS_CORE is not set
++CONFIG_SND=y
++CONFIG_SND_TIMER=y
++CONFIG_SND_PCM=y
++CONFIG_SND_JACK=y
++# CONFIG_SND_SEQUENCER is not set
++# CONFIG_SND_MIXER_OSS is not set
++# CONFIG_SND_PCM_OSS is not set
++# CONFIG_SND_DYNAMIC_MINORS is not set
++# CONFIG_SND_SUPPORT_OLD_API is not set
++# CONFIG_SND_VERBOSE_PROCFS is not set
++# CONFIG_SND_VERBOSE_PRINTK is not set
++# CONFIG_SND_DEBUG is not set
++# CONFIG_SND_RAWMIDI_SEQ is not set
++# CONFIG_SND_OPL3_LIB_SEQ is not set
++# CONFIG_SND_OPL4_LIB_SEQ is not set
++# CONFIG_SND_SBAWE_SEQ is not set
++# CONFIG_SND_EMU10K1_SEQ is not set
++# CONFIG_SND_DRIVERS is not set
++# CONFIG_SND_ARM is not set
++# CONFIG_SND_SPI is not set
++# CONFIG_SND_USB is not set
++CONFIG_SND_SOC=y
++CONFIG_SND_S3C24XX_SOC=y
++CONFIG_SND_S3C24XX_SOC_I2S=y
++CONFIG_SND_S3C24XX_SOC_NEO1973_WM8753=y
++# CONFIG_SND_S3C24XX_SOC_LN2440SBC_ALC650 is not set
++# CONFIG_SND_S3C24XX_SOC_S3C24XX_UDA134X is not set
++# CONFIG_SND_S3C24XX_SOC_SIMTEC_TLV320AIC23 is not set
++# CONFIG_SND_S3C24XX_SOC_SIMTEC_HERMES is not set
++CONFIG_SND_SOC_I2C_AND_SPI=y
++# CONFIG_SND_SOC_ALL_CODECS is not set
++CONFIG_SND_SOC_WM8753=y
++CONFIG_SND_SOC_LM4857=y
++# CONFIG_SOUND_PRIME is not set
++CONFIG_HID_SUPPORT=y
++CONFIG_HID=y
++# CONFIG_HIDRAW is not set
++
++#
++# USB Input Devices
++#
++CONFIG_USB_HID=y
++# CONFIG_HID_PID is not set
++# CONFIG_USB_HIDDEV is not set
++
++#
++# Special HID drivers
++#
++# CONFIG_HID_3M_PCT is not set
++CONFIG_HID_A4TECH=y
++CONFIG_HID_APPLE=y
++CONFIG_HID_BELKIN=y
++CONFIG_HID_CHERRY=y
++CONFIG_HID_CHICONY=y
++CONFIG_HID_CYPRESS=y
++CONFIG_HID_DRAGONRISE=y
++# CONFIG_DRAGONRISE_FF is not set
++CONFIG_HID_EZKEY=y
++CONFIG_HID_KYE=y
++CONFIG_HID_GYRATION=y
++# CONFIG_HID_TWINHAN is not set
++CONFIG_HID_KENSINGTON=y
++CONFIG_HID_LOGITECH=y
++# CONFIG_LOGITECH_FF is not set
++# CONFIG_LOGIRUMBLEPAD2_FF is not set
++# CONFIG_LOGIG940_FF is not set
++CONFIG_HID_MICROSOFT=y
++# CONFIG_HID_MOSART is not set
++CONFIG_HID_MONTEREY=y
++CONFIG_HID_NTRIG=y
++# CONFIG_HID_ORTEK is not set
++CONFIG_HID_PANTHERLORD=y
++# CONFIG_PANTHERLORD_FF is not set
++CONFIG_HID_PETALYNX=y
++# CONFIG_HID_QUANTA is not set
++CONFIG_HID_SAMSUNG=y
++CONFIG_HID_SONY=y
++# CONFIG_HID_STANTUM is not set
++CONFIG_HID_SUNPLUS=y
++CONFIG_HID_GREENASIA=y
++# CONFIG_GREENASIA_FF is not set
++CONFIG_HID_SMARTJOYPLUS=y
++# CONFIG_SMARTJOYPLUS_FF is not set
++CONFIG_HID_TOPSEED=y
++CONFIG_HID_THRUSTMASTER=y
++# CONFIG_THRUSTMASTER_FF is not set
++CONFIG_HID_ZEROPLUS=y
++# CONFIG_ZEROPLUS_FF is not set
++CONFIG_USB_SUPPORT=y
++CONFIG_USB_ARCH_HAS_HCD=y
++CONFIG_USB_ARCH_HAS_OHCI=y
++# CONFIG_USB_ARCH_HAS_EHCI is not set
++CONFIG_USB=y
++# CONFIG_USB_DEBUG is not set
++CONFIG_USB_ANNOUNCE_NEW_DEVICES=y
++
++#
++# Miscellaneous USB options
++#
++# CONFIG_USB_DEVICEFS is not set
++# CONFIG_USB_DEVICE_CLASS is not set
++# CONFIG_USB_DYNAMIC_MINORS is not set
++# CONFIG_USB_OTG_WHITELIST is not set
++# CONFIG_USB_OTG_BLACKLIST_HUB is not set
++# CONFIG_USB_MON is not set
++# CONFIG_USB_WUSB is not set
++# CONFIG_USB_WUSB_CBAF is not set
++
++#
++# USB Host Controller Drivers
++#
++# CONFIG_USB_C67X00_HCD is not set
++# CONFIG_USB_OXU210HP_HCD is not set
++# CONFIG_USB_ISP116X_HCD is not set
++# CONFIG_USB_ISP1760_HCD is not set
++# CONFIG_USB_ISP1362_HCD is not set
++CONFIG_USB_OHCI_HCD=y
++# CONFIG_USB_OHCI_BIG_ENDIAN_DESC is not set
++# CONFIG_USB_OHCI_BIG_ENDIAN_MMIO is not set
++CONFIG_USB_OHCI_LITTLE_ENDIAN=y
++# CONFIG_USB_SL811_HCD is not set
++# CONFIG_USB_R8A66597_HCD is not set
++# CONFIG_USB_HWA_HCD is not set
++# CONFIG_USB_MUSB_HDRC is not set
++# CONFIG_USB_GADGET_MUSB_HDRC is not set
++
++#
++# USB Device Class drivers
++#
++# CONFIG_USB_ACM is not set
++# CONFIG_USB_PRINTER is not set
++# CONFIG_USB_WDM is not set
++# CONFIG_USB_TMC is not set
++
++#
++# NOTE: USB_STORAGE depends on SCSI but BLK_DEV_SD may
++#
++
++#
++# also be needed; see USB_STORAGE Help for more info
++#
++# CONFIG_USB_LIBUSUAL is not set
++
++#
++# USB Imaging devices
++#
++# CONFIG_USB_MDC800 is not set
++
++#
++# USB port drivers
++#
++# CONFIG_USB_SERIAL is not set
++
++#
++# USB Miscellaneous drivers
++#
++# CONFIG_USB_EMI62 is not set
++# CONFIG_USB_EMI26 is not set
++# CONFIG_USB_ADUTUX is not set
++# CONFIG_USB_SEVSEG is not set
++# CONFIG_USB_RIO500 is not set
++# CONFIG_USB_LEGOTOWER is not set
++# CONFIG_USB_LCD is not set
++# CONFIG_USB_LED is not set
++# CONFIG_USB_CYPRESS_CY7C63 is not set
++# CONFIG_USB_CYTHERM is not set
++# CONFIG_USB_IDMOUSE is not set
++# CONFIG_USB_FTDI_ELAN is not set
++# CONFIG_USB_APPLEDISPLAY is not set
++# CONFIG_USB_LD is not set
++# CONFIG_USB_TRANCEVIBRATOR is not set
++# CONFIG_USB_IOWARRIOR is not set
++# CONFIG_USB_TEST is not set
++# CONFIG_USB_ISIGHTFW is not set
++CONFIG_USB_GADGET=y
++# CONFIG_USB_GADGET_DEBUG is not set
++# CONFIG_USB_GADGET_DEBUG_FILES is not set
++CONFIG_USB_GADGET_VBUS_DRAW=500
++CONFIG_USB_GADGET_SELECTED=y
++# CONFIG_USB_GADGET_AT91 is not set
++# CONFIG_USB_GADGET_ATMEL_USBA is not set
++# CONFIG_USB_GADGET_FSL_USB2 is not set
++# CONFIG_USB_GADGET_LH7A40X is not set
++# CONFIG_USB_GADGET_OMAP is not set
++# CONFIG_USB_GADGET_PXA25X is not set
++# CONFIG_USB_GADGET_R8A66597 is not set
++# CONFIG_USB_GADGET_PXA27X is not set
++# CONFIG_USB_GADGET_S3C_HSOTG is not set
++# CONFIG_USB_GADGET_IMX is not set
++CONFIG_USB_GADGET_S3C2410=y
++CONFIG_USB_S3C2410=y
++# CONFIG_USB_S3C2410_DEBUG is not set
++# CONFIG_USB_GADGET_M66592 is not set
++# CONFIG_USB_GADGET_AMD5536UDC is not set
++# CONFIG_USB_GADGET_FSL_QE is not set
++# CONFIG_USB_GADGET_CI13XXX is not set
++# CONFIG_USB_GADGET_NET2280 is not set
++# CONFIG_USB_GADGET_GOKU is not set
++# CONFIG_USB_GADGET_LANGWELL is not set
++# CONFIG_USB_GADGET_DUMMY_HCD is not set
++# CONFIG_USB_GADGET_DUALSPEED is not set
++# CONFIG_USB_ZERO is not set
++# CONFIG_USB_AUDIO is not set
++CONFIG_USB_ETH=m
++CONFIG_USB_ETH_RNDIS=y
++# CONFIG_USB_ETH_EEM is not set
++# CONFIG_USB_GADGETFS is not set
++CONFIG_USB_FILE_STORAGE=m
++# CONFIG_USB_FILE_STORAGE_TEST is not set
++# CONFIG_USB_MASS_STORAGE is not set
++# CONFIG_USB_G_SERIAL is not set
++# CONFIG_USB_MIDI_GADGET is not set
++# CONFIG_USB_G_PRINTER is not set
++# CONFIG_USB_CDC_COMPOSITE is not set
++# CONFIG_USB_G_NOKIA is not set
++# CONFIG_USB_G_MULTI is not set
++
++#
++# OTG and related infrastructure
++#
++# CONFIG_USB_GPIO_VBUS is not set
++# CONFIG_USB_ULPI is not set
++# CONFIG_NOP_USB_XCEIV is not set
++CONFIG_MMC=y
++# CONFIG_MMC_DEBUG is not set
++# CONFIG_MMC_UNSAFE_RESUME is not set
++
++#
++# MMC/SD/SDIO Card Drivers
++#
++CONFIG_MMC_BLOCK=y
++CONFIG_MMC_BLOCK_BOUNCE=y
++# CONFIG_SDIO_UART is not set
++# CONFIG_MMC_TEST is not set
++
++#
++# MMC/SD/SDIO Host Controller Drivers
++#
++# CONFIG_MMC_SDHCI is not set
++# CONFIG_MMC_SPI is not set
++CONFIG_MMC_S3C=y
++# CONFIG_MMC_S3C_HW_SDIO_IRQ is not set
++CONFIG_MMC_S3C_PIO=y
++# CONFIG_MMC_S3C_DMA is not set
++# CONFIG_MMC_S3C_PIODMA is not set
++# CONFIG_MEMSTICK is not set
++CONFIG_NEW_LEDS=y
++CONFIG_LEDS_CLASS=y
++
++#
++# LED drivers
++#
++# CONFIG_LEDS_S3C24XX is not set
++# CONFIG_LEDS_PCA9532 is not set
++CONFIG_LEDS_GPIO=y
++CONFIG_LEDS_GPIO_PLATFORM=y
++# CONFIG_LEDS_LP3944 is not set
++# CONFIG_LEDS_PCA955X is not set
++# CONFIG_LEDS_DAC124S085 is not set
++CONFIG_LEDS_PWM=y
++# CONFIG_LEDS_REGULATOR is not set
++# CONFIG_LEDS_BD2802 is not set
++# CONFIG_LEDS_LT3593 is not set
++CONFIG_LEDS_TRIGGERS=y
++
++#
++# LED Triggers
++#
++CONFIG_LEDS_TRIGGER_TIMER=y
++CONFIG_LEDS_TRIGGER_HEARTBEAT=y
++# CONFIG_LEDS_TRIGGER_BACKLIGHT is not set
++# CONFIG_LEDS_TRIGGER_GPIO is not set
++# CONFIG_LEDS_TRIGGER_DEFAULT_ON is not set
++
++#
++# iptables trigger is under Netfilter config (LED target)
++#
++# CONFIG_ACCESSIBILITY is not set
++CONFIG_RTC_LIB=y
++CONFIG_RTC_CLASS=y
++CONFIG_RTC_HCTOSYS=y
++CONFIG_RTC_HCTOSYS_DEVICE="rtc0"
++# CONFIG_RTC_DEBUG is not set
++
++#
++# RTC interfaces
++#
++CONFIG_RTC_INTF_SYSFS=y
++CONFIG_RTC_INTF_PROC=y
++CONFIG_RTC_INTF_DEV=y
++# CONFIG_RTC_INTF_DEV_UIE_EMUL is not set
++# CONFIG_RTC_DRV_TEST is not set
++
++#
++# I2C RTC drivers
++#
++# CONFIG_RTC_DRV_DS1307 is not set
++# CONFIG_RTC_DRV_DS1374 is not set
++# CONFIG_RTC_DRV_DS1672 is not set
++# CONFIG_RTC_DRV_MAX6900 is not set
++# CONFIG_RTC_DRV_RS5C372 is not set
++# CONFIG_RTC_DRV_ISL1208 is not set
++# CONFIG_RTC_DRV_X1205 is not set
++# CONFIG_RTC_DRV_PCF8563 is not set
++# CONFIG_RTC_DRV_PCF8583 is not set
++# CONFIG_RTC_DRV_M41T80 is not set
++# CONFIG_RTC_DRV_BQ32K is not set
++# CONFIG_RTC_DRV_S35390A is not set
++# CONFIG_RTC_DRV_FM3130 is not set
++# CONFIG_RTC_DRV_RX8581 is not set
++# CONFIG_RTC_DRV_RX8025 is not set
++
++#
++# SPI RTC drivers
++#
++# CONFIG_RTC_DRV_M41T94 is not set
++# CONFIG_RTC_DRV_DS1305 is not set
++# CONFIG_RTC_DRV_DS1390 is not set
++# CONFIG_RTC_DRV_MAX6902 is not set
++# CONFIG_RTC_DRV_R9701 is not set
++# CONFIG_RTC_DRV_RS5C348 is not set
++# CONFIG_RTC_DRV_DS3234 is not set
++# CONFIG_RTC_DRV_PCF2123 is not set
++
++#
++# Platform RTC drivers
++#
++# CONFIG_RTC_DRV_CMOS is not set
++# CONFIG_RTC_DRV_DS1286 is not set
++# CONFIG_RTC_DRV_DS1511 is not set
++# CONFIG_RTC_DRV_DS1553 is not set
++# CONFIG_RTC_DRV_DS1742 is not set
++# CONFIG_RTC_DRV_STK17TA8 is not set
++# CONFIG_RTC_DRV_M48T86 is not set
++# CONFIG_RTC_DRV_M48T35 is not set
++# CONFIG_RTC_DRV_M48T59 is not set
++# CONFIG_RTC_DRV_MSM6242 is not set
++# CONFIG_RTC_DRV_BQ4802 is not set
++# CONFIG_RTC_DRV_RP5C01 is not set
++# CONFIG_RTC_DRV_V3020 is not set
++CONFIG_RTC_DRV_PCF50606=y
++
++#
++# on-CPU RTC drivers
++#
++# CONFIG_RTC_DRV_S3C is not set
++# CONFIG_DMADEVICES is not set
++# CONFIG_AUXDISPLAY is not set
++# CONFIG_UIO is not set
++
++#
++# TI VLYNQ
++#
++# CONFIG_STAGING is not set
++
++#
++# File systems
++#
++CONFIG_EXT2_FS=m
++# CONFIG_EXT2_FS_XATTR is not set
++# CONFIG_EXT2_FS_XIP is not set
++CONFIG_EXT3_FS=y
++# CONFIG_EXT3_DEFAULTS_TO_ORDERED is not set
++# CONFIG_EXT3_FS_XATTR is not set
++# CONFIG_EXT4_FS is not set
++CONFIG_JBD=y
++# CONFIG_REISERFS_FS is not set
++# CONFIG_JFS_FS is not set
++# CONFIG_FS_POSIX_ACL is not set
++# CONFIG_XFS_FS is not set
++# CONFIG_OCFS2_FS is not set
++# CONFIG_BTRFS_FS is not set
++# CONFIG_NILFS2_FS is not set
++CONFIG_FILE_LOCKING=y
++# CONFIG_FSNOTIFY is not set
++# CONFIG_DNOTIFY is not set
++CONFIG_INOTIFY=y
++# CONFIG_INOTIFY_USER is not set
++# CONFIG_QUOTA is not set
++# CONFIG_AUTOFS_FS is not set
++# CONFIG_AUTOFS4_FS is not set
++# CONFIG_FUSE_FS is not set
++
++#
++# Caches
++#
++# CONFIG_FSCACHE is not set
++
++#
++# CD-ROM/DVD Filesystems
++#
++# CONFIG_ISO9660_FS is not set
++# CONFIG_UDF_FS is not set
++
++#
++# DOS/FAT/NT Filesystems
++#
++CONFIG_FAT_FS=y
++# CONFIG_MSDOS_FS is not set
++CONFIG_VFAT_FS=y
++CONFIG_FAT_DEFAULT_CODEPAGE=437
++CONFIG_FAT_DEFAULT_IOCHARSET="iso8859-1"
++# CONFIG_NTFS_FS is not set
++
++#
++# Pseudo filesystems
++#
++CONFIG_PROC_FS=y
++CONFIG_PROC_SYSCTL=y
++CONFIG_PROC_PAGE_MONITOR=y
++CONFIG_SYSFS=y
++CONFIG_TMPFS=y
++# CONFIG_TMPFS_POSIX_ACL is not set
++# CONFIG_HUGETLB_PAGE is not set
++# CONFIG_CONFIGFS_FS is not set
++CONFIG_MISC_FILESYSTEMS=y
++# CONFIG_ADFS_FS is not set
++# CONFIG_AFFS_FS is not set
++# CONFIG_HFS_FS is not set
++# CONFIG_HFSPLUS_FS is not set
++# CONFIG_BEFS_FS is not set
++# CONFIG_BFS_FS is not set
++# CONFIG_EFS_FS is not set
++CONFIG_JFFS2_FS=y
++CONFIG_JFFS2_FS_DEBUG=0
++CONFIG_JFFS2_FS_WRITEBUFFER=y
++# CONFIG_JFFS2_FS_WBUF_VERIFY is not set
++CONFIG_JFFS2_SUMMARY=y
++# CONFIG_JFFS2_FS_XATTR is not set
++CONFIG_JFFS2_COMPRESSION_OPTIONS=y
++CONFIG_JFFS2_ZLIB=y
++# CONFIG_JFFS2_LZO is not set
++CONFIG_JFFS2_RTIME=y
++# CONFIG_JFFS2_RUBIN is not set
++# CONFIG_JFFS2_CMODE_NONE is not set
++CONFIG_JFFS2_CMODE_PRIORITY=y
++# CONFIG_JFFS2_CMODE_SIZE is not set
++# CONFIG_JFFS2_CMODE_FAVOURLZO is not set
++# CONFIG_LOGFS is not set
++# CONFIG_CRAMFS is not set
++# CONFIG_SQUASHFS is not set
++# CONFIG_VXFS_FS is not set
++# CONFIG_MINIX_FS is not set
++# CONFIG_OMFS_FS is not set
++# CONFIG_HPFS_FS is not set
++# CONFIG_QNX4FS_FS is not set
++# CONFIG_ROMFS_FS is not set
++# CONFIG_SYSV_FS is not set
++# CONFIG_UFS_FS is not set
++# CONFIG_NETWORK_FILESYSTEMS is not set
++
++#
++# Partition Types
++#
++CONFIG_PARTITION_ADVANCED=y
++# CONFIG_ACORN_PARTITION is not set
++# CONFIG_OSF_PARTITION is not set
++# CONFIG_AMIGA_PARTITION is not set
++# CONFIG_ATARI_PARTITION is not set
++# CONFIG_MAC_PARTITION is not set
++CONFIG_MSDOS_PARTITION=y
++# CONFIG_BSD_DISKLABEL is not set
++# CONFIG_MINIX_SUBPARTITION is not set
++# CONFIG_SOLARIS_X86_PARTITION is not set
++# CONFIG_UNIXWARE_DISKLABEL is not set
++# CONFIG_LDM_PARTITION is not set
++# CONFIG_SGI_PARTITION is not set
++# CONFIG_ULTRIX_PARTITION is not set
++# CONFIG_SUN_PARTITION is not set
++# CONFIG_KARMA_PARTITION is not set
++# CONFIG_EFI_PARTITION is not set
++# CONFIG_SYSV68_PARTITION is not set
++CONFIG_NLS=y
++CONFIG_NLS_DEFAULT="iso8859-1"
++# CONFIG_NLS_CODEPAGE_437 is not set
++# CONFIG_NLS_CODEPAGE_737 is not set
++# CONFIG_NLS_CODEPAGE_775 is not set
++# CONFIG_NLS_CODEPAGE_850 is not set
++# CONFIG_NLS_CODEPAGE_852 is not set
++# CONFIG_NLS_CODEPAGE_855 is not set
++# CONFIG_NLS_CODEPAGE_857 is not set
++# CONFIG_NLS_CODEPAGE_860 is not set
++# CONFIG_NLS_CODEPAGE_861 is not set
++# CONFIG_NLS_CODEPAGE_862 is not set
++# CONFIG_NLS_CODEPAGE_863 is not set
++# CONFIG_NLS_CODEPAGE_864 is not set
++# CONFIG_NLS_CODEPAGE_865 is not set
++# CONFIG_NLS_CODEPAGE_866 is not set
++# CONFIG_NLS_CODEPAGE_869 is not set
++# CONFIG_NLS_CODEPAGE_936 is not set
++# CONFIG_NLS_CODEPAGE_950 is not set
++# CONFIG_NLS_CODEPAGE_932 is not set
++# CONFIG_NLS_CODEPAGE_949 is not set
++# CONFIG_NLS_CODEPAGE_874 is not set
++# CONFIG_NLS_ISO8859_8 is not set
++# CONFIG_NLS_CODEPAGE_1250 is not set
++# CONFIG_NLS_CODEPAGE_1251 is not set
++# CONFIG_NLS_ASCII is not set
++# CONFIG_NLS_ISO8859_1 is not set
++# CONFIG_NLS_ISO8859_2 is not set
++# CONFIG_NLS_ISO8859_3 is not set
++# CONFIG_NLS_ISO8859_4 is not set
++# CONFIG_NLS_ISO8859_5 is not set
++# CONFIG_NLS_ISO8859_6 is not set
++# CONFIG_NLS_ISO8859_7 is not set
++# CONFIG_NLS_ISO8859_9 is not set
++# CONFIG_NLS_ISO8859_13 is not set
++# CONFIG_NLS_ISO8859_14 is not set
++# CONFIG_NLS_ISO8859_15 is not set
++# CONFIG_NLS_KOI8_R is not set
++# CONFIG_NLS_KOI8_U is not set
++# CONFIG_NLS_UTF8 is not set
++# CONFIG_DLM is not set
++
++#
++# Kernel hacking
++#
++# CONFIG_PRINTK_TIME is not set
++# CONFIG_ENABLE_WARN_DEPRECATED is not set
++# CONFIG_ENABLE_MUST_CHECK is not set
++CONFIG_FRAME_WARN=1024
++# CONFIG_MAGIC_SYSRQ is not set
++# CONFIG_STRIP_ASM_SYMS is not set
++# CONFIG_UNUSED_SYMBOLS is not set
++# CONFIG_DEBUG_FS is not set
++# CONFIG_HEADERS_CHECK is not set
++CONFIG_DEBUG_KERNEL=y
++# CONFIG_DEBUG_SHIRQ is not set
++CONFIG_DETECT_SOFTLOCKUP=y
++# CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC is not set
++CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC_VALUE=0
++CONFIG_DETECT_HUNG_TASK=y
++# CONFIG_BOOTPARAM_HUNG_TASK_PANIC is not set
++CONFIG_BOOTPARAM_HUNG_TASK_PANIC_VALUE=0
++CONFIG_SCHED_DEBUG=y
++# CONFIG_SCHEDSTATS is not set
++# CONFIG_TIMER_STATS is not set
++# CONFIG_DEBUG_OBJECTS is not set
++# CONFIG_DEBUG_SLAB is not set
++# CONFIG_DEBUG_KMEMLEAK is not set
++# CONFIG_DEBUG_RT_MUTEXES is not set
++# CONFIG_RT_MUTEX_TESTER is not set
++# CONFIG_DEBUG_SPINLOCK is not set
++# CONFIG_DEBUG_MUTEXES is not set
++# CONFIG_DEBUG_LOCK_ALLOC is not set
++# CONFIG_PROVE_LOCKING is not set
++# CONFIG_LOCK_STAT is not set
++# CONFIG_DEBUG_SPINLOCK_SLEEP is not set
++# CONFIG_DEBUG_LOCKING_API_SELFTESTS is not set
++# CONFIG_DEBUG_KOBJECT is not set
++CONFIG_DEBUG_BUGVERBOSE=y
++CONFIG_DEBUG_INFO=y
++# CONFIG_DEBUG_VM is not set
++# CONFIG_DEBUG_WRITECOUNT is not set
++CONFIG_DEBUG_MEMORY_INIT=y
++# CONFIG_DEBUG_LIST is not set
++# CONFIG_DEBUG_SG is not set
++# CONFIG_DEBUG_NOTIFIERS is not set
++# CONFIG_DEBUG_CREDENTIALS is not set
++CONFIG_FRAME_POINTER=y
++# CONFIG_BOOT_PRINTK_DELAY is not set
++# CONFIG_RCU_TORTURE_TEST is not set
++# CONFIG_RCU_CPU_STALL_DETECTOR is not set
++# CONFIG_BACKTRACE_SELF_TEST is not set
++# CONFIG_DEBUG_BLOCK_EXT_DEVT is not set
++# CONFIG_DEBUG_FORCE_WEAK_PER_CPU is not set
++# CONFIG_FAULT_INJECTION is not set
++# CONFIG_LATENCYTOP is not set
++# CONFIG_SYSCTL_SYSCALL_CHECK is not set
++# CONFIG_PAGE_POISONING is not set
++CONFIG_HAVE_FUNCTION_TRACER=y
++CONFIG_TRACING_SUPPORT=y
++# CONFIG_FTRACE is not set
++# CONFIG_SAMPLES is not set
++CONFIG_HAVE_ARCH_KGDB=y
++# CONFIG_KGDB is not set
++# CONFIG_DEBUG_USER is not set
++# CONFIG_DEBUG_ERRORS is not set
++# CONFIG_DEBUG_STACK_USAGE is not set
++# CONFIG_DEBUG_LL is not set
++# CONFIG_OC_ETM is not set
++CONFIG_DEBUG_S3C_UART=2
++
++#
++# Security options
++#
++# CONFIG_KEYS is not set
++# CONFIG_SECURITY is not set
++# CONFIG_SECURITYFS is not set
++# CONFIG_DEFAULT_SECURITY_SELINUX is not set
++# CONFIG_DEFAULT_SECURITY_SMACK is not set
++# CONFIG_DEFAULT_SECURITY_TOMOYO is not set
++CONFIG_DEFAULT_SECURITY_DAC=y
++CONFIG_DEFAULT_SECURITY=""
++CONFIG_CRYPTO=y
++
++#
++# Crypto core or helper
++#
++CONFIG_CRYPTO_ALGAPI=y
++CONFIG_CRYPTO_ALGAPI2=y
++CONFIG_CRYPTO_HASH=y
++CONFIG_CRYPTO_HASH2=y
++CONFIG_CRYPTO_PCOMP=y
++# CONFIG_CRYPTO_MANAGER is not set
++# CONFIG_CRYPTO_MANAGER2 is not set
++# CONFIG_CRYPTO_GF128MUL is not set
++# CONFIG_CRYPTO_NULL is not set
++# CONFIG_CRYPTO_CRYPTD is not set
++# CONFIG_CRYPTO_AUTHENC is not set
++# CONFIG_CRYPTO_TEST is not set
++
++#
++# Authenticated Encryption with Associated Data
++#
++# CONFIG_CRYPTO_CCM is not set
++# CONFIG_CRYPTO_GCM is not set
++# CONFIG_CRYPTO_SEQIV is not set
++
++#
++# Block modes
++#
++# CONFIG_CRYPTO_CBC is not set
++# CONFIG_CRYPTO_CTR is not set
++# CONFIG_CRYPTO_CTS is not set
++# CONFIG_CRYPTO_ECB is not set
++# CONFIG_CRYPTO_LRW is not set
++# CONFIG_CRYPTO_PCBC is not set
++# CONFIG_CRYPTO_XTS is not set
++
++#
++# Hash modes
++#
++# CONFIG_CRYPTO_HMAC is not set
++# CONFIG_CRYPTO_XCBC is not set
++# CONFIG_CRYPTO_VMAC is not set
++
++#
++# Digest
++#
++# CONFIG_CRYPTO_CRC32C is not set
++# CONFIG_CRYPTO_GHASH is not set
++# CONFIG_CRYPTO_MD4 is not set
++CONFIG_CRYPTO_MD5=y
++# CONFIG_CRYPTO_MICHAEL_MIC is not set
++# CONFIG_CRYPTO_RMD128 is not set
++# CONFIG_CRYPTO_RMD160 is not set
++# CONFIG_CRYPTO_RMD256 is not set
++# CONFIG_CRYPTO_RMD320 is not set
++# CONFIG_CRYPTO_SHA1 is not set
++# CONFIG_CRYPTO_SHA256 is not set
++# CONFIG_CRYPTO_SHA512 is not set
++# CONFIG_CRYPTO_TGR192 is not set
++# CONFIG_CRYPTO_WP512 is not set
++
++#
++# Ciphers
++#
++# CONFIG_CRYPTO_AES is not set
++# CONFIG_CRYPTO_ANUBIS is not set
++# CONFIG_CRYPTO_ARC4 is not set
++# CONFIG_CRYPTO_BLOWFISH is not set
++# CONFIG_CRYPTO_CAMELLIA is not set
++# CONFIG_CRYPTO_CAST5 is not set
++# CONFIG_CRYPTO_CAST6 is not set
++# CONFIG_CRYPTO_DES is not set
++# CONFIG_CRYPTO_FCRYPT is not set
++# CONFIG_CRYPTO_KHAZAD is not set
++# CONFIG_CRYPTO_SALSA20 is not set
++# CONFIG_CRYPTO_SEED is not set
++# CONFIG_CRYPTO_SERPENT is not set
++# CONFIG_CRYPTO_TEA is not set
++# CONFIG_CRYPTO_TWOFISH is not set
++
++#
++# Compression
++#
++# CONFIG_CRYPTO_DEFLATE is not set
++CONFIG_CRYPTO_ZLIB=y
++# CONFIG_CRYPTO_LZO is not set
++
++#
++# Random Number Generation
++#
++# CONFIG_CRYPTO_ANSI_CPRNG is not set
++# CONFIG_CRYPTO_HW is not set
++# CONFIG_BINARY_PRINTF is not set
++
++#
++# Library routines
++#
++CONFIG_BITREVERSE=y
++CONFIG_GENERIC_FIND_LAST_BIT=y
++CONFIG_CRC_CCITT=y
++CONFIG_CRC16=y
++CONFIG_CRC_T10DIF=y
++CONFIG_CRC_ITU_T=y
++CONFIG_CRC32=y
++CONFIG_CRC7=y
++# CONFIG_LIBCRC32C is not set
++CONFIG_ZLIB_INFLATE=y
++CONFIG_ZLIB_DEFLATE=y
++CONFIG_DECOMPRESS_GZIP=y
++CONFIG_DECOMPRESS_BZIP2=y
++CONFIG_DECOMPRESS_LZMA=y
++CONFIG_HAS_IOMEM=y
++CONFIG_HAS_DMA=y
++CONFIG_NLATTR=y
++CONFIG_GENERIC_ATOMIC64=y
 diff --git a/arch/arm/configs/gta02_defconfig b/arch/arm/configs/gta02_defconfig
 new file mode 100644
 index 0000000..59e805f
@@ -4603,6 +6467,44 @@ index 6ff7919..c07691e 100644
  int claim_fiq(struct fiq_handler *f)
  {
  	int ret = 0;
+diff --git a/arch/arm/mach-s3c2410/Kconfig b/arch/arm/mach-s3c2410/Kconfig
+index 5547318..da71ace 100644
+--- a/arch/arm/mach-s3c2410/Kconfig
++++ b/arch/arm/mach-s3c2410/Kconfig
+@@ -168,4 +168,24 @@ config MACH_QT2410
+ 	help
+ 	   Say Y here if you are using the Armzone QT2410
+ 
++config MACH_NEO1973_GTA01
++	bool "FIC Neo1973 GSM Phone (GTA01 Hardware)"
++	select CPU_S3C2410
++	select MACH_NEO1973
++	select S3C_DEV_USB_HOST
++	select MFD_PCF50606
++	select INPUT_PCF50606_PMU
++	select PCF50606_ADC
++	select PCF50606_GPIO
++	select RTC_DRV_PCF50606
++	select REGULATOR_PCF50606
++	select CHARGER_PCF50606
++	select PCF50606_WATCHDOG
++	select POWER_SUPPLY
++	select BATTERY_GTA01
++	select S3C24XX_ADC
++	select S3C_DEV_NAND
++	help
++	  Say Y here if you are using the FIC Neo1973 GSM Phone
++
+ endmenu
+diff --git a/arch/arm/mach-s3c2410/Makefile b/arch/arm/mach-s3c2410/Makefile
+index 0d468e9..aecf5e5 100644
+--- a/arch/arm/mach-s3c2410/Makefile
++++ b/arch/arm/mach-s3c2410/Makefile
+@@ -40,3 +40,4 @@ obj-$(CONFIG_SIMTEC_NOR)	+= nor-simtec.o
+ # machine additions
+ 
+ obj-$(CONFIG_MACH_BAST_IDE)	+= bast-ide.o
++obj-$(CONFIG_MACH_NEO1973_GTA01) += mach-gta01.o
 diff --git a/arch/arm/mach-s3c2410/include/mach/gpio.h b/arch/arm/mach-s3c2410/include/mach/gpio.h
 index 15f0b3e..0b53cad 100644
 --- a/arch/arm/mach-s3c2410/include/mach/gpio.h
@@ -4621,6 +6523,79 @@ index 15f0b3e..0b53cad 100644
  
 -#define S3C_GPIO_END	(S3C2410_GPIO_BANKH + 32)
 +#define S3C_GPIO_END	(S3C2440_GPIO_BANKJ + 32)
+diff --git a/arch/arm/mach-s3c2410/include/mach/gta01.h b/arch/arm/mach-s3c2410/include/mach/gta01.h
+new file mode 100644
+index 0000000..673a116
+--- /dev/null
++++ b/arch/arm/mach-s3c2410/include/mach/gta01.h
+@@ -0,0 +1,67 @@
++#ifndef _GTA01_H
++#define _GTA01_H
++
++#include <mach/regs-gpio.h>
++#include <mach/irqs.h>
++
++/* Different hardware revisions, passed in ATAG_REVISION by u-boot */
++#define GTA01v3_SYSTEM_REV	0x00000130
++#define GTA01v4_SYSTEM_REV	0x00000140
++#define GTA01Bv2_SYSTEM_REV	0x00000220
++#define GTA01Bv3_SYSTEM_REV	0x00000230
++#define GTA01Bv4_SYSTEM_REV	0x00000240
++
++/* !!!!!!!!!!! */
++#define S3C_SYSTEM_REV_ATAG	GTA01Bv2_SYSTEM_REV
++
++/* Backlight */
++
++/* Definitions common to all revisions */
++#define GTA01_GPIO_BACKLIGHT	S3C2410_GPB(0)
++#define GTA01_GPIO_GPS_PWRON	S3C2410_GPB(1)
++#define GTA01_GPIO_MODEM_RST	S3C2410_GPB(6)
++#define GTA01_GPIO_MODEM_ON	S3C2410_GPB(7)
++#define GTA01_GPIO_LCD_RESET	S3C2410_GPC(6)
++#define GTA01_GPIO_PMU_IRQ	S3C2410_GPG(8)
++#define GTA01_GPIO_JACK_INSERT	S3C2410_GPF(4)
++#define GTA01_GPIO_nSD_DETECT	S3C2410_GPF(5)
++#define GTA01_GPIO_AUX_KEY	S3C2410_GPF(6)
++#define GTA01_GPIO_HOLD_KEY	S3C2410_GPF(7)
++
++#define GTA01_IRQ_MODEM		IRQ_EINT1
++#define GTA01_IRQ_JACK_INSERT	IRQ_EINT4
++#define GTA01_IRQ_nSD_DETECT	IRQ_EINT5
++#define GTA01_IRQ_AUX_KEY	IRQ_EINT6
++
++/* GTA01v3 */
++#define GTA01v3_GPIO_nGSM_EN	S3C2410_GPG(9)
++
++/* GTA01v4 */
++#define GTA01_GPIO_MODEM_DNLOAD	S3C2410_GPG(0)
++
++/* GTA01Bv2 */
++#define GTA01Bv2_GPIO_nGSM_EN	S3C2410_GPF(2)
++#define GTA01Bv2_GPIO_VIBRATOR_ON S3C2410_GPB(10)
++#define GTA01Bv2_IRQ_PCF50606      IRQ_EINT16
++
++/* GTA01Bv3 */
++#define GTA01_GPIO_GPS_EN_3V3	S3C2410_GPG(9)
++
++#define GTA01_GPIO_SDMMC_ON	S3C2410_GPB(2)
++#define GTA01_GPIO_BT_EN	S3C2410_GPB(5)
++#define GTA01_GPIO_USB_PULLUP	S3C2410_GPB(9)
++
++#define GTA01_GPIO_GPS_EN_2V8	S3C2410_GPG(9)
++#define GTA01_GPIO_GPS_EN_3V	S3C2410_GPG(10)
++#define GTA01_GPIO_GPS_RESET	S3C2410_GPC(0)
++
++/* GTA01Bv4 */
++#define GTA01Bv4_GPIO_nNAND_WP	S3C2410_GPA(16)
++#define GTA01Bv4_GPIO_VIBRATOR_ON S3C2410_GPB(3)
++#define GTA01Bv4_GPIO_PMU_IRQ	S3C2410_GPG(1)
++
++#define GTA01Bv4_IRQ_PCF50606	IRQ_EINT9
++
++extern struct pcf50606 *gta01_pcf;
++
++#endif /* _GTA01_H */
 diff --git a/arch/arm/mach-s3c2410/include/mach/irqs.h b/arch/arm/mach-s3c2410/include/mach/irqs.h
 index 6c12c63..fc0e3c9 100644
 --- a/arch/arm/mach-s3c2410/include/mach/irqs.h
@@ -4660,6 +6635,988 @@ index 6c12c63..fc0e3c9 100644
 +#define NR_IRQS			IRQ_BOARD_END
 +
  #endif /* __ASM_ARCH_IRQ_H */
+diff --git a/arch/arm/mach-s3c2410/mach-gta01.c b/arch/arm/mach-s3c2410/mach-gta01.c
+new file mode 100644
+index 0000000..45fe03a
+--- /dev/null
++++ b/arch/arm/mach-s3c2410/mach-gta01.c
+@@ -0,0 +1,976 @@
++/*
++ * linux/arch/arm/mach-s3c2410/mach-gta01.c
++ *
++ * S3C2410 Machine Support for the FIC Neo1973 GTA01
++ *
++ * Copyright (C) 2006-2007 by Openmoko, Inc.
++ * Author: Harald Welte <laforge@openmoko.org>
++ * Copyright (C) 2009, Lars-Peter Clausen <lars@metafoo.de>
++ * All rights reserved.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ *
++ */
++
++#include <linux/kernel.h>
++#include <linux/types.h>
++#include <linux/interrupt.h>
++#include <linux/init.h>
++#include <linux/workqueue.h>
++#include <linux/platform_device.h>
++#include <linux/i2c.h>
++#include <linux/serial_core.h>
++#include <linux/mmc/mmc.h>
++#include <linux/mmc/host.h>
++
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/nand.h>
++#include <linux/mtd/nand_ecc.h>
++#include <linux/mtd/partitions.h>
++
++#include <linux/mmc/host.h>
++
++#include <linux/mfd/pcf50606/core.h>
++#include <linux/mfd/pcf50606/pmic.h>
++#include <linux/mfd/pcf50606/mbc.h>
++#include <linux/mfd/pcf50606/adc.h>
++
++#include <linux/regulator/machine.h>
++#include <linux/regulator/consumer.h>
++
++
++#include <asm/mach/arch.h>
++#include <asm/mach/map.h>
++#include <asm/mach/irq.h>
++
++#include <mach/hardware.h>
++#include <mach/io.h>
++#include <asm/mach-types.h>
++
++#include <mach/regs-gpio.h>
++#include <mach/gpio-fns.h>
++#include <mach/fb.h>
++
++#include <linux/spi/spi.h>
++#include <linux/spi/spi_gpio.h>
++
++#include <mach/gta01.h>
++
++#include <plat/regs-serial.h>
++#include <plat/nand.h>
++#include <plat/devs.h>
++#include <plat/cpu.h>
++#include <plat/pm.h>
++#include <plat/udc.h>
++#include <plat/iic.h>
++#include <plat/mci.h>
++#include <plat/usb-control.h>
++/*#include <mach/neo1973-pm-gsm.h>*/
++
++#include <linux/jbt6k74.h>
++
++#include <linux/input.h>
++#include <linux/gpio_keys.h>
++
++#include <linux/pwm_backlight.h>
++#include <linux/leds_pwm.h>
++
++#include <linux/gpio.h>
++
++/*
++#include <../drivers/input/touchscreen/ts_filter_chain.h>
++#ifdef CONFIG_TOUCHSCREEN_FILTER
++#include <../drivers/input/touchscreen/ts_filter_linear.h>
++#include <../drivers/input/touchscreen/ts_filter_mean.h>
++#include <../drivers/input/touchscreen/ts_filter_median.h>
++#include <../drivers/input/touchscreen/ts_filter_group.h>
++#endif
++*/
++
++static void gta01_pmu_attach_child_devices(struct pcf50606 *pcf);
++
++static struct map_desc gta01_iodesc[] __initdata = {
++	{
++		.virtual	= 0xe0000000,
++		.pfn		= __phys_to_pfn(S3C2410_CS3+0x01000000),
++		.length		= SZ_1M,
++		.type		= MT_DEVICE
++	},
++};
++
++#define UCON S3C2410_UCON_DEFAULT
++#define ULCON S3C2410_LCON_CS8 | S3C2410_LCON_PNONE | S3C2410_LCON_STOPB
++#define UFCON S3C2410_UFCON_RXTRIG8 | S3C2410_UFCON_FIFOMODE
++/* UFCON for the gta01 sets the FIFO trigger level at 4, not 8 */
++#define UFCON_GTA01_PORT0 S3C2410_UFCON_FIFOMODE
++
++static struct s3c2410_uartcfg gta01_uartcfgs[] = {
++	[0] = {
++		.hwport	= 0,
++		.flags	= 0,
++		.ucon	= UCON,
++		.ulcon	= ULCON,
++		.ufcon	= UFCON_GTA01_PORT0,
++	},
++	[1] = {
++		.hwport	= 1,
++		.flags	= 0,
++		.ucon	= UCON,
++		.ulcon	= ULCON,
++		.ufcon	= UFCON,
++	},
++};
++
++/* TODO */
++static void gta01_pmu_event_callback(struct pcf50606 *pcf, int irq)
++{
++	/*TODO : Handle ACD here */
++}
++#if 0
++/* FIXME : Goes away when ACD is handled above */
++static int pmu_callback(struct device *dev, unsigned int feature,
++			enum pmu_event event)
++{
++	switch (feature) {
++	case PCF50606_FEAT_ACD:
++		switch (event) {
++		case PMU_EVT_INSERT:
++			pcf50606_charge_fast(pcf50606_global, 1);
++			break;
++		case PMU_EVT_REMOVE:
++			pcf50606_charge_fast(pcf50606_global, 0);
++			break;
++		default:
++			break;
++		}
++		break;
++	default:
++		break;
++	}
++
++	return 0;
++}
++#endif
++struct pcf50606 *gta01_pcf;
++
++static struct platform_device gta01_pm_gsm_dev = {
++	.name		= "neo1973-pm-gsm",
++};
++
++static struct platform_device gta01_pm_bt_dev = {
++	.name		= "neo1973-pm-bt",
++};
++static struct platform_device gta01_pm_gps_dev = {
++	.name		= "neo1973-pm-gps",
++};
++
++static struct regulator_consumer_supply ioreg_consumers[] = {
++	{
++		.dev = &gta01_pm_gps_dev.dev,
++		.supply = "GPS_2V8",
++	},
++};
++
++static struct regulator_consumer_supply d1reg_consumers[] = {
++	{
++		.dev = &gta01_pm_gps_dev.dev,
++		.supply = "GPS_3V",
++	},
++	{
++		.dev = &gta01_pm_bt_dev.dev,
++		.supply = "BT_3V1",
++	},
++};
++
++static struct regulator_consumer_supply dcd_consumers[] = {
++	{
++		.dev = &gta01_pm_gps_dev.dev,
++		.supply = "GPS_3V3",
++	},
++	{
++		.dev = &gta01_pm_gps_dev.dev,
++		.supply = "GPS_1V5",
++	},
++};
++
++static struct regulator_consumer_supply d2reg_consumers[] = {
++	{
++		.dev = &gta01_pm_gps_dev.dev,
++		.supply = "GPS_2V5",
++	},
++	{
++		.dev = &s3c_device_sdi.dev,
++		.supply = "SD_3V3",
++	},
++};
++
++#if 0
++/* This will come with 2.6.32. Don't forget to uncomment it then. */
++static struct regulator_consumer_supply lpreg_consumers[] = {
++	REGULATOR_SUPPLY("VDC", "jbt6k74"),
++	REGULATOR_SUPPLY("VDDIO", "jbt6k74"),
++};
++#else
++static struct regulator_consumer_supply lpreg_consumers[] = {
++	{ .supply = "VDC", },
++	{ .supply = "VDDIO", },
++};
++#endif
++
++#if 0
++
++static int gta01_bat_get_charging_status(void)
++{
++	struct pcf50606 *pcf = gta01_pcf;
++	u8 mbcc1, chgmod;
++
++	mbcc1 = pcf50606_reg_read(pcf, PCF50606_REG_MBCC1);
++	chgmod = mbcc1 & PCF50606_MBCC1_CHGMOD_MASK;
++
++	if (chgmod == PCF50606_MBCC1_CHGMOD_IDLE)
++		return 0;
++	else
++		return 1;
++}
++
++static int gta01_bat_get_voltage(void)
++{
++	struct pcf50606 *pcf = gta01_pcf;
++	u16 adc, mv = 0;
++
++	adc = pcf50606_adc_sync_read(pcf, PCF50606_ADCMUX_BATVOLT_RES);
++	mv = (adc * 6000) / 1024;
++
++	return mv * 1000;
++}
++
++static int gta01_bat_get_current(void)
++{
++	struct pcf50606 *pcf = gta01_pcf;
++	u16 adc_battvolt, adc_adcin1;
++	s32 res;
++
++	adc_battvolt = pcf50606_adc_sync_read(pcf, PCF50606_ADCMUX_BATVOLT_SUBTR);
++	adc_adcin1 = pcf50606_adc_sync_read(pcf, PCF50606_ADCMUX_ADCIN1_SUBTR);
++	res = (adc_battvolt - adc_adcin1) * 2400;
++
++	/*rsense is 220 milli */
++	return (res * 1000) / (220 * 1024) * 1000;
++}
++
++static struct gta01_bat_platform_data gta01_bat_pdata = {
++	.get_charging_status = gta01_bat_get_charging_status,
++	.get_voltage = gta01_bat_get_voltage,
++	.get_current = gta01_bat_get_current,
++};
++
++static struct platform_device gta01_bat = {
++	.name = "gta01_battery",
++	.id = -1,
++	.dev = {
++		.platform_data = &gta01_bat_pdata,
++	}
++};
++#endif
++
++static void __devinit gta01_pcf_probe_done(struct pcf50606 *pcf)
++{
++	gta01_pcf = pcf;
++
++	gta01_pmu_attach_child_devices(pcf);
++}
++
++static int gps_registered_regulators = 0;
++
++static void gta01_pmu_regulator_registered(struct pcf50606 *pcf, int id)
++{
++	switch(id) {
++		case PCF50606_REGULATOR_D1REG:
++			platform_device_register(&gta01_pm_bt_dev);
++			gps_registered_regulators++;
++			break;
++		case PCF50606_REGULATOR_D2REG:
++			gps_registered_regulators++;
++			break;
++		case PCF50606_REGULATOR_IOREG:
++		case PCF50606_REGULATOR_DCD:
++			gps_registered_regulators++;
++			break;
++	}
++
++	/* All GPS related regulators registered ? */
++	if (gps_registered_regulators == 4)
++		platform_device_register(&gta01_pm_gps_dev);
++}
++
++static struct pcf50606_platform_data gta01_pcf_pdata __devinitdata = {
++	.resumers = {
++			[0] = 	PCF50606_INT1_ALARM |
++				PCF50606_INT1_ONKEYF |
++				PCF50606_INT1_EXTONR,
++			[1] = 	PCF50606_INT2_CHGWD10S |
++				PCF50606_INT2_CHGPROT |
++				PCF50606_INT2_CHGERR,
++			[2] =	PCF50606_INT3_LOWBAT |
++				PCF50606_INT3_HIGHTMP |
++				PCF50606_INT3_ACDINS,
++	},
++	.mbc_event_callback = gta01_pmu_event_callback,
++	.reg_init_data = {
++		/* BT, GPS */
++		[PCF50606_REGULATOR_D1REG] = {
++			.constraints = {
++				.min_uV = 3000000,
++				.max_uV = 3150000,
++				.valid_modes_mask = REGULATOR_MODE_NORMAL,
++				.apply_uV = 1,
++			},
++			.num_consumer_supplies = ARRAY_SIZE(d1reg_consumers),
++			.consumer_supplies = d1reg_consumers,
++		},
++		/* GPS */
++		[PCF50606_REGULATOR_D2REG] = {
++			.constraints = {
++				.min_uV = 1650000,
++				.max_uV = 3300000,
++				.valid_modes_mask = REGULATOR_MODE_NORMAL,
++				.valid_ops_mask = REGULATOR_CHANGE_VOLTAGE,
++				.apply_uV = 1,
++			},
++			.num_consumer_supplies = ARRAY_SIZE(d2reg_consumers),
++			.consumer_supplies = d2reg_consumers,
++
++		},
++		/* RTC/Standby */
++		[PCF50606_REGULATOR_D3REG] = {
++			.constraints = {
++				.min_uV = 1800000,
++				.max_uV = 2100000,
++				.valid_modes_mask = REGULATOR_MODE_NORMAL,
++				.always_on = 1,
++				.state_mem = {
++					.enabled = 1,
++				},
++			},
++			.num_consumer_supplies = 0,
++		},
++		/* GPS */
++		[PCF50606_REGULATOR_DCD] = {
++			.constraints = {
++				.min_uV = 1500000,
++				.max_uV = 1500000,
++				.valid_modes_mask = REGULATOR_MODE_NORMAL,
++				.apply_uV = 1,
++			},
++			.num_consumer_supplies = ARRAY_SIZE(dcd_consumers),
++			.consumer_supplies = dcd_consumers,
++		},
++
++		/* S3C2410 Memory and IO, Vibrator, RAM, NAND, AMP, SD Card */
++		[PCF50606_REGULATOR_DCDE] = {
++			.constraints = {
++				.min_uV = 3300000,
++				.max_uV = 3300000,
++				.valid_modes_mask = REGULATOR_MODE_NORMAL,
++				.apply_uV = 1,
++				.always_on = 1,
++				.state_mem = {
++					.enabled = 1,
++				},
++			},
++			.num_consumer_supplies = 0,
++		},
++		/* SoC */
++		[PCF50606_REGULATOR_DCUD] = {
++			.constraints = {
++				.min_uV = 2100000,
++				.max_uV = 2100000,
++				.valid_modes_mask = REGULATOR_MODE_NORMAL,
++				.apply_uV = 1,
++				.always_on = 1,
++				.state_mem = {
++					.enabled = 1,
++				},
++			},
++			.num_consumer_supplies = 0,
++		},
++		/* Codec, GPS */
++		[PCF50606_REGULATOR_IOREG] = {
++			.constraints = {
++				.min_uV = 3300000,
++				.max_uV = 3300000,
++				.valid_modes_mask = REGULATOR_MODE_NORMAL,
++				.apply_uV = 1,
++				.always_on = 1,
++			},
++			.num_consumer_supplies = ARRAY_SIZE(ioreg_consumers),
++			.consumer_supplies = ioreg_consumers,
++
++		},
++		/* LCM */
++		[PCF50606_REGULATOR_LPREG] = {
++			.constraints = {
++				.min_uV = 3300000,
++				.max_uV = 3300000,
++				.valid_modes_mask = REGULATOR_MODE_NORMAL,
++				.apply_uV = 1,
++			},
++			.num_consumer_supplies = ARRAY_SIZE(lpreg_consumers),
++			.consumer_supplies = lpreg_consumers,
++		},
++	},
++	.probe_done = gta01_pcf_probe_done,
++	.regulator_registered = gta01_pmu_regulator_registered,
++};
++
++static void mangle_pmu_pdata_by_system_rev(void)
++{
++	struct regulator_init_data *reg_init_data;
++
++	reg_init_data = gta01_pcf_pdata.reg_init_data;
++
++	switch (S3C_SYSTEM_REV_ATAG) {
++	case GTA01Bv4_SYSTEM_REV:
++		/* FIXME : gta01_pcf_pdata.used_features |= PCF50606_FEAT_ACD; */
++		break;
++	case GTA01Bv3_SYSTEM_REV:
++	case GTA01Bv2_SYSTEM_REV:
++		reg_init_data[PCF50606_REGULATOR_D3REG].constraints.state_mem.enabled = 1;
++		break;
++	default:
++		break;
++	}
++}
++
++static void gta01_power_off(void)
++{
++	pcf50606_reg_write(gta01_pcf, PCF50606_REG_OOCC1,
++			PCF50606_OOCC1_GOSTDBY);
++}
++
++/* LCD driver info */
++
++/* Configuration for 480x640 toppoly TD028TTEC1.
++ * Do not mark this as __initdata or it will break! */
++static struct s3c2410fb_display gta01_displays[] =  {
++	{
++		.type		= S3C2410_LCDCON1_TFT,
++		.width		= 43,
++		.height		= 58,
++		.xres		= 480,
++		.yres		= 640,
++		.bpp		= 16,
++
++		.pixclock	= 40000,	/* HCLK/4 */
++		.left_margin	= 104,
++		.right_margin	= 8,
++		.hsync_len	= 8,
++		.upper_margin	= 2,
++		.lower_margin	= 16,
++		.vsync_len	= 2,
++		.lcdcon5	= S3C2410_LCDCON5_FRM565 |
++				  S3C2410_LCDCON5_INVVCLK |
++				  S3C2410_LCDCON5_INVVLINE |
++				  S3C2410_LCDCON5_INVVFRAME |
++				  S3C2410_LCDCON5_PWREN |
++				  S3C2410_LCDCON5_HWSWP,
++	},
++	{
++		.type		= S3C2410_LCDCON1_TFT,
++		.width		= 43,
++		.height		= 58,
++		.xres		= 480,
++		.yres		= 640,
++		.bpp		= 32,
++
++		.pixclock	= 40000,	/* HCLK/4 */
++		.left_margin	= 104,
++		.right_margin	= 8,
++		.hsync_len	= 8,
++		.upper_margin	= 2,
++		.lower_margin	= 16,
++		.vsync_len	= 2,
++		.lcdcon5	= S3C2410_LCDCON5_FRM565 |
++				  S3C2410_LCDCON5_INVVCLK |
++				  S3C2410_LCDCON5_INVVLINE |
++				  S3C2410_LCDCON5_INVVFRAME |
++				  S3C2410_LCDCON5_PWREN |
++				  S3C2410_LCDCON5_HWSWP,
++	},
++	{
++		.type		= S3C2410_LCDCON1_TFT,
++		.width		= 43,
++		.height		= 58,
++		.xres		= 240,
++		.yres		= 320,
++		.bpp		= 16,
++
++		.pixclock	= 40000,	/* HCLK/4 */
++		.left_margin	= 104,
++		.right_margin	= 8,
++		.hsync_len	= 8,
++		.upper_margin	= 2,
++		.lower_margin	= 16,
++		.vsync_len	= 2,
++		.lcdcon5	= S3C2410_LCDCON5_FRM565 |
++				  S3C2410_LCDCON5_INVVCLK |
++				  S3C2410_LCDCON5_INVVLINE |
++				  S3C2410_LCDCON5_INVVFRAME |
++				  S3C2410_LCDCON5_PWREN |
++				  S3C2410_LCDCON5_HWSWP,
++	},
++};
++
++static struct s3c2410fb_mach_info gta01_lcd_cfg __initdata = {
++	.displays	= gta01_displays,
++	.num_displays	= ARRAY_SIZE(gta01_displays),
++	.default_display = 0,
++
++	.lpcsel		= ((0xCE6) & ~7) | 1<<4,
++};
++
++static struct s3c2410_nand_set gta01_nand_sets[] = {
++	[0] = {
++		.name		= "neo1973-nand",
++		.nr_chips	= 1,
++/*		.flags		= S3C2410_NAND_BBT,*/
++	},
++};
++
++static struct s3c2410_platform_nand gta01_nand_info = {
++	.tacls		= 20,
++	.twrph0		= 60,
++	.twrph1		= 20,
++	.nr_sets	= ARRAY_SIZE(gta01_nand_sets),
++	.sets		= gta01_nand_sets,
++};
++
++/* MMC */
++
++static void gta01_mmc_set_power(unsigned char power_mode, unsigned short vdd)
++{
++	printk(KERN_DEBUG "mmc_set_power(power_mode=%u, vdd=%u)\n",
++		   power_mode, vdd);
++
++	switch (power_mode) {
++	case MMC_POWER_OFF:
++			gpio_set_value(GTA01_GPIO_SDMMC_ON, 1);
++			break;
++	case MMC_POWER_UP:
++			gpio_set_value(GTA01_GPIO_SDMMC_ON, 0);
++			break;
++	}
++}
++
++static struct s3c24xx_mci_pdata gta01_mmc_cfg = {
++	.gpio_detect	= GTA01_GPIO_nSD_DETECT,
++	.set_power	= &gta01_mmc_set_power,
++	.ocr_avail	= MMC_VDD_32_33,
++};
++
++/* UDC */
++
++static void gta01_udc_command(enum s3c2410_udc_cmd_e cmd)
++{
++	printk("udc command: %d\n", cmd);
++	switch (cmd) {
++	case S3C2410_UDC_P_ENABLE:
++		gpio_set_value(GTA01_GPIO_USB_PULLUP, 1);
++		break;
++	case S3C2410_UDC_P_DISABLE:
++		gpio_set_value(GTA01_GPIO_USB_PULLUP, 0);
++		break;
++	default:
++		break;
++	}
++}
++
++/* use a work queue, since I2C API inherently schedules
++ * and we get called in hardirq context from UDC driver */
++
++struct vbus_draw {
++	struct work_struct work;
++	int ma;
++};
++static struct vbus_draw gta01_udc_vbus_drawer;
++
++static void __gta01_udc_vbus_draw(struct work_struct *work)
++{
++	/*
++	 * This is a fix to work around boot-time ordering problems if the
++	 * s3c2410_udc is initialized before the pcf50606 driver has defined
++	 * pcf50606_global
++	 */
++	if (!gta01_pcf)
++		return;
++#if 0
++	if (gta01_udc_vbus_drawer.ma >= 500) {
++		/* enable fast charge */
++		printk(KERN_DEBUG "udc: enabling fast charge\n");
++		pcf50606_charge_fast(gta01_pcf, 1);
++	} else {
++		/* disable fast charge */
++		printk(KERN_DEBUG "udc: disabling fast charge\n");
++		pcf50606_charge_fast(gta01_pcf, 0);
++	}
++#endif
++}
++
++static void gta01_udc_vbus_draw(unsigned int ma)
++{
++	gta01_udc_vbus_drawer.ma = ma;
++	schedule_work(&gta01_udc_vbus_drawer.work);
++}
++
++static struct s3c2410_udc_mach_info gta01_udc_cfg = {
++	.vbus_draw		= gta01_udc_vbus_draw,
++	.udc_command	= gta01_udc_command,
++};
++
++/* Touchscreen configuration. */
++
++#if 0
++
++#ifdef CONFIG_TOUCHSCREEN_FILTER
++const static struct ts_filter_group_configuration gta01_ts_group = {
++	.length = 12,
++	.close_enough = 10,
++	.threshold = 6,		/* At least half of the points in a group. */
++	.attempts = 10,
++};
++
++const static struct ts_filter_median_configuration gta01_ts_median = {
++	.extent = 20,
++	.decimation_below = 3,
++	.decimation_threshold = 8 * 3,
++	.decimation_above = 4,
++};
++
++const static struct ts_filter_mean_configuration gta01_ts_mean = {
++	.length = 4,
++};
++
++const static struct ts_filter_linear_configuration gta01_ts_linear = {
++	.constants = {1, 0, 0, 0, 1, 0, 1},	/* Don't modify coords. */
++	.coord0 = 0,
++	.coord1 = 1,
++};
++#endif
++
++const static struct ts_filter_chain_configuration gta01_filter_configuration[] =
++{
++#ifdef CONFIG_TOUCHSCREEN_FILTER
++	{&ts_filter_group_api,		&gta01_ts_group.config},
++	{&ts_filter_median_api,		&gta01_ts_median.config},
++	{&ts_filter_mean_api,		&gta01_ts_mean.config},
++	{&ts_filter_linear_api,		&gta01_ts_linear.config},
++#endif
++	{NULL, NULL},
++};
++
++const static struct s3c2410_ts_mach_info gta01_ts_cfg = {
++	.delay = 10000,
++	.presc = 0xff, /* slow as we can go */
++	.filter_config = gta01_filter_configuration,
++};
++#endif
++
++/* SPI / Display */
++
++const struct jbt6k74_platform_data gta01_jbt6k74_pdata = {
++	.gpio_reset = GTA01_GPIO_LCD_RESET,
++};
++
++static struct spi_board_info gta01_spi_board_info[] = {
++	{
++		.modalias	= "jbt6k74",
++		.platform_data	= &gta01_jbt6k74_pdata,
++		.controller_data = (void*)S3C2410_GPG(3),
++		.max_speed_hz	= 10 * 1000 * 1000,
++		.bus_num = 1,
++	},
++};
++
++static struct spi_gpio_platform_data spigpio_platform_data = {
++	.sck = S3C2410_GPG(7),
++	.mosi = S3C2410_GPG(6),
++	.miso = S3C2410_GPG(5),
++	.num_chipselect = 1,
++};
++
++static struct platform_device gta01_lcm_spigpio_device = {
++	.name = "spi_gpio",
++	.id   = 1,
++	.dev = {
++		.platform_data = &spigpio_platform_data,
++	},
++};
++
++/* Backlight */
++
++static struct platform_pwm_backlight_data gta01_bl_pdata = {
++	.max_brightness = 0xff,
++	.dft_brightness = 0xff,
++	.pwm_period_ns = 5000000, /* TODO: Tweak this */
++	.pwm_id = 0,
++};
++
++static struct platform_device gta01_bl_device = {
++	.name 		= "pwm-backlight",
++	.id		= -1,
++	.dev		= {
++		.platform_data = &gta01_bl_pdata,
++		.parent = &s3c_device_timer[0].dev,
++	},
++};
++
++/* Vibrator */
++static struct led_pwm gta01_vibrator = {
++	.name = "gta01::vibrator",
++	.max_brightness = 0xff,
++	.pwm_period_ns = 500000, /* TODO: Tweak this */
++	.pwm_id = 3,
++};
++
++static struct led_pwm_platform_data gta01_vibrator_pdata = {
++	.num_leds = 1,
++	.leds = &gta01_vibrator,
++};
++
++static struct platform_device gta01_vibrator_device_bv4 = {
++	.name	= "leds_pwm",
++	.id	= -1,
++	.dev = {
++		.platform_data = &gta01_vibrator_pdata,
++		.parent = &s3c_device_timer[3].dev,
++	}
++};
++
++static struct gpio_led gta01_vibrator_bv2 = {
++	.name = "gta01::vibrator",
++	.gpio = GTA01Bv2_GPIO_VIBRATOR_ON,
++	.default_state = LEDS_GPIO_DEFSTATE_OFF,
++};
++
++static struct gpio_led_platform_data gta01_vibrator_pdata_bv2 = {
++	.num_leds = 1,
++	.leds = &gta01_vibrator_bv2,
++};
++
++static struct platform_device gta01_vibrator_device_bv2 = {
++	.name	= "leds-gpio",
++	.id	= -1,
++	.dev = {
++		.platform_data = &gta01_vibrator_pdata_bv2,
++	}
++};
++
++static struct platform_device *gta01_vibrator_device = &gta01_vibrator_device_bv4;
++/* Buttons */
++
++static struct gpio_keys_button gta01_buttons[] = {
++	{
++		.gpio = GTA01_GPIO_AUX_KEY,
++		.code = KEY_PHONE,
++		.desc = "Aux",
++		.type = EV_KEY,
++		.debounce_interval = 100,
++	},
++	{
++		.gpio = GTA01_GPIO_HOLD_KEY,
++		.code = KEY_PAUSE,
++		.desc = "Hold",
++		.type = EV_KEY,
++		.debounce_interval = 100,
++	},
++};
++
++static struct gpio_keys_platform_data gta01_buttons_pdata = {
++	.buttons = gta01_buttons,
++	.nbuttons = ARRAY_SIZE(gta01_buttons),
++};
++
++static struct platform_device gta01_buttons_device = {
++	.name = "gpio-keys",
++	.id = -1,
++	.dev = {
++		.platform_data = &gta01_buttons_pdata,
++	},
++};
++
++/* USB */
++
++static struct s3c2410_hcd_info gta01_usb_info = {
++	.port[0]	= {
++		.flags	= S3C_HCDFLG_USED,
++	},
++	.port[1]	= {
++		.flags	= 0,
++	},
++};
++
++static struct platform_device *gta01_devices[] __initdata = {
++	&s3c_device_ohci,
++	&s3c_device_lcd,
++	&s3c_device_wdt,
++	&s3c_device_i2c0,
++	&s3c_device_iis,
++	&s3c_device_sdi,
++	&s3c_device_usbgadget,
++	&s3c_device_nand,
++	&s3c_device_adc,
++	&s3c_device_ts,
++	&s3c_device_timer[0],
++	&s3c_device_timer[3],
++	&gta01_bl_device,
++	&gta01_buttons_device,
++	&gta01_pm_gsm_dev,
++};
++
++static struct platform_device *gta01_pmu_child_devices[] __devinitdata = {
++	&gta01_lcm_spigpio_device,
++};
++
++static void __devinit gta01_pmu_attach_child_devices(struct pcf50606 *pcf)
++{
++	size_t i;
++
++	for (i = 0; i < ARRAY_SIZE(gta01_pmu_child_devices); ++i)
++		gta01_pmu_child_devices[i]->dev.parent = pcf->dev;
++
++	platform_add_devices(gta01_pmu_child_devices,
++				 ARRAY_SIZE(gta01_pmu_child_devices));
++}
++static void __init gta01_map_io(void)
++{
++	s3c24xx_init_io(gta01_iodesc, ARRAY_SIZE(gta01_iodesc));
++	s3c24xx_init_clocks(12*1000*1000);
++	s3c24xx_init_uarts(gta01_uartcfgs, ARRAY_SIZE(gta01_uartcfgs));
++}
++
++static irqreturn_t gta01_modem_irq(int irq, void *param)
++{
++	printk(KERN_DEBUG "GSM wakeup interrupt (IRQ %d)\n", irq);
++/*	gta_gsm_interrupts++;*/
++	return IRQ_HANDLED;
++}
++
++static struct i2c_board_info gta01_i2c_devs[] __initdata = {
++	{
++		I2C_BOARD_INFO("pcf50606", 0x08),
++		.irq = GTA01Bv4_IRQ_PCF50606,
++		.platform_data = &gta01_pcf_pdata,
++	},
++	{
++		I2C_BOARD_INFO("lm4857", 0x7c),
++	},
++	{
++		I2C_BOARD_INFO("wm8753", 0x1a),
++	},
++};
++
++static int __init gta01_init_gpio(void)
++{
++	int ret;
++
++	ret = gpio_request(GTA01_GPIO_USB_PULLUP, "udc pullup");
++
++	ret = gpio_direction_output(GTA01_GPIO_USB_PULLUP, 0);
++
++	ret = gpio_request(GTA01_GPIO_SDMMC_ON, "SD/MMC power");
++
++	ret = gpio_direction_output(GTA01_GPIO_SDMMC_ON, 1);
++
++	s3c2410_gpio_cfgpin(GTA01_GPIO_BACKLIGHT, S3C2410_GPB0_TOUT0);
++	if (S3C_SYSTEM_REV_ATAG == GTA01Bv4_SYSTEM_REV)
++		s3c2410_gpio_cfgpin(GTA01Bv4_GPIO_VIBRATOR_ON, S3C2410_GPB3_TOUT3);
++
++	return ret;
++}
++
++static void __init gta01_machine_init(void)
++{
++	int rc;
++
++	gta01_init_gpio();
++
++	if (S3C_SYSTEM_REV_ATAG != GTA01Bv4_SYSTEM_REV) {
++		gta01_vibrator_device = &gta01_vibrator_device_bv2;
++		gta01_i2c_devs[0].irq = GTA01Bv2_IRQ_PCF50606;
++	}
++
++	s3c_ohci_set_platdata(&gta01_usb_info);
++	s3c_device_nand.dev.platform_data = &gta01_nand_info;
++	s3c_device_sdi.dev.platform_data = &gta01_mmc_cfg;
++
++	s3c24xx_fb_set_platdata(&gta01_lcd_cfg);
++
++	INIT_WORK(&gta01_udc_vbus_drawer.work, __gta01_udc_vbus_draw);
++	s3c24xx_udc_set_platdata(&gta01_udc_cfg);
++	s3c_i2c0_set_platdata(NULL);
++
++/*	set_s3c2410ts_info(&gta01_ts_cfg);*/
++
++#if 0
++	switch (S3C_SYSTEM_REV_ATAG) {
++	case GTA01v3_SYSTEM_REV:
++	case GTA01v4_SYSTEM_REV:
++		/* just use the default (GTA01_IRQ_PCF50606) */
++		break;
++	case GTA01Bv2_SYSTEM_REV:
++	case GTA01Bv3_SYSTEM_REV:
++		/* just use the default (GTA01_IRQ_PCF50606) */
++		gta01_led_resources[0].start =
++			gta01_led_resources[0].end = GTA01Bv2_GPIO_VIBRATOR_ON;
++		break;
++	case GTA01Bv4_SYSTEM_REV:
++		gta01_i2c_devs[0].irq =	 GTA01Bv4_IRQ_PCF50606;
++		gta01_led_resources[0].start =
++			gta01_led_resources[0].end = GTA01Bv4_GPIO_VIBRATOR_ON;
++		break;
++	}
++#endif
++	mangle_pmu_pdata_by_system_rev();
++
++	i2c_register_board_info(0, gta01_i2c_devs, ARRAY_SIZE(gta01_i2c_devs));
++	spi_register_board_info(gta01_spi_board_info,
++				ARRAY_SIZE(gta01_spi_board_info));
++
++	platform_add_devices(gta01_devices, ARRAY_SIZE(gta01_devices));
++/*	platform_add_devices(gta01_vibrator_device, 1);*/
++
++	s3c_pm_init();
++
++	set_irq_type(GTA01_IRQ_MODEM, IRQ_TYPE_EDGE_RISING);
++	rc = request_irq(GTA01_IRQ_MODEM, gta01_modem_irq, IRQF_DISABLED,
++			 "modem", NULL);
++	enable_irq_wake(GTA01_IRQ_MODEM);
++
++	printk(KERN_DEBUG  "Enabled GSM wakeup IRQ %d (rc=%d)\n",
++		   GTA01_IRQ_MODEM, rc);
++
++	pm_power_off = &gta01_power_off;
++}
++
++MACHINE_START(NEO1973_GTA01, "GTA01")
++	.phys_io	= S3C2410_PA_UART,
++	.io_pg_offst	= (((u32)S3C24XX_VA_UART) >> 18) & 0xfffc,
++	.boot_params	= S3C2410_SDRAM_PA + 0x100,
++	.map_io		= gta01_map_io,
++	.init_irq	= s3c24xx_init_irq,
++	.init_machine	= gta01_machine_init,
++	.timer		= &s3c24xx_timer,
++MACHINE_END
 diff --git a/arch/arm/mach-s3c2440/Kconfig b/arch/arm/mach-s3c2440/Kconfig
 index 7f46526..cb5a8e5 100644
 --- a/arch/arm/mach-s3c2440/Kconfig
@@ -41887,6 +44844,181 @@ index 0000000..eb044e8
 +MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
 +MODULE_DESCRIPTION("GPIO driver for the PCF50633");
 +MODULE_LICENSE("GPL");
+diff --git a/drivers/input/misc/Kconfig b/drivers/input/misc/Kconfig
+index 23140a3..c75d165 100644
+--- a/drivers/input/misc/Kconfig
++++ b/drivers/input/misc/Kconfig
+@@ -277,6 +277,13 @@ config INPUT_PCF50633_PMU
+ 	 Say Y to include support for delivering  PMU events via  input
+ 	 layer on NXP PCF50633.
+ 
++config INPUT_PCF50606_PMU
++	tristate "PCF50606 PMU events"
++	depends on MFD_PCF50606
++	help
++	 Say Y to include support for delivering  PMU events via  input
++	 layer on NXP PCF50606.
++
+ config INPUT_GPIO_ROTARY_ENCODER
+ 	tristate "Rotary encoders connected to GPIO pins"
+ 	depends on GPIOLIB && GENERIC_GPIO
+diff --git a/drivers/input/misc/Makefile b/drivers/input/misc/Makefile
+index 7e95a5d..a70c9cf 100644
+--- a/drivers/input/misc/Makefile
++++ b/drivers/input/misc/Makefile
+@@ -19,6 +19,7 @@ obj-$(CONFIG_INPUT_KEYSPAN_REMOTE)	+= keyspan_remote.o
+ obj-$(CONFIG_INPUT_M68K_BEEP)		+= m68kspkr.o
+ obj-$(CONFIG_INPUT_PCAP)		+= pcap_keys.o
+ obj-$(CONFIG_INPUT_PCF50633_PMU)	+= pcf50633-input.o
++obj-$(CONFIG_INPUT_PCF50606_PMU)	+= pcf50606-input.o
+ obj-$(CONFIG_INPUT_PCSPKR)		+= pcspkr.o
+ obj-$(CONFIG_INPUT_POWERMATE)		+= powermate.o
+ obj-$(CONFIG_INPUT_RB532_BUTTON)	+= rb532_button.o
+diff --git a/drivers/input/misc/pcf50606-input.c b/drivers/input/misc/pcf50606-input.c
+new file mode 100644
+index 0000000..ccaf745
+--- /dev/null
++++ b/drivers/input/misc/pcf50606-input.c
+@@ -0,0 +1,139 @@
++/* Philips PCF50606 Input Driver
++ *
++ * (C) 2006-2008 by Openmoko, Inc.
++ * Author: Balaji Rao <balajirrao@openmoko.org>
++ * All rights reserved.
++ *
++ * Broken down from monstrous PCF50606 driver mainly by
++ * Harald Welte, Matt Hsu, Andy Green and Werner Almesberger
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/device.h>
++#include <linux/platform_device.h>
++#include <linux/input.h>
++#include <linux/slab.h>
++
++#include <linux/mfd/pcf50606/core.h>
++
++#define PCF50606_OOCS_ONKEY		0x01
++#define PCF50606_OOCS_EXTON	 	0x02
++
++#define PCF50606_OOCC2_ONKEYDB_NONE	0x00
++#define PCF50606_OOCC2_ONKEYDB_14ms	0x01
++#define PCF50606_OOCC2_ONKEYDB_62ms	0x02
++#define PCF50606_OOCC2_ONKEYDB_500ms	0x03
++#define PCF50606_OOCC2_EXTONDB_NONE	0x00
++#define PCF50606_OOCC2_EXTONDB_14ms	0x04
++#define PCF50606_OOCC2_EXTONDB_62ms	0x08
++#define PCF50606_OOCC2_EXTONDB_500ms	0x0c
++
++#define PCF50606_REG_OOCS 	0x01
++
++struct pcf50606_input {
++	struct pcf50606 *pcf;
++	struct input_dev *input_dev;
++};
++
++static void
++pcf50606_input_irq(int irq, void *data)
++{
++	struct pcf50606_input *input;
++	int onkey_released;
++
++	input = data;
++	onkey_released = pcf50606_reg_read(input->pcf, PCF50606_REG_OOCS) &
++						PCF50606_OOCS_ONKEY;
++
++	if (irq == PCF50606_IRQ_ONKEYF && !onkey_released)
++		input_report_key(input->input_dev, KEY_POWER, 1);
++	else if (irq == PCF50606_IRQ_ONKEYR && onkey_released)
++		input_report_key(input->input_dev, KEY_POWER, 0);
++
++	input_sync(input->input_dev);
++}
++
++static int __devinit pcf50606_input_probe(struct platform_device *pdev)
++{
++	struct pcf50606_input *input;
++	struct input_dev *input_dev;
++	int ret;
++
++	input = kzalloc(sizeof(*input), GFP_KERNEL);
++	if (!input)
++		return -ENOMEM;
++
++	input_dev = input_allocate_device();
++	if (!input_dev) {
++		kfree(input);
++		return -ENOMEM;
++	}
++
++	platform_set_drvdata(pdev, input);
++	input->pcf = dev_to_pcf50606(pdev->dev.parent);
++	input->input_dev = input_dev;
++
++	input_dev->name = "PCF50606 PMU events";
++	input_dev->id.bustype = BUS_I2C;
++	input_dev->evbit[0] = BIT(EV_KEY) | BIT(EV_PWR);
++	set_bit(KEY_POWER, input_dev->keybit);
++
++	ret = input_register_device(input_dev);
++	if (ret) {
++		input_free_device(input_dev);
++		kfree(input);
++		return ret;
++	}
++	pcf50606_register_irq(input->pcf, PCF50606_IRQ_ONKEYR,
++				pcf50606_input_irq, input);
++	pcf50606_register_irq(input->pcf, PCF50606_IRQ_ONKEYF,
++				pcf50606_input_irq, input);
++
++	return 0;
++}
++
++static int __devexit pcf50606_input_remove(struct platform_device *pdev)
++{
++	struct pcf50606_input *input  = platform_get_drvdata(pdev);
++
++	input_unregister_device(input->input_dev);
++	pcf50606_free_irq(input->pcf, PCF50606_IRQ_ONKEYR);
++	pcf50606_free_irq(input->pcf, PCF50606_IRQ_ONKEYF);
++
++	kfree(input);
++
++	return 0;
++}
++
++static struct platform_driver pcf50606_input_driver = {
++	.driver = {
++		.name = "pcf50606-input",
++	},
++	.probe = pcf50606_input_probe,
++	.remove = __devexit_p(pcf50606_input_remove),
++};
++
++static int __init pcf50606_input_init(void)
++{
++	return platform_driver_register(&pcf50606_input_driver);
++}
++module_init(pcf50606_input_init);
++
++static void __exit pcf50606_input_exit(void)
++{
++	platform_driver_unregister(&pcf50606_input_driver);
++}
++module_exit(pcf50606_input_exit);
++
++MODULE_AUTHOR("Balaji Rao <balajirrao@openmoko.org>");
++MODULE_DESCRIPTION("PCF50606 input driver");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:pcf50606-input");
 diff --git a/drivers/leds/leds-pwm.c b/drivers/leds/leds-pwm.c
 index da3fa8d..ee9c708 100644
 --- a/drivers/leds/leds-pwm.c
@@ -41967,7 +45099,7 @@ index da3fa8d..ee9c708 100644
  		pwm_free(leds_data[i].pwm);
  	}
 diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index 2a5a0b7..e0d1b7c 100644
+index 2a5a0b7..cad1ef2 100644
 --- a/drivers/mfd/Kconfig
 +++ b/drivers/mfd/Kconfig
 @@ -334,13 +334,6 @@ config PCF50633_ADC
@@ -41984,7 +45116,7 @@ index 2a5a0b7..e0d1b7c 100644
  config AB3100_CORE
  	bool "ST-Ericsson AB3100 Mixed Signal Circuit core functions"
  	depends on I2C=y
-@@ -399,6 +392,14 @@ config LPC_SCH
+@@ -399,6 +392,30 @@ config LPC_SCH
  	  LPC bridge function of the Intel SCH provides support for
  	  System Management Bus and General Purpose I/O.
  
@@ -41996,11 +45128,27 @@ index 2a5a0b7..e0d1b7c 100644
 +	  multi-function device.  It includes irq_chip demultiplex as
 +	  well as clock / power management and GPIO support.
 +
++config MFD_PCF50606
++	tristate "Support for NXP PCF50606"
++	depends on I2C
++	help
++	   Say yes here if you have NXP PCF50606 chip on your board.
++	   This core driver provides register access and IRQ handling
++	   facilities, and registers devices for the various functions
++	   so that function-specific drivers can bind to them.
++
++config PCF50606_ADC
++	tristate "Support for NXP PCF50606 ADC"
++	depends on MFD_PCF50606
++	help
++	  Say yes here if you want to include support for ADC in the
++	  NXP PCF50606 chip.
++
  endmenu
  
  menu "Multimedia Capabilities Port drivers"
 diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-index 22715ad..da7a930 100644
+index 22715ad..51395cf 100644
 --- a/drivers/mfd/Makefile
 +++ b/drivers/mfd/Makefile
 @@ -7,6 +7,7 @@ obj-$(CONFIG_MFD_88PM860X)	+= 88pm860x.o
@@ -42011,7 +45159,7 @@ index 22715ad..da7a930 100644
  
  obj-$(CONFIG_HTC_EGPIO)		+= htc-egpio.o
  obj-$(CONFIG_HTC_PASIC3)	+= htc-pasic3.o
-@@ -54,12 +55,12 @@ obj-$(CONFIG_PMIC_DA903X)	+= da903x.o
+@@ -54,12 +55,14 @@ obj-$(CONFIG_PMIC_DA903X)	+= da903x.o
  max8925-objs			:= max8925-core.o max8925-i2c.o
  obj-$(CONFIG_MFD_MAX8925)	+= max8925.o
  
@@ -42028,6 +45176,8 @@ index 22715ad..da7a930 100644
 -obj-$(CONFIG_LPC_SCH)		+= lpc_sch.o
 \ No newline at end of file
 +obj-$(CONFIG_LPC_SCH)		+= lpc_sch.o
++obj-$(CONFIG_MFD_PCF50606)	+= pcf50606-core.o
++obj-$(CONFIG_PCF50606_ADC)	+= pcf50606-adc.o
 diff --git a/drivers/mfd/glamo-core.c b/drivers/mfd/glamo-core.c
 new file mode 100644
 index 0000000..8880263
@@ -43333,6 +46483,979 @@ index 0000000..8880263
 +MODULE_DESCRIPTION("Smedia Glamo 3362 core/resource driver");
 +MODULE_LICENSE("GPL");
 +MODULE_ALIAS("platform:glamo3362");
+diff --git a/drivers/mfd/pcf50606-adc.c b/drivers/mfd/pcf50606-adc.c
+new file mode 100644
+index 0000000..9d37c4a
+--- /dev/null
++++ b/drivers/mfd/pcf50606-adc.c
+@@ -0,0 +1,279 @@
++/* Philips PCF50606 ADC Driver
++ *
++ * (C) 2006-2008 by Openmoko, Inc.
++ * Author: Balaji Rao <balajirrao@openmoko.org>
++ * All rights reserved.
++ *
++ * Broken down from monstrous PCF50606 driver mainly by
++ * Harald Welte, Andy Green, Werner Almesberger and Matt Hsu
++ *
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
++ *
++ *  NOTE: This driver does not yet support subtractive ADC mode, which means
++ *  you can do only one measurement per read request.
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/device.h>
++#include <linux/platform_device.h>
++#include <linux/completion.h>
++#include <linux/slab.h>
++
++#include <linux/mfd/pcf50606/core.h>
++#include <linux/mfd/pcf50606/adc.h>
++
++struct pcf50606_adc_request {
++	int mux;
++	int result;
++	void (*callback)(struct pcf50606 *, void *, int);
++	void *callback_param;
++
++	/* Used in case of sync requests */
++	struct completion completion;
++
++};
++
++#define PCF50606_MAX_ADC_FIFO_DEPTH 8
++
++struct pcf50606_adc {
++	struct pcf50606 *pcf;
++
++	/* Private stuff */
++	struct pcf50606_adc_request *queue[PCF50606_MAX_ADC_FIFO_DEPTH];
++	int queue_head;
++	int queue_tail;
++	struct mutex queue_mutex;
++};
++
++static inline struct pcf50606_adc *__to_adc(struct pcf50606 *pcf)
++{
++	return platform_get_drvdata(pcf->adc_pdev);
++}
++
++static void adc_setup(struct pcf50606 *pcf, int channel)
++{
++	channel &= PCF50606_ADCC2_ADCMUX_MASK;
++
++	/* start ADC conversion of selected channel */
++	pcf50606_reg_write(pcf, PCF50606_REG_ADCC2, channel |
++		    PCF50606_ADCC2_ADCSTART | PCF50606_ADCC2_RES_10BIT);
++
++}
++
++static void trigger_next_adc_job_if_any(struct pcf50606 *pcf)
++{
++	struct pcf50606_adc *adc = __to_adc(pcf);
++	int head, tail;
++
++	mutex_lock(&adc->queue_mutex);
++
++	head = adc->queue_head;
++	tail = adc->queue_tail;
++
++	if (!adc->queue[head])
++		goto out;
++
++	adc_setup(pcf, adc->queue[head]->mux);
++out:
++	mutex_unlock(&adc->queue_mutex);
++}
++
++static int
++adc_enqueue_request(struct pcf50606 *pcf, struct pcf50606_adc_request *req)
++{
++	struct pcf50606_adc *adc = __to_adc(pcf);
++	int head, tail;
++
++	mutex_lock(&adc->queue_mutex);
++	head = adc->queue_head;
++	tail = adc->queue_tail;
++
++	if (adc->queue[tail]) {
++		mutex_unlock(&adc->queue_mutex);
++		return -EBUSY;
++	}
++
++	adc->queue[tail] = req;
++
++	adc->queue_tail =
++		(tail + 1) & (PCF50606_MAX_ADC_FIFO_DEPTH - 1);
++
++	mutex_unlock(&adc->queue_mutex);
++
++	trigger_next_adc_job_if_any(pcf);
++
++	return 0;
++}
++
++static void
++pcf50606_adc_sync_read_callback(struct pcf50606 *pcf, void *param, int result)
++{
++	struct pcf50606_adc_request *req;
++
++	/*We know here that the passed param is an adc_request object */
++	req = (struct pcf50606_adc_request *)param;
++
++	req->result = result;
++	complete(&req->completion);
++}
++
++int pcf50606_adc_sync_read(struct pcf50606 *pcf, int mux)
++{
++
++	struct pcf50606_adc_request *req;
++	int result;
++
++	/* req is freed when the result is ready, in irq handler*/
++	req = kzalloc(sizeof(*req), GFP_KERNEL);
++	if (!req)
++		return -ENOMEM;
++
++	req->mux = mux;
++	req->callback =  pcf50606_adc_sync_read_callback;
++	req->callback_param = req;
++	init_completion(&req->completion);
++
++	adc_enqueue_request(pcf, req);
++
++	if (wait_for_completion_timeout(&req->completion, 5 * HZ) == 5 * HZ) {
++		dev_err(pcf->dev, "ADC read timed out \n");
++	}
++
++	result = req->result;
++
++	return result;
++}
++EXPORT_SYMBOL_GPL(pcf50606_adc_sync_read);
++
++int pcf50606_adc_async_read(struct pcf50606 *pcf, int mux,
++			     void (*callback)(struct pcf50606 *, void *, int),
++			     void *callback_param)
++{
++	struct pcf50606_adc_request *req;
++
++	/* req is freed when the result is ready, in pcf50606_work*/
++	req = kmalloc(sizeof(*req), GFP_KERNEL);
++	if (!req)
++		return -ENOMEM;
++
++	req->mux = mux;
++	req->callback = callback;
++	req->callback_param = callback_param;
++
++	adc_enqueue_request(pcf, req);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(pcf50606_adc_async_read);
++
++static int adc_result(struct pcf50606 *pcf)
++{
++	u16 ret = (pcf50606_reg_read(pcf, PCF50606_REG_ADCS1) << 2) |
++			(pcf50606_reg_read(pcf, PCF50606_REG_ADCS2) & 0x03);
++
++	dev_dbg(pcf->dev, "adc result = %d\n", ret);
++
++	return ret;
++}
++
++static void pcf50606_adc_irq(int irq, void *data)
++{
++	struct pcf50606_adc *adc = data;
++	struct pcf50606 *pcf = adc->pcf;
++	struct pcf50606_adc_request *req;
++	int head;
++
++	mutex_lock(&adc->queue_mutex);
++	head = adc->queue_head;
++
++	req = adc->queue[head];
++	if (WARN_ON(!req)) {
++		dev_err(pcf->dev, "pcf50606-adc irq: ADC queue empty!\n");
++		mutex_unlock(&adc->queue_mutex);
++		return;
++	}
++
++	adc->queue[head] = NULL;
++	adc->queue_head = (head + 1) &
++				      (PCF50606_MAX_ADC_FIFO_DEPTH - 1);
++
++	mutex_unlock(&adc->queue_mutex);
++
++	req->callback(pcf, req->callback_param, adc_result(pcf));
++	kfree(req);
++
++	trigger_next_adc_job_if_any(pcf);
++}
++
++static int __devinit pcf50606_adc_probe(struct platform_device *pdev)
++{
++	struct pcf50606_adc *adc;
++
++	adc = kzalloc(sizeof(*adc), GFP_KERNEL);
++	if (!adc)
++		return -ENOMEM;
++
++	adc->pcf = dev_to_pcf50606(pdev->dev.parent);
++	platform_set_drvdata(pdev, adc);
++
++	pcf50606_register_irq(adc->pcf, PCF50606_IRQ_ADCRDY,
++					pcf50606_adc_irq, adc);
++
++	mutex_init(&adc->queue_mutex);
++
++	return 0;
++}
++
++static int __devexit pcf50606_adc_remove(struct platform_device *pdev)
++{
++	struct pcf50606_adc *adc = platform_get_drvdata(pdev);
++	int i, head;
++
++	pcf50606_free_irq(adc->pcf, PCF50606_IRQ_ADCRDY);
++
++	mutex_lock(&adc->queue_mutex);
++	head = adc->queue_head;
++
++	if (WARN_ON(adc->queue[head]))
++		dev_err(adc->pcf->dev,
++			"adc driver removed with request pending\n");
++
++	for (i = 0; i < PCF50606_MAX_ADC_FIFO_DEPTH; i++)
++		kfree(adc->queue[i]);
++
++	mutex_unlock(&adc->queue_mutex);
++	kfree(adc);
++
++	return 0;
++}
++
++struct platform_driver pcf50606_adc_driver = {
++	.driver = {
++		.name = "pcf50606-adc",
++	},
++	.probe = pcf50606_adc_probe,
++	.remove = __devexit_p(pcf50606_adc_remove),
++};
++
++static int __init pcf50606_adc_init(void)
++{
++		return platform_driver_register(&pcf50606_adc_driver);
++}
++module_init(pcf50606_adc_init);
++
++static void __exit pcf50606_adc_exit(void)
++{
++		platform_driver_unregister(&pcf50606_adc_driver);
++}
++module_exit(pcf50606_adc_exit);
++
++MODULE_AUTHOR("Balaji Rao <balajirrao@openmoko.org>");
++MODULE_DESCRIPTION("PCF50606 adc driver");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:pcf50606-adc");
++
+diff --git a/drivers/mfd/pcf50606-core.c b/drivers/mfd/pcf50606-core.c
+new file mode 100644
+index 0000000..4f35acb
+--- /dev/null
++++ b/drivers/mfd/pcf50606-core.c
+@@ -0,0 +1,682 @@
++/* Philips PCF50606 Power Management Unit (PMU) driver
++ *
++ * (C) 2006-2008 by Openmoko, Inc.
++ * Author: Harald Welte <laforge@openmoko.org>
++ *	    Matt Hsu <matt@openmoko.org>
++ * All rights reserved.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ */
++#include <linux/kernel.h>
++#include <linux/device.h>
++#include <linux/sysfs.h>
++#include <linux/device.h>
++#include <linux/module.h>
++#include <linux/types.h>
++#include <linux/interrupt.h>
++#include <linux/workqueue.h>
++#include <linux/platform_device.h>
++#include <linux/i2c.h>
++#include <linux/irq.h>
++#include <linux/device.h>
++#include <linux/module.h>
++#include <linux/slab.h>
++
++#include <linux/mfd/pcf50606/core.h>
++
++static int __pcf50606_read(struct pcf50606 *pcf, uint8_t reg, int num, uint8_t *data)
++{
++	int ret;
++
++	ret = i2c_smbus_read_i2c_block_data(pcf->i2c_client, reg,
++				num, data);
++	if (ret < 0)
++		dev_err(pcf->dev, "Error reading %d regs at %d\n", num, reg);
++
++	return ret;
++}
++
++static int __pcf50606_write(struct pcf50606 *pcf, uint8_t reg, int num, uint8_t *data)
++{
++	int ret;
++
++	ret = i2c_smbus_write_i2c_block_data(pcf->i2c_client, reg,
++				num, data);
++	if (ret < 0)
++		dev_err(pcf->dev, "Error writing %d regs at %d\n", num, reg);
++
++	return ret;
++
++}
++
++/* Read a block of upto 32 regs  */
++int pcf50606_read_block(struct pcf50606 *pcf, uint8_t reg,
++					int nr_regs, uint8_t *data)
++{
++	int ret;
++
++	mutex_lock(&pcf->lock);
++	ret = __pcf50606_read(pcf, reg, nr_regs, data);
++	mutex_unlock(&pcf->lock);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(pcf50606_read_block);
++
++/* Write a block of upto 32 regs  */
++int pcf50606_write_block(struct pcf50606 *pcf , uint8_t reg,
++					int nr_regs, uint8_t *data)
++{
++	int ret;
++
++	mutex_lock(&pcf->lock);
++	ret = __pcf50606_write(pcf, reg, nr_regs, data);
++	mutex_unlock(&pcf->lock);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(pcf50606_write_block);
++
++uint8_t pcf50606_reg_read(struct pcf50606 *pcf, uint8_t reg)
++{
++	uint8_t val;
++
++	mutex_lock(&pcf->lock);
++	__pcf50606_read(pcf, reg, 1, &val);
++	mutex_unlock(&pcf->lock);
++
++	return val;
++}
++EXPORT_SYMBOL_GPL(pcf50606_reg_read);
++
++int pcf50606_reg_write(struct pcf50606 *pcf, uint8_t reg, uint8_t val)
++{
++	int ret;
++
++	mutex_lock(&pcf->lock);
++	ret = __pcf50606_write(pcf, reg, 1, &val);
++	mutex_unlock(&pcf->lock);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(pcf50606_reg_write);
++
++int pcf50606_reg_set_bit_mask(struct pcf50606 *pcf, uint8_t reg, uint8_t mask, uint8_t val)
++{
++	int ret;
++	uint8_t tmp;
++
++	val &= mask;
++
++	mutex_lock(&pcf->lock);
++	ret = __pcf50606_read(pcf, reg, 1, &tmp);
++	if (ret < 0)
++		goto out;
++
++	tmp &= ~mask;
++	tmp |= val;
++	ret = __pcf50606_write(pcf, reg, 1, &tmp);
++
++out:
++	mutex_unlock(&pcf->lock);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(pcf50606_reg_set_bit_mask);
++
++int pcf50606_reg_clear_bits(struct pcf50606 *pcf, uint8_t reg, uint8_t val)
++{
++	int ret;
++	uint8_t tmp;
++
++	mutex_lock(&pcf->lock);
++	ret = __pcf50606_read(pcf, reg, 1, &tmp);
++	if (ret < 0)
++		goto out;
++
++	tmp &= ~val;
++	ret = __pcf50606_write(pcf, reg, 1, &tmp);
++
++out:
++	mutex_unlock(&pcf->lock);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(pcf50606_reg_clear_bits);
++
++/* sysfs attributes */
++static ssize_t show_dump_regs(struct device *dev, struct device_attribute *attr,
++				char *buf)
++{
++	struct pcf50606 *pcf = dev_get_drvdata(dev);
++	uint8_t dump[16];
++	int n, n1, idx = 0;
++	char *buf1 = buf;
++	static uint8_t address_no_read[] = { /* must be ascending */
++		PCF50606_REG_INT1,
++		PCF50606_REG_INT2,
++		PCF50606_REG_INT3,
++		0 /* terminator */
++	};
++
++	for (n = 0; n < 256; n += sizeof(dump)) {
++		for (n1 = 0; n1 < sizeof(dump); n1++)
++			if (n == address_no_read[idx]) {
++				idx++;
++				dump[n1] = 0x00;
++			} else
++				dump[n1] = pcf50606_reg_read(pcf, n + n1);
++
++		hex_dump_to_buffer(dump, sizeof(dump), 16, 1, buf1, 128, 0);
++		buf1 += strlen(buf1);
++		*buf1++ = '\n';
++		*buf1 = '\0';
++	}
++
++	return buf1 - buf;
++}
++static DEVICE_ATTR(dump_regs, 0400, show_dump_regs, NULL);
++
++static ssize_t show_resume_reason(struct device *dev,
++				struct device_attribute *attr, char *buf)
++{
++	struct pcf50606 *pcf = dev_get_drvdata(dev);
++	int n;
++
++	n = sprintf(buf, "%02x%02x%02x\n",
++				pcf->resume_reason[0],
++				pcf->resume_reason[1],
++				pcf->resume_reason[2]);
++
++	return n;
++}
++static DEVICE_ATTR(resume_reason, 0400, show_resume_reason, NULL);
++
++static struct attribute *pcf_sysfs_entries[] = {
++	&dev_attr_dump_regs.attr,
++	&dev_attr_resume_reason.attr,
++	NULL,
++};
++
++static struct attribute_group pcf_attr_group = {
++	.name	= NULL,			/* put in device directory */
++	.attrs	= pcf_sysfs_entries,
++};
++
++int pcf50606_register_irq(struct pcf50606 *pcf, int irq,
++			void (*handler) (int, void *), void *data)
++{
++	if (irq < 0 || irq > PCF50606_NUM_IRQ || !handler)
++		return -EINVAL;
++
++	if (WARN_ON(pcf->irq_handler[irq].handler))
++		return -EBUSY;
++
++	mutex_lock(&pcf->lock);
++	pcf->irq_handler[irq].handler = handler;
++	pcf->irq_handler[irq].data = data;
++	mutex_unlock(&pcf->lock);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(pcf50606_register_irq);
++
++int pcf50606_free_irq(struct pcf50606 *pcf, int irq)
++{
++	if (irq < 0 || irq > PCF50606_NUM_IRQ)
++		return -EINVAL;
++
++	mutex_lock(&pcf->lock);
++	pcf->irq_handler[irq].handler = NULL;
++	mutex_unlock(&pcf->lock);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(pcf50606_free_irq);
++
++static int __pcf50606_irq_mask_set(struct pcf50606 *pcf, int irq, uint8_t mask)
++{
++	uint8_t reg, bits, tmp;
++	int ret = 0, idx;
++
++	idx = irq >> 3;
++	reg =  PCF50606_REG_INT1M + idx;
++	bits = 1 << (irq & 0x07);
++
++	mutex_lock(&pcf->lock);
++
++	if (mask) {
++		ret = __pcf50606_read(pcf, reg, 1, &tmp);
++		if (ret < 0)
++			goto out;
++
++		tmp |= bits;
++
++		ret = __pcf50606_write(pcf, reg, 1, &tmp);
++		if (ret < 0)
++			goto out;
++
++		pcf->mask_regs[idx] &= ~bits;
++		pcf->mask_regs[idx] |= bits;
++	} else {
++		ret = __pcf50606_read(pcf, reg, 1, &tmp);
++		if (ret < 0)
++			goto out;
++
++		tmp &= ~bits;
++
++		ret = __pcf50606_write(pcf, reg, 1, &tmp);
++		if (ret < 0)
++			goto out;
++
++		pcf->mask_regs[idx] &= ~bits;
++	}
++out:
++	mutex_unlock(&pcf->lock);
++
++	return ret;
++}
++
++int pcf50606_irq_mask(struct pcf50606 *pcf, int irq)
++{
++	dev_dbg(pcf->dev, "Masking IRQ %d\n", irq);
++
++	return __pcf50606_irq_mask_set(pcf, irq, 1);
++}
++EXPORT_SYMBOL_GPL(pcf50606_irq_mask);
++
++int pcf50606_irq_unmask(struct pcf50606 *pcf, int irq)
++{
++	dev_dbg(pcf->dev, "Unmasking IRQ %d\n", irq);
++
++	return __pcf50606_irq_mask_set(pcf, irq, 0);
++}
++EXPORT_SYMBOL_GPL(pcf50606_irq_unmask);
++
++int pcf50606_irq_mask_get(struct pcf50606 *pcf, int irq)
++{
++	uint8_t reg, bits;
++
++	reg =  (irq / 8);
++	bits = (1 << (irq % 8));
++
++	return pcf->mask_regs[reg] & bits;
++}
++EXPORT_SYMBOL_GPL(pcf50606_irq_mask_get);
++
++static void pcf50606_irq_call_handler(struct pcf50606 *pcf,
++					int irq)
++{
++	if (pcf->irq_handler[irq].handler)
++		pcf->irq_handler[irq].handler(irq, pcf->irq_handler[irq].data);
++}
++
++#define PCF50606_ONKEY1S_TIMEOUT 	8
++
++#define PCF50606_REG_MBCS1		0x2c
++
++static void pcf50606_irq_worker(struct work_struct *work)
++{
++	int ret;
++	struct pcf50606 *pcf;
++	uint8_t pcf_int[3], charger_status;
++	size_t i, j;
++
++	pcf = container_of(work, struct pcf50606, irq_work);
++
++	/* Read the 3 INT regs in one transaction */
++	ret = pcf50606_read_block(pcf, PCF50606_REG_INT1,
++						ARRAY_SIZE(pcf_int), pcf_int);
++	if (ret != ARRAY_SIZE(pcf_int)) {
++		dev_err(pcf->dev, "Error reading INT registers\n");
++
++		/*
++		 * If this doesn't ACK the interrupt to the chip, we'll be
++		 * called once again as we're level triggered.
++		 */
++		goto out;
++	}
++
++	/* We immediately read the charger status. We thus make sure
++	 * only one of CHGINS/CHGRM interrupt handlers are called */
++	if (pcf_int[1] & (PCF50606_INT2_CHGINS | PCF50606_INT2_CHGRM)) {
++		charger_status = pcf50606_reg_read(pcf, PCF50606_REG_MBCS1);
++		if (charger_status & (0x1 << 4))
++			pcf_int[1] &= ~PCF50606_INT2_CHGRM;
++		else
++			pcf_int[1] &= ~PCF50606_INT2_CHGINS;
++	}
++
++	dev_dbg(pcf->dev, "INT1=0x%02x INT2=0x%02x INT3=0x%02x\n",
++				pcf_int[0], pcf_int[1], pcf_int[2]);
++
++	/* Some revisions of the chip don't have a 8s standby mode on
++	 * ONKEY1S press. We try to manually do it in such cases. */
++	if (pcf_int[0] & PCF50606_INT1_SECOND && pcf->onkey1s_held) {
++		dev_info(pcf->dev, "ONKEY1S held for %d secs\n",
++							pcf->onkey1s_held);
++		if (pcf->onkey1s_held++ == PCF50606_ONKEY1S_TIMEOUT)
++			if (pcf->pdata->force_shutdown)
++				pcf->pdata->force_shutdown(pcf);
++	}
++
++	if (pcf_int[0] & PCF50606_INT1_ONKEY1S) {
++		dev_info(pcf->dev, "ONKEY1S held\n");
++		pcf->onkey1s_held = 1 ;
++
++		/* Unmask IRQ_SECOND */
++		pcf50606_reg_clear_bits(pcf, PCF50606_REG_INT1M,
++						PCF50606_INT1_SECOND);
++
++		/* Unmask IRQ_ONKEYF */
++		pcf50606_reg_clear_bits(pcf, PCF50606_REG_INT1M,
++						PCF50606_INT1_ONKEYF);
++	}
++
++	if ((pcf_int[0] & PCF50606_INT1_ONKEYR) && pcf->onkey1s_held) {
++		pcf->onkey1s_held = 0;
++
++		/* Mask SECOND and ONKEYF interrupts */
++		if (pcf->mask_regs[0] & PCF50606_INT1_SECOND)
++			pcf50606_reg_set_bit_mask(pcf,
++					PCF50606_REG_INT1M,
++					PCF50606_INT1_SECOND,
++					PCF50606_INT1_SECOND);
++
++		if (pcf->mask_regs[0] & PCF50606_INT1_ONKEYF)
++			pcf50606_reg_set_bit_mask(pcf,
++					PCF50606_REG_INT1M,
++					PCF50606_INT1_ONKEYF,
++					PCF50606_INT1_ONKEYF);
++	}
++
++	/* Have we just resumed ? */
++	if (pcf->is_suspended) {
++
++		pcf->is_suspended = 0;
++
++		/* Set the resume reason filtering out non resumers */
++		for (i = 0; i < ARRAY_SIZE(pcf_int); i++)
++			pcf->resume_reason[i] = pcf_int[i] &
++						pcf->pdata->resumers[i];
++
++		/* Make sure we don't pass on ONKEY events to
++		 * userspace now */
++		pcf_int[1] &= ~(PCF50606_INT1_ONKEYR | PCF50606_INT1_ONKEYF);
++	}
++
++	for (i = 0; i < ARRAY_SIZE(pcf_int); i++) {
++		/* Unset masked interrupts */
++		pcf_int[i] &= ~pcf->mask_regs[i];
++
++		for (j = 0; j < 8 ; j++)
++			if (pcf_int[i] & (1 << j))
++				pcf50606_irq_call_handler(pcf, (i * 8) + j);
++	}
++
++out:
++	put_device(pcf->dev);
++	enable_irq(pcf->irq);
++}
++
++static irqreturn_t pcf50606_irq(int irq, void *data)
++{
++	struct pcf50606 *pcf = data;
++
++	get_device(pcf->dev);
++	disable_irq_nosync(pcf->irq);
++	schedule_work(&pcf->irq_work);
++
++	return IRQ_HANDLED;
++}
++
++static void
++pcf50606_client_dev_register(struct pcf50606 *pcf, const char *name,
++						struct platform_device **pdev)
++{
++	int ret;
++
++	*pdev = platform_device_alloc(name, -1);
++	if (!*pdev) {
++		dev_err(pcf->dev, "Falied to allocate %s\n", name);
++		return;
++	}
++
++	(*pdev)->dev.parent = pcf->dev;
++
++	ret = platform_device_add(*pdev);
++	if (ret) {
++		dev_err(pcf->dev, "Failed to register %s: %d\n", name, ret);
++		platform_device_put(*pdev);
++		*pdev = NULL;
++	}
++}
++
++#ifdef CONFIG_PM
++static int pcf50606_suspend(struct i2c_client *client, pm_message_t state)
++{
++	int ret;
++	struct pcf50606 *pcf;
++	size_t i;
++	uint8_t res[3];
++
++	pcf = i2c_get_clientdata(client);
++
++	/* Make sure our interrupt handlers are not called
++	 * henceforth */
++	disable_irq(pcf->irq);
++
++	/* Make sure that any running IRQ worker has quit */
++	cancel_work_sync(&pcf->irq_work);
++
++	/* Save the masks */
++	ret = pcf50606_read_block(pcf, PCF50606_REG_INT1M,
++				ARRAY_SIZE(pcf->suspend_irq_masks),
++						pcf->suspend_irq_masks);
++	if (ret < 0) {
++		dev_err(pcf->dev, "error saving irq masks\n");
++		goto out;
++	}
++
++	/* Write wakeup irq masks */
++	for (i = 0; i < ARRAY_SIZE(res); i++)
++		res[i] = ~pcf->pdata->resumers[i];
++
++	ret = pcf50606_write_block(pcf, PCF50606_REG_INT1M,
++					ARRAY_SIZE(res), &res[0]);
++	if (ret < 0) {
++		dev_err(pcf->dev, "error writing wakeup irq masks\n");
++		goto out;
++	}
++
++	pcf->is_suspended = 1;
++
++out:
++	return ret;
++}
++
++static int pcf50606_resume(struct i2c_client *client)
++{
++	struct pcf50606 *pcf;
++	int ret;
++
++	pcf = i2c_get_clientdata(client);
++
++	/* Write the saved mask registers */
++	ret = pcf50606_write_block(pcf, PCF50606_REG_INT1M,
++				ARRAY_SIZE(pcf->suspend_irq_masks),
++					pcf->suspend_irq_masks);
++	if (ret < 0)
++		dev_err(pcf->dev, "Error restoring saved suspend masks\n");
++
++	get_device(pcf->dev);
++
++	/*
++	 * Clear any pending interrupts and set resume reason if any.
++	 * This will leave with enable_irq()
++	 */
++	pcf50606_irq_worker(&pcf->irq_work);
++
++	return 0;
++}
++#else
++#define pcf50606_suspend NULL
++#define pcf50606_resume NULL
++#endif
++
++static int pcf50606_probe(struct i2c_client *client,
++				const struct i2c_device_id *ids)
++{
++	int ret;
++	struct pcf50606 *pcf;
++	struct pcf50606_platform_data *pdata = client->dev.platform_data;
++	int i;
++	uint8_t version, variant;
++
++	if (!client->irq) {
++		dev_err(&client->dev, "Missing IRQ\n");
++		return -ENOENT;
++	}
++
++	pcf = kzalloc(sizeof(*pcf), GFP_KERNEL);
++	if (!pcf)
++		return -ENOMEM;
++
++	pcf->pdata = pdata;
++
++	mutex_init(&pcf->lock);
++
++	i2c_set_clientdata(client, pcf);
++	pcf->dev = &client->dev;
++	pcf->i2c_client = client;
++	pcf->irq = client->irq;
++
++	INIT_WORK(&pcf->irq_work, pcf50606_irq_worker);
++
++	version = pcf50606_reg_read(pcf, 0);
++	variant = pcf50606_reg_read(pcf, 1);
++
++	/* This test is always false, FIX it */
++	if (version < 0 || variant < 0) {
++		dev_err(pcf->dev, "Unable to probe pcf50606\n");
++		ret = -ENODEV;
++		goto err;
++	}
++
++	dev_info(pcf->dev, "Probed device version %d variant %d\n",
++							version, variant);
++	/* Enable all inteerupts except RTC SECOND */
++	pcf->mask_regs[0] = 0x40;
++	pcf50606_reg_write(pcf, PCF50606_REG_INT1M, pcf->mask_regs[0]);
++	pcf50606_reg_write(pcf, PCF50606_REG_INT2M, 0x00);
++	pcf50606_reg_write(pcf, PCF50606_REG_INT3M, 0x00);
++
++	ret = request_irq(client->irq, pcf50606_irq,
++			IRQF_TRIGGER_LOW, "pcf50606", pcf);
++
++	if (ret) {
++		dev_err(pcf->dev, "Failed to request IRQ %d\n", ret);
++		goto err;
++	}
++
++	pcf50606_client_dev_register(pcf, "pcf50606-input",
++						&pcf->input_pdev);
++	pcf50606_client_dev_register(pcf, "pcf50606-rtc",
++						&pcf->rtc_pdev);
++	pcf50606_client_dev_register(pcf, "pcf50606-mbc",
++						&pcf->mbc_pdev);
++	pcf50606_client_dev_register(pcf, "pcf50606-adc",
++						&pcf->adc_pdev);
++	pcf50606_client_dev_register(pcf, "pcf50606-wdt",
++						&pcf->wdt_pdev);
++	for (i = 0; i < PCF50606_NUM_REGULATORS; i++) {
++		struct platform_device *pdev;
++
++		pdev = platform_device_alloc("pcf50606-regltr", i);
++		if (!pdev) {
++			dev_err(pcf->dev, "Cannot create regulator %d\n", i);
++			continue;
++		}
++
++		pdev->dev.parent = pcf->dev;
++		platform_device_add_data(pdev, &pdata->reg_init_data[i],
++					sizeof(pdata->reg_init_data[i]));
++		pcf->regulator_pdev[i] = pdev;
++
++		platform_device_add(pdev);
++	}
++
++	if (enable_irq_wake(client->irq) < 0)
++		dev_info(pcf->dev, "IRQ %u cannot be enabled as wake-up source"
++			"in this hardware revision\n", client->irq);
++
++	ret = sysfs_create_group(&client->dev.kobj, &pcf_attr_group);
++	if (ret)
++		dev_info(pcf->dev, "error creating sysfs entries\n");
++
++	if (pdata->probe_done)
++		pdata->probe_done(pcf);
++
++	return 0;
++
++err:
++	i2c_set_clientdata(client, NULL);
++	kfree(pcf);
++	return ret;
++}
++
++static int pcf50606_remove(struct i2c_client *client)
++{
++	struct pcf50606 *pcf = i2c_get_clientdata(client);
++	unsigned int i;
++
++	free_irq(pcf->irq, pcf);
++
++	platform_device_unregister(pcf->input_pdev);
++	platform_device_unregister(pcf->rtc_pdev);
++	platform_device_unregister(pcf->mbc_pdev);
++	platform_device_unregister(pcf->adc_pdev);
++
++	for (i = 0; i < PCF50606_NUM_REGULATORS; i++)
++		platform_device_unregister(pcf->regulator_pdev[i]);
++
++	i2c_set_clientdata(client, NULL);
++	kfree(pcf);
++
++	return 0;
++}
++
++static struct i2c_device_id pcf50606_id_table[] = {
++	{"pcf50606", 0x08},
++};
++
++static struct i2c_driver pcf50606_driver = {
++	.driver = {
++		.name	= "pcf50606",
++	},
++	.id_table = pcf50606_id_table,
++	.probe = pcf50606_probe,
++	.remove = pcf50606_remove,
++	.suspend = pcf50606_suspend,
++	.resume	= pcf50606_resume,
++};
++
++static int __init pcf50606_init(void)
++{
++	return i2c_add_driver(&pcf50606_driver);
++}
++module_init(pcf50606_init);
++
++static void pcf50606_exit(void)
++{
++	i2c_del_driver(&pcf50606_driver);
++}
++module_exit(pcf50606_exit);
++
++MODULE_DESCRIPTION("I2C chip driver for NXP PCF50606 PMU");
++MODULE_AUTHOR("Harald Welte <laforge@openmoko.org>");
++MODULE_LICENSE("GPL");
 diff --git a/drivers/mfd/pcf50633-adc.c b/drivers/mfd/pcf50633-adc.c
 index fe8f922..bf77c8f 100644
 --- a/drivers/mfd/pcf50633-adc.c
@@ -45508,10 +49631,10 @@ index fa6e9c7..ec4ac09 100644
  		chip->ecc.correct   = s3c2410_nand_correct_data;
  		chip->ecc.mode	    = NAND_ECC_HW;
 diff --git a/drivers/power/Kconfig b/drivers/power/Kconfig
-index faaa9b4..06e65f9 100644
+index faaa9b4..53da5dd 100644
 --- a/drivers/power/Kconfig
 +++ b/drivers/power/Kconfig
-@@ -131,4 +131,22 @@ config CHARGER_PCF50633
+@@ -131,4 +131,27 @@ config CHARGER_PCF50633
  	help
  	 Say Y to include support for NXP PCF50633 Main Battery Charger.
  
@@ -45532,16 +49655,22 @@ index faaa9b4..06e65f9 100644
 +	  Say Y here to include support for battery driver that gets all
 +	  information from platform functions.
 +
- endif # POWER_SUPPLY
++config CHARGER_PCF50606
++	tristate "Support for NXP PCF50606 MBC"
++	depends on MFD_PCF50606
++	help
++	 Say Y to include support for NXP PCF50606 Battery Charger.
 +
+ endif # POWER_SUPPLY
 diff --git a/drivers/power/Makefile b/drivers/power/Makefile
-index a2ba7c8..1a0ecf6 100644
+index a2ba7c8..01d3976 100644
 --- a/drivers/power/Makefile
 +++ b/drivers/power/Makefile
-@@ -32,3 +32,7 @@ obj-$(CONFIG_BATTERY_BQ27x00)	+= bq27x00_battery.o
+@@ -32,3 +32,8 @@ obj-$(CONFIG_BATTERY_BQ27x00)	+= bq27x00_battery.o
  obj-$(CONFIG_BATTERY_DA9030)	+= da9030_battery.o
  obj-$(CONFIG_BATTERY_MAX17040)	+= max17040_battery.o
  obj-$(CONFIG_CHARGER_PCF50633)	+= pcf50633-charger.o
++obj-$(CONFIG_CHARGER_PCF50606)	+= pcf50606-charger.o
 +obj-$(CONFIG_BATTERY_BQ27000_HDQ)	+= bq27000_battery.o
 +obj-$(CONFIG_BATTERY_PLATFORM)	+= platform_battery.o
 +
@@ -46548,6 +50677,273 @@ index 0000000..cea024f
 +
 +MODULE_AUTHOR("Andy Green <andy@openmoko.com>");
 +MODULE_DESCRIPTION("HDQ driver");
+diff --git a/drivers/power/pcf50606-charger.c b/drivers/power/pcf50606-charger.c
+new file mode 100644
+index 0000000..52c0191
+--- /dev/null
++++ b/drivers/power/pcf50606-charger.c
+@@ -0,0 +1,261 @@
++/* NXP PCF50606 Main Battery Charger Driver
++ *
++ * (C) 2006-2008 by Openmoko, Inc.
++ * Author: Balaji Rao <balajirrao@openmoko.org>
++ * All rights reserved.
++ *
++ * Broken down from monstrous PCF50606 driver mainly by
++ * Harald Welte, Andy Green and Werner Almesberger
++ *
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
++ *
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/types.h>
++#include <linux/device.h>
++#include <linux/sysfs.h>
++#include <linux/platform_device.h>
++#include <linux/power_supply.h>
++#include <linux/slab.h>
++
++#include <linux/mfd/pcf50606/core.h>
++#include <linux/mfd/pcf50606/mbc.h>
++
++struct pcf50606_mbc {
++	struct pcf50606 *pcf;
++
++	int charger_online;
++	struct power_supply charger;
++};
++
++int pcf50606_charge_fast(struct pcf50606 *pcf, int on)
++{
++	struct pcf50606_mbc *mbc = platform_get_drvdata(pcf->mbc_pdev);
++
++	/*
++	 * This is a fix to work around boot-time ordering problems if
++	 * the s3c2410_udc is initialized before the pcf50606 mbc is
++	 * ready.
++	 */
++	if (!mbc)
++		return -ENODEV;
++
++	if (on) {
++		pcf50606_reg_set_bit_mask(pcf, PCF50606_REG_MBCC1,
++				 PCF50606_MBCC1_AUTOFST,
++				 PCF50606_MBCC1_AUTOFST);\
++			mbc->charger_online = 1;
++	} else {
++		/* disable automatic fast-charge */
++		pcf50606_reg_clear_bits(pcf, PCF50606_REG_MBCC1,
++					PCF50606_MBCC1_AUTOFST);
++		/* switch to idle mode to abort existing charge process */
++		pcf50606_reg_set_bit_mask(pcf, PCF50606_REG_MBCC1,
++				PCF50606_MBCC1_CHGMOD_MASK,
++				PCF50606_MBCC1_CHGMOD_IDLE);
++			mbc->charger_online = 0;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(pcf50606_charge_fast);
++
++static const char *charge_mode_descs[] = {
++	"qualification",
++	"pre",
++	"trickle",
++	"fast_cccv",
++	"idle",
++};
++
++static ssize_t
++show_charge_mode(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	struct pcf50606_mbc *mbc = dev_get_drvdata(dev);
++	const char **desc = charge_mode_descs;
++
++	uint8_t charge_mode = pcf50606_reg_read(mbc->pcf, PCF50606_REG_MBCC1);
++	charge_mode &= PCF50606_MBCC1_CHGMOD_MASK;
++	switch (charge_mode) {
++	case PCF50606_MBCC1_CHGMOD_IDLE:
++		++desc;
++	case PCF50606_MBCC1_CHGMOD_FAST_CCCV:
++		++desc;
++	case PCF50606_MBCC1_CHGMOD_TRICKLE:
++		++desc;
++	case PCF50606_MBCC1_CHGMOD_PRE:
++		++desc;
++	case PCF50606_MBCC1_CHGMOD_QUAL:
++		return sprintf(buf, "%s\n", *desc);
++		break;
++	default:
++		return sprintf(buf, "unkown: %d\n", charge_mode);
++		break;
++	}
++}
++
++static ssize_t set_charge_mode(struct device *dev, struct device_attribute *attr,
++			   const char *buf, size_t count)
++{
++	struct pcf50606_mbc *mbc = dev_get_drvdata(dev);
++	uint8_t mbcc1 = pcf50606_reg_read(mbc->pcf, PCF50606_REG_MBCC1);
++
++	mbcc1 &= ~PCF50606_MBCC1_CHGMOD_MASK;
++
++	if (!strcmp(buf, "qualification"))
++		mbcc1 |= PCF50606_MBCC1_CHGMOD_QUAL;
++	else if (!strcmp(buf, "pre"))
++		mbcc1 |= PCF50606_MBCC1_CHGMOD_PRE;
++	else if (!strcmp(buf, "trickle"))
++		mbcc1 |= PCF50606_MBCC1_CHGMOD_TRICKLE;
++	else if (!strcmp(buf, "fast_cccv"))
++		mbcc1 |= PCF50606_MBCC1_CHGMOD_FAST_CCCV;
++	/* We don't allow the other fast modes for security reasons */
++	else if (!strcmp(buf, "idle"))
++		mbcc1 |= PCF50606_MBCC1_CHGMOD_IDLE;
++	else
++		return -EINVAL;
++
++	pcf50606_reg_write(mbc->pcf, PCF50606_REG_MBCC1, mbcc1);
++
++	return count;
++}
++
++static DEVICE_ATTR(charge_mode, S_IRUGO | S_IWUSR, show_charge_mode, set_charge_mode);
++
++static void
++pcf50606_mbc_irq_handler(int irq, void *data)
++{
++	struct pcf50606_mbc *mbc = data;
++
++	power_supply_changed(&mbc->charger);
++
++	if (mbc->pcf->pdata->mbc_event_callback)
++		mbc->pcf->pdata->mbc_event_callback(mbc->pcf, irq);
++}
++
++static int charger_get_property(struct power_supply *psy,
++			enum power_supply_property psp,
++			union power_supply_propval *val)
++{
++	struct pcf50606_mbc *mbc = container_of(psy, struct pcf50606_mbc, charger);
++	int ret = 0;
++
++	switch (psp) {
++	case POWER_SUPPLY_PROP_ONLINE:
++		val->intval =  mbc->charger_online;
++		break;
++	default:
++		ret = -EINVAL;
++		break;
++	}
++	return ret;
++}
++
++static enum power_supply_property power_props[] = {
++	POWER_SUPPLY_PROP_ONLINE,
++};
++
++static const uint8_t mbc_irq_handlers[] = {
++	PCF50606_IRQ_CHGINS,
++	PCF50606_IRQ_CHGRM,
++	PCF50606_IRQ_CHGFOK,
++	PCF50606_IRQ_CHGERR,
++	PCF50606_IRQ_CHGFRDY,
++	PCF50606_IRQ_CHGPROT,
++};
++
++static int __devinit pcf50606_mbc_probe(struct platform_device *pdev)
++{
++	struct pcf50606_mbc *mbc;
++	int ret;
++	size_t i;
++	uint8_t oocs;
++
++	mbc = kzalloc(sizeof(*mbc), GFP_KERNEL);
++	if (!mbc)
++		return -ENOMEM;
++
++	mbc->pcf = dev_to_pcf50606(pdev->dev.parent);
++
++	mbc->charger.name		= "charger";
++	mbc->charger.type		= POWER_SUPPLY_TYPE_MAINS;
++	mbc->charger.properties		= power_props;
++	mbc->charger.num_properties	= ARRAY_SIZE(power_props);
++	mbc->charger.get_property	= &charger_get_property;
++	mbc->charger.supplied_to	= mbc->pcf->pdata->batteries;
++	mbc->charger.num_supplicants	= mbc->pcf->pdata->num_batteries;
++
++	ret = power_supply_register(&pdev->dev, &mbc->charger);
++	if (ret) {
++		dev_err(mbc->pcf->dev, "failed to register charger\n");
++		kfree(mbc);
++		return ret;
++	}
++
++	/* Set up IRQ handlers */
++	for (i = 0; i < ARRAY_SIZE(mbc_irq_handlers); i++)
++		pcf50606_register_irq(mbc->pcf, mbc_irq_handlers[i],
++					pcf50606_mbc_irq_handler, mbc);
++
++	ret = sysfs_create_file(&pdev->dev.kobj, &dev_attr_charge_mode.attr);
++	if (ret)
++		dev_err(mbc->pcf->dev, "failed to create sysfs entries\n");
++
++	oocs = pcf50606_reg_read(mbc->pcf, PCF50606_REG_OOCS);
++	if (oocs & PCF50606_OOCS_CHGOK)
++		pcf50606_mbc_irq_handler(PCF50606_IRQ_CHGINS, mbc);
++
++	platform_set_drvdata(pdev, mbc);
++
++	return 0;
++}
++
++static int __devexit pcf50606_mbc_remove(struct platform_device *pdev)
++{
++	struct pcf50606_mbc *mbc = platform_get_drvdata(pdev);
++	size_t i;
++
++	/* Remove IRQ handlers */
++	for (i = 0; i < ARRAY_SIZE(mbc_irq_handlers); i++)
++		pcf50606_free_irq(mbc->pcf, mbc_irq_handlers[i]);
++
++	power_supply_unregister(&mbc->charger);
++
++	platform_set_drvdata(pdev, NULL);
++	kfree(mbc);
++
++	return 0;
++}
++
++static struct platform_driver pcf50606_mbc_driver = {
++	.driver = {
++		.name = "pcf50606-mbc",
++		.owner = THIS_MODULE,
++	},
++	.probe = pcf50606_mbc_probe,
++	.remove = __devexit_p(pcf50606_mbc_remove),
++};
++
++static int __init pcf50606_mbc_init(void)
++{
++	return platform_driver_register(&pcf50606_mbc_driver);
++}
++module_init(pcf50606_mbc_init);
++
++static void __exit pcf50606_mbc_exit(void)
++{
++	platform_driver_unregister(&pcf50606_mbc_driver);
++}
++module_exit(pcf50606_mbc_exit);
++
++MODULE_AUTHOR("Balaji Rao <balajirrao@openmoko.org>");
++MODULE_DESCRIPTION("PCF50606 mbc driver");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:pcf50606-mbc");
 diff --git a/drivers/power/pcf50633-charger.c b/drivers/power/pcf50633-charger.c
 index 066f994..f711485 100644
 --- a/drivers/power/pcf50633-charger.c
@@ -46740,6 +51136,399 @@ index 0000000..a5c9f35
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Paul Fertser <fercerpav@gmail.com>");
 +MODULE_DESCRIPTION("platform battery driver");
+diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
+index 04f2e08..fe57909 100644
+--- a/drivers/regulator/Kconfig
++++ b/drivers/regulator/Kconfig
+@@ -201,5 +201,12 @@ config REGULATOR_88PM8607
+ 	help
+ 	  This driver supports 88PM8607 voltage regulator chips.
+ 
++config REGULATOR_PCF50606
++	bool "PCF50606 regulator driver"
++        depends on MFD_PCF50606
++	help
++	 Say Y here to support the voltage regulators and convertors
++	 on PCF50606
++
+ endif
+ 
+diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
+index 4e7feec..0727ecd 100644
+--- a/drivers/regulator/Makefile
++++ b/drivers/regulator/Makefile
+@@ -23,6 +23,7 @@ obj-$(CONFIG_REGULATOR_WM8350) += wm8350-regulator.o
+ obj-$(CONFIG_REGULATOR_WM8400) += wm8400-regulator.o
+ obj-$(CONFIG_REGULATOR_WM8994) += wm8994-regulator.o
+ obj-$(CONFIG_REGULATOR_DA903X)	+= da903x.o
++obj-$(CONFIG_REGULATOR_PCF50606) += pcf50606-regulator.o
+ obj-$(CONFIG_REGULATOR_PCF50633) += pcf50633-regulator.o
+ obj-$(CONFIG_REGULATOR_PCAP) += pcap-regulator.o
+ obj-$(CONFIG_REGULATOR_MC13783) += mc13783-regulator.o
+diff --git a/drivers/regulator/pcf50606-regulator.c b/drivers/regulator/pcf50606-regulator.c
+new file mode 100644
+index 0000000..ae3193f
+--- /dev/null
++++ b/drivers/regulator/pcf50606-regulator.c
+@@ -0,0 +1,358 @@
++/* NXP PCF50606 PMIC Driver
++ *
++ * (C) 2006-2008 by Openmoko, Inc.
++ * Author: Balaji Rao <balajirrao@openmoko.org>
++ * All rights reserved.
++ *
++ * Broken down from monstrous PCF50606 driver mainly by
++ * Harald Welte and Andy Green and Werner Almesberger
++ *
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
++ *
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/device.h>
++#include <linux/err.h>
++#include <linux/platform_device.h>
++
++#include <linux/mfd/pcf50606/core.h>
++#include <linux/mfd/pcf50606/pmic.h>
++
++#define PCF50606_REGULATOR(_name, _id) 		\
++	{					\
++		.name = _name, 			\
++		.id = _id,			\
++		.ops = &pcf50606_regulator_ops,	\
++		.type = REGULATOR_VOLTAGE, 	\
++		.owner = THIS_MODULE, 		\
++	}
++
++static const uint8_t pcf50606_regulator_registers[PCF50606_NUM_REGULATORS] = {
++	[PCF50606_REGULATOR_DCD]	= PCF50606_REG_DCDC1,
++	[PCF50606_REGULATOR_DCDE]	= PCF50606_REG_DCDEC1,
++	[PCF50606_REGULATOR_DCUD]	= PCF50606_REG_DCUDC1,
++	[PCF50606_REGULATOR_D1REG]	= PCF50606_REG_D1REGC1,
++	[PCF50606_REGULATOR_D2REG]	= PCF50606_REG_D2REGC1,
++	[PCF50606_REGULATOR_D3REG]	= PCF50606_REG_D3REGC1,
++	[PCF50606_REGULATOR_LPREG]	= PCF50606_REG_LPREGC1,
++	[PCF50606_REGULATOR_IOREG]	= PCF50606_REG_IOREGC,
++};
++
++static uint8_t dcudc_voltage(unsigned int millivolts)
++{
++	if (millivolts <= 900)
++		return 0;
++	else if (millivolts <= 3300)
++		return (millivolts - 900) / 300;
++	else if (millivolts < 4000)
++		return 0x0f;
++	else if (millivolts <= 5500)
++		return (millivolts - 4000) / 100;
++
++	return 0x1f;
++}
++
++static unsigned int dcudc_2voltage(uint8_t bits)
++{
++	bits &= 0x1f;
++	if (bits < 0x08)
++		return 900 + bits * 300;
++	else if (bits < 0x10)
++		return 3300;
++	else
++		return 4000 + (bits & 0xf) * 100;
++}
++
++static uint8_t dcdec_voltage(unsigned int millivolts)
++{
++	if (millivolts < 900)
++		return 0;
++	else if (millivolts > 3300)
++		return 0x0f;
++
++	return (millivolts - 900) / 300;
++}
++
++static unsigned int dcdec_2voltage(uint8_t bits)
++{
++	bits &= 0x0f;
++	return 900 + bits * 300;
++}
++
++static uint8_t dcdc_voltage(unsigned int millivolts)
++{
++	if (millivolts < 900)
++		return 0;
++	else if (millivolts > 3600)
++		return 0x1f;
++
++	if (millivolts < 1500)
++		return (millivolts - 900) / 25;
++	else
++		return 0x18 + (millivolts - 1500) / 300;
++}
++
++static unsigned int dcdc_2voltage(uint8_t bits)
++{
++	bits &= 0x1f;
++	if ((bits & 0x18) == 0x18)
++		return 1500 + ((bits & 0x7) * 300);
++	else
++		return 900 + (bits * 25);
++}
++
++static uint8_t dx_voltage(unsigned int millivolts)
++{
++	if (millivolts < 900)
++		return 0;
++	else if (millivolts > 3300)
++		return 0x18;
++
++	return (millivolts - 900) / 100;
++}
++
++static unsigned int dx_2voltage(uint8_t bits)
++{
++	bits &= 0x1f;
++	return 900 + (bits * 100);
++}
++
++static int pcf50606_regulator_set_voltage(struct regulator_dev *rdev,
++						int min_uV, int max_uV)
++{
++	struct pcf50606 *pcf;
++	int regulator_id, millivolts;
++	uint8_t volt_bits, regnr;
++
++	pcf = rdev_get_drvdata(rdev);
++
++	regulator_id = rdev_get_id(rdev);
++
++	millivolts = min_uV / 1000;
++
++	switch (regulator_id) {
++	case PCF50606_REGULATOR_DCD:
++		volt_bits = dcdc_voltage(millivolts);
++		regnr = PCF50606_REG_DCDC1;
++		break;
++	case PCF50606_REGULATOR_DCDE:
++		volt_bits = dcdec_voltage(millivolts);
++		regnr = PCF50606_REG_DCDEC1;
++		break;
++	case PCF50606_REGULATOR_DCUD:
++		volt_bits = dcudc_voltage(millivolts);
++		regnr = PCF50606_REG_DCUDC1;
++		break;
++	case PCF50606_REGULATOR_D1REG:
++	case PCF50606_REGULATOR_D2REG:
++	case PCF50606_REGULATOR_D3REG:
++		regnr = PCF50606_REG_D1REGC1 +
++				(regulator_id - PCF50606_REGULATOR_D1REG);
++		volt_bits = dx_voltage(millivolts);
++		break;
++	case PCF50606_REGULATOR_LPREG:
++		volt_bits = dx_voltage(millivolts);
++		regnr = PCF50606_REG_LPREGC1;
++		break;
++	case PCF50606_REGULATOR_IOREG:
++		if (millivolts < 1800)
++			return -EINVAL;
++		volt_bits = dx_voltage(millivolts);
++		regnr = PCF50606_REG_IOREGC;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return pcf50606_reg_set_bit_mask(pcf, regnr, 0x1f, volt_bits);
++}
++
++static int pcf50606_regulator_get_voltage(struct regulator_dev *rdev)
++{
++	struct pcf50606 *pcf;
++	uint8_t volt_bits, regnr;
++	int regulator_id;
++	int voltage;
++
++	pcf = rdev_get_drvdata(rdev);
++
++	regulator_id = rdev_get_id(rdev);
++
++	switch (regulator_id) {
++	case PCF50606_REGULATOR_DCD:
++		volt_bits = pcf50606_reg_read(pcf, PCF50606_REG_DCDC1) & 0x1f;
++		voltage = dcdc_2voltage(volt_bits);
++		break;
++	case PCF50606_REGULATOR_DCDE:
++		volt_bits = pcf50606_reg_read(pcf, PCF50606_REG_DCDEC1) & 0x0f;
++		voltage = dcdec_2voltage(volt_bits);
++		break;
++	case PCF50606_REGULATOR_DCUD:
++		volt_bits = pcf50606_reg_read(pcf, PCF50606_REG_DCUDC1) & 0x1f;
++		voltage = dcudc_2voltage(volt_bits);
++		break;
++	case PCF50606_REGULATOR_D1REG:
++	case PCF50606_REGULATOR_D2REG:
++	case PCF50606_REGULATOR_D3REG:
++		regnr = PCF50606_REG_D1REGC1 + (regulator_id - PCF50606_REGULATOR_D1REG);
++		volt_bits = pcf50606_reg_read(pcf, regnr) & 0x1f;
++		if (volt_bits > 0x18)
++			volt_bits = 0x18;
++		voltage = dx_2voltage(volt_bits);
++		break;
++	case PCF50606_REGULATOR_LPREG:
++		volt_bits = pcf50606_reg_read(pcf, PCF50606_REG_LPREGC1) & 0x1f;
++		if (volt_bits > 0x18)
++			volt_bits = 0x18;
++		voltage = dx_2voltage(volt_bits);
++		break;
++	case PCF50606_REGULATOR_IOREG:
++		volt_bits = pcf50606_reg_read(pcf, PCF50606_REG_IOREGC) & 0x1f;
++		if (volt_bits > 0x18)
++			volt_bits = 0x18;
++		voltage = dx_2voltage(volt_bits);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return voltage * 1000;
++}
++
++static int pcf50606_regulator_enable(struct regulator_dev *rdev)
++{
++	struct pcf50606 *pcf = rdev_get_drvdata(rdev);
++	int regulator_id;
++	uint8_t regnr;
++
++	regulator_id = rdev_get_id(rdev);
++
++	regnr = pcf50606_regulator_registers[regulator_id];
++
++	return pcf50606_reg_set_bit_mask(pcf, regnr, 0xe0, 0xe0);
++}
++
++static int pcf50606_regulator_disable(struct regulator_dev *rdev)
++{
++	struct pcf50606 *pcf = rdev_get_drvdata(rdev);
++	int regulator_id;
++	uint8_t regnr;
++
++	regulator_id = rdev_get_id(rdev);
++
++	/* IOREG cannot be powered off since it powers the PMU I2C */
++	if (regulator_id == PCF50606_REGULATOR_IOREG)
++		return -EINVAL;
++
++	regnr = pcf50606_regulator_registers[regulator_id];
++
++	return pcf50606_reg_set_bit_mask(pcf, regnr, 0xe0, 0);
++}
++
++static int pcf50606_regulator_is_enabled(struct regulator_dev *rdev)
++{
++	struct pcf50606 *pcf = rdev_get_drvdata(rdev);
++	int regulator_id = rdev_get_id(rdev);
++	uint8_t regnr, val;
++
++	regulator_id = rdev_get_id(rdev);
++
++	/* the *ENA register is always one after the *OUT register */
++	regnr = pcf50606_regulator_registers[regulator_id];
++	val = (pcf50606_reg_read(pcf, regnr) & 0xe0) >> 5;
++
++	/* PWREN1 = 1, PWREN2 = 1, see table 16 of datasheet */
++	if (val == 0 || val == 5)
++		return 0;
++
++	return 1;
++}
++
++static struct regulator_ops pcf50606_regulator_ops = {
++	.set_voltage = pcf50606_regulator_set_voltage,
++	.get_voltage = pcf50606_regulator_get_voltage,
++	.enable = pcf50606_regulator_enable,
++	.disable = pcf50606_regulator_disable,
++	.is_enabled = pcf50606_regulator_is_enabled,
++};
++
++static struct regulator_desc regulators[] = {
++	[PCF50606_REGULATOR_DCD] =
++		PCF50606_REGULATOR("dcd", PCF50606_REGULATOR_DCD),
++	[PCF50606_REGULATOR_DCDE] =
++		PCF50606_REGULATOR("dcde", PCF50606_REGULATOR_DCDE),
++	[PCF50606_REGULATOR_DCUD] =
++		PCF50606_REGULATOR("dcud", PCF50606_REGULATOR_DCUD),
++	[PCF50606_REGULATOR_D1REG] =
++		PCF50606_REGULATOR("d1reg", PCF50606_REGULATOR_D1REG),
++	[PCF50606_REGULATOR_D2REG] =
++		PCF50606_REGULATOR("d2reg", PCF50606_REGULATOR_D2REG),
++	[PCF50606_REGULATOR_D3REG] =
++		PCF50606_REGULATOR("d3reg", PCF50606_REGULATOR_D3REG),
++	[PCF50606_REGULATOR_LPREG] =
++		PCF50606_REGULATOR("lpreg", PCF50606_REGULATOR_LPREG),
++	[PCF50606_REGULATOR_IOREG] =
++		PCF50606_REGULATOR("ioreg", PCF50606_REGULATOR_IOREG),
++};
++
++static int __devinit pcf50606_regulator_probe(struct platform_device *pdev)
++{
++	struct regulator_dev *rdev;
++	struct pcf50606 *pcf;
++
++	pcf = dev_to_pcf50606(pdev->dev.parent);
++
++	rdev = regulator_register(&regulators[pdev->id], &pdev->dev,
++					pdev->dev.platform_data, pcf);
++	if (IS_ERR(rdev))
++		return PTR_ERR(rdev);
++
++	platform_set_drvdata(pdev, rdev);
++
++	if (pcf->pdata->regulator_registered)
++		pcf->pdata->regulator_registered(pcf, pdev->id);
++
++	return 0;
++}
++
++static int __devexit pcf50606_regulator_remove(struct platform_device *pdev)
++{
++	struct regulator_dev *rdev = platform_get_drvdata(pdev);
++
++	platform_set_drvdata(pdev, NULL);
++	regulator_unregister(rdev);
++
++	return 0;
++}
++
++static struct platform_driver pcf50606_regulator_driver = {
++	.driver = {
++		.name = "pcf50606-regltr",
++		.owner = THIS_MODULE,
++	},
++	.probe = pcf50606_regulator_probe,
++	.remove = __devexit_p(pcf50606_regulator_remove),
++};
++
++static int __init pcf50606_regulator_init(void)
++{
++	return platform_driver_register(&pcf50606_regulator_driver);
++}
++module_init(pcf50606_regulator_init);
++
++static void __exit pcf50606_regulator_exit(void)
++{
++	platform_driver_unregister(&pcf50606_regulator_driver);
++}
++module_exit(pcf50606_regulator_exit);
++
++MODULE_AUTHOR("Balaji Rao <balajirrao@openmoko.org>");
++MODULE_DESCRIPTION("PCF50606 regulator driver");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:pcf50606-regulator");
 diff --git a/drivers/regulator/pcf50633-regulator.c b/drivers/regulator/pcf50633-regulator.c
 index c8f41dc..6ef66d9 100644
 --- a/drivers/regulator/pcf50633-regulator.c
@@ -46757,6 +51546,384 @@ index c8f41dc..6ef66d9 100644
  	if (IS_ERR(rdev))
  		return PTR_ERR(rdev);
  
+diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
+index 6a13037..1bd28bb 100644
+--- a/drivers/rtc/Kconfig
++++ b/drivers/rtc/Kconfig
+@@ -618,6 +618,13 @@ config RTC_DRV_NUC900
+ 	  If you say yes here you get support for the RTC subsystem of the
+ 	  NUC910/NUC920 used in embedded systems.
+ 
++config RTC_DRV_PCF50606
++	depends on MFD_PCF50606
++	tristate "NXP PCF50606 RTC"
++	help
++	  If you say yes here you get support for the RTC subsystem of the
++	  NXP PCF50606 used in embedded systems.
++
+ comment "on-CPU RTC drivers"
+ 
+ config RTC_DRV_OMAP
+diff --git a/drivers/rtc/Makefile b/drivers/rtc/Makefile
+index 44ef194..02a0fe4 100644
+--- a/drivers/rtc/Makefile
++++ b/drivers/rtc/Makefile
+@@ -64,6 +64,7 @@ obj-$(CONFIG_RTC_DRV_PCAP)	+= rtc-pcap.o
+ obj-$(CONFIG_RTC_DRV_PCF8563)	+= rtc-pcf8563.o
+ obj-$(CONFIG_RTC_DRV_PCF8583)	+= rtc-pcf8583.o
+ obj-$(CONFIG_RTC_DRV_PCF2123)	+= rtc-pcf2123.o
++obj-$(CONFIG_RTC_DRV_PCF50606)	+= rtc-pcf50606.o
+ obj-$(CONFIG_RTC_DRV_PCF50633)	+= rtc-pcf50633.o
+ obj-$(CONFIG_RTC_DRV_PL030)	+= rtc-pl030.o
+ obj-$(CONFIG_RTC_DRV_PL031)	+= rtc-pl031.o
+diff --git a/drivers/rtc/rtc-pcf50606.c b/drivers/rtc/rtc-pcf50606.c
+new file mode 100644
+index 0000000..5501615
+--- /dev/null
++++ b/drivers/rtc/rtc-pcf50606.c
+@@ -0,0 +1,342 @@
++/* NXP PCF50606 RTC Driver
++ *
++ * (C) 2006-2008 by Openmoko, Inc.
++ * Author: Balaji Rao <balajirrao@openmoko.org>
++ * All rights reserved.
++ *
++ * Broken down from monstrous PCF50606 driver mainly by
++ * Harald Welte, Andy Green and Werner Almesberger
++ *
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
++ *
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/device.h>
++#include <linux/platform_device.h>
++#include <linux/rtc.h>
++#include <linux/bcd.h>
++#include <linux/err.h>
++#include <linux/slab.h>
++
++#include <linux/mfd/pcf50606/core.h>
++
++#define PCF50606_REG_RTCSC	0x0a /* Second */
++#define PCF50606_REG_RTCMN	0x0b /* Minute */
++#define PCF50606_REG_RTCHR	0x0c /* Hour */
++#define PCF50606_REG_RTCWD	0x0d /* Weekday */
++#define PCF50606_REG_RTCDT	0x0e /* Day */
++#define PCF50606_REG_RTCMT	0x0f /* Month */
++#define PCF50606_REG_RTCYR	0x10 /* Year */
++#define PCF50606_REG_RTCSCA	0x11 /* Alarm Second */
++#define PCF50606_REG_RTCMNA	0x12 /* Alarm Minute */
++#define PCF50606_REG_RTCHRA	0x13 /* Alarm Hour */
++#define PCF50606_REG_RTCWDA	0x14 /* Alarm Weekday */
++#define PCF50606_REG_RTCDTA	0x15 /* Alarm Day */
++#define PCF50606_REG_RTCMTA	0x16 /* Alarm Month */
++#define PCF50606_REG_RTCYRA	0x17 /* Alarm Year */
++
++enum pcf50606_time_indexes {
++	PCF50606_TI_SEC,
++	PCF50606_TI_MIN,
++	PCF50606_TI_HOUR,
++	PCF50606_TI_WKDAY,
++	PCF50606_TI_DAY,
++	PCF50606_TI_MONTH,
++	PCF50606_TI_YEAR,
++	PCF50606_TI_EXTENT /* always last */
++};
++
++struct pcf50606_time {
++	uint8_t time[PCF50606_TI_EXTENT];
++};
++
++struct pcf50606_rtc {
++	int alarm_enabled;
++	int second_enabled;
++	int alarm_pending;
++
++	struct pcf50606 *pcf;
++	struct rtc_device *rtc_dev;
++};
++
++static void pcf2rtc_time(struct rtc_time *rtc, struct pcf50606_time *pcf)
++{
++	rtc->tm_sec = bcd2bin(pcf->time[PCF50606_TI_SEC]);
++	rtc->tm_min = bcd2bin(pcf->time[PCF50606_TI_MIN]);
++	rtc->tm_hour = bcd2bin(pcf->time[PCF50606_TI_HOUR]);
++	rtc->tm_wday = bcd2bin(pcf->time[PCF50606_TI_WKDAY]);
++	rtc->tm_mday = bcd2bin(pcf->time[PCF50606_TI_DAY]);
++	rtc->tm_mon = bcd2bin(pcf->time[PCF50606_TI_MONTH]) - 1;
++	rtc->tm_year = bcd2bin(pcf->time[PCF50606_TI_YEAR]) + 100;
++}
++
++static void rtc2pcf_time(struct pcf50606_time *pcf, struct rtc_time *rtc)
++{
++	pcf->time[PCF50606_TI_SEC] = bin2bcd(rtc->tm_sec);
++	pcf->time[PCF50606_TI_MIN] = bin2bcd(rtc->tm_min);
++	pcf->time[PCF50606_TI_HOUR] = bin2bcd(rtc->tm_hour);
++	pcf->time[PCF50606_TI_WKDAY] = bin2bcd(rtc->tm_wday);
++	pcf->time[PCF50606_TI_DAY] = bin2bcd(rtc->tm_mday);
++	pcf->time[PCF50606_TI_MONTH] = bin2bcd(rtc->tm_mon + 1);
++	pcf->time[PCF50606_TI_YEAR] = bin2bcd(rtc->tm_year % 100);
++}
++
++static int
++pcf50606_rtc_ioctl(struct device *dev, unsigned int cmd, unsigned long arg)
++{
++	struct pcf50606_rtc *rtc = dev_get_drvdata(dev);
++
++	switch (cmd) {
++	case RTC_AIE_OFF:
++		rtc->alarm_enabled = 0;
++		pcf50606_irq_mask(rtc->pcf, PCF50606_IRQ_ALARM);
++		return 0;
++	case RTC_AIE_ON:
++		rtc->alarm_enabled = 1;
++		pcf50606_irq_unmask(rtc->pcf, PCF50606_IRQ_ALARM);
++		return 0;
++	case RTC_UIE_OFF:
++		rtc->second_enabled = 0;
++		pcf50606_irq_mask(rtc->pcf, PCF50606_IRQ_SECOND);
++		return 0;
++	case RTC_UIE_ON:
++		rtc->second_enabled = 1;
++		pcf50606_irq_unmask(rtc->pcf, PCF50606_IRQ_SECOND);
++		return 0;
++	}
++
++	return -ENOIOCTLCMD;
++}
++
++static int pcf50606_rtc_read_time(struct device *dev, struct rtc_time *tm)
++{
++	struct pcf50606_rtc *rtc;
++	struct pcf50606_time pcf_tm;
++	int ret;
++
++	rtc = dev_get_drvdata(dev);
++
++	ret = pcf50606_read_block(rtc->pcf, PCF50606_REG_RTCSC,
++					    PCF50606_TI_EXTENT,
++					    &pcf_tm.time[0]);
++	if (ret != PCF50606_TI_EXTENT) {
++		dev_err(dev, "Failed to read time\n");
++		return -EIO;
++	}
++
++	dev_dbg(dev, "PCF_TIME: %02x.%02x.%02x %02x:%02x:%02x\n",
++		pcf_tm.time[PCF50606_TI_DAY],
++		pcf_tm.time[PCF50606_TI_MONTH],
++		pcf_tm.time[PCF50606_TI_YEAR],
++		pcf_tm.time[PCF50606_TI_HOUR],
++		pcf_tm.time[PCF50606_TI_MIN],
++		pcf_tm.time[PCF50606_TI_SEC]);
++
++	pcf2rtc_time(tm, &pcf_tm);
++
++	dev_dbg(dev, "RTC_TIME: %u.%u.%u %u:%u:%u\n",
++		tm->tm_mday, tm->tm_mon, tm->tm_year,
++		tm->tm_hour, tm->tm_min, tm->tm_sec);
++
++	return rtc_valid_tm(tm);
++}
++
++static int pcf50606_rtc_set_time(struct device *dev, struct rtc_time *tm)
++{
++	struct pcf50606_rtc *rtc;
++	struct pcf50606_time pcf_tm;
++	int second_masked, alarm_masked, ret = 0;
++
++	rtc = dev_get_drvdata(dev);
++
++	dev_dbg(dev, "RTC_TIME: %u.%u.%u %u:%u:%u\n",
++		tm->tm_mday, tm->tm_mon, tm->tm_year,
++		tm->tm_hour, tm->tm_min, tm->tm_sec);
++
++	rtc2pcf_time(&pcf_tm, tm);
++
++	dev_dbg(dev, "PCF_TIME: %02x.%02x.%02x %02x:%02x:%02x\n",
++		pcf_tm.time[PCF50606_TI_DAY],
++		pcf_tm.time[PCF50606_TI_MONTH],
++		pcf_tm.time[PCF50606_TI_YEAR],
++		pcf_tm.time[PCF50606_TI_HOUR],
++		pcf_tm.time[PCF50606_TI_MIN],
++		pcf_tm.time[PCF50606_TI_SEC]);
++
++
++	second_masked = pcf50606_irq_mask_get(rtc->pcf, PCF50606_IRQ_SECOND);
++	alarm_masked = pcf50606_irq_mask_get(rtc->pcf, PCF50606_IRQ_ALARM);
++
++	if (!second_masked)
++		pcf50606_irq_mask(rtc->pcf, PCF50606_IRQ_SECOND);
++	if (!alarm_masked)
++		pcf50606_irq_mask(rtc->pcf, PCF50606_IRQ_ALARM);
++
++	/* Returns 0 on success */
++	ret = pcf50606_write_block(rtc->pcf, PCF50606_REG_RTCSC,
++					     PCF50606_TI_EXTENT,
++					     &pcf_tm.time[0]);
++
++	if (!second_masked)
++		pcf50606_irq_unmask(rtc->pcf, PCF50606_IRQ_SECOND);
++	if (!alarm_masked)
++		pcf50606_irq_unmask(rtc->pcf, PCF50606_IRQ_ALARM);
++
++	return ret;
++}
++
++static int pcf50606_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alrm)
++{
++	struct pcf50606_rtc *rtc;
++	struct pcf50606_time pcf_tm;
++	int ret = 0;
++
++	rtc = dev_get_drvdata(dev);
++
++	alrm->enabled = rtc->alarm_enabled;
++	alrm->pending = rtc->alarm_pending;
++
++	ret = pcf50606_read_block(rtc->pcf, PCF50606_REG_RTCSCA,
++				PCF50606_TI_EXTENT, &pcf_tm.time[0]);
++	if (ret != PCF50606_TI_EXTENT) {
++		dev_err(dev, "Failed to read time\n");
++		return -EIO;
++	}
++
++	pcf2rtc_time(&alrm->time, &pcf_tm);
++
++	return rtc_valid_tm(&alrm->time);
++}
++
++static int pcf50606_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alrm)
++{
++	struct pcf50606_rtc *rtc;
++	struct pcf50606_time pcf_tm;
++	int alarm_masked, ret = 0;
++
++	rtc = dev_get_drvdata(dev);
++
++	rtc2pcf_time(&pcf_tm, &alrm->time);
++
++	/* do like mktime does and ignore tm_wday */
++	pcf_tm.time[PCF50606_TI_WKDAY] = 7;
++
++	alarm_masked = pcf50606_irq_mask_get(rtc->pcf, PCF50606_IRQ_ALARM);
++
++	/* disable alarm interrupt */
++	if (!alarm_masked)
++		pcf50606_irq_mask(rtc->pcf, PCF50606_IRQ_ALARM);
++
++	/* Returns 0 on success */
++	ret = pcf50606_write_block(rtc->pcf, PCF50606_REG_RTCSCA,
++				PCF50606_TI_EXTENT, &pcf_tm.time[0]);
++
++	if (!alrm->enabled)
++		rtc->alarm_pending = 0;
++
++	if (!alarm_masked || alrm->enabled)
++		pcf50606_irq_unmask(rtc->pcf, PCF50606_IRQ_ALARM);
++	rtc->alarm_enabled = alrm->enabled;
++
++	return ret;
++}
++
++static struct rtc_class_ops pcf50606_rtc_ops = {
++	.ioctl		= pcf50606_rtc_ioctl,
++	.read_time	= pcf50606_rtc_read_time,
++	.set_time	= pcf50606_rtc_set_time,
++	.read_alarm	= pcf50606_rtc_read_alarm,
++	.set_alarm	= pcf50606_rtc_set_alarm,
++};
++
++static void pcf50606_rtc_irq(int irq, void *data)
++{
++	struct pcf50606_rtc *rtc = data;
++
++	switch (irq) {
++	case PCF50606_IRQ_ALARM:
++		rtc_update_irq(rtc->rtc_dev, 1, RTC_AF | RTC_IRQF);
++		rtc->alarm_pending = 1;
++		break;
++	case PCF50606_IRQ_SECOND:
++		rtc_update_irq(rtc->rtc_dev, 1, RTC_UF | RTC_IRQF);
++		break;
++	}
++}
++
++static int __devinit pcf50606_rtc_probe(struct platform_device *pdev)
++{
++	struct pcf50606_rtc *rtc;
++
++	rtc = kzalloc(sizeof(*rtc), GFP_KERNEL);
++	if (!rtc)
++		return -ENOMEM;
++
++	rtc->pcf = dev_to_pcf50606(pdev->dev.parent);
++	platform_set_drvdata(pdev, rtc);
++	rtc->rtc_dev = rtc_device_register("pcf50606-rtc", &pdev->dev,
++				&pcf50606_rtc_ops, THIS_MODULE);
++
++	if (IS_ERR(rtc->rtc_dev)) {
++		kfree(rtc);
++		return PTR_ERR(rtc->rtc_dev);
++	}
++
++	pcf50606_register_irq(rtc->pcf, PCF50606_IRQ_ALARM,
++					pcf50606_rtc_irq, rtc);
++	pcf50606_register_irq(rtc->pcf, PCF50606_IRQ_SECOND,
++					pcf50606_rtc_irq, rtc);
++
++	return 0;
++}
++
++
++static int __devexit pcf50606_rtc_remove(struct platform_device *pdev)
++{
++	struct pcf50606_rtc *rtc;
++
++	rtc = platform_get_drvdata(pdev);
++
++	rtc_device_unregister(rtc->rtc_dev);
++
++	pcf50606_free_irq(rtc->pcf, PCF50606_IRQ_ALARM);
++	pcf50606_free_irq(rtc->pcf, PCF50606_IRQ_SECOND);
++
++	platform_set_drvdata(pdev, NULL);
++	kfree(rtc);
++
++	return 0;
++}
++
++
++static struct platform_driver pcf50606_rtc_driver = {
++	.driver = {
++		.name = "pcf50606-rtc",
++		.owner = THIS_MODULE,
++	},
++	.probe = pcf50606_rtc_probe,
++	.remove = __devexit_p(pcf50606_rtc_remove),
++};
++
++static int __init pcf50606_rtc_init(void)
++{
++	return platform_driver_register(&pcf50606_rtc_driver);
++}
++module_init(pcf50606_rtc_init);
++
++static void __exit pcf50606_rtc_exit(void)
++{
++	platform_driver_unregister(&pcf50606_rtc_driver);
++}
++module_exit(pcf50606_rtc_exit);
++
++MODULE_DESCRIPTION("PCF50606 RTC driver");
++MODULE_AUTHOR("Balaji Rao <balajirrao@openmoko.org>");
++MODULE_LICENSE("GPL");
++
 diff --git a/drivers/serial/samsung.c b/drivers/serial/samsung.c
 index a9d6c56..f7b80ae 100644
 --- a/drivers/serial/samsung.c
@@ -48961,6 +54128,280 @@ index 0000000..3f8ec8d
 +MODULE_DESCRIPTION("Smedia Glamo 336x/337x framebuffer driver");
 +MODULE_LICENSE("GPL");
 +MODULE_ALIAS("platform:glamo-fb");
+diff --git a/drivers/video/s3c2410fb.c b/drivers/video/s3c2410fb.c
+index 2b094de..33a83b7 100644
+--- a/drivers/video/s3c2410fb.c
++++ b/drivers/video/s3c2410fb.c
+@@ -631,7 +631,7 @@ static struct fb_ops s3c2410fb_ops = {
+  *	cache.  Once this area is remapped, all virtual memory
+  *	access to the video memory should occur at the new region.
+  */
+-static int __init s3c2410fb_map_video_memory(struct fb_info *info)
++static int __devinit s3c2410fb_map_video_memory(struct fb_info *info)
+ {
+ 	struct s3c2410fb_info *fbi = info->par;
+ 	dma_addr_t map_dma;
+@@ -814,7 +814,7 @@ static inline void s3c2410fb_cpufreq_deregister(struct s3c2410fb_info *info)
+ 
+ static char driver_name[] = "s3c2410fb";
+ 
+-static int __init s3c24xxfb_probe(struct platform_device *pdev,
++static int __devinit s3c24xxfb_probe(struct platform_device *pdev,
+ 				  enum s3c_drv_type drv_type)
+ {
+ 	struct s3c2410fb_info *info;
+diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+index b87ba23..0ee6f41 100644
+--- a/drivers/watchdog/Kconfig
++++ b/drivers/watchdog/Kconfig
+@@ -161,6 +161,13 @@ config S3C2410_WATCHDOG
+ 	  The driver can be built as a module by choosing M, and will
+ 	  be called s3c2410_wdt
+ 
++config PCF50606_WATCHDOG
++	depends on MFD_PCF50606
++	tristate "Philips PCF50606 watchdog"
++	help
++	  If you say yes here you get support for the Philips PCF50606
++	  PMU's watchdog.
++
+ config SA1100_WATCHDOG
+ 	tristate "SA1100/PXA2xx watchdog"
+ 	depends on ARCH_SA1100 || ARCH_PXA
+diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
+index 5e3cb95..ae75364 100644
+--- a/drivers/watchdog/Makefile
++++ b/drivers/watchdog/Makefile
+@@ -35,6 +35,7 @@ obj-$(CONFIG_IXP2000_WATCHDOG) += ixp2000_wdt.o
+ obj-$(CONFIG_IXP4XX_WATCHDOG) += ixp4xx_wdt.o
+ obj-$(CONFIG_KS8695_WATCHDOG) += ks8695_wdt.o
+ obj-$(CONFIG_S3C2410_WATCHDOG) += s3c2410_wdt.o
++obj-$(CONFIG_PCF50606_WATCHDOG) += pcf50606_wdt.o
+ obj-$(CONFIG_SA1100_WATCHDOG) += sa1100_wdt.o
+ obj-$(CONFIG_MPCORE_WATCHDOG) += mpcore_wdt.o
+ obj-$(CONFIG_EP93XX_WATCHDOG) += ep93xx_wdt.o
+diff --git a/drivers/watchdog/pcf50606_wdt.c b/drivers/watchdog/pcf50606_wdt.c
+new file mode 100644
+index 0000000..6a53c66
+--- /dev/null
++++ b/drivers/watchdog/pcf50606_wdt.c
+@@ -0,0 +1,216 @@
++/* Philips PCF50606 Watchdog Timer Driver
++ *
++ * (C) 2006-2008 by Openmoko, Inc.
++ * Author: Balaji Rao <balajirrao@openmoko.org>
++ * All rights reserved.
++ *
++ * Broken down from monstrous PCF50606 driver mainly by
++ * Harald Welte, Matt Hsu, Andy Green and Werner Almesberger
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/device.h>
++#include <linux/rtc.h>
++#include <linux/bcd.h>
++#include <linux/err.h>
++#include <linux/miscdevice.h>
++#include <linux/watchdog.h>
++#include <linux/platform_device.h>
++
++#include <linux/mfd/pcf50606/core.h>
++
++static struct pcf50606 *pcf = NULL;
++static unsigned long wdt_status;
++
++#define WDT_IN_USE        0
++#define WDT_OK_TO_CLOSE   1
++#define WDT_REGION_INITED 2
++#define WDT_DEVICE_INITED 3
++
++static int allow_close;
++#define CLOSE_STATE_NOT		0x0000
++#define CLOSE_STATE_ALLOW	0x2342
++
++#define PCF50606_REG_OOCC1 	0x08
++#define PCF50606_REG_OOCS 	0x01
++
++#define PCF50606_OOCS_WDTEXP 	0x80
++#define PCF50606_OOCC1_WDTRST 	0x08
++
++static void pcf50606_wdt_start(void)
++{
++	pcf50606_reg_set_bit_mask(pcf, PCF50606_REG_OOCC1, PCF50606_OOCC1_WDTRST,
++			 PCF50606_OOCC1_WDTRST);
++}
++
++static void pcf50606_wdt_stop(void)
++{
++	pcf50606_reg_clear_bits(pcf, PCF50606_REG_OOCS, PCF50606_OOCS_WDTEXP);
++}
++
++static void pcf50606_wdt_keepalive(void)
++{
++	pcf50606_wdt_start();
++}
++
++static int pcf50606_wdt_open(struct inode *inode, struct file *file)
++{
++	if (test_and_set_bit(WDT_IN_USE, &wdt_status))
++		return -EBUSY;
++
++	pcf50606_wdt_start();
++
++	return nonseekable_open(inode, file);
++}
++
++static int pcf50606_wdt_release(struct inode *inode, struct file *file)
++{
++	if (allow_close == CLOSE_STATE_ALLOW)
++		pcf50606_wdt_stop();
++	else {
++		printk(KERN_CRIT "Unexpected close, not stopping watchdog!\n");
++		pcf50606_wdt_keepalive();
++	}
++
++	allow_close = CLOSE_STATE_NOT;
++	clear_bit(WDT_IN_USE, &wdt_status);
++
++	return 0;
++}
++
++static ssize_t pcf50606_wdt_write(struct file *file, const char __user *data,
++				  size_t len, loff_t *ppos)
++{
++	if (len) {
++		size_t i;
++
++		for (i = 0; i != len; i++) {
++			char c;
++			if (get_user(c, data + i))
++				return -EFAULT;
++			if (c == 'V')
++				allow_close = CLOSE_STATE_ALLOW;
++		}
++		pcf50606_wdt_keepalive();
++	}
++
++	return len;
++}
++
++static struct watchdog_info pcf50606_wdt_ident = {
++	.options	= WDIOF_MAGICCLOSE,
++	.firmware_version = 0,
++	.identity	= "PCF50606 Watchdog",
++};
++
++static int pcf50606_wdt_ioctl(struct inode *inode, struct file *file,
++			      unsigned int cmd, unsigned long arg)
++{
++	void __user *argp = (void __user *)arg;
++	int __user *p = argp;
++
++	switch (cmd) {
++	case WDIOC_GETSUPPORT:
++		return copy_to_user(argp, &pcf50606_wdt_ident,
++				    sizeof(pcf50606_wdt_ident)) ? -EFAULT : 0;
++		break;
++	case WDIOC_GETSTATUS:
++	case WDIOC_GETBOOTSTATUS:
++		return put_user(0, p);
++	case WDIOC_KEEPALIVE:
++		pcf50606_wdt_keepalive();
++		return 0;
++	case WDIOC_GETTIMEOUT:
++		return put_user(8, p);
++	default:
++		return -ENOIOCTLCMD;
++	}
++}
++
++static struct file_operations pcf50606_wdt_fops = {
++	.owner		= THIS_MODULE,
++	.llseek		= no_llseek,
++	.write		= &pcf50606_wdt_write,
++	.ioctl		= &pcf50606_wdt_ioctl,
++	.open		= &pcf50606_wdt_open,
++	.release	= &pcf50606_wdt_release,
++};
++
++static struct miscdevice pcf50606_wdt_miscdev = {
++	.minor		= WATCHDOG_MINOR,
++	.name		= "watchdog",
++	.fops		= &pcf50606_wdt_fops,
++};
++
++static void pcf50606_wdt_irq(int irq, void *unused)
++{
++	pcf50606_reg_set_bit_mask(pcf, PCF50606_REG_OOCC1,
++				 PCF50606_OOCC1_WDTRST,
++				 PCF50606_OOCC1_WDTRST);
++}
++
++int __init pcf50606_wdt_probe(struct platform_device *pdev)
++{
++	int err;
++
++	if (pcf) {
++		dev_err(pcf->dev, "Only one instance of WDT supported\n");
++		return -ENODEV;
++	}
++
++	pcf = dev_to_pcf50606(pdev->dev.parent);
++
++	err = misc_register(&pcf50606_wdt_miscdev);
++	if (err) {
++		dev_err(&pdev->dev, "cannot register miscdev on "
++		       "minor=%d (%d)\n", WATCHDOG_MINOR, err);
++		return err;
++	}
++	set_bit(WDT_DEVICE_INITED, &wdt_status);
++
++	pcf50606_register_irq(pcf, PCF50606_IRQ_CHGWD10S, pcf50606_wdt_irq, NULL);
++
++	return 0;
++}
++
++static int __devexit pcf50606_wdt_remove(struct platform_device *pdev)
++{
++	pcf50606_free_irq(pcf, PCF50606_IRQ_CHGWD10S);
++	misc_deregister(&pcf50606_wdt_miscdev);
++	pcf = NULL;
++
++	return 0;
++}
++
++struct platform_driver pcf50606_wdt_driver = {
++	.driver = {
++		.name = "pcf50606-wdt",
++	},
++	.probe = pcf50606_wdt_probe,
++	.remove = __devexit_p(pcf50606_wdt_remove),
++};
++
++static int __init pcf50606_wdt_init(void)
++{
++		return platform_driver_register(&pcf50606_wdt_driver);
++}
++module_init(pcf50606_wdt_init);
++
++static void __exit pcf50606_wdt_exit(void)
++{
++		platform_driver_unregister(&pcf50606_wdt_driver);
++}
++module_exit(pcf50606_wdt_exit);
++
++MODULE_AUTHOR("Balaji Rao <balajirrao@openmoko.org>");
++MODULE_DESCRIPTION("PCF50606 wdt driver");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:pcf50606-wdt");
++
 diff --git a/include/linux/bq27000_battery.h b/include/linux/bq27000_battery.h
 new file mode 100644
 index 0000000..a617466
@@ -48984,7 +54425,7 @@ index 0000000..a617466
 +
 +#endif
 diff --git a/include/linux/fb.h b/include/linux/fb.h
-index c10163b..71f714a 100644
+index 94af940..25a79ef 100644
 --- a/include/linux/fb.h
 +++ b/include/linux/fb.h
 @@ -134,6 +134,7 @@ struct dentry;
@@ -49878,6 +55319,399 @@ index 0000000..ae52f3d
 +};
 +
 +#endif
+diff --git a/include/linux/mfd/pcf50606/adc.h b/include/linux/mfd/pcf50606/adc.h
+new file mode 100644
+index 0000000..fd48403
+--- /dev/null
++++ b/include/linux/mfd/pcf50606/adc.h
+@@ -0,0 +1,72 @@
++/*
++ * adc.h  -- Driver for NXP PCF50606 ADC
++ *
++ * (C) 2006-2008 by Openmoko, Inc.
++ * All rights reserved.
++ *
++ * This program is free software; you can redistribute  it and/or modify it
++ * under  the terms of  the GNU General  Public License as published by the
++ * Free Software Foundation;  either version 2 of the  License, or (at your
++ * option) any later version.
++ */
++
++#ifndef __LINUX_MFD_PCF50606_ADC_H
++#define __LINUX_MFD_PCF50606_ADC_H
++
++#include <linux/mfd/pcf50633/core.h>
++#include <linux/platform_device.h>
++
++/* ADC Registers */
++#define PCF50606_REG_ADCC1 0x2e
++#define PCF50606_REG_ADCC2 0x2f
++#define PCF50606_REG_ADCS1 0x30
++#define PCF50606_REG_ADCS2 0x31
++#define PCF50606_REG_ADCS3 0x32
++
++#define PCF50606_ADCC1_TSCMODACT	 0x01
++#define PCF50606_ADCC1_TSCMODSTB	 0x02
++#define PCF50606_ADCC1_TRATSET		 0x04
++#define PCF50606_ADCC1_NTCSWAPE		 0x08
++#define PCF50606_ADCC1_NTCSWAOFF	 0x10
++#define PCF50606_ADCC1_EXTSYNCBREAK	 0x20
++	/* reserved */
++#define PCF50606_ADCC1_TSCINT		 0x80
++
++#define PCF50606_ADCC2_ADCSTART		 0x01
++	/* see enum pcf50606_adcc2_adcmux */
++#define PCF50606_ADCC2_SYNC_NONE	 0x00
++#define PCF50606_ADCC2_SYNC_TXON	 0x20
++#define PCF50606_ADCC2_SYNC_PWREN1	 0x40
++#define PCF50606_ADCC2_SYNC_PWREN2	 0x60
++#define PCF50606_ADCC2_RES_10BIT	 0x00
++#define PCF50606_ADCC2_RES_8BIT		 0x80
++
++#define PCF50606_ADCC2_ADCMUX_MASK	(0xf << 1)
++
++#define ADCMUX_SHIFT	1
++#define PCF50606_ADCMUX_BATVOLT_RES	 (0x0 << ADCMUX_SHIFT)
++#define PCF50606_ADCMUX_BATVOLT_SUBTR	 (0x1 << ADCMUX_SHIFT)
++#define PCF50606_ADCMUX_ADCIN1_RES	 (0x2 << ADCMUX_SHIFT)
++#define PCF50606_ADCMUX_ADCIN1_SUBTR	 (0x3 << ADCMUX_SHIFT)
++#define PCF50606_ADCMUX_BATTEMP		 (0x4 << ADCMUX_SHIFT)
++#define PCF50606_ADCMUX_ADCIN2		 (0x5 << ADCMUX_SHIFT)
++#define PCF50606_ADCMUX_ADCIN3		 (0x6 << ADCMUX_SHIFT)
++#define PCF50606_ADCMUX_ADCIN3_RATIO	 (0x7 << ADCMUX_SHIFT)
++#define PCF50606_ADCMUX_XPOS		 (0x8 << ADCMUX_SHIFT)
++#define PCF50606_ADCMUX_YPOS		 (0x9 << ADCMUX_SHIFT)
++#define PCF50606_ADCMUX_P1		 (0xa << ADCMUX_SHIFT)
++#define PCF50606_ADCMUX_P2		 (0xb << ADCMUX_SHIFT)
++#define PCF50606_ADCMUX_BATVOLT_ADCIN1	 (0xc << ADCMUX_SHIFT)
++#define PCF50606_ADCMUX_XY_SEQUENCE	 (0xe << ADCMUX_SHIFT)
++#define PCF50606_P1_P2_RESISTANCE	 (0xf << ADCMUX_SHIFT)
++
++#define PCF50606_ADCS2_ADCRDY		 0x80
++
++extern int
++pcf50606_adc_async_read(struct pcf50606 *pcf, int mux,
++		void (*callback)(struct pcf50606 *, void *, int),
++		void *callback_param);
++extern int
++pcf50606_adc_sync_read(struct pcf50606 *pcf, int mux);
++
++#endif /* __LINUX_PCF50606_ADC_H */
+diff --git a/include/linux/mfd/pcf50606/core.h b/include/linux/mfd/pcf50606/core.h
+new file mode 100644
+index 0000000..e036e07
+--- /dev/null
++++ b/include/linux/mfd/pcf50606/core.h
+@@ -0,0 +1,172 @@
++/*
++ * core.h  -- Core driver for NXP PCF50606
++ *
++ * (C) 2006-2008 by Openmoko, Inc.
++ * All rights reserved.
++ *
++ * This program is free software; you can redistribute  it and/or modify it
++ * under  the terms of  the GNU General  Public License as published by the
++ * Free Software Foundation;  either version 2 of the  License, or (at your
++ * option) any later version.
++ */
++
++#ifndef __LINUX_MFD_PCF50606_CORE_H
++#define __LINUX_MFD_PCF50606_CORE_H
++
++#include <linux/i2c.h>
++#include <linux/workqueue.h>
++#include <linux/regulator/driver.h>
++#include <linux/regulator/machine.h>
++#include <linux/power_supply.h>
++
++struct pcf50606;
++
++#define PCF50606_NUM_REGULATORS	8
++
++struct pcf50606_platform_data {
++	struct regulator_init_data reg_init_data[PCF50606_NUM_REGULATORS];
++
++	char **batteries;
++	int num_batteries;
++
++	/* Callbacks */
++	void (*probe_done)(struct pcf50606 *);
++	void (*mbc_event_callback)(struct pcf50606 *, int);
++	void (*regulator_registered)(struct pcf50606 *, int);
++	void (*force_shutdown)(struct pcf50606 *);
++
++	u8 resumers[3];
++};
++
++struct pcf50606_irq {
++	void (*handler)(int, void *);
++	void *data;
++};
++
++int pcf50606_register_irq(struct pcf50606 *pcf, int irq,
++			void (*handler) (int, void *), void *data);
++int pcf50606_free_irq(struct pcf50606 *pcf, int irq);
++
++int pcf50606_irq_mask(struct pcf50606 *pcf, int irq);
++int pcf50606_irq_unmask(struct pcf50606 *pcf, int irq);
++int pcf50606_irq_mask_get(struct pcf50606 *pcf, int irq);
++
++int pcf50606_read_block(struct pcf50606 *, u8 reg,
++					int nr_regs, u8 *data);
++int pcf50606_write_block(struct pcf50606 *pcf, u8 reg,
++					int nr_regs, u8 *data);
++u8 pcf50606_reg_read(struct pcf50606 *, u8 reg);
++int pcf50606_reg_write(struct pcf50606 *pcf, u8 reg, u8 val);
++
++int pcf50606_reg_set_bit_mask(struct pcf50606 *pcf, u8 reg, u8 mask, u8 val);
++int pcf50606_reg_clear_bits(struct pcf50606 *pcf, u8 reg, u8 bits);
++
++/* Interrupt registers */
++
++#define PCF50606_REG_INT1	0x02
++#define	PCF50606_REG_INT2	0x03
++#define	PCF50606_REG_INT3	0x04
++
++#define PCF50606_REG_INT1M	0x05
++#define	PCF50606_REG_INT2M	0x06
++#define	PCF50606_REG_INT3M	0x07
++
++enum {
++	/* Chip IRQs */
++	PCF50606_IRQ_ONKEYR,
++	PCF50606_IRQ_ONKEYF,
++	PCF50606_IRQ_ONKEY1S,
++	PCF50606_IRQ_EXTONR,
++	PCF50606_IRQ_EXTONF,
++	PCF50606_IRQ_RESERVED_1,
++	PCF50606_IRQ_SECOND,
++	PCF50606_IRQ_ALARM,
++	PCF50606_IRQ_CHGINS,
++	PCF50606_IRQ_CHGRM,
++	PCF50606_IRQ_CHGFOK,
++	PCF50606_IRQ_CHGERR,
++	PCF50606_IRQ_CHGFRDY,
++	PCF50606_IRQ_CHGPROT,
++	PCF50606_IRQ_CHGWD10S,
++	PCF50606_IRQ_CHGWDEXP,
++	PCF50606_IRQ_ADCRDY,
++	PCF50606_IRQ_ACDINS,
++	PCF50606_IRQ_ACDREM,
++	PCF50606_IRQ_TSCPRES,
++	PCF50606_IRQ_RESERVED_2,
++	PCF50606_IRQ_RESERVED_3,
++	PCF50606_IRQ_LOWBAT,
++	PCF50606_IRQ_HIGHTMP,
++
++	/* Always last */
++	PCF50606_NUM_IRQ,
++};
++
++struct pcf50606 {
++	struct device *dev;
++	struct i2c_client *i2c_client;
++
++	struct pcf50606_platform_data *pdata;
++	int irq;
++	struct pcf50606_irq irq_handler[PCF50606_NUM_IRQ];
++	struct work_struct irq_work;
++	struct mutex lock;
++
++	u8 mask_regs[3];
++
++	u8 suspend_irq_masks[3];
++	u8 resume_reason[3];
++	int is_suspended;
++
++	int onkey1s_held;
++
++	struct platform_device *rtc_pdev;
++	struct platform_device *mbc_pdev;
++	struct platform_device *adc_pdev;
++	struct platform_device *input_pdev;
++	struct platform_device *wdt_pdev;
++	struct platform_device *regulator_pdev[PCF50606_NUM_REGULATORS];
++};
++
++enum pcf50606_reg_int1 {
++	PCF50606_INT1_ONKEYR	= 0x01,	/* ONKEY rising edge */
++	PCF50606_INT1_ONKEYF	= 0x02,	/* ONKEY falling edge */
++	PCF50606_INT1_ONKEY1S	= 0x04,	/* OMKEY at least 1sec low */
++	PCF50606_INT1_EXTONR	= 0x08,	/* EXTON rising edge */
++	PCF50606_INT1_EXTONF	= 0x10,	/* EXTON falling edge */
++	PCF50606_INT1_SECOND	= 0x40,	/* RTC periodic second interrupt */
++	PCF50606_INT1_ALARM	= 0x80, /* RTC alarm time is reached */
++};
++
++enum pcf50606_reg_int2 {
++	PCF50606_INT2_CHGINS	= 0x01, /* Charger inserted */
++	PCF50606_INT2_CHGRM	= 0x02, /* Charger removed */
++	PCF50606_INT2_CHGFOK	= 0x04,	/* Fast charging OK */
++	PCF50606_INT2_CHGERR	= 0x08,	/* Error in charging mode */
++	PCF50606_INT2_CHGFRDY	= 0x10,	/* Fast charge completed */
++	PCF50606_INT2_CHGPROT	= 0x20,	/* Charging protection interrupt */
++	PCF50606_INT2_CHGWD10S	= 0x40,	/* Charger watchdig expires in 10s */
++	PCF50606_INT2_CHGWDEXP	= 0x80,	/* Charger watchdog expires */
++};
++
++enum pcf50606_reg_int3 {
++	PCF50606_INT3_ADCRDY	= 0x01,	/* ADC conversion finished */
++	PCF50606_INT3_ACDINS	= 0x02,	/* Accessory inserted */
++	PCF50606_INT3_ACDREM	= 0x04, /* Accessory removed */
++	PCF50606_INT3_TSCPRES	= 0x08,	/* Touch screen pressed */
++	PCF50606_INT3_LOWBAT	= 0x40,	/* Low battery voltage */
++	PCF50606_INT3_HIGHTMP	= 0x80, /* High temperature */
++};
++
++/* Misc regs */
++
++#define PCF50606_REG_OOCC1 	0x08
++#define PCF50606_OOCC1_GOSTDBY	0x01
++
++static inline struct pcf50606 *dev_to_pcf50606(struct device *dev)
++{
++	return dev_get_drvdata(dev);
++}
++
++#endif
++
+diff --git a/include/linux/mfd/pcf50606/mbc.h b/include/linux/mfd/pcf50606/mbc.h
+new file mode 100644
+index 0000000..23aeb9e
+--- /dev/null
++++ b/include/linux/mfd/pcf50606/mbc.h
+@@ -0,0 +1,52 @@
++/*
++ * mbc.h  -- Driver for NXP PCF50606 Main Battery Charger
++ *
++ * (C) 2006-2008 by Openmoko, Inc.
++ * All rights reserved.
++ *
++ * This program is free software; you can redistribute  it and/or modify it
++ * under  the terms of  the GNU General  Public License as published by the
++ * Free Software Foundation;  either version 2 of the  License, or (at your
++ * option) any later version.
++ */
++
++#ifndef __LINUX_MFD_PCF50606_MBC_H
++#define __LINUX_MFD_PCF50606_MBC_H
++
++#include <linux/mfd/pcf50606/core.h>
++#include <linux/platform_device.h>
++
++#define PCF50606_REG_OOCS	0x01
++
++/* Charger OK */
++#define PCF50606_OOCS_CHGOK	0x20
++
++#define PCF50606_REG_MBCC1	0x29
++#define PCF50606_REG_MBCC2	0x2a
++#define PCF50606_REG_MBCC3	0x2b
++#define PCF50606_REG_MBCS1	0x2c
++
++#define PCF50606_MBCC1_CHGAPE		0x01
++#define PCF50606_MBCC1_AUTOFST		0x02
++#define PCF50606_MBCC1_CHGMOD_MASK	0x1c
++#define PCF50606_MBCC1_CHGMOD_QUAL	0x00
++#define PCF50606_MBCC1_CHGMOD_PRE	0x04
++#define PCF50606_MBCC1_CHGMOD_TRICKLE	0x08
++#define PCF50606_MBCC1_CHGMOD_FAST_CCCV	0x0c
++#define PCF50606_MBCC1_CHGMOD_FAST_NOCC	0x10
++#define PCF50606_MBCC1_CHGMOD_FAST_NOCV	0x14
++#define PCF50606_MBCC1_CHGMOD_FAST_SW	0x18
++#define PCF50606_MBCC1_CHGMOD_IDLE	0x1c
++#define PCF50606_MBCC1_DETMOD_LOWCHG	0x20
++#define PCF50606_MBCC1_DETMOD_WDRST	0x40
++
++#define PCF50606_MBCC1_CHGMOD_SHIFT	2
++
++/* Charger status */
++#define PCF50606_MBC_CHARGER_ONLINE	0x01
++#define PCF50606_MBC_CHARGER_ACTIVE	0x02
++
++int pcf50606_charge_fast(struct pcf50606 *pcf, int on);
++
++#endif
++
+diff --git a/include/linux/mfd/pcf50606/pmic.h b/include/linux/mfd/pcf50606/pmic.h
+new file mode 100644
+index 0000000..1bcfe39
+--- /dev/null
++++ b/include/linux/mfd/pcf50606/pmic.h
+@@ -0,0 +1,73 @@
++#ifndef __LINUX_MFD_PCF50606_PMIC_H
++#define __LINUX_MFD_PCF50606_PMIC_H
++
++#define PCF50606_REG_DCDC1	 0x1b
++#define PCF50606_REG_DCDC2	 0x1c
++#define PCF50606_REG_DCDC3	 0x1d
++#define PCF50606_REG_DCDC4	 0x1e
++#define PCF50606_REG_DCDEC1	 0x1f
++#define PCF50606_REG_DCDEC2	 0x20
++#define PCF50606_REG_DCUDC1	 0x21
++#define PCF50606_REG_DCUDC2	 0x22
++#define PCF50606_REG_IOREGC	 0x23
++#define PCF50606_REG_D1REGC1	 0x24
++#define PCF50606_REG_D2REGC1	 0x25
++#define PCF50606_REG_D3REGC1	 0x26
++#define PCF50606_REG_LPREGC1	 0x27
++#define PCF50606_REG_LPREGC2	 0x28
++
++/* used by PSSC, PWROKM, PWROKS, */
++enum pcf50606_regu {
++	PCF50606_REGU_DCD	= 0x01,	/* DCD in phase 2 */
++	PCF50606_REGU_DCDE	= 0x02,	/* DCDE in phase 2 */
++	PCF50606_REGU_DCUD	= 0x04,	/* DCDU in phase 2 */
++	PCF50606_REGU_IO	= 0x08,	/* IO in phase 2 */
++	PCF50606_REGU_D1	= 0x10, /* D1 in phase 2 */
++	PCF50606_REGU_D2	= 0x20,	/* D2 in phase 2 */
++	PCF50606_REGU_D3	= 0x40,	/* D3 in phase 2 */
++	PCF50606_REGU_LP	= 0x80,	/* LP in phase 2 */
++};
++
++enum pcf50606_reg_dcdc4 {
++	PCF50606_DCDC4_MODE_AUTO	= 0x00,
++	PCF50606_DCDC4_MODE_PWM		= 0x01,
++	PCF50606_DCDC4_MODE_PCF		= 0x02,
++	PCF50606_DCDC4_OFF_FLOAT	= 0x00,
++	PCF50606_DCDC4_OFF_BYPASS	= 0x04,
++	PCF50606_DCDC4_OFF_PULLDOWN	= 0x08,
++	PCF50606_DCDC4_CURLIM_500mA	= 0x00,
++	PCF50606_DCDC4_CURLIM_750mA	= 0x10,
++	PCF50606_DCDC4_CURLIM_1000mA	= 0x20,
++	PCF50606_DCDC4_CURLIM_1250mA	= 0x30,
++	PCF50606_DCDC4_TOGGLE		= 0x40,
++	PCF50606_DCDC4_REGSEL_DCDC2	= 0x80,
++};
++
++enum pcf50606_reg_dcdec2 {
++	PCF50606_DCDEC2_MODE_AUTO	= 0x00,
++	PCF50606_DCDEC2_MODE_PWM	= 0x01,
++	PCF50606_DCDEC2_MODE_PCF	= 0x02,
++	PCF50606_DCDEC2_OFF_FLOAT	= 0x00,
++	PCF50606_DCDEC2_OFF_BYPASS	= 0x04,
++};
++
++enum pcf50606_reg_dcudc2 {
++	PCF50606_DCUDC2_MODE_AUTO	= 0x00,
++	PCF50606_DCUDC2_MODE_PWM	= 0x01,
++	PCF50606_DCUDC2_MODE_PCF	= 0x02,
++	PCF50606_DCUDC2_OFF_FLOAT	= 0x00,
++	PCF50606_DCUDC2_OFF_BYPASS	= 0x04,
++};
++
++enum pcf50606_regulator_id {
++	PCF50606_REGULATOR_DCD,
++	PCF50606_REGULATOR_DCDE,
++	PCF50606_REGULATOR_DCUD,
++	PCF50606_REGULATOR_D1REG,
++	PCF50606_REGULATOR_D2REG,
++	PCF50606_REGULATOR_D3REG,
++	PCF50606_REGULATOR_LPREG,
++	PCF50606_REGULATOR_IOREG,
++};
++
++#endif
 diff --git a/include/linux/mfd/pcf50633/backlight.h b/include/linux/mfd/pcf50633/backlight.h
 new file mode 100644
 index 0000000..9d3646a
@@ -50086,12 +55920,32 @@ index 1743d56..36678f7 100644
  config SND_SOC_MAX9877
  	tristate
  
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index dd5ce6d..5134c2e 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -56,6 +56,7 @@ snd-soc-wm9713-objs := wm9713.o
+ snd-soc-wm-hubs-objs := wm_hubs.o
+ 
+ # Amp
++snd-soc-lm4857-objs := lm4857.o
+ snd-soc-max9877-objs := max9877.o
+ snd-soc-tpa6130a2-objs := tpa6130a2.o
+ snd-soc-wm2000-objs := wm2000.o
+@@ -118,6 +119,7 @@ obj-$(CONFIG_SND_SOC_WM9713)	+= snd-soc-wm9713.o
+ obj-$(CONFIG_SND_SOC_WM_HUBS)	+= snd-soc-wm-hubs.o
+ 
+ # Amp
++obj-$(CONFIG_SND_SOC_LM4857)	+= snd-soc-lm4857.o
+ obj-$(CONFIG_SND_SOC_MAX9877)	+= snd-soc-max9877.o
+ obj-$(CONFIG_SND_SOC_TPA6130A2)	+= snd-soc-tpa6130a2.o
+ obj-$(CONFIG_SND_SOC_WM2000)	+= snd-soc-wm2000.o
 diff --git a/sound/soc/codecs/lm4857.c b/sound/soc/codecs/lm4857.c
 new file mode 100644
-index 0000000..3143797
+index 0000000..48dbf88
 --- /dev/null
 +++ b/sound/soc/codecs/lm4857.c
-@@ -0,0 +1,224 @@
+@@ -0,0 +1,225 @@
 +/*
 + * LM4857 AMP driver
 + *
@@ -50112,6 +55966,7 @@ index 0000000..3143797
 +#include <sound/core.h>
 +#include <sound/soc.h>
 +#include <sound/soc-dapm.h>
++#include <sound/tlv.h>
 +
 +#include "lm4857.h"
 +
@@ -50129,7 +55984,7 @@ index 0000000..3143797
 +		return;
 +
 +	if (i2c_master_send(lm4857.i2c, lm4857.regs, 4) != 4)
-+		dev_err(&lm4857_i2c->dev, "lm4857: i2c write failed\n");
++		dev_err(&lm4857.i2c->dev, "lm4857: i2c write failed\n");
 +}
 +
 +static int lm4857_get_reg(struct snd_kcontrol *kcontrol,
@@ -50233,9 +56088,9 @@ index 0000000..3143797
 +int lm4857_add_controls(struct snd_soc_codec *codec)
 +{
 +	return snd_soc_add_controls(codec, lm4857_controls,
-+				ARRAY_SIZE(lm5857_controls));
++				ARRAY_SIZE(lm4857_controls));
 +}
-+EXPORT_GPL(lm4857_add_controlls);
++EXPORT_SYMBOL_GPL(lm4857_add_controls);
 +
 +static int __devinit lm4857_probe(struct i2c_client *client,
 +	const struct i2c_device_id *id)
@@ -50253,7 +56108,7 @@ index 0000000..3143797
 +
 +static void lm4857_shutdown(struct i2c_client *client)
 +{
-+	lm4857_regs[LM4857_CTRL] &= 0xf0;
++	lm4857.regs[LM4857_CTRL] &= 0xf0;
 +	lm4857_write_regs();
 +}
 +
@@ -50261,7 +56116,7 @@ index 0000000..3143797
 +
 +static int lm4857_suspend(struct i2c_client *client, pm_message_t state)
 +{
-+	lm4857.state = lm4857_regs[LM4857_CTRL] & 0xf;
++	lm4857.state = lm4857.regs[LM4857_CTRL] & 0xf;
 +
 +	if (lm4857.state)
 +		lm4857_shutdown(client);
@@ -50272,7 +56127,7 @@ index 0000000..3143797
 +static int lm4857_resume(struct i2c_client *dev)
 +{
 +	if (lm4857.state) {
-+		lm4857_regs[LM4857_CTRL] |= (lm4857.state & 0x0f);
++		lm4857.regs[LM4857_CTRL] |= (lm4857.state & 0x0f);
 +		lm4857_write_regs();
 +	}
 +	return 0;
