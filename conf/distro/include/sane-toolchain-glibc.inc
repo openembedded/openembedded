@@ -13,6 +13,9 @@ FULL_OPTIMIZATION_pn-perl = "-fexpensive-optimizations -fomit-frame-pointer -fre
 FULL_OPTIMIZATION_pn-glibc = "-fexpensive-optimizations -fomit-frame-pointer -O2"
 FULL_OPTIMIZATION_sparc = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2"
 
+# gcc 4.4 and 4.5 has a problem with 'leakage' into libgcc.a with -Os
+FULL_OPTIMIZATION_powerpc = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2"
+
 BUILD_OPTIMIZATION_pn-perl = "-O1"
 BUILD_OPTIMIZATION_pn-glibc = "-O2"
 BUILD_OPTIMIZATION_sparc = "-O2"

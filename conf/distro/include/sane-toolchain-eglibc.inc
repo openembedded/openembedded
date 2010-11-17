@@ -9,6 +9,9 @@ FULL_OPTIMIZATION_pn-eglibc_arm = "-fexpensive-optimizations -fomit-frame-pointe
 FULL_OPTIMIZATION_pn-perl = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O1"
 FULL_OPTIMIZATION_sparc = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2"
 
+# gcc 4.4 and 4.5 has a problem with 'leakage' into libgcc.a with -Os
+FULL_OPTIMIZATION_powerpc = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2"
+
 # JaMa: I promise to report bug upstream, but as it can take a while to fix it, I'll switch to -O2 here
 # Tested with gcc-4.4.2 and gcc-4.4.3 on armv4t and armv5te and it fails with -Os, with gcc-4.3.3 it works OK with -Os
 # Here is testcase, but you have to rebuild whole libqtxml to test it
