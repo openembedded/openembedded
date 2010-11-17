@@ -8,8 +8,8 @@ RDEPENDS_${PN} = "mytharchive mythbrowser mythgallery mythgame mythmovies  \
 RRECOMMENDS_${PN} = "mythweb-lighttpd"
 
 # the apache variant does not work yet, too many issues with apache+php+mysql"
-DEPENDS_mythweb-apache = "mythweb"
-RDEPENDS_mythweb-apache = "apache2"
+#DEPENDS_mythweb-apache = "mythweb"
+#RDEPENDS_mythweb-apache = "apache2"
 
 DEPENDS_mythweb-lighttpd = "mythweb"
 RDEPENDS_mythweb-lighttpd = "lighttpd lighttpd-module-cgi lighttpd-module-fastcgi \
@@ -26,7 +26,7 @@ DEPENDS += " libxml-xpath-perl-native libxml-simple-perl-native libdatetime-form
 RDEPENDS_mythweather += " libxml-xpath-perl libxml-simple-perl libdatetime-format-iso8601-perl \
 	libsoap-lite-perl libimage-size-perl libdate-manip-perl "
 
-PR = "svnr${SRCPV}+r5"
+PR = "svnr${SRCPV}+r6"
 PV = "0.23"
 
 SRCREV = "25609"
@@ -62,15 +62,15 @@ do_configure() {
 do_install () {
         oe_runmake install INSTALL_ROOT="${D}"
 	rm -rf `find ${S}/mythweb -type d -name .svn`
-        install -d  ${D}${datadir}/
-        install -d  ${D}${datadir}/apache2
-        install -d  ${D}${datadir}/apache2/htdocs
+#        install -d  ${D}${datadir}/
+#        install -d  ${D}${datadir}/apache2
+#        install -d  ${D}${datadir}/apache2/htdocs
         install -d  ${D}${sysconfdir}/
-        install -d  ${D}${sysconfdir}/apache2
-        install -d  ${D}${sysconfdir}/apache2/extra
-        cp -R ${S}/mythweb/* ${D}/${datadir}/apache2/htdocs/
-        mv ${S}/mythweb/mythweb.conf.apache ${D}${sysconfdir}/apache2/extra/mythweb.conf
-        sed -i -e s:/var/www/html:/usr/share/apache2/htdocs:g ${D}${sysconfdir}/apache2/extra/mythweb.conf
+#        install -d  ${D}${sysconfdir}/apache2
+#        install -d  ${D}${sysconfdir}/apache2/extra
+#        cp -R ${S}/mythweb/* ${D}/${datadir}/apache2/htdocs/
+#        mv ${S}/mythweb/mythweb.conf.apache ${D}${sysconfdir}/apache2/extra/mythweb.conf
+#        sed -i -e s:/var/www/html:/usr/share/apache2/htdocs:g ${D}${sysconfdir}/apache2/extra/mythweb.conf
         install -d  ${D}/www
         install -d  ${D}/www/pages
         cp -R ${S}/mythweb/* ${D}/www/pages/
@@ -78,12 +78,12 @@ do_install () {
         sed -i -e s:/var/www/html:/www/pages:g ${D}${sysconfdir}/mythweb.conf
 }
 
-pkg_postinst_mythweb-apache () {
-        chgrp -R apache /usr/share/apache2/htdocs/data
-        chmod g+rw /usr/share/apache2/htdocs/data
-        grep mythweb.conf /etc/apache2/httpd.conf || \
-              echo "Include /etc/apache2/extra/mythweb.conf" >>/etc/apache2/httpd.conf
-}
+#pkg_postinst_mythweb-apache () {
+#        chgrp -R apache /usr/share/apache2/htdocs/data
+#        chmod g+rw /usr/share/apache2/htdocs/data
+#        grep mythweb.conf /etc/apache2/httpd.conf || \
+#              echo "Include /etc/apache2/extra/mythweb.conf" >>/etc/apache2/httpd.conf
+#}
 
 pkg_postinst_mythweb-lighttpd () {
         chgrp -R www-data /var/www/pages
@@ -98,7 +98,8 @@ pkg_postinst_mythweb-lighttpd () {
 }
 
 PACKAGES =+ " \
-        mythweb-apache mythweb-lighttpd \
+#        mythweb-apache \
+	mythweb-lighttpd \
         mytharchive mytharchive-dbg \
         mythbrowser mythbrowser-dbg \
         mythgallery mythgallery-dbg \
@@ -112,13 +113,13 @@ PACKAGES =+ " \
         mythweather mythweather-dbg \
         mythzoneminder mythzoneminder-dbg"
 
-FILES_mythweb-apache = " \
-	${datadir}/apache2/htdocs/mythweb.* \
-	${datadir}/apache2/htdocs/*/ \
-	${datadir}/apache2/htdocs/*/*/ \
-	${datadir}/apache2/htdocs/*/*/* \
-	${datadir}/apache2/htdocs/*/*/*/* \
-        /etc/apache2/extra/mythweb.conf"
+#FILES_mythweb-apache = " \
+#	${datadir}/apache2/htdocs/mythweb.* \
+#	${datadir}/apache2/htdocs/*/ \
+#	${datadir}/apache2/htdocs/*/*/ \
+#	${datadir}/apache2/htdocs/*/*/* \
+#	${datadir}/apache2/htdocs/*/*/*/* \
+#        /etc/apache2/extra/mythweb.conf"
 
 FILES_mythweb-lighttpd = " \
 	/www/pages/mythweb.* \
