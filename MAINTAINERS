@@ -91,6 +91,7 @@ Interests:  content sharing, media center,
 Recipes:    myth*, lirc*, python-coherence, tgt, nios2 recipes
 Recipes:    cdparanoia, cdstatus, iscsi-target urjtag
 Recipes:    lib*perl recipes needed for mythplugins
+Recipes:    james-image and tasks used by it
 
 Person:     Graeme Gregory
 Mail:       dp@xora.org.uk
