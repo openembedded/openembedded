@@ -2,8 +2,8 @@ require openssl.inc
 
 inherit pkgconfig native
 
-SRC_URI[src.md5sum] = "e3873edfffc783624cfbdb65e2249cbd"
-SRC_URI[src.sha256sum] = "18a9bd1fc02b8ef90dded34fafaa9089baaafef278a19fc4e89c2ab0dcf70f63"
+SRC_URI[src.md5sum] = "104deb3b7e6820cae6de3f49ba0ff2b0"
+SRC_URI[src.sha256sum] = "4e7b4e2fb33ee2d97c5e143561ab495dbbfc08f0a863e617a0c7adca19017331"
 PR = "${INC_PR}.0"
 
 DEFAULT_PREFERENCE = "-1"
