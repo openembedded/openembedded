@@ -22,7 +22,6 @@ PREFERRED_GCC_VERSION_bfin           ?= "4.1.2"
 PREFERRED_GCC_VERSION_sh3            ?= "4.4.4"
 PREFERRED_GCC_VERSION_sh4            ?= "4.4.4"
 PREFERRED_GCC_VERSION_xilinx-ml403   ?= "4.1.1"
-PREFERRED_GCC_VERSION_xilinx-ml403   ?= "4.1.1"
 
 # This is unrelated to the kernel version, but glibc and some userspaceapps require a recent version to build against
 PREFERRED_VERSION_linux-libc-headers ?= "2.6.31"
