@@ -7,7 +7,7 @@ LICENSE = "LGPLv2+"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "glib-2.0-native gtk-doc virtual/libiconv virtual/libintl zlib"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "\
   http://ftp.gnome.org/pub/GNOME/sources/glib/2.23/glib-${PV}.tar.bz2;name=archive \
@@ -15,6 +15,7 @@ SRC_URI = "\
   file://configure-libtool.patch \
   file://g_once_init_enter.patch \
   file://gatomic-proper-pointer-get-cast.patch \
+  file://glib-mkenums-interpreter.patch \
 "
 SRC_URI[archive.md5sum] = "72e6eadc16d7022376ecef12c6fe905e"
 SRC_URI[archive.sha256sum] = "f91840e27ad4cd48e655a6babed7e2024f86814f94961da88ca2adba447c6e77"

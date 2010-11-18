@@ -1,11 +1,12 @@
 require glib.inc
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 SRC_URI = "\
   http://ftp.gnome.org/pub/GNOME/sources/glib/2.20/glib-${PV}.tar.bz2;name=tarball \
   file://glibconfig-sysdefs.h \
   file://configure-libtool.patch \
   file://glib-2.6.4-fix-autotools-fiac.patch \
+  file://glib-mkenums-interpreter.patch \
 "
 SRC_URI_append_arm = " file://atomic-thumb.patch"
 

@@ -1,0 +1,11 @@
+diff -rNau glib-2.22.1.orig/gobject/glib-mkenums.in glib-2.22.1/gobject/glib-mkenums.in
+--- glib-2.22.1.orig/gobject/glib-mkenums.in	2009-09-22 09:33:24.000000000 -0400
++++ glib-2.22.1/gobject/glib-mkenums.in	2010-02-24 19:23:05.638244748 -0500
+@@ -1,5 +1,6 @@
+-#!@PERL_PATH@ -w
++#!/usr/bin/env perl
+ 
++use warnings;
+ use File::Basename;
+ 
+ # glib-mkenums.pl 

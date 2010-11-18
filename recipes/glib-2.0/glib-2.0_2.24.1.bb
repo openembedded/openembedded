@@ -10,7 +10,7 @@ DEPENDS = "glib-2.0-native gtk-doc zlib"
 DEPENDS_virtclass-native = "gettext-native gtk-doc-native \
                             pkgconfig-native"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "\
   http://ftp.gnome.org/pub/GNOME/sources/glib/2.24/glib-${PV}.tar.bz2;name=archive \
@@ -20,6 +20,7 @@ SRC_URI = "\
   file://gatomic-proper-pointer-get-cast.patch \
   file://gio.patch \
   file://60_wait-longer-for-threads-to-die.patch \
+  file://glib-mkenums-interpreter.patch \
 "
 
 SRC_URI[archive.md5sum] = "6a7db81c9a2cffe6a34dadb57d7ba2d2"

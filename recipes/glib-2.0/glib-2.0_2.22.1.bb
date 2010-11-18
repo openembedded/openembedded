@@ -1,5 +1,5 @@
 require glib.inc
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.3"
 
 SRC_URI = "\
   http://ftp.gnome.org/pub/GNOME/sources/glib/2.22/glib-${PV}.tar.bz2 \
@@ -8,6 +8,7 @@ SRC_URI = "\
   file://bug-556515.patch \
   file://g_once_init_enter.patch \
   file://uclibc-res_query.patch \
+  file://glib-mkenums-interpreter.patch \
 "
 
 
