@@ -1,0 +1,62 @@
+Index: notes/editwindow.cpp
+===================================================================
+--- notes/editwindow.cpp
++++ notes/editwindow.cpp
+@@ -22,7 +22,7 @@ void editWindowWidget::loadFile(QString 
+     {
+         if (!file.open(IO_ReadOnly)) 
+         {
+-            QMessageBox::warning(0, tr("File i/o error"), fileName.sprintf(tr("Could not read file '%s'"), fileName));
++            QMessageBox::warning(0, tr("File i/o error"), fileName.sprintf(tr("Could not read file '%s'"), fileName.data()));
+         } 
+         else 
+         {
+@@ -40,7 +40,7 @@ void editWindowWidget::saveFile(QString 
+ 
+     if(!file.open(IO_WriteOnly)) 
+     {
+-        QMessageBox::warning(0, tr("File i/o error"), fileName.sprintf(tr("Could not write file '%s'"), fileName));
++        QMessageBox::warning(0, tr("File i/o error"), fileName.sprintf(tr("Could not write file '%s'"), fileName.data()));
+     }
+     else 
+     {
+Index: notes/mainwindow.cpp
+===================================================================
+--- notes/mainwindow.cpp
++++ notes/mainwindow.cpp
+@@ -57,7 +57,7 @@ mainWindowWidget::mainWindowWidget( QWid
+ 
+             if(!fileList.mkdir(fileList.absPath()))
+             {
+-                QMessageBox::critical(0, tr("i/o error"), text.sprintf(tr("Could not create directory '%s'"), fileList.absPath()));
++                QMessageBox::critical(0, tr("i/o error"), text.sprintf(tr("Could not create directory '%s'"), fileList.absPath().data()).data());
+             }
+             else
+             {
+@@ -65,7 +65,7 @@ mainWindowWidget::mainWindowWidget( QWid
+ 
+                 if(!fileList.mkdir(fileList.absPath()))
+                 {
+-                    QMessageBox::critical(0, tr("i/o error"), text.sprintf(tr("Could not create directory '%s'"), fileList.absPath()));
++                    QMessageBox::critical(0, tr("i/o error"), text.sprintf(tr("Could not create directory '%s'"), fileList.absPath().data()).data());
+                 }
+             }
+         }
+@@ -154,7 +154,7 @@ void mainWindowWidget::slotItemDuplicate
+     {
+         if (!fileOld.open(IO_ReadOnly)) 
+         {
+-            QMessageBox::warning(0, tr("File i/o error"), fileName.sprintf(tr("Could not read file '%s'"), fileName));
++            QMessageBox::warning(0, tr("File i/o error"), fileName.sprintf(tr("Could not read file '%s'"), fileName.data()));
+         } 
+         else 
+         {
+@@ -208,7 +208,7 @@ void mainWindowWidget::refreshList()
+ 
+         if (!file.open(IO_ReadOnly)) 
+         {
+-            QMessageBox::warning(0, tr("File i/o error"), title.sprintf(tr("Could not read file '%s'"), fileList[item]));
++            QMessageBox::warning(0, tr("File i/o error"), title.sprintf(tr("Could not read file '%s'"), fileList[item].data()).data());
+         }
+         else 
+         {
