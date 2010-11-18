@@ -3,11 +3,15 @@ SECTION = "x11/gnome/libs"
 LICENSE = "GPL"
 DEPENDS = "libproxy glib-2.0 gnutls libxml2 sqlite3 gnome-keyring"
 
+PR = "r1"
+
 inherit gnome
 
 SRC_URI = "${GNOME_MIRROR}/libsoup/${@gnome_verdir("${PV}")}/libsoup-${PV}.tar.bz2;name=libsoup"
 SRC_URI[libsoup.md5sum] = "900390c0ead254fbb23f3f0b84fd18bb"
 SRC_URI[libsoup.sha256sum] = "626c88f6b87463cb092733d2bcd5672ca69529a766cc6c5cc817f34b49c821b1"
+
+SRC_URI += "file://Disable-TLS-1.2-in-addition-to-1.0-and-1.1.patch"
 
 S = "${WORKDIR}/libsoup-${PV}"
 
