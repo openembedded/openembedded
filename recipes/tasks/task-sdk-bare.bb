@@ -19,6 +19,7 @@ LIBC_PKGS_linux-gnueabi = "${GLIBC_PKGS}"
 LIBC_PKGS_linux-gnuspe = "${GLIBC_PKGS}"
 LIBC_PKGS_linux-uclibc = "uclibc uclibc-dev uclibc-thread-db"
 LIBC_PKGS_linux-uclibceabi = "uclibc uclibc-dev uclibc-thread-db"
+LIBC_PKGS_linux-uclibcspe = "uclibc uclibc-dev uclibc-thread-db"
 
 RDEPENDS_${PN} = "\
     ${LIBC_PKGS} \
