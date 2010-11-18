@@ -21,8 +21,9 @@ SUBDIRS = "bin . lib"
 do_configure_prepend () {
 	if ${@['true', 'false'][bb.data.inherits_class('native', d)]}
 	then
+		M4=`which m4`
 		export ac_cv_path_PERL="${ac_cv_path_PERL=${bindir}/perl}"
-		export ac_cv_path_M4="${ac_cv_path_M4=${bindir}/m4}"
+		export ac_cv_path_M4="${ac_cv_path_M4=${M4}}"
 		export ac_cv_prog_gnu_m4="${ac_cv_prog_gnu_m4=yes}"
 	fi
 }
