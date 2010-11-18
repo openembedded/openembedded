@@ -30,6 +30,10 @@ BBFILES := "${@bb.fatal('Edit your conf/local.conf: BBFILES')}"
 # This is a regulary expression, so be sure to get your parenthesis balanced.
 BBMASK = ""
 
+# Comment this if your host distribution does not provide the
+# help2man tool.
+ASSUME_PROVIDED += "help2man-native"
+
 # Uncomment this if your host distribution has recent enough Linux
 # Kernel header files.  Utilities we use to generate certain types of
 # target filesystems need somewhat recent header files.
