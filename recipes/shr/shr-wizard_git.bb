@@ -4,7 +4,7 @@ LICENSE = "GPL"
 DEPENDS = "e-wm"
 RDEPENDS_${PN} = "python-elementary shr-settings python-phoneutils e-wm python-dbus python-edbus"
 SECTION = "x11/application"
-SRCREV = "0342a0b36ab3df7e980fe7a045c905cee8f2a7e8"
+SRCREV = "18690ac56e303f3e0fe48e684da2e57d3ed68201"
 PV = "0.0.0+gitr${SRCPV}"
 PR = "r8"
 
