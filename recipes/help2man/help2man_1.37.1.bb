@@ -2,7 +2,7 @@ DESCRIPTION = "Program to create simple man pages"
 SECTION = "devel"
 LICENSE = "GPLv3"
 DEPENDS = "gettext-native perl-native liblocale-gettext-perl-native"
-DEPENDS_virtclass-native = "perl-native-runtime"
+DEPENDS_virtclass-native = ""
 RDEPENDS_pn-help2man = "gettext perl liblocale-gettext-perl"
 PR = "r0"
 
