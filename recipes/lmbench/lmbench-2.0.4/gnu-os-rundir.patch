@@ -1,0 +1,12 @@
+Index: lmbench-2.0.4/scripts/gnu-os
+===================================================================
+--- lmbench-2.0.4.orig/scripts/gnu-os
++++ lmbench-2.0.4/scripts/gnu-os
+@@ -88,6 +88,7 @@ if test $# != 0; then
+   exit 1
+ fi
+ 
++mkdir -p $RUNDIR
+ cd $RUNDIR
+ dummy=`tempfile -d .`
+ #dummy=dummy-$$
