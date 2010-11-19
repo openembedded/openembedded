@@ -3,7 +3,7 @@ SECTION = "x11/gnome/libs"
 LICENSE = "GPL"
 DEPENDS = "libproxy glib-2.0 gnutls libxml2 sqlite3 gnome-keyring"
 
-PR = "r1"
+PR = "r2"
 
 inherit gnome
 
