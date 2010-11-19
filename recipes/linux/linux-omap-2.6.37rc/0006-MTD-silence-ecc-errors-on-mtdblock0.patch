@@ -1,4 +1,4 @@
-From 4b2f845548597524c49fcc47ed3ae8984f5caa58 Mon Sep 17 00:00:00 2001
+From 7565934e99f3e0b2a4d1bdae5542db7ceda03ccf Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Mon, 26 Apr 2010 11:17:26 -0700
 Subject: [PATCH 6/7] MTD: silence ecc errors on mtdblock0
@@ -14,10 +14,10 @@ this patch silences ecc error messages when linux peeks into mtdblock0
  3 files changed, 7 insertions(+), 5 deletions(-)
 
 diff --git a/block/blk-core.c b/block/blk-core.c
-index 32a1c12..6783ea1 100644
+index 4ce953f..1ef9a01 100644
 --- a/block/blk-core.c
 +++ b/block/blk-core.c
-@@ -2011,9 +2011,10 @@ bool blk_update_request(struct request *req, int error, unsigned int nr_bytes)
+@@ -2028,9 +2028,10 @@ bool blk_update_request(struct request *req, int error, unsigned int nr_bytes)
  
  	if (error && req->cmd_type == REQ_TYPE_FS &&
  	    !(req->cmd_flags & REQ_QUIET)) {
@@ -45,7 +45,7 @@ index 271b8e7..5924ba7 100644
  }
  EXPORT_SYMBOL(__nand_correct_data);
 diff --git a/fs/buffer.c b/fs/buffer.c
-index 3e7dca2..a26d127 100644
+index 5930e38..06a00d5 100644
 --- a/fs/buffer.c
 +++ b/fs/buffer.c
 @@ -114,7 +114,8 @@ static int quiet_error(struct buffer_head *bh)

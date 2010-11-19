@@ -1,4 +1,4 @@
-From 8e8ce81218c20765e194d988f90ae5f10afc1742 Mon Sep 17 00:00:00 2001
+From 386961b3ee4201286f1f0d91785a0edc9f053360 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Mon, 4 Jan 2010 19:20:25 -0800
 Subject: [PATCH 5/7] mmc: don't display single block read console messages
@@ -9,10 +9,10 @@ mmc: don't display single block read console messages
  1 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mmc/card/block.c b/drivers/mmc/card/block.c
-index d545f79..936df22 100644
+index 217f820..b0b68cc 100644
 --- a/drivers/mmc/card/block.c
 +++ b/drivers/mmc/card/block.c
-@@ -420,8 +420,8 @@ static int mmc_blk_issue_rw_rq(struct mmc_queue *mq, struct request *req)
+@@ -434,8 +434,8 @@ static int mmc_blk_issue_rw_rq(struct mmc_queue *mq, struct request *req)
  		if (brq.cmd.error || brq.data.error || brq.stop.error) {
  			if (brq.data.blocks > 1 && rq_data_dir(req) == READ) {
  				/* Redo read one sector at a time */
