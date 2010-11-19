@@ -1,5 +1,5 @@
 require libgpepimc.inc
-PR = "r1"
+PR = "r2"
 
 SRC_URI += " file://get-category-by-name.patch"
 
