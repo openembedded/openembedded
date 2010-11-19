@@ -288,6 +288,36 @@ addtask build
 do_build = ""
 do_build[func] = "1"
 
+def set_multimach_arch(d):
+    # 'multimachine' handling
+    mach_arch = bb.data.getVar('MACHINE_ARCH', d, 1)
+    pkg_arch = bb.data.getVar('PACKAGE_ARCH', d, 1)
+
+    #
+    # We always try to scan SRC_URI for urls with machine overrides
+    # unless the package sets SRC_URI_OVERRIDES_PACKAGE_ARCH=0
+    #
+    override = bb.data.getVar('SRC_URI_OVERRIDES_PACKAGE_ARCH', d, 1)
+    if override != '0' and is_machine_specific(d):
+        bb.data.setVar('PACKAGE_ARCH', "${MACHINE_ARCH}", d)
+        bb.data.setVar('MULTIMACH_ARCH', mach_arch, d)
+        return
+
+    multiarch = pkg_arch
+
+    packages = bb.data.getVar('PACKAGES', d, 1).split()
+    for pkg in packages:
+        pkgarch = bb.data.getVar("PACKAGE_ARCH_%s" % pkg, d, 1)
+
+        # We could look for != PACKAGE_ARCH here but how to choose
+        # if multiple differences are present?
+        # Look through PACKAGE_ARCHS for the priority order?
+        if pkgarch and pkgarch == mach_arch:
+            multiarch = mach_arch
+            break
+
+    bb.data.setVar('MULTIMACH_ARCH', multiarch, d)
+
 python () {
     import exceptions
 
@@ -363,30 +393,7 @@ python () {
         # Already machine specific - nothing further to do
         return
 
-    #
-    # We always try to scan SRC_URI for urls with machine overrides
-    # unless the package sets SRC_URI_OVERRIDES_PACKAGE_ARCH=0
-    #
-    override = bb.data.getVar('SRC_URI_OVERRIDES_PACKAGE_ARCH', d, 1)
-    if override != '0' and is_machine_specific(d):
-        bb.data.setVar('PACKAGE_ARCH', "${MACHINE_ARCH}", d)
-        bb.data.setVar('MULTIMACH_ARCH', mach_arch, d)
-        return
-
-    multiarch = pkg_arch
-
-    packages = bb.data.getVar('PACKAGES', d, 1).split()
-    for pkg in packages:
-        pkgarch = bb.data.getVar("PACKAGE_ARCH_%s" % pkg, d, 1)
-
-        # We could look for != PACKAGE_ARCH here but how to choose
-        # if multiple differences are present?
-        # Look through PACKAGE_ARCHS for the priority order?
-        if pkgarch and pkgarch == mach_arch:
-            multiarch = mach_arch
-            break
-
-    bb.data.setVar('MULTIMACH_ARCH', multiarch, d)
+    set_multimach_arch(d)
 }
 
 EXPORT_FUNCTIONS do_setscene do_fetch do_unpack do_configure do_compile do_install do_package
