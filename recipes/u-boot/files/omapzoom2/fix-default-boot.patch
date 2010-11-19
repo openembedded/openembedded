@@ -1,0 +1,44 @@
+Index: git/include/configs/omap3430zoom2.h
+===================================================================
+--- git.orig/include/configs/omap3430zoom2.h
++++ git/include/configs/omap3430zoom2.h
+@@ -157,7 +157,7 @@
+ #define CONFIG_EXTRA_ENV_SETTINGS		\
+ "loadaddr=0x81c00000\0"			\
+ "nandloadaddr=0x81000000\0"			\
+-"console=ttyS3,115200n8\0"			\
++"console=ttyS0,115200n8 console=tty0\0"			\
+ "mmcroot=/dev/mmcblk0p2\0"			\
+ "nandroot=/dev/ram0\0"				\
+ "mmcargs=setenv bootargs console=${console} "	\
+@@ -175,7 +175,7 @@
+ 		" ${kernel_nand_size};"		\
+ 		" run nandargs;"		\
+ 		" bootm ${nandloadaddr}\0"	\
+-"autoboot=if mmc init 0; then" 			\
++"autoboot=if mmcinit 0; then" 			\
+ 		" run loaduimage;" 		\
+ 		" run mmcboot;" 		\
+ 	" else run nandboot;"			\
+Index: git/include/configs/omap3630zoom3.h
+===================================================================
+--- git.orig/include/configs/omap3630zoom3.h
++++ git/include/configs/omap3630zoom3.h
+@@ -177,7 +177,7 @@
+ #define CONFIG_EXTRA_ENV_SETTINGS		\
+ "loadaddr=0x81c00000\0"			\
+ "nandloadaddr=0x81000000\0"			\
+-"console=ttyS3,115200n8\0"			\
++"console=ttyS0,115200n8 console=tty0\0"			\
+ "mmcroot=/dev/mmcblk0p2\0"			\
+ "nandroot=/dev/ram0\0"				\
+ "mmcargs=setenv bootargs console=${console} "	\
+@@ -195,7 +195,7 @@
+ 		" ${kernel_nand_size};"		\
+ 		" run nandargs;"		\
+ 		" bootm ${nandloadaddr}\0"	\
+-"autoboot=if mmc init 0; then" 			\
++"autoboot=if mmcinit 0; then" 			\
+ 		" run loaduimage;" 		\
+ 		" run mmcboot;" 		\
+ 	" else run nandboot;"			\

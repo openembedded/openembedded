@@ -1,0 +1,40 @@
+From fe048d0b6db98744888ba79b6b6551d822e19edd Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Mon, 25 Jan 2010 14:31:01 +0100
+Subject: [PATCH] OMAP3: set L1NEON bit in aux control register
+
+This is required to work around ARM erratum 621766, affecting
+Cortex-A8 r1p0-3:
+
+  When a sequence of Neon load instructions is intermixed with several
+  branches, some of which are mispredicted, it is possible for the
+  processor to deadlock due to Neon loads on the speculative path not
+  being properly flushed from the Neon load queue.
+
+Also enable ASA like recent upstream u-boots do.
+
+Based on a patch from Mans Rullgard: http://www.mail-archive.com/u-boot@lists.denx.de/msg04879.html
+---
+ cpu/omap3/cpu.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/cpu/omap3/cpu.c b/cpu/omap3/cpu.c
+index 54c0ecf..0f3882a 100644
+--- a/cpu/omap3/cpu.c
++++ b/cpu/omap3/cpu.c
+@@ -252,8 +252,10 @@ void setup_auxcr(int device_type, int boot_type)
+ 		/* r12 = AUXCR Write function and r0 value */
+ 		__asm__ __volatile__("mov r12, #0x3");
+ 		__asm__ __volatile__("mrc p15, 0, r0, c1, c0, 1");
+-		/* Enabling IBE. ASA is disabled following recommendation from ARM */
+-		__asm__ __volatile__("orr r0, r0, #0x40");
++		/* Enabling ASA */
++		__asm__ __volatile__("orr r0, r0, #0x10");
++		/* Enable L1NEON */
++		__asm__ __volatile__("orr r0, r0, #1<<5");
+ 		/* SMI instruction to call ROM Code API */
+ 		__asm__ __volatile__(".word 0xE1600070");
+ 
+-- 
+1.6.5
+
