@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r65"
+PR ="r66"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -181,8 +181,10 @@ PV_omapzoom = "2009.01+${PR}+gitr${SRCREV}"
 
 SRC_URI_omapzoom2 = "git://dev.omapzoom.org/pub/scm/bootloader/u-boot.git;branch=master;protocol=git \
                      file://0001-OMAP3-set-L1NEON-bit-in-aux-control-register.patch \
-                     file://inline-fix.patch"
-SRCREV_omapzoom2 = "78e778e0ea884306841c6499851a1e35177d81d0"
+                     file://fix-default-boot.patch \
+                    "
+
+SRCREV_omapzoom2 = "fbe4cef852de5a39412234b4acd47a830d0282a2"
 PV_omapzoom2 = "1.1.4+${PR}+gitr${SRCREV}"
 PE_omapzoom2 = "1"
 
@@ -195,8 +197,12 @@ do_compile_omapzoom2 () {
         oe_runmake tools
 }
 
-SRC_URI_omapzoom36x = "git://dev.omapzoom.org/pub/scm/bootloader/u-boot.git;branch=master;protocol=git"
-SRCREV_omapzoom36x = "ab45d2a787a9674bed30542139175d8e090e0749"
+SRC_URI_omapzoom36x = "git://dev.omapzoom.org/pub/scm/bootloader/u-boot.git;branch=master;protocol=git \
+                       file://0001-OMAP3-set-L1NEON-bit-in-aux-control-register.patch \
+                       file://fix-default-boot.patch \
+                      "
+
+SRCREV_omapzoom36x = "fbe4cef852de5a39412234b4acd47a830d0282a2"
 PV_omapzoom36x = "1.1.4+${PR}+gitr${SRCREV}"
 PE_omapzoom36x = "1"
 
