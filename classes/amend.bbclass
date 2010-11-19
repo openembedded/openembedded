@@ -42,4 +42,6 @@ python () {
             depends = set()
         depends |= set(newdata)
     d.setVar("__depends", depends)
+
+    set_multimach_arch(d)
 }
