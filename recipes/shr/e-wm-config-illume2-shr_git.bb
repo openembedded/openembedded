@@ -3,7 +3,7 @@ SECTION = "e/utils"
 DEPENDS = "eet"
 LICENSE = "MIT BSD"
 RDEPENDS_${PN} = "shr-e-gadgets"
-SRCREV = "bed3a9ac381b88717b153012fa4b9da0c860c6b0"
+SRCREV = "ac32cc259883be1602e51f8496c96bc381513b38"
 PV = "1.2+gitr${SRCPV}"
 PR = "r6"
 
