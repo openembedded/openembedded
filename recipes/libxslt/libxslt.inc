@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "libxml2 (>=2.6.27)"
 LICENSE = "MIT"
-INC_PR = "r5"
+INC_PR = "r6"
 
 SRC_URI = "ftp://xmlsoft.org/libxml2/${BPN}-${PV}.tar.gz;name=archive"
 S = "${WORKDIR}/${BPN}-${PV}"
