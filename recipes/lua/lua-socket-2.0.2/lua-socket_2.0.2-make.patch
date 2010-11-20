@@ -1,0 +1,46 @@
+Index: luasocket-2.0.2/config
+===================================================================
+--- luasocket-2.0.2.orig/config	2007-10-15 06:21:05.000000000 +0200
++++ luasocket-2.0.2/config	2010-11-20 23:36:34.000000000 +0100
+@@ -49,11 +49,10 @@
+ #------
+ # Compiler and linker settings
+ # for Linux
+-CC=gcc
+-DEF=-DLUASOCKET_DEBUG 
+-CFLAGS= $(LUAINC) $(DEF) -pedantic -Wall -O2 -fpic
+-LDFLAGS=-O -shared -fpic
+-LD=gcc 
++#DEF=-DLUASOCKET_DEBUG
++#CFLAGS= $(LUAINC) $(DEF) -pedantic -Wall -O2 -fpic
++#LDFLAGS=$(LDFLAGS) `pkg-config --cflags --libs lua51`
++#LD=$(CC)
+ 
+ #------
+ # End of makefile configuration
+Index: luasocket-2.0.2/src/makefile
+===================================================================
+--- luasocket-2.0.2.orig/src/makefile	2007-10-15 06:21:05.000000000 +0200
++++ luasocket-2.0.2/src/makefile	2010-11-20 23:38:57.000000000 +0100
+@@ -47,16 +47,18 @@
+ 	usocket.o \
+ 	unix.o
+ 
++FLAGS = -shared $(MYFLAGS) `pkg-config --libs --cflags lua5.1`
++
+ all: $(SOCKET_SO) $(MIME_SO) 
+ 
+ $(SOCKET_SO): $(SOCKET_OBJS)
+-	$(LD) $(LDFLAGS) -o $@ $(SOCKET_OBJS)
++	$(CC) $(FLAGS) -o $@ $(SOCKET_OBJS)
+ 
+ $(MIME_SO): $(MIME_OBJS)
+-	$(LD) $(LDFLAGS) -o $@ $(MIME_OBJS)
++	$(CC) $(FLAGS) -o $@ $(MIME_OBJS)
+ 
+ $(UNIX_SO): $(UNIX_OBJS)
+-	$(LD) $(LDFLAGS) -o $@ $(UNIX_OBJS)
++	$(CC) $(FLAGS) -o $@ $(UNIX_OBJS)
+ 
+ #------
+ # List of dependencies
