@@ -2,13 +2,14 @@ SECTION = "base"
 PRIORITY = "standard"
 DESCRIPTION = "Manage symlinks in /etc/rcN.d"
 LICENSE = "GPLv2+"
-S = "${WORKDIR}/update-rc.d"
+S = "${WORKDIR}"
+# S = "${WORKDIR}/update-rc.d"
 INHIBIT_DEFAULT_DEPS = "1"
-PR = "r1"
+PR = "r2"
 
 BBCLASSEXTEND = "native"
 
-SRC_URI = "${HANDHELDS_CVS};module=apps/update-rc.d;tag=r0_7 \
+SRC_URI = "file://update-rc.d \
            file://add-verbose.patch"
 
 PACKAGE_ARCH = "all"
