@@ -3,8 +3,8 @@ HOMEPAGE = "http://www.wesnoth.org/"
 SECTION = "games"
 LICENSE = "GPL"
 
-DEPENDS = "freetype libsdl-image libsdl-mixer libsdl-net libsdl-ttf zlib boost imagemagick-native pango libpng"
-INC_PR = "r0"
+DEPENDS = "freetype libsdl-image libsdl-mixer libsdl-net libsdl-ttf zlib boost imagemagick-native pango libpng lua5.1"
+INC_PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/wesnoth/wesnoth-${PV}.tar.bz2"
 S = "${WORKDIR}/wesnoth-${PV}"
