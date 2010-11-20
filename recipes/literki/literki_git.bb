@@ -1,20 +1,17 @@
 DESCRIPTION = "Literki overlay keyboard"
 SECTION = "x11"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 HOMEPAGE = "http://www.opkg.org/package_232.html"
 
-SRCREV = "master"
-PR = "r0.1"
+SRCREV = "1da40724369c8adc069288f1bfc6b2e167bbb87b"
 
-# TODO:
-# steal from http://users.tkk.fi/~tajyrink/moko/literki_mods/
+SRC_URI = "git://git.senfdax.de/git/literki;protocol=http \
+           file://makefile.patch \
+           file://noswitcher.patch \
+           file://sliderheight.patch \
+"
 
-SRC_URI = "git://git.senfdax.de/git/literki;protocol=http"
-SRC_URI += "file://makefile.patch"
-SRC_URI += "file://noswitcher.patch"
-SRC_URI += "file://sliderheight.patch"
-
-PV = "${SRCPV}"
+PV = "0.0.2+gitr${SRCPV}"
 
 DEPENDS += " \
 	freetype \
@@ -26,7 +23,6 @@ DEPENDS += " \
 "
 
 S = "${WORKDIR}/git"
-PACKAGES = "${PN}"
 
 inherit base
 
