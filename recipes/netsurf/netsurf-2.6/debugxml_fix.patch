@@ -1,0 +1,63 @@
+diff -ru netsurf-old/gtk/gtk_scaffolding.c netsurf/gtk/gtk_scaffolding.c
+--- netsurf-old/gtk/gtk_scaffolding.c	2010-09-18 23:53:43.000000000 +0300
++++ netsurf/gtk/gtk_scaffolding.c	2010-11-18 18:16:07.650000875 +0200
+@@ -27,7 +27,6 @@
+ #include <unistd.h>
+ #include <gtk/gtk.h>
+ #include <gdk-pixbuf/gdk-pixbuf.h>
+-#include <libxml/debugXML.h>
+ #include "gtk/gtk_scaffolding.h"
+ #include "content/content.h"
+ #include "content/hlcache.h"
+@@ -1099,50 +1098,7 @@
+ 
+ MULTIHANDLER(savedomtree)
+ {
+-	GtkWidget *save_dialog;
+-
+-	save_dialog = gtk_file_chooser_dialog_new("Save File", g->window,
+-			GTK_FILE_CHOOSER_ACTION_SAVE,
+-			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+-			GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+-			NULL);
+-
+-	gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(save_dialog),
+-			getenv("HOME") ? getenv("HOME") : "/");
+-
+-	gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(save_dialog),
+-			"domtree.txt");
+-
+-	if (gtk_dialog_run(GTK_DIALOG(save_dialog)) == GTK_RESPONSE_ACCEPT) {
+-		gchar *filename = gtk_file_chooser_get_filename(
+-				GTK_FILE_CHOOSER(save_dialog));
+-		FILE *fh;
+-		LOG(("Saving dom tree to %s...\n", filename));
+-
+-		fh = fopen((const char *) filename, "w");
+-		if (fh == NULL) {
+-			warn_user("Error saving box tree dump.",
+-				"Unable to open file for writing.");
+-		} else {
+-			struct browser_window *bw;
+-			bw = gui_window_get_browser_window(g->top_level);
+-
+-			if (bw->current_content && 
+-					content_get_type(bw->current_content) ==
+-					CONTENT_HTML) {
+-				xmlDebugDumpDocument(fh,
+-					html_get_document(bw->current_content));
+-			}
+-
+-			fclose(fh);
+-		}
+-
+-		g_free(filename);
+-	}
+-
+-	gtk_widget_destroy(save_dialog);
+-
+-	return TRUE;
++	return FALSE;
+ }
+ 
+ 

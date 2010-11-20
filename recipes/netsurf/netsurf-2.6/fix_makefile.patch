@@ -1,0 +1,12 @@
+diff -ru netsurf-old/Makefile netsurf/Makefile
+--- netsurf-old/Makefile	2010-09-21 22:35:54.000000000 +0300
++++ netsurf/Makefile	2010-11-18 18:13:37.793334209 +0200
+@@ -842,7 +842,7 @@
+ 	@cp -RL gtk/res/toolbarIndices $(DESTDIR)$(NETSURF_GTK_RESOURCES)
+ 	@cp -RL gtk/res/Aliases $(DESTDIR)$(NETSURF_GTK_RESOURCES)
+ 	@cp -RL gtk/res/SearchEngines $(DESTDIR)$(NETSURF_GTK_RESOURCES)
+-	@cp -RL gtk/res/docs $(DESTDIR)$(NETSURF_GTK_RESOURCES)
++#	@cp -RL gtk/res/docs $(DESTDIR)$(NETSURF_GTK_RESOURCES)
+ 	@cp -RL gtk/res/themes $(DESTDIR)$(NETSURF_GTK_RESOURCES)
+ 	@# Install translations
+ 	@cp -RL gtk/res/C $(DESTDIR)$(NETSURF_GTK_RESOURCES)

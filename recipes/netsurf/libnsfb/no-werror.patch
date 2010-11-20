@@ -1,0 +1,12 @@
+diff -ru libnsfb.orig/Makefile libnsfb/Makefile
+--- libnsfb.orig/Makefile	2010-11-18 22:03:40.000000000 +0200
++++ libnsfb/Makefile	2010-11-18 22:04:51.803334238 +0200
+@@ -13,7 +13,7 @@
+ # Toolchain flags
+ WARNFLAGS := -Wall -Wextra -Wundef -Wpointer-arith -Wcast-align \
+ 	-Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes \
+-	-Wmissing-declarations -Wnested-externs -Werror -pedantic \
++	-Wmissing-declarations -Wnested-externs -pedantic \
+ 	-Wno-overlength-strings # For nsglobe.c
+ CFLAGS := -g -std=c99 -D_BSD_SOURCE -I$(CURDIR)/include/ \
+ 	-I$(CURDIR)/src $(WARNFLAGS) $(CFLAGS)
