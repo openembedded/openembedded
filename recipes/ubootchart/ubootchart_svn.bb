@@ -3,6 +3,7 @@ HOMEPAGE = "http://code.google.com/p/ubootchart/"
 LICENSE="GPLv3"
 PV = "0.1.0+svnr${SRCREV}"
 PR = "r0"
+SRCREV_pn-ubootchart ?= "12"
 
 SRC_URI="svn://ubootchart.googlecode.com/svn/;proto=http;module=trunk"
 S = "${WORKDIR}/trunk"
