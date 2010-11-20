@@ -12,4 +12,6 @@ LICENSE = "GPL-2"
 
 SECTION = "libs"
 
+DEPENDS = "libpng jpeg"
+
 PR="r1"
