@@ -5,14 +5,14 @@ PATH="/bin:/usr/bin:/usr/local/bin:/usr/games"
 EDITOR="/usr/bin/nano"	# needed for packages like cron
 TERM="linux"		# Basic terminal capab. For screen etc.
 
-if [ "`id -u`" -eq 0 ]; then
-   PATH="$PATH:/sbin:/usr/sbin:/usr/local/sbin"
-fi
-
 if [ ! -e /etc/localtime -a ! -e /etc/TZ ]; then
-	TZ="UTC"		# Time Zone. Look at http://theory.uwinnipeg.ca/gnu/glibc/libc_303.html
+	TZ="UTC"		# Time Zone. Look at http://theory.uwinnipeg.ca/gnu/glibc/libc_303.html 
 				# for an explanation of how to set this to your local timezone.
 	export TZ
+fi
+
+if [ "`id -u`" -eq 0 ]; then
+   PATH=$PATH:/usr/local/sbin:/usr/sbin:/sbin
 fi
 
 if [ "$PS1" ]; then
@@ -21,8 +21,10 @@ if [ "$PS1" ]; then
 fi
 
 if [ -d /etc/profile.d ]; then
-  for i in `ls /etc/profile.d/`; do
-    . /etc/profile.d/$i
+  for i in /etc/profile.d/*.sh; do
+    if [ -r $i ]; then
+      . $i
+    fi
   done
   unset i
 fi
@@ -32,3 +34,4 @@ alias ls='ls --color'
 export PATH PS1 OPIEDIR QPEDIR QTDIR EDITOR TERM
 
 umask 022
+
