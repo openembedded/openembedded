@@ -5,7 +5,7 @@ DEPENDS = "e-wm"
 RDEPENDS_${PN} = "e-wm"
 SECTION = "x11/application"
 
-SRCREV = "ce3de686930676b54e182190216d66930ddc0cb4"
+SRCREV = "64e4f00291097d43ee974ee9d09317d349035a3b"
 PV = "0.0.0+gitr${SRCPV}"
 PR = "r8"
 
