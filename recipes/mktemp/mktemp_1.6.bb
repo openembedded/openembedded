@@ -2,20 +2,22 @@ DESCRIPTION = "Allow safe temporary file creation from shell scripts."
 HOMEPAGE = "http://www.mktemp.org/"
 SECTION = "console/utils"
 LICENSE = "GPLv2 BSD"
+PR = "r2"
 
 inherit autotools update-alternatives
 
 EXTRA_OECONF = "--with-libc"
 
 SRC_URI = "\
-  ftp://ftp.mktemp.org/pub/mktemp/${P}.tar.gz \
-  file://add_destdir.patch \
-  file://disable-strip.patch \
+    ftp://ftp.mktemp.org/pub/mktemp/${BP}.tar.gz \
+    file://add_destdir.patch \
+    file://disable-strip.patch \
 "
 
-do_install_append () {
-	mkdir ${D}${base_bindir}
-	mv ${D}${bindir}/mktemp ${D}${base_bindir}/mktemp.${PN}
+bindir = "${base_bindir}"
+
+do_install_append_pn-mktemp () {
+    mv ${D}${base_bindir}/mktemp ${D}${base_bindir}/mktemp.${PN}
 }
 
 ALTERNATIVE_NAME = "mktemp"
