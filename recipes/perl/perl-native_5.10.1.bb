@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.perl.org/"
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
 DEPENDS = "virtual/db-native gdbm-native"
-PR = "r5"
+PR = "r6"
 NATIVE_INSTALL_WORKS = "1"
 
 # Not tested enough
@@ -103,7 +103,13 @@ do_install() {
 
 	# Fix Errno.pm for target builds
 	sed -i -r "s,^\tdie\ (\"Errno\ architecture.+)$,\twarn\ \1," ${D}${libdir}/perl/${PV}/Errno.pm
+
+	# Make sure we use /usr/bin/env perl
+	for PERLSCRIPT in `grep -rIl ${bindir}/perl ${D}${bindir}`; do
+		sed -i -e 's|^#!${bindir}/perl|#!/usr/bin/env perl|' $PERLSCRIPT
+	done
 }
+
 do_install_append_nylon() {
         # get rid of definitions not supported by the gcc version we use for nylon...
         for i in ${D}${libdir}/perl/${PV}/Config_heavy.pl ${D}${libdir}/perl/config.sh; do
