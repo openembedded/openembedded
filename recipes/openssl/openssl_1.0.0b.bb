@@ -4,7 +4,7 @@ require openssl.inc
 SRC_URI[src.md5sum] = "104deb3b7e6820cae6de3f49ba0ff2b0"
 SRC_URI[src.sha256sum] = "4e7b4e2fb33ee2d97c5e143561ab495dbbfc08f0a863e617a0c7adca19017331"
 
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 DEFAULT_PREFERENCE = "-1"
 
