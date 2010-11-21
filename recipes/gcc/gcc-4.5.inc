@@ -136,8 +136,8 @@ SRC_URI = "svn://gcc.gnu.org/svn/gcc/branches;module=${BRANCH} \
 	   file://gcc-linaro-fix-lp-653316.patch \
 	  "
 
-SRC_URI_append_mips64 = " file://mips64-nomultilib.patch"
-SRC_URI_append_mips64el = " file://mips64-nomultilib.patch"
+SRC_URI_append_mips64 = " file://mips64-nomultilib.patch "
+SRC_URI_append_mips64el = " file://mips64-nomultilib.patch "
 
 # Language Overrides
 FORTRAN = ""
