@@ -434,3 +434,23 @@ def base_set_filespath(path, d):
 		for o in overrides.split(":"):
 			filespath.append(os.path.join(p, o))
 	return ":".join(filespath)
+
+# These directory stack functions are based upon the versions in the Korn
+# Shell documentation - http://docstore.mik.ua/orelly/unix3/korn/ch04_07.htm.
+dirs() {
+    echo "$_DIRSTACK"
+}
+
+pushd() {
+    dirname=$1
+    cd ${dirname:?"missing directory name."} || return 1
+    _DIRSTACK="$PWD $_DIRSTACK"
+    echo "$_DIRSTACK"
+}
+
+popd() {
+    _DIRSTACK=${_DIRSTACK#* }
+    top=${_DIRSTACK%% *}
+    cd $top || return 1
+    echo "$PWD"
+}
