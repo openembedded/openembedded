@@ -1,4 +1,4 @@
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 require klibc.inc
 require klibc-checksums_${PV}.inc
@@ -16,4 +16,4 @@ do_install() {
 }
 
 PACKAGES = "${PN}"
-FILES_${PN} = "${D}${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}klcc"
+FILES_${PN} = "${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}klcc"
