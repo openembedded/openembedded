@@ -159,7 +159,7 @@ if __name__ == "__main__":
     "warnings.* site.* stat.* " +
     "UserDict.* UserList.* UserString.* " +
     "lib-dynload/binascii.so lib-dynload/_struct.so lib-dynload/time.so " +
-    "lib-dynload/xreadlines.so types.* ${bindir}/python*" )
+    "lib-dynload/xreadlines.so types.* platform.* ${bindir}/python*" )
 
     m.addPackage( "python-core-dbg", "Python core module debug information", "python-core",
     "config/.debug lib-dynload/.debug ${bindir}/.debug ${libdir}/.debug" )
