@@ -2,9 +2,9 @@ DESCRIPTION = "Flex is a tool for generating programs that recognize lexical pat
 SECTION = "devel"
 LICENSE = "BSD"
 
-DEPENDS = "gettext"
+DEPENDS = "gettext perl"
 
-INC_PR = "r5"
+INC_PR = "r6"
 
 BBCLASSEXTEND = "native"
 
