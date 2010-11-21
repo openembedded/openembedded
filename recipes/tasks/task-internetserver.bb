@@ -1,5 +1,5 @@
 DESCRIPTION = "internet server functionality"
-PR = "r0"
+PR = "r1"
 LICENSE = "MIT"
 
 inherit task
@@ -7,6 +7,8 @@ inherit task
 RDEPENDS_${PN} = "\
     lighttpd \
     php \
+    php-cli \
+    php-cgi \
     mysql5 \
     perl \
     proftpd \
