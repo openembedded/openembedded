@@ -1,13 +1,9 @@
 RDEPENDS_${PN} = "kexec"
 PV = "0.5"
-PR = "r20+gitr${SRCREV}"
+PR = "r21+gitr${SRCREV}"
 
 SRC_URI = "git://git.linuxtogo.org/home/groups/kexecboot/kexecboot.git;protocol=git "
-
-SRCREV = "3e2ea676a39f22160a4a0e55a78b77867bf58dbb"
-# temporary fix for machines with unrotated fb
-SRCREV_c7x0 = "c192d8d456f931160539220bf96f74b44fea87d1"
-SRCREV_tosa = "c192d8d456f931160539220bf96f74b44fea87d1"
+SRCREV = "d590e063112bb75e6995a0d09afcfac13c931f9f"
 S = "${WORKDIR}/git"
 
 require kexecboot.inc
