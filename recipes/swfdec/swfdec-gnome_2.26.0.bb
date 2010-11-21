@@ -2,12 +2,12 @@ DESCRIPTION = "flash plugin"
 LICENSE = "GPL"
 
 DEPENDS = "gtk+ gconf swfdec"
+PR = "r1"
 
 inherit gnome pkgconfig
 
 do_configure_prepend() {
-	sed -i -e 's/swfdec-$SWFDEC_MAJORMINOR/swfdec/g' configure.ac
-	sed -i -e 's/swfdec-gtk-$SWFDEC_MAJORMINOR/swfdec-gtk/g' configure.ac
+	sed -i -e 's/^SWFDEC_MAJORMINOR=0\.8/SWFDEC_MAJORMINOR=0.9/' configure.ac
 }
 
 
