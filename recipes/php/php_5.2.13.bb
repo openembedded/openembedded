@@ -3,7 +3,7 @@ require php.inc
 DEPENDS = "zlib libxml2 virtual/libiconv php-native lemon-native mysql5 \
            libc-client openssl"
 
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 SRC_URI =     "http://museum.php.net/php5/php-${PV}.tar.bz2;name=src \
                file://acinclude-xml2-config.patch \
@@ -56,6 +56,7 @@ do_install_append() {
     rm -rf ${D}/.registry
     rm -rf ${D}/.channels
     rm -rf ${D}/.[a-z]*
+    sed -i 's:${STAGING_DIR_NATIVE}::g' ${D}/${sysconfdir}/pear.conf
 }
 
 PACKAGES = "${PN}-dbg \
