@@ -5,23 +5,19 @@ LICENSE = "LGPL"
 PRIORITY = "optional"
 SECTION = "libs"
 
-PR = "r2"
+PR = "r0"
 
-SRC_URI = "http://cxx.uclibc.org/src/uClibc++-${PV}.tbz2 \
-	   file://nobash.patch \
+SRCREV = "7efcc107b6bf7a59a85beaf7c7f35da6de0f321e"
+
+SRC_URI = "git://git.busybox.net/uClibc++;protocol=git \
+	   file://006-eabi_fix.patch \
 	   file://defconfig"
-S = "${WORKDIR}/uClibc++"
+S = "${WORKDIR}/git"
 
 # uClibc++ runtime prefix directory (UCLIBCXX_RUNTIME_PREFIX) [/usr/$(TARGET_ARCH)-linux-uclibc] (NEW)
 # uClibc++ header file subdirectory (UCLIBCXX_RUNTIME_INCLUDE_SUBDIR) [/include] (NEW)
 # uClibc++ library subdirectory (UCLIBCXX_RUNTIME_LIB_SUBDIR) [/lib] (NEW)
 # uClibc++ application file subdirectory (UCLIBCXX_RUNTIME_BIN_SUBDIR) [/bin] (NEW)
-
-do_unpack_real () {
-	bzcat uClibc++-${PV}.tbz2 | tar -xvf -
-}
-do_unpack_real[dirs] = "${WORKDIR}"
-addtask unpack_real before do_patch after do_unpack
 
 EXTRA_OEMAKE = "'OPTIMIZATION=' 'XWARNINGS=' 'XARCH_CFLAGS=${CFLAGS}' \
 		'CPU_FLAGS=' 'STRIPTOOL=true' 'LD=${LD}'"
@@ -49,6 +45,3 @@ PACKAGES = "g++-uc libuclibc++ libuclibc++-dev"
 FILES_g++-uc = "${bindir}/g++-uc"
 FILES_libuclibc++ = "${libdir}/*.so.*"
 FILES_libuclibc++-dev = "${FILES_uclibc++-dev}"
-
-SRC_URI[md5sum] = "ebf58e04d72eab5c131c2c9118737024"
-SRC_URI[sha256sum] = "82342a5d6088421e79699dd7af614ebecf6dd335eabce07690902a379f5ea8de"
