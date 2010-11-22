@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.perl.org/"
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
 DEPENDS = "virtual/db-native gdbm-native"
-PR = "r6"
+PR = "r7"
 NATIVE_INSTALL_WORKS = "1"
 
 # Not tested enough

@@ -3,16 +3,6 @@
 #
 inherit cpan-base
 
-EXTRA_CPANFLAGS ?= ""
-
-# Env var which tells perl if it should use host (no) or target (yes) settings
-export PERLCONFIGTARGET = "${@is_target(d)}"
-
-# Env var which tells perl where the perl include files are
-export PERL_INC = "${STAGING_LIBDIR}/perl/${@get_perl_version(d)}/CORE"
-export PERL_LIB = "${STAGING_DATADIR}/perl/${@get_perl_version(d)}"
-export PERL_ARCHLIB = "${STAGING_LIBDIR}/perl/${@get_perl_version(d)}"
-
 NATIVE_INSTALL_WORKS = "1"
 
 cpan_do_configure () {

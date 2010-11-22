@@ -32,11 +32,21 @@ def perl_get_libdirs(d):
 
 def is_target(d):
     if not bb.data.inherits_class('native', d):
-        return "yes"
-    return "no"
+        return bb.data.expand('${TARGET_SYS}', d)
+    return ""
 
 PERLLIBDIRS = "${@perl_get_libdirs(d)}"
 
 FILES_${PN}-dbg += "${PERLLIBDIRS}/auto/*/.debug \
                     ${PERLLIBDIRS}/auto/*/*/.debug \
                     ${PERLLIBDIRS}/auto/*/*/*/.debug"
+
+# Env var which tells perl if it should use host ('') or target ('$TARGET_SYS') settings
+export PERLCONFIGTARGET = "${@is_target(d)}"
+
+EXTRA_CPANFLAGS ?= ""
+
+# Env var which tells perl where the perl include files are
+export PERL_INC = "${STAGING_LIBDIR}/perl/${@get_perl_version(d)}/CORE"
+export PERL_LIB = "${STAGING_DATADIR}/perl/${@get_perl_version(d)}"
+export PERL_ARCHLIB = "${STAGING_LIBDIR}/perl/${@get_perl_version(d)}"

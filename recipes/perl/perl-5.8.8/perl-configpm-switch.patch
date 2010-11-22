@@ -1,6 +1,6 @@
 This patch is used for perl-native only. It enables the switching of
 configuration files between Config_heavy.pl and
-Config_heavy-target.pl by setting the environment variables
+Config_heavy-$TARGET_SYS.pl by setting the environment variables
 PERLCONFIGTARGET - the later containing settings for the target while
 the former contains those for the host. This will allow cpan.bbclass
 to use the settings appropriate for the native and/or target builds
@@ -24,9 +24,9 @@ values would be valid for the host only.
  sub AUTOLOAD {
 -    require 'Config_heavy.pl';
 +    my $cfgfile = 'Config_heavy.pl';
-+    if (defined $ENV{PERLCONFIGTARGET} and $ENV{PERLCONFIGTARGET} eq "yes")
++    if (defined $ENV{PERLCONFIGTARGET} and $ENV{PERLCONFIGTARGET} ne "")
 +    {
-+        $cfgfile = 'Config_heavy-target.pl';
++        $cfgfile = "Config_heavy-$ENV{PERLCONFIGTARGET}.pl";
 +    }
 +    require $cfgfile;
      goto \&launcher unless $Config::AUTOLOAD =~ /launcher$/;
