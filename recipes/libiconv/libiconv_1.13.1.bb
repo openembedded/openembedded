@@ -2,7 +2,7 @@ require libiconv.inc
 LICENSE = "GPLv3 LGPLv2"
 
 PROVIDES = "virtual/libiconv"
-PR = "r0"
+PR = "r1"
 
 #gettext.class cant be inherit here so use this hack
 DEPENDS = "${@['','gettext-native'][bb.data.getVar('USE_NLS', d, 1) == 'yes']}"
