@@ -1,7 +1,7 @@
 DESCRIPTION = "A C++ standard library targeted towards the embedded \
 systems/software market."
 HOMEPAGE = "http://cxx.uclibc.org/"
-LICENSE = "LGPL"
+LICENSE = "LGPLv2+"
 PRIORITY = "optional"
 SECTION = "libs"
 
