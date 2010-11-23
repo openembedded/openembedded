@@ -1,0 +1,271 @@
+maybe partially fixes Bug#562887: qemu-user-static mipsel emulation
+
+from:
+
+https://build.opensuse.org/package/view_file?file=qemu-0.11-git-user-linux-uid16_fix.patch&package=qemu-svn&project=openSUSE%3ATools
+---
+
+Quite a number of syscalls are only defined on systems with USE_UID16
+defined; this patch defines them on other systems as well.
+
+Fixes a large number of uid/gid-related testcases on the s390x target
+(and most likely on other targets as well)
+
+Signed-off-by: Ulrich Hecht &lt;uli@suse.de&gt;
+---
+ linux-user/syscall.c |  125 ++++++++++++++++++++++++++++++++++++++++++--------
+ 1 files changed, 105 insertions(+), 20 deletions(-)
+
+diff --git a/linux-user/syscall.c b/linux-user/syscall.c
+index c9e0194..6892880 100644
+--- a/linux-user/syscall.c
++++ b/linux-user/syscall.c
+@@ -305,7 +305,7 @@ static int sys_fchmodat(int dirfd, const char *pathname, mode_t mode)
+   return (fchmodat(dirfd, pathname, mode, 0));
+ }
+ #endif
+-#if defined(TARGET_NR_fchownat) && defined(USE_UID16)
++#if defined(TARGET_NR_fchownat)
+ static int sys_fchownat(int dirfd, const char *pathname, uid_t owner,
+     gid_t group, int flags)
+ {
+@@ -414,7 +414,7 @@ _syscall3(int,sys_faccessat,int,dirfd,const char *,pathname,int,mode)
+ #if defined(TARGET_NR_fchmodat) && defined(__NR_fchmodat)
+ _syscall3(int,sys_fchmodat,int,dirfd,const char *,pathname, mode_t,mode)
+ #endif
+-#if defined(TARGET_NR_fchownat) && defined(__NR_fchownat) && defined(USE_UID16)
++#if defined(TARGET_NR_fchownat) && defined(__NR_fchownat)
+ _syscall5(int,sys_fchownat,int,dirfd,const char *,pathname,
+           uid_t,owner,gid_t,group,int,flags)
+ #endif
+@@ -6353,18 +6353,35 @@ abi_long do_syscall(void *cpu_env, int num, abi_long arg1,
+     case TARGET_NR_setfsgid:
+         ret = get_errno(setfsgid(arg1));
+         break;
++#else /* USE_UID16 */
++#if defined(TARGET_NR_fchownat) && defined(__NR_fchownat)
++    case TARGET_NR_fchownat:
++        if (!(p = lock_user_string(arg2))) 
++            goto efault;
++        ret = get_errno(sys_fchownat(arg1, p, arg3, arg4, arg5));
++        unlock_user(p, arg2, 0);
++        break;
++#endif
+ #endif /* USE_UID16 */
+ 
+-#ifdef TARGET_NR_lchown32
++#if defined(TARGET_NR_lchown32) || !defined(USE_UID16)
++#if defined(TARGET_NR_lchown32)
+     case TARGET_NR_lchown32:
++#else
++    case TARGET_NR_lchown:
++#endif
+         if (!(p = lock_user_string(arg1)))
+             goto efault;
+         ret = get_errno(lchown(p, arg2, arg3));
+         unlock_user(p, arg1, 0);
+         break;
+ #endif
+-#ifdef TARGET_NR_getuid32
++#if defined(TARGET_NR_getuid32) || (defined(TARGET_NR_getuid) && !defined(USE_UID16))
++#if defined(TARGET_NR_getuid32)
+     case TARGET_NR_getuid32:
++#else
++    case TARGET_NR_getuid:
++#endif
+         ret = get_errno(getuid());
+         break;
+ #endif
+@@ -6392,33 +6409,57 @@ abi_long do_syscall(void *cpu_env, int num, abi_long arg1,
+         break;
+ #endif
+ 
+-#ifdef TARGET_NR_getgid32
++#if defined(TARGET_NR_getgid32) || (defined(TARGET_NR_getgid) && !defined(USE_UID16))
++#if defined(TARGET_NR_getgid32)
+     case TARGET_NR_getgid32:
++#else
++    case TARGET_NR_getgid:
++#endif
+         ret = get_errno(getgid());
+         break;
+ #endif
+-#ifdef TARGET_NR_geteuid32
++#if defined(TARGET_NR_geteuid32) || (defined(TARGET_NR_geteuid) && !defined(USE_UID16))
++#if defined(TARGET_NR_geteuid32)
+     case TARGET_NR_geteuid32:
++#else
++    case TARGET_NR_geteuid:
++#endif
+         ret = get_errno(geteuid());
+         break;
+ #endif
+-#ifdef TARGET_NR_getegid32
++#if defined(TARGET_NR_getegid32) || (defined(TARGET_NR_getegid) && !defined(USE_UID16))
++#if defined(TARGET_NR_getegid32)
+     case TARGET_NR_getegid32:
++#else
++    case TARGET_NR_getegid:
++#endif
+         ret = get_errno(getegid());
+         break;
+ #endif
+-#ifdef TARGET_NR_setreuid32
++#if defined(TARGET_NR_setreuid32) || !defined(USE_UID16)
++#if defined(TARGET_NR_setreuid32)
+     case TARGET_NR_setreuid32:
++#else
++    case TARGET_NR_setreuid:
++#endif
+         ret = get_errno(setreuid(arg1, arg2));
+         break;
+ #endif
+-#ifdef TARGET_NR_setregid32
++#if defined(TARGET_NR_setregid32) || !defined(USE_UID16)
++#if defined(TARGET_NR_setregid32)
+     case TARGET_NR_setregid32:
++#else
++    case TARGET_NR_setregid:
++#endif
+         ret = get_errno(setregid(arg1, arg2));
+         break;
+ #endif
+-#ifdef TARGET_NR_getgroups32
++#if defined(TARGET_NR_getgroups32) || !defined(USE_UID16)
++#if defined(TARGET_NR_getgroups32)
+     case TARGET_NR_getgroups32:
++#else
++    case TARGET_NR_getgroups:
++#endif
+         {
+             int gidsetsize = arg1;
+             uint32_t *target_grouplist;
+@@ -6442,8 +6483,12 @@ abi_long do_syscall(void *cpu_env, int num, abi_long arg1,
+         }
+         break;
+ #endif
+-#ifdef TARGET_NR_setgroups32
++#if defined(TARGET_NR_setgroups32) || !defined(USE_UID16)
++#if defined(TARGET_NR_setgroups32)
+     case TARGET_NR_setgroups32:
++#else
++    case TARGET_NR_setgroups:
++#endif
+         {
+             int gidsetsize = arg1;
+             uint32_t *target_grouplist;
+@@ -6463,18 +6508,30 @@ abi_long do_syscall(void *cpu_env, int num, abi_long arg1,
+         }
+         break;
+ #endif
+-#ifdef TARGET_NR_fchown32
++#if defined(TARGET_NR_fchown32) || !defined(USE_UID16)
++#if defined(TARGET_NR_fchown32)
+     case TARGET_NR_fchown32:
++#else
++    case TARGET_NR_fchown:
++#endif
+         ret = get_errno(fchown(arg1, arg2, arg3));
+         break;
+ #endif
+-#ifdef TARGET_NR_setresuid32
++#if defined(TARGET_NR_setresuid32) || !defined(USE_UID16)
++#if defined(TARGET_NR_setresuid32)
+     case TARGET_NR_setresuid32:
++#else
++    case TARGET_NR_setresuid:
++#endif
+         ret = get_errno(setresuid(arg1, arg2, arg3));
+         break;
+ #endif
+-#ifdef TARGET_NR_getresuid32
++#if defined(TARGET_NR_getresuid32) || !defined(USE_UID16)
++#if defined(TARGET_NR_getresuid32)
+     case TARGET_NR_getresuid32:
++#else
++    case TARGET_NR_getresuid:
++#endif
+         {
+             uid_t ruid, euid, suid;
+             ret = get_errno(getresuid(&ruid, &euid, &suid));
+@@ -6487,13 +6544,21 @@ abi_long do_syscall(void *cpu_env, int num, abi_long arg1,
+         }
+         break;
+ #endif
+-#ifdef TARGET_NR_setresgid32
++#if defined(TARGET_NR_setresgid32) || !defined(USE_UID16)
++#if defined(TARGET_NR_setresgid32)
+     case TARGET_NR_setresgid32:
++#else
++    case TARGET_NR_setresgid:
++#endif
+         ret = get_errno(setresgid(arg1, arg2, arg3));
+         break;
+ #endif
++#if defined(TARGET_NR_getresgid32) || !defined(USE_UID16)
+ #ifdef TARGET_NR_getresgid32
+     case TARGET_NR_getresgid32:
++#else
++    case TARGET_NR_getresgid:
++#endif
+         {
+             gid_t rgid, egid, sgid;
+             ret = get_errno(getresgid(&rgid, &egid, &sgid));
+@@ -6506,31 +6571,51 @@ abi_long do_syscall(void *cpu_env, int num, abi_long arg1,
+         }
+         break;
+ #endif
+-#ifdef TARGET_NR_chown32
++#if defined(TARGET_NR_chown32) || !defined(USE_UID16)
++#if defined(TARGET_NR_chown32)
+     case TARGET_NR_chown32:
++#else
++    case TARGET_NR_chown:
++#endif
+         if (!(p = lock_user_string(arg1)))
+             goto efault;
+         ret = get_errno(chown(p, arg2, arg3));
+         unlock_user(p, arg1, 0);
+         break;
+ #endif
+-#ifdef TARGET_NR_setuid32
++#if defined(TARGET_NR_setuid32) || !defined(USE_UID16)
++#if defined(TARGET_NR_setuid32)
+     case TARGET_NR_setuid32:
++#else
++    case TARGET_NR_setuid:
++#endif
+         ret = get_errno(setuid(arg1));
+         break;
+ #endif
+-#ifdef TARGET_NR_setgid32
++#if defined(TARGET_NR_setgid32) || !defined(USE_UID16)
++#if defined(TARGET_NR_setgid32)
+     case TARGET_NR_setgid32:
++#else
++    case TARGET_NR_setgid:
++#endif
+         ret = get_errno(setgid(arg1));
+         break;
+ #endif
+-#ifdef TARGET_NR_setfsuid32
++#if defined(TARGET_NR_setfsuid32) || !defined(USE_UID16)
++#if defined(TARGET_NR_setfsuid32)
+     case TARGET_NR_setfsuid32:
++#else
++    case TARGET_NR_setfsuid:
++#endif
+         ret = get_errno(setfsuid(arg1));
+         break;
+ #endif
+-#ifdef TARGET_NR_setfsgid32
++#if defined(TARGET_NR_setfsgid32) || !defined(USE_UID16)
++#if defined(TARGET_NR_setfsgid32)
+     case TARGET_NR_setfsgid32:
++#else
++    case TARGET_NR_setfsgid:
++#endif
+         ret = get_errno(setfsgid(arg1));
+         break;
+ #endif
+-- 
