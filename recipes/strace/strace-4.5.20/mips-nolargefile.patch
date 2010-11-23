@@ -1,0 +1,41 @@
+--- strace-4.5.20/linux/mips/syscallent.h.orig	2010-11-23 13:25:49.000000000 +1030
++++ strace-4.5.20/linux/mips/syscallent.h	2010-11-23 13:28:23.000000000 +1030
+@@ -4213,15 +4213,24 @@
+ 	{ 0,	0,	printargs,		"SYS_4208"	}, /* 4208 */
+ 	{ 0,	0,	printargs,		"SYS_4209"	}, /* 4209 */
+ 	{ 6,	0,	sys_mmap,		"mmap"		}, /* 4210 */
++#ifdef _LFS64_LARGEFILE
+ 	{ 4,	TF,	sys_truncate64,		"truncate64"	}, /* 4211 */
+ 	{ 4,	TD,	sys_ftruncate64,	"ftruncate64"	}, /* 4212 */
++#else
++	{ 4,	TF,	printargs,		"truncate64"	}, /* 4211 */
++	{ 4,	TD,	printargs,		"ftruncate64"	}, /* 4212 */
++#endif
+ 	{ 2,	TF,	printargs,		"stat64"	}, /* 4213 */
+ 	{ 2,	TF,	sys_lstat64,		"lstat64"	}, /* 4214 */
+ 	{ 2,	TD,	sys_fstat64,		"fstat64"	}, /* 4215 */
+ 	{ 2,	TF,	sys_pivotroot,		"pivot_root"	}, /* 4216 */
+ 	{ 3,	0,	printargs,		"mincore"	}, /* 4217 */
+ 	{ 3,	0,	sys_madvise,		"madvise"	}, /* 4218 */
++#ifdef _LFS64_LARGEFILE
+ 	{ 3,	TF,	sys_getdents64,		"getdents64"	}, /* 4219 */
++#else
++	{ 3,	TF,	printargs,		"getdents64"	}, /* 4219 */
++#endif
+ 	{ 3,	TD,	sys_fcntl,		"fcntl64"	}, /* 4220 */
+ 	{ 0,	0,	printargs,		"SYS_4221"	}, /* 4221 */
+ 	{ 0,	0,	printargs,		"gettid"	}, /* 4222 */
+@@ -4257,8 +4266,13 @@
+ 	{ 1,	0,	printargs,		"set_tid_address"}, /* 4252 */
+ 	{ 0,	0,	sys_restart_syscall,	"restart_syscall"}, /* 4253 */
+ 	{ 6,	0,	sys_fadvise64_64,	"fadvise64_64"	}, /* 4254 */
++#ifdef _LFS64_LARGEFILE
+ 	{ 3,	TF,	sys_statfs64,		"statfs64"	}, /* 4255 */
+ 	{ 2,	TD,	sys_fstatfs64,		"fstatfs64"	}, /* 4256 */
++#else
++	{ 3,	TF,	printargs,		"statfs64"	}, /* 4255 */
++	{ 2,	TD,	printargs,		"fstatfs64"	}, /* 4256 */
++#endif
+ 	{ 3,	0,	sys_timer_create,	"timer_create"	}, /* 4257 */
+ 	{ 4,	0,	sys_timer_settime,	"timer_settime"	}, /* 4258 */
+ 	{ 2,	0,	sys_timer_gettime,	"timer_gettime"	}, /* 4259 */

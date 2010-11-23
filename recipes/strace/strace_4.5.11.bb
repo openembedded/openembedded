@@ -1,4 +1,4 @@
-LICENSE = "GPL"
+LICENSE = "BSD"
 SECTION = "console/utils"
 PR = "r2"
 
