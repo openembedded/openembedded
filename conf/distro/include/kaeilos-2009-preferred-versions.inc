@@ -4,7 +4,7 @@
 #@NAME: KaeilOS(R) - http://www.kaeilos.com
 #@DESCRIPTION: KaeilOS Linux Distribution preferred version
 #@MAINTAINER: Marco Cavallini <m.cavallini@koansoftware.com>
-#@VERSION: 03-07-2010
+#@VERSION: 23-11-2010
 #
 # KaeilOS is a registered trade mark of KOAN - Bergamo - Italia
 # Product website : http://www.KaeilOS.com 
@@ -15,16 +15,16 @@ PREFERRED_VERSION_autoconf-native = "2.65"
 PREFERRED_VERSION_automake = "1.11.1"
 PREFERRED_VERSION_automake-native = "1.11.1"
 PREFERRED_VERSION_busybox 	= "1.13.2"
-PREFERRED_VERSION_cairo		= "1.8.10"
+PREFERRED_VERSION_cairo		= "1.10.0"
 PREFERRED_VERSION_dbus 		= "1.2.24"
 PREFERRED_VERSION_dropbear      = "0.51"
 PREFERRED_VERSION_fontconfig	= "2.8.0"
-PREFERRED_VERSION_glib-2.0 	= "2.24.0"
-PREFERRED_VERSION_glib-2.0-native = "2.24.0"
+PREFERRED_VERSION_glib-2.0 	= "2.24.1"
+PREFERRED_VERSION_glib-2.0-native = "2.24.1"
 PREFERRED_VERSION_glibmm = "2.24.0"
 PREFERRED_VERSION_gst-pulse 	= "0.9.7"
-PREFERRED_VERSION_gtk+		= "2.20.0"
-PREFERRED_VERSION_gtk+-native	= "2.20.0"
+PREFERRED_VERSION_gtk+		= "2.20.1"
+PREFERRED_VERSION_gtk+-native	= "2.20.1"
 PREFERRED_VERSION_gtkmm		= "2.20.0"
 PREFERRED_VERSION_hal		= "0.5.14"
 PREFERRED_VERSION_libgemwidget	= "1.0"
@@ -42,8 +42,10 @@ PREFERRED_VERSION_mythplugins   = "0.22"
 PREFERRED_VERSION_myththemes    = "0.22"
 PREFERRED_VERSION_mythtv        = "0.22"
 PREFERRED_VERSION_mplayer       = "0.0+1.0rc3+svnr30165"
-PREFERRED_VERSION_network-manager-applet = "0.8"
-PREFERRED_VERSION_networkmanager = "0.8"
+PREFERRED_VERSION_network-manager-applet = "0.8.1"
+PREFERRED_VERSION_networkmanager = "0.8.1"
+PREFERRED_VERSION_openssl = "1.0.0b"
+PREFERRED_VERSION_openssl-native = "1.0.0b"
 PREFERRED_VERSION_pango 	= "1.24.4"
 PREFERRED_VERSION_pango-native     = "1.24.4"
 #PREFERRED_VERSION_pixman	= "0.13.2"
@@ -55,7 +57,7 @@ PREFERRED_VERSION_python-pycairo = "1.8.0"
 KAEILOS_WX_VERSION ?= "2.8.10"
 PREFERRED_VERSION_wxwidgets = "${KAEILOS_WX_VERSION}"
 
-KAEILOS_QT_VERSION ?= "4.6.2"
+KAEILOS_QT_VERSION ?= "4.6.3"
 PREFERRED_VERSION_qt4-tools-native = "${KAEILOS_QT_VERSION}"
 PREFERRED_VERSION_qt4-tools-sdk = "${KAEILOS_QT_VERSION}"
 PREFERRED_VERSION_qt4-embedded = "${KAEILOS_QT_VERSION}"
