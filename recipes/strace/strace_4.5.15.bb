@@ -1,6 +1,6 @@
 DESCRIPTION = "strace is a system call tracing tool."
 SECTION = "console/utils"
-LICENSE = "GPL"
+LICENSE = "BSD"
 PR = "r1"
 
 # this recipe is missing patches for arm and sh
