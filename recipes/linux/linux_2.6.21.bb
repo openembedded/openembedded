@@ -12,6 +12,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=ke
            file://tsc2003.c \
 	   file://tsc2003-config.diff \
 	   file://defconfig \
+           file://sumversionfix.patch \
 	   "
 
 SRC_URI_append_simpad = "\
