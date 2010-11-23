@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.perl.org/"
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
 DEPENDS = "virtual/db-native gdbm-native"
-PR = "r7"
+PR = "r8"
 NATIVE_INSTALL_WORKS = "1"
 
 # Not tested enough
@@ -21,6 +21,7 @@ SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz;name=perl-${PV} \
            file://perl-configpm-switch.patch \
            file://native-nopacklist.patch \
            file://native-perlinc.patch \
+	   file://perl-fix-cross-library-check.patch \
 	   "
 
 SRC_URI[perl-5.10.1.md5sum] = "b9b2fdb957f50ada62d73f43ee75d044"

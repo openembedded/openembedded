@@ -1,0 +1,19 @@
+Index: perl-5.10.1/lib/ExtUtils/Liblist/Kid.pm
+===================================================================
+--- perl-5.10.1.orig/lib/ExtUtils/Liblist/Kid.pm	2010-11-23 13:54:41.000000000 +0300
++++ perl-5.10.1/lib/ExtUtils/Liblist/Kid.pm	2010-11-23 14:18:13.000000000 +0300
+@@ -33,6 +33,14 @@
+ 	$potential_libs .= " " if $potential_libs;
+ 	$potential_libs .= $Config{perllibs};
+     }
++
++    if ($Config{ldflags}) { 
++	# Dynamic libraries are not transitive, so we may need including
++	# the libraries linked against perl.dll again.
++
++	$potential_libs = $Config{ldflags} . " " . $potential_libs;
++    }
++
+     return ("", "", "", "", ($give_libs ? [] : ())) unless $potential_libs;
+     warn "Potential libraries are '$potential_libs':\n" if $verbose;
+ 
