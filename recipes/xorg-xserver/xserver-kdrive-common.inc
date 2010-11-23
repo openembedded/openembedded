@@ -1,11 +1,12 @@
 LICENSE = "MIT"
 DEPENDS = "compositeproto damageproto fixesproto recordproto resourceproto scrnsaverproto xineramaproto videoproto xextproto xproto \
 	libxau libxext libxdmcp libxfont libxrandr tslib virtual/libx11 xtrans xextproto-70-includes"
-INC_PR = "r28"
+INC_PR = "r29"
 
 PKGN ?= "xserver-kdrive"
 
 PROVIDES = "virtual/xserver"
+PROVIDES += "${PACKAGES}"
 PACKAGES =+ "${PKGN}-fbdev \
              ${PKGN}-sdl \
              ${PKGN}-fake \
