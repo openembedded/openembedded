@@ -6,9 +6,17 @@ networking utilities and servers including ftp, ftpd, rcp, \
 rexec, rlogin, rlogind, rsh, rshd, syslog, syslogd, talk, \
 talkd, telnet, telnetd, tftp, tftpd, and uucpd."
 
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "${GNU_MIRROR}/inetutils/inetutils-${PV}.tar.gz \
+           file://inetutils-1.8-0001-printf-parse-pull-in-features.h-for-__GLIBC__.patch \
+           file://inetutils-1.8-0002-argp-fix-program_invocation_name-detection.patch \
+           file://inetutils-1.8-0003-wchar.patch \
+           file://inetutils-1.8-1001-ftp-rename-ruserpass-to-avoid-C-library-collision.patch \
+           file://inetutils-1.8-1002-rshd-detect-__rcmd_errstr-support-in-the-C-lib.patch \
+           file://inetutils-1.8-1003-use-daemon-from-the-C-library-when-possible.patch \
+           file://inetutils-1.8-1004-detect-fork-support.patch \
+           file://inetutils-1.8-1005-ftpd-add-daemon-D-nommu-support.patch \
 "
 
 inherit autotools
@@ -17,6 +25,7 @@ EXTRA_OECONF = "--with-ncurses-include-dir=${STAGING_INCDIR} \
 		--with-path-procnet-dev=/proc/net/dev"
 
 do_configure_prepend () {
+	export HELP2MAN='help2man --no-discard-stderr'
 	cp ${STAGING_DATADIR_NATIVE}/gettext/config.rpath ${S}/build-aux/config.rpath
 	rm -f ${S}/glob/configure*
 }
