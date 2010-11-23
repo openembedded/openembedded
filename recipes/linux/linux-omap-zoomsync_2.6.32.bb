@@ -13,7 +13,7 @@ DEFAULT_PREFERENCE_omapzoom36x = "1"
 
 SRCREV = "9925e5c0abf878314d98419320325470c9bbd03d"
 
-OEV = "oe8"
+OEV = "oe9"
 PE = "2"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
@@ -21,6 +21,7 @@ PV = "2.6.32.7-${OEV}+gitr${SRCREV}"
 
 SRC_URI = "git://dev.omapzoom.org/pub/scm/integration/kernel-omap3.git;branch=master;protocol=git \
        file://0042-musb-allow-host-io-without-gadget-module.patch \
+       file://rev.patch \
        file://logo_linux_clut224.ppm \
        file://defconfig"
 
