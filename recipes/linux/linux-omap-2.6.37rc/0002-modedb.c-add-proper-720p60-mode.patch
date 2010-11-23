@@ -1,7 +1,7 @@
 From 3f6d595815a2362c3c7b3ed0db48aad2436f2c4e Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Mon, 8 Mar 2010 14:38:31 +0100
-Subject: [PATCH 2/7] modedb.c: add proper 720p60 mode
+Subject: [PATCH 2/8] modedb.c: add proper 720p60 mode
 
 Signed-off-by: Koen Kooi <koen@beagleboard.org>
 ---

@@ -1,7 +1,7 @@
 From f88552cc59b8292b45dd16ec56198e50f040122a Mon Sep 17 00:00:00 2001
 From: Mike Galbraith <efault@gmx.de>
 Date: Fri, 19 Nov 2010 12:52:42 +0100
-Subject: [PATCH 7/7] Miracle patch
+Subject: [PATCH 7/8] Miracle patch
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit

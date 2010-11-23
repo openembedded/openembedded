@@ -1,7 +1,7 @@
 From 26383be87990cba18af2da275d12781d179215a8 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Wed, 6 Oct 2010 10:19:34 +0200
-Subject: [PATCH 1/7] ARM: OMAP: beagleboard: Add infrastructure to do fixups based on expansionboard name passed by u-boot
+Subject: [PATCH 1/8] ARM: OMAP: beagleboard: Add infrastructure to do fixups based on expansionboard name passed by u-boot
 
 Add support for Tincantools Zippy and Zippy2 expansionboards as well
 

@@ -1,7 +1,7 @@
 From 5eca3854e9bd6fa1d27f2def25176bb9fc27b86d Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Thu, 7 Oct 2010 09:25:45 +0200
-Subject: [PATCH 3/7] ARM: OMAP: fix USB initialization for beagleboard-xM
+Subject: [PATCH 3/8] ARM: OMAP: fix USB initialization for beagleboard-xM
 
 Signed-off-by: Koen Kooi <koen@beagleboard.org>
 ---
