@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPLv1+"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r15"
+PR = "r16"
 
 # 5.10.1 has Module::Build built-in
 PROVIDES += "libmodule-build-perl"
@@ -62,6 +62,7 @@ SRC_URI = "ftp://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz;name=perl-${PV} \
 	file://arm-alignment.diff \
 	file://fcgi-test.diff \
 	file://hurd-ccflags.diff \
+	file://perl-time-hires-fix-cross-compilation.patch \
 	\
         file://Makefile.patch \
         file://Makefile.SH.patch \

@@ -1,0 +1,29 @@
+Index: perl-5.10.1/ext/Time-HiRes/Makefile.PL
+===================================================================
+--- perl-5.10.1.orig/ext/Time-HiRes/Makefile.PL	2010-11-23 12:05:59.000000000 +0300
++++ perl-5.10.1/ext/Time-HiRes/Makefile.PL	2010-11-23 12:06:42.000000000 +0300
+@@ -157,24 +157,6 @@
+ 	    my $res = system($cccmd);
+ 	    $ok = defined($res) && $res == 0 && -s $tmp_exe && -x _;
+ 
+-	    if ( $ok && exists $args{run} && $args{run}) {
+-		my $tmp_exe =
+-		    File::Spec->catfile(File::Spec->curdir, $tmp_exe);
+-		printf "Running $tmp_exe..." if $VERBOSE;
+-		if (system($tmp_exe) == 0) {
+-		    $ok = 1;
+-		} else {
+-		    $ok = 0;
+-		    my $errno = $? >> 8;
+-		    local $! = $errno;
+-		    printf <<EOF;
+-
+-*** The test run of '$tmp_exe' failed: status $?
+-*** (the status means: errno = $errno or '$!')
+-*** DO NOT PANIC: this just means that *some* functionality will be missing.
+-EOF
+-		}
+-	    }
+ 	    unlink("$tmp.c", $tmp_exe);
+         }
+     }
