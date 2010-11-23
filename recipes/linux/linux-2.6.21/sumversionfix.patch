@@ -1,0 +1,12 @@
+diff --git a/scripts/mod/sumversion.c b/scripts/mod/sumversion.c
+index 8a28756..bd2981b 100644
+--- a/scripts/mod/sumversion.c
++++ b/scripts/mod/sumversion.c
+@@ -7,6 +7,7 @@
+ #include <ctype.h>
+ #include <errno.h>
+ #include <string.h>
++#include <linux/limits.h>
+ #include "modpost.h"
+ 
+ /*
