@@ -6,7 +6,7 @@ networking utilities and servers including ftp, ftpd, rcp, \
 rexec, rlogin, rlogind, rsh, rshd, syslog, syslogd, talk, \
 talkd, telnet, telnetd, tftp, tftpd, and uucpd."
 
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "${GNU_MIRROR}/inetutils/inetutils-${PV}.tar.gz \
            file://inetutils-1.8-0001-printf-parse-pull-in-features.h-for-__GLIBC__.patch \
@@ -25,7 +25,7 @@ EXTRA_OECONF = "--with-ncurses-include-dir=${STAGING_INCDIR} \
 		--with-path-procnet-dev=/proc/net/dev"
 
 do_configure_prepend () {
-	export HELP2MAN='help2man --no-discard-stderr'
+	export HELP2MAN='true'
 	cp ${STAGING_DATADIR_NATIVE}/gettext/config.rpath ${S}/build-aux/config.rpath
 	rm -f ${S}/glob/configure*
 }
