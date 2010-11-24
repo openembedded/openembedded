@@ -1,8 +1,7 @@
 # NOTE: WIP! This recipe does not cross-compile atm., only -native
 SECTION = "libs"
-DEPENDS = "glib-2.0 libffi"
+DEPENDS = "glib-2.0 libffi bison-native"
 BBCLASSEXTEND = "native"
-DEPENDS_virtclass-native = "glib-2.0-native libffi-native"
 LICENSE = "LGPL"
 PR = "r1"
 
