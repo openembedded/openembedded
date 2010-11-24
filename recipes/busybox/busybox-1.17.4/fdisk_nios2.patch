@@ -1,0 +1,13 @@
+Index: busybox-1.15.3/util-linux/fdisk_osf.c
+===================================================================
+--- busybox-1.15.3.orig/util-linux/fdisk_osf.c
++++ busybox-1.15.3/util-linux/fdisk_osf.c
+@@ -44,7 +44,7 @@
+ #define BSD_LINUX_BOOTDIR "/usr/ucb/mdec"
+ 
+ #if defined(i386) || defined(__sparc__) || defined(__arm__) \
+- || defined(__m68k__) || defined(__mips__) || defined(__s390__) \
++ || defined(__m68k__) || defined(__mips__) || defined(__nios2__) \
+  || defined(__s390__) || defined(__s390x__) \
+  || defined(__sh__) || defined(__x86_64__) || defined(__avr32__)
+ # define BSD_LABELSECTOR   1
