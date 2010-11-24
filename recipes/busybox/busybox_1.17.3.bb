@@ -1,10 +1,12 @@
 require busybox_1.1x.inc
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 SRC_URI += "\
   file://busybox-1.17.3-sort.patch  \
   file://busybox-1.17.3-dnsd.patch \
   file://busybox-1.17.3-unicode.patch \
+  file://busybox-1.17.3-iproute.patch \
+  file://busybox-1.17.3-ls.patch \
 "
 
 SRC_URI[md5sum] = "a2ce1a951571da8c6e0eaf75b1acef60"
