@@ -3,9 +3,9 @@ DEPENDS = "geoclue enchant gtk-doc-native gtk-doc gnome-keyring libsoup-2.4 curl
 
 SRCREV_FORMAT = "webcore-rwebkit"
 
-PR = "r1"
-SRCREV = "68244"
-PV = "1.3.4+svnr${SRCPV}"
+PR = "r0"
+SRCREV = "72648"
+PV = "1.3.6+svnr${SRCPV}"
 
 SRC_URI = "\
   svn://svn.webkit.org/repository/webkit/trunk/;module=JavaScriptCore;proto=http \
@@ -34,6 +34,7 @@ EXTRA_OECONF = "\
                 --enable-svg \
                 --enable-icon-database=yes \
                 --enable-geolocation=yes \
+                --enable-link-prefetch \
 #                --with-unicode-backend=glib \
 "
 
