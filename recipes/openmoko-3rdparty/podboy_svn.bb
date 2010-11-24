@@ -5,9 +5,8 @@ AUTHOR = "Valéry Febvre <vfebvre@easter-eggs.com>"
 SECTION = "x11/applications"
 PRIORITY = "optional"
 
-SRCREV = "174"
-PV = "1.6.1+svnr${SRCPV}"
-PR = "r3"
+SRCREV = "210"
+PV = "1.7.2+svnr${SRCPV}"
 
 PACKAGE_ARCH = "all"
 
@@ -21,6 +20,7 @@ FILES_${PN} += "${datadir}/podboy ${datadir}/applications/podboy.desktop ${datad
 DEPENDS = "${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'gst-plugins-ugly', d)}"
 RDEPENDS_${PN} += "python-compression python-elementary python-gst python-html python-netclient python-netserver python-sqlite3 python-subprocess gst-plugin-alsa gst-plugin-audioconvert gst-plugin-audioresample gst-plugin-bluez ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'gst-plugin-mad', d)} gst-plugin-ogg gst-plugin-volume gst-plugin-vorbis"
 
-do_compile_prepend() {
-	${STAGING_BINDIR_NATIVE}/edje_cc ${S}/data/podboy.edc
+do_compile_append() {
+	cd ${S}/data/
+	${STAGING_BINDIR_NATIVE}/edje_cc podboy.edc
 }
