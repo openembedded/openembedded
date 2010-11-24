@@ -11,7 +11,7 @@ S = "${WORKDIR}/git"
 SRCREV = "d22159060470d2f429d4e8b9ba1dc3096aa5d099"
 PV = "0.17.0+gitr${SRCPV}"
 PR = "r1"
-SRC_URI = "git://shr.bearstech.com/repo/pyphonelog.git;protocol=http"
+SRC_URI = "git://git.shr-project.org/repo/pyphonelog.git;protocol=http"
 FILES_${PN} += "${datadir}/applications/phonelog.desktop \
 		${datadir}/phonelog/ \
 		${datadir}/pixmaps/phonelog.png"

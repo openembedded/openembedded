@@ -7,5 +7,5 @@ PR = "r0"
 
 inherit autotools
 
-SRC_URI = "git://shr.bearstech.com/repo/${PN}.git;protocol=http;branch=master"
+SRC_URI = "git://git.shr-project.org/repo/${PN}.git;protocol=http;branch=master"
 S = "${WORKDIR}/git"
