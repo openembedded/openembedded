@@ -7,8 +7,8 @@ RDEPENDS_pn-help2man = "gettext perl liblocale-gettext-perl"
 PR = "r0"
 
 SRC_URI = "${GNU_MIRROR}/${BPN}/${BPN}-${PV}.tar.gz"
-SRC_URI[md5sum] = "371b5cc74fe9c2ea3ee1ca23c19b19a8"
-SRC_URI[sha256sum] = "3b44a91ef8e722c570a2a2d0e3f1cd249aac25dd2b2692c7792d87b30ed61561"
+SRC_URI[md5sum] = "426671c6fe79e5ef2233303367eab5a6"
+SRC_URI[sha256sum] = "952c29561bce8b233aa10af7f0e0c79c8243712810bf8ddf01e6efd82ce250d1"
 
 inherit autotools
 
