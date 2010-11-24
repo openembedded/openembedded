@@ -1,0 +1,16 @@
+This patch is taken from 
+https://bugs.gentoo.org/show_bug.cgi?id=343175
+-Khem
+
+--- a/rules.mak	2010-11-03 01:05:54.765852993 +0000
++++ b/rules.mak	2010-11-03 01:06:54.234107851 +0000
+@@ -14,7 +14,7 @@
+ # Flags for dependency generation
+ QEMU_DGFLAGS += -MMD -MP -MT $@ -MF $(*D)/$(*F).d
+ 
+-%.o: %.c
++%.o: %.c $(GENERATED_HEADERS)
+ 	$(call quiet-command,$(CC) $(QEMU_CFLAGS) $(QEMU_DGFLAGS) $(CFLAGS) -c -o $@ $<,"  CC    $(TARGET_DIR)$@")
+ 
+ %.o: %.S
+
