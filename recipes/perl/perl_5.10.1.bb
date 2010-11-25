@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPLv1+"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r17"
+PR = "r18"
 
 # 5.10.1 has Module::Build built-in
 PROVIDES += "libmodule-build-perl"
@@ -152,6 +152,10 @@ do_configure() {
 	case "${TARGET_ARCH}" in
 		x86_64 | powerpc | s390)
 			sed -i -e "s,\(need_va_copy=\)'undef',\1'define',g" \
+				config.sh-${TARGET_ARCH}-${TARGET_OS}
+			;;
+		arm)
+			sed -i -e "s,\(d_u32align=\)'undef',\1'define',g" \
 				config.sh-${TARGET_ARCH}-${TARGET_OS}
 			;;
 	esac
