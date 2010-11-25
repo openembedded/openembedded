@@ -1,6 +1,6 @@
 LICENSE = "GPL"
 DEPENDS = "zlib ncurses gnutls"
-PR = "r1"
+PR = "r2"
 SRC_URI = "\
     http://download.savannah.gnu.org/releases/qemu/qemu-${PV}.tar.gz \
     file://leftover.patch \
@@ -21,6 +21,8 @@ EXTRA_OECONF += " --disable-curl --disable-sdl --disable-strip \
 EXTRA_OECONF_append_virtclass-native = " --extra-cflags="-I${STAGING_INCDIR_NATIVE}""
 
 inherit autotools
+
+PARALLEL_MAKE = ""
 
 do_configure() {
 	${S}/configure --prefix=${prefix} ${EXTRA_OECONF}
