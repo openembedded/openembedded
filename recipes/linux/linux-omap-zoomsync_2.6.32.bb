@@ -13,7 +13,7 @@ DEFAULT_PREFERENCE_omapzoom36x = "1"
 
 SRCREV = "9925e5c0abf878314d98419320325470c9bbd03d"
 
-OEV = "oe9"
+OEV = "oe10"
 PE = "2"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
