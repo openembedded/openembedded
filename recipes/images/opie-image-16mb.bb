@@ -4,7 +4,6 @@ DEPENDS = "task-boot task-opie-16mb"
 
 ANGSTROM_EXTRA_INSTALL ?= ""
 IMAGE_INSTALL = "task-boot \
-                    ipkg ipkg-collateral \
                     dropbear \
                     task-opie-16mb-base \
                     task-opie-16mb-applets \

@@ -19,9 +19,6 @@ ADD_JVM = "\
     jamvm \
     cacao "
 
-ADD_OTHER = "\
-    ipkg "
-
 IMAGE_INSTALL = "\
     ${XSERVER} \
     task-base-extended \
