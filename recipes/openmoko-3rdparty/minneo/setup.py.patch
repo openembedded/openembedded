@@ -1,0 +1,20 @@
+--- trunk.orig/setup.py	2010-11-25 13:10:09.000000000 +0100
++++ trunk/setup.py	2010-11-25 13:11:15.000000000 +0100
+@@ -50,13 +50,12 @@
+     for root, dirs, files in os.walk('data/themes/'):
+         if root == 'data/themes/' or root.find('images') >= 0 or root.find('.svn') >= 0:
+             continue
+-        for i, file_name in enumerate(files):
++        theme_files = []
++        for file_name in files:
+             if file_name == 'minneo.edj':
+-                files[i] = os.path.join(root, file_name)
+-            else:
+-                del files[i]
++                theme_files.append(os.path.join(root, file_name))
+         theme_name = os.path.basename(root)
+-        l.append((os.path.join('share/minneo/themes', theme_name), files))
++        l.append((os.path.join('share/minneo/themes', theme_name), theme_files))
+     return l
+ 
+ def main():
