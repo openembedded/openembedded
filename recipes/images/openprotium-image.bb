@@ -22,7 +22,7 @@ IMAGE_PREPROCESS_COMMAND += "echo /dev/md >> ${IMAGE_ROOTFS}/etc/udev/mount.blac
 IMAGE_PREPROCESS_COMMAND += "echo /dev/hd >> ${IMAGE_ROOTFS}/etc/udev/mount.blacklist;"
 IMAGE_PREPROCESS_COMMAND += "echo /dev/mtd3		0x30000		0x10000		0x10000 > ${IMAGE_ROOTFS}/etc/fw_env.config;"
 
-ROOTFS_POSTPROCESS_COMMAND += "ipkg-cl ${IPKG_ARGS} -force-depends \
+ROOTFS_POSTPROCESS_COMMAND += "opkg-cl ${IPKG_ARGS} -force-depends \
                                 remove ${PACKAGE_REMOVE};"
 
 inherit image concatenated-image
