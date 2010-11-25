@@ -1,7 +1,7 @@
-From b62a517b3a1600fa491840223feb11fc99a76e0f Mon Sep 17 00:00:00 2001
+From a9afe5db3c54dc9dcc1025d493afe854a6e86914 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 15 Jul 2010 17:53:44 -0500
-Subject: [PATCH 58/71] mt9t112: Do init_camera every powerup
+Subject: [PATCH 58/75] mt9t112: Do init_camera every powerup
 
 This is because we want to ensure we always come from a known state.
 

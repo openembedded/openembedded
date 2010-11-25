@@ -1,7 +1,7 @@
-From 250e5bf211583993d5e56cb5fc736a07945fa496 Mon Sep 17 00:00:00 2001
+From 05232a5ba68cab14877a4032cc7995c15254195d Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Fri, 25 Jun 2010 16:01:47 -0500
-Subject: [PATCH 30/71] WIP: mt9t111: Work in progress for camera enablement
+Subject: [PATCH 30/75] WIP: mt9t111: Work in progress for camera enablement
 
 This is changing so far:
 - Remove useless printk's in enum_frameinterval calls.

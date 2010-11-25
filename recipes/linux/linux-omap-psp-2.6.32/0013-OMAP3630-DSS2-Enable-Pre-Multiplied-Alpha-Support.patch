@@ -1,7 +1,7 @@
-From 7a700536628f92058e2c76ec297b941cc176e156 Mon Sep 17 00:00:00 2001
+From 37bcddac7dbfe61576489e4c55b32d8b45eb1c5a Mon Sep 17 00:00:00 2001
 From: Sudeep Basavaraj <sudeep.basavaraj@ti.com>
 Date: Tue, 5 Jan 2010 18:58:18 +0530
-Subject: [PATCH 13/48] OMAP3630:DSS2:Enable Pre-Multiplied Alpha Support
+Subject: [PATCH 13/45] OMAP3630:DSS2:Enable Pre-Multiplied Alpha Support
 
 Enables dss to process color formats with pre-mulitplied alpha values.
 With this we can have alpha values defined for each pixel

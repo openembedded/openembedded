@@ -1,7 +1,7 @@
-From 9ff295528695c3a1b0a369e989f556db02ddf6b9 Mon Sep 17 00:00:00 2001
+From d14c2924e8bb7d9a864dfeb0aca37ef9fc913f7d Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Wed, 16 Jun 2010 04:28:06 +0300
-Subject: [PATCH 10/71] omap3beagle: camera: Change arch -> late_initcall
+Subject: [PATCH 10/75] omap3beagle: camera: Change arch -> late_initcall
 
 This is for ensuring that the regulators are initialized already.
 

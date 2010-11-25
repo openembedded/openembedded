@@ -1,7 +1,7 @@
-From d1b23a6a7e9c92877c21a1325c699176e1e0be8f Mon Sep 17 00:00:00 2001
+From bfca10fcff055b53728881c4c443f18e1387c722 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 1 Jul 2010 13:57:26 -0500
-Subject: [PATCH 56/71] omap34xxcam: Fix multi pixel format negotiation
+Subject: [PATCH 56/75] omap34xxcam: Fix multi pixel format negotiation
 
 Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
 ---

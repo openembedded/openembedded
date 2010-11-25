@@ -1,7 +1,7 @@
-From 6a768a155a2758aa55e27574dd2e5d268b54079b Mon Sep 17 00:00:00 2001
+From e069619a821aca3569440a4d8ccf3727ebe80ddd Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Sat, 10 Jul 2010 09:51:16 -0500
-Subject: [PATCH 35/71] omap3isp: Fix bad YUV_BT checks in datapath_config
+Subject: [PATCH 35/75] omap3isp: Fix bad YUV_BT checks in datapath_config
 
 The use of an external write enable signals (from ISP point of
 view) shouldn't depend on the sensor parallel interface type.

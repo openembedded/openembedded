@@ -1,7 +1,7 @@
-From 9bff3b599cc43bb716d1f1190318122b169ab723 Mon Sep 17 00:00:00 2001
+From f33e1a25ca1d7e8418f076a9aead8fa66341f964 Mon Sep 17 00:00:00 2001
 From: Vaibhav Hiremath <hvaibhav@ti.com>
 Date: Thu, 15 Jul 2010 13:53:03 +0530
-Subject: [PATCH 44/71] mt9v113: AE param tuned to get 28~30FPS
+Subject: [PATCH 44/75] mt9v113: AE param tuned to get 28~30FPS
 
 Please note that with this change we are compromising with
 image quality, so should be used only in case of high FPS use-case.

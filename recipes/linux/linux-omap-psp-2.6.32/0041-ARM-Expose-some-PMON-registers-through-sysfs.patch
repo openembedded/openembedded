@@ -1,7 +1,7 @@
-From d54211da37c7ac61956381359b7504f9fde38c47 Mon Sep 17 00:00:00 2001
+From 51643be36a5b45636cd7208a81a09638d7913604 Mon Sep 17 00:00:00 2001
 From: Mans Rullgard <mans@mansr.com>
 Date: Sat, 28 Mar 2009 13:05:02 +0000
-Subject: [PATCH 41/48] ARM: Expose some PMON registers through sysfs
+Subject: [PATCH 41/45] ARM: Expose some PMON registers through sysfs
 
 ---
  arch/arm/kernel/sysfs_v7.c |   11 +++++++++++

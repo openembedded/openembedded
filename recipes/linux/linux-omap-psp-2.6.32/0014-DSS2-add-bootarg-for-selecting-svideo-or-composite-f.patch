@@ -1,7 +1,7 @@
-From d2c7e5e7904f08cb9f6639b418bed879bf921738 Mon Sep 17 00:00:00 2001
+From d03b9f3dc00274820bed99cc22d8425d6bf0e7b4 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Tue, 19 Jan 2010 21:19:15 -0800
-Subject: [PATCH 14/48] DSS2: add bootarg for selecting svideo or composite for tv output
+Subject: [PATCH 14/45] DSS2: add bootarg for selecting svideo or composite for tv output
 
 also add pal-16 and ntsc-16 omapfb.mode settings for 16bpp
 ---
@@ -50,10 +50,10 @@ index 1127e85..53fa54e 100644
  }
  
 diff --git a/drivers/video/omap2/omapfb/omapfb-main.c b/drivers/video/omap2/omapfb/omapfb-main.c
-index ef29983..015831b 100644
+index 7f47a34..0fe87e0 100644
 --- a/drivers/video/omap2/omapfb/omapfb-main.c
 +++ b/drivers/video/omap2/omapfb/omapfb-main.c
-@@ -1961,7 +1961,15 @@ static int omapfb_mode_to_timings(const char *mode_str,
+@@ -1988,7 +1988,15 @@ static int omapfb_mode_to_timings(const char *mode_str,
  	int r;
  
  #ifdef CONFIG_OMAP2_DSS_VENC

@@ -1,7 +1,7 @@
-From c14444442ebdb0c717931557bebbeab314e44bf3 Mon Sep 17 00:00:00 2001
+From b23565171bddf4f2e454f7857d52a5a79da00ba7 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 22 Jul 2010 15:38:43 -0500
-Subject: [PATCH 1/2] omap3beagle: Add camera bootarg
+Subject: [PATCH 75/75] omap3beagle: Add camera bootarg
 
 This adds a new 'camera' bootarg, with (so far) 2 new possible types:
 - lbcmvga: Leopard Board Camera Module: MT9V113 VGA
@@ -104,5 +104,5 @@ index f93616b..2677b41 100644
  MACHINE_START(OMAP3_BEAGLE, "OMAP3 Beagle Board")
  	/* Maintainer: Syed Mohammed Khasim - http://beagleboard.org */
 -- 
-1.6.3.3
+1.6.6.1
 

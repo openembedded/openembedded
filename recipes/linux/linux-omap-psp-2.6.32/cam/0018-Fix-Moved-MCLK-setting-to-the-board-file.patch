@@ -1,7 +1,7 @@
-From fc51d55718e20246c18c45c9e5545a0ef31d8b05 Mon Sep 17 00:00:00 2001
+From 1156c4406ff37b425c596804624ad6014006fcc1 Mon Sep 17 00:00:00 2001
 From: Penda, Naveen <pnaveen@ti.com>
 Date: Thu, 22 Oct 2009 06:07:01 +0530
-Subject: [PATCH 18/71] Fix: Moved MCLK setting to the board file
+Subject: [PATCH 18/75] Fix: Moved MCLK setting to the board file
 
 This patch provides the flexibility to set  the MCLK frequency
  from the board file

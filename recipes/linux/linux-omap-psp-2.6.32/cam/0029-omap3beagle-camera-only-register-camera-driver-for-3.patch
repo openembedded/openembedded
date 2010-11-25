@@ -1,7 +1,7 @@
-From 0e5fd12767472b52744c5dce43c77451aa89ba3d Mon Sep 17 00:00:00 2001
+From 6cce810371e763a367b69a38e53635657804694c Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Sun, 27 Jun 2010 16:11:39 +0200
-Subject: [PATCH 29/71] omap3beagle: camera: only register camera driver for 36xx based SoCs
+Subject: [PATCH 29/75] omap3beagle: camera: only register camera driver for 36xx based SoCs
 
 This is a workaround for the bootcrash when used on 35xx based beagleboards.
 

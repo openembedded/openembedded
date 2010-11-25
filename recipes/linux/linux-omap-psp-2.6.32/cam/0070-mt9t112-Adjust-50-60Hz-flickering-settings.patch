@@ -1,7 +1,7 @@
-From e1df34acacf936ec2d8f2822fed88d78d29449ad Mon Sep 17 00:00:00 2001
+From 3768ad7fb5304b05ee2184ba929a9896a3f8212a Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Mon, 19 Jul 2010 17:30:29 -0500
-Subject: [PATCH 70/71] mt9t112: Adjust 50/60Hz flickering settings
+Subject: [PATCH 70/75] mt9t112: Adjust 50/60Hz flickering settings
 
 Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
 ---

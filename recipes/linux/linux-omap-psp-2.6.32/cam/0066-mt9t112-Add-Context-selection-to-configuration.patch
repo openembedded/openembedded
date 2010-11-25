@@ -1,7 +1,7 @@
-From d53224070b960f08989a50f1786adeecfca227eb Mon Sep 17 00:00:00 2001
+From c085125afaa6641b5db8e88f227eb4141ed6d59c Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Sun, 18 Jul 2010 01:12:41 -0500
-Subject: [PATCH 66/71] mt9t112: Add Context selection to configuration
+Subject: [PATCH 66/75] mt9t112: Add Context selection to configuration
 
 Thsi makes always start at least with preview mode
 (context A), and then, if needed, transition to capture

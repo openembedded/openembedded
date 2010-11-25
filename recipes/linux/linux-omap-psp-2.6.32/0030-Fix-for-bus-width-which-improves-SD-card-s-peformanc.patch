@@ -1,7 +1,7 @@
-From 790f4a8c72bb800890c37aac61fd16153a2a46a8 Mon Sep 17 00:00:00 2001
+From 5615ccd89eb521c2365992bdb7c08879fe039daa Mon Sep 17 00:00:00 2001
 From: Kishore Kadiyala <kishore.kadiyala@ti.com>
 Date: Wed, 17 Feb 2010 19:34:47 +0530
-Subject: [PATCH 30/48] Fix for bus width which improves SD card's peformance.
+Subject: [PATCH 30/45] Fix for bus width which improves SD card's peformance.
 
 This patch fixes bus width which improves peformance for SD cards.
 OMAP-MMC controller's can support maximum bus width of '8'.

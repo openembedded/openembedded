@@ -1,7 +1,7 @@
-From ffaa0e141898987cba2618d8e5b0ef2a285e79a9 Mon Sep 17 00:00:00 2001
+From b174adfdb2836b01f8306f6112b7a8c36540f7d2 Mon Sep 17 00:00:00 2001
 From: Vaibhav Hiremath <hvaibhav@ti.com>
 Date: Tue, 13 Jul 2010 19:40:39 +0530
-Subject: [PATCH 41/71] MT9V113: Min, Max clk input changed as per the spec
+Subject: [PATCH 41/75] MT9V113: Min, Max clk input changed as per the spec
 
 Signed-off-by: Vaibhav Hiremath <hvaibhav@ti.com>
 ---

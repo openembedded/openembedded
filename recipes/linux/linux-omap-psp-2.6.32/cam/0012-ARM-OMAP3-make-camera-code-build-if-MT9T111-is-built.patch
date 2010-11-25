@@ -1,14 +1,14 @@
-From e37a8b39623910576c5784ccc10229fabe51b4c3 Mon Sep 17 00:00:00 2001
+From 860ff4be70242f2d2964e0d431d09231cbf6bfde Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Wed, 16 Jun 2010 09:45:46 +0200
-Subject: [PATCH 12/71] ARM: OMAP3: make camera code build if MT9T111 is built as module or disabled
+Subject: [PATCH 12/75] ARM: OMAP3: make camera code build if MT9T111 is built as module or disabled
 
 ---
  arch/arm/mach-omap2/board-omap3beagle.c |    4 +++-
  1 files changed, 3 insertions(+), 1 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index 757d430..1e9a868 100644
+index 97ccf04..3d4b0bc 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -71,7 +71,7 @@ static struct omap_opp * _omap35x_l3_rate_table         = NULL;

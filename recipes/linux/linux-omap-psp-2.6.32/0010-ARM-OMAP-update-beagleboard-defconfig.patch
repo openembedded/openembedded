@@ -1,7 +1,7 @@
-From 11ab39e32179a71675e547b160ec084be65998c2 Mon Sep 17 00:00:00 2001
+From f1e6a762a7bf8d7ff7700011f60a005f28025239 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Tue, 27 Apr 2010 10:51:15 +0200
-Subject: [PATCH 10/48] ARM: OMAP: update beagleboard defconfig
+Subject: [PATCH 10/45] ARM: OMAP: update beagleboard defconfig
 
 ---
  arch/arm/configs/omap3_beagle_defconfig | 2514 +++++++++++++++++++++++++------

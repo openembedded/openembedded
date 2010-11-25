@@ -1,7 +1,7 @@
-From 4b1758fb393aefec27bd500ba64fed6b65da9d8d Mon Sep 17 00:00:00 2001
+From aa2753fcce815b4a86be5c95238cf029a948e5ff Mon Sep 17 00:00:00 2001
 From: Mans Rullgard <mans@mansr.com>
 Date: Mon, 13 Oct 2008 20:32:16 +0100
-Subject: [PATCH 36/48] ARM: Add prompt for CONFIG_ALIGNMENT_TRAP
+Subject: [PATCH 36/45] ARM: Add prompt for CONFIG_ALIGNMENT_TRAP
 
 This adds a prompt text for CONFIG_ALIGNMENT_TRAP, thus making it
 visible in make *config.

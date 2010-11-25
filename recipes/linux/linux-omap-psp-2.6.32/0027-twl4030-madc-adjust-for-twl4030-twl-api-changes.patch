@@ -1,7 +1,7 @@
-From 28d763b088bad47caac75e096bafe42e756b656d Mon Sep 17 00:00:00 2001
+From ea14002af533b155db59e15b5bccc6374aa8a5d1 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Mon, 15 Feb 2010 14:20:51 +0100
-Subject: [PATCH 27/48] twl4030-madc: adjust for twl4030 -> twl api changes
+Subject: [PATCH 27/45] twl4030-madc: adjust for twl4030 -> twl api changes
 
 ---
  drivers/mfd/twl4030-madc.c |   18 +++++++++---------

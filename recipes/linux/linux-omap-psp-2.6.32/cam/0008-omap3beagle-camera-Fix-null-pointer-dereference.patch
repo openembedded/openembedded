@@ -1,7 +1,7 @@
-From 74fef5ae63ecf623ea3accdff05b092699437b11 Mon Sep 17 00:00:00 2001
+From e5dc69cd15b96c2ffc5807a4127a94a32c9b4242 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Fri, 11 Jun 2010 17:53:50 -0500
-Subject: [PATCH 08/71] omap3beagle: camera: Fix null pointer dereference
+Subject: [PATCH 08/75] omap3beagle: camera: Fix null pointer dereference
 
 Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
 ---

@@ -5,13 +5,13 @@ KERNEL_IMAGETYPE = "uImage"
 
 COMPATIBLE_MACHINE = "beagleboard|omap3evm|am3517-evm|dm37x-evm|am37x-evm|omap3-touchbook|overo"
 
-# This is the v2.6.32_OMAPPSP_03.00.01.06 branch
-SRCREV = "a6bad4464f985fdd3bed72e1b82dcbfc004d7869"
+# This is on the master branch
+SRCREV = "5fc29e7b2a76a64a739f857858ef0b98294aa155"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
 MACHINE_KERNEL_PR_append = "+gitr${SRCREV}"
 
-SRC_URI = "git://arago-project.org/git/people/sriram/ti-psp-omap.git;protocol=git;branch=master \
+SRC_URI = "git://arago-project.org/git/projects/linux-omap3.git;protocol=http;branch=master \
            file://0001-Revert-omap3-beagle-Fix-compile-time-errors.patch \
            file://0002-board-omap3touchbook-make-it-build-against-TI-linux-.patch \
            file://0003-ARM-OMAP-add-support-for-TCT-Zippy-to-Beagle-board-f.patch \
@@ -128,21 +128,12 @@ SRC_URI = "git://arago-project.org/git/people/sriram/ti-psp-omap.git;protocol=gi
            file://cam/0069-mt9t112-Fix-pll-p-dividers-abstraction.patch \
            file://cam/0070-mt9t112-Adjust-50-60Hz-flickering-settings.patch \
            file://cam/0071-mt9t112-Trigger-autofocus-at-the-end-of-context-swit.patch \
-           file://cam/0002-omap3beagle-camera-Fix-dual-sensor-registration.patch \
-           file://cam/0003-mt9v113-Fix-State-variable-handling.patch \
-           file://cam/0001-Move-sensor-rest-to-after-applying-power.patch \
+           file://cam/0072-omap3beagle-camera-Fix-dual-sensor-registration.patch \
+           file://cam/0073-mt9v113-Fix-State-variable-handling.patch \
+           file://cam/0074-Move-sensor-rest-to-after-applying-power.patch \
+           file://cam/0075-omap3beagle-Add-camera-bootarg.patch \
            file://0001-BeagleBoard-Adjust-USER-button-pin-for-xM.patch \
-           file://cam/0001-omap3beagle-Add-camera-bootarg.patch \
            file://porches.patch \
-           file://pending/0001-OMAP3-SDRC-add-100MHz-timing-data-for-Hynix-H8KDS0.patch \
-           file://pending/0002-omap3-Fix-voltage-and-frequency-scaling-order-when.patch \
-           file://pending/0003-OMAP3-PM-Introduce-Smartreflex-support-on-OMAP3630.patch \
-           file://pending/0004-OMAP3630-PM-implement-Foward-Body-Bias-for-OPP1G.patch \
-           file://pending/0005-Revert-Revert-OMAP-DSS2-FIFI-UNDERFLOW-issue-fix.patch \
-           file://pending/0006-modules-Skip-empty-sections-when-exporting-section.patch \
-           file://pending/0007-RTC-s35390a-Bug-Fix-Pie-mode-doesn-t-work.patch \
-           file://pending/0008-OMAP3EVM-Set-minimum-throughput-requirement-for-DSS.patch \
-           file://pending/0009-ehci-fix-device-detect-issue-with-modules.patch \
            file://defconfig"
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \

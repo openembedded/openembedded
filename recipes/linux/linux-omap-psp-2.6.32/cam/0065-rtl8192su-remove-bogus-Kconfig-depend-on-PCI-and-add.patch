@@ -1,7 +1,7 @@
-From aa46956935fdee7636a66b023c521643c982208c Mon Sep 17 00:00:00 2001
+From 088fc53bfda23acd009213c5ff83f411bf09e307 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Sun, 18 Jul 2010 11:25:12 +0200
-Subject: [PATCH 65/71] rtl8192su: remove bogus Kconfig depend on PCI and add another product ID
+Subject: [PATCH 65/75] rtl8192su: remove bogus Kconfig depend on PCI and add another product ID
 
 Signed-off-by: Koen Kooi <koen@dominion.thruhere.net>
 ---

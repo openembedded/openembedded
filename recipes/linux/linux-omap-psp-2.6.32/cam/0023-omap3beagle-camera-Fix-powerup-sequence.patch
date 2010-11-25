@@ -1,7 +1,7 @@
-From 1f300b7451ed1aef6f9b9902f2070b7340cb4d0a Mon Sep 17 00:00:00 2001
+From 294459d9500c75256cff282f441b6cf68077a3e9 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 24 Jun 2010 18:21:52 -0500
-Subject: [PATCH 23/71] omap3beagle: camera: Fix powerup sequence
+Subject: [PATCH 23/75] omap3beagle: camera: Fix powerup sequence
 
 The powerup sequence was very incomplete. After revisiting the
 Aptina developer's guide, the resulting powerup sequence is followed.

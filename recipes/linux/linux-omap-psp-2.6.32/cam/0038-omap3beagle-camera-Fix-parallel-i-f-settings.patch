@@ -1,7 +1,7 @@
-From 35c871dc139883d790a0080b9f3a9bfcf0a5a24c Mon Sep 17 00:00:00 2001
+From efa8018485d29f3545e174dc10af0d01b9197077 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Mon, 12 Jul 2010 14:11:44 -0500
-Subject: [PATCH 38/71] omap3beagle: camera: Fix parallel i/f settings
+Subject: [PATCH 38/75] omap3beagle: camera: Fix parallel i/f settings
 
 This makes the sensor input be shifted from 13:4 -> 9:0, as
 in YUV streaming, the 8 least significant pins are used.

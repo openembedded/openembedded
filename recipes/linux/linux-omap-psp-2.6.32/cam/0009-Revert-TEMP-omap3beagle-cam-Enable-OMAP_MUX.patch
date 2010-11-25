@@ -1,7 +1,7 @@
-From 6d9afea5e436a57e66efd2784aa299e1baf3fe3a Mon Sep 17 00:00:00 2001
+From 0c7579c682c3eb3dc5190e1b28743be0b33571e3 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Wed, 16 Jun 2010 03:23:57 +0300
-Subject: [PATCH 09/71] Revert "TEMP: omap3beagle: cam: Enable OMAP_MUX"
+Subject: [PATCH 09/75] Revert "TEMP: omap3beagle: cam: Enable OMAP_MUX"
 
 This reverts commit 7d5f49845f06feadb9bc97d458d1ce03814ff5f4.
 

@@ -1,7 +1,7 @@
-From 06ff02b8346c0ed77fabba84a1b984f53bfaecb6 Mon Sep 17 00:00:00 2001
+From e91589e4c2736495be6f1252599d5115b33ac8c8 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Fri, 11 Jun 2010 16:15:58 -0500
-Subject: [PATCH 04/71] omap3beagle: Add camera support
+Subject: [PATCH 04/75] omap3beagle: Add camera support
 
 This is tested with the xM + Leopard imaging module camera, which
 has a MT9T111.
@@ -312,7 +312,7 @@ index 0000000..1026aeb
 +
 +#endif		/* __BOARD_OMAP3BEAGLE_LMB_H_ */
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index b313350..d6b69a6 100644
+index 93b9e5f..31de2f9 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -712,6 +712,31 @@ static struct ehci_hcd_omap_platform_data ehci_pdata __initdata = {

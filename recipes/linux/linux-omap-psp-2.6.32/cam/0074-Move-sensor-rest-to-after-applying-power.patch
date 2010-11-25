@@ -1,14 +1,14 @@
-From f3fdd3fb4e45b75722d68e5e380c0c71f83fffcf Mon Sep 17 00:00:00 2001
+From cf2b4381eeb1bb33c60fa48ea7ba27de13bca5ab Mon Sep 17 00:00:00 2001
 From: Steve Kipisz <s-kipisz2@ti.com>
 Date: Thu, 5 Aug 2010 10:51:11 -0500
-Subject: [PATCH] Move sensor rest to after applying power.
+Subject: [PATCH 74/75] Move sensor rest to after applying power.
 
 ---
  arch/arm/mach-omap2/board-omap3beagle-camera.c |   12 ++++++++----
  1 files changed, 8 insertions(+), 4 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3beagle-camera.c b/arch/arm/mach-omap2/board-omap3beagle-camera.c
-index 520e1d8..39ac4b7 100644
+index c0218e3..110c2c9 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle-camera.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle-camera.c
 @@ -160,8 +160,6 @@ static int mt9v113_power_set(struct v4l2_int_device *s, enum v4l2_power power)

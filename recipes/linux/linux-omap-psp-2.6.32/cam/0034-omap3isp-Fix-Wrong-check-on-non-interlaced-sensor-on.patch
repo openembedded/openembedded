@@ -1,7 +1,7 @@
-From 242df5600b1bb1173670846eac802840d4601de0 Mon Sep 17 00:00:00 2001
+From d6e6a76aa9d842ed9f8963ed10fc884cff3af5dd Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Fri, 9 Jul 2010 16:56:18 -0500
-Subject: [PATCH 34/71] omap3isp: Fix Wrong check on non-interlaced sensor on isr
+Subject: [PATCH 34/75] omap3isp: Fix Wrong check on non-interlaced sensor on isr
 
 Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
 ---

@@ -1,7 +1,7 @@
-From b8f60d7198d5df18336cb0151ac593cfa422f83a Mon Sep 17 00:00:00 2001
+From f5bc21e02cfc66734591104ec1b58556dccfed70 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Fri, 25 Jun 2010 12:03:59 -0500
-Subject: [PATCH 25/71] omap3beagle: camera: Rename regulators to match actual voltage levels
+Subject: [PATCH 25/75] omap3beagle: camera: Rename regulators to match actual voltage levels
 
 Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
 ---

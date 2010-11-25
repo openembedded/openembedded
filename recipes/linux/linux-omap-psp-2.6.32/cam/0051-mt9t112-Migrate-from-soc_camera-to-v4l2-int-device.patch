@@ -1,7 +1,7 @@
-From 8b94a264c58f26b5877a79fb86f55f70e54cd25a Mon Sep 17 00:00:00 2001
+From f4b417bf9b373e042f6cfb921bc67dd18d0a752f Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 1 Jul 2010 07:26:38 -0500
-Subject: [PATCH 51/71] mt9t112: Migrate from soc_camera to v4l2-int-device
+Subject: [PATCH 51/75] mt9t112: Migrate from soc_camera to v4l2-int-device
 
 This is to use the driver with the old OMAP3 Camera-ISP platform.
 

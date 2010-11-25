@@ -1,7 +1,7 @@
-From 140f36e6a0a01ccef5a13ff2a1a466bd38fa3b2d Mon Sep 17 00:00:00 2001
+From 434ac18f2ac9969570dd9347f9933f4ed5147749 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 24 Jun 2010 16:34:13 -0500
-Subject: [PATCH 20/71] omap3beagle: camera: set mclk for mt9t111
+Subject: [PATCH 20/75] omap3beagle: camera: set mclk for mt9t111
 
 Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
 ---

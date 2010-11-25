@@ -1,7 +1,7 @@
-From 4f010e99c75490daf2f89cf5aed95ea5cd1f3fad Mon Sep 17 00:00:00 2001
+From 3da817ad292e1414b175484cf384f1fcca351493 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Wed, 25 Nov 2009 12:30:46 -0600
-Subject: [PATCH 19/71] omap3isp: core: Do smarter MCLK setting
+Subject: [PATCH 19/75] omap3isp: core: Do smarter MCLK setting
 
 Since the ratio between MCLK and DPLL4_M5 could not be 1:1
 (i.e. on 3430 its 2:1), it's necessary to check ratio

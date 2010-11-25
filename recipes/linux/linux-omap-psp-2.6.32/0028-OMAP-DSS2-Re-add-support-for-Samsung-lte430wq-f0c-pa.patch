@@ -1,7 +1,7 @@
-From f19824e700617d83e6409f909f4dd2f989b84e4d Mon Sep 17 00:00:00 2001
+From fea02525d71cc64fb84f011768a5f5d0bb248dc7 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Mon, 15 Feb 2010 14:38:00 +0100
-Subject: [PATCH 28/48] OMAP: DSS2: (Re)add support for Samsung lte430wq-f0c panel
+Subject: [PATCH 28/45] OMAP: DSS2: (Re)add support for Samsung lte430wq-f0c panel
 
 ---
  drivers/video/omap2/displays/Kconfig               |    6 +

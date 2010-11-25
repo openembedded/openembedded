@@ -1,7 +1,7 @@
-From 7e836bcc19cd61006cbc8bc0eb3360b2c188fa47 Mon Sep 17 00:00:00 2001
+From 046dac666301c0df22679424169675045c70defd Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Mon, 12 Jul 2010 16:42:41 -0500
-Subject: [PATCH 47/71] omap3beagle: camera: Bring back mt9t111 support
+Subject: [PATCH 47/75] omap3beagle: camera: Bring back mt9t111 support
 
 Restore MT9T111 sensor support.
 
@@ -217,7 +217,7 @@ index c91529d..2e49158 100644
  {
  	cam_1v8_reg = regulator_get(&pdev->dev, "cam_1v8");
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index b0da483..0e7e8b2 100644
+index a1535ca..239bd44 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -77,6 +77,12 @@ static struct omap_opp * _omap37x_l3_rate_table         = NULL;

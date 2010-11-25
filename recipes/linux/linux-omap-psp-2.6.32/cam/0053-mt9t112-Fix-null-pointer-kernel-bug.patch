@@ -1,7 +1,7 @@
-From fe7df74595c449a47a7a86cab9d35ab7320faf16 Mon Sep 17 00:00:00 2001
+From 8ef0425ef8bc0d228e03666cf7d0af564882fcef Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 1 Jul 2010 09:12:37 -0500
-Subject: [PATCH 53/71] mt9t112: Fix null pointer kernel bug
+Subject: [PATCH 53/75] mt9t112: Fix null pointer kernel bug
 
 We were trying to access a null pointer (info) which we weren't
 initializing anywhere.

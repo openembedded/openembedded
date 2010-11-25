@@ -1,14 +1,14 @@
-From 89137f6fe9aafee168fe116b905cd21988fe587b Mon Sep 17 00:00:00 2001
+From 9b98719bf7787f1ec8eef6b09cb5b94100de7d12 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Mon, 3 May 2010 22:31:34 +0200
-Subject: [PATCH 09/48] ARM: OMAP: beagleboard: initialize ds1307 and eeprom only for zippy and zippy2
+Subject: [PATCH 09/45] ARM: OMAP: beagleboard: initialize ds1307 and eeprom only for zippy and zippy2
 
 ---
  arch/arm/mach-omap2/board-omap3beagle.c |   39 +++++++++++++++++++++++++++---
  1 files changed, 35 insertions(+), 4 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index c9af202..b3c8cb7 100644
+index abbc1b2..cb11b07 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -496,24 +496,55 @@ static struct i2c_board_info __initdata beagle_i2c1_boardinfo[] = {

@@ -1,7 +1,7 @@
-From 3770853bc0a25112b5f50811c75079a41cdb81da Mon Sep 17 00:00:00 2001
+From 38d07e3ffe848680df123f7422ec4b150bbc8f68 Mon Sep 17 00:00:00 2001
 From: Ajay Kumar Gupta <ajay.gupta@ti.com>
 Date: Wed, 14 Apr 2010 16:08:37 +0530
-Subject: [PATCH 42/48] musb: allow host io without gadget module
+Subject: [PATCH 42/45] musb: allow host io without gadget module
 
 Signed-off-by: Ajay Kumar Gupta <ajay.gupta@ti.com>
 ---

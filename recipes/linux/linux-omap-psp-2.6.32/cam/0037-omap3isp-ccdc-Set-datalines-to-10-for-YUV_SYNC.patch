@@ -1,7 +1,7 @@
-From 059f8c94d288f5e40f38aa86344ae7556c0f0f45 Mon Sep 17 00:00:00 2001
+From 67e3840b98c88da4417e386d3e955385a120138e Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Mon, 12 Jul 2010 14:09:38 -0500
-Subject: [PATCH 37/71] omap3isp: ccdc: Set datalines to 10 for YUV_SYNC
+Subject: [PATCH 37/75] omap3isp: ccdc: Set datalines to 10 for YUV_SYNC
 
 Most of the sensors we use are 10 bits, so set this as
 default.

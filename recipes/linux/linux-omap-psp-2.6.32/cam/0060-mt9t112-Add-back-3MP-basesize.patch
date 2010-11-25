@@ -1,7 +1,7 @@
-From cb36a121a4a73d6c9080f6648258317abb787f4c Mon Sep 17 00:00:00 2001
+From 022aa1373b5bfb77bc90f9e1abb485e0717f28c2 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 15 Jul 2010 18:33:00 -0500
-Subject: [PATCH 60/71] mt9t112: Add back 3MP basesize
+Subject: [PATCH 60/75] mt9t112: Add back 3MP basesize
 
 Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
 ---

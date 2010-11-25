@@ -1,7 +1,7 @@
-From 750b19e0def4d0f5cb8470c104d4faf75f174e0f Mon Sep 17 00:00:00 2001
+From 14b44ddc3119dc497b4d17901884af4f068c5ada Mon Sep 17 00:00:00 2001
 From: Imre Deak <imre.deak@nokia.com>
 Date: Thu, 4 Feb 2010 21:38:02 +0200
-Subject: [PATCH 31/48] ARM: VFP: add support to sync the VFP state of the current thread
+Subject: [PATCH 31/45] ARM: VFP: add support to sync the VFP state of the current thread
 
 ARM: VFP: add support to sync the VFP state of the current thread
 

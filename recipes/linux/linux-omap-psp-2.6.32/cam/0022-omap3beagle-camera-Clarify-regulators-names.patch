@@ -1,7 +1,7 @@
-From 769bd80474aeb9951046336c4332f1cee3d27619 Mon Sep 17 00:00:00 2001
+From b5058c1ca4af6076dff7e1f592f871030ba31a95 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 24 Jun 2010 17:53:55 -0500
-Subject: [PATCH 22/71] omap3beagle: camera: Clarify regulators names
+Subject: [PATCH 22/75] omap3beagle: camera: Clarify regulators names
 
 Changed:
  - beagle_mt9t111_reg1 -> beagle_mt9t111_1_8v

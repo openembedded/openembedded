@@ -1,14 +1,14 @@
-From 98916b700d91e3a2cf811cdba0ed5a1903dcb1ce Mon Sep 17 00:00:00 2001
+From 2db9c35d01af6f4b3e44fac3466b5d6b62e52232 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Thu, 13 May 2010 21:43:08 +0200
-Subject: [PATCH 44/48] ARM: OMAP: beagle: every known beagle (except revB) uses 2 chipselects so don't use NULL for the second chipselect timings
+Subject: [PATCH 44/45] ARM: OMAP: beagle: every known beagle (except revB) uses 2 chipselects so don't use NULL for the second chipselect timings
 
 ---
  arch/arm/mach-omap2/board-omap3beagle.c |    4 ++--
  1 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index dd830b1..078e026 100644
+index c4ebaab..4aa91cb 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -614,7 +614,7 @@ static void __init omap3_beagle_init_irq(void)

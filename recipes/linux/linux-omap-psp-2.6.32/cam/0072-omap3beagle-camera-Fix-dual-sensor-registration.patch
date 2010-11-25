@@ -1,7 +1,7 @@
-From b5412a27380f0c8d571181ba2ab719574fce796a Mon Sep 17 00:00:00 2001
+From 4ceb51197a0f0f2ebd9fc9530033f38de289a1cf Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 22 Jul 2010 11:03:33 -0500
-Subject: [PATCH 2/3] omap3beagle: camera: Fix dual sensor registration
+Subject: [PATCH 72/75] omap3beagle: camera: Fix dual sensor registration
 
 dev_index should be different, which represents an internal index
 in the master camera driver.

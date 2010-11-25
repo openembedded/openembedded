@@ -1,7 +1,7 @@
-From 9d72ec0f11e370715e19ea51702b386b41252438 Mon Sep 17 00:00:00 2001
+From f8b1eeb8f3dc580f24b5d2a2b140c74cfa88c5eb Mon Sep 17 00:00:00 2001
 From: Koen Kooi <k-kooi@ti.com>
 Date: Wed, 27 Jan 2010 21:57:13 +0100
-Subject: [PATCH 06/48] board-omap3beagle: prepare for DM3730 based BeagleboardXM
+Subject: [PATCH 06/45] board-omap3beagle: prepare for DM3730 based BeagleboardXM
 
 * OPP changes copy/pasted from board-omap3evm.c
 	* EHCI changes copy/pasted from Steve Kipisz' 2.6.33rcX work
@@ -11,7 +11,7 @@ Subject: [PATCH 06/48] board-omap3beagle: prepare for DM3730 based BeagleboardXM
  1 files changed, 54 insertions(+), 8 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index 3b7f6ec..429dacb 100644
+index 79d43d0..b1e4d73 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -53,6 +53,23 @@

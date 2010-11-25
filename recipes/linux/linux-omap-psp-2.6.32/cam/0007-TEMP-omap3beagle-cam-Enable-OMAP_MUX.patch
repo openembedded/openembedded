@@ -1,7 +1,7 @@
-From 7d5f49845f06feadb9bc97d458d1ce03814ff5f4 Mon Sep 17 00:00:00 2001
+From 4b111d4e4f4050db9fcca746f9b8a893d3d60f98 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Fri, 11 Jun 2010 16:52:25 -0500
-Subject: [PATCH 07/71] TEMP: omap3beagle: cam: Enable OMAP_MUX
+Subject: [PATCH 07/75] TEMP: omap3beagle: cam: Enable OMAP_MUX
 
 Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
 ---

@@ -1,7 +1,7 @@
-From b16f10756ac1aeeab5c636fcaa2837b2ffec43f2 Mon Sep 17 00:00:00 2001
+From 00cd18c8b6bd6b7f6c627d2b1284ca8f98f1fda4 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 15 Jul 2010 23:43:20 -0500
-Subject: [PATCH 62/71] omap3beagle: camera: Prepare 24MHz xclk for mt9t112
+Subject: [PATCH 62/75] omap3beagle: camera: Prepare 24MHz xclk for mt9t112
 
 Adjust calculations of timings based on # of EXTCLK cycles.
 

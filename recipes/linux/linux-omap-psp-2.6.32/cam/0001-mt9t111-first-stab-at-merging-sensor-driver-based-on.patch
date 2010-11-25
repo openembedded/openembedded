@@ -1,7 +1,7 @@
-From 4a505672e75774854a02bf5c2a6c17f0789b1c93 Mon Sep 17 00:00:00 2001
+From a03a0f8d0c856a152f477efea64e7df1c927c9b1 Mon Sep 17 00:00:00 2001
 From: OpenEmbedded User <oe@OE-builder.(none)>
 Date: Tue, 9 Feb 2010 17:16:13 +0100
-Subject: [PATCH 01/71] mt9t111: first stab at merging sensor driver based on a patch by Leopard Imaging
+Subject: [PATCH 01/75] mt9t111: first stab at merging sensor driver based on a patch by Leopard Imaging
 
 ---
  drivers/media/video/Kconfig       |    8 +

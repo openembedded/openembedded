@@ -1,7 +1,7 @@
-From 92135e4024ba2115305da23acb9d13bd0f9251b1 Mon Sep 17 00:00:00 2001
+From 2f4a4612cd2fa21468f708a9c981e39a3927611f Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Sat, 10 Jul 2010 09:57:40 -0500
-Subject: [PATCH 36/71] omap3isp: Set vd_pol to 0 by default on all cases
+Subject: [PATCH 36/75] omap3isp: Set vd_pol to 0 by default on all cases
 
 Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
 ---

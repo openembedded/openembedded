@@ -1,7 +1,7 @@
-From 8a84e3d947230c1031254884d8fff18a54b77df5 Mon Sep 17 00:00:00 2001
+From 6efdc547be5f685b4f29b05eba73cb56441fd898 Mon Sep 17 00:00:00 2001
 From: Mans Rullgard <mans@mansr.com>
 Date: Tue, 10 Nov 2009 00:52:56 +0000
-Subject: [PATCH 40/48] ARM: Add option to allow userspace access to performance counters
+Subject: [PATCH 40/45] ARM: Add option to allow userspace access to performance counters
 
 This adds an option to allow userspace access to the performance monitor
 registers of the Cortex-A8.

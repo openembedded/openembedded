@@ -1,7 +1,7 @@
-From b61ff796dd0bb5bb34d7d2125983baa78f8a3831 Mon Sep 17 00:00:00 2001
+From 3f7280192c69d6437c5d0e7c46ab2de345b52e5d Mon Sep 17 00:00:00 2001
 From: Vaibhav Hiremath <hvaibhav@ti.com>
 Date: Wed, 14 Jul 2010 19:07:34 +0530
-Subject: [PATCH 43/71] mt9v113: Settings from Aptima used to increase FPS
+Subject: [PATCH 43/75] mt9v113: Settings from Aptima used to increase FPS
 
 The FPS is still low at around ~15FPS, expected one is 30FPS.
 

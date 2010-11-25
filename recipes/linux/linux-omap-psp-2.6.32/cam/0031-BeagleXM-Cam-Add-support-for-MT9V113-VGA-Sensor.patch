@@ -1,7 +1,7 @@
-From eed14c95dbe46b0e34b489ad5e0452654e0f1661 Mon Sep 17 00:00:00 2001
+From 4080bcdb05f5fdb51a16faa011a68205f0cb7482 Mon Sep 17 00:00:00 2001
 From: Vaibhav Hiremath <hvaibhav@ti.com>
 Date: Wed, 7 Jul 2010 11:55:43 +0530
-Subject: [PATCH 31/71] BeagleXM:Cam: Add support for MT9V113 VGA Sensor
+Subject: [PATCH 31/75] BeagleXM:Cam: Add support for MT9V113 VGA Sensor
 
 This patch replaces the MT9T111 to MT9V113 sensor.
 ---
@@ -327,7 +327,7 @@ index 8faa437..6c06265 100644
  }
  late_initcall(omap3beaglelmb_init);
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index af9b818..d4b0b0a 100644
+index 09e8459..6835c1a 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -71,10 +71,10 @@ static struct omap_opp * _omap35x_l3_rate_table         = NULL;
@@ -406,7 +406,7 @@ index af9b818..d4b0b0a 100644
  		.mode = SPI_MODE_1,
  	},
  };
-@@ -830,7 +830,7 @@ static void __init omap3_beagle_init(void)
+@@ -835,7 +835,7 @@ static void __init omap3_beagle_init(void)
  	/* REVISIT leave DVI powered down until it's needed ... */
  	gpio_direction_output(170, true);
  
@@ -415,7 +415,7 @@ index af9b818..d4b0b0a 100644
  	{
  		printk(KERN_INFO "Beagle expansionboard: initializing enc28j60\n");
  		omap3beagle_enc28j60_init();
-@@ -838,8 +838,8 @@ static void __init omap3_beagle_init(void)
+@@ -843,8 +843,8 @@ static void __init omap3_beagle_init(void)
  		mmc[1].gpio_wp = 141;
  		mmc[1].gpio_cd = 162;
  	}
@@ -426,7 +426,7 @@ index af9b818..d4b0b0a 100644
  	{
  		printk(KERN_INFO "Beagle expansionboard: initializing ks_8851\n");
  		omap3beagle_ks8851_init();
-@@ -880,7 +880,7 @@ static void __init omap3_beagle_init(void)
+@@ -885,7 +885,7 @@ static void __init omap3_beagle_init(void)
  	}
  
  	if(!strcmp(expansionboard_name, "beaglefpga"))

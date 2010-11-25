@@ -1,7 +1,7 @@
-From aea0e79b7ace8ffc3b6752276d693af54a23cdb8 Mon Sep 17 00:00:00 2001
+From c0b564c145013ca024787702dc9f43c56016c5ec Mon Sep 17 00:00:00 2001
 From: Vaibhav Hiremath <hvaibhav@ti.com>
 Date: Tue, 13 Jul 2010 19:39:34 +0530
-Subject: [PATCH 40/71] mt9v113:Clean Up: Remove unneccessary code/printf
+Subject: [PATCH 40/75] mt9v113:Clean Up: Remove unneccessary code/printf
 
 Signed-off-by: Vaibhav Hiremath <hvaibhav@ti.com>
 ---

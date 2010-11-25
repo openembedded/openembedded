@@ -1,7 +1,7 @@
-From 85fc82296bf6f9eaaad63e0aee2c0ec98a0d6ed9 Mon Sep 17 00:00:00 2001
+From b4d9f3d3f45b3f47ec243df170381b0c2d1049e7 Mon Sep 17 00:00:00 2001
 From: Vaibhav Hiremath <hvaibhav@ti.com>
 Date: Fri, 9 Jul 2010 17:38:09 +0530
-Subject: [PATCH 32/71] MT9V113: Fixed sensor nitialization issues
+Subject: [PATCH 32/75] MT9V113: Fixed sensor nitialization issues
 
 With this patch sensor is now able to generate HS, VS and pixel clock, also
 CCDC is able to generate HS/VS, VD0, VD1 interrupts.

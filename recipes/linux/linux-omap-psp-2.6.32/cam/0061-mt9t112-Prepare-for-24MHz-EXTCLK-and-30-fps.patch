@@ -1,7 +1,7 @@
-From 5c6d1392f4781e7b86bb0335461ef2fda0349fdf Mon Sep 17 00:00:00 2001
+From aabf8386a23795f73722bf74901bd8aa46ebe1ba Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 15 Jul 2010 23:41:32 -0500
-Subject: [PATCH 61/71] mt9t112: Prepare for 24MHz EXTCLK and 30 fps
+Subject: [PATCH 61/75] mt9t112: Prepare for 24MHz EXTCLK and 30 fps
 
 Set Aptina recommended values to get 30 FPS with VGA, which
 are achievable given the new PLL divider settings, considering

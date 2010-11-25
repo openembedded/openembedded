@@ -1,7 +1,7 @@
-From fd5fc55fe4ffedb3bf865f54b2648f77bcf0aa2e Mon Sep 17 00:00:00 2001
+From 9c37d9acd3f7909cb1f4e437e0b5fe31dd6214d6 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Mon, 19 Jul 2010 12:31:47 -0500
-Subject: [PATCH 69/71] mt9t112: Fix pll p-dividers abstraction
+Subject: [PATCH 69/75] mt9t112: Fix pll p-dividers abstraction
 
 Previously, it wasn't clear that the values needed to be filled
 were (val - 1). Fix that.

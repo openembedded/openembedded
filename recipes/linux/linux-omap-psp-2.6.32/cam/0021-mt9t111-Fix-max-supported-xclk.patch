@@ -1,7 +1,7 @@
-From 04f40f398ac899504e4836e78f8e791f98200cf2 Mon Sep 17 00:00:00 2001
+From f32acfd90df92c93328c093c2414f6a11b98ce57 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 24 Jun 2010 17:43:23 -0500
-Subject: [PATCH 21/71] mt9t111: Fix max supported xclk
+Subject: [PATCH 21/75] mt9t111: Fix max supported xclk
 
 According to Aptina documentation, the max should be 54 MHz, not 75 MHz.
 

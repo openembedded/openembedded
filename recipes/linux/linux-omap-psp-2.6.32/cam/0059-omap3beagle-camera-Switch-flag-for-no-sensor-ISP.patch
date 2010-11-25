@@ -1,7 +1,7 @@
-From bb29d0713a991471b0d1a7cbb5194fc8e6a41ddb Mon Sep 17 00:00:00 2001
+From 86ecf1214056406f84852a9863b2e0f4cd64c52c Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 15 Jul 2010 18:15:32 -0500
-Subject: [PATCH 59/71] omap3beagle: camera: Switch flag for no sensor ISP
+Subject: [PATCH 59/75] omap3beagle: camera: Switch flag for no sensor ISP
 
 Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
 ---

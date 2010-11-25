@@ -1,7 +1,7 @@
-From c56b16bf7ee83b17d6aefa30f84fb50417fde28b Mon Sep 17 00:00:00 2001
+From c3080e6e6ea59efc7f7812951a9972229fcc5078 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <morimoto.kuninori@renesas.com>
 Date: Tue, 2 Feb 2010 13:17:54 +0900
-Subject: [PATCH 50/71] soc-camera: mt9t112: modify exiting conditions from standby mode
+Subject: [PATCH 50/75] soc-camera: mt9t112: modify exiting conditions from standby mode
 
 This polling is needed if camera is in standby mode, but current exiting
 condition is inverted.

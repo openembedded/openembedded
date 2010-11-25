@@ -1,7 +1,7 @@
-From 62155e17564a986215d61697c6b8a20cc0b4e07f Mon Sep 17 00:00:00 2001
+From 484186abcf6d44cc690c73d68148edde8b0b365b Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 4 Feb 2010 18:12:37 -0600
-Subject: [PATCH 14/71] OMAP3: CLOCK: Add capability to change rate of dpll4_m5_ck_3630
+Subject: [PATCH 14/75] OMAP3: CLOCK: Add capability to change rate of dpll4_m5_ck_3630
 
 Add necessary clk_sel definitions to clock framework to allow changing
 dpll4_m5_ck_3630 rate.

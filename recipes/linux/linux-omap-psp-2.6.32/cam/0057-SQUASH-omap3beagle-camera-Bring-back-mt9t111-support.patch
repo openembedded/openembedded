@@ -1,7 +1,7 @@
-From 1f47f621038372fe698921b5469dadf5446f73a8 Mon Sep 17 00:00:00 2001
+From 42caf665931e5f86e514fcf5e011daff395836c2 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 15 Jul 2010 17:53:07 -0500
-Subject: [PATCH 57/71] SQUASH: omap3beagle: camera: Bring back mt9t111 support
+Subject: [PATCH 57/75] SQUASH: omap3beagle: camera: Bring back mt9t111 support
 
 ---
  arch/arm/mach-omap2/board-omap3beagle-camera.c |    8 ++++----

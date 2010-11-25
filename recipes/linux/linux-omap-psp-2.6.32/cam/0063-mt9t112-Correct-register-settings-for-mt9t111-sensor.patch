@@ -1,7 +1,7 @@
-From 78cb5d13faa2b29e33c6a820435dbd82ad3effa5 Mon Sep 17 00:00:00 2001
+From 898d1ae2cad72e2b74a0a354b323ba91f2cd4a2a Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Fri, 16 Jul 2010 07:52:06 -0500
-Subject: [PATCH 63/71] mt9t112: Correct register settings for mt9t111 sensor
+Subject: [PATCH 63/75] mt9t112: Correct register settings for mt9t111 sensor
 
 This now matches with Aptina's recommended values.
 
