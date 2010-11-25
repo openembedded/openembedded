@@ -44,6 +44,14 @@ do_configure () {
         sed -i 's/^\(HOST_LIBELFLIBS =\) \(.*\)$/\1 -Wl,-Bstatic \2 -Wl,-Bdynamic/' ${S}/Makefile.in
 
 	(cd ${S} && gnu-configize) || die "failure running gnu-configize"
+	# gcc assumes ${sysroot}/usr to be prefix on linux targets
+	# but we have distro option to flatten out the tree and micro
+	# uses root file system without leading /usr so we need to
+	# teach gcc configure to look in correct include paths
+	# unfortunately there is no configure knob to indicate this
+	# to configury hence the sed :(
+	sed -i 's:/usr/include:${target_includedir}:g' ${S}/gcc/configure.ac
+	sed -i 's:/usr/include:${target_includedir}:g' ${S}/gcc/configure
 	oe_runconf
 }
 
