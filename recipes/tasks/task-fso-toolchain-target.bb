@@ -2,7 +2,7 @@ DESCRIPTION = "Packages for a standalone  SDK or external toolchain"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
-PR = "r2"
+PR = "r3"
 
 PACKAGES = "${PN}"
 
@@ -27,6 +27,7 @@ RDEPENDS_${PN} = "\
     locale-base-en-gb \
     libgcc \
     libstdc++ \
+    libstdc++-dev \
     linux-libc-headers-dev \
     \
     libssl \
