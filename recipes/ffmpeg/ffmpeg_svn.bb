@@ -6,7 +6,7 @@ LICENSE = "GPLv2+"
 DEPENDS += "virtual/libsdl schroedinger libgsm libvpx"
 
 # When bumping SRCREV make sure you bump PR here and in dependant recipes (gst-ffmpeg, gnash, omxil, etc) to account for SOVERSION changes
-SRCREV = "24596"
+SRCREV = "25825"
 
 PV = "0.6+${PR}+svnr${SRCPV}"
 PR = "${INC_PR}.3"

@@ -47,7 +47,7 @@ ffmpeg_create_compat_links() {
         cd ${SYSROOT_DESTDIR}${STAGING_INCDIR}/ffmpeg
 
         for lib in ${FFMPEG_LIBS}; do
-                ln -s ../$lib/*.h '.'
+                ln -s ../$lib/*.h '.' || true
         done
 }
 
