@@ -8,14 +8,10 @@ DEPENDS = "libvpx live555 libdvdread libtheora virtual/libsdl ffmpeg xsp zlib li
 RDEPENDS_${PN} = "mplayer-common"
 LICENSE = "GPL"
 SRC_URI = "git://repo.or.cz/mplayer/glamo.git;protocol=git;branch=master \
-   file://makefile-nostrip-svn.patch \
    "
 
 SRC_URI_append_armv7a = " \
-	   file://mplayer-git_omapfb.patch \
-	   file://vo_omapfb.c \
-	   file://yuv.S \
-	   file://omapfb_control_arguments.patch;patchdir=.. \
+	   file://0001-video-out-for-omapfb-support.patch \
 	  "
 
 # This is required for the collie machine only as all stacks in that
@@ -24,7 +20,7 @@ SRC_URI_append_armv7a = " \
 # ie. for all armv4 machines.
 SRC_URI_append_collie = "file://disable-executable-stack-test.patch"
 
-SRCREV = "d1c686f6a63c31276b0811baf7c78aa6f4c6c6a6"
+SRCREV = "81f0b8dacff926d46438faedb1a56da3946a8d2a"
 
 PACKAGE_ARCH_collie = "collie"
 PACKAGE_ARCH_c7x0 = "c7x0"
@@ -44,10 +40,7 @@ PARALLEL_MAKE = ""
 
 S = "${WORKDIR}/git"
 
-PACKAGES =+ "mencoder"
-
 FILES_${PN} = "${bindir}/mplayer ${libdir} /usr/etc/mplayer/"
-FILES_mencoder = "${bindir}/mencoder"
 CONFFILES_${PN} += "/usr/etc/mplayer/input.conf \
                     /usr/etc/mplayer/example.conf \
                     /usr/etc/mplayer/codecs.conf \
@@ -63,10 +56,8 @@ EXTRA_OECONF = " \
 	--mandir=${mandir} \
 	--target=${SIMPLE_TARGET_SYS} \
 	\
-	--enable-mencoder \
 	--disable-gui \
 	--enable-largefiles \
-	--disable-linux-devfs \
 	--disable-lirc \
 	--disable-lircc \
 	--disable-joystick \
@@ -77,7 +68,7 @@ EXTRA_OECONF = " \
 	--enable-tv-v4l2 \
 	--disable-tv-bsdbt848 \
 	--enable-rtc \
-	--enable-network \
+	--enable-networking \
 	--disable-smb \
 	--enable-live \
 	--disable-dvdnav \
@@ -188,8 +179,6 @@ FULL_OPTIMIZATION_armv7a = "-fexpensive-optimizations  -ftree-vectorize -fomit-f
 BUILD_OPTIMIZATION = "${FULL_OPTIMIZATION}"
 
 do_configure_prepend_armv7a() {
-	cp ${WORKDIR}/yuv.S ${S}/libvo
- 	cp ${WORKDIR}/vo_omapfb.c ${S}/libvo
 	cp ${STAGING_KERNEL_DIR}/arch/arm/plat-omap/include/mach/omapfb.h ${S}/libvo/omapfb.h || true
  	cp ${STAGING_KERNEL_DIR}/include/asm-arm/arch-omap/omapfb.h ${S}/libvo/omapfb.h || true
 	cp ${STAGING_KERNEL_DIR}/include/linux/omapfb.h ${S}/libvo/omapfb.h || true
@@ -203,6 +192,7 @@ do_configure() {
 	sed -i 's|/usr/lib|${STAGING_LIBDIR}|g' ${S}/configure
 	sed -i 's|/usr/\S*include[\w/]*||g' ${S}/configure
 	sed -i 's|/usr/\S*lib[\w/]*||g' ${S}/configure
+	sed -i 's|_install_strip="-s"|_install_strip=""|g' ${S}/configure
 	sed -i 's|HOST_CC|BUILD_CC|' ${S}/Makefile
 
 	export SIMPLE_TARGET_SYS="$(echo ${TARGET_SYS} | sed s:${TARGET_VENDOR}::g)"
