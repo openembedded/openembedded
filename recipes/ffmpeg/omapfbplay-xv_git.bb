@@ -5,7 +5,7 @@ LICENSE = "MIT"
 PR = "r2"
 PV = "0.0+${PR}+gitr${SRCREV}"
 
-SRCREV = "e66bf25df1f1ff085e6db102b282d90e7ceff4bf"
+SRCREV = "2d27708a21d8dcc12ff7182099f352182d925003"
 SRC_URI = "git://git.mansr.com/omapfbplay;protocol=git \
 "
 
