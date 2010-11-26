@@ -1,0 +1,61 @@
+diff -Nur x264-snapshot-20100531-2245.vanilla/encoder/analyse.c x264-snapshot-20100531-2245/encoder/analyse.c
+--- x264-snapshot-20100531-2245.vanilla/encoder/analyse.c	2010-05-31 22:45:11.000000000 +0200
++++ x264-snapshot-20100531-2245/encoder/analyse.c	2010-08-20 02:52:11.505161943 +0200
+@@ -251,7 +251,7 @@
+     for( int i = 0; i <= 2*4*2048; i++ )
+     {
+         h->cost_mv[lambda][-i] =
+-        h->cost_mv[lambda][i]  = lambda * (log2f(i+1)*2 + 0.718f + !!i) + .5f;
++        h->cost_mv[lambda][i]  = lambda * ( (logf(i+1)/logf(2))*2 + 0.718f + !!i) + .5f;
+     }
+     x264_pthread_mutex_lock( &cost_ref_mutex );
+     for( int i = 0; i < 3; i++ )
+diff -Nur x264-snapshot-20100531-2245.vanilla/encoder/encoder.c x264-snapshot-20100531-2245/encoder/encoder.c
+--- x264-snapshot-20100531-2245.vanilla/encoder/encoder.c	2010-05-31 22:45:11.000000000 +0200
++++ x264-snapshot-20100531-2245/encoder/encoder.c	2010-08-20 02:53:58.516661776 +0200
+@@ -479,8 +479,8 @@
+     if( h->param.rc.i_rc_method == X264_RC_CQP )
+     {
+         float qp_p = h->param.rc.i_qp_constant;
+-        float qp_i = qp_p - 6*log2f( h->param.rc.f_ip_factor );
+-        float qp_b = qp_p + 6*log2f( h->param.rc.f_pb_factor );
++        float qp_i = qp_p - 6*(logf(h->param.rc.f_ip_factor)/logf(2));
++        float qp_b = qp_p + 6*(logf(h->param.rc.f_pb_factor)/logf(2));
+         h->param.rc.i_qp_min = x264_clip3( (int)(X264_MIN3( qp_p, qp_i, qp_b )), 0, 51 );
+         h->param.rc.i_qp_max = x264_clip3( (int)(X264_MAX3( qp_p, qp_i, qp_b ) + .999), 0, 51 );
+         h->param.rc.i_aq_mode = 0;
+diff -Nur x264-snapshot-20100531-2245.vanilla/encoder/ratecontrol.c x264-snapshot-20100531-2245/encoder/ratecontrol.c
+--- x264-snapshot-20100531-2245.vanilla/encoder/ratecontrol.c	2010-05-31 22:45:11.000000000 +0200
++++ x264-snapshot-20100531-2245/encoder/ratecontrol.c	2010-08-20 02:55:26.752661912 +0200
+@@ -549,8 +549,8 @@
+         rc->last_non_b_pict_type = SLICE_TYPE_I;
+     }
+ 
+-    rc->ip_offset = 6.0 * log2f( h->param.rc.f_ip_factor );
+-    rc->pb_offset = 6.0 * log2f( h->param.rc.f_pb_factor );
++    rc->ip_offset = 6.0 * (logf( h->param.rc.f_ip_factor )/logf(2));
++    rc->pb_offset = 6.0 * (logf( h->param.rc.f_pb_factor )/logf(2));
+     rc->qp_constant[SLICE_TYPE_P] = h->param.rc.i_qp_constant;
+     rc->qp_constant[SLICE_TYPE_I] = x264_clip3( h->param.rc.i_qp_constant - rc->ip_offset + 0.5, 0, 51 );
+     rc->qp_constant[SLICE_TYPE_B] = x264_clip3( h->param.rc.i_qp_constant + rc->pb_offset + 0.5, 0, 51 );
+@@ -1154,7 +1154,7 @@
+             if( zone->b_force_qp )
+                 q += zone->i_qp - rc->qp_constant[SLICE_TYPE_P];
+             else
+-                q -= 6*log2f( zone->f_bitrate_factor );
++                q -= 6*(logf( zone->f_bitrate_factor )/logf(2));
+         }
+     }
+ 
+diff -Nur x264-snapshot-20100531-2245.vanilla/encoder/set.c x264-snapshot-20100531-2245/encoder/set.c
+--- x264-snapshot-20100531-2245.vanilla/encoder/set.c	2010-05-31 22:45:11.000000000 +0200
++++ x264-snapshot-20100531-2245/encoder/set.c	2010-08-20 02:58:19.400661820 +0200
+@@ -234,7 +234,7 @@
+         sps->vui.i_max_bytes_per_pic_denom = 0;
+         sps->vui.i_max_bits_per_mb_denom = 0;
+         sps->vui.i_log2_max_mv_length_horizontal =
+-        sps->vui.i_log2_max_mv_length_vertical = (int)log2f( X264_MAX( 1, param->analyse.i_mv_range*4-1 ) ) + 1;
++        sps->vui.i_log2_max_mv_length_vertical = (int)(logf( X264_MAX( 1, param->analyse.i_mv_range*4-1 ))/logf(2))  + 1;
+     }
+ }
+ 
