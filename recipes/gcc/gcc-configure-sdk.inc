@@ -28,39 +28,8 @@ export WINDRES_FOR_TARGET = "${TOOLCHAIN_PATH}/${TARGET_SYS}/bin/windres"
 #
 export ARCH_FLAGS_FOR_TARGET = "--sysroot=${STAGING_DIR_TARGET}"
 
-do_configure () {
-	export CC_FOR_BUILD="${BUILD_CC}"
-	export CXX_FOR_BUILD="${BUILD_CXX}"
-	export CFLAGS_FOR_BUILD="${BUILD_CFLAGS}"
-	export CPPFLAGS_FOR_BUILD="${BUILD_CPPFLAGS}"
-	export CXXFLAGS_FOR_BUILD="${BUILD_CXXFLAGS}"
-	export LDFLAGS_FOR_BUILD="${BUILD_LDFLAGS}"
-        # Make sure we use GMP/MPFR statically
-        sed -i 's/^\(HOST_GMPLIBS =\) \(.*\)$/\1 -Wl,-Bstatic \2 -Wl,-Bdynamic/' ${S}/Makefile.tpl
-        sed -i 's/^\(HOST_GMPLIBS =\) \(.*\)$/\1 -Wl,-Bstatic \2 -Wl,-Bdynamic/' ${S}/Makefile.in
-        sed -i 's/^\(HOST_PPLLIBS =\) \(.*\)$/\1 -Wl,-Bstatic \2 -Wl,-Bdynamic/' ${S}/Makefile.tpl
-        sed -i 's/^\(HOST_PPLLIBS =\) \(.*\)$/\1 -Wl,-Bstatic \2 -Wl,-Bdynamic/' ${S}/Makefile.in
-        sed -i 's/^\(HOST_LIBELFLIBS =\) \(.*\)$/\1 -Wl,-Bstatic \2 -Wl,-Bdynamic/' ${S}/Makefile.tpl
-        sed -i 's/^\(HOST_LIBELFLIBS =\) \(.*\)$/\1 -Wl,-Bstatic \2 -Wl,-Bdynamic/' ${S}/Makefile.in
-
-	(cd ${S} && gnu-configize) || die "failure running gnu-configize"
-	# gcc assumes ${sysroot}/usr to be prefix on linux targets
-	# but we have distro option to flatten out the tree and micro
-	# uses root file system without leading /usr so we need to
-	# teach gcc configure to look in correct include paths
-	# unfortunately there is no configure knob to indicate this
-	# to configury hence the sed :(
-	sed -i 's:/usr/include:${target_includedir}:g' ${S}/gcc/configure.ac
-	sed -i 's:/usr/include:${target_includedir}:g' ${S}/gcc/configure
-	oe_runconf
-}
-
 do_compile () {
 	export CC="${BUILD_CC}"
-	export AR_FOR_TARGET="${TARGET_SYS}-ar"
-	export RANLIB_FOR_TARGET="${TARGET_SYS}-ranlib"
-	export LD_FOR_TARGET="${TARGET_SYS}-ld"
-	export NM_FOR_TARGET="${TARGET_SYS}-nm"
 	export CC_FOR_TARGET="${CCACHE} ${TARGET_SYS}-gcc ${TARGET_CC_ARCH}"
 	base_do_compile
 }
