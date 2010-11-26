@@ -4,7 +4,7 @@ DEPENDS = "evas ecore edje elementary webkit-efl"
 PV = "0.2.0.0+svnr${SRCPV}"
 SRCREV = "${EFL_SRCREV}"
 
-PR = "r1"
+PR = "r2"
 
 inherit e
 
