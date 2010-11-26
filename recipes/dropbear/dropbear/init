@@ -13,8 +13,6 @@ DROPBEAR_PORT=22
 DROPBEAR_EXTRA_ARGS=
 NO_START=0
 
-set -e
-
 test ! -r /etc/default/dropbear || . /etc/default/dropbear
 test "$NO_START" = "0" || exit 0
 test -x "$DAEMON" || exit 0
