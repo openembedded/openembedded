@@ -13,7 +13,7 @@ ARM_INSTRUCTION_SET = "arm"
 
 QMAKE_PROFILES = "mythtv.pro"
 
-PR = "svnr${SRCPV}+r2"
+PR = "svnr${SRCPV}+r0"
 PV = "0.23"
 
 # REALPV is here to support release candidates
@@ -21,7 +21,7 @@ PV = "0.23"
 # but for packaging the real PV is needed
 REALPV = "0.23"
 
-SRCREV = "25609"
+SRCREV = "27202"
 SRC_URI = "svn://svn.mythtv.org/svn/branches/release-0-23-fixes;module=mythtv;proto=http"
 
 S = "${WORKDIR}/mythtv"
