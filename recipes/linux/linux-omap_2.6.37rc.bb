@@ -6,9 +6,9 @@ KERNEL_IMAGETYPE = "uImage"
 COMPATIBLE_MACHINE = "beagleboard"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
-PV = "2.6.36+2.6.37-rc2"
+PV = "2.6.36+2.6.37-rc3"
 MACHINE_KERNEL_PR_append = "b+gitr${SRCREV}"
-SRCREV = "8973a21e18241081d16693504d7c0ed5b9918716"
+SRCREV = "063d907edaf3fbf9776c189c3e02f2c7a129d18c"
 
 FILESPATHPKG_prepend = "linux-omap-2.6.37rc:"
 
