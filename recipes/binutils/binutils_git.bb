@@ -1,7 +1,7 @@
 FILESPATHPKG =. "binutils-git:"
-SRCREV = "6ef128735ce52ee2acf8cfd80f6d72003dd39ab7"
+SRCREV = "63afe4ed46b5b8c21445192c9046d1c3de2859ec"
 require binutils.inc
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.3"
 PR_append = "+gitr${SRCPV}"
 
 S = "${WORKDIR}/git"
@@ -12,4 +12,5 @@ SRC_URI = "git://sources.redhat.com/git/binutils.git;branch=binutils-2_21-branch
      file://binutils-uclibc-300-006_better_file_error.patch \
      file://binutils-uclibc-300-012_check_ldrunpath_length.patch \
      file://binutils-uclibc-gas-needs-libm.patch \
+     file://fix-clone-conflicts.patch \
      "
