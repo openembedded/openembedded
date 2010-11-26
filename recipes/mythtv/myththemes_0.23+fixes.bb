@@ -8,7 +8,7 @@ inherit qmake2
 PR = "svnr${SRCPV}+r0"
 PV = "0.23"
 
-SRCREV = "25609"
+SRCREV = "27202"
 SRC_URI = \
 "svn://svn.mythtv.org/svn/branches/release-0-23-fixes;module=myththemes;proto=http"
 
