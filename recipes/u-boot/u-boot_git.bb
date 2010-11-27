@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r66"
+PR ="r67"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -296,8 +296,8 @@ SRC_URI_append_c7x0 = "file://pdaXrom-u-boot.patch \
                        file://uboot-eabi-fix-HACK2.patch \
                        file://corgi-standard-partitioning.patch \
                        "
-SRC_URI_sheevaplug = "git://git.denx.de/u-boot-marvell.git;protocol=git;branch=testing"
-SRCREV_sheevaplug = "119b9942da2e450d4e525fc004208dd7f7d062e0"
+SRC_URI_sheevaplug = "git://git.denx.de/u-boot-marvell.git;protocol=git;branch=master"
+SRCREV_sheevaplug = "749c971873dbba301bd138c95d31223a25b32150"
 
 SRC_URI_xilinx-ml507 = "git://git.xilinx.com/u-boot-xlnx.git;protocol=git"
 SRCREV_xilinx-ml507 = "26e999650cf77c16f33c580abaadab2532f5e8b2"
