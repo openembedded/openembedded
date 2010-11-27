@@ -2,8 +2,9 @@ DESCRIPTION = "The High Voltage SID Collection (HVSC) \
 Commodore 64 music for the masses"
 LICENSE = "PD"
 SECTION = "multimedia"
+HOMEPAGE = "http://www.dottyflowers.com/HVSC/"
 
-SRC_URI = "http://gallium.prg.dtu.dk/HVSC/random/HVSC_${PV}-all-of-them.rar"
+SRC_URI = "http://www.dottyflowers.com/HVSC/HVSC_${PV}-all-of-them.rar"
 S = "${WORKDIR}"
 
 do_install() {
