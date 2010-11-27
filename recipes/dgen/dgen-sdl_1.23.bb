@@ -4,7 +4,7 @@ SECTION = "x11/games"
 LICENSE = "BSD"
 
 SRC_URI = "\
-  http://pknet.com/~joe/${PN}-${PV}.tar.gz \
+  http://web.archive.org/web/20070705161341/http://www.pknet.com/~joe/${PN}-${PV}.tar.gz \
   file://fix-configure-and-make.patch \
 "
 
