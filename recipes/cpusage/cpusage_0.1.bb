@@ -1,10 +1,12 @@
 DESCRIPTION = "This tool read out the tics counter of the operating system and \
 calculates the Percentages spend in each CPU_STATE."
+HOMEPAGE = "http://www.net.t-labs.tu-berlin.de/~fabian/proj_de.html"
 SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "GPL"
+PR = "r0"
 
-SRC_URI = "http://www8.in.tum.de/~schneifa/group/sources/cpusage-${PV}.tar.gz \
+SRC_URI = "http://www.net.t-labs.tu-berlin.de/~fabian/sources/cpusage-${PV}.tar.gz \
            file://cpusage.patch"
 
 S = "${WORKDIR}/cpusage-${PV}"
