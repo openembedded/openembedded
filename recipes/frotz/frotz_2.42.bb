@@ -1,12 +1,12 @@
 LICENSE = "GPL"
 DESCRIPTION = "Frotz is an interpreter for Infocom games and other Z-machine games."
-HOMEPAGE = "http://www.cs.csubak.edu/~dgriffi/proj/frotz/"
+HOMEPAGE = "http://frotz.sourceforge.net/"
 SECTION = "console/games"
 PR = "r1"
 
 DEPENDS = "ncurses"
 
-SRC_URI = "http://www.cs.csubak.edu/~dgriffi/proj/frotz/files/frotz-${PV}.tar.gz \
+SRC_URI = "http://downloads.sourceforge.net/project/frotz/frotz/2.42/frotz-${PV}.tar.gz \
 	file://Makefile.patch "
 
 do_configure() {
