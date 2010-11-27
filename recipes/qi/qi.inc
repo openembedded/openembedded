@@ -50,8 +50,13 @@ do_compile_om-gta02() {
 }
 
 do_deploy () {
+	cd image
+	for IMG in qi-*.udfu; do
+		IMG_LINK=`echo ${IMG} | sed s:-${PV}.*udfu:.udfu:g`
+		ln -sf ${IMG} ${IMG_LINK}
+	done
 	install -d ${DEPLOY_DIR_IMAGE}
-	cp -f image/qi-*.udfu ${DEPLOY_DIR_IMAGE}
+	cp -fa qi-*.udfu ${DEPLOY_DIR_IMAGE}
 }
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
