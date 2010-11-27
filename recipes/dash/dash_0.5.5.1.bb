@@ -3,7 +3,7 @@ PROVIDES = "virtual/sh"
 LICENSE = "BSD GPL"
 
 SRC_URI = "http://ftp.debian.org/debian/pool/main/d/dash/dash_${PV}.orig.tar.gz;name=archive \
-	http://ftp.debian.org/debian/pool/main/d/dash/dash_${PV}-2.3.diff.gz;name=patch \
+	https://launchpad.net/debian/sid/+source/dash/0.5.5.1-2.3/+files/dash_${PV}-2.3.diff.gz;name=patch \
 	file://makefile-build-cc.diff"
 
 SRC_URI[archive.md5sum] = "7ac832b440b91f5a52cf8eb68e172616"
