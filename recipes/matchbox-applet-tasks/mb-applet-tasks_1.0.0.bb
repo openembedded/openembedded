@@ -14,7 +14,7 @@ CFLAGS += "-I${STAGING_INCDIR} \
 	   -I${STAGING_INCDIR}/cairo \
 	   -DWNCK_I_KNOW_THIS_IS_UNSTABLE"
 
-SRC_URI = "http://www.pdaxrom.org/download/1.1.0beta4/src/${P}.tar.bz2"
+SRC_URI = "http://distro.ibiblio.org/pub/linux/distributions/pdaxrom/download/1.1.0beta4/src/${P}.tar.bz2"
 
 do_install() {
 install -d ${D}/${datadir}/applications
