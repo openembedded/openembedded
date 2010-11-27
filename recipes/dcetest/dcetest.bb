@@ -1,8 +1,9 @@
 SECTION = "network/misc"
 DESCRIPTION = "DCE Service enumerator for MS Windows systems"
-PV = "1.2"
+PV = "2.0"
+PR = "r0"
 
-SRC_URI = "http://packetstormsecurity.org/UNIX/scanners/dcetest-2.0.tar.gz"
+SRC_URI = "http://packetstorm.linuxsecurity.com/UNIX/scanners/dcetest-2.0.tar.gz"
 
 DEFAULT_PREFERENCE="-1"
 
