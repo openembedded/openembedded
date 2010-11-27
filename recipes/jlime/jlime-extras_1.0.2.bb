@@ -1,5 +1,5 @@
 DESCRIPTION = "Various extras for the Jlime userlands"
-PR = "r1"
+PR = "r0"
 
 RRECOMMENDS_${PN} = "jlime-extras-${MACHINE}"
 
@@ -13,5 +13,5 @@ do_install() {
 	cp -R etc usr ${D}
 }
 
-SRC_URI[md5sum] = "920be63e2269289b5ffdf3c0199d71ef"
-SRC_URI[sha256sum] = "3fd6016ac8bafab8eaa8c1cc2975a8bbeca116dcdf807989154bc772fbf518d0"
+SRC_URI[md5sum] = "8cd2e31183ac37343d0009de5f5ac6b2"
+SRC_URI[sha256sum] = "d467534f52cc24477ce8407d179834720a7dc4a7f01e7be4ab0f9810dc460e44"
