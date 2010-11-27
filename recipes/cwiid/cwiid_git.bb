@@ -2,8 +2,8 @@ DESCRIPTION = "wiimote library + tools"
 LICENSE = "GPLv2"
 HOMEPAGE = "http://abstrakraft.org/cwiid/"
 
-SRCREV = "192"
-PV = "0.6.00+svnr${SRCPV}"
+SRCREV = "fadf11e89b579bcc0336a0692ac15c93785f3f82"
+PV = "0.6.00+gitr${SRCREV}"
 
 inherit autotools
 inherit distutils-base
@@ -13,8 +13,8 @@ export HOST_SYS
 
 PARALLEL_MAKE = ""
 
-SRC_URI = "svn://abstrakraft.org/cwiid/svn/;module=trunk;proto=http"
-S = "${WORKDIR}/trunk"
+SRC_URI = "git://github.com/abstrakraft/cwiid.git;protocol=git"
+S = "${WORKDIR}/git"
 
 EXTRA_OECONF = "--disable-ldconfig"
 
