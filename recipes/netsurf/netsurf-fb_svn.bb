@@ -2,7 +2,7 @@ DESCRIPTION = "NetSurf is a lightweight, multi-platform web browser."
 HOMEPAGE = "http://www.netsurf-browser.org/"
 SECTION = "x11/network"
 LICENSE = "GPLv2"
-SRCREV = "10946"
+SRCREV = "10950"
 PV = "2.6+svnr${SRCPV}"
 PR = "r0"
 
