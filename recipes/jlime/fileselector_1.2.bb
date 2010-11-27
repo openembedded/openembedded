@@ -1,6 +1,6 @@
 DESCRIPTION = "Fileselector is an SDL-based file chooser dialog"
 LICENSE = "GPLv2"
-PR = "r1"
+PR = "r0"
 
 DEPENDS = "virtual/libsdl libsdl-ttf"
 RDEPENDS_${PN} = "ttf-dejavu-sans-condensed"
@@ -11,5 +11,5 @@ do_install() {
 	oe_runmake install DESTDIR=${D}
 }
 
-SRC_URI[md5sum] = "fb0e57e86605a8650c90349b6e17c5a6"
-SRC_URI[sha256sum] = "8dd35fcb6fcf3af285e2a74420ae2027626f7a1cc64f66da36568884f9a3e30c"
+SRC_URI[md5sum] = "650d64020a8eeec33716c60affa2a7d7"
+SRC_URI[sha256sum] = "844511ca2c096aad407d53421d5a225a3238130d21f1e31ec3d2449ebefa4300"
