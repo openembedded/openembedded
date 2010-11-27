@@ -1,6 +1,10 @@
 LICENSE = "GPL"
 DEPENDS = "guile libggz ggz-client-libs python-pygtk gtk+ libgnome libgnomeui librsvg gnome-vfs gconf libglade gnome-common gnome-python-desktop gnome-python gstreamer"
 
+SRC_URI[archive.md5sum] = "1fc03fe2209aa8a70da8f25d6eae1735"
+SRC_URI[archive.sha256sum] = "57c3f3685cdd49016dfbf236f4a1d98c9d669d456fabe0aeb6f5a4128dba3586"
+
+
 inherit gnome distutils-base gconf
 
 EXTRA_OECONF = " \
