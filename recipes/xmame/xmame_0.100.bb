@@ -7,7 +7,7 @@ DEPENDS = "expat virtual/libsdl libsdl-mixer"
 SRC_URI = "http://x.mame.net/download/historic/xmame-${PV}.tar.bz2 file://tiny.mak"
 S = "${WORKDIR}/xmame-${PV}"
 
-PR = "r1"
+PR = "r2"
 
 inherit flow-lossage siteinfo
 
@@ -15,7 +15,7 @@ ENDIANESS = "${@base_conditional('SITEINFO_ENDIANNESS', 'le', '-DLSB_FIRST', '-D
 
 do_compile() {
     test -z "${TINY}" && oe_runmake TARGET="mame" CC="${BUILD_CC}" maketree xmame.obj/cpu/m68000/m68kmake
-    oe_runmake TARGET="mame" JOY_SDL=1 SOUND_SDL=1 DISPLAY_METHOD=SDL                                      \
+    oe_runmake TARGET="mame" SOUND_ALSA=1 DISPLAY_METHOD=x11 X11_MITSHM=1 X11_XV=1 XINPUT_DEVICES=1      \
                CC="${CC}" CXX="${CXX}" CFLAGS="-I. -Isrc -Isrc/include -Isrc/unix ${CFLAGS} ${ENDIANESS}"  \
                CXXFLAGS="${CXXFLAGS}" LD="${CC}" LDFLAGS="${LDFLAGS}"                                      \
                RANLIB="${RANLIB}" MY_CPU="${TARGET_ARCH}" ARCH="${TARGET_OS}"                              \
@@ -24,7 +24,7 @@ do_compile() {
 
 do_install() {
 	install -d ${D}${bindir}
-	install -m 0755 xmame.SDL ${D}${bindir}
+	install -m 0755 xmame.x11 ${D}${bindir}
 }
 
 SRC_URI[md5sum] = "c289797531d540853c835a2bb9fad8bc"
