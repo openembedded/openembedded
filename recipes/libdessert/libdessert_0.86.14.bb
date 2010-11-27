@@ -6,7 +6,7 @@ PR = "r2"
 
 DEPENDS = "net-snmp libpcap libcli"
 
-SRC_URI = "http://www.des-testbed.net/sites/default/files/${PN}${PV}.tar.gz \
+SRC_URI = "http://www.des-testbed.net/sites/default/files/DES-SERT/${PN}${PV}.tar.gz \
 	   file://0001-big-fat-autotools-patch.patch \
 	  "
 
