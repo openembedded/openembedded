@@ -4,7 +4,7 @@ HOMEPAGE = "http://ekg.chmurka.net/"
 SECTION = "console/network"
 LICENSE = "GPL LGPL"
 
-SRC_URI = "http://ekg.chmurka.net/${PN}-${PV}.tar.gz"
+SRC_URI = "http://downloads.sourceforge.net/project/ekg/ekg/1.6/${PN}-${PV}.tar.gz"
 
 inherit autotools
 
