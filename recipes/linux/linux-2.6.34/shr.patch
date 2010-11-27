@@ -2,37 +2,35 @@ All patches from shr kernel repository
 
 http://gitorious.org/~jama/htc-msm-2-6-32/openmoko-kernel/commits/shr-2.6.34
 
-2144a64 Use 100 as HZ value on S3C24XX
-7116806 Force GPS power up on resume if it were powered up on suspend
-137d559 jbt6k74: fix WS
-c909f4a wm8753: use snd_soc_jack on neo1973
-5d3109e Fix printk level of s3c touchscreen release message
-6765601 s3c2410_ts: jitter less touchscreen for glamo, version 4
-4307846 gta02_defconfig: sync with DRM defconfig we have in OE (only DRM is disabled)
-baad7b4 gta02_drm_defconfig: sync with SHR defconfig we have in OE
-4b4c906 Openmoko resume reason sysfs node ported from 2.6.29
-d21326d tslib relies on ts pressures events so this hack is needed to get tslib stuff working
-cfae809 GTA02 bt - remember state of bluetooth in variable
-03a18a8 Enable powering off after 8s POWER press
-e50f0ee Rename /dev/s3c2410_serialXXX to /dev/ttySACXXX
-e70a62e mach-gta02: fix PR2349, do not manage down
-c88d383 Enable 3D engine
-3e8adeb glamo-display: fix WSOD for 242 timming
-90cd2dc glamo-display: Enable FIFO stage for the LCD engine's memory access
-7aab67a6 save_regs.patch
-f14f2f4 ar6000_delay.patch
-8f875e5 usbhost.patch
-8346417 accels.patch
-b98bc44 Use unlocked_ioctl rather than ioctl
-73c5bee Fix claim of 2D register resource
-e5b26b3 Debug statements for testing
-892ffb4 Fix dynamic command queue allocation
-89168be JBT6k74 work for KMS
-070af7e Work on Glamo-core for DRM
-67aaec6 Glamo DRM and KMS driver
-a086ee4 DRM for platform devices
-4460e0d touchscreen: ignore unexpected interrupts
-16ac021 wm8753: fix build with gcc-4.4.2, which works ok with 4.1.2
+332d4d6 Use 100 as HZ value on S3C24XX
+cf15f2e Force GPS power up on resume if it were powered up on suspend
+35100b9 jbt6k74: fix WS
+4ca6aba wm8753: use snd_soc_jack on neo1973
+65199ec Fix printk level of s3c touchscreen release message
+bd646c3 s3c2410_ts: jitter less touchscreen for glamo, version 4
+1fdc5e8 Openmoko resume reason sysfs node ported from 2.6.29
+3e467dd tslib relies on ts pressures events so this hack is needed to get tslib stuff working
+06b0058 GTA02 bt - remember state of bluetooth in variable
+d4eb15f Enable powering off after 8s POWER press
+4b917b2 Rename /dev/s3c2410_serialXXX to /dev/ttySACXXX
+8c29f08 mach-gta02: fix PR2349, do not manage down
+25252fc Enable 3D engine
+171485c glamo-display: fix WSOD for 242 timming
+d946c88 glamo-display: Enable FIFO stage for the LCD engine's memory access
+e5b69c0 save_regs.patch
+00184ca ar6000_delay.patch
+23214c2 usbhost.patch
+752655b accels.patch
+60e60b8 Use unlocked_ioctl rather than ioctl
+31c3e30 Fix claim of 2D register resource
+9258714 Debug statements for testing
+01b964f Fix dynamic command queue allocation
+e054ea4 JBT6k74 work for KMS
+04b6a8d Work on Glamo-core for DRM
+bc2937b Glamo DRM and KMS driver
+11e85be DRM for platform devices
+73f7873 touchscreen: ignore unexpected interrupts
+9965e7f wm8753: fix build with gcc-4.4.2, which works ok with 4.1.2
 
 diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
 index 811dedc..1a7b708 100644
@@ -394,7 +392,7 @@ index 0000000..233340a
 +MODULE_AUTHOR("Harald Welte <laforge@openmoko.org>");
 +MODULE_DESCRIPTION("Openmoko Freerunner USBHOST Power Management");
 diff --git a/arch/arm/mach-s3c2440/mach-gta02.c b/arch/arm/mach-s3c2440/mach-gta02.c
-index 9a9461d..031fd00 100644
+index 9a9461d..e9487f8 100644
 --- a/arch/arm/mach-s3c2440/mach-gta02.c
 +++ b/arch/arm/mach-s3c2440/mach-gta02.c
 @@ -62,6 +62,7 @@
@@ -666,15 +664,15 @@ index 9a9461d..031fd00 100644
  struct pcf50633_platform_data gta02_pcf_pdata = {
  	.resumers = {
  		[0] =	PCF50633_INT1_USBINS |
-@@ -533,7 +725,7 @@ struct pcf50633_platform_data gta02_pcf_pdata = {
- 				.min_uV = 3300000,
- 				.max_uV = 3300000,
+@@ -545,7 +737,7 @@ struct pcf50633_platform_data gta02_pcf_pdata = {
+ 				.min_uV = 1300000,
+ 				.max_uV = 1600000,
  				.valid_modes_mask = REGULATOR_MODE_NORMAL,
 -				.always_on = 1,
 +				.always_on = 0,
  				.apply_uV = 1,
- 				.state_mem = {
- 					.enabled = 1,
+ 			},
+ 		},
 @@ -649,6 +841,7 @@ struct pcf50633_platform_data gta02_pcf_pdata = {
  	},
  	.probe_done = gta02_pmu_attach_child_devices,
