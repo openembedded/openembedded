@@ -1,12 +1,12 @@
 DESCRIPTION = "Mozilla Mobile browser"
 
-PV = "0.9+${MOZPV}"
-MOZPV = "2.0a1pre"
-PR = "r10"
+PV = "2.0+${MOZPV}"
+MOZPV = "4.0b3pre"
+PR = "r0"
 PE = "1"
 
-SRC_URI = "hg://hg.mozilla.org;module=mozilla-central;rev=ad5644e101fd \
-           hg://hg.mozilla.org;module=mobile-browser;rev=457ffb726aeb \
+SRC_URI = "hg://hg.mozilla.org;module=mozilla-central;rev=e2bc7992d304 \
+           hg://hg.mozilla.org;module=mobile-browser;rev=051c9709248b \
            file://jsautocfg.h \
            file://jsautocfg-dontoverwrite.patch \
 "
