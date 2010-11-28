@@ -1,0 +1,44 @@
+From patchwork Sun Sep  5 07:25:12 2010
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: [libXext] sync declarations/definitions of xgeExtRegister()
+Date: Sun, 05 Sep 2010 15:25:12 -0000
+From: =?utf-8?q?R=C3=A9mi_Cardona_=3Cremi=40gentoo=2Eorg=3E?=
+X-Patchwork-Id: 1786
+Message-Id: <1283671512-6655-1-git-send-email-remi@gentoo.org>
+To: xorg-devel@lists.x.org
+
+src/extutil.c has _X_HIDDEN while src/Xge.c didn't. This apparently went
+unnoticed by most compilers for a while, but not on Gentoo-prefix/amd64
+where this issue breaks the build.
+
+Fixes https://bugs.freedesktop.org/show_bug.cgi?id=29958
+
+Signed-off-by: Ivan Jager <aij+freedesktop.org@mrph.org>
+Reviewed-by: Rémi Cardona <remi@gentoo.org>
+Acked-by: Peter Hutterer <peter.hutterer@who-t.net>
+
+---
+Could I get an extra pair of eyes to ACK this before committing?
+
+Thanks,
+
+Rémi
+
+ src/Xge.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/src/Xge.c b/src/Xge.c
+index 0655e00..2e25894 100644
+--- a/src/Xge.c
++++ b/src/Xge.c
+@@ -291,7 +291,7 @@ _xgeEventToWire(Display* dpy, XEvent* re, xEvent* event)
+ /*
+  * Extensions need to register callbacks for their events.
+  */
+-Bool
++_X_HIDDEN Bool
+ xgeExtRegister(Display* dpy, int offset, XExtensionHooks* callbacks)
+ {
+     XGEExtNode* newExt;
