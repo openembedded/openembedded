@@ -1,9 +1,10 @@
 require ${PN}.inc
 
+PR = "r1"
 
-SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/${APPNAME} \
-	   ${HANDHELDS_CVS};tag=${TAG};module=opie/core/apps/calibrate \
-	   ${HANDHELDS_CVS};tag=${TAG};module=opie/core/launcher \
+SRC_URI = "http://sources.openembedded.org/opie-1.2.4-split_core_${APPNAME}.tar.bz2 \
+	   http://sources.openembedded.org/opie-1.2.4-split_core_apps_calibrate.tar.bz2 \
+	   http://sources.openembedded.org/opie-1.2.4-split_core_launcher.tar.bz2 \
 	   file://opie-session \
 	   file://post-session \
 	   file://pre-session \

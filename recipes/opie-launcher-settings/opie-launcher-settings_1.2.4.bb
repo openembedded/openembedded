@@ -1,6 +1,7 @@
 require ${PN}.inc
 
+PR = "r1"
 
-SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/settings/launcher \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/apps \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/pics"
+SRC_URI = "http://sources.openembedded.org/opie-1.2.4-split_core_settings_launcher.tar.bz2 \
+           http://sources.openembedded.org/opie-1.2.4-split_apps.tar.bz2 \
+           http://sources.openembedded.org/opie-1.2.4-split_pics.tar.bz2"

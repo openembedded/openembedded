@@ -2,9 +2,9 @@ DESCRIPTION = "HotPlug -> QCOP Event Bridge"
 SECTION = "opie/base"
 RDEPENDS_${PN} = "opie-qcop hotplug"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "${HANDHELDS_CVS};module=opie/core/tools/hotplug-qcop"
+SRC_URI = "${OPIE_GIT};protocol=git;subpath=core/tools/hotplug-qcop"
 S = "${WORKDIR}/hotplug-qcop"
 
 inherit opie

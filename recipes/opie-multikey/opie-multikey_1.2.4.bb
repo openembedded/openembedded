@@ -1,9 +1,9 @@
 require ${PN}.inc
 
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/inputmethods/multikey \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/share \
+SRC_URI = "http://sources.openembedded.org/opie-1.2.4-split_inputmethods_multikey.tar.bz2 \
+           http://sources.openembedded.org/opie-1.2.4-split_share.tar.bz2 \
            file://fix-rpath.patch"
 
 #           file://friendly-button-names.patch"

@@ -1,7 +1,7 @@
 require ${PN}.inc
 
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/applets/memoryapplet \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/settings/sysinfo \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/pics"
+SRC_URI = "http://sources.openembedded.org/opie-1.2.4-split_noncore_applets_memoryapplet.tar.bz2 \
+           http://sources.openembedded.org/opie-1.2.4-split_noncore_settings_sysinfo.tar.bz2 \
+           http://sources.openembedded.org/opie-1.2.4-split_pics.tar.bz2"

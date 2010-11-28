@@ -1,7 +1,8 @@
 require ${PN}.inc
 
+PR = "r1"
 
-SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/settings/netsystemtime \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/pics \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/etc \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/apps"
+SRC_URI = "http://sources.openembedded.org/opie-1.2.4-split_noncore_settings_netsystemtime.tar.bz2 \
+           http://sources.openembedded.org/opie-1.2.4-split_pics.tar.bz2 \
+           http://sources.openembedded.org/opie-1.2.4-split_etc.tar.bz2 \
+           http://sources.openembedded.org/opie-1.2.4-split_apps.tar.bz2"

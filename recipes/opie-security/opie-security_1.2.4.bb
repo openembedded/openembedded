@@ -1,9 +1,10 @@
 require ${PN}.inc
 
+PR = "r1"
 
-SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/settings/security \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/pics \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/apps"
+SRC_URI = "http://sources.openembedded.org/opie-1.2.4-split_core_settings_security.tar.bz2 \
+           http://sources.openembedded.org/opie-1.2.4-split_pics.tar.bz2 \
+           http://sources.openembedded.org/opie-1.2.4-split_apps.tar.bz2"
 
 # FILES plugins/application/libsecurity.so* bin/security apps/Settings/Security.desktop pics/security
 do_install() {

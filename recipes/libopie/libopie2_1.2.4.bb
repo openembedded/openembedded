@@ -1,8 +1,8 @@
 require ${PN}.inc
 
-PR = "r3"
+PR = "r4"
 
-SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/libopie2 \
+SRC_URI = "http://sources.openembedded.org/opie-1.2.4-split_libopie2.tar.bz2 \
            file://include.pro \
            file://libopie2-tosa.patch \
            file://c7x0_w100_disable.patch \

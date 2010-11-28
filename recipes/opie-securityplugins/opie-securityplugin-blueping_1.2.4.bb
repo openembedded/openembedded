@@ -1,5 +1,7 @@
 require opie-securityplugin-blueping.inc
 
-SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/securityplugins/blueping \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/pics "
+PR = "r1"
+
+SRC_URI = "http://sources.openembedded.org/opie-1.2.4-split_noncore_securityplugins_blueping.tar.bz2 \
+           http://sources.openembedded.org/opie-1.2.4-split_pics.tar.bz2"
 

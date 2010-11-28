@@ -9,7 +9,7 @@
 #
 
 I18N_STATS = "1"
-SRC_URI += "${HANDHELDS_CVS};module=opie/i18n" 
+SRC_URI += "${OPIE_GIT};protocol=git;subpath=i18n" 
 DEPENDS += "opie-i18n"
 	
 die () {

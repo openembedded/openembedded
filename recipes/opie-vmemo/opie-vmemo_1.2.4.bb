@@ -1,9 +1,9 @@
 require ${PN}.inc
 
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/applets/vmemo \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/sounds"
+SRC_URI = "http://sources.openembedded.org/opie-1.2.4-split_core_applets_vmemo.tar.bz2 \
+           http://sources.openembedded.org/opie-1.2.4-split_sounds.tar.bz2"
 
 # FILES plugins/applets/libvmemoapplet.so sounds/vmemo*.wav
 do_install() {

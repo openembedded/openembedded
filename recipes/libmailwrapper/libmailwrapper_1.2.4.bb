@@ -1,5 +1,5 @@
 require ${PN}.inc
 
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/net/mail/libmailwrapper"
+SRC_URI = "http://sources.openembedded.org/opie-1.2.4-split_noncore_net_mail_libmailwrapper.tar.bz2"

@@ -1,8 +1,8 @@
 require ${PN}.inc
 
-PR = "r0"
+PR = "r1"
 
 TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '_')}"
 
-SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/pics \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/pics-hires"
+SRC_URI = "http://sources.openembedded.org/opie-1.2.4-split_pics.tar.bz2 \
+           http://sources.openembedded.org/opie-1.2.4-split_pics-hires.tar.bz2"

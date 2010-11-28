@@ -1,10 +1,10 @@
 require ${PN}.inc
 
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/applets/cardapplet \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/pics \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/sounds \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/apps \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/etc"
+SRC_URI = "http://sources.openembedded.org/opie-1.2.4-split_noncore_applets_cardapplet.tar.bz2 \
+           http://sources.openembedded.org/opie-1.2.4-split_pics.tar.bz2 \
+           http://sources.openembedded.org/opie-1.2.4-split_sounds.tar.bz2 \
+           http://sources.openembedded.org/opie-1.2.4-split_apps.tar.bz2 \
+           http://sources.openembedded.org/opie-1.2.4-split_etc.tar.bz2"
 
