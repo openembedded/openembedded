@@ -1,13 +1,13 @@
 require ${PN}.inc
-PR = "r5"
+PR = "r6"
 
-SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/apps/calibrate \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/settings/mediummount \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/core/launcher \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/pics \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/apps \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/root \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/etc \
+SRC_URI = "http://sources.openembedded.org/opie-1.2.4-split_core_apps_calibrate.tar.bz2 \
+           http://sources.openembedded.org/opie-1.2.4-split_noncore_settings_mediummount.tar.bz2 \
+           http://sources.openembedded.org/opie-1.2.4-split_core_launcher.tar.bz2 \
+           http://sources.openembedded.org/opie-1.2.4-split_pics.tar.bz2 \
+           http://sources.openembedded.org/opie-1.2.4-split_apps.tar.bz2 \
+           http://sources.openembedded.org/opie-1.2.4-split_root.tar.bz2 \
+           http://sources.openembedded.org/opie-1.2.4-split_etc.tar.bz2 \
            file://nomax.patch;striplevel=3 \
            file://no-builtin-qss-startup.patch \
            file://kbdlocks-runtime.patch \

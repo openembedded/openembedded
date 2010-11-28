@@ -1,5 +1,5 @@
 require ${PN}.inc
 
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/apps/qss"
+SRC_URI = "http://sources.openembedded.org/opie-1.2.4-split_core_apps_qss.tar.bz2"

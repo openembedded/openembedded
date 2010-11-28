@@ -1,4 +1,5 @@
 require ${PN}.inc
 
+PR = "r1"
 
-SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/pim/datebook/holiday/birthday "
+SRC_URI = "http://sources.openembedded.org/opie-1.2.4-split_core_pim_datebook_holiday_birthday.tar.bz2"

@@ -5,10 +5,10 @@ LICENSE = "GPL"
 DEPENDS = "opie-mediaplayer1"
 RDEPENDS_${PN} = "opie-mediaplayer1"
 PV = "${OPIE_CVS_PV}"
-PR = "r1"
+PR = "r2"
 APPNAME = "mpeg3plugin"
 
-SRC_URI = "${HANDHELDS_CVS};module=opie/core/multimedia/opieplayer"
+SRC_URI = "${OPIE_GIT};protocol=git;subpath=core/multimedia/opieplayer"
 
 S = "${WORKDIR}/opieplayer/libmpeg3"
 

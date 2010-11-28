@@ -3,7 +3,9 @@ DESCRIPTION = "Ethernet manufacturer database"
 LICENSE = "PD"
 SRCDATE = "${PV}"
 
-SRC_URI = "${HANDHELDS_CVS};module=opie/etc"
+PR = "r1"
+
+SRC_URI = "${OPIE_GIT};protocol=git;subpath=etc"
 S = "${WORKDIR}/etc"
 
 do_install() {
