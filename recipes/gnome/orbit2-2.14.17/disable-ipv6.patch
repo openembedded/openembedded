@@ -1,0 +1,12 @@
+--- ORBit2-2.14.17/linc2/src/linc-protocols.c.orig	2010-11-29 15:21:32.000000000 +1030
++++ ORBit2-2.14.17/linc2/src/linc-protocols.c	2010-11-29 15:22:59.000000000 +1030
+@@ -937,6 +937,9 @@
+ 	static const struct in6_addr in6addr_any = { { { 0 } } };
+ #  endif
+ #endif
++#ifdef DISABLE_IPV6
++	const struct in6_addr in6addr_any = { { { 0 } } };
++#endif
+ 
+ static gboolean
+ link_protocol_get_sockinfo_ipv6 (const LinkProtocolInfo  *proto,
