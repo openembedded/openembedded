@@ -21,7 +21,11 @@ SRC_URI = "\
   file://gio.patch \
   file://60_wait-longer-for-threads-to-die.patch \
   file://glib-mkenums-interpreter.patch \
+  file://disable-ipv6.patch \
 "
+
+noipv6 = "${@base_contains('DISTRO_FEATURES', 'ipv6', '', '-DDISABLE_IPV6', d)}"
+EXTRA_OEMAKE_append = "'CFLAGS=${CFLAGS} ${noipv6}'"
 
 SRC_URI[archive.md5sum] = "6a7db81c9a2cffe6a34dadb57d7ba2d2"
 SRC_URI[archive.sha256sum] = "014c3da960bf17117371075c16495f05f36501db990851ceea658f15d2ea6d04"
