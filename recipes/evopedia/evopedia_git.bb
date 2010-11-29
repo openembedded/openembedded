@@ -6,11 +6,11 @@ LICENSE = "GPL"
 RRECOMMENDS_${PN} = "midori"
 RRECOMMENDS_${PN}_shr = "eve"
 
-PV = "0.4.0+gitr${SRCPV}"
+PV = "0.4.2+gitr${SRCPV}"
 
 SRC_URI = "git://gitorious.org/evopedia/evopedia.git;protocol=git;branch=master"
 
-SRCREV = "f5d159c75106680a8b39137ad100d7e3a531f0b2"
+SRCREV = "36ca70acb457762d623e8e6c83039256dbe5c7f4"
 S = "${WORKDIR}/git"
 
 inherit qt4x11
