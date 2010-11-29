@@ -1,0 +1,26 @@
+--- glib-2.24.1/gio/ginetaddress.c.orig	2010-11-29 14:54:17.000000000 +1030
++++ glib-2.24.1/gio/ginetaddress.c	2010-11-29 14:55:03.000000000 +1030
+@@ -485,7 +485,11 @@
+       return g_inet_address_new_from_bytes (addr, family);
+     }
+   else
++#ifdef DISABLE_IPV6
++    return NULL;
++#else
+     return g_inet_address_new_from_bytes (in6addr_loopback.s6_addr, family);
++#endif
+ }
+ 
+ /**
+@@ -512,7 +516,11 @@
+       return g_inet_address_new_from_bytes (addr, family);
+     }
+   else
++#ifdef DISABLE_IPV6
++    return NULL;
++#else
+     return g_inet_address_new_from_bytes (in6addr_any.s6_addr, family);
++#endif
+ }
+ 
+ 
