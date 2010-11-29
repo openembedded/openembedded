@@ -4,7 +4,7 @@
 #@NAME: KaeilOS(R) - http://www.kaeilos.com
 #@DESCRIPTION: KaeilOS Linux Distribution preferred version
 #@MAINTAINER: Marco Cavallini <m.cavallini@koansoftware.com>
-#@VERSION: 23-11-2010
+#@VERSION: 29-11-2010
 #
 # KaeilOS is a registered trade mark of KOAN - Bergamo - Italia
 # Product website : http://www.KaeilOS.com 
@@ -38,10 +38,10 @@ PREFERRED_VERSION_lighttpd      = "1.4.26"
 PREFERRED_VERSION_mesa          = "7.6"
 PREFERRED_VERSION_mesa-dri      = "7.6"
 PREFERRED_VERSION_mesa-xlib     = "7.6"
-PREFERRED_VERSION_mythplugins   = "0.22"
-PREFERRED_VERSION_myththemes    = "0.22"
-PREFERRED_VERSION_mythtv        = "0.22"
-PREFERRED_VERSION_mplayer       = "0.0+1.0rc3+svnr30165"
+PREFERRED_VERSION_mythplugins   = "0.23"
+PREFERRED_VERSION_myththemes    = "0.23"
+PREFERRED_VERSION_mythtv        = "0.23"
+PREFERRED_VERSION_mplayer       = "0.0+1.0rc3+svnr%"
 PREFERRED_VERSION_network-manager-applet = "0.8.1"
 PREFERRED_VERSION_networkmanager = "0.8.1"
 PREFERRED_VERSION_openssl = "1.0.0b"
