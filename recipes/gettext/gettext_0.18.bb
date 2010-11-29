@@ -19,6 +19,9 @@ SRC_URI = "${GNU_MIRROR}/gettext/gettext-${PV}.tar.gz \
 
 SRC_URI_append_libc-uclibc = " file://gettext-error_print_progname.patch"
 
+nolargefile = "${@base_contains('DISTRO_FEATURES', 'largefile', '', '-DNO_LARGEFILE_SOURCE', d)}"
+EXTRA_OEMAKE_append_libc-uclibc = "'CFLAGS=${CFLAGS} ${nolargefile}'"
+
 PARALLEL_MAKE = ""
 
 inherit autotools
