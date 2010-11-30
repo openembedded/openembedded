@@ -9,7 +9,7 @@ LICENSE = "GPL"
 DEPENDS = "ncurses"
 RDEPENDS_${PN} = "ncurses-terminfo"
 
-INC_PR = "r12"
+INC_PR = "r13"
 
 SRC_URI = "http://procps.sourceforge.net/procps-${PV}.tar.gz;name=tarball \
 	   file://sysctl.conf \
@@ -30,7 +30,10 @@ EXTRA_OEMAKE = "CFLAGS=-I${STAGING_INCDIR} \
                 LDFLAGS="${LDFLAGS}" \
                 CURSES=-lncurses \
                 install='install -D' \
-                ldconfig=echo"
+                ldconfig=echo \
+                usr/bin=${D}${bindir}/ \
+                usr/proc/bin=${D}${bindir}/ \
+                "
 
 do_install_append () {
 	install -d ${D}${sysconfdir}/init.d
