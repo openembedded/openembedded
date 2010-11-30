@@ -1,0 +1,24 @@
+--- alsa-utils-1.0.20/aplay/aplay.c.orig	2010-11-30 11:45:41.000000000 +1030
++++ alsa-utils-1.0.20/aplay/aplay.c	2010-11-30 11:55:57.000000000 +1030
+@@ -51,6 +51,21 @@
+ #include "formats.h"
+ #include "version.h"
+ 
++#ifndef __USE_LARGEFILE64
++#include <stdint.h>
++typedef uint64_t off64_t;
++off64_t
++lseek64(int fd, off64_t offset, int whence)
++{
++	if (offset >= (1 << ((sizeof(off_t)*8) - 1))) {
++		errno = EOVERFLOW;
++		return -1;
++	}
++	return lseek(fd, (off_t) offset, whence);
++}
++#define open64 open
++#endif
++
+ #ifndef LLONG_MAX
+ #define LLONG_MAX    9223372036854775807LL
+ #endif
