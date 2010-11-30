@@ -1,6 +1,8 @@
 DESCRIPTION = "Scripts to be called when fonts are installed or removed \
 to make them known to the WM, whether X11 or Opie"
 AUTHOR = "Rolf Leggewie <oe-devel@rolf.leggewie.biz"
+LICENSE = "MIT"
+PR = "r1"
 
 SRC_URI = "file://update-fonts"
 
