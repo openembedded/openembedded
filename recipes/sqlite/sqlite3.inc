@@ -15,8 +15,11 @@ inherit autotools pkgconfig
 
 BBCLASSEXTEND = "native"
 
+nolargefile = "${@base_contains('DISTRO_FEATURES', 'largefile', '', '-DSQLITE_DISABLE_LFS', d)}"
 EXTRA_OECONF = "--disable-tcl --enable-shared \
-		--enable-threadsafe"
+		--enable-threadsafe \
+		CFLAGS='${CFLAGS} ${nolargefile}' \
+		"
 export config_BUILD_CC = "${BUILD_CC}"
 export config_BUILD_CFLAGS = "${BUILD_CFLAGS}"
 export config_BUILD_LIBS = "${BUILD_LDFLAGS}"
