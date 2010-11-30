@@ -5,7 +5,7 @@ DESCRIPTION = "OpenJade is a suite of tools for validating, \
 processing, and applying DSSSL (Document Style Semantics and \
 Specification Language) stylesheets to SGML and XML documents."
 LICENSE = "BSD"
-PR = "r4"
+PR = "r5"
 SRC_URI = "${SOURCEFORGE_MIRROR}/openjade/openjade-${PV}.tar.gz \
 	   file://configure.patch \
 	   file://autoconf.patch \
@@ -42,8 +42,11 @@ do_install_append () {
        install -m 644 dsssl/catalog ${D}${datadir}/sgml/openjade-${PV}
        install -m 644 dsssl/*.{dtd,dsl,sgm} ${D}${datadir}/sgml/openjade-${PV}
 
+       # The catalog must live in the sysroot and it must be there for
+       # install-catalog to do its thing.
+       install -m 644 dsssl/catalog ${datadir}/sgml/openjade-${PV}
        install-catalog --add ${sysconfdir}/sgml/openjade-${PV}.cat \
-           ${D}${datadir}/sgml/openjade-${PV}/catalog
+           ${datadir}/sgml/openjade-${PV}/catalog
 
        install-catalog --add ${sysconfdir}/sgml/sgml-docbook.cat \
            ${sysconfdir}/sgml/openjade-${PV}.cat
