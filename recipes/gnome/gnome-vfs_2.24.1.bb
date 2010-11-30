@@ -22,8 +22,19 @@ EXTRA_OECONF = " \
                  --with-samba-includes=${STAGING_INCDIR} \
                "
 
+do_nolargefile() {
+	for file in ${S}/modules/Makefile.am \
+			${S}/daemon/Makefile.am \
+			${S}/libgnomevfs/Makefile.am; do
+		sed -i -e '/_FILE_OFFSET_BITS/d' $file
+		sed -i -e '/_LARGEFILE64_SOURCE/d' $file
+	done
+	sed -i -e '/_LARGEFILE64_SOURCE/,/#endif/d' ${S}/libgnomevfs/gnome-vfs-module-shared.h
+}
+
 do_configure_prepend() {
         sed -i -e 's:	doc	::g' Makefile.am
+	${@base_contains('DISTRO_FEATURES', 'largefile', '', 'do_nolargefile', d)}
 }
 
 PACKAGES_DYNAMIC = "gnome-vfs-plugin-*"
