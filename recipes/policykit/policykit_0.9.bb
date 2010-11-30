@@ -1,7 +1,8 @@
 HOMEPAGE = "http://www.packagekit.org/"
 DEPENDS = "libpam expat dbus-glib intltool-native"
+LICENSE = "LGPLv2+"
 
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "http://hal.freedesktop.org/releases/PolicyKit-${PV}.tar.gz \
            file://PolicyKit.conf \
