@@ -1,0 +1,26 @@
+diff -ur autoconf-2.65.orig/configure autoconf-2.65/configure
+--- autoconf-2.65.orig/configure	2009-11-22 00:29:10.000000000 +1030
++++ autoconf-2.65/configure	2010-11-30 15:53:46.000000000 +1030
+@@ -2504,9 +2504,6 @@
+ if test "$PERL" = no; then
+   as_fn_error "perl is not found" "$LINENO" 5
+ fi
+-$PERL -e 'require 5.005_03;' || {
+-   as_fn_error "Perl 5.005_03 or better is required" "$LINENO" 5
+-}
+ 
+ # Find out whether the system supports flock
+ # Note this test does not try to find out whether it works with this
+diff -ur autoconf-2.65.orig/configure.ac autoconf-2.65/configure.ac
+--- autoconf-2.65.orig/configure.ac	2009-10-29 12:23:41.000000000 +1030
++++ autoconf-2.65/configure.ac	2010-11-30 15:53:04.000000000 +1030
+@@ -133,9 +133,6 @@
+ if test "$PERL" = no; then
+   AC_MSG_ERROR([perl is not found])
+ fi
+-$PERL -e 'require 5.005_03;' || {
+-   AC_MSG_ERROR([Perl 5.005_03 or better is required])
+-}
+ 
+ # Find out whether the system supports flock
+ # Note this test does not try to find out whether it works with this
