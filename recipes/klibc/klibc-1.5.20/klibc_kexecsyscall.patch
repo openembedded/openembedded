@@ -4,7 +4,7 @@
  #include <asm/unistd.h>
  #include <klibc/sysconfig.h>
  #include <bitsize.h>
-+#include <asm/kexec.h>
++/* #include <asm/kexec.h> */
 +long kexec_load(void *, unsigned long , struct kexec_segment *, unsigned long );
  
  /*
