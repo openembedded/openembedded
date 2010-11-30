@@ -3,7 +3,7 @@ require php.inc
 DEPENDS = "zlib libxml2 virtual/libiconv php-native lemon-native mysql5 \
            libc-client openssl"
 
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.3"
 
 SRC_URI =     "http://museum.php.net/php5/php-${PV}.tar.bz2;name=src \
                file://acinclude-xml2-config.patch \
@@ -21,6 +21,7 @@ export LIBS=" -lpthread "
 
 EXTRA_OECONF = "    --enable-mbstring \
                     --enable-discard-path \
+                    --disable-iconv \
                     --enable-sockets \
                     --enable-shared \
                     --enable-pcntl \
