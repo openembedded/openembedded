@@ -1,0 +1,45 @@
+status: applied
+origin: https://github.com/xbmc/xbmc/commit/9e765ccae4ef9753c94b793f44931d84f65ca99c
+
+Index: /tools/TexturePacker/Makefile.in
+===================================================================
+--- /tools/TexturePacker/Makefile.in	(revision 33752)
++++ /tools/TexturePacker/Makefile.in	(revision 35484)
+@@ -3,5 +3,5 @@
+ DEFINES = 
+ ifeq ($(findstring osx,$(ARCH)),osx)
+-LIBS = ../../xbmc/lib/libsquish/libsquish-@ARCH@.a -L/opt/local/lib -lSDL_image -lSDL -llzo
++LIBS = ../../xbmc/lib/libsquish/libsquish-@ARCH@.a -L/opt/local/lib -lSDL_image -lSDL -llzo2
+ else
+ LIBS = ../../xbmc/lib/libsquish/libsquish-@ARCH@.a -lSDL_image -lSDL -llzo2
+Index: /tools/TexturePacker/XBMCTex.cpp
+===================================================================
+--- /tools/TexturePacker/XBMCTex.cpp	(revision 35328)
++++ /tools/TexturePacker/XBMCTex.cpp	(revision 35484)
+@@ -41,5 +41,5 @@
+ 
+ #ifdef _LINUX
+-#include <lzo1x.h>
++#include <lzo/lzo1x.h>
+ #else
+ #include "../../xbmc/lib/liblzo/LZO1X.H"
+Index: /configure.in
+===================================================================
+--- /configure.in	(revision 35468)
++++ /configure.in	(revision 35484)
+@@ -1074,5 +1074,4 @@
+ AC_HEADER_STDC
+ AC_HEADER_SYS_WAIT
+-AC_CHECK_HEADERS([lzo/lzo1.h])
+ AC_CHECK_HEADERS([arpa/inet.h fcntl.h float.h inttypes.h limits.h locale.h \
+   malloc.h memory.h netdb.h netinet/in.h stddef.h stdint.h stdlib.h string.h \
+@@ -1186,10 +1185,4 @@
+ else
+   final_message="$final_message\n  MID Support:\tNo"
+-fi
+-
+-if test -d "/usr/include/lzo"; then
+-  INCLUDES="$INCLUDES -I/usr/include/lzo"
+-else
+-  INCLUDES="$INCLUDES"
+ fi
