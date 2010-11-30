@@ -25,4 +25,8 @@ DEPENDS_x86 = "yasm-native"
 
 EXTRA_OECONF = '--enable-shared ${X264_DISABLE_ASM} --extra-cflags="${X264_ECFLAGS}"'
 
+do_configure_append() {
+	eval "${@base_contains('DISTRO_FEATURES', 'largefile', '', 'sed -i -e "/_LARGEFILE_SOURCE/d" ${S}/common/osdep.h', d)}"
+	eval "${@base_contains('DISTRO_FEATURES', 'largefile', '', 'sed -i -e "/_FILE_OFFSET_BITS/d" ${S}/common/osdep.h', d)}"
+}
 
