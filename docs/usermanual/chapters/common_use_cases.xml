@@ -55,17 +55,6 @@ PREFERRED_VERSION_linux-omap1_omap5912osk ?= "2.6.18+git"
 PREFERRED_VERSION_linux-openzaurus ?= "2.6.17"
             </screen></para>
         </listitem>
-
-        <listitem>
-          <para>To get more stable build it is good to make use of
-          sane-srcdates.inc file which contain working SRCDATE for many of
-          floating recipes. <screen>
-require conf/distro/include/sane-srcdates.inc
-            </screen> It also should have global <command>SRCDATE</command>
-          value set (format is ISO date: YYYYMMDD): <screen>
-SRCDATE = "20061014"
-            </screen></para>
-        </listitem>
       </itemizedlist></para>
   </section>
 
@@ -152,12 +141,11 @@ SRCDATE = "20061014"
         prevent random breakage in OE at the most inopportune time for all OE users.  Here is
         how to do that properly.
           <itemizedlist>
-            <listitem><para>for svn: add 'PV = "1.1+svnr${SRCREV}"' to your bb file.</para></listitem>
-            <listitem><para>for cvs: add 'PV = "1.1+cvs${SRCREV}"' to your bb file.</para></listitem>
+            <listitem><para>for svn: add 'PV = "1.1+svnr${SRCPV}"' to your bb file.</para></listitem>
+            <listitem><para>for git: add 'PV = "1.1+gitr${SRCPV}"' to your bb file.</para></listitem>
+            <listitem><para>for cvs: add 'PV = "1.1+cvs${SRCPV}"' to your bb file.</para></listitem>
           </itemizedlist>
-        Accompany either with an entry to conf/distro/include/sane-srcrevs.inc for a revision that you know
-        builds successfully.  It is also common to define the stable SRCREV
-        for your package directly in the package recipe.
+        Accompany with stable SRCREV for your package directly in the package recipe.
         </para>
         <para>
         If you really absolutely have to follow the latest commits, you can do that by adding
