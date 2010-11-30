@@ -25,7 +25,6 @@ EXTRA_OECONF = "    --enable-mbstring \
                     --enable-sockets \
                     --enable-shared \
                     --enable-pcntl \
-                    --enable-memory-limit \
                     --enable-wddx \
                     --disable-embedded-mysqli \
                     --enable-magic-quotes \
