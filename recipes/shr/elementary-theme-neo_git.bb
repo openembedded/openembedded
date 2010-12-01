@@ -7,7 +7,7 @@ RSUGGESTS_${PN} = "elementary-theme-neo e-wm-theme-illume-neo gtk-theme-neo gpe-
 LICENSE = "unknown"
 
 SRCREV = "c2443c4052997045f8862462a06a5b07dce42cb5"
-PV = "0.5-${EFL_SRCREV}+gitr${SRCPV}"
+PV = "0.6+gitr${SRCPV}"
 PR = "r2"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master \
