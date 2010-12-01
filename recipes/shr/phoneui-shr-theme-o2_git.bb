@@ -8,7 +8,8 @@ RDEPENDS_${PN} = "libphone-ui-shr"
 RSUGGESTS_${PN} = "elementary-theme-o2"
 SRCREV = "20e5e82819a7612aa31c753a6898ccc9e940c7c6"
 PV = "0.1+gitr${SRCPV}"
-PR = "r1"
+PR = "r2"
+PACKAGE_ARCH = "all"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master"
 

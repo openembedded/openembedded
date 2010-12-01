@@ -3,7 +3,7 @@ SECTION = "x11/data"
 LICENSE = "MIT BSD"
 SRCREV = "baad098dc8c8058a712a6d98a69b5558ccc54973"
 PV = "0.1+gitr${SRCPV}"
-PR = "r3"
+PR = "${INC_PR}.0"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master"
 S = "${WORKDIR}/git/shr-splash/${PN}"
@@ -18,4 +18,5 @@ SS_append_palmpre  = "/palmpre"
 ALTERNATIVE_PRIORITY = 3
 
 require shr-splash-theme.inc
-
+# only this recipe is MACHINE specific
+PACKAGE_ARCH = "${MACHINE_ARCH}"
