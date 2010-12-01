@@ -5,7 +5,7 @@ SECTION = "console/network"
 LICENSE ="BSD"
 DEPENDS = "docbook-utils-native sgmlspl-native"
 
-PR = "r2"
+PR = "r3"
 
 DEFAULT_PREFERENCE_angstrom = "2"
 
@@ -22,10 +22,14 @@ SRC_URI = "http://ftp.de.debian.org/debian/pool/main/i/iputils/iputils_${PV}.ori
 
 S = "${WORKDIR}/iputils_20071127.orig"
 
-PACKAGES += "${PN}-ping ${PN}-ping6 ${PN}-arping ${PN}-tracepath ${PN}-tracepath6 ${PN}-traceroute6"
+PACKAGES_IPV4 = "${PN}-ping ${PN}-arping ${PN}-tracepath"
+PACKAGES_IPV6 = "${PN}-ping6 ${PN}-tracepath6 ${PN}-traceroute6"
+all_pkgs = "${PACKAGES_IPV4} \
+	${@base_contains('DISTRO_FEATURES', 'ipv6', '${PACKAGES_IPV6}', '', d)}"
+PACKAGES += "${all_pkgs}"
 
 ALLOW_EMPTY_${PN} = "1"
-RDEPENDS_{PN} += "${PN}-ping ${PN}-ping6 ${PN}-arping ${PN}-tracepath ${PN}-tracepath6 ${PN}-traceroute6"
+RDEPENDS_{PN} += "${all_pkgs}"
 
 FILES_${PN}		= ""
 FILES_${PN}-ping	= "${base_bindir}/ping.${PN}"
@@ -37,25 +41,32 @@ FILES_${PN}-traceroute6	= "${bindir}/traceroute6"
 FILES_${PN}-doc		= "${mandir}/man8"
 
 do_compile () {
+	make_targets="${@base_contains('DISTRO_FEATURES', 'ipv6', 'all', 'tracepath ping arping', d)}"
 	oe_runmake 'CC=${CC}' \
 		   KERNEL_INCLUDE="${STAGING_INCDIR}" \
-		   LIBC_INCLUDE="${STAGING_INCDIR}" all man
+		   LIBC_INCLUDE="${STAGING_INCDIR}" ${make_targets} man
 }
 
+do_install_ipv6 () {
+	install -m 4555 ping6 ${D}${base_bindir}/ping6.${PN}
+	install -m 4555 traceroute6 ${D}${bindir}/
+	install -m 0755 tracepath6 ${D}${bindir}/
+	install -m 0644 doc/traceroute6.8 ${D}${mandir}/man8/ || true
+}
 do_install () {
 	install -m 0755 -d ${D}${base_bindir} ${D}${bindir} ${D}${mandir}/man8
 	# SUID root programs
 	install -m 4555 ping ${D}${base_bindir}/ping.${PN}
-	install -m 4555 ping6 ${D}${base_bindir}/ping6.${PN}
-	install -m 4555 traceroute6 ${D}${bindir}/
-	# Other programgs
-	for i in arping tracepath tracepath6; do
+	# Other programs
+	for i in arping tracepath; do
 	  install -m 0755 $i ${D}${bindir}/
 	done
 	# Manual pages for things we build packages for
-	for i in tracepath.8 traceroute6.8 ping.8 arping.8; do
+	for i in tracepath.8 ping.8 arping.8; do
 	  install -m 0644 doc/$i ${D}${mandir}/man8/ || true
 	done
+
+	${@base_contains('DISTRO_FEATURES', 'ipv6', 'do_install_ipv6', '', d)}
 }
 
 # Busybox also provides ping and ping6, so use update-alternatives
