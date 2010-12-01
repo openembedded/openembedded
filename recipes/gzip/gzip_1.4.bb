@@ -19,10 +19,12 @@ alternatives = "gunzip gzip zcat"
 do_install () {
     autotools_do_install
     # Move files into /bin (FHS)
-    install -d ${D}${base_bindir}
-    for file in ${D}${bindir}/*; do
-        mv $file ${D}${base_bindir}/
-    done
+    if [ "${base_bindir}" != "${bindir}" ]; then
+        install -d ${D}${base_bindir}
+        for file in ${D}${bindir}/*; do
+            mv $file ${D}${base_bindir}/
+        done
+    fi
 }
 
 do_install_append_pn-gzip () {
