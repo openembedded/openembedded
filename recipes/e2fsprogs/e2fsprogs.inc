@@ -9,7 +9,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-${PV}.tar.gz"
 
 S = "${WORKDIR}/e2fsprogs-${PV}"
 
-INC_PR = "r25"
+INC_PR = "r26"
 
 inherit autotools
 
@@ -30,32 +30,25 @@ do_compile_prepend () {
 do_install_append () {
 
     	oe_runmake install-libs DESTDIR=${D}
-
-	mv ${D}${base_sbindir}/e2fsck ${D}${base_sbindir}/e2fsck.${PN}
-	rm ${D}${base_sbindir}/fsck.ext2
-	rm ${D}${base_sbindir}/fsck.ext3
-	rm ${D}${base_sbindir}/fsck.ext4*
-	mv ${D}${base_sbindir}/mke2fs ${D}${base_sbindir}/mke2fs.${PN}
-	rm ${D}${base_sbindir}/mkfs.ext2
-	rm ${D}${base_sbindir}/mkfs.ext3
-	rm ${D}${base_sbindir}/mkfs.ext4*
-	mv ${D}${base_sbindir}/uuidd ${D}${base_sbindir}/uuidd.${PN}
-
-	cd ${D}/${base_sbindir}
-	ln -sf ./e2fsck.${PN} fsck.ext2.${PN}
-	ln -sf ./e2fsck.${PN} fsck.ext3.${PN}
-	ln -sf ./e2fsck.${PN} fsck.ext4.${PN}
-	ln -sf ./e2fsck.${PN} fsck.ext4dev.${PN}
-	ln -sf ./mke2fs.${PN} mkfs.ext2.${PN}
-	ln -sf ./mke2fs.${PN} mkfs.ext3.${PN}
-	ln -sf ./mke2fs.${PN} mkfs.ext4.${PN}
-	ln -sf ./mke2fs.${PN} mkfs.ext4dev.${PN}
-
-	ln -sf ./tune2fs findfs
-	ln -sf ./tune2fs e2label
-
-	mv ${D}${bindir}/chattr ${D}${bindir}/chattr.${PN}
+	ln -sf ${D}/${base_sbindir}/tune2fs findfs
+	ln -sf ${D}/${base_sbindir}/tune2fs e2label
 }
+
+do_install_append_pn-e2fsprogs () {
+	for f in e2fsck mke2fs uuid; do
+		mv ${D}${base_sbindir}/$f ${D}${base_sbindir}/$f.${PN}
+	done
+	for f in chattr; do
+		mv ${D}${bindir}/$f ${D}${bindir}/$f.${PN}
+	done
+	fsck=$(cd ${D}${base_sbindir}/ && ls -1 fsck.ext* | sed s/[^\.]*//)
+	for e in $fsck; do
+		rm ${D}${base_sbindir}/{fsck,mkfs}$e;
+		ln -s ${D}${base_sbindir}/e2fsck$e.${PN}$e fsck$e.${PN}
+		ln -s ${D}${base_sbindir}/mke2fs$e.${PN}$e mkfs$e.${PN}
+	done
+}
+
 
 pkg_postinst_e2fsprogs () {
 	update-alternatives --install ${base_bindir}/chattr chattr chattr.${PN} 100
