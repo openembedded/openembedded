@@ -1,7 +1,6 @@
 DESCRIPTION = "${PN} bindings"
 LICENSE = "BSD"
 AUTHOR = "Gustavo Sverzut Barbieri <barbieri@gmail.com>"
-HOMEPAGE = "http://www.enlightenment.org"
 # NOTE: Due to a bug in distutils, even if we don't use pyrex but cython,
 # we need to build pyrex otherwise cython doesn't get called to build
 # the extension modules.
@@ -14,10 +13,9 @@ PR = "ml1"
 export BUILD_SYS
 export HOST_SYS
 
-inherit autotools pkgconfig distutils-base
+inherit e-base autotools pkgconfig distutils-base
 
-SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/BINDINGS/python;module=${PN};proto=http"
-S = "${WORKDIR}/${PN}"
+SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/BINDINGS/python;module=${SRCNAME};proto=http"
 
 do_configure_prepend() {
 	# prefix CYTHON_.*_INCLUDEDIR with path to STAGING_DIR_HOST also use $PKG_CONFIG instead of pkg-config directly
