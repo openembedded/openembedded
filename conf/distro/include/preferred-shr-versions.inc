@@ -20,9 +20,6 @@ LINUX_LIBC_HEADERS_VERSION ?= "2.6.32"
 PREFERRED_VERSION_linux-libc-headers = "${LINUX_LIBC_HEADERS_VERSION}"
 PREFERRED_VERSION_linux-libc-headers-native = "${LINUX_LIBC_HEADERS_VERSION}"
 
-# override EFL_SRCREV from sane-srcrevs.inc
-# EFL_SRCREV ?= "44424"
-
 # specifically set an openssh version
 # NOTE: whenever changing the version here make sure
 #       to check we won't loose our specific config !!!

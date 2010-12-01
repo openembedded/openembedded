@@ -187,4 +187,3 @@ PREFERRED_PROVIDER_bluez-utils			= "bluez4"
 # Include any package preferred versions and srcrevs:
 
 require conf/distro/include/preferred-slugos-versions.inc
-require conf/distro/include/sane-srcrevs.inc
