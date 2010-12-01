@@ -7,11 +7,11 @@ PV = "0.5.0+svnr${SRCPV}"
 PR = "r1"
 PE = "1"
 SRCREV = "${EFL_SRCREV}"
+SRCNAME = "vala"
 
-SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/BINDINGS;module=vala;proto=http"
-S = "${WORKDIR}/vala"
+inherit e-base autotools pkgconfig vala
 
-inherit autotools pkgconfig vala
+SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/BINDINGS;module=${SRCNAME};proto=http"
 
 PACKAGES =+ "${PN}-examples"
 FILES_${PN}-examples = "${datadir}/libeflvala ${bindir}/*"

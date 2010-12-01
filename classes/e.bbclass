@@ -1,13 +1,6 @@
-HOMEPAGE = "http://www.enlightenment.org"
 SECTION = "e/apps"
-SRCNAME ?= "${PN}"
 
-SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk;module=${SRCNAME};proto=http"
-S = "${WORKDIR}/${SRCNAME}"
-
-ARM_INSTRUCTION_SET = "arm"
-
-inherit autotools pkgconfig binconfig
+inherit e-base autotools pkgconfig binconfig
 
 do_prepsources () {
 	make clean distclean || true
