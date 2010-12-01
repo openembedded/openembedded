@@ -8,7 +8,7 @@ PACKAGE_ARCH = "all"
 LICENCE = "unknown"
 
 SRCREV = "bed3a9ac381b88717b153012fa4b9da0c860c6b0"
-PV = "0.3-${EFL_SRCREV}+gitr${SRCPV}"
+PV = "0.4+gitr${SRCPV}"
 PR = "r2"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master"

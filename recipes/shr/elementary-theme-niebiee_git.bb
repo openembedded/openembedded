@@ -3,7 +3,7 @@ SECTION = "e/utils"
 DEPENDS = "edje-native"
 LICENSE = "MIT BSD"
 SRCREV = "4b89eb1d477fb1e5256e2e35bf214af2c59843eb"
-PV = "0.1-${EFL_SRCREV}+gitr${SRCPV}"
+PV = "0.2+gitr${SRCPV}"
 PR = "r0"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master"
