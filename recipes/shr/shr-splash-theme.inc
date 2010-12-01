@@ -4,7 +4,10 @@ inherit update-alternatives
 
 FILES_${PN} = "${datadir}/shr-splash/themes/${PN}"
 
-PACKAGE_ARCH = "${MACHINE_ARCH}"
+INC_PR = "r7"
+
+# only shr-splash-theme-logo recipe is MACHINE specific
+PACKAGE_ARCH = "all"
 
 ALTERNATIVE_NAME = "shr-splash-theme"
 ALTERNATIVE_LINK = "${datadir}/shr-splash/theme"
