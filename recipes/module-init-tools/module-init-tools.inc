@@ -3,13 +3,13 @@ removing kernel modules for Linux (versions 2.5.48 and above). It serves \
 the same function that the modutils package serves for Linux 2.4."
 LICENSE = "GPLv2"
 SECTION = "base"
-PR = "r5"
+PR = "r6"
 
-PACKAGES =+ "module-init-tools-insmod-static module-init-tools-depmod"
-RDEPENDS_${PN} += "module-init-tools-depmod"
+PACKAGES =+ "${PN}-insmod-static ${PN}-depmod"
+RDEPENDS_${PN} += "${PN}-depmod"
 
-FILES_module-init-tools-depmod = "${sbindir}/depmod.26"
-FILES_module-init-tools-insmod-static = "${sbindir}/insmod.static"
+FILES_${PN}-depmod = "${sbindir}/depmod.26"
+FILES_${PN}-insmod-static = "${sbindir}/insmod.static"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/module-init-tools/module-init-tools-${PV}.tar.bz2 \
 	   file://ignore_arch_directory;apply=yes \
