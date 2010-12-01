@@ -122,5 +122,5 @@ do_install () {
 	oe_libinstall -so libssl ${D}${libdir}
 
 	install -d ${D}${includedir}
-	cp --dereference -R include/openssl ${D}${includedir}
+	cp -L -R include/openssl ${D}${includedir}
 }
