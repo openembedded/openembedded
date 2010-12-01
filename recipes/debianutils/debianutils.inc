@@ -11,11 +11,13 @@ do_install_append() {
     for app in ${D}${sbindir}/* ${D}${bindir}/*; do
         mv $app $app.${PN}
     done
-    # Debian places some utils into ${base_bindir} as does busybox
-    install -d ${D}${base_bindir}
-    for app in run-parts.${PN} tempfile.${PN}; do
-        mv ${D}${bindir}/$app ${D}${base_bindir}/$app
-    done
+    if [ "${base_bindir}" != "${bindir}" ]; then
+        # Debian places some utils into ${base_bindir} as does busybox
+        install -d ${D}${base_bindir}
+        for app in run-parts.${PN} tempfile.${PN}; do
+            mv ${D}${bindir}/$app ${D}${base_bindir}/$app
+        done
+    fi
 }
 
 pkg_prerm_${PN} () {
