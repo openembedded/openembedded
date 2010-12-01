@@ -3,7 +3,7 @@ require php.inc
 DEPENDS = "zlib libxml2 virtual/libiconv php-native lemon-native mysql5 \
            libc-client openssl"
 
-PR = "${INC_PR}.3"
+PR = "${INC_PR}.4"
 
 SRC_URI =     "http://museum.php.net/php5/php-${PV}.tar.bz2;name=src \
                file://acinclude-xml2-config.patch \
@@ -11,6 +11,7 @@ SRC_URI =     "http://museum.php.net/php5/php-${PV}.tar.bz2;name=src \
 	       file://pear-makefile.patch \
 	       file://imap-fix-autofoo.patch \
 	       file://CVE-2010-0397.patch \
+	       file://iconv.patch \
             "
 
 SRC_URI[src.md5sum] = "eb4d0766dc4fb9667f05a68b6041e7d1"
@@ -21,7 +22,6 @@ export LIBS=" -lpthread "
 
 EXTRA_OECONF = "    --enable-mbstring \
                     --enable-discard-path \
-                    --disable-iconv \
                     --enable-sockets \
                     --enable-shared \
                     --enable-pcntl \
@@ -32,6 +32,7 @@ EXTRA_OECONF = "    --enable-mbstring \
                     --with-imap=${STAGING_DIR_HOST} \
                     --with-imap-ssl=${STAGING_DIR_HOST} \
                     --with-zlib --with-zlib-dir=${STAGING_LIBDIR}/.. \
+                    --with-iconv=${STAGING_LIBDIR}/.. \
                     --with-libxml-dir=${STAGING_BINDIR_CROSS} \
                     --with-mysql="${STAGING_DIR_TARGET}${layout_exec_prefix}" \
                     --with-mysqli="${STAGING_BINDIR_CROSS}/mysql_config" \
