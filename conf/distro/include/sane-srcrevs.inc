@@ -1,1 +1,0 @@
-OPKG_SRCREV ?= "554"
