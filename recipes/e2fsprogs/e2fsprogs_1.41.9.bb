@@ -1,6 +1,8 @@
 require e2fsprogs.inc
 
-PR = "${INC_PR}"
+PR = "${INC_PR}.1"
+
+SRC_URI += "file://llseek-uclibc.patch"
 
 do_configure() {
         oe_runconf
