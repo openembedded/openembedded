@@ -9,7 +9,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-${PV}.tar.gz"
 
 S = "${WORKDIR}/e2fsprogs-${PV}"
 
-INC_PR = "r24"
+INC_PR = "r25"
 
 inherit autotools
 
@@ -39,6 +39,7 @@ do_install_append () {
 	rm ${D}${base_sbindir}/mkfs.ext2
 	rm ${D}${base_sbindir}/mkfs.ext3
 	rm ${D}${base_sbindir}/mkfs.ext4*
+	mv ${D}${base_sbindir}/uuidd ${D}${base_sbindir}/uuidd.${PN}
 
 	cd ${D}/${base_sbindir}
 	ln -sf ./e2fsck.${PN} fsck.ext2.${PN}
@@ -58,10 +59,12 @@ do_install_append () {
 
 pkg_postinst_e2fsprogs () {
 	update-alternatives --install ${base_bindir}/chattr chattr chattr.${PN} 100
+	update-alternatives --install ${base_sbindir}/uuidd uuidd uuidd.${PN} 10
 }
 
 pkg_prerm_e2fsprogs () {
 	update-alternatives --remove chattr chattr.${PN}
+	update-alternatives --remove uuidd uuidd.${PN}
 }
 
 
