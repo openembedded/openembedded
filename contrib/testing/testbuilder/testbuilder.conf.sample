@@ -1,0 +1,115 @@
+# Testbuilder config
+
+### NOTES
+# 0. For first time setup look into end of file for "Misc dirs"
+# 1. All names in BUILDS and BUILD_SETS variables should
+# consists only of alphanumeric characters and underscores, 
+# and beginning with an alphabetic character or an underscore.
+# i.e. [a-zA-Z_][a-zA-Z0-9_]*
+# My recommendation is not to use underscore as well
+# 2. You can prefix any word in following 'list' variables
+# with '!' do disable it.
+# 3. All lists items will be processed in order they appears in list
+
+### BUILDS: Define here your build profiles
+#
+BUILDS="testing master my"
+
+## BUILD: Just some text comment to show in build log
+BUILD_testing="Regular build of testing branch"
+## OE_BRANCH: OE branch to use for this build
+OE_BRANCH_testing="testing-next"
+## BB_BRANCH: bitbake branch to use for this build
+BB_BRANCH_testing="1.10"
+## DISTROS: OE distros
+DISTROS_testing="angstrom-2008.1 angstrom-2010.x"
+## IMAGES: OE images
+IMAGES_testing="console-image x11-image opie-image"
+## BUILD_SETS: build all machines in set within same TMPDIR
+BUILD_SETS_testing="armv5 mips32 mips64 ppc sh4 i686"
+## MACHINES: OE machines per build set
+MACHINES_testing_armv5="qemuarm"
+MACHINES_testing_mips32="qemumips qemumipsel"
+MACHINES_testing_mips64="qemumips64"
+MACHINES_testing_ppc="qemuppc"
+MACHINES_testing_sh4="qemush4"
+MACHINES_testing_i686="qemux86"
+## TASKS: What to do exactly
+# build_clean - do clean builds
+# build_incremental - do incremental builds
+TASKS_testing="!build_clean build_incremental"
+
+# Other sample build profile
+BUILD_master="Build from master branch"
+OE_BRANCH_master="master"
+BB_BRANCH_master="master"
+# Note that angstrom-2010.x is disabled below ('!' before)
+DISTROS_master="!angstrom-2010.x minimal"
+IMAGES_master="console-image"
+BUILD_SETS_master="zauruses qemux86"
+MACHINES_master_zauruses="collie tosa akita"
+MACHINES_master_qemu="qemux86"
+TASKS_master="build_clean !build_incremental"
+
+# Sample build from local branch
+BUILD_my="Build my local branch"
+OE_BRANCH_my="my/work"
+BB_BRANCH_my="master"
+DISTROS_my="minimal"
+IMAGES_my="console-image !my-own-image"
+# Note BUILD_SETS_my absence
+# Every machine will be built in own TMPDIR
+MACHINES_my="tosa akita spitz"
+TASKS_my="build_clean !build_incremental"
+
+
+### Common options
+
+## STAGES: what TB should do
+# update_bb - update bitbake git tree
+# update_oe - update OE git tree
+# run_builds - run builds
+STAGES="update_bb update_oe !run_builds"
+
+## ACCOUNTING: account some useful things
+# df - log free disk space
+# ps - log processes count
+# vmstat - log vm statistics
+ACCOUNTING="!df !ps !vmstat"
+# Accounting interval (seconds)
+ACCOUNTING_INTERVAL="10"
+
+# Build every image by separate bitbake invocation (lower peak disk usage)
+#SEPARATE_BUILD="yes"
+# Build all images by single bitbake invocation (slightly faster)
+SEPARATE_BUILD="no"
+
+# Number of parallel bitbake threads
+BB_NUMBER_THREADS=2
+# Number of parallel make threads inside one bitbake thread (-j)
+MAKE_NUMBER_THREADS=2
+
+# Bitbake cmdline options
+#BB_OPTS='-k'
+
+# Direct build invocation shell variables (-S option)
+# PS1 for shell mode
+TB_PS1="[TB] "
+# Use bash with --norc to disable overriding PS1
+TB_SHELL='/bin/bash --norc'
+# Use $SHELL variable or fallback to /bin/sh
+#TB_SHELL=${SHELL:-'/bin/sh'}
+
+# Name for oestats-client
+TB_BUILDER="You_should_change_this"
+
+# Misc dirs
+TB_BASE=`pwd`
+BB_DIR="${TB_BASE}/bitbake"
+OE_DIR="${TB_BASE}/openembedded"
+DL_DIR="${TB_BASE}/sources"
+BLD_DIR="${TB_BASE}/build"
+LOG_DIR="${TB_BASE}/logs"
+CLN_DIR="/var/tmp/tb-clean-build"	# TMPDIR for clean builds
+INC_DIR="${BLD_DIR}"	# Top dir for incremental builds archive
+

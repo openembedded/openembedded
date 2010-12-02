@@ -1,0 +1,100 @@
+#!/bin/sh
+
+# TestBuilder setup script for OpenEmbedded
+# Copyright (c) 2010 Yuri Bushmelev <jay4mail@gmail.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+TB_DIR=`dirname $0`
+CFG_FILE="${TB_DIR}/testbuilder.conf"
+
+if [ "$#" -lt "2" -o "$1" = "-h" -o "$1" = "--help" ]; then
+	echo "Usage: `basename $0` <OE branch> <bitbake branch>"
+	exit 1
+fi
+
+OE_BRANCH=$1
+BB_BRANCH=$2
+
+. "${CFG_FILE}"
+
+cd "${TB_BASE}"
+
+echo "OE branch: $OE_BRANCH"
+echo "BB branch: $BB_BRANCH"
+
+## Checkout bitbake
+echo "= Fetching bitbake"
+git clone -n git://git.openembedded.org/bitbake "${BB_DIR}"
+cd "${BB_DIR}"
+
+if [ -n "${BB_BRANCH}" ]; then
+	git checkout -b "${BB_BRANCH}" "origin/${BB_BRANCH}"
+elif [ -n "${BB_TAG}" ]; then
+	git checkout -b "${BB_TAG}" "${BB_TAG}"
+else
+	echo "You should specify BB_BRANCH or BB_TAG in ${CFG_FILE}"
+fi
+
+echo "= Fetching OE"
+cd "${TB_BASE}"
+
+git clone -n git://git.openembedded.org/openembedded "${OE_DIR}"
+cd "${OE_DIR}"
+
+if [ -n "${OE_BRANCH}" ]; then
+	git checkout -b "${OE_BRANCH}" "origin/${OE_BRANCH}"
+else
+	echo "You should specify OE_BRANCH in ${CFG_FILE}"
+fi
+
+cd "${TB_BASE}"
+mkdir -p "${BLD_DIR}/conf"
+
+echo "= Creating bitbake config"
+cat >> "${BLD_DIR}/conf/local.conf" << "EOF"
+# Testbuilder bitbake local configuration file
+
+DISTRO ?= "${@bb.fatal('Set DISTRO in your config')}"
+MACHINE ?= "${@bb.fatal('Set MACHINE in your config')}"
+
+DL_DIR ?= "${@bb.fatal('Set DL_DIR in your config')}"
+TMPDIR = "${TMP_DIR}"
+
+BBFILES ?= "${OE_DIR}/recipes/*/*.bb"
+
+# ENABLE_BINARY_LOCALE_GENERATION = "0"
+# GLIBC_GENERATE_LOCALES = "en_US.UTF-8 en_GB.UTF-8 de_DE.UTF-8 fr_FR.UTF-8 ru_RU.UTF-8"
+# IMAGE_LINGUAS="en-us en-gb de-de fr-fr ru-ru"
+
+# jffs2, tar(.gz|bz2), cpio(.gz), cramfs, ext2(.gz), ext3(.gz)
+# squashfs, squashfs-lzma
+IMAGE_FSTYPES = "jffs2 tar.gz"
+
+# CCACHE = "${@bb.which(bb.data.getVar('PATH', d, 1), 'ccache') and 'ccache '}"
+PARALLEL_MAKE = "-j ${MAKE_NUMBER_THREADS}"
+BB_NUMBER_THREADS ?= "${@bb.fatal('Set BB_NUMBER_THREADS in your config')}"
+
+INHERIT += "rm_work"
+#INHERIT += "devshell"
+#TERMCMD = ${SCREEN_TERMCMD}
+
+BBINCLUDELOGS = "yes"
+
+# OE stats client (make troubleshooting easier)
+INHERIT += "oestats-client"
+OESTATS_BUILDER = "${TB_BUILDER}"
+OESTATS_SERVER = "tinderbox.openembedded.net"
+
+EOF
+
+echo "= All is done. Run ${TB_DIR}/testbuilder now"
+

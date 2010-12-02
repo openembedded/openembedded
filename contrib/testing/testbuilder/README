@@ -1,0 +1,35 @@
+= How to setup and use TestBuilder
+
+I assume below that you wish install TestBuilder into ~/testbuilder directory.
+
+1. Copy files from OE contrib/testing/testbuilder directory to any place you
+   wish to use (e.g. ~/testbuilder) and goto that directory
+
+2. Run setup-testbuilder script with OE branch and bitbake branch you wish to
+   use. E.g.:
+   ./setup-testbuilder "testing-next" "1.10"
+ 
+   It will clone OE and bitbake trees and prepare build/conf/local.conf file
+   for you. You can review local.conf after and add some settings there.
+
+4. Create testbuilder.conf according your needs.  You can use
+   testbuilder.conf.sample as reference.
+
+5. Run ./testbuilder and wait for build results. Check 'logs' subdir for log
+   files ('tail logs/B.*' is useful)
+
+You can run single configured build (e.g. "testing")
+./testbuilder -B testing
+
+Or you can use testbuilder to build specified distro/machine/image
+(e.g. angstrom-2008.1/qemuarm/console-image)
+./testbuilder -D angstrom-2008.1 -M qemuarm console-image
+
+If you wish only setup environment and run bitbake by hands you can
+use -S option:
+./testbuilder -D angstrom-2008.1 -M qemuarm -S
+
+-- 
+Yury 'Jay7' Bushmelev
+email: jay4mail at gmail com
+irc: Jay7 on freenode

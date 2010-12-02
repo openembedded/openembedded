@@ -1,0 +1,383 @@
+#!/bin/sh
+
+# TestBuilder for OpenEmbedded
+# Copyright (c) 2010 Yuri Bushmelev <jay4mail@gmail.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+VERSION="0.3"
+PACKAGE="TestBuilder"
+
+TB_DIR=`dirname $0`
+TB_NAME=`basename $0`
+cd "${TB_DIR}"
+
+tb_usage() {
+	echo "${PACKAGE} v${VERSION}"
+	# Run only specified build
+	echo "Usage: ${TB_NAME} -Vh"
+	echo "   or  ${TB_NAME} [-B build ]"
+	# Behave like DISTRO=distro MACHINE=machine bitbake images
+	# with -S testbuilder will only setup env and run interactive sub-shell
+	echo "   or  ${TB_NAME} [-D distro] [-M machine] [-T /full/path/to/tmpdir] [-S | images]"
+}
+
+CFG_FILE="${TB_DIR}/testbuilder.conf"
+. "${CFG_FILE}"
+
+# Sanity cleanup
+ORIG_PATH=${PATH}
+ORIG_LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
+ORIG_LANG=${LANG}
+export ORIG_PATH ORIG_LD_LIBRARY_PATH ORIG_LANG
+
+# clean LD_LIBRARY_PATH
+unset LD_LIBRARY_PATH
+
+# clean locale
+LANG=C
+
+# include bitbake into PATH
+PATH=${BB_DIR}/bin:${PATH}
+
+BBPATH="${BLD_DIR}:${OE_DIR}"
+
+TB_LOG="${LOG_DIR}/tb.log"
+
+#export LD_LIBRARY_PATH LANG PATH
+export LD_LIBRARY_PATH LANG
+
+BB_ENV_EXTRAWHITE="MACHINE DISTRO TB_BUILDER OE_DIR TMP_DIR DL_DIR MAKE_NUMBER_THREADS BB_NUMBER_THREADS"
+export   BB_ENV_EXTRAWHITE BBPATH TB_BUILDER OE_DIR TMP_DIR DL_DIR MAKE_NUMBER_THREADS BB_NUMBER_THREADS
+
+mkdir -p ${LOG_DIR}
+
+### Functions
+
+# log message
+tb_log() {
+	local _dt=`date "+%F %X (%s)"`
+	echo "[${_dt}] $@" >&2
+	echo "[${_dt}] $@" >> $TB_LOG
+}
+
+# Do vmstat accounting
+tb_accounting_vmstat() {
+	exec vmstat -n "${ACCOUNTING_INTERVAL}" >> "${LOG_DIR}/A.vmstat.log"
+}
+
+# Do accounting by commands (df/ps)
+tb_accounting_cmd() {
+	local _dir=$1; shift
+	while true; do
+		[ -n "${DO_ACCOUNTING_DF}" ] && ( df -Pk "${_dir}" | awk 'END {OFS="\t"; print systime(), $4, $6;}' ) >> "${LOG_DIR}/A.df.log"
+		[ -n "${DO_ACCOUNTING_PS}" ] && ( ps ax | awk 'END {OFS="\t"; print systime(), NR-1;}' ) >> "${LOG_DIR}/A.ps.log"
+		sleep "${ACCOUNTING_INTERVAL}"
+	done
+}
+
+# Stop all remaining tasks
+tb_kill_all() {
+	for proc in `jobs | cut -c 2- | cut -d] -f1`; do
+		kill "%${proc}"
+	done
+}
+
+
+# update git tree
+tb_git_update() {
+	local _dir=$1
+
+	cd "${_dir}"
+	tb_log "Updating git tree ${_dir}"
+	git pull
+	cd "${TB_DIR}"
+}
+
+# checkout branch from git tree
+tb_git_branch() {
+	local _dir=$1
+	local _branch=$2
+
+	cd "${_dir}"
+	tb_log "Checking out branch ${_branch} from tree ${_dir}"
+	git checkout -f ${_branch}
+	cd "${TB_DIR}"
+}
+
+
+# Do build of image-set $bbimages for machine-set $MLIST
+# tb_build_machines "$MLIST" $bbimages
+tb_build_machines() {
+	local _MLIST=$1; shift
+	local _bbimages=$@
+	local _machine
+	local _rc
+	local _image
+	local _log
+	
+	# Start accounting
+	trap "tb_kill_all" RETURN
+	[ -n "${DO_ACCOUNTING_VMSTAT}" ] && tb_accounting_vmstat &
+	[ -n "${DO_ACCOUNTING_DF}" -o -n "${DO_ACCOUNTING_PS}" ] && tb_accounting_cmd "${TMP_DIR}" &
+
+	for _machine in $_MLIST; do
+		[ "${_machine}" != "${_machine#!}" ] && continue
+
+		tb_log "${_machine} build started, images: ${_bbimages}"
+
+		export MACHINE=$_machine
+
+		case "${SEPARATE_BUILD}" in
+		[Yy][Ee][Ss])
+			# Build images separately
+			for _image in $_bbimages; do
+				tb_log "${_image} build started"
+				_log="${LOG_DIR}/B.${build}.${DISTRO}.${_machine}.${_image}.log"
+				[ -f "${_log}" ] && mv "${_log}" "${_log}.0"
+				bitbake ${BB_OPTS} ${_image} 2>&1 | tee "${_log}"
+				_rc=$?
+				tb_log "${_image} build finished. Exit code: ${_rc}."
+			done
+			;;
+		*)
+			# Build all images with one bitbake invocation
+			_log="${LOG_DIR}/B.${build}.${DISTRO}.${_machine}.log"
+			[ -f "${_log}" ] && mv "${_log}" "${_log}.0"
+			bitbake ${BB_OPTS} ${_bbimages} 2>&1 | tee "${_log}"
+			_rc=$?
+			;;
+		esac
+		
+		tb_log "${_machine} build finished. Exit code:${_rc}."
+	done
+
+}
+
+
+### Main code 
+
+# Parse stages
+unset DO_RUN_BUILDS DO_UPDATE_OE DO_UPDATE_BB
+for stage in $STAGES; do
+	[ "${stage}" != "${stage#!}" ] && continue
+	case ${stage} in
+	'run_builds')
+		DO_RUN_BUILDS=y;;
+	'update_oe')
+		DO_UPDATE_OE=y;;
+	'update_bb')
+		DO_UPDATE_BB=y;;
+	*)
+		tb_log "Unknown stage ${stage}.";;
+	esac
+done
+
+# Parse accounting
+unset DO_ACCOUNTING_DF DO_ACCOUNTING_PS DO_ACCOUNTING_VMSTAT
+for count in $ACCOUNTING; do
+[ "${count}" != "${count#!}" ] && continue
+	case ${count} in
+	'df')
+		DO_ACCOUNTING_DF=y;;
+	'ps')
+		DO_ACCOUNTING_PS=y;;
+	'vmstat')
+		DO_ACCOUNTING_VMSTAT=y;;
+	*)
+		tb_log "Unknown accounting type ${count}.";;
+	esac
+done
+
+# Parse cmdline
+unset ODISTRO OBUILD OMACHINE OIMAGES OTMPDIR DO_RUN_SHELL
+while getopts VhSB:D:M:T: opt; do
+	case $opt in
+	B) OBUILD="${OPTARG}";;
+	D) ODISTRO="${OPTARG}";;
+	M) OMACHINE="${OPTARG}";;
+	T) OTMPDIR="${OPTARG}";;
+	S) DO_RUN_SHELL=y;;
+	*)
+		tb_usage
+		exit 2
+		;;
+	esac
+done
+
+shift $(($OPTIND - 1))
+OIMAGES=$@
+
+# Kill all tasks on exit
+trap "tb_kill_all" EXIT
+
+# Check for 'direct' mode
+if [ -n "${ODISTRO}" ]; then
+	DISTRO="${ODISTRO}"
+	MACHINE="${OMACHINE}"
+	TMP_DIR=${OTMPDIR:-${CLN_DIR}}
+	export DISTRO MACHINE TMP_DIR
+
+	if [ -n "${DO_RUN_SHELL}" ]; then
+		# Run shell if -s option was given
+		echo "Distro:  $DISTRO"
+		echo "Machine: $MACHINE"
+		echo "TMPDIR:  $TMP_DIR"
+		echo "Starting shell $TB_SHELL. Use 'exit' or ^D to quit"
+		[ -n "${TB_PS1}" ] && export PS1=${TB_PS1}
+		eval $TB_SHELL
+	else
+		tb_build_machines "${MACHINE}" ${OIMAGES}
+	fi
+
+	exit $rc
+fi
+
+# Do stages
+[ -n "${DO_UPDATE_BB}" ] && tb_git_update ${BB_DIR}
+[ -n "${DO_UPDATE_OE}" ] && tb_git_update ${OE_DIR}
+[ -z "${DO_RUN_BUILDS}" ] && exit 0
+
+# Use build from cmdline if any
+[ -n "$OBUILD" ] && BUILDS=$OBUILD
+
+# Auto-building mode
+tb_log "${PACKAGE} v${VERSION}"
+
+for build in $BUILDS; do
+	[ "${build}" != "${build#!}" ] && continue
+
+	eval BUILD="\$BUILD_${build}"
+	tb_log "= Started build '$build'"
+	[ -n "$BUILD" ] && tb_log "= $BUILD"
+
+	# change BB branch
+	eval BB_BRANCH="\$BB_BRANCH_${build}"
+	if [ -n "${BB_BRANCH}" ]; then
+		tb_git_branch "$BB_DIR" "$BB_BRANCH"
+	fi
+	
+	# change OE branch
+	eval OE_BRANCH="\$OE_BRANCH_${build}"
+	if [ -n "${OE_BRANCH}" ]; then
+		tb_git_branch "$OE_DIR" "$OE_BRANCH"
+	fi
+
+	# parse tasks
+	eval TASKS="\$TASKS_${build}"
+	unset DO_BUILD_CLEAN DO_BUILD_INCREMENTAL
+	for task in $TASKS; do
+		[ "${task}" != "${task#!}" ] && continue
+		case ${task} in
+		'build_clean')
+			DO_BUILD_CLEAN=y;;
+		'build_incremental')
+			DO_BUILD_INCREMENTAL=y;;
+		*)
+			tb_log "Unknown task ${task}.";;
+		esac
+	done
+
+	# distros
+	eval DISTROS="\$DISTROS_${build}"
+	for distro in $DISTROS; do
+		[ "${distro}" != "${distro#!}" ] && continue
+
+		export DISTRO=$distro
+
+		# Get build sets
+		eval BSLIST="\$BUILD_SETS_${build}"
+
+		# Empty $BUILD_SETS is exception - we should use $MACHINES 
+		# to build every machine in separate TMPDIRs
+		if [ -z "${BSLIST}" ]; then
+			# Use every machine as separate build set
+			eval MACHINES="\$MACHINES_${build}"
+			for machine in $MACHINES; do
+				[ "${machine}" != "${machine#!}" ] && continue
+				eval "MACHINE_${machine}=${machine}"
+				BSLIST="${BSLIST} ${machine}"
+			done
+		fi
+
+		tb_log "== Processing distro ${DISTRO}, build set: ${BSLIST}"
+
+		for bset in $BSLIST; do
+			[ "${bset}" != "${bset#!}" ] && continue
+	
+			eval MLIST="\$MACHINES_${build}_${bset}"
+			[ -z "$MLIST" ] && eval MLIST="\$MACHINES_${build}"
+
+			eval ILIST="\$IMAGES_${build}"
+	
+			tb_log "=== Processing set ${bset}, machines: ${MLIST}"
+	
+			INC_TMP_DIR="${INC_DIR}/${build}/${distro}/${bset}"
+	
+		
+			# collect images to build in $bbimages
+			bbimages=''
+			for image in $ILIST; do
+				[ "${image}" != "${image#!}" ] && continue
+				bbimages="${bbimages} ${image}"
+			done
+	
+			# If there is no previous incremental builddir and we are requested
+			# to do both incremental and clean builds
+			# then skip clean build and do only incremental because it will be clean build then :)
+			if [	"${DO_BUILD_INCREMENTAL}" = 'y' \
+				-a "${DO_BUILD_CLEAN}" = 'y' \
+				-a ! -d "${INC_TMP_DIR}/work" \
+			]; then
+				tb_log "Will do incremental build instead of clean to populate TMPDIR"
+				DO_BUILD_CLEAN='skip-once'
+			fi
+	
+			## Do clean builds
+			case "${DO_BUILD_CLEAN}" in
+			'y')
+				export TMP_DIR="${CLN_DIR}"
+				mkdir -p "${TMP_DIR}"
+		
+				tb_log "=== Cleaning ${TMP_DIR}"
+				#rm -rf ${TMP_DIR}/*
+				find ${TMP_DIR}/* -delete
+				
+				tb_log "=== Starting clean builds for machines {$MLIST}"
+				tb_build_machines "$MLIST" $bbimages
+	
+				tb_log "=== Cleaning ${TMP_DIR} again"
+				find ${TMP_DIR}/* -delete
+				;;
+			'skip-once')
+				# Re-enable skipped clean build
+				DO_BUILD_CLEAN=y
+				;;
+			esac
+	
+			## Do incremental build
+			case "${DO_BUILD_INCREMENTAL}" in
+			'y')
+				# Switch tmpdir to archive
+				export TMP_DIR="${INC_TMP_DIR}"
+				mkdir -p "${TMP_DIR}"
+	
+				tb_log "=== Starting incremental builds for machine-set {$MLIST}"
+				tb_build_machines "$MLIST" $bbimages
+				;;
+			esac
+		done
+	done
+done
+
+tb_log "All done."
+
+exit 0
+
