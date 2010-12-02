@@ -1,6 +1,6 @@
 require ${PN}.inc
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/net/opietooth/applet \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/pics/bluetoothapplet"
+           ${HANDHELDS_CVS};tag=${TAG};module=opie/pics"
