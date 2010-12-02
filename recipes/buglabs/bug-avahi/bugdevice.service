@@ -1,0 +1,16 @@
+<?xml version="1.0" standalone='no'?><!--*-nxml-*-->
+<!DOCTYPE service-group SYSTEM "avahi-service.dtd">
+<!-- this is the bugdevice service for avahi which
+     allows BUGs to be found via mDNS-->
+<service-group>
+
+  <name replace-wildcards="yes">%h</name>
+
+  <service protocol="ipv4">
+    <type>_bugdevice._tcp</type>
+    <port>80</port>
+  </service>
+
+</service-group>
+
+
