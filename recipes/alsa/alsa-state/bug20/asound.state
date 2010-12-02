@@ -536,7 +536,7 @@ state.omap3bug {
 		comment.count 1
 		iface MIXER
 		name 'PredriveL Mixer AudioR2'
-		value true
+		value false
 	}
 	control.57 {
 		comment.access 'read write'
