@@ -17,12 +17,16 @@ SRC_URI = "${GNU_MIRROR}/inetutils/inetutils-${PV}.tar.gz \
            file://inetutils-1.8-1003-use-daemon-from-the-C-library-when-possible.patch \
            file://inetutils-1.8-1004-detect-fork-support.patch \
            file://inetutils-1.8-1005-ftpd-add-daemon-D-nommu-support.patch \
+           file://fix-disable-ipv6.patch \
 "
 
 inherit autotools
 
+noipv6="${@base_contains('DISTRO_FEATURES', 'ipv6', '', '--disable-ipv6 gl_cv_socket_ipv6=no', d)}"
 EXTRA_OECONF = "--with-ncurses-include-dir=${STAGING_INCDIR} \
-		--with-path-procnet-dev=/proc/net/dev"
+		--with-path-procnet-dev=/proc/net/dev \
+		${noipv6} \
+		"
 
 do_configure_prepend () {
 	export HELP2MAN='true'
