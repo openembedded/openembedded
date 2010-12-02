@@ -1,0 +1,334 @@
+From: Melissa Watkins <m-watkins@ti.com>
+Date: Wed, 24 Nov 2010 02:59:34 -0600
+Subject: [PATCH 1/3] uio_pruss1: Core driver addition
+
+This patch adds the uio_pru driver and updates the uio Makefile
+ and Kconfig files to support this driver. The uio_pru driver provides
+a framework for handling the PRU in the user space and is responsible
+for the device setup and the primary interrupt handling.
+
+Signed-off-by: Amit Chatterjee <amit.chatterjee@ti.com>
+Signed-off-by: Melissa Watkins <m-watkins@ti.com>
+---
+ drivers/uio/Kconfig   |   10 ++
+ drivers/uio/Makefile  |    1 +
+ drivers/uio/uio_pru.c |  279 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 290 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/uio/uio_pru.c
+
+diff --git a/drivers/uio/Kconfig b/drivers/uio/Kconfig
+index 8aa1955..8ae8280 100644
+--- a/drivers/uio/Kconfig
++++ b/drivers/uio/Kconfig
+@@ -94,4 +94,14 @@ config UIO_PCI_GENERIC
+ 	  primarily, for virtualization scenarios.
+ 	  If you compile this as a module, it will be called uio_pci_generic.
+ 
++config UIO_PRUSS
++	tristate "Texas Instruments PRUSS driver"
++	depends on ARCH_DAVINCI_DA850
++	default n
++	help
++	  PRUSS driver for OMAPL13X/DA8XX/AM17XX/AM18XX devices
++	  PRUSS driver requires user space components
++	  To compile this driver as a module, choose M here: the module
++	  will be called uio_pruss.
++
+ endif
+diff --git a/drivers/uio/Makefile b/drivers/uio/Makefile
+index 73b2e75..e6d8adb 100644
+--- a/drivers/uio/Makefile
++++ b/drivers/uio/Makefile
+@@ -6,3 +6,4 @@ obj-$(CONFIG_UIO_SMX)	+= uio_smx.o
+ obj-$(CONFIG_UIO_AEC)	+= uio_aec.o
+ obj-$(CONFIG_UIO_SERCOS3)	+= uio_sercos3.o
+ obj-$(CONFIG_UIO_PCI_GENERIC)	+= uio_pci_generic.o
++obj-$(CONFIG_UIO_PRUSS)         += uio_pru.o
+diff --git a/drivers/uio/uio_pru.c b/drivers/uio/uio_pru.c
+new file mode 100644
+index 0000000..82dc35e
+--- /dev/null
++++ b/drivers/uio/uio_pru.c
+@@ -0,0 +1,279 @@
++/*
++ * UIO TI Programmable Real-Time Unit (PRU) driver.
++ *
++ * (C) 2010 Amit Chatterjee <amit.chatterjee@ti.com>
++ *
++ * Copyright (C) {YEAR} Texas Instruments Incorporated - http://www.ti.com/
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation version 2.
++ *
++ * This program is distributed .as is. WITHOUT ANY WARRANTY of any
++ * kind, whether express or implied; without even the implied warranty
++ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++
++#include <linux/device.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/uio_driver.h>
++#include <linux/io.h>
++#include <linux/clk.h>
++#include <linux/dma-mapping.h>
++
++#define DRV_NAME "pruss"
++#define DRV_VERSION "0.01"
++
++/*
++0x01C30000 - 0x01C301FF Data RAM 0
++0x01C30200 - 0x01C31FFF Reserved
++0x01C32000 - 0x01C321FF Data RAM 1
++0x01C32200 - 0x01C33FFF Reserved
++0x01C34000 - 0x01C36FFF INTC Registers
++0x01C37000 - 0x01C373FF PRU0 Control Registers
++0x01C37400 - 0x01C377FF PRU0 Debug Registers
++0x01C37800 - 0x01C37BFF PRU1 Control Registers
++0x01C37C00 - 0x01C37FFF PRU1 Debug Registers
++0x01C38000 - 0x01C38FFF PRU0 Instruction RAM
++0x01C39000 - 0x01C3BFFF Reserved
++0x01C3C000 - 0x01C3CFFF PRU1 Instruction RAM
++0x01C3D000 - 0x01C3FFFF Reserved
++*/
++/*
++ * 3 PRU_EVTOUT0 PRUSS Interrupt
++ * 4 PRU_EVTOUT1 PRUSS Interrupt
++ * 5 PRU_EVTOUT2 PRUSS Interrupt
++ * 6 PRU_EVTOUT3 PRUSS Interrupt
++ * 7 PRU_EVTOUT4 PRUSS Interrupt
++ * 8 PRU_EVTOUT5 PRUSS Interrupt
++ * 9 PRU_EVTOUT6 PRUSS Interrupt
++ * 10 PRU_EVTOUT7 PRUSS Interrupt
++*/
++
++#define PRUSS_INSTANCE		(8)
++
++static struct clk *pruss_clk = NULL, *ecap0_clk = NULL;
++static struct uio_info *info[PRUSS_INSTANCE];
++static void *ddr_virt_addr;
++static dma_addr_t ddr_phy_addr;
++
++
++
++static irqreturn_t pruss_handler(int irq, struct uio_info *dev_info)
++{
++	return IRQ_HANDLED;
++}
++
++static int __devinit pruss_probe(struct platform_device *dev)
++{
++	int ret = -ENODEV;
++	int count = 0;
++	struct resource *regs_pruram, *regs_l3ram, *regs_ddr;
++	char *string;
++
++	/* Power on PRU in case its not done as part of boot-loader */
++	pruss_clk = clk_get(&dev->dev, "pruss");
++	if (IS_ERR(pruss_clk)) {
++		dev_err(&dev->dev, "no pruss clock available\n");
++		ret = PTR_ERR(pruss_clk);
++		pruss_clk = NULL;
++		return ret;
++	} else {
++		clk_enable (pruss_clk);
++	}
++
++	ecap0_clk = clk_get(&dev->dev, "ecap0");
++	if (IS_ERR(ecap0_clk)) {
++		dev_err(&dev->dev, "no ecap0 clock available\n");
++		ret = PTR_ERR(ecap0_clk);
++		ecap0_clk = NULL;
++		return ret;
++	} else {
++		clk_enable(ecap0_clk);
++	}
++
++
++
++	for (count = 0; count < PRUSS_INSTANCE; count++) {
++		info[count] = (struct uio_info *)kzalloc(sizeof(struct uio_info), GFP_KERNEL);
++		if (!info[count])
++			return -ENOMEM;
++
++	}
++
++	regs_pruram = platform_get_resource(dev, IORESOURCE_MEM, 0);
++	if (!regs_pruram) {
++		dev_err(&dev->dev, "No memory resource specified\n");
++		goto out_free;
++	}
++
++	regs_l3ram = platform_get_resource(dev, IORESOURCE_MEM, 1);
++	if (!regs_l3ram) {
++		dev_err(&dev->dev, "No memory resource specified\n");
++		goto out_free;
++	}
++
++	regs_ddr = platform_get_resource(dev, IORESOURCE_MEM, 2);
++	if (!regs_ddr) {
++		dev_err(&dev->dev, "No memory resource specified\n");
++		goto out_free;
++	}
++	ddr_virt_addr = dma_alloc_coherent(&dev->dev, regs_ddr->end-regs_ddr->start+1, &ddr_phy_addr, GFP_KERNEL|GFP_DMA);
++
++
++	for (count = 0; count < PRUSS_INSTANCE; count++) {
++		info[count]->mem[0].addr = regs_pruram->start;
++		if (!info[count]->mem[0].addr) {
++			dev_err(&dev->dev, "Invalid memory resource\n");
++			break;
++		}
++
++		info[count]->mem[0].size = regs_pruram->end - regs_pruram->start + 1;
++		info[count]->mem[0].internal_addr = ioremap(regs_pruram->start, info[count]->mem[0].size);
++
++		if (!info[count]->mem[0].internal_addr) {
++			dev_err(&dev->dev, "Can't remap memory address range\n");
++			break;
++		}
++		info[count]->mem[0].memtype = UIO_MEM_PHYS;
++
++
++		info[count]->mem[1].addr = regs_l3ram->start;
++		if (!info[count]->mem[1].addr) {
++			dev_err(&dev->dev, "Invalid memory resource\n");
++			break;
++		}
++
++		info[count]->mem[1].size = regs_l3ram->end - regs_l3ram->start + 1;
++		info[count]->mem[1].internal_addr = ioremap(regs_l3ram->start, info[count]->mem[1].size);
++
++		if (!info[count]->mem[1].internal_addr) {
++			dev_err(&dev->dev, "Can't remap memory address range\n");
++			break;
++		}
++		info[count]->mem[1].memtype = UIO_MEM_PHYS;
++
++
++		info[count]->mem[2].size = regs_ddr->end - regs_ddr->start + 1;
++		if (!(info[count]->mem[2].size-1)) {
++			dev_err(&dev->dev, "Invalid memory resource\n");
++			break;
++		}
++
++
++		info[count]->mem[2].internal_addr = ddr_virt_addr;
++
++		if (!info[count]->mem[2].internal_addr) {
++			dev_err(&dev->dev, "Can't remap memory address range\n");
++			break;
++		}
++		info[count]->mem[2].addr = ddr_phy_addr;
++		info[count]->mem[2].memtype = UIO_MEM_PHYS;
++
++
++		string = kzalloc(20, GFP_KERNEL);
++		sprintf(string, "pruss_evt%d", count);
++		info[count]->name = string;
++		info[count]->version = "0.01";
++
++		/* Register PRUSS IRQ lines */
++		info[count]->irq = IRQ_DA8XX_EVTOUT0+count;
++
++		info[count]->irq_flags = IRQF_SHARED;
++		info[count]->handler = pruss_handler;
++
++		ret = uio_register_device(&dev->dev, info[count]);
++
++		if (ret < 0)
++			break;
++	}
++
++	platform_set_drvdata(dev, info);
++
++	if (ret < 0) {
++		if (ddr_virt_addr)
++			dma_free_coherent(&dev->dev, regs_ddr->end - regs_ddr->start + 1, ddr_virt_addr, ddr_phy_addr);
++		while (count--) {
++			uio_unregister_device(info[count]);
++			if (info[count]->name)
++				kfree(info[count]->name);
++			iounmap(info[count]->mem[0].internal_addr);
++		}
++	} else {
++		return 0;
++	}
++
++out_free:
++	for (count = 0; count < PRUSS_INSTANCE; count++) {
++		if (info[count])
++			kfree(info[count]);
++	}
++
++	if (pruss_clk != NULL)
++		clk_put(pruss_clk);
++	if (ecap0_clk != NULL)
++		clk_put(ecap0_clk);
++
++	return ret;
++}
++
++static int __devexit pruss_remove(struct platform_device *dev)
++{
++	int count = 0;
++	struct uio_info **info;
++
++	info = (struct uio_info **)platform_get_drvdata(dev);
++
++	for (count = 0; count < PRUSS_INSTANCE; count++) {
++		uio_unregister_device(info[count]);
++		if (info[count]->name)
++			kfree(info[count]->name);
++
++	}
++	iounmap(info[0]->mem[0].internal_addr);
++	iounmap(info[0]->mem[1].internal_addr);
++	if (ddr_virt_addr)
++		dma_free_coherent(&dev->dev, info[0]->mem[2].size, info[0]->mem[2].internal_addr, info[0]->mem[2].addr);
++
++	for (count = 0; count < PRUSS_INSTANCE; count++) {
++		if (info[count])
++			kfree(info[count]);
++	}
++
++	platform_set_drvdata(dev, NULL);
++
++	if (pruss_clk != NULL)
++		clk_put(pruss_clk);
++	if (ecap0_clk != NULL)
++		clk_put(ecap0_clk);
++
++
++	return 0;
++}
++
++static struct platform_driver pruss_driver = {
++	.probe		= pruss_probe,
++	.remove		= __devexit_p(pruss_remove),
++	.driver		= {
++		.name	= DRV_NAME,
++		.owner	= THIS_MODULE,
++	},
++};
++
++static int __init pruss_init_module(void)
++{
++	return platform_driver_register(&pruss_driver);
++}
++module_init(pruss_init_module);
++
++static void __exit pruss_exit_module(void)
++{
++	platform_driver_unregister(&pruss_driver);
++}
++module_exit(pruss_exit_module);
++
++MODULE_LICENSE("GPL v2");
++MODULE_VERSION(DRV_VERSION);
++MODULE_AUTHOR("Amit Chatterjee <amit.chatterjee@ti.com>");
+-- 
+1.7.0.4
+

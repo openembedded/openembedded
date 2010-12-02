@@ -1,0 +1,243 @@
+From: Melissa Watkins <m-watkins@ti.com>
+Date: Wed, 24 Nov 2010 04:18:07 -0600
+Subject: [PATCH 2/3] uio_pruss2: Platform changes
+
+Adding resources supporting the uio_pru driver within the
+da850 (omapl138) device.
+
+Signed-off-by: Amit Chatterjee <amit.chatterjee@ti.com>
+Signed-off-by: Melissa Watkins <m-watkins@ti.com>
+---
+ arch/arm/configs/da850_omapl138_defconfig  |    8 +++-
+ arch/arm/mach-davinci/board-da850-evm.c    |    3 +
+ arch/arm/mach-davinci/da850.c              |   38 +++++++++++++-
+ arch/arm/mach-davinci/devices-da8xx.c      |   75 ++++++++++++++++++++++++++++
+ arch/arm/mach-davinci/include/mach/da8xx.h |    3 +
+ 5 files changed, 124 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/configs/da850_omapl138_defconfig b/arch/arm/configs/da850_omapl138_defconfig
+index b312050..baebec8 100644
+--- a/arch/arm/configs/da850_omapl138_defconfig
++++ b/arch/arm/configs/da850_omapl138_defconfig
+@@ -1361,6 +1361,7 @@ CONFIG_USB_MUSB_HDRC=y
+ CONFIG_USB_MUSB_SOC=y
+ CONFIG_USB_MUSB_HOST=y
+ # CONFIG_USB_MUSB_PERIPHERAL is not set
++# CONFIG_USB_MUSB_DUAL_ROLE is not set
+ # CONFIG_USB_MUSB_OTG is not set
+ CONFIG_USB_MUSB_HDRC_HCD=y
+ # CONFIG_MUSB_PIO_ONLY is not set
+@@ -1535,7 +1536,12 @@ CONFIG_RTC_INTF_DEV=y
+ CONFIG_RTC_DRV_OMAP=y
+ # CONFIG_DMADEVICES is not set
+ # CONFIG_AUXDISPLAY is not set
+-# CONFIG_UIO is not set
++CONFIG_UIO=y
++# CONFIG_UIO_PDRV is not set
++# CONFIG_UIO_PDRV_GENIRQ is not set
++# CONFIG_UIO_SMX is not set
++# CONFIG_UIO_SERCOS3 is not set
++CONFIG_UIO_PRUSS=m
+ 
+ #
+ # TI VLYNQ
+diff --git a/arch/arm/mach-davinci/board-da850-evm.c b/arch/arm/mach-davinci/board-da850-evm.c
+index 009e9b5..1687c7c 100755
+--- a/arch/arm/mach-davinci/board-da850-evm.c
++++ b/arch/arm/mach-davinci/board-da850-evm.c
+@@ -1070,6 +1070,9 @@ static __init void da850_evm_init(void)
+ 
+ 	platform_device_register(&da850_gpio_i2c);
+ 
++	/* Register PRUSS device */
++	da8xx_register_pruss();
++
+ 	ret = da8xx_register_watchdog();
+ 	if (ret)
+ 		pr_warning("da830_evm_init: watchdog registration failed: %d\n",
+diff --git a/arch/arm/mach-davinci/da850.c b/arch/arm/mach-davinci/da850.c
+index 513ae85..8bd1919 100755
+--- a/arch/arm/mach-davinci/da850.c
++++ b/arch/arm/mach-davinci/da850.c
+@@ -237,6 +237,13 @@ static struct clk tptc2_clk = {
+ 	.flags		= ALWAYS_ENABLED,
+ };
+ 
++static struct clk pruss_clk = {
++	.name		= "pruss",
++	.parent		= &pll0_sysclk2,
++	.lpsc		= DA8XX_LPSC0_DMAX,
++	.flags		= ALWAYS_ENABLED,
++};
++
+ static struct clk uart0_clk = {
+ 	.name		= "uart0",
+ 	.parent		= &pll0_sysclk2,
+@@ -385,13 +392,37 @@ static struct clk usb20_clk = {
+ 	.gpsc		= 1,
+ };
+ 
+-
+ static struct clk sata_clk = {
+ 	.name		= "ahci",
+ 	.parent		= &pll0_sysclk2,
+ 	.lpsc		= DA850_LPSC1_SATA,
+ 	.gpsc		= 1,
+ };
++
++static struct clk ecap0_clk = {
++	.name		= "ecap0",
++	.parent		= &pll0_sysclk2,
++	.lpsc		= DA8XX_LPSC1_ECAP,
++	.flags		= DA850_CLK_ASYNC3,
++	.gpsc		= 1,
++};
++
++static struct clk ecap1_clk = {
++	.name		= "ecap1",
++	.parent		= &pll0_sysclk2,
++	.lpsc		= DA8XX_LPSC1_ECAP,
++	.flags		= DA850_CLK_ASYNC3,
++	.gpsc		= 1,
++};
++
++static struct clk ecap2_clk = {
++	.name		= "ecap2",
++	.parent		= &pll0_sysclk2,
++	.lpsc		= DA8XX_LPSC1_ECAP,
++	.flags		= DA850_CLK_ASYNC3,
++	.gpsc		= 1,
++};
++
+ static struct clk_lookup da850_clks[] = {
+ 	CLK(NULL,		"ref",		&ref_clk),
+ 	CLK(NULL,		"pll0",		&pll0_clk),
+@@ -419,6 +450,7 @@ static struct clk_lookup da850_clks[] = {
+ 	CLK(NULL,		"tptc1",	&tptc1_clk),
+ 	CLK(NULL,		"tpcc1",	&tpcc1_clk),
+ 	CLK(NULL,		"tptc2",	&tptc2_clk),
++	CLK(NULL,       "pruss",    &pruss_clk),
+ 	CLK(NULL,		"uart0",	&uart0_clk),
+ 	CLK(NULL,		"uart1",	&uart1_clk),
+ 	CLK(NULL,		"uart2",	&uart2_clk),
+@@ -441,7 +473,9 @@ static struct clk_lookup da850_clks[] = {
+ 	CLK(NULL,		"usb11",	&usb11_clk),
+ 	CLK(NULL,		"usb20",	&usb20_clk),
+ 	CLK(NULL,		"ahci",		&sata_clk),
+-
++	CLK(NULL,		"ecap0",	&ecap0_clk),
++	CLK(NULL,		"ecap1",	&ecap1_clk),
++	CLK(NULL,		"ecap2",	&ecap2_clk),
+ 	CLK(NULL,		NULL,		NULL),
+ };
+ 
+diff --git a/arch/arm/mach-davinci/devices-da8xx.c b/arch/arm/mach-davinci/devices-da8xx.c
+index 0842590..94979b3 100755
+--- a/arch/arm/mach-davinci/devices-da8xx.c
++++ b/arch/arm/mach-davinci/devices-da8xx.c
+@@ -972,6 +972,81 @@ int __init da8xx_register_sata(void)
+ 	return platform_device_register(&da850_ahci_device);
+ }
+ 
++static struct resource pruss_resources[] = {
++	[0] = {
++		.start  = DA8XX_PRUSS_BASE,
++		.end    = DA8XX_PRUSS_BASE + SZ_64K - 1,
++		.flags  = IORESOURCE_MEM,
++	},
++	[1] = {
++		.start  = DA8XX_L3RAM_BASE,
++		.end    = DA8XX_L3RAM_BASE + SZ_128K - 1,
++		.flags  = IORESOURCE_MEM,
++	},
++	[2] = {
++		.start  = 0,
++		.end    = SZ_256K - 1,
++		.flags  = IORESOURCE_MEM,
++	},
++
++	[3] = {
++		.start  = IRQ_DA8XX_EVTOUT0,
++		.end    = IRQ_DA8XX_EVTOUT0,
++		.flags  = IORESOURCE_IRQ,
++	},
++	[4] = {
++		.start  = IRQ_DA8XX_EVTOUT1,
++		.end    = IRQ_DA8XX_EVTOUT1,
++		.flags  = IORESOURCE_IRQ,
++	},
++	[5] = {
++		.start  = IRQ_DA8XX_EVTOUT2,
++		.end    = IRQ_DA8XX_EVTOUT2,
++		.flags  = IORESOURCE_IRQ,
++	},
++	[6] = {
++		.start  = IRQ_DA8XX_EVTOUT3,
++		.end    = IRQ_DA8XX_EVTOUT3,
++		.flags  = IORESOURCE_IRQ,
++	},
++	[7] = {
++		.start  = IRQ_DA8XX_EVTOUT4,
++		.end    = IRQ_DA8XX_EVTOUT4,
++		.flags  = IORESOURCE_IRQ,
++	},
++	[8] = {
++		.start  = IRQ_DA8XX_EVTOUT5,
++		.end    = IRQ_DA8XX_EVTOUT5,
++		.flags  = IORESOURCE_IRQ,
++	},
++	[9] = {
++		.start  = IRQ_DA8XX_EVTOUT6,
++		.end    = IRQ_DA8XX_EVTOUT6,
++		.flags  = IORESOURCE_IRQ,
++	},
++	[10] = {
++		.start  = IRQ_DA8XX_EVTOUT7,
++		.end    = IRQ_DA8XX_EVTOUT7,
++		.flags  = IORESOURCE_IRQ,
++	},
++};
++
++static struct platform_device pruss_device = {
++	.name			= "pruss",
++	.id			= 0,
++	.num_resources		= ARRAY_SIZE(pruss_resources),
++	.resource		= pruss_resources,
++	.dev    =	{
++		.coherent_dma_mask = 0xffffffff,
++	}
++
++};
++
++int __init da8xx_register_pruss()
++{
++	return platform_device_register(&pruss_device);
++}
++
+ #define CFGCHIP2	DA8XX_SYSCFG0_VIRT(DA8XX_CFGCHIP2_REG)
+ /*
+  * Configure the USB PHY for DA8xx platforms.
+diff --git a/arch/arm/mach-davinci/include/mach/da8xx.h b/arch/arm/mach-davinci/include/mach/da8xx.h
+index f76433f..632d7e2 100755
+--- a/arch/arm/mach-davinci/include/mach/da8xx.h
++++ b/arch/arm/mach-davinci/include/mach/da8xx.h
+@@ -75,6 +75,8 @@ extern void __iomem *da8xx_syscfg1_base;
+ #define DA8XX_USB0_BASE		0x01e00000
+ #define DA850_SATA_BASE		0x01E18000
+ #define DA850_SATA_CLK_PWRDN	0x01E2C018
++#define DA8XX_PRUSS_BASE       0x01C30000
++#define DA8XX_L3RAM_BASE       0x80000000
+ 
+ #define PINMUX0			0x00
+ #define PINMUX1			0x04
+@@ -162,6 +164,7 @@ int __init da850_register_vpif_capture(struct vpif_capture_config
+ 
+ int cppi41_init(void);
+ int da8xx_register_sata(void);
++int da8xx_register_pruss(void);
+ 
+ 
+ extern struct platform_device da8xx_serial_device;
+-- 
+1.7.0.4
+

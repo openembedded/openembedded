@@ -69,6 +69,9 @@ SRC_URI_append_omapl138 = "file://logo_linux_clut224.ppm \
                                      file://0001-ahci-ti-Fix-currently-harmless-typo-in-SATA-PHY.patch \
                                      file://0002-ahci-ti-Update-SATA-PHY-configuration-RXCDR.patch \
                                      file://0001-board-da850-evm-Disable-NAND-SUBPAGE.patch \
+                                     file://0001-uio_pruss1-Core-driver-addition.patch \
+                                     file://0002-uio_pruss2-Platform-changes.patch \
+                                     file://0003-uio_pruss3-Workarounds-put-into-core-code.patch \
                                      "
 
 SRC_URI_append_hawkboard          = " \

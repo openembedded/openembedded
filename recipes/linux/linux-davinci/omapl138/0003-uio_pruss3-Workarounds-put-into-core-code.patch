@@ -1,0 +1,45 @@
+From: Melissa Watkins <m-watkins@ti.com>
+Date: Wed, 24 Nov 2010 04:20:24 -0600
+Subject: [PATCH 3/3] uio_pruss3: Workarounds put into core code to support our devices
+
+This patch modifies uio.c to support the uio_pruss driver. The UIO user space module relies on IO memory being mapped to user space. The IO map works fine for all mapped virtual addresses less than 0x80000000. However for the uio_pruss driver, the virtual address is on the higher side, so it fails. The fix added in this patch is mainly to check if the page map returned is correct.
+
+Signed-off-by: Amit Chatterjee <amit.chatterjee@ti.com>
+Signed-off-by: Melissa Watkins <m-watkins@ti.com>
+---
+ drivers/uio/uio.c |    9 +++++++--
+ 1 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/uio/uio.c b/drivers/uio/uio.c
+index e941367..3241d26 100644
+--- a/drivers/uio/uio.c
++++ b/drivers/uio/uio.c
+@@ -19,7 +19,6 @@
+ #include <linux/device.h>
+ #include <linux/mm.h>
+ #include <linux/idr.h>
+-#include <linux/sched.h>
+ #include <linux/string.h>
+ #include <linux/kobject.h>
+ #include <linux/uio_driver.h>
+@@ -615,7 +615,7 @@ static int uio_find_mem_index(struct vm_area_struct *vma)
+ 	for (mi = 0; mi < MAX_UIO_MAPS; mi++) {
+ 		if (idev->info->mem[mi].size == 0)
+ 			return -1;
+-		if (vma->vm_pgoff == mi)
++		if ((idev->info->mem[mi].addr) >> PAGE_SHIFT == vma->vm_pgoff)
+ 			return mi;
+ 	}
+ 	return -1;
+@@ -659,7 +664,7 @@ static int uio_vma_fault(struct vm_area_struct *vma, struct vm_fault *vmf)
+ 	return 0;
+ }
+ 
+-static const struct vm_operations_struct uio_vm_ops = {
++static struct vm_operations_struct uio_vm_ops = {
+ 	.open = uio_vma_open,
+ 	.close = uio_vma_close,
+ 	.fault = uio_vma_fault,
+-- 
+1.7.0.4
+
