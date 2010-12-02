@@ -1,0 +1,97 @@
+---
+ src/main/java/ch/ethz/iks/concierge/framework/BundleClassLoader.java |   11 +++++-
+ src/main/java/ch/ethz/iks/concierge/framework/Framework.java         |   17 ++++++++--
+ 2 files changed, 24 insertions(+), 4 deletions(-)
+
+--- framework.orig/src/main/java/ch/ethz/iks/concierge/framework/BundleClassLoader.java
++++ framework/src/main/java/ch/ethz/iks/concierge/framework/BundleClassLoader.java
+@@ -172,13 +172,20 @@ final class BundleClassLoader extends Cl
+ 		this.bundle = bundle;
+ 		this.storageLocation = Framework.STORAGE_LOCATION + bundle.bundleID
+ 				+ File.separatorChar + File.separatorChar;
+ 
+ 		try {
+-			// write the JAR file to the storage
+ 			File file = new File(storageLocation, BUNDLE_FILE_NAME);
+-			storeFile(file, stream);
++
++			if (Framework.RUN_IN_PLACE) {
++				file.getParentFile().mkdirs();
++				String fileLoc = bundle.location.indexOf(':') > -1 ? bundle.location.substring(bundle.location.indexOf(':') + 1) : bundle.location;
++				file = new File(fileLoc);
++			} else {
++				// write the JAR file to the storage
++				storeFile(file, stream);
++			}
+ 
+ 			// and open a JarFile
+ 			final JarFile jar = new JarFile(file);
+ 
+ 			// process the manifest
+--- framework.orig/src/main/java/ch/ethz/iks/concierge/framework/Framework.java
++++ framework/src/main/java/ch/ethz/iks/concierge/framework/Framework.java
+@@ -164,10 +164,15 @@ public final class Framework {
+ 
+ 	/**
+ 	 * debug outputs from services ?
+ 	 */
+ 	static boolean DEBUG_SERVICES;
++	
++	/**
++	 * run without copying classes to storage ?
++	 */
++	static boolean RUN_IN_PLACE;
+ 
+ 	/**
+ 	 * the profile.
+ 	 */
+ 	private static String PROFILE;
+@@ -382,27 +387,34 @@ public final class Framework {
+ 				PROFILE = properties.getProperty("osgi.profile", "default");
+ 				launch();
+ 
+ 				// if profile set, try to restart the profile
+ 				target = -1;
++				restart = false;
+ 				boolean init = getProperty("osgi.init", false);
+-				if (!init) {
++				if (RUN_IN_PLACE) {
++					System.out.println("Executing jars in place.");
++				}
++				
++				if (!init && !RUN_IN_PLACE) {
+ 					time = System.currentTimeMillis();
+ 					target = restoreProfile();
+ 					restart = true;
+ 				}
+ 
+ 				if (target == -1) {
+-					restart = false;
+ 					File storage = new File(STORAGE_LOCATION);
+ 					if (init) {
+ 						if (storage.exists()) {
+ 							System.out.println("purging storage ...");
+ 							deleteDirectory(storage);
+ 						}
++					} else if (RUN_IN_PLACE && storage.exists()) {
++						restart = true;
+ 					}
+ 
++
+ 					storage.mkdirs();
+ 
+ 					// TO THE ACTUAL WORK
+ 					time = System.currentTimeMillis();
+ 					properties.setProperty("osgi.auto.install.1", properties
+@@ -592,10 +604,11 @@ public final class Framework {
+ 				false);
+ 		DECOMPRESS_EMBEDDED = getProperty(
+ 				"ch.ethz.iks.concierge.decompressEmbedded", true);
+ 		SECURITY_ENABLED = getProperty(
+ 				"ch.ethz.iks.concierge.security.enabled", false);
++		RUN_IN_PLACE = getProperty("ch.ethz.iks.concierge.runInPlace", false);
+ 
+ 		final String ADDITIONAL_PACKAGES = properties
+ 				.getProperty("org.osgi.framework.system.packages");
+ 
+ 		if (ADDITIONAL_PACKAGES != null) {

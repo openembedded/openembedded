@@ -1,0 +1,5 @@
+Bundle-Name: Service Tracker
+Bundle-Description: Concierge Service Tracker
+Bundle-Vendor: Jan S. Rellermeyer, ETH Zurich
+Import-Package: org.osgi.framework;specification-version=1.2
+Export-Package: org.osgi.util.tracker;specification-version=1.2

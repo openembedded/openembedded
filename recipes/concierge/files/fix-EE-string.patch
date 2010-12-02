@@ -1,0 +1,13 @@
+Index: framework/src/main/java/ch/ethz/iks/concierge/framework/Framework.java
+===================================================================
+--- framework.orig/src/main/java/ch/ethz/iks/concierge/framework/Framework.java
++++ framework/src/main/java/ch/ethz/iks/concierge/framework/Framework.java
+@@ -624,7 +624,7 @@ public final class Framework {
+ 			case 7:
+ 				myEEs.append("J2SE-1.7,");
+ 			case 6:
+-				myEEs.append("J2SE-1.6,");
++				myEEs.append("JavaSE-1.6,");
+ 			case 5:
+ 				myEEs.append("J2SE-1.5,");
+ 			case 4:
