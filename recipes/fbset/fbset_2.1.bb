@@ -20,10 +20,10 @@ inherit autotools update-alternatives
 PARALLEL_MAKE = ""
 
 do_install() {
-        install -d ${D}/usr/sbin ${D}/usr/share/man/man8 ${D}/usr/share/man/man5
-        install -m 0755 ${WORKDIR}/${P}/fbset ${D}/usr/sbin/fbset.real
-        install -m 0644 ${WORKDIR}/${P}/*.5 ${D}/usr/share/man/man5
-        install -m 0644 ${WORKDIR}/${P}/*.8 ${D}/usr/share/man/man8
+        install -d ${D}${sbindir} ${D}${datadir}/man/man8 ${D}${datadir}/man/man5
+        install -m 0755 ${WORKDIR}/${P}/fbset ${D}${sbindir}/fbset.real
+        install -m 0644 ${WORKDIR}/${P}/*.5 ${D}${datadir}/man/man5
+        install -m 0644 ${WORKDIR}/${P}/*.8 ${D}${datadir}/man/man8
 }
 
 ALTERNATIVE_NAME = "fbset"
