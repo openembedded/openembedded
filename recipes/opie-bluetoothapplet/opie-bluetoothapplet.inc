@@ -13,6 +13,6 @@ inherit opie
 
 do_install() {
 	install -d ${D}${palmtopdir}/pics/bluetoothapplet
-	install -m 0644 ${WORKDIR}/bluetoothapplet/*.png ${D}${palmtopdir}/pics/bluetoothapplet
+	install -m 0644 ${WORKDIR}/pics/bluetoothapplet/*.png ${D}${palmtopdir}/pics/bluetoothapplet
 }
 
