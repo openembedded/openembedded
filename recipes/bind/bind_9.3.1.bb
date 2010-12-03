@@ -17,7 +17,7 @@ INITSCRIPT_PARAMS = "defaults"
 
 
 do_install_append() {
-	rm "${D}/usr/bin/nslookup"
+	rm "${D}${bindir}/nslookup"
 	install -d "${D}/etc/bind"
 	install -d "${D}/etc/init.d"
 	install -m 644 ${S}/conf/* "${D}/etc/bind"
