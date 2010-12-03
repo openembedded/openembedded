@@ -6,8 +6,6 @@ SRCREV = "${EFL_SRCREV}"
 
 inherit efl
 
-SRC_URI += "file://gnu_source.patch"
-
 # Some upgrade path tweaking
 AUTO_LIBNAME_PKGS = ""
 
