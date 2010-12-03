@@ -1,0 +1,19 @@
+We don't patch configure.ac as aclocal.m4 has a dependency upon it, which
+breaks compilation.
+
+diff -ur automake-1.11.1.orig/configure automake-1.11.1/configure
+--- automake-1.11.1.orig/configure	2009-12-09 04:45:46.000000000 +1030
++++ automake-1.11.1/configure	2010-12-01 14:01:54.000000000 +1030
+@@ -2303,12 +2303,6 @@
+ if test -z "$PERL"; then
+    as_fn_error "perl not found" "$LINENO" 5
+ fi
+-$PERL -e 'require 5.006;' || {
+-   as_fn_error "perl 5.6 or better is required; perl 5.8.2 or better
+-is recommended.  If you have several perl versions
+-installed, select the one Automake should use using
+-  ./configure PERL=/path/to/perl" "$LINENO" 5
+-}
+ 
+ # We require ithreads support, and version 5.7.2 for CLONE.
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether $PERL supports ithreads" >&5
