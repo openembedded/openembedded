@@ -44,7 +44,8 @@ do_install_append () {
 
        # The catalog must live in the sysroot and it must be there for
        # install-catalog to do its thing.
-       install -m 644 dsssl/catalog ${datadir}/sgml/openjade-${PV}
+       install -d ${datadir}/sgml/openjade-${PV}
+       install -m 644 dsssl/catalog ${datadir}/sgml/openjade-${PV}/catalog
        install-catalog --add ${sysconfdir}/sgml/openjade-${PV}.cat \
            ${datadir}/sgml/openjade-${PV}/catalog
 
