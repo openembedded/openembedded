@@ -1,4 +1,4 @@
-require openembedded/recipes/uhd/uhd-firmware.inc
+require recipes/uhd/uhd-firmware.inc
 
 PR = "${INC_PR}.0"
 
