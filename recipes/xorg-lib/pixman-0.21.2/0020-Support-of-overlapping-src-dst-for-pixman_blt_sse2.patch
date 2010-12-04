@@ -1,17 +1,17 @@
-From 2d6cc769d233c0b1a391b501e84f5c3b0f1af4f8 Mon Sep 17 00:00:00 2001
+From c8755294fa9ea396f7113370230b17c424a93be1 Mon Sep 17 00:00:00 2001
 From: Siarhei Siamashka <siarhei.siamashka@nokia.com>
-Date: Thu, 22 Oct 2009 05:45:47 +0300
-Subject: [PATCH 2/7] Support of overlapping src/dst for pixman_blt_mmx
+Date: Thu, 22 Oct 2009 05:45:54 +0300
+Subject: [PATCH 20/24] Support of overlapping src/dst for pixman_blt_sse2
 
 ---
- pixman/pixman-mmx.c |   55 +++++++++++++++++++++++++++++---------------------
+ pixman/pixman-sse2.c |   55 +++++++++++++++++++++++++++++--------------------
  1 files changed, 32 insertions(+), 23 deletions(-)
 
-diff --git a/pixman/pixman-mmx.c b/pixman/pixman-mmx.c
-index 34637a4..f9dd473 100644
---- a/pixman/pixman-mmx.c
-+++ b/pixman/pixman-mmx.c
-@@ -2996,34 +2996,43 @@ pixman_blt_mmx (uint32_t *src_bits,
+diff --git a/pixman/pixman-sse2.c b/pixman/pixman-sse2.c
+index 5907de0..25015ae 100644
+--- a/pixman/pixman-sse2.c
++++ b/pixman/pixman-sse2.c
+@@ -5027,34 +5027,43 @@ pixman_blt_sse2 (uint32_t *src_bits,
  {
      uint8_t *   src_bytes;
      uint8_t *   dst_bytes;
@@ -26,7 +26,7 @@ index 34637a4..f9dd473 100644
 -    {
 -	src_stride = src_stride * (int) sizeof (uint32_t) / 2;
 -	dst_stride = dst_stride * (int) sizeof (uint32_t) / 2;
--	src_bytes = (uint8_t *)(((uint16_t *)src_bits) + src_stride * (src_y) + (src_x));
+-	src_bytes =(uint8_t *)(((uint16_t *)src_bits) + src_stride * (src_y) + (src_x));
 -	dst_bytes = (uint8_t *)(((uint16_t *)dst_bits) + dst_stride * (dst_y) + (dst_x));
 -	byte_width = 2 * width;
 -	src_stride *= 2;
@@ -65,7 +65,7 @@ index 34637a4..f9dd473 100644
 +
 +	if (src_bytes + width > dst_bytes)
 +	{
-+	    /* TODO: reverse scanline copy using MMX */
++	    /* TODO: reverse scanline copy using SSE2 */
 +	    while (--height >= 0)
 +	    {
 +		memmove (dst_bytes, src_bytes, width);
@@ -77,7 +77,7 @@ index 34637a4..f9dd473 100644
      }
  
      while (height--)
-@@ -3033,7 +3042,7 @@ pixman_blt_mmx (uint32_t *src_bits,
+@@ -5064,7 +5073,7 @@ pixman_blt_sse2 (uint32_t *src_bits,
  	uint8_t *d = dst_bytes;
  	src_bytes += src_stride;
  	dst_bytes += dst_stride;
@@ -87,5 +87,5 @@ index 34637a4..f9dd473 100644
  	while (w >= 2 && ((unsigned long)d & 3))
  	{
 -- 
-1.7.3.2
+1.6.6.1
 

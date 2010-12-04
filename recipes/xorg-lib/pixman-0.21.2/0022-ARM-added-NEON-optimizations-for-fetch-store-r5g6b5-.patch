@@ -1,7 +1,7 @@
-From 8d7a77b6780af1b96db32026fb8d79c5603f0fba Mon Sep 17 00:00:00 2001
+From 60d972afbae8613d700d3a6b3cb107429d7e11c6 Mon Sep 17 00:00:00 2001
 From: Siarhei Siamashka <siarhei.siamashka@nokia.com>
 Date: Thu, 10 Dec 2009 00:51:50 +0200
-Subject: [PATCH 5/7] ARM: added NEON optimizations for fetch/store r5g6b5 scanline
+Subject: [PATCH 22/24] ARM: added NEON optimizations for fetch/store r5g6b5 scanline
 
 ---
  pixman/pixman-arm-neon-asm.S |   20 ++++++++++++++++++++
@@ -9,7 +9,7 @@ Subject: [PATCH 5/7] ARM: added NEON optimizations for fetch/store r5g6b5 scanli
  2 files changed, 60 insertions(+), 0 deletions(-)
 
 diff --git a/pixman/pixman-arm-neon-asm.S b/pixman/pixman-arm-neon-asm.S
-index 91ec27d..b838f92 100644
+index cf014fa..25f7bf0 100644
 --- a/pixman/pixman-arm-neon-asm.S
 +++ b/pixman/pixman-arm-neon-asm.S
 @@ -459,6 +459,16 @@ generate_composite_function \
@@ -47,10 +47,10 @@ index 91ec27d..b838f92 100644
  
  .macro pixman_composite_add_8_8_process_pixblock_head
 diff --git a/pixman/pixman-arm-neon.c b/pixman/pixman-arm-neon.c
-index 6a6ed37..4b2bbea 100644
+index 74316a8..f773e92 100644
 --- a/pixman/pixman-arm-neon.c
 +++ b/pixman/pixman-arm-neon.c
-@@ -422,6 +422,42 @@ BIND_COMBINE_U (over)
+@@ -448,6 +448,42 @@ BIND_COMBINE_U (over)
  BIND_COMBINE_U (add)
  BIND_COMBINE_U (out_reverse)
  
@@ -93,7 +93,7 @@ index 6a6ed37..4b2bbea 100644
  pixman_implementation_t *
  _pixman_implementation_create_arm_neon (void)
  {
-@@ -437,6 +473,10 @@ _pixman_implementation_create_arm_neon (void)
+@@ -463,6 +499,10 @@ _pixman_implementation_create_arm_neon (void)
      imp->combine_32[PIXMAN_OP_ADD] = neon_combine_add_u;
      imp->combine_32[PIXMAN_OP_OUT_REVERSE] = neon_combine_out_reverse_u;
  
@@ -105,5 +105,5 @@ index 6a6ed37..4b2bbea 100644
      imp->fill = arm_neon_fill;
  
 -- 
-1.7.3.2
+1.6.6.1
 

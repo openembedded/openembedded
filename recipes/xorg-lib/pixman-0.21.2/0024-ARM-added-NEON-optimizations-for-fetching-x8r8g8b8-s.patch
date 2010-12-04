@@ -1,7 +1,7 @@
-From 912d7b4f79cda5dd828f5db7608314057a39338e Mon Sep 17 00:00:00 2001
+From cf3b8fdc53144ff62c4054996559d3a1a4d62b75 Mon Sep 17 00:00:00 2001
 From: Siarhei Siamashka <siarhei.siamashka@nokia.com>
 Date: Fri, 24 Sep 2010 18:22:44 +0300
-Subject: [PATCH 7/7] ARM: added NEON optimizations for fetching x8r8g8b8 scanline
+Subject: [PATCH 24/24] ARM: added NEON optimizations for fetching x8r8g8b8 scanline
 
 ---
  pixman/pixman-arm-neon-asm.S |   14 ++++++++++++++
@@ -9,10 +9,10 @@ Subject: [PATCH 7/7] ARM: added NEON optimizations for fetching x8r8g8b8 scanlin
  2 files changed, 35 insertions(+), 0 deletions(-)
 
 diff --git a/pixman/pixman-arm-neon-asm.S b/pixman/pixman-arm-neon-asm.S
-index 8e43a3b..5ebee5a 100644
+index 439b06b..3e0dcfe 100644
 --- a/pixman/pixman-arm-neon-asm.S
 +++ b/pixman/pixman-arm-neon-asm.S
-@@ -1206,6 +1206,20 @@ generate_composite_function \
+@@ -1257,6 +1257,20 @@ generate_composite_function \
      0, /* src_basereg   */ \
      0  /* mask_basereg  */
  
@@ -34,10 +34,10 @@ index 8e43a3b..5ebee5a 100644
  
  .macro pixman_composite_over_n_8_8888_process_pixblock_head
 diff --git a/pixman/pixman-arm-neon.c b/pixman/pixman-arm-neon.c
-index 1c68d32..0bcfc54 100644
+index 55219b3..8cef414 100644
 --- a/pixman/pixman-arm-neon.c
 +++ b/pixman/pixman-arm-neon.c
-@@ -496,6 +496,24 @@ neon_store_scanline_a8 (bits_image_t *  image,
+@@ -522,6 +522,24 @@ neon_store_scanline_a8 (bits_image_t *  image,
      pixman_store_scanline_a8_asm_neon (width, pixel, values);
  }
  
@@ -62,7 +62,7 @@ index 1c68d32..0bcfc54 100644
  
  pixman_implementation_t *
  _pixman_implementation_create_arm_neon (void)
-@@ -518,6 +536,9 @@ _pixman_implementation_create_arm_neon (void)
+@@ -544,6 +562,9 @@ _pixman_implementation_create_arm_neon (void)
      _pixman_bits_override_accessors (PIXMAN_a8,
                                       neon_fetch_scanline_a8,
                                       neon_store_scanline_a8);
@@ -73,5 +73,5 @@ index 1c68d32..0bcfc54 100644
      imp->blt = arm_neon_blt;
      imp->fill = arm_neon_fill;
 -- 
-1.7.3.2
+1.6.6.1
 

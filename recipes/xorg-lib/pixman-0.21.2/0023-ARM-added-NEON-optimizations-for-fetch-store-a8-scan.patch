@@ -1,7 +1,7 @@
-From b689ddce66ce6391b6478d870f00fe21bbce944c Mon Sep 17 00:00:00 2001
+From cc99d8d6fcbabd7f9f3ed99e65c78a2fb71792fa Mon Sep 17 00:00:00 2001
 From: Siarhei Siamashka <siarhei.siamashka@nokia.com>
 Date: Thu, 23 Sep 2010 21:10:56 +0300
-Subject: [PATCH 6/7] ARM: added NEON optimizations for fetch/store a8 scanline
+Subject: [PATCH 23/24] ARM: added NEON optimizations for fetch/store a8 scanline
 
 ---
  pixman/pixman-arm-neon-asm.S |   64 ++++++++++++++++++++++++++++++++++++++++++
@@ -9,7 +9,7 @@ Subject: [PATCH 6/7] ARM: added NEON optimizations for fetch/store a8 scanline
  2 files changed, 106 insertions(+), 0 deletions(-)
 
 diff --git a/pixman/pixman-arm-neon-asm.S b/pixman/pixman-arm-neon-asm.S
-index b838f92..8e43a3b 100644
+index 25f7bf0..439b06b 100644
 --- a/pixman/pixman-arm-neon-asm.S
 +++ b/pixman/pixman-arm-neon-asm.S
 @@ -418,6 +418,70 @@ generate_composite_function \
@@ -84,10 +84,10 @@ index b838f92..8e43a3b 100644
      vshll.u8    q8, d1, #8
      vshll.u8    q14, d2, #8
 diff --git a/pixman/pixman-arm-neon.c b/pixman/pixman-arm-neon.c
-index 4b2bbea..1c68d32 100644
+index f773e92..55219b3 100644
 --- a/pixman/pixman-arm-neon.c
 +++ b/pixman/pixman-arm-neon.c
-@@ -458,6 +458,45 @@ neon_store_scanline_r5g6b5 (bits_image_t *  image,
+@@ -484,6 +484,45 @@ neon_store_scanline_r5g6b5 (bits_image_t *  image,
      pixman_store_scanline_r5g6b5_asm_neon (width, pixel, values);
  }
  
@@ -133,7 +133,7 @@ index 4b2bbea..1c68d32 100644
  pixman_implementation_t *
  _pixman_implementation_create_arm_neon (void)
  {
-@@ -476,6 +515,9 @@ _pixman_implementation_create_arm_neon (void)
+@@ -502,6 +541,9 @@ _pixman_implementation_create_arm_neon (void)
      _pixman_bits_override_accessors (PIXMAN_r5g6b5,
                                       neon_fetch_scanline_r5g6b5,
                                       neon_store_scanline_r5g6b5);
@@ -144,5 +144,5 @@ index 4b2bbea..1c68d32 100644
      imp->blt = arm_neon_blt;
      imp->fill = arm_neon_fill;
 -- 
-1.7.3.2
+1.6.6.1
 
