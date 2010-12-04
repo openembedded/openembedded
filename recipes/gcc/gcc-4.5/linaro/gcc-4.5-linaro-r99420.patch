@@ -1,9 +1,18 @@
-Source: http://gcc.gnu.org/bugzilla/show_bug.cgi?id=45805
+2010-10-18  Kazu Hirata  <kazu@codesourcery.com>
 
-Index: gcc-4.5/gcc/config/arm/neon.md
-===================================================================
---- gcc-4.5.orig/gcc/config/arm/neon.md	2010-09-28 12:04:38.000000000 -0700
-+++ gcc-4.5/gcc/config/arm/neon.md	2010-09-28 12:07:28.026227000 -0700
+	Issue #9720
+	Backport from mainline:
+	gcc/
+	2010-10-07  Tejas Belagod  <tejas.belagod@arm.com>
+	* config/arm/neon.md (neon_unpack<US>_<mode>): Add 'w' to
+	constraint, add register specifier in instruction template.
+	(neon_vec_pack_trunc_<mode>): Likewise.
+	(neon_vec_<US>mult_<mode>): Add register specifier to
+	instruction template.
+
+=== modified file 'gcc/config/arm/neon.md'
+--- a/gcc/config/arm/neon.md	2010-09-09 14:11:34 +0000
++++ b/gcc/config/arm/neon.md	2010-11-04 11:47:50 +0000
 @@ -5682,9 +5682,9 @@
  ;; Vectorize for non-neon-quad case
  (define_insn "neon_unpack<US>_<mode>"
@@ -25,3 +34,4 @@ Index: gcc-4.5/gcc/config/arm/neon.md
    [(set_attr "neon_type" "neon_shift_1")]
  )
  
+

@@ -14,11 +14,9 @@
 	* gcc.dg/20101010-1.c: New testcase.
 
 === modified file 'gcc/ifcvt.c'
-Index: gcc-4.5/gcc/ifcvt.c
-===================================================================
---- gcc-4.5.orig/gcc/ifcvt.c
-+++ gcc-4.5/gcc/ifcvt.c
-@@ -88,6 +88,8 @@ static int count_bb_insns (const_basic_b
+--- a/gcc/ifcvt.c	2010-10-04 00:50:43 +0000
++++ b/gcc/ifcvt.c	2010-10-15 10:01:07 +0000
+@@ -88,6 +88,8 @@
  static bool cheap_bb_rtx_cost_p (const_basic_block, int);
  static rtx first_active_insn (basic_block);
  static rtx last_active_insn (basic_block, int);
@@ -27,7 +25,7 @@ Index: gcc-4.5/gcc/ifcvt.c
  static basic_block block_fallthru (basic_block);
  static int cond_exec_process_insns (ce_if_block_t *, rtx, rtx, rtx, rtx, int);
  static rtx cond_exec_get_condition (rtx);
-@@ -230,6 +232,48 @@ last_active_insn (basic_block bb, int sk
+@@ -230,6 +232,48 @@
    return insn;
  }
  
@@ -76,7 +74,7 @@ Index: gcc-4.5/gcc/ifcvt.c
  /* Return the basic block reached by falling though the basic block BB.  */
  
  static basic_block
-@@ -448,9 +492,9 @@ cond_exec_process_if_block (ce_if_block_
+@@ -448,9 +492,9 @@
        if (n_matching > 0)
  	{
  	  if (then_end)
@@ -88,7 +86,7 @@ Index: gcc-4.5/gcc/ifcvt.c
  	  n_insns -= 2 * n_matching;
  	}
  
-@@ -488,9 +532,9 @@ cond_exec_process_if_block (ce_if_block_
+@@ -488,9 +532,9 @@
  	  if (n_matching > 0)
  	    {
  	      if (then_start)
@@ -100,7 +98,7 @@ Index: gcc-4.5/gcc/ifcvt.c
  	      n_insns -= 2 * n_matching;
  	    }
  	}
-@@ -646,7 +690,7 @@ cond_exec_process_if_block (ce_if_block_
+@@ -646,7 +690,7 @@
      {
        rtx from = then_first_tail;
        if (!INSN_P (from))
@@ -109,10 +107,10 @@ Index: gcc-4.5/gcc/ifcvt.c
        delete_insn_chain (from, BB_END (then_bb), false);
      }
    if (else_last_head)
-Index: gcc-4.5/gcc/testsuite/gcc.dg/20101010-1.c
-===================================================================
---- /dev/null
-+++ gcc-4.5/gcc/testsuite/gcc.dg/20101010-1.c
+
+=== added file 'gcc/testsuite/gcc.dg/20101010-1.c'
+--- a/gcc/testsuite/gcc.dg/20101010-1.c	1970-01-01 00:00:00 +0000
++++ b/gcc/testsuite/gcc.dg/20101010-1.c	2010-10-15 10:01:07 +0000
 @@ -0,0 +1,14 @@
 +/* { dg-do compile } */
 +/* { dg-options "-O2 -fno-crossjumping" } */
@@ -128,3 +126,4 @@ Index: gcc-4.5/gcc/testsuite/gcc.dg/20101010-1.c
 +    }
 +  return -1;
 +}
+

@@ -8,9 +8,9 @@ DEPENDS = "mpfr gmp libmpc libelf"
 NATIVEDEPS = "mpfr-native gmp-native libmpc-native"
 
 
-INC_PR = "r20"
+INC_PR = "r21"
 
-SRCREV = "166342"
+SRCREV = "167449"
 PV = "4.5"
 # BINV should be incremented after updating to a revision
 # after a minor gcc release (e.g. 4.5.1 or 4.5.2) has been made
@@ -131,9 +131,12 @@ SRC_URI = "svn://gcc.gnu.org/svn/gcc/branches;module=${BRANCH} \
 	   file://linaro/gcc-4.5-linaro-r99413.patch \
 	   file://linaro/gcc-4.5-linaro-r99414.patch \
 	   file://linaro/gcc-4.5-linaro-r99415.patch \
-	   file://gcc-vmovl-PR45805.patch \
+	   file://linaro/gcc-4.5-linaro-r99416.patch \
+	   file://linaro/gcc-4.5-linaro-r99417.patch \
+	   file://linaro/gcc-4.5-linaro-r99418.patch \
+	   file://linaro/gcc-4.5-linaro-r99419.patch \
+	   file://linaro/gcc-4.5-linaro-r99420.patch \
 	   file://gcc-scalar-widening-pr45847.patch \
-	   file://gcc-linaro-fix-lp-653316.patch \
 	  "
 
 SRC_URI_append_mips64 = " file://mips64-nomultilib.patch "
