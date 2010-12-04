@@ -1,0 +1,31 @@
+From f0fce3b189055bcf210c2811594ee9ab1b4e7e3c Mon Sep 17 00:00:00 2001
+From: Robert Nelson <robertcnelson@gmail.com>
+Date: Mon, 1 Nov 2010 10:23:52 -0500
+Subject: [PATCH] OMAP3 SGX TI 4.00.00.01 2.6.37-rc1 use semaphore over mutex
+
+Signed-off-by: Robert Nelson <robertcnelson@gmail.com>
+
+Changes by Koen:
+
+Protect it with #if LINUX_VERSION_CODE => KERNEL_VERSION(2,6,36)
+
+---
+ .../omap3-sgx/services4/srvkm/common/resman.c      |    2 +++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+--- /tmp/resman.c	2010-12-04 16:15:37.000000000 +0100
++++ GFX_Linux_KM/services4/srvkm/common/resman.c	2010-12-04 16:16:29.000000000 +0100
+@@ -46,7 +46,11 @@
+ #include <asm/semaphore.h>
+ #endif
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36)
++static DEFINE_SEMAPHORE(lock);
++#else
+ static DECLARE_MUTEX(lock);
++#endif
+ 
+ #define ACQUIRE_SYNC_OBJ  do {							\
+ 		if (in_interrupt()) { 							\
+--
+1.7.1

@@ -12,19 +12,20 @@ SGXPV = "4_00_00_01"
 IMGPV = "1.4.14.2616"
 BINFILE := "Graphics_SDK_setuplinux_${SGXPV}.bin"
 
+inherit module
+
+MACHINE_KERNEL_PR_append = "h"
+
 SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/gfxsdk/${SGXPV}/exports/Graphics_SDK_setuplinux_${SGXPV}.bin \
            file://0002-Compile-fixes-for-recent-kernels.patch \
            file://update.patch \
+           file://0001-OMAP3-SGX-TI-4.00.00.01-2.6.37-rc1-use-semaphore-ove.patch \
 "
 
 SRC_URI[md5sum] = "a027002dcd7164df467b1a315788d5fd"
 SRC_URI[sha256sum] = "62383d15e33adf9349afba063b0f2405a15aa6c4b0b5579b0abdf81db7580df7"
 
 S = "${WORKDIR}/Graphics_SDK_${SGXPV}/GFX_Linux_KM"
-
-inherit module
-
-MACHINE_KERNEL_PR_append = "g"
 
 PVRBUILD = "release"
 
