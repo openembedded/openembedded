@@ -4,6 +4,8 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "MIT"
 
+PR = "r1"
+
 SRC_URI = "http://www.netsurf-browser.org/projects/releases/libnsbmp-${PV}-src.tar.gz"
 
 inherit pkgconfig
@@ -16,6 +18,7 @@ EXTRA_OEMAKE = "CURDIR=${S} DESTDIR=${D} PREFIX=${prefix} BUILDDIR=build-OE"
 
 do_stage() {
 	oe_libinstall -a -C build-OE/ libnsbmp ${STAGING_LIBDIR}
+	install -m 0644 build-OE/libnsbmp.pc ${STAGING_LIBDIR}/pkgconfig
 	install -m 0644 include/*.h ${STAGING_INCDIR}/
 }
 

@@ -5,6 +5,8 @@ PRIORITY = "optional"
 LICENSE = "MIT"
 DEPENDS = "libwapcaplet"
 
+PR = "r1"
+
 SRC_URI = "http://www.netsurf-browser.org/projects/releases/libcss-${PV}-src.tar.gz \
 	   file://no-werror.patch"
 
@@ -18,6 +20,7 @@ EXTRA_OEMAKE = "CURDIR=${S} DESTDIR=${D} PREFIX=${prefix} BUILDDIR=build-OE"
 
 do_stage() {
 	oe_libinstall -a -C build-OE/ libcss ${STAGING_LIBDIR}
+	install -m 0644 build-OE/libcss.pc ${STAGING_LIBDIR}/pkgconfig
 	install -d ${STAGING_INCDIR}/libcss
 	install -m 0644 include/libcss/*.h ${STAGING_INCDIR}/libcss
 }

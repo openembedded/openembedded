@@ -11,7 +11,7 @@ SRC_URI = "http://www.netsurf-browser.org/downloads/releases/netsurf-${PV}-src.t
 	   file://netsurf.desktop \
 	   file://Makefile.config"
 
-PR = "r0"
+PR = "r1"
 
 # Workaround for 2.6 tarball (unpacks into netsurf/, not netsurf-2.6/ )
 S = "${WORKDIR}/netsurf"

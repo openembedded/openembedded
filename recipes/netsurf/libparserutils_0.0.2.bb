@@ -4,6 +4,8 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "MIT"
 
+PR = "r1"
+
 SRC_URI = "http://www.netsurf-browser.org/projects/releases/libparserutils-${PV}-src.tar.gz"
 
 inherit pkgconfig
@@ -16,7 +18,7 @@ EXTRA_OEMAKE = "CURDIR=${S} DESTDIR=${D} PREFIX=${prefix} BUILDDIR=build-OE"
 
 do_stage () {
         oe_libinstall -a -C build-OE/ libparserutils ${STAGING_LIBDIR}
-
+	install -m 0644 build-OE/libparserutils.pc ${STAGING_LIBDIR}/pkgconfig
 	install -d ${STAGING_INCDIR}/parserutils
 	install -d ${STAGING_INCDIR}/parserutils/charset
 	install -d ${STAGING_INCDIR}/parserutils/input

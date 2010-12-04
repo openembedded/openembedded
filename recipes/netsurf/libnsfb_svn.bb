@@ -7,7 +7,7 @@ DEPENDS = "xcb-util"
 
 SRCREV = "10944"
 PV = "0.0.1+svnr${SRCPV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "svn://svn.netsurf-browser.org/trunk;module=libnsfb \
 	   file://no-werror.patch"
@@ -24,6 +24,7 @@ EXTRA_OEMAKE = "CURDIR=${S} DESTDIR=${D} PREFIX=${prefix} BUILDDIR=build-OE"
 
 do_stage() {
 	oe_libinstall -a -C build-OE/ libnsfb ${STAGING_LIBDIR}
+	install -m 0644 build-OE/libnsfb.pc ${STAGING_LIBDIR}/pkgconfig
 	install -m 0644 include/*.h ${STAGING_INCDIR}/
 }
 

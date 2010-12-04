@@ -4,7 +4,7 @@ SECTION = "x11/network"
 LICENSE = "GPLv2"
 SRCREV = "10950"
 PV = "2.6+svnr${SRCPV}"
-PR = "r0"
+PR = "r1"
 
 DEPENDS = "virtual/libsdl lemon-native re2c-native jpeg openssl curl \
 	   libxml2 hubbub libcss libnsfb libnsgif libnsbmp lcms"
@@ -24,6 +24,9 @@ FILES_${PN} += " /usr/share/netsurf "
 
 do_configure() {
 	cp ${WORKDIR}/Makefile.config ${S}/
+}
+
+do_compile() {
 }
 
 do_install() {

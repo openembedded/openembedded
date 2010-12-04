@@ -1,6 +1,15 @@
-diff -ru netsurf-old/Makefile netsurf/Makefile
---- netsurf-old/Makefile	2010-09-21 22:35:54.000000000 +0300
-+++ netsurf/Makefile	2010-11-18 18:13:37.793334209 +0200
+diff -ru netsurf.orig/Makefile netsurf/Makefile
+--- netsurf.orig/Makefile	2010-09-21 22:35:54.000000000 +0300
++++ netsurf/Makefile	2010-12-03 19:49:46.930000534 +0200
+@@ -118,7 +118,7 @@
+ STRIP=strip
+ 
+ # Override this only if the host compiler is called something different
+-HOST_CC := gcc
++HOST_CC := $(BUILD_CC) $(BUILD_CFLAGS) $(BUILD_LDFLAGS)
+ ifeq ($(TARGET),amiga)
+   ifneq ($(HOST),amiga)
+     CC := ppc-amigaos-gcc
 @@ -842,7 +842,7 @@
  	@cp -RL gtk/res/toolbarIndices $(DESTDIR)$(NETSURF_GTK_RESOURCES)
  	@cp -RL gtk/res/Aliases $(DESTDIR)$(NETSURF_GTK_RESOURCES)
