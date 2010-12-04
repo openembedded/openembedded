@@ -7,9 +7,11 @@
 	vector type exists.
 
 === modified file 'gcc/tree-vect-stmts.c'
---- a/gcc/tree-vect-stmts.c	2010-07-23 15:51:08 +0000
-+++ b/gcc/tree-vect-stmts.c	2010-10-20 16:52:04 +0000
-@@ -4650,6 +4650,11 @@
+Index: gcc-4.5/gcc/tree-vect-stmts.c
+===================================================================
+--- gcc-4.5.orig/gcc/tree-vect-stmts.c
++++ gcc-4.5/gcc/tree-vect-stmts.c
+@@ -4867,6 +4867,11 @@ supportable_widening_operation (enum tre
    tree wide_vectype = get_vectype_for_scalar_type (type);
    enum tree_code c1, c2;
  
@@ -21,4 +23,3 @@
    /* The result of a vectorized widening operation usually requires two vectors
       (because the widened results do not fit int one vector). The generated
       vector results would normally be expected to be generated in the same
-

@@ -9,9 +9,11 @@
 	script when relocatable linking.
 
 === modified file 'gcc/testsuite/lib/lto.exp'
---- a/gcc/testsuite/lib/lto.exp	2010-06-29 15:35:54 +0000
-+++ b/gcc/testsuite/lib/lto.exp	2010-10-15 16:08:25 +0000
-@@ -156,6 +156,7 @@
+Index: gcc-4.5/gcc/testsuite/lib/lto.exp
+===================================================================
+--- gcc-4.5.orig/gcc/testsuite/lib/lto.exp
++++ gcc-4.5/gcc/testsuite/lib/lto.exp
+@@ -156,6 +156,7 @@ proc lto-link-and-maybe-run { testname o
      global testcase
      global tool
      global compile_type
@@ -19,7 +21,7 @@
  
      # Check that all of the objects were built successfully.
      foreach obj [split $objlist] {
-@@ -170,10 +171,29 @@
+@@ -170,10 +171,29 @@ proc lto-link-and-maybe-run { testname o
      set options ""
      lappend options "additional_flags=$optall $optfile"
  
@@ -49,4 +51,3 @@
      # Prune unimportant visibility warnings before checking output.
      set comp_output [lto_prune_warns $comp_output]
  
-

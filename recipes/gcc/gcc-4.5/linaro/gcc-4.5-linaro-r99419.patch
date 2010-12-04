@@ -88,87 +88,66 @@
 	gcc/testsuite/
 	* gcc.target/arm/sync-1.c: New.
 
- 2010-10-20  Yao Qi  <yao@codesourcery.com>
- 
- 	Merge from Sourcery G++ to fix LP:660021
-@@ -110,22 +200,56 @@
  
  	Backport from FSF:
  
--	2010-08-07  Marcus Shawcroft  <marcus.shawcroft@arm.com>
--
--	gcc/
--	* config/arm/linux-atomic.c (SUBWORD_VAL_CAS): Instantiate with
--	'unsigned short' and 'unsigned char' instead of 'short' and
--	'char'. (SUBWORD_BOOL_CAS): Likewise.
--	(SUBWORD_SYNC_OP): Likewise.
--	(SUBWORD_TEST_AND_SET): Likewise.
--	(FETCH_AND_OP_WORD): Parenthesise INF_OP
--	(SUBWORD_SYNC_OP): Likewise.
--	(OP_AND_FETCH_WORD): Likewise.
--
--	gcc/testsuite/
--	* lib/target-supports.exp: (check_effective_target_sync_int_long):
--	Add arm*-*-linux-gnueabi.
--	(check_effective_target_sync_char_short): Likewise.
-+	gcc/
-+	2010-08-18  Marcus Shawcroft  <marcus.shawcroft@arm.com>
-+	* config/arm/arm-protos.h (arm_expand_sync): New.
-+	(arm_output_memory_barrier, arm_output_sync_insn): New.
-+	(arm_sync_loop_insns): New.
-+	* config/arm/arm.c (FL_ARCH7): New.
-+	(FL_FOR_ARCH7): Include FL_ARCH7.
-+	(arm_arch7): New.
-+	(arm_print_operand): Support %C markup.
-+	(arm_legitimize_sync_memory): New.
-+	(arm_emit, arm_insn_count, arm_count, arm_output_asm_insn): New.
-+	(arm_process_output_memory_barrier, arm_output_memory_barrier): New.
-+	(arm_ldrex_suffix, arm_output_ldrex, arm_output_strex): New.
-+	(arm_output_op2, arm_output_op3, arm_output_sync_loop): New.
-+	(arm_get_sync_operand, FETCH_SYNC_OPERAND): New.
-+	(arm_process_output_sync_insn, arm_output_sync_insn): New.
-+	(arm_sync_loop_insns,arm_call_generator, arm_expand_sync): New.
-+	* config/arm/arm.h (struct arm_sync_generator): New.
-+	(TARGET_HAVE_DMB, TARGET_HAVE_DMB_MCR): New.
-+	(TARGET_HAVE_MEMORY_BARRIER): New.
-+	(TARGET_HAVE_LDREX, TARGET_HAVE_LDREXBHD): New.
-+	* config/arm/arm.md: Include sync.md.
-+	(UNSPEC_MEMORY_BARRIER): New.
-+	(VUNSPEC_SYNC_COMPARE_AND_SWAP, VUNSPEC_SYNC_LOCK): New.
-+	(VUNSPEC_SYNC_OP):New.
-+	(VUNSPEC_SYNC_NEW_OP, VUNSPEC_SYNC_OLD_OP): New.
-+	(sync_result, sync_memory, sync_required_value): New attributes.
-+	(sync_new_value, sync_t1, sync_t2): Likewise.
-+	(sync_release_barrier, sync_op): Likewise.
-+	(length): Add logic to length attribute defintion to call
-+	arm_sync_loop_insns when appropriate.
-+	* config/arm/sync.md: New file.
-+
-+	gcc/
-+	2010-09-02  Marcus Shawcroft  <marcus.shawcroft@arm.com>
-+	* config/arm/predicates.md (arm_sync_memory_operand): New.
-+	* config/arm/sync.md (arm_sync_compare_and_swapsi): Change predicate
-+	to arm_sync_memory_operand and constraint to Q.
-+	(arm_sync_compare_and_swap<mode>): Likewise.
-+	(arm_sync_compare_and_swap<mode>): Likewise.
-+	(arm_sync_lock_test_and_setsi): Likewise.
-+	(arm_sync_lock_test_and_set<mode>): Likewise.
-+	(arm_sync_new_<sync_optab>si): Likewise.
-+	(arm_sync_new_nandsi): Likewise.
-+	(arm_sync_new_<sync_optab><mode>): Likewise.
-+	(arm_sync_new_nand<mode>): Likewise.
-+	(arm_sync_old_<sync_optab>si): Likewise.
-+	(arm_sync_old_nandsi): Likewise.
-+	(arm_sync_old_<sync_optab><mode>): Likewise.
-+	(arm_sync_old_nand<mode>): Likewise.
- 
- 2010-09-30  Jie Zhang  <jie@codesourcery.com>
- 
+	gcc/
+	2010-08-18  Marcus Shawcroft  <marcus.shawcroft@arm.com>
+	* config/arm/arm-protos.h (arm_expand_sync): New.
+	(arm_output_memory_barrier, arm_output_sync_insn): New.
+	(arm_sync_loop_insns): New.
+	* config/arm/arm.c (FL_ARCH7): New.
+	(FL_FOR_ARCH7): Include FL_ARCH7.
+	(arm_arch7): New.
+	(arm_print_operand): Support %C markup.
+	(arm_legitimize_sync_memory): New.
+	(arm_emit, arm_insn_count, arm_count, arm_output_asm_insn): New.
+	(arm_process_output_memory_barrier, arm_output_memory_barrier): New.
+	(arm_ldrex_suffix, arm_output_ldrex, arm_output_strex): New.
+	(arm_output_op2, arm_output_op3, arm_output_sync_loop): New.
+	(arm_get_sync_operand, FETCH_SYNC_OPERAND): New.
+	(arm_process_output_sync_insn, arm_output_sync_insn): New.
+	(arm_sync_loop_insns,arm_call_generator, arm_expand_sync): New.
+	* config/arm/arm.h (struct arm_sync_generator): New.
+	(TARGET_HAVE_DMB, TARGET_HAVE_DMB_MCR): New.
+	(TARGET_HAVE_MEMORY_BARRIER): New.
+	(TARGET_HAVE_LDREX, TARGET_HAVE_LDREXBHD): New.
+	* config/arm/arm.md: Include sync.md.
+	(UNSPEC_MEMORY_BARRIER): New.
+	(VUNSPEC_SYNC_COMPARE_AND_SWAP, VUNSPEC_SYNC_LOCK): New.
+	(VUNSPEC_SYNC_OP):New.
+	(VUNSPEC_SYNC_NEW_OP, VUNSPEC_SYNC_OLD_OP): New.
+	(sync_result, sync_memory, sync_required_value): New attributes.
+	(sync_new_value, sync_t1, sync_t2): Likewise.
+	(sync_release_barrier, sync_op): Likewise.
+	(length): Add logic to length attribute defintion to call
+	arm_sync_loop_insns when appropriate.
+	* config/arm/sync.md: New file.
 
+	gcc/
+	2010-09-02  Marcus Shawcroft  <marcus.shawcroft@arm.com>
+	* config/arm/predicates.md (arm_sync_memory_operand): New.
+	* config/arm/sync.md (arm_sync_compare_and_swapsi): Change predicate
+	to arm_sync_memory_operand and constraint to Q.
+	(arm_sync_compare_and_swap<mode>): Likewise.
+	(arm_sync_compare_and_swap<mode>): Likewise.
+	(arm_sync_lock_test_and_setsi): Likewise.
+	(arm_sync_lock_test_and_set<mode>): Likewise.
+	(arm_sync_new_<sync_optab>si): Likewise.
+	(arm_sync_new_nandsi): Likewise.
+	(arm_sync_new_<sync_optab><mode>): Likewise.
+	(arm_sync_new_nand<mode>): Likewise.
+	(arm_sync_old_<sync_optab>si): Likewise.
+	(arm_sync_old_nandsi): Likewise.
+	(arm_sync_old_<sync_optab><mode>): Likewise.
+	(arm_sync_old_nand<mode>): Likewise.
+ 
 === modified file 'gcc/config/arm/arm-protos.h'
---- a/gcc/config/arm/arm-protos.h	2010-10-14 11:33:26 +0000
-+++ b/gcc/config/arm/arm-protos.h	2010-11-04 10:45:05 +0000
-@@ -151,6 +151,11 @@
+Index: gcc-4.5/gcc/config/arm/arm-protos.h
+===================================================================
+--- gcc-4.5.orig/gcc/config/arm/arm-protos.h
++++ gcc-4.5/gcc/config/arm/arm-protos.h
+@@ -151,6 +151,11 @@ extern const char *vfp_output_fstmd (rtx
  extern void arm_set_return_address (rtx, rtx);
  extern int arm_eliminable_register (rtx);
  extern const char *arm_output_shift(rtx *, int);
@@ -180,11 +159,11 @@
  
  extern bool arm_output_addr_const_extra (FILE *, rtx);
  
-
-=== modified file 'gcc/config/arm/arm.c'
---- a/gcc/config/arm/arm.c	2010-10-15 06:01:22 +0000
-+++ b/gcc/config/arm/arm.c	2010-11-04 10:45:05 +0000
-@@ -602,6 +602,7 @@
+Index: gcc-4.5/gcc/config/arm/arm.c
+===================================================================
+--- gcc-4.5.orig/gcc/config/arm/arm.c
++++ gcc-4.5/gcc/config/arm/arm.c
+@@ -602,6 +602,7 @@ static int thumb_call_reg_needed;
  #define FL_NEON       (1 << 20)       /* Neon instructions.  */
  #define FL_ARCH7EM    (1 << 21)	      /* Instructions present in the ARMv7E-M
  					 architecture.  */
@@ -192,7 +171,7 @@
  
  #define FL_IWMMXT     (1 << 29)	      /* XScale v2 or "Intel Wireless MMX technology".  */
  
-@@ -626,7 +627,7 @@
+@@ -626,7 +627,7 @@ static int thumb_call_reg_needed;
  #define FL_FOR_ARCH6ZK	FL_FOR_ARCH6K
  #define FL_FOR_ARCH6T2	(FL_FOR_ARCH6 | FL_THUMB2)
  #define FL_FOR_ARCH6M	(FL_FOR_ARCH6 & ~FL_NOTM)
@@ -201,7 +180,7 @@
  #define FL_FOR_ARCH7A	(FL_FOR_ARCH7 | FL_NOTM | FL_ARCH6K)
  #define FL_FOR_ARCH7R	(FL_FOR_ARCH7A | FL_DIV)
  #define FL_FOR_ARCH7M	(FL_FOR_ARCH7 | FL_DIV)
-@@ -664,6 +665,9 @@
+@@ -664,6 +665,9 @@ int arm_arch6 = 0;
  /* Nonzero if this chip supports the ARM 6K extensions.  */
  int arm_arch6k = 0;
  
@@ -211,7 +190,7 @@
  /* Nonzero if instructions not present in the 'M' profile can be used.  */
  int arm_arch_notm = 0;
  
-@@ -1602,6 +1606,7 @@
+@@ -1602,6 +1606,7 @@ arm_override_options (void)
    arm_arch6 = (insn_flags & FL_ARCH6) != 0;
    arm_arch6k = (insn_flags & FL_ARCH6K) != 0;
    arm_arch_notm = (insn_flags & FL_NOTM) != 0;
@@ -219,7 +198,7 @@
    arm_arch7em = (insn_flags & FL_ARCH7EM) != 0;
    arm_arch_thumb2 = (insn_flags & FL_THUMB2) != 0;
    arm_arch_xscale = (insn_flags & FL_XSCALE) != 0;
-@@ -16562,6 +16567,17 @@
+@@ -16562,6 +16567,17 @@ arm_print_operand (FILE *stream, rtx x,
        }
        return;
  
@@ -237,7 +216,7 @@
      /* Translate an S register number into a D register number and element index.  */
      case 'y':
        {
-@@ -22793,4 +22809,372 @@
+@@ -22793,4 +22809,372 @@ arm_builtin_support_vector_misalignment
  						      is_packed);
  }
  
@@ -610,11 +589,11 @@
 +}
 +
  #include "gt-arm.h"
-
-=== modified file 'gcc/config/arm/arm.h'
---- a/gcc/config/arm/arm.h	2010-10-15 10:44:40 +0000
-+++ b/gcc/config/arm/arm.h	2010-11-04 10:45:05 +0000
-@@ -128,6 +128,24 @@
+Index: gcc-4.5/gcc/config/arm/arm.h
+===================================================================
+--- gcc-4.5.orig/gcc/config/arm/arm.h
++++ gcc-4.5/gcc/config/arm/arm.h
+@@ -128,6 +128,24 @@ enum target_cpus
  /* The processor for which instructions should be scheduled.  */
  extern enum processor_type arm_tune;
  
@@ -639,7 +618,7 @@
  typedef enum arm_cond_code
  {
    ARM_EQ = 0, ARM_NE, ARM_CS, ARM_CC, ARM_MI, ARM_PL, ARM_VS, ARM_VC,
-@@ -272,6 +290,20 @@
+@@ -272,6 +290,20 @@ extern void (*arm_lang_output_object_att
     for Thumb-2.  */
  #define TARGET_UNIFIED_ASM TARGET_THUMB2
  
@@ -660,7 +639,7 @@
  
  /* True iff the full BPABI is being used.  If TARGET_BPABI is true,
     then TARGET_AAPCS_BASED must be true -- but the converse does not
-@@ -405,6 +437,12 @@
+@@ -405,6 +437,12 @@ extern int arm_arch5e;
  /* Nonzero if this chip supports the ARM Architecture 6 extensions.  */
  extern int arm_arch6;
  
@@ -673,10 +652,10 @@
  /* Nonzero if instructions not present in the 'M' profile can be used.  */
  extern int arm_arch_notm;
  
-
-=== modified file 'gcc/config/arm/arm.md'
---- a/gcc/config/arm/arm.md	2010-10-14 11:33:26 +0000
-+++ b/gcc/config/arm/arm.md	2010-11-04 10:45:05 +0000
+Index: gcc-4.5/gcc/config/arm/arm.md
+===================================================================
+--- gcc-4.5.orig/gcc/config/arm/arm.md
++++ gcc-4.5/gcc/config/arm/arm.md
 @@ -103,6 +103,7 @@
     (UNSPEC_RBIT 26)       ; rbit operation.
     (UNSPEC_SYMBOL_OFFSET 27) ; The offset of the start of the symbol from
@@ -727,10 +706,10 @@
 -
 +;; Synchronization Primitives
 +(include "sync.md")
-
-=== modified file 'gcc/config/arm/predicates.md'
---- a/gcc/config/arm/predicates.md	2010-10-14 11:33:26 +0000
-+++ b/gcc/config/arm/predicates.md	2010-11-04 10:45:05 +0000
+Index: gcc-4.5/gcc/config/arm/predicates.md
+===================================================================
+--- gcc-4.5.orig/gcc/config/arm/predicates.md
++++ gcc-4.5/gcc/config/arm/predicates.md
 @@ -573,6 +573,11 @@
  		(and (match_test "TARGET_32BIT")
  		     (match_operand 0 "arm_di_operand"))))
@@ -743,14 +722,13 @@
  ;; Predicates for parallel expanders based on mode.
  (define_special_predicate "vect_par_constant_high" 
    (match_code "parallel")
-
-=== modified file 'gcc/testsuite/gcc.target/arm/synchronize.c'
---- a/gcc/testsuite/gcc.target/arm/synchronize.c	2009-08-12 14:55:19 +0000
-+++ b/gcc/testsuite/gcc.target/arm/synchronize.c	2010-11-04 10:45:05 +0000
+Index: gcc-4.5/gcc/testsuite/gcc.target/arm/synchronize.c
+===================================================================
+--- gcc-4.5.orig/gcc/testsuite/gcc.target/arm/synchronize.c
++++ gcc-4.5/gcc/testsuite/gcc.target/arm/synchronize.c
 @@ -1,4 +1,4 @@
 -/* { dg-final { scan-assembler "__sync_synchronize" { target arm*-*-linux-*eabi } } } */
 +/* { dg-final { scan-assembler "__sync_synchronize|dmb|mcr" { target arm*-*-linux-*eabi } } } */
  
  void *foo (void)
  {
-

@@ -11,8 +11,10 @@
 	instruction template.
 
 === modified file 'gcc/config/arm/neon.md'
---- a/gcc/config/arm/neon.md	2010-09-09 14:11:34 +0000
-+++ b/gcc/config/arm/neon.md	2010-11-04 11:47:50 +0000
+Index: gcc-4.5/gcc/config/arm/neon.md
+===================================================================
+--- gcc-4.5.orig/gcc/config/arm/neon.md
++++ gcc-4.5/gcc/config/arm/neon.md
 @@ -5682,9 +5682,9 @@
  ;; Vectorize for non-neon-quad case
  (define_insn "neon_unpack<US>_<mode>"
@@ -34,4 +36,3 @@
    [(set_attr "neon_type" "neon_shift_1")]
  )
  
-
