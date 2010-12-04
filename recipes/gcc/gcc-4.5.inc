@@ -134,7 +134,7 @@ SRC_URI = "svn://gcc.gnu.org/svn/gcc/branches;module=${BRANCH} \
 	   file://linaro/gcc-4.5-linaro-r99416.patch \
 	   file://linaro/gcc-4.5-linaro-r99417.patch \
 	   file://linaro/gcc-4.5-linaro-r99418.patch \
-	   file://linaro/gcc-4.5-linaro-r99419.patch \
+#	   file://linaro/gcc-4.5-linaro-r99419.patch \
 	   file://linaro/gcc-4.5-linaro-r99420.patch \
 	   file://gcc-scalar-widening-pr45847.patch \
 	  "
