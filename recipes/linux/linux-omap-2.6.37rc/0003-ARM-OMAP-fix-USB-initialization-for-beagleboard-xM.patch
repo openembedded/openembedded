@@ -1,7 +1,7 @@
-From 5eca3854e9bd6fa1d27f2def25176bb9fc27b86d Mon Sep 17 00:00:00 2001
+From c908140c053071789dfa72f34bee76223ba9bdb7 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Thu, 7 Oct 2010 09:25:45 +0200
-Subject: [PATCH 3/8] ARM: OMAP: fix USB initialization for beagleboard-xM
+Subject: [PATCH 03/14] ARM: OMAP: fix USB initialization for beagleboard-xM
 
 Signed-off-by: Koen Kooi <koen@beagleboard.org>
 ---
@@ -9,7 +9,7 @@ Signed-off-by: Koen Kooi <koen@beagleboard.org>
  1 files changed, 7 insertions(+), 5 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index 9962932..800ba5b 100644
+index 2943e1f..92335a9 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -390,12 +390,14 @@ static int beagle_twl_gpio_setup(struct device *dev,

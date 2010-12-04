@@ -1,7 +1,7 @@
-From c423f45fee0b6b5148e9ad31a79761b8562e2df8 Mon Sep 17 00:00:00 2001
+From 28d1c68dd4fd99b61375217efbe7b59f42f5c886 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Thu, 7 Oct 2010 11:46:01 +0200
-Subject: [PATCH 4/8] ARM: OMAP: Power on EHCI, serial, camera and DVI on beagleboard-x<
+Subject: [PATCH 04/14] ARM: OMAP: Power on EHCI, serial, camera and DVI on beagleboard-x<
 
 Signed-off-by: Koen Kooi <koen@beagleboard.org>
 ---
@@ -9,7 +9,7 @@ Signed-off-by: Koen Kooi <koen@beagleboard.org>
  1 files changed, 19 insertions(+), 0 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index 800ba5b..3bc524c 100644
+index 92335a9..6d7f008 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -399,6 +399,25 @@ static int beagle_twl_gpio_setup(struct device *dev,

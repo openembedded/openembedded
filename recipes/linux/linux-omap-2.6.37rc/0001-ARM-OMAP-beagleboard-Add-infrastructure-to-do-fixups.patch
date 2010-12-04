@@ -1,7 +1,7 @@
-From 26383be87990cba18af2da275d12781d179215a8 Mon Sep 17 00:00:00 2001
+From 29fb3969c82a750b41746a299e484172dba443dc Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Wed, 6 Oct 2010 10:19:34 +0200
-Subject: [PATCH 1/8] ARM: OMAP: beagleboard: Add infrastructure to do fixups based on expansionboard name passed by u-boot
+Subject: [PATCH 01/14] ARM: OMAP: beagleboard: Add infrastructure to do fixups based on expansionboard name passed by u-boot
 
 Add support for Tincantools Zippy and Zippy2 expansionboards as well
 
@@ -11,7 +11,7 @@ Signed-off-by: Koen Kooi <koen@beagleboard.org>
  1 files changed, 139 insertions(+), 3 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index 14f4224..9962932 100644
+index f1a8ede..2943e1f 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -21,6 +21,7 @@
@@ -164,7 +164,7 @@ index 14f4224..9962932 100644
  	/* Bus 3 is attached to the DVI port where devices like the pico DLP
  	 * projector don't work reliably with 400kHz */
  	omap_register_i2c_bus(3, 100, beagle_i2c_eeprom, ARRAY_SIZE(beagle_i2c_eeprom));
-@@ -558,6 +665,15 @@ static struct omap_musb_board_data musb_board_data = {
+@@ -555,6 +662,15 @@ static struct omap_musb_board_data musb_board_data = {
  	.power			= 100,
  };
  
@@ -180,7 +180,7 @@ index 14f4224..9962932 100644
  static void __init omap3_beagle_init(void)
  {
  	omap3_mux_init(board_mux, OMAP_PACKAGE_CBB);
-@@ -572,6 +688,24 @@ static void __init omap3_beagle_init(void)
+@@ -569,6 +685,24 @@ static void __init omap3_beagle_init(void)
  	/* REVISIT leave DVI powered down until it's needed ... */
  	gpio_direction_output(170, true);
  
@@ -205,7 +205,7 @@ index 14f4224..9962932 100644
  	usb_musb_init(&musb_board_data);
  	usb_ehci_init(&ehci_pdata);
  	omap3beagle_flash_init();
-@@ -583,6 +717,8 @@ static void __init omap3_beagle_init(void)
+@@ -580,6 +714,8 @@ static void __init omap3_beagle_init(void)
  	beagle_display_init();
  }
  

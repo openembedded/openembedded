@@ -1,7 +1,7 @@
-From f88552cc59b8292b45dd16ec56198e50f040122a Mon Sep 17 00:00:00 2001
+From 27f26e95a6cb18d2afc103c6b17bde7d79a95c01 Mon Sep 17 00:00:00 2001
 From: Mike Galbraith <efault@gmx.de>
 Date: Fri, 19 Nov 2010 12:52:42 +0100
-Subject: [PATCH 7/8] Miracle patch
+Subject: [PATCH 07/14] Miracle patch
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -113,7 +113,7 @@ Signed-off-by: Mike Galbraith <efault@gmx.de>
  create mode 100644 kernel/sched_autogroup.h
 
 diff --git a/Documentation/kernel-parameters.txt b/Documentation/kernel-parameters.txt
-index 92e83e5..86820a7 100644
+index cdd2a6e..b79a8fb 100644
 --- a/Documentation/kernel-parameters.txt
 +++ b/Documentation/kernel-parameters.txt
 @@ -1622,6 +1622,8 @@ and is between 256 and 4096 characters. It is defined in the file
@@ -138,7 +138,7 @@ index c05c5af..5698038 100644
  
  static void proc_set_tty(struct task_struct *tsk, struct tty_struct *tty)
 diff --git a/include/linux/sched.h b/include/linux/sched.h
-index d0036e5..6dff9ac 100644
+index 2c79e92..1e677c2 100644
 --- a/include/linux/sched.h
 +++ b/include/linux/sched.h
 @@ -509,6 +509,8 @@ struct thread_group_cputimer {
@@ -160,7 +160,7 @@ index d0036e5..6dff9ac 100644
  	/*
  	 * Cumulative resource counters for dead threads in the group,
  	 * and for reaped dead child processes forked by this group.
-@@ -1930,6 +1935,20 @@ int sched_rt_handler(struct ctl_table *table, int write,
+@@ -1931,6 +1936,20 @@ int sched_rt_handler(struct ctl_table *table, int write,
  
  extern unsigned int sysctl_sched_compat_yield;
  
@@ -182,10 +182,10 @@ index d0036e5..6dff9ac 100644
  extern int rt_mutex_getprio(struct task_struct *p);
  extern void rt_mutex_setprio(struct task_struct *p, int prio);
 diff --git a/init/Kconfig b/init/Kconfig
-index 88c1046..8fc6606 100644
+index c972899..a4985d9 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -728,6 +728,18 @@ config NET_NS
+@@ -741,6 +741,18 @@ config NET_NS
  
  endif # NAMESPACES
  
@@ -229,7 +229,7 @@ index 3b159c5..b6f2475 100644
  	sig->oom_adj = current->signal->oom_adj;
  	sig->oom_score_adj = current->signal->oom_score_adj;
 diff --git a/kernel/sched.c b/kernel/sched.c
-index aa14a56..ba9d6e7 100644
+index dc91a4d..b4ed496 100644
 --- a/kernel/sched.c
 +++ b/kernel/sched.c
 @@ -78,6 +78,7 @@
@@ -240,7 +240,7 @@ index aa14a56..ba9d6e7 100644
  
  #define CREATE_TRACE_POINTS
  #include <trace/events/sched.h>
-@@ -615,11 +616,14 @@ static inline int cpu_of(struct rq *rq)
+@@ -605,11 +606,14 @@ static inline int cpu_of(struct rq *rq)
   */
  static inline struct task_group *task_group(struct task_struct *p)
  {
@@ -256,7 +256,7 @@ index aa14a56..ba9d6e7 100644
  }
  
  /* Change a task's cfs_rq and parent entity if it moves across CPUs/groups */
-@@ -2016,6 +2020,7 @@ static void sched_irq_time_avg_update(struct rq *rq, u64 curr_irq_time) { }
+@@ -2006,6 +2010,7 @@ static void sched_irq_time_avg_update(struct rq *rq, u64 curr_irq_time) { }
  #include "sched_idletask.c"
  #include "sched_fair.c"
  #include "sched_rt.c"
@@ -264,7 +264,7 @@ index aa14a56..ba9d6e7 100644
  #include "sched_stoptask.c"
  #ifdef CONFIG_SCHED_DEBUG
  # include "sched_debug.c"
-@@ -7962,7 +7967,7 @@ void __init sched_init(void)
+@@ -7979,7 +7984,7 @@ void __init sched_init(void)
  #ifdef CONFIG_CGROUP_SCHED
  	list_add(&init_task_group.list, &task_groups);
  	INIT_LIST_HEAD(&init_task_group.children);
@@ -273,7 +273,7 @@ index aa14a56..ba9d6e7 100644
  #endif /* CONFIG_CGROUP_SCHED */
  
  #if defined CONFIG_FAIR_GROUP_SCHED && defined CONFIG_SMP
-@@ -8492,15 +8497,11 @@ void sched_destroy_group(struct task_group *tg)
+@@ -8509,15 +8514,11 @@ void sched_destroy_group(struct task_group *tg)
  /* change task's runqueue when it moves between groups.
   *	The caller of this function should have put the task in its new group
   *	by now. This function just updates tsk->se.cfs_rq and tsk->se.parent to
@@ -291,7 +291,7 @@ index aa14a56..ba9d6e7 100644
  
  	running = task_current(rq, tsk);
  	on_rq = tsk->se.on_rq;
-@@ -8521,7 +8522,15 @@ void sched_move_task(struct task_struct *tsk)
+@@ -8538,7 +8539,15 @@ void sched_move_task(struct task_struct *tsk)
  		tsk->sched_class->set_curr_task(rq);
  	if (on_rq)
  		enqueue_task(rq, tsk, 0);
@@ -478,7 +478,7 @@ index 0000000..6048f5d
 +
 +#endif /* CONFIG_SCHED_AUTOGROUP */
 diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index b65bf63..983e6b2 100644
+index 5abfa15..b162f65 100644
 --- a/kernel/sysctl.c
 +++ b/kernel/sysctl.c
 @@ -382,6 +382,17 @@ static struct ctl_table kern_table[] = {
