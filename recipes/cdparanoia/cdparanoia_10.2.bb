@@ -1,7 +1,7 @@
 # cdparanoia OE build file
 # Copyright (C) 2005, Advanced Micro Devices, Inc.  All Rights Reserved
 # Released under the MIT license (see packages/COPYING)
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 PR = "r1"
 
 SRC_URI = "http://downloads.xiph.org/releases/cdparanoia/cdparanoia-III-10.2.src.tgz \
