@@ -1,0 +1,22 @@
+From: Koen Kooi <k-kooi@ti.com>
+Subject: Adjust drv_pmgr for post 2.6.36 ioctl changes
+
+This is a buildfix
+
+---
+
+--- /tmp/drv_pmgr.c	2010-12-05 14:23:32.000000000 +0100
++++ dsplink_linux_1_65_00_03/dsplink/gpp/src/pmgr/Linux/2.6.18/drv_pmgr.c	2010-12-05 14:24:49.000000000 +0100
+@@ -495,7 +495,11 @@
+     open:    DRV_Open,
+     flush:   DRV_Flush,
+     release: DRV_Release,
+-    ioctl:   DRV_Ioctl,
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,36)
++	ioctl:   DRV_Ioctl,
++#else
++	unlocked_ioctl: DRV_Ioctl,
++#endif	
+     mmap:    DRV_Mmap,
+     read:    DRV_Read,
+    .owner = THIS_MODULE
