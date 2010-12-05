@@ -2,11 +2,11 @@
 # Copyright (C) 2005, Advanced Micro Devices, Inc.  All Rights Reserved
 # Released under the MIT license (see packages/COPYING)
 
-PR = "r3"
-LICENSE = "GPL"
+PR = "r0"
+LICENSE = "GPLv2"
 
 PV = "10.2+svnr${SRCPV}"
-SRCREV = "16684"
+SRCREV = "17714"
 
 SRC_URI = "svn://svn.xiph.org/trunk;module=cdparanoia;proto=http \
 	 file://fixes10.patch \
@@ -19,7 +19,7 @@ S = "${WORKDIR}/cdparanoia"
 
 PARALLEL_MAKE = ""
 
-inherit autotools
+inherit autotools pkgconfig
 
 PACKAGES += "libcdparanoia libcdparanoia-dev libcdparanoia-static"
 
@@ -36,5 +36,7 @@ FILES_libcdparanoia-static = "${libdir}/*.a"
 
 do_install() {
 	oe_runmake BINDIR="${D}/usr/bin" MANDIR="${D}/usr/share/man/" \
-		   INCLUDEDIR="${D}/usr/include/" LIBDIR="${D}/usr/lib" install
+		   INCLUDEDIR="${D}/usr/include/" LIBDIR="${D}/usr/lib" \
+		   PKGCONFIGDIR="${D}/usr/lib/pkgconfig" \
+		   install
 }
