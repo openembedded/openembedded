@@ -2,7 +2,7 @@ LICENSE = "GPL"
 DESCRIPTION = "ShoutCast-compatible streamer"
 PR = "r0"
 
-SRC_URI = "http://www.litestream.org/litestream/${P}.tar.gz"
+SRC_URI = "http://ftp.osuosl.org/pub/nslu2/sources/${P}.tar.gz"
 
 inherit autotools
 
