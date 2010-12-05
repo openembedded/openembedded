@@ -3,7 +3,9 @@ DESCRIPTION = "A server-side, HTML-embedded scripting language. This package pro
 LICENSE = "PHP"
 RDEPENDS_${PN} = "apache2"
 DEPENDS = "apache2-native apache2 zlib"
-SRC_URI = "http://de3.php.net/distributions/php-${PV}.tar.bz2 \
+
+#SRC_URI = "http://de3.php.net/distributions/php-${PV}.tar.bz2 \
+SRC_URI = "http://museum.php.net/php5/php-${PV}.tar.bz2 \
 	   file://configure.patch \
 	  "
 
