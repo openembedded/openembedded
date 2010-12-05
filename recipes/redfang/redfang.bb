@@ -1,5 +1,5 @@
 SECTION = "unknown"
-SRC_URI = "http://packetstormsecurity.org/wireless/redfang.2.5.tar.gz \
+SRC_URI = "http://dl.packetstormsecurity.net/wireless/redfang.2.5.tar.gz \
     	   file://Makefile.patch;striplevel=0"
 
 DEFAULT_PREFERENCE="-1"
