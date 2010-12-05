@@ -4,7 +4,7 @@ DEPENDS += "perl-native"
 PV = "2.0.0+svn${SRCDATE}"
 PR = "r1"
 
-SRC_URI = "svn://svn.gnome.org/svn/${PN}/;module=trunk"
+SRC_URI = "svn://svn.gnome.org/svn/${PN}/;module=trunk;proto=http"
 S = "${WORKDIR}/trunk"
 
 do_compile_prepend() {
