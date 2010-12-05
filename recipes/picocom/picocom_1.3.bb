@@ -2,7 +2,7 @@ DESCRIPTION = "Picocom is a lightweight and minimal (~20K) dumb-terminal emulati
 SECTION = "console/utils"
 PRIORITY = "optional"
 LICENSE = "GPL"
-SRC_URI = "http://efault.net/npat/hacks/picocom/dist/picocom-${PV}.tar.gz"
+SRC_URI = "http://picocom.googlecode.com/files/picocom-${PV}.tar.gz"
 
 CFLAGS_append = ' -DVERSION_STR=\\"${PV}\\"'
 
