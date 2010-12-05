@@ -1,4 +1,4 @@
-SRC_URI = "http://www.opensync.org/attachment/wiki/download/msynctool-0.22.tar.bz2?format=raw"
+SRC_URI = "http://www.opensync.org/download/releases/0.22/msynctool-${PV}.tar.bz2"
 
 LICENSE = "GPL"
 DEPENDS = "libopensync"
