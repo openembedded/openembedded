@@ -1,7 +1,8 @@
 DESCRIPTION = "OpenAL is a cross-platform 3D audio API."
 DEPENDS = "alsa-lib virtual/libsdl libvorbis"
+HOMEPAGE = "http://connect.creativelabs.com/openal/default.aspx"
 
-SRC_URI = "http://www.openal.org/openal_webstf/downloads/${PN}-${PV}.tar.gz \
+SRC_URI = "ftp://ftp.eenet.ee/pub/FreeBSD/distfiles/${PN}-${PV}.tar.gz \
            file://void-workaround.patch"
 
 inherit autotools pkgconfig
