@@ -3,7 +3,8 @@ DESCRIPTION = "Murasaki automatically loads and unloads modules for \
 USB, Cardbus, and other hot-pluggable devices using the new Hotplug \
 feature in Linux 2.4."
 LICENSE = "GPL"
-SRC_URI = "http://www.dotaster.com/~shuu/linux/murasaki/0.8/8/murasaki-${PV}.tar.gz \
+HOMEPAGE = "http://zuckin.com/old/linux/murasaki/index_ja.html"
+SRC_URI = "http://www.openzaurus.org/download/3.5.4/sources/murasaki-${PV}.tar.gz \
 	   file://fix-compile.patch"
 
 EXTRA_OEMAKE = 'OPT="-DPATH_MAX" DEBUG= INC="-I ../inc ${CFLAGS}"'
