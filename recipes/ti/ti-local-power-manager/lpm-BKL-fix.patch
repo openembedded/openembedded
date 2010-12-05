@@ -1,0 +1,39 @@
+From: Koen Kooi <k-kooi@ti.com>
+Subject: Fix build with 2.6.37rcX
+
+---
+
+--- /tmp/lpm_driver.c	2010-12-05 18:25:17.000000000 +0100
++++ local_power_manager_linux_1_24_02_09/packages/ti/bios/power/modules/omap3530/lpm/lpm_driver.c	2010-12-05 18:30:13.000000000 +0100
+@@ -40,6 +40,7 @@
+ #include <asm/semaphore.h>
+ #endif
+ #include <linux/io.h>
++#include <linux/slab.h>
+ 
+ #include "lpm_driver.h"
+ #include "lpm_dev.h"
+@@ -111,7 +112,11 @@
+ 
+ static struct file_operations lpm_fops = {
+     .owner =    THIS_MODULE,
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,36)
+     .ioctl =    lpm_ioctl,
++#else
++    .unlocked_ioctl = lpm_ioctl,
++#endif
+     .open =     lpm_open,
+     .release =  lpm_release,
+ };
+@@ -244,7 +249,11 @@
+         lpm->inst[i].major = MAJOR(lpm->first);
+         lpm->inst[i].minor = MINOR(lpm->first) + i;
+         INIT_LIST_HEAD(&lpm->inst[i].clients);
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,36)
+         init_MUTEX(&lpm->inst[i].sem);
++#else
++        sema_init(&lpm->inst[i].sem,1);
++#endif
+         init_completion(&lpm->inst[i].event);
+         lpm_devAttrs.os_instance = (void *)&lpm->inst[i];
+         LPM_init(i, &lpm->inst[i].lpm, &lpm_devAttrs);
