@@ -4,9 +4,9 @@
 
 DESCRIPTION="Hibernate script supporting multiple suspend methods"
 LICENSE="GPL"
-HOMEPAGE="http://www.suspend2.net"
+HOMEPAGE="http://tuxonice.net/"
 
-SRC_URI="http://www.suspend2.net/downloads/all/${PN}-${PV}.tar.gz \
+SRC_URI="http://tuxonice.net/files/${PN}-${PV}.tar.gz \
 	file://hibernate.conf \
 	file://standby.conf \
 	file://ram.conf"
