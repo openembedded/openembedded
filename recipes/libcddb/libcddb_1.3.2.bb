@@ -3,8 +3,9 @@ HOMEPAGE = "http://libcddb.sourceforge.net"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPLv2"
+PR = "r1"
 
-DEPENDS = "libcdio"
+DEPENDS = "libcdio gettext"
 
 SRC_URI = "http://downloads.sourceforge.net/${PN}/${P}.tar.bz2"
 
