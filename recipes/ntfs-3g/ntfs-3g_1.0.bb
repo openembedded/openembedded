@@ -7,7 +7,7 @@ PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 
-SRC_URI = http://www.ntfs-3g.org/ntfs-3g-${PV}.tgz
+SRC_URI = http://distro.ibiblio.org/pub/linux/distributions/amigolinux/download/Utils/ntfs-3g-1.0/ntfs-3g-${PV}.tgz
 
 inherit autotools
 
