@@ -1,5 +1,8 @@
 require ti-dmai.inc
 
+# Hack to be able to use recent kernel headers from userspace
+TARGET_CC_ARCH += " -D__EXPORTED_HEADERS__"
+
 DEFAULT_PREFERENCE = "-1"
 
 PV = "2_10_00_01+svnr${SRCPV}"

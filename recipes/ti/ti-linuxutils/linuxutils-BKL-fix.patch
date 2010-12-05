@@ -1,0 +1,73 @@
+From: Koen Kooi <k-kooi@ti.com>
+Subject: linuxutils: fix build with 2.6.37rcX
+
+---
+
+--- /tmp/cmemk.c	2010-12-05 18:41:00.000000000 +0100
++++ linuxutils_2_25_05_11/packages/ti/sdo/linuxutils/cmem/src/module/cmemk.c	2010-12-05 18:43:24.000000000 +0100
+@@ -31,6 +31,7 @@
+ #include <linux/seq_file.h>
+ #include <linux/vmalloc.h>
+ #include <linux/sched.h>
++#include <linux/slab.h>
+ #include <asm/cacheflush.h>
+ #include <asm/uaccess.h>
+ #include <asm/pgtable.h>
+@@ -204,7 +205,11 @@
+     "\n\t\t fall back to a heap-based allocation attempt");
+ module_param(useHeapIfPoolUnavailable, int, S_IRUGO);
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36)
++static DEFINE_SEMAPHORE(cmem_mutex);
++#else
+ static DECLARE_MUTEX(cmem_mutex);
++#endif
+ 
+ /* Describes a pool buffer */
+ typedef struct pool_buffer {
+@@ -243,8 +248,12 @@
+ 
+ static struct file_operations cmem_fxns = {
+     owner:   THIS_MODULE,
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36)
++    unlocked_ioctl: ioctl,
++#else
+     ioctl:   ioctl,
+-    mmap:    mmap,
++#endif
++	mmap:    mmap,
+     open:    open,
+     release: release
+ };
+--- /tmp/sdmak.c	2010-12-05 18:43:55.000000000 +0100
++++ linuxutils_2_25_05_11/packages/ti/sdo/linuxutils/sdma/src/module/sdmak.c	2010-12-05 18:48:31.000000000 +0100
+@@ -208,9 +208,12 @@
+             }
+ 
+             up_read(&current->mm->mmap_sem);
+-
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36)
++            sema_init(&(channels[channel].mutex),1);
++#else
+             init_MUTEX_LOCKED(&(channels[channel].mutex));
+-            channels[channel].owner = filp;
++#endif
++			channels[channel].owner = filp;
+ 
+             if (copy_to_user(argp, &channel, sizeof(channel))) {
+                 return -EFAULT;
+@@ -286,8 +289,12 @@
+ }
+ 
+ static struct file_operations fops = {
+-    .ioctl = dma_ioctl,
+-    .release = dma_release,
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36)
++    .unlocked_ioctl = dma_ioctl,
++#else
++	.ioctl = dma_ioctl,
++#endif
++	.release = dma_release,
+     .owner = THIS_MODULE
+ };
+ 
