@@ -9,7 +9,7 @@ SRC_URI = "http://www.lesswatts.org/projects/powertop/download/powertop-${PV}.ta
 	   file://ldflags.patch \
 	  "
 
-CFLAGS = "${LDFLAGS}"
+CFLAGS += "${LDFLAGS}"
 
 do_configure() {
     # We do not build ncurses with wide char support
