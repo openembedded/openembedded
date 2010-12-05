@@ -4,7 +4,7 @@ PR = "r1"
 SRCREV = "1251"
 DEPENDS = "libxsettings-client libglade libxtst gconf gtk+"
 SECTION = "gpe"
-SRC_URI = "svn://svn.gnome.org/svn/dasher;module=trunk \
+SRC_URI = "svn://svn.gnome.org/svn/dasher;module=trunk;proto=http \
 	file://configure-lossage.patch"
 
 S = "${WORKDIR}/trunk"
