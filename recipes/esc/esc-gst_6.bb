@@ -1,7 +1,7 @@
 DESCRIPTION = "Gstreamer scripts for Embedded Systems Conference workshop"
 LICENSE = "Various"
 
-SRC_URI = "http://hivelocity.dl.sourceforge.net/project/showoff/esc_gst_scripts.tar.gz \
+SRC_URI = "http://downloads.sourceforge.net/project/showoff/esc_gst_scripts.tar.gz \
 "
 SRC_URI[md5sum] = "944f4ea58e81c3a32b947322ac8f9e1d"
 SRC_URI[sha256sum] = "589c3b611406f255204e1993e470d0d69ac8f12ff479febf4d5dc92915f982da"
