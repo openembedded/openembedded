@@ -6,6 +6,6 @@ SRCREV = "2285"
 PV = "2007-10-R1+svnr${SRCPV}"
 PR = "r2"
 
-SRC_URI = "svn://svn.kismetwireless.net/code/;module=trunk;proto=http"
+SRC_URI = "svn://www.kismetwireless.net/code/svn/;module=trunk;proto=https"
 
 S = "${WORKDIR}/trunk"
