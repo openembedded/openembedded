@@ -9,7 +9,7 @@ HOMEPAGE = "http://packages.debian.org/unstable/admin/scsi-idle"
 AUTHOR = "Eduard Bloch <blade@debian.org>"
 PR = "r1"
 
-SRC_URI = "${DEBIAN_MIRROR}/main/s/scsi-idle/scsi-idle_${PV}-5.tar.gz \
+SRC_URI = "http://ftp.osuosl.org/pub/nslu2/sources/scsi-idle_${PV}-5.tar.gz \
 	file://makefile.patch \
 	file://scsi-idle.init.patch"
 
