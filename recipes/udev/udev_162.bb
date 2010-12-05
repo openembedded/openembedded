@@ -3,7 +3,7 @@ DESCRIPTION = "udev is a daemon which dynamically creates and removes device nod
 the hotplug package and requires a kernel not older than 2.6.12."
 LICENSE = "GPLv2+"
 
-PR = "r4"
+PR = "r5"
 
 # Untested
 #DEFAULT_PREFERENCE = "-1"
@@ -63,7 +63,7 @@ INITSCRIPT_PARAMS = "start 03 S ."
 
 PACKAGES =+ "libudev libgudev udev-utils"
 
-FILES_libudev = "${libdir}/libudev.so.*"
+FILES_libudev = "${base_libdir}/libudev.so.*"
 FILES_libgudev = "${libdir}/libgudev*.so.*"
 
 FILES_udev-utils = "${bindir}/udevinfo ${bindir}/udevtest ${base_sbindir}/udevadm"
