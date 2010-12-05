@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.xm1math.net/qxmp/index.html"
 RDEPENDS_${PN} = "mplayer"
 PR = "r1"
 
-SRC_URI = "http://www.xm1math.net/qxmp/qxmp-${PV}.tar.bz2"
+SRC_URI = "http://www.sourcefiles.org/Multimedia/Video/Players/qxmp-${PV}.tar.bz2"
 
 inherit qt4x11
 
