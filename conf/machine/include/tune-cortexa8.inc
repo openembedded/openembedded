@@ -6,7 +6,7 @@
 # Can be 'softfp' or 'hardfp'
 ARM_FP_MODE ?= "softfp"
 
-ARM_FP_OPT = "${@['-mfloat-abi=softfp', '-mfloat-abi=hardfp'][bb.data.getVar('ARM_FP_MODE', d, 1) == 'hardfp']}"
+ARM_FP_OPT = "${@['-mfloat-abi=softfp', '-mfloat-abi=hard'][bb.data.getVar('ARM_FP_MODE', d, 1) == 'hardfp']}"
 ARM_FP_PACKAGESUFFIX = "${@['', '-hardfp'][bb.data.getVar('ARM_FP_MODE', d, 1) == 'hardfp']}"
 
 TARGET_CC_ARCH = "-march=armv7-a -mtune=cortex-a8 -mfpu=neon ${ARM_FP_OPT}"
