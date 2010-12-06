@@ -7,9 +7,10 @@ RDEPENDS_${PN} += "udev hal-info"
 SRC_URI = "git://anongit.freedesktop.org/git/ohm/;protocol=git \
            file://fix_configure.patch"
 
-SRCREV = "edfe25d49d67884bf004de7ae0724c162bb5e65e"
+SRCREV = "3cb3496846508929b9f2d05683ec93523de7947c"
 PV = "0.1.2+${PR}+gitr${SRCREV}"
 PE = "1"
+PR = "r1"
 
 S = "${WORKDIR}/git"
 
@@ -29,7 +30,7 @@ OE_LT_RPATH_ALLOW[export]="1"
 
 PACKAGES =+ "libohm ohm-plugin-x11"
 
-FILES_${PN}-dev += "${libdir}/ohm/*.a"
+FILES_${PN}-dev += "${libdir}/ohm/*.a ${libdir}/ohm/*.la"
 
 FILES_${PN} = "${sysconfdir} \
                ${bindir}/* \
