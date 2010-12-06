@@ -1,0 +1,37 @@
+https://bugs.webkit.org/show_bug.cgi?id=46258
+
+diff --git a/WebKit/efl/ChangeLog b/WebKit/efl/ChangeLog
+index cfb2f1189e4071cdca7027e81b6fda178ee32490..5ce726ec72fcb530fe0d96e77a4e8fc4b8a8c537 100644
+--- a/WebKit/efl/ChangeLog
++++ b/WebKit/efl/ChangeLog
+@@ -1,3 +1,17 @@
++2010-12-09  Alex Bredariol Grilo  <abgrilo@profusion.mobi>
++
++        Reviewed by NOBODY (OOPS!).
++
++        [EFL] Fix scroll operation in WebKit-EFL
++        https://bugs.webkit.org/show_bug.cgi?id=50752
++
++        Add the _ewk_view_scroll_add call in WebKit-EFL scroll function. This
++        call was wrongly removed in previous commit and performs the scroll
++        operation on the page.
++
++        * ewk/ewk_view.cpp:
++        (ewk_view_scroll):
++
+ 2010-12-03  Alex Bredariol Grilo  <abgrilo@profusion.mobi>
+ 
+         Reviewed by Andreas Kling.
+diff --git a/WebKit/efl/ewk/ewk_view.cpp b/WebKit/efl/ewk/ewk_view.cpp
+index 5147b6d9b7ce518deb8e1b864fe773c1931db42e..d1731e74173b53decd18610657ea4eb97f903397 100644
+--- a/WebKit/efl/ewk/ewk_view.cpp
++++ b/WebKit/efl/ewk/ewk_view.cpp
+@@ -4075,6 +4075,8 @@ void ewk_view_scroll(Evas_Object* o, Evas_Coord dx, Evas_Coord dy, Evas_Coord sx
+     EWK_VIEW_PRIV_GET_OR_RETURN(sd, priv);
+     EINA_SAFETY_ON_TRUE_RETURN(!dx && !dy);
+ 
++    _ewk_view_scroll_add(priv, dx, dy, sx, sy, sw, sh, main_frame);
++
+     _ewk_view_smart_changed(sd);
+ }
+ 
