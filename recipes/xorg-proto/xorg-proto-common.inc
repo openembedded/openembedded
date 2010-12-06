@@ -15,3 +15,4 @@ S = "${WORKDIR}/${BPN}-${PV}"
 
 inherit autotools pkgconfig
 
+BBCLASSEXTEND = "native nativesdk sdk"
