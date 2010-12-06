@@ -7,7 +7,7 @@ SRCREV = "8674"
 PR = "r7"
 
 SRC_URI = "\
-  svn://svn.buglabs.net/bug/branches/R1.4/qa;module=u-boot;proto=svn \
+  svn://bugcamp.net/bug/branches/R1.4/qa;module=u-boot;proto=svn \
 "
 S = "${WORKDIR}/u-boot"
 
