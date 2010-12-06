@@ -6,7 +6,7 @@ DEPENDS = "freetype zlib virtual/kernel"
 SRCREV = "9405"
 PR = "r2"
 
-SRC_URI = "svn://svn.buglabs.net/bug/trunk;module=com.buglabs.bug.native.fbprogress;proto=svn \
+SRC_URI = "svn://bugcamp.net/bug/trunk;module=com.buglabs.bug.native.fbprogress;proto=svn \
            file://fbprogress-init"
 
 S = "${WORKDIR}/com.buglabs.bug.native.fbprogress"
