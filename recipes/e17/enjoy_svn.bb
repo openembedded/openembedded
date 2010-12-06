@@ -3,9 +3,9 @@ LICENSE = "LGPLv3"
 DEPENDS = "evas ecore edje emotion lightmediascanner"
 SRCREV = "${EFL_SRCREV}"
 PV = "0.0+svnr${SRCPV}"
-PR = "r2"
+PR = "r3"
 
-DEPENDS = "gst-plugins-good ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'gst-plugins-ugly', d)}"
+DEPENDS += "gst-plugins-good ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'gst-plugins-ugly', d)}"
 
 #1st needed for all formats
 #2nd needed for mp3 playback
