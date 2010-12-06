@@ -9,7 +9,7 @@ COMPATIBLE_MACHINE = "bug"
 SVN_PRJ = "bug-linux-${KV}"
 SRCREV = "10746"
 
-SRC_URI = "svn://svn.buglabs.net/bug/branches/R1.4/qa;module=${SVN_PRJ};proto=svn \
+SRC_URI = "svn://bugcamp.net/bug/branches/R1.4/qa;module=${SVN_PRJ};proto=svn \
            file://defconfig \
            "
 
