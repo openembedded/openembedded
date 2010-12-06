@@ -1,7 +1,10 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 PROJECT(WebKit)
 
-IF (NOT CMAKE_BUILD_TYPE)
+# Set a default build type if and only if user did not define one as command
+# line options and he did not give custom CFLAGS or CXXFLAGS. Otherwise, flags
+# from default build type would overwrite user-defined ones.
+IF (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_C_FLAGS AND NOT CMAKE_CXX_FLAGS)
     SET(CMAKE_BUILD_TYPE Release)
 ENDIF ()
 SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
@@ -9,10 +12,11 @@ SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 SET(JAVASCRIPTCORE_DIR "${CMAKE_SOURCE_DIR}/JavaScriptCore")
 SET(WEBCORE_DIR "${CMAKE_SOURCE_DIR}/WebCore")
 SET(WEBKIT_DIR "${CMAKE_SOURCE_DIR}/WebKit")
+SET(WEBKITTOOLS_DIR "${CMAKE_SOURCE_DIR}/WebKitTools")
 SET(DERIVED_SOURCES_DIR "${CMAKE_BINARY_DIR}/DerivedSources")
 
 INCLUDE(WebKitMacros)
-INCLUDE(WebKitGenerators)
+INCLUDE(WebKitFS)
 INCLUDE(WebKitHelpers)
 INCLUDE(WebKitFeatures)
 
@@ -34,11 +38,12 @@ FIND_PACKAGE(PythonInterp REQUIRED)
 # -----------------------------------------------------------------------------
 # Determine the target processor
 # -----------------------------------------------------------------------------
-IF (CMAKE_SYSTEM_PROCESSOR MATCHES "arm")
+STRING(TOLOWER ${CMAKE_SYSTEM_PROCESSOR} LOWERCASE_CMAKE_SYSTEM_PROCESSOR)
+IF (LOWERCASE_CMAKE_SYSTEM_PROCESSOR MATCHES "^arm")
     SET(WTF_CPU_ARM 1)
-ELSEIF (CMAKE_SYSTEM_PROCESSOR MATCHES "(x86_64)")
+ELSEIF (LOWERCASE_CMAKE_SYSTEM_PROCESSOR MATCHES "(x86_64)")
     SET(WTF_CPU_X86_64 1)
-ELSEIF (CMAKE_SYSTEM_PROCESSOR MATCHES "(i[3-6]86|x86)")
+ELSEIF (LOWERCASE_CMAKE_SYSTEM_PROCESSOR MATCHES "(i[3-6]86|x86)")
     SET(WTF_CPU_X86 1)
 ELSE ()
     MESSAGE(FATAL_ERROR "Unknown CPU '${CMAKE_SYSTEM_PROCESSOR}'")
@@ -102,6 +107,11 @@ INCLUDE(WebKitPackaging)
 ADD_SUBDIRECTORY(JavaScriptCore)
 ADD_SUBDIRECTORY(WebCore)
 ADD_SUBDIRECTORY(WebKit)
+
+# -----------------------------------------------------------------------------
+# Add test browser if exists
+# -----------------------------------------------------------------------------
+INCLUDE_IF_EXISTS(${WEBKITTOOLS_DIR}/CMakeLists${PORT}.txt)
 
 # -----------------------------------------------------------------------------
 # Set compiler flags for all targets
