@@ -2,6 +2,8 @@
 # Copyright (C) 2005, Advanced Micro Devices, Inc.  All Rights Reserved
 # Released under the MIT license (see packages/COPYING)
 
+HOMEPAGE = "http://www.xiph.org/paranoia/"
+DESCRIPTION = "Audio CD digital audio extraction application"
 PR = "r0"
 LICENSE = "GPLv2"
 
