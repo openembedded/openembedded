@@ -7,7 +7,7 @@ DEPENDS = "vala-native glib-2.0 dbus dbus-glib libfso-glib libgee"
 DEPENDS += "${@['libfsoframework', ''][(bb.data.getVar('PN', d, 1) in 'libfsoframework libfsobasics'.split())]}"
 PV = "invalid, please override"
 
-FSO_CORNUCOPIA_SRCREV ?= "8fa36faa70f85c168124dfd020d87796cd155a53"
+FSO_CORNUCOPIA_SRCREV ?= "09dd3ede231106dc2535145291c076b085db3018"
 INC_PR = "r2"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/cornucopia;protocol=git;branch=master"
