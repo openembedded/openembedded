@@ -1,0 +1,43 @@
+From 05c3efdd3116aa18d4cb1f2303aeb7660609f5f0 Mon Sep 17 00:00:00 2001
+From: Matan Ziv-Av <matan@svgalib.org>
+Date: Tue, 7 Dec 2010 12:01:34 +0100
+Subject: [PATCH 7/9] Only delay boot if keyboard open
+
+---
+ board/nokia/rx51/rx51.c      |    7 +++++++
+ include/configs/nokia_rx51.h |    1 +
+ 2 files changed, 8 insertions(+), 0 deletions(-)
+
+diff --git a/board/nokia/rx51/rx51.c b/board/nokia/rx51/rx51.c
+index 3149a79..347d08a 100644
+--- a/board/nokia/rx51/rx51.c
++++ b/board/nokia/rx51/rx51.c
+@@ -104,6 +104,13 @@ int misc_init_r(void)
+ 	setenv("nolo_atagaddr", buf);
+ #endif
+ 
++	// set environment variable slide_sw
++	// if keyboard slide is open/close
++	omap_set_gpio_direction(71, 1);
++	unsigned val = omap_get_gpio_datain(71);
++	omap_free_gpio(71);
++	setenv("slide_sw", val ? "close" : "open");
++
+ 	dieid_num_r();
+ 
+ 	return 0;
+diff --git a/include/configs/nokia_rx51.h b/include/configs/nokia_rx51.h
+index 45b942a..5c3b068 100644
+--- a/include/configs/nokia_rx51.h
++++ b/include/configs/nokia_rx51.h
+@@ -200,6 +200,7 @@ int rx51_kp_getc(void);
+ 		"bootm ${nolo_kernaddr}\0"
+ 
+ #define CONFIG_PREBOOT \
++	"if test $slide_sw != open ; then run noloboot; fi ;" \
+ 	"echo Extra commands:;" \
+ 	"echo run sercon - Use serial port for control.;" \
+ 	"echo run usbcon - Use usbtty for control.;" \
+-- 
+1.7.3.2
+

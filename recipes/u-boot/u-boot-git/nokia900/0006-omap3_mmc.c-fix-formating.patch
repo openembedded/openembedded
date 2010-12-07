@@ -1,0 +1,28 @@
+From 229f5fc3cce7463a66574cff62f4941fa198e27c Mon Sep 17 00:00:00 2001
+From: Matan Ziv-Av <matan@svgalib.org>
+Date: Tue, 7 Dec 2010 11:56:05 +0100
+Subject: [PATCH 6/9] omap3_mmc.c: fix formating
+
+---
+ drivers/mmc/omap3_mmc.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mmc/omap3_mmc.c b/drivers/mmc/omap3_mmc.c
+index c5aaa6d..9fdcc32 100644
+--- a/drivers/mmc/omap3_mmc.c
++++ b/drivers/mmc/omap3_mmc.c
+@@ -544,9 +544,9 @@ unsigned char configure_mmc(mmc_card_data *mmc_card_cur)
+ unsigned long mmc_bread(int dev_num, unsigned long blknr, lbaint_t blkcnt,
+ 			void *dst)
+ {
+-	if(omap_mmc_read_sect(blknr, (blkcnt * MMCSD_SECTOR_SIZE), &cur_card_data,
++	if (omap_mmc_read_sect(blknr, (blkcnt * MMCSD_SECTOR_SIZE), &cur_card_data,
+ 				(unsigned long *) dst) != 1)
+-		return 0;
++        return 0;
+ 	return blkcnt;
+ }
+ 
+-- 
+1.7.3.2
+

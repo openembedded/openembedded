@@ -17,6 +17,7 @@ SRCREV_mpc8641-hpcn = "f20393c5e787b3776c179d20f82a86bda124d651"
 SRCREV_p1020rdb = "f20393c5e787b3776c179d20f82a86bda124d651"
 SRCREV_p2020ds = "f20393c5e787b3776c179d20f82a86bda124d651"
 SRCREV_bug20 = "169a4c804dbaf11facb041b1333d394c6ceb8d68"
+SRCREV_nokia900 = "bd2313078114c4b44c4a5ce149af43bcb7fc8854"
 SRC_URI_append_afeb9260 = " file://AFEB9260-network-fix.patch"
 SRC_URI_append_afeb9260-180 = " file://AFEB9260-network-fix.patch"
 SRC_URI_append_cm-t35 = "file://cm-t35/cm-t35.patch"
@@ -355,3 +356,24 @@ if [ -d "${XILINX_BSP_PATH}" ]; then
     install ${S}/u-boot ${XILINX_BSP_PATH}
 fi
 }
+
+PV_nokia900 = "2010.06+gitr${SRCPV}"
+SRC_URI_nokia900 = "git://www.denx.de/git/u-boot.git;protocol=git \
+                    file://0001-ARM-Avoid-compiler-optimization-for-usages-of-readb-.patch \
+                    file://0001-Reduce-delays-in-omap-i2c-driver.patch \
+                    file://0002-Make-bootm-optionally-use-pre-existing-atags-for-Lin.patch \
+                    file://0003-Store-existing-atags-at-startup-if-chainloading.patch \
+                    file://0004-Nokia-RX-51-aka-N900-support.patch \
+                    file://0001-nokia-rx51-use-O0-as-work-around-for-gcc-4.5.patch \
+                    file://0005-fix-loading-file-from-ext2-partition-on-OMAP3-evm.patch \
+                    file://0006-omap3_mmc.c-fix-formating.patch \
+                    file://0007-Only-delay-boot-if-keyboard-open.patch \
+"
+SRC_URI_nokia900_append_shr = " \
+                    file://0008-configs-nokia_rx51.h-use-ext2-instead-of-fat-for-1st.patch \
+                    file://0009-configs-nokia_rx51.h-integrate-SHR-boot.scr-to-defau.patch \
+                    file://0010-configs-nokia_rx51.h-call-mmc-init-manually-because-.patch \
+                    file://0011-configs-nokia_rx51.h-don-t-set-atags-when-booting-fr.patch \
+"
+
+UBOOT_MACHINE_nokia900 = "nokia_rx51_config"

@@ -1,0 +1,33 @@
+From 05f13bfcd6fcaec3a9372497c0d9e45592e2516f Mon Sep 17 00:00:00 2001
+From: Mickael LANOE <mickael.lanoe@univ-ubs.fr>
+Date: Tue, 7 Dec 2010 11:42:49 +0100
+Subject: [PATCH 5/9] fix loading file from ext2 partition on OMAP3 evm
+
+* http://lists.denx.de/pipermail/u-boot/2010-June/072198.html
+
+Signed-off-by: Martin Jansa <Martin.Jansa@gmail.com>
+---
+ drivers/mmc/omap3_mmc.c |    7 ++++---
+ 1 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mmc/omap3_mmc.c b/drivers/mmc/omap3_mmc.c
+index 9506cca..c5aaa6d 100644
+--- a/drivers/mmc/omap3_mmc.c
++++ b/drivers/mmc/omap3_mmc.c
+@@ -544,9 +544,10 @@ unsigned char configure_mmc(mmc_card_data *mmc_card_cur)
+ unsigned long mmc_bread(int dev_num, unsigned long blknr, lbaint_t blkcnt,
+ 			void *dst)
+ {
+-	omap_mmc_read_sect(blknr, (blkcnt * MMCSD_SECTOR_SIZE), &cur_card_data,
+-				(unsigned long *) dst);
+-	return 1;
++	if(omap_mmc_read_sect(blknr, (blkcnt * MMCSD_SECTOR_SIZE), &cur_card_data,
++				(unsigned long *) dst) != 1)
++		return 0;
++	return blkcnt;
+ }
+ 
+ int mmc_legacy_init(int dev)
+-- 
+1.7.3.2
+

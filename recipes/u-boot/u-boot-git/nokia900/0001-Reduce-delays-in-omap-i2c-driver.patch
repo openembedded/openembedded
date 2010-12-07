@@ -1,0 +1,68 @@
+From 18b7882e3cdc4ba80dc6952cb7b567db45ddb819 Mon Sep 17 00:00:00 2001
+From: Alistair Buxton <a.j.buxton@gmail.com>
+Date: Sun, 5 Sep 2010 22:05:53 +0100
+Subject: [PATCH 1/9] Reduce delays in omap i2c driver.
+
+The calls to udelay in the omap i2c driver make i2c access very slow.
+Checking the twl4030 keypad requires about 10 register accesses and
+this can take up to 1 second, causing high input latency. I reduced all
+the delays by a factor of 10 and this did not seem to affect anything
+but makes the keyboard input much nicer.
+
+Signed-off-by: Alistair Buxton <a.j.buxton@gmail.com>
+---
+ drivers/i2c/omap24xx_i2c.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/i2c/omap24xx_i2c.c b/drivers/i2c/omap24xx_i2c.c
+index 7c98f15..86602a6 100644
+--- a/drivers/i2c/omap24xx_i2c.c
++++ b/drivers/i2c/omap24xx_i2c.c
+@@ -162,7 +162,7 @@ static int i2c_read_byte (u8 devaddr, u8 regoffset, u8 * value)
+ 	if (status & I2C_STAT_XRDY) {
+ 		/* Important: have to use byte access */
+ 		writeb (regoffset, &i2c_base->data);
+-		udelay (20000);
++		udelay (2000);
+ 		if (readw (&i2c_base->stat) & I2C_STAT_NACK) {
+ 			i2c_error = 1;
+ 		}
+@@ -174,7 +174,7 @@ static int i2c_read_byte (u8 devaddr, u8 regoffset, u8 * value)
+ 		writew (I2C_CON_EN, &i2c_base->con);
+ 		while (readw(&i2c_base->stat) &
+ 			(I2C_STAT_XRDY | I2C_STAT_ARDY)) {
+-			udelay (10000);
++			udelay (1000);
+ 			/* Have to clear pending interrupt to clear I2C_STAT */
+ 			writew (0xFFFF, &i2c_base->stat);
+ 		}
+@@ -195,7 +195,7 @@ static int i2c_read_byte (u8 devaddr, u8 regoffset, u8 * value)
+ #else
+ 			*value = readw (&i2c_base->data);
+ #endif
+-			udelay (20000);
++			udelay (2000);
+ 		} else {
+ 			i2c_error = 1;
+ 		}
+@@ -204,7 +204,7 @@ static int i2c_read_byte (u8 devaddr, u8 regoffset, u8 * value)
+ 			writew (I2C_CON_EN, &i2c_base->con);
+ 			while (readw (&i2c_base->stat) &
+ 				(I2C_STAT_RRDY | I2C_STAT_ARDY)) {
+-				udelay (10000);
++				udelay (1000);
+ 				writew (0xFFFF, &i2c_base->stat);
+ 			}
+ 		}
+@@ -254,7 +254,7 @@ static int i2c_write_byte (u8 devaddr, u8 regoffset, u8 value)
+ 		writew ((value << 8) + regoffset, &i2c_base->data);
+ #endif
+ 		/* must have enough delay to allow BB bit to go low */
+-		udelay (50000);
++		udelay (5000);
+ 		if (readw (&i2c_base->stat) & I2C_STAT_NACK) {
+ 			i2c_error = 1;
+ 		}
+-- 
+1.7.3.2
+

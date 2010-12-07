@@ -1,0 +1,37 @@
+From 8845d1ab756293f16c5eac7b4c575f73fe29726d Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Tue, 7 Dec 2010 15:46:08 +0100
+Subject: [PATCH 10/10] configs/nokia_rx51.h: call mmc init manually, because mmc init in CONFIG_BOOTCOMMAND is called only after timeout
+
+---
+ include/configs/nokia_rx51.h |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/include/configs/nokia_rx51.h b/include/configs/nokia_rx51.h
+index 49412e7..1031a8e 100644
+--- a/include/configs/nokia_rx51.h
++++ b/include/configs/nokia_rx51.h
+@@ -187,15 +187,15 @@ int rx51_kp_getc(void);
+ 	"usbcon=setenv con usbtty; run setcon\0" \
+ 	"vgacon=setenv con vga; run setcon\0" \
+ 	"loadaddr=0x82000000\0" \
+-	"loadbootscript=ext2load mmc 0 ${loadaddr} boot.scr\0" \
++	"loadbootscript=mmc init; ext2load mmc 0 ${loadaddr} boot.scr\0" \
+ 	"bootscript=echo Running bootscript from mmc ...; " \
+ 		"source ${loadaddr}\0" \
+ 	"meegoargs=root=/dev/mmcblk0p3 rootwait console=tty0 omapfb.vram=0:2M,1:2M,2:2M mtdoops.mtddev=2 nosplash\0" \
+ 	"shrargs=snd-soc-rx51.hp_lim=42 snd-soc-tlv320aic3x.hp_dac_lim=6 console=tty1 root=/dev/mmcblk1p2 rootwait panic=20 debug\0" \
+-	"shrcmd=ext2load mmc 0:1 0x82000000 uImage-shr; bootm 0x82000000\0" \
+-	"shr2cmd=ext2load mmc 0:1 0x82000000 uImage-shr2; bootm 0x82000000\0" \
+-	"meegocmd=ext2load mmc 0:1 0x82000000 uImage-meego; bootm 0x82000000\0" \
+-	"meego2cmd=ext2load mmc 0:1 0x82000000 uImage-meego2; bootm 0x82000000\0" \
++	"shrcmd=mmc init; ext2load mmc 0:1 0x82000000 uImage-shr; bootm 0x82000000\0" \
++	"shr2cmd=mmc init; ext2load mmc 0:1 0x82000000 uImage-shr2; bootm 0x82000000\0" \
++	"meegocmd=mmc init; ext2load mmc 0:1 0x82000000 uImage-meego; bootm 0x82000000\0" \
++	"meego2cmd=mmc init; ext2load mmc 0:1 0x82000000 uImage-meego2; bootm 0x82000000\0" \
+ 	"meego=echo Booting Meego from 3nd partition on SD card ((uImage-meego) ...; " \
+ 		"setenv atags ${nolo_atagaddr};" \
+ 		"setenv bootargs ${meegoargs}; " \
+-- 
+1.7.3.2
+

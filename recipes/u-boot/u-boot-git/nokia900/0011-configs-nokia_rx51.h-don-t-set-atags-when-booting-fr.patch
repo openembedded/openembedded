@@ -1,0 +1,37 @@
+From 1b9f7d91fd173ef3beaf5afea761e5056c027577 Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Wed, 8 Dec 2010 09:20:33 +0100
+Subject: [PATCH 11/11] configs/nokia_rx51.h: don't set atags when booting from uSD except shr2
+
+* overwrites supplied bootargs ie root=
+* is needed only for old 2.6.28.10 kernel soundmodule checking revision
+  so keep for shr2 option
+---
+ include/configs/nokia_rx51.h |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
+
+diff --git a/include/configs/nokia_rx51.h b/include/configs/nokia_rx51.h
+index 1031a8e..f1858b4 100644
+--- a/include/configs/nokia_rx51.h
++++ b/include/configs/nokia_rx51.h
+@@ -197,17 +197,14 @@ int rx51_kp_getc(void);
+ 	"meegocmd=mmc init; ext2load mmc 0:1 0x82000000 uImage-meego; bootm 0x82000000\0" \
+ 	"meego2cmd=mmc init; ext2load mmc 0:1 0x82000000 uImage-meego2; bootm 0x82000000\0" \
+ 	"meego=echo Booting Meego from 3nd partition on SD card ((uImage-meego) ...; " \
+-		"setenv atags ${nolo_atagaddr};" \
+ 		"setenv bootargs ${meegoargs}; " \
+ 		"setenv bootcmd ${meegocmd}; " \
+ 		"boot\0" \
+ 	"meego2=echo Booting Meego from 3nd partition on SD card ((uImage-meego2) ...; " \
+-		"setenv atags ${nolo_atagaddr};" \
+ 		"setenv bootargs ${meegoargs}; " \
+ 		"setenv bootcmd ${meego2cmd}; " \
+ 		"boot\0" \
+ 	"shr=echo Booting SHR from 2nd partition on SD card ((uImage-shr) ...; " \
+-		"setenv atags ${nolo_atagaddr};" \
+ 		"setenv bootargs ${shrargs}; " \
+ 		"setenv bootcmd ${shrcmd}; " \
+ 		"boot\0" \
+-- 
+1.7.3.2
+

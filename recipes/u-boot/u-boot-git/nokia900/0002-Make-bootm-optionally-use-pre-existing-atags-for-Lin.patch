@@ -1,0 +1,97 @@
+From b05e635c24a65e5efc540694bbaa33055f3180c6 Mon Sep 17 00:00:00 2001
+From: Alistair Buxton <a.j.buxton@gmail.com>
+Date: Wed, 1 Sep 2010 23:07:20 +0100
+Subject: [PATCH 2/9] Make bootm optionally use pre-existing atags for Linux kernel boot.
+
+This patch adapts the bootm command so that it can use an existing atags command
+set up by a previous bootloader. If the environment variable "atags" is unset,
+bootm behaves as normal. If "atags" is set, bootm will skip all boot args setup
+entirely, and pass the address found in "atags". For example, if a previous boot
+loader already set up the atags struct at 0x80000100:
+
+setenv atags 0x80000100; bootm 0x80008000
+
+Signed-off-by: Alistair Buxton <a.j.buxton@gmail.com>
+---
+ arch/arm/lib/bootm.c |   35 +++++++++++++++++++++++++----------
+ 1 files changed, 25 insertions(+), 10 deletions(-)
+
+diff --git a/arch/arm/lib/bootm.c b/arch/arm/lib/bootm.c
+index 3101321..82186f8 100644
+--- a/arch/arm/lib/bootm.c
++++ b/arch/arm/lib/bootm.c
+@@ -55,6 +55,12 @@ int do_bootm_linux(int flag, int argc, char * const argv[], bootm_headers_t *ima
+ 	bd_t	*bd = gd->bd;
+ 	char	*s;
+ 	int	machid = bd->bi_arch_number;
++#ifdef CONFIG_CHAINLOADER
++	uint	params;
++	#define PARAMS params
++#else
++	#define PARAMS (bd->bi_boot_params)
++#endif
+ 	void	(*theKernel)(int zero, int arch, uint params);
+ 
+ #ifdef CONFIG_CMDLINE_TAG
+@@ -77,31 +83,40 @@ int do_bootm_linux(int flag, int argc, char * const argv[], bootm_headers_t *ima
+ 	debug ("## Transferring control to Linux (at address %08lx) ...\n",
+ 	       (ulong) theKernel);
+ 
++#ifdef CONFIG_CHAINLOADER
++	s = getenv ("atags");
++	if (s) {
++		params = simple_strtoul (s, NULL, 16);
++		printf ("Using existing atags at 0x%x\n", params);
++	} else {
++#endif
+ #if defined (CONFIG_SETUP_MEMORY_TAGS) || \
+     defined (CONFIG_CMDLINE_TAG) || \
+     defined (CONFIG_INITRD_TAG) || \
+     defined (CONFIG_SERIAL_TAG) || \
+     defined (CONFIG_REVISION_TAG)
+-	setup_start_tag (bd);
++		setup_start_tag (bd);
+ #ifdef CONFIG_SERIAL_TAG
+-	setup_serial_tag (&params);
++		setup_serial_tag (&params);
+ #endif
+ #ifdef CONFIG_REVISION_TAG
+-	setup_revision_tag (&params);
++		setup_revision_tag (&params);
+ #endif
+ #ifdef CONFIG_SETUP_MEMORY_TAGS
+-	setup_memory_tags (bd);
++		setup_memory_tags (bd);
+ #endif
+ #ifdef CONFIG_CMDLINE_TAG
+-	setup_commandline_tag (bd, commandline);
++		setup_commandline_tag (bd, commandline);
+ #endif
+ #ifdef CONFIG_INITRD_TAG
+-	if (images->rd_start && images->rd_end)
+-		setup_initrd_tag (bd, images->rd_start, images->rd_end);
++		if (images->rd_start && images->rd_end)
++			setup_initrd_tag (bd, images->rd_start, images->rd_end);
+ #endif
+-	setup_end_tag (bd);
++		setup_end_tag (bd);
++#endif
++#ifdef CONFIG_CHAINLOADER
++	}
+ #endif
+-
+ 	/* we assume that the kernel is in place */
+ 	printf ("\nStarting kernel ...\n\n");
+ 
+@@ -114,7 +129,7 @@ int do_bootm_linux(int flag, int argc, char * const argv[], bootm_headers_t *ima
+ 
+ 	cleanup_before_linux ();
+ 
+-	theKernel (0, machid, bd->bi_boot_params);
++	theKernel (0, machid, PARAMS);
+ 	/* does not return */
+ 
+ 	return 1;
+-- 
+1.7.3.2
+

@@ -1,0 +1,30 @@
+From f7b7886a7000ae2a65255d29b51578cba223a99e Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Tue, 7 Dec 2010 12:41:39 +0100
+Subject: [PATCH 8/9] configs/nokia_rx51.h: use ext2 instead of fat for 1st and 3rd partition
+
+Signed-off-by: Martin Jansa <Martin.Jansa@gmail.com>
+---
+ include/configs/nokia_rx51.h |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/configs/nokia_rx51.h b/include/configs/nokia_rx51.h
+index 5c3b068..57769d0 100644
+--- a/include/configs/nokia_rx51.h
++++ b/include/configs/nokia_rx51.h
+@@ -188,10 +188,10 @@ int rx51_kp_getc(void);
+ 	"vgacon=setenv con vga; run setcon\0" \
+ 	"loadaddr=0x82000000\0" \
+ 	"meegoargs=setenv bootargs\0" \
+-	"loadbootscript=fatload mmc 0 ${loadaddr} boot.scr\0" \
++	"loadbootscript=ext2load mmc 0 ${loadaddr} boot.scr\0" \
+ 	"bootscript=echo Running bootscript from mmc ...; " \
+ 		"source ${loadaddr}\0" \
+-	"loaduimage=fatload mmc 0:3 ${loadaddr} uImage\0" \
++	"loaduimage=ext2load mmc 0:3 ${loadaddr} uImage\0" \
+ 	"mmcboot=echo Booting from mmc ...; " \
+ 		"run meegoargs; " \
+ 		"bootm ${loadaddr}\0" \
+-- 
+1.7.3.2
+

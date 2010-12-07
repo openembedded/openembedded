@@ -1,0 +1,45 @@
+From f84df2f55ac133d9ff4cbc14d0eff812ee891b38 Mon Sep 17 00:00:00 2001
+From: Alistair Buxton <a.j.buxton@gmail.com>
+Date: Wed, 1 Sep 2010 23:04:03 +0100
+Subject: [PATCH 3/9] Store existing atags at startup if chainloading.
+
+This patch stores the values in r1 and r2 at startup. It also stores the address
+which u-boot was originally loaded to. This is useful if you feed some other
+bootloader a u-boot.bin instead of the linux kernel it was expecting. It is
+rather ugly because it stores these values in an arbitrary memory address.
+
+Signed-off-by: Alistair Buxton <a.j.buxton@gmail.com>
+---
+ arch/arm/cpu/armv7/start.S |   16 ++++++++++++++++
+ 1 files changed, 16 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/cpu/armv7/start.S b/arch/arm/cpu/armv7/start.S
+index 1e0a150..bdea26c 100644
+--- a/arch/arm/cpu/armv7/start.S
++++ b/arch/arm/cpu/armv7/start.S
+@@ -100,6 +100,22 @@ FIQ_STACK_START:
+  */
+ 
+ reset:
++#if (CONFIG_CHAINLOADER)
++	/*
++	 * Ugly hack: store the u-boot load address and kernel params
++	 * 0x82000004: address where this image was loaded
++	 * 0x82000008: mach_type
++	 * 0x8200000c: atags address
++	 */
++	adr 	r0, _start
++	mov 	r3, #0x82000000
++	add	r3, r3, #4
++	str	r0, [r3]
++	add	r3, r3, #4
++	str	r1, [r3]
++	add	r3, r3, #4
++	str	r2, [r3]
++#endif
+ 	/*
+ 	 * set the cpu to SVC32 mode
+ 	 */
+-- 
+1.7.3.2
+

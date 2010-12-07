@@ -1,0 +1,90 @@
+From 68641f0dea622a6274337fcc1c14d1f176d3ea79 Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Tue, 7 Dec 2010 13:07:57 +0100
+Subject: [PATCH 9/9] configs/nokia_rx51.h: integrate SHR boot.scr to default env
+
+---
+ include/configs/nokia_rx51.h |   50 +++++++++++++++++++++++++++++------------
+ 1 files changed, 35 insertions(+), 15 deletions(-)
+
+diff --git a/include/configs/nokia_rx51.h b/include/configs/nokia_rx51.h
+index 57769d0..49412e7 100644
+--- a/include/configs/nokia_rx51.h
++++ b/include/configs/nokia_rx51.h
+@@ -187,38 +187,58 @@ int rx51_kp_getc(void);
+ 	"usbcon=setenv con usbtty; run setcon\0" \
+ 	"vgacon=setenv con vga; run setcon\0" \
+ 	"loadaddr=0x82000000\0" \
+-	"meegoargs=setenv bootargs\0" \
+ 	"loadbootscript=ext2load mmc 0 ${loadaddr} boot.scr\0" \
+ 	"bootscript=echo Running bootscript from mmc ...; " \
+ 		"source ${loadaddr}\0" \
+-	"loaduimage=ext2load mmc 0:3 ${loadaddr} uImage\0" \
+-	"mmcboot=echo Booting from mmc ...; " \
+-		"run meegoargs; " \
+-		"bootm ${loadaddr}\0" \
+-	"noloboot=echo Booting NOLO supplied kernel ...; " \
++	"meegoargs=root=/dev/mmcblk0p3 rootwait console=tty0 omapfb.vram=0:2M,1:2M,2:2M mtdoops.mtddev=2 nosplash\0" \
++	"shrargs=snd-soc-rx51.hp_lim=42 snd-soc-tlv320aic3x.hp_dac_lim=6 console=tty1 root=/dev/mmcblk1p2 rootwait panic=20 debug\0" \
++	"shrcmd=ext2load mmc 0:1 0x82000000 uImage-shr; bootm 0x82000000\0" \
++	"shr2cmd=ext2load mmc 0:1 0x82000000 uImage-shr2; bootm 0x82000000\0" \
++	"meegocmd=ext2load mmc 0:1 0x82000000 uImage-meego; bootm 0x82000000\0" \
++	"meego2cmd=ext2load mmc 0:1 0x82000000 uImage-meego2; bootm 0x82000000\0" \
++	"meego=echo Booting Meego from 3nd partition on SD card ((uImage-meego) ...; " \
++		"setenv atags ${nolo_atagaddr};" \
++		"setenv bootargs ${meegoargs}; " \
++		"setenv bootcmd ${meegocmd}; " \
++		"boot\0" \
++	"meego2=echo Booting Meego from 3nd partition on SD card ((uImage-meego2) ...; " \
++		"setenv atags ${nolo_atagaddr};" \
++		"setenv bootargs ${meegoargs}; " \
++		"setenv bootcmd ${meego2cmd}; " \
++		"boot\0" \
++	"shr=echo Booting SHR from 2nd partition on SD card ((uImage-shr) ...; " \
++		"setenv atags ${nolo_atagaddr};" \
++		"setenv bootargs ${shrargs}; " \
++		"setenv bootcmd ${shrcmd}; " \
++		"boot\0" \
++	"shr2=echo Booting SHR from 2nd partition on SD card ((uImage-shr2) ...; " \
++		"setenv atags ${nolo_atagaddr};" \
++		"setenv bootargs ${shrargs}; " \
++		"setenv bootcmd ${shr2cmd}; " \
++		"boot\0" \
++	"maemo=echo Booting Maemo from eMMC, NOLO supplied kernel ...; " \
+ 		"setenv atags ${nolo_atagaddr};" \
+ 		"bootm ${nolo_kernaddr}\0"
+ 
+ #define CONFIG_PREBOOT \
+-	"if test $slide_sw != open ; then run noloboot; fi ;" \
++	"if test $slide_sw != open ; then run maemo; fi ;" \
++	"echo All uImage-* kernels and boot.scr are expected on ext2 mmc 0;" \
+ 	"echo Extra commands:;" \
+ 	"echo run sercon - Use serial port for control.;" \
+ 	"echo run usbcon - Use usbtty for control.;" \
+ 	"echo run vgacon - Use framebuffer/keyboard.;" \
+-	"echo run mmcboot - Boot from SD card slot.;" \
+-	"echo run noloboot - Boot kernel loaded by NOLO."
++	"echo run shr - Boot SHR from 2nd partition on SD card (uImage-shr).;" \
++	"echo run shr2 - Boot SHR from 2nd partition on SD card (uImage-shr2).;" \
++	"echo run meego - Boot Meego from 3nd partition on SD card (uImage-meego).;" \
++	"echo run meego2 - Boot Meego from 3nd partition on SD card (uImage-meego2).;" \
++	"echo run maemo - Boot Maemo from eMMC, kernel loaded by NOLO."
+ 
+ #define CONFIG_BOOTCOMMAND \
+ 	"if mmc init; then " \
+ 		"if run loadbootscript; then " \
+ 			"run bootscript; " \
+-		"else " \
+-			"if run loaduimage; then " \
+-				"run mmcboot; " \
+-			"else run noloboot; " \
+-			"fi; " \
+ 		"fi; " \
+-	"else run noloboot; fi"
++	"else run maemo; fi"
+ 
+ #define CONFIG_AUTO_COMPLETE		1
+ /*
+-- 
+1.7.3.2
+

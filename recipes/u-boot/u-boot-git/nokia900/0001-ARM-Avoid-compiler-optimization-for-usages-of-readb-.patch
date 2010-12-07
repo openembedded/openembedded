@@ -1,0 +1,61 @@
+From a6154b8604c4cf1c9c44cf15524102e4e258a238 Mon Sep 17 00:00:00 2001
+From: Alexander Holler <holler@ahsoftware.de>
+Date: Wed, 22 Dec 2010 01:04:22 +0000
+Subject: [PATCH] ARM: Avoid compiler optimization for usages of readb, writeb and friends.
+
+gcc 4.5.1 seems to ignore (at least some) volatile definitions,
+avoid that as done in the kernel.
+
+Reading C99 6.7.3 8 and the comment 114) there, I think it is a bug of that
+gcc version to ignore the volatile type qualifier used e.g. in __arch_getl().
+Anyway, using a definition as in the kernel headers avoids such optimizations when
+gcc 4.5.1 is used.
+
+Maybe the headers as used in the current linux-kernel should be used,
+but to avoid large changes, I've just added a small change to the current headers.
+
+I haven't add the definitions which are using a memory barrier because I haven't found
+a place in the kernel where they were actually enabled (CONFIG_ARM_DMA_MEM_BUFFERABLE).
+
+Signed-off-by: Alexander Holler <holler@ahsoftware.de>
+Signed-off-by: Wolfgang Denk <wd@denx.de>
+Acked-by: Dirk Behme <dirk.behme@googlemail.com>
+---
+ arch/arm/include/asm/io.h |   20 ++++++++++++++------
+ 1 files changed, 14 insertions(+), 6 deletions(-)
+
+diff --git a/arch/arm/include/asm/io.h b/arch/arm/include/asm/io.h
+index ff1518e..068ed17 100644
+--- a/arch/arm/include/asm/io.h
++++ b/arch/arm/include/asm/io.h
+@@ -125,13 +125,21 @@ extern inline void __raw_readsl(unsigned int addr, void *data, int longlen)
+ #define __raw_readw(a)			__arch_getw(a)
+ #define __raw_readl(a)			__arch_getl(a)
+ 
+-#define writeb(v,a)			__arch_putb(v,a)
+-#define writew(v,a)			__arch_putw(v,a)
+-#define writel(v,a)			__arch_putl(v,a)
++/*
++ * TODO: The kernel offers some more advanced versions of barriers, it might
++ * have some advantages to use them instead of the simple one here.
++ */
++#define dmb()				__asm__ __volatile__ ("" : : : "memory")
++#define __iormb()			dmb()
++#define __iowmb()			dmb()
++
++#define writeb(v,c)			do { __iowmb(); __arch_putb(v,c); } while (0)
++#define writew(v,c)			do { __iowmb(); __arch_putw(v,c); } while (0)
++#define writel(v,c)			do { __iowmb(); __arch_putl(v,c); } while (0)
+ 
+-#define readb(a)			__arch_getb(a)
+-#define readw(a)			__arch_getw(a)
+-#define readl(a)			__arch_getl(a)
++#define readb(c)			({ u8  __v = __arch_getb(c); __iormb(); __v; })
++#define readw(c)			({ u16 __v = __arch_getw(c); __iormb(); __v; })
++#define readl(c)			({ u32 __v = __arch_getl(c); __iormb(); __v; })
+ 
+ /*
+  * The compiler seems to be incapable of optimising constants
+-- 
+1.7.3.4
+
