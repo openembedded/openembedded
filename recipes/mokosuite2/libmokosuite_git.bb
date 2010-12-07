@@ -6,6 +6,7 @@ DEPENDS = "elementary libfreesmartphone-glib libphone-utils eggdbus glib-2.0 dbu
 SECTION = "misc/utils"
 
 PV = "1.0.99+gitr${SRCPV}"
+PR = "r1"
 SRCREV = "d8e5a780d93ba2c22514502ad9cca0ba66ff7b9d"
 
 SRC_URI = "git://gitorious.org/mokosuite2/libmokosuite.git;protocol=git"
@@ -17,3 +18,7 @@ EXTRA_OECONF = " --enable-contactsdb-sqlite --with-edje-cc=${STAGING_BINDIR_NATI
 FILES_${PN} += "${datadir}/mokosuite"
 
 inherit pkgconfig autotools
+
+do_install_append() {
+    ln -s themes/gry.edj ${D}${datadir}/mokosuite/common/theme.edj
+}
