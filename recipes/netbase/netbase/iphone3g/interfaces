@@ -1,0 +1,20 @@
+# /etc/network/interfaces -- configuration file for ifup(8), ifdown(8)
+
+# The loopback interface
+auto lo
+iface lo inet loopback
+
+# Ethernet/RNDIS gadget (g_ether)
+# ... or on host side, usbnet and random hwaddr
+auto usb0
+iface usb0 inet static
+	address 192.168.0.202
+	netmask 255.255.255.0
+	network 192.168.0.0
+	up route add default gw 192.168.0.200 metric 8
+	up echo nameserver 208.67.222.222 > /etc/resolv.conf
+	up echo nameserver 208.67.220.220 >> /etc/resolv.conf
+	down route del default gw 192.168.0.200 metric 8
+
+auto wlan0
+iface wlan0 inet dhcp
