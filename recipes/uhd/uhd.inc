@@ -22,4 +22,6 @@ FILES_${PN}-examples = "${datadir}/uhd/examples/*"
 OECMAKE_BUILDPATH = "${S}/build"
 OECMAKE_SOURCEPATH = "${S}"
 
+EXTRA_OECMAKE = "-DENABLE_USRP_E100=TRUE"
+
 EXTRA_OEMAKE = "-C ${OECMAKE_BUILDPATH}"
