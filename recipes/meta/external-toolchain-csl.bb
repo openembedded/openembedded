@@ -1,11 +1,11 @@
-PR = "r6"
+PR = "r7"
 
 INHIBIT_DEFAULT_DEPS = "1"
 
-INSANE_SKIP_libgcc = True
-INSANE_SKIP_libstdc++ = True
-INSANE_SKIP_nscd = True
-INSANE_SKIP_glibc-utils = True
+INSANE_SKIP_libgcc = "True"
+INSANE_SKIP_libstdc++ = "True"
+INSANE_SKIP_nscd = "True"
+INSANE_SKIP_glibc-utils = "True"
 
 SRC_URI = "file://SUPPORTED"
 
@@ -165,37 +165,39 @@ CSL_VER_MAIN := "${@csl_get_main_version(d)}"
 CSL_VER_GCC := "${@csl_get_gcc_version(d)}"
 CSL_VER_LIBC := "${@csl_get_libc_version(d)}"
 CSL_VER_KERNEL := "${@csl_get_kernel_version(d)}"
-CSL_LIC_RLE := "${@["GPLv3 with GCC RLE", "GPLv2 with GCC RLE"][csl_get_main_version(d) <= "2009q1-203"]}"
+CSL_LIC_LIBC := "LGPLv2.1+"
+CSL_LIC_RLE := "${@["GPLv3 with GCC RLE", "GPLv2 with GCC RLE"][csl_get_main_version(d) <= "2007q3-51"]}"
 
-PKGV = ${CSL_VER_MAIN}
-PKGV_libgcc = ${CSL_VER_GCC}
-PKGV_libgcc-dev = ${CSL_VER_GCC}
-PKGV_libstdc++ = ${CSL_VER_GCC}
-PKGV_libstdc++-dev = ${CSL_VER_GCC}
-PKGV_libc = ${CSL_VER_LIBC}
-PKGV_glibc = ${CSL_VER_LIBC}
-PKGV_glibc-dev = ${CSL_VER_LIBC}
-PKGV_glibc-dbg = ${CSL_VER_LIBC}
-PKGV_glibc-utils = ${CSL_VER_LIBC}
-PKGV_glibc-gconv = ${CSL_VER_LIBC}
-PKGV_glibc-extra-nss = ${CSL_VER_LIBC}
-PKGV_glibc-thread-db = ${CSL_VER_LIBC}
-PKGV_glibc-pcprofile = ${CSL_VER_LIBC}
-PKGV_catchsegv = ${CSL_VER_LIBC}
-PKGV_sln = ${CSL_VER_LIBC}
-PKGV_nscd = ${CSL_VER_LIBC}
-PKGV_ldd = ${CSL_VER_LIBC}
-PKGV_localedef = ${CSL_VER_LIBC}
-PKGV_libsegfault = ${CSL_VER_LIBC}
-PKGV_linux-libc-headers = ${CSL_VER_KERNEL}
+PKGV = "${CSL_VER_MAIN}"
+PKGV_libgcc = "${CSL_VER_GCC}"
+PKGV_libgcc-dev = "${CSL_VER_GCC}"
+PKGV_libstdc++ = "${CSL_VER_GCC}"
+PKGV_libstdc++-dev = "${CSL_VER_GCC}"
+PKGV_libc = "${CSL_VER_LIBC}"
+PKGV_glibc = "${CSL_VER_LIBC}"
+PKGV_glibc-dev = "${CSL_VER_LIBC}"
+PKGV_glibc-dbg = "${CSL_VER_LIBC}"
+PKGV_glibc-utils = "${CSL_VER_LIBC}"
+PKGV_glibc-gconv = "${CSL_VER_LIBC}"
+PKGV_glibc-extra-nss = "${CSL_VER_LIBC}"
+PKGV_glibc-thread-db = "${CSL_VER_LIBC}"
+PKGV_glibc-pcprofile = "${CSL_VER_LIBC}"
+PKGV_catchsegv = "${CSL_VER_LIBC}"
+PKGV_sln = "${CSL_VER_LIBC}"
+PKGV_nscd = "${CSL_VER_LIBC}"
+PKGV_ldd = "${CSL_VER_LIBC}"
+PKGV_localedef = "${CSL_VER_LIBC}"
+PKGV_libsegfault = "${CSL_VER_LIBC}"
+PKGV_linux-libc-headers = "${CSL_VER_KERNEL}"
 
-LICENSE_ldd = "LGPLv2.1+"
-LICENSE_glibc = "LGPLv2.1+"
-LICENSE_glibc-thread-db = "LGPLv2.1+"
-LICENSE_libgcc = ${CSL_LIC_RLE}
-LICENSE_libgcc-dev = ${CSL_LIC_RLE}
-LICENSE_libstdc++ = ${CSL_LIC_RLE}
-LICENSE_libstdc++-dev = ${CSL_LIC_RLE}
+LICENSE = "${CSL_LIC_LIBC}"
+LICENSE_ldd = "${CSL_LIC_LIBC}"
+LICENSE_glibc = "${CSL_LIC_LIBC}"
+LICENSE_glibc-thread-db = "${CSL_LIC_LIBC}"
+LICENSE_libgcc = "${CSL_LIC_RLE}"
+LICENSE_libgcc-dev = "${CSL_LIC_RLE}"
+LICENSE_libstdc++ = "${CSL_LIC_RLE}"
+LICENSE_libstdc++-dev = "${CSL_LIC_RLE}"
 
 do_install() {
 	install -d ${D}${sysconfdir}
