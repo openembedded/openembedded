@@ -1,9 +1,9 @@
 require recipes/gnuradio/gnuradio.inc
 
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 PV = "3.3.0-${PR}+gitr${SRCREV}"
 
-SRCREV = "068aa7f5b2591f7cc06e4495c89600101bd19b6b"
+SRCREV = "cdca1c917626f7c63f820da921a17187efc92cd5"
 
 # Make it easy to test against developer repos and branches
 GIT_REPO = "gnuradio.git"
