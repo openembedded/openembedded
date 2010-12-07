@@ -1,0 +1,33 @@
+sync conflicts with sync in newer eglibc
+| showdesktop.c:60:1: error: conflicting types for 'sync'
+| /OE/tmpdir-shr/sysroots/armv4t-oe-linux-gnueabi/usr/include/unistd.h:986:13: note: previous declaration of 'sync' was here
+
+--- matchbox-panel-2/applets/showdesktop/showdesktop.c	2010-12-08 00:11:26.000000000 +0100
++++ matchbox-panel-2/applets/showdesktop/showdesktop.c.new	2010-12-08 00:11:16.000000000 +0100
+@@ -57,7 +57,7 @@
+ 
+ /* Sync @applet with the _NET_SHOWING_DESKTOP root window property */
+ static void
+-sync (ShowDesktopApplet *applet)
++sync_applet (ShowDesktopApplet *applet)
+ {
+         GdkDisplay *display;
+         Atom type;
+@@ -103,7 +103,7 @@
+         if (xev->type == PropertyNotify) {
+                 if (xev->xproperty.atom == applet->atom) {
+                         /* _NET_SHOWING_DESKTOP changed */
+-                        sync (applet);
++                        sync_applet (applet);
+                 }
+         }
+ 
+@@ -145,7 +145,7 @@
+                                applet);
+ 
+         /* Sync */
+-        sync (applet);
++        sync_applet (applet);
+ }
+ 
+ /* Button clicked */

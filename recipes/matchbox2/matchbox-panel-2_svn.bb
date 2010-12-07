@@ -8,7 +8,7 @@ RDEPENDS_${PN} = "matchbox-panel-2-icon-theme"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 SRCREV = "2098"
 PV = "2.0+svnr${SRCPV}"
-PR = "r1"
+PR = "r2"
 
 inherit autotools pkgconfig
 
@@ -17,6 +17,7 @@ SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=${PN};proto=http \
 	   file://startup-invalid-access.patch;striplevel=0 \
 	   file://startup-shown-uninitialized.patch;striplevel=0 \
 	   file://themeable-icons.patch;striplevel=0 \
+	   file://rename.sync.to.sync_applet.patch \
 "
 S = "${WORKDIR}/${PN}"
 
