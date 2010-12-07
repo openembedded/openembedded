@@ -1,6 +1,6 @@
 require flac.inc
 
-PR = "r7"
+PR = "${INC_PR}.8"
 
 SRC_URI += "file://disable-xmms-plugin.patch"
 

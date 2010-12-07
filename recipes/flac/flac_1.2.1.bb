@@ -1,6 +1,6 @@
 require flac.inc
 
-PR = "r1"
+PR = "${INC_PR}.2"
 
 # fixes from openSUSE:
 SRC_URI += "file://flac-gcc43-fixes.diff;striplevel=0 \
