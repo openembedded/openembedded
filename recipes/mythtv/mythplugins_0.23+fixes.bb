@@ -2,7 +2,7 @@ DESCRIPTION = "plugins for mythtv: A full featured personal video recorder syste
 HOMEPAGE = "http://www.mythtv.org"
 LICENSE = "GPLv2"
 
-DEPENDS = "flac taglib mythtv libvorbis libexif libvisual libsdl-x11 libcdaudio cdparanoia"
+DEPENDS = "flac taglib mythtv libvorbis libexif libvisual virtual/libsdl libcdaudio cdparanoia"
 RDEPENDS_${PN} = "mytharchive mythbrowser mythgallery mythgame mythmovies  \
                   mythmusic mythnetvision mythnews mythvideo mythweather mythzoneminder"
 RRECOMMENDS_${PN} = "mythweb-lighttpd"
