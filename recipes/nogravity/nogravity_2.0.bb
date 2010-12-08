@@ -3,7 +3,7 @@ DESCRIPTION = "3D arcade space shooter"
 HOMEPAGE = "http://www.realtech-vr.com/nogravity/"
 LICENSE = "GPL"
 SECTION = "x11/games"
-DEPENDS = "libsdl-x11 zlib libpng libsdl-mixer libogg libvorbis"
+DEPENDS = "virtual/libsdl zlib libpng libsdl-mixer libogg libvorbis"
 PR = "r1"
 
 SRC_URI = "http://zaurus.vivaphp.net/nogravity.tar.bz2;name=archive \
