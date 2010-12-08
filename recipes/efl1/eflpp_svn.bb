@@ -11,5 +11,5 @@ inherit efl
 
 EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc"
 
-SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/BINDINGS;module=cxx;proto=http"
+SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/BINDINGS;module=cxx;proto=http;scmdata=keep"
 S = "${WORKDIR}/cxx"

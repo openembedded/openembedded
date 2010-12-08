@@ -9,7 +9,7 @@ inherit efl
 
 EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc"
 
-SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/PROTO;module=libeweather;proto=http"
+SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/PROTO;module=libeweather;proto=http;scmdata=keep"
 S = "${WORKDIR}/eweather"
 
 RSUGGESTS_${PN} = "elementary-tests"

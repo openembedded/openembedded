@@ -13,7 +13,7 @@ EXTRA_OECONF = "\
     --disable-mupdf \
 "
 
-SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/PROTO;module=epdf;proto=http"
+SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/PROTO;module=epdf;proto=http;scmdata=keep"
 
 # Some upgrade path tweaking, as in evas
 AUTO_LIBNAME_PKGS = ""
