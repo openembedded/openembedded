@@ -367,6 +367,12 @@ python perform_packagecopy () {
 	os.system('cp -pPR %s/. %s/' % (installdest, pkgcopy))
 }
 
+python run_strip_funcs() {
+	if (bb.data.getVar('PACKAGE_STRIP', d, True) != 'no'):
+		for f in (bb.data.getVar('PACKAGESTRIPFUNCS', d, True) or '').split():
+			bb.build.exec_func(f, d)
+}
+
 python populate_packages () {
 	import glob, errno, re,os
 
@@ -390,11 +396,6 @@ python populate_packages () {
 			bb.error("-------------------")
 		else:
 			package_list.append(pkg)
-
-
-	if (bb.data.getVar('PACKAGE_STRIP', d, True) != 'no'):
-		for f in (bb.data.getVar('PACKAGESTRIPFUNCS', d, True) or '').split():
-			bb.build.exec_func(f, d)
 
 	pkgdest = bb.data.getVar('PKGDEST', d, True)
 	os.system('rm -rf %s' % pkgdest)
@@ -1011,6 +1012,7 @@ PACKAGE_PREPROCESS_FUNCS ?= ""
 PACKAGEFUNCS ?= "perform_packagecopy \
                 ${PACKAGE_PREPROCESS_FUNCS} \
 		package_do_split_locales \
+		run_strip_funcs \
 		populate_packages \
 		package_do_shlibs \
 		package_do_pkgconfig \
