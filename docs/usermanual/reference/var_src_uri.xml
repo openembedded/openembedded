@@ -351,15 +351,6 @@ SRC_URI[sha256sum] = &quot;36bdb85c97b39ac604bc58cb7857ee08295242c78a12848ef8a31
 
     <para>Related variables:<variablelist>
         <varlistentry>
-          <term>CVS_TARBALL_STASH</term>
-
-          <listitem>
-            <para>Used to specifies a location to search for pre-generated tar
-            archives to use instead of accessing cvs directly.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term>CVSDIR</term>
 
           <listitem>
