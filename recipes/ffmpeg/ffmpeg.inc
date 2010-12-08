@@ -3,7 +3,7 @@ HOMEPAGE = "http://ffmpeg.mplayerhq.hu/"
 AUTHOR = "Fabrice Bellard ffmpeg-devel@mplayerhq.hu"
 SECTION = "libs"
 PRIORITY = "optional"
-LICENSE = "LGPL"
+LICENSE = "GPLv2+"
 
 ARM_INSTRUCTION_SET = "arm"
 
@@ -12,7 +12,7 @@ PE = "2"
 DEPENDS = "zlib libogg libvorbis libtheora faac faad2 ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'lame liba52', d)}"
 RSUGGESTS_${PN} = "mplayer"
 
-INC_PR = "r16"
+INC_PR = "r17"
 
 inherit autotools pkgconfig
 
