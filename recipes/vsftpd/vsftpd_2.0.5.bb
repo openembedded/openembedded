@@ -35,6 +35,9 @@ do_install() {
 }
 
 pkg_postinst() {
+        if [ "x$D" != "x" ]; then
+                exit 1
+        fi
         addgroup ftp
         adduser --system --home /var/lib/ftp --no-create-home --ingroup ftp --disabled-password -s /bin/false ftp
         mkdir -p ${localstatedir}/share/empty
