@@ -2,7 +2,7 @@ DESCRIPTION = "wxWidgets is a cross platform application framework utilizing nat
 HOMEPAGE = "http://www.wxwidgets.org"
 SECTION = "x11/libs"
 LICENSE = "wxWindows"
-DEPENDS = "gtk+ jpeg tiff libpng zlib expat"
+DEPENDS = "gtk+ jpeg tiff libpng zlib expat libxinerama"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/wxwindows/wxWidgets-${PV}.tar.bz2"
 
