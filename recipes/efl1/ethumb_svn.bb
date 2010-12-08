@@ -12,8 +12,6 @@ EXTRA_OECONF = "\
   --disable-docs \
 "
 
-SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk;module=ethumb;proto=http"
-
 # Some upgrade path tweaking, as in evas
 AUTO_LIBNAME_PKGS = ""
 

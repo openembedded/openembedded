@@ -7,10 +7,7 @@ SRCREV = "${EFL_SRCREV}"
 
 inherit e
 
-SRC_URI = "\
-           svn://svn.enlightenment.org/svn/e/trunk;module=eve;proto=http \
-           file://default.theme.remove.min.size.patch \
-"
+SRC_URI += "file://eve-theme-for-smaller-screens.patch"
 
 EXTRA_OECONF = "\
   --with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc \
