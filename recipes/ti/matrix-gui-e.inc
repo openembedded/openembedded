@@ -4,7 +4,7 @@ LICENSE = "BSD"
 SECTION = "multimedia"
 PRIORITY = "optional"
 
-INC_PR = "r20"
+INC_PR = "r21"
 
 COMPATIBLE_MACHINE = "(dm365|omapl138|omap3|ti816x)"
 
@@ -15,6 +15,9 @@ PLATFORM_dm37x-evm = "dm3730"
 PLATFORM_am37x-evm = "am3715"
 PLATFORM_beagleboard = "am3715"
 PLATFORM_ti816x = "ti816x"
+PLATFORM_am180x-evm = "am180x"
+PLATFORM_am181x-evm = "am181x"
+PLATFORM_am3517-evm = "am3517"
 
 SRC_URI = "svn://gforge.ti.com/svn/matrix_gui/;module=trunk;proto=https;user=anonymous;pswd='' "
 
