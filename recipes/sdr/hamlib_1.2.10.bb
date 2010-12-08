@@ -38,9 +38,6 @@ python populate_packages_prepend () {
 	do_split_packages(d, hamlib_libdir, '^lib(.*)\.so\.*', 'lib%s', 'hamlib %s library', extra_depends='', allow_links=True)
 }
 
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
-
-
 
 SRC_URI[md5sum] = "29f0d30779a8ffe0444eb523a6ad8344"
 SRC_URI[sha256sum] = "9b50825666519b0b86469f1988a0de09ce2ffc08fa221f9aa40d18c7b7f6c651"

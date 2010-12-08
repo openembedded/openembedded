@@ -12,11 +12,8 @@ do_configure_prepend() {
 }
 
 
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
-
 FILES_${PN} += "${PYTHON_SITEPACKAGES_DIR}"
 FILES_${PN}-dbg += "${PYTHON_SITEPACKAGES_DIR}/.debug"
-
 
 
 SRC_URI[archive.md5sum] = "9a0f64eb0258a3e8ba710eff9798a7d0"

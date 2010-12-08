@@ -37,8 +37,6 @@ FILES_libmissioncontrol-dbg += "${libdir}/.debug/libmissioncontrol.so.*"
 FILES_libmissioncontrol-config-dbg += "${libdir}/.debug/libmissioncontrol-config.so.*"
 FILES_libmissioncontrol-server-dbg += "${libdir}/.debug/libmissioncontrol-server.so.*"
 
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
-
 do_compile_append() {
         for i in ${S}/*.pc ; do
             sed -i -e s:${STAGING_DIR_TARGET}::g \

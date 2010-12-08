@@ -8,7 +8,6 @@ S = "${WORKDIR}/libusb-${PV}"
 
 inherit autotools
 
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
 EXTRA_OECONF = "--disable-build-docs"
 
 SRC_URI[md5sum] = "dc8865eaff167aabe78e5799762b8067"

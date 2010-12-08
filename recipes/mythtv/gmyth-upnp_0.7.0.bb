@@ -11,8 +11,6 @@ S = "${WORKDIR}/${PN}"
 
 inherit autotools
 
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
-
 do_compile_append() {
         sed -i -e s:${STAGING_DIR_TARGET}::g \
                -e s,Version:,Version:\ 0\.7\.0,g \

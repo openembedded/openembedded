@@ -11,8 +11,6 @@ inherit autotools
 
 EXTRA_OECONF = "--with-bdb-lib=${STAGING_LIBDIR} --with-bdb-include=${STAGING_INCDIR} --with-sqlite=no"
 
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
-
 do_compile_append() {
 for i in `find ${S}/ -name "*.pc" -type f` ; do \
             sed -i -e 's:-L${STAGING_LIBDIR}::g' -e 's:${STAGING_LIBDIR}:\$\{libdir\}:g' $i

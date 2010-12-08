@@ -8,7 +8,6 @@ SRC_URI = "http://telepathy.freedesktop.org/releases/telepathy-gabble/${P}.tar.g
            file://gabble.manager"
 
 inherit autotools
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 do_compile_prepend() {
       cp ${WORKDIR}/gabble.manager ${S}/data/

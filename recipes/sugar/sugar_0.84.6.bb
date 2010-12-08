@@ -19,7 +19,5 @@ FILES_${PN} += "${datadir}/${PN} \
                 ${datadir}/dbus-1 \
                 ${sysconfdir} "
 
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
-
 SRC_URI[md5sum] = "1747f7f35519b273e6c27bbcd8513d4b"
 SRC_URI[sha256sum] = "f5db9c1caf5cd57abfccb12ab1f5ba508cbf0f90ec9bad03de3fb38063775b83"

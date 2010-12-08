@@ -6,7 +6,6 @@ LICENSE = "LGPL/MPL"
 DEPENDS = "glib-2.0 gstreamer"
 
 inherit autotools
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 FILES_${PN} += "${libdir}/gstreamer-0.10/*.so"
 FILES_${PN}-dev += "${libdir}/gstreamer-0.10/*a"
@@ -19,7 +18,6 @@ do_compile_append() {
                       $i
         done
 }
-
 
 
 SRC_URI[md5sum] = "055e3eedf735ee1257fd4bb9ce86d04e"

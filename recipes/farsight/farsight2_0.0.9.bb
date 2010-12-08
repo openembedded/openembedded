@@ -5,7 +5,6 @@ SRC_URI = "http://farsight.freedesktop.org/releases/farsight2/${P}.tar.gz"
 DEPENDS = "libnice glib-2.0 libxml2 zlib dbus gstreamer gst-plugins-base"
 
 inherit autotools
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 EXTRA_OECONF = " \
   --disable-debug \
@@ -16,9 +15,6 @@ EXTRA_OECONF = " \
 FILES_${PN} += "${libdir}/*/*.so"
 FILES_${PN}-dev += "${libdir}/*/*a"
 FILES_${PN}-dbg += "${libdir}/*/.debug"
-
-
-
 
 
 SRC_URI[md5sum] = "f2d4fad95009bc7eae29f97c6f560dcd"

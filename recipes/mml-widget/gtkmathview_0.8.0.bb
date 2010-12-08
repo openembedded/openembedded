@@ -9,7 +9,6 @@ SRC_URI = "http://helm.cs.unibo.it/mml-widget/sources/${P}.tar.gz \
 	  "
 
 inherit autotools 
-AUTOTOOLS_STAGE_PKGCONFIG = 1
 
 EXTRA_OECONF = "--disable-binreloc"
 

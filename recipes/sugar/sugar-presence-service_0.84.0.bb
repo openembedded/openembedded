@@ -24,7 +24,5 @@ FILES_${PN} += "${datadir}/${PN} \
 FILES_${PN}-dbg += "${PYTHON_SITEPACKAGES_DIR}/*/.debug"
 
 
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
-
 SRC_URI[md5sum] = "bf292605b6c2d0ef3761a957acc8a95e"
 SRC_URI[sha256sum] = "15afba51ef2c34b86ae2c4b8ecfe612e37a7024ae9ccf42a3b612d70e3034d48"

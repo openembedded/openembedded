@@ -10,8 +10,6 @@ SRC_URI = "http://dev.laptop.org/pub/sugar/sources/sugar-datastore/${PN}-${PV}.t
 
 inherit autotools distutils-base
 
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
-
 FILES_${PN} += "${datadir}/dbus-1"
 
 SRC_URI[md5sum] = "7a6bbb387c1f7cd3ddd6663869df3b88"

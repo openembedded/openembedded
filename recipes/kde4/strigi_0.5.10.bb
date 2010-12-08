@@ -15,7 +15,5 @@ EXTRA_OECMAKE = "-DENABLE_FAM:BOOL=ON \
 
 FILES_${PN} += "${datadir}/dbus-1 \
                "
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
-
 SRC_URI[md5sum] = "cfaa2114ea27f2a00e6773c374e98ec4"
 SRC_URI[sha256sum] = "3851f803de3759490073c1d682d018592b010437b9ac2b85394eaddc63621faf"

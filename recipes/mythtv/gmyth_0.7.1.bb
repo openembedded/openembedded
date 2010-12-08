@@ -9,8 +9,6 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/gmyth/${PN}-${PV}.tar.gz"
 
 inherit autotools
 
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
-
 do_compile_append() {
         sed -i -e s:${STAGING_DIR_TARGET}::g \
                -e s:/${TARGET_SYS}::g \

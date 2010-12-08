@@ -9,8 +9,6 @@ SRC_URI[sha256sum] = "75cf8d3b5cac2764420ae2cc7846b9bb12a47d2ca04c96e5821309b012
 
 inherit autotools
 
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
-
 FILES_${PN} += "${libdir}/bellagio/*.so ${libdir}/bellagio/*.la"
 FILES_${PN}-dev += "${libdir}/bellagio/*.a"
 FILES_${PN}-dbg += "${libdir}/bellagio/.debug"

@@ -31,8 +31,6 @@ do_configure_prepend() {
         ${S}/configure.ac
 }	
 
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
-
 FILES_${PN}-dev += "${datadir}/pygtk"
 
 SRC_URI[archive.md5sum] = "9f3b7ec5c57130b96061cb486b79c076"

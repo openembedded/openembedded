@@ -11,7 +11,6 @@ SRC_URI = "http://www.kernel.org/pub/linux/bluetooth/bluez-${PV}.tar.gz \
 S = "${WORKDIR}/bluez-${PV}"
 
 inherit autotools
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 EXTRA_OECONF = "\
   --disable-tools \

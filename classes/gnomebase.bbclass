@@ -20,8 +20,6 @@ FILES_${PN}-doc += "${datadir}/devhelp"
 
 inherit autotools pkgconfig
 
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
-
 do_install_append() {
 	rm -rf ${D}${localstatedir}/lib/scrollkeeper/*
 	rm -rf ${D}${localstatedir}/scrollkeeper/*

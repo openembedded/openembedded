@@ -8,7 +8,6 @@ PE = "2"
 inherit e-base autotools
 
 # evas-native looks at this var, so keep it
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 do_configure_prepend() {
 	autopoint || touch config.rpath

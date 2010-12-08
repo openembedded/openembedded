@@ -39,6 +39,3 @@ FILES_${PN}-dbg += "${libdir}/qt4/.debug \
                     ${libdir}/qt4/*/.debug \
 		    ${libdir}/qt4/*/*/.debug"
 
-
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
-

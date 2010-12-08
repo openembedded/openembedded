@@ -10,8 +10,6 @@ SRC_URI = "http://download.sugarlabs.org/sources/sucrose/glucose/sugar-datastore
 
 inherit autotools
 
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
-
 FILES_${PN} += "${datadir}/dbus-1"
 
 

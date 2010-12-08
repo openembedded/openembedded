@@ -9,7 +9,6 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/openobex/obexftp-${PV}.tar.bz2 \
 	  "
 
 inherit autotools
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 EXTRA_OECONF += "--enable-bluetooth \
 		 --disable-swig \
@@ -24,7 +23,6 @@ EXTRA_OECONF += "--enable-bluetooth \
 PARALLEL_MAKE = ""
 
 LEAD_SONAME = "libobexftp.so"
-
 
 
 SRC_URI[md5sum] = "f20762061b68bc921e80be4aebc349eb"

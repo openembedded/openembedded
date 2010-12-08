@@ -15,8 +15,6 @@ SRC_URI = "http://mocha.xfce.org/archive/src/xfce/${PN}/${@'${PV}'[0:3]}/${PN}-$
 
 inherit autotools gtk-icon-cache pkgconfig
 
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
-
 EXTRA_OECONF += "--with-pluginsdir=${libdir}/xfce4/panel-plugins/"
 
 # FIXME:  Put icons in their own package too?

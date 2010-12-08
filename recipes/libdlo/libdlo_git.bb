@@ -9,7 +9,6 @@ SRC_URI = "git://anongit.freedesktop.org/libdlo;protocol=git"
 S = "${WORKDIR}/git"
 
 inherit lib_package autotools
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 do_configure_prepend() {
 	sed -i -e s:63:61: configure.ac

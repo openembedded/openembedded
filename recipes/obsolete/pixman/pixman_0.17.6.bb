@@ -28,5 +28,3 @@ NEON_armv7a = ""
 
 EXTRA_OECONF = "${NEON} --disable-gtk"
 
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
-

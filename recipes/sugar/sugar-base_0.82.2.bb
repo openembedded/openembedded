@@ -47,7 +47,5 @@ FILES_${PN} += "${datadir}/${PN} \
 
 FILES_${PN}-dbg += "${PYTHON_SITEPACKAGES_DIR}/sugar/.debug"
 
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
-
 SRC_URI[md5sum] = "c5790a18fd9ee86a49ffa727505294f5"
 SRC_URI[sha256sum] = "430b27a0510a50fb66ee211e35565be7e1e522bcde7d1adde5c63a1d18ad7f1d"

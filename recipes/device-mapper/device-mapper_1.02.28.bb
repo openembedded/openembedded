@@ -13,7 +13,6 @@ SRC_URI = "ftp://sources.redhat.com/pub/dm/device-mapper.${PV}.tgz \
 	   file://remove_insanity.patch "
 
 inherit autotools update-rc.d
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 # The install-script will fail without this.
 EXTRA_OECONF="--with-user= --with-group= "
