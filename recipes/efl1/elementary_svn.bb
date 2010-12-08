@@ -12,7 +12,7 @@ EXTRA_OECONF = "\
   --with-eet-eet=${STAGING_BINDIR_NATIVE}/eet \
 "
 
-SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/TMP/st;module=elementary;proto=http"
+SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/TMP/st;module=elementary;proto=http;scmdata=keep"
 S = "${WORKDIR}/elementary"
 
 do_compile_append() {

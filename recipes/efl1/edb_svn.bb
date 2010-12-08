@@ -7,4 +7,4 @@ SRCREV = "${EFL_SRCREV}"
 
 inherit efl
 
-SRC_URI = "svn://svn.enlightenment.org/svn/e/OLD;module=edb;proto=http"
+SRC_URI = "svn://svn.enlightenment.org/svn/e/OLD;module=edb;proto=http;scmdata=keep"
