@@ -13,8 +13,6 @@ SRC_URI = "git://github.com/buglabs/bug20-2.6.31-omap.git;branch=master;protocol
 
 S = "${WORKDIR}/git"
 
-CVS_TARBALL_STASH = ""
-
 do_configure_prepend() {
 	cp arch/arm/configs/omap3_bug_defconfig ${WORKDIR}/defconfig
 }
