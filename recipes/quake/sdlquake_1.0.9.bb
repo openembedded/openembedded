@@ -1,7 +1,7 @@
 DESCRIPTION = "Quake 1"
 SECTION = "x11/games"
 PRIORITY = "optional"
-DEPENDS = "libsdl-x11 libsdl-mixer libsdl-net zlib libxau"
+DEPENDS = "virtual/libsdl libsdl-mixer libsdl-net zlib libxau"
 LICENSE = "GPL"
 
 SRC_URI = "http://www.libsdl.org/projects/quake/src/sdlquake-${PV}.tar.gz \

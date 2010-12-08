@@ -1,7 +1,7 @@
 DESCRIPTION = "Initially a fork of the Quake2Forge project, this engine aims to provide security and performance enhancements."
 LICENSE = "GPLv2"
 
-DEPENDS = "libsdl-x11 zlib virtual/libgl"
+DEPENDS = "virtual/libsdl zlib virtual/libgl"
 SRC_URI = "http://tastyspleen.net/~jdolan/quetoo-${PV}.tar.bz2"
 
 PR = "r1"
