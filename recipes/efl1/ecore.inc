@@ -4,7 +4,7 @@ DEPENDS = "gettext-native virtual/libiconv tslib curl eet evas glib-2.0 \
            libxtst libxcomposite libxinerama libxscrnsaver libxdamage libxrandr libxcursor libxprintutil"
 DEPENDS_virtclass-native = "eet-native evas-native"	   
 # optional
-# DEPENDS += "directfb libsdl-x11 openssl virtual/libiconv"
+# DEPENDS += "directfb virtual/libsdl openssl virtual/libiconv"
 PV = "0.9.9.060+svnr${SRCPV}"
 PR = "r5"
 
