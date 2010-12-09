@@ -3,7 +3,7 @@ LICENSE = "GPL"
 SECTION = "libs/network"
 DEPENDS = "readline ncurses" 
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/js/older-packages/js-1.5.tar.gz \
 	   file://libtermcap.patch \
@@ -11,6 +11,7 @@ SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/js/older-packages/js-1.5.tar.g
 S = "${WORKDIR}/js/src"
 
 EXTRA_OEMAKE = "'CC=${CC}' 'LD=${LD}' 'XCFLAGS=${CFLAGS}' 'XLDFLAGS=-L${STAGING_LIBDIR} -soname=libjs'"
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 do_compile_prepend() {
 	cp ${WORKDIR}/jsautocfg.h ${S}/
