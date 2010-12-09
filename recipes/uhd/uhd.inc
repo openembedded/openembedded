@@ -5,11 +5,11 @@ LICENSE = "GPLV3+"
 DEPENDS = "git-native python-cheetah-native boost libusb1 uhd-firmware"
 RDEPENDS_${PN} += "uhd-firmware"
 
-INC_PR = "r3"
+INC_PR = "r4"
 
 inherit cmake
 
-PACKAGES += "${PN}-tests ${PN}-examples"
+PACKAGES =+ "${PN}-tests ${PN}-examples"
 
 FILES_${PN} += "${libdir}/libuhd.so"
 FILES_${PN} += "${datadir}/uhd/utils/*"
