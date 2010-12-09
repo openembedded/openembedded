@@ -1,2 +1,2 @@
-require binutils_git.bb
+require binutils_${PV}.bb
 require binutils-cross.inc
