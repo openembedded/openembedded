@@ -3,9 +3,7 @@ DEPENDS = "pkgconfig zlib openssl eina gnutls ecore libxml2 re2c-native mysql5 a
 DEPENDS_virtclass-native = "pkgconfig-native zlib-native openssl-native eina-native gnutls-native ecore-native libxml2-native re2c-native mysql5-native"
 LICENSE = "LGPLv2.1+"
 PV = "1.0.0+svnr${SRCPV}"
-# current EFL_SRCREV doesn't support external re2c
-SRCREV = "55665"
-#SRCREV = "${EFL_SRCREV}"
+SRCREV = "${EFL_SRCREV}"
 
 # to provide native lemon binary
 BBCLASSEXTEND = "native"
