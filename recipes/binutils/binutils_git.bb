@@ -1,11 +1,12 @@
 FILESPATHPKG =. "binutils-git:"
-SRCREV = "8e34e0b00b49977c905554ebd6e793b095ec2f05"
+SRCREV = "4685dd35801488a1da0293061d9f953ffe4e7ae7"
 require binutils.inc
 PR = "${INC_PR}.3"
 PR_append = "+gitr${SRCPV}"
+LICENSE = "GPLv3"
 
 S = "${WORKDIR}/git"
-SRC_URI = "git://sources.redhat.com/git/binutils.git;branch=binutils-2_21-branch;protocol=git \
+SRC_URI = "git://sources.redhat.com/git/binutils.git;branch=master;protocol=git \
      file://binutils-uclibc-100-uclibc-conf.patch \
      file://110-arm-eabi-conf.patch \
      file://binutils-uclibc-300-001_ld_makefile_patch.patch \
