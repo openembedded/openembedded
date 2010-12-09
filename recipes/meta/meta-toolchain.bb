@@ -171,8 +171,10 @@ do_populate_sdk() {
 	# Package it up
 	mkdir -p ${SDK_DEPLOY}
 	cd ${SDK_OUTPUT}
+	chmod -R go-w ${SDK_OUTPUT}
 	fakeroot tar cfj ${SDK_DEPLOY}/${TOOLCHAIN_OUTPUTNAME}.tar.bz2 .
 	cd ${SDK_OUTPUT2}
+	chmod -R go-w ${SDK_OUTPUT2}
 	fakeroot tar cfj ${SDK_DEPLOY}/${TOOLCHAIN_OUTPUTNAME}-extras.tar.bz2 .
 }
 
