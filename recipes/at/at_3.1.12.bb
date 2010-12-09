@@ -5,7 +5,7 @@ DEPENDS = "flex-native flex"
 RCONFLICTS_${PN} = "atd"
 RREPLACES_${PN} = "atd"
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI = " \
 	${DEBIAN_MIRROR}/main/a/at/at_${PV}.orig.tar.gz \
