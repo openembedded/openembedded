@@ -1,0 +1,22 @@
+# File: /etc/ppp/peers/tmobile
+#
+/dev/ttyUSB3
+115200
+crtscts
+lock
+hide-password
+defaultroute # set the default route
+usepeerdns
+holdoff 3
+ipcp-accept-local
+lcp-echo-failure 12
+lcp-echo-interval 3
+noauth
+noipdefault
+novj
+novjccomp
+replacedefaultroute
+debug
+
+connect "/usr/sbin/chat -v -f /etc/ppp/peers/tmobile_chat"
+disconnect "/usr/sbin/chat -v -f /etc/ppp/peers/tmobile_disconnect

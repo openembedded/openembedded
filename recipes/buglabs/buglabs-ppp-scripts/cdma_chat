@@ -1,0 +1,25 @@
+# Connection script for Sierra Wireless CDMA/EVDO modems
+# Note: This demo script is setup to work on Verizon and Sprint
+#       Networks.
+#
+SAY 'Starting Sierra Wireless CDMA connect script...\n'
+SAY '\n'
+
+#######################################
+SAY 'Setting the abort string\n'
+SAY '\n'
+# Abort String ------------------------------
+ABORT 'NO DIAL TONE' ABORT 'NO ANSWER' ABORT 'NO CARRIER' ABORT DELAYED
+
+#######################################
+SAY 'Initializing modem\n'
+# Modem Initialization 
+'' AT
+OK ATZ
+
+#######################################
+SAY '\n'
+SAY     'Dialing...\n'
+OK ATDT#777
+CONNECT ''
+

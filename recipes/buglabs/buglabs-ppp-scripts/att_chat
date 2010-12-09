@@ -1,0 +1,40 @@
+# Connection script for Sierra Wireless GSM/UMTS modems
+# Note: This demo script is setup to work on the Cingular EDGE network
+#
+SAY 'Starting Sierra Wireless GSM connect script...\n'
+SAY '\n'
+
+#######################################
+SAY 'Setting the abort string\n'
+SAY '\n'
+# Abort String ------------------------------
+ABORT 'NO DIAL TONE' ABORT 'NO ANSWER' ABORT 'NO CARRIER' ABORT DELAYED
+
+#######################################
+SAY 'Initializing modem\n'
+# Modem Initialization 
+'' AT
+OK ATZ
+
+#######################################
+SAY '\n'
+SAY     'Setting APN\n'
+# Access Point Name (APN) 
+# Incorrect APN or CGDCONT can often cause errors in connection.
+# Below are a bunch of different popular APNs
+
+#REG:\s1 AT+cgdcont=1,"IP","proxy"
+#OK     'AT+CGDCONT=0,"IP","proxy"'
+#OK     'AT+CGDCONT=1,"IP","proxy"'
+#OK     'AT+CGDCONT=2,"IP","proxy"'
+#OK     'AT+CGDCONT=0,"IP","ISP.CINGULAR"'
+OK     'AT+CGDCONT=1,"IP","WAP.CINGULAR"'
+#OK     'AT+CGDCONT=2,"IP","ISP.CINGULAR"'
+
+#######################################
+SAY '\n'
+SAY     'Dialing...\n'
+# Dial the ISP, this is the common Cingular dial string
+
+OK ATD*99#
+CONNECT ''

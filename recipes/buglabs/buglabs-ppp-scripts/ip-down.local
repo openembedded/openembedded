@@ -1,0 +1,18 @@
+#!/bin/bash
+# latest-kernel-support: 2.6.18
+# Author: Kevin Lloyd <linux@sierrawireless.com>
+# Date: 10/20/2006
+
+if [ $# -eq 0 ]; then
+  exit 1
+fi
+
+if [ $1 = ppp0 ]; then
+  mv -f /etc/resolv.conf /etc/resolv.conf.ppp0
+  if [ -e /etc/resolv.conf.orig ]; then
+    cp /etc/resolv.conf.orig /etc/resolv.conf
+  else
+    grep -v ppp0 /etc/resolv.conf.ppp0 > /etc/resolv.conf
+  fi
+  chmod a+r /etc/resolv.conf
+fi

@@ -1,0 +1,13 @@
+-detach
+lcp-echo-failure 0
+noauth
+/dev/ttyUSB0
+115200
+debug
+defaultroute
+ipcp-accept-local
+ipcp-accept-remote
+usepeerdns
+crtscts
+lock
+connect '/usr/sbin/chat -v -t6 -f /etc/ppp/peers/cdma_chat'

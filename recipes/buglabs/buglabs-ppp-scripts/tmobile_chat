@@ -1,0 +1,14 @@
+TIMEOUT 10
+ABORT 'BUSY'
+ABORT 'NO ANSWER'
+ABORT 'ERROR'
+SAY 'Starting GPRS connect script\n'
+
+""'ATZ'
+SAY 'Setting APN\n'
+OK 'AT+CGDCONT=1,"IP","internet2.voicestream.com"'
+
+ABORT 'NO CARRIER'
+SAY 'Dialing...\n'
+OK 'ATD*99***1#'
+CONNECT 
