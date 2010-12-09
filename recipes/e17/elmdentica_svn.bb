@@ -1,5 +1,5 @@
 DESCRIPTION = "A indenti.ca client for E"
-DEPENDS = "glib-2.0 gconf curl elementary sqlite3-native"
+DEPENDS = "glib-2.0 gconf curl elementary sqlite3-native azy"
 LICENSE = "GPLv3+"
 SECTION = "e/apps"
 HOMEPAGE = "http://elmdentica.googlecode.com"
