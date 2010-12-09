@@ -1,7 +1,7 @@
-From 033209b9aceb9a2dc395e70f49eee9f7b406bb90 Mon Sep 17 00:00:00 2001
+From 99db14dd71d9681b52647edaffefd5dd951b1672 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Mon, 10 May 2010 20:44:09 -0700
-Subject: [PATCH 10/14] OMAP: DSS2: enable hsclk in dsi_pll_init for OMAP36XX
+Subject: [PATCH 10/11] OMAP: DSS2: enable hsclk in dsi_pll_init for OMAP36XX
 
 Signed-off-by: Koen Kooi <koen@beagleboard.org>
 ---

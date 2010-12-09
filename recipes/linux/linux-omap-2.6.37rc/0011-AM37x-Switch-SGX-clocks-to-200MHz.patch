@@ -1,7 +1,7 @@
-From 2f7fbd88fbaf05433fc5a6e6a6c2897246a67af6 Mon Sep 17 00:00:00 2001
+From f98795ac746eb6681738e56fc8df0f126bfd5f2f Mon Sep 17 00:00:00 2001
 From: Prabindh Sundareson <prabu@ti.com>
 Date: Thu, 3 Jun 2010 11:20:57 +0530
-Subject: [PATCH 12/14] AM37x: Switch SGX clocks to 200MHz
+Subject: [PATCH 11/11] AM37x: Switch SGX clocks to 200MHz
 
 Signed-off-by: Prabindh Sundareson <prabu@ti.com>
 Signed-off-by: Koen Kooi <koen@beagleboard.org>
@@ -10,7 +10,7 @@ Signed-off-by: Koen Kooi <koen@beagleboard.org>
  1 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/clock3xxx_data.c b/arch/arm/mach-omap2/clock3xxx_data.c
-index a8c8c7a..a56f8e9 100644
+index 0579604..f394b4f 100644
 --- a/arch/arm/mach-omap2/clock3xxx_data.c
 +++ b/arch/arm/mach-omap2/clock3xxx_data.c
 @@ -3267,8 +3267,8 @@ static struct omap_clk omap3xxx_clks[] = {

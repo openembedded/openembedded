@@ -1,7 +1,7 @@
-From 020068c783093a74ef15086afc6405e44676bbd2 Mon Sep 17 00:00:00 2001
+From 85ea664bbf0410eb8132be8427874761113457bc Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Tue, 23 Nov 2010 11:40:20 +0100
-Subject: [PATCH 08/14] ARM: OMAP: add omap_rev_* macros
+Subject: [PATCH 09/11] ARM: OMAP: add omap_rev_* macros
 
 This is just to make the SGX modules build that depend on omap_rev_lt_3_0
 
