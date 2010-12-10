@@ -1,0 +1,22 @@
+#!/bin/sh
+
+PIDFILE="/var/run/ustd.pid"
+TRACEDIR="/tmp/ust"
+
+case "$1" in
+
+    start)
+	mkdir -p $TRACEDIR
+	ustd -o $TRACEDIR -d --pidfile $PIDFILE
+	;;
+
+    stop)
+	kill `cat $PIDFILE`
+	;;
+
+    reload)
+	$0 stop
+	$0 start
+	;;
+
+esac
