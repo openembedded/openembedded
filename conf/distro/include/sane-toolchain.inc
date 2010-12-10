@@ -10,6 +10,8 @@ PREFERRED_BINUTILS_VERSION           ?= "2.20.1"
 PREFERRED_UCLIBC_VERSION             ?= "git"
 PREFERRED_EGLIBC_VERSION             ?= "2.12"
 PREFERRED_GLIBC_VERSION              ?= "2.10.1"
+PREFERRED_LIBTOOL_VERSION            ?= "2.4"
+LIBTOOL_HAS_SYSROOT                  ?= "yes"
 
 # Prefer glibc 2.6 and uclibc 0.9.30, these have had the most testing.
 PREFERRED_VERSION_glibc              ?= "${PREFERRED_GLIBC_VERSION}"
@@ -57,6 +59,11 @@ PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}g++              = "gcc-cross"
 
 # Others
 PREFERRED_PROVIDER_linux-libc-headers = "linux-libc-headers"
+PREFERRED_VERSION_libtool = "${PREFERRED_LIBTOOL_VERSION}"
+PREFERRED_VERSION_libtool-cross = "${PREFERRED_LIBTOOL_VERSION}"
+PREFERRED_VERSION_libtool-native = "${PREFERRED_LIBTOOL_VERSION}"
+PREFERRED_VERSION_libtool-sdk = "${PREFERRED_LIBTOOL_VERSION}"
+PREFERRED_VERSION_libtool-nativesdk = "${PREFERRED_LIBTOOL_VERSION}"
 
 #############################################################################
 # TOOLCHAIN CUSTOMIZATION
