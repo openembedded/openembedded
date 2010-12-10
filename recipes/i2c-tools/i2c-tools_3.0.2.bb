@@ -2,7 +2,7 @@ DESCRIPTION = "Set of i2c tools for linux"
 SECTION = "base"
 LICENSE = "GPLv2"
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://dl.lm-sensors.org/i2c-tools/releases/i2c-tools-${PV}.tar.bz2 \
            file://Module.mk \
