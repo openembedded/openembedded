@@ -17,5 +17,17 @@ do_compile_prepend() {
         echo "include eepromer/Module.mk" >> Makefile
 }
 
+do_stage2() {
+        install -d ${STAGING_INCDIR}/linux
+        install -m 0644 include/linux/i2c-dev.h ${STAGING_INCDIR}/linux/i2c-dev-user.h
+}
+addtask stage2 after do_package before do_populate_staging
+
+do_install_append() {
+        install -d ${D}{$includedir}/linux
+        install -m 0644 include/linux/i2c-dev.h ${D}${includedir}/linux/i2c-dev-user.h
+	rm -f ${D}${includedir}/linux/i2c-dev.h
+}
+
 SRC_URI[md5sum] = "b546345ac19db56719dea6b8199f11e0"
 SRC_URI[sha256sum] = "0b4d6455a30a3264a60b4d3be55855d996d52ea4f162a2f04ffff378e24f98a2"
