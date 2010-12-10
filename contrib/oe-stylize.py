@@ -379,7 +379,7 @@ if __name__ == "__main__":
                 line = follow_rule(5, line)
             if var == "":
                 if not in_routine:
-                    print "## Warning: unknown variable/routine \"%s\"" % originalLine
+                    print "## Warning: unknown variable/routine \"%s\"" % originalLine.rstrip('\n')
                 var = 'others'
             for c in commentBloc: seen_vars[var].append(c)
             commentBloc = []
