@@ -2,7 +2,7 @@ DESCRIPTION = "Set of i2c tools for linux"
 SECTION = "base"
 LICENSE = "GPLv2"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://dl.lm-sensors.org/i2c-tools/releases/i2c-tools-${PV}.tar.bz2 \
            file://Module.mk \
@@ -16,12 +16,6 @@ do_compile_prepend() {
         sed -i 's#CC\t:= gcc#CC\t:= ${CC}#' Makefile
         echo "include eepromer/Module.mk" >> Makefile
 }
-
-do_stage2() {
-        install -d ${STAGING_INCDIR}/linux
-        install -m 0644 include/linux/i2c-dev.h ${STAGING_INCDIR}/linux/i2c-dev-user.h
-}
-addtask stage2 after do_package before do_populate_staging
 
 do_install_append() {
         install -d ${D}{$includedir}/linux
