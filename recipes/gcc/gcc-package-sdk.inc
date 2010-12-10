@@ -56,9 +56,9 @@ do_install () {
 	# the packaging.
 	if [ "x${OLD_PACKAGE_STRIP}" != "xno" ]; then
 		for soFile in ${D}${prefix}/${TARGET_SYS}/lib/libstdc++.so.* ${D}${prefix}/${TARGET_SYS}/lib/libg2c.so.* ${D}${prefix}/${TARGET_SYS}/lib/libgcc_s.so.*; do
-			if echo ${soFile} | grep '.py$' ; then 
+			if echo ${soFile} | grep '.py$' ; then
 				echo "Not stripping .py file ${soFile}"
-			elif echo ${soFile} | grep '*' ; then 
+			elif echo ${soFile} | grep '*' ; then
 				echo "Not stripping non-existent mask ${soFile}"
 			else
 				${TARGET_PREFIX}strip ${soFile}

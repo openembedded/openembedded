@@ -28,6 +28,12 @@ do_install () {
                         mv -f ${D}${prefix}/$d/* ${D}${target_libdir} || true
                 fi
         done
+        rm -f ${D}${target_base_libdir}/libgcc_s.so
+        rm -f ${D}${target_libdir}/libgcc_s.so
+       echo "/* GNU ld script
+   Use the shared library, but some functions are only in
+   the static library.  */
+GROUP ( libgcc_s.so.1 libgcc.a )" > ${D}${target_libdir}/libgcc_s.so
     # If this is important, we should remove the staging package here
 	# get rid of dummy libc.so
 	#if [ -z "`file ${STAGING_DIR_TARGET}${target_libdir}/libc.so | grep "ASCII C program text"`" ]; then
