@@ -7,6 +7,7 @@ LICENSE = "GPLv3"
 DEPENDS = "libeflvala"
 RDEPENDS_${PN} = "phoneuid"
 PV = "0.1+gitr${SRCPV}"
+PR = "r1"
 
 SRC_URI = "git://git.shr-project.org/repo/ffphonelog.git;protocol=http;branch=master"
 
