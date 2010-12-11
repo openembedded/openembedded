@@ -5,5 +5,5 @@ SECTION = "base"
 RREPLACES_${PN} = "textutils shellutils fileutils"
 RPROVIDES_${PN} = "textutils shellutils fileutils"
 
-INC_PR = "r5"
+INC_PR = "r6"
 inherit autotools

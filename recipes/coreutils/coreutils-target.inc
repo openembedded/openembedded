@@ -64,23 +64,23 @@ do_install () {
 pkg_postinst_${PN} () {
 	# The utilities in /usr/bin
 	for i in ${bindir_progs}; do 
-		if [ -e ${bindir}/$i.${PN} ]; then
+#		if [ -e ${bindir}/$i.${PN} ]; then
 			update-alternatives --install ${bindir}/$i $i $i.${PN} 100;
-		fi
+#		fi
 	done
 
 	# The utilities in /bin
 	for i in ${base_bindir_progs}; do 
-		if [ -e ${base_bindir}/$i.${PN} ]; then
+#		if [ -e ${base_bindir}/$i.${PN} ]; then
 			update-alternatives --install ${base_bindir}/$i $i $i.${PN} 100;
-		fi
+#		fi
 	done
 
 	# The utilities in /usr/sbin
 	for i in ${sbindir_progs}; do
-		if [ -e ${sbindir}/$i.${PN} ]; then
+#		if [ -e ${sbindir}/$i.${PN} ]; then
 			update-alternatives --install ${sbindir}/$i $i $i.${PN} 100;
-		fi
+#		fi
 	done
 
 	# Special cases. uptime and hostname is broken, prefer busybox's version. [ needs to be treated separately.
