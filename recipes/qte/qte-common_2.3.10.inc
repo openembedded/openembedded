@@ -109,7 +109,7 @@ export SYSCONF_LFLAGS = "${LDFLAGS} -lts"
 export SYSCONF_MOC = "${STAGING_BINDIR_NATIVE}/moc"
 export SYSCONF_UIC = "${STAGING_BINDIR_NATIVE}/uic"
 
-# generate uclibc and eabi configurations
+# generate uclibc, eabi and powerpc configurations
 do_configure() {
 	for f in ${S}/configs/linux-*-g++-shared; do
 		sed -e 's,-linux-,-linux-uclibc-,g' < $f \
@@ -119,6 +119,7 @@ do_configure() {
 		sed -e 's,-linux-,-linux-uclibceabi-,g' < $f \
 			> `dirname $f`/`basename $f | sed -e 's,linux-,linux-uclibceabi-,'`
 	done
+	sed -e 's/arm/powerpc/'  ${S}/configs/linux-arm-g++-shared > ${S}/configs/linux-powerpc-g++-shared
 	echo yes | ./configure ${EXTRA_OECONF} || die "Configuring qte failed. EXTRA_OECONF was ${EXTRA_OECONF}"
 }
 
