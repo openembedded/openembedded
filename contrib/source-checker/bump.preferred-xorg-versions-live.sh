@@ -33,10 +33,23 @@ function updateVersions {
   if ls -1 ${BBS}${GRP}/${PKG}_*.bb >/dev/null 2>/dev/null ; then
     echo "PREFERRED_VERSION_${PKG} ?= \"${VER}\"" >> ${PREFS_LIVE}
   fi
-  if ls -1 ${BBS}${GRP}/${PKG}-native_*.bb >/dev/null 2>/dev/null || 
-       grep "BBCLASSEXTEND.*native" ${BBS}${GRP}/${PKG}_*.bb >/dev/null 2>/dev/null ||
-       grep "BBCLASSEXTEND.*native" ${BBS}${GRP}/${PKG}.inc >/dev/null 2>/dev/null ; then
+  if [[ ${GRP} == "proto" ]] ||
+       ls -1 ${BBS}${GRP}/${PKG}-native_*.bb >/dev/null 2>/dev/null || 
+       grep "BBCLASSEXTEND.*native[ \"]" ${BBS}${GRP}/${PKG}_*.bb >/dev/null 2>/dev/null ||
+       grep "BBCLASSEXTEND.*native[ \"]" ${BBS}${GRP}/${PKG}.inc >/dev/null 2>/dev/null ; then
     echo "PREFERRED_VERSION_${PKG}-native ?= \"${VER}\"" >> ${PREFS_LIVE}
+  fi
+  if [[ ${GRP} == "proto" ]] ||
+       ls -1 ${BBS}${GRP}/${PKG}-nativesdk_*.bb >/dev/null 2>/dev/null || 
+       grep "BBCLASSEXTEND.*nativesdk" ${BBS}${GRP}/${PKG}_*.bb >/dev/null 2>/dev/null ||
+       grep "BBCLASSEXTEND.*nativesdk" ${BBS}${GRP}/${PKG}.inc >/dev/null 2>/dev/null ; then
+    echo "PREFERRED_VERSION_${PKG}-nativesdk ?= \"${VER}\"" >> ${PREFS_LIVE}
+  fi
+  if [[ ${GRP} == "proto" ]] ||
+       ls -1 ${BBS}${GRP}/${PKG}-sdk_*.bb >/dev/null 2>/dev/null || 
+       grep "BBCLASSEXTEND.*[ \"]sdk" ${BBS}${GRP}/${PKG}_*.bb >/dev/null 2>/dev/null ||
+       grep "BBCLASSEXTEND.*[ \"]sdk" ${BBS}${GRP}/${PKG}.inc >/dev/null 2>/dev/null ; then
+    echo "PREFERRED_VERSION_${PKG}-sdk ?= \"${VER}\"" >> ${PREFS_LIVE}
   fi
   if [[ -n ${BB_VER} && ${BB_VER} != ${VER} ]] ; then
     echo "bump: $GRP ${PKG} ${BB_VER} -> ${VER}" | tee -a ${OUT_LOG}
