@@ -100,7 +100,7 @@ python () {
 # Manually run do_install & all of its deps
 python do_populate_sysroot_post () {
     from os.path import exists
-    from bb.build import exec_task, exec_func
+    from bb.build import exec_func, make_stamp
     from bb import note
 
     stamp = d.getVar("STAMP", True)
@@ -113,6 +113,9 @@ python do_populate_sysroot_post () {
         if not exists("%s.%s" % (stamp, task)):
             note("%s: executing task %s" % (d.getVar("PF", True), task))
             exec_func(task, d)
+            flags = d.getVarFlags(task)
+            if not flags.get('nostamp') and not flags.get('selfstamp'):
+                make_stamp(task, d)
 
     rec_exec_task("do_populate_sysroot", set())
 }
