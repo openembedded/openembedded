@@ -1,6 +1,7 @@
 DESCRIPTION = " Enlightenment Web Browser"
 LICENSE = "GPL"
 DEPENDS = "evas ecore edje elementary webkit-efl"
+PR = "r1"
 PV = "0.3.0.0+svnr${SRCPV}"
 SRCREV = "${EFL_SRCREV}"
 
