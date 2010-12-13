@@ -10,7 +10,7 @@ SRC_URI = "${GNU_MIRROR}/binutils/binutils-${PV}.tar.bz2 \
      file://binutils-uclibc-300-012_check_ldrunpath_length.patch \
      file://binutils-uclibc-gas-needs-libm.patch \
      file://fix-clone-conflicts.patch \
-     ${@['file://libtool-update.patch','file://libtool-2.4-update.patch'][bb.data.getVar('LIBTOOL_HAS_SYSROOT', d, 1) == 'yes']} \
+     ${@['','file://libtool-2.4-update.patch'][bb.data.getVar('LIBTOOL_HAS_SYSROOT', d, 1) == 'yes']} \
      file://binutils-2.19.1-ld-sysroot.patch \
      "
 SRC_URI[md5sum] = "c84c5acc9d266f1a7044b51c85a823f5"
