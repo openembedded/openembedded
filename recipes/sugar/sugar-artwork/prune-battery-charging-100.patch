@@ -1,0 +1,20 @@
+--- a/icons/scalable/device/Makefile.am	2009-02-01 14:59:04.000000000 +0100
++++ b/icons/scalable/device/Makefile.am	2010-12-12 01:57:57.000000000 +0100
+@@ -25,7 +25,6 @@
+ 	battery-090.svg			\
+ 	battery-100.icon		\
+ 	battery-100.svg			\
+-	battery-charging-100.svg	\
+ 	battery-charging-000.svg	\
+ 	battery-charging-010.svg	\
+ 	battery-charging-020.svg	\
+--- a/icons/scalable/device/Makefile.in	2009-03-11 17:20:20.000000000 +0100
++++ b/icons/scalable/device/Makefile.in	2010-12-12 02:10:57.000000000 +0100
+@@ -195,7 +195,6 @@
+ 	battery-090.svg			\
+ 	battery-100.icon		\
+ 	battery-100.svg			\
+-	battery-charging-100.svg	\
+ 	battery-charging-000.svg	\
+ 	battery-charging-010.svg	\
+ 	battery-charging-020.svg	\
