@@ -145,13 +145,8 @@ SRC_URI_append_mips64el = " file://mips64-nomultilib.patch "
 # Language Overrides
 FORTRAN = ""
 JAVA = ""
-rename_srcdir (){
-        mv ${WORKDIR}/${BRANCH} ${WORKDIR}/gcc-${PV}
-}
 
-do_unpack_append() {
-        bb.build.exec_func('rename_srcdir', d)
-}
+S = "${WORKDIR}/${BRANCH}"
 
 EXTRA_OECONF_BASE = " --enable-lto \
 		      --enable-libssp \
