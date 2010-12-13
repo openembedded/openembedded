@@ -1,0 +1,15 @@
+Index: matchbox-keyboard/src/matchbox-keyboard-ui.c
+===================================================================
+--- matchbox-keyboard.orig/src/matchbox-keyboard-ui.c	2008-02-07 08:14:02.000000000 -0500
++++ matchbox-keyboard/src/matchbox-keyboard-ui.c	2008-08-26 16:58:10.000000000 -0400
+@@ -860,8 +860,8 @@
+   MARK();
+ 
+   /* Don't scale beyond a sensible height on wide screens */
+-  if (height > (ui->dpy_height / 3))
+-    height = ui->dpy_height / 3;
++  if (height > (ui->dpy_height / 2))
++    height = ui->dpy_height / 2;
+ 
+   width_diff  = width  - ui->base_alloc_width; 
+   height_diff = height - ui->base_alloc_height; 

@@ -5,7 +5,7 @@ RCONFLICTS_${PN} = "matchbox-keyboard"
 SECTION = "x11"
 SRCREV = "1910"
 PV = "0.0+svnr${SRCPV}"
-PR = "r12"
+PR = "r13"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=matchbox-keyboard;proto=http \
 	    file://smallscreen-fontsize.patch \
@@ -16,6 +16,10 @@ SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=matchbox-keyboard;pr
         file://6-Add-layout-switch-key-to-all-layouts.patch \
         file://7-Newer-autotools.patch \
 	    file://80matchboxkeyboard"
+
+SRC_URI_append_bug20 = " file://mb_kb_mods.patch \
+			file://mb_kbd_size.patch \
+			file://keyboard-bug.xml"
 
 SRC_URI_append_om-gta01 = " file://fic-gta01-font-size.patch"
 SRC_URI_append_om-gta02 = " file://fic-gta01-font-size.patch"
@@ -44,6 +48,13 @@ FILES_matchbox-keyboard-applet-dbg += "${libdir}/matchbox-panel/.debug"
 do_install_append () {
 	install -d ${D}/${sysconfdir}/X11/Xsession.d/
 	install -m 755 ${WORKDIR}/80matchboxkeyboard ${D}/${sysconfdir}/X11/Xsession.d/
+}
+
+do_install_append_bug20 () {
+	install -d ${D}/${sysconfdir}/X11/Xsession.d/
+	install -m 755 ${WORKDIR}/80matchboxkeyboard ${D}/${sysconfdir}/X11/Xsession.d/
+	install -d ${D}/${datadir}/matchbox-keyboard/
+	install -m 644 ${WORKDIR}/keyboard-bug.xml ${D}/${datadir}/matchbox-keyboard/
 }
 
 pkg_postinst_matchbox-keyboard-im () {
