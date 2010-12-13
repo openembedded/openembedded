@@ -1,5 +1,5 @@
 DESCRIPTION = "Full versions of tools provided by busybox"
-PR = "r15"
+PR = "r16"
 
 inherit task
 
@@ -21,9 +21,9 @@ RDEPENDS_${PN} = "\
 		grep \
 		gzip \
 		ifupdown \
-		iproute2 \
+		${@base_contains('DISTRO_FEATURES', 'ipv6', 'iproute2', '', d)} \
 		iputils-arping \
-		iputils-ping6 \
+		${@base_contains('DISTRO_FEATURES', 'ipv6', 'iputils-ping6', '', d)} \
 		iputils-ping \
 		iputils \
 		less \
