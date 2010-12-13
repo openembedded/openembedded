@@ -1,6 +1,7 @@
 LICENSE = "GPL"
 DEPENDS = "zlib ncurses gnutls"
 PR = "r2"
+DEFAULT_PREFERENCE = "-1"
 SRC_URI = "\
     http://download.savannah.gnu.org/releases/qemu/qemu-${PV}.tar.gz \
     file://leftover.patch \
