@@ -6,7 +6,7 @@ DEPENDS = "vala-dbus-binding-tool-native dbus-glib glib-2.0 fso-specs"
 SRCREV = "145c461842173a9e3b34b987ec48080275377798"
 PV = "2010.10.15.1+gitr${SRCPV}"
 PE = "1"
-PR = "r1"
+PR = "r2"
 
 inherit autotools vala
 
