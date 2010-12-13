@@ -1,0 +1,13 @@
+Index: src/config/Linux_All.mk
+===================================================================
+--- src.orig/config/Linux_All.mk	2010-12-13 21:34:05.189656981 +0000
++++ src/config/Linux_All.mk	2010-12-13 21:35:02.849657511 +0000
+@@ -47,7 +47,7 @@
+ OS_CFLAGS = -DXP_UNIX -DSVR4 -DSYSV -D_BSD_SOURCE -DPOSIX_SOURCE -DHAVE_LOCALTIME_R
+ 
+ RANLIB = echo
+-MKSHLIB = $(LD) -shared $(XMKSHLIBOPTS)
++MKSHLIB = $(CC) -shared $(XMKSHLIBOPTS)
+ 
+ #.c.o:
+ #      $(CC) -c -MD $*.d $(CFLAGS) $<
