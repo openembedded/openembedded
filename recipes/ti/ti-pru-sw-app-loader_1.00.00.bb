@@ -1,14 +1,13 @@
 DESCRIPTION = "PRU sw application loader"
 HOMEPAGE = "https://gforge.ti.com/gf/project/pru_sw/"
 LICENSE = "BSD"
-RRECOMMENDS_${PN} = "kernel-module-uio-pru"
-PR = "r0+svnr${SRCPV}"
+PR = "r1+svnr${SRCPV}"
 
-COMPATIBLE_MACHINE = "omapl138|am180x-evm"
+COMPATIBLE_MACHINE = "omapl138"
 
 SRC_URI = "svn://gforge.ti.com/svn/pru_sw/;module=trunk;proto=https;user=anonymous;pswd=''"
 
-SRCREV = "18"
+SRCREV = "20"
 S = "${WORKDIR}/trunk/app_loader"
 
 do_compile () {
