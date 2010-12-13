@@ -1,16 +1,18 @@
 DESCRIPTION = "Builds eDMA module used by eDMA libraries for PRU sw example applications"
 HOMEPAGE = "https://gforge.ti.com/gf/project/pru_sw/"
 LICENSE = "GPLv2"
-PR = "r0+svnr${SRCPV}"
 
-COMPATIBLE_MACHINE = "omapl138|am180x-evm|am181x-evm"
+COMPATIBLE_MACHINE = "omapl138"
 
 SRC_URI = "svn://gforge.ti.com/svn/pru_sw/;module=trunk;proto=https;user=anonymous;pswd=''"
 
-SRCREV = "18"
+SRCREV = "20"
 S = "${WORKDIR}/trunk/peripheral_lib/edma_driver/module"
 
+PACKAGE_STRIP = "no"
+
 inherit module
+PR = "${MACHINE_KERNEL_PR}+svnr${SRCPV}"
 
 do_install () {
         install -d ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/pru
