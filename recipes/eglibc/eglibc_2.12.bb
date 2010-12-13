@@ -21,7 +21,11 @@ SRC_URI = "svn://svn.eglibc.org/branches;module=${EGLIBC_BRANCH};proto=svn \
 S = "${WORKDIR}/${EGLIBC_BRANCH}/libc"
 B = "${WORKDIR}/build-${TARGET_SYS}"
 
-# the -isystem in bitbake.conf screws up glibc do_stage
+PACKAGES_DYNAMIC = "libc6*"
+RPROVIDES_${PN}-dev = "libc6-dev virtual-libc-dev"
+PROVIDES_${PN}-dbg = "glibc-dbg"
+
+# the -isystem in bitbake.conf screws up eglibc sysroot
 BUILD_CPPFLAGS = "-I${STAGING_INCDIR_NATIVE}"
 TARGET_CPPFLAGS = "-I${STAGING_DIR_TARGET}${layout_includedir}"
 
@@ -52,19 +56,6 @@ EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
                 --with-headers=${STAGING_INCDIR} \
                 --without-selinux \
                 ${GLIBC_EXTRA_OECONF}"
-
-EXTRA_OECONF += "${@get_eglibc_fpu_setting(bb, d)}"
-
-do_unpack_append() {
-	bb.build.exec_func('do_move_ports', d)
-}
-
-do_move_ports() {
-        if test -d ${WORKDIR}/${EGLIBC_BRANCH}/ports ; then
-	    rm -rf ${S}/ports
-	    mv ${WORKDIR}/${EGLIBC_BRANCH}/ports ${S}/
-	fi
-}
 
 do_configure () {
 # override this function to avoid the autoconf/automake/aclocal/autoheader
@@ -98,4 +89,4 @@ do_compile () {
 	)
 }
 
-require eglibc-package.bbclass
+require eglibc-package.inc

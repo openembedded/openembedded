@@ -94,7 +94,7 @@ EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 		--without-selinux \
 		${GLIBC_EXTRA_OECONF}"
 
-EXTRA_OECONF += "${@get_glibc_fpu_setting(bb, d)}"
+EXTRA_OECONF += "${@get_libc_fpu_setting(bb, d)}"
 
 do_munge() {
 	# Integrate ports and libidn into tree
