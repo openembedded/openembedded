@@ -1,0 +1,45 @@
+Index: IceE-1.3.0/cppe/src/IceE/Cond.cpp
+===================================================================
+--- IceE-1.3.0.orig/cppe/src/IceE/Cond.cpp	2010-05-13 14:59:18.512636959 +0200
++++ IceE-1.3.0/cppe/src/IceE/Cond.cpp	2010-05-13 14:59:42.528636875 +0200
+@@ -7,12 +7,12 @@
+ //
+ // **********************************************************************
+ 
+-#include <IceE/Cond.h>
+-
+ #ifndef _WIN32
+ #    include <sys/time.h>
+ #endif
+ 
++#include <IceE/Cond.h>
++
+ #ifdef _WIN32
+ 
+ IceUtilInternal::Semaphore::Semaphore(long initial)
+Index: IceE-1.3.0/cppe/src/IceE/Time.cpp
+===================================================================
+--- IceE-1.3.0.orig/cppe/src/IceE/Time.cpp	2010-05-13 14:59:18.564634684 +0200
++++ IceE-1.3.0/cppe/src/IceE/Time.cpp	2010-05-13 15:00:03.580637302 +0200
+@@ -7,10 +7,6 @@
+ //
+ // **********************************************************************
+ 
+-#include <IceE/DisableWarnings.h>
+-#include <IceE/Time.h>
+-#include <IceE/LocalException.h>
+-
+ #ifndef _WIN32_WCE
+ #   if defined(_WIN32)
+ #       include <sys/timeb.h>
+@@ -20,6 +16,10 @@
+ #   endif
+ #endif
+ 
++#include <IceE/DisableWarnings.h>
++#include <IceE/Time.h>
++#include <IceE/LocalException.h>
++
+ using namespace IceUtil;
+ 
+ #ifdef _WIN32

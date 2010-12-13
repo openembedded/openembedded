@@ -1,0 +1,204 @@
+Index: IceE-1.3.0/cpp/Makefile
+===================================================================
+--- IceE-1.3.0.orig/cpp/Makefile	2008-12-18 09:17:41.000000000 +0100
++++ IceE-1.3.0/cpp/Makefile	2010-12-12 16:57:57.669172001 +0100
+@@ -13,9 +13,9 @@
+ 
+ SUBDIRS = src
+ 
+-INSTALL_SUBDIRS = $(install_bindir) $(install_libdir)
++INSTALL_SUBDIRS = $(install_bindir)
+ 
+-install:: install-common
++install::
+ 	@for subdir in $(INSTALL_SUBDIRS); \
+ 	do \
+ 	    if test ! -d $$subdir ; \
+Index: IceE-1.3.0/cpp/config/Make.rules
+===================================================================
+--- IceE-1.3.0.orig/cpp/config/Make.rules	2008-12-18 09:17:40.000000000 +0100
++++ IceE-1.3.0/cpp/config/Make.rules	2010-12-12 17:31:58.265369002 +0100
+@@ -54,8 +54,8 @@
+ MCPP_LIBS              = $(if $(MCPP_HOME),-L$(MCPP_HOME)/$(libsubdir)) -lmcpp
+ MCPP_RPATH_LINK        = $(if $(MCPP_HOME),$(call rpathlink,$(MCPP_HOME)/$(libsubdir)))
+ 
+-CPPFLAGS		= -I$(includedir)
+-LDFLAGS			= $(LDPLATFORMFLAGS) $(CXXFLAGS) -L$(libdir) 
++CPPFLAGS		+= -I$(includedir)
++LDFLAGS			+= $(LDPLATFORMFLAGS) $(CXXFLAGS) -L$(libdir)
+ 
+ ifeq ($(FLEX_NOLINE),yes)
+     FLEXFLAGS	       := -L
+Index: IceE-1.3.0/cpp/config/Make.rules.Linux
+===================================================================
+--- IceE-1.3.0.orig/cpp/config/Make.rules.Linux	2008-12-18 09:17:40.000000000 +0100
++++ IceE-1.3.0/cpp/config/Make.rules.Linux	2010-12-12 18:09:38.858531002 +0100
+@@ -25,21 +25,55 @@
+    CXX			= c++
+ endif
+ 
++# Allow ar to be properly detected
++ifeq ($(AR),)
++   AR = ar
++endif
++
+ #
+ # icecpp is built with a C compiler
+ #
+-CFLAGS = -O2
++CFLAGS += -O2
++
++#ifeq ($(MACHINE),x86_64)
++#   ifeq ($(LP64),yes)
++#      CFLAGS	+= -m64
++#   else
++#      CFLAGS	+= -m32
++#   endif
++#endif
+ 
+-ifeq ($(MACHINE),x86_64)
+-   ifeq ($(LP64),yes)
+-      CFLAGS	+= -m64
++ifeq ($(CXX),icpc)
++   $(warning ===================================================================) 
++   $(warning Intel C++ is currently not supported. The Ice team does not)
++   $(warning maintain Intel C++ specific portions of the source code or build)
++   $(warning system.  Contact sales@zeroc.com if you wish to sponsor official)
++   $(warning support.)
++   $(warning ===================================================================) 
++   CXXFLAGS		= -D_REENTRANT    
++
++   ifneq ($(GENPIC),no)
++      CXXFLAGS		+= -fPIC
++   endif
++
++   ifeq ($(OPTIMIZE),yes)
++      CXXFLAGS		+= -O2 -DNDEBUG
+    else
+-      CFLAGS	+= -m32
++      CXXFLAGS		+= -g
+    endif
+-endif
+ 
+-ifeq ($(CXX),c++)
++   #
++   # C++ run-time libraries, necessary for linking some shared libraries.
++   #
++   CXXLIBS		=
++
++   mkshlib		= $(CXX) -shared $(LDFLAGS) -o $(1) -Wl,-h,$(2) $(3) $(4) -lpthread -lrt
++
++   mklib		= $(AR) cr $(1) $(2)
++
++   rpathlink            = -Wl,-rpath-link,$(1) 
+ 
++else
+    ifeq ($(MACHINE),sparc64)
+       #
+       # We are an ultra, at least, and so have the atomic instructions
+@@ -70,15 +104,17 @@
+       CXXARCHFLAGS	= -mtune=v8 -pipe -Wno-deprecated -DICE_USE_MUTEX_SHARED
+    endif
+ 
+-   ifeq ($(MACHINE),x86_64)
+-      ifeq ($(LP64),yes)
+-         CXXARCHFLAGS	+= -m64
+-      else
+-         CXXARCHFLAGS	+= -m32
+-      endif
+-   endif
++   #ifeq ($(MACHINE),x86_64)
++   #   ifeq ($(LP64),yes)
++   #      CXXARCHFLAGS	+= -m64
++   #   else
++   #      CXXARCHFLAGS	+= -m32
++   #   endif
++   #endif
+ 
+-   CXXFLAGS		= $(CXXARCHFLAGS) -ftemplate-depth-128 -Wall -D_REENTRANT -I/usr/include/nptl
++
++   #CXXFLAGS		= $(CXXARCHFLAGS) -ftemplate-depth-128 -Wall -D_REENTRANT -I/usr/include/nptl
++   CXXFLAGS		+= $(CXXARCHFLAGS) -ftemplate-depth-128 -Wall -D_REENTRANT
+ 
+    ifneq ($(GENPIC),no)
+       CXXFLAGS		+= -fPIC
+@@ -106,57 +142,26 @@
+    #
+    # C++ run-time libraries, necessary for linking some shared libraries.
+    #
+-   CXXLIBS		=
++   #CXXLIBS		=
+ 
+    mkshlib		= $(CXX) -shared $(LDFLAGS) -o $(1) -Wl,-h,$(2) $(3) $(4) -lpthread -lrt
+ 
+-   mklib		= ar cr $(1) $(2)
++   mklib		= $(AR) cr $(1) $(2)
+ 
+    rpathlink            = -Wl,-rpath-link,$(1) 
+ 
+-   ifneq ($(embedded_runpath_prefix),)
+-      LDPLATFORMFLAGS      = -Wl,--enable-new-dtags -Wl,-rpath,$(runpath_libdir)
+-   else
+-      LDPLATFORMFLAGS      = -Wl,--enable-new-dtags
+-   endif
++   #ifneq ($(embedded_runpath_prefix),)
++   #   LDPLATFORMFLAGS      = -Wl,--enable-new-dtags -Wl,-rpath,$(runpath_libdir)
++   #else
++   #   LDPLATFORMFLAGS      = -Wl,--enable-new-dtags
++   #endif
+ 
+ endif
+ 
+-ifeq ($(CXX),icpc)
+-   $(warning ===================================================================) 
+-   $(warning Intel C++ is currently not supported. The Ice team does not)
+-   $(warning maintain Intel C++ specific portions of the source code or build)
+-   $(warning system.  Contact sales@zeroc.com if you wish to sponsor official)
+-   $(warning support.)
+-   $(warning ===================================================================) 
+-   CXXFLAGS		= -D_REENTRANT    
+-
+-   ifneq ($(GENPIC),no)
+-      CXXFLAGS		+= -fPIC
+-   endif
+-
+-   ifeq ($(OPTIMIZE),yes)
+-      CXXFLAGS		+= -O2 -DNDEBUG
+-   else
+-      CXXFLAGS		+= -g
+-   endif
+-
+-   #
+-   # C++ run-time libraries, necessary for linking some shared libraries.
+-   #
+-   CXXLIBS		=
+-
+-   mkshlib		= $(CXX) -shared $(LDFLAGS) -o $(1) -Wl,-h,$(2) $(3) $(4) -lpthread -lrt
+-
+-   mklib		= ar cr $(1) $(2)
+-
+-   rpathlink            = -Wl,-rpath-link,$(1) 
+-
+-endif
+ 
+-NPTL_LIB		= /usr/$(libsubdir)/nptl
++#NPTL_LIB		= /usr/$(libsubdir)/nptl
+ 
+-BASELIBS		= -lIceUtil -L$(NPTL_LIB) -lpthread -lrt
++BASELIBS		= -lIceUtil -lpthread -lrt
+ LIBS			= $(BZIP2_RPATH_LINK) -lIce $(BASELIBS)
+ 
+ ICEUTIL_OS_LIBS         = 
+Index: IceE-1.3.0/Makefile
+===================================================================
+--- IceE-1.3.0.orig/Makefile	2008-12-18 09:17:40.000000000 +0100
++++ IceE-1.3.0/Makefile	2010-12-12 16:57:57.669172001 +0100
+@@ -7,7 +7,7 @@
+ #
+ # **********************************************************************
+ 
+-SUBDIRS			= cppe 
++SUBDIRS			= cpp
+ 
+ all::
+ 	@for subdir in $(SUBDIRS); \
