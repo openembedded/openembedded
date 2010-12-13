@@ -4,7 +4,7 @@ LICENSE = "BSD"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${BPN}/${BPN}-${PV}.tar.gz"
 
-inherit autotools lib_package
+inherit autotools
 
 EXTRA_OECONF = " --enable-mcpplib "
 
