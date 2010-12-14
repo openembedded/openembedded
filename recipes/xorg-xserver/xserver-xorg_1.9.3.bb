@@ -13,8 +13,8 @@ SRC_URI += " \
             file://randr-support.patch \
             file://hack-fbdev-ignore-return-mode.patch \
            "
-SRC_URI[archive.md5sum] = "5c8773499a6a8c1ddaedf33577ec9634"
-SRC_URI[archive.sha256sum] = "8b30800004c98fc7a8e6ff31a339f28451be5132e774443be22bf226e1791e34"
+SRC_URI[archive.md5sum] = "5bef6839a76d029204ab31aa2fcb5201"
+SRC_URI[archive.sha256sum] = "864831f51e841ff37f2445d1c85b86b559c8860a435fb496aead4f256a2b141d"
 
 SRC_URI_append_angstrom = " file://hack-assume-pixman-supports-overlapped-blt.patch"
 SRC_URI_append_shr = " file://hack-assume-pixman-supports-overlapped-blt.patch"
@@ -28,6 +28,6 @@ PACKAGE_ARCH_ion = "${MACHINE_ARCH}"
 XINERAMA = "${@['--disable-xinerama','--enable-xinerama'][bb.data.getVar('MACHINE',d) in ['ion']]}"
 
 EXTRA_OECONF += " ${CONFIG_MANAGER_OPTION} ${XINERAMA} --disable-kdrive --disable-xephyr --disable-xsdl --disable-xfake --disable-xfbdev --disable-dmx"
-EXTRA_OECONF += " --enable-dri2 --disable-unit-tests "
+EXTRA_OECONF += " --enable-dri2 --disable-unit-tests --disable-docs --disable-devel-docs"
 
 export LDFLAGS += " -ldl "
