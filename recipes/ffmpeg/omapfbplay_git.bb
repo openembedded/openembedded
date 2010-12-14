@@ -2,11 +2,11 @@ DESCRIPTION = "Simple ffmpeg-based player that uses the omapfb overlays"
 DEPENDS = "bzip2 lame ffmpeg virtual/kernel"
 LICENSE = "MIT"
 
-PR = "r25"
+PR = "r26"
 
 PV = "0.0+${PR}+gitr${SRCREV}"
 
-SRCREV = "f8de7f679a22230486f92e1a1c48ca477e0816bf"
+SRCREV = "1d217676ba71e8740524e9814c47da39880ed3bc"
 SRC_URI = "git://git.mansr.com/${PN};protocol=git \
 "
 
