@@ -2,7 +2,7 @@ DESCRIPTION = "Set of i2c tools for linux"
 SECTION = "base"
 LICENSE = "GPLv2"
 
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://dl.lm-sensors.org/i2c-tools/releases/i2c-tools-${PV}.tar.bz2 \
            file://Module.mk \
@@ -18,7 +18,7 @@ do_compile_prepend() {
 }
 
 do_install_append() {
-        install -d ${D}{$includedir}/linux
+        install -d ${D}${includedir}/linux
         install -m 0644 include/linux/i2c-dev.h ${D}${includedir}/linux/i2c-dev-user.h
 	rm -f ${D}${includedir}/linux/i2c-dev.h
 }
