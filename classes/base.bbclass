@@ -287,6 +287,9 @@ base_do_package() {
 addtask build
 do_build = ""
 do_build[func] = "1"
+do_build() {
+       :
+}
 
 def set_multimach_arch(d):
     # 'multimachine' handling
