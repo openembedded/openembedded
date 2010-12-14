@@ -9,11 +9,8 @@ RRECOMMENDS_PN = "opie-reader-filter-htmlfilter, opie-reader-codec-weasel, opie-
   opie-reader-codec-isilo, opie-reader-codec-aportis, opie-reader-codec-ppms, opie-reader-codec-chm, \
   opie-reader-codec-plucker, opie-reader-codec-arrierego"
 RSUGGESTS_PN = "opie-reader-output-flitedyn16, opie-reader-output-flitecmd, opie-reader-output-flitedyn"
-INC_PR = "r4"
+INC_PR = "r5"
 
-SRC_URI = "${OPIE_GIT};protocol=git;tag=${TAG};subpath=noncore/apps/opie-reader \
-           ${OPIE_GIT};protocol=git;tag=${TAG};subpath=pics \
-           ${OPIE_GIT};protocol=git;tag=${TAG};subpath=apps"
 S = "${WORKDIR}/opie-reader"
 
 EXTRA_QMAKEVARS_POST += "LIBS+=-L${S}"
