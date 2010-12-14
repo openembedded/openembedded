@@ -7,8 +7,8 @@ COMPATIBLE_MACHINE = "beagleboard"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
 PV = "2.6.36+2.6.37-rc5"
-MACHINE_KERNEL_PR_append = "a+gitr${SRCREV}"
-SRCREV = "f306749fced39b0c71d191ca53a1d4350477df64"
+MACHINE_KERNEL_PR_append = "c+gitr${SRCREV}"
+SRCREV = "2fc4a8a62495f4f72d91c62340443e409be8f448"
 
 FILESPATHPKG_prepend = "linux-omap-2.6.37rc:"
 
