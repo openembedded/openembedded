@@ -1,0 +1,150 @@
+From 5154c4370017e92498f98d35446baefd8b150e84 Mon Sep 17 00:00:00 2001
+From: Rob Clark <rob@ti.com>
+Date: Sat, 10 Jul 2010 18:03:16 -0500
+Subject: [PATCH 8/8] tiler: avoid lock-ups due to unmapped DMM entries
+
+Due to the address remapping done for 2d buffers, when a 2d buffer is
+allocated by userspace, it is possible that only partial pages map to
+valid physical pages of memory.  But the MMU can only protect accesses
+to invalid addresses on the granualarity of full pages.  Which results
+in the inconvenient situation where access to a perfectly valid address
+(from the point of view of a userspace process's memory map) can lock
+up the processor.
+
+To protect against this, a single dummy page is allocated at boot time
+and mapped in to the entire DMM space.  When actual buffers are alloc'd,
+the mapping is replaced with the actual pages allocated for the buffer.
+And when the actual TILER buffer is freed, the mappings are set back to
+the dummy page.
+
+As a result, there is no longer the need for a clear() function in DMM.
+Instead the clear operation is simply remapping DMM entries back to the
+dummy page.
+
+As an added advantage, now pages are properly unmapped from DMM when
+TILER buffers are freed, avoiding the potential to corrupt pages that
+where previously allocated for TILER buffers.
+---
+ drivers/media/video/dmm/tmm.h     |   12 ------------
+ drivers/media/video/dmm/tmm_pat.c |    1 -
+ drivers/media/video/tiler/tiler.c |   27 ++++++++++++++++++++++++++-
+ 3 files changed, 26 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/media/video/dmm/tmm.h b/drivers/media/video/dmm/tmm.h
+index deaeca5..b86dbc3 100644
+--- a/drivers/media/video/dmm/tmm.h
++++ b/drivers/media/video/dmm/tmm.h
+@@ -27,7 +27,6 @@ struct tmm {
+ 	u32 *(*get)    (struct tmm *tmm, s32 num_pages);
+ 	void (*free)   (struct tmm *tmm, u32 *pages);
+ 	s32  (*map)    (struct tmm *tmm, struct pat_area area, u32 page_pa);
+-	void (*clear)  (struct tmm *tmm, struct pat_area area);
+ 	void (*deinit) (struct tmm *tmm);
+ };
+ 
+@@ -68,17 +67,6 @@ s32 tmm_map(struct tmm *tmm, struct pat_area area, u32 page_pa)
+ }
+ 
+ /**
+- * Clears the physical address translator.
+- * @param area PAT area
+- */
+-static inline
+-void tmm_clear(struct tmm *tmm, struct pat_area area)
+-{
+-	if (tmm && tmm->clear && tmm->pvt)
+-		tmm->clear(tmm, area);
+-}
+-
+-/**
+  * Checks whether tiler memory manager supports mapping
+  */
+ static inline
+diff --git a/drivers/media/video/dmm/tmm_pat.c b/drivers/media/video/dmm/tmm_pat.c
+index 4ee59bd..c9c9aa5 100644
+--- a/drivers/media/video/dmm/tmm_pat.c
++++ b/drivers/media/video/dmm/tmm_pat.c
+@@ -316,7 +316,6 @@ struct tmm *tmm_pat_init(u32 pat_id)
+ 		tmm->get = tmm_pat_get_pages;
+ 		tmm->free = tmm_pat_free_pages;
+ 		tmm->map = tmm_pat_map;
+-		tmm->clear = NULL;   /* not yet supported */
+ 
+ 		return tmm;
+ 	}
+diff --git a/drivers/media/video/tiler/tiler.c b/drivers/media/video/tiler/tiler.c
+index 567e620..d05e5e2 100644
+--- a/drivers/media/video/tiler/tiler.c
++++ b/drivers/media/video/tiler/tiler.c
+@@ -125,6 +125,9 @@ static struct tmm *tmm[TILER_FORMATS];
+ static u32 *dmac_va;
+ static dma_addr_t dmac_pa;
+ 
++static u32 *dummy_mem;
++static u32 dummy_pa;
++
+ #define TCM(fmt)        tcm[(fmt) - TILFMT_8BIT]
+ #define TCM_SS(ssptr)   TCM(TILER_GET_ACC_MODE(ssptr))
+ #define TCM_SET(fmt, i) tcm[(fmt) - TILFMT_8BIT] = i
+@@ -410,6 +413,7 @@ static void clear_pat(struct tmm *tmm, struct tcm_area *area)
+ {
+ 	struct pat_area p_area = {0};
+ 	struct tcm_area slice, area_s;
++	int i;
+ 
+ 	tcm_for_each_slice(slice, *area, area_s) {
+ 		p_area.x0 = slice.p0.x;
+@@ -417,7 +421,11 @@ static void clear_pat(struct tmm *tmm, struct tcm_area *area)
+ 		p_area.x1 = slice.p1.x;
+ 		p_area.y1 = slice.p1.y;
+ 
+-		tmm_clear(tmm, p_area);
++		for (i = 0; i<tcm_sizeof(slice); i++) {
++			dmac_va[i] = dummy_pa;
++		}
++
++		tmm_map(tmm, p_area, dmac_pa);
+ 	}
+ }
+ 
+@@ -1467,6 +1475,8 @@ static void __exit tiler_exit(void)
+ 	kfree(tiler_device);
+ 	device_destroy(tilerdev_class, MKDEV(tiler_major, tiler_minor));
+ 	class_destroy(tilerdev_class);
++
++	free_pages_exact(dummy_mem, PAGE_SIZE);
+ }
+ 
+ static s32 tiler_open(struct inode *ip, struct file *filp)
+@@ -1511,6 +1521,7 @@ static s32 __init tiler_init(void)
+ 	struct tcm_pt div_pt;
+ 	struct tcm *sita = NULL;
+ 	struct tmm *tmm_pat = NULL;
++	struct tcm_area area = {0};
+ 
+ 	/**
+ 	  * Array of physical pages for PAT programming, which must be a 16-byte
+@@ -1582,6 +1593,20 @@ static s32 __init tiler_init(void)
+ 	BLOCKING_INIT_NOTIFIER_HEAD(&tiler_device->notifier);
+ 	id = 0xda7a000;
+ 
++	/* Dummy page for filling unused entries in dmm (dmac_va):
++	 */
++	dummy_mem = alloc_pages_exact(PAGE_SIZE, GFP_KERNEL);
++	dummy_pa = virt_to_phys(dummy_mem);
++
++	/* clear the entire dmm space:
++	 */
++	area.tcm = sita;
++	area.p0.x = 0;
++	area.p0.y = 0;
++	area.p1.x = TILER_WIDTH - 1;
++	area.p1.y = TILER_HEIGHT - 1;
++	clear_pat(tmm_pat, &area);
++
+ error:
+ 	/* TODO: error handling for device registration */
+ 	if (r) {
+-- 
+1.6.6.1
+
