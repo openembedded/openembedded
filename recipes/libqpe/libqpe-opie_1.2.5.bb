@@ -1,11 +1,6 @@
 require ${PN}.inc
 
-# OPIE_GIT_PV is defined in opie.bbclass
-# but this recipe does not inherit opie
-# so any updates to OPIE_GIT_PV should happen
-# in both places.
-
-PR = "r0"
+PR = "${INC_PR}.0"
 
 DEPENDS += " sysfsutils"
 
