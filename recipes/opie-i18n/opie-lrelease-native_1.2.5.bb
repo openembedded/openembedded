@@ -1,6 +1,6 @@
 require ${PN}.inc
 
-PR = "r0"
+PR = "${INC_PR}.0"
 
 SRC_URI = "http://sources.openembedded.org/opie-1.2.5-split_development_translation_opie-lrelease.tar.bz2;name=split_development_translation_opie-lrelease \
            http://sources.openembedded.org/opie-1.2.5-split_development_translation_shared.tar.bz2;name=split_development_translation_shared"
