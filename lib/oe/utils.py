@@ -1,3 +1,5 @@
+import bb.data
+
 def uniq(iterable):
     seen = set()
     for i in iterable:
@@ -7,8 +9,8 @@ def uniq(iterable):
 
 def read_file(filename):
     try:
-        f = file( filename, "r" )
-    except IOError, reason:
+        f = file(filename, "r")
+    except IOError:
         return "" # WARNING: can't raise an error now because of the new RDEPENDS handling. This is a bit ugly. :M:
     else:
         return f.read().strip()
@@ -60,7 +62,7 @@ def both_contain(variable1, variable2, checkvalue, d):
         return ""
 
 def prune_suffix(var, suffixes, d):
-    # See if var ends with any of the suffixes listed and 
+    # See if var ends with any of the suffixes listed and
     # remove it if found
     for suffix in suffixes:
         if var.endswith(suffix):
@@ -85,3 +87,7 @@ def param_bool(cfg, field, dflt = None):
     elif strvalue in ('no', 'n', 'false', 'f', '0'):
         return False
     raise ValueError("invalid value for boolean parameter '%s': '%s'" % (field, value))
+
+def inherits(d, *classes):
+    """Return True if the metadata inherits any of the specified classes"""
+    return any(bb.data.inherits_class(cls, d) for cls in classes)
