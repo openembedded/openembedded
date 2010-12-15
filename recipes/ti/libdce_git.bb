@@ -1,4 +1,4 @@
-DEPENDS = "ti-libd2cmap ti-tiler-memmgr ti-syslink"
+DEPENDS = "ti-libd2cmap ti-tilermemmgr ti-syslink"
 
 LICENSE = "TI"
 
