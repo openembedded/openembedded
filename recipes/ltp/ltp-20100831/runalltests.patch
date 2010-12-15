@@ -1,0 +1,302 @@
+--- ltp-full-20100831.orig/runalltests.sh	2010-09-14 16:04:32.000000000 +0500
++++ ltp-full-20100831/runalltests.sh	2010-12-13 11:18:11.857382107 +0500
+@@ -68,6 +68,12 @@ export RUN_FILECAPS=0
+ export LIBCAPS_INSTALLED=0
+ export LIBATTR_INSTALLED=0
+ 
++## Set this to 1 if tmp_tools tests are required to be tested
++export RUN_TPM_TOOLS=0
++
++## Set this to 1 if tcore tests are required to be tested
++export RUN_TCORE=0
++
+ ## Set this to 1 if you wish to execute the stress_cd tests
+ ## Make sure you have FLOPPY inserted, be warned that you
+ ## will loose all data on it after the tests,
+@@ -202,6 +208,194 @@ export RUN_SMACK_SECURITY_TESTS=0
+ ##Set this to 1 if you wish to run the Basic PERFORMANCE COUNTER tests
+ export RUN_PERFORMANCE_COUNTERS_TESTS=0
+ 
++### Additional tests That are not included in runalltests.sh
++export RUN_LTP_AIODIO_PART1=0
++export RUN_LTP_AIODIO_PART2=0
++export RUN_LTP_AIODIO_PART3=0
++export RUN_LTP_AIODIO_PART4=0
++
++if [ $RUN_LTP_AIODIO_PART1 -eq 1 ]                        
++then                                                               
++        AIODIO_PART1_STR="ltp-aiodio.part1"
++fi                                                                 
++
++if [ $RUN_LTP_AIODIO_PART2 -eq 1 ]                        
++then                                                               
++        AIODIO_PART2_STR="ltp-aiodio.part2"
++fi                                                                 
++
++if [ $RUN_LTP_AIODIO_PART3 -eq 1 ]                        
++then                                                               
++        AIODIO_PART3_STR="ltp-aiodio.part3"
++fi                                                                 
++
++if [ $RUN_LTP_AIODIO_PART4 -eq 1 ]                        
++then                                                               
++        AIODIO_PART4_STR="ltp-aiodio.part4"
++fi                                                                 
++
++## This is default set of tests chose which tests you want to perform by default
++## Set this to 1 if you wish to run the specific tests
++
++export RUN_DEFAULT_MATH=0
++export RUN_DEFAULT_NPTL=0
++export RUN_DEFAULT_PTY=0
++export RUN_DEFAULT_IO=0
++export RUN_DEFAULT_TIMERS=0
++export RUN_DEFAULT_MM=0
++export RUN_DEFAULT_IPC=0
++export RUN_DEFAULT_SCHED=0
++export RUN_DEFAULT_CONTAINERS=0
++export RUN_DEFAULT_CONNECTORS=0
++export RUN_DEFAULT_FILECAPS=0
++export RUN_DEFAULT_CAP_BOUNDS=0
++export RUN_DEFAULT_FSX=0
++export RUN_DEFAULT_FCNTL_LOCKTESTS=0
++export RUN_DEFAULT_CONTROLLERS=0
++export RUN_DEFAULT_ADMIN_TOOLS=0
++export RUN_DEFAULT_HYPERTHREADING=0
++export RUN_DEFAULT_DIO=0
++export RUN_DEFAULT_SYSCALLS=0
++export RUN_DEFAULT_FS_PERMS_SIMPLE=0
++export RUN_DEFAULT_POWER_MANAGEMENT_TESTS=0
++export RUN_DEFAULT_NUMA=0
++export RUN_DEFAULT_HUGETLB=0
++export RUN_DEFAULT_COMMANDS=0
++export RUN_DEFAULT_FS=0
++export RUN_DEFAULT_FS_BIND=0
++
++if [ $RUN_DEFAULT_SYSCALLS -eq 1 ]                                 
++then                                                               
++        SYSCALLS_STR="syscalls"                                    
++fi                                                                 
++
++if [ $RUN_DEFAULT_FS -eq 1 ]
++then                        
++        FS_STR="fs"         
++fi                          
++
++if [ $RUN_DEFAULT_FS_PERMS_SIMPLE -eq 1 ]
++then                                     
++        FS_PERMS_SIMPLE_STR="fs_perms_simple"
++fi                                           
++
++if [ $RUN_DEFAULT_FSX -eq 1 ]
++then                         
++        FSX_STR="fsx"        
++fi                           
++
++if [ $RUN_DEFAULT_DIO -eq 1 ]
++then                         
++        DIO_STR="dio"        
++fi                           
++
++if [ $RUN_DEFAULT_IO -eq 1 ]
++then                        
++        IO_STR="io"         
++fi                          
++
++if [ $RUN_DEFAULT_MM -eq 1 ]
++then                        
++        MM_STR="mm"         
++fi                          
++
++if [ $RUN_DEFAULT_IPC -eq 1 ]
++then                         
++        IPC_STR="ipc"        
++fi                           
++
++if [ $RUN_DEFAULT_SCHED -eq 1 ]
++then                           
++        SCHED_STR="sched"      
++fi                             
++
++if [ $RUN_DEFAULT_MATH -eq 1 ]
++then                          
++        MATH_STR="math"       
++fi                            
++
++if [ $RUN_DEFAULT_NPTL -eq 1 ]
++then                          
++        NPTL_STR="nptl"       
++fi                            
++
++if [ $RUN_DEFAULT_PTY -eq 1 ]
++then                         
++        PTY_STR="pty"        
++fi                           
++
++if [ $RUN_DEFAULT_CONTAINERS -eq 1 ]
++then                                
++        CONTAINERS_STR="containers" 
++fi                                  
++
++if [ $RUN_DEFAULT_FS_BIND -eq 1 ]
++then                             
++        FS_BIND_STR="fs_bind"    
++fi                               
++
++if [ $RUN_DEFAULT_CONTROLLERS -eq 1 ]
++then                                 
++        CONTROLLERS_STR="controllers"
++fi
++
++if [ $RUN_DEFAULT_FILECAPS -eq 1 ]
++then
++        FILECAPS_STR="filecaps"
++fi
++
++if [ $RUN_DEFAULT_CAP_BOUNDS -eq 1 ]
++then
++        CAP_BOUNDS_STR="cap_bounds"
++fi
++
++if [ $RUN_DEFAULT_FCNTL_LOCKTESTS -eq 1 ]
++then
++        FCNTL_LOCKTESTS_STR="fcntl-locktests"
++fi
++
++if [ $RUN_DEFAULT_CONNECTORS -eq 1 ]
++then
++        CONNECTORS_STR="connectors"
++fi
++
++if [ $RUN_DEFAULT_ADMIN_TOOLS -eq 1 ]
++then
++        ADMIN_TOOLS_STR="admin_tools"
++fi
++
++if [ $RUN_DEFAULT_TIMERS -eq 1 ]
++then
++        TIMERS_STR="timers"
++fi
++
++if [ $RUN_DEFAULT_POWER_MANAGEMENT_TESTS -eq 1 ]
++then
++        POWER_MANAGEMENT_TESTS_STR="power_management_tests"
++fi
++
++if [ $RUN_DEFAULT_NUMA -eq 1 ]
++then
++        NUMA_STR="numa"
++fi
++
++if [ $RUN_DEFAULT_HUGETLB -eq 1 ]
++then
++        HUGETLB_STR="hugetlb"
++fi
++
++if [ $RUN_DEFAULT_COMMANDS -eq 1 ]
++then
++        COMMANDS_STR="commands"
++fi
++
++if [ $RUN_DEFAULT_HYPERTHREADING -eq 1 ]
++then
++        HYPERTHREADING_STR="hyperthreading"
++fi
++
++
++
+ export LTP_VERSION=`"${RUNLTP}" -e`
+ export TEST_START_TIME=`date +"%Y_%b_%d-%Hh_%Mm_%Ss"`
+ export HARDWARE_TYPE=$(uname -i)
+@@ -215,13 +409,68 @@ if ! cd "${LTPROOT}"; then
+ 	exit $rc
+ fi
+ 
++# ## The First one i plan to run is the default LTP run ##
++# ## START => Test Series 1                             ##
++# echo "Running Default LTP..."
++# "${RUNLTP}" -g $HTML_OUTPUT_FILE_NAME
++# printf "Completed running Default LTP\n\n\n"
++# ## END => Test Series 1                               ##
++
+ ## The First one i plan to run is the default LTP run ##
+ ## START => Test Series 1                             ##
+ echo "Running Default LTP..."
+-"${RUNLTP}" -g $HTML_OUTPUT_FILE_NAME
++        RUN_DEFAULT_SET="$SYSCALLS_STR \
++	$FS_STR \
++	$FS_PERMS_SIMPLE_STR \
++	$FSX_STR \
++	$DIO_STR \
++	$IO_STR \
++	$MM_STR \
++	$IPC_STR \
++	$SCHED_STR \
++	$MATH_STR \
++	$NPTL_STR \
++	$PTY_STR \
++	$CONTAINERS_STR \
++	$FS_BIND_STR \
++	$CONTROLLERS_STR \
++	$FILECAPS_STR \
++	$CAP_BOUNDS_STR \
++	$FCNTL_LOCKTESTS_STR \
++	$CONNECTORS_STR \
++	$ADMIN_TOOLS_STR \
++	$TIMERS_STR \
++	$POWER_MANAGEMENT_TESTS_STR \
++	$NUMA_STR \
++	$HUGETLB_STR \
++	$COMMANDS_STR \
++	$HYPERTHREADING_STR \
++	$AIODIO_PART1_STR \
++	$AIODIO_PART2_STR \
++	$AIODIO_PART3_STR \
++	$AIODIO_PART4_STR"
++
++	rm -f runtest/defaultset
++	for TEST in $RUN_DEFAULT_SET
++	do
++	    UPPER=`echo $TEST | tr "[:lower:]" "[:upper:]"`
++# # 	    var="_STR"
++# # 	    echo "	\$$UPPER$var \\"
++# # 	    echo "Running Test $UPPER"
++	    echo "Running Test $TEST"
++	    cat  runtest/$TEST >> runtest/defaultset
++# # 			echo "if [ \$RUN_DEFAULT_$UPPER -eq 1 ]"
++# # 			echo "then"
++# # 			echo "	$UPPER$var=\"$TEST\""
++# # 			echo "fi"
++# # 			echo ""
++# #			echo "export RUN_DEFAULT_$UPPER=1"
++	done
++	"${RUNLTP}" -f defaultset -g defaultset.html
+ printf "Completed running Default LTP\n\n\n"
+ ## END => Test Series 1                               ##
+ 
++
+ ## The next one i plan to run is ballista             ##
+ ## START => Test Series 2                             ##
+ if [ $RUN_BALLISTA -eq 1 ]
+@@ -353,15 +602,20 @@ then
+ fi
+ ## END => Test Series 6                               ##
+ 
+-
+ ## The next one i plan to run is tpm_tools            ##
+ ## START => Test Series 7                             ##
++if [ $RUN_TPM_TOOLS -eq 1 ]
++then
+ "${RUNLTP}" -f tpm_tools
++fi
+ ## END => Test Series 7                               ##
+ 
+ ## The next one i plan to run is tcore_patch_test_suites
+ ## START => Test Series 8                             ##
++if [ $RUN_TCORE -eq 1 ]
++then
+ "${RUNLTP}" -f tcore
++fi
+ ## END => Test Series 8                               ##
+ 
+ 

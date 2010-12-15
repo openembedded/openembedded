@@ -7,7 +7,8 @@ PR = "r0"
 
 inherit autotools
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/ltp/ltp-full-${PV}.tgz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/ltp/ltp-full-${PV}.tgz \
+	  file://runalltests.patch;patch=1 "
 
 S = "${WORKDIR}/ltp-full-${PV}"
 
