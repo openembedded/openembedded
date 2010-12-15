@@ -1,0 +1,53 @@
+--- a/Makefile	2009-01-31 17:28:42.000000000 +0100
++++ b/Makefile	2010-12-15 18:41:59.280095000 +0100
+@@ -1,24 +1,11 @@
+-WITH_SVN=openmoko
+-
+ PROG=gwaterpas
+ default:$(PROG)
+ 
+-CPPFLAGS	=
+-CFLAGS	= -Wall -Os -g3
+-CXXFLAGS	= -Wall -Os -g3 -fexceptions
+-LDFLAGS	= 
+-CC=gcc
+-CXX=g++
+-LD=$(CXX)
+-
+ LDLIBS = -lfltk
+-#LDLIBS +=-lXft -lX11
+ 
+ include make/include
+ 
+-DESTDIR=/usr/local
+-
+-$(PROG)-dbg : main.o Fl_Level.o
++gwaterpas:Fl_Level.o main.o
+ 
+ install:default desktop icon.png
+ 	@install -D -p $(PROG) $(DESTDIR)/usr/bin/$(PROG)
+--- a/make/include	2008-12-07 16:55:24.000000000 +0100
++++ b/make/include	2010-12-15 18:39:03.700095000 +0100
+@@ -103,20 +103,7 @@
+ % : %.cc
+ % : %.o
+ 
+-ifdef WITH_SVN
+-SVNVERSION := $(shell svnversion .)
+-#SVNPATH    := $(shell echo $(WITH_SVN) | sed -e "s/^[^\/]*\///g")
+-SVNPATH    := $(shell svn info | grep URL | sed -e "s/^.*\/$(WITH_SVN)\/\(.*\)/\1/g")
+-%.ov :
+-	@echo " SVN  $* $(SVNVERSION), $(SVNPATH)"
+-	@echo "const char * argp_program_version = \"$* r$(SVNVERSION), $(SVNPATH)\";"	\
+-		|$(CROSS)$(CC) -x c - -c -o $@ $(CPPFLAGS) $(CFLAGS)
+-%-dbg : %.ov
+-	@echo " LD  " $* $(LDLIBS) $(LDLIBS_$*)
+-	@$(CROSS)$(LD) -o $@ $(LDFLAGS) $^ $(LDLIBS) $(LDLIBS_$*)
+-else
+-%-dbg :
++% :
+ 	@echo " LD  " $* $(LDLIBS) $(LDLIBS_$*)
+-	@$(CROSS)$(LD) -o $@ $(LDFLAGS) $^ $(LDLIBS)
+-endif
++	@$(CROSS)$(CC) -o $@ $(LDFLAGS) $^ $(LDLIBS)
+ 

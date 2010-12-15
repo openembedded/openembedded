@@ -1,0 +1,16 @@
+--- a/desktop~	2010-12-15 19:40:04.776645571 +0100
++++ b/desktop	2010-12-15 19:40:04.796645571 +0100
+@@ -1,11 +1,9 @@
+ [Desktop Entry]
+-Encoding=UTF-8
+ Name=Waterpas
+ Comment=3D sensor
+ Exec=gwaterpas
+ Icon=/usr/share/gwaterpas/icon.png
+ Terminal=false
+ Type=Application
+-Categories=Utilities;Utility;
+-SingleInstance=true
+-StartupNotify=true
++Categories=Utility;
++
