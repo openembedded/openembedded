@@ -75,7 +75,6 @@ PREFERRED_VERSION_wpa-supplicant = "0.6.9"
 PREFERRED_VERSION_wget = "1.11.4"
 PREFERRED_VERSION_xserver-common = "1.33"
 PREFERRED_VERSION_xserver-kdrive = "1.4.0.90"
-PREFERRED_VERSION_xserver-xorg = "1.8.1"
 
 #
 # meta-moblin package SRCREVs
