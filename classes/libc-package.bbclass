@@ -99,6 +99,7 @@ do_install() {
 	rm -f ${D}/etc/rpc
 	rm -rf ${D}${datadir}/zoneinfo
 	rm -rf ${D}${libexecdir}/getconf
+	rm -rf ${D}${sysconfdir}/localtime
 	install -d ${D}${sysconfdir}/init.d
 	install -m 0644 ${S}/nscd/nscd.conf ${D}${sysconfdir}/
 	install ${S}/nscd/nscd.init ${D}${sysconfdir}/init.d/nscd
