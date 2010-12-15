@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.eglibc.org/home"
 SECTION = "libs"
 PRIORITY = "required"
 LICENSE = "LGPL"
-INC_PR = "r17"
+INC_PR = "r18"
 # nptl needs unwind support in gcc, which can't be built without glibc.
 DEPENDS = "virtual/${TARGET_PREFIX}gcc-intermediate linux-libc-headers"
 #this leads to circular deps, so lets not add it yet
@@ -29,7 +29,7 @@ ARM_INSTRUCTION_SET = "arm"
 EXTRA_OEMAKE := "PARALLELMFLAGS="${PARALLEL_MAKE}""
 PARALLEL_MAKE = ""
 
-EXTRA_OECONF += "${@get_libc_fpu_setting(bb, d)}"
+GLIBC_EXTRA_OECONF += "${@get_libc_fpu_setting(bb, d)}"
 
 do_unpack_append() {
 	bb.build.exec_func('do_move_ports', d)
