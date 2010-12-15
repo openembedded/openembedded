@@ -1,0 +1,22 @@
+--- a/main.cc~	2010-12-15 15:10:04.196645570 +0100
++++ b/main.cc	2010-12-15 15:10:04.216645570 +0100
+@@ -41,8 +41,8 @@
+ 
+ #include "Fl_Level.H"
+ 
+-static const char dev0 [] = "/dev/input/event2";
+-static const char dev1 [] = "/dev/input/event3";
++static const char dev0 [] = "/dev/input/event3";
++static const char dev1 [] = "/dev/input/event4";
+ 
+ struct _3d {
+    double x, y, z;
+@@ -252,7 +252,7 @@
+       switch (lp->type) {
+       case EV_SYN:
+          break;
+-      case EV_REL:
++      case EV_ABS:
+          switch (lp->code) {
+          case REL_X:
+             s->raw.x = lp->value /-1e3;
