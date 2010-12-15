@@ -1,5 +1,5 @@
 # we need javah
-DEPENDS += "openjdk-langtools-native zip-native"
+DEPENDS += "openjdk-langtools-native zip-native icedtea6-native"
 
 JNI_LIB_DIR = "/usr/lib/jni"
 
@@ -15,6 +15,7 @@ EXTRA_OEMAKE +=" \
 	STAGING_INCDIR=${STAGING_INCDIR} \
 	CLASSPATH_INCDIR=${STAGING_INCDIR}/classpath \
 	ROOTFS_BUG=${STAGING_LIBDIR}/../../ \
+	JAVAH=${STAGING_LIBDIR_JVM_NATIVE}/icedtea6-native/bin/javah \
 "
 
 addtask jni_compile after do_compile before do_install
