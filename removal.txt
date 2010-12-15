@@ -33,4 +33,4 @@ Reason:         Obsoleted by SHR/FSO packages
 Proposed by:    Martin 'JaMa' Jansa
 Note:		Openmoko distribution removed 2010-08-10
 Note:		Moved to obsolete on 2010-10-19
-
+Note:           Removed 2010-12-22
