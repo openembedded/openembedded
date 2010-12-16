@@ -1,0 +1,810 @@
+From 45ef073f7c7748376f11ae2dea372eea6dc3a04a Mon Sep 17 00:00:00 2001
+From: Rob Clark <rob@ti.com>
+Date: Wed, 19 May 2010 15:48:09 -0500
+Subject: [PATCH] add GstQueryBuffers query
+
+This query is used by buffer allocator, for example a video sink element,
+to find out any minimum buffer requirements of upstream elements that uses
+pad_alloc() to allocate buffers.  For example, some cameras may have need
+for additional padding/boarder around the frame (for vstab), or some video
+decoders may have requirements for a certain minimum number of buffers (so
+they can hold refs to reference-frames)
+---
+ gst/gstquark.c               |    3 +-
+ gst/gstquark.c.BACKUP.9714.c |   74 +++++++++++++++++++++
+ gst/gstquark.c.BASE.9714.c   |   69 +++++++++++++++++++
+ gst/gstquark.c.LOCAL.9714.c  |   69 +++++++++++++++++++
+ gst/gstquark.c.REMOTE.9714.c |   70 ++++++++++++++++++++
+ gst/gstquark.c.orig          |   74 +++++++++++++++++++++
+ gst/gstquark.h               |    7 ++-
+ gst/gstquark.h.orig          |  148 ++++++++++++++++++++++++++++++++++++++++++
+ gst/gstquery.c               |  141 ++++++++++++++++++++++++++++++++++++++++
+ gst/gstquery.h               |   16 ++++-
+ 10 files changed, 668 insertions(+), 3 deletions(-)
+ create mode 100644 gst/gstquark.c.BACKUP.9714.c
+ create mode 100644 gst/gstquark.c.BASE.9714.c
+ create mode 100644 gst/gstquark.c.LOCAL.9714.c
+ create mode 100644 gst/gstquark.c.REMOTE.9714.c
+ create mode 100644 gst/gstquark.c.orig
+ create mode 100644 gst/gstquark.h.orig
+
+diff --git a/gst/gstquark.c b/gst/gstquark.c
+index 4073eb4..58badca 100644
+--- a/gst/gstquark.c
++++ b/gst/gstquark.c
+@@ -49,7 +49,8 @@ static const gchar *_quark_strings[] = {
+   "GstQueryURI", "GstEventStep", "GstMessageStepDone", "amount", "flush",
+   "intermediate", "GstMessageStepStart", "active", "eos", "sink-message",
+   "message", "GstMessageQOS", "running-time", "stream-time", "jitter",
+-  "quality", "processed", "dropped", "buffering-ranges"
++  "quality", "processed", "dropped", "buffering-ranges", "GstQueryBuffers",
++  "caps", "count", "width", "height"
+ };
+ 
+ GQuark _priv_gst_quark_table[GST_QUARK_MAX];
+diff --git a/gst/gstquark.c.BACKUP.9714.c b/gst/gstquark.c.BACKUP.9714.c
+new file mode 100644
+index 0000000..e1fc9b1
+--- /dev/null
++++ b/gst/gstquark.c.BACKUP.9714.c
+@@ -0,0 +1,74 @@
++/* GStreamer
++ * Copyright (C) 2006 Jan Schmidt <thaytan@noraisin.net>
++ *
++ * gstquark.c: Registered quarks for the _priv_gst_quark_table, private to 
++ *   GStreamer
++ *
++ * This library is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Library General Public
++ * License as published by the Free Software Foundation; either
++ * version 2 of the License, or (at your option) any later version.
++ *
++ * This library is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Library General Public License for more details.
++ *
++ * You should have received a copy of the GNU Library General Public
++ * License along with this library; if not, write to the
++ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
++ * Boston, MA 02111-1307, USA.
++ */
++
++#include "gst_private.h"
++#include "gstquark.h"
++
++/* These strings must match order and number declared in the GstQuarkId
++ * enum in gstquark.h! */
++static const gchar *_quark_strings[] = {
++  "format", "current", "duration", "rate",
++  "seekable", "segment-start", "segment-end",
++  "src_format", "src_value", "dest_format", "dest_value",
++  "start_format", "start_value", "stop_format", "stop_value",
++  "gerror", "debug", "buffer-percent", "buffering-mode",
++  "avg-in-rate", "avg-out-rate", "buffering-left",
++  "estimated-total", "old-state", "new-state", "pending-state",
++  "clock", "ready", "position", "new-base-time", "live", "min-latency",
++  "max-latency", "busy", "type", "owner", "update", "applied-rate",
++  "start", "stop", "minsize", "maxsize", "async", "proportion",
++  "diff", "timestamp", "flags", "cur-type", "cur", "stop-type",
++  "latency", "uri", "object", "taglist", "GstEventNewsegment",
++  "GstEventBufferSize", "GstEventQOS", "GstEventSeek", "GstEventLatency",
++  "GstMessageError", "GstMessageWarning", "GstMessageInfo",
++  "GstMessageBuffering", "GstMessageState", "GstMessageClockProvide",
++  "GstMessageClockLost", "GstMessageNewClock", "GstMessageStructureChange",
++  "GstMessageSegmentStart", "GstMessageSegmentDone", "GstMessageDuration",
++  "GstMessageAsyncStart", "GstMessageRequestState", "GstMessageStreamStatus",
++  "GstQueryPosition", "GstQueryDuration", "GstQueryLatency", "GstQueryConvert",
++  "GstQuerySegment", "GstQuerySeeking", "GstQueryFormats", "GstQueryBuffering",
++  "GstQueryURI", "GstEventStep", "GstMessageStepDone", "amount", "flush",
++  "intermediate", "GstMessageStepStart", "active", "eos", "sink-message",
++  "message", "GstMessageQOS", "running-time", "stream-time", "jitter",
++<<<<<<< HEAD
++  "quality", "processed", "dropped", "buffering-ranges"
++=======
++  "quality", "processed", "dropped", "GstQueryBuffers", "caps", "count",
++  "width", "height"
++>>>>>>> 1ff1ed7... add GstQueryBuffers query
++};
++
++GQuark _priv_gst_quark_table[GST_QUARK_MAX];
++
++void
++_priv_gst_quarks_initialize (void)
++{
++  gint i;
++
++  if (G_N_ELEMENTS (_quark_strings) != GST_QUARK_MAX)
++    g_warning ("the quark table is not consistent! %d != %d",
++        (int) G_N_ELEMENTS (_quark_strings), GST_QUARK_MAX);
++
++  for (i = 0; i < GST_QUARK_MAX; i++) {
++    _priv_gst_quark_table[i] = g_quark_from_static_string (_quark_strings[i]);
++  }
++}
+diff --git a/gst/gstquark.c.BASE.9714.c b/gst/gstquark.c.BASE.9714.c
+new file mode 100644
+index 0000000..a4253a9
+--- /dev/null
++++ b/gst/gstquark.c.BASE.9714.c
+@@ -0,0 +1,69 @@
++/* GStreamer
++ * Copyright (C) 2006 Jan Schmidt <thaytan@noraisin.net>
++ *
++ * gstquark.c: Registered quarks for the _priv_gst_quark_table, private to 
++ *   GStreamer
++ *
++ * This library is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Library General Public
++ * License as published by the Free Software Foundation; either
++ * version 2 of the License, or (at your option) any later version.
++ *
++ * This library is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Library General Public License for more details.
++ *
++ * You should have received a copy of the GNU Library General Public
++ * License along with this library; if not, write to the
++ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
++ * Boston, MA 02111-1307, USA.
++ */
++
++#include "gst_private.h"
++#include "gstquark.h"
++
++/* These strings must match order and number declared in the GstQuarkId
++ * enum in gstquark.h! */
++static const gchar *_quark_strings[] = {
++  "format", "current", "duration", "rate",
++  "seekable", "segment-start", "segment-end",
++  "src_format", "src_value", "dest_format", "dest_value",
++  "start_format", "start_value", "stop_format", "stop_value",
++  "gerror", "debug", "buffer-percent", "buffering-mode",
++  "avg-in-rate", "avg-out-rate", "buffering-left",
++  "estimated-total", "old-state", "new-state", "pending-state",
++  "clock", "ready", "position", "new-base-time", "live", "min-latency",
++  "max-latency", "busy", "type", "owner", "update", "applied-rate",
++  "start", "stop", "minsize", "maxsize", "async", "proportion",
++  "diff", "timestamp", "flags", "cur-type", "cur", "stop-type",
++  "latency", "uri", "object", "taglist", "GstEventNewsegment",
++  "GstEventBufferSize", "GstEventQOS", "GstEventSeek", "GstEventLatency",
++  "GstMessageError", "GstMessageWarning", "GstMessageInfo",
++  "GstMessageBuffering", "GstMessageState", "GstMessageClockProvide",
++  "GstMessageClockLost", "GstMessageNewClock", "GstMessageStructureChange",
++  "GstMessageSegmentStart", "GstMessageSegmentDone", "GstMessageDuration",
++  "GstMessageAsyncStart", "GstMessageRequestState", "GstMessageStreamStatus",
++  "GstQueryPosition", "GstQueryDuration", "GstQueryLatency", "GstQueryConvert",
++  "GstQuerySegment", "GstQuerySeeking", "GstQueryFormats", "GstQueryBuffering",
++  "GstQueryURI", "GstEventStep", "GstMessageStepDone", "amount", "flush",
++  "intermediate", "GstMessageStepStart", "active", "eos", "sink-message",
++  "message", "GstMessageQOS", "running-time", "stream-time", "jitter",
++  "quality", "processed", "dropped"
++};
++
++GQuark _priv_gst_quark_table[GST_QUARK_MAX];
++
++void
++_priv_gst_quarks_initialize (void)
++{
++  gint i;
++
++  if (G_N_ELEMENTS (_quark_strings) != GST_QUARK_MAX)
++    g_warning ("the quark table is not consistent! %d != %d",
++        (int) G_N_ELEMENTS (_quark_strings), GST_QUARK_MAX);
++
++  for (i = 0; i < GST_QUARK_MAX; i++) {
++    _priv_gst_quark_table[i] = g_quark_from_static_string (_quark_strings[i]);
++  }
++}
+diff --git a/gst/gstquark.c.LOCAL.9714.c b/gst/gstquark.c.LOCAL.9714.c
+new file mode 100644
+index 0000000..4073eb4
+--- /dev/null
++++ b/gst/gstquark.c.LOCAL.9714.c
+@@ -0,0 +1,69 @@
++/* GStreamer
++ * Copyright (C) 2006 Jan Schmidt <thaytan@noraisin.net>
++ *
++ * gstquark.c: Registered quarks for the _priv_gst_quark_table, private to 
++ *   GStreamer
++ *
++ * This library is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Library General Public
++ * License as published by the Free Software Foundation; either
++ * version 2 of the License, or (at your option) any later version.
++ *
++ * This library is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Library General Public License for more details.
++ *
++ * You should have received a copy of the GNU Library General Public
++ * License along with this library; if not, write to the
++ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
++ * Boston, MA 02111-1307, USA.
++ */
++
++#include "gst_private.h"
++#include "gstquark.h"
++
++/* These strings must match order and number declared in the GstQuarkId
++ * enum in gstquark.h! */
++static const gchar *_quark_strings[] = {
++  "format", "current", "duration", "rate",
++  "seekable", "segment-start", "segment-end",
++  "src_format", "src_value", "dest_format", "dest_value",
++  "start_format", "start_value", "stop_format", "stop_value",
++  "gerror", "debug", "buffer-percent", "buffering-mode",
++  "avg-in-rate", "avg-out-rate", "buffering-left",
++  "estimated-total", "old-state", "new-state", "pending-state",
++  "clock", "ready", "position", "new-base-time", "live", "min-latency",
++  "max-latency", "busy", "type", "owner", "update", "applied-rate",
++  "start", "stop", "minsize", "maxsize", "async", "proportion",
++  "diff", "timestamp", "flags", "cur-type", "cur", "stop-type",
++  "latency", "uri", "object", "taglist", "GstEventNewsegment",
++  "GstEventBufferSize", "GstEventQOS", "GstEventSeek", "GstEventLatency",
++  "GstMessageError", "GstMessageWarning", "GstMessageInfo",
++  "GstMessageBuffering", "GstMessageState", "GstMessageClockProvide",
++  "GstMessageClockLost", "GstMessageNewClock", "GstMessageStructureChange",
++  "GstMessageSegmentStart", "GstMessageSegmentDone", "GstMessageDuration",
++  "GstMessageAsyncStart", "GstMessageRequestState", "GstMessageStreamStatus",
++  "GstQueryPosition", "GstQueryDuration", "GstQueryLatency", "GstQueryConvert",
++  "GstQuerySegment", "GstQuerySeeking", "GstQueryFormats", "GstQueryBuffering",
++  "GstQueryURI", "GstEventStep", "GstMessageStepDone", "amount", "flush",
++  "intermediate", "GstMessageStepStart", "active", "eos", "sink-message",
++  "message", "GstMessageQOS", "running-time", "stream-time", "jitter",
++  "quality", "processed", "dropped", "buffering-ranges"
++};
++
++GQuark _priv_gst_quark_table[GST_QUARK_MAX];
++
++void
++_priv_gst_quarks_initialize (void)
++{
++  gint i;
++
++  if (G_N_ELEMENTS (_quark_strings) != GST_QUARK_MAX)
++    g_warning ("the quark table is not consistent! %d != %d",
++        (int) G_N_ELEMENTS (_quark_strings), GST_QUARK_MAX);
++
++  for (i = 0; i < GST_QUARK_MAX; i++) {
++    _priv_gst_quark_table[i] = g_quark_from_static_string (_quark_strings[i]);
++  }
++}
+diff --git a/gst/gstquark.c.REMOTE.9714.c b/gst/gstquark.c.REMOTE.9714.c
+new file mode 100644
+index 0000000..7277593
+--- /dev/null
++++ b/gst/gstquark.c.REMOTE.9714.c
+@@ -0,0 +1,70 @@
++/* GStreamer
++ * Copyright (C) 2006 Jan Schmidt <thaytan@noraisin.net>
++ *
++ * gstquark.c: Registered quarks for the _priv_gst_quark_table, private to 
++ *   GStreamer
++ *
++ * This library is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Library General Public
++ * License as published by the Free Software Foundation; either
++ * version 2 of the License, or (at your option) any later version.
++ *
++ * This library is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Library General Public License for more details.
++ *
++ * You should have received a copy of the GNU Library General Public
++ * License along with this library; if not, write to the
++ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
++ * Boston, MA 02111-1307, USA.
++ */
++
++#include "gst_private.h"
++#include "gstquark.h"
++
++/* These strings must match order and number declared in the GstQuarkId
++ * enum in gstquark.h! */
++static const gchar *_quark_strings[] = {
++  "format", "current", "duration", "rate",
++  "seekable", "segment-start", "segment-end",
++  "src_format", "src_value", "dest_format", "dest_value",
++  "start_format", "start_value", "stop_format", "stop_value",
++  "gerror", "debug", "buffer-percent", "buffering-mode",
++  "avg-in-rate", "avg-out-rate", "buffering-left",
++  "estimated-total", "old-state", "new-state", "pending-state",
++  "clock", "ready", "position", "new-base-time", "live", "min-latency",
++  "max-latency", "busy", "type", "owner", "update", "applied-rate",
++  "start", "stop", "minsize", "maxsize", "async", "proportion",
++  "diff", "timestamp", "flags", "cur-type", "cur", "stop-type",
++  "latency", "uri", "object", "taglist", "GstEventNewsegment",
++  "GstEventBufferSize", "GstEventQOS", "GstEventSeek", "GstEventLatency",
++  "GstMessageError", "GstMessageWarning", "GstMessageInfo",
++  "GstMessageBuffering", "GstMessageState", "GstMessageClockProvide",
++  "GstMessageClockLost", "GstMessageNewClock", "GstMessageStructureChange",
++  "GstMessageSegmentStart", "GstMessageSegmentDone", "GstMessageDuration",
++  "GstMessageAsyncStart", "GstMessageRequestState", "GstMessageStreamStatus",
++  "GstQueryPosition", "GstQueryDuration", "GstQueryLatency", "GstQueryConvert",
++  "GstQuerySegment", "GstQuerySeeking", "GstQueryFormats", "GstQueryBuffering",
++  "GstQueryURI", "GstEventStep", "GstMessageStepDone", "amount", "flush",
++  "intermediate", "GstMessageStepStart", "active", "eos", "sink-message",
++  "message", "GstMessageQOS", "running-time", "stream-time", "jitter",
++  "quality", "processed", "dropped", "GstQueryBuffers", "caps", "count",
++  "width", "height"
++};
++
++GQuark _priv_gst_quark_table[GST_QUARK_MAX];
++
++void
++_priv_gst_quarks_initialize (void)
++{
++  gint i;
++
++  if (G_N_ELEMENTS (_quark_strings) != GST_QUARK_MAX)
++    g_warning ("the quark table is not consistent! %d != %d",
++        (int) G_N_ELEMENTS (_quark_strings), GST_QUARK_MAX);
++
++  for (i = 0; i < GST_QUARK_MAX; i++) {
++    _priv_gst_quark_table[i] = g_quark_from_static_string (_quark_strings[i]);
++  }
++}
+diff --git a/gst/gstquark.c.orig b/gst/gstquark.c.orig
+new file mode 100644
+index 0000000..e1fc9b1
+--- /dev/null
++++ b/gst/gstquark.c.orig
+@@ -0,0 +1,74 @@
++/* GStreamer
++ * Copyright (C) 2006 Jan Schmidt <thaytan@noraisin.net>
++ *
++ * gstquark.c: Registered quarks for the _priv_gst_quark_table, private to 
++ *   GStreamer
++ *
++ * This library is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Library General Public
++ * License as published by the Free Software Foundation; either
++ * version 2 of the License, or (at your option) any later version.
++ *
++ * This library is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Library General Public License for more details.
++ *
++ * You should have received a copy of the GNU Library General Public
++ * License along with this library; if not, write to the
++ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
++ * Boston, MA 02111-1307, USA.
++ */
++
++#include "gst_private.h"
++#include "gstquark.h"
++
++/* These strings must match order and number declared in the GstQuarkId
++ * enum in gstquark.h! */
++static const gchar *_quark_strings[] = {
++  "format", "current", "duration", "rate",
++  "seekable", "segment-start", "segment-end",
++  "src_format", "src_value", "dest_format", "dest_value",
++  "start_format", "start_value", "stop_format", "stop_value",
++  "gerror", "debug", "buffer-percent", "buffering-mode",
++  "avg-in-rate", "avg-out-rate", "buffering-left",
++  "estimated-total", "old-state", "new-state", "pending-state",
++  "clock", "ready", "position", "new-base-time", "live", "min-latency",
++  "max-latency", "busy", "type", "owner", "update", "applied-rate",
++  "start", "stop", "minsize", "maxsize", "async", "proportion",
++  "diff", "timestamp", "flags", "cur-type", "cur", "stop-type",
++  "latency", "uri", "object", "taglist", "GstEventNewsegment",
++  "GstEventBufferSize", "GstEventQOS", "GstEventSeek", "GstEventLatency",
++  "GstMessageError", "GstMessageWarning", "GstMessageInfo",
++  "GstMessageBuffering", "GstMessageState", "GstMessageClockProvide",
++  "GstMessageClockLost", "GstMessageNewClock", "GstMessageStructureChange",
++  "GstMessageSegmentStart", "GstMessageSegmentDone", "GstMessageDuration",
++  "GstMessageAsyncStart", "GstMessageRequestState", "GstMessageStreamStatus",
++  "GstQueryPosition", "GstQueryDuration", "GstQueryLatency", "GstQueryConvert",
++  "GstQuerySegment", "GstQuerySeeking", "GstQueryFormats", "GstQueryBuffering",
++  "GstQueryURI", "GstEventStep", "GstMessageStepDone", "amount", "flush",
++  "intermediate", "GstMessageStepStart", "active", "eos", "sink-message",
++  "message", "GstMessageQOS", "running-time", "stream-time", "jitter",
++<<<<<<< HEAD
++  "quality", "processed", "dropped", "buffering-ranges"
++=======
++  "quality", "processed", "dropped", "GstQueryBuffers", "caps", "count",
++  "width", "height"
++>>>>>>> 1ff1ed7... add GstQueryBuffers query
++};
++
++GQuark _priv_gst_quark_table[GST_QUARK_MAX];
++
++void
++_priv_gst_quarks_initialize (void)
++{
++  gint i;
++
++  if (G_N_ELEMENTS (_quark_strings) != GST_QUARK_MAX)
++    g_warning ("the quark table is not consistent! %d != %d",
++        (int) G_N_ELEMENTS (_quark_strings), GST_QUARK_MAX);
++
++  for (i = 0; i < GST_QUARK_MAX; i++) {
++    _priv_gst_quark_table[i] = g_quark_from_static_string (_quark_strings[i]);
++  }
++}
+diff --git a/gst/gstquark.h b/gst/gstquark.h
+index c95d9cd..f4c8e0f 100644
+--- a/gst/gstquark.h
++++ b/gst/gstquark.h
+@@ -127,8 +127,13 @@ typedef enum _GstQuarkId
+   GST_QUARK_PROCESSED = 98,
+   GST_QUARK_DROPPED = 99,
+   GST_QUARK_BUFFERING_RANGES = 100,
++  GST_QUARK_QUERY_BUFFERS = 101,
++  GST_QUARK_CAPS = 102,
++  GST_QUARK_COUNT = 103,
++  GST_QUARK_WIDTH = 104,
++  GST_QUARK_HEIGHT = 105,
+ 
+-  GST_QUARK_MAX = 101
++  GST_QUARK_MAX = 106
+ } GstQuarkId;
+ 
+ extern GQuark _priv_gst_quark_table[GST_QUARK_MAX];
+diff --git a/gst/gstquark.h.orig b/gst/gstquark.h.orig
+new file mode 100644
+index 0000000..1662daf
+--- /dev/null
++++ b/gst/gstquark.h.orig
+@@ -0,0 +1,148 @@
++/* GStreamer
++ * Copyright (C) 2006 Jan Schmidt <thaytan@noraisin.net>
++ *
++ * gstquark.h: Private header for storing quark info 
++ *
++ * This library is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Library General Public
++ * License as published by the Free Software Foundation; either
++ * version 2 of the License, or (at your option) any later version.
++ *
++ * This library is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Library General Public License for more details.
++ *
++ * You should have received a copy of the GNU Library General Public
++ * License along with this library; if not, write to the
++ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
++ * Boston, MA 02111-1307, USA.
++ */
++
++#ifndef __GST_QUARK_H__
++#define __GST_QUARK_H__
++
++/* These enums need to match the number and order
++ * of strings declared in _quark_table, in gstquark.c */
++typedef enum _GstQuarkId
++{
++  GST_QUARK_FORMAT = 0,
++  GST_QUARK_CURRENT = 1,
++  GST_QUARK_DURATION = 2,
++  GST_QUARK_RATE = 3,
++  GST_QUARK_SEEKABLE = 4,
++  GST_QUARK_SEGMENT_START = 5,
++  GST_QUARK_SEGMENT_END = 6,
++  GST_QUARK_SRC_FORMAT = 7,
++  GST_QUARK_SRC_VALUE = 8,
++  GST_QUARK_DEST_FORMAT = 9,
++  GST_QUARK_DEST_VALUE = 10,
++  GST_QUARK_START_FORMAT = 11,
++  GST_QUARK_START_VALUE = 12,
++  GST_QUARK_STOP_FORMAT = 13,
++  GST_QUARK_STOP_VALUE = 14,
++  GST_QUARK_GERROR = 15,
++  GST_QUARK_DEBUG = 16,
++  GST_QUARK_BUFFER_PERCENT = 17,
++  GST_QUARK_BUFFERING_MODE = 18,
++  GST_QUARK_AVG_IN_RATE = 19,
++  GST_QUARK_AVG_OUT_RATE = 20,
++  GST_QUARK_BUFFERING_LEFT = 21,
++  GST_QUARK_ESTIMATED_TOTAL = 22,
++  GST_QUARK_OLD_STATE = 23,
++  GST_QUARK_NEW_STATE = 24,
++  GST_QUARK_PENDING_STATE = 25,
++  GST_QUARK_CLOCK = 26,
++  GST_QUARK_READY = 27,
++  GST_QUARK_POSITION = 28,
++  GST_QUARK_NEW_BASE_TIME = 29,
++  GST_QUARK_LIVE = 30,
++  GST_QUARK_MIN_LATENCY = 31,
++  GST_QUARK_MAX_LATENCY = 32,
++  GST_QUARK_BUSY = 33,
++  GST_QUARK_TYPE = 34,
++  GST_QUARK_OWNER = 35,
++  GST_QUARK_UPDATE = 36,
++  GST_QUARK_APPLIED_RATE = 37,
++  GST_QUARK_START = 38,
++  GST_QUARK_STOP = 39,
++  GST_QUARK_MINSIZE = 40,
++  GST_QUARK_MAXSIZE = 41,
++  GST_QUARK_ASYNC = 42,
++  GST_QUARK_PROPORTION = 43,
++  GST_QUARK_DIFF = 44,
++  GST_QUARK_TIMESTAMP = 45,
++  GST_QUARK_FLAGS = 46,
++  GST_QUARK_CUR_TYPE = 47,
++  GST_QUARK_CUR = 48,
++  GST_QUARK_STOP_TYPE = 49,
++  GST_QUARK_LATENCY = 50,
++  GST_QUARK_URI = 51,
++  GST_QUARK_OBJECT = 52,
++  GST_QUARK_TAGLIST = 53,
++  GST_QUARK_EVENT_NEWSEGMENT = 54,
++  GST_QUARK_EVENT_BUFFER_SIZE = 55,
++  GST_QUARK_EVENT_QOS = 56,
++  GST_QUARK_EVENT_SEEK = 57,
++  GST_QUARK_EVENT_LATENCY = 58,
++  GST_QUARK_MESSAGE_ERROR = 59,
++  GST_QUARK_MESSAGE_WARNING = 60,
++  GST_QUARK_MESSAGE_INFO = 61,
++  GST_QUARK_MESSAGE_BUFFERING = 62,
++  GST_QUARK_MESSAGE_STATE = 63,
++  GST_QUARK_MESSAGE_CLOCK_PROVIDE = 64,
++  GST_QUARK_MESSAGE_CLOCK_LOST = 65,
++  GST_QUARK_MESSAGE_NEW_CLOCK = 66,
++  GST_QUARK_MESSAGE_STRUCTURE_CHANGE = 67,
++  GST_QUARK_MESSAGE_SEGMENT_START = 68,
++  GST_QUARK_MESSAGE_SEGMENT_DONE = 69,
++  GST_QUARK_MESSAGE_DURATION = 70,
++  GST_QUARK_MESSAGE_ASYNC_START = 71,
++  GST_QUARK_MESSAGE_REQUEST_STATE = 72,
++  GST_QUARK_MESSAGE_STREAM_STATUS = 73,
++  GST_QUARK_QUERY_POSITION = 74,
++  GST_QUARK_QUERY_DURATION = 75,
++  GST_QUARK_QUERY_LATENCY = 76,
++  GST_QUARK_QUERY_CONVERT = 77,
++  GST_QUARK_QUERY_SEGMENT = 78,
++  GST_QUARK_QUERY_SEEKING = 79,
++  GST_QUARK_QUERY_FORMATS = 80,
++  GST_QUARK_QUERY_BUFFERING = 81,
++  GST_QUARK_QUERY_URI = 82,
++  GST_QUARK_EVENT_STEP = 83,
++  GST_QUARK_MESSAGE_STEP_DONE = 84,
++  GST_QUARK_AMOUNT = 85,
++  GST_QUARK_FLUSH = 86,
++  GST_QUARK_INTERMEDIATE = 87,
++  GST_QUARK_MESSAGE_STEP_START = 88,
++  GST_QUARK_ACTIVE = 89,
++  GST_QUARK_EOS = 90,
++  GST_QUARK_EVENT_SINK_MESSAGE = 91,
++  GST_QUARK_MESSAGE = 92,
++  GST_QUARK_MESSAGE_QOS = 93,
++  GST_QUARK_RUNNING_TIME = 94,
++  GST_QUARK_STREAM_TIME = 95,
++  GST_QUARK_JITTER = 96,
++  GST_QUARK_QUALITY = 97,
++  GST_QUARK_PROCESSED = 98,
++  GST_QUARK_DROPPED = 99,
++<<<<<<< HEAD
++  GST_QUARK_BUFFERING_RANGES = 100,
++
++  GST_QUARK_MAX = 101
++=======
++  GST_QUARK_QUERY_BUFFERS = 100,
++  GST_QUARK_CAPS = 101,
++  GST_QUARK_COUNT = 102,
++  GST_QUARK_WIDTH = 103,
++  GST_QUARK_HEIGHT = 104,
++
++  GST_QUARK_MAX = 105
++>>>>>>> 1ff1ed7... add GstQueryBuffers query
++} GstQuarkId;
++
++extern GQuark _priv_gst_quark_table[GST_QUARK_MAX];
++
++#define GST_QUARK(q) _priv_gst_quark_table[GST_QUARK_##q]
++
++#endif
+diff --git a/gst/gstquery.c b/gst/gstquery.c
+index 44ffa59..86e9f38 100644
+--- a/gst/gstquery.c
++++ b/gst/gstquery.c
+@@ -94,6 +94,7 @@ static GstQueryTypeDefinition standard_definitions[] = {
+   {GST_QUERY_BUFFERING, "buffering", "Buffering status", 0},
+   {GST_QUERY_CUSTOM, "custom", "Custom query", 0},
+   {GST_QUERY_URI, "uri", "URI of the source or sink", 0},
++  {GST_QUERY_BUFFERS, "buffers", "Minimum buffer requirements", 0},
+   {0, NULL, NULL, 0}
+ };
+ 
+@@ -1480,3 +1481,143 @@ gst_query_parse_uri (GstQuery * query, gchar ** uri)
+     *uri = g_value_dup_string (gst_structure_id_get_value (structure,
+             GST_QUARK (URI)));
+ }
++
++/**
++ * gst_query_new_buffers:
++ * @caps: the #GstCaps for the buffers that are going to be allocated
++ *
++ * Constructs a new buffer requirements query object to query buffer
++ * requirements for a particular caps.  Use gst_query_unref() when done
++ * with it.
++ *
++ * Returns: A #GstQuery
++ */
++GstQuery *
++gst_query_new_buffers (GstCaps * caps)
++{
++  GstQuery *query;
++  GstStructure *structure;
++
++  /* XXX could add size here, for linear (non YUV/RGB) buffers?  But I'm not
++   * entirely sure what is the use-case for that.. it should be easy enough
++   * to add more optional reply fields later
++   */
++  structure = gst_structure_id_new (GST_QUARK (QUERY_BUFFERS),
++      GST_QUARK (CAPS), GST_TYPE_CAPS, caps,
++      GST_QUARK (COUNT), G_TYPE_INT, -1,
++      GST_QUARK (WIDTH), G_TYPE_INT, -1,
++      GST_QUARK (HEIGHT), G_TYPE_INT, -1, NULL);
++
++  query = gst_query_new (GST_QUERY_BUFFERS, structure);
++
++  return query;
++}
++
++/**
++ * gst_query_set_buffers_count:
++ * @count: minimum number of buffers required
++ *
++ * Answer a buffers query by setting the minimum number of buffers required.
++ * If there is no minimum buffer count requirement, don't set this field in
++ * the query.
++ */
++void
++gst_query_set_buffers_count (GstQuery * query, gint count)
++{
++  GstStructure *structure;
++
++  g_return_if_fail (GST_QUERY_TYPE (query) == GST_QUERY_BUFFERS);
++
++  structure = gst_query_get_structure (query);
++  gst_structure_id_set (structure, GST_QUARK (COUNT), G_TYPE_INT, count, NULL);
++}
++
++/**
++ * gst_query_set_buffers_dimensions:
++ * @width: minimum buffer width
++ * @height: minimum buffer height
++ *
++ * Answer a buffers query by setting the minimum buffer dimensions required.
++ * If there is no minimum buffer dimensions (beyond the width/height specified
++ * in the #GstCaps), don't set this field in the query.
++ */
++void
++gst_query_set_buffers_dimensions (GstQuery * query, gint width, gint height)
++{
++  GstStructure *structure;
++
++  g_return_if_fail (GST_QUERY_TYPE (query) == GST_QUERY_BUFFERS);
++
++  structure = gst_query_get_structure (query);
++  gst_structure_id_set (structure,
++      GST_QUARK (WIDTH), G_TYPE_INT, width,
++      GST_QUARK (HEIGHT), G_TYPE_INT, height, NULL);
++}
++
++/**
++ * gst_query_parse_buffers_caps:
++ * @query: a #GstQuery
++ * @caps: the storage for the #GstCaps pointer, or NULL
++ *
++ * Parse a buffers query.
++ */
++void
++gst_query_parse_buffers_caps (GstQuery * query, const GstCaps ** caps)
++{
++  GstStructure *structure;
++
++  g_return_if_fail (GST_QUERY_TYPE (query) == GST_QUERY_BUFFERS);
++
++  structure = gst_query_get_structure (query);
++  if (caps)
++    *caps = gst_value_get_caps (gst_structure_id_get_value (structure,
++            GST_QUARK (CAPS)));
++}
++
++/**
++ * gst_query_parse_buffers_count:
++ * @query: a #GstQuery
++ * @count: the storage for minimum number of buffers, or NULL
++ *
++ * Parse a buffers query answer to see the minimum number of buffers
++ * required.  A returned value of -1 means there is no minimum requirement
++ */
++void
++gst_query_parse_buffers_count (GstQuery * query, gint * count)
++{
++  GstStructure *structure;
++
++  g_return_if_fail (GST_QUERY_TYPE (query) == GST_QUERY_BUFFERS);
++
++  structure = gst_query_get_structure (query);
++  if (count)
++    *count = g_value_get_int (gst_structure_id_get_value (structure,
++            GST_QUARK (COUNT)));
++}
++
++/**
++ * gst_query_parse_buffers_dimensions:
++ * @query: a #GstQuery
++ * @width: the storage for minimum width, or NULL
++ * @height: the storage for minimum height, or NULL
++ *
++ * Parse a buffers query answer to see the minimum buffer dimensions required.
++ * A returned value of -1 for either dimension means there is no minimum
++ * requirement in that axis
++ */
++void
++gst_query_parse_buffers_dimensions (GstQuery * query, gint * width,
++    gint * height)
++{
++  GstStructure *structure;
++
++  g_return_if_fail (GST_QUERY_TYPE (query) == GST_QUERY_BUFFERS);
++
++  structure = gst_query_get_structure (query);
++  if (width)
++    *width = g_value_get_int (gst_structure_id_get_value (structure,
++            GST_QUARK (WIDTH)));
++  if (height)
++    *height = g_value_get_int (gst_structure_id_get_value (structure,
++            GST_QUARK (HEIGHT)));
++}
+diff --git a/gst/gstquery.h b/gst/gstquery.h
+index 0284a29..e95d85b 100644
+--- a/gst/gstquery.h
++++ b/gst/gstquery.h
+@@ -31,6 +31,7 @@
+ #include <gst/gstminiobject.h>
+ #include <gst/gststructure.h>
+ #include <gst/gstformat.h>
++#include <gst/gstcaps.h>
+ 
+ G_BEGIN_DECLS
+ 
+@@ -51,6 +52,9 @@ G_BEGIN_DECLS
+  * @GST_QUERY_CUSTOM: a custom application or element defined query. Since
+  * 0.10.22.
+  * @GST_QUERY_URI: query the URI of the source or sink. Since 0.10.22.
++ * @GST_QUERY_BUFFERS: query the upstream users of pad_alloc()'d buffers to
++ * find any particular requirements about buffer size (padding) or numbers of
++ * buffers. Since ?.?.?.
+  *
+  * Standard predefined Query types
+  */
+@@ -69,7 +73,8 @@ typedef enum {
+   GST_QUERY_FORMATS,
+   GST_QUERY_BUFFERING,
+   GST_QUERY_CUSTOM,
+-  GST_QUERY_URI
++  GST_QUERY_URI,
++  GST_QUERY_BUFFERS
+ } GstQueryType;
+ 
+ /**
+@@ -332,6 +337,15 @@ GstQuery *      gst_query_new_uri                 (void);
+ void            gst_query_parse_uri               (GstQuery *query, gchar **uri);
+ void            gst_query_set_uri                 (GstQuery *query, const gchar *uri);
+ 
++/* buffer requirements query */
++GstQuery *      gst_query_new_buffers             (GstCaps * caps);
++void            gst_query_set_buffers_count       (GstQuery * query, gint count);
++void            gst_query_set_buffers_dimensions  (GstQuery * query, gint width, gint height);
++void            gst_query_parse_buffers_caps      (GstQuery * query, const GstCaps ** caps);
++void            gst_query_parse_buffers_count     (GstQuery * query, gint * count);
++void            gst_query_parse_buffers_dimensions (GstQuery * query, gint * width, gint * height);
++
++
+ G_END_DECLS
+ 
+ #endif /* __GST_QUERY_H__ */
+-- 
+1.6.6.1
+
