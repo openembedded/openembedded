@@ -5,7 +5,6 @@ DIR=${SCRDIR}/${DATE}
 PREFIX=http://www.x.org/releases/X11R7.5/src/
 GRPS="app data doc driver font lib proto util xserver"
 OETREE=${SCRDIR}/../..
-PREFS_LIVE=${OETREE}/conf/distro/include/preferred-xorg-versions-X11R7.5-live.inc
 BBS=${OETREE}/recipes/xorg-
 OUT_LOG=${DIR}.log
 OUT_CMD=${DIR}.cmd
@@ -30,9 +29,6 @@ function updateVersions {
   VER=$3
   BB_VER=`ls -1 ${BBS}${GRP}/${PKG}_*.bb 2>/dev/null | sed "s%${BBS}${GRP}/${PKG}_%%g; s%.bb$%%g" | grep -v X11R7.0 | grep -v cvs | grep -v git | grep -v svn | sort -V | tail -n 1`
   #echo ${GRP}/${PKG}/${VER} ${PREF_VER} ${BB_VER}
-  if ls -1 ${BBS}${GRP}/${PKG}_*.bb >/dev/null 2>/dev/null ; then
-    echo "PREFERRED_VERSION_${PKG} ?= \"${VER}\"" >> ${PREFS_LIVE}
-  fi
   if [[ -n ${BB_VER} && ${BB_VER} != ${VER} ]] ; then
     echo "bump: $GRP ${PKG} ${BB_VER} -> ${VER}" | tee -a ${OUT_LOG}
     echo "cp ${BBS}${GRP}/${PKG}_${BB_VER}.bb ${BBS}${GRP}/${PKG}_${VER}.bb" >> ${OUT_CMD}
@@ -53,14 +49,11 @@ done
 
 sort -u ${DIR}/latest.txt > ${DIR}/latest.sort.txt
  
-echo "#`date`" > ${PREFS_LIVE}
-
 echo "#`date`" > ${OUT_LOG}
 echo "#`date`" > ${OUT_CMD}
 
 cat ${DIR}/latest.txt | while read LINE; do
   if [[ ${LINE} =~ \#.* ]]; then
-    echo ${LINE} >> ${PREFS_LIVE}
     continue
   fi
   #echo ${LINE};
