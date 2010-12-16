@@ -22,6 +22,12 @@ SECTION  = "interpreters"
 # PhoneME builds currently cannot be parallel
 PARALLEL_MAKE = ""
 
+# with Thumb mode enabled it fails with
+# | /tmp/cc20oI7T.s:11528: Error: selected processor does not support `swp r2,r3,[r8]'
+# or on other host with even better error
+# | /tmp/ccIG8VdD.s:875: Error: selected processor does not support Thumb mode `swp r5,r7,[r4]'
+ARM_INSTRUCTION_SET = "ARM"
+
 S = "${WORKDIR}"
 
 BUILDREV = ${@bb.fatal('BUILDREV is not defined in this phoneme-advanced recipe!')}
