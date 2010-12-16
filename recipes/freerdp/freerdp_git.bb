@@ -3,10 +3,15 @@
 
 include freerdp.inc
 
-PR = "${INC_PR}.2"
-PV = "0.8.1-${PR}+gitr${SRCREV}"
+inherit gitpkgv
+
+PV = "gitr${SRCPV}"
+PKGV = "${GITPKGVTAG}"
+
+SRCREV = "aec5dd5807dbcd0989bb15124dcac157bb0412bc"
+PR = "${INC_PR}.4"
+
 S = "${WORKDIR}/git"
 
-SRCREV = "210fa972d96ecf927b75ca983b4551858a091ae7"
 
 SRC_URI = "git://freerdp.git.sourceforge.net/gitroot/freerdp/freerdp.git;protocol=git"
