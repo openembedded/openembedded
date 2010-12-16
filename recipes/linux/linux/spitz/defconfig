@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux/arm 2.6.37-rc4 Kernel Configuration
-# Tue Nov 30 12:05:56 2010
+# Linux/arm 2.6.37-rc6 Kernel Configuration
+# Thu Dec 16 11:01:46 2010
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -398,7 +398,7 @@ CONFIG_ALIGNMENT_TRAP=y
 #
 CONFIG_ZBOOT_ROM_TEXT=0x0
 CONFIG_ZBOOT_ROM_BSS=0x0
-CONFIG_CMDLINE=" quiet "
+CONFIG_CMDLINE=" debug "
 # CONFIG_CMDLINE_FORCE is not set
 # CONFIG_XIP_KERNEL is not set
 CONFIG_KEXEC=y
@@ -1169,6 +1169,7 @@ CONFIG_INPUT_KEYBOARD=y
 # CONFIG_KEYBOARD_QT2160 is not set
 # CONFIG_KEYBOARD_LKKBD is not set
 CONFIG_KEYBOARD_GPIO=y
+# CONFIG_KEYBOARD_GPIO_POLLED is not set
 # CONFIG_KEYBOARD_TCA6416 is not set
 CONFIG_KEYBOARD_MATRIX=y
 # CONFIG_KEYBOARD_LM8323 is not set
@@ -1287,6 +1288,9 @@ CONFIG_I2C_COMPAT=y
 # CONFIG_I2C_CHARDEV is not set
 # CONFIG_I2C_MUX is not set
 CONFIG_I2C_HELPER_AUTO=y
+# CONFIG_I2C_ALGOBIT is not set
+# CONFIG_I2C_ALGOPCF is not set
+# CONFIG_I2C_ALGOPCA is not set
 
 #
 # I2C Hardware Bus support
