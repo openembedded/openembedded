@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r87"
+PR = "r88"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -39,7 +39,7 @@ RDEPENDS_${PN} += "\
 		libyaml-perl \
 		libnet-dbus-perl \
 		mc \
-		mpd \
+# broken	mpd \
 		mplayer \
 		navit \
 		omhacks \
@@ -217,7 +217,7 @@ RDEPENDS_${PN} += "\
 		mickeyterm \
 		opimd-utils \
 		omgps \
-		shr-launcher \
+# broken	shr-launcher \
 		e-tasks \
 		elmdentica \
 		shr-installer \
@@ -283,7 +283,7 @@ RDEPENDS_${PN} += "\
 		litephone \
 		linphone \
 		rtmom \
-		ventura \
+# broken	ventura \
 		emtooth \
 		podboy \
 		mcnavi \
@@ -291,7 +291,7 @@ RDEPENDS_${PN} += "\
 		spojegui \
 		dbus-daemon-proxy \
 		unixbench \
-		maxima \
+# broken	maxima \
 		xfsprogs \
 		xfsdump \
 		numberx \
@@ -317,6 +317,7 @@ RDEPENDS_${PN} += "\
 		setxkbmap \
 		enjoy \
 		shr-theme-efenniht \
+		gwaterpas \
 "
 
 # this is only usefull on gta02 and on other devices it's trying to pull mesa-dri (not respecting DEFAULT_PROVIDER for virtual/libgl)
