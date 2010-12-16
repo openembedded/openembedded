@@ -54,15 +54,7 @@ PREFERRED_VERSION_gcc-cross-sdk          ?= "${PREFERRED_GCC_VERSION}"
 PREFERRED_VERSION_gcc-cross-initial      ?= "${PREFERRED_GCC_VERSION}"
 PREFERRED_VERSION_gcc-cross-intermediate ?= "${PREFERRED_GCC_VERSION}"
 
-# Compiler selection
-PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}binutils         = "binutils-cross"
-PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}gcc-initial      = "gcc-cross-initial"
-PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}gcc-intermediate = "gcc-cross-intermediate"
-PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}gcc              = "gcc-cross"
-PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}g++              = "gcc-cross"
-
 # Others
-PREFERRED_PROVIDER_linux-libc-headers = "linux-libc-headers"
 PREFERRED_VERSION_libtool = "${PREFERRED_LIBTOOL_VERSION}"
 PREFERRED_VERSION_libtool-cross = "${PREFERRED_LIBTOOL_VERSION}"
 PREFERRED_VERSION_libtool-native = "${PREFERRED_LIBTOOL_VERSION}"
@@ -75,6 +67,10 @@ PREFERRED_VERSION_libtool-nativesdk = "${PREFERRED_LIBTOOL_VERSION}"
 
 # Branding
 TARGET_VENDOR = "-oe"
+
+# Compiler selection
+TOOLCHAIN_TYPE ?= "internal"
+require conf/distro/include/toolchain-${TOOLCHAIN_TYPE}.inc
 
 # Add FEED_ARCH to the overrides list so that we can override the
 # ARM_INSTRUCTION_SET like below
@@ -134,7 +130,7 @@ TARGET_CC_ARCH_pn-cairo_armv5te = "-march=armv4t"
 
 # Can be "glibc", "eglibc" or "uclibc"
 LIBC ?= "eglibc"
-require conf/distro/include/${LIBC}.inc
+require conf/distro/include/${LIBC}-${TOOLCHAIN_TYPE}.inc
 PSTAGE_EXTRAPATH = "${LIBC}"
 require conf/distro/include/sane-toolchain-${LIBC}.inc
 
@@ -204,7 +200,12 @@ def compute_os_portion_of_target_triplet (d):
 	else:
 		bb.note("DISTRO_FEATURES is not set abi suffix not set")
 		abi_suffix = ""
-	if libc_suffix is not "" or abi_suffix is not "":
+
+	if bb.data.getVar('TOOLCHAIN_BRAND',d,1) is not None and \
+	bb.data.getVar('TOOLCHAIN_BRAND',d,1) in "csl":
+		gnu_suffix = "gnu"
+
+	if libc_suffix + gnu_suffix + abi_suffix is not "":
 		return os_suffix + "-" + libc_suffix + gnu_suffix + abi_suffix
 	else:
 		return os_suffix
