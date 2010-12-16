@@ -2,9 +2,9 @@ SECTION = "x11/base"
 LICENSE = "MIT"
 SRC_URI = "http://dri.freedesktop.org/libdrm/libdrm-${PV}.tar.bz2"
 PROVIDES = "drm"
-DEPENDS = "libpthread-stubs"
+DEPENDS = "libpthread-stubs cairo"
 
-INC_PR = "r6"
+INC_PR = "r7"
 PE = "1"
 
 inherit autotools pkgconfig
