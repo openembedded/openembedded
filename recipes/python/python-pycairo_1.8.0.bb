@@ -6,8 +6,6 @@ LICENSE = "LGPL MPL"
 DEPENDS = "cairo"
 PR = "ml4"
 
-DEFAULT_PREFERENCE = "-1"
-
 SRC_URI = "http://cairographics.org/releases/pycairo-${PV}.tar.gz \
            file://fix-setup-py.patch"
 S = "${WORKDIR}/pycairo-${PV}"
