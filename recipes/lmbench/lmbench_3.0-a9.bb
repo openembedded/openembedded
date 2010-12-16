@@ -3,7 +3,7 @@ DESCRIPTION = "Tools for performance analysis."
 LICENSE = "GPL"
 RDEPENDS_${PN} = "debianutils"
 
-PR = "r0"
+PR = "r1"
 
 inherit autotools
 
@@ -53,4 +53,8 @@ do_install () {
 	install -m 0755 ${WORKDIR}/lmbench-run ${D}${bindir}/
 	mkdir -p ${D}${mandir}
 	mv ${D}${prefix}/man/* ${D}${mandir}/
+	install -d ${D}${datadir}/lmbench/scripts
+	install -m 0755 ${S}/scripts/* ${D}${datadir}/lmbench/scripts
 }
+
+FILES_${PN} += "${datadir}/lmbench"
