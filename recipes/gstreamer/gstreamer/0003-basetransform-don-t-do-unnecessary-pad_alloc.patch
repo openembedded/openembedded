@@ -1,0 +1,52 @@
+From 380ca4382237afe8535ab8c3c44e64adb4d73e71 Mon Sep 17 00:00:00 2001
+From: Rob Clark <rob@ti.com>
+Date: Wed, 26 May 2010 14:42:40 -0500
+Subject: [PATCH 3/3] basetransform: don't do unnecessary pad_alloc()
+
+Don't allocate a buffer in passthrough mode.
+---
+ libs/gst/base/gstbasetransform.c |   28 ++++++++++++++++++++--------
+ 1 files changed, 20 insertions(+), 8 deletions(-)
+
+diff --git a/libs/gst/base/gstbasetransform.c b/libs/gst/base/gstbasetransform.c
+index 62731c5..dfc61a8 100644
+--- a/libs/gst/base/gstbasetransform.c
++++ b/libs/gst/base/gstbasetransform.c
+@@ -2182,14 +2182,26 @@ gst_base_transform_handle_buffer (GstBaseTransform * trans, GstBuffer * inbuf,
+ 
+ no_qos:
+ 
+-  /* first try to allocate an output buffer based on the currently negotiated
+-   * format. While we call pad-alloc we could renegotiate the srcpad format or
+-   * have a new suggestion for upstream buffer-alloc. 
+-   * In any case, outbuf will contain a buffer suitable for doing the configured
+-   * transform after this function. */
+-  ret = gst_base_transform_prepare_output_buffer (trans, inbuf, outbuf);
+-  if (G_UNLIKELY (ret != GST_FLOW_OK))
+-    goto no_buffer;
++  if (trans->passthrough) {
++    /* I'm not yet sure if we should bypass allocating output buffer in case of
++     * passthrough, or if I should override the prepare_output_buffer vmethod..
++     * I think the argument for always doing buffer allocation is to give a
++     * chance for upstream caps-renegotiation.. except I think the existing
++     * gst_base_transform_buffer_alloc() which itself does a pad_alloc() should
++     * be sufficient..
++     */
++    GST_DEBUG_OBJECT (trans, "reuse input buffer");
++    *outbuf = inbuf;
++  } else {
++    /* first try to allocate an output buffer based on the currently negotiated
++     * format. While we call pad-alloc we could renegotiate the srcpad format or
++     * have a new suggestion for upstream buffer-alloc.
++     * In any case, outbuf will contain a buffer suitable for doing the configured
++     * transform after this function. */
++    ret = gst_base_transform_prepare_output_buffer (trans, inbuf, outbuf);
++    if (G_UNLIKELY (ret != GST_FLOW_OK))
++      goto no_buffer;
++  }
+ 
+   /* now perform the needed transform */
+   if (trans->passthrough) {
+-- 
+1.6.6.1
+

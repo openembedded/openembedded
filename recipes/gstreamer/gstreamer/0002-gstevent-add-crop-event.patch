@@ -1,0 +1,199 @@
+From a3f0f0da45500e89fa005bd078b2a31ce7c8b9a1 Mon Sep 17 00:00:00 2001
+From: Rob Clark <rob@ti.com>
+Date: Mon, 24 May 2010 16:49:20 -0500
+Subject: [PATCH 2/3] gstevent: add crop event
+
+This replaces vstab event, and includes width/height as well.
+
+Note vstab event remains as wrapper for crop event for now for
+compatibility.  But once other trees are updated, vstab event
+should be removed and the patch squashed with this.
+
+Signed-off-by: Daniel Diaz <ddiaz@ti.com>
+---
+ gst/gstevent.c |   92 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ gst/gstevent.h |   15 +++++++++
+ gst/gstquark.c |    2 +-
+ gst/gstquark.h |    5 ++-
+ 4 files changed, 112 insertions(+), 2 deletions(-)
+
+diff --git a/gst/gstevent.c b/gst/gstevent.c
+index 3c1b0b9..96add3c 100644
+--- a/gst/gstevent.c
++++ b/gst/gstevent.c
+@@ -116,6 +116,7 @@ static GstEventQuarks event_quarks[] = {
+   {GST_EVENT_TAG, "tag", 0},
+   {GST_EVENT_BUFFERSIZE, "buffersize", 0},
+   {GST_EVENT_SINK_MESSAGE, "sink-message", 0},
++  {GST_EVENT_CROP, "crop", 0},
+   {GST_EVENT_QOS, "qos", 0},
+   {GST_EVENT_SEEK, "seek", 0},
+   {GST_EVENT_NAVIGATION, "navigation", 0},
+@@ -1236,3 +1237,94 @@ gst_event_parse_sink_message (GstEvent * event, GstMessage ** msg)
+         GST_MESSAGE (gst_value_dup_mini_object (gst_structure_id_get_value
+             (structure, GST_QUARK (MESSAGE))));
+ }
++
++/**
++ * gst_event_new_vstab:
++ * @top:  the new offset to top of sub-image
++ * @left:  the new offset to left of sub-image
++ *
++ * Create a new vstab event.
++ */
++GstEvent *
++gst_event_new_vstab (gint top, gint left)
++{
++  return gst_event_new_crop (top, left, -1, -1);
++}
++
++/**
++ * gst_event_parse_vstab:
++ * @event: The event to query
++ * @top: A pointer to store top offset in
++ * @left: A pointer to store left offset in
++ *
++ * Parse the vstab event.
++ */
++void
++gst_event_parse_vstab (GstEvent * event, gint * top, gint * left)
++{
++  gst_event_parse_crop (event, top, left, NULL, NULL);
++}
++
++/* TODO remove vstab event functions.. use crop instead.. */
++
++/**
++ * gst_event_new_crop:
++ * @top:  the new offset to top of sub-image
++ * @left:  the new offset to left of sub-image
++ * @width:  the new width
++ * @height:  the new height
++ *
++ * Create a new vstab event.
++ */
++GstEvent *
++gst_event_new_crop (gint top, gint left, gint width, gint height)
++{
++  GstEvent *event;
++  GstStructure *structure;
++
++  GST_CAT_INFO (GST_CAT_EVENT, "creating crop event: %d,%d %dx%d",
++      top, left, width, height);
++
++  structure = gst_structure_id_new (GST_QUARK (EVENT_CROP),
++      GST_QUARK (TOP), G_TYPE_INT, top,
++      GST_QUARK (LEFT), G_TYPE_INT, left,
++      GST_QUARK (WIDTH), G_TYPE_INT, width,
++      GST_QUARK (HEIGHT), G_TYPE_INT, height, NULL);
++  event = gst_event_new_custom (GST_EVENT_CROP, structure);
++
++  return event;
++}
++
++/**
++ * gst_event_parse_vstab:
++ * @event: The event to query
++ * @top: A pointer to store top offset in
++ * @left: A pointer to store left offset in
++ * @width: A pointer to store width in
++ * @height: A pointer to store height in
++ *
++ * Parse the vstab event.
++ */
++void
++gst_event_parse_crop (GstEvent * event, gint * top, gint * left,
++    gint * width, gint * height)
++{
++  const GstStructure *structure;
++
++  g_return_if_fail (GST_IS_EVENT (event));
++  g_return_if_fail (GST_EVENT_TYPE (event) == GST_EVENT_CROP);
++
++  structure = gst_event_get_structure (event);
++  if (top)
++    *top = g_value_get_int (gst_structure_id_get_value (structure,
++            GST_QUARK (TOP)));
++  if (left)
++    *left = g_value_get_int (gst_structure_id_get_value (structure,
++            GST_QUARK (LEFT)));
++  if (width)
++    *width = g_value_get_int (gst_structure_id_get_value (structure,
++            GST_QUARK (WIDTH)));
++  if (height)
++    *height = g_value_get_int (gst_structure_id_get_value (structure,
++            GST_QUARK (HEIGHT)));
++}
+diff --git a/gst/gstevent.h b/gst/gstevent.h
+index 7ee460d..e600e25 100644
+--- a/gst/gstevent.h
++++ b/gst/gstevent.h
+@@ -93,6 +93,9 @@ typedef enum {
+  * @GST_EVENT_SINK_MESSAGE: An event that sinks turn into a message. Used to
+  *                          send messages that should be emitted in sync with
+  *                          rendering.
++ * @GST_EVENT_VSTAB: An event that can set horizontal (pan/scan) and vertical
++ *                   (tilt/scan) offset within a larger image.  This event
++ *                   precedes the buffer to which it applies.
+  * @GST_EVENT_QOS: A quality message. Used to indicate to upstream elements
+  *                 that the downstream elements are being starved of or
+  *                 flooded with data.
+@@ -133,6 +136,8 @@ typedef enum {
+   GST_EVENT_TAG                   = GST_EVENT_MAKE_TYPE (7, FLAG(DOWNSTREAM) | FLAG(SERIALIZED)),
+   GST_EVENT_BUFFERSIZE            = GST_EVENT_MAKE_TYPE (8, FLAG(DOWNSTREAM) | FLAG(SERIALIZED)),
+   GST_EVENT_SINK_MESSAGE          = GST_EVENT_MAKE_TYPE (9, FLAG(DOWNSTREAM) | FLAG(SERIALIZED)),
++  GST_EVENT_CROP                  = GST_EVENT_MAKE_TYPE (10, FLAG(DOWNSTREAM) | FLAG(SERIALIZED)),
++  GST_EVENT_VSTAB                 = GST_EVENT_CROP,
+   /* upstream events */
+   GST_EVENT_QOS                   = GST_EVENT_MAKE_TYPE (15, FLAG(UPSTREAM)),
+   GST_EVENT_SEEK                  = GST_EVENT_MAKE_TYPE (16, FLAG(UPSTREAM)),
+@@ -483,6 +488,16 @@ GstEvent*       gst_event_new_step              (GstFormat format, guint64 amoun
+ void            gst_event_parse_step            (GstEvent *event, GstFormat *format, guint64 *amount,
+                                                  gdouble *rate, gboolean *flush, gboolean *intermediate);
+ 
++/* vstab event */
++GstEvent *      gst_event_new_vstab             (gint top, gint left);
++void            gst_event_parse_vstab           (GstEvent * event, gint * top, gint * left);
++
++/* crop event */
++GstEvent *      gst_event_new_crop              (gint top, gint left, gint width, gint height);
++void            gst_event_parse_crop            (GstEvent * event, gint * top, gint * left,
++                                                 gint * width, gint * height);
++
++
+ G_END_DECLS
+ 
+ #endif /* __GST_EVENT_H__ */
+diff --git a/gst/gstquark.c b/gst/gstquark.c
+index 58badca..f8716cc 100644
+--- a/gst/gstquark.c
++++ b/gst/gstquark.c
+@@ -50,7 +50,7 @@ static const gchar *_quark_strings[] = {
+   "intermediate", "GstMessageStepStart", "active", "eos", "sink-message",
+   "message", "GstMessageQOS", "running-time", "stream-time", "jitter",
+   "quality", "processed", "dropped", "buffering-ranges", "GstQueryBuffers",
+-  "caps", "count", "width", "height"
++  "caps", "count", "width", "height", "GstEventCrop", "top", "left"
+ };
+ 
+ GQuark _priv_gst_quark_table[GST_QUARK_MAX];
+diff --git a/gst/gstquark.h b/gst/gstquark.h
+index f4c8e0f..6eeb77f 100644
+--- a/gst/gstquark.h
++++ b/gst/gstquark.h
+@@ -132,8 +132,11 @@ typedef enum _GstQuarkId
+   GST_QUARK_COUNT = 103,
+   GST_QUARK_WIDTH = 104,
+   GST_QUARK_HEIGHT = 105,
++  GST_QUARK_EVENT_CROP = 106,
++  GST_QUARK_TOP = 107,
++  GST_QUARK_LEFT = 108,
+ 
+-  GST_QUARK_MAX = 106
++  GST_QUARK_MAX = 109
+ } GstQuarkId;
+ 
+ extern GQuark _priv_gst_quark_table[GST_QUARK_MAX];
+-- 
+1.6.6.1
+
