@@ -232,6 +232,29 @@ python base_do_unpack() {
             oe_unpack(d, local, urldata)
 }
 
+python old_bitbake_messages () {
+    version = [int(c) for c in bb.__version__.split('.')]
+    if version >= [1, 9, 0]:
+        return
+
+    from bb.event import BuildBase, DepBase
+    from bb.build import TaskBase
+
+    name = bb.event.getName(e)
+    if isinstance(e, TaskBase):
+        pf = bb.data.getVar('PF', e.data, True)
+        msg = 'package %s: task %s: %s' % (pf, e.task, name[4:].lower())
+    elif isinstance(e, BuildBase):
+        msg = 'build %s: %s' % (e.name, name[5:].lower())
+    elif isinstance(e, DepBase):
+        msg = 'package %s: dependency %s %s' % (e.pkg, e.dep, name[:-3].lower())
+    else:
+        return
+
+    bb.note(msg)
+}
+addhandler old_bitbake_messages
+
 python build_summary() {
     from bb import note, error, data
     from bb.event import getName
