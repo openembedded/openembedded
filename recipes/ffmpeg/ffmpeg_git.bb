@@ -57,13 +57,13 @@ EXTRA_OECONF = " \
 do_configure() {
         sed -i -e s:'check_cflags -std=c99'::g ${S}/configure
         cd ${S}
-	git clone git://git.mplayerhq.hu/libswscale || true
-	cd libswscale
-	git checkout ${SRCREV_libswscale} || true
-	cd ${S}
+        git clone git://git.mplayerhq.hu/libswscale || true
+        cd libswscale
+        git checkout ${SRCREV_libswscale} || true
+        cd ${S}
         mkdir -p ${B}
         cd ${B}
         ${S}/configure ${EXTRA_OECONF}
-		sed -i -e s:Os:O4:g ${B}/config.h
+        sed -i -e s:Os:O4:g ${B}/config.h
 }
 

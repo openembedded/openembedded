@@ -56,6 +56,6 @@ do_configure() {
         mkdir -p ${B}
         cd ${B}
         ${S}/configure ${EXTRA_OECONF}
-		sed -i -e s:Os:O4:g ${B}/config.h
+        sed -i -e s:Os:O4:g ${B}/config.h
 }
 

@@ -6,7 +6,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/ffmpeg/ffmpeg-${PV}.tar.gz \
            file://configure.patch \
            file://gcc4.patch \
            file://soname.patch \
-	   file://Makefile-avformat-use-LDFLAGS.patch \
+           file://Makefile-avformat-use-LDFLAGS.patch \
            file://Makefile-add-liblame.patch \
            file://install-must-not-strip.patch \
           "
