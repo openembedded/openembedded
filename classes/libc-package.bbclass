@@ -289,10 +289,16 @@ python package_do_split_gconvs () {
 	    		target_arch = bb.data.getVar('TARGET_ARCH', d, True)
 			locale_arch_options = { \
 				"arm":     " --uint32-align=4 --little-endian ", \
+				"armeb":     " --uint32-align=4 --big-endian ", \
+				"armel":     " --uint32-align=4 --little-endian ", \
 				"powerpc": " --uint32-align=4 --big-endian ",    \
 				"mips":    " --uint32-align=4 --big-endian ",    \
-				"mipsel":  " --uint32-align=4 --little-endian ", \
+				"mipsel":    " --uint32-align=4 --little-endian ",    \
+				"mips64":    " --uint32-align=4 --big-endian ",    \
+				"i386":    " --uint32-align=4 --little-endian ", \
+				"i486":    " --uint32-align=4 --little-endian ", \
 				"i586":    " --uint32-align=4 --little-endian ", \
+				"i686":    " --uint32-align=4 --little-endian ", \
 				"x86_64":  " --uint32-align=4 --little-endian "  }
 
 			if target_arch in locale_arch_options:
