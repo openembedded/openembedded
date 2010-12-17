@@ -15,7 +15,6 @@ SRC_URI = "${GNU_MIRROR}/gettext/gettext-${PV}.tar.gz \
            file://autotools.patch \
            file://gettext-autoconf-lib-link-no-L.patch \
 	   file://gnulib-uclibc-sched_param-def.patch \
-	   file://disable-gettext-tools-tests.patch \
 	  "
 
 SRC_URI_append_libc-uclibc = " file://gettext-error_print_progname.patch"
