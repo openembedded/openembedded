@@ -5,7 +5,7 @@ DEPENDS = "expat freetype zlib"
 
 PR = "r4"
 
-SRC_URI = "http://fontconfig.org/release/fontconfig-${PV}.tar.gz \
+SRC_URI = "${GENTOO_MIRROR}/fontconfig-${PV}.tar.gz \
            file://fix-pkgconfig.patch"
 
 PACKAGES =+ "fontconfig-utils-dbg fontconfig-utils "
