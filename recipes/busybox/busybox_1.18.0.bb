@@ -1,11 +1,12 @@
 require busybox_1.1x.inc
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.3"
 
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI += " \
 	file://busybox-1.18.0-buildsys.patch \
 	file://busybox-1.18.0-sha.patch \
+	file://busybox-1.18.0-runsvdir.patch \
 	"
 
 SRC_URI[md5sum] = "7a8150a10558a5292fa1f52f1c65b0f5"
