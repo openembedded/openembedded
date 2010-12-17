@@ -72,9 +72,9 @@ do_populate_sdk() {
 		${IPKG_TARGET} remove -force-depends ${TOOLCHAIN_TARGET_EXCLUDE}
 	fi
 
-	install -d ${SDK_OUTPUT}/${SDKPATH}/usr/lib/opkg
-	mv ${SDK_OUTPUT}/usr/lib/opkg/* ${SDK_OUTPUT}/${SDKPATH}/usr/lib/opkg/
-	rm -Rf ${SDK_OUTPUT}/usr/lib
+	install -d ${SDK_OUTPUT}/${SDKPATH}${libdir}/opkg
+	mv ${SDK_OUTPUT}${libdir}/opkg/* ${SDK_OUTPUT}/${SDKPATH}${libdir}/opkg/
+	rm -Rf ${SDK_OUTPUT}${libdir}
 
 	# Clean up empty directories from excluded packages
 	find ${SDK_OUTPUT} -depth -type d -empty -print0 | xargs -r0 /bin/rmdir
@@ -86,7 +86,7 @@ do_populate_sdk() {
 	install -m 0644 ${IPKGCONF_SDK} ${SDK_OUTPUT}/${SDKPATH}/${sysconfdir}/
 
 	# extract and store ipks, pkgdata and shlibs data
-	target_pkgs=`cat ${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS}/usr/lib/opkg/status | grep Package: | cut -f 2 -d ' '`
+	target_pkgs=`cat ${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS}${libdir}/opkg/status | grep Package: | cut -f 2 -d ' '`
 	mkdir -p ${SDK_OUTPUT2}/${SDKPATH}/ipk/
 	mkdir -p ${SDK_OUTPUT2}/${SDKPATH}/pkgdata/runtime/
 	mkdir -p ${SDK_OUTPUT2}/${SDKPATH}/${TARGET_SYS}/shlibs/
@@ -123,9 +123,11 @@ do_populate_sdk() {
 
 	# With sysroot support, gcc expects the default C++ headers to be
 	# in a specific place.
-	install -d ${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS}/include
-	mv ${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS}/usr/include/c++ \
-		${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS}/include/
+	if [ "${base_prefix}" != "${prefix}" ]; then
+		install -d ${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS}/include
+		mv ${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS}/usr/include/c++ \
+			${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS}/include/
+	fi
 
 	# Fix or remove broken .la files
 	for i in `find ${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS} -name \*.la`; do
