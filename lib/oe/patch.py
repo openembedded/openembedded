@@ -2,6 +2,7 @@ import subprocess
 import os
 import oe.path
 import oe.process
+import bb.fetch, bb.data
 
 class PatchError(Exception):
     def __init__(self, msg):
