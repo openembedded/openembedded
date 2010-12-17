@@ -47,7 +47,7 @@ def mkdirhier(dir):
 
 if __name__ == "__main__":
     parser = optparse.OptionParser( version = "Metadata Stage Manager version %s" % ( __version__ ),
-    usage = """%prog [options]\n\nPerforms mamagement tasks on a metadata staging area.""" )
+    usage = """%prog [options]\n\nPerforms management tasks on a metadata staging area.""" )
 
     parser.add_option( "-p", "--parentdir", help = "the path to the metadata parent directory",
                action = "store", dest = "parentdir", default = None)
