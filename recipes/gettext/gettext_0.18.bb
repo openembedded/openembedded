@@ -2,7 +2,7 @@ DESCRIPTION = "The GNU internationalization library."
 HOMEPAGE = "http://www.gnu.org/software/gettext/gettext.html"
 SECTION = "libs"
 LICENSE = "GPLv3"
-PR = "r3"
+PR = "r4"
 DEPENDS = "gettext-native virtual/libiconv ncurses expat"
 DEPENDS_virtclass-native = "libxml2-native"
 PROVIDES = "virtual/libintl"
@@ -15,6 +15,7 @@ SRC_URI = "${GNU_MIRROR}/gettext/gettext-${PV}.tar.gz \
            file://autotools.patch \
            file://gettext-autoconf-lib-link-no-L.patch \
 	   file://gnulib-uclibc-sched_param-def.patch \
+	   file://disable-gettext-tools-tests.patch \
 	  "
 
 SRC_URI_append_libc-uclibc = " file://gettext-error_print_progname.patch"
@@ -26,6 +27,9 @@ PARALLEL_MAKE = ""
 
 inherit autotools
 
+NATIVECONF = ""
+NATIVECONF_virtclass-native += "--enable-relocatable --disable-curses"
+
 EXTRA_OECONF += "--without-lispdir \
 		 --disable-csharp \
 		 --disable-libasprintf \
@@ -35,7 +39,9 @@ EXTRA_OECONF += "--without-lispdir \
 		 --with-included-glib \
 		 --without-emacs \
 		 --with-included-libcroco \
+		 ${NATIVECONF} \
 	        "
+
 acpaths = '-I ${S}/gnulib-local/m4/ \
 	   -I ${S}/gettext-runtime/m4 \
 	   -I ${S}/gettext-tools/m4'
