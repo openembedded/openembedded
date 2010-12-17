@@ -24,7 +24,7 @@ PROVIDES = "\
 	linux-libc-headers \
 "
 
-RPROVIDES_glibc-dev += "libc-dev"
+RPROVIDES_glibc-dev += "libc-dev libc6-dev virtual-libc-dev"
 PACKAGES_DYNAMIC += "glibc-gconv-*"
 PACKAGES_DYNAMIC += "glibc-locale-*"
 
@@ -211,9 +211,11 @@ do_install() {
 
 	cp -a ${TOOLCHAIN_PATH}/${TARGET_SYS}/libc/lib/* ${D}${base_libdir}
 	cp -a ${TOOLCHAIN_PATH}/${TARGET_SYS}/libc/etc/* ${D}${sysconfdir}
-	cp -a ${TOOLCHAIN_PATH}/${TARGET_SYS}/libc/sbin/* ${D}${base_sbindir}
+	cp -a ${TOOLCHAIN_PATH}/${TARGET_SYS}/libc/sbin/* ${D}${base_sbindir} \
+		|| true
 	cp -a ${TOOLCHAIN_PATH}/${TARGET_SYS}/libc/usr/* ${D}/usr
 	cp -a ${TOOLCHAIN_PATH}/${TARGET_SYS}/include/* ${D}/usr/include
+
 	rm -rf ${D}${bindir}/gdbserver
 	rm -rf ${D}${sysconfdir}/rpc
 	rm -rf ${D}${datadir}/zoneinfo
