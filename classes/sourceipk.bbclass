@@ -106,6 +106,16 @@ sourceipk_do_create_srcipk() {
         # Copy sources for packaging
         mkdir -p $tmp_dir/${SRCIPK_INSTALL_DIR}
         cp -RLf ${S}/* $tmp_dir/${SRCIPK_INSTALL_DIR}/
+        # Copy any hidden files in the source directory such as
+        # eclipse project files.  Use a regex to avoid trying to
+        # copy the . and .. directories.  This is only required for
+        # the top-level directory as the hidden files will be copied
+        # for subdiretories.
+        hidden_files=`find ${S} -maxdepth 1 -name ".*"`
+        for f in $hidden_files
+        do
+            cp -rf $f $tmp_dir/${SRCIPK_INSTALL_DIR}/
+        done
 
         if [ ${SRCIPK_INCLUDE_EXTRAFILES} != "0" ]
         then
