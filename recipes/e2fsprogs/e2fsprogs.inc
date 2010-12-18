@@ -35,7 +35,7 @@ do_install_append () {
 }
 
 do_install_append_pn-e2fsprogs () {
-	for f in e2fsck mke2fs uuid; do
+	for f in e2fsck mke2fs uuidd; do
 		mv ${D}${base_sbindir}/$f ${D}${base_sbindir}/$f.${PN}
 	done
 	for f in chattr; do
