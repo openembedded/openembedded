@@ -1,10 +1,10 @@
 require linux-kexecboot.inc
 
-KERNEL_RELEASE = "2.6.37-rc6"
+KERNEL_RELEASE = "2.6.37-rc7"
 OLD_KERNEL_RELEASE = "2.6.36"
 PV = "${OLD_KERNEL_RELEASE}+${KERNEL_RELEASE}+gitr${SRCPV}"
 
-SRCREV = "b0c3844d8af6b9f3f18f31e1b0502fbefa2166be"
+SRCREV = "90a8a73c06cc32b609a880d48449d7083327e11a"
 
 SRC_URI += "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;branch=master \
             file://defconfig"
