@@ -10,10 +10,8 @@ RREPLACES_fontconfig-utils = "libfontconfig-utils"
 RCONFLICTS_fontconfig-utils = "libfontconfig-utils"
 DEBIAN_NOAUTONAME_fontconfig-utils = "1"
 
-SRC_URI = "http://fontconfig.org/release/fontconfig-${PV}.tar.gz \
+SRC_URI = "http://www.freedesktop.org/software/fontconfig/release/${BPN}-${PV}.tar.gz \
            file://01fc-cache"
-
-S = "${WORKDIR}/fontconfig-${PV}"
 
 inherit autotools pkgconfig
 
