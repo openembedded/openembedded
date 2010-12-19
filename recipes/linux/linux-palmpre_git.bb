@@ -12,7 +12,7 @@ DEPENDS += "kbd-native"
 
 S = "${WORKDIR}/git/"
 
-SRCREV = "33239e4074f4716a674b450a443b64add201bf39"
+SRCREV = "da14a48e167191b7d66c044a03cdfb900a510c27"
 KV = "2.6.24"
 PR="r4"
 PV = "${KV}+gitr${SRCPV}"
