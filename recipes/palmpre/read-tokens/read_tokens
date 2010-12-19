@@ -1,0 +1,6 @@
+
+#!/bin/sh
+
+if [ ! -e /etc/tokens ] ; then
+	/usr/bin/read_tokens > /etc/tokens
+fi
