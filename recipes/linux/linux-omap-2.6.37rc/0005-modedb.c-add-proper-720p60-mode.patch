@@ -1,4 +1,4 @@
-From 2963f2663b0b2457bd0a02eaa2d72d20390af4aa Mon Sep 17 00:00:00 2001
+From f4ad137e2db56975adb534d40cac148cf3cc3fea Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Mon, 8 Mar 2010 14:38:31 +0100
 Subject: [PATCH 05/11] modedb.c: add proper 720p60 mode
@@ -9,7 +9,7 @@ Signed-off-by: Koen Kooi <koen@beagleboard.org>
  1 files changed, 4 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/video/modedb.c b/drivers/video/modedb.c
-index 0a4dbdc..53edf81 100644
+index de450c1..1cd8153 100644
 --- a/drivers/video/modedb.c
 +++ b/drivers/video/modedb.c
 @@ -46,6 +46,10 @@ static const struct fb_videomode modedb[] = {

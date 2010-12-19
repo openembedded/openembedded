@@ -1,4 +1,4 @@
-From f7410950ad86e2b70fca1b02e4c4097fe9280bef Mon Sep 17 00:00:00 2001
+From ab08efe84b1362ffda7afb929fdb299bb00a55a2 Mon Sep 17 00:00:00 2001
 From: Mike Galbraith <efault@gmx.de>
 Date: Fri, 19 Nov 2010 12:52:42 +0100
 Subject: [PATCH 08/11] Miracle patch
