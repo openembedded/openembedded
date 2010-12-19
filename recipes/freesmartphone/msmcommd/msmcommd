@@ -1,0 +1,40 @@
+#! /bin/sh
+#
+# msmcommd -- This shell script starts and stops the msmcomm daemon
+#
+# chkconfig: 345 90 20
+# description: msmcommd is a daemon which handles the low level protocol for some qualcomm modems
+# processname: msmcommd
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+NAME=msmcommd
+
+[ -f /etc/default/rcS ] && . /etc/default/rcS
+
+case "$1" in
+    start)
+        echo -n "Starting msmcommd: "
+        start-stop-daemon --start --pidfile /var/run/${NAME}.pid --make-pidfile --background -x /usr/sbin/msmcommd
+        if [ $? = 0 ]; then
+            echo "(ok)"
+        else
+            echo "(failed)"
+        fi
+        ;;
+    stop)
+        echo -n "Stopping msmcommd: "
+        start-stop-daemon --stop --pidfile /var/run/${NAME}.pid --oknodo
+        rm -f /var/run/${NAME}.pid
+        echo "(done)"
+        ;;
+    restart|force-reload)
+        $0 stop
+        $0 start
+        ;;
+    *)
+        echo "Usage: /etc/init.d/msmcommd {start|stop|restart|force-reload}"
+        exit 1
+        ;;
+esac
+
+exit 0
