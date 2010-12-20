@@ -9,7 +9,7 @@ SRCREV_beagleboard = "1c9276af4d6a5b7014a7630a1abeddf3b3177563"
 
 PV = "1.42+${PR}+gitr${SRCREV}"
 PV_beagleboard = "1.44+${PR}+gitr${SRCREV}"
-PR ="r17"
+PR ="r18"
 PE = "1"
 
 SRC_URI = "git://gitorious.org/x-load-omap3/mainline.git;branch=master;protocol=git"
@@ -25,6 +25,13 @@ SRC_URI_append_omap3-touchbook = " \
                               file://name.patch \
                               file://screen-off.patch \
                              "
+
+# TI PSP v1.46_OMAPPSP_03.00.01.06 (Tag is one commit different)
+SRC_URI_am3517-crane = "git://arago-project.org/git/projects/x-load-omap3.git;protocol=git \
+                        file://0001-Added-support-for-AM3517-CraneBoard.patch \
+"
+SRCREV_am3517-crane = "fc6d5be15c703d21aef0ae0b8c02177721f0445f"
+PV_am3517-crane = "1.46+${PR}+gitr${SRCREV}"
 
 # TI PSP v1.46_OMAPPSP_03.00.01.06 (Tag is one commit different)
 SRC_URI_omap3evm = "git://arago-project.org/git/projects/x-load-omap3.git;protocol=git"
