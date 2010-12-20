@@ -7,7 +7,7 @@ DESCRIPTION="cdtool is a free software package to control the audio functions \
 of an attached CDROM drive from the command line in a quick and scriptable way."
 LICENSE = "GPL"
 
-SRC_URI="http://hinterhof.net/${PN}/dist/${PN}-${PV}.tar.gz \
+SRC_URI="http://ibiblio.org/pub/linux/apps/sound/cdrom/cli/${PN}-${PV}.tar.gz \
 	file://install-no-owner.patch"
 
 inherit autotools
