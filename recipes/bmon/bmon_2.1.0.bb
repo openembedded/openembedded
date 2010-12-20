@@ -5,7 +5,7 @@ LICENSE = "MIT"
 # only works with libnl-0.5.0
 DEPENDS = "libnl"
 
-SRC_URI = "http://people.suug.ch/~tgr/bmon/files/bmon-2.1.0.tar.gz \
+SRC_URI = "http://distfiles.macports.org/bmon/bmon-2.1.0.tar.gz \
            file://no-strip.patch"
 
 inherit autotools
