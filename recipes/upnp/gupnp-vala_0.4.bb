@@ -3,7 +3,7 @@ DEPENDS = "gupnp vala-native"
 
 PR = "r1"
 
-SRC_URI = "http://gupnp.org/sources/bindings/${PN}-${PV}.tar.gz"
+require gupnp.inc
 
 inherit autotools pkgconfig
 

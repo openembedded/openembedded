@@ -1,7 +1,7 @@
 LICENSE = "LGPL"
 DEPENDS = "e2fsprogs gssdp libsoup-2.4 libxml2"
 
-SRC_URI = "http://gupnp.org/sources/${PN}/${PN}-${PV}.tar.gz"
+require gupnp.inc
 
 inherit autotools pkgconfig
 

@@ -1,7 +1,7 @@
 LICENSE = "LGPL"
 DEPENDS = "glib-2.0 libsoup-2.4 libglade"
 
-SRC_URI = "http://gupnp.org/sources/${PN}/${PN}-${PV}.tar.gz"
+require gupnp.inc
 
 inherit autotools pkgconfig
 

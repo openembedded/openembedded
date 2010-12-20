@@ -1,8 +1,9 @@
 LICENSE = "LGPL"
 DEPENDS = "gupnp"
 
-SRC_URI = "http://gupnp.org/sources/${PN}/${PN}-${PV}.tar.gz \
-           file://nodoc.patch"
+require gupnp.inc
+
+SRC_URI += "file://nodoc.patch"
 
 inherit autotools pkgconfig
 

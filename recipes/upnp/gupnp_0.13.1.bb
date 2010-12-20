@@ -1,7 +1,9 @@
 LICENSE = "LGPL"
 DEPENDS = "e2fsprogs gssdp libsoup-2.4 libxml2 gtk-doc-native libgee"
 
-SRC_URI = "http://gupnp.org/sources/${PN}/${PN}-${PV}.tar.gz \
+require gupnp.inc
+
+SRC_URI += " \
            file://nodoc.patch"
 
 inherit autotools pkgconfig
