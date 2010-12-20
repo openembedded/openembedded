@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r67"
+PR ="r68"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -162,6 +162,13 @@ SRC_URI_dm37x-evm = "git://arago-project.org/git/projects/u-boot-omap3.git;proto
 "
 SRCREV_dm37x-evm = "c0a8fb217fdca7888d89f9a3dee74a4cec865620"
 PV_dm37x-evm = "2009.11+${PR}+gitr${SRCREV}"
+
+# ~ TI PSP v2009.11_OMAPPSP_03.00.01.06 (+ couple of commits)
+SRC_URI_am3517-crane = "git://arago-project.org/git/projects/u-boot-omap3.git;protocol=git \
+                        file://0001-Added-Support-for-AM3517-05-based-CraneBoard.patch \
+"
+SRCREV_am3517-crane = "c0a8fb217fdca7888d89f9a3dee74a4cec865620"
+PV_am3517-crane = "2009.11+${PR}+gitr${SRCREV}"
 
 # ~ TI PSP v2009.11_OMAPPSP_03.00.01.06 (+ couple of commits)
 SRC_URI_am37x-evm = "git://arago-project.org/git/projects/u-boot-omap3.git;protocol=git \
