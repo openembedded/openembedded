@@ -6,8 +6,8 @@
 # UCLIBC_BASE can be set in a distro file, but whether this works depends
 # on whether the base patches apply to the selected (SRCDATE) svn release.
 #
-UCLIBC_BASE ?= "0.9.31"
-SRCREV="e2903ddb06b1f50cb4ac9af0b035c74ed6b9d30f"
+UCLIBC_BASE ?= "0.9.32"
+SRCREV="4d81f2a74578f819285b131c682e8d2f6c315c4e"
 PR_append = "+gitr${SRCPV}"
 DEFAULT_PREFERENCE = "-1"
 #DEFAULT_PREFERENCE is 0 (empty), releases have a preference of 1 so take
