@@ -6,7 +6,7 @@ HOMEPAGE="http://www.openh323.org/"
 DESCRIPTION="Open Soure ITU-T H.323 teleconferencing protocol implementation."
 LICENSE = "GPL"
 
-SRC_URI="http://http.us.debian.org/debian/pool/main/o/${PN}/${PN}_${PV}.orig.tar.gz \
+SRC_URI="http://193.1.193.64/pub/www.adamantix.org/dists/1.0.5/main/source/libs/${PN}_${PV}.orig.tar.gz \
 	file://fixes.patch"
 
 S="${WORKDIR}/${PN}"
