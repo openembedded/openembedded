@@ -8,7 +8,7 @@ DESCRIPTION="Terminal Server Client (tsclient) is a frontend for rdesktop and ot
 HOMEPAGE="http://www.gnomepro.com/tsclient/"
 LICENSE="GPL"
 
-SRC_URI="http://www.gnomepro.com/tsclient/tsclient-${PV}.tar.gz \
+SRC_URI="https://launchpad.net/ubuntu/+archive/primary/+files/${PN}_${PV}.orig.tar.gz \
 	 file://fixes.patch"
 
 DEPENDS="gtk+ intltool-native"

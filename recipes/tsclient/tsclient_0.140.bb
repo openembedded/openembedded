@@ -5,7 +5,7 @@ DEPENDS = "glib-2.0 gtk+ gnome-panel rdesktop"
 RDEPENDS_${PN} = "rdesktop"
 PR = "r2"
 
-SRC_URI = "http://www.gnomepro.com/tsclient/${P}.tar.gz"
+SRC_URI = "https://launchpad.net/ubuntu/+archive/primary/+files/${PN}_${PV}.orig.tar.gz"
 
 inherit autotools pkgconfig
 
