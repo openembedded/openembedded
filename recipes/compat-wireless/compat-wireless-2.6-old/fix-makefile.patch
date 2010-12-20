@@ -1,0 +1,164 @@
+From af47c5b7686ca91a32eab8b7c83def34bd55e4c0 Mon Sep 17 00:00:00 2001
+From: Simon Busch <morphis@gravedo.de>
+Date: Sat, 18 Dec 2010 18:23:59 +0100
+Subject: [PATCH 5/5] Remove not working uninstall logic and rename install to modules_install
+
+Default uninstall/install logic is not working for cross compile environments like OE so
+we fix that here.
+---
+ Makefile |  130 +-------------------------------------------------------------
+ 1 files changed, 2 insertions(+), 128 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 72ea85b..8201140 100644
+--- a/Makefile
++++ b/Makefile
+@@ -57,136 +57,9 @@ $(CREL_CHECK):
+ 	@touch $@
+ 	@md5sum $(COMPAT_CONFIG) > $(CONFIG_CHECK)
+ 
+-install: uninstall modules
++modules_install: modules
+ 	$(MAKE) -C $(KLIB_BUILD) M=$(PWD) $(KMODDIR_ARG) $(KMODPATH_ARG) \
+ 		modules_install
+-	@# All the scripts we can use
+-	@mkdir -p /usr/lib/compat-wireless/
+-	@install scripts/modlib.sh	/usr/lib/compat-wireless/
+-	@install scripts/madwifi-unload	/usr/sbin/
+-	@# This is to allow switching between drivers without blacklisting
+-	@install scripts/athenable	/usr/sbin/
+-	@install scripts/b43enable	/usr/sbin/
+-	@install scripts/athload	/usr/sbin/
+-	@install scripts/b43load	/usr/sbin/
+-	@if [ ! -z $(MADWIFI) ]; then \
+-		echo ;\
+-		echo -n "Note: madwifi detected, we're going to disable it. "  ;\
+-		echo "If you would like to enable it later you can run:"  ;\
+-		echo "    sudo athenable madwifi"  ;\
+-		echo ;\
+-		echo Running athenable ath5k...;\
+-		/usr/sbin/athenable ath5k ;\
+-	fi
+-	@/sbin/depmod -ae
+-	@echo
+-	@echo "Currently detected wireless subsystem modules:"
+-	@echo 
+-	@$(MODPROBE) -l mac80211
+-	@# rc80211_simple is a module only on 2.6.22 and 2.6.23
+-	@$(MODPROBE) -l cfg80211
+-	@$(MODPROBE) -l adm8211
+-	@$(MODPROBE) -l ar9170
+-	@$(MODPROBE) -l at76_usb
+-	@$(MODPROBE) -l ath5k
+-	@$(MODPROBE) -l ath9k
+-	@$(MODPROBE) -l b43
+-	@$(MODPROBE) -l b43legacy
+-	@$(MODPROBE) -l ssb
+-	@$(MODPROBE) -l iwlcore
+-	@$(MODPROBE) -l iwl3945
+-	@$(MODPROBE) -l iwlagn
+-	@$(MODPROBE) -l ipw2100
+-	@$(MODPROBE) -l ipw2200
+-	@$(MODPROBE) -l ieee80211
+-	@$(MODPROBE) -l ieee80211_crypt
+-	@$(MODPROBE) -l libertas_cs
+-	@$(MODPROBE) -l ub8xxx
+-	@$(MODPROBE) -l p54_pci
+-	@$(MODPROBE) -l p54_usb
+-	@$(MODPROBE) -l rt2400pci
+-	@$(MODPROBE) -l rt2500pci
+-	@$(MODPROBE) -l rt2500usb
+-	@$(MODPROBE) -l rt61pci
+-	@$(MODPROBE) -l rt73usb
+-	@$(MODPROBE) -l usbnet
+-	@$(MODPROBE) -l cdc_ether
+-	@$(MODPROBE) -l rndis_host
+-	@$(MODPROBE) -l rndis_wlan
+-	@$(MODPROBE) -l rtl8180
+-	@$(MODPROBE) -l rtl8187
+-	@# rc80211_simple is no longer a module
+-	@#$(MODPROBE) -l rc80211_simple
+-	@$(MODPROBE) -l zd1211rw
+-	@echo 
+-	@echo Now run:
+-	@echo 
+-	@echo make unload
+-	@echo
+-	@echo And then load the wireless module you need. If unsure run:
+-	@echo
+-	@echo make load
+-	@echo
+-
+-uninstall:
+-	@# New location, matches upstream
+-	@rm -rf $(KLIB)/$(KMODDIR)/net/mac80211/
+-	@rm -rf $(KLIB)/$(KMODDIR)/net/wireless/
+-	@rm -rf $(KLIB)/$(KMODDIR)/net/ieee80211/
+-	@rm -rf $(KLIB)/$(KMODDIR)/drivers/ssb/
+-	@rm -rf $(KLIB)/$(KMODDIR)/drivers/net/usb/
+-	@rm -rf $(KLIB)/$(KMODDIR)/drivers/net/wireless/
+-	@# Lets only remove the stuff we are sure we are providing
+-	@# on the misc directory.
+-	@rm -f $(KLIB)/$(KMODDIR)/drivers/misc/eeprom_93cx6.ko
+-	@/sbin/depmod -ae
+-	@if [ -x /usr/sbin/athenable ]; then /usr/sbin/athenable madwifi; fi
+-	@if [ -x /usr/sbin/b43enable ]; then /usr/sbin/b43enable bcm43xx; fi
+-	@echo
+-	@echo "Your old wireless subsystem modules were left intact:"
+-	@echo 
+-	@$(MODPROBE) -l mac80211
+-	@$(MODPROBE) -l cfg80211
+-	@# rc80211_simple is a module on 2.6.22 and 2.6.23 though
+-	@$(MODPROBE) -l adm8211
+-	@$(MODPROBE) -l ar9170
+-	@$(MODPROBE) -l ath5k
+-	@$(MODPROBE) -l ath9k
+-	@$(MODPROBE) -l at76_usb
+-	@$(MODPROBE) -l b43
+-	@$(MODPROBE) -l b43legacy
+-	@$(MODPROBE) -l ssb
+-	@$(MODPROBE) -l rc80211_simple
+-	@$(MODPROBE) -l iwlcore
+-	@$(MODPROBE) -l iwl3945
+-	@$(MODPROBE) -l iwlagn
+-	@$(MODPROBE) -l ipw2100
+-	@$(MODPROBE) -l ipw2200
+-	@$(MODPROBE) -l ieee80211
+-	@$(MODPROBE) -l ieee80211_crypt
+-	@$(MODPROBE) -l libertas_cs
+-	@$(MODPROBE) -l mac80211
+-	@$(MODPROBE) -l ub8xxx
+-	@$(MODPROBE) -l p54pci
+-	@$(MODPROBE) -l p54usb
+-	@$(MODPROBE) -l rt2400pci
+-	@$(MODPROBE) -l rt2500pci
+-	@$(MODPROBE) -l rt2500usb
+-	@$(MODPROBE) -l rt61pci
+-	@$(MODPROBE) -l rt73usb
+-	@$(MODPROBE) -l usbnet
+-	@$(MODPROBE) -l cdc_ether
+-	@$(MODPROBE) -l rndis_host
+-	@$(MODPROBE) -l rndis_wlan
+-	@$(MODPROBE) -l rtl8180
+-	@$(MODPROBE) -l rtl8187
+-	@# rc80211_simple is no longer a module
+-	@#$(MODPROBE) -l rc80211_simple
+-	@$(MODPROBE) -l zd1211rw
+-	@# Old kernels have ieee80211softmac, this will be removed soon :)
+-	@$(MODPROBE) -l ieee80211softmac
+-	@
+-	@echo 
+ 
+ clean:
+ 	@rm -f compat-release
+@@ -194,6 +67,7 @@ clean:
+ 		$(MAKE) -C $(KLIB_BUILD) M=$(PWD) clean ;\
+ 	fi
+ 	@rm -f $(CREL_PRE)*
++
+ unload:
+ 	@./scripts/unload.sh
+ 
+-- 
+1.7.1
+
