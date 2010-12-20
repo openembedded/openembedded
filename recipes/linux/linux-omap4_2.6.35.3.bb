@@ -4,9 +4,9 @@ require multi-kernel.inc
 
 CORTEXA8FIXUP = "no"
 
-SRCREV = "a25c0585b701b048f5fba298bd56cb5495c97bd2"
+SRCREV = "35528f5b0481485654a6577306f7a80d9e6a5cf5"
 
-SRC_URI = "git://git.mansr.com/linux-panda;protocol=git;branch=mru \
+SRC_URI = "git://dev.omapzoom.org/pub/scm/integration/kernel-ubuntu.git;protocol=git;branch=ti-ubuntu-L24.11 \
            file://defconfig"
 
 S = "${WORKDIR}/git"
