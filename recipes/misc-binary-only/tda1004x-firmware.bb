@@ -1,7 +1,7 @@
 SECTION = "base"
 do_unpack[depends] += "unzip-native:do_populate_sysroot"
 
-SRC_URI = "http://hauppauge.lightpath.net/de/nova-pci218c.exe"
+SRC_URI = "ftp://ftp.lucky.net/pub/sat/dvdnavas/nova-pci218c.exe"
 FILES_${PN} = '*'
 
 python do_unpack() {
