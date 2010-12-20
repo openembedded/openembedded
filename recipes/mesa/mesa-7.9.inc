@@ -1,5 +1,6 @@
 SRC_URI = "ftp://ftp.freedesktop.org/pub/mesa/${PV}/MesaLib-${PV}.tar.bz2;name=archive \
            file://glamo.patch \
+           file://uclibc.patch \
           "
 
 DEPENDS += "talloc"
