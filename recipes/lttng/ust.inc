@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPLv2 and LGPLv2.1"
 DEPENDS = "liburcu"
 
-PR = "r3"
+PR = "r4"
 
 inherit update-rc.d
 
@@ -36,5 +36,9 @@ do_install_append () {
         install -m 0755 ${WORKDIR}/ustd.init ${D}${sysconfdir}/init.d/ustd
 }
 
-# Need the .so symlinks for preload to work
-FILES_${PN} += "${libdir}/libust*.so"
+# We need to have -dev get parsed first.  Need the .so symlinks for preload to
+# work
+PACKAGES = "${PN}-dev ${PN}-dbg ${PN} ${PN}-static ${PN}-doc"
+FILES_${PN}-dev = "${includedir} ${libdir}/*.la ${libdir}/*.o ${libdir}/libust.so"
+FILES_${PN} += "${libdir}/lib*${SOLIBS} ${libdir}/lib*${SOLIBSDEV}"
+INSANE_SKIP_${PN} = "1"
