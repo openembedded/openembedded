@@ -1,0 +1,30 @@
+From 723224de36f461fde40367e302bc341f4f68846a Mon Sep 17 00:00:00 2001
+From: Ryan Hope <rmh3093@gmail.com>
+Date: Mon, 6 Dec 2010 22:39:44 -0500
+Subject: [PATCH 2/5] compat: remove dev_name method as it is already in our kernel
+
+---
+ include/net/compat.h |    7 -------
+ 1 files changed, 0 insertions(+), 7 deletions(-)
+
+diff --git a/include/net/compat.h b/include/net/compat.h
+index 0ccabcd..8eb48ef 100644
+--- a/include/net/compat.h
++++ b/include/net/compat.h
+@@ -559,13 +559,6 @@ static inline int list_is_singular(const struct list_head *head)
+ 	return !list_empty(head) && (head->next == head->prev);
+ }
+ 
+-/* This is from include/linux/device.h, which was added as of 2.6.26 */
+-static inline const char *dev_name(struct device *dev)
+-{
+-	/* will be changed into kobject_name(&dev->kobj) in the near future */
+-	return dev->bus_id;
+-}
+-
+ /* This is from include/linux/kernel.h, which was added as of 2.6.26 */ 
+ 
+ /**
+-- 
+1.7.1
+
