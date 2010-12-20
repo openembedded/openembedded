@@ -5,8 +5,8 @@ SECTION = "devel"
 PRIORITY = "optional"
 LICENSE = "PD"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/re2c/re2c-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/${BPN}/${BPN}-${PV}.tar.gz"
 
-S = "${WORKDIR}/re2c-${PV}"
+BBCLASSEXTEND = "native"
 
 inherit autotools
