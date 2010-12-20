@@ -62,7 +62,7 @@ MUTEX_arm = "${ARM_MUTEX}"
 MUTEX_armeb = "${ARM_MUTEX}"
 EXTRA_OECONF += "${MUTEX}"
 
-LIBTOOL = "${HOST_SYS}-libtool"
+LIBTOOL = "${HOST_SYS}-libtool --tag=CXX"
 EXTRA_OEMAKE = "'LIBTOOL=${LIBTOOL}'"
 
 # Cancel the site stuff - it's set for db3 and destroys the
