@@ -2,7 +2,7 @@ require swt-gtk.inc
 
 PR = "r1"
 
-SRC_URI = "http://mirror.switch.ch/eclipse/eclipse/downloads/drops/R-3.5.1-200909170800/swt-3.5.1-gtk-linux-x86.zip;name=swt \
+SRC_URI = "http://archive.eclipse.org/eclipse/downloads/drops/R-3.5.1-200909170800/swt-3.5.1-gtk-linux-x86.zip;name=swt \
            file://Makefile"
 
 SRC_URI[swt.md5sum] = "ceaa95d484d7ab95c663401b5a9bd1f5"
