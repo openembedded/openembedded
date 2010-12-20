@@ -8,7 +8,7 @@ INC_PR  = "r1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
-SRC_URI = "http://www.xelerance.com/software/xl2tpd/xl2tpd-${PV}.tar.gz"
+SRC_URI = "ftp://ftp.xelerance.com/xl2tpd/xl2tpd-${PV}.tar.gz"
 
 S = "${WORKDIR}/xl2tpd-${PV}"
 
