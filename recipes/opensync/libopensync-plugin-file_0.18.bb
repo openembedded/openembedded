@@ -1,4 +1,4 @@
-SRC_URI = "http://ewi546.ewi.utwente.nl/OE/source/${P}.tar.gz"
+SRC_URI = "https://launchpad.net/ubuntu/+archive/primary/+files/${PN}_${PV}.orig.tar.gz"
 
 
 LICENSE = "LGPL"

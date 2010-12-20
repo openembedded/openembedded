@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.opensync.org/"
 
 DEPENDS = "sqlite3 libxml2 zlib glib-2.0"
 
-SRC_URI = "http://www.opensync.org/attachment/wiki/download/libopensync-0.22.tar.bz2?format=raw"
+SRC_URI = "http://www.opensync.org/download/releases/${PV}/${PN}-${PV}.tar.bz2"
 
 inherit autotools pkgconfig lib_package
 
