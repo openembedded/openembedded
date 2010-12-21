@@ -1,11 +1,12 @@
 DESCRIPTION = "Commands for Manipulating POSIX Access Control Lists"
 LICENSE = "GPLv2"
 
-PR = "r2"
+PR = "r3"
 
 DEPENDS = "attr"
 
-SRC_URI = "http://mirror.its.uidaho.edu/pub/savannah/acl/acl-${PV}.src.tar.gz"
+SRC_URI = "http://mirror.its.uidaho.edu/pub/savannah/acl/acl-${PV}.src.tar.gz \
+		file://nolargefile.patch"
 
 inherit autotools lib_package
 
@@ -19,6 +20,10 @@ EXTRA_OECONF = " --enable-gettext=yes \
 do_configure_append() {
     # gettext hack
     echo "#define _(str) str" >> ${S}/include/config.h
+}
+
+do_configure_prepend() {
+    ${@base_contains('DISTRO_FEATURES', 'largefile', '', 'sed -i -e "s/-D_FILE_OFFSET_BITS=64//" ${S}/include/builddefs.in', d)}
 }
 
 do_install() {

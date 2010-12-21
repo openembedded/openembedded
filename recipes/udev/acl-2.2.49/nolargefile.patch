@@ -1,0 +1,15 @@
+--- acl-2.2.49/chacl/chacl.c.orig	2010-12-21 14:00:42.563984943 +1030
++++ acl-2.2.49/chacl/chacl.c	2010-12-21 14:01:15.614983219 +1030
+@@ -315,6 +315,12 @@
+ 	return(failed);
+ }
+ 
++#ifndef __USE_LARGEFILE64
++/* XXX: hack! */
++#define dirent64 dirent
++#define readdir64 readdir
++#endif
++
+ static int
+ walk_dir(acl_t acl, acl_t dacl, const char *fname)
+ {
