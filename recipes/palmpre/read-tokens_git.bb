@@ -6,7 +6,7 @@ LICENSE = "GPL"
 PR = "r1"
 PV = "1.0.0+gitr${SRCPV}"
 
-SRCREV = "93a640dafa8ebebdb1a03f051cb1b566629b227c"
+SRCREV = "704b7965ad1936bf935b576d4663590bdaab09b1"
 SRC_URI = " \
  ${FREESMARTPHONE_GIT}/utilities.git;protocol=git;branch=master \
  file://read_tokens \
