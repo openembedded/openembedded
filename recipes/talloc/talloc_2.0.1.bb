@@ -10,8 +10,17 @@ SRC_URI[sha256sum] = "5b810527405f29d54f50efd78bf2c89e318f2cd8bed001f22f2a1412fd
 
 TARGET_CC_ARCH += "${LDFLAGS}"
 
+PR = "r1"
+
 # autoreconf doesn't work well while reconfiguring included libreplace
 do_configure () {
        gnu-configize
        oe_runconf
+}
+
+do_install_append() {
+       install -d ${D}${libdir}
+       ln -s libtalloc.so.2.0.1 ${D}${libdir}/libtalloc.so.2.0
+       ln -s libtalloc.so.2.0 ${D}${libdir}/libtalloc.so.2
+       ln -s libtalloc.so.2 ${D}${libdir}/libtalloc.so
 }
