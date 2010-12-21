@@ -9,7 +9,7 @@ SRC_URI += "file://configure-3.2.8.patch \
 SRC_URI[md5sum] = "5a3bcc4927c9643b9f42970d0815b18f"
 SRC_URI[sha256sum] = "84281fd1faeffee8558e49dff865dd382abbf78bc1be00f8cb5aa70aeea67d46"
 
-PR = "r2"
+PR = "r3"
 
 EXTRA_OECONF += "\
 	SMB_BUILD_CC_NEGATIVE_ENUM_VALUES=yes \
