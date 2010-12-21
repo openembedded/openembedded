@@ -1,4 +1,4 @@
-require gt-common.inc
+require gst-common.inc
 
 DESCRIPTION = "Gstreamer RTSP server"
 LICENSE = "LGPLv2"
