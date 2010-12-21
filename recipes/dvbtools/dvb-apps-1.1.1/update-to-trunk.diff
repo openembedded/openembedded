@@ -1,4 +1,15 @@
- COPYING                                                             |  339 
+update to:
+
+changeset 1281:af23d23c278b
+
+update scan files for several satellites
+submitted by kosava gmail.com
+author	Christoph Pfister <pfister@linuxtv.org>
+date	Sat Jun 20 16:47:55 2009 +0200 (18 months ago)
+parents	291041ebe58f
+children	6d6dad45d8ef
+ 
+COPYING                                                             |  339 
  COPYING.LGPL                                                        |  502 +
  INSTALL                                                             |   26 
  Make.rules                                                          |  104 
