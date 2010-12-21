@@ -8,7 +8,7 @@ DEPENDS = "mpfr gmp libmpc libelf"
 NATIVEDEPS = "mpfr-native gmp-native libmpc-native"
 
 
-INC_PR = "r26"
+INC_PR = "r27"
 
 SRCREV = "167948"
 PV = "4.5"
@@ -136,6 +136,24 @@ SRC_URI = "svn://gcc.gnu.org/svn/gcc/branches;module=${BRANCH} \
 	   file://linaro/gcc-4.5-linaro-r99418.patch \
 	   file://linaro/gcc-4.5-linaro-r99419.patch \
 	   file://linaro/gcc-4.5-linaro-r99420.patch \
+	   file://linaro/gcc-4.5-linaro-r99421.patch \
+	   file://linaro/gcc-4.5-linaro-r99423.patch \
+	   file://linaro/gcc-4.5-linaro-r99424.patch \
+	   file://linaro/gcc-4.5-linaro-r99425.patch \
+	   file://linaro/gcc-4.5-linaro-r99426.patch \
+	   file://linaro/gcc-4.5-linaro-r99429.patch \
+	   file://linaro/gcc-4.5-linaro-r99432.patch \
+	   file://linaro/gcc-4.5-linaro-r99433.patch \
+	   file://linaro/gcc-4.5-linaro-r99434.patch \
+	   file://linaro/gcc-4.5-linaro-r99435.patch \
+	   file://linaro/gcc-4.5-linaro-r99436.patch \
+	   file://linaro/gcc-4.5-linaro-r99437.patch \
+	   file://linaro/gcc-4.5-linaro-r99439.patch \
+	   file://linaro/gcc-4.5-linaro-r99440.patch \
+	   file://linaro/gcc-4.5-linaro-r99441.patch \
+	   file://linaro/gcc-4.5-linaro-r99442.patch \
+	   file://linaro/gcc-4.5-linaro-r99443.patch \
+	   file://linaro/gcc-4.5-linaro-r99444.patch \
 	   file://gcc-scalar-widening-pr45847.patch \
 	   file://gcc-arm-qihi-split-PR46883.patch \
 	  "
