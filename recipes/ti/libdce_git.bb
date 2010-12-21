@@ -5,10 +5,10 @@ LICENSE = "TI"
 inherit autotools lib_package
 
 PV = "1.0.0"
-PR = "r2"
+PR = "r3"
 PR_append = "+gitr${SRCREV}"
 
-SRCREV = "6c36c6503a9befff35cbe36e67b61515f963a008"
+SRCREV = "086d0bed544ecb92afde57db32c16b5e97c6f2d2"
 SRC_URI = "git://github.com/robclark/libdce.git;protocol=git"
 
 S = "${WORKDIR}/git"
