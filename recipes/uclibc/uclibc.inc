@@ -2,7 +2,7 @@ DESCRIPTION = "C library for embedded systems"
 LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "required"
-INC_PR = "r34"
+INC_PR = "r35"
 require uclibc-config.inc
 #
 # For now, we will skip building of a gcc package if it is a uclibc one
@@ -60,6 +60,10 @@ FILES_uclibc-utils-dbg += "${bindir}/.debug ${sbindir}/.debug"
 FILES_uclibc-gconv = "${libdir}/gconv"
 FILES_uclibc-thread-db = "/lib/libthread_db*"
 RPROVIDES_uclibc-dev += "libc-dev virtual-libc-dev"
+# uclibc does not really has libsegfault but then using the one from glibc is also not
+# going to work. So we pretend that we have it to make bitbake not pull other recipes
+# to satisfy this dependency for the images/tasks
+RPROVIDES_${PN} += "libsegfault"
 
 SRC_URI = "\
         file://uClibc.config \
