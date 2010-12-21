@@ -1,7 +1,7 @@
-From 5154c4370017e92498f98d35446baefd8b150e84 Mon Sep 17 00:00:00 2001
+From 694125c6684f8bafbf5c4502659f1322fae33af2 Mon Sep 17 00:00:00 2001
 From: Rob Clark <rob@ti.com>
 Date: Sat, 10 Jul 2010 18:03:16 -0500
-Subject: [PATCH 8/8] tiler: avoid lock-ups due to unmapped DMM entries
+Subject: [PATCH 1/7] tiler: avoid lock-ups due to unmapped DMM entries
 
 Due to the address remapping done for 2d buffers, when a 2d buffer is
 allocated by userspace, it is possible that only partial pages map to
@@ -73,7 +73,7 @@ index 4ee59bd..c9c9aa5 100644
  		return tmm;
  	}
 diff --git a/drivers/media/video/tiler/tiler.c b/drivers/media/video/tiler/tiler.c
-index 567e620..d05e5e2 100644
+index 1c117eb..9ce065c 100644
 --- a/drivers/media/video/tiler/tiler.c
 +++ b/drivers/media/video/tiler/tiler.c
 @@ -125,6 +125,9 @@ static struct tmm *tmm[TILER_FORMATS];
@@ -116,15 +116,15 @@ index 567e620..d05e5e2 100644
  }
  
  static s32 tiler_open(struct inode *ip, struct file *filp)
-@@ -1511,6 +1521,7 @@ static s32 __init tiler_init(void)
+@@ -1509,6 +1519,7 @@ static s32 __init tiler_init(void)
  	struct tcm_pt div_pt;
  	struct tcm *sita = NULL;
  	struct tmm *tmm_pat = NULL;
 +	struct tcm_area area = {0};
  
- 	/**
- 	  * Array of physical pages for PAT programming, which must be a 16-byte
-@@ -1582,6 +1593,20 @@ static s32 __init tiler_init(void)
+ 	if (!cpu_is_omap44xx())
+ 		return 0;
+@@ -1583,6 +1594,20 @@ static s32 __init tiler_init(void)
  	BLOCKING_INIT_NOTIFIER_HEAD(&tiler_device->notifier);
  	id = 0xda7a000;
  
