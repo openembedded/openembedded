@@ -134,6 +134,7 @@ SRC_URI = "git://arago-project.org/git/projects/linux-omap3.git;protocol=http;br
            file://cam/0074-Move-sensor-rest-to-after-applying-power.patch \
            file://cam/0075-omap3beagle-Add-camera-bootarg.patch \
            file://0001-BeagleBoard-Adjust-USER-button-pin-for-xM.patch \
+           file://0001-PSP-3.0.1.6-kernel-source-patched-with-OCF-Linux.patch \
            file://porches.patch \
            file://defconfig"
 
