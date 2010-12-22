@@ -1,6 +1,6 @@
 require midpath-common.inc
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/midpath/midpath-0.3rc2.tar.gz"
 
@@ -27,10 +27,14 @@ do_compile() {
     --disable-opengl-api \
     --disable-m3g-api \
     --disable-demos \
+    --enable-cldc-vm \
     --with-cldc-jar=dist/${JAR}
 }
 
 do_install() {
+	oe_libinstall -C dist -so libmidpathfile ${D}${libdir_jni}
+	oe_libinstall -C dist -so libmidpathnio ${D}${libdir_jni}
+
 	install -d ${D}${datadir}/midpath-cldc
 	install -m 0644 dist/${JAR} ${D}${datadir}/midpath-cldc
 }
@@ -42,7 +46,8 @@ do_stage() {
 	
 PACKAGES = "${PN}"
 
-FILES_${PN}  = "${datadir}/midpath-cldc/${JAR}"
+FILES_${PN}  = "${datadir}/midpath-cldc/${JAR} ${libdir_jni}/*.so"
+FILES_${PN}-dbg  = "${libdir_jni}/.debug"
 
 SRC_URI[md5sum] = "d03cd88f51f82bbcfcfa5b65df0da5b0"
 SRC_URI[sha256sum] = "e235ca7470e7cdfb90e3806fbcc1b2c450db286276136a2523c7ae26a804a100"

@@ -1,8 +1,11 @@
 DESCRIPTION = "MIDPath is a Java library which provides a MIDP2 implementation"
 
-PR = "r4"
+PR = "r5"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/midpath/midpath-0.3rc2.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/midpath/midpath-0.3rc2.tar.gz \
+	   file://configuration.cfg \
+	   file://ui-colors.patch \
+	   file://sdl-fixes.patch"
 
 S = "${WORKDIR}/midpath-0.3rc2"
 
@@ -23,6 +26,10 @@ DEPENDS += "midpath-cldc midpath-backend-sdl midpath-backend-escher swt3.4-gtk k
 RDEPENDS_${PN} += "libkxml2-java"
 
 JAR = "midpath.jar"
+
+do_configure() {
+  mv ${WORKDIR}/configuration.cfg ${S}/configuration/com/sun/midp/configuration/
+}
 
 do_compile() {
   midpath_build \
@@ -48,6 +55,7 @@ do_install() {
   oe_libinstall -C dist -so libavetanabtcldc ${D}${libdir_jni}
 
   install -d ${D}${datadir}/midpath
+  cp -R configuration ${D}${datadir}/midpath
   install -m 0644 dist/${JAR} ${D}${datadir}/midpath
   install -m 0644 dist/microbackend.jar ${D}${datadir}/midpath
   install -m 0644 dist/avetanabt-cldc.jar ${D}${datadir}/midpath
@@ -76,11 +84,11 @@ FILES_${PN}-ogg = "${datadir}/midpath/jorbis-cldc.jar"
 
 FILES_${PN} = "\
   ${datadir}/midpath/*.jar \
+  ${datadir}/midpath/configuration \
   ${datadir}/applications \
   ${datadir}/pixmaps \
   ${bindir} \
 	"
-
 
 SRC_URI[md5sum] = "d03cd88f51f82bbcfcfa5b65df0da5b0"
 SRC_URI[sha256sum] = "e235ca7470e7cdfb90e3806fbcc1b2c450db286276136a2523c7ae26a804a100"

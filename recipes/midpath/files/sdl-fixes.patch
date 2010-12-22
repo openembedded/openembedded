@@ -1,0 +1,20 @@
+diff -ru midpath-0.3rc2.orig/components/microbackend/org/thenesis/microbackend/ui/sdl/SDLBackend.java midpath-0.3rc2/components/microbackend/org/thenesis/microbackend/ui/sdl/SDLBackend.java
+--- midpath-0.3rc2.orig/components/microbackend/org/thenesis/microbackend/ui/sdl/SDLBackend.java	2008-09-02 03:03:19.000000000 +0300
++++ midpath-0.3rc2/components/microbackend/org/thenesis/microbackend/ui/sdl/SDLBackend.java	2010-12-21 18:58:05.890000957 +0200
+@@ -119,6 +119,7 @@
+ 
+         try {
+             SDLMain.init(SDLMain.SDL_INIT_VIDEO);
++            SDLVideo.showCursor(SDLVideo.SDL_DISABLE);
+             screenSurface = SDLVideo.setVideoMode(canvasWidth, canvasHeight, bitsPerPixel, flags);
+             rootARGBSurface = SDLVideo.createRGBSurface(SDLVideo.SDL_SWSURFACE, canvasWidth, canvasHeight, 32, 0x00ff0000L, 0x0000ff00L,
+                 0x000000ffL, 0xff000000L);
+@@ -155,6 +156,8 @@
+ 
+             try {
+                 SDLEvent.enableUNICODE(1);
++                SDLEvent.enableKeyRepeat(SDLEvent.SDL_DEFAULT_REPEAT_DELAY,
++			SDLEvent.SDL_DEFAULT_REPEAT_INTERVAL);
+                 while (Thread.currentThread() == thread) {
+                     processEvent(SDLEvent.waitEvent(true));
+                 }

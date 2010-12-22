@@ -1,0 +1,136 @@
+diff -ru midpath-0.3rc2.orig/components/core/src/com/sun/midp/chameleon/skins/resources/RomizedSkin.java midpath-0.3rc2/components/core/src/com/sun/midp/chameleon/skins/resources/RomizedSkin.java
+--- midpath-0.3rc2.orig/components/core/src/com/sun/midp/chameleon/skins/resources/RomizedSkin.java	2007-03-31 19:26:53.000000000 +0300
++++ midpath-0.3rc2/components/core/src/com/sun/midp/chameleon/skins/resources/RomizedSkin.java	2010-12-21 20:25:02.336667885 +0200
+@@ -58,15 +58,15 @@
+         // SCREEN_COLOR_FG
+         0x000000,
+         // SCREEN_COLOR_BG_HL
+-        0xFFCC33,
++        0x808080,
+         // SCREEN_COLOR_FG_HL
+         0x000000,
+         // SCREEN_COLOR_BORDER
+         0x000000,
+         // SCREEN_COLOR_BORDER_HL
+-        0xFFCC33,
++        0x808080,
+         // SCREEN_COLOR_TRAVERSE_IND
+-        0xFFCC33,
++        0x808080,
+         // SCREEN_BORDER_STYLE
+         Graphics.SOLID,
+         // SCREEN_FONT_LABEL
+@@ -128,19 +128,19 @@
+         // SOFTBTN_COLOR_FG_SHD
+         0x000000,
+         // SOFTBTN_COLOR_BG
+-        0x264DB6,
++        0x373636,
+         // SOFTBTN_COLOR_MU_FG
+         0xFFFFFF,
+         // SOFTBTN_COLOR_MU_FG_SHD
+         0x000000,
+         // SOFTBTN_COLOR_MU_BG
+-        0xFF9933,
++        0x373636,
+         // SOFTBTN_COLOR_AU_FG
+         0xFFFFFF,
+         // SOFTBTN_COLOR_AU_FG_SHD
+         0x000000,
+         // SOFTBTN_COLOR_AU_BG
+-        0xF06409,
++        0x373636,
+         // SOFTBTN_FONT
+         1,
+         // SOFTBTN_TEXT_MENUCMD
+@@ -186,13 +186,13 @@
+         // PTI_MARGIN
+         3,
+         // PTI_COLOR_BG
+-        0xA3E2F8,
++        0xD9D9D9,
+         // PTI_COLOR_FG
+         0x000000,
+         // PTI_COLOR_FG_HL
+         0x000000,
+         // PTI_COLOR_BG_HL
+-        0xFFCC33,
++        0xAFAFAF,
+         // PTI_COLOR_BDR
+         0x336699,
+         // PTI_FONT
+@@ -216,7 +216,7 @@
+         // TITLE_COLOR_FG_SHD
+         0x000000,
+         // TITLE_COLOR_BG
+-        0x1F3FB1,
++        0x202020,
+         // TITLE_FONT
+         1,
+         // TITLE_IMAGE_BG
+@@ -258,7 +258,7 @@
+         // ALERT_TIMEOUT
+         2000,
+         // ALERT_COLOR_BG
+-        0xFFCC33,
++        0xAFAFAF,
+         // ALERT_COLOR_TITLE
+         0x000000,
+         // ALERT_COLOR_FG
+@@ -312,7 +312,7 @@
+         // CHOICE_COLOR_FG
+         0x000000,
+         // CHOICE_COLOR_BG
+-        0xCCFFFF,
++        0xD9D9D9,
+         // CHOICE_COLOR_BRDR
+         0x003366,
+         // CHOICE_COLOR_BRDR_SHD
+@@ -390,7 +390,7 @@
+         // DATEFIELD_COLOR_FG
+         0x000000,
+         // DATEFIELD_COLOR_BG
+-        0xC9E8FF,
++        0xD9D9D9,
+         // DATEFIELD_COLOR_BRDR
+         0x0D3964,
+         // DATEFIELD_COLOR_BRDR_LT
+@@ -446,7 +446,7 @@
+         // GAUGE_IMAGE_VALUES
+         31,
+         // IMAGEITEM_COLOR_BG_LNK_FOC
+-        0xFFCC33,
++        0xAFAFAF,
+         // IMAGEITEM_COLOR_BG_BTN
+         0xff0000,
+         // IMAGEITEM_COLOR_BORDER_LT
+@@ -496,9 +496,9 @@
+         // MENU_ITEM_ANCHOR_X
+         18,
+         // MENU_COLOR_BG
+-        0xFFEAA1,
++        0xD9D9D9,
+         // MENU_COLOR_BG_SEL
+-        0xFFCC33,
++        0xAFAFAF,
+         // MENU_COLOR_TITLE
+         0x000000,
+         // MENU_COLOR_INDEX
+@@ -562,7 +562,7 @@
+         // STRINGITEM_COLOR_FG_LNK_FOC
+         0x003399,
+         // STRINGITEM_COLOR_BG_LNK_FOC
+-        0xFFCC33,
++        0xAFAFAF,
+         // STRINGITEM_COLOR_FG_BTN
+         0x000000,
+         // STRINGITEM_COLOR_BG_BTN
+@@ -600,7 +600,7 @@
+         // TEXTFIELD_COLOR_BRDR
+         0x000000,
+         // TEXTFIELD_COLOR_BRDR_SHD
+-        0x8db0d9,
++        0x444444,
+         // TEXTFIELD_COLOR_FG_UE
+         0x5d5d5d,
+         // TEXTFIELD_COLOR_BG_UE
