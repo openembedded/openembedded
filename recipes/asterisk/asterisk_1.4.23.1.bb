@@ -8,7 +8,7 @@ SECTION = "console/telephony"
 DEPENDS = "speex readline zlib openssl curl popt gnutls sqlite libogg libvorbis"
 #RRECOMMENDS_${PN} = "logrotate"
 
-SRC_URI="http://downloads.digium.com/pub/asterisk/releases/asterisk-${PV}.tar.gz \
+SRC_URI="http://downloads.asterisk.org/pub/telephony/asterisk/old-releases/asterisk-${PV}.tar.gz \
 #	file://sounds.xml.patch \
 	file://Makefile.patch \
 	file://logrotate \

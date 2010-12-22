@@ -5,7 +5,7 @@ LICENSE="GPL"
 #DEPENDS="asterisk"
 PR = "r1"
 
-SRC_URI="http://downloads.digium.com/pub/telephony/sounds/releases/asterisk-core-sounds-en-ulaw-${PV}.tar.gz"
+SRC_URI="http://downloads.asterisk.org/pub/telephony/sounds/releases/asterisk-core-sounds-en-ulaw-${PV}.tar.gz"
 
 do_install() {
 	install -d ${D}${localstatedir}/lib/asterisk/sounds
