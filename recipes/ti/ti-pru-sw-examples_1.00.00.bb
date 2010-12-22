@@ -3,7 +3,7 @@ HOMEPAGE = "https://gforge.ti.com/gf/project/pru_sw/"
 LICENSE = "BSD"
 DEPENDS += "ti-pru-sw-app-loader ti-pru-sw-edma-library"
 RDEPENDS += "ti-pru-sw-edma-driver kernel-module-uio-pru"
-PR = "r1+svnr${SRCPV}"
+PR = "r2+svnr${SRCPV}"
 
 COMPATIBLE_MACHINE = "omapl138"
 
@@ -13,11 +13,8 @@ SRCREV = "20"
 S = "${WORKDIR}/trunk"
 
 do_compile () {
-        make -C ${S}/example_apps LIBDIR_APP_LOADER="${D}${libdir}" \
+        make -C ${S}/example_apps \
           CC=${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}gcc \
-          LIBDIR_EDMA_LOADER="${D}${libdir}}" \
-          INCDIR_APP_LOADER="${D}${includedir}" \
-          INCDIR_EDMA_DRIVER="${D}${includedir}" \
           BINDIR_APPLICATIONS="${S}/example_apps/bin" \
           BINDIR_FW="${S}/example_apps/bin" \
           UTILS_DIR="${S}/utils"
