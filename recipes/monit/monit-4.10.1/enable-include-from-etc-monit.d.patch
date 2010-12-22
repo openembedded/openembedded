@@ -1,0 +1,10 @@
+--- a/monitrc
++++ b/monitrc
+@@ -212,6 +212,6 @@
+ ## It is possible to include additional configuration parts from other files or
+ ## directories.
+ #
+-#  include /etc/monit.d/*
++include /etc/monit.d/*
+ #
+ #

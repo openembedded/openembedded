@@ -1,9 +1,10 @@
 LICENSE = "GPL"
 DEPENDS = "openssl"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.tildeslash.com/monit/dist/monit-${PV}.tar.gz\
 	file://no-strip-in-makefile.patch \
+	file://enable-include-from-etc-monit.d.patch \
 	file://init"
 
 INITSCRIPT_NAME = "monit"
