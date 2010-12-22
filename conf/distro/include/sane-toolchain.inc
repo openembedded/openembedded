@@ -72,10 +72,10 @@ TARGET_VENDOR = "-oe"
 TOOLCHAIN_TYPE ?= "internal"
 require conf/distro/include/toolchain-${TOOLCHAIN_TYPE}.inc
 
-# Add FEED_ARCH to the overrides list so that we can override the
+# Add BASE_PACKAGE_ARCH to the overrides list so that we can override the
 # ARM_INSTRUCTION_SET like below
 
-OVERRIDES .= ":${FEED_ARCH}"
+OVERRIDES =. "${BASE_PACKAGE_ARCH}:"
 
 # ARM920T and up can use thumb mode to decrease binary size at the expense of speed
 # (the complete story is a bit more nuanced due to cache starvation)
