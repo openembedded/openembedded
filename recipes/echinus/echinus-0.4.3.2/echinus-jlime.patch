@@ -90,7 +90,7 @@ diff -ru echinus-0.4.3.2.orig/echinusrc echinus-0.4.3.2/echinusrc
  
  Echinus*border: 1
  
-@@ -16,82 +16,43 @@
+@@ -16,82 +16,44 @@
  
  Echinus*sloppy: 0
  Echinus*opacity: 0.8
@@ -201,3 +201,4 @@ diff -ru echinus-0.4.3.2.orig/echinusrc echinus-0.4.3.2/echinusrc
 +Echinus*rule0: .* main 0 0
 +Echinus*rule1: Desktop.* main 1 0
 +Echinus*rule2: floating.* main 1 0
++Echinus*rule3: jamvm.* main 0 1

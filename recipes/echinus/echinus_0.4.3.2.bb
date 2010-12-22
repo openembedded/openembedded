@@ -1,7 +1,7 @@
 DESCRIPTION = "echinus is a simple and lightweight tiling and floating window manager for X11."
 SECTION = "x11/wm"
 LICENSE = "MIT"
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "virtual/libx11 libxft libxrandr"
 
