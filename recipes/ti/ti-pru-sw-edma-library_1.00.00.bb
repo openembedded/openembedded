@@ -1,7 +1,7 @@
 DESCRIPTION = "eDMA library for use by PRU sw example applications"
 HOMEPAGE = "https://gforge.ti.com/gf/project/pru_sw/"
 LICENSE = "BSD"
-PR = "r1+svnr${SRCPV}"
+PR = "r2+svnr${SRCPV}"
 
 DEPENDS += "virtual/kernel ti-pru-sw-edma-driver"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -18,7 +18,8 @@ do_compile () {
 }
 
 do_install () {
-	install -d ${D}/${libdir}
-	install -m 0755 ${S}/../lib/libedmautils.a ${D}/${libdir}/
+	install -d ${D}${libdir}
+	install -d ${D}${includedir}
+	install -m 0755 ${S}/../lib/libedmautils.a ${D}${libdir}/
+	install -m 0644 ${S}/../include/edma.h ${D}${includedir}/
 }
-
