@@ -1,6 +1,6 @@
 DESCRIPTION = "All packages required for the Jlime Muffinman userland"
 LICENSE = "MIT"
-PR = "r3"
+PR = "r4"
 
 inherit task
 
@@ -13,4 +13,5 @@ RDEPENDS_${PN} = "echinus ourico dzen2 matchbox-desktop net-tools xinit \
 		  tzdata-europe tzdata-pacific tzdata wmctrl ttf-inconsolata \
 		  fileselector feh imlib2-loaders mupdf stppc2x mplayer \
 		  gcalc psplash jlime-extras greq midpath-backend-sdl \
-		  midpath-core midpath-cldc libxmlpull-java jamvm netsurf-fb"
+		  midpath-core midpath-cldc libxmlpull-java netsurf-fb \
+		  phoneme-advanced-foundation"
