@@ -1,0 +1,26 @@
+From 4223359216dc16d70ac0aced7078e66602500d66 Mon Sep 17 00:00:00 2001
+From: Mans Rullgard <mans@mansr.com>
+Date: Sat, 30 Oct 2010 15:36:06 +0100
+Subject: [PATCH 7/8] OMAP4: do not force-select options which are not required
+
+---
+ arch/arm/plat-omap/Kconfig |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/plat-omap/Kconfig b/arch/arm/plat-omap/Kconfig
+index 7bfaeb8..934fe64 100644
+--- a/arch/arm/plat-omap/Kconfig
++++ b/arch/arm/plat-omap/Kconfig
+@@ -39,9 +39,6 @@ config ARCH_OMAP4
+ 	select CPU_V7
+ 	select ARM_GIC
+ 	select ARM_ERRATA_720789
+-	select ARM_THUMB
+-	select ARM_THUMBEE
+-	select DEVTMPFS
+ 	select UNIX
+ 	select USB_ARCH_HAS_EHCI
+ endchoice
+-- 
+1.6.6.1
+

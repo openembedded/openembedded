@@ -1,0 +1,203 @@
+From b3f993f02eb4cf2018c78fb5b9cd5f220fda9589 Mon Sep 17 00:00:00 2001
+From: Shravan Suryanarayana <shravan.s@ti.com>
+Date: Wed, 22 Dec 2010 09:42:43 +0100
+Subject: [PATCH 8/8] omap4: pandaboard: add support for DVI output
+
+---
+ arch/arm/mach-omap2/board-omap4panda.c |   45 +++++++++++++++++++++++++++++++-
+ drivers/video/omap2/dss/dispc.c        |    6 ++++
+ drivers/video/omap2/dss/dpi.c          |    3 --
+ drivers/video/omap2/dss/dss.c          |   37 ++++++++++++++++++++++++-
+ 4 files changed, 85 insertions(+), 6 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap4panda.c b/arch/arm/mach-omap2/board-omap4panda.c
+index 1f6d59e..323daa6 100644
+--- a/arch/arm/mach-omap2/board-omap4panda.c
++++ b/arch/arm/mach-omap2/board-omap4panda.c
+@@ -47,6 +47,7 @@
+ #include <plat/hwspinlock.h>
+ #include <plat/opp_twl_tps.h>
+ #include "hsmmc.h"
++#include "mux.h"						
+ 
+ #define GPIO_HUB_POWER 1
+ #define GPIO_HUB_NRESET_39 39
+@@ -55,6 +56,8 @@
+ #define GPIO_BOARD_ID1 101
+ #define GPIO_BOARD_ID2 171
+ 
++#define PANDA_DVI_CHIP_ENABLE_GPIO 0				
++
+ static int board_revision;
+ 
+ /* wl127x BT, FM, GPS connectivity chip */
+@@ -134,16 +137,45 @@ static struct omap_dss_device panda_hdmi_device = {
+ 	.channel = OMAP_DSS_CHANNEL_DIGIT,
+ };
+ 
++static int panda_enable_dvi(struct omap_dss_device *dssdev)		
++{
++	if (gpio_is_valid(dssdev->reset_gpio))		
++		gpio_set_value(dssdev->reset_gpio, 1);
++	gpio_direction_output(dssdev->reset_gpio, 1);
++
++	return 0;
++}
++
++static void panda_disable_dvi(struct omap_dss_device *dssdev)		
++{
++	if (gpio_is_valid(dssdev->reset_gpio))		
++		gpio_set_value(dssdev->reset_gpio, 0);
++	gpio_direction_output(dssdev->reset_gpio, 0);
++}
++
++static struct omap_dss_device panda_dvi_device = {
++	.name				= "dvi",			
++	.driver_name		        = "generic_panel",
++	.type			        = OMAP_DISPLAY_TYPE_DPI,
++	.phy.dpi.data_lines	        = 24,
++	.platform_enable		= panda_enable_dvi,
++	.platform_disable		= panda_disable_dvi,
++	.channel			= OMAP_DSS_CHANNEL_LCD2,
++	.reset_gpio			= PANDA_DVI_CHIP_ENABLE_GPIO,	
++};
++
+ static struct omap_dss_device *panda_dss_devices[] = {
+ 	&panda_hdmi_device,
++	&panda_dvi_device,						
+ };
+ 
+ static struct omap_dss_board_info panda_dss_data = {
+ 	.num_devices	=	ARRAY_SIZE(panda_dss_devices),
+ 	.devices	=	panda_dss_devices,
+-	.default_device	=	&panda_hdmi_device,
++	.default_device	=	&panda_hdmi_device,			
+ };
+ 
++
+ static struct platform_device *panda_devices[] __initdata = {
+ 	&leds_gpio,
+ 	&sdp4430_hdmi_audio_device,
+@@ -158,6 +190,16 @@ static void __init omap4_display_init(void)
+ 	/* Turning on DSI PHY Mux*/
+ 	__raw_writel(dsimux, phymux_base+0x618);
+ 	dsimux = __raw_readl(phymux_base+0x618);
++
++	int r = 0;							
++	omap_mux_init_gpio(panda_dvi_device.reset_gpio, OMAP_PULL_UP | OMAP_PULL_ENA | OMAP_MUX_MODE3);
++	r = gpio_request(panda_dvi_device.reset_gpio, "DVI reset");
++	if (r) {
++		printk(KERN_ERR "failed to get DVI reset GPIO\n");
++		return;
++	}
++	gpio_direction_output(panda_dvi_device.reset_gpio, 0);
++
+ }
+ #else
+ 
+@@ -207,6 +249,7 @@ static struct omap2_hsmmc_info mmc[] = {
+ 		.mmc		= 1,
+ 		.wires		= 8,
+ 		.gpio_wp	= -EINVAL,
++		.gpio_cd	= -EINVAL,
+ 	},
+ 	{
+ 		.mmc            = 5,
+diff --git a/drivers/video/omap2/dss/dispc.c b/drivers/video/omap2/dss/dispc.c
+index 42dfb1f..06f1989 100644
+--- a/drivers/video/omap2/dss/dispc.c
++++ b/drivers/video/omap2/dss/dispc.c
+@@ -3818,6 +3818,12 @@ static void dispc_set_lcd_divisor(enum omap_channel channel, u16 lck_div,
+ 	else
+ 		dispc_write_reg(DISPC_DIVISOR,
+ 			FLD_VAL(lck_div, 23, 16) | FLD_VAL(pck_div, 7, 0));
++
++	// DISPC_DIVISOR1 is actually mapped to DISPC_DIVISOR memory block (see #define at the beginning of this file);
++	// We need to write the value 1 (as opposed to default value 4); otherwise, we can't hit the pixel clock needed for
++	// higher resolutions and will have a stairstep / tearing display
++	dispc_write_reg(DISPC_DIVISOR1, FLD_VAL(1, 23, 16) | FLD_VAL(1, 7, 0));
++
+ 	enable_clocks(0);
+ }
+ 
+diff --git a/drivers/video/omap2/dss/dpi.c b/drivers/video/omap2/dss/dpi.c
+index 33e046e..29bffef 100644
+--- a/drivers/video/omap2/dss/dpi.c
++++ b/drivers/video/omap2/dss/dpi.c
+@@ -97,9 +97,6 @@ static int dpi_set_dispc_clk(enum omap_channel channel, bool is_tft,
+ 	struct dispc_clock_info dispc_cinfo;
+ 	int r;
+ 
+-	if (cpu_is_omap44xx()) /*TODO Check this */
+-		return 0;
+-
+ 	r = dss_calc_clock_div(is_tft, pck_req, &dss_cinfo, &dispc_cinfo);
+ 	if (r)
+ 		return r;
+diff --git a/drivers/video/omap2/dss/dss.c b/drivers/video/omap2/dss/dss.c
+index a69b754..2eff8f8 100644
+--- a/drivers/video/omap2/dss/dss.c
++++ b/drivers/video/omap2/dss/dss.c
+@@ -136,7 +136,7 @@ void dss_restore_context(void)
+ 
+ bool dss_get_mainclk_state()
+ {
+-	return dss.mainclk_state;
++	return true;
+ }
+ 
+ /*
+@@ -501,9 +501,24 @@ int dss_calc_clock_div(bool is_tft, unsigned long req_pck,
+ 	int match = 0;
+ 	int min_fck_per_pck;
+ 
+-	prate = dss_get_dpll4_rate();
++//	prate = dss_get_dpll4_rate();		
+ 
+ 	fck = dss_clk_get_rate(DSS_CLK_FCK1);
++
++	if (!cpu_is_omap44xx()) {		
++	prate = dss_get_dpll4_rate();
++	} else {
++	/* Linux ARM clk framework issue currently all DPLL lock frequency
++	* multipliers are not configured properly. Hence multiplying by
++	* 2 to get the right pixel clock dividers.
++	*
++	* TODO: Need to change this once appropriate patches are added
++	* to clock framework.
++	*/
++	fck *= 2;
++	}
++
++
+ 	if (req_pck == dss.cache_req_pck &&
+ 			((cpu_is_omap34xx() && prate == dss.cache_prate) ||
+ 			 dss.cache_dss_cinfo.fck == fck)) {
+@@ -575,6 +590,24 @@ retry:
+ 					goto found;
+ 			}
+ 		}
++	} else if (cpu_is_omap44xx()) {
++		struct dispc_clock_info cur_dispc;
++		/* we can not change fclk on OMAP4 */
++
++		dispc_find_clk_divs(is_tft, req_pck, fck, &cur_dispc);		
++		match = 1;
++
++		if (abs(cur_dispc.pck - req_pck) < abs(best_dispc.pck - req_pck)) {
++		best_dss.fck = fck;
++		best_dss.fck_div = 1;
++
++		best_dispc = cur_dispc;
++
++		if (cur_dispc.pck == req_pck)
++		goto found;
++		}
++
++
+ 	} else {
+ 		BUG();
+ 	}
+-- 
+1.6.6.1
+

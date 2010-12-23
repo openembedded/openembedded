@@ -1,0 +1,49 @@
+From 47cb7627876fdc6a6b90eb86dc77705a6df0072a Mon Sep 17 00:00:00 2001
+From: Mans Rullgard <mans@mansr.com>
+Date: Tue, 10 Nov 2009 00:52:56 +0000
+Subject: [PATCH 6/8] ARM: Add option to allow userspace access to performance counters
+
+This adds an option to allow userspace access to the performance monitor
+registers of the Cortex-A8.
+
+Signed-off-by: Mans Rullgard <mans@mansr.com>
+---
+ arch/arm/mm/Kconfig   |    7 +++++++
+ arch/arm/mm/proc-v7.S |    6 ++++++
+ 2 files changed, 13 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mm/Kconfig b/arch/arm/mm/Kconfig
+index 4a337ab..a49ff8b 100644
+--- a/arch/arm/mm/Kconfig
++++ b/arch/arm/mm/Kconfig
+@@ -861,3 +861,10 @@ config USER_L2_PLE
+ 	help
+ 	  Enable userspace access to the L2 preload engine (PLE) available
+ 	  in Cortex-A series ARM processors.
++
++config USER_PMON
++	bool "Enable userspace access to performance counters"
++	depends on CPU_V7
++	default n
++	help
++	  Enable userpsace access to the performance monitor registers.
+diff --git a/arch/arm/mm/proc-v7.S b/arch/arm/mm/proc-v7.S
+index c1c3fe0..bd10c28 100644
+--- a/arch/arm/mm/proc-v7.S
++++ b/arch/arm/mm/proc-v7.S
+@@ -276,6 +276,12 @@ __v7_setup:
+ 	mcr	p15, 0, r5, c10, c2, 0		@ write PRRR
+ 	mcr	p15, 0, r6, c10, c2, 1		@ write NMRR
+ #endif
++
++#ifdef CONFIG_USER_PMON
++	mov	r0, #1
++	mcr	p15, 0, r0, c9, c14, 0
++#endif
++
+ 	adr	r5, v7_crval
+ 	ldmia	r5, {r5, r6}
+ #ifdef CONFIG_CPU_ENDIAN_BE8
+-- 
+1.6.6.1
+

@@ -14,6 +14,7 @@ SRC_URI = "git://dev.omapzoom.org/pub/scm/integration/kernel-ubuntu.git;protocol
            file://0005-ARM-Add-option-to-allow-userspace-PLE-access.patch \
            file://0006-ARM-Add-option-to-allow-userspace-access-to-performa.patch \
            file://0007-OMAP4-do-not-force-select-options-which-are-not-requ.patch \
+           file://0008-omap4-pandaboard-add-support-for-DVI-output.patch \
            file://defconfig"
 
 S = "${WORKDIR}/git"

@@ -1,7 +1,7 @@
 From 694125c6684f8bafbf5c4502659f1322fae33af2 Mon Sep 17 00:00:00 2001
 From: Rob Clark <rob@ti.com>
 Date: Sat, 10 Jul 2010 18:03:16 -0500
-Subject: [PATCH 1/7] tiler: avoid lock-ups due to unmapped DMM entries
+Subject: [PATCH 1/8] tiler: avoid lock-ups due to unmapped DMM entries
 
 Due to the address remapping done for 2d buffers, when a 2d buffer is
 allocated by userspace, it is possible that only partial pages map to
