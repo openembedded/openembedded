@@ -1,0 +1,14 @@
+Index: libopie2/opiemm/owavrecorder.cpp
+===================================================================
+--- libopie2.orig/opiemm/owavrecorder.cpp	2010-12-22 23:55:07.000000000 +0000
++++ libopie2/opiemm/owavrecorder.cpp	2010-12-22 23:55:39.000000000 +0000
+@@ -28,6 +28,9 @@
+ 
+ #include "owavrecorder.h"
+ 
++#include <sys/types.h>
++#include <sys/stat.h>
++
+ extern "C" {
+ #include "ima_rw.h"
+ }
