@@ -6,7 +6,7 @@ DEPENDS = "sqlite3"
 SRCNAME = "pysqlite"
 PR = "ml3"
 
-SRC_URI = "http://initd.org/pub/software/pysqlite/releases/2.4/${PV}/${SRCNAME}-${PV}.tar.gz \
+SRC_URI = "http://www.ibiblio.org/pub/solaris/freeware/SOURCES/${SRCNAME}-${PV}.tar.gz \
            file://fix-setup.patch"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
