@@ -1,0 +1,34 @@
+From 6adc07f7e71cccf86eba96467ef46a9b63eb7d84 Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Thu, 23 Dec 2010 21:04:25 +0100
+Subject: [PATCH] nokia/rx51: fix declaration, fails when building with gcc-4.5
+
+* older gcc or -O0 doesn't show it, but it's code issue
+---
+ board/nokia/rx51/rx51.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+diff --git a/board/nokia/rx51/rx51.c b/board/nokia/rx51/rx51.c
+index 347d08a..572d352 100644
+--- a/board/nokia/rx51/rx51.c
++++ b/board/nokia/rx51/rx51.c
+@@ -43,6 +43,7 @@
+ #include "rx51.h"
+ 
+ GraphicDevice gdev;
++DECLARE_GLOBAL_DATA_PTR;
+ 
+ /*
+  * Routine: board_init
+@@ -50,8 +51,6 @@ GraphicDevice gdev;
+  */
+ int board_init(void)
+ {
+-	DECLARE_GLOBAL_DATA_PTR;
+-
+ 	gpmc_init(); /* in SRAM or SDRAM, finish GPMC */
+ 	/* board id for Linux */
+ 	gd->bd->bi_arch_number = MACH_TYPE_NOKIA_RX51;
+-- 
+1.7.3.4
+

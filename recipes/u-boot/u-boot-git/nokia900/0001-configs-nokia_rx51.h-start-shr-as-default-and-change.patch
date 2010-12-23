@@ -1,0 +1,88 @@
+From 1b46029e60f9a40aad72fabbb5a2ef57440ead97 Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Tue, 7 Dec 2010 12:41:39 +0100
+Subject: [PATCH] configs/nokia_rx51.h: start shr as default and change expected partition layout
+
+* use layout like this:
+* boot.scr:  optional on 1st ext2 partition /boot.scr
+* run shr:   rootfs on 1st ext2 partition and kernel in /boot/uImage
+* run shr2:  rootfs on 1st partition and kernel on 3rd fat partition /uImage
+* run p2:    rootfs on 2nd partition and kernel on 3rd fat partition /uImage
+* run maemo: rootfs on eMMC and kernel provided by NOLO
+
+Signed-off-by: Martin Jansa <Martin.Jansa@gmail.com>
+---
+ include/configs/nokia_rx51.h |   42 ++++++++++++++++++++++++++----------------
+ 1 files changed, 26 insertions(+), 16 deletions(-)
+
+diff --git a/include/configs/nokia_rx51.h b/include/configs/nokia_rx51.h
+index 5c3b068..62770c9 100644
+--- a/include/configs/nokia_rx51.h
++++ b/include/configs/nokia_rx51.h
+@@ -187,38 +187,47 @@ int rx51_kp_getc(void);
+ 	"usbcon=setenv con usbtty; run setcon\0" \
+ 	"vgacon=setenv con vga; run setcon\0" \
+ 	"loadaddr=0x82000000\0" \
+-	"meegoargs=setenv bootargs\0" \
+-	"loadbootscript=fatload mmc 0 ${loadaddr} boot.scr\0" \
++	"loadbootscript=mmc init; ext2load mmc 0:1 ${loadaddr} boot.scr\0" \
+ 	"bootscript=echo Running bootscript from mmc ...; " \
+ 		"source ${loadaddr}\0" \
+-	"loaduimage=fatload mmc 0:3 ${loadaddr} uImage\0" \
+-	"mmcboot=echo Booting from mmc ...; " \
+-		"run meegoargs; " \
+-		"bootm ${loadaddr}\0" \
+-	"noloboot=echo Booting NOLO supplied kernel ...; " \
++	"meegoargs=root=/dev/mmcblk0p2 rootwait console=tty0 omapfb.vram=0:2M,1:2M,2:2M mtdoops.mtddev=2 nosplash\0" \
++	"shrargs=snd-soc-rx51.hp_lim=42 snd-soc-tlv320aic3x.hp_dac_lim=6 console=tty1 root=/dev/mmcblk1p1 rootwait panic=20 debug\0" \
++	"boot1stcmd=mmc init; ext2load mmc 0:1 0x82000000 /boot/uImage; bootm 0x82000000\0" \
++	"boot3rdcmd=mmc init; fatload mmc 0:3 0x82000000 uImage; bootm 0x82000000\0" \
++	"shr=echo Booting SHR from uSD 1st part (/boot/uImage) ...; " \
++		"setenv bootargs ${shrargs}; " \
++		"setenv bootcmd ${boot1stcmd}; " \
++		"boot\0" \
++	"shr2=echo Booting SHR from uSD 1st part, kernel on 3rd ...; " \
++		"setenv atags ${nolo_atagaddr};" \
++		"setenv bootargs ${shrargs}; " \
++		"setenv bootcmd ${boot3rdcmd}; " \
++		"boot\0" \
++	"p2=echo Booting from uSD 2nd part, kernel on 3rd ...; " \
++		"setenv bootargs ${meegoargs}; " \
++		"setenv bootcmd ${boot3rdcmd}; " \
++		"boot\0" \
++	"maemo=echo Booting Maemo from eMMC, NOLO supplied kernel ...; " \
+ 		"setenv atags ${nolo_atagaddr};" \
+ 		"bootm ${nolo_kernaddr}\0"
+ 
+ #define CONFIG_PREBOOT \
+-	"if test $slide_sw != open ; then run noloboot; fi ;" \
++	"if test $slide_sw != open ; then run shr; fi ;" \
+ 	"echo Extra commands:;" \
+ 	"echo run sercon - Use serial port for control.;" \
+ 	"echo run usbcon - Use usbtty for control.;" \
+ 	"echo run vgacon - Use framebuffer/keyboard.;" \
+-	"echo run mmcboot - Boot from SD card slot.;" \
+-	"echo run noloboot - Boot kernel loaded by NOLO."
++	"echo run shr - Boot SHR from uSD 1st part (/boot/uImage).;" \
++	"echo run shr2 - Boot SHR from uSD 1st part, kernel on 3rd.;" \
++	"echo run p2 - Boot from uSD 2nd part, kernel on 3rd.;" \
++	"echo run maemo - Boot Maemo from eMMC, kernel loaded by NOLO."
+ 
+ #define CONFIG_BOOTCOMMAND \
+ 	"if mmc init; then " \
+ 		"if run loadbootscript; then " \
+ 			"run bootscript; " \
+-		"else " \
+-			"if run loaduimage; then " \
+-				"run mmcboot; " \
+-			"else run noloboot; " \
+-			"fi; " \
+ 		"fi; " \
+-	"else run noloboot; fi"
++	"else run shr; fi"
+ 
+ #define CONFIG_AUTO_COMPLETE		1
+ /*
+-- 
+1.7.3.4
+
