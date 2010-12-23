@@ -151,6 +151,10 @@ oe_phoneme_configarm() {
 	pmo USE_AAPCS $tf
 }
 
+oe_phoneme_configmips() {
+	pmo LINK_ARCH_LIBS -lm
+}
+
 oe_phoneme_configx86() {
 	# Taken from linux-x86-generic/GNUmakefile
 	pmo CVM_JIT_REGISTER_LOCALS false
