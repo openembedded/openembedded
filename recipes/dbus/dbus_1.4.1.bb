@@ -11,8 +11,5 @@ SRC_URI = "\
   file://dbus-1.init \
 "            
 
-# This needs more testing before pushing as default dbus
-DEFAULT_PREFERENCE = "-1"
-
-SRC_URI[md5sum] = "f59618b18d2fb2bd1fce9e1c5a2a3282"
-SRC_URI[sha256sum] = "c96d2f86d40e158e2bf405925a0a42cce0533a8466098e2f2238aa1614926652"
+SRC_URI[md5sum] = "99cb057700c0455fb68f8d57902f77ac"
+SRC_URI[sha256sum] = "caa1a0ded2d0f2e95c1d4ec7e3c8bd44834928c5b0ed41a7189963f3593983bd"
