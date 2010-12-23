@@ -201,4 +201,4 @@ diff -ru echinus-0.4.3.2.orig/echinusrc echinus-0.4.3.2/echinusrc
 +Echinus*rule0: .* main 0 0
 +Echinus*rule1: Desktop.* main 1 0
 +Echinus*rule2: floating.* main 1 0
-+Echinus*rule3: jamvm.* main 0 1
++Echinus*rule3: cvm.* main 0 1
