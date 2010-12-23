@@ -1,7 +1,5 @@
 # Upgraded
 # use newer version then preferred by default
-PREFERRED_VERSION_dbus = "1.4.0"
-PREFERRED_VERSION_dbus-native = "1.4.0"
 PREFERRED_VERSION_libmikmod = "3.2.0-beta2"
 PREFERRED_VERSION_strace = "4.5.15"
 PREFERRED_VERSION_emacs-x11 = "23.1"
