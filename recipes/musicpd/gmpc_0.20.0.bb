@@ -14,7 +14,7 @@ LDFLAGS += "-export-dynamic"
 do_configure_prepend() {
      MACROS="libtool.m4 lt~obsolete.m4 ltoptions.m4 ltsugar.m4 ltversion.m4"
       for i in ${MACROS}; do
-         rm m4/$i
+         rm -f m4/$i
       done
 }
 
