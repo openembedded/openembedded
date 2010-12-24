@@ -11,7 +11,7 @@ SRC_URI = "http://ftp.yars.free.net/pub/source/lftp/lftp-${PV}.tar.bz2;name=u1"
 EXTRA_OECONF = "--disable-largefile --disable-rpath --with-included-readline=no"
 
 do_configure_prepend () {
-    rm ${S}/m4/iconv.m4
+    rm -f ${S}/m4/iconv.m4
 }
 
 inherit autotools gettext

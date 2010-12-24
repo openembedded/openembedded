@@ -29,7 +29,7 @@ do_preconfigure() {
 	mv ac_find_xft.m4 m4/
 	mv acinclude.m4 m4/
 
-	rm aclocal.m4
+	rm -f aclocal.m4
 
 	sed -i -e "s|LT_HAVE_FREETYPE|HAVEFREETYPE|" m4/acinclude.m4
 	sed -i -e "s|LT_HAVE_XRENDER|HAVEXRENDER|" m4/acinclude.m4

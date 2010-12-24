@@ -39,7 +39,7 @@ EXTRA_OEMAKE = "'XINC=-I${STAGING_INCDIR}' \
 
 do_configure () {
 	mv autoconf/configure.in . || true
-	rm autoconf/libtool.m4
+	rm -f autoconf/libtool.m4
 	libtoolize --force
 	autotools_do_configure
 	echo '#define RXVT_UTMP_FILE "${localstatedir}/run/utmp"' >> config.h

@@ -26,7 +26,7 @@ EXTRA_OECONF = "--disable-opengl --disable-esd \
 
 do_configure_prepend() {
 	cp ${WORKDIR}/acinclude.m4 ${S}
-	rm ${S}/libxmms/acinclude.m4 || true
+	rm -f ${S}/libxmms/acinclude.m4 || true
 	for i in $(find . -name "Makefile*") ; do
 		sed -i -e 's:MKINSTALLDIRS = @MKINSTALLDIRS@:MKINSTALLDIRS = @mkdir_p@:g' \ 
 	           -e 's:$(SHELL) $(MKINSTALLDIRS):$(MKINSTALLDIRS):g' $i

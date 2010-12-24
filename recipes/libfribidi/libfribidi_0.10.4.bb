@@ -14,7 +14,7 @@ inherit autotools lib_package binconfig pkgconfig
 
 do_configure_prepend () {
         # this version of libtool is old - we have to nobble this file to get it to litoolize
-        rm ltconfig
-        rm aclocal.m4
-        rm acinclude.m4
+        rm -f ltconfig
+        rm -f aclocal.m4
+        rm -f acinclude.m4
 }

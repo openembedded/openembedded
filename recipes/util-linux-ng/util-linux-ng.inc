@@ -80,7 +80,7 @@ do_configure_prepend_chinook-compat () {
 
         for i in  lt~obsolete.m4 ltsugar.m4 libtool.m4 ltoptions.m4 ltversion.m4
         do
-                rm ${S}/m4/${i}
+                rm -f ${S}/m4/${i}
         done
 }
 

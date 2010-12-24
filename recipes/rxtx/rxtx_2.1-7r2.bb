@@ -15,7 +15,7 @@ SRC_URI = "\
     "
 
 do_removebinaries_append() {
-	rm acinclude.m4
+	rm -f acinclude.m4
 }
 
 do_compile() {
