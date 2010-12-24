@@ -1,6 +1,9 @@
 DESCRIPTION = "gdbus-binding-tool is used to generate C code for interacting with remote objects using D-Bus."
 DEPENDS = "glib-2.0 gdbus-binding-tool-native"
 DEPENDS_virtclass-native = "glib-2.0-native"
+RDEPENDS_${PN} = "glib-2.0-utils"
+
+PR = "r1"
 
 inherit autotools pkgconfig
 
