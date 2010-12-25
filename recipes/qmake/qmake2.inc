@@ -3,7 +3,7 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 SECTION = "devel"
 LICENSE = "GPL"
-PR = "r11"
+PR = "r12"
 
 # We call 'moc' during the build 
 DEPENDS = "qt4-tools-native"
