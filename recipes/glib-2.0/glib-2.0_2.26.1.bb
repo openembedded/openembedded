@@ -29,8 +29,6 @@ inherit autotools gettext
 
 S = "${WORKDIR}/glib-${PV}"
 
-DEFAULT_PREFERENCE = "-1"
-
 EXTRA_OECONF = "--disable-debug "
 
 # Add and entry for your favourite arch if your (g)libc has a sane printf
