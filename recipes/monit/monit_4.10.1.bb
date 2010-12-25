@@ -1,4 +1,4 @@
-LICENSE = "GPL"
+LICENSE = "GPLv3"
 DEPENDS = "openssl"
 PR = "r2"
 
