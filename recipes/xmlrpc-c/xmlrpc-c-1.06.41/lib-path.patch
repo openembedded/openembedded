@@ -1,0 +1,58 @@
+Don't use build directories in the library search path because it apparently
+causes Libtool to hard-code the build directories inside installed .la files,
+triggering "QA issues". Use with newer Libtool.
+--- xmlrpc-c-1.06.41/src/Makefile
++++ xmlrpc-c-1.06.41/src/Makefile
+@@ -7,8 +7,8 @@ VPATH = .:$(SRCDIR)
+ 
+ include $(BUILDDIR)/Makefile.config
+ 
+-ABYSS_LIBDIR = $(BUILDDIR)/lib/abyss/src/.libs
+-LIBUTIL_LIBDIR = $(BUILDDIR)/lib/libutil/.libs
++ABYSS_LIB = $(BUILDDIR)/lib/abyss/src/libxmlrpc_abyss.la
++LIBUTIL_LIB = $(BUILDDIR)/lib/libutil/libxmlrpc_util.la
+ 
+ default: all
+ 
+@@ -70,17 +70,17 @@ endif
+ # may require the necessary -L options in addition.
+ 
+ LIBXMLRPC_CLIENT_OBJS = xmlrpc_client.lo xmlrpc_client_global.lo
+-LIBXMLRPC_CLIENT_LIBDEP = -lxmlrpc_util -lxmlrpc
++LIBXMLRPC_CLIENT_LIBDEP = $(LIBUTIL_LIB) libxmlrpc.la
+ 
+ LIBXMLRPC_SERVER_OBJS = registry.lo system_method.lo
+-LIBXMLRPC_SERVER_LIBDEP = -lxmlrpc_util -lxmlrpc
++LIBXMLRPC_SERVER_LIBDEP = $(LIBUTIL_LIB) libxmlrpc.la
+ 
+ LIBXMLRPC_SERVER_ABYSS_OBJS = xmlrpc_server_abyss.lo
+ LIBXMLRPC_SERVER_ABYSS_LIBDEP = \
+-  -lxmlrpc_util -lxmlrpc_server -L$(ABYSS_LIBDIR) -lxmlrpc_abyss -lxmlrpc
++  $(LIBUTIL_LIB) libxmlrpc_server.la $(ABYSS_LIB) libxmlrpc.la
+ 
+ LIBXMLRPC_SERVER_CGI_OBJS = xmlrpc_server_cgi.lo
+-LIBXMLRPC_SERVER_CGI_LIBDEP = -lxmlrpc_util -lxmlrpc_server -lxmlrpc
++LIBXMLRPC_SERVER_CGI_LIBDEP = $(LIBUTIL_LIB) libxmlrpc_server.la libxmlrpc.la
+ 
+ LIBXMLRPC_OBJS = \
+ 	trace.lo \
+@@ -96,7 +96,7 @@ LIBXMLRPC_OBJS = \
+ 	xmlrpc_utf8.lo \
+ 	xmlrpc_authcookie.lo \
+ 
+-LIBXMLRPC_LIBDEP = -lxmlrpc_util $(LIBXML_LIBS)
++LIBXMLRPC_LIBDEP = $(LIBUTIL_LIB) $(LIBXML_LIBS)
+ 
+ LIB_OBJS = $(LIBXMLRPC_CLIENT_OBJS) $(LIBXMLRPC_SERVER_OBJS)
+ 
+@@ -133,9 +133,7 @@ all: $(TARGET_LTLIBRARIES) $(SUBDIRS:%=%
+ 
+ LDFLAGS = $(LADD)
+ 
+-LIBPATHS = -L.libs -L$(LIBUTIL_LIBDIR)
+-
+-LIBLDFLAGS = $(LDFLAGS_VERSINFO) -rpath $(LIBINST_DIR) $(LIBPATHS) $(LADD)
++LIBLDFLAGS = $(LDFLAGS_VERSINFO) -rpath $(LIBINST_DIR) $(LADD)
+ 
+ 
+ libxmlrpc.la: $(LIBXMLRPC_OBJS)
