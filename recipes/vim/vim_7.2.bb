@@ -19,13 +19,11 @@ SRC_URI += "file://configure.in_remove_CC_quotes.patch;apply=no"
 SRC_URI += "file://vimrc"
 
 # we need to apply patches in other dir then ${S}
-do_applypatch() {
+do_patch() {
 	cd ${WORKDIR}/vim${VIMVER}
 	patch -p1 <${WORKDIR}/001-411.diff
 	patch -p1 <${WORKDIR}/configure.in_remove_CC_quotes.patch
 }
-
-addtask applypatch after do_unpack before do_patch
 
 do_install_append() {
     install -m 0644 ${WORKDIR}/vimrc ${D}/${datadir}/vim
