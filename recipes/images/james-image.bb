@@ -19,7 +19,7 @@ IMAGE_INSTALL += "task-boot \
 	    xmltv \
 	    midori \
 	    lame \
-	    cwiid \
+	    libcwiid  wmgui wminput lswm \
 	    w3cam  \
 	   "
 
