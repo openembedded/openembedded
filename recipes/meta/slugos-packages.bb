@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r69"
+PR = "r70"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2|ixp4xx"
@@ -92,7 +92,6 @@ SLUGOS_PACKAGES = "\
 	gnu-config \
 	gphoto2 \
 	grep \
-	groff \
 	gtk-doc \
 	gzip \
 	hdparm \
@@ -132,7 +131,6 @@ SLUGOS_PACKAGES = "\
 	madplay \
 	mailx \
 	make \
-	man man-pages \
 	masqmail \
 	mdadm \
 	mediatomb \
@@ -256,6 +254,7 @@ SLUGOS_X11_PACKAGES = "\
 # 
 SLUGOS_BROKEN_BUT_NEED_FIXING_PACKAGES = "\
 	apex-env \
+	groff man man-pages \
 	inetutils \
 	lvm2 \
 	madwifi-ng \
