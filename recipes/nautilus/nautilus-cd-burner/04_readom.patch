@@ -1,0 +1,30 @@
+diff -Nur -x '*.orig' -x '*~' nautilus-cd-burner-2.21.5/src/make-iso.c nautilus-cd-burner-2.21.5.new/src/make-iso.c
+--- nautilus-cd-burner-2.21.5/src/make-iso.c	2008-01-21 16:14:52.000000000 +0000
++++ nautilus-cd-burner-2.21.5.new/src/make-iso.c	2008-01-22 09:46:01.000000000 +0000
+@@ -719,7 +719,7 @@
+         char            *pos;
+ 
+         if (line && iso->priv->debug) {
+-                g_print ("readcd stderr: %s", line);
++                g_print ("readom stderr: %s", line);
+         }
+ 
+         pos = strstr (line, "addr:");
+@@ -1379,7 +1379,7 @@
+                 device_arg = g_strdup_printf ("-dev=%s", nautilus_burn_drive_get_device (drive));
+ 
+                 argv = g_ptr_array_new ();
+-                g_ptr_array_add (argv, "readcd");
++                g_ptr_array_add (argv, "readom");
+                 g_ptr_array_add (argv, "-sectors=0-0");
+                 g_ptr_array_add (argv, device_arg);
+                 g_ptr_array_add (argv, "-f=/dev/null");
+@@ -1561,7 +1561,7 @@
+                 dev_arg = g_strdup_printf ("dev=%s", nautilus_burn_drive_get_device (drive));
+ 
+                 argv = g_ptr_array_new ();
+-                g_ptr_array_add (argv, "readcd");
++                g_ptr_array_add (argv, "readom");
+                 g_ptr_array_add (argv, (char *)dev_arg);
+                 g_ptr_array_add (argv, (char *)filename_arg);
+                 g_ptr_array_add (argv, NULL);

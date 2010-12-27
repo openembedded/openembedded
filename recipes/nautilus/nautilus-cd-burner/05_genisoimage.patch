@@ -1,0 +1,83 @@
+diff -Nur -x '*.orig' -x '*~' nautilus-cd-burner-2.21.5/src/make-iso.c nautilus-cd-burner-2.21.5.new/src/make-iso.c
+--- nautilus-cd-burner-2.21.5/src/make-iso.c	2008-01-22 09:53:29.000000000 +0000
++++ nautilus-cd-burner-2.21.5.new/src/make-iso.c	2008-01-22 09:54:50.000000000 +0000
+@@ -837,22 +837,8 @@
+ static gboolean
+ ncb_mkisofs_supports_utf8 (void)
+ {
+-        static gboolean first = TRUE;
+-        static gboolean supported;
+-
+-        if (first) {
+-                char    *standard_error;
+-                gboolean res;
+-                res = g_spawn_command_line_sync ("mkisofs -input-charset utf8", NULL, &standard_error, NULL, NULL);
+-                if (res && !g_strrstr (standard_error, "Unknown charset")) {
+-                        supported = TRUE;
+-                } else {
+-                        supported = FALSE;
+-                }
+-                g_free (standard_error);
+-        }
+-
+-        return supported;
++        /* genisoimage always supports utf8 */
++        return TRUE;
+ }
+ 
+ static char *
+@@ -972,7 +958,7 @@
+         }
+         argv = g_ptr_array_new ();
+ 
+-        g_ptr_array_add (argv, "mkisofs");
++        g_ptr_array_add (argv, "genisoimage");
+         g_ptr_array_add (argv, "-r");
+         if (use_joliet) {
+                 g_ptr_array_add (argv, "-J");
+@@ -1139,7 +1125,7 @@
+                 utf8_filename = ncb_make_valid_utf8 (filename->str);
+                 msg = g_strdup_printf (_("Some files have invalid filenames: \n%s"), utf8_filename);
+                 if (iso->priv->debug) {
+-                        g_print ("mkisofs error: %s\n", msg);
++                        g_print ("genisoimage error: %s\n", msg);
+                 }
+ 
+                 process_error (iso, msg);
+@@ -1253,7 +1239,7 @@
+         }
+ 
+         argv = g_ptr_array_new ();
+-        g_ptr_array_add (argv, "mkisofs");
++        g_ptr_array_add (argv, "genisoimage");
+         g_ptr_array_add (argv, "-r");
+         if (use_joliet) {
+                 g_ptr_array_add (argv, "-J");
+diff -Nur -x '*.orig' -x '*~' nautilus-cd-burner-2.21.5/src/nautilus-burn-recorder.c nautilus-cd-burner-2.21.5.new/src/nautilus-burn-recorder.c
+--- nautilus-cd-burner-2.21.5/src/nautilus-burn-recorder.c	2008-01-22 09:53:29.000000000 +0000
++++ nautilus-cd-burner-2.21.5.new/src/nautilus-burn-recorder.c	2008-01-22 09:54:00.000000000 +0000
+@@ -1069,22 +1069,8 @@
+ static gboolean
+ ncb_mkisofs_supports_utf8 (void)
+ {
+-        static gboolean first = TRUE;
+-        static gboolean supported;
+-
+-        if (first) {
+-                char    *standard_error;
+-                gboolean res;
+-                res = g_spawn_command_line_sync ("mkisofs -input-charset utf8", NULL, &standard_error, NULL, NULL);
+-                if (res && !g_strrstr (standard_error, "Unknown charset")) {
+-                        supported = TRUE;
+-                } else {
+-                        supported = FALSE;
+-                }
+-                g_free (standard_error);
+-        }
+-
+-        return supported;
++        /* genisoimage always supports utf8 */
++        return TRUE;
+ }
+ 
+ static int
