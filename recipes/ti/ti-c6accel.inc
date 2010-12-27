@@ -31,11 +31,7 @@ DEPENDS = "ti-codec-engine ti-xdais ti-dsplink ti-dspbios"
 DEPENDS += "ti-edma3lld ti-cgt6x ti-xdctools ti-framework-components" 
 DEPENDS += "ti-biosutils" 
 
-do_compile() {
-    unset VERBOSE
-    # Build C6Accel package
-    cd ${S}
-    make \
+TIARGS = ' \
     PLATFORM="${PLATFORM}" \
     CE_INSTALL_DIR="${CE_INSTALL_DIR}" \
     XDAIS_INSTALL_DIR="${XDAIS_INSTALL_DIR}" \
@@ -52,8 +48,18 @@ do_compile() {
     C6ACCEL_INSTALL_DIR="${S}" \
     CSTOOL_DIR="${TOOLCHAIN_PATH}" \
     CSTOOL_PREFIX="${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}" \
-    all
+    LINUXLIBS_INSTALL_DIR="${STAGING_DIR}/${BASE_PACKAGE_ARCH}${HOST_VENDOR}-${HOST_OS}" \
+'
 
+do_configure() {
+	unset VERBOSE
+	make ${TIARGS} clean
+	#sed -i -e 's:-L$(LINUXLIBS_INSTALL_DIR)/lib:${LDFLAGS}:' ${S}/soc/app/Makefile
+}
+
+do_compile() {
+    unset VERBOSE
+    make ${TIARGS} all
 }
 
 do_install() {
