@@ -116,7 +116,7 @@ SRC_URI_nokia900 = "\
 	file://inconsistent-mmc-fix-2.6.35.patch \
 	file://defconfig "
 
-CMDLINE_nokia900_shr = "snd-soc-rx51.hp_lim=42 snd-soc-tlv320aic3x.hp_dac_lim=6 console=tty1 root=/dev/mmcblk1p2 rootwait panic=20 debug"
+CMDLINE_nokia900_shr = "snd-soc-rx51.hp_lim=42 snd-soc-tlv320aic3x.hp_dac_lim=6 console=tty1 root=/dev/mmcblk1p1 rootwait panic=20 debug"
 
 SRC_URI[kernel.md5sum] = "091abeb4684ce03d1d936851618687b6"
 SRC_URI[kernel.sha256sum] = "18b2e2c336032e366c942622b77302cb05fc034fb19018f086a4ebc9ed41bfcf"
