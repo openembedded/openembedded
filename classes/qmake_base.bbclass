@@ -61,7 +61,7 @@ qmake_base_do_configure() {
 	oenote "using qmake spec in ${QMAKESPEC}, using profiles '${QMAKE_PROFILES}'"
 
 	if [ -z "${QMAKE_PROFILES}" ]; then 
-		PROFILES="`ls *.pro`"
+		PROFILES="`ls ${S}/*.pro`"
 	else
 		PROFILES="${QMAKE_PROFILES}"
 	fi
