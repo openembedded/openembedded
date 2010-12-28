@@ -10,7 +10,6 @@ S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit setuptools
 
-DEPENDS = "python"
 RDEPENDS_${PN} = "python-pickle python-pprint"
 
 NATIVE_INSTALL_WORKS = "1"
