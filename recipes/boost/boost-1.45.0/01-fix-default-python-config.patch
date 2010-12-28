@@ -1,0 +1,29 @@
+Index: boost_1_45_0/tools/build/v2/tools/python.jam
+===================================================================
+--- boost_1_45_0.orig/tools/build/v2/tools/python.jam	2010-12-27 16:10:56.340207790 -0500
++++ boost_1_45_0/tools/build/v2/tools/python.jam	2010-12-27 16:11:53.751709203 -0500
+@@ -806,11 +806,7 @@
+     }
+ 
+     # Anything left to compute?
+-    if $(includes) && $(libraries)
+-    {
+-        .configured = true ;
+-    }
+-    else
++    if ! $(includes) || ! $(libraries)
+     {
+         version ?= $(fallback-version) ;
+         version ?= 2.5 ;
+@@ -818,6 +814,11 @@
+         compute-default-paths $(target-os) : $(version) : $(prefix:E=) ;
+     }
+ 
++    if $(includes) && $(libraries)
++    {
++        .configured = true ;
++    }
++
+     if ! $(interpreter-cmd)
+     {
+         fallback-cmd ?= python ;
