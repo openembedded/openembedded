@@ -1,0 +1,27 @@
+Index: Python-2.7.1/Lib/distutils/unixccompiler.py
+===================================================================
+--- Python-2.7.1.orig/Lib/distutils/unixccompiler.py	2010-06-27 08:36:16.000000000 -0400
++++ Python-2.7.1/Lib/distutils/unixccompiler.py	2010-12-26 10:09:44.282632589 -0500
+@@ -318,6 +318,8 @@
+ 
+ 
+ 
++        print "Looking in %s for %s" % (lib, dirs)
++
+         for dir in dirs:
+             shared = os.path.join(dir, shared_f)
+             dylib = os.path.join(dir, dylib_f)
+@@ -336,10 +338,13 @@
+             # assuming that *all* Unix C compilers do.  And of course I'm
+             # ignoring even GCC's "-static" option.  So sue me.
+             if os.path.exists(dylib):
++                print "Found %s" % (dylib)
+                 return dylib
+             elif os.path.exists(shared):
++                print "Found %s" % (shared)
+                 return shared
+             elif os.path.exists(static):
++                print "Found %s" % (static)
+                 return static
+ 
+         # Oops, didn't find it in *any* of 'dirs'

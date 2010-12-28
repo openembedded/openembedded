@@ -1,0 +1,29 @@
+Index: Python-2.7.1/setup.py
+===================================================================
+--- Python-2.7.1.orig/setup.py	2010-12-26 10:02:43.000000000 -0500
++++ Python-2.7.1/setup.py	2010-12-26 10:12:30.920427195 -0500
+@@ -404,11 +404,8 @@
+         # lib_dirs and inc_dirs are used to search for files;
+         # if a file is found in one of those directories, it can
+         # be assumed that no additional -I,-L directives are needed.
+-        lib_dirs = self.compiler.library_dirs + [
+-            '/lib64', '/usr/lib64',
+-            '/lib', '/usr/lib',
+-            ]
+-        inc_dirs = self.compiler.include_dirs + ['/usr/include']
++        lib_dirs = self.compiler.library_dirs
++        inc_dirs = self.compiler.include_dirs
+         exts = []
+         missing = []
+ 
+@@ -657,9 +654,7 @@
+                 pass # Issue 7384: Already linked against curses or tinfo.
+             elif curses_library:
+                 readline_libs.append(curses_library)
+-            elif self.compiler.find_library_file(lib_dirs +
+-                                                     ['/usr/lib/termcap'],
+-                                                     'termcap'):
++            elif self.compiler.find_library_file(lib_dirs, 'termcap'):
+                 readline_libs.append('termcap')
+             exts.append( Extension('readline', ['readline.c'],
+                                    library_dirs=['/usr/lib/termcap'],

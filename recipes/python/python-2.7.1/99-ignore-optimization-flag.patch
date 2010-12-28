@@ -1,0 +1,19 @@
+# Reinstate the empty -O option to fix weird mixing of native and target
+# binaries and libraries with LD_LIBRARY_PATH when host==target
+#
+# Signed-off-by: Denys Dmytriyenko <denis@denix.org>
+
+Index: Python-2.7.1/Modules/main.c
+===================================================================
+--- Python-2.7.1.orig/Modules/main.c	2010-06-13 02:50:39.000000000 -0400
++++ Python-2.7.1/Modules/main.c	2010-12-26 10:09:34.300455892 -0500
+@@ -329,8 +329,7 @@
+ 
+         /* case 'J': reserved for Jython */
+ 
+-        case 'O':
+-            Py_OptimizeFlag++;
++        case 'O': /* ignore it */
+             break;
+ 
+         case 'B':

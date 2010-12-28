@@ -1,0 +1,18 @@
+# Don't modify the she-bang line for a cross-build.
+# Otherwise it points to our hostpython (which we do not want)
+#
+# Signed-Off: Michael 'Mickey' Lauer <mickey@vanille-media.de>
+
+Index: Python-2.7.1/Lib/distutils/command/build_scripts.py
+===================================================================
+--- Python-2.7.1.orig/Lib/distutils/command/build_scripts.py	2010-01-23 04:23:15.000000000 -0500
++++ Python-2.7.1/Lib/distutils/command/build_scripts.py	2010-12-26 10:07:35.762597668 -0500
+@@ -85,7 +85,7 @@
+                     continue
+ 
+                 match = first_line_re.match(first_line)
+-                if match:
++                if False: #match:
+                     adjust = 1
+                     post_interp = match.group(1) or ''
+ 

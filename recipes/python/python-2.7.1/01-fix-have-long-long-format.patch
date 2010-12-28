@@ -1,0 +1,19 @@
+# The configure script assumes the %lld printf format is not available as it
+# can't run its check script. For some reason python refuses to compile without
+# this functionality, so we just assume that our printf supports %lld.
+#
+# Include/pyport.h:243:13: error: #error "This platform's pyconfig.h needs to define PY_FORMAT_LONG_LONG"
+
+Index: Python-2.7.1/configure.in
+===================================================================
+--- Python-2.7.1.orig/configure.in
++++ Python-2.7.1/configure.in
+@@ -4151,7 +4151,7 @@ then
+   ]]])],
+   [ac_cv_have_long_long_format=yes],
+   [ac_cv_have_long_long_format=no],
+-  [ac_cv_have_long_long_format=no])
++  [ac_cv_have_long_long_format=yes])
+   )
+   AC_MSG_RESULT($ac_cv_have_long_long_format)
+ fi

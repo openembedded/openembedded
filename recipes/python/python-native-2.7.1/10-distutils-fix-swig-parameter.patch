@@ -1,0 +1,16 @@
+# Some versions of SWIG do not use the extension parameter.
+# Make it optional.
+# Signed-Off: Michael 'Mickey' Lauer <mickey@vanille-media.de>
+Index: Python-2.7.1/Lib/distutils/command/build_ext.py
+===================================================================
+--- Python-2.7.1.orig/Lib/distutils/command/build_ext.py	2010-09-10 16:03:17.000000000 -0400
++++ Python-2.7.1/Lib/distutils/command/build_ext.py	2010-12-26 10:07:28.492632349 -0500
+@@ -531,7 +531,7 @@
+             target_lang=language)
+ 
+ 
+-    def swig_sources (self, sources, extension):
++    def swig_sources (self, sources, extension=None):
+ 
+         """Walk the list of source files in 'sources', looking for SWIG
+         interface (.i) files.  Run SWIG on all that are found, and
