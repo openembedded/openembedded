@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPLv1+"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r18"
+PR = "r19"
 
 # 5.10.1 has Module::Build built-in
 PROVIDES += "libmodule-build-perl"
@@ -224,6 +224,13 @@ do_stage() {
         install config.sh ${STAGING_LIBDIR}/perl/
         # target configuration, used by native perl when cross-compiling
         install lib/Config_heavy.pl ${STAGING_LIBDIR_NATIVE}/perl/${PV}/Config_heavy-${TARGET_SYS}.pl
+	sed -r -i \
+		-e "s,^(archlib=).*$,\1'${STAGING_LIBDIR}/perl/${PV}'," \
+		-e "s,^(archlibexp=).*$,\1'${STAGING_LIBDIR}/perl/${PV}'," \
+		-e "s,^(privlib=).*$,\1'${STAGING_DATADIR}/perl/${PV}'," \
+		-e "s,^(privlibexp=).*$,\1'${STAGING_DATADIR}/perl/${PV}'," \
+		${STAGING_LIBDIR_NATIVE}/perl/${PV}/Config_heavy-${TARGET_SYS}.pl \
+		${STAGING_LIBDIR}/perl/config.sh
 	# target configuration
         install lib/Config.pm       ${STAGING_LIBDIR}/perl/${PV}/
 	install lib/ExtUtils/typemap ${STAGING_DATADIR}/perl/${PV}/ExtUtils/
