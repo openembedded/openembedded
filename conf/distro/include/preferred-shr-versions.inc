@@ -25,6 +25,8 @@ PREFERRED_VERSION_glib-2.0      = "2.26.1"
 PREFERRED_VERSION_glib-2.0-native = "2.26.1"
 PREFERRED_VERSION_openssl = "1.0.0c"
 PREFERRED_VERSION_openssl-native = "1.0.0c"
+PREFERRED_VERSION_perl = "5.10.1"
+PREFERRED_VERSION_perl-native = "5.10.1"
 UDEV_GE_141 = "1"
 
 PREFERRED_VERSION_postgresql = "8.4.4"
