@@ -1,4 +1,4 @@
-From 4ff497659816b4f6d558a2fb96e3f9bfe10c05ff Mon Sep 17 00:00:00 2001
+From 60e119550f5a782c512c19d86a08313ae2ffa876 Mon Sep 17 00:00:00 2001
 From: Robert Nelson <robertcnelson@gmail.com>
 Date: Tue, 9 Nov 2010 08:34:55 -0600
 Subject: [PATCH 02/11] omap: Beagle: detect new xM revision B
@@ -12,7 +12,7 @@ Signed-off-by: Koen Kooi <koen@beagleboard.org>
  1 files changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index 4756ac7..2ad28c9 100644
+index 6e8a1b9..be8c4ec 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -58,7 +58,8 @@

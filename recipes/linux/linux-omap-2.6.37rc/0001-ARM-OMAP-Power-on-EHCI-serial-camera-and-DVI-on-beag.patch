@@ -1,20 +1,15 @@
-From d48c64139caa1e374fffe10141068df04f3b0536 Mon Sep 17 00:00:00 2001
+From 71b7d633e566195b065e09e97164bec046ca7b6d Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Thu, 7 Oct 2010 09:25:45 +0200
-Subject: [PATCH v2] ARM: OMAP: Power on EHCI, serial, camera and DVI on beagleboard-xM
+Subject: [PATCH 01/11] ARM: OMAP: Power on EHCI, serial, camera and DVI on beagleboard-xM
 
 Signed-off-by: Koen Kooi <koen@beagleboard.org>
-
 ---
-
-Changes since v1:
-	* Reenable the PMU stat LED
-
  arch/arm/mach-omap2/board-omap3beagle.c |   26 ++++++++++++++++++++++++--
  1 files changed, 24 insertions(+), 2 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index f1a8ede..4756ac7 100644
+index 6c12760..6e8a1b9 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -297,13 +297,35 @@ static int beagle_twl_gpio_setup(struct device *dev,

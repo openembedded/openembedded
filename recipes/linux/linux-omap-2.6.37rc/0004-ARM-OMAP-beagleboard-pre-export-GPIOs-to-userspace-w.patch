@@ -1,4 +1,4 @@
-From 7525475b1a7799035b69c2c039eeea9c14a986ef Mon Sep 17 00:00:00 2001
+From 6f80e6f5205a429951244e690952f192b78d15a8 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Sun, 5 Dec 2010 13:25:00 +0100
 Subject: [PATCH 04/11] ARM: OMAP: beagleboard: pre-export GPIOs to userspace when using a Tincantools trainerboard
@@ -11,10 +11,10 @@ Signed-off-by: Koen Kooi <koen@beagleboard.org>
  1 files changed, 31 insertions(+), 0 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index bb13ca2..074d138 100644
+index 495be15..34f2132 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
-@@ -730,6 +730,37 @@ static void __init omap3_beagle_init(void)
+@@ -731,6 +731,37 @@ static void __init omap3_beagle_init(void)
  		mmc[1].gpio_cd = 162;
  	}
  

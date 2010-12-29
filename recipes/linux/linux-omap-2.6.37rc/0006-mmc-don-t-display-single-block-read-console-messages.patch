@@ -1,4 +1,4 @@
-From c0da6149be97cfe2924395534312844575c16e90 Mon Sep 17 00:00:00 2001
+From 2036f80d16c1df22b00953f4d2e2457eef00a82d Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Mon, 4 Jan 2010 19:20:25 -0800
 Subject: [PATCH 06/11] mmc: don't display single block read console messages

@@ -7,8 +7,8 @@ COMPATIBLE_MACHINE = "beagleboard"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
 PV = "2.6.36+2.6.37-rc7"
-MACHINE_KERNEL_PR_append = "a+gitr${SRCREV}"
-SRCREV = "04b7dac5b85442b970838188f6338952a98aae84"
+MACHINE_KERNEL_PR_append = "b+gitr${SRCREV}"
+SRCREV = "7b6b2e84ada1eca268eac17a90f93fc6145f6146"
 
 FILESPATHPKG_prepend = "linux-omap-2.6.37rc:"
 
@@ -26,7 +26,7 @@ SRC_URI_append = " \
                   file://0008-Miracle-patch.patch \
                   file://0009-ARM-OMAP-add-omap_rev_-macros.patch \
                   file://0010-OMAP-DSS2-enable-hsclk-in-dsi_pll_init-for-OMAP36XX.patch \
-                  file://0011-AM37x-Switch-SGX-clocks-to-200MHz.patch \
+                  file://0011-omap3-beagleboard-add-WIP-support-for-beagleboardtoy.patch \
 "
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \

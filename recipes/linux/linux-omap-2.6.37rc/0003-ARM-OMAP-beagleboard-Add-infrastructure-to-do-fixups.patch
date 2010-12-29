@@ -1,4 +1,4 @@
-From be8aed2c51dec505bcf4cacf2a805268740200b2 Mon Sep 17 00:00:00 2001
+From 72657e1ec88da91b772c7158c4c987b29d274ece Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Wed, 6 Oct 2010 10:19:34 +0200
 Subject: [PATCH 03/11] ARM: OMAP: beagleboard: Add infrastructure to do fixups based on expansionboard name passed by u-boot
@@ -11,7 +11,7 @@ Signed-off-by: Koen Kooi <koen@beagleboard.org>
  1 files changed, 139 insertions(+), 3 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index 2ad28c9..bb13ca2 100644
+index be8c4ec..495be15 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -21,6 +21,7 @@
@@ -164,7 +164,7 @@ index 2ad28c9..bb13ca2 100644
  	/* Bus 3 is attached to the DVI port where devices like the pico DLP
  	 * projector don't work reliably with 400kHz */
  	omap_register_i2c_bus(3, 100, beagle_i2c_eeprom, ARRAY_SIZE(beagle_i2c_eeprom));
-@@ -582,6 +689,15 @@ static struct omap_musb_board_data musb_board_data = {
+@@ -583,6 +690,15 @@ static struct omap_musb_board_data musb_board_data = {
  	.power			= 100,
  };
  
@@ -180,7 +180,7 @@ index 2ad28c9..bb13ca2 100644
  static void __init omap3_beagle_init(void)
  {
  	omap3_mux_init(board_mux, OMAP_PACKAGE_CBB);
-@@ -596,6 +712,24 @@ static void __init omap3_beagle_init(void)
+@@ -597,6 +713,24 @@ static void __init omap3_beagle_init(void)
  	/* REVISIT leave DVI powered down until it's needed ... */
  	gpio_direction_output(170, true);
  
@@ -205,7 +205,7 @@ index 2ad28c9..bb13ca2 100644
  	usb_musb_init(&musb_board_data);
  	usb_ehci_init(&ehci_pdata);
  	omap3beagle_flash_init();
-@@ -607,6 +741,8 @@ static void __init omap3_beagle_init(void)
+@@ -608,6 +742,8 @@ static void __init omap3_beagle_init(void)
  	beagle_display_init();
  }
  

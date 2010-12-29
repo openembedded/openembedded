@@ -1,4 +1,4 @@
-From ab08efe84b1362ffda7afb929fdb299bb00a55a2 Mon Sep 17 00:00:00 2001
+From 31949867bace7945acd3ec10c822e6988613aed7 Mon Sep 17 00:00:00 2001
 From: Mike Galbraith <efault@gmx.de>
 Date: Fri, 19 Nov 2010 12:52:42 +0100
 Subject: [PATCH 08/11] Miracle patch
@@ -113,7 +113,7 @@ Signed-off-by: Mike Galbraith <efault@gmx.de>
  create mode 100644 kernel/sched_autogroup.h
 
 diff --git a/Documentation/kernel-parameters.txt b/Documentation/kernel-parameters.txt
-index cdd2a6e..b79a8fb 100644
+index 8b61c93..9408728 100644
 --- a/Documentation/kernel-parameters.txt
 +++ b/Documentation/kernel-parameters.txt
 @@ -1622,6 +1622,8 @@ and is between 256 and 4096 characters. It is defined in the file
@@ -138,7 +138,7 @@ index 35480dd..1849f4a 100644
  
  static void proc_set_tty(struct task_struct *tsk, struct tty_struct *tty)
 diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 2c79e92..1e677c2 100644
+index 2238745..3a775e3 100644
 --- a/include/linux/sched.h
 +++ b/include/linux/sched.h
 @@ -509,6 +509,8 @@ struct thread_group_cputimer {
@@ -205,7 +205,7 @@ index c972899..a4985d9 100644
  	bool
  
 diff --git a/kernel/fork.c b/kernel/fork.c
-index 3b159c5..b6f2475 100644
+index 5447dc7..70ea75f 100644
 --- a/kernel/fork.c
 +++ b/kernel/fork.c
 @@ -174,8 +174,10 @@ static inline void free_signal_struct(struct signal_struct *sig)
@@ -220,7 +220,7 @@ index 3b159c5..b6f2475 100644
  }
  
  void __put_task_struct(struct task_struct *tsk)
-@@ -904,6 +906,7 @@ static int copy_signal(unsigned long clone_flags, struct task_struct *tsk)
+@@ -905,6 +907,7 @@ static int copy_signal(unsigned long clone_flags, struct task_struct *tsk)
  	posix_cpu_timers_init_group(sig);
  
  	tty_audit_fork(sig);
@@ -229,7 +229,7 @@ index 3b159c5..b6f2475 100644
  	sig->oom_adj = current->signal->oom_adj;
  	sig->oom_score_adj = current->signal->oom_score_adj;
 diff --git a/kernel/sched.c b/kernel/sched.c
-index dc91a4d..b4ed496 100644
+index 297d1a0..53ff9a1 100644
 --- a/kernel/sched.c
 +++ b/kernel/sched.c
 @@ -78,6 +78,7 @@
@@ -256,7 +256,7 @@ index dc91a4d..b4ed496 100644
  }
  
  /* Change a task's cfs_rq and parent entity if it moves across CPUs/groups */
-@@ -2006,6 +2010,7 @@ static void sched_irq_time_avg_update(struct rq *rq, u64 curr_irq_time) { }
+@@ -2063,6 +2067,7 @@ static void update_rq_clock_task(struct rq *rq, s64 delta)
  #include "sched_idletask.c"
  #include "sched_fair.c"
  #include "sched_rt.c"
@@ -264,7 +264,7 @@ index dc91a4d..b4ed496 100644
  #include "sched_stoptask.c"
  #ifdef CONFIG_SCHED_DEBUG
  # include "sched_debug.c"
-@@ -7979,7 +7984,7 @@ void __init sched_init(void)
+@@ -8164,7 +8169,7 @@ void __init sched_init(void)
  #ifdef CONFIG_CGROUP_SCHED
  	list_add(&init_task_group.list, &task_groups);
  	INIT_LIST_HEAD(&init_task_group.children);
@@ -273,7 +273,7 @@ index dc91a4d..b4ed496 100644
  #endif /* CONFIG_CGROUP_SCHED */
  
  #if defined CONFIG_FAIR_GROUP_SCHED && defined CONFIG_SMP
-@@ -8509,15 +8514,11 @@ void sched_destroy_group(struct task_group *tg)
+@@ -8694,15 +8699,11 @@ void sched_destroy_group(struct task_group *tg)
  /* change task's runqueue when it moves between groups.
   *	The caller of this function should have put the task in its new group
   *	by now. This function just updates tsk->se.cfs_rq and tsk->se.parent to
@@ -291,7 +291,7 @@ index dc91a4d..b4ed496 100644
  
  	running = task_current(rq, tsk);
  	on_rq = tsk->se.on_rq;
-@@ -8538,7 +8539,15 @@ void sched_move_task(struct task_struct *tsk)
+@@ -8723,7 +8724,15 @@ void sched_move_task(struct task_struct *tsk)
  		tsk->sched_class->set_curr_task(rq);
  	if (on_rq)
  		enqueue_task(rq, tsk, 0);
