@@ -6,9 +6,9 @@
 DESCRIPTION = "Task packages for the SlugOS distribution"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r27"
+PR = "r28"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-COMPATIBLE_MACHINE = "(nslu2|ixp4xx|sheevaplug)"
+COMPATIBLE_MACHINE = "(nslu2|ixp4xx|sheevaplug|qemuarm)"
 ALLOW_EMPTY = "1"
 
 #----------------------------------------------------------------------------------
@@ -25,9 +25,9 @@ SLUGOS_MACHINE_RDEPENDS = ""
 SLUGOS_MACHINE_RRECOMMENDS = ""
 
 # The full cpio (non-busybox) is required for turnup and sysconfig.
-SLUGOS_STANDARD_RRECOMMENDS += "\
-cpio \
-"
+##SLUGOS_STANDARD_RRECOMMENDS += "\
+##cpio \
+##"
 
 # These lines add support for formatting ext2 and ext3 file systems
 # on a hard disk attached to the NSLU2.  ext3 is the standard Linux
@@ -126,16 +126,16 @@ DISTRO_EXTRA_RDEPENDS ?= ""
 ## SlugOS 5.0 - module-init-tools replaced by busybox as well - MJW
 ## SlugOS 5.2 - module-init-tools reinstated due to busybox bugs - MJW
 ## SlugOS 5.4 - util-linux-mount reinstated due to busybox bugs - MJW
-
+## SlugOS 5.6 - util-linux-mount dropped once again
+##            - remove sysvinit; provided via image.bbclass
 RDEPENDS_${PN} += "\
 	kernel \
 	base-files base-passwd netbase \
         busybox initscripts-slugos slugos-init \
-        update-modules sysvinit udev \
+        update-modules udev \
 	module-init-tools modutils-initscripts \
 	libgcc \
 	beep \
-	util-linux-mount \
 	${SLUGOS_STANDARD_RDEPENDS} \
 	${SLUGOS_MACHINE_RDEPENDS} \
 	${DISTRO_EXTRA_RDEPENDS}"
