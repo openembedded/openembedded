@@ -1,7 +1,7 @@
 From 18333339fe5e104c2ddfb2688989a15df0e0f94c Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@beagleboard.org>
 Date: Mon, 20 Dec 2010 11:57:56 +0100
-Subject: [PATCH 11/11] omap3: beagleboard: add WIP support for beagleboardtoys WL12xx board
+Subject: [PATCH 11/29] omap3: beagleboard: add WIP support for beagleboardtoys WL12xx board
 
 Based on a patch by Luciano Coelho <luciano.coelho@nokia.com>
 
