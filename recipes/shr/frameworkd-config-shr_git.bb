@@ -6,7 +6,7 @@ DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
 
 SRCREV_pn-frameworkd-config-shr_FSO_REV ?= "cfc0a5c3def2dc2556c86f3dad182181124de006"
-SRCREV_pn-frameworkd-config-shr_SHR_REV ?= "41871d1c920b5db024d9a7d54d03fdab0494b8a2"
+SRCREV_pn-frameworkd-config-shr_SHR_REV ?= "cb1391fc4afec7158e34629ea557c6ea486cfc05"
 
 SRCREV_FORMAT = "FSO_REV-SHR_REV"
 PV = "0.9.5.9+gitr${SRCPV}"
