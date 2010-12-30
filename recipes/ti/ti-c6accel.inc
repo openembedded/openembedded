@@ -22,6 +22,7 @@ PR_append = "a"
 
 S = "${WORKDIR}/c6accel_${PV}"
 
+# http://software-dl.ti.com/dsps/dsps_public_sw/c6000/web/c6accel/latest/index_FDS.html
 SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/c6000/web/c6accel/latest/exports//c6accel_${PV}_Linux-x86_Setup.bin;name=c6accelbin "
 
 BINFILE="c6accel_${PV}_Linux-x86_Setup.bin"
