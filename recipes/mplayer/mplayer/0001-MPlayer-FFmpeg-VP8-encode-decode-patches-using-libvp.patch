@@ -1,0 +1,45 @@
+From e01313b9d1aef66ba63e1e10dc8b6c069e935eb0 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Thu, 30 Dec 2010 10:13:23 +0100
+Subject: [PATCH] MPlayer/FFmpeg VP8 encode/decode patches - using libvpx.git@6cd4a10 or later (includes 0.9.1 and onward)
+
+---
+ libmpcodecs/ve_lavc.c |    8 +++++---
+ 1 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/libmpcodecs/ve_lavc.c b/libmpcodecs/ve_lavc.c
+index 139396c..35206d9 100644
+--- a/libmpcodecs/ve_lavc.c
++++ b/libmpcodecs/ve_lavc.c
+@@ -826,6 +826,9 @@ static int encode_frame(struct vf_instance *vf, AVFrame *pic, double pts){
+     assert(MP_NOPTS_VALUE == AV_NOPTS_VALUE);
+ #endif
+ //fprintf(stderr, "ve_lavc %f/%f\n", dts, pts);
++    /* store stats if there are any */
++    if(lavc_venc_context->stats_out && stats_file)
++        fprintf(stats_file, "%s", lavc_venc_context->stats_out);
+     if(out_size == 0 && lavc_param_skip_threshold==0 && lavc_param_skip_factor==0){
+         ++mux_v->encoder_delay;
+         return 0;
+@@ -887,9 +890,6 @@ static int encode_frame(struct vf_instance *vf, AVFrame *pic, double pts){
+             pict_type_char[lavc_venc_context->coded_frame->pict_type]
+             );
+     }
+-    /* store stats if there are any */
+-    if(lavc_venc_context->stats_out && stats_file)
+-        fprintf(stats_file, "%s", lavc_venc_context->stats_out);
+     return out_size;
+ }
+ 
+@@ -1022,6 +1022,8 @@ static int vf_open(vf_instance_t *vf, char* args){
+ 	mux_v->bih->biCompression = mmioFOURCC('d', 'r', 'a', 'c');
+     else if (!strcasecmp(lavc_param_vcodec, "libdirac"))
+ 	mux_v->bih->biCompression = mmioFOURCC('d', 'r', 'a', 'c');
++    else if (!strcasecmp(lavc_param_vcodec, "libvpx"))
++	mux_v->bih->biCompression = mmioFOURCC('V', 'P', '8', '0');
+     else
+ 	mux_v->bih->biCompression = mmioFOURCC(lavc_param_vcodec[0],
+ 		lavc_param_vcodec[1], lavc_param_vcodec[2], lavc_param_vcodec[3]); /* FIXME!!! */
+-- 
+1.6.6.1
+
