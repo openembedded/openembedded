@@ -1,5 +1,7 @@
 require ti-linuxutils.inc
 
+SRC_URI += "file://linuxutils-BKL-fix-2.patch"
+
 PE = "1"
 PV = "2_26_01_02"
 

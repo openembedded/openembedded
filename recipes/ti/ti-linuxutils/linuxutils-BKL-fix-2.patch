@@ -1,0 +1,22 @@
+From: Koen Kooi <k-kooi@ti.com>
+Subject: linuxutils: fix build with 2.6.37rcX
+
+---
+
+--- /tmp/sdmak.c	2010-12-05 18:43:55.000000000 +0100
++++ linuxutils_2_25_05_11/packages/ti/sdo/linuxutils/sdma/src/module/sdmak.c	2010-12-05 18:48:31.000000000 +0100
+@@ -208,9 +208,12 @@
+             }
+ 
+             up_read(&current->mm->mmap_sem);
+-
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36)
++            sema_init(&(channels[channel].mutex),1);
++#else
+             init_MUTEX_LOCKED(&(channels[channel].mutex));
+-            channels[channel].owner = filp;
++#endif
++			channels[channel].owner = filp;
+ 
+             if (copy_to_user(argp, &channel, sizeof(channel))) {
+                 return -EFAULT;
