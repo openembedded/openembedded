@@ -54,7 +54,7 @@ TIARGS = ' \
 do_configure() {
 	unset VERBOSE
 	make ${TIARGS} clean
-	#sed -i -e 's:-L$(LINUXLIBS_INSTALL_DIR)/lib:${LDFLAGS}:' ${S}/soc/app/Makefile
+	sed -i -e 's:-L$(LINUXLIBS_INSTALL_DIR)/lib:-L$(LINUXLIBS_INSTALL_DIR)/lib -L$(LINUXLIBS_INSTALL_DIR)/usr/lib ${LDFLAGS}:' ${S}/soc/app/Makefile
 }
 
 do_compile() {
