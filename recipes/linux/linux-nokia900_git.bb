@@ -14,5 +14,6 @@ S = "${WORKDIR}/git"
 CMDLINE_nokia900 = "snd-soc-rx51.hp_lim=42 snd-soc-tlv320aic3x.hp_dac_lim=6 console=tty1 root=/dev/mmcblk1p1 rootdelay=10 panic=20"
 
 # Mark archs/machines that this kernel supports
+COMPATIBLE_MACHINE = "nokia900"
 DEFAULT_PREFERENCE = "-2"
 DEFAULT_PREFERENCE_nokia900 = "1"
