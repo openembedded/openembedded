@@ -1,0 +1,19 @@
+--- a/packages/gnu/targets/arm/linkcmd.xdt	2010-12-30 19:33:53.000000000 +0100
++++ b/packages/gnu/targets/arm/linkcmd.xdt	2010-12-30 19:42:55.000000000 +0100
+@@ -40,12 +40,13 @@
+ 
+ %if ("BINVERS" in prog.build.target) {
+ %    var _utils = xdc.loadCapsule("gnu/targets/linkUtils.xs");
++%    if (prog.build.target.GCCVERS < "4.3.3") {
+ SECTIONS {
+ `_utils.genSections(prog)`
+ }
+-
+-%    if (!prog.build.target.noStdLinkScript
+-%        && prog.build.target.BINVERS >= "2.19") {
++%    }
++%    if (prog.build.target.noStdLinkScript
++%        && prog.build.target.BINVERS >= "2.19") {
+ INSERT BEFORE .gnu.attributes
+ %    }
+ 
