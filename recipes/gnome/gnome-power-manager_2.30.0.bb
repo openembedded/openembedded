@@ -27,6 +27,7 @@ do_configure_append() {
         for i in $(find ${S} -name "Makefile") ; do
             sed -i -e s:-Werror::g $i
         done
+		sed -e "s/libtool --/${TARGET_SYS}-libtool --/" -i ${S}/src/Makefile
 }
 
 PACKAGES =+ "${PN}-applets"
