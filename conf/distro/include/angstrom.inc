@@ -11,6 +11,9 @@ BUILDNAME = "Angstrom ${DISTRO_VERSION}"
 
 TARGET_VENDOR = "-angstrom"
 
+# Uncomment this to get a custom string appended to the target kernels uname
+#LOCALVERSION = "-Angstrom"
+
 SOC_FAMILY ?= "Unknown"
 
 # Add FEED_ARCH and SOC_FAMILY to overrides
