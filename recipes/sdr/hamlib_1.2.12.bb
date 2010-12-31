@@ -17,8 +17,8 @@ do_compile_prepend() {
 	for i in $(find ${S} -name "Makefile") ; do
 		sed -i -e 's:${STAGING_LIBDIR_NATIVE}:${STAGING_LIBDIR}:g' \
 		       -e s:-L/usr/local/lib::g \
-			   -e 's:\"$(CC)\":\"${CC}\" LD=\"${LD}\" LDFLAGS=\"${LDFLAGS}\":g' \
-		       -e s:${STAGING_INCDIR_NATIVE}/python2.6:${STAGING_INCDIR}/python2.6:g $i 
+		       -e 's:\"$(CC)\":\"${CC}\" LD=\"${LD}\" LDFLAGS=\"${LDFLAGS}\":g' \
+		       -e s:${STAGING_INCDIR_NATIVE}/python2.6:${STAGING_INCDIR}/python2.6:g $i
 	done
 }
 
@@ -35,5 +35,3 @@ python populate_packages_prepend () {
 	do_split_packages(d, hamlib_libdir, '^lib(.*)\.a$', 'lib%s-dev', 'hamlib %s development package', extra_depends='${PN}-dev')
 	do_split_packages(d, hamlib_libdir, '^lib(.*)\.so\.*', 'lib%s', 'hamlib %s library', extra_depends='', allow_links=True)
 }
-
-

@@ -4,6 +4,8 @@ LICENSE = "GPLv2"
 DEPENDS = "swig-native perl python virtual/libusb0 tcl gnuradio"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/hamlib/hamlib-${PV}.tar.gz"
+SRC_URI[md5sum] = "29f0d30779a8ffe0444eb523a6ad8344"
+SRC_URI[sha256sum] = "9b50825666519b0b86469f1988a0de09ce2ffc08fa221f9aa40d18c7b7f6c651"
 
 inherit autotools
 
@@ -19,8 +21,8 @@ do_compile_prepend() {
 	for i in $(find ${S} -name "Makefile") ; do
 		sed -i -e 's:${STAGING_LIBDIR_NATIVE}:${STAGING_LIBDIR}:g' \
 		       -e s:-L/usr/local/lib::g \
-			   -e 's:\"$(CC)\":\"${CC}\" LD=\"${LD}\" LDFLAGS=\"${LDFLAGS}\":g' \
-		       -e s:${STAGING_INCDIR_NATIVE}/python2.6:${STAGING_INCDIR}/python2.6:g $i 
+		       -e 's:\"$(CC)\":\"${CC}\" LD=\"${LD}\" LDFLAGS=\"${LDFLAGS}\":g' \
+		       -e s:${STAGING_INCDIR_NATIVE}/python2.6:${STAGING_INCDIR}/python2.6:g $i
 	done
 }
 
@@ -37,7 +39,3 @@ python populate_packages_prepend () {
 	do_split_packages(d, hamlib_libdir, '^lib(.*)\.a$', 'lib%s-dev', 'hamlib %s development package', extra_depends='${PN}-dev')
 	do_split_packages(d, hamlib_libdir, '^lib(.*)\.so\.*', 'lib%s', 'hamlib %s library', extra_depends='', allow_links=True)
 }
-
-
-SRC_URI[md5sum] = "29f0d30779a8ffe0444eb523a6ad8344"
-SRC_URI[sha256sum] = "9b50825666519b0b86469f1988a0de09ce2ffc08fa221f9aa40d18c7b7f6c651"
