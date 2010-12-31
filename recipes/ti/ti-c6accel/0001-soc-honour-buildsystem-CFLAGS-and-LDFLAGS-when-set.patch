@@ -1,0 +1,82 @@
+From 192b19046a67263da44203bf50a5b51d0a655fec Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Fri, 31 Dec 2010 15:26:37 +0100
+Subject: [PATCH] soc: honour buildsystem CFLAGS and LDFLAGS when set
+
+Signed-off-by: Koen Kooi <koen@dominion.thruhere.net>
+---
+ soc/app/Makefile      |   13 ++++---------
+ soc/c6accelw/Makefile |   14 ++++----------
+ 2 files changed, 8 insertions(+), 19 deletions(-)
+
+diff --git a/soc/app/Makefile b/soc/app/Makefile
+index 2647746..bed937e 100755
+--- a/soc/app/Makefile
++++ b/soc/app/Makefile
+@@ -53,15 +53,10 @@ CONFIGURO = $(XDC_INSTALL_DIR)/xs xdc.tools.configuro
+ CONFIG_BLD = ../../config.bld
+ 
+ ifeq ($(BUILD_TYPE), release)
+-ifeq ($(ARM_ISA),armv7-a)
+-    C_FLAGS	+= -O3 -march=armv7-a -mtune=cortex-a8 -mfpu=neon -ftree-vectorize -mfloat-abi=softfp
+-endif
+-ifeq ($(ARM_ISA),armv5t)
+-    C_FLAGS	+= -mlittle-endian -march=armv5t -mtune=arm9tdmi -mabi=aapcs-linux -O
+-endif
++C_FLAGS += $(CFLAGS)
+ else
+     CPP_FLAGS	+= -DNDEBUG
+-    C_FLAGS	+= -Wall -g
++    C_FLAGS	+= $(CFLAGS) -Wall -g
+ endif
+ 
+ 
+@@ -72,7 +67,7 @@ ifeq ($(PLATFORM),omapl138)
+     C_FLAGS	+= -DPLATFORM=138
+ endif
+ 
+-LD_FLAGS += -L$(LINUXLIBS_INSTALL_DIR)/lib -lm -lpthread
++LD_FLAGS += $(LDFLAGS) -L$(LINUXLIBS_INSTALL_DIR)/lib -lm -lpthread
+ C6ACCEL_LIB += ../c6accelw/lib/c6accelw_$(PLATFORM).a470MV
+ 
+ COMPILE.c = $(VERBOSE) $(CSTOOL_PREFIX)gcc $(CPP_FLAGS) $(C_FLAGS) $(CPP_FLAGS) -c
+@@ -102,7 +97,7 @@ $(TARGET):	$(OBJFILES) $(C6ACCEL_LIB) $(XDC_LFILE)
+ 
+ $(OBJFILES):	%.o: %.c $(HEADERS) $(XDC_CFLAGS)
+ 	@echo Compiling $@ from $<..
+-	$(COMPILE.c) $(shell cat $(XDC_CFLAGS)) -o $@ $<
++	$(COMPILE.c) $(shell cat $(XDC_CFLAGS) | sed 's:-march=armv5t::g') -o $@ $<
+ 
+ $(XDC_LFILE) $(XDC_CFLAGS):	$(XDC_CFGFILE)
+ 	@echo
+diff --git a/soc/c6accelw/Makefile b/soc/c6accelw/Makefile
+index cc58acf..298ab3b 100755
+--- a/soc/c6accelw/Makefile
++++ b/soc/c6accelw/Makefile
+@@ -21,19 +21,13 @@ BUILD_TYPE=release
+ CPP_FLAGS += -I../packages -I$(XDC_INSTALL_DIR)/packages -I$(CE_INSTALL_DIR)/packages -I$(XDAIS_INSTALL_DIR)/packages -Dxdc_target_name__=arm/GCArmv5T -Dxdc_target_types__=gnu/targets/std.h
+ 
+ ifeq ($(BUILD_TYPE), release)
+-ifeq ($(ARM_ISA),armv7-a)
+-    C_FLAGS	+= -O3 -march=armv7-a -mtune=cortex-a8 -mfpu=neon -ftree-vectorize -mfloat-abi=softfp
+- endif
+-ifeq ($(ARM_ISA),armv5t)
+-    C_FLAGS	+= -mlittle-endian -march=armv5t -mtune=arm9tdmi -mabi=aapcs-linux -O
+- endif
+-
++C_FLAGS += $(CFLAGS)
+ else
+-    CPP_FLAGS	+= -DNDEBUG
+-    C_FLAGS	+= -Wall -g
++    CPP_FLAGS   += -DNDEBUG
++    C_FLAGS += $(CFLAGS) -Wall -g
+ endif
+ 
+-LD_FLAGS += -L$(LINUXLIBS_INSTALL_DIR)/lib
++LD_FLAGS += $(LDFLAGS) -L$(LINUXLIBS_INSTALL_DIR)/lib
+ AR_FLAGS += 
+ 
+ COMPILE.c = $(VERBOSE) $(CSTOOL_PREFIX)gcc $(CPP_FLAGS) $(C_FLAGS) -c
+-- 
+1.6.6.1
+
