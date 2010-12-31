@@ -1,33 +1,38 @@
-= How to setup and use TestBuilder
+How to setup and use TestBuilder
+================================
 
-I assume below that you wish install TestBuilder into ~/testbuilder directory.
+I assume below that you wish to install TestBuilder into `~/testbuilder` directory.
 
-1. Copy files from OE contrib/testing/testbuilder directory to any place you
-   wish to use (e.g. ~/testbuilder) and goto that directory
+1. Copy the files from OE `contrib/testing/testbuilder` directory to any place you
+   wish to use (e.g. `~/testbuilder`) and go to that directory.
 
-2. Run setup-testbuilder script with OE branch and bitbake branch you wish to
+2. Run the `setup-testbuilder` script with an OE branch and BitBake branch you wish to
    use. E.g.:
-   ./setup-testbuilder "testing-next" "1.10"
- 
-   It will clone OE and bitbake trees and prepare build/conf/local.conf file
-   for you. You can review local.conf after and add some settings there.
 
-4. Create testbuilder.conf according your needs.  You can use
-   testbuilder.conf.sample as reference.
+       ./setup-testbuilder "testing-next" "1.10"
 
-5. Run ./testbuilder and wait for build results. Check 'logs' subdir for log
-   files ('tail logs/B.*' is useful)
+   It will clone the OE and BitBake trees and prepare the file `build/conf/local.conf`
+   for you. You can review `local.conf` afterward and add some settings there.
 
-You can run single configured build (e.g. "testing")
-./testbuilder -B testing
+4. Create `testbuilder.conf` according to your needs. You can use
+   `testbuilder.conf.sample` as reference.
 
-Or you can use testbuilder to build specified distro/machine/image
-(e.g. angstrom-2008.1/qemuarm/console-image)
-./testbuilder -D angstrom-2008.1 -M qemuarm console-image
+5. Run `./testbuilder` and wait for the build results. Check the `logs` subdir for log
+   files (`tail logs/B.*` is useful)
 
-If you wish only setup environment and run bitbake by hands you can
-use -S option:
-./testbuilder -D angstrom-2008.1 -M qemuarm -S
+You can run a single configured build (e.g. "testing").
+
+    ./testbuilder -B testing
+
+Or you can use TestBuilder to build a specific distro/machine/image
+(e.g. angstrom-2008.1/qemuarm/console-image).
+
+    ./testbuilder -D angstrom-2008.1 -M qemuarm console-image
+
+If you wish to only setup an environment and run BitBake by hand you can
+use the option `-S`.
+
+    ./testbuilder -D angstrom-2008.1 -M qemuarm -S
 
 -- 
 Yury 'Jay7' Bushmelev
