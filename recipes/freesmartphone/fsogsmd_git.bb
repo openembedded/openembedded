@@ -5,10 +5,11 @@ PR = "${INC_PR}.5"
 PV = "0.5.0+gitr${SRCPV}"
 PE = "1"
 
-DEPENDS += "libfsoresource libgsm0710mux ppp"
+DEPENDS += "libfsoresource libgsm0710mux libisi ppp"
 
 EXTRA_OECONF_append = "\
   --enable-libgsm0710mux \
+  --enable-modem-nokia-isi \
 "
 
 # On the palmpre we need the msmcomm daemon to talk to the modem
