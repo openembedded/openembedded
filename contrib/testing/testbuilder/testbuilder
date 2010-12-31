@@ -12,7 +12,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-VERSION="0.3"
+VERSION="0.3.1"
 PACKAGE="TestBuilder"
 
 TB_DIR=`dirname $0`
@@ -23,10 +23,10 @@ tb_usage() {
 	echo "${PACKAGE} v${VERSION}"
 	# Run only specified build
 	echo "Usage: ${TB_NAME} -Vh"
-	echo "   or  ${TB_NAME} [-B build ]"
+	echo "   or  ${TB_NAME} [-B build [-D distro] [-M machine] [-S]]"
 	# Behave like DISTRO=distro MACHINE=machine bitbake images
 	# with -S testbuilder will only setup env and run interactive sub-shell
-	echo "   or  ${TB_NAME} [-D distro] [-M machine] [-T /full/path/to/tmpdir] [-S | images]"
+	echo "   or  ${TB_NAME} -D distro -M machine [-T /full/path/to/tmpdir] [-S | images]"
 }
 
 CFG_FILE="${TB_DIR}/testbuilder.conf"
@@ -68,6 +68,15 @@ tb_log() {
 	echo "[${_dt}] $@" >> $TB_LOG
 }
 
+tb_interactive_shell() {
+	echo "Distro:  $DISTRO"
+	echo "Machine: $MACHINE"
+	echo "TMPDIR:  $TMP_DIR"
+	echo "Starting shell $TB_SHELL. Use 'exit' or ^D to quit"
+	[ -n "${TB_PS1}" ] && export PS1=${TB_PS1}
+	eval $TB_SHELL
+}
+
 # Do vmstat accounting
 tb_accounting_vmstat() {
 	exec vmstat -n "${ACCOUNTING_INTERVAL}" >> "${LOG_DIR}/A.vmstat.log"
@@ -94,22 +103,24 @@ tb_kill_all() {
 # update git tree
 tb_git_update() {
 	local _dir=$1
+	local _cwd=`pwd`
 
 	cd "${_dir}"
 	tb_log "Updating git tree ${_dir}"
 	git pull
-	cd "${TB_DIR}"
+	cd "${_cwd}"
 }
 
 # checkout branch from git tree
 tb_git_branch() {
 	local _dir=$1
 	local _branch=$2
+	local _cwd=`pwd`
 
 	cd "${_dir}"
 	tb_log "Checking out branch ${_branch} from tree ${_dir}"
 	git checkout -f ${_branch}
-	cd "${TB_DIR}"
+	cd "${_cwd}"
 }
 
 
@@ -130,33 +141,38 @@ tb_build_machines() {
 
 	for _machine in $_MLIST; do
 		[ "${_machine}" != "${_machine#!}" ] && continue
-
-		tb_log "${_machine} build started, images: ${_bbimages}"
+		[ -n "${OMACHINE}" -a "${_machine#!}" != "${OMACHINE}" ] && continue
 
 		export MACHINE=$_machine
 
-		case "${SEPARATE_BUILD}" in
-		[Yy][Ee][Ss])
-			# Build images separately
-			for _image in $_bbimages; do
-				tb_log "${_image} build started"
-				_log="${LOG_DIR}/B.${build}.${DISTRO}.${_machine}.${_image}.log"
+		if [ -n "${DO_RUN_SHELL}" ]; then
+			tb_interactive_shell
+		else
+
+			tb_log "${_machine} build started, images: ${_bbimages}"
+			case "${SEPARATE_BUILD}" in
+			[Yy][Ee][Ss])
+				# Build images separately
+				for _image in $_bbimages; do
+					tb_log "${_image} build started"
+					_log="${LOG_DIR}/B.${build}.${DISTRO}.${_machine}.${_image}.log"
+					[ -f "${_log}" ] && mv "${_log}" "${_log}.0"
+					bitbake ${BB_OPTS} ${_image} 2>&1 | tee "${_log}"
+					_rc=$?
+					tb_log "${_image} build finished. Exit code: ${_rc}."
+				done
+				;;
+			*)
+				# Build all images with one bitbake invocation
+				_log="${LOG_DIR}/B.${build}.${DISTRO}.${_machine}.log"
 				[ -f "${_log}" ] && mv "${_log}" "${_log}.0"
-				bitbake ${BB_OPTS} ${_image} 2>&1 | tee "${_log}"
+				bitbake ${BB_OPTS} ${_bbimages} 2>&1 | tee "${_log}"
 				_rc=$?
-				tb_log "${_image} build finished. Exit code: ${_rc}."
-			done
-			;;
-		*)
-			# Build all images with one bitbake invocation
-			_log="${LOG_DIR}/B.${build}.${DISTRO}.${_machine}.log"
-			[ -f "${_log}" ] && mv "${_log}" "${_log}.0"
-			bitbake ${BB_OPTS} ${_bbimages} 2>&1 | tee "${_log}"
-			_rc=$?
-			;;
-		esac
-		
-		tb_log "${_machine} build finished. Exit code:${_rc}."
+				;;
+			esac
+			
+			tb_log "${_machine} build finished. Exit code:${_rc}."
+		fi
 	done
 
 }
@@ -219,7 +235,7 @@ OIMAGES=$@
 trap "tb_kill_all" EXIT
 
 # Check for 'direct' mode
-if [ -n "${ODISTRO}" ]; then
+if [ -z "${OBUILD}" -a -n "${ODISTRO}" ]; then
 	DISTRO="${ODISTRO}"
 	MACHINE="${OMACHINE}"
 	TMP_DIR=${OTMPDIR:-${CLN_DIR}}
@@ -227,12 +243,7 @@ if [ -n "${ODISTRO}" ]; then
 
 	if [ -n "${DO_RUN_SHELL}" ]; then
 		# Run shell if -s option was given
-		echo "Distro:  $DISTRO"
-		echo "Machine: $MACHINE"
-		echo "TMPDIR:  $TMP_DIR"
-		echo "Starting shell $TB_SHELL. Use 'exit' or ^D to quit"
-		[ -n "${TB_PS1}" ] && export PS1=${TB_PS1}
-		eval $TB_SHELL
+		tb_interactive_shell
 	else
 		tb_build_machines "${MACHINE}" ${OIMAGES}
 	fi
@@ -289,6 +300,7 @@ for build in $BUILDS; do
 	eval DISTROS="\$DISTROS_${build}"
 	for distro in $DISTROS; do
 		[ "${distro}" != "${distro#!}" ] && continue
+		[ -n "${ODISTRO}" -a "${distro#!}" != "${ODISTRO}" ] && continue
 
 		export DISTRO=$distro
 
