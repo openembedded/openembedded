@@ -1,11 +1,12 @@
 require busybox_1.1x.inc
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI += " \
 	file://busybox-1.18.1-hush.patch \
 	file://busybox-1.18.1-cpio.patch \
+	file://busybox-1.18.1-bzip2.patch \
 	"
 
 SRC_URI[md5sum] = "f15fe752d8b7012aa5e59f83b88ccb1c"
