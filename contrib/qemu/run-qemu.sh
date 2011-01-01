@@ -71,9 +71,9 @@ fi
 arch=$1
 libc=$2
 mem=256				# memory for guest server in Mb
-imagetype="ext2"
-networking="yes"
-nfsboot="yes"
+imagetype="ext3"
+networking="no"
+nfsboot="no"
 staticip="yes"
 
 case $arch in
@@ -121,7 +121,7 @@ case $arch in
 	rootdisk="hdc"
 	qemuopts="-nographic"
 	kernel="vmlinux"
-	image="minimalist-image"
+	image="console-image"
 	;;
     sh|sh4)
 	arch=sh4
