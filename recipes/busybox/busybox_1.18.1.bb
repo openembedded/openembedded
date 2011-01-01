@@ -1,8 +1,6 @@
 require busybox_1.1x.inc
 PR = "${INC_PR}.1"
 
-DEFAULT_PREFERENCE = "-1"
-
 SRC_URI += " \
 	file://busybox-1.18.1-hush.patch \
 	file://busybox-1.18.1-cpio.patch \
