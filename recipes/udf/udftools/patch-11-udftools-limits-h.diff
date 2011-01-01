@@ -1,0 +1,10 @@
+--- ./cdrwtool/cdrwtool.h.orig	2008-01-12 13:07:44.000000000 +0100
++++ ./cdrwtool/cdrwtool.h	2008-01-12 13:08:19.000000000 +0100
+@@ -11,6 +11,7 @@
+ #define _CDRWTOOL_H 1
+ 
+ #include <inttypes.h>
++#include <limits.h>
+ #include <linux/cdrom.h>
+ #include "../include/libudffs.h"
+ 

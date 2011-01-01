@@ -1,0 +1,126 @@
+Date: Thu, 06 Jan 2005 02:04:10 -0500
+From: A Costa <agcosta@gis.net>
+Reply-To: A Costa <agcosta@gis.net>, 288896@bugs.debian.org
+Sender: A Costa <alfie@Arf>
+To: Debian Bug Tracking System <submit@bugs.debian.org>
+Subject: Bug#288896: udftools: 'man pktsetup' links to obsolete "http://packet-cd.sourceforge.net/"
+
+Package: udftools
+Version: 1.0.0b3-9
+Severity: normal
+
+
+        % man pktsetup | grep -n http
+        19:       See: http://packet-cd.sourceforge.net/
+        55:       http://linux-udf.sourceforge.net.
+
+The web page in #19 hasn't been updated since 2001.  It's a time waster.
+
+The web page in #55 says "copyright 1999" at the bottom.
+
+Suggest:
+
+        19:       See /usr/share/doc/udftools/README.Debian
+        55:       http://sourceforge.net/projects/linux-udf/
+
+
+
+
+--- ./doc/pktsetup.8.orig	2005-10-03 13:11:38.000000000 +0000
++++ ./doc/pktsetup.8	2005-10-03 13:14:16.000000000 +0000
+@@ -45,9 +45,7 @@
+ used as a read/write filesystem. This requires kernel support for
+ the packet device, and the UDF filesystem.
+ .PP
+-See:
+-.UR
+-http://packet-cd.sourceforge.net/
++See /usr/share/doc/udftools/README.Debian for more information.
+ .UE
+ 
+ .SH EXIT STATUS
+@@ -87,7 +85,7 @@
+ .SH AVAILABILITY
+ .B pktsetup
+ is part of the udftools package and is available from
+-http://linux-udf.sourceforge.net.
++http://sourceforge.net/projects/linux-udf/
+ 
+ .SH "SEE ALSO"
+ .BR cdrwtool (1)
+
+-----------------------------------------------------------------
+
+From: Carsten Grohmann <carstengrohmann@gmx.de>
+To: "Debian Bug Tracking System" <submit@bugs.debian.org>
+Subject: Bug#414801: udftools: man pktsetup: Wrong device names in "EXAMPLE" and "FILES" sections
+Date: Tue, 13 Mar 2007 22:56:04 +0100
+
+The device files are moved in the seprate directory /dev/pktcdvd/. The
+current files are /dev/pktcdvd/control,/dev/pktcdvd/0, ... The major
+device number has changed too.
+
+The example section used the wrong path names. Calling 
+"pktsetup /dev/pktcdvd0 /dev/sr0" prints an error message like
+"ioctl: Inappropriate ioctl for device".
+
+The new syntax works fine:
+pktsetup 0 /dev/sr0
+pktsetup -d 0
+
+And could you add the option "-s" too?
+
+Thanks
+
+--- ./doc/pktsetup.8.orig	2007-11-30 13:10:51.865824000 +0100
++++ ./doc/pktsetup.8	2007-11-30 13:25:14.915006370 +0100
+@@ -37,6 +37,9 @@
+ .B pktsetup
+ .B \-d
+ .I packet_device
++.br
++.B pktsetup
++.B \-s
+ .ad b
+ .SH DESCRIPTION
+ .B Pktsetup
+@@ -59,29 +62,36 @@
+ Delete the association between the specified \fIpacket-device\fP
+ and its block device.
+ 
++.IP "\fB\-s\fP"
++Show the current device mapping, one device per line, in the format
++ \fIname\fP : \fIpktdevid\fP -> \fIblkdevid\fP
++.br
++(e.g. "0 : 253:0 -> 22:0")
++
+ .SH EXAMPLE
+ The following commands provide an example of using the
+ packet device.
+ .nf
+ .IP
+ cdrwtool -d /dev/sr0 -q
+-pktsetup /dev/pktcdvd0 /dev/sr0
++pktsetup 0 /dev/sr0
+ 
+ mount -t udf /dev/pktcdvd0 /mnt
+  ...
+ umount /dev/pktcdvd0
+-pktsetup -d /dev/pktcdvd0
++pktsetup -d 0
+ .fi
+ .LP
+ 
+ .SH FILES
+ .nf
+-/dev/pktcdvd0,/dev/pktcdvd1,...  CD/DVD packet devices (block major=97)
++/dev/pktcdvd0,/dev/pktcdvd1,...  CD/DVD packet devices
+ .fi
+ 
+ .SH AUTHOR
+ .nf
+ Jens Axboe <axboe@suse.de>
++Some additions by Richard Atterer <atterer@debian.org>
+ .fi
+ 
+ .SH AVAILABILITY

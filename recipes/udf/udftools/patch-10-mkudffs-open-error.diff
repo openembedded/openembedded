@@ -1,0 +1,31 @@
+From: Christoph Hellwig <hch@lst.de>
+To: submit@bugs.debian.org
+Subject: Bug#285313: mkudffs gives unhelpfull error messages when called without write-access to the device
+Date: Sun, 12 Dec 2004 14:28:09 +0100
+
+When calling mkuffs without write access to the device, e.g.
+
+	mkudffs /dev/sda
+
+as ordinary user where the device is writeable only for root it gives an
+completely unhelpfull error message:
+
+	hch@dhcppc1:~$ mkudffs /dev/sda4
+	trying to change type of multiple extents
+
+Some kind of permission denied message would be much better
+
+
+--- ./mkudffs/main.c.orig	2007-11-30 13:57:22.524854595 +0100
++++ ./mkudffs/main.c	2007-11-30 13:58:44.529527775 +0100
+@@ -162,6 +162,10 @@
+ #else
+ 	fd = open(filename, O_RDWR | O_CREAT | O_LARGEFILE, 0660);
+ #endif
++	if (fd == -1) {
++		perror("Error opening device");
++		exit(1);
++	}
+ 	disc.head->blocks = get_blocks(fd, disc.blocksize, disc.head->blocks);
+ 	disc.write = write_func;
+ 	disc.write_data = &fd;

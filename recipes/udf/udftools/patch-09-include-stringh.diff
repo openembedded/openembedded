@@ -1,0 +1,42 @@
+
+--- ./include/udf_endian.h.orig	2007-11-30 12:35:59.746600920 +0100
++++ ./include/udf_endian.h	2007-11-30 12:36:49.749450420 +0100
+@@ -20,6 +20,8 @@
+  *
+  */
+ 
++#include <string.h>
++
+ #ifndef __UDF_ENDIAN_H
+ #define __UDF_ENDIAN_H
+ 
+--- ./pktsetup/pktsetup.c.orig	2007-11-30 12:37:42.252442395 +0100
++++ ./pktsetup/pktsetup.c	2007-11-30 12:38:36.255519855 +0100
+@@ -25,6 +25,7 @@
+ #include <getopt.h>
+ #include <bits/types.h>
+ #include <sys/types.h>
++#include <string.h>
+ 
+ #include <linux/cdrom.h>
+ 
+--- ./wrudf/wrudf-cdr.c.orig	2007-11-30 12:39:06.257229555 +0100
++++ ./wrudf/wrudf-cdr.c	2007-11-30 12:39:28.758511830 +0100
+@@ -6,6 +6,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <unistd.h>
++#include <string.h>
+ #include "wrudf.h"
+ #include "ide-pc.h"
+ #include "bswap.h"
+--- ./wrudf/wrudf-cdrw.c.orig	2007-11-30 12:40:21.761532300 +0100
++++ ./wrudf/wrudf-cdrw.c	2007-11-30 12:40:36.762387150 +0100
+@@ -28,6 +28,7 @@
+ #include <stdio.h>
+ #include <fcntl.h>
+ #include <unistd.h>
++#include <string.h>
+ #include <sys/stat.h>
+ #include <sys/ioctl.h>
+ #include <linux/cdrom.h>		/* for CDROM_DRIVE_STATUS  */

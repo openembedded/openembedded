@@ -1,0 +1,11 @@
+--- ./wrudf/wrudf.c.orig	2007-11-30 12:09:29.655986820 +0100
++++ ./wrudf/wrudf.c	2007-11-30 12:10:09.658266420 +0100
+@@ -245,7 +245,7 @@
+ 	    } else if( strncmp( spm->partIdent.ident, UDF_ID_VIRTUAL, strlen(UDF_ID_VIRTUAL)) == 0 )
+ 		virtualPartitionNum = i;
+ 	}
+-	spm = (char*)spm + spm->partitionMapLength;
++	spm = (struct sparablePartitionMap*)((char*)spm + spm->partitionMapLength);
+     }
+ 
+     if( medium == CDR ) {

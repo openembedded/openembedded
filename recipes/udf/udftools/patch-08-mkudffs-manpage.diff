@@ -1,0 +1,15 @@
+--- ./doc/mkudffs.8	2002-11-26 08:18:51.000000000 +0100
++++ ./doc/mkudffs.8	2006-11-22 22:37:49.099351000 +0100
+@@ -96,10 +96,10 @@
+ hard drive
+ .TP
+ dvd
+-DVD (Digital Versital Disc)
++DVD (Digital Versatile Disc)
+ .TP
+ dvdram
+-DVD\-RAM (Digital Versital Disc\-Random Access Memory)
++DVD\-RAM (Digital Versatile Disc\-Random Access Memory)
+ .TP
+ worm
+ WORM (Write Once Ready Many)
