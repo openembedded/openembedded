@@ -1,0 +1,34 @@
+From 4af562525c7779cd41ae9a68d56771407df558d7 Mon Sep 17 00:00:00 2001
+From: Rajendra Nayak <rnayak@ti.com>
+Date: Mon, 4 Oct 2010 18:49:18 +0530
+Subject: [PATCH 4/5] OMAP4: clocks: Disable slimbus and pad_clks
+
+The slimbus and pad_clks if left enabled in x-loader
+would gate abe power domain from transitioning to RET.
+
+These should be enabled by the audio driver (if present)
+in the kernel.
+
+Signed-off-by: Rajendra Nayak <rnayak@ti.com>
+Signed-off-by: Ricardo Salveti de Araujo <ricardo.salveti@canonical.com>
+---
+ board/omap4430panda/clock.c |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
+
+diff --git a/board/omap4430panda/clock.c b/board/omap4430panda/clock.c
+index 0961f51..c591a9f 100644
+--- a/board/omap4430panda/clock.c
++++ b/board/omap4430panda/clock.c
+@@ -333,9 +333,6 @@ static void configure_abe_dpll(u32 clk_index)
+ 	/* Select sys_clk as ref clk for ABE dpll */
+ 	sr32(CM_ABE_PLL_REF_CLKSEL, 0, 32, 0x0);
+ 
+-	/* Enable slimbus and pad clocks */
+-	sr32(CM_CLKSEL_ABE, 0, 32, 0x500);
+-
+ 	/* Unlock the ABE dpll */
+ 	sr32(CM_CLKMODE_DPLL_ABE, 0, 3, PLL_MN_POWER_BYPASS);
+ 	wait_on_value(BIT0, 0, CM_IDLEST_DPLL_ABE, LDELAY);
+-- 
+1.6.6.1
+

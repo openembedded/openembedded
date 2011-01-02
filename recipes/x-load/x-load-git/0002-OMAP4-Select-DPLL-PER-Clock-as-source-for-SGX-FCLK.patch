@@ -1,0 +1,32 @@
+From fff093ab92c5dadd646130c38097dc167d2d0e1e Mon Sep 17 00:00:00 2001
+From: Rajeev Kulkarni <rajeevk@ti.com>
+Date: Tue, 26 Oct 2010 07:34:43 -0500
+Subject: [PATCH 2/5] OMAP4: Select DPLL PER Clock as source for SGX FCLK
+
+The correct frequncy for SGX is 307.2 Mhz.. If DPLL_PER
+is set 1536 Mhz, There is no need to change dividers, just
+parent clock need to change. And DPLL PER is set at 1536.
+
+Signed-off-by: Rajeev Kulkarni <rajeevk@ti.com>
+Signed-off-by: Ricardo Salveti de Araujo <ricardo.salveti@canonical.com>
+---
+ board/omap4430panda/clock.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/board/omap4430panda/clock.c b/board/omap4430panda/clock.c
+index 149fc85..0961f51 100644
+--- a/board/omap4430panda/clock.c
++++ b/board/omap4430panda/clock.c
+@@ -772,6 +772,9 @@ static void enable_all_clocks(void)
+ 		//wait_on_value(BIT17|BIT16, 0, CM_L3INIT_USBPHY_CLKCTRL, LDELAY);
+ 	}
+ 
++	/* Select DPLL PER CLOCK as source for SGX FCLK */
++	sr32(CM_SGX_SGX_CLKCTRL, 24, 1, 0x1);
++
+ 	/* Enable clocks for USB fast boot to work */
+ 	sr32(CM_L3INIT_USBPHY_CLKCTRL, 0, 32, 0x301);
+ 	sr32(CM_L3INIT_HSUSBOTG_CLKCTRL, 0, 32, 0x1);
+-- 
+1.6.6.1
+

@@ -1,0 +1,265 @@
+From 94fee465a6d63b6f0551037fe14cec4410bb9af2 Mon Sep 17 00:00:00 2001
+From: Rajendra Nayak <rnayak@ti.com>
+Date: Tue, 21 Dec 2010 11:55:01 -0200
+Subject: [PATCH 1/5] OMAP4: clocks: Enable only required clks
+
+X-loader untill now, was enabling all clks at bootup
+to help all modules to be functional at the kernel, even
+with drivers which do not handle clks well.
+Now that we are moving towards all drivers being adapted
+to request/release clks as expected, most of this code is
+useless and hence removed.
+
+Signed-off-by: Rajendra Nayak <rnayak@ti.com>
+Signed-off-by: Ricardo Salveti de Araujo <ricardo.salveti@canonical.com>
+---
+ board/omap4430panda/clock.c |  225 ++++++++++++++++++++++---------------------
+ 1 files changed, 117 insertions(+), 108 deletions(-)
+
+diff --git a/board/omap4430panda/clock.c b/board/omap4430panda/clock.c
+index 792e5d6..149fc85 100644
+--- a/board/omap4430panda/clock.c
++++ b/board/omap4430panda/clock.c
+@@ -552,71 +552,73 @@ static void enable_all_clocks(void)
+ {
+ 	volatile int regvalue = 0;
+ 
+-	/* Enable Ducati clocks */
+-	sr32(CM_DUCATI_DUCATI_CLKCTRL, 0, 32, 0x1);
+-	sr32(CM_DUCATI_CLKSTCTRL, 0, 32, 0x2);
+-
+-	wait_on_value(BIT8, BIT8, CM_DUCATI_CLKSTCTRL, LDELAY);
+-	//wait_on_value(BIT18|BIT17|BIT16, 0, CM_DUCATI_DUCATI_CLKCTRL, LDELAY);
+-
+-	/* Enable ivahd and sl2 clocks */
+-	sr32(IVAHD_IVAHD_CLKCTRL, 0, 32, 0x1);
+-	sr32(IVAHD_SL2_CLKCTRL, 0, 32, 0x1);
+-	sr32(IVAHD_CLKSTCTRL, 0, 32, 0x2);
+-
+-	wait_on_value(BIT8, BIT8, IVAHD_CLKSTCTRL, LDELAY);
+-
+-	/* wait for ivahd to become accessible */
+-	//wait_on_value(BIT18|BIT17|BIT16, 0, IVAHD_IVAHD_CLKCTRL, LDELAY);
+-	/* wait for sl2 to become accessible */
+-	//wait_on_value(BIT17|BIT16, 0, IVAHD_SL2_CLKCTRL, LDELAY);
+-
+-	/* Enable Tesla clocks */
+-	sr32(DSP_DSP_CLKCTRL, 0, 32, 0x1);
+-	sr32(DSP_CLKSTCTRL, 0, 32, 0x2);
+-
+-	wait_on_value(BIT8, BIT8, DSP_CLKSTCTRL, LDELAY);
+-
+-	/* wait for tesla to become accessible */
+-	//wait_on_value(BIT18|BIT17|BIT16, 0, DSP_DSP_CLKCTRL, LDELAY);
+-
+-	/* TODO: Some hack needed by MM: Clean this */
+-	#if 0 /* Doesn't work on some Zebu */
+-	*(volatile int*)0x4a306910 = 0x00000003;
+-	*(volatile int*)0x550809a0 = 0x00000001;
+-	*(volatile int*)0x55080a20 = 0x00000007;
+-	#endif
+-
+-	/* ABE clocks */
+-	sr32(CM1_ABE_CLKSTCTRL, 0, 32, 0x3);
+-	sr32(CM1_ABE_AESS_CLKCTRL, 0, 32, 0x2);
+-	//wait_on_value(BIT18|BIT17|BIT16, 0, CM1_ABE_AESS_CLKCTRL, LDELAY);
+-	sr32(CM1_ABE_PDM_CLKCTRL, 0, 32, 0x2);
+-	//wait_on_value(BIT17|BIT16, 0, CM1_ABE_PDM_CLKCTRL, LDELAY);
+-	sr32(CM1_ABE_DMIC_CLKCTRL, 0, 32, 0x2);
+-	//wait_on_value(BIT17|BIT16, 0, CM1_ABE_DMIC_CLKCTRL, LDELAY);
+-	sr32(CM1_ABE_MCASP_CLKCTRL, 0, 32, 0x2);
+-	//wait_on_value(BIT17|BIT16, 0, CM1_ABE_MCASP_CLKCTRL, LDELAY);
+-	sr32(CM1_ABE_MCBSP1_CLKCTRL, 0, 32, 0x08000002);
+-	//wait_on_value(BIT17|BIT16, 0, CM1_ABE_MCBSP1_CLKCTRL, LDELAY);
+-	sr32(CM1_ABE_MCBSP2_CLKCTRL, 0, 32, 0x08000002);
+-	//wait_on_value(BIT17|BIT16, 0, CM1_ABE_MCBSP2_CLKCTRL, LDELAY);
+-	sr32(CM1_ABE_MCBSP3_CLKCTRL, 0, 32, 0x08000002);
+-	//wait_on_value(BIT17|BIT16, 0, CM1_ABE_MCBSP3_CLKCTRL, LDELAY);
+-	sr32(CM1_ABE_SLIMBUS_CLKCTRL, 0, 32, 0xf02);
+-	//wait_on_value(BIT17|BIT16, 0, CM1_ABE_SLIMBUS_CLKCTRL, LDELAY);
+-	sr32(CM1_ABE_TIMER5_CLKCTRL, 0, 32, 0x2);
+-	//wait_on_value(BIT17|BIT16, 0, CM1_ABE_TIMER5_CLKCTRL, LDELAY);
+-	sr32(CM1_ABE_TIMER6_CLKCTRL, 0, 32, 0x2);
+-	//wait_on_value(BIT17|BIT16, 0, CM1_ABE_TIMER6_CLKCTRL, LDELAY);
+-	sr32(CM1_ABE_TIMER7_CLKCTRL, 0, 32, 0x2);
+-	//wait_on_value(BIT17|BIT16, 0, CM1_ABE_TIMER7_CLKCTRL, LDELAY);
+-	sr32(CM1_ABE_TIMER8_CLKCTRL, 0, 32, 0x2);
+-	//wait_on_value(BIT17|BIT16, 0, CM1_ABE_TIMER8_CLKCTRL, LDELAY);
+-	sr32(CM1_ABE_WDT3_CLKCTRL, 0, 32, 0x2);
+-	//wait_on_value(BIT17|BIT16, 0, CM1_ABE_WDT3_CLKCTRL, LDELAY);
+-	/* Disable sleep transitions */
+-	sr32(CM1_ABE_CLKSTCTRL, 0, 32, 0x0);
++	if (omap_revision() == OMAP4430_ES1_0) {
++		/* Enable Ducati clocks */
++		sr32(CM_DUCATI_DUCATI_CLKCTRL, 0, 32, 0x1);
++		sr32(CM_DUCATI_CLKSTCTRL, 0, 32, 0x2);
++
++		wait_on_value(BIT8, BIT8, CM_DUCATI_CLKSTCTRL, LDELAY);
++		//wait_on_value(BIT18|BIT17|BIT16, 0, CM_DUCATI_DUCATI_CLKCTRL, LDELAY);
++
++		/* Enable ivahd and sl2 clocks */
++		sr32(IVAHD_IVAHD_CLKCTRL, 0, 32, 0x1);
++		sr32(IVAHD_SL2_CLKCTRL, 0, 32, 0x1);
++		sr32(IVAHD_CLKSTCTRL, 0, 32, 0x2);
++
++		wait_on_value(BIT8, BIT8, IVAHD_CLKSTCTRL, LDELAY);
++
++		/* wait for ivahd to become accessible */
++		//wait_on_value(BIT18|BIT17|BIT16, 0, IVAHD_IVAHD_CLKCTRL, LDELAY);
++		/* wait for sl2 to become accessible */
++		//wait_on_value(BIT17|BIT16, 0, IVAHD_SL2_CLKCTRL, LDELAY);
++
++		/* Enable Tesla clocks */
++		sr32(DSP_DSP_CLKCTRL, 0, 32, 0x1);
++		sr32(DSP_CLKSTCTRL, 0, 32, 0x2);
++
++		wait_on_value(BIT8, BIT8, DSP_CLKSTCTRL, LDELAY);
++
++		/* wait for tesla to become accessible */
++		//wait_on_value(BIT18|BIT17|BIT16, 0, DSP_DSP_CLKCTRL, LDELAY);
++
++		/* TODO: Some hack needed by MM: Clean this */
++		#if 0 /* Doesn't work on some Zebu */
++		*(volatile int*)0x4a306910 = 0x00000003;
++		*(volatile int*)0x550809a0 = 0x00000001;
++		*(volatile int*)0x55080a20 = 0x00000007;
++		#endif
++
++		/* ABE clocks */
++		sr32(CM1_ABE_CLKSTCTRL, 0, 32, 0x3);
++		sr32(CM1_ABE_AESS_CLKCTRL, 0, 32, 0x2);
++		//wait_on_value(BIT18|BIT17|BIT16, 0, CM1_ABE_AESS_CLKCTRL, LDELAY);
++		sr32(CM1_ABE_PDM_CLKCTRL, 0, 32, 0x2);
++		//wait_on_value(BIT17|BIT16, 0, CM1_ABE_PDM_CLKCTRL, LDELAY);
++		sr32(CM1_ABE_DMIC_CLKCTRL, 0, 32, 0x2);
++		//wait_on_value(BIT17|BIT16, 0, CM1_ABE_DMIC_CLKCTRL, LDELAY);
++		sr32(CM1_ABE_MCASP_CLKCTRL, 0, 32, 0x2);
++		//wait_on_value(BIT17|BIT16, 0, CM1_ABE_MCASP_CLKCTRL, LDELAY);
++		sr32(CM1_ABE_MCBSP1_CLKCTRL, 0, 32, 0x08000002);
++		//wait_on_value(BIT17|BIT16, 0, CM1_ABE_MCBSP1_CLKCTRL, LDELAY);
++		sr32(CM1_ABE_MCBSP2_CLKCTRL, 0, 32, 0x08000002);
++		//wait_on_value(BIT17|BIT16, 0, CM1_ABE_MCBSP2_CLKCTRL, LDELAY);
++		sr32(CM1_ABE_MCBSP3_CLKCTRL, 0, 32, 0x08000002);
++		//wait_on_value(BIT17|BIT16, 0, CM1_ABE_MCBSP3_CLKCTRL, LDELAY);
++		sr32(CM1_ABE_SLIMBUS_CLKCTRL, 0, 32, 0xf02);
++		//wait_on_value(BIT17|BIT16, 0, CM1_ABE_SLIMBUS_CLKCTRL, LDELAY);
++		sr32(CM1_ABE_TIMER5_CLKCTRL, 0, 32, 0x2);
++		//wait_on_value(BIT17|BIT16, 0, CM1_ABE_TIMER5_CLKCTRL, LDELAY);
++		sr32(CM1_ABE_TIMER6_CLKCTRL, 0, 32, 0x2);
++		//wait_on_value(BIT17|BIT16, 0, CM1_ABE_TIMER6_CLKCTRL, LDELAY);
++		sr32(CM1_ABE_TIMER7_CLKCTRL, 0, 32, 0x2);
++		//wait_on_value(BIT17|BIT16, 0, CM1_ABE_TIMER7_CLKCTRL, LDELAY);
++		sr32(CM1_ABE_TIMER8_CLKCTRL, 0, 32, 0x2);
++		//wait_on_value(BIT17|BIT16, 0, CM1_ABE_TIMER8_CLKCTRL, LDELAY);
++		sr32(CM1_ABE_WDT3_CLKCTRL, 0, 32, 0x2);
++		//wait_on_value(BIT17|BIT16, 0, CM1_ABE_WDT3_CLKCTRL, LDELAY);
++		/* Disable sleep transitions */
++		sr32(CM1_ABE_CLKSTCTRL, 0, 32, 0x0);
++	}
+ 
+ 	/* L4PER clocks */
+ 	sr32(CM_L4PER_CLKSTCTRL, 0, 32, 0x2);
+@@ -723,50 +725,57 @@ static void enable_all_clocks(void)
+ 	sr32(CM_WKUP_WDT2_CLKCTRL, 0, 32, 0x2);
+ 	wait_on_value(BIT17|BIT16, 0, CM_WKUP_WDT2_CLKCTRL, LDELAY);
+ 
+-	/* Enable Camera clocks */
+-	sr32(CM_CAM_CLKSTCTRL, 0, 32, 0x3);
+-	sr32(CM_CAM_ISS_CLKCTRL, 0, 32, 0x102);
+-	//wait_on_value(BIT18|BIT17|BIT16, 0, CM_CAM_ISS_CLKCTRL, LDELAY);
+-	sr32(CM_CAM_FDIF_CLKCTRL, 0, 32, 0x2);
+-	//wait_on_value(BIT18|BIT17|BIT16, 0, CM_CAM_FDIF_CLKCTRL, LDELAY);
+-	sr32(CM_CAM_CLKSTCTRL, 0, 32, 0x0);
+-
+-	/* Enable DSS clocks */
+-	/* PM_DSS_PWRSTCTRL ON State and LogicState = 1 (Retention) */
+-	*(volatile int*)0x4A307100 = 0x7; //DSS_PRM
+-	sr32(CM_DSS_CLKSTCTRL, 0, 32, 0x2);
+-	sr32(CM_DSS_DSS_CLKCTRL, 0, 32, 0xf02);
+-	//wait_on_value(BIT18|BIT17|BIT16, 0, CM_DSS_DSS_CLKCTRL, LDELAY);
+-	sr32(CM_DSS_DEISS_CLKCTRL, 0, 32, 0x2);
+-	//wait_on_value(BIT18|BIT17|BIT16, 0, CM_DSS_DEISS_CLKCTRL, LDELAY);
+-	/* Check for DSS Clocks */
+-	while (((*(volatile int*)0x4A009100) & 0xF00) != 0xE00)
+-	/* Set HW_AUTO transition mode */
+-	sr32(CM_DSS_CLKSTCTRL, 0, 32, 0x3);
+-
+-	/* Enable SGX clocks */
+-	sr32(CM_SGX_CLKSTCTRL, 0, 32, 0x2);
+-	sr32(CM_SGX_SGX_CLKCTRL, 0, 32, 0x2);
+-	//wait_on_value(BIT18|BIT17|BIT16, 0, CM_SGX_SGX_CLKCTRL, LDELAY);
+-	/* Check for SGX FCLK and ICLK */
+-	while ( (*(volatile int*)0x4A009200) != 0x302 );
+-	//sr32(CM_SGX_CLKSTCTRL, 0, 32, 0x0);
+-	/* Enable hsi/unipro/usb clocks */
+-	sr32(CM_L3INIT_HSI_CLKCTRL, 0, 32, 0x1);
+-	//wait_on_value(BIT18|BIT17|BIT16, 0, CM_L3INIT_HSI_CLKCTRL, LDELAY);
+-	sr32(CM_L3INIT_UNIPRO1_CLKCTRL, 0, 32, 0x2);
+-	//wait_on_value(BIT18|BIT17|BIT16, 0, CM_L3INIT_UNIPRO1_CLKCTRL, LDELAY);
+-	sr32(CM_L3INIT_HSUSBHOST_CLKCTRL, 0, 32, 0x2);
+-	//wait_on_value(BIT18|BIT17|BIT16, 0, CM_L3INIT_HSUSBHOST_CLKCTRL, LDELAY);
+-	sr32(CM_L3INIT_HSUSBOTG_CLKCTRL, 0, 32, 0x1);
+-	//wait_on_value(BIT18|BIT17|BIT16, 0, CM_L3INIT_HSUSBOTG_CLKCTRL, LDELAY);
+-	sr32(CM_L3INIT_HSUSBTLL_CLKCTRL, 0, 32, 0x1);
+-	//wait_on_value(BIT17|BIT16, 0, CM_L3INIT_HSUSBTLL_CLKCTRL, LDELAY);
+-	sr32(CM_L3INIT_FSUSB_CLKCTRL, 0, 32, 0x2);
+-	//wait_on_value(BIT18|BIT17|BIT16, 0, CM_L3INIT_FSUSB_CLKCTRL, LDELAY);
+-	/* enable the 32K, 48M optional clocks and enable the module */
++	if (omap_revision() == OMAP4430_ES1_0) {
++		/* Enable Camera clocks */
++		sr32(CM_CAM_CLKSTCTRL, 0, 32, 0x3);
++		sr32(CM_CAM_ISS_CLKCTRL, 0, 32, 0x102);
++		//wait_on_value(BIT18|BIT17|BIT16, 0, CM_CAM_ISS_CLKCTRL, LDELAY);
++		sr32(CM_CAM_FDIF_CLKCTRL, 0, 32, 0x2);
++		//wait_on_value(BIT18|BIT17|BIT16, 0, CM_CAM_FDIF_CLKCTRL, LDELAY);
++		sr32(CM_CAM_CLKSTCTRL, 0, 32, 0x0);
++
++		/* Enable DSS clocks */
++		/* PM_DSS_PWRSTCTRL ON State and LogicState = 1 (Retention) */
++		*(volatile int*)0x4A307100 = 0x7; //DSS_PRM
++		sr32(CM_DSS_CLKSTCTRL, 0, 32, 0x2);
++		sr32(CM_DSS_DSS_CLKCTRL, 0, 32, 0xf02);
++		//wait_on_value(BIT18|BIT17|BIT16, 0, CM_DSS_DSS_CLKCTRL, LDELAY);
++		sr32(CM_DSS_DEISS_CLKCTRL, 0, 32, 0x2);
++		//wait_on_value(BIT18|BIT17|BIT16, 0, CM_DSS_DEISS_CLKCTRL, LDELAY);
++		/* Check for DSS Clocks */
++		while (((*(volatile int*)0x4A009100) & 0xF00) != 0xE00)
++		/* Set HW_AUTO transition mode */
++		sr32(CM_DSS_CLKSTCTRL, 0, 32, 0x3);
++
++		/* Enable SGX clocks */
++		sr32(CM_SGX_CLKSTCTRL, 0, 32, 0x2);
++		sr32(CM_SGX_SGX_CLKCTRL, 0, 32, 0x2);
++		//wait_on_value(BIT18|BIT17|BIT16, 0, CM_SGX_SGX_CLKCTRL, LDELAY);
++		/* Check for SGX FCLK and ICLK */
++		while ( (*(volatile int*)0x4A009200) != 0x302 );
++		//sr32(CM_SGX_CLKSTCTRL, 0, 32, 0x0);
++		/* Enable hsi/unipro/usb clocks */
++		sr32(CM_L3INIT_HSI_CLKCTRL, 0, 32, 0x1);
++		//wait_on_value(BIT18|BIT17|BIT16, 0, CM_L3INIT_HSI_CLKCTRL, LDELAY);
++		sr32(CM_L3INIT_UNIPRO1_CLKCTRL, 0, 32, 0x2);
++		//wait_on_value(BIT18|BIT17|BIT16, 0, CM_L3INIT_UNIPRO1_CLKCTRL, LDELAY);
++		sr32(CM_L3INIT_HSUSBHOST_CLKCTRL, 0, 32, 0x2);
++		//wait_on_value(BIT18|BIT17|BIT16, 0, CM_L3INIT_HSUSBHOST_CLKCTRL, LDELAY);
++		sr32(CM_L3INIT_HSUSBOTG_CLKCTRL, 0, 32, 0x1);
++		//wait_on_value(BIT18|BIT17|BIT16, 0, CM_L3INIT_HSUSBOTG_CLKCTRL, LDELAY);
++		sr32(CM_L3INIT_HSUSBTLL_CLKCTRL, 0, 32, 0x1);
++		//wait_on_value(BIT17|BIT16, 0, CM_L3INIT_HSUSBTLL_CLKCTRL, LDELAY);
++		sr32(CM_L3INIT_FSUSB_CLKCTRL, 0, 32, 0x2);
++		//wait_on_value(BIT18|BIT17|BIT16, 0, CM_L3INIT_FSUSB_CLKCTRL, LDELAY);
++		/* enable the 32K, 48M optional clocks and enable the module */
++		sr32(CM_L3INIT_USBPHY_CLKCTRL, 0, 32, 0x301);
++		//wait_on_value(BIT17|BIT16, 0, CM_L3INIT_USBPHY_CLKCTRL, LDELAY);
++	}
++
++	/* Enable clocks for USB fast boot to work */
+ 	sr32(CM_L3INIT_USBPHY_CLKCTRL, 0, 32, 0x301);
+-	//wait_on_value(BIT17|BIT16, 0, CM_L3INIT_USBPHY_CLKCTRL, LDELAY);
++	sr32(CM_L3INIT_HSUSBOTG_CLKCTRL, 0, 32, 0x1);
++
+ 	return;
+ }
+ 
+-- 
+1.6.6.1
+

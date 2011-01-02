@@ -1,0 +1,33 @@
+From daaaf036f3336e01a83a13dd93b8030b00a0af50 Mon Sep 17 00:00:00 2001
+From: Ricardo Salveti de Araujo <ricardo.salveti@canonical.com>
+Date: Tue, 21 Dec 2010 12:03:50 -0200
+Subject: [PATCH 3/5] MUX: Configure SYS_NIRQ2 pin in safe mode
+
+SYS_NIRQ2 pin if not in safe mode, with audio driver
+enabled gates CORE RET. Hence configured in safe mode.
+Audio driver is expected to re-init the pin in the
+kernel.
+
+Patch from sdp, by Rajendra Nayak <rnayak@ti.com>
+
+Signed-off-by: Ricardo Salveti de Araujo <ricardo.salveti@canonical.com>
+---
+ board/omap4430panda/omap4430panda.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/board/omap4430panda/omap4430panda.c b/board/omap4430panda/omap4430panda.c
+index 5695733..814b2cb 100644
+--- a/board/omap4430panda/omap4430panda.c
++++ b/board/omap4430panda/omap4430panda.c
+@@ -910,7 +910,7 @@ int dram_init(void)
+ 	MV(CP(FREF_CLK1_OUT) , ( M0))  /* fref_clk1_out */ \
+ 	MV(CP(FREF_CLK2_OUT) , ( PTD | IEN | M3))  /* gpio_182 */ \
+ 	MV(CP(SYS_NIRQ1) , ( PTU | IEN | M0))  /* sys_nirq1 */ \
+-	MV(CP(SYS_NIRQ2) , ( PTU | IEN | M0))  /* sys_nirq2 */ \
++	MV(CP(SYS_NIRQ2) , (M7_SAFE))  /* sys_nirq2 */ \
+ 	MV(CP(SYS_BOOT0) , ( PTU | IEN | M3))  /* gpio_184 */ \
+ 	MV(CP(SYS_BOOT1) , ( M3))  /* gpio_185 */ \
+ 	MV(CP(SYS_BOOT2) , ( PTD | IEN | M3))  /* gpio_186 */ \
+-- 
+1.6.6.1
+
