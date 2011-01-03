@@ -11,7 +11,7 @@ DEPENDS = "dbus dbus-glib gstreamer readline"
 SRCREV = "b1b22984a3028531cbddea431acd1e6c3fd0edb8"
 
 PV = "1.0"
-PR = "r14"
+PR = "r15"
 PR_append = "+gitr${SRCREV}"
 
 SRC_URI = "git://gstd.git.sourceforge.net/gitroot/gstd/gstd;protocol=git \
@@ -25,7 +25,7 @@ do_configure() {
 }
 
 RDEPENDS_${PN} = "dbus dbus-glib gstreamer gst-plugins-base"
-RRECOMENDS_${PN} = "gstreamer-ti"
+RRECOMMENDS_${PN} = "gstreamer-ti"
 
 FILES_${PN} += "${datadir}/dbus-1/*/*.service"
 FILES_${PN}-dev += "${datadir}/dbus-1/interfaces/*.xml"
