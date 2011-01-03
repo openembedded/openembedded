@@ -322,16 +322,16 @@ PACKAGES =+ "${PN}-mdev"
 FILES_${PN}-mdev = "${sysconfdir}/mdev ${sysconfdir}/mdev.conf ${sysconfdir}/init.d/mdev"
 RDEPENDS_${PN}-mdev += "${PN}"
 
+pkg_postinst_${PN}-mdev() {
+	[ -n "$D" ] && OPT="-r $D" || OPT="-s"
+	update-rc.d $OPT mdev start 06 S .
+}
+pkg_postrm_${PN}-mdev() {
+	[ -n "$D" ] && OPT="-r $D" || OPT="-s"
+	update-rc.d $OPT -f mdev remove
+}
+
 PACKAGES =+ "${PN}-linuxrc"
 FILES_${PN}-linuxrc = "linuxrc"
 RDEPENDS_${PN}-linuxrc += "${PN}"
-
-pkg_postinst_${PN}-mdev() {
-if test "x$D" != "x"; then
-	OPT="-r $D"
-else
-	OPT="-s"
-fi
-	update-rc.d $OPT mdev start 06 S .
-}
 
