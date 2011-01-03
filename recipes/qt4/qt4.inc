@@ -1,6 +1,6 @@
 inherit qmake_base
 
-DEPENDS += "qt4-tools-native freetype jpeg libpng zlib dbus openssl glib-2.0 gstreamer gst-plugins-base mysql postgresql sqlite sqlite3"
+DEPENDS += "qt4-tools-native freetype jpeg libpng zlib dbus openssl glib-2.0 gstreamer gst-plugins-base mysql5 postgresql sqlite sqlite3"
 
 require qt4_arch.inc
 QT_ARCH := "${@qt_arch(d)}"
