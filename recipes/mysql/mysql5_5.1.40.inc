@@ -36,12 +36,6 @@ do_configure_append() {
      sed -i /comp_err/d ${S}/sql/share/Makefile
 }
 
-do_stage() {
-	autotools_stage_all
-	oe_libinstall -a -so -C libmysql libmysqlclient ${STAGING_LIBDIR}
-	oe_libinstall -a -C libmysqld libmysqld ${STAGING_LIBDIR}
-}
-
 SYSROOT_PREPROCESS_FUNCS += "mysql5_sysroot_preprocess"
 
 # We need to append this so it runs *after* binconfig's preprocess function
