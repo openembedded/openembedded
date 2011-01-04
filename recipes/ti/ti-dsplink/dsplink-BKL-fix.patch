@@ -1,22 +1,71 @@
-From: Koen Kooi <k-kooi@ti.com>
-Subject: Adjust drv_pmgr for post 2.6.36 ioctl changes
+From e0931bf37628727903a567f1c7096ae0011edc3d Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Tue, 4 Jan 2011 13:49:05 +0100
+Subject: [PATCH] Adjust drv_pmgr for post 2.6.36 ioctl changes
 
-This is a buildfix
-
+Signed-off-by: Koen Kooi <koen@dominion.thruhere.net>
 ---
+ dsplink/gpp/src/pmgr/Linux/2.6.18/drv_pmgr.c |   17 ++++++++++++++++-
+ 1 files changed, 16 insertions(+), 1 deletions(-)
 
---- /tmp/drv_pmgr.c	2010-12-05 14:23:32.000000000 +0100
-+++ dsplink_linux_1_65_00_03/dsplink/gpp/src/pmgr/Linux/2.6.18/drv_pmgr.c	2010-12-05 14:24:49.000000000 +0100
-@@ -495,7 +495,11 @@
+diff --git a/dsplink/gpp/src/pmgr/Linux/2.6.18/drv_pmgr.c b/dsplink/gpp/src/pmgr/Linux/2.6.18/drv_pmgr.c
+index a9b831c..e4a836d 100644
+--- a/dsplink/gpp/src/pmgr/Linux/2.6.18/drv_pmgr.c
++++ b/dsplink/gpp/src/pmgr/Linux/2.6.18/drv_pmgr.c
+@@ -399,10 +399,15 @@ DRV_Release (struct inode * inode, struct file * filp) ;
+  *  @see    None
+  *  ----------------------------------------------------------------------------
+  */
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,36)
+ STATIC
+ int
+ DRV_Ioctl (struct inode * inode, struct file * filp,
+            unsigned int cmd, unsigned long args) ;
++#else
++STATIC
++int DRV_Ioctl (struct file *filp, unsigned int cmd, unsigned long args);
++#endif
+ 
+ 
+ /** ----------------------------------------------------------------------------
+@@ -495,7 +500,11 @@ STATIC struct file_operations driverOps = {
      open:    DRV_Open,
      flush:   DRV_Flush,
      release: DRV_Release,
--    ioctl:   DRV_Ioctl,
 +#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,36)
-+	ioctl:   DRV_Ioctl,
+     ioctl:   DRV_Ioctl,
 +#else
-+	unlocked_ioctl: DRV_Ioctl,
-+#endif	
++    unlocked_ioctl:   DRV_Ioctl,
++#endif
      mmap:    DRV_Mmap,
      read:    DRV_Read,
     .owner = THIS_MODULE
+@@ -817,10 +826,16 @@ DRV_Release (struct inode * inode, struct file * filp)
+  *  @desc   Function to invoke the APIs through ioctl.
+  *  ----------------------------------------------------------------------------
+  */
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,36)
+ STATIC
+ NORMAL_API
+ int DRV_Ioctl (struct inode * inode, struct file * filp,
+                unsigned int cmd, unsigned long args)
++#else
++STATIC
++NORMAL_API
++int DRV_Ioctl (struct file *filp, unsigned int cmd, unsigned long args)
++#endif
+ {
+     DSP_STATUS status   = DSP_SOK ;
+     int        osStatus = 0       ;
+@@ -829,7 +844,7 @@ int DRV_Ioctl (struct inode * inode, struct file * filp,
+     CMD_Args   apiArgs            ;
+ 
+ 
+-    TRC_4ENTER ("DRV_Ioctl", inode, filp, cmd, args) ;
++    TRC_3ENTER ("DRV_Ioctl", filp, cmd, args) ;
+ 
+     retVal = copy_from_user ((Pvoid) &apiArgs,
+                              (const Pvoid) srcAddr,
+-- 
+1.6.6.1
+

@@ -16,7 +16,7 @@ PROVIDES += "ti-dsplink-examples"
 
 # This package builds a kernel module, use kernel PR as base and append a local version
 PR = "${MACHINE_KERNEL_PR}"
-PR_append = "h"
+PR_append = "i"
 
 S = "${WORKDIR}/dsplink_linux_${PV}"
 
