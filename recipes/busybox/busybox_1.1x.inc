@@ -17,6 +17,8 @@ SRC_URI = "\
   file://hwclock-default \
   file://mount.busybox \
   file://mountall \
+  file://passwd \
+  file://shadow \
   file://syslog \
   file://syslog.conf \
   file://umount.busybox \

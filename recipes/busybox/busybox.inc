@@ -23,6 +23,8 @@ SRC_URI = "\
   file://hwclock-default \
   file://ifupdown-spurious-environ.patch \
   file://mount.busybox \
+  file://passwd \
+  file://shadow \
   file://syslog \
   file://syslog.conf \
   file://udhcpscript.patch \
@@ -34,6 +36,7 @@ SRC_URI_append_nylon = " file://xargs-double-size.patch"
 export EXTRA_CFLAGS = "${CFLAGS}"
 EXTRA_OEMAKE_append = " CROSS=${HOST_PREFIX}"
 PACKAGES =+ "${PN}-mountall ${PN}-httpd ${PN}-syslog ${PN}-udhcpd"
+PACKAGES =+ "${PN}-passwd ${PN}-shadow"
 
 # We need this RRECOMMENDS_${PN} because libc dlopens libgcc
 # and shlib mechanism can not detect it because its not
@@ -67,6 +70,8 @@ CONFFILES_${PN}-syslog = "${sysconfdir}/default/busybox-syslog"
 INITSCRIPT_PARAMS_${PN}-syslog_slugos = "start 20 ."
 
 RDEPENDS_${PN}-httpd += "${PN}"
+RDEPENDS_${PN}-passwd += "${PN}"
+RDEPENDS_${PN}-shadow += "${PN}-passwd"
 RDEPENDS_${PN}-syslog += "${PN}"
 RDEPENDS_${PN}-udhcpd += "${PN}"
 
@@ -180,6 +185,12 @@ do_install () {
 		fi
 	fi
 
+	if grep -q "CONFIG_PASSWD=y" ${WORKDIR}/defconfig; then
+	    install -m 0644 ${WORKDIR}/passwd ${D}${sysconfdir}/passwd.${PN}
+	    if grep -q "CONFIG_FEATURE_SHADOWPASSWDS=y" ${WORKDIR}/defconfig; then
+	        install -m 0640 ${WORKDIR}/shadow ${D}${sysconfdir}/shadow.${PN}
+            fi
+	fi
 	if grep -q "CONFIG_SYSLOGD=y" ${WORKDIR}/defconfig; then
 		install -m 0755 ${WORKDIR}/syslog ${D}${sysconfdir}/init.d/syslog.${PN}
 	        sed -i -e 's,/etc/default/busybox-syslog,${sysconfdir}/default/busybox-syslog,' \
@@ -266,6 +277,21 @@ pkg_postinst_${PN}-mountall () {
 pkg_prerm_${PN}-mountall () {
 	update-alternatives --remove default_mountall mountall.${PN}
 }
+
+pkg_postinst_${PN}-passwd () {
+	update-alternatives --install ${sysconfdir}/passwd default_passwd passwd.${PN} 50
+}
+pkg_prerm_${PN}-passwd () {
+	update-alternatives --remove default_passwd passwd.${PN}
+}
+
+pkg_postinst_${PN}-shadow () {
+	update-alternatives --install ${sysconfdir}/shadow default_shadow shadow.${PN} 50
+}
+pkg_prerm_${PN}-shadow () {
+	update-alternatives --remove default_shadow shadow.${PN}
+}
+
 
 pkg_postinst_${PN}-syslog () {
 	update-alternatives --install ${sysconfdir}/init.d/syslog syslog-init syslog.${PN} 50
