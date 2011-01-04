@@ -1,10 +1,17 @@
-From: Koen Kooi <k-kooi@ti.com>
-Subject: Fix build with 2.6.37rcX
+From b7e83000f316f5f109b9237fde4d1c576534aa1a Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Tue, 4 Jan 2011 14:21:02 +0100
+Subject: [PATCH] Fix build with 2.6.37rcX
 
+Signed-off-by: Koen Kooi <koen@dominion.thruhere.net>
 ---
+ .../bios/power/modules/omap3530/lpm/lpm_driver.c   |   12 +++++++++---
+ 1 files changed, 9 insertions(+), 3 deletions(-)
 
---- /tmp/lpm_driver.c	2010-12-05 18:25:17.000000000 +0100
-+++ local_power_manager_linux_1_24_02_09/packages/ti/bios/power/modules/omap3530/lpm/lpm_driver.c	2010-12-05 18:30:13.000000000 +0100
+diff --git a/packages/ti/bios/power/modules/omap3530/lpm/lpm_driver.c b/packages/ti/bios/power/modules/omap3530/lpm/lpm_driver.c
+index fa22ea3..4663fc9 100644
+--- a/packages/ti/bios/power/modules/omap3530/lpm/lpm_driver.c
++++ b/packages/ti/bios/power/modules/omap3530/lpm/lpm_driver.c
 @@ -40,6 +40,7 @@
  #include <asm/semaphore.h>
  #endif
@@ -13,19 +20,25 @@ Subject: Fix build with 2.6.37rcX
  
  #include "lpm_driver.h"
  #include "lpm_dev.h"
-@@ -111,7 +112,11 @@
+@@ -95,7 +96,7 @@ static int enablevicp = -1;
+ module_param(enablevicp, int, S_IRUGO);
+ 
+ /* forward declaration of system calls (used by Linux driver) */
+-static int lpm_ioctl    (struct inode *inode, struct file *filp,
++static long lpm_ioctl    (struct file *filp,
+                          unsigned int cmd, unsigned long args);
+ static int lpm_open     (struct inode *inode, struct file *filp);
+ static int lpm_release  (struct inode *inode, struct file *filp);
+@@ -111,7 +112,7 @@ static void       lpm_os_trace  (char *fmt, ...);
  
  static struct file_operations lpm_fops = {
      .owner =    THIS_MODULE,
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,36)
-     .ioctl =    lpm_ioctl,
-+#else
+-    .ioctl =    lpm_ioctl,
 +    .unlocked_ioctl = lpm_ioctl,
-+#endif
      .open =     lpm_open,
      .release =  lpm_release,
  };
-@@ -244,7 +249,11 @@
+@@ -244,7 +245,11 @@ static int __init lpm_init(void)
          lpm->inst[i].major = MAJOR(lpm->first);
          lpm->inst[i].minor = MINOR(lpm->first) + i;
          INIT_LIST_HEAD(&lpm->inst[i].clients);
@@ -37,3 +50,23 @@ Subject: Fix build with 2.6.37rcX
          init_completion(&lpm->inst[i].event);
          lpm_devAttrs.os_instance = (void *)&lpm->inst[i];
          LPM_init(i, &lpm->inst[i].lpm, &lpm_devAttrs);
+@@ -320,7 +325,7 @@ fail_02:
+ /*
+  *  ======== lpm_ioctl ========
+  */
+-static int lpm_ioctl(struct inode *inode, struct file *filp,
++static long lpm_ioctl(struct file *filp,
+                      unsigned int cmd, unsigned long args)
+ {
+     struct LPM_Dev     *dev;
+@@ -328,6 +333,7 @@ static int lpm_ioctl(struct inode *inode, struct file *filp,
+     LPM_Client         *client;
+     LPM_Status          lpmStat = LPM_SOK;
+     int                 stat = 0;
++    struct inode *inode = filp->f_dentry->d_inode;
+ 
+     TRACE(KERN_ALERT "--> lpm_ioctl, cmd: 0x%X\n", cmd);
+ 
+-- 
+1.6.6.1
+

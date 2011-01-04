@@ -13,7 +13,7 @@ PROVIDES += "ti-lpm-utils"
 
 # This package builds a kernel module, use kernel PR as base and append a local version
 PR = "${MACHINE_KERNEL_PR}"
-PR_append = "d"
+PR_append = "e"
 
 S = "${WORKDIR}/local_power_manager_linux_${PV}"
 
