@@ -2,8 +2,8 @@ DESCRIPTION = "SHR Phone FSO Daemon"
 HOMEPAGE = "http://shr-project.org/"
 LICENSE = "GPL"
 SECTION = "x11/applications"
-DEPENDS += " libfso-glib dbus-glib libframeworkd-glib sqlite3 shr-specs libfsoframework"
-SRCREV = "d910e1c3ca270409325f0fc807245a14c84c35f7"
+DEPENDS += " libfso-glib libshr-glib sqlite3 shr-specs libfsoframework"
+SRCREV = "c94b6ef3900bfe850ec3b92e2c8721fb0b5fbf9a"
 PV = "0.0.0+gitr${SRCPV}"
 PR = "r5"
 
@@ -14,10 +14,6 @@ inherit autotools update-rc.d
 
 INITSCRIPT_NAME = "phonefsod"
 INITSCRIPT_PARAMS = "defaults 75"
-
-EXTRA_OECONF = "\
-	SPECS_PATH=${STAGING_DATADIR}/shr-specs \
-"
 
 CONFFILES_${PN} = "${sysconfdir}/phonefsod.conf"
 
