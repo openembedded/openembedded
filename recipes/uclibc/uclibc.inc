@@ -52,6 +52,7 @@ FILES_uclibc-dev_append = "\
         ${libdir}/lib*.so \
         ${libdir}/*_nonshared.a \
         ${libdir}/[S]*crt[1in].o \
+        ${libdir}/crtreloc*.o \
         ${libdir}/lib*.a \
         ${includedir}/*.h ${includedir}/*/*.h \
        "
@@ -60,7 +61,7 @@ FILES_uclibc-utils-dbg += "${bindir}/.debug ${sbindir}/.debug"
 FILES_uclibc-gconv = "${libdir}/gconv"
 FILES_uclibc-thread-db = "/lib/libthread_db*"
 RPROVIDES_uclibc-dev += "libc-dev virtual-libc-dev"
-# uclibc does not really has libsegfault but then using the one from glibc is also not
+# uclibc does not really have libsegfault but then using the one from glibc is also not
 # going to work. So we pretend that we have it to make bitbake not pull other recipes
 # to satisfy this dependency for the images/tasks
 RPROVIDES_${PN} += "libsegfault"
