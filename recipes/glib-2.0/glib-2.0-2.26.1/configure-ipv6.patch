@@ -1,0 +1,92 @@
+From a619a217e3e5aa5345db631213aec5a3684a3001 Mon Sep 17 00:00:00 2001
+Subject: [PATCH] autodetect in6addr_{any,loopback} availability
+
+Fixes linking error on systems which choose not to support ipv6:
+./.libs/libgio-2.0.so: undefined reference to `in6addr_loopback'
+./.libs/libgio-2.0.so: undefined reference to `in6addr_any'
+
+Signed-off-by: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
+---
+ configure.ac       |   31 +++++++++++++++++++++++++++++++
+ gio/ginetaddress.c |   16 ++++++++++++++--
+ 2 files changed, 45 insertions(+), 2 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 7114014..023db49 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1019,6 +1019,37 @@ if test $glib_native_win32 = no; then
+   AC_SUBST(LIBASYNCNS_LIBADD)
+ fi
+ 
++dnl handle --disable-ipv6
++AC_ARG_ENABLE(ipv6, AC_HELP_STRING([--disable-ipv6],[Disable IPv6 support]))
++if test "$ipv6" != "no"; then
++  AC_DEFINE(HAVE_IPV6, 1, [Define if IPv6 is available])
++
++  AC_MSG_CHECKING([for struct in6addr_any])
++  AC_TRY_LINK(
++   [#define IN_AUTOCONF
++     #include <sys/types.h>
++     #include <sys/socket.h>
++     #include <netinet/in.h>],
++   [struct in6_addr a = in6addr_any;
++    return a.s6_addr[0];],
++   [AC_MSG_RESULT(yes)
++    AC_DEFINE(HAVE_IN6ADDR_ANY, 1, [Define if in6addr_any is available])],
++   [AC_MSG_RESULT(no)]
++  )
++  AC_MSG_CHECKING([for struct in6addr_loopback])
++  AC_TRY_LINK(
++   [#define IN_AUTOCONF
++     #include <sys/types.h>
++     #include <sys/socket.h>
++     #include <netinet/in.h>],
++   [struct in6_addr a = in6addr_loopback;
++    return a.s6_addr[0];],
++   [AC_MSG_RESULT(yes)
++    AC_DEFINE(HAVE_IN6ADDR_LOOPBACK, 1, [Define if in6addr_loopback is available])],
++   [AC_MSG_RESULT(no)]
++  )
++fi
++
+ case $host in
+   *-*-solaris* )
+      AC_DEFINE(_XOPEN_SOURCE_EXTENDED, 1, Needed to get declarations for msg_control and msg_controllen on Solaris)
+diff --git a/gio/ginetaddress.c b/gio/ginetaddress.c
+index 0f67e4f..ed29be2 100644
+--- a/gio/ginetaddress.c
++++ b/gio/ginetaddress.c
+@@ -484,7 +484,13 @@ g_inet_address_new_loopback (GSocketFamily family)
+       return g_inet_address_new_from_bytes (addr, family);
+     }
+   else
+-    return g_inet_address_new_from_bytes (in6addr_loopback.s6_addr, family);
++    {
++#ifdef HAVE_IN6ADDR_LOOPBACK
++      return g_inet_address_new_from_bytes (in6addr_loopback.s6_addr, family);
++#else
++      return NULL;
++#endif
++    }
+ }
+ 
+ /**
+@@ -511,7 +517,13 @@ g_inet_address_new_any (GSocketFamily family)
+       return g_inet_address_new_from_bytes (addr, family);
+     }
+   else
+-    return g_inet_address_new_from_bytes (in6addr_any.s6_addr, family);
++    {
++#ifdef HAVE_IN6ADDR_ANY
++      return g_inet_address_new_from_bytes (in6addr_any.s6_addr, family);
++#else
++      return NULL;
++#endif
++    }
+ }
+ 
+ 
+-- 
+1.7.2.3
+
