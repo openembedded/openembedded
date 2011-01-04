@@ -2,11 +2,11 @@ DESCRIPTION = "Util-linux-ng is a suite of essential utilities for any Linux sys
 SECTION = "base"
 LICENSE = "GPL"
 DEPENDS = "${@base_contains('DISTRO_FEATURES', 'pam', 'libpam', '', d)} udev  zlib ncurses virtual/libintl"
-DEPENDS_virtclass-native = "zlib-native ncurses-native lzo-native gettext-native"
+DEPENDS_virtclass-native = "zlib-native lzo-native gettext-native"
 
 inherit autotools gettext
 
-INC_PR = "r34"
+INC_PR = "r35"
 
 # allows for a release candidate
 RC ?= ""
@@ -65,11 +65,14 @@ RDEPENDS_${PN}-reset = "ncurses-tools"
 RRECOMMENDS_${PN}_virtclass-native = ""
 RDEPENDS_${PN}_virtclass-native = ""
 
+NATIVECONF = ""
+NATIVECONF_virtclass-native = "--without-ncurses"
+
 EXTRA_OECONF = "--disable-use-tty-group --disable-makeinstall-chown \
 --enable-kill --enable-last --enable-mesg --enable-raw --enable-login-utils \
 --enable-arch --enable-init --enable-partx --enable-schedutils \
 --with-fsprobe=builtin --enable-libuuid --enable-libblkid \
---enable-fsck --enable-reset"
+--enable-fsck --enable-reset ${NATIVECONF}"
 
 LDFLAGS_append_libc-uclibc = "${@['',' -lintl'][bb.data.getVar('USE_NLS', d, 1) == 'yes']}"
 LDFLAGS_virtclass-native = "${BUILD_LDFLAGS}"
