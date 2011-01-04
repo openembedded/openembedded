@@ -18,7 +18,7 @@
       <para>Inherits the rootfs class for the appropriate package type,
       typically <xref linkend="rootfs_ipkg_class" />, in order to bring in the
       functionality required to generate a root filesystem image. The root
-      filesystem image is generate from a set of of packages (typically .ipkg
+      filesystem image is generated from a set of of packages (typically .ipkg
       packages), and then the required images are generated using the contents
       of the root filesystem;</para>
     </listitem>
@@ -26,7 +26,7 @@
     <listitem>
       <para>Sets <command>BUILD_ALL_DEPS = "1"</command> to force the
       dependency system to build all packages that are listed in the
-      <command>RDEPENDS</command> and/or <command>RRECOMENDS</command> of the
+      <command>RDEPENDS</command> and/or <command>RRECOMMENDS</command> of the
       packages to be installed;</para>
     </listitem>
 
@@ -126,7 +126,7 @@
 
       <listitem>
         <para>Specifies the file that lists the device nodes that should be
-        created in the <command>/dev </command>directory of the image. This
+        created in the <command>/dev</command> directory of the image. This
         needs to be an absolute filename and so should be specified relative
         to <command>${BBPATH}</command>. Only a single device table is
         supported. Use <command>IMAGE_DEVICE_TABLES</command> instead if you
@@ -217,8 +217,8 @@
 
     <para>The <command>IMAGE_PREPROCESS_COMMAND</command> and
     <command>IMAGE_POSTPROCESS_COMMAND</command> variables will be processed
-    within the same <xref linkend="fakeroot" /> instance as the rest of the
-    rest of this class.</para>
+    within the same <xref linkend="fakeroot" /> instance as the rest of
+    this class.</para>
   </section>
 
   <section>
@@ -292,12 +292,12 @@ IMAGE_DEVICE_TABLES = "files/device_table-minimal.txt files/device_table_add-sci
 
     <para>"Package feed", or feed for short, is a term used by <command>ipkg</command> 
     package manager, commonly used in embedded systems, to name a package repository 
-    holding packages. Structurally, a feed is a directory - local, or on HTTP of FTP server, -
+    holding packages. Structurally, a feed is a directory - local, or on HTTP or FTP server, -
     holding packages and package descriptor file, named <command>Packages</command> or 
     <command>Packages.gz</command> if compressed. Multiple feeds are supported.</para>
 
     <para>OpenEmbedded has support to pre-configure feeds within generated images, 
-    so once image is installed on a device, user can immediately install new software, 
+    so once an image is installed on a device, the user can immediately install new software, 
     without the need to manually edit config files. There are several ways to pre-configure 
     feed support, described below.</para>
     
