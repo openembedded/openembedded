@@ -296,11 +296,7 @@ pkg_prerm_${PN}-shadow () {
 pkg_postinst_${PN}-syslog () {
 	update-alternatives --install ${sysconfdir}/init.d/syslog syslog-init syslog.${PN} 50
 
-	if test "x$D" != "x"; then
-		OPT="-r $D"
-	else
-		OPT="-s"
-	fi
+	[ -n "$D" ] && OPT="-r $D" || OPT="-s"
 	# remove all rc.d-links potentially created from alternative
 	# syslog packages before creating new ones
 	update-rc.d $OPT -f syslog remove
@@ -318,13 +314,9 @@ pkg_prerm_${PN}-syslog () {
 }
 
 pkg_postrm_${PN}-syslog () {
-	if test "x$D" != "x"; then
-		OPT="-r $D"
-	else
-		OPT=""
-	fi
 	if test "$1" = "remove" -o "$1" = "purge"; then
 		if ! test -e "/etc/init.d/syslog"; then
+			[ -n "$D" ] && OPT="-r $D" || OPT="-s"
 			update-rc.d $OPT syslog remove
 		fi
 	fi
