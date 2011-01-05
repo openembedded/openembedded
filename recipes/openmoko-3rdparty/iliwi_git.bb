@@ -8,9 +8,10 @@ RDEPENDS_${PN} = "wireless-tools wpa-supplicant"
 
 SRCREV = "5be2b301033418fb9a33759047274b676034f096"
 PV = "0.0.1+gitr${SRCPV}"
-PR = "r8"
+PR = "r9"
 
-SRC_URI = "git://github.com/Ebbe/Iliwi.git;protocol=http;branch=master"
+SRC_URI = "git://github.com/Ebbe/Iliwi.git;protocol=http;branch=master \
+           file://new.vala.patch"
 S = "${WORKDIR}/git"
 
 inherit autotools vala
