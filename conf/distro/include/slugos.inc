@@ -30,12 +30,9 @@ THUMB_INTERWORK = "yes"
 #    arm system and vice versa.  It is strongly recommended that DISTROs not
 #    turn this off - the actual cost is very small.
 # We want images supporting the following features (for task-base)
-DISTRO_FEATURES = "largefile ipv4 ipv6 nfs smbfs wifi ppp alsa bluetooth ext2 vfat irda pcmcia usbhost pci"
+DISTRO_FEATURES = "largefile ipv4 ipv6 nfs smbfs wifi ppp alsa bluetooth ext2 vfat irda pcmcia usbhost pci eabi"
 # We may also wish to enable raid support at some point (space permitting)
 #DISTRO_FEATURES += " raid"
-
-# Add thumb-interwork to feature list if selected machine supports it.
-DISTRO_FEATURES += ' ${@["", "thumb-interwork"][bb.data.getVar('THUMB_INTERWORK', d, 1) == "yes"]}'
 
 IMAGE_BASENAME = "${@['slugos${SITEINFO_ENDIANNESS}', 'ucslugc'][bb.data.getVar('TARGET_OS', d, 1) == 'linux-uclibc']}"
 
@@ -111,8 +108,8 @@ DISTRO_EXTRA_DEPENDS ?= ""
 DISTRO_EXTRA_RDEPENDS ?= ""
 DISTRO_EXTRA_RRECOMMENDS ?= ""
 
-CVS_TARBALL_STASH = "http://sources.nslu2-linux.org/sources/"
-INHERIT += "nslu2-mirrors"
+SOURCE_MIRROR_URL = "http://sources.nslu2-linux.org/sources/"
+INHERIT += "own-mirrors"
 
 #FIXME: HACK: REMOVE THIS
 IGNORE_STRIP_ERRORS = ""
