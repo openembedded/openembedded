@@ -1,6 +1,7 @@
 DESCRIPTION = "Collection of POSIX-c functions implementing the OAuth Core RFC 5849 standard"
 HOMEPAGE = "http://liboauth.sourceforge.net/"
 LICENSE = "MIT GPLv2"
+DEPENDS = "curl"
 SECTION = "libs"
 
 SRC_URI = "http://liboauth.sourceforge.net/pool/${P}.tar.gz"
