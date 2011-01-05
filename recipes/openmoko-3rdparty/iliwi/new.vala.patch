@@ -1,0 +1,59 @@
+From patchwork Mon Jan  3 16:17:07 2011
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [Shr-Devel] Fix code to compile against new vala version
+Date: Mon, 03 Jan 2011 15:17:07 -0000
+From: Pau Espin Pedrol <pespin.shar@gmail.com>
+X-Patchwork-Id: 838
+
+---
+ src/wifi.vala |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
+
+
+diff --git a/src/wifi.vala b/src/wifi.vala
+index 5460bb1..9995f16 100644
+--- a/src/wifi.vala
++++ b/src/wifi.vala
+@@ -25,11 +25,11 @@ namespace iliwi {
+     public signal void status_change();
+     public signal void network_list_change();
+     
+-    unowned Thread thread;
++    unowned Thread<void*> thread;
+     
+     public Wifi() {
+       try {
+-        thread = Thread.create(WifiThread.run_thread, true);
++        thread = Thread.create<void*>(WifiThread.run_thread, true);
+       } catch(Error e) {
+         critical("Couldn't start wifi-thread!");
+       }
+@@ -270,7 +270,7 @@ namespace iliwi {
+       }
+     }
+     public static void connect_to_network(Network network) {
+-      disconnect();
++      disconnectt();
+       wifi.set_new_status("connecting..");
+       connect_network = network;
+       network.set_new_status(NetworkStatus.CONNECTING);
+@@ -317,7 +317,7 @@ namespace iliwi {
+       }
+       status = NetworkStatus.CONNECT;
+     }
+-    private static void disconnect() {
++    private static void disconnectt() {
+       status = NetworkStatus.UNCONNECTED;
+       try {
+         Process.spawn_sync(null, {Environment.find_program_in_path("killall"),"wpa_supplicant"}, null, GLib.SpawnFlags.STDERR_TO_DEV_NULL, null);
+@@ -372,7 +372,7 @@ namespace iliwi {
+       networks = new HashMap<string,Network>(str_hash,str_equal);
+       visible_networks = new ArrayList<Network>();
+       status = NetworkStatus.UNCONNECTED;
+-      disconnect();
++      disconnectt();
+       load_preferred_networks();
+       scan();
+     }
