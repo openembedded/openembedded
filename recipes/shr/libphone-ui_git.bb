@@ -10,7 +10,7 @@ DEPENDS="glib-2.0 libshr-glib libfso-glib libfsoframework libphone-utils alsa-li
 
 inherit pkgconfig autotools autotools
 
-SRC_URI = "git://git.shr-project.org/repo/libphone-ui.git;protocol=http;branch=gdbus"
+SRC_URI = "git://git.shr-project.org/repo/libphone-ui.git;protocol=http;branch=master"
 
 S="${WORKDIR}/git"
 
