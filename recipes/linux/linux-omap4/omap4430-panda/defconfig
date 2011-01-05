@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.35.3
-# Mon Jan  3 18:32:31 2011
+# Wed Jan  5 11:21:06 2011
 #
 CONFIG_ARM=y
 CONFIG_HAVE_PWM=y
@@ -320,7 +320,7 @@ CONFIG_CACHE_L2X0=y
 CONFIG_CACHE_PL310=y
 CONFIG_ARM_L1_CACHE_SHIFT=5
 CONFIG_ARM_DMA_MEM_BUFFERABLE=y
-CONFIG_USER_L2_PLE=y
+# CONFIG_USER_L2_PLE is not set
 CONFIG_USER_PMON=y
 CONFIG_CPU_HAS_PMU=y
 # CONFIG_ARM_ERRATA_430973 is not set
