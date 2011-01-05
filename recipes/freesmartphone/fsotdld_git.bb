@@ -1,11 +1,11 @@
 require cornucopia.inc
 inherit fso-plugin
 SRCREV = "${FSO_CORNUCOPIA_SRCREV}"
-PR = "${INC_PR}.3"
+PR = "${INC_PR}.4"
 PV = "0.3.1+gitr${SRCPV}"
 PE = "1"
 
-DEPENDS += "libfsotransport libfsoresource json-glib"
+DEPENDS += "libfsotransport libfsoresource json-glib libsoup-2.4"
 
 inherit update-rc.d
 
