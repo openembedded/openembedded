@@ -1,6 +1,7 @@
 HOMEPAGE = "http://processors.wiki.ti.com/index.php/Xgxperf"
 DESCRIPTION = "Qt Benchmarking Utility With Sample GUI applications For 2D/3D UseCases"
 
+SRCREV = "79"
 SRC_URI = "svn://gforge.ti.com/svn/gleslayer/;module=trunk;proto=https;user=anonymous;pswd=''"
 
 S = "${WORKDIR}/trunk/Packages/OMAP3_Graphics_SDK/xgxperf/xgxperf"
