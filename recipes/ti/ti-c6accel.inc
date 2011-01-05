@@ -18,7 +18,7 @@ PROVIDES += "ti-c6accel-apps"
 
 # This recipe links statically against kernel dependant stuff, use kernel PR as base and append a local version
 PR = "${MACHINE_KERNEL_PR}"
-PR_append = "a"
+PR_append = "b"
 
 S = "${WORKDIR}/c6accel_${PV}"
 

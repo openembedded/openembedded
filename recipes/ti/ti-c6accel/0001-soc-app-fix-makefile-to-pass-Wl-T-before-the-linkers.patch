@@ -1,0 +1,26 @@
+From 58c50064afdc2fd7093613e0ae3a9192ea189460 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Wed, 5 Jan 2011 10:10:33 +0100
+Subject: [PATCH] soc/app: fix makefile to pass -Wl,-T, before the linkerscript
+
+Signed-off-by: Koen Kooi <koen@dominion.thruhere.net>
+---
+ soc/app/Makefile |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/soc/app/Makefile b/soc/app/Makefile
+index 0bb7bdc..342e43a 100755
+--- a/soc/app/Makefile
++++ b/soc/app/Makefile
+@@ -33,7 +33,7 @@ XDC_CFG		= $(TARGET)_config
+ XDC_CFLAGS	= $(XDC_CFG)/compiler.opt
+ 
+ # Output linker file
+-XDC_LFILE	= $(XDC_CFG)/linker.cmd
++XDC_LFILE	= -Wl,-T,$(XDC_CFG)/linker.cmd
+ 
+ # Input configuration file
+ XDC_CFGFILE	= $(PLATFORM)/$(TARGET).cfg
+-- 
+1.6.6.1
+
