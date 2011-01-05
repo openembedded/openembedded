@@ -1,0 +1,17 @@
+---
+ klcc/makeklcc.pl |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+Index: klibc-1.5.20/klcc/makeklcc.pl
+===================================================================
+--- klibc-1.5.20.orig/klcc/makeklcc.pl
++++ klibc-1.5.20/klcc/makeklcc.pl
+@@ -26,7 +26,7 @@ sub pathsearch($) {
+     return undef;
+ }
+ 
+-print "#!${perlpath}\n";
++print "#!/usr/bin/env perl\n";
+ 
+ open(KLIBCCONF, "< $klibcconf\0")
+     or die "$0: cannot open $klibcconf: $!\n";

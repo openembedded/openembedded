@@ -1,7 +1,10 @@
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 require klibc.inc
 require klibc-checksums_${PV}.inc
+
+SRC_URI += "file://use-env-for-perl.patch"
+
 DEPENDS = "klibc"
 
 FILESPATHPKG =. "klibc-${PV}:"
