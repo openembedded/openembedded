@@ -2,6 +2,10 @@ DESCRIPTION = "JSON-GLib is a library providing serialization and deserializatio
 LICENSE = "LGPLv2.1"
 DEPENDS = "glib-2.0"
 
+PR = "r1"
+
+EXTRA_OECONF = "--enable-introspection=no"
+
 inherit autotools
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/json-glib/0.10/json-glib-0.10.4.tar.gz"
 
