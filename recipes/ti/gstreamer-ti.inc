@@ -15,7 +15,7 @@ require ti-paths.inc
 require ti-staging.inc
 
 # Rebuild on kernel change since it links statically to ti-dmai, ti-codec-engine, etc
-PR = "r81+${MACHINE_KERNEL_PR}"
+PR = "r82+${MACHINE_KERNEL_PR}"
 
 DEPENDS = "ti-dmai gstreamer gst-plugins-base"
 
@@ -79,6 +79,20 @@ do_configure_prepend() {
 	if ! [ -e ${STAGING_KERNEL_DIR}/include/linux/omapfb.h ] ; then
 		sed -i -e s:linux/omapfb:mach/omapfb:g ${S}/src/omapfb.h || true
 	fi
+
+	# Fix up linkerscripts, recent toolchains need -T to prepend the default script to the custom one 
+	for makefile in $(find ${S} -name "Makefile.am") ; do
+		sed -i -e 's:-Wl,$(XDC_CONFIG_BASENAME)/linker.cmd:-Wl,-T,$(XDC_CONFIG_BASENAME)/linker.cmd:g' $makefile
+	done
+}
+
+do_compile() {
+	# Recent kernel headers warn against inclusion from userspace
+	for makefile in $(find ${S} -name "Makefile") ; do
+		sed -i -e s:-Werror::g $makefile
+	done
+
+    oe_runmake
 }
 
 do_install_prepend () {
