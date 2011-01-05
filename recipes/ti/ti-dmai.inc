@@ -81,6 +81,16 @@ do_prepsources() {
 addtask prepsources after do_unpack before do_patch
 
 do_compile () {
+	# Recent kernel headers warn against inclusion from userspace
+    for makefile in $(find ${S} -name "Makefile") ; do
+        sed -i -e s:-Werror::g $makefile
+    done
+
+    # Fix up linkerscripts, recent toolchains need -T to prepend the default script to the custom one 
+    for appmakefile in $(find ${S} -name "Makefile.app") ; do
+        sed -i -e 's: $(XDC_CFG)/linker.cmd: -Wl,-T,$(XDC_CFG)/linker.cmd:g' $appmakefile
+    done
+
     # TODO :: Why do we do this?
     unset DMAI_INSTALL_DIR
     cd ${S}
