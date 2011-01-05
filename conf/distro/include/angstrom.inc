@@ -133,6 +133,7 @@ TARGET_FPU_ppc405 ?= "soft"
 TARGET_FPU_armv6 ?= "hard"
 TARGET_FPU_armv6-novfp ?= "soft"
 TARGET_FPU_armv7a ?= "hard"
+TARGET_FPU_armv7a-vfp ?= "hard"
 TARGET_FPU_ppc603e ?= "hard"
 
 # webkit-gtk and cairo have alignment issues with double instructions on armv5 so
