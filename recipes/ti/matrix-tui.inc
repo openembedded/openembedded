@@ -5,9 +5,16 @@ SECTION = "multimedia"
 PRIORITY = "optional"
 DEPENDS = "libxml2 zlib ncurses"
 
-INC_PR = "r5"
+INC_PR = "r7"
 
-INSANE_SKIP_${PN} = "True"
+COMPATIBLE_MACHINE = "(omapl138|omap3)"
+
+PLATFORM_am37x-evm = "am3715"
+PLATFORM_beagleboard = "am3715"
+PLATFORM_am3517-evm = "am3517"
+PLATFORM_am180x-evm = "am180x"
+PLATFORM_am181x-evm = "am181x"
+PLATFORM_da850-omapl138-evm = "am180x"
 
 SRC_URI = "svn://gforge.ti.com/svn/matrix_tui/;module=trunk;proto=https;user=anonymous;pswd='' \
 	file://init \
@@ -36,6 +43,7 @@ do_compile() {
 }
 
 do_install() {
+	export PLATFORM=${PLATFORM}
 	make DESTDIR=${D} install
 	install -d ${D}${sysconfdir}/init.d/
 	install -c -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/matrix-tui
