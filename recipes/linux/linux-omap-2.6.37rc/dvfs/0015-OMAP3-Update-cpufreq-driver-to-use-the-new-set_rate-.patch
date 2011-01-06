@@ -1,0 +1,54 @@
+From 7fbd0c4b60534401287ae4a0410e82853f7dc015 Mon Sep 17 00:00:00 2001
+From: Thara Gopinath <thara@ti.com>
+Date: Fri, 2 Jul 2010 13:07:49 +0530
+Subject: [PATCH 15/19] OMAP3: Update cpufreq driver to use the new set_rate API
+
+This patch updates the cpufreq driver to use the device
+set rate API to scale the mpu frequency for OMAP3.
+
+Signed-off-by: Thara Gopinath <thara@ti.com>
+---
+ arch/arm/plat-omap/cpu-omap.c |   11 ++++-------
+ 1 files changed, 4 insertions(+), 7 deletions(-)
+
+diff --git a/arch/arm/plat-omap/cpu-omap.c b/arch/arm/plat-omap/cpu-omap.c
+index 671e4b9..71777db 100644
+--- a/arch/arm/plat-omap/cpu-omap.c
++++ b/arch/arm/plat-omap/cpu-omap.c
+@@ -31,10 +31,7 @@
+ #include <plat/clock.h>
+ #include <plat/common.h>
+ #include <asm/system.h>
+-
+-#if defined(CONFIG_ARCH_OMAP3) && !defined(CONFIG_OMAP_PM_NONE)
+-#include <plat/omap-pm.h>
+-#endif
++#include <plat/omap_device.h>
+ 
+ #define VERY_HI_RATE	900000000
+ 
+@@ -88,7 +85,7 @@ static int omap_target(struct cpufreq_policy *policy,
+ #ifdef CONFIG_ARCH_OMAP1
+ 	struct cpufreq_freqs freqs;
+ #endif
+-#if defined(CONFIG_ARCH_OMAP3) && !defined(CONFIG_OMAP_PM_NONE)
++#if defined(CONFIG_ARCH_OMAP3)
+ 	unsigned long freq;
+ 	struct device *mpu_dev = omap2_get_mpuss_device();
+ #endif
+@@ -115,10 +112,10 @@ static int omap_target(struct cpufreq_policy *policy,
+ #endif
+ 	ret = clk_set_rate(mpu_clk, freqs.new * 1000);
+ 	cpufreq_notify_transition(&freqs, CPUFREQ_POSTCHANGE);
+-#elif defined(CONFIG_ARCH_OMAP3) && !defined(CONFIG_OMAP_PM_NONE)
++#elif defined(CONFIG_ARCH_OMAP3)
+ 	freq = target_freq * 1000;
+ 	if (opp_find_freq_ceil(mpu_dev, &freq))
+-		omap_pm_cpu_set_freq(freq);
++		omap_device_scale(mpu_dev, mpu_dev, freq);
+ #endif
+ 	return ret;
+ }
+-- 
+1.6.6.1
+

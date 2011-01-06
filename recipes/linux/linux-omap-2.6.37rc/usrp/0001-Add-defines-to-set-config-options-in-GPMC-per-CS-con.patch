@@ -1,0 +1,80 @@
+From a6e1f70eca0fcc9899e949f7ecb30b0fa483f590 Mon Sep 17 00:00:00 2001
+From: Philip Balister <balister@nomad.(none)>
+Date: Wed, 17 Feb 2010 14:51:39 -0800
+Subject: [PATCH 01/22] Add defines to set config options in GPMC per CS control registers.
+
+---
+ arch/arm/plat-omap/include/plat/gpmc.h |   36 ++++++++++++++++++++++++++++++++
+ 1 files changed, 36 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/plat-omap/include/plat/gpmc.h b/arch/arm/plat-omap/include/plat/gpmc.h
+index 85ded59..1a6c748 100644
+--- a/arch/arm/plat-omap/include/plat/gpmc.h
++++ b/arch/arm/plat-omap/include/plat/gpmc.h
+@@ -46,6 +46,11 @@
+ #define GPMC_ECC_WRITE		1 /* Reset Hardware ECC for write */
+ #define GPMC_ECC_READSYN	2 /* Reset before syndrom is read back */
+ 
++#define GPMC_CONFIG		0x50
++#define GPMC_STATUS		0x54
++#define GPMC_CS0_BASE		0x60
++#define GPMC_CS_SIZE		0x30
++
+ #define GPMC_CONFIG1_WRAPBURST_SUPP     (1 << 31)
+ #define GPMC_CONFIG1_READMULTIPLE_SUPP  (1 << 30)
+ #define GPMC_CONFIG1_READTYPE_ASYNC     (0 << 29)
+@@ -63,6 +68,7 @@
+ #define GPMC_CONFIG1_DEVICESIZE_16      GPMC_CONFIG1_DEVICESIZE(1)
+ #define GPMC_CONFIG1_DEVICETYPE(val)    ((val & 3) << 10)
+ #define GPMC_CONFIG1_DEVICETYPE_NOR     GPMC_CONFIG1_DEVICETYPE(0)
++#define GPMC_CONFIG1_DEVICETYPE_NAND    GPMC_CONFIG1_DEVICETYPE(2)
+ #define GPMC_CONFIG1_MUXADDDATA         (1 << 9)
+ #define GPMC_CONFIG1_TIME_PARA_GRAN     (1 << 4)
+ #define GPMC_CONFIG1_FCLK_DIV(val)      (val & 3)
+@@ -79,6 +85,35 @@
+ #define GPMC_PREFETCH_STATUS_FIFO_CNT(val)	((val >> 24) & 0x7F)
+ #define GPMC_PREFETCH_STATUS_COUNT(val)	(val & 0x00003fff)
+ 
++#define GPMC_CONFIG2_CSWROFFTIME(val)	((val & 31) << 16)
++#define GPMC_CONFIG2_CSRDOFFTIME(val)	((val & 31) << 8)
++#define GPMC_CONFIG2_CSEXTRADELAY	(1 << 7)
++#define GPMC_CONFIG2_CSONTIME(val)	(val & 15)
++
++#define GPMC_CONFIG3_ADVWROFFTIME(val)	((val & 31) << 16)
++#define GPMC_CONFIG3_ADVRDOFFTIME(val)	((val & 31) << 8)
++#define GPMC_CONFIG3_ADVEXTRADELAY	(1 << 7)
++#define GPMC_CONFIG3_ADVONTIME(val)	(val & 15)
++
++#define GPMC_CONFIG4_WEOFFTIME(val)	((val & 31) << 24)
++#define GPMC_CONFIG4_WEEXTRADELAY	(1 << 23)
++#define GPMC_CONFIG4_WEONTIME(val)	((val & 15) << 16)
++#define GPMC_CONFIG4_OEOFFTIME(val)	((val & 31) << 8)
++#define GPMC_CONFIG4_OEEXTRADELAY	(1 << 7)
++#define GPMC_CONFIG4_OEONTIME(val)	(val & 15)
++
++#define GPMC_CONFIG5_PAGEBURSTACCESSTIME(val)	((val & 15) << 24)
++#define GPMC_CONFIG5_RDACCESSTIME(val)	((val & 31) << 16)
++#define GPMC_CONFIG5_WRCYCLETIME(val)	((val & 31) << 8)
++#define GPMC_CONFIG5_RDCYCLETIME(val)	(val & 31)
++
++#define GPMC_CONFIG6_WRACCESSTIME(val)	((val & 31) << 24)
++#define GPMC_CONFIG6_WRDATAONADMUXBUS(val)	((val & 15) << 16)
++#define GPMC_CONFIG6_CYCLE2CYCLEDELAY(val)	((val & 15) << 8)
++#define GPMC_CONFIG6_CYCLE2CYCLESAMECSEN	(1 << 7)
++#define GPMC_CONFIG6_CYCLE2CYCLEDIFFCSEN	(1 << 6)
++#define GPMC_CONFIG6_BUSTURNAROUND(val)	(val & 15)
++
+ /*
+  * Note that all values in this struct are in nanoseconds except sync_clk
+  * (which is in picoseconds), while the register values are in gpmc_fck cycles.
+@@ -133,6 +168,7 @@ extern int gpmc_cs_reserved(int cs);
+ extern int gpmc_prefetch_enable(int cs, int dma_mode,
+ 					unsigned int u32_count, int is_write);
+ extern int gpmc_prefetch_reset(int cs);
++extern int gpmc_prefetch_status(void);
+ extern void omap3_gpmc_save_context(void);
+ extern void omap3_gpmc_restore_context(void);
+ extern void gpmc_init(void);
+-- 
+1.6.6.1
+

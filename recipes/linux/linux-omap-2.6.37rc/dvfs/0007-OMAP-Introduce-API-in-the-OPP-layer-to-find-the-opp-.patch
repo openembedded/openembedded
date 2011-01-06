@@ -1,0 +1,82 @@
+From d11d1b439fd20557813154c6d8c92d1f7e21f975 Mon Sep 17 00:00:00 2001
+From: Thara Gopinath <thara@ti.com>
+Date: Fri, 29 Oct 2010 20:43:10 +0530
+Subject: [PATCH 07/19] OMAP: Introduce API in the OPP layer to find the opp entry corresponding to a voltage.
+
+This patch adds an API in the opp layer to get the opp table entry
+corresponding to the voltage passed as the parameter.
+
+Signed-off-by: Thara Gopinath <thara@ti.com>
+---
+ drivers/base/power/opp.c |   28 ++++++++++++++++++++++++++++
+ include/linux/opp.h      |    8 ++++++++
+ 2 files changed, 36 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/base/power/opp.c b/drivers/base/power/opp.c
+index 2bb9b4c..60b4478 100644
+--- a/drivers/base/power/opp.c
++++ b/drivers/base/power/opp.c
+@@ -354,6 +354,34 @@ struct opp *opp_find_freq_floor(struct device *dev, unsigned long *freq)
+ }
+ 
+ /**
++ * opp_find_voltage() - search for an exact voltage
++ * @dev:	device pointer associated with the opp type
++ * @volt:	voltage to search for
++ *
++ * Searches for exact match in the opp list and returns handle to the matching
++ * opp if found, else returns ERR_PTR in case of error and should be handled
++ * using IS_ERR.
++ */
++struct opp *opp_find_voltage(struct device *dev, unsigned long volt)
++{
++	struct device_opp *dev_opp;
++	struct opp *temp_opp, *opp = ERR_PTR(-ENODEV);
++
++	dev_opp = find_device_opp(dev);
++	if (IS_ERR(dev_opp))
++		return opp;
++
++	list_for_each_entry_rcu(temp_opp, &dev_opp->opp_list, node) {
++		if (temp_opp->available && temp_opp->u_volt == volt) {
++			opp = temp_opp;
++			break;
++		}
++	}
++
++	return opp;
++}
++
++/**
+  * opp_add()  - Add an OPP table from a table definitions
+  * @dev:	device for which we do this operation
+  * @freq:	Frequency in Hz for this OPP
+diff --git a/include/linux/opp.h b/include/linux/opp.h
+index 5449945..4977d5c 100644
+--- a/include/linux/opp.h
++++ b/include/linux/opp.h
+@@ -34,6 +34,8 @@ struct opp *opp_find_freq_floor(struct device *dev, unsigned long *freq);
+ 
+ struct opp *opp_find_freq_ceil(struct device *dev, unsigned long *freq);
+ 
++struct opp *opp_find_voltage(struct device *dev, unsigned long volt);
++
+ int opp_add(struct device *dev, unsigned long freq, unsigned long u_volt);
+ 
+ int opp_enable(struct device *dev, unsigned long freq);
+@@ -74,6 +76,12 @@ static inline struct opp *opp_find_freq_ceil(struct device *dev,
+ 	return ERR_PTR(-EINVAL);
+ }
+ 
++static inline struct opp *opp_find_voltage(struct device *dev,
++						unsigned long volt)
++{
++	return ERR_PTR(-EINVAL);
++}
++
+ static inline int opp_add(struct device *dev, unsigned long freq,
+ 					unsigned long u_volt)
+ {
+-- 
+1.6.6.1
+
