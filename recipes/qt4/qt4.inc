@@ -285,14 +285,12 @@ do_install() {
            ${D}${libdir}/pkgconfig/*.pc
     for name in ${QT_LIB_NAMES}; do
            sed -i -e /Requires/s#"${name}"#"${name}${QT_LIBINFIX}"#g ${D}${libdir}/pkgconfig/*.pc
+           if [ -f ${D}${libdir}/pkgconfig/${name}${QT_LIBINFIX}.pc ]; then
+               sed -i -e /^includedir=/s#"/${name}"## \
+                      -e /^Cflags:/s#"${QT_DIR_NAME}"#"${name}"# \
+                         ${D}${libdir}/pkgconfig/${name}${QT_LIBINFIX}.pc
+           fi
     done
-
-	# QT abuses $includedir to point to its headers, which breaks pkgconfig sysroot, so manually fix it up here:
-	for pc in ${D}${libdir}/pkgconfig/*.pc ; do
-		sed -i -e "s:prefix}include/${QT_BASE_NAME}/$(basename $pc .pc):prefix}/include:" \
-		       -e "s,Cflags: ,Cflags: -IP{includedir}/${QT_BASE_NAME}/$(basename $pc .pc) ," \
-		       -e 's:IP{:I${:g' $pc
-	done
 
     install -d ${D}/${libdir}/fonts
     touch ${D}/${libdir}/fonts/fontdir
