@@ -28,6 +28,9 @@ cpan_do_compile () {
 
 cpan_do_install () {
 	oe_runmake DESTDIR="${D}" install_vendor
+	for PERLSCRIPT in `grep -rIl '#!${bindir}/perl' ${D}`; do
+		sed -i -e 's|^#!${bindir}/perl|#!/usr/bin/env perl|' $PERLSCRIPT
+	done
 }
 
 EXPORT_FUNCTIONS do_configure do_compile do_install
