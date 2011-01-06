@@ -190,12 +190,11 @@ def oe_unpack(d, local, urldata):
         bb.mkdirhier(destdir)
     else:
         destdir = workdir
-    dos = urldata.parm.get("dos")
 
     bb.note("Unpacking %s to %s/" % (base_path_out(local, d),
                                      base_path_out(destdir, d)))
     try:
-        unpack_file(local, destdir, env={"PATH": d.getVar("PATH", True)}, dos=dos)
+        unpack_file(local, destdir, urldata.parm, env={"PATH": d.getVar("PATH", True)})
     except UnpackError, exc:
         bb.fatal(str(exc))
 
