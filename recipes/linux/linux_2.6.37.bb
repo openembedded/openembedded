@@ -2,6 +2,9 @@ require linux.inc
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_sheevaplug = "1"
+DEFAULT_PREFERENCE_openrd-base = "1"
+DEFAULT_PREFERENCE_openrd-client = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/${P}.tar.bz2;name=kernel \
            file://defconfig "
