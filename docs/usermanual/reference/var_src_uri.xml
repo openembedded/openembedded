@@ -91,7 +91,8 @@ SRC_URI[sha256sum] = &quot;36bdb85c97b39ac604bc58cb7857ee08295242c78a12848ef8a31
   it is unpacked into the work directory, <command>${WORKDIR}</command>. The
   unpacker recognises several archive and compression types and for these it
   will decompress any compressed files and extract all of the files from
-  archives into the work directory. The supported types are:</para>
+  archives into the work directory, unless the option <command>unpack=no</command>
+  is set for the given file. The supported types are:</para>
 
   <variablelist>
     <varlistentry>
@@ -190,6 +191,16 @@ SRC_URI[sha256sum] = &quot;36bdb85c97b39ac604bc58cb7857ee08295242c78a12848ef8a31
           <para>If an md5sum is provided then the downloaded files will only
           be considered valid if the md5sum of the downloaded file matches the
           md5sum option provided.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>unpack={yes|no}</term>
+
+        <listitem>
+          <para>If set to 'yes' (default) and the source file is an archive,
+          then the archive will be decompressed and unpacked into the ${WORKDIR}.
+	  Otherwise, the archive will be copied into the ${WORKDIR}.</para>
         </listitem>
       </varlistentry>
     </variablelist>
