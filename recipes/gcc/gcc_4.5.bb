@@ -10,6 +10,6 @@ FILES_${PN} += "\
 	${libexecdir}/gcc/${TARGET_SYS}/${BINV}/lto-wrapper \
 "
 
-SRC_URI_append = "file://fortran-cross-compile-hack.patch"
+SRC_URI += "file://fortran-cross-compile-hack.patch"
 
 ARCH_FLAGS_FOR_TARGET += "-isystem${STAGING_INCDIR}"

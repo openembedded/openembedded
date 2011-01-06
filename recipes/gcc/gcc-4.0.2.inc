@@ -13,7 +13,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
 	file://zecke-xgcc-cpp.patch "
 
 # uclibc patches below
-SRC_URI_append = " file://100-uclibc-conf.patch   \
+SRC_URI += "file://100-uclibc-conf.patch   \
                    file://200-uclibc-locale.patch \
                    file://301-missing-execinfo_h.patch \
                    file://302-c99-snprintf.patch  \
