@@ -15,7 +15,7 @@ require ti-paths.inc
 require ti-staging.inc
 
 # Rebuild on kernel change since it links statically to ti-dmai, ti-codec-engine, etc
-PR = "r82+${MACHINE_KERNEL_PR}"
+PR = "r83+${MACHINE_KERNEL_PR}"
 
 DEPENDS = "ti-dmai gstreamer gst-plugins-base"
 
@@ -80,10 +80,13 @@ do_configure_prepend() {
 		sed -i -e s:linux/omapfb:mach/omapfb:g ${S}/src/omapfb.h || true
 	fi
 
-	# Fix up linkerscripts, recent toolchains need -T to prepend the default script to the custom one 
-	for makefile in $(find ${S} -name "Makefile.am") ; do
-		sed -i -e 's:-Wl,$(XDC_CONFIG_BASENAME)/linker.cmd:-Wl,-T,$(XDC_CONFIG_BASENAME)/linker.cmd:g' $makefile
-	done
+	# Angstrom 2008 breaks with -Wl,-T, while angstrom 2010 needs it
+	if [ $(${TARGET_PREFIX}gcc -dumpversion | awk -F. '{print $2}') -gt 3 ] ; then
+		# Fix up linkerscripts, recent toolchains need -T to prepend the default script to the custom one 
+		for makefile in $(find ${S} -name "Makefile.am") ; do
+			sed -i -e 's:-Wl,$(XDC_CONFIG_BASENAME)/linker.cmd:-Wl,-T,$(XDC_CONFIG_BASENAME)/linker.cmd:g' $makefile
+		done
+	fi
 }
 
 do_compile() {

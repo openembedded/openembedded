@@ -86,10 +86,13 @@ do_compile () {
         sed -i -e s:-Werror::g $makefile
     done
 
-    # Fix up linkerscripts, recent toolchains need -T to prepend the default script to the custom one 
-    for appmakefile in $(find ${S} -name "Makefile.app") ; do
-        sed -i -e 's: $(XDC_CFG)/linker.cmd: -Wl,-T,$(XDC_CFG)/linker.cmd:g' $appmakefile
-    done
+    # Angstrom 2008 breaks with -Wl,-T, while angstrom 2010 needs it
+    if [ $(${TARGET_PREFIX}gcc -dumpversion | awk -F. '{print $2}') -gt 3 ] ; then
+        # Fix up linkerscripts, recent toolchains need -T to prepend the default script to the custom one 
+        for appmakefile in $(find ${S} -name "Makefile.app") ; do
+            sed -i -e 's: $(XDC_CFG)/linker.cmd: -Wl,-T,$(XDC_CFG)/linker.cmd:g' $appmakefile
+        done
+    fi
 
     # TODO :: Why do we do this?
     unset DMAI_INSTALL_DIR

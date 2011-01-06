@@ -9,7 +9,7 @@ PV = "2_10_00_01+svnr${SRCPV}"
 
 # This package has high dependence on kernel, use kernel PR as base and append a local version
 PR = "${MACHINE_KERNEL_PR}"
-PR_append = "m"
+PR_append = "n"
 
 DMAIBRANCH_dm6446     = "trunk"
 DMAIBRANCH_dm6467     = "branches/GITPSP_INT_101009"
