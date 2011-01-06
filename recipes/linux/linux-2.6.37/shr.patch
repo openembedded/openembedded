@@ -1,13 +1,1110 @@
-From ba03d027f8a6ae3eb6d6805a2d27fce422e7adad Mon Sep 17 00:00:00 2001
-From: Martin Jansa <Martin.Jansa@gmail.com>
-Date: Sat, 7 Nov 2009 20:33:06 +0100
-Subject: [PATCH] wm8753: fix build with gcc-4.4.2, which works ok with 4.1.2
+All patches from shr kernel repository
+rebased on top of openmoko kernel repository
 
-Signed-off-by: Martin Jansa <Martin.Jansa@gmail.com>
----
- sound/soc/codecs/wm8753.c |    4 +++-
- 1 files changed, 3 insertions(+), 1 deletions(-)
+http://gitorious.org/~jama/htc-msm-2-6-32/openmoko-kernel/commits/shr-2.6.37
 
+ccd549e Use 100 as HZ value on S3C24XX
+7afc3f0 wm8753: use snd_soc_jack on neo1973
+4941630 Force GPS power up on resume if it were powered up on suspend
+ef4b55b s3c2410_ts: jitter less touchscreen for glamo, version 4
+dc7bd23 Openmoko resume reason sysfs node ported from 2.6.29
+40e1523 Rename /dev/s3c2410_serialXXX to /dev/ttySACXXX
+41fb019 glamo-display: fix WSOD for 242 timming
+2d81aa9 Enable powering off after 8s POWER press
+743f76b Fix high power consumption in suspend
+3adb6be tslib relies on ts pressures events so this hack is needed to get tslib stuff working
+dcd1e55 ar6000_delay.patch
+f00d735 usbhost.patch
+4633ec7 touchscreen: ignore unexpected interrupts
+1b95598 wm8753: fix build with gcc-4.4.2, which works ok with 4.1.2
+
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index d56d21c..fea7f49 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -1302,7 +1302,7 @@ source kernel/Kconfig.preempt
+ 
+ config HZ
+ 	int
+-	default 200 if ARCH_EBSA110 || ARCH_S3C2410 || ARCH_S5P64X0 || \
++	default 200 if ARCH_EBSA110 || ARCH_S5P64X0 || \
+ 		ARCH_S5P6442 || ARCH_S5PV210 || ARCH_S5PV310
+ 	default OMAP_32K_TIMER_HZ if ARCH_OMAP && OMAP_32K_TIMER
+ 	default AT91_TIMER_HZ if ARCH_AT91
+diff --git a/arch/arm/mach-s3c2440/Makefile b/arch/arm/mach-s3c2440/Makefile
+index 035d116..16d9855 100644
+--- a/arch/arm/mach-s3c2440/Makefile
++++ b/arch/arm/mach-s3c2440/Makefile
+@@ -38,6 +38,7 @@ obj-$(CONFIG_MACH_NEO1973_GTA02) += mach-gta02.o \
+ 	gta02-pm-bt.o \
+ 	gta02-pm-gps.o \
+ 	gta02-pm-gsm.o \
++	gta02-pm-usbhost.o \
+ 	gta02-pm-wlan.o \
+ 	gta02-fiq.o \
+ 	gta02-hdq.o \
+diff --git a/arch/arm/mach-s3c2440/gta02-pm-gps.c b/arch/arm/mach-s3c2440/gta02-pm-gps.c
+index 5f57eb4..092f5a0 100644
+--- a/arch/arm/mach-s3c2440/gta02-pm-gps.c
++++ b/arch/arm/mach-s3c2440/gta02-pm-gps.c
+@@ -42,7 +42,7 @@ int gta02_pm_gps_is_on(void)
+ EXPORT_SYMBOL_GPL(gta02_pm_gps_is_on);
+ 
+ /* This is the POWERON pin */
+-static void gps_pwron_set(int on)
++static void gps_pwron_set(int on, int ignore_state)
+ {
+ 	if (on) {
+ 		/* return UART pins to being UART pins */
+@@ -50,7 +50,7 @@ static void gps_pwron_set(int on)
+ 		/* remove pulldown now it won't be floating any more */
+ 		s3c_gpio_setpull(S3C2410_GPH(5), S3C_GPIO_PULL_NONE);
+ 
+-		if (!gta02_gps.power_was_on)
++		if (!gta02_gps.power_was_on || ignore_state)
+ 			regulator_enable(gta02_gps.regulator);
+ 	} else {
+ 		/*
+@@ -61,7 +61,7 @@ static void gps_pwron_set(int on)
+ 		gpio_set_value(S3C2410_GPH(4), 0);
+ 		/* don't let RX from unpowered GPS float */
+ 		s3c_gpio_setpull(S3C2410_GPH(5), S3C_GPIO_PULL_DOWN);
+-		if (gta02_gps.power_was_on)
++		if (gta02_gps.power_was_on || ignore_state)
+ 			regulator_disable(gta02_gps.regulator);
+ 	}
+ }
+@@ -108,7 +108,7 @@ static ssize_t power_gps_write(struct device *dev,
+ 	unsigned long on = simple_strtoul(buf, NULL, 10);
+ 
+ 	if (!strcmp(attr->attr.name, "power_on")) {
+-		gps_pwron_set(on);
++		gps_pwron_set(on, 0);
+ 		gta02_gps.power_was_on = !!on;
+ #ifdef CONFIG_PM
+ 	} else if (!strcmp(attr->attr.name, "keep_on_in_suspend")) {
+@@ -123,7 +123,7 @@ static int gta02_pm_gps_suspend(struct device *dev)
+ {
+ 	if (!gta02_gps.keep_on_in_suspend ||
+ 		!gta02_gps.power_was_on)
+-		gps_pwron_set(0);
++		gps_pwron_set(0, 0);
+ 	else
+ 		dev_warn(dev, "GTA02: keeping gps ON "
+ 			 "during suspend\n");
+@@ -133,7 +133,7 @@ static int gta02_pm_gps_suspend(struct device *dev)
+ static int gta02_pm_gps_resume(struct device *dev)
+ {
+ 	if (!gta02_gps.keep_on_in_suspend && gta02_gps.power_was_on)
+-		gps_pwron_set(1);
++		gps_pwron_set(1, 1);
+ 
+ 	return 0;
+ }
+diff --git a/arch/arm/mach-s3c2440/gta02-pm-usbhost.c b/arch/arm/mach-s3c2440/gta02-pm-usbhost.c
+new file mode 100644
+index 0000000..233340a
+--- /dev/null
++++ b/arch/arm/mach-s3c2440/gta02-pm-usbhost.c
+@@ -0,0 +1,174 @@
++/*
++ * USBHOST Management code for the Openmoko Freerunner GSM Phone
++ *
++ * (C) 2007 by Openmoko Inc.
++ * Author: Harald Welte <laforge@openmoko.org>
++ * All rights reserved.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/platform_device.h>
++#include <linux/console.h>
++#include <linux/errno.h>
++#include <linux/interrupt.h>
++#include <linux/delay.h>
++#include <linux/err.h>
++#include <linux/regulator/consumer.h>
++
++#include <mach/gpio.h>
++#include <asm/mach-types.h>
++
++#include <mach/hardware.h>
++
++#include <mach/gta02.h>
++#include <mach/regs-gpio.h>
++#include <mach/regs-gpioj.h>
++
++static struct regulator *gta02_usbhost_regulator;
++
++static ssize_t usbhost_read(struct device *dev, struct device_attribute *attr,
++			char *buf)
++{
++	if (!strcmp(attr->attr.name, "power_on")) {
++		if (regulator_is_enabled(gta02_usbhost_regulator))
++			goto out_1;
++	}
++
++	return strlcpy(buf, "0\n", 3);
++out_1:
++	return strlcpy(buf, "1\n", 3);
++}
++
++static void usbhost_on_off(struct device *dev, int on)
++{
++
++	on = !!on;
++
++	if (on == regulator_is_enabled(gta02_usbhost_regulator))
++		return;
++
++	if (!on) {
++		regulator_disable(gta02_usbhost_regulator);
++		return;
++	}
++
++	regulator_enable(gta02_usbhost_regulator);
++}
++
++static ssize_t usbhost_write(struct device *dev, struct device_attribute *attr,
++			 const char *buf, size_t count)
++{
++	unsigned long on = simple_strtoul(buf, NULL, 10);
++
++	if (!strcmp(attr->attr.name, "power_on")) {
++		usbhost_on_off(dev, on);
++
++		return count;
++	}
++
++	return count;
++}
++
++static DEVICE_ATTR(power_on, 0644, usbhost_read, usbhost_write);
++
++#ifdef CONFIG_PM
++
++static int gta02_usbhost_suspend(struct device *dev)
++{
++	return 0;
++}
++
++static int gta02_usbhost_suspend_late(struct device *dev)
++{
++	return 0;
++}
++
++static int gta02_usbhost_resume(struct device *dev)
++{
++	return 0;
++}
++
++static struct dev_pm_ops gta02_usbhost_pm_ops = {
++	.suspend	= gta02_usbhost_suspend,
++	.suspend_noirq	= gta02_usbhost_suspend_late,
++	.resume		= gta02_usbhost_resume,
++};
++
++#define GTA02_USBHOST_PM_OPS (&gta02_usbhost_pm_ops)
++
++#else
++#define GTA02_USBHOST_PM_OPS NULL
++#endif /* CONFIG_PM */
++
++static struct attribute *gta02_usbhost_sysfs_entries[] = {
++	&dev_attr_power_on.attr,
++	NULL
++};
++
++static struct attribute_group gta02_usbhost_attr_group = {
++	.name	= NULL,
++	.attrs	= gta02_usbhost_sysfs_entries,
++};
++
++static int __init gta02_usbhost_probe(struct platform_device *pdev)
++{
++	int ret;
++
++	gta02_usbhost_regulator = regulator_get_exclusive(&pdev->dev, "USBHOST");
++
++	if (IS_ERR(gta02_usbhost_regulator)) {
++		ret = PTR_ERR(gta02_usbhost_regulator);
++		dev_err(&pdev->dev, "Failed to get regulator: %d\n", ret);
++		return ret;
++	}
++
++	ret = sysfs_create_group(&pdev->dev.kobj, &gta02_usbhost_attr_group);
++	if (ret) {
++		dev_err(&pdev->dev, "Failed to create sysfs entries: %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int gta02_usbhost_remove(struct platform_device *pdev)
++{
++	usbhost_on_off(&pdev->dev, 0);
++
++	sysfs_remove_group(&pdev->dev.kobj, &gta02_usbhost_attr_group);
++	regulator_put(gta02_usbhost_regulator);
++
++	return 0;
++}
++
++static struct platform_driver gta02_usbhost_driver = {
++	.probe		= gta02_usbhost_probe,
++	.remove		= gta02_usbhost_remove,
++	.driver		= {
++		.name	= "gta02-pm-usbhost",
++		.pm	= GTA02_USBHOST_PM_OPS,
++	},
++};
++
++static int __devinit gta02_usbhost_init(void)
++{
++	return platform_driver_register(&gta02_usbhost_driver);
++}
++module_init(gta02_usbhost_init);
++
++static void gta02_usbhost_exit(void)
++{
++	platform_driver_unregister(&gta02_usbhost_driver);
++}
++module_exit(gta02_usbhost_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Harald Welte <laforge@openmoko.org>");
++MODULE_DESCRIPTION("Openmoko Freerunner USBHOST Power Management");
+diff --git a/arch/arm/mach-s3c2440/mach-gta02.c b/arch/arm/mach-s3c2440/mach-gta02.c
+index 450f1f2..b4b60aa 100644
+--- a/arch/arm/mach-s3c2440/mach-gta02.c
++++ b/arch/arm/mach-s3c2440/mach-gta02.c
+@@ -109,6 +109,7 @@
+ #include <linux/jbt6k74.h>
+ #include <linux/glamofb.h>
+ #include <linux/mfd/glamo.h>
++#include <linux/mfd/glamo-core.h>
+ 
+ static struct pcf50633 *gta02_pcf;
+ 
+@@ -127,6 +128,10 @@ static long gta02_panic_blink(int state)
+ 	return delay;
+ }
+ 
++struct platform_device gta02_resume_reason_device = {
++	.name 		= "neo1973-resume",
++	.num_resources	= 0,
++};
+ 
+ static struct map_desc gta02_iodesc[] __initdata = {
+ 	{
+@@ -177,6 +182,10 @@ static struct platform_device gta02_pm_gsm_dev = {
+ 	.name = "gta02-pm-gsm",
+ };
+ 
++static struct platform_device gta02_pm_usbhost_dev = {
++	.name = "gta02-pm-usbhost",
++};
++
+ static struct platform_device gta02_pm_wlan_dev = {
+ 	.name = "gta02-pm-wlan",
+ };
+@@ -186,6 +195,11 @@ static struct regulator_consumer_supply gsm_supply_consumer = {
+ 	.supply = "GSM",
+ };
+ 
++static struct regulator_consumer_supply usbhost_supply_consumer = {
++	.dev = &gta02_pm_usbhost_dev.dev,
++	.supply = "USBHOST",
++};
++
+ static struct regulator_init_data gsm_supply_init_data = {
+ 	.constraints = {
+ 		.min_uV = 3700000,
+@@ -197,6 +211,17 @@ static struct regulator_init_data gsm_supply_init_data = {
+ 	.consumer_supplies = &gsm_supply_consumer,
+ };
+ 
++static struct regulator_init_data usbhost_supply_init_data = {
++	.constraints = {
++		.min_uV = 3700000,
++		.max_uV = 3700000,
++		.valid_modes_mask = REGULATOR_MODE_NORMAL,
++		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
++	},
++	.num_consumer_supplies = 1,
++	.consumer_supplies = &usbhost_supply_consumer,
++};
++
+ static struct fixed_voltage_config gsm_supply_config = {
+ 	.supply_name = "GSM",
+ 	.microvolts = 3700000,
+@@ -205,6 +230,14 @@ static struct fixed_voltage_config gsm_supply_config = {
+ 	.init_data = &gsm_supply_init_data,
+ };
+ 
++static struct fixed_voltage_config usbhost_supply_config = {
++	.supply_name = "USBHOST",
++	.microvolts = 3700000,
++	.gpio = GTA02_GPIO_PCF(PCF50633_GPO),
++	.enable_high = 1,
++	.init_data = &usbhost_supply_init_data,
++};
++
+ static struct platform_device gta02_gsm_supply_device = {
+ 	.name = "reg-fixed-voltage",
+ 	.id = 1,
+@@ -213,6 +246,14 @@ static struct platform_device gta02_gsm_supply_device = {
+ 	},
+ };
+ 
++static struct platform_device gta02_usbhost_supply_device = {
++	.name = "reg-fixed-voltage",
++	.id = 2,
++	.dev = {
++		.platform_data = &usbhost_supply_config,
++	},
++};
++
+ /*
+  * we crank down SD Card clock dynamically when GPS is powered
+  */
+@@ -498,6 +539,11 @@ static struct regulator_consumer_supply hcldo_consumers[] = {
+ 	},
+ };
+ 
++static void gta02_poweroff(void)
++{
++	pcf50633_reg_set_bit_mask(gta02_pcf, PCF50633_REG_OOCSHDWN, 1, 1);
++}
++
+ struct pcf50633_platform_data gta02_pcf_pdata = {
+ 	.resumers = {
+ 		[0] =	PCF50633_INT1_USBINS |
+@@ -534,7 +580,7 @@ struct pcf50633_platform_data gta02_pcf_pdata = {
+ 				.min_uV = 1300000,
+ 				.max_uV = 1600000,
+ 				.valid_modes_mask = REGULATOR_MODE_NORMAL,
+-				.always_on = 1,
++				.always_on = 0,
+ 				.apply_uV = 1,
+ 			},
+ 		},
+@@ -626,6 +672,7 @@ struct pcf50633_platform_data gta02_pcf_pdata = {
+ 	},
+ 	.probe_done = gta02_pmu_attach_child_devices,
+ 	.mbc_event_callback = gta02_pmu_event_callback,
++	.force_shutdown = gta02_poweroff,
+ };
+ 
+ 
+@@ -728,11 +775,31 @@ static struct s3c2410_hcd_info gta02_usb_info __initdata = {
+ 	},
+ };
+ 
++static int glamo_slowed = 0;
++
++static void gta02_ts_hook_before_adc () 
++{
++	if (!glamo_slowed) {
++		glamo_slowed = 1;
++		glamo_pixclock_slow(dev_get_drvdata (&gta02_glamo_dev.dev));
++	}
++};
++
++static void gta02_ts_hook_after_adc () 
++{
++	if (glamo_slowed) {
++		glamo_slowed = 0;
++		glamo_pixclock_fast(dev_get_drvdata (&gta02_glamo_dev.dev));
++	}
++};
++
+ /* Touchscreen */
+ static struct s3c2410_ts_mach_info gta02_ts_info = {
+-       .delay = 10000,
++       .delay = 1000,
+        .presc = 0xff, /* slow as we can go */
+-	   .oversampling_shift = 2,
++       .oversampling_shift = 0,
++       .before_adc_hook = gta02_ts_hook_before_adc,
++       .after_adc_hook = gta02_ts_hook_after_adc,
+ };
+ 
+ /* Buttons */
+@@ -1073,6 +1140,7 @@ static struct platform_device *gta02_devices[] __initdata = {
+ static struct platform_device *gta02_devices_pmu_children[] = {
+     &gta02_hdq_device,
+ 	&gta02_platform_bat,
++	&gta02_resume_reason_device,
+ };
+ 
+ 
+@@ -1102,11 +1170,6 @@ static void gta02_pmu_attach_child_devices(struct pcf50633 *pcf)
+ 	regulator_has_full_constraints();
+ }
+ 
+-static void gta02_poweroff(void)
+-{
+-	pcf50633_reg_set_bit_mask(gta02_pcf, PCF50633_REG_OOCSHDWN, 1, 1);
+-}
+-
+ struct gta02_device_children {
+ 	const char *dev_name;
+ 	size_t num_children;
+@@ -1116,12 +1179,17 @@ struct gta02_device_children {
+ 
+ static struct platform_device* gta02_pcf50633_gpio_children[] = {
+ 	&gta02_gsm_supply_device,
++	&gta02_usbhost_supply_device,
+ };
+ 
+ static struct platform_device* gta02_gsm_supply_children[] = {
+ 	&gta02_pm_gsm_dev,
+ };
+ 
++static struct platform_device* gta02_usbhost_supply_children[] = {
++	&gta02_pm_usbhost_dev,
++};
++
+ static struct platform_device* gta02_hdq_children[] = {
+ 	&bq27000_battery_device,
+ };
+@@ -1130,7 +1198,7 @@ static struct platform_device* gta02_hdq_children[] = {
+ static struct gta02_device_children gta02_device_children[] = {
+ 	{
+ 		.dev_name = "pcf50633-gpio.0",
+-		.num_children = 1,
++		.num_children = 2,
+ 		.children = gta02_pcf50633_gpio_children,
+ 	},
+ 	{
+@@ -1139,6 +1207,11 @@ static struct gta02_device_children gta02_device_children[] = {
+ 		.children = gta02_gsm_supply_children,
+ 	},
+ 	{
++		.dev_name = "reg-fixed-voltage.2",
++		.num_children = 1,
++		.children = gta02_usbhost_supply_children,
++	},
++	{
+ 		.dev_name = "spi2.0",
+ 		.probed_callback = gta02_jbt6k74_probe_completed,
+ 	},
+diff --git a/arch/arm/plat-samsung/include/plat/ts.h b/arch/arm/plat-samsung/include/plat/ts.h
+index 26fdb22..f475349 100644
+--- a/arch/arm/plat-samsung/include/plat/ts.h
++++ b/arch/arm/plat-samsung/include/plat/ts.h
+@@ -15,6 +15,8 @@ struct s3c2410_ts_mach_info {
+        int             presc;
+        int             oversampling_shift;
+ 	void    (*cfg_gpio)(struct platform_device *dev);
++       void          (*before_adc_hook)(void);
++       void          (*after_adc_hook)(void);
+ };
+ 
+ extern void s3c24xx_ts_set_platdata(struct s3c2410_ts_mach_info *);
+diff --git a/arch/arm/plat-samsung/time.c b/arch/arm/plat-samsung/time.c
+index 2231d80..d342876 100644
+--- a/arch/arm/plat-samsung/time.c
++++ b/arch/arm/plat-samsung/time.c
+@@ -195,12 +195,12 @@ static void s3c2410_timer_setup (void)
+ 
+ 		/* configure clock tick */
+ 
+-		timer_usec_ticks = timer_mask_usec_ticks(6, pclk);
++		timer_usec_ticks = timer_mask_usec_ticks(12, pclk);
+ 
+ 		tscaler = clk_get_parent(tdiv);
+ 
+-		clk_set_rate(tscaler, pclk / 3);
+-		clk_set_rate(tdiv, pclk / 6);
++		clk_set_rate(tscaler, pclk / 6);
++		clk_set_rate(tdiv, pclk / 12);
+ 		clk_set_parent(tin, tdiv);
+ 
+ 		tcnt = clk_get_rate(tin) / HZ;
+diff --git a/drivers/ar6000/hif/hif2.c b/drivers/ar6000/hif/hif2.c
+index 386d96e..90178d0 100644
+--- a/drivers/ar6000/hif/hif2.c
++++ b/drivers/ar6000/hif/hif2.c
+@@ -517,6 +517,8 @@ static int ar6000_do_activate(struct hif_device *hif)
+ 		goto out_func_ready;
+ 	}
+ 
++	mdelay (10);
++
+ 	ret = htcCallbacks.deviceInsertedHandler(hif);
+ 	if (ret == A_OK)
+ 		return 0;
+diff --git a/drivers/input/touchscreen/s3c2410_ts.c b/drivers/input/touchscreen/s3c2410_ts.c
+index 8feb7f3..21c113b 100644
+--- a/drivers/input/touchscreen/s3c2410_ts.c
++++ b/drivers/input/touchscreen/s3c2410_ts.c
+@@ -20,7 +20,7 @@
+  * Copyright 2009 Simtec Electronics <linux@simtec.co.uk>
+  *
+  * Additional work by Herbert Pötzl <herbert@13thfloor.at> and
+- * Harald Welte <laforge@openmoko.org>
++ * Harald Welte <laforge@openmoko.org> and Gennady Kupava <gb@bsdmn.com>
+  */
+ 
+ #include <linux/errno.h>
+@@ -85,10 +85,19 @@ struct s3c2410ts {
+ 	int count;
+ 	int shift;
+ 	int features;
++	int expectedintr; /* kind of interrupt we are waiting for */
++#ifdef CONFIG_MACH_NEO1973_GTA02
++	void          (*before_adc_hook)(void);
++	void          (*after_adc_hook)(void);
++#endif
+ };
+ 
+ static struct s3c2410ts ts;
+ 
++#define WAITFORINT_UP (0)
++#define WAITFORINT_DOWN (1)
++#define WAITFORINT_NOTHING (2)
++
+ /**
+  * get_down - return the down state of the pen
+  * @data0: The data read from ADCDAT0 register.
+@@ -126,6 +135,7 @@ static void touch_timer_fire(unsigned long data)
+ 			input_report_abs(ts.input, ABS_Y, ts.yp);
+ 
+ 			input_report_key(ts.input, BTN_TOUCH, 1);
++            input_report_abs(ts.input, ABS_PRESSURE, 1);
+ 			input_sync(ts.input);
+ 
+ 			ts.xp = 0;
+@@ -133,6 +143,9 @@ static void touch_timer_fire(unsigned long data)
+ 			ts.count = 0;
+ 		}
+ 
++#ifdef CONFIG_MACH_NEO1973_GTA02
++		ts.before_adc_hook();
++#endif
+ 		s3c_adc_start(ts.client, 0, 1 << ts.shift);
+ 	} else {
+ 		ts.xp = 0;
+@@ -140,8 +153,10 @@ static void touch_timer_fire(unsigned long data)
+ 		ts.count = 0;
+ 
+ 		input_report_key(ts.input, BTN_TOUCH, 0);
++		input_report_abs(ts.input, ABS_PRESSURE, 0);
+ 		input_sync(ts.input);
+-
++		
++		ts.expectedintr = WAITFORINT_DOWN;
+ 		writel(WAIT4INT | INT_DOWN, ts.io + S3C2410_ADCTSC);
+ 	}
+ }
+@@ -166,13 +181,22 @@ static irqreturn_t stylus_irq(int irq, void *dev_id)
+ 
+ 	down = get_down(data0, data1);
+ 
+-	/* TODO we should never get an interrupt with down set while
+-	 * the timer is running, but maybe we ought to verify that the
+-	 * timer isn't running anyways. */
++	/* sitautions below can actually happen on openmoko hardware while 
++	   various debugging facilities are turned off */
++	if (ts.expectedintr == WAITFORINT_NOTHING)
++	  return IRQ_HANDLED;
++	if (!down && ts.expectedintr == WAITFORINT_DOWN) {
++	  writel(WAIT4INT | INT_DOWN, ts.io + S3C2410_ADCTSC);
++	  return IRQ_HANDLED;
++	} else if (down && ts.expectedintr == WAITFORINT_UP) {
++	  writel(WAIT4INT | INT_UP, ts.io + S3C2410_ADCTSC);
++	  return IRQ_HANDLED;
++	}
++	ts.expectedintr = WAITFORINT_NOTHING;
+ 
+-	if (down)
+-		s3c_adc_start(ts.client, 0, 1 << ts.shift);
+-	else
++	if (down) {
++		mod_timer(&touch_timer, jiffies + 2);
++	} else
+ 		dev_dbg(ts.dev, "%s: count=%d\n", __func__, ts.count);
+ 
+ 	if (ts.features & FEAT_PEN_IRQ) {
+@@ -203,6 +227,11 @@ static void s3c24xx_ts_conversion(struct s3c_adc_client *client,
+ 
+ 	ts.count++;
+ 
++#ifdef CONFIG_MACH_NEO1973_GTA02
++	if (!*left) 
++		ts.after_adc_hook();
++#endif
++
+ 	/* From tests, it seems that it is unlikely to get a pen-up
+ 	 * event during the conversion process which means we can
+ 	 * ignore any pen-up events with less than the requisite
+@@ -226,7 +255,8 @@ static void s3c24xx_ts_select(struct s3c_adc_client *client, unsigned select)
+ 		writel(S3C2410_ADCTSC_PULL_UP_DISABLE | AUTOPST,
+ 		       ts.io + S3C2410_ADCTSC);
+ 	} else {
+-		mod_timer(&touch_timer, jiffies+1);
++		mod_timer(&touch_timer, jiffies + 3);
++		ts.expectedintr = WAITFORINT_UP;
+ 		writel(WAIT4INT | INT_UP, ts.io + S3C2410_ADCTSC);
+ 	}
+ }
+@@ -304,6 +334,7 @@ static int __devinit s3c2410ts_probe(struct platform_device *pdev)
+ 	if ((info->delay & 0xffff) > 0)
+ 		writel(info->delay & 0xffff, ts.io + S3C2410_ADCDLY);
+ 
++	ts.expectedintr = WAITFORINT_DOWN;
+ 	writel(WAIT4INT | INT_DOWN, ts.io + S3C2410_ADCTSC);
+ 
+ 	input_dev = input_allocate_device();
+@@ -318,6 +349,7 @@ static int __devinit s3c2410ts_probe(struct platform_device *pdev)
+ 	ts.input->keybit[BIT_WORD(BTN_TOUCH)] = BIT_MASK(BTN_TOUCH);
+ 	input_set_abs_params(ts.input, ABS_X, 0, 0x3FF, 0, 0);
+ 	input_set_abs_params(ts.input, ABS_Y, 0, 0x3FF, 0, 0);
++    input_set_abs_params(ts.input, ABS_PRESSURE, 0, 1, 0, 0);
+ 
+ 	ts.input->name = "S3C24XX TouchScreen";
+ 	ts.input->id.bustype = BUS_HOST;
+@@ -328,6 +360,11 @@ static int __devinit s3c2410ts_probe(struct platform_device *pdev)
+ 	ts.shift = info->oversampling_shift;
+ 	ts.features = platform_get_device_id(pdev)->driver_data;
+ 
++#ifdef CONFIG_MACH_NEO1973_GTA02
++	ts.before_adc_hook = info->before_adc_hook;
++	ts.after_adc_hook = info->after_adc_hook;
++#endif
++
+ 	ret = request_irq(ts.irq_tc, stylus_irq, IRQF_DISABLED,
+ 			  "s3c2410_ts_pen", ts.input);
+ 	if (ret) {
+@@ -382,8 +419,18 @@ static int __devexit s3c2410ts_remove(struct platform_device *pdev)
+ #ifdef CONFIG_PM
+ static int s3c2410ts_suspend(struct device *dev)
+ {
++  	ts.expectedintr = WAITFORINT_NOTHING;
+ 	writel(TSC_SLEEP, ts.io + S3C2410_ADCTSC);
+ 	disable_irq(ts.irq_tc);
++
++	del_timer_sync(&touch_timer); 
++	/* TODO - need to fix races better, as timer can fire 
++	   between TSC_SLEEP and del_timer_sync() and shedule next adc */
++
++#ifdef CONFIG_MACH_NEO1973_GTA02
++	ts.after_adc_hook();
++#endif
++
+ 	clk_disable(ts.clock);
+ 
+ 	return 0;
+@@ -401,6 +448,7 @@ static int s3c2410ts_resume(struct device *dev)
+ 	if ((info->delay & 0xffff) > 0)
+ 		writel(info->delay & 0xffff, ts.io + S3C2410_ADCDLY);
+ 
++	ts.expectedintr = WAITFORINT_DOWN;
+ 	writel(WAIT4INT | INT_DOWN, ts.io + S3C2410_ADCTSC);
+ 
+ 	return 0;
+diff --git a/drivers/mfd/glamo-core.c b/drivers/mfd/glamo-core.c
+index 8880263..a0556b8 100644
+--- a/drivers/mfd/glamo-core.c
++++ b/drivers/mfd/glamo-core.c
+@@ -160,6 +160,19 @@ static void reg_set_bit_mask(struct glamo_core *glamo,
+ 	spin_unlock(&glamo->lock);
+ }
+ 
++
++
++static void reg_checkandset_bit_mask(struct glamo_core *glamo,
++				uint16_t reg, uint16_t mask,
++				uint16_t val, uint16_t check)
++{
++	spin_lock(&glamo->lock);
++	if (__reg_read(glamo, reg) & mask == check)
++	    __reg_set_bit_mask(glamo, reg, mask, val);
++	spin_unlock(&glamo->lock);
++}
++
++
+ static inline void __reg_set_bit(struct glamo_core *glamo,
+ 				 uint16_t reg, uint16_t bit)
+ {
+@@ -169,6 +182,49 @@ static inline void __reg_set_bit(struct glamo_core *glamo,
+ 	__reg_write(glamo, reg, tmp);
+ }
+ 
++void glamo_pixclock_slow (struct glamo_core *glamo) 
++{
++	
++	int x, lastx = 0;
++	int timeout = 1000000;
++	int threshold = 5;
++	int fa;
++
++ 	int evcnt = 0;
++
++	for (fa = 0; fa < timeout; fa++) {
++		x = glamo_reg_read(glamo, 0x1100 + GLAMO_REG_LCD_STATUS1) & 0x3ff;
++
++
++		if (x == lastx) {
++			evcnt++;
++			if (evcnt == threshold)
++				break;
++		} else {
++			evcnt = 0;
++			lastx = x;
++		}		
++	}
++	if (fa == timeout) {
++		printk (KERN_WARNING "Glamo: Error waiting for stable x position.\n");
++	}
++
++	/* then, make glamo slower */
++	/* it's not a problems if in rare case we do not slow down glamo properly
++	   as all we'll get in that case is singe jittered value */
++	
++	glamo->slowed_divider = glamo_reg_read (glamo, 0x36) & 0xFF;
++	reg_set_bit_mask (glamo, 0x36, 0xFF, 0xFF);
++
++}
++
++void glamo_pixclock_fast (struct glamo_core *glamo) 
++{
++	reg_checkandset_bit_mask (glamo, 0x36, 0xFF, glamo->slowed_divider, 0xFF);
++}
++EXPORT_SYMBOL_GPL(glamo_pixclock_fast);
++EXPORT_SYMBOL_GPL(glamo_pixclock_slow);
++
+ static inline void __reg_clear_bit(struct glamo_core *glamo,
+ 					uint16_t reg, uint16_t bit)
+ {
+@@ -930,6 +986,7 @@ static int __devinit glamo_probe(struct platform_device *pdev)
+ 	glamo->irq = platform_get_irq(pdev, 0);
+ 	glamo->irq_base = irq_base = platform_get_irq(pdev, 1);
+ 	glamo->pdata = pdev->dev.platform_data;
++	glamo->slowed_divider = 0xFF;
+ 
+ 	if (glamo->irq < 0) {
+ 		ret = glamo->irq;
+@@ -965,7 +1022,7 @@ static int __devinit glamo_probe(struct platform_device *pdev)
+ 		goto err_free;
+ 	}
+ 
+-	glamo->base = ioremap(glamo->mem->start, resource_size(glamo->mem));
++	glamo->base = ioremap(glamo->mem->start, resource_size(glamo->mem)+0x1100);
+ 	if (!glamo->base) {
+ 		dev_err(&pdev->dev, "Failed to ioremap() memory region\n");
+ 		goto err_release_mem_region;
+diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+index 4d073f1..35c3563 100644
+--- a/drivers/misc/Kconfig
++++ b/drivers/misc/Kconfig
+@@ -452,6 +452,13 @@ config PCH_PHUB
+ 	  To compile this driver as a module, choose M here: the module will
+ 	  be called pch_phub.
+ 
++config OPENMOKO_RESUME_REASON
++	tristate "Openmoko resume reason driver"
++	depends on SYSFS
++	help
++	  This driver adds a sysfs entry for accessing the resume reason
++          of the openmoko board.
++
+ source "drivers/misc/c2port/Kconfig"
+ source "drivers/misc/eeprom/Kconfig"
+ source "drivers/misc/cb710/Kconfig"
+diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
+index 98009cc..1f0e902 100644
+--- a/drivers/misc/Makefile
++++ b/drivers/misc/Makefile
+@@ -42,3 +42,4 @@ obj-$(CONFIG_ARM_CHARLCD)	+= arm-charlcd.o
+ obj-$(CONFIG_PCH_PHUB)		+= pch_phub.o
+ obj-y				+= ti-st/
+ obj-$(CONFIG_AB8500_PWM)	+= ab8500-pwm.o
++obj-$(CONFIG_OPENMOKO_RESUME_REASON)	+= neo1973_pm_resume_reason.o
+diff --git a/drivers/misc/neo1973_pm_resume_reason.c b/drivers/misc/neo1973_pm_resume_reason.c
+new file mode 100644
+index 0000000..5bcc818
+--- /dev/null
++++ b/drivers/misc/neo1973_pm_resume_reason.c
+@@ -0,0 +1,142 @@
++/*
++ * Resume reason sysfs for the FIC Neo1973 GSM Phone
++ *
++ * (C) 2008 by Openmoko Inc.
++ * Author: Andy Green <andy@openmoko.com>
++ * All rights reserved.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License resume_reason 2 as
++ * published by the Free Software Foundation
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/platform_device.h>
++#include <linux/io.h>
++
++#include <mach/hardware.h>
++#include <asm/mach-types.h>
++
++#ifdef CONFIG_MACH_NEO1973_GTA02
++#include <mach/gta02.h>
++#include <linux/mfd/pcf50633/core.h>
++#endif
++
++static unsigned int *gstatus4_mapped;
++static char *resume_reasons[][17] = { { /* GTA01 */
++	"EINT00_NULL",
++	"EINT01_GSM",
++	"EINT02_NULL",
++	"EINT03_NULL",
++	"EINT04_JACK",
++	"EINT05_SDCARD",
++	"EINT06_AUXKEY",
++	"EINT07_HOLDKEY",
++	"EINT08_NULL",
++	"EINT09_NULL",
++	"EINT10_NULL",
++	"EINT11_NULL",
++	"EINT12_NULL",
++	"EINT13_NULL",
++	"EINT14_NULL",
++	"EINT15_NULL",
++	NULL
++}, { /* GTA02 */
++	"EINT00_ACCEL1",
++	"EINT01_GSM",
++	"EINT02_BLUETOOTH",
++	"EINT03_DEBUGBRD",
++	"EINT04_JACK",
++	"EINT05_WLAN",
++	"EINT06_AUXKEY",
++	"EINT07_HOLDKEY",
++	"EINT08_ACCEL2",
++	"EINT09_PMU",
++	"EINT10_NULL",
++	"EINT11_NULL",
++	"EINT12_GLAMO",
++	"EINT13_NULL",
++	"EINT14_NULL",
++	"EINT15_NULL",
++	NULL
++} };
++
++static ssize_t resume_reason_read(struct device *dev,
++				  struct device_attribute *attr,
++				  char *buf)
++{
++	int bit = 0;
++	char *end = buf;
++	int gta = !!machine_is_neo1973_gta02();
++
++	for (bit = 0; resume_reasons[gta][bit]; bit++) {
++		if ((*gstatus4_mapped) & (1 << bit))
++			end += sprintf(end, "* %s\n", resume_reasons[gta][bit]);
++		else
++			end += sprintf(end, "  %s\n", resume_reasons[gta][bit]);
++	}
++
++	return end - buf;
++}
++
++
++static DEVICE_ATTR(resume_reason, 0644, resume_reason_read, NULL);
++
++static struct attribute *neo1973_resume_reason_sysfs_entries[] = {
++	&dev_attr_resume_reason.attr,
++	NULL
++};
++
++static struct attribute_group neo1973_resume_reason_attr_group = {
++	.name	= NULL,
++	.attrs	= neo1973_resume_reason_sysfs_entries,
++};
++
++static int __init neo1973_resume_reason_probe(struct platform_device *pdev)
++{
++	dev_info(&pdev->dev, "starting\n");
++
++	gstatus4_mapped = ioremap(0x560000BC /* GSTATUS4 */, 0x4);
++	if (!gstatus4_mapped) {
++		dev_err(&pdev->dev, "failed to ioremap() memory region\n");
++		return -EINVAL;
++	}
++
++	return sysfs_create_group(&pdev->dev.kobj,
++					    &neo1973_resume_reason_attr_group);
++}
++
++static int neo1973_resume_reason_remove(struct platform_device *pdev)
++{
++	sysfs_remove_group(&pdev->dev.kobj, &neo1973_resume_reason_attr_group);
++	iounmap(gstatus4_mapped);
++	return 0;
++}
++
++static struct platform_driver neo1973_resume_reason_driver = {
++	.probe		= neo1973_resume_reason_probe,
++	.remove		= neo1973_resume_reason_remove,
++	.driver		= {
++		.name		= "neo1973-resume",
++	},
++};
++
++static int __devinit neo1973_resume_reason_init(void)
++{
++	return platform_driver_register(&neo1973_resume_reason_driver);
++}
++
++static void neo1973_resume_reason_exit(void)
++{
++	platform_driver_unregister(&neo1973_resume_reason_driver);
++}
++
++module_init(neo1973_resume_reason_init);
++module_exit(neo1973_resume_reason_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Andy Green <andy@openmoko.com>");
++MODULE_DESCRIPTION("Neo1973 resume_reason");
+diff --git a/drivers/serial/samsung.c b/drivers/serial/samsung.c
+index ac1f0b0..3a1fdb7 100644
+--- a/drivers/serial/samsung.c
++++ b/drivers/serial/samsung.c
+@@ -883,7 +883,7 @@ static struct uart_ops s3c24xx_serial_ops = {
+ 
+ static struct uart_driver s3c24xx_uart_drv = {
+ 	.owner		= THIS_MODULE,
+-	.dev_name	= "s3c2410_serial",
++	.dev_name	= S3C24XX_SERIAL_NAME,
+ 	.nr		= CONFIG_SERIAL_SAMSUNG_UARTS,
+ 	.cons		= S3C24XX_SERIAL_CONSOLE,
+ 	.driver_name	= S3C24XX_SERIAL_NAME,
+diff --git a/drivers/usb/host/ohci-s3c2410.c b/drivers/usb/host/ohci-s3c2410.c
+index a68af2d..02bd7b0 100644
+--- a/drivers/usb/host/ohci-s3c2410.c
++++ b/drivers/usb/host/ohci-s3c2410.c
+@@ -22,6 +22,10 @@
+ #include <linux/platform_device.h>
+ #include <linux/clk.h>
+ #include <plat/usb-control.h>
++#include <mach/hardware.h>
++#include <mach/gpio-fns.h>
++#include <mach/regs-gpio.h>
++#include <mach/gta02.h>
+ 
+ #define valid_port(idx) ((idx) == 1 || (idx) == 2)
+ 
+@@ -306,6 +310,42 @@ static void s3c2410_hcd_oc(struct s3c2410_hcd_info *info, int port_oc)
+ 	local_irq_restore(flags);
+ }
+ 
++/* switching of USB pads */
++static ssize_t show_usb_mode(struct device *dev, struct device_attribute *attr,
++			     char *buf)
++{
++	if (__raw_readl(S3C24XX_MISCCR) & S3C2410_MISCCR_USBHOST)
++		return sprintf(buf, "host\n");
++
++	return sprintf(buf, "device\n");
++}
++
++static ssize_t set_usb_mode(struct device *dev, struct device_attribute *attr,
++			    const char *buf, size_t count)
++{
++	if (!strncmp(buf, "host", 4)) {
++		printk("s3c2410: changing usb to host\n");
++		s3c2410_modify_misccr(S3C2410_MISCCR_USBHOST,
++				      S3C2410_MISCCR_USBHOST);
++		/* FIXME:
++		 * - call machine-specific disable-pullup function i
++		 * - enable +Vbus (if hardware supports it)
++		 */
++		s3c2410_gpio_setpin(GTA02_GPIO_USB_PULLUP, 0);
++	} else if (!strncmp(buf, "device", 6)) {
++		printk("s3c2410: changing usb to device\n");
++		s3c2410_modify_misccr(S3C2410_MISCCR_USBHOST, 0);
++		s3c2410_gpio_setpin(GTA02_GPIO_USB_PULLUP, 1);
++	} else {
++		printk("s3c2410: unknown mode\n");
++		return -EINVAL;
++	}
++
++	return count;
++}
++
++static DEVICE_ATTR(usb_mode, S_IRUGO | S_IWUSR, show_usb_mode, set_usb_mode);
++
+ /* may be called without controller electrically present */
+ /* may be called with controller, bus, and devices active */
+ 
+@@ -323,6 +363,7 @@ static void s3c2410_hcd_oc(struct s3c2410_hcd_info *info, int port_oc)
+ static void
+ usb_hcd_s3c2410_remove (struct usb_hcd *hcd, struct platform_device *dev)
+ {
++	device_remove_file(&dev->dev, &dev_attr_usb_mode);
+ 	usb_remove_hcd(hcd);
+ 	s3c2410_stop_hc(dev);
+ 	iounmap(hcd->regs);
+@@ -390,8 +431,15 @@ static int usb_hcd_s3c2410_probe (const struct hc_driver *driver,
+ 	if (retval != 0)
+ 		goto err_ioremap;
+ 
++	retval = device_create_file(&dev->dev, &dev_attr_usb_mode);
++	if (retval != 0)
++		goto err_hcd;
++
+ 	return 0;
+ 
++ err_hcd:
++	usb_remove_hcd(hcd);
++
+  err_ioremap:
+ 	s3c2410_stop_hc(dev);
+ 	iounmap(hcd->regs);
+diff --git a/drivers/video/glamo-fb.c b/drivers/video/glamo-fb.c
+index 3f8ec8d..a428047 100644
+--- a/drivers/video/glamo-fb.c
++++ b/drivers/video/glamo-fb.c
+@@ -312,7 +312,7 @@ static int glamofb_cmd_mode(struct glamofb_handle *gfb, int on)
+ 			glamofb_reg_write(gfb, GLAMO_REG_LCD_COMMAND1,
+ 				  GLAMO_LCD_CMD_TYPE_DISP |
+ 				  GLAMO_LCD_CMD_DATA_DISP_SYNC);
+-
++		mdelay(1);
+ 		glamofb_reg_write(gfb, GLAMO_REG_LCD_COMMAND1,
+ 			  GLAMO_LCD_CMD_TYPE_DISP |
+ 			  GLAMO_LCD_CMD_DATA_DISP_FIRE);
+diff --git a/include/linux/mfd/glamo-core.h b/include/linux/mfd/glamo-core.h
+index 8275a2f..8e3e56e 100644
+--- a/include/linux/mfd/glamo-core.h
++++ b/include/linux/mfd/glamo-core.h
+@@ -37,6 +37,7 @@ struct glamo_core {
+ 	enum glamo_engine_state engine_state[__NUM_GLAMO_ENGINES];
+ 	spinlock_t lock;
+ 	uint16_t saved_irq_mask;
++	int slowed_divider;
+ #ifdef CONFIG_DEBUG_FS
+ 	struct dentry *debugfs_dir;
+ #endif
+@@ -55,4 +56,6 @@ int glamo_engine_disable(struct glamo_core *glamo, enum glamo_engine engine);
+ void glamo_engine_reset(struct glamo_core *glamo, enum glamo_engine engine);
+ int glamo_engine_reclock(struct glamo_core *glamo,
+ 			 enum glamo_engine engine, int ps);
++void glamo_pixclock_slow (struct glamo_core *glamo);
++void glamo_pixclock_fast (struct glamo_core *glamo);
+ #endif /* __GLAMO_CORE_H */
 diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
 index 28ee2e6..d5b4a40 100644
 --- a/sound/soc/codecs/wm8753.c
@@ -23,6 +1120,87 @@ index 28ee2e6..d5b4a40 100644
  
  	K = Kpart & 0xFFFFFFFF;
  
--- 
-1.7.4.rc1
-
+diff --git a/sound/soc/s3c24xx/neo1973_wm8753.c b/sound/soc/s3c24xx/neo1973_wm8753.c
+index dc5893d..37835ca 100644
+--- a/sound/soc/s3c24xx/neo1973_wm8753.c
++++ b/sound/soc/s3c24xx/neo1973_wm8753.c
+@@ -23,6 +23,7 @@
+ #include <sound/pcm.h>
+ #include <sound/soc.h>
+ #include <sound/soc-dapm.h>
++#include <sound/jack.h>
+ #include <sound/tlv.h>
+ 
+ #include <asm/mach-types.h>
+@@ -252,6 +253,8 @@ static const struct snd_kcontrol_new wm8753_neo1973_controls[] = {
+ 
+ /* GTA01 specific controlls */
+ 
++static struct snd_soc_jack hs_jack;
++
+ #ifdef CONFIG_MACH_NEO1973_GTA01
+ 
+ static const struct snd_soc_dapm_widget wm8753_dapm_widgets_gta01[] = {
+@@ -318,6 +321,29 @@ static const struct snd_kcontrol_new wm8753_neo1973_gta02_controls[] = {};
+ static const struct snd_soc_dapm_widget wm8753_dapm_widgets_gta02[] = {};
+ #endif
+ 
++static struct snd_soc_jack_pin hs_jack_pins[] = {
++	{
++		.pin = "Headset Mic",
++		.mask = SND_JACK_MICROPHONE,
++	},
++	{
++		.pin = "Stereo Out",
++		.mask = SND_JACK_HEADPHONE,
++		.invert = 1,
++	},
++};
++
++static struct snd_soc_jack_gpio hs_jack_gpios[] = {
++	{
++		.gpio = GTA02_GPIO_JACK_INSERT,
++		.name = "headset-gpio",
++		.report = SND_JACK_HEADSET,
++		.debounce_time = 100,
++	},
++};
++
++
++
+ static int neo1973_wm8753_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_soc_codec *codec = rtd->codec;
+@@ -397,6 +423,24 @@ static int neo1973_wm8753_init(struct snd_soc_pcm_runtime *rtd)
+ 
+ 	snd_soc_dapm_sync(codec);
+ 
++	err = snd_soc_jack_new(codec, "Headset Jack", SND_JACK_HEADSET, &hs_jack);
++	if (err) {
++		dev_err(codec->card->dev, "failed to alloc headset jack\n");
++		return err;
++	}
++
++	err = snd_soc_jack_add_pins(&hs_jack, ARRAY_SIZE(hs_jack_pins), hs_jack_pins);
++	if (err) {
++		dev_err(codec->card->dev, "failed to add headset jack pins\n");
++		return err;
++	}
++
++	err = snd_soc_jack_add_gpios(&hs_jack, ARRAY_SIZE(hs_jack_gpios), hs_jack_gpios);
++	if (err) {
++		dev_err(codec->card->dev, "failed to add headset jack gpios\n");
++		return err;
++	}
++
+ 	return 0;
+ }
+ 
+@@ -551,6 +595,7 @@ static inline void neo1973_gta02_exit(void) {}
+ static void __exit neo1973_exit(void)
+ {
+ 	snd_soc_unregister_dais(&neo1973_snd_device->dev, 1);
++	snd_soc_jack_free_gpios(&hs_jack, ARRAY_SIZE(hs_jack_gpios), hs_jack_gpios);
+ 	platform_device_unregister(neo1973_snd_device);
+ 
+ 	if (machine_is_neo1973_gta02())
