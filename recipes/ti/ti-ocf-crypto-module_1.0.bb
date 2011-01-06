@@ -17,6 +17,11 @@ inherit module
 
 PR = "${MACHINE_KERNEL_PR}+svnr${SRCPV}"
 
+# Fix silly hardcodes, module.bbclass puts in the *correct* values
+do_compile_prepend() {
+	sed -i 's:ARCH=arm CROSS_COMPILE=arm-none-linux-gnueabi-::g' Makefile
+}
+
 do_install () {
         install -d ${D}/lib/modules/${KERNEL_VERSION}/crypto/ocf/
         install -m 0755 ${S}/ocf_omap3_cryptok.ko ${D}/lib/modules/${KERNEL_VERSION}/crypto/ocf/
