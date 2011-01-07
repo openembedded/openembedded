@@ -9,9 +9,9 @@ MACHINE_TASK_PROVIDER 		= "task-base"
 USE_DEVFS = "0"
 
 PREFERRED_PROVIDER_virtual/bootloader = ""
-PREFERRED_PROVIDER_virtual/kernel = "linux-kirkwood"
+PREFERRED_PROVIDER_virtual/kernel = "linux"
 
-MACHINE_KERNEL_PR = "r18"
+MACHINE_KERNEL_PR = "r19"
 
 IMAGE_FSTYPES += "tar.gz ubi"
 SERIAL_CONSOLE = "ttyS0 115200"
