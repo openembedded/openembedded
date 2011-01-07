@@ -4,7 +4,7 @@ LICENSE = "GPLv3"
 DEPENDS = "gettext-native perl-native liblocale-gettext-perl-native"
 DEPENDS_virtclass-native = ""
 RDEPENDS_pn-help2man = "gettext perl liblocale-gettext-perl"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${GNU_MIRROR}/${BPN}/${BPN}-${PV}.tar.gz"
 SRC_URI[md5sum] = "426671c6fe79e5ef2233303367eab5a6"
@@ -19,4 +19,9 @@ BBCLASSEXTEND = "native"
 # We don't want to reconfigure things as we're using host perl
 do_configure() {
 	oe_runconf
+}
+
+do_install_append () {
+	# Make sure we use /usr/bin/env perl
+	sed -i -e "1s:#!.*:#! /usr/bin/env perl:" ${D}${bindir}/help2man
 }

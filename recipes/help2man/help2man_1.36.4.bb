@@ -11,12 +11,17 @@ SRC_URI    = "${GNU_MIRROR}/help2man/${P}.tar.gz"
 
 inherit autotools
 
-PR = "r1"
+PR = "r2"
 
 EXTRA_OECONF += "PERL=/usr/bin/perl"
 
 do_configure () {
 	oe_runconf
+}
+
+do_install_append () {
+	# Make sure we use /usr/bin/env perl
+	sed -i -e "1s:#!.*:#! /usr/bin/env perl:" ${D}${bindir}/help2man
 }
 
 FILES_${PN} += "/usr/lib/hacklocaledir.so"
