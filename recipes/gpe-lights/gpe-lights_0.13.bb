@@ -1,11 +1,11 @@
 inherit gpe
-LICENSE = "PD"
+LICENSE = "GPLv2+"
 
 DESCRIPTION = "A simple light puzzle."
 DEPENDS = "gtk+ libgpewidget gpe-icons"
 SECTION = "gpe/games"
 PRIORITY = "optional"
-PR = "r1"
+PR = "r2"
 
 SRC_URI += "file://fix-makefiles.patch"
 
