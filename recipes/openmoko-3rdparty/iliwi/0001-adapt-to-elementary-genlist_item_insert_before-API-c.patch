@@ -1,0 +1,29 @@
+From d1ad5f7b4e0bd96f7085392dcc9c9e7edc32d940 Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Fri, 7 Jan 2011 08:24:27 +0100
+Subject: [PATCH] adapt to elementary genlist_item_insert_before API change from r55869
+
+---
+ src/view_main.vala |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/view_main.vala b/src/view_main.vala
+index 2aafdcc..03f561e 100644
+--- a/src/view_main.vala
++++ b/src/view_main.vala
+@@ -151,10 +151,10 @@ namespace iliwi.View {
+         while(found_place == false) {
+           if( network.preferred_network && list_network.preferred_network==false ) {
+             found_place = true;
+-            network.listitem = wifilist.item_insert_before( itc, (void*)network, listitem_tmp, Elm.GenlistItemFlags.NONE, item_select );
++            network.listitem = wifilist.item_insert_before( itc, (void*)network, listitem_tmp, null, Elm.GenlistItemFlags.NONE, item_select );
+           } else if( list_network.preferred_network==network.preferred_network && list_network.strength<=network.strength ) {
+             found_place = true;
+-            network.listitem = wifilist.item_insert_before( itc, (void*)network, listitem_tmp, Elm.GenlistItemFlags.NONE, item_select );
++            network.listitem = wifilist.item_insert_before( itc, (void*)network, listitem_tmp, null, Elm.GenlistItemFlags.NONE, item_select );
+           } else { // Couldn't find a place to put it
+             listitem_tmp2 = listitem_tmp.next_get();
+             listitem_tmp = listitem_tmp2;
+-- 
+1.7.4.rc1
+
