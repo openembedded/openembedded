@@ -7,7 +7,7 @@ COMPATIBLE_MACHINE = "omapl138"
 
 SRC_URI = "svn://gforge.ti.com/svn/pru_sw/;module=trunk;proto=https;user=anonymous;pswd=''"
 
-SRCREV = "21"
+SRCREV = "23"
 S = "${WORKDIR}/trunk/app_loader"
 
 do_compile () {
