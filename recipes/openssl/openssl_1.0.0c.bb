@@ -1,10 +1,16 @@
 inherit pkgconfig
 
 require openssl.inc
+
+# For target side versions of openssl enable support for OCF Linux driver
+# if they are available.
+DEPENDS += "ocf-linux"
+CFLAG += "-DHAVE_CRYPTODEV -DUSE_CRYPTODEV_DIGESTS"
+
 SRC_URI[src.md5sum] = "ff8fb85610aef328315a9decbb2712e4"
 SRC_URI[src.sha256sum] = "f731b36de3edaa361179ae6f449668b248a360e34e31e92902d976e9b9d604eb"
 
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 DEFAULT_PREFERENCE = "-1"
 
