@@ -6,11 +6,14 @@ DEPENDS = "dbus-glib elementary libgee"
 # killall and udhcpc from busybox are enough
 RDEPENDS_${PN} = "wireless-tools wpa-supplicant"
 
-SRCREV = "5be2b301033418fb9a33759047274b676034f096"
+SRCREV = "fcd77fada06f6373b0fb5771f78aaa9dcaa97036"
 PV = "0.0.1+gitr${SRCPV}"
-PR = "r8"
-
 SRC_URI = "git://github.com/Ebbe/Iliwi.git;protocol=http;branch=master"
+PR = "r10"
+
+SRC_URI = "git://github.com/Ebbe/Iliwi.git;protocol=http;branch=master \
+           file://0001-adapt-to-elementary-genlist_item_insert_before-API-c.patch \
+           file://new.vala.patch"
 S = "${WORKDIR}/git"
 
 inherit autotools vala
