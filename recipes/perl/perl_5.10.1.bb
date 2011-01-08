@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPLv1+"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r19"
+PR = "r20"
 
 # 5.10.1 has Module::Build built-in
 PROVIDES += "libmodule-build-perl"
