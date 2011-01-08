@@ -19,7 +19,8 @@ SRC_URI = "git://gitorious.org/x-loader/x-loader.git;branch=master;protocol=git 
 
 XLOAD_MACHINE_beagleboard = "omap3530beagle_config"
 
-SRC_URI_omap3-touchbook = "   git://gitorious.org/x-load-omap3/mainline.git;branch=master;protocol=git \\
+SRCREV_omap3-touchbook = "319b26586fafb86f919f514bcd175838aaab96b3"
+SRC_URI_omap3-touchbook = "   git://gitorious.org/x-load-omap3/mainline.git;branch=master;protocol=git \
                               file://name.patch \
                               file://screen-off.patch \
                              "
