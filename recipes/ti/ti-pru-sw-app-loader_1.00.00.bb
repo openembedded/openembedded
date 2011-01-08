@@ -10,8 +10,10 @@ SRC_URI = "svn://gforge.ti.com/svn/pru_sw/;module=trunk;proto=https;user=anonymo
 SRCREV = "23"
 S = "${WORKDIR}/trunk/app_loader"
 
+TARGET_CC_ARCH += "${LDFLAGS}"
+
 do_compile () {
-        make -C ${S}/interface
+        oe_runmake -C ${S}/interface
 }
 
 do_install () {
