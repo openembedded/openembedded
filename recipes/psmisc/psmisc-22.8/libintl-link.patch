@@ -1,0 +1,21 @@
+--- psmisc-22.8/src/Makefile.am.old	2011-01-07 17:49:23.000000000 -0500
++++ psmisc-22.8/src/Makefile.am	2011-01-07 17:49:47.000000000 -0500
+@@ -16,16 +16,17 @@
+ endif
+
+ fuser_SOURCES = fuser.c comm.h signals.c signals.h i18n.h fuser.h
++fuser_LDADD = @INTLLIBS@
+
+ killall_SOURCES = killall.c comm.h signals.c signals.h i18n.h
+
+-killall_LDADD = @SELINUX_LIB@
++killall_LDADD = @SELINUX_LIB@ @INTLLIBS@
+
+ peekfd_SOURCES = peekfd.c
+
+ pstree_SOURCES = pstree.c comm.h i18n.h
+
+-pstree_LDADD = @TERMCAP_LIB@ @SELINUX_LIB@
++pstree_LDADD = @TERMCAP_LIB@ @SELINUX_LIB@ @INTLLIBS@
+
+ BUILT_SOURCES = signames.h
