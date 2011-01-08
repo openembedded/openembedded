@@ -1,7 +1,7 @@
 DESCRIPTION = "Install required headers to enable OCF Linux support"
 LICENSE = "BSD"
 
-INC_PR = "r1"
+INC_PR = "r2"
 
 SRC_URI = "http://sourceforge.net/projects/ocf-linux/files/ocf-linux/${PV}/ocf-linux-${PV}.tar.gz"
 
@@ -19,4 +19,4 @@ do_install() {
     install -m 0644 ${S}/ocf/*.h ${D}${includedir}/crypto/
 }
 
-ALLOW_EMPTY = ""
+ALLOW_EMPTY = "1"
