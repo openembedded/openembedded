@@ -24,5 +24,5 @@ do_install () {
 		   "MANDIR=${D}${mandir}/man8" install
 }
 
-SRC_URI[md5sum] = "7f159ec44d3b9c502904bab0236050e4"
-SRC_URI[sha256sum] = "3f63676faeac507e909d84c8920ddb6597da1eb688577c2fc9c756b821d0458f"
+SRC_URI[md5sum] = "8d2211d5bd813164e20740e7c852aa06"
+SRC_URI[sha256sum] = "94b27a0f53f4aa86b0c049eb26df7a681ec6c31bc352c57d3ac53881bcfcd9a8"
