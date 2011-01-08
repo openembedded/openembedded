@@ -14,6 +14,11 @@ PACKAGE_STRIP = "no"
 inherit module
 PR = "${MACHINE_KERNEL_PR}+svnr${SRCPV}"
 
+# Fix silly hardcodes, module.bbclass puts in the *correct* values
+do_compile_prepend() {
+       sed -i 's:ARCH=arm CROSS_COMPILE=$(CSTOOL_PREFIX)::g' Makefile
+}
+
 do_install () {
         install -d ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/pru
         install -m 0755 ${S}/edmautils.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/pru/
