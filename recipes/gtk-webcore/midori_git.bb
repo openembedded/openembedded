@@ -1,22 +1,24 @@
 require midori.inc
 
-DEPENDS += "python-native python-docutils-native"
+DEPENDS += "vala-native python-native python-docutils-native"
+
+DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_shr = "1"
 
 # increment PR every time SRCREV is updated!
-SRCREV = "400139644371c0b675723f9a986ddab4445a8794"
-PR = "r3"
-PV = "0.1.7+${PR}+gitr${SRCPV}"
+SRCREV = "ad2f0066ce969152080cd841ce4cdd0920565409"
+PR = "r0"
+PV = "0.2.9+${PR}+gitr${SRCPV}"
 
-SRC_URI = "git://git.xfce.org/apps/midori;protocol=git \
-           file://waf \
-           file://wscript-fix.patch"
+SRC_URI = "git://git.xfce.org/apps/midori;protocol=git"
 
 S = "${WORKDIR}/git"
 
-
+SRC_URI_append_shr = " file://config \
+"
 
 do_configure() {
-	cp -f ${WORKDIR}/waf ${S}/
+	sed -i -e 's:, shell=False::g' wscript
 	./configure \
             --prefix=${prefix} \
             --bindir=${bindir} \
@@ -31,10 +33,10 @@ do_configure() {
             --infodir=${infodir} \
             --mandir=${mandir} \
             ${EXTRA_OECONF} 
- 
-	sed -i /LINK_CC/d ./_build_/c4che/default.cache.py 
-	echo "LINK_CC = '${CXX}'" >>  ./_build_/c4che/default.cache.py
 }
 
-
+do_install_append_shr() {
+	install -d ${D}${sysconfdir}/xdg/midori
+	install -m 0644 ${WORKDIR}/config ${D}${sysconfdir}/xdg/midori
+}
 
