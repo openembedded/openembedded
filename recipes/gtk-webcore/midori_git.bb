@@ -2,9 +2,6 @@ require midori.inc
 
 DEPENDS += "vala-native python-native python-docutils-native"
 
-DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_shr = "1"
-
 # increment PR every time SRCREV is updated!
 SRCREV = "ad2f0066ce969152080cd841ce4cdd0920565409"
 PR = "r0"
