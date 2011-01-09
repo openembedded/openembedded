@@ -7,7 +7,7 @@
 # on whether the base patches apply to the selected (SRCDATE) svn release.
 #
 UCLIBC_BASE ?= "0.9.32"
-SRCREV="4d81f2a74578f819285b131c682e8d2f6c315c4e"
+SRCREV="8764f2e75c875757529aa81e5cd96e17e6f6e5e4"
 PR_append = "+gitr${SRCPV}"
 DEFAULT_PREFERENCE = "-1"
 #DEFAULT_PREFERENCE is 0 (empty), releases have a preference of 1 so take
@@ -31,5 +31,12 @@ SRC_URI = "git://uclibc.org/uClibc.git;branch=master;protocol=git \
 	file://uclibc-arm-ftruncate64.patch \
 	file://uclibc_enable_log2_test.patch \
 	file://ldso_use_arm_dl_linux_resolve_in_thumb_mode.patch \
+	file://reorder-use-BX.patch \
+	file://select-force-thumb.patch \
+	file://remove-sub-arch-variants.patch \
+	file://transform-eabi-oabi-choice.patch \
+	file://include-arm-asm.h.patch \
+	file://detect-bx-availibility.patch \
+	file://remove-eabi-oabi-selection.patch \
 	"
 S = "${WORKDIR}/git"
