@@ -1,7 +1,7 @@
 DESCRIPTION = "XBMC Media Center"
 LICENSE = "xbmc"
 
-DEPENDS = "libxmu fribidi mpeg2dec ffmpeg samba fontconfig curl libmodplug libmicrohttpd wavpack libmms cmake-native libsdl-image libsdl-mixer virtual/egl mysql5 sqlite3 libmms faad2 libcdio libpcre boost lzo2 enca avahi libsamplerate0 libxinerama libxrandr libxtst bzip2 virtual/libsdl jasper zip-native zlib"
+DEPENDS = "libxmu fribidi mpeg2dec ffmpeg samba fontconfig curl python libmodplug libmicrohttpd wavpack libmms cmake-native libsdl-image libsdl-mixer virtual/egl mysql5 sqlite3 libmms faad2 libcdio libpcre boost lzo2 enca avahi libsamplerate0 libxinerama libxrandr libxtst bzip2 virtual/libsdl jasper zip-native zlib"
 require recipes/egl/egl.inc
 
 SRCREV = "e2ab481ebe964321c358ab9d6402088c714adcbe"
