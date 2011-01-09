@@ -27,8 +27,6 @@ PREFERRED_VERSION_eglibc-initial     ?= "${PREFERRED_EGLIBC_VERSION}"
 PREFERRED_GCC_VERSION_486sx          ?= "4.3.2"
 PREFERRED_GCC_VERSION_avr32          ?= "4.2.2"
 PREFERRED_GCC_VERSION_bfin           ?= "4.1.2"
-PREFERRED_GCC_VERSION_sh3            ?= "4.4.4"
-PREFERRED_GCC_VERSION_sh4            ?= "4.4.4"
 PREFERRED_GCC_VERSION_xilinx-ml403   ?= "4.1.1"
 
 # This is unrelated to the kernel version, but glibc and some userspaceapps require a recent version to build against
