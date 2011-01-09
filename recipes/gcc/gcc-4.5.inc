@@ -32,6 +32,7 @@ SRC_URI = "svn://gcc.gnu.org/svn/gcc/branches;module=${BRANCH} \
 	   file://arm-bswapsi2.patch \
 	   file://Makefile.in.patch \
 	   file://gcc-armv4-pass-fix-v4bx-to-ld.patch \
+	   file://sh4-multilib.patch \
 	   file://linaro/gcc-4.5-linaro-r99297.patch \
 	   file://linaro/gcc-4.5-linaro-r99298.patch \
 	   file://linaro/gcc-4.5-linaro-r99299.patch \
