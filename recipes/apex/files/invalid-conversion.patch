@@ -1,0 +1,13 @@
+Index: usr/link.cc
+===================================================================
+--- usr/link.cc
++++ usr/link.cc
+@@ -232,7 +232,7 @@ static struct descriptor parse_region (c
+   struct descriptor d;
+   memset (&d, 0, sizeof (d));
+ 
+-  char* pch;
++  const char* pch;
+   if ((pch = index (sz, ':'))) {
+     int c = pch - sz;
+     if (c > sizeof (d.driver) - 1)
