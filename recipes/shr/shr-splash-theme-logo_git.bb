@@ -1,9 +1,9 @@
 DESCRIPTION = "SHR splash screen - SHR logo theme"
 SECTION = "x11/data"
 LICENSE = "MIT BSD"
-SRCREV = "baad098dc8c8058a712a6d98a69b5558ccc54973"
+SRCREV = "cb1391fc4afec7158e34629ea557c6ea486cfc05"
 PV = "0.1+gitr${SRCPV}"
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master"
 S = "${WORKDIR}/git/shr-splash/${PN}"
