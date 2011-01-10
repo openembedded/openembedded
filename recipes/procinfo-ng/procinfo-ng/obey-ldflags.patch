@@ -1,0 +1,18 @@
+---
+ configure.in |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+--- procinfo-ng-2.0.304.orig/configure.in
++++ procinfo-ng-2.0.304/configure.in
+@@ -42,7 +42,10 @@ if test "$enable_maintainer_mode" = "yes
+ 	LDFLAGS="-lncurses"
+ else
+ 	CFLAGS="$CFLAGS -pipe -Wall"
+-	LDFLAGS="-s -lncurses"
++	if test "X$LDFLAGS" = X; then
++	    LDFLAGS="-s"
++	fi
++	LDFLAGS="$LDFLAGS -lncurses"
+ fi
+ 
+ AC_OUTPUT(Makefile)
