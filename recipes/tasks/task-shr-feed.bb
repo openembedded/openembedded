@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r89"
+PR = "r90"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -285,6 +285,7 @@ RDEPENDS_${PN} += "\
 		rtmom \
 # broken	ventura \
 		emtooth \
+		emtooth2 \
 		podboy \
 		mcnavi \
 		neolight \
