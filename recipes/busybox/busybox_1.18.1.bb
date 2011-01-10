@@ -1,5 +1,5 @@
 require busybox_1.1x.inc
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.3"
 
 SRC_URI += " \
 	file://busybox-1.18.1-hush.patch \
@@ -7,6 +7,7 @@ SRC_URI += " \
 	file://busybox-1.18.1-bzip2.patch \
 	file://busybox-1.18.1-mkswap.patch \
 	file://busybox-1.18.1-warning.patch \
+	file://busybox-1.18.1-modprobe-small.patch \
 	"
 
 SRC_URI[md5sum] = "f15fe752d8b7012aa5e59f83b88ccb1c"
