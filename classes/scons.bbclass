@@ -1,5 +1,7 @@
 DEPENDS += "python-scons-native"
 
+EXTRA_OESCONS ?= ""
+
 export TARGET_LINK_HASH_STYLE
 
 scons_do_compile() {
@@ -11,7 +13,7 @@ scons_do_compile() {
         fi
     fi
 
-    ${STAGING_BINDIR_NATIVE}/scons ${PARALLEL_MAKE} CXX="${CXX}" PREFIX=${prefix} prefix=${prefix} || \
+    ${STAGING_BINDIR_NATIVE}/scons ${PARALLEL_MAKE} CXX="${CXX}" PREFIX=${prefix} prefix=${prefix} ${EXTRA_OESCONS} || \
     oefatal "scons build execution failed."
 }
 
