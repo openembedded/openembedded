@@ -3,7 +3,7 @@ PRIORITY = "optional"
 SECTION = "libs"
 LICENSE = "GPL"
 DEPENDS = "bison-native flex-native attr"
-PR = "r1"
+PR = "r2"
 
 BUILD_CFLAGS += "-I${S}/libcap/include"
 CFLAGS += "-I${S}/libcap/include"
@@ -14,9 +14,6 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/security/linux-privs/libcap2/libca
 	"
 
 S = "${WORKDIR}/libcap-${PV}"
-
-FILES_${PN} = "${libdir}"
-FILES_${PN}-dev = "${includedir}"
 
 do_install() {
 	install -d ${D}${includedir}/sys

@@ -3,7 +3,7 @@ PRIORITY = "optional"
 SECTION = "libs"
 LICENSE = "GPL"
 DEPENDS = "bison-native flex-native"
-PR = "r2"
+PR = "r3"
 
 CFLAGS_append = " -I${S}/libcap/include -fPIC"
 
@@ -11,9 +11,6 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/security/linux-privs/kernel-2.4/${
 	   file://makenames.patch \
 	   file://make.patch \
 	   file://syscall.patch"
-
-FILES_${PN} = "${libdir}"
-FILES_${PN}-dev = "${includedir}"
 
 do_install() {
 	install -d ${D}${includedir}/sys
