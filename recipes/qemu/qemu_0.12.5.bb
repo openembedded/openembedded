@@ -1,7 +1,7 @@
 LICENSE = "GPL"
 DEPENDS = "zlib ncurses gnutls"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "\
     http://download.savannah.gnu.org/releases/qemu/qemu-${PV}.tar.gz \
@@ -16,6 +16,8 @@ SRC_URI = "\
     file://fix_baum_c_compilation.patch \
     file://fallback.to.safe.mmap_min_addr.patch \
     file://linux-user-fix-running-programs-with-iwmmxt.patch \
+    file://qemu-sh4-mmapped-ITLB.patch \
+    file://qemu-sh4-improve-tlb.patch \
     "
 
 SRC_URI[md5sum] = "1d02ee0a04dfae2894340273372c1de4"

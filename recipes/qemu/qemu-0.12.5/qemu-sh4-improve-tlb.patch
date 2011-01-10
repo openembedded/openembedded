@@ -1,0 +1,120 @@
+From 829a49274f6741c0f3d3a2ba4698baf381a7e264 Mon Sep 17 00:00:00 2001
+From: Aurelien Jarno <aurelien@aurel32.net>
+Date: Sun, 09 Jan 2011 22:53:45 +0000
+Subject: target-sh4: improve TLB
+
+SH4 is using 16-bit instructions which means most of the constants are
+loaded through a constant pool at the end of the subroutine. The same
+memory page is therefore accessed in exec and read mode.
+
+With the current implementation, a QEMU TLB entry is set to read or
+read/write mode after an UTLB search and to exec mode after an ITLB
+search, which causes a lot of TLB exceptions to switch from read or
+read/write to exec and vice versa.
+
+This patch optimizes that by already setting the QEMU TLB entry in read
+or read/write mode when an UTLB entry is copied into ITLB (during an
+ITLB miss). This improve the emulation speed by about 14%.
+
+Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
+---
+Index: qemu-0.12.5/target-sh4/helper.c
+===================================================================
+--- qemu-0.12.5.orig/target-sh4/helper.c	2011-01-09 15:41:39.000000000 -0800
++++ qemu-0.12.5/target-sh4/helper.c	2011-01-09 15:54:43.808656002 -0800
+@@ -295,36 +295,41 @@
+     env->mmucr = (env->mmucr & 0xffff03ff) | (urc << 10);
+ }
+ 
+-/* Find itlb entry - update itlb from utlb if necessary and asked for
++/* Copy and utlb entry into itlb
++   Return entry
++*/
++static int copy_utlb_entry_itlb(CPUState *env, int utlb)
++{
++    int itlb;
++
++    tlb_t * ientry;
++   itlb = itlb_replacement(env);
++    ientry = &env->itlb[itlb];
++    if (ientry->v) {
++        tlb_flush_page(env, ientry->vpn << 10);
++    }
++    *ientry = env->utlb[utlb];
++    update_itlb_use(env, itlb);
++    return itlb;
++}
++
++/* Find itlb entry
+    Return entry, MMU_ITLB_MISS, MMU_ITLB_MULTIPLE or MMU_DTLB_MULTIPLE
+    Update the itlb from utlb if update is not 0
+ */
+ static int find_itlb_entry(CPUState * env, target_ulong address,
+-                           int use_asid, int update)
++                           int use_asid)
+ {
+-    int e, n;
++    int e;
+ 
+     e = find_tlb_entry(env, address, env->itlb, ITLB_SIZE, use_asid);
+-    if (e == MMU_DTLB_MULTIPLE)
++    if (e == MMU_DTLB_MULTIPLE) {
+ 	e = MMU_ITLB_MULTIPLE;
+-    else if (e == MMU_DTLB_MISS && update) {
+-	e = find_tlb_entry(env, address, env->utlb, UTLB_SIZE, use_asid);
+-	if (e >= 0) {
+-	    tlb_t * ientry;
+-	    n = itlb_replacement(env);
+-	    ientry = &env->itlb[n];
+-	    if (ientry->v) {
+-		if (!same_tlb_entry_exists(env->utlb, UTLB_SIZE, ientry))
+-		    tlb_flush_page(env, ientry->vpn << 10);
+-	    }
+-	    *ientry = env->utlb[e];
+-	    e = n;
+-	} else if (e == MMU_DTLB_MISS)
+-	    e = MMU_ITLB_MISS;
+-    } else if (e == MMU_DTLB_MISS)
++    } else if (e == MMU_DTLB_MISS) {
+ 	e = MMU_ITLB_MISS;
+-    if (e >= 0)
++    } else if (e >= 0) {
+ 	update_itlb_use(env, e);
++    }
+     return e;
+ }
+ 
+@@ -356,13 +361,31 @@
+     use_asid = (env->mmucr & MMUCR_SV) == 0 || (env->sr & SR_MD) == 0;
+ 
+     if (rw == 2) {
+-	n = find_itlb_entry(env, address, use_asid, 1);
++	n = find_itlb_entry(env, address, use_asid);
+ 	if (n >= 0) {
+ 	    matching = &env->itlb[n];
+ 	    if (!(env->sr & SR_MD) && !(matching->pr & 2))
+ 		n = MMU_ITLB_VIOLATION;
+ 	    else
+-		*prot = PAGE_READ;
++		*prot = PAGE_EXEC;
++        } else {
++            n = find_utlb_entry(env, address, use_asid);
++            if (n >= 0) {
++                n = copy_utlb_entry_itlb(env, n);
++                matching = &env->itlb[n];
++                if (!(env->sr & SR_MD) && !(matching->pr & 2)) {
++                      n = MMU_ITLB_VIOLATION;
++                } else {
++                    *prot = PAGE_READ | PAGE_EXEC;
++                    if ((matching->pr & 1) && matching->d) {
++                        *prot |= PAGE_WRITE;
++                    }
++                }
++            } else if (n == MMU_DTLB_MULTIPLE) {
++                n = MMU_ITLB_MULTIPLE;
++            } else if (n == MMU_DTLB_MISS) {
++                n = MMU_ITLB_MISS;
++            }
+ 	}
+     } else {
+ 	n = find_utlb_entry(env, address, use_asid);

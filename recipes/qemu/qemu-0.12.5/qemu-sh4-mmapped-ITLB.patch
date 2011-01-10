@@ -1,0 +1,70 @@
+From c0f809c46aa271f29a9e6268cdeda1f21301a8ef Mon Sep 17 00:00:00 2001
+From: Aurelien Jarno <aurelien@aurel32.net>
+Date: Sun, 09 Jan 2011 22:53:45 +0000
+Subject: target-sh4: implement writes to mmaped ITLB
+
+Some Linux kernels seems to implement ITLB/UTLB flushing through by
+writing all TLB entries through the memory mapped interface instead
+of writing one to MMUCR.TI.
+
+Implement memory mapped ITLB write interface so that such kernels can
+boot. This fixes https://bugs.launchpad.net/bugs/700774 .
+
+Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
+---
+Index: qemu-0.12.5/hw/sh7750.c
+===================================================================
+--- qemu-0.12.5.orig/hw/sh7750.c	2010-07-22 05:39:04.000000000 -0700
++++ qemu-0.12.5/hw/sh7750.c	2011-01-09 15:41:39.148656001 -0800
+@@ -670,6 +670,8 @@
+         /* do nothing */
+ 	break;
+     case MM_ITLB_ADDR:
++        cpu_sh4_write_mmaped_itlb_addr(s->cpu, addr, mem_value);
++        break;
+     case MM_ITLB_DATA:
+         /* XXXXX */
+         assert(0);
+Index: qemu-0.12.5/target-sh4/cpu.h
+===================================================================
+--- qemu-0.12.5.orig/target-sh4/cpu.h	2011-01-09 14:04:50.708656002 -0800
++++ qemu-0.12.5/target-sh4/cpu.h	2011-01-09 15:41:39.168656001 -0800
+@@ -167,6 +167,8 @@
+ 
+ void sh4_cpu_list(FILE *f, int (*cpu_fprintf)(FILE *f, const char *fmt, ...));
+ void cpu_sh4_invalidate_tlb(CPUSH4State *s);
++void cpu_sh4_write_mmaped_itlb_addr(CPUSH4State *s, target_phys_addr_t addr,
++				    uint32_t mem_value);
+ void cpu_sh4_write_mmaped_utlb_addr(CPUSH4State *s, target_phys_addr_t addr,
+ 				    uint32_t mem_value);
+ 
+Index: qemu-0.12.5/target-sh4/helper.c
+===================================================================
+--- qemu-0.12.5.orig/target-sh4/helper.c	2011-01-09 14:04:50.708656002 -0800
++++ qemu-0.12.5/target-sh4/helper.c	2011-01-09 15:41:39.178656001 -0800
+@@ -561,6 +561,25 @@
+     tlb_flush(s, 1);
+ }
+ 
++void cpu_sh4_write_mmaped_itlb_addr(CPUSH4State *s, target_phys_addr_t addr,
++				    uint32_t mem_value)
++{
++    uint32_t vpn = (mem_value & 0xfffffc00) >> 10;
++    uint8_t v = (uint8_t)((mem_value & 0x00000100) >> 8);
++    uint8_t asid = (uint8_t)(mem_value & 0x000000ff);
++
++    int index = (addr & 0x00003f00) >> 8;
++    tlb_t * entry = &s->itlb[index];
++    if (entry->v) {
++        /* Overwriting valid entry in itlb. */
++        target_ulong address = entry->vpn << 10;
++        tlb_flush_page(s, address);
++    }
++    entry->asid = asid;
++    entry->vpn = vpn;
++    entry->v = v;
++}
++
+ void cpu_sh4_write_mmaped_utlb_addr(CPUSH4State *s, target_phys_addr_t addr,
+ 				    uint32_t mem_value)
+ {
