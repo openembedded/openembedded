@@ -25,16 +25,13 @@ do_configure_prepend () {
 		export ac_cv_path_M4="${ac_cv_path_M4=${bindir}/m4}"
 		export ac_cv_prog_gnu_m4="${ac_cv_prog_gnu_m4=yes}"
 	fi
+
+	sed -i -e's,^SUBDIRS = .*,SUBDIRS = ${SUBDIRS},' ${S}/Makefile.am
 }
 
 do_configure_append() {
 	# replace paths to STAGING_BINDIR_NATIVE/perl with ${bindir}/perl
 	sed -i -e "s:#! @PERL@ -w:#! /usr/bin/env perl:" ${S}/bin/*.in
-}
-
-do_compile () {
-	sed -i -e's,^SUBDIRS = .*,SUBDIRS = ${SUBDIRS},' Makefile
-	oe_runmake
 }
 
 PARALLEL_MAKE = ""
