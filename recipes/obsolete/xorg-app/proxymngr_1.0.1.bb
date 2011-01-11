@@ -1,5 +1,5 @@
 require xorg-app-common.inc
-DEPENDS += " libice libxt xproxymngproto"
+DEPENDS += " libice libxt xproxymanagementprotocol"
 PE = "1"
 PR = "${INC_PR}.0"
 

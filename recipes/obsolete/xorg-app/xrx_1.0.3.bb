@@ -1,5 +1,5 @@
 require xorg-app-common.inc
-DEPENDS += " libxaw libxt libxext xtrans xproxymngproto libxau"
+DEPENDS += " libxaw libxt libxext xtrans xproxymanagementprotocol libxau"
 PE = "1"
 PR = "${INC_PR}.0"
 

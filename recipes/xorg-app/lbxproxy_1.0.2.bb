@@ -1,7 +1,7 @@
 require xorg-app-common.inc
 DESCRIPTION = "Applications that would like to take advantage of the Low Bandwidth \
 extension to X (LBX) must make their connections to an lbxproxy."
-DEPENDS += " xtrans libxext liblbxutil libice xproxymngproto bigreqsproto zlib"
+DEPENDS += " xtrans libxext liblbxutil libice xproxymanagementprotocol bigreqsproto zlib"
 PE = "1"
 PR = "${INC_PR}.0"
 

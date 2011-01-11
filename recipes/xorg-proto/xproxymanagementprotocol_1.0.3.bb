@@ -1,5 +1,4 @@
 require xorg-proto-common.inc
-PROVIDES = "xproxymngproto"
 PE = "1"
 PR = "${INC_PR}.0"
 
