@@ -2,35 +2,34 @@ All patches from shr kernel repository
 
 http://gitorious.org/~jama/htc-msm-2-6-32/openmoko-kernel/commits/shr-2.6.34
 
-332d4d6 Use 100 as HZ value on S3C24XX
-cf15f2e Force GPS power up on resume if it were powered up on suspend
-35100b9 jbt6k74: fix WS
-4ca6aba wm8753: use snd_soc_jack on neo1973
-65199ec Fix printk level of s3c touchscreen release message
-bd646c3 s3c2410_ts: jitter less touchscreen for glamo, version 4
-1fdc5e8 Openmoko resume reason sysfs node ported from 2.6.29
-3e467dd tslib relies on ts pressures events so this hack is needed to get tslib stuff working
-06b0058 GTA02 bt - remember state of bluetooth in variable
-d4eb15f Enable powering off after 8s POWER press
-4b917b2 Rename /dev/s3c2410_serialXXX to /dev/ttySACXXX
-8c29f08 mach-gta02: fix PR2349, do not manage down
-25252fc Enable 3D engine
-171485c glamo-display: fix WSOD for 242 timming
-d946c88 glamo-display: Enable FIFO stage for the LCD engine's memory access
-e5b69c0 save_regs.patch
-00184ca ar6000_delay.patch
-23214c2 usbhost.patch
-752655b accels.patch
-60e60b8 Use unlocked_ioctl rather than ioctl
-31c3e30 Fix claim of 2D register resource
-9258714 Debug statements for testing
-01b964f Fix dynamic command queue allocation
-e054ea4 JBT6k74 work for KMS
-04b6a8d Work on Glamo-core for DRM
-bc2937b Glamo DRM and KMS driver
-11e85be DRM for platform devices
-73f7873 touchscreen: ignore unexpected interrupts
-9965e7f wm8753: fix build with gcc-4.4.2, which works ok with 4.1.2
+dec0e10 Use 100 as HZ value on S3C24XX
+6165821 Force GPS power up on resume if it were powered up on suspend
+17e3948 wm8753: use snd_soc_jack on neo1973
+c4c7ad4 Fix printk level of s3c touchscreen release message
+4af6ed4 s3c2410_ts: jitter less touchscreen for glamo, version 4
+9f4c4ae Openmoko resume reason sysfs node ported from 2.6.29
+911da41 tslib relies on ts pressures events so this hack is needed to get tslib stuff working
+4571684 GTA02 bt - remember state of bluetooth in variable
+da72ac9 Enable powering off after 8s POWER press
+367e5a0 Rename /dev/s3c2410_serialXXX to /dev/ttySACXXX
+8c6e224 mach-gta02: fix PR2349, do not manage down
+cc57694 Enable 3D engine
+6efb1c3 glamo-display: fix WSOD for 242 timming
+bd1b283 glamo-display: Enable FIFO stage for the LCD engine's memory access
+8c7e255 save_regs.patch
+e88329a ar6000_delay.patch
+f1d852c usbhost.patch
+daf5121 accels.patch
+bc5da40 Use unlocked_ioctl rather than ioctl
+0e3dfae Fix claim of 2D register resource
+e8f4cb4 Debug statements for testing
+bba7d30 Fix dynamic command queue allocation
+aa1daae JBT6k74 work for KMS
+0497e8b Work on Glamo-core for DRM
+f56f798 Glamo DRM and KMS driver
+c05e860 DRM for platform devices
+97c4db8 touchscreen: ignore unexpected interrupts
+7d0d327 wm8753: fix build with gcc-4.4.2, which works ok with 4.1.2
 
 diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
 index 811dedc..1a7b708 100644
@@ -6914,7 +6913,7 @@ index a68af2d..02bd7b0 100644
  	s3c2410_stop_hc(dev);
  	iounmap(hcd->regs);
 diff --git a/drivers/video/backlight/jbt6k74.c b/drivers/video/backlight/jbt6k74.c
-index 8450904..4db021f 100644
+index 58547b5..ce925aa 100644
 --- a/drivers/video/backlight/jbt6k74.c
 +++ b/drivers/video/backlight/jbt6k74.c
 @@ -101,20 +101,10 @@ enum jbt_register {
@@ -6993,7 +6992,7 @@ index 8450904..4db021f 100644
  
  	ret |= jbt_reg_write(jbt, JBT_REG_SLEEP_OUT_FR_A, 0x11);
  	ret |= jbt_reg_write(jbt, JBT_REG_SLEEP_OUT_FR_B, 0x11);
-@@ -260,13 +259,16 @@ static int jbt_init_regs(struct jbt_info *jbt)
+@@ -260,9 +259,11 @@ static int jbt_init_regs(struct jbt_info *jbt)
  	return ret ? -EIO : 0;
  }
  
@@ -7005,13 +7004,17 @@ index 8450904..4db021f 100644
 +
  	struct jbt6k74_platform_data *pdata = jbt->spi->dev.platform_data;
  
- 	gpio_set_value_cansleep(pdata->gpio_reset, 1);
  	ret = regulator_bulk_enable(ARRAY_SIZE(jbt->supplies), jbt->supplies);
+@@ -270,7 +271,7 @@ static int jbt_standby_to_sleep(struct jbt_info *jbt)
+ 		return ret;
+ 
+ 	gpio_set_value_cansleep(pdata->gpio_reset, 1);
+-	mdelay(100);
 +	mdelay(200);
  
  	/* three times command zero */
  	ret |= jbt_reg_write_nodata(jbt, 0x00);
-@@ -279,17 +281,16 @@ static int jbt_standby_to_sleep(struct jbt_info *jbt)
+@@ -283,17 +284,16 @@ static int jbt_standby_to_sleep(struct jbt_info *jbt)
  	/* deep standby out */
  	ret |= jbt_reg_write(jbt, JBT_REG_POWER_ON_OFF, 0x11);
  	mdelay(1);
@@ -7035,7 +7038,7 @@ index 8450904..4db021f 100644
  
  	/* Make sure we are 120 ms after SLEEP_OUT */
  	if (time_before(jiffies, jbt->next_sleep))
-@@ -320,6 +321,7 @@ static int jbt_sleep_to_normal(struct jbt_info *jbt)
+@@ -324,6 +324,7 @@ static int jbt_sleep_to_normal(struct jbt_info *jbt)
  
  	/* Sleep mode off */
  	ret |= jbt_reg_write_nodata(jbt, JBT_REG_SLEEP_OUT);
@@ -7043,7 +7046,7 @@ index 8450904..4db021f 100644
  	jbt->next_sleep = jiffies + msecs_to_jiffies(120);
  
  	/* Allow the booster and display controller to restart stably */
-@@ -328,96 +330,87 @@ static int jbt_sleep_to_normal(struct jbt_info *jbt)
+@@ -332,95 +333,92 @@ static int jbt_sleep_to_normal(struct jbt_info *jbt)
  	return ret ? -EIO : 0;
  }
  
@@ -7096,20 +7099,20 @@ index 8450904..4db021f 100644
 +static int jbt_standby_to_normal(struct jbt_info *jbt)
  {
  	int ret;
--	struct jbt6k74_platform_data *pdata = jbt->spi->dev.platform_data;
+ 	struct jbt6k74_platform_data *pdata = jbt->spi->dev.platform_data;
  
 -	ret = jbt_reg_write(jbt, JBT_REG_POWER_ON_OFF, 0x00);
 +	if ( jbt->power_mode != JBT_POWER_MODE_STANDBY ) return 0;
- 
--	if (!ret)
--		ret = regulator_bulk_disable(ARRAY_SIZE(jbt->supplies), jbt->supplies);
++
 +	/* Make sure we are 120 ms after SLEEP_{IN,OUT} */
 +	while (time_before(jiffies, jbt->next_sleep)) cpu_relax();
- 
--	if (!ret)
--		gpio_set_value_cansleep(pdata->gpio_reset, 0);
 +	ret = jbt_reg_write_nodata(jbt, JBT_REG_SLEEP_OUT);
 +	jbt->next_sleep = jiffies + msecs_to_jiffies(150);
+ 
+ 	if (!ret) {
+ 		gpio_set_value_cansleep(pdata->gpio_reset, 0);
+ 		ret = regulator_bulk_disable(ARRAY_SIZE(jbt->supplies), jbt->supplies);
+ 	}
  
 -	return ret;
 +	ret |= jbt_reg_write_nodata(jbt, JBT_REG_DISPLAY_ON);
@@ -7166,7 +7169,8 @@ index 8450904..4db021f 100644
 -			ret = jbt_standby_to_sleep(jbt);
 -			/* then transition into normal */
 -			ret |= jbt_sleep_to_normal(jbt);
--			break;
++			ret = jbt_off_to_normal(jbt);
+ 			break;
 -		}
 -		break;
 -	case JBT_POWER_MODE_SLEEP:
@@ -7176,8 +7180,7 @@ index 8450904..4db021f 100644
 -			break;
 -		case JBT_POWER_MODE_DEEP_STANDBY:
 -			ret = jbt_sleep_to_standby(jbt);
-+			ret = jbt_off_to_normal(jbt);
- 			break;
+-			break;
 -		case JBT_POWER_MODE_NORMAL:
 -			ret = jbt_sleep_to_normal(jbt);
 +		case JBT_POWER_MODE_STANDBY:
@@ -7185,7 +7188,7 @@ index 8450904..4db021f 100644
  			break;
  		}
  		break;
-@@ -426,25 +419,23 @@ static int jbt6k74_enter_power_mode(struct jbt_info *jbt,
+@@ -429,25 +427,23 @@ static int jbt6k74_enter_power_mode(struct jbt_info *jbt,
  		case JBT_POWER_MODE_NORMAL:
  			ret = 0;
  			break;
@@ -7220,7 +7223,7 @@ index 8450904..4db021f 100644
  				jbt_power_mode_names[new_mode], ret);
  	}
  
-@@ -456,28 +447,46 @@ static int jbt6k74_enter_power_mode(struct jbt_info *jbt,
+@@ -459,28 +455,46 @@ static int jbt6k74_enter_power_mode(struct jbt_info *jbt,
  static int jbt6k74_set_resolution(struct jbt_info *jbt,
  					enum jbt_resolution new_resolution)
  {
@@ -7242,10 +7245,7 @@ index 8450904..4db021f 100644
  
 -	if (jbt->power_mode == JBT_POWER_MODE_NORMAL) {
 +	if ( jbt->power_mode == JBT_POWER_MODE_NORMAL ) {
- 
--		/* first transition into sleep */
--		ret = jbt_normal_to_sleep(jbt);
--		ret |= jbt_sleep_to_normal(jbt);
++
 +		ret = jbt_normal_to_standby(jbt);
 +
 +		mdelay(25);
@@ -7259,7 +7259,10 @@ index 8450904..4db021f 100644
 +			ret |= jbt_reg_write(jbt, JBT_REG_QUAD_RATE, 0x22);
 +			ret = jbt_reg_write(jbt, JBT_REG_DISPLAY_MODE, 0x81);
 +		}
-+
+ 
+-		/* first transition into sleep */
+-		ret = jbt_normal_to_sleep(jbt);
+-		ret |= jbt_sleep_to_normal(jbt);
 +		mdelay(25);
 +
 +		ret |= jbt_standby_to_normal(jbt);
@@ -7275,7 +7278,7 @@ index 8450904..4db021f 100644
  	}
  
  out_unlock:
-@@ -589,7 +598,7 @@ static ssize_t reset_write(struct device *dev, struct device_attribute *attr,
+@@ -592,7 +606,7 @@ static ssize_t reset_write(struct device *dev, struct device_attribute *attr,
  
  	mutex_unlock(&jbt->lock);
  
@@ -7284,7 +7287,7 @@ index 8450904..4db021f 100644
  	jbt6k74_enter_power_mode(jbt, old_power_mode);
  
  	return count;
-@@ -616,27 +625,6 @@ static struct attribute_group jbt_attr_group = {
+@@ -619,27 +633,6 @@ static struct attribute_group jbt_attr_group = {
  	.attrs	= jbt_sysfs_entries,
  };
  
@@ -7312,7 +7315,7 @@ index 8450904..4db021f 100644
  
  static int jbt6k74_set_mode(struct lcd_device *ld, struct fb_videomode *m)
  {
-@@ -649,7 +637,7 @@ static int jbt6k74_set_mode(struct lcd_device *ld, struct fb_videomode *m)
+@@ -652,7 +645,7 @@ static int jbt6k74_set_mode(struct lcd_device *ld, struct fb_videomode *m)
  		ret = jbt6k74_set_resolution(jbt, JBT_RESOLUTION_VGA);
  	} else {
  		dev_err(&jbt->spi->dev, "Unknown resolution.\n");
@@ -7321,7 +7324,7 @@ index 8450904..4db021f 100644
  	}
  
  	return ret;
-@@ -661,7 +649,7 @@ static int jbt6k74_set_power(struct lcd_device *ld, int power)
+@@ -664,7 +657,7 @@ static int jbt6k74_set_power(struct lcd_device *ld, int power)
  	struct jbt_info *jbt = dev_get_drvdata(&ld->dev);
  
  	jbt->blank_mode = power;
@@ -7330,7 +7333,7 @@ index 8450904..4db021f 100644
  
  	switch (power) {
  	case FB_BLANK_UNBLANK:
-@@ -671,11 +659,13 @@ static int jbt6k74_set_power(struct lcd_device *ld, int power)
+@@ -674,11 +667,13 @@ static int jbt6k74_set_power(struct lcd_device *ld, int power)
  		break;
  	case FB_BLANK_NORMAL:
  		dev_dbg(&jbt->spi->dev, "blank\n");
@@ -7346,7 +7349,7 @@ index 8450904..4db021f 100644
  		break;
  	default:
  		break;
-@@ -691,10 +681,10 @@ static int jbt6k74_get_power(struct lcd_device *ld)
+@@ -694,10 +689,10 @@ static int jbt6k74_get_power(struct lcd_device *ld)
  	switch (jbt->power_mode) {
  	case JBT_POWER_MODE_NORMAL:
  		return FB_BLANK_UNBLANK;
@@ -7359,7 +7362,7 @@ index 8450904..4db021f 100644
  	}
  }
  
-@@ -728,6 +718,8 @@ static int __devinit jbt_probe(struct spi_device *spi)
+@@ -731,6 +726,8 @@ static int __devinit jbt_probe(struct spi_device *spi)
  	if (!jbt)
  		return -ENOMEM;
  
@@ -7368,7 +7371,7 @@ index 8450904..4db021f 100644
  	jbt->spi = spi;
  
  	jbt->lcd_dev = lcd_device_register("jbt6k74-lcd", &spi->dev, jbt,
-@@ -738,11 +730,9 @@ static int __devinit jbt_probe(struct spi_device *spi)
+@@ -741,11 +738,9 @@ static int __devinit jbt_probe(struct spi_device *spi)
  		goto err_free_drvdata;
  	}
  
@@ -7381,7 +7384,7 @@ index 8450904..4db021f 100644
  	mutex_init(&jbt->lock);
  
  	dev_set_drvdata(&spi->dev, jbt);
-@@ -831,6 +821,26 @@ static int __devexit jbt_remove(struct spi_device *spi)
+@@ -834,6 +829,26 @@ static int __devexit jbt_remove(struct spi_device *spi)
  	return 0;
  }
  
@@ -7408,7 +7411,7 @@ index 8450904..4db021f 100644
  #ifdef CONFIG_PM
  static int jbt_suspend(struct spi_device *spi, pm_message_t state)
  {
-@@ -838,8 +848,7 @@ static int jbt_suspend(struct spi_device *spi, pm_message_t state)
+@@ -841,8 +856,7 @@ static int jbt_suspend(struct spi_device *spi, pm_message_t state)
  
  	jbt->suspend_mode = jbt->power_mode;
  
