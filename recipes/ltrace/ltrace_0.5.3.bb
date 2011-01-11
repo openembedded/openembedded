@@ -4,7 +4,7 @@ SECTION = "devel"
 DEPENDS = "libelf binutils"
 LICENSE = "GPLv2"
 
-PR = "r2"
+PR = "r3"
 
 # ltrace is not ported to sh3/sh4 targets at this time
 COMPATIBLE_TARGET_SYS = (?!sh[34])
@@ -17,6 +17,7 @@ SRC_URI = "\
   file://ltrace-mips-remove-CP.patch \
   file://ltrace-mips.patch \
   file://ltrace-ppc.patch \
+  file://ltrace-fix-sysdep_h-dependency.patch \
 "
 inherit autotools
 
