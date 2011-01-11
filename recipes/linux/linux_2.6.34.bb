@@ -24,8 +24,6 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=ke
            file://ARM-Add-support-for-LZMA-compressed-kernel-images.patch;status=pending \
            file://defconfig"
 
-SRC_URI_append_c7x0 = " file://fix-corgi-card-detection.patch;status=pending "
-
 SRC_URI_append_ts72xx = " \
            file://0001-ts72xx_base.patch \
            file://0002-ts72xx_force_machine-id.patch \
