@@ -1,12 +1,12 @@
 DESCRIPTION = "SHR default module for the Phone UI daemon"
 SECTION = "e/apps"
 DEPENDS += " dbus-glib libframeworkd-glib libfsoframework libphone-ui evas ecore edje edje-native elementary"
-SRCREV = "d0e59a3b5ef88d65a67e2c00abac9f14b2775eea"
+SRCREV = "d51b77390b123fff86e2bd47080ff20faa610604"
 PE = "1"
 PV = "0.0.1+gitr${SRCPV}"
 PR = "r2"
 
-SRC_URI = "git://shr.bearstech.com/repo/libphone-ui-shr.git;protocol=http;branch=master"
+SRC_URI = "git://shr.bearstech.com/repo/libphone-ui-shr.git;protocol=http;branch=dbus-glib"
 S = "${WORKDIR}/git"
 
 inherit pkgconfig autotools autotools
