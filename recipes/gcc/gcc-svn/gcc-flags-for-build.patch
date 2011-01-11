@@ -98,24 +98,6 @@ Index: gcc-4.5+svnr155680/gcc/configure
  fi
  
  # Expand extra_headers to include complete path.
-@@ -17037,7 +17040,7 @@ else
-   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
-   lt_status=$lt_dlunknown
-   cat > conftest.$ac_ext <<_LT_EOF
--#line 17040 "configure"
-+#line 17043 "configure"
- #include "confdefs.h"
- 
- #if HAVE_DLFCN_H
-@@ -17143,7 +17146,7 @@ else
-   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
-   lt_status=$lt_dlunknown
-   cat > conftest.$ac_ext <<_LT_EOF
--#line 17146 "configure"
-+#line 17149 "configure"
- #include "confdefs.h"
- 
- #if HAVE_DLFCN_H
 Index: gcc-4.5+svnr155680/Makefile.tpl
 ===================================================================
 --- gcc-4.5+svnr155680.orig/Makefile.tpl	2010-01-13 01:02:22.603540396 -0800
