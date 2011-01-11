@@ -34,3 +34,10 @@ Proposed by:    Martin 'JaMa' Jansa
 Note:		Openmoko distribution removed 2010-08-10
 Note:		Moved to obsolete on 2010-10-19
 Note:           Removed 2010-12-22
+
+Package Name:	obsolete/xorg-*
+Removal Date:	2011-02-01
+Maintainer:	Martin 'JaMa' Jansa
+Reason:	Old not pinned versions, we have X11R7.6 now by default
+Proposed by:	Martin 'JaMa' Jansa
+Note:		Moved to obsolete on 2011-01-11
