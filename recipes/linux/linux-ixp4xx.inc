@@ -21,7 +21,5 @@ CMDLINE += "${CMDLINE_DEBUG}"
 CMDLINE += "${CMDLINE_CONSOLE}"
 
 # Kernel module dependencies
-# (according to hrw, these should go in kernel.bbclass)
-
-DEPENDS_kernel-module-zd1211rw  += "zd1211-firmware"
+DEPENDS += "zd1211-firmware"
 RDEPENDS_kernel-module-zd1211rw += "zd1211-firmware"
