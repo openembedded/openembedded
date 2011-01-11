@@ -1,5 +1,5 @@
 DESCRIPTION = "SDK packages"
-PR = "r11"
+PR = "r12"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
@@ -14,7 +14,6 @@ RDEPENDS_task-sdk-x11 = "\
     gconf-dev \
     gtk+-dev \
     gtk-engines-dev \
-    libsvg-cairo-dev \
     libmatchbox-dev \
     matchbox-desktop-dev \
     pango-dev \
