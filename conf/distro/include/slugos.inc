@@ -180,7 +180,7 @@ PREFERRED_PROVIDER_virtual/libusb0		?= "libusb-compat"
 # we use bluez4 instead of the older bluez3
 DISTRO_BLUETOOTH_MANAGER			= "bluez4"
 PREFERRED_PROVIDER_bluez-utils-dbus		= "bluez4"
-PREFERRED_PROVIDER_bluez-libs			= "bluez-libs"
+PREFERRED_PROVIDER_bluez-libs			= "bluez4"
 PREFERRED_PROVIDER_bluez-utils			= "bluez4"
 
 # Include any package preferred versions and srcrevs:
