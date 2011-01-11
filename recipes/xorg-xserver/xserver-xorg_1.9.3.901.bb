@@ -13,8 +13,8 @@ SRC_URI += " \
             file://randr-support.patch \
             file://hack-fbdev-ignore-return-mode.patch \
            "
-SRC_URI[archive.md5sum] = "5bef6839a76d029204ab31aa2fcb5201"
-SRC_URI[archive.sha256sum] = "864831f51e841ff37f2445d1c85b86b559c8860a435fb496aead4f256a2b141d"
+SRC_URI[archive.md5sum] = "f22831fdddecbe4eecf006380d659ac8"
+SRC_URI[archive.sha256sum] = "1a77c1cf699e0430c9ab2b9c830861c998ef390517700d4c3a4b7265693c2747"
 
 SRC_URI_append_angstrom = " file://hack-assume-pixman-supports-overlapped-blt.patch"
 SRC_URI_append_shr = " file://hack-assume-pixman-supports-overlapped-blt.patch"
