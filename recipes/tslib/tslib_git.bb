@@ -1,8 +1,8 @@
 SRC_URI = "git://github.com/kergoth/tslib.git;protocol=git"
 S = "${WORKDIR}/git"
-SRCREV = "5243db505b109df3001f"
+SRCREV = "860d69cadedef0dec8ba6259ab5850691d3402e7"
 PV = "1.0+gitr${SRCPV}"
-PR = "${INC_PR}.3"
+PR = "${INC_PR}.4"
 
 DEFAULT_PREFERENCE = "-1"
 
