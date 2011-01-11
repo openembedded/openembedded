@@ -1,6 +1,5 @@
 require ntp_${PV}.bb
 DEPENDS = "openssl"
-PR = "r2"
 
 S = "${WORKDIR}/ntp-${PV}"
 

@@ -1,5 +1,7 @@
 require ntp.inc
 
+PR = "r1"
+
 SRC_URI = "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/${P}.tar.gz \
         file://tickadj.c.patch \
         file://ntp-4.2.4_p6-nano.patch \
@@ -37,7 +39,7 @@ else
         if ! grep -q -s ntpdate /var/cron/tabs/root; then
                 echo "adding crontab"
                 test -d /var/cron/tabs || mkdir -p /var/cron/tabs
-                echo "30 * * * *    /usr/bin/ntpdate -s -u pool.ntp.org" >> /var/cron/tabs/root
+                echo "30 * * * *    /usr/bin/ntpdate -b -s -u pool.ntp.org" >> /var/cron/tabs/root
         fi
 fi
 }
