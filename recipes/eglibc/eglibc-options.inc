@@ -9,7 +9,7 @@ def eglibc_cfg(feature, features, tokens, cnf ):
 # Map distro features to eglibc options settings
 def features_to_eglibc_settings(d):
         cnf = ([])
-        distro_features = bb.data.getVar('DISTRO_FEATURES_EGLIBC', d, True).split()
+        distro_features = (bb.data.getVar('DISTRO_FEATURES_EGLIBC', d, True) or '').split() 
         eglibc_cfg('ipv6',      distro_features, 'OPTION_EGLIBC_ADVANCED_INET6', cnf)
         eglibc_cfg('backtrace',      distro_features, 'OPTION_EGLIBC_BACKTRACE', cnf)
         eglibc_cfg('big-macros',      distro_features, 'OPTION_EGLIBC_BIG_MACROS', cnf)
