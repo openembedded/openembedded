@@ -25,7 +25,7 @@ INITSCRIPT_PARAMS = "defaults"
 EXTRA_OECONF = "--without-openssl --without-crypto ac_cv_header_readline_history_h=no"
 CFLAGS_append = " -DPTYS_ARE_GETPT -DPTYS_ARE_SEARCHED"
 
-PACKAGES += "ntpdate ntp-bin ntp-tickadj ntp-utils"
+PACKAGES += "ntpdate ${PN}-bin ${PN}-tickadj ${PN}-utils"
 # NOTE: you don't need ntpdate, use "ntpdc -q -g -x"
 
 # This should use rc.update
