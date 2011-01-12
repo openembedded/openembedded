@@ -1,6 +1,8 @@
 require boost-with-bjam.inc
 
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
+
+ARM_INSTRUCTION_SET = "arm"
 
 SRC_URI = " \
   http://downloads.sourceforge.net/project/boost/boost/1.45.0/boost_1_45_0.tar.gz \
