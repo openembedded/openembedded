@@ -1,0 +1,32 @@
+From d0dfc6b74a0c6e9ee46b62713256e2b025244d3c Mon Sep 17 00:00:00 2001
+From: Avi Kivity <avi@redhat.com>
+Date: Fri, 31 Dec 2010 10:52:15 +0200
+Subject: [PATCH 44/66] KVM: i8259: initialize isr_ack
+
+isr_ack is never initialized.  So, until the first PIC reset, interrupts
+may fail to be injected.  This can cause Windows XP to fail to boot, as
+reported in the fallout from the fix to
+https://bugzilla.kernel.org/show_bug.cgi?id=21962.
+
+Reported-and-tested-by: Nicolas Prochazka <prochazka.nicolas@gmail.com>
+Signed-off-by: Avi Kivity <avi@redhat.com>
+---
+ arch/x86/kvm/i8259.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/arch/x86/kvm/i8259.c b/arch/x86/kvm/i8259.c
+index f628234..3cece05 100644
+--- a/arch/x86/kvm/i8259.c
++++ b/arch/x86/kvm/i8259.c
+@@ -575,6 +575,8 @@ struct kvm_pic *kvm_create_pic(struct kvm *kvm)
+ 	s->pics[1].elcr_mask = 0xde;
+ 	s->pics[0].pics_state = s;
+ 	s->pics[1].pics_state = s;
++	s->pics[0].isr_ack = 0xff;
++	s->pics[1].isr_ack = 0xff;
+ 
+ 	/*
+ 	 * Initialize PIO device
+-- 
+1.6.6.1
+

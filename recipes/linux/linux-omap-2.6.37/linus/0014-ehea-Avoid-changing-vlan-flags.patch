@@ -1,0 +1,34 @@
+From c4711786986af0cce654f493426ee0a1055e4b17 Mon Sep 17 00:00:00 2001
+From: Breno Leitao <leitao@linux.vnet.ibm.com>
+Date: Mon, 20 Dec 2010 09:02:37 +0000
+Subject: [PATCH 14/66] ehea: Avoid changing vlan flags
+
+This patch avoids disabling the vlan flags using ethtool.
+
+Signed-off-by: Breno Leitao <leitao@linux.vnet.ibm.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+---
+ drivers/net/ehea/ehea_ethtool.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/net/ehea/ehea_ethtool.c b/drivers/net/ehea/ehea_ethtool.c
+index 1f37ee6..d6cf502 100644
+--- a/drivers/net/ehea/ehea_ethtool.c
++++ b/drivers/net/ehea/ehea_ethtool.c
+@@ -263,6 +263,13 @@ static void ehea_get_ethtool_stats(struct net_device *dev,
+ 
+ static int ehea_set_flags(struct net_device *dev, u32 data)
+ {
++	/* Avoid changing the VLAN flags */
++	if ((data & (ETH_FLAG_RXVLAN | ETH_FLAG_TXVLAN)) !=
++	    (ethtool_op_get_flags(dev) & (ETH_FLAG_RXVLAN |
++					  ETH_FLAG_TXVLAN))){
++		return -EINVAL;
++	}
++
+ 	return ethtool_op_set_flags(dev, data, ETH_FLAG_LRO
+ 					| ETH_FLAG_TXVLAN
+ 					| ETH_FLAG_RXVLAN);
+-- 
+1.6.6.1
+

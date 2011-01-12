@@ -1,0 +1,33 @@
+From 0bc463426ab5eb39e76df637b29a4f191d01b8a0 Mon Sep 17 00:00:00 2001
+From: Jate Sujjavanich <jsujjavanich@syntech-fuelmaster.com>
+Date: Wed, 29 Sep 2010 09:44:32 -0400
+Subject: [PATCH 30/66] spi/m68knommu: Coldfire QSPI platform support
+
+After grabbing a msg from the msgq, the mcfqspi_work function calls
+list_del_init on the mcfqspi->msgq which unintentionally deletes the rest
+of the list before it can be processed. If qspi call was made using
+spi_sync, this can result in a process hang.
+
+Signed-off-by: Jate Sujjavanich <jsujjavanich@syntech-fuelmaster.com>
+Acked-by: Steven King <sfking@fdwdc.com>
+Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
+---
+ drivers/spi/coldfire_qspi.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/spi/coldfire_qspi.c b/drivers/spi/coldfire_qspi.c
+index 052b3c7..8856bcc 100644
+--- a/drivers/spi/coldfire_qspi.c
++++ b/drivers/spi/coldfire_qspi.c
+@@ -317,7 +317,7 @@ static void mcfqspi_work(struct work_struct *work)
+ 		msg = container_of(mcfqspi->msgq.next, struct spi_message,
+ 				   queue);
+ 
+-		list_del_init(&mcfqspi->msgq);
++		list_del_init(&msg->queue);
+ 		spin_unlock_irqrestore(&mcfqspi->lock, flags);
+ 
+ 		spi = msg->spi;
+-- 
+1.6.6.1
+

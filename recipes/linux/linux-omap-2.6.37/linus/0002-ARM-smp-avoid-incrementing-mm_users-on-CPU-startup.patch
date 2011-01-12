@@ -1,0 +1,32 @@
+From 1ae1b5f053cf36bd0f913e83f3b136fec8152d4d Mon Sep 17 00:00:00 2001
+From: Russell King <rmk+kernel@arm.linux.org.uk>
+Date: Sat, 18 Dec 2010 13:57:00 +0000
+Subject: [PATCH 02/66] ARM: smp: avoid incrementing mm_users on CPU startup
+
+We should not be incrementing mm_users when we startup a secondary
+CPU - doing so results in mm_users incrementing by one each time we
+hotplug a CPU, which will eventually wrap, and will cause problems.
+
+Other architectures such as x86 do not increment mm_users, but only
+mm_count, so we follow that pattern.
+
+Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+---
+ arch/arm/kernel/smp.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
+index 8c19595..9066473 100644
+--- a/arch/arm/kernel/smp.c
++++ b/arch/arm/kernel/smp.c
+@@ -310,7 +310,6 @@ asmlinkage void __cpuinit secondary_start_kernel(void)
+ 	 * All kernel threads share the same mm context; grab a
+ 	 * reference and switch to it.
+ 	 */
+-	atomic_inc(&mm->mm_users);
+ 	atomic_inc(&mm->mm_count);
+ 	current->active_mm = mm;
+ 	cpumask_set_cpu(cpu, mm_cpumask(mm));
+-- 
+1.6.6.1
+

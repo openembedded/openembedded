@@ -1,0 +1,37 @@
+From f4d5900a99dbc354ef1ba384d445ff80ae4d77b4 Mon Sep 17 00:00:00 2001
+From: Ben Hutchings <ben@decadent.org.uk>
+Date: Wed, 29 Dec 2010 04:26:17 +0000
+Subject: [PATCH 42/66] starfire: Fix dma_addr_t size test for MIPS
+
+Commit 56543af "starfire: use BUILD_BUG_ON for netdrv_addr_t" revealed
+that the preprocessor condition used to find the size of dma_addr_t
+yielded the wrong result for some architectures and configurations.
+This was kluged for 64-bit PowerPC in commit 3e502e6 by adding yet
+another case to the condition.  However, 64-bit MIPS configurations
+are not detected reliably either.
+
+This should be fixed by using CONFIG_ARCH_DMA_ADDR_T_64BIT, but that
+isn't yet defined everywhere it should be.
+
+Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+---
+ drivers/net/starfire.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/net/starfire.c b/drivers/net/starfire.c
+index 4adf124..a4f2bd5 100644
+--- a/drivers/net/starfire.c
++++ b/drivers/net/starfire.c
+@@ -148,7 +148,7 @@ static int full_duplex[MAX_UNITS] = {0, };
+  * This SUCKS.
+  * We need a much better method to determine if dma_addr_t is 64-bit.
+  */
+-#if (defined(__i386__) && defined(CONFIG_HIGHMEM64G)) || defined(__x86_64__) || defined (__ia64__) || defined(__alpha__) || defined(__mips64__) || (defined(__mips__) && defined(CONFIG_HIGHMEM) && defined(CONFIG_64BIT_PHYS_ADDR)) || (defined(__powerpc64__) || defined(CONFIG_PHYS_64BIT))
++#if (defined(__i386__) && defined(CONFIG_HIGHMEM64G)) || defined(__x86_64__) || defined (__ia64__) || defined(__alpha__) || (defined(CONFIG_MIPS) && ((defined(CONFIG_HIGHMEM) && defined(CONFIG_64BIT_PHYS_ADDR)) || defined(CONFIG_64BIT))) || (defined(__powerpc64__) || defined(CONFIG_PHYS_64BIT))
+ /* 64-bit dma_addr_t */
+ #define ADDR_64BITS	/* This chip uses 64 bit addresses. */
+ #define netdrv_addr_t __le64
+-- 
+1.6.6.1
+

@@ -1,0 +1,56 @@
+From 2393c944d5d60eedaede80273ede8a816b5fa3e0 Mon Sep 17 00:00:00 2001
+From: Jesper Juhl <jj@chaosbits.net>
+Date: Sun, 26 Dec 2010 09:59:58 +0000
+Subject: [PATCH 39/66] ISDN, Gigaset: Fix memory leak in do_disconnect_req()
+
+Hi,
+
+In drivers/isdn/gigaset/capi.c::do_disconnect_req() we will leak the
+memory allocated (with kmalloc) to 'b3cmsg' if the call to alloc_skb()
+fails.
+
+...
+		b3cmsg = kmalloc(sizeof(*b3cmsg), GFP_KERNEL);
+	allocation here ------^
+		if (!b3cmsg) {
+			dev_err(cs->dev, "%s: out of memory\n", __func__);
+			send_conf(iif, ap, skb, CAPI_MSGOSRESOURCEERR);
+			return;
+		}
+		capi_cmsg_header(b3cmsg, ap->id, CAPI_DISCONNECT_B3, CAPI_IND,
+				 ap->nextMessageNumber++,
+				 cmsg->adr.adrPLCI | (1 << 16));
+		b3cmsg->Reason_B3 = CapiProtocolErrorLayer1;
+		b3skb = alloc_skb(CAPI_DISCONNECT_B3_IND_BASELEN, GFP_KERNEL);
+		if (b3skb == NULL) {
+			dev_err(cs->dev, "%s: out of memory\n", __func__);
+			send_conf(iif, ap, skb, CAPI_MSGOSRESOURCEERR);
+			return;
+	leak here ------^
+...
+
+This leak is easily fixed by just kfree()'ing the memory allocated to
+'b3cmsg' right before we return. The following patch does that.
+
+Signed-off-by: Jesper Juhl <jj@chaosbits.net>
+Acked-by: Tilman Schmidt <tilman@imap.cc>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+---
+ drivers/isdn/gigaset/capi.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/isdn/gigaset/capi.c b/drivers/isdn/gigaset/capi.c
+index bcc174e..658e75f 100644
+--- a/drivers/isdn/gigaset/capi.c
++++ b/drivers/isdn/gigaset/capi.c
+@@ -1900,6 +1900,7 @@ static void do_disconnect_req(struct gigaset_capi_ctr *iif,
+ 		if (b3skb == NULL) {
+ 			dev_err(cs->dev, "%s: out of memory\n", __func__);
+ 			send_conf(iif, ap, skb, CAPI_MSGOSRESOURCEERR);
++			kfree(b3cmsg);
+ 			return;
+ 		}
+ 		capi_cmsg2message(b3cmsg,
+-- 
+1.6.6.1
+

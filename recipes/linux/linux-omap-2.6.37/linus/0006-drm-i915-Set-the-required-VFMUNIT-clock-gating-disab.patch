@@ -1,0 +1,45 @@
+From 06f37751af77192b424b2b0ff17dc08de65faba0 Mon Sep 17 00:00:00 2001
+From: Eric Anholt <eric@anholt.net>
+Date: Tue, 14 Dec 2010 10:06:46 -0800
+Subject: [PATCH 06/66] drm/i915: Set the required VFMUNIT clock gating disable on Ironlake.
+
+It's required by the specs, but we don't know why.  Let's not find out
+why.
+
+Signed-off-by: Eric Anholt <eric@anholt.net>
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+---
+ drivers/gpu/drm/i915/i915_reg.h      |    3 +++
+ drivers/gpu/drm/i915/intel_display.c |    2 ++
+ 2 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/gpu/drm/i915/i915_reg.h b/drivers/gpu/drm/i915/i915_reg.h
+index 878fc76..8470a97 100644
+--- a/drivers/gpu/drm/i915/i915_reg.h
++++ b/drivers/gpu/drm/i915/i915_reg.h
+@@ -2471,6 +2471,9 @@
+ # define MARIUNIT_CLOCK_GATE_DISABLE		(1 << 18)
+ # define SVSMUNIT_CLOCK_GATE_DISABLE		(1 << 1)
+ 
++#define PCH_3DCGDIS1		0x46024
++# define VFMUNIT_CLOCK_GATE_DISABLE		(1 << 11)
++
+ #define FDI_PLL_FREQ_CTL        0x46030
+ #define  FDI_PLL_FREQ_CHANGE_REQUEST    (1<<24)
+ #define  FDI_PLL_FREQ_LOCK_LIMIT_MASK   0xfff00
+diff --git a/drivers/gpu/drm/i915/intel_display.c b/drivers/gpu/drm/i915/intel_display.c
+index d9b7092..97e374e 100644
+--- a/drivers/gpu/drm/i915/intel_display.c
++++ b/drivers/gpu/drm/i915/intel_display.c
+@@ -5825,6 +5825,8 @@ void intel_init_clock_gating(struct drm_device *dev)
+ 			I915_WRITE(PCH_3DCGDIS0,
+ 				   MARIUNIT_CLOCK_GATE_DISABLE |
+ 				   SVSMUNIT_CLOCK_GATE_DISABLE);
++			I915_WRITE(PCH_3DCGDIS1,
++				   VFMUNIT_CLOCK_GATE_DISABLE);
+ 		}
+ 
+ 		I915_WRITE(PCH_DSPCLK_GATE_D, dspclk_gate);
+-- 
+1.6.6.1
+

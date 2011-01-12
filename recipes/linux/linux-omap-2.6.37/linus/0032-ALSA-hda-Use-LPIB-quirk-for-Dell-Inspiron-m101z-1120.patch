@@ -1,0 +1,32 @@
+From e03fa055bc126e536c7f65862e08a9b143138ea9 Mon Sep 17 00:00:00 2001
+From: Daniel T Chen <crimsun@ubuntu.com>
+Date: Tue, 28 Dec 2010 17:20:02 -0500
+Subject: [PATCH 32/66] ALSA: hda: Use LPIB quirk for Dell Inspiron m101z/1120
+
+Sjoerd Simons reports that, without using position_fix=1, recording
+experiences overruns. Work around that by applying the LPIB quirk
+for his hardware.
+
+Reported-and-tested-by: Sjoerd Simons <sjoerd@debian.org>
+Cc: <stable@kernel.org>
+Signed-off-by: Daniel T Chen <crimsun@ubuntu.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/hda_intel.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index b030c8e..a1c4008 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2300,6 +2300,7 @@ static struct snd_pci_quirk position_fix_list[] __devinitdata = {
+ 	SND_PCI_QUIRK(0x1028, 0x01cc, "Dell D820", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x1028, 0x01de, "Dell Precision 390", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x1028, 0x01f6, "Dell Latitude 131L", POS_FIX_LPIB),
++	SND_PCI_QUIRK(0x1028, 0x0470, "Dell Inspiron 1120", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x103c, 0x306d, "HP dv3", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x1043, 0x813d, "ASUS P5AD2", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x1043, 0x81b3, "ASUS", POS_FIX_LPIB),
+-- 
+1.6.6.1
+

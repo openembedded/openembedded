@@ -1,0 +1,34 @@
+From 4ef9e11d6867f88951e30db910fa015300e31871 Mon Sep 17 00:00:00 2001
+From: Hillf Danton <dhillf@gmail.com>
+Date: Wed, 29 Dec 2010 21:55:28 +0800
+Subject: [PATCH 27/66] fix freeing user_struct in user cache
+
+When racing on adding into user cache, the new allocated from mm slab
+is freed without putting user namespace.
+
+Since the user namespace is already operated by getting, putting has
+to be issued.
+
+Signed-off-by: Hillf Danton <dhillf@gmail.com>
+Acked-by: Serge Hallyn <serge@hallyn.com>
+Cc: stable@kernel.org
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+---
+ kernel/user.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/kernel/user.c b/kernel/user.c
+index 2c7d8d5..5c598ca 100644
+--- a/kernel/user.c
++++ b/kernel/user.c
+@@ -158,6 +158,7 @@ struct user_struct *alloc_uid(struct user_namespace *ns, uid_t uid)
+ 		spin_lock_irq(&uidhash_lock);
+ 		up = uid_hash_find(uid, hashent);
+ 		if (up) {
++			put_user_ns(ns);
+ 			key_put(new->uid_keyring);
+ 			key_put(new->session_keyring);
+ 			kmem_cache_free(uid_cachep, new);
+-- 
+1.6.6.1
+

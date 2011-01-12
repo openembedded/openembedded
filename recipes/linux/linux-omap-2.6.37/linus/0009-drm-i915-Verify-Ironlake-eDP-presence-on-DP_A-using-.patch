@@ -1,0 +1,69 @@
+From 4d3024428f5c3ef5295e6f6fb257ae118b3f93a1 Mon Sep 17 00:00:00 2001
+From: Chris Wilson <chris@chris-wilson.co.uk>
+Date: Tue, 14 Dec 2010 19:21:29 +0000
+Subject: [PATCH 09/66] drm/i915: Verify Ironlake eDP presence on DP_A using the capability fuse
+
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+---
+ drivers/gpu/drm/i915/i915_reg.h      |    7 +++++++
+ drivers/gpu/drm/i915/intel_display.c |   19 ++++++++++++++++++-
+ 2 files changed, 25 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/gpu/drm/i915/i915_reg.h b/drivers/gpu/drm/i915/i915_reg.h
+index 8470a97..cb8f434 100644
+--- a/drivers/gpu/drm/i915/i915_reg.h
++++ b/drivers/gpu/drm/i915/i915_reg.h
+@@ -2591,6 +2591,13 @@
+ #define ILK_DISPLAY_CHICKEN2	0x42004
+ #define  ILK_DPARB_GATE	(1<<22)
+ #define  ILK_VSDPFD_FULL	(1<<21)
++#define ILK_DISPLAY_CHICKEN_FUSES	0x42014
++#define  ILK_INTERNAL_GRAPHICS_DISABLE	(1<<31)
++#define  ILK_INTERNAL_DISPLAY_DISABLE	(1<<30)
++#define  ILK_DISPLAY_DEBUG_DISABLE	(1<<29)
++#define  ILK_HDCP_DISABLE		(1<<25)
++#define  ILK_eDP_A_DISABLE		(1<<24)
++#define  ILK_DESKTOP			(1<<23)
+ #define ILK_DSPCLK_GATE		0x42020
+ #define  ILK_DPARB_CLK_GATE	(1<<5)
+ /* According to spec this bit 7/8/9 of 0x42020 should be set to enable FBC */
+diff --git a/drivers/gpu/drm/i915/intel_display.c b/drivers/gpu/drm/i915/intel_display.c
+index 97e374e..fca5232 100644
+--- a/drivers/gpu/drm/i915/intel_display.c
++++ b/drivers/gpu/drm/i915/intel_display.c
+@@ -5379,6 +5379,23 @@ static int intel_encoder_clones(struct drm_device *dev, int type_mask)
+ 	return index_mask;
+ }
+ 
++static bool has_edp_a(struct drm_device *dev)
++{
++	struct drm_i915_private *dev_priv = dev->dev_private;
++
++	if (!IS_MOBILE(dev))
++		return false;
++
++	if ((I915_READ(DP_A) & DP_DETECTED) == 0)
++		return false;
++
++	if (IS_GEN5(dev) &&
++	    (I915_READ(ILK_DISPLAY_CHICKEN_FUSES) & ILK_eDP_A_DISABLE))
++		return false;
++
++	return true;
++}
++
+ static void intel_setup_outputs(struct drm_device *dev)
+ {
+ 	struct drm_i915_private *dev_priv = dev->dev_private;
+@@ -5396,7 +5413,7 @@ static void intel_setup_outputs(struct drm_device *dev)
+ 	if (HAS_PCH_SPLIT(dev)) {
+ 		dpd_is_edp = intel_dpd_is_edp(dev);
+ 
+-		if (IS_MOBILE(dev) && (I915_READ(DP_A) & DP_DETECTED))
++		if (has_edp_a(dev))
+ 			intel_dp_init(dev, DP_A);
+ 
+ 		if (dpd_is_edp && (I915_READ(PCH_DP_D) & DP_DETECTED))
+-- 
+1.6.6.1
+

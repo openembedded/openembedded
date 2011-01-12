@@ -1,0 +1,190 @@
+From 63ee41d794d9c555f84205517a68509848988760 Mon Sep 17 00:00:00 2001
+From: Eric Anholt <eric@anholt.net>
+Date: Mon, 20 Dec 2010 18:40:06 -0800
+Subject: [PATCH 08/66] drm/i915, intel_ips: When i915 loads after IPS, make IPS relink to i915.
+
+The IPS driver is designed to be able to run detached from i915 and
+just not enable GPU turbo in that case, in order to avoid module
+dependencies between the two drivers.  This means that we don't know
+what the load order between the two is going to be, and we had
+previously only supported IPS after (optionally) i915, but not i915
+after IPS.  If the wrong order was chosen, you'd get no GPU turbo, and
+something like half the possible graphics performance.
+
+Signed-off-by: Eric Anholt <eric@anholt.net>
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+Cc: stable@kernel.org
+---
+ drivers/gpu/drm/i915/i915_dma.c  |   23 +++++++++++++++++++++++
+ drivers/platform/x86/intel_ips.c |   36 +++++++++++++++++++++++++++++++++---
+ drivers/platform/x86/intel_ips.h |   21 +++++++++++++++++++++
+ 3 files changed, 77 insertions(+), 3 deletions(-)
+ create mode 100644 drivers/platform/x86/intel_ips.h
+
+diff --git a/drivers/gpu/drm/i915/i915_dma.c b/drivers/gpu/drm/i915/i915_dma.c
+index e680081..cb900dc 100644
+--- a/drivers/gpu/drm/i915/i915_dma.c
++++ b/drivers/gpu/drm/i915/i915_dma.c
+@@ -34,6 +34,7 @@
+ #include "i915_drm.h"
+ #include "i915_drv.h"
+ #include "i915_trace.h"
++#include "../../../platform/x86/intel_ips.h"
+ #include <linux/pci.h>
+ #include <linux/vgaarb.h>
+ #include <linux/acpi.h>
+@@ -1871,6 +1872,26 @@ out_unlock:
+ EXPORT_SYMBOL_GPL(i915_gpu_turbo_disable);
+ 
+ /**
++ * Tells the intel_ips driver that the i915 driver is now loaded, if
++ * IPS got loaded first.
++ *
++ * This awkward dance is so that neither module has to depend on the
++ * other in order for IPS to do the appropriate communication of
++ * GPU turbo limits to i915.
++ */
++static void
++ips_ping_for_i915_load(void)
++{
++	void (*link)(void);
++
++	link = symbol_get(ips_link_to_i915_driver);
++	if (link) {
++		link();
++		symbol_put(ips_link_to_i915_driver);
++	}
++}
++
++/**
+  * i915_driver_load - setup chip and create an initial config
+  * @dev: DRM device
+  * @flags: startup flags
+@@ -2075,6 +2096,8 @@ int i915_driver_load(struct drm_device *dev, unsigned long flags)
+ 	dev_priv->mchdev_lock = &mchdev_lock;
+ 	spin_unlock(&mchdev_lock);
+ 
++	ips_ping_for_i915_load();
++
+ 	return 0;
+ 
+ out_workqueue_free:
+diff --git a/drivers/platform/x86/intel_ips.c b/drivers/platform/x86/intel_ips.c
+index c44a5e8..f0b3ad1 100644
+--- a/drivers/platform/x86/intel_ips.c
++++ b/drivers/platform/x86/intel_ips.c
+@@ -75,6 +75,7 @@
+ #include <drm/i915_drm.h>
+ #include <asm/msr.h>
+ #include <asm/processor.h>
++#include "intel_ips.h"
+ 
+ #define PCI_DEVICE_ID_INTEL_THERMAL_SENSOR 0x3b32
+ 
+@@ -245,6 +246,7 @@
+ #define thm_writel(off, val) writel((val), ips->regmap + (off))
+ 
+ static const int IPS_ADJUST_PERIOD = 5000; /* ms */
++static bool late_i915_load = false;
+ 
+ /* For initial average collection */
+ static const int IPS_SAMPLE_PERIOD = 200; /* ms */
+@@ -339,6 +341,9 @@ struct ips_driver {
+ 	u64 orig_turbo_ratios;
+ };
+ 
++static bool
++ips_gpu_turbo_enabled(struct ips_driver *ips);
++
+ /**
+  * ips_cpu_busy - is CPU busy?
+  * @ips: IPS driver struct
+@@ -517,7 +522,7 @@ static void ips_disable_cpu_turbo(struct ips_driver *ips)
+  */
+ static bool ips_gpu_busy(struct ips_driver *ips)
+ {
+-	if (!ips->gpu_turbo_enabled)
++	if (!ips_gpu_turbo_enabled(ips))
+ 		return false;
+ 
+ 	return ips->gpu_busy();
+@@ -532,7 +537,7 @@ static bool ips_gpu_busy(struct ips_driver *ips)
+  */
+ static void ips_gpu_raise(struct ips_driver *ips)
+ {
+-	if (!ips->gpu_turbo_enabled)
++	if (!ips_gpu_turbo_enabled(ips))
+ 		return;
+ 
+ 	if (!ips->gpu_raise())
+@@ -549,7 +554,7 @@ static void ips_gpu_raise(struct ips_driver *ips)
+  */
+ static void ips_gpu_lower(struct ips_driver *ips)
+ {
+-	if (!ips->gpu_turbo_enabled)
++	if (!ips_gpu_turbo_enabled(ips))
+ 		return;
+ 
+ 	if (!ips->gpu_lower())
+@@ -1454,6 +1459,31 @@ out_err:
+ 	return false;
+ }
+ 
++static bool
++ips_gpu_turbo_enabled(struct ips_driver *ips)
++{
++	if (!ips->gpu_busy && late_i915_load) {
++		if (ips_get_i915_syms(ips)) {
++			dev_info(&ips->dev->dev,
++				 "i915 driver attached, reenabling gpu turbo\n");
++			ips->gpu_turbo_enabled = !(thm_readl(THM_HTS) & HTS_GTD_DIS);
++		}
++	}
++
++	return ips->gpu_turbo_enabled;
++}
++
++void
++ips_link_to_i915_driver()
++{
++	/* We can't cleanly get at the various ips_driver structs from
++	 * this caller (the i915 driver), so just set a flag saying
++	 * that it's time to try getting the symbols again.
++	 */
++	late_i915_load = true;
++}
++EXPORT_SYMBOL_GPL(ips_link_to_i915_driver);
++
+ static DEFINE_PCI_DEVICE_TABLE(ips_id_table) = {
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL,
+ 		     PCI_DEVICE_ID_INTEL_THERMAL_SENSOR), },
+diff --git a/drivers/platform/x86/intel_ips.h b/drivers/platform/x86/intel_ips.h
+new file mode 100644
+index 0000000..73299be
+--- /dev/null
++++ b/drivers/platform/x86/intel_ips.h
+@@ -0,0 +1,21 @@
++/*
++ * Copyright (c) 2010 Intel Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms and conditions of the GNU General Public License,
++ * version 2, as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ *
++ * You should have received a copy of the GNU General Public License along with
++ * this program; if not, write to the Free Software Foundation, Inc.,
++ * 51 Franklin St - Fifth Floor, Boston, MA 02110-1301 USA.
++ *
++ * The full GNU General Public License is included in this distribution in
++ * the file called "COPYING".
++ */
++
++void ips_link_to_i915_driver(void);
+-- 
+1.6.6.1
+

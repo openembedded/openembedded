@@ -1,0 +1,30 @@
+From cc6455f82edd3f9da3b03870d41cde3cb22ad40d Mon Sep 17 00:00:00 2001
+From: Chris Wilson <chris@chris-wilson.co.uk>
+Date: Thu, 30 Dec 2010 12:54:00 +0000
+Subject: [PATCH 34/66] drm/i915/dvo: Report LVDS attached to ch701x as connected
+
+As we have already detected something attached to the chip during
+initialisation, always report the LVDS connector status as connected
+during probing.
+
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+---
+ drivers/gpu/drm/i915/dvo_ch7017.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/gpu/drm/i915/dvo_ch7017.c b/drivers/gpu/drm/i915/dvo_ch7017.c
+index af70337..d3e8c54 100644
+--- a/drivers/gpu/drm/i915/dvo_ch7017.c
++++ b/drivers/gpu/drm/i915/dvo_ch7017.c
+@@ -242,7 +242,7 @@ fail:
+ 
+ static enum drm_connector_status ch7017_detect(struct intel_dvo_device *dvo)
+ {
+-	return connector_status_unknown;
++	return connector_status_connected;
+ }
+ 
+ static enum drm_mode_status ch7017_mode_valid(struct intel_dvo_device *dvo,
+-- 
+1.6.6.1
+

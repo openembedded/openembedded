@@ -1,0 +1,58 @@
+From 551423748a4eba55f2eb0fc250d757986471f187 Mon Sep 17 00:00:00 2001
+From: Ben Hutchings <ben@decadent.org.uk>
+Date: Sun, 2 Jan 2011 23:02:42 +0000
+Subject: [PATCH 46/66] watchdog: Improve initialisation error message and documentation
+
+The error message 'NMI watchdog failed to create perf event...'
+does not make it clear that this is a fatal error for the
+watchdog.  It also currently prints the error value as a
+pointer, rather than extracting the error code with PTR_ERR().
+Fix that.
+
+Add a note to the description of the 'nowatchdog' kernel
+parameter to associate it with this message.
+
+Reported-by: Cesare Leonardi <celeonar@gmail.com>
+Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+Cc: 599368@bugs.debian.org
+Cc: 608138@bugs.debian.org
+Cc: Don Zickus <dzickus@redhat.com>
+Cc: Frederic Weisbecker <fweisbec@gmail.com>
+Cc: <stable@kernel.org> # .37.x and later
+LKML-Reference: <1294009362.3167.126.camel@localhost>
+Signed-off-by: Ingo Molnar <mingo@elte.hu>
+---
+ Documentation/kernel-parameters.txt |    2 +-
+ kernel/watchdog.c                   |    3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/kernel-parameters.txt b/Documentation/kernel-parameters.txt
+index 8b61c93..01ece1b 100644
+--- a/Documentation/kernel-parameters.txt
++++ b/Documentation/kernel-parameters.txt
+@@ -1759,7 +1759,7 @@ and is between 256 and 4096 characters. It is defined in the file
+ 
+ 	nousb		[USB] Disable the USB subsystem
+ 
+-	nowatchdog	[KNL] Disable the lockup detector.
++	nowatchdog	[KNL] Disable the lockup detector (NMI watchdog).
+ 
+ 	nowb		[ARM]
+ 
+diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+index 6e3c41a..5b08215 100644
+--- a/kernel/watchdog.c
++++ b/kernel/watchdog.c
+@@ -364,7 +364,8 @@ static int watchdog_nmi_enable(int cpu)
+ 		goto out_save;
+ 	}
+ 
+-	printk(KERN_ERR "NMI watchdog failed to create perf event on cpu%i: %p\n", cpu, event);
++	printk(KERN_ERR "NMI watchdog disabled for cpu%i: unable to create perf event: %ld\n",
++	       cpu, PTR_ERR(event));
+ 	return PTR_ERR(event);
+ 
+ 	/* success path */
+-- 
+1.6.6.1
+

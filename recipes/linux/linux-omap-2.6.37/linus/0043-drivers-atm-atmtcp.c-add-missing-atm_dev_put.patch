@@ -1,0 +1,50 @@
+From b9556f9a1abdc56a179ac7ba6053469373b6de0f Mon Sep 17 00:00:00 2001
+From: Julia Lawall <julia@diku.dk>
+Date: Wed, 29 Dec 2010 04:01:03 +0000
+Subject: [PATCH 43/66] drivers/atm/atmtcp.c: add missing atm_dev_put
+
+The earlier call to atm_dev_lookup increases the reference count of dev,
+so decrease it on the way out.
+
+The semantic match that finds this problem is as follows:
+(http://coccinelle.lip6.fr/)
+
+// <smpl>
+@@
+expression x, E;
+constant C;
+@@
+
+x = atm_dev_lookup(...);
+... when != false x != NULL
+    when != true x == NULL
+    when != \(E = x\|x = E\)
+    when != atm_dev_put(dev);
+*return -C;
+// </smpl>
+
+Signed-off-by: Julia Lawall <julia@diku.dk>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+---
+ drivers/atm/atmtcp.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/atm/atmtcp.c b/drivers/atm/atmtcp.c
+index 2b464b6..0b06250 100644
+--- a/drivers/atm/atmtcp.c
++++ b/drivers/atm/atmtcp.c
+@@ -392,7 +392,10 @@ static int atmtcp_attach(struct atm_vcc *vcc,int itf)
+ 			atm_dev_put(dev);
+ 			return -EMEDIUMTYPE;
+ 		}
+-		if (PRIV(dev)->vcc) return -EBUSY;
++		if (PRIV(dev)->vcc) {
++			atm_dev_put(dev);
++			return -EBUSY;
++		}
+ 	}
+ 	else {
+ 		int error;
+-- 
+1.6.6.1
+

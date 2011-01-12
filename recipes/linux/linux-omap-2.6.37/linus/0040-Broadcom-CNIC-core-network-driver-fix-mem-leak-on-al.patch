@@ -1,0 +1,58 @@
+From f7e4c9775ea648deed4a8193951e50d0c7706173 Mon Sep 17 00:00:00 2001
+From: Jesper Juhl <jj@chaosbits.net>
+Date: Fri, 31 Dec 2010 11:18:48 -0800
+Subject: [PATCH 40/66] Broadcom CNIC core network driver: fix mem leak on allocation failures in cnic_alloc_uio_rings()
+
+We are leaking memory in drivers/net/cnic.c::cnic_alloc_uio_rings() if
+either of the calls to dma_alloc_coherent() fail. This patch fixes it by
+freeing both the memory allocated with kzalloc() and memory allocated with
+previous calls to dma_alloc_coherent() when there's a failure.
+
+Thanks to  Joe Perches <joe@perches.com>  for suggesting a better
+implementation than my initial version.
+
+Signed-off-by: Jesper Juhl <jj@chaosbits.net>
+Acked-by: Michael Chan <mchan@broadcom.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+---
+ drivers/net/cnic.c |   10 ++++++++--
+ 1 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/cnic.c b/drivers/net/cnic.c
+index 92bac19..6dff321 100644
+--- a/drivers/net/cnic.c
++++ b/drivers/net/cnic.c
+@@ -940,7 +940,7 @@ static int cnic_alloc_uio_rings(struct cnic_dev *dev, int pages)
+ 					   &udev->l2_ring_map,
+ 					   GFP_KERNEL | __GFP_COMP);
+ 	if (!udev->l2_ring)
+-		return -ENOMEM;
++		goto err_udev;
+ 
+ 	udev->l2_buf_size = (cp->l2_rx_ring_size + 1) * cp->l2_single_buf_size;
+ 	udev->l2_buf_size = PAGE_ALIGN(udev->l2_buf_size);
+@@ -948,7 +948,7 @@ static int cnic_alloc_uio_rings(struct cnic_dev *dev, int pages)
+ 					  &udev->l2_buf_map,
+ 					  GFP_KERNEL | __GFP_COMP);
+ 	if (!udev->l2_buf)
+-		return -ENOMEM;
++		goto err_dma;
+ 
+ 	write_lock(&cnic_dev_lock);
+ 	list_add(&udev->list, &cnic_udev_list);
+@@ -959,6 +959,12 @@ static int cnic_alloc_uio_rings(struct cnic_dev *dev, int pages)
+ 	cp->udev = udev;
+ 
+ 	return 0;
++ err_dma:
++	dma_free_coherent(&udev->pdev->dev, udev->l2_ring_size,
++			  udev->l2_ring, udev->l2_ring_map);
++ err_udev:
++	kfree(udev);
++	return -ENOMEM;
+ }
+ 
+ static int cnic_init_uio(struct cnic_dev *dev)
+-- 
+1.6.6.1
+

@@ -1,0 +1,33 @@
+From bcfbbce822d219eb587acaba8a6e062bbeae4761 Mon Sep 17 00:00:00 2001
+From: Chris Wilson <chris@chris-wilson.co.uk>
+Date: Thu, 30 Dec 2010 09:07:15 +0000
+Subject: [PATCH 33/66] Revert "drm/i915/bios: Reverse order of 100/120 Mhz SSC clocks"
+
+As I feared, whilst this fixed the clocks for the Lenovo U160, it broke
+many other machines. So lets reverts commit 448f53a1ede54eb854d036abf
+and search for the real bug.
+
+Reported-and-tested-by: Travis Hume <travis@computoring.org> [et al]
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=25842
+Bugzilla: https://bugs.freedesktop.org/show_bug.cgi?id=32698
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+---
+ drivers/gpu/drm/i915/intel_bios.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/gpu/drm/i915/intel_bios.c b/drivers/gpu/drm/i915/intel_bios.c
+index 2b20786..b0b1200 100644
+--- a/drivers/gpu/drm/i915/intel_bios.c
++++ b/drivers/gpu/drm/i915/intel_bios.c
+@@ -270,7 +270,7 @@ parse_general_features(struct drm_i915_private *dev_priv,
+ 					general->ssc_freq ? 66 : 48;
+ 			else if (IS_GEN5(dev) || IS_GEN6(dev))
+ 				dev_priv->lvds_ssc_freq =
+-					general->ssc_freq ? 120 : 100;
++					general->ssc_freq ? 100 : 120;
+ 			else
+ 				dev_priv->lvds_ssc_freq =
+ 					general->ssc_freq ? 100 : 96;
+-- 
+1.6.6.1
+

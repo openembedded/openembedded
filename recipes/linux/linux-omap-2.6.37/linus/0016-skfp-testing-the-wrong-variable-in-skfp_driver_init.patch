@@ -1,0 +1,31 @@
+From 4a5fc4e179d79c79ad87bfc12a2d7e9b2371e40c Mon Sep 17 00:00:00 2001
+From: Dan Carpenter <error27@gmail.com>
+Date: Thu, 23 Dec 2010 19:17:34 +0000
+Subject: [PATCH 16/66] skfp: testing the wrong variable in skfp_driver_init()
+
+The intent here was to test if the allocation failed but we tested
+"SharedMemSize" instead of "SharedMemAddr" by mistake.
+
+Signed-off-by: Dan Carpenter <error27@gmail.com>
+Reviewed-by: Jiri Pirko <jpirko@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+---
+ drivers/net/skfp/skfddi.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/net/skfp/skfddi.c b/drivers/net/skfp/skfddi.c
+index 0a66fed..16c6265 100644
+--- a/drivers/net/skfp/skfddi.c
++++ b/drivers/net/skfp/skfddi.c
+@@ -412,7 +412,7 @@ static  int skfp_driver_init(struct net_device *dev)
+ 		bp->SharedMemAddr = pci_alloc_consistent(&bp->pdev,
+ 							 bp->SharedMemSize,
+ 							 &bp->SharedMemDMA);
+-		if (!bp->SharedMemSize) {
++		if (!bp->SharedMemAddr) {
+ 			printk("could not allocate mem for ");
+ 			printk("hardware module: %ld byte\n",
+ 			       bp->SharedMemSize);
+-- 
+1.6.6.1
+

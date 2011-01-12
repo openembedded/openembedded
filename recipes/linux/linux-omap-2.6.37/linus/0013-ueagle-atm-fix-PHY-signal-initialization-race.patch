@@ -1,0 +1,100 @@
+From 12f188f2e59394ec1f1c8c0a4439f48ec16bc336 Mon Sep 17 00:00:00 2001
+From: Dan Williams <dcbw@redhat.com>
+Date: Sun, 19 Dec 2010 08:17:50 +0000
+Subject: [PATCH 13/66] ueagle-atm: fix PHY signal initialization race
+
+A race exists when initializing ueagle-atm devices where the generic atm
+device may not yet be created before the driver attempts to initialize
+it's PHY signal state, which checks whether the atm device has been
+created or not.  This often causes the sysfs 'carrier' attribute to be
+'1' even though no signal has actually been found.
+
+uea_probe
+   usbatm_usb_probe
+      driver->bind (uea_bind)
+         uea_boot
+            kthread_run(uea_kthread)     uea_kthread
+      usbatm_atm_init                       uea_start_reset
+         atm_dev_register                      UPDATE_ATM_SIGNAL
+
+UPDATE_ATM_SIGNAL checks whether the ATM device has been created and if
+not, will not update the PHY signal state.  Because of the race that
+does not always happen in time, and the PHY signal state remains
+ATM_PHY_SIG_FOUND even though no signal exists.
+
+To fix the race, just create the kthread during initialization, and only
+after initialization is complete, start the thread that reboots the
+device and initializes PHY state.
+
+[ 3030.490931] uea_probe: calling usbatm_usb_probe
+[ 3030.490946] ueagle-atm 8-2:1.0: usbatm_usb_probe: trying driver ueagle-atm with vendor=1110, product=9031, ifnum  0
+[ 3030.493691] uea_bind: setting usbatm
+[ 3030.496932] usb 8-2: [ueagle-atm] using iso mode
+[ 3030.497283] ueagle-atm 8-2:1.0: usbatm_usb_probe: using 3021 byte buffer for rx channel 0xffff880125953508
+   <kthread already started before usbatm_usb_probe() has returned>
+[ 3030.497292] usb 8-2: [ueagle-atm] (re)booting started
+   <UPDATE_ATM_SIGNAL checks whether ATM device has been created yet before setting PHY state>
+[ 3030.497298] uea_start_reset: atm dev (null)
+   <and since it hasn't been created yet PHY state is not set>
+[ 3030.497306] ueagle-atm 8-2:1.0: usbatm_usb_probe: using 3392 byte buffer for tx channel 0xffff8801259535b8
+[ 3030.497374] usbatm_usb_probe: about to init
+[ 3030.497379] usbatm_usb_probe: calling usbatm_atm_init
+   <atm device finally gets created>
+[ 3030.497384] usbatm_atm_init: creating atm device!
+
+Signed-off-by: Dan Williams <dcbw@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+---
+ drivers/usb/atm/ueagle-atm.c |   22 +++++++++++++++++++---
+ 1 files changed, 19 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/usb/atm/ueagle-atm.c b/drivers/usb/atm/ueagle-atm.c
+index 44447f5..99ac70e 100644
+--- a/drivers/usb/atm/ueagle-atm.c
++++ b/drivers/usb/atm/ueagle-atm.c
+@@ -2206,8 +2206,11 @@ static int uea_boot(struct uea_softc *sc)
+ 		goto err1;
+ 	}
+ 
+-	sc->kthread = kthread_run(uea_kthread, sc, "ueagle-atm");
+-	if (sc->kthread == ERR_PTR(-ENOMEM)) {
++	/* Create worker thread, but don't start it here.  Start it after
++	 * all usbatm generic initialization is done.
++	 */
++	sc->kthread = kthread_create(uea_kthread, sc, "ueagle-atm");
++	if (IS_ERR(sc->kthread)) {
+ 		uea_err(INS_TO_USBDEV(sc), "failed to create thread\n");
+ 		goto err2;
+ 	}
+@@ -2624,6 +2627,7 @@ static struct usbatm_driver uea_usbatm_driver = {
+ static int uea_probe(struct usb_interface *intf, const struct usb_device_id *id)
+ {
+ 	struct usb_device *usb = interface_to_usbdev(intf);
++	int ret;
+ 
+ 	uea_enters(usb);
+ 	uea_info(usb, "ADSL device founded vid (%#X) pid (%#X) Rev (%#X): %s\n",
+@@ -2637,7 +2641,19 @@ static int uea_probe(struct usb_interface *intf, const struct usb_device_id *id)
+ 	if (UEA_IS_PREFIRM(id))
+ 		return uea_load_firmware(usb, UEA_CHIP_VERSION(id));
+ 
+-	return usbatm_usb_probe(intf, id, &uea_usbatm_driver);
++	ret = usbatm_usb_probe(intf, id, &uea_usbatm_driver);
++	if (ret == 0) {
++		struct usbatm_data *usbatm = usb_get_intfdata(intf);
++		struct uea_softc *sc = usbatm->driver_data;
++
++		/* Ensure carrier is initialized to off as early as possible */
++		UPDATE_ATM_SIGNAL(ATM_PHY_SIG_LOST);
++
++		/* Only start the worker thread when all init is done */
++		wake_up_process(sc->kthread);
++	}
++
++	return ret;
+ }
+ 
+ static void uea_disconnect(struct usb_interface *intf)
+-- 
+1.6.6.1
+

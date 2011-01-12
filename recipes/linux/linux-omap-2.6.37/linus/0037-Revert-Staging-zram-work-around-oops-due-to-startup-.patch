@@ -1,0 +1,54 @@
+From e983dc2428164698571e1dd1b25c4322181adbac Mon Sep 17 00:00:00 2001
+From: Nitin Gupta <ngupta@vflare.org>
+Date: Thu, 30 Dec 2010 04:07:58 -0500
+Subject: [PATCH 37/66] Revert "Staging: zram: work around oops due to startup ordering snafu"
+
+This reverts commit 7e24cce38a99f373450db67bf576fe73e8168d66 because it
+was never appropriate for mainline.
+
+Do not check for init flag before starting I/O - zram module is unusable
+without this fix.
+
+The oops mentioned in the reverted commit message was actually a problem
+only with the zram version as present in project's own repository where
+we allocate struct zram_stats_cpu upon device initialization.  OTOH, In
+mainline/staging version of zram, we allocate struct stats upfront, so
+this oops cannot happen in mainline version.
+
+Checking for init_done flag in zram_make_request() results in a *no-op*
+for any I/O operation since we simply always return success.  This flag
+is actually set when the first write occurs on a zram disk which
+triggers its initialization.
+
+Bug report: https://bugzilla.kernel.org/show_bug.cgi?id=25722
+
+Reported-by: Dennis Jansen <dennis.jansen@web.de>
+Signed-off-by: Nitin Gupta <ngupta@vflare.org>
+Cc: Anton Blanchard <anton@samba.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Greg Kroah-Hartman <gregkh@suse.de>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+---
+ drivers/staging/zram/zram_drv.c |    6 ------
+ 1 files changed, 0 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/staging/zram/zram_drv.c b/drivers/staging/zram/zram_drv.c
+index 8c3c057..d0e9e02 100644
+--- a/drivers/staging/zram/zram_drv.c
++++ b/drivers/staging/zram/zram_drv.c
+@@ -435,12 +435,6 @@ static int zram_make_request(struct request_queue *queue, struct bio *bio)
+ 	int ret = 0;
+ 	struct zram *zram = queue->queuedata;
+ 
+-	if (unlikely(!zram->init_done)) {
+-		set_bit(BIO_UPTODATE, &bio->bi_flags);
+-		bio_endio(bio, 0);
+-		return 0;
+-	}
+-
+ 	if (!valid_io_request(zram, bio)) {
+ 		zram_stat64_inc(zram, &zram->stats.invalid_io);
+ 		bio_io_error(bio);
+-- 
+1.6.6.1
+

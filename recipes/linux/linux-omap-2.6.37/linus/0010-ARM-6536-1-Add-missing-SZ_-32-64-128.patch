@@ -1,0 +1,42 @@
+From 537de3a67c0c86586eacffde40673b727242dc3a Mon Sep 17 00:00:00 2001
+From: Stephen Warren <swarren@nvidia.com>
+Date: Wed, 22 Dec 2010 04:52:05 +0100
+Subject: [PATCH 10/66] ARM: 6536/1: Add missing SZ_{32,64,128}
+
+... and also remove misleading comment stating that this header is
+auto-generated.
+
+Signed-off-by: Stephen Warren <swarren@nvidia.com>
+Acked-by: Uwe Kleine-Knig <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+---
+ arch/arm/include/asm/sizes.h |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/include/asm/sizes.h b/arch/arm/include/asm/sizes.h
+index 4fc1565..316bb2b 100644
+--- a/arch/arm/include/asm/sizes.h
++++ b/arch/arm/include/asm/sizes.h
+@@ -13,9 +13,6 @@
+  * along with this program; if not, write to the Free Software
+  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  */
+-/* DO NOT EDIT!! - this file automatically generated
+- *                 from .s file by awk -f s2h.awk
+- */
+ /*  Size definitions
+  *  Copyright (C) ARM Limited 1998. All rights reserved.
+  */
+@@ -25,6 +22,9 @@
+ 
+ /* handy sizes */
+ #define SZ_16				0x00000010
++#define SZ_32				0x00000020
++#define SZ_64				0x00000040
++#define SZ_128				0x00000080
+ #define SZ_256				0x00000100
+ #define SZ_512				0x00000200
+ 
+-- 
+1.6.6.1
+

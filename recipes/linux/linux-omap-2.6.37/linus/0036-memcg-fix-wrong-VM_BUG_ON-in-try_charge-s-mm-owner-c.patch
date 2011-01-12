@@ -1,0 +1,63 @@
+From ebb76ce16daf6908dc030dec1c00827d37129fe5 Mon Sep 17 00:00:00 2001
+From: KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>
+Date: Wed, 29 Dec 2010 14:07:11 -0800
+Subject: [PATCH 36/66] memcg: fix wrong VM_BUG_ON() in try_charge()'s mm->owner check
+
+At __mem_cgroup_try_charge(), VM_BUG_ON(!mm->owner) is checked.
+But as commented in mem_cgroup_from_task(), mm->owner can be NULL
+in some racy case. This check of VM_BUG_ON() is bad.
+
+A possible story to hit this is at swapoff()->try_to_unuse(). It passes
+mm_struct to mem_cgroup_try_charge_swapin() while mm->owner is NULL. If we
+can't get proper mem_cgroup from swap_cgroup information, mm->owner is used
+as charge target and we see NULL.
+
+Cc: Daisuke Nishimura <nishimura@mxp.nes.nec.co.jp>
+Cc: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>
+Reported-by: Hugh Dickins <hughd@google.com>
+Reported-by: Thomas Meyer <thomas@m3y3r.de>
+Signed-off-by: KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>
+Reviewed-by: Balbir Singh <balbir@linux.vnet.ibm.com>
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Cc: stable@kernel.org
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+---
+ mm/memcontrol.c |   19 +++++++++----------
+ 1 files changed, 9 insertions(+), 10 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 7a22b41..00bb8a6 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1925,19 +1925,18 @@ again:
+ 
+ 		rcu_read_lock();
+ 		p = rcu_dereference(mm->owner);
+-		VM_BUG_ON(!p);
+ 		/*
+-		 * because we don't have task_lock(), "p" can exit while
+-		 * we're here. In that case, "mem" can point to root
+-		 * cgroup but never be NULL. (and task_struct itself is freed
+-		 * by RCU, cgroup itself is RCU safe.) Then, we have small
+-		 * risk here to get wrong cgroup. But such kind of mis-account
+-		 * by race always happens because we don't have cgroup_mutex().
+-		 * It's overkill and we allow that small race, here.
++		 * Because we don't have task_lock(), "p" can exit.
++		 * In that case, "mem" can point to root or p can be NULL with
++		 * race with swapoff. Then, we have small risk of mis-accouning.
++		 * But such kind of mis-account by race always happens because
++		 * we don't have cgroup_mutex(). It's overkill and we allo that
++		 * small race, here.
++		 * (*) swapoff at el will charge against mm-struct not against
++		 * task-struct. So, mm->owner can be NULL.
+ 		 */
+ 		mem = mem_cgroup_from_task(p);
+-		VM_BUG_ON(!mem);
+-		if (mem_cgroup_is_root(mem)) {
++		if (!mem || mem_cgroup_is_root(mem)) {
+ 			rcu_read_unlock();
+ 			goto done;
+ 		}
+-- 
+1.6.6.1
+

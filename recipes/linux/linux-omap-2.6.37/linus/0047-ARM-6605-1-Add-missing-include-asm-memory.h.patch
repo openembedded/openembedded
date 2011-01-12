@@ -1,0 +1,42 @@
+From 7c0ab43e6ab09d72dc8dbac2521b2f819ccc4026 Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@gmail.com>
+Date: Mon, 3 Jan 2011 02:26:53 +0100
+Subject: [PATCH 47/66] ARM: 6605/1: Add missing include "asm/memory.h"
+
+This patch fixes below build error by adding the missing asm/memory.h,
+which is needed for arch_is_coherent().
+
+$ make pxa3xx_defconfig; make
+  CC      init/do_mounts_rd.o
+In file included from include/linux/list_bl.h:5,
+                 from include/linux/rculist_bl.h:7,
+                 from include/linux/dcache.h:7,
+                 from include/linux/fs.h:381,
+                 from init/do_mounts_rd.c:3:
+include/linux/bit_spinlock.h: In function 'bit_spin_unlock':
+include/linux/bit_spinlock.h:61: error: implicit declaration of function 'arch_is_coherent'
+make[1]: *** [init/do_mounts_rd.o] Error 1
+make: *** [init] Error 2
+
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+Acked-by: Peter Huewe <peterhuewe@gmx.de>
+Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+---
+ arch/arm/include/asm/system.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/include/asm/system.h b/arch/arm/include/asm/system.h
+index 1120f18..8002594 100644
+--- a/arch/arm/include/asm/system.h
++++ b/arch/arm/include/asm/system.h
+@@ -150,6 +150,7 @@ extern unsigned int user_debug;
+ #define rmb()		dmb()
+ #define wmb()		mb()
+ #else
++#include <asm/memory.h>
+ #define mb()	do { if (arch_is_coherent()) dmb(); else barrier(); } while (0)
+ #define rmb()	do { if (arch_is_coherent()) dmb(); else barrier(); } while (0)
+ #define wmb()	do { if (arch_is_coherent()) dmb(); else barrier(); } while (0)
+-- 
+1.6.6.1
+
