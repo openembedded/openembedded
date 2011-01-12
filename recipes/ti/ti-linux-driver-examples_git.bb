@@ -6,6 +6,6 @@ PV = "git-${MACHINE_KERNEL_PR}-gitr${SRCREV}"
 PR_append = "d"
 
 SRC_URI = "git://arago-project.org/git/projects/examples-davinci.git;protocol=git \
-  file://0001-linux-davinci-example-add-make-install-target.patch;patch=1 \
+  file://0001-linux-davinci-example-add-make-install-target.patch \
 "
 
