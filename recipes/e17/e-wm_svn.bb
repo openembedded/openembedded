@@ -4,7 +4,9 @@ LICENSE = "MIT BSD"
 SRCNAME = "e"
 PV = "0.16.999.060+svnr${SRCPV}"
 PR = "r18"
-SRCREV = "${EFL_SRCREV}"
+#SRCREV = "${EFL_SRCREV}"
+#we need newer SRCREV now, remove with next EFL_SRCREV bump
+SRCREV = "56059"
 
 inherit e update-alternatives
 
