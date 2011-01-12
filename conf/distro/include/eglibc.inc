@@ -18,3 +18,11 @@ OLDEST_KERNEL ?= "2.4.0"
 OLDEST_KERNEL_linux-gnueabi ?= "2.6.16"
 OLDEST_KERNEL_sparc64 ?= "2.4.21"
 OLDEST_KERNEL_ppc64 ?= "2.4.21"
+DISTRO_FEATURES_EGLIBC ?= "ipv6 backtrace big-macros bsd cxx-tests catgets \
+                           charsets crypt crypt-ufc db-aliases envz fcvt fmtmsg \
+                           fstab ftraverse getlogin idn inet inet-anl libm \
+                           libm-big locales locale-code memusage nis nsswitch \
+                           rcmd rtld-debug spawn streams sunrpc utmp utmpx \
+                           wordexp posix-clang-wchar posix-regexp \
+                           posix-regexp-glibc posix-wchar-io"
+
