@@ -11,8 +11,7 @@ SRCNAME = "vala"
 
 inherit e-base autotools pkgconfig vala
 
-SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/BINDINGS;module=${SRCNAME};proto=http;scmdata=keep \
-           file://0001-eflvala-adapt-to-elementary-API-change-from-r55869.patch"
+SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/BINDINGS;module=${SRCNAME};proto=http;scmdata=keep"
 
 PACKAGES =+ "${PN}-examples"
 FILES_${PN}-examples = "${datadir}/libeflvala ${bindir}/*"
