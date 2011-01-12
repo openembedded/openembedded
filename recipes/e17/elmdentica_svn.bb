@@ -9,8 +9,10 @@ inherit e gettext
 
 EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc"
 
+SRC_URI += "file://elmdentica.azy.api.change.r56034.patch"
+
 PV = "0.9.9+svnr${SRCPV}"
-PR = "r2"
+PR = "r3"
 SRCREV = "${EFL_SRCREV}"
 
 RDEPENDS_${PN} = "${PN}-themes"

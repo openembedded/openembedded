@@ -1,0 +1,31 @@
+diff --git a/src/statusnet.c b/src/statusnet.c
+index 136e985..cdda89b 100644
+--- a/src/statusnet.c
++++ b/src/statusnet.c
+@@ -666,7 +666,7 @@ static void Array_statusnet_Status_free(Eina_List *array) {
+ Eina_Bool timeline_connected(void *data, int type, Azy_Client *cli) {
+ 	Azy_Client_Call_Id id;
+ 
+-	id = azy_client_blank(cli, AZY_NET_TYPE_GET, NULL, (Azy_Content_Cb)azy_value_to_Array_statusnet_Status, NULL);
++	id = azy_client_blank(cli, AZY_NET_TYPE_GET, (Azy_Content_Cb)azy_value_to_Array_statusnet_Status, NULL);
+ 	azy_client_callback_free_set(cli, id, (Ecore_Cb)Array_statusnet_Status_free);
+ 
+ 	return(EINA_TRUE);
+@@ -927,7 +927,7 @@ Eina_Bool ed_statusnet_userget_returned(Azy_Client *cli, int type, Azy_Client *e
+ Eina_Bool ed_statusnet_userget_connected(Azy_Client *cli, int type, Azy_Client *ev) {
+         Azy_Client_Call_Id id;
+ 
+-        id = azy_client_blank(ev, AZY_NET_TYPE_GET, NULL, (Azy_Content_Cb)ed_sn_userget_parse, NULL);
++        id = azy_client_blank(ev, AZY_NET_TYPE_GET, (Azy_Content_Cb)ed_sn_userget_parse, NULL);
+         if(!id) return(EINA_FALSE);
+ 
+         azy_client_callback_free_set(ev, id, (Ecore_Cb)ed_sn_single_user_free);
+@@ -1044,7 +1044,7 @@ Eina_Bool ed_statusnet_repeat_disconnected(Azy_Client *cli, int type, Azy_Client
+ Eina_Bool ed_statusnet_repeat_connected(Azy_Client *cli, int type, Azy_Client *ev) {
+ 	Azy_Client_Call_Id id;
+ 
+-	id = azy_client_blank(ev, AZY_NET_TYPE_POST, NULL, (Azy_Content_Cb)azy_value_to_Array_statusnet_Status, NULL);
++	id = azy_client_blank(ev, AZY_NET_TYPE_POST, (Azy_Content_Cb)azy_value_to_Array_statusnet_Status, NULL);
+ 	if(!id) return(EINA_FALSE);
+ 
+ 	azy_client_callback_free_set(ev, id, (Ecore_Cb)ed_sn_single_status_free);
