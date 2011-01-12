@@ -1,8 +1,9 @@
-SRC_URI = "git://github.com/kergoth/tslib.git;protocol=git"
+SRC_URI = "git://github.com/kergoth/tslib.git;protocol=git \
+           file://0001-relax-EV_VERSION-check-fail-only-if-version-of-runni.patch"
 S = "${WORKDIR}/git"
 SRCREV = "860d69cadedef0dec8ba6259ab5850691d3402e7"
 PV = "1.0+gitr${SRCPV}"
-PR = "${INC_PR}.4"
+PR = "${INC_PR}.5"
 
 DEFAULT_PREFERENCE = "-1"
 
