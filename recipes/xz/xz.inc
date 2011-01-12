@@ -2,9 +2,9 @@ DESCRIPTION = "XZ Utils is free general-purpose data compression software with h
 SECTION = "console/utils"
 LICENSE = "Public Domain"
 HOMEPAGE = "http://tukaani.org/xz/"
-INC_PR = "r0"
+INC_PR = "r1"
 S ?= "${WORKDIR}/xz-${PV}"
-EXTRA_OECONF = "--enable-shared"
+EXTRA_OECONF = "--enable-shared --enable-small --disable-lzma-links"
 BBCLASSEXTEND = "native"
 
 inherit autotools
