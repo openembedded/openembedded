@@ -4,8 +4,8 @@ DEPENDS += "xproto virtual/libx11 libxext xextproto libxt libxmu libxpm libxp pr
 PE = "1"
 PR = "${INC_PR}.0"
 
-SRC_URI[archive.md5sum] = "030fced589e9128c3cf57564d4a2e1ab"
-SRC_URI[archive.sha256sum] = "3daeab01ee702cbc4ac91f11d553710ad31d4151510386093c186a94ccd4beba"
+SRC_URI[archive.md5sum] = "ccc57478c41b7a75b9702241b889b1d4"
+SRC_URI[archive.sha256sum] = "a83977546b78e24ac5dca86affc10b6404a87c16272405b05386feca1a2db037"
 
 # disable docs as groff detection doesn't work on some hosts while cross compilling
 EXTRA_OECONF += " --disable-docs "
