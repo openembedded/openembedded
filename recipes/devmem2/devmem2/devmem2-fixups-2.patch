@@ -1,5 +1,9 @@
---- devmem2/devmem2.c.orig	2006-08-31 17:21:45.000000000 -0600
-+++ devmem2/devmem2.c	2006-09-02 09:09:29.000000000 -0600
+---
+ devmem2.c |  145 ++++++++++++++++++++++++++++++++++++--------------------------
+ 1 file changed, 86 insertions(+), 59 deletions(-)
+
+--- devmem2-1.0-r5.orig/devmem2.c
++++ devmem2-1.0-r5/devmem2.c
 @@ -20,7 +20,7 @@
   * but WITHOUT ANY WARRANTY; without even the implied warranty of
   * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -40,16 +44,15 @@
 -		exit(1);
 -	}
 -	target = strtoul(argv[1], 0, 0);
--
--	if(argc > 2)
--		access_type = tolower(argv[2][0]);
 +    void *map_base, *virt_addr;
 +    unsigned long read_result, write_val;
 +    off_t target;
 +    int access_type = 'w';
 +    char fmt_str[128];
 +    size_t data_size;
-+
+
+-	if(argc > 2)
+-		access_type = tolower(argv[2][0]);
 +    if(argc < 2) {
 +	fprintf(stderr, "\nUsage:\t%s { address } [ type [ data ] ]\n"
 +	    "\taddress : memory address to act upon\n"

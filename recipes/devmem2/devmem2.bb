@@ -1,6 +1,6 @@
 DESCRIPTION = "Simple program to read/write from/to any location in memory."
 LICENSE = "GPLv2"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "http://www.lartmaker.nl/lartware/port/devmem2.c \
            file://devmem2-fixups-2.patch"
