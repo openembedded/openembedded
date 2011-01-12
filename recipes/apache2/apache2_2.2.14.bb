@@ -95,7 +95,7 @@ do_configure_prepend() {
 }
 
 do_configure() {
-	( cd srclib/apr; ./buildconf ) 
+	( cd srclib/apr; sh ./buildconf ) 
 	oe_runconf
 }
 
