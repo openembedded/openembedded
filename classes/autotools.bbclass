@@ -176,7 +176,9 @@ autotools_do_configure() {
 			fi
 
 			fi
-			mkdir -p m4
+			for aux in m4 `sed -n -e '/^[[:space:]]*AC_CONFIG_MACRO_DIR/s|[^(]*([[]*\([^])]*\)[]]*)|\1|p' $CONFIGURE_AC`; do
+				mkdir -p ${aux}
+			done
 			oenote Executing autoreconf --verbose --install --force ${EXTRA_AUTORECONF} $acpaths
 			autoreconf -Wcross --verbose --install --force ${EXTRA_AUTORECONF} $acpaths || oefatal "autoreconf execution failed."
 			if grep "^[[:space:]]*[AI][CT]_PROG_INTLTOOL" $CONFIGURE_AC >/dev/null; then
