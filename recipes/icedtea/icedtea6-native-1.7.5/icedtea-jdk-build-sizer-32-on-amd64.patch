@@ -1,0 +1,36 @@
+Build the xawt sizer.32 binary on Linux/x86_64 so we can use it when
+compiling openjdk for 32-bit platforms.
+
+--- openjdk/jdk/make/sun/xawt/Makefile.orig	2011-01-08 01:53:22.000000000 -0500
++++ openjdk/jdk/make/sun/xawt/Makefile	2011-01-11 15:12:17.000000000 -0500
+@@ -184,6 +184,22 @@
+ 
+ else # !solaris
+ 
++ifeq ($(PLATFORM), linux)
++
++ifeq ($(ARCH), amd64)
++# On amd64 we generate both 32 and 64-bit sizers in spite of ARCH_DATA_MODEL.
++SIZERS = $(SIZER).32 $(SIZER).64
++SIZERS_C = $(SIZER_32_C) $(SIZER_64_C)
++SIZES = $(WRAPPER_GENERATOR_DIR)/sizes.32 $(WRAPPER_GENERATOR_DIR)/sizes.64
++CFLAGS_32 = $(CFLAGS) -m32
++else # !amd64
++SIZERS = $(SIZER).32
++SIZERS_C = $(SIZER_32_C)
++SIZES = $(WRAPPER_GENERATOR_DIR)/sizes.32
++endif # amd64
++
++else # !linux
++
+ ifeq ($(ARCH_DATA_MODEL), 32)
+ SIZERS = $(SIZER).32
+ SIZERS_C = $(SIZER_32_C)
+@@ -194,6 +210,7 @@
+ SIZES = $(WRAPPER_GENERATOR_DIR)/sizes.64
+ endif # 32
+ 
++endif # linux
+ endif # solaris
+ 
+ # XXX Hack for 6185483 - use hard-coded sizes.
