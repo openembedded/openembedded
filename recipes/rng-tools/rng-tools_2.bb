@@ -1,6 +1,7 @@
 DESCRIPTION = "Random number generator daemon"
 LICENSE = "GPL"
-PR = "1"
+DEPENDS_append_libc-uclibc = " argp-standalone"
+PR = "2"
 
 SRC_URI = "http://heanet.dl.sourceforge.net/sourceforge/gkernel/${P}.tar.gz \
            file://init"
