@@ -11,7 +11,7 @@ LICENSE = "GPLv2"
 SECTION = "base"
 PRIORITY = "required"
 
-INC_PR = "r39"
+INC_PR = "r40"
 
 SRC_URI = "\
   file://busybox-cron \
@@ -52,7 +52,8 @@ RRECOMMENDS_${PN} += "libgcc ${PN}-syslog"
 FILES_${PN}-httpd = "${sysconfdir}/init.d/busybox-httpd /srv/www"
 FILES_${PN}-passwd = "${sysconfdir}/passwd.${PN}"
 FILES_${PN}-shadow = "${sysconfdir}/shadow.${PN}"
-FILES_${PN}-syslog = "${sysconfdir}/init.d/syslog.${PN} ${sysconfdir}/syslog.conf"
+FILES_${PN}-syslog = "${sysconfdir}/init.d/syslog.${PN} \
+                      ${sysconfdir}/default/busybox-syslog"
 FILES_${PN}-udhcpd = "${sysconfdir}/init.d/busybox-udhcpd"
 
 FILES_${PN} += "${datadir}/udhcpc"
@@ -63,7 +64,7 @@ INITSCRIPT_PACKAGES = "${PN}-httpd ${PN}-udhcpd"
 INITSCRIPT_NAME_${PN}-httpd = "busybox-httpd"
 INITSCRIPT_NAME_${PN}-syslog = "syslog"
 INITSCRIPT_NAME_${PN}-udhcpd = "busybox-udhcpd"
-CONFFILES_${PN}-syslog = "${sysconfdir}/syslog.conf"
+CONFFILES_${PN}-syslog = "${sysconfdir}/default/busybox-syslog"
 
 # This disables the syslog startup links in slugos (see slugos-init)
 INITSCRIPT_PARAMS_${PN}-syslog_slugos = "start 20 ."
@@ -192,7 +193,11 @@ do_install () {
 	fi
 	if grep -q "CONFIG_SYSLOGD=y" ${WORKDIR}/defconfig; then
 		install -m 0755 ${WORKDIR}/syslog ${D}${sysconfdir}/init.d/syslog.${PN}
-		install -m 644 ${WORKDIR}/syslog.conf ${D}${sysconfdir}/
+	        sed -i -e 's,/etc/default/busybox-syslog,${sysconfdir}/default/busybox-syslog,' \
+	            ${D}${sysconfdir}/init.d/syslog.${PN}
+
+		install -d ${D}${sysconfdir}/default
+		install -m 644 ${WORKDIR}/syslog.conf ${D}${sysconfdir}/default/busybox-syslog
 	fi
 	if grep "CONFIG_CROND=y" ${WORKDIR}/defconfig; then
 		install -m 0755 ${WORKDIR}/busybox-cron ${D}${sysconfdir}/init.d/
