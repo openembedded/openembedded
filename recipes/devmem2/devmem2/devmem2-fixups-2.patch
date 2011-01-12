@@ -153,7 +153,7 @@
 +	    break;
 +	case 'w':
 +	    virt_addr = fixup_addr(virt_addr, sizeof(unsigned long));
-+//	    *((unsigned long *)virt_addr) = write_val;
++	    *((unsigned long *)virt_addr) = write_val;
 +	    read_result = *((unsigned long *)virt_addr);
 +	    break;
 	}
