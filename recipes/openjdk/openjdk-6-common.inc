@@ -282,7 +282,7 @@ do_compilestepone() {
         cp -ar openjdk-ecj/${BUILD_DIR}/hotspot/import/include openjdk-ecj/${BUILD_DIR}/j2sdk-image/
         install -d openjdk-ecj/${BUILD_DIR}/j2sdk-image/bin
 }
-addtask compilestepone after do_qa_configure before do_compilesteptwo
+addtask compilestepone after do_configure before do_compilesteptwo
 
 # This part can be shared between cacao and hotspot-zero builds.
 do_compilesteptwo() {
