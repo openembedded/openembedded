@@ -65,6 +65,22 @@ def append_libtool_sysroot(d):
 			return '--with-libtool-sysroot=${STAGING_DIR_HOST}'
 	return ''
 
+def distro_imposed_configure_flags(d):
+	distro_features = bb.data.getVar('DISTRO_FEATURES', d, True) or ""
+	distro_features = distro_features.split()
+	flags = set()
+	features = (('largefile', 'largefile'),
+		('ipv6'     , 'ipv6'),
+		('nls'      , 'nls'))
+
+	for knob, cfgargs in features:
+		if isinstance(cfgargs, basestring):
+			cfgargs = [cfgargs]
+		en_or_dis = knob in distro_features and "enable" or "disable"
+		for flg in cfgargs:
+			flags.add("--%s-%s" % (en_or_dis, flg))
+	return " ".join(flags)
+
 # EXTRA_OECONF_append = "${@autotools_set_crosscompiling(d)}"
 
 CONFIGUREOPTS = " --build=${BUILD_SYS} \
@@ -85,6 +101,7 @@ CONFIGUREOPTS = " --build=${BUILD_SYS} \
 		  --infodir=${infodir} \
 		  --mandir=${mandir} \
 		  ${@append_libtool_sysroot(d)} \
+		  ${@distro_imposed_configure_flags(d)} \
 		"
 
 oe_runconf () {
