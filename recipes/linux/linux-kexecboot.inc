@@ -1,5 +1,5 @@
 # We set INC_PR here, since a change in the kexecboot recipe will need to get picked up by *all* the kernels:
-INC_PR = "r26"
+INC_PR = "r27"
 
 LOGO_SIZE ?= "."
 SRC_URI = "file://${LOGO_SIZE}/logo_linux_clut224.ppm.bz2"
