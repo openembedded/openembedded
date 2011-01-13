@@ -26,7 +26,9 @@ inherit e
 EXTRA_OECONF = "\
   --with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc \
 "
-
+EXTRA_OECONF_append_shr = "\
+  --enable-fso \
+"
 
 pkg_postinst_${PN} () {
 	echo "enjoy:	SCAN and LIBRARY MANAGER are not implemeted yet!"
