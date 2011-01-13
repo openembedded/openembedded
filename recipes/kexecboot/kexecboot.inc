@@ -28,15 +28,17 @@ inherit autotools
 #                          [default=no]
 #  --enable-timeout        allow to boot 1st kernel after timeout in seconds
 #                          [default=no]
-#  --enable-bpp            enable support of specified bpp modes 
+#  --enable-delay          specify delay before device scanning, allowing
+#                          initialization of old CF/SD cards [default=1]
+#  --enable-bpp            enable support of specified bpp modes
 #                          (all,32,24,18,16,4,2,1) [default=all]
 ############################
 
-EXTRA_OECONF_akita = "--enable-zaurus"
-EXTRA_OECONF_c7x0 = "--enable-zaurus"
-EXTRA_OECONF_spitz = "--enable-zaurus"
-EXTRA_OECONF_poodle = "--enable-zaurus"
-EXTRA_OECONF_tosa = "--enable-zaurus"
+EXTRA_OECONF_akita = "--enable-zaurus --enable-delay=1"
+EXTRA_OECONF_c7x0 = "--enable-zaurus --enable-delay=1"
+EXTRA_OECONF_spitz = "--enable-zaurus --enable-delay=2"
+EXTRA_OECONF_poodle = "--enable-zaurus --enable-delay=1"
+EXTRA_OECONF_tosa = "--enable-zaurus --enable-delay=1"
 EXTRA_OECONF_omap3 = "--enable-uimage"
 
 do_configure_prepend () {
