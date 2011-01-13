@@ -1,52 +1,102 @@
-Index: gcc-4.4.1/libstdc++-v3/config/locale/generic/c_locale.h
-===================================================================
---- gcc-4.4.1.orig/libstdc++-v3/config/locale/generic/c_locale.h	2009-08-06 23:38:32.398265633 -0700
-+++ gcc-4.4.1/libstdc++-v3/config/locale/generic/c_locale.h	2009-08-06 23:41:09.778242281 -0700
-@@ -41,12 +41,17 @@
- 
- #include <clocale>
- #include <cstddef>
-+#include <features.h> 
-+#include <ctype.h> 
- 
+From 66c29e5dc346d0ea5f426705f46d36f36e057a68 Mon Sep 17 00:00:00 2001
+From: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
+Date: Tue, 4 Jan 2011 10:29:53 +0100
+Subject: [PATCH 19/20] libstdc++-v3: handle uClibc locale
+
+libstdc++-v3/ChangeLog:
+
+2010-01-03  Bernhard Reutner-Fischer  <aldot@gcc.gnu.org>
+
+	* config/locale/generic/c_locale.h: Handle uClibc locale.
+	* config/os/gnu-linux/ctype_base.h: Likewise.
+	* include/c/clocale: Include ctype.h for uClibc.
+	* include/c_global/clocale: Likewise.
+	* include/c_std/clocale: Likewise.
+
+Signed-off-by: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
+---
+ libstdc++-v3/config/locale/generic/c_locale.h |    5 ++++-
+ libstdc++-v3/config/os/gnu-linux/ctype_base.h |    4 ++++
+ libstdc++-v3/include/c/clocale                |    3 +++
+ libstdc++-v3/include/c_global/clocale         |    3 +++
+ libstdc++-v3/include/c_std/clocale            |    4 ++++
+ 5 files changed, 18 insertions(+), 1 deletions(-)
+
+diff --git a/libstdc++-v3/config/locale/generic/c_locale.h b/libstdc++-v3/config/locale/generic/c_locale.h
+index 7d685b8..4f69857 100644
+--- a/libstdc++-v3/config/locale/generic/c_locale.h
++++ b/libstdc++-v3/config/locale/generic/c_locale.h
+@@ -44,8 +44,11 @@
  #define _GLIBCXX_NUM_CATEGORIES 0
  
  _GLIBCXX_BEGIN_NAMESPACE(std)
 -
--  typedef int*			__c_locale;
-+#ifdef __UCLIBC__ 
-+   typedef __ctype_touplow_t*   __c_locale; 
-+#else 
-+   typedef int*         __c_locale; 
-+#endif 
++#ifdef __UCLIBC__
++  typedef __ctype_touplow_t* __c_locale;
++#else
+   typedef int*			__c_locale;
++#endif
  
    // Convert numeric value of type double and long double to string and
    // return length of string.  If vsnprintf is available use it, otherwise
-Index: gcc-4.4.1/libstdc++-v3/config/os/gnu-linux/ctype_base.h
-===================================================================
---- gcc-4.4.1.orig/libstdc++-v3/config/os/gnu-linux/ctype_base.h	2009-08-06 23:42:27.402242608 -0700
-+++ gcc-4.4.1/libstdc++-v3/config/os/gnu-linux/ctype_base.h	2009-08-06 23:43:44.842241959 -0700
-@@ -33,14 +33,21 @@
-  */
- 
- // Information as gleaned from /usr/include/ctype.h
--  
-+
-+#include <features.h> 
-+#include <ctype.h> 
-+
- _GLIBCXX_BEGIN_NAMESPACE(std)
- 
-   /// @brief  Base class for ctype.
+diff --git a/libstdc++-v3/config/os/gnu-linux/ctype_base.h b/libstdc++-v3/config/os/gnu-linux/ctype_base.h
+index ff1f157..e88f569 100644
+--- a/libstdc++-v3/config/os/gnu-linux/ctype_base.h
++++ b/libstdc++-v3/config/os/gnu-linux/ctype_base.h
+@@ -40,7 +40,11 @@ _GLIBCXX_BEGIN_NAMESPACE(std)
    struct ctype_base
    {
      // Non-standard typedefs.
--    typedef const int* 		__to_type;
-+#ifdef __UCLIBC__ 
-+    typedef const __ctype_touplow_t*   __to_type; 
-+#else 
-+    typedef const int*         __to_type; 
++#ifdef __UCLIBC__
++    typedef const __ctype_touplow_t* __to_type;
++#else
+     typedef const int* 		__to_type;
 +#endif
  
      // NB: Offsets into ctype<char>::_M_table force a particular size
      // on the mask type. Because of this, we don't use an enum.
+diff --git a/libstdc++-v3/include/c/clocale b/libstdc++-v3/include/c/clocale
+index 7ea60f0..619f128 100644
+--- a/libstdc++-v3/include/c/clocale
++++ b/libstdc++-v3/include/c/clocale
+@@ -32,5 +32,8 @@
+ #pragma GCC system_header
+ 
+ #include_next <locale.h>
++#ifdef __UCLIBC__
++#include <ctype.h>
++#endif
+ 
+ #endif
+diff --git a/libstdc++-v3/include/c_global/clocale b/libstdc++-v3/include/c_global/clocale
+index 7cf42e2..cd9b37a 100644
+--- a/libstdc++-v3/include/c_global/clocale
++++ b/libstdc++-v3/include/c_global/clocale
+@@ -42,6 +42,9 @@
+ 
+ #include <bits/c++config.h>
+ #include <locale.h>
++#ifdef __UCLIBC__
++#include <ctype.h>
++#endif
+ 
+ #ifndef _GLIBCXX_CLOCALE
+ #define _GLIBCXX_CLOCALE 1
+diff --git a/libstdc++-v3/include/c_std/clocale b/libstdc++-v3/include/c_std/clocale
+index 36d8bd7..7905d5d 100644
+--- a/libstdc++-v3/include/c_std/clocale
++++ b/libstdc++-v3/include/c_std/clocale
+@@ -45,6 +45,10 @@
+ #include <bits/c++config.h>
+ #include <locale.h>
+ 
++#ifdef __UCLIBC__
++#include <ctype.h>
++#endif
++
+ // Get rid of those macros defined in <locale.h> in lieu of real functions.
+ #undef setlocale
+ #undef localeconv
+-- 
+1.7.2.3
+
