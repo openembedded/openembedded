@@ -89,3 +89,16 @@ def integer(value, numberbase=10):
     'numberbase' flag."""
 
     return int(value, int(numberbase))
+
+_float = float
+def float(value, fromhex='false'):
+    """OpenEmbedded floating point type
+
+    To use this type, set the type flag to 'float', and optionally set the
+    'fromhex' flag to a true value (obeying the same rules as for the
+    'boolean' type) if the value is in base 16 rather than base 10."""
+
+    if boolean(fromhex):
+        return _float.fromhex(value)
+    else:
+        return _float(value)
