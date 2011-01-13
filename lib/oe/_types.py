@@ -82,6 +82,10 @@ def boolean(value):
         return False
     raise ValueError("Invalid boolean value '%s'" % value)
 
-def integer(value):
-    """OpenEmbedded 'integer' type"""
-    return int(value)
+def integer(value, numberbase=10):
+    """OpenEmbedded 'integer' type
+
+    Defaults to base 10, but this can be specified using the optional
+    'numberbase' flag."""
+
+    return int(value, int(numberbase))
