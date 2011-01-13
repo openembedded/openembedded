@@ -1,9 +1,9 @@
-# Constructs objects of the specified type for a given variable in the
-# metadata.  The 'type' flag of the variable defines which of the factory
-# functions in this module will be called.
-#
-# If no type is defined, the value() function will simply return the expanded
-# string value as is.
+"""OpenEmbedded variable typing support
+
+Types are defined in the metadata by name, using the 'type' flag on a
+variable.  Other flags may be utilized in the construction of the types.  See
+the arguments of the type's factory for details.
+"""
 
 import bb
 import inspect
@@ -12,6 +12,8 @@ import _types
 types = {}
 
 class MissingFlag(TypeError):
+    """A particular flag is required to construct the type, but has not been
+    provided."""
     def __init__(self, flag, type):
         self.flag = flag
         self.type = type
@@ -21,12 +23,15 @@ class MissingFlag(TypeError):
         return "Type '%s' requires flag '%s'" % (self.type, self.flag)
 
 def factory(var_type):
+    """Return the factory for a specified type."""
     try:
         return types[var_type]
     except KeyError:
         raise TypeError("Invalid type '%s'" % var_type)
 
 def create(value, var_type, **flags):
+    """Create an object of the specified type, given the specified flags and
+    string value."""
     obj = factory(var_type)
     objflags = {}
     for flag in obj.flags:
@@ -39,8 +44,8 @@ def create(value, var_type, **flags):
     return obj(value, **objflags)
 
 def value(key, d):
-    """Construct a value for a metadata variable, based upon its flags"""
-
+    """Construct a value for the specified metadata variable, using its flags
+    to determine the type and parameters for construction."""
     var_type = d.getVarFlag(key, 'type')
     flags = d.getVarFlags(key)
 
@@ -69,7 +74,7 @@ def get_callable_args(obj):
     return flaglist, optional
 
 def factory_setup(name, obj):
-    """Prepare a factory for use by oe.types"""
+    """Prepare a factory for use."""
     args, optional = get_callable_args(obj)
     extra_args = args[1:]
     if extra_args:
@@ -82,10 +87,15 @@ def factory_setup(name, obj):
         obj.name = name
 
 def register(name, factory):
+    """Register a type, given its name and a factory callable.
+
+    Determines the required and optional flags from the factory's
+    arguments."""
     factory_setup(name, factory)
     types[factory.name] = factory
 
-# Set the 'flags' and 'optflags' attributes of all our types
+
+# Register all our included types
 for name in dir(_types):
     if name.startswith('_'):
         continue
