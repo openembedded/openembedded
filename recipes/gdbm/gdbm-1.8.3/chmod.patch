@@ -1,0 +1,23 @@
+With an umask of 022 the build might fail with
+
+| chmod -w gdbm.h
+| chmod: gdbm.h: new permissions are r--rw----, not r--r-----
+| make: *** [gdbm.h] Error 1
+
+Index: gdbm-1.8.3/Makefile.in
+===================================================================
+--- gdbm-1.8.3.orig/Makefile.in
++++ gdbm-1.8.3/Makefile.in
+@@ -167,10 +167,10 @@ libgdbm_compat.la: $(C_LOBJS) gdbm.h
+ gdbm.h:	gdbm.proto gdbmerrno.h gdbm.proto2
+ 	rm -f gdbm.h
+ 	cp $(srcdir)/gdbm.proto gdbm.h
+-	chmod +w gdbm.h
++	chmod u+w gdbm.h
+ 	grep _ $(srcdir)/gdbmerrno.h >> gdbm.h
+ 	cat $(srcdir)/gdbm.proto2 >> gdbm.h
+-	chmod -w gdbm.h
++	chmod a-w gdbm.h
+ 
+ testgdbm: testgdbm.o libgdbm.la @LIBOBJS@
+ 	$(LIBTOOL) $(CC) $(LDFLAGS) -o testgdbm testgdbm.o libgdbm.la @LIBOBJS@
