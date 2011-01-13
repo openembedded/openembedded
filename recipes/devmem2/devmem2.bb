@@ -3,7 +3,7 @@ LICENSE = "GPLv2"
 PR = "r6"
 
 SRC_URI = "http://www.lartmaker.nl/lartware/port/devmem2.c \
-           file://devmem2-fixups-2.patch"
+           file://devmem2-fixups-2.patch;apply=yes;striplevel=0"
 S = "${WORKDIR}"
 
 do_compile() {
