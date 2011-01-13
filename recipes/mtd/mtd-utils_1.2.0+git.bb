@@ -1,6 +1,6 @@
 require mtd-utils.inc
 
-DEPENDS += "util-linux-ng"
+DEPENDS += "util-linux-ng lzo"
 PR = "r4"
 
 ARM_INSTRUCTION_SET = "arm"

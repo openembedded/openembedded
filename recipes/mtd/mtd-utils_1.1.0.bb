@@ -2,6 +2,8 @@ require mtd-utils.inc
 
 PR = "r4"
 
+DEPENDS += "lzo"
+
 SRC_URI += "file://add-exclusion-to-mkfs-jffs2-git.patch \
 	    file://fix-ignoreerrors-git.patch \
 	    file://lzo_1x.patch"

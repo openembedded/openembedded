@@ -1,6 +1,6 @@
 DESCRIPTION = "Tools for managing memory technology devices."
 SECTION = "base"
-DEPENDS = "zlib lzo"
+DEPENDS = "zlib"
 HOMEPAGE = "http://www.linux-mtd.infradead.org/"
 LICENSE = "GPLv2"
 PR = "r0"
