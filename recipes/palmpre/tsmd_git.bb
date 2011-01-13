@@ -9,7 +9,7 @@ DEPENDS = "tslib"
 PR = "r1"
 PV = "1.0.0+gitr${SRCPV}"
 
-SRCREV = "704b7965ad1936bf935b576d4663590bdaab09b1"
+SRCREV = "9262a2e4f8f6e6c7bcacf1eeae0ad348cbfcce06"
 SRC_URI = " \
  ${FREESMARTPHONE_GIT}/utilities.git;protocol=git;branch=master \
 "
