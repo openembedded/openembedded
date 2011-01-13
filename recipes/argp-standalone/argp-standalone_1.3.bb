@@ -1,6 +1,6 @@
 DESCRIPTION = "A standalone version of argp, which is part of the GNU C Library."
 PRIORITY = "optional"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.auto.tuwien.ac.at/~mkoegler/eib/argp-standalone-${PV}.tar.gz \
            file://libtool.patch"
