@@ -5,6 +5,7 @@ DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_sheevaplug = "1"
 DEFAULT_PREFERENCE_openrd-base = "1"
 DEFAULT_PREFERENCE_openrd-client = "1"
+DEFAULT_PREFERENCE_qemuppc = "1"
 # needs more testing before making it new default
 # DEFAULT_PREFERENCE_om-gta02 = "1"
 # DEFAULT_PREFERENCE_om-gta01 = "1"
