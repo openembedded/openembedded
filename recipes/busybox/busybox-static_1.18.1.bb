@@ -1,6 +1,6 @@
 require busybox_${PV}.bb
 
-FILESPATHPKG =. "busybox-${PV}:"
+FILESPATHPKG =. "${P}:${BPN}:busybox-${PV}:"
 S = "${WORKDIR}/busybox-${PV}"
 
 do_configure_append() {
