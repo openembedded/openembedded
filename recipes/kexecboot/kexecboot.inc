@@ -34,11 +34,11 @@ inherit autotools
 #                          (all,32,24,18,16,4,2,1) [default=all]
 ############################
 
-EXTRA_OECONF_akita = "--enable-zaurus --enable-delay=1"
-EXTRA_OECONF_c7x0 = "--enable-zaurus --enable-delay=1"
-EXTRA_OECONF_spitz = "--enable-zaurus --enable-delay=2"
-EXTRA_OECONF_poodle = "--enable-zaurus --enable-delay=1"
-EXTRA_OECONF_tosa = "--enable-zaurus --enable-delay=1"
+EXTRA_OECONF_akita = "--enable-zaurus --enable-delay=2"
+EXTRA_OECONF_c7x0 = "--enable-zaurus --enable-delay=2"
+EXTRA_OECONF_spitz = "--enable-zaurus --enable-delay=3"
+EXTRA_OECONF_poodle = "--enable-zaurus --enable-delay=2"
+EXTRA_OECONF_tosa = "--enable-zaurus --enable-delay=2"
 EXTRA_OECONF_omap3 = "--enable-uimage"
 
 do_configure_prepend () {
