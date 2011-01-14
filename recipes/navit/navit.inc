@@ -11,9 +11,9 @@ RSUGGESTS_${PN} = "flite espeak ${PN}-speech-dbus ${PN}-gui-gtk ${PN}-gui-qml ${
 PE = "1"
 INC_PR = "r8"
 
-inherit autotools
+inherit autotools gettext
 
-EXTRA_OECONF = " \
+EXTRA_OECONF += " \
   --disable-binding-python \
   --disable-samplemap \
   --enable-avoid-unaligned \
