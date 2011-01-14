@@ -2,7 +2,7 @@ require hal.inc
 
 DEFAULT_PREFERENCE = "-1"
 
-PR = "r1"
+PR = "${INC_PR}.1"
 
 # The following code finds the right linux/input.h,
 # which also works with external-toolchain/SDK

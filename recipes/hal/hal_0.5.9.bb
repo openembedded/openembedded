@@ -1,5 +1,5 @@
 require hal.inc
-PR = "r9"
+PR = "${INC_PR}.1"
 
 
 SRC_URI[md5sum] = "a6f532770cf9286e1de38d6570cbc6bc"

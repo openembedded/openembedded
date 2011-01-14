@@ -1,6 +1,6 @@
 require hal.inc
 
-PR = "r6"
+PR = "${INC_PR}.1"
 
 SRC_URI += " file://hal-right-input-h.patch \
              file://fix-configure.diff \

@@ -3,6 +3,8 @@ HOMEPAGE = "http://freedesktop.org/Software/hal"
 SECTION = "unknown"
 LICENSE = "GPL LGPL AFL"
 
+INC_PR = "r10"
+
 SRC_URI = "http://hal.freedesktop.org/releases/hal-${PV}.tar.gz"
 
 S = "${WORKDIR}/hal-${PV}"
