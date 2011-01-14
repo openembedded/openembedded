@@ -1,7 +1,7 @@
 DESCRIPTION = "Configuration file for kexecboot"
 SECTION = "base"
 LICENSE = "GPL"
-PR = "r9"
+PR = "r10"
 
 SRC_URI = "file://icon.xpm"
 
@@ -28,7 +28,7 @@ do_configure_prepend () {
 }
 do_install_prepend () {
 echo '# Show this label in kexecboot menu.
-LABEL=${DISTRO}
+LABEL=${DISTRO}-${MACHINE}
 #
 # Specify full kernel path on target.
 KERNEL=/boot/${KERNEL_IMAGETYPE}
