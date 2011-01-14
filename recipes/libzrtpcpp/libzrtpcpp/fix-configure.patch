@@ -1,0 +1,20 @@
+diff -Nurd libzrtpcpp-1.6.0/configure.ac libzrtpcpp-1.6.0/configure.ac
+--- libzrtpcpp-1.6.0/configure.ac	2011-01-14 23:00:26.000000000 +0100
++++ libzrtpcpp-1.6.0/configure.ac	2011-01-14 23:00:26.000000000 +0100
+@@ -151,14 +151,12 @@
+ 
+ if test "x$with_ccrtp" != xno; then
+     PKG_CHECK_MODULES(RTPSTACK, libccrtp1 >= 1.8.0, [
+-        RTPSTACK_LIBPATH=`pkg-config --variable=libdir libccrtp1`
+-        LIBS="-L$RTPSTACK_LIBPATH $RTPSTACK_LIBS $LIBS"
++        LIBS="$RTPSTACK_LIBS $LIBS"
+         CCXX_FLAGS="$CXXFLAGS $RTPSTACK_CFLAGS"
+     ])
+     PKG_CHECK_MODULES(COMMON, libccgnu2 >= $REQUIRES)
+     CXXFLAGS="$CXXFLAGS $COMMON_CFLAGS"
+-    COMMON_LIBPATH=`pkg-config --variable=libdir libccgnu2`
+-    LIBS="-L$COMMON_LIBPATH $COMMON_LIBS $LIBS"
++    LIBS="$COMMON_LIBS $LIBS"
+     CRYPTOBACKEND="$CRYPTOBACKEND libccrtp1 >= 1.8.0"
+ fi
+ AM_CONDITIONAL(CCRTP_SUPPORT, test "${with_ccrtp}" = "yes")
