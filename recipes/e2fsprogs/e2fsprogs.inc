@@ -9,7 +9,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-${PV}.tar.gz"
 
 S = "${WORKDIR}/e2fsprogs-${PV}"
 
-INC_PR = "r28"
+INC_PR = "r29"
 
 inherit autotools
 
@@ -51,7 +51,7 @@ do_install_append_pn-e2fsprogs () {
 
 
 pkg_postinst_e2fsprogs () {
-	update-alternatives --install ${base_bindir}/chattr chattr chattr.${PN} 100
+	update-alternatives --install ${bindir}/chattr chattr chattr.${PN} 100
 	update-alternatives --install ${base_sbindir}/uuidd uuidd uuidd.${PN} 10
 }
 
