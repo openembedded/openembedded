@@ -6,8 +6,10 @@ SRCREV = "9e25833870ed8281fab00d7f9eac5755c6798c57"
 
 PE = "1"
 PV = "0.6.0-pre1+gitr${SRCPV}"
+PR = "r1"
 
-SRC_URI = "git://gitorious.org/dbus-cplusplus/mainline.git;protocol=git"
+SRC_URI = "git://gitorious.org/dbus-cplusplus/mainline.git;protocol=git \
+           file://fix-Makefile.patch"
 
 S = "${WORKDIR}/git"
 

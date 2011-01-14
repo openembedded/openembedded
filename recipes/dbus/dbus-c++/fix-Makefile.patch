@@ -1,0 +1,11 @@
+--- git/src/Makefile.am	2011-01-14 23:36:44.000000000 +0100
++++ git/src/Makefile.am	2011-01-14 23:36:44.000000000 +0100
+@@ -39,7 +39,7 @@
+ 	$(HEADER_DIR)/pipe.h \
+ 	$(GLIB_H) $(ECORE_H)
+ 
+-lib_includedir=$(includedir)/dbus-c++-1/dbus-c++/
++lib_includedir=$(includedir)/dbus-c++/
+ lib_include_HEADERS = $(HEADER_FILES)
+ 
+ lib_LTLIBRARIES = libdbus-c++-1.la
