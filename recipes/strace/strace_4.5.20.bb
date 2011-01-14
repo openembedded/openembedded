@@ -3,10 +3,6 @@ SECTION = "console/utils"
 LICENSE = "BSD"
 PR = "r1"
 
-DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_mips = "1"
-DEFAULT_PREFERENCE_mipsel = "1"
-
 SRC_URI = "${SOURCEFORGE_MIRROR}/strace/strace-${PV}.tar.bz2 \
           file://mips-nolargefile.patch \
           "
