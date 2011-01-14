@@ -1,0 +1,14 @@
+Index: commoncpp2-1.8.1/src/applog.cpp
+===================================================================
+--- commoncpp2-1.8.1.orig/src/applog.cpp
++++ commoncpp2-1.8.1/src/applog.cpp
+@@ -34,6 +34,9 @@
+ // If you do not wish that, delete this exception notice.
+ //
+ 
++#include <sys/types.h>
++#include <sys/stat.h>
++
+ #include <cc++/config.h>
+ #include <cc++/thread.h>
+ #include <cc++/slog.h>
