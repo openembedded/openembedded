@@ -1,6 +1,8 @@
---- libcap-2.16/Make.Rules.orig	2009-03-07 18:50:23.000000000 +0100
-+++ libcap-2.16/Make.Rules	2009-03-07 18:50:44.000000000 +0100
-@@ -45,19 +45,12 @@
+Index: libcap-2.16/Make.Rules
+===================================================================
+--- libcap-2.16.orig/Make.Rules	2008-12-04 08:03:30.000000000 +0100
++++ libcap-2.16/Make.Rules	2011-01-13 22:51:04.568844000 +0100
+@@ -45,25 +45,18 @@
  KERNEL_HEADERS := $(topdir)/libcap/include
  IPATH += -I$(topdir)/libcap/include -I$(KERNEL_HEADERS)
  
@@ -19,5 +21,13 @@
 -LD=$(CC) -Wl,-x -shared
 -LDFLAGS := #-g
  
- SYSTEM_HEADERS = /usr/include
+-SYSTEM_HEADERS = /usr/include
++SYSTEM_HEADERS ?= /usr/include
  INCS=$(topdir)/libcap/include/sys/capability.h
+ LDFLAGS += -L$(topdir)/libcap
+ CFLAGS += -Dlinux $(WARNINGS) $(DEBUG) $(IPATH)
+-PAM_CAP := $(shell if [ -f /usr/include/security/pam_modules.h ]; then echo yes ; else echo no ; fi)
++PAM_CAP := $(shell if [ -f $(SYSTEM_HEADERS)/security/pam_modules.h ]; then echo yes ; else echo no ; fi)
+ INDENT := $(shell if [ -n "$(which indent 2>/dev/null)" ]; then echo "| indent -kr" ; fi)
+ DYNAMIC := $(shell if [ ! -d "$(topdir)/.git" ]; then echo yes; fi)
+ LIBATTR := yes
