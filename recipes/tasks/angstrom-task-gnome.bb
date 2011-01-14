@@ -12,7 +12,7 @@ XSERVER ?= "xserver-xorg \
            xf86-input-keyboard \
 "
 
-PR = "r13"
+PR = "r14"
 
 PACKAGES += "task-gnome-apps task-gnome-fonts task-gnome task-gnome-gstreamer task-gnome-perl task-gnome-pulseaudio task-gnome-themes task-gnome-totem task-gnome-xserver-base task-gnome-xserver"
 
@@ -58,6 +58,7 @@ RDEPENDS_task-gnome-fonts = " \
 
 RDEPENDS_task-gnome = " \
   at-spi \
+  cron \
   file-roller \
   gconf gconf-editor \
   gdm \
@@ -99,6 +100,7 @@ RDEPENDS_task-gnome = " \
   metacity \
   nautilus nautilus-cd-burner desktop-file-utils gnome-mount \
   networkmanager network-manager-applet networkmanager-openvpn modemmanager \
+  ntpdate \
   policykit-gnome policykit \
   zenity \
  "
