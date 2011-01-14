@@ -1,0 +1,25 @@
+Index: dbus-cxx-0.7.0/dbus-cxx/signature.h
+===================================================================
+--- dbus-cxx-0.7.0.orig/dbus-cxx/signature.h
++++ dbus-cxx-0.7.0/dbus-cxx/signature.h
+@@ -20,6 +20,7 @@
+ #include <string>
+ #include <dbus-cxx/signatureiterator.h>
+ #include <dbus-cxx/path.h>
++#include <stdint.h>
+ 
+ #ifndef DBUSCXX_SIGNATURE_H
+ #define DBUSCXX_SIGNATURE_H
+Index: dbus-cxx-0.7.0/dbus-cxx/pointer.h
+===================================================================
+--- dbus-cxx-0.7.0.orig/dbus-cxx/pointer.h
++++ dbus-cxx-0.7.0/dbus-cxx/pointer.h
+@@ -23,7 +23,7 @@
+   // Headers for smart pointers
+   #ifdef DBUS_CXX_USE_BOOST_SMART_POINTER
+     #include <boost/shared_ptr.hpp>
+-    //#include <boost/weak_ptr.hpp>
++    #include <boost/weak_ptr.hpp>
+     #define DBusCxxPointer boost::shared_ptr
+     #define DBusCxxWeakPointer boost::weak_ptr
+     #define dbus_cxx_static_pointer_cast  boost::static_pointer_cast
