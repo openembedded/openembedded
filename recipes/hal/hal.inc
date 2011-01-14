@@ -3,7 +3,7 @@ HOMEPAGE = "http://freedesktop.org/Software/hal"
 SECTION = "unknown"
 LICENSE = "GPL LGPL AFL"
 
-INC_PR = "r10"
+INC_PR = "r11"
 
 SRC_URI = "http://hal.freedesktop.org/releases/hal-${PV}.tar.gz"
 
@@ -45,6 +45,11 @@ do_install_append() {
         install -d ${D}/${sysconfdir}/dbus-1/event.d
         install -m 0755 ${WORKDIR}/20hal ${D}/${sysconfdir}/dbus-1/event.d
 	rm -rf ${D}/${sysconfdir}/rc.d || true
+
+        # Handle case where prefix is empty
+        if [ -z "$prefix" ]; then
+                sed -i 's,/usr,,g' ${D}/${sysconfdir}/dbus-1/event.d/20hal
+        fi
 }
 
 # At the time the postinst runs, dbus might not be setup so only restart if running
