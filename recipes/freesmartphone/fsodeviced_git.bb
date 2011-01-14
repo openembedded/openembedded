@@ -21,10 +21,6 @@ INITSCRIPT_PARAMS = "defaults 27"
 
 SRC_URI += "file://fsodeviced"
 
-do_configure_prepend() {
-	install ${STAGING_INCDIR}/linux/i2c-dev-user.h ${STAGING_INCDIR}/linux/i2c-dev.h
-}
-
 CONFFILES_${PN} = "${sysconfdir}/freesmartphone/conf/openmoko_gta/fsodeviced.conf \
                    ${sysconfdir}/freesmartphone/conf/palm_pre/fsodeviced.conf \
                    ${sysconfdir}/freesmartphone/conf/htc_qualcomm_dream/fsodeviced.conf \
