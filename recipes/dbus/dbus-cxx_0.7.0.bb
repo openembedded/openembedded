@@ -15,4 +15,5 @@ SRC_URI[sha256sum] = "92218bd35240f76e359e767b7d5db54674599434f6b5bc568e5ab60f43
 
 inherit autotools
 
-BBCLASSEXTENDS = "native"
+BBCLASSEXTEND = "native"
+DEPENDS_virtclass-native = "dbus-native libsigc++-2.0-native"
