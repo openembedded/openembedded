@@ -57,11 +57,14 @@
 #		is disabled
 
 supported_archs="{arm mips mips64 mipsel mips64el ppc sh4 x86}"
-if [ $# -lt 2 ]; then
+if [ $# -lt 3 ]; then
     echo -en "
-    Usage: `basename $0` <arch> <libc> [single|empty]
+    Usage: `basename $0` <arch> <libc> <image> [single|empty]
     where <arch> is one $supported_archs
-    libc is uclibc glibc or eglibc (used in the deploy directory)
+    <libc> is uclibc glibc or eglibc (used in the deploy directory)
+    <image> is OE image that you would like to boot for list of
+    available images look into <OE-metadata>/recipes/images
+    some common images are console-image, x11-image, minimalist-image
     single may be passed to use /bin/sh as init or omitted.
     Example: `basename $0` arm eglibc
 "
@@ -70,6 +73,7 @@ fi
 
 arch=$1
 libc=$2
+image=$3
 mem=256				# memory for guest server in Mb
 imagetype="ext3"
 networking="no"
@@ -86,7 +90,6 @@ case $arch in
 	rootdisk="sda"
 	qemuopts="-nographic"
 	kernel="zImage"
-	image="native-sdk-image"
 	;;
     mips)
 	address="192.168.1.102"
@@ -97,7 +100,6 @@ case $arch in
 	rootdisk="hda"
 	qemuopts="-nographic"
 	kernel="vmlinux"
-	image="native-sdk-image"
 	;;
     mipsel)
 	address="192.168.1.103"
@@ -108,7 +110,6 @@ case $arch in
 	rootdisk="hda"
 	qemuopts="-nographic"
 	kernel="vmlinux"
-	image="native-sdk-image"
 	;;
     ppc|powerpc)
 	arch=ppc
@@ -121,7 +122,6 @@ case $arch in
 	rootdisk="hdc"
 	qemuopts="-nographic"
 	kernel="vmlinux"
-	image="console-image"
 	;;
     sh|sh4)
 	arch=sh4
@@ -134,7 +134,6 @@ case $arch in
 	rootdisk="sda"
 	qemuopts="-monitor null -serial vc -serial stdio"
 	kernel="zImage"
-	image="minimalist-image"
 	;;
     x86)
 	address="192.168.1.106"
@@ -144,9 +143,8 @@ case $arch in
 	mem="1024"
 	consoleopt="console=ttyS0"
 	rootdisk="hda"
-	qemuopts=""
+	qemuopts="-nographic"
 	kernel="bzImage"
-	image="minimalist-image"
 	;;
     mips64)
 	address="192.168.1.107"
@@ -158,7 +156,6 @@ case $arch in
 	rootdisk="hda"
 	qemuopts="-nographic"
 	kernel="vmlinux"
-	image="minimalist-image"
 	;;
     mips64el)
 	address="192.168.1.108"
@@ -170,7 +167,6 @@ case $arch in
 	rootdisk="hda"
 	qemuopts="-nographic"
 	kernel="vmlinux"
-	image="minimalist-image"
 	;;
     *)
 	echo "Specify one architectures out of $supported_archs to emulate."
