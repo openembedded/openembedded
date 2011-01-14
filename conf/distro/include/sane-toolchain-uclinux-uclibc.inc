@@ -9,7 +9,7 @@ USE_NLS_gcc-cross = "no"
 
 #mess with compiler flags to use -Os instead of -O2
 #Please see http://free-electrons.com/doc/embedded_linux_optimizations/img47.html for some more info
-FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -Os"
+FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -Os -pipe"
 BUILD_OPTIMIZATION = "-Os"
 
 #Gcc will die with 'internal consistency error when using the above optimizations
