@@ -1,0 +1,46 @@
+From 6f516330f556c6929a54ca8899f9c3cdf175ef13 Mon Sep 17 00:00:00 2001
+From: Carmelo Amoroso <carmelo.amoroso@st.com>
+Date: Wed, 12 Jan 2011 08:19:56 +0100
+Subject: [PATCH 3/5] Revert "ldso/arm: Correct protected symbol resolution"
+
+This reverts commit 48fb264beaac8114e5ac3e80e70dda473fbce96d.
+The generic implementation will cover all the architectures handling
+the protected symbols in _dl_lookup_hash [ldso/ldso/dl-hash.c]
+
+Signed-off-by: Carmelo Amoroso <carmelo.amoroso@st.com>
+---
+ ldso/ldso/arm/elfinterp.c |   11 ++---------
+ 1 files changed, 2 insertions(+), 9 deletions(-)
+
+diff --git a/ldso/ldso/arm/elfinterp.c b/ldso/ldso/arm/elfinterp.c
+index adc282a..9bbf92c 100644
+--- a/ldso/ldso/arm/elfinterp.c
++++ b/ldso/ldso/arm/elfinterp.c
+@@ -198,9 +198,7 @@ _dl_do_reloc (struct elf_resolve *tpnt,struct dyn_elf *scope,
+ 	symtab_index = ELF32_R_SYM(rpnt->r_info);
+ 	symbol_addr = 0;
+ 
+-	if (symtab_index &&
+-			(ELF32_ST_VISIBILITY(symtab[symtab_index].st_other)
+-			 != STV_PROTECTED)) {
++	if (symtab_index) {
+ 		symbol_addr = _dl_find_hash(strtab + symtab[symtab_index].st_name,
+ 			scope, tpnt, elf_machine_type_class(reloc_type), &def_mod);
+ 
+@@ -221,12 +219,7 @@ _dl_do_reloc (struct elf_resolve *tpnt,struct dyn_elf *scope,
+ 		 * symbol value of zero, and using the module containing the
+ 		 * reloc itself.
+ 		 */
+-		if (symtab_index)
+-			symbol_addr = DL_FIND_HASH_VALUE(tpnt, elf_machine_type_class(reloc_type),
+-											&symtab[symtab_index]);
+-		else
+-			symbol_addr = symtab[symtab_index].st_value;
+-
++		symbol_addr = symtab[symtab_index].st_value;
+ 		def_mod = tpnt;
+ 	}
+ 
+-- 
+1.7.3.4
+

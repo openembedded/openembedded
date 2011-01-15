@@ -1,0 +1,72 @@
+From 8f5cb1d94001169a6600b19078372ba824f42c6d Mon Sep 17 00:00:00 2001
+From: Carmelo Amoroso <carmelo.amoroso@st.com>
+Date: Wed, 12 Jan 2011 08:19:17 +0100
+Subject: [PATCH 2/5] Revert "ldso_sh: add support for protected symbols to SH"
+
+This reverts commit 74407db52d3953c7f3c6b8a53661cfc96cb07e22.
+The generic implementation will cover all the architectures handling
+the protected symbols in _dl_lookup_hash [ldso/ldso/dl-hash.c]
+
+Signed-off-by: Carmelo Amoroso <carmelo.amoroso@st.com>
+---
+ ldso/ldso/sh/elfinterp.c |   42 ++++++++++++++++++------------------------
+ 1 files changed, 18 insertions(+), 24 deletions(-)
+
+diff --git a/ldso/ldso/sh/elfinterp.c b/ldso/ldso/sh/elfinterp.c
+index 756f6c4..715eadc 100644
+--- a/ldso/ldso/sh/elfinterp.c
++++ b/ldso/ldso/sh/elfinterp.c
+@@ -166,32 +166,26 @@ _dl_do_reloc (struct elf_resolve *tpnt,struct dyn_elf *scope,
+ 	reloc_type = ELF32_R_TYPE(rpnt->r_info);
+ 	symtab_index = ELF32_R_SYM(rpnt->r_info);
+ 	symbol_addr = 0;
++	symname = strtab + symtab[symtab_index].st_name;
+ 
+ 	if (symtab_index) {
+-		symname = strtab + symtab[symtab_index].st_name;
+-		if (ELF32_ST_VISIBILITY(symtab[symtab_index].st_other)
+-			 != STV_PROTECTED) {
+-			symbol_addr = (unsigned long) _dl_find_hash(symname, scope, tpnt,
+-								elf_machine_type_class(reloc_type), &tls_tpnt);
+-			/*
+-			 * We want to allow undefined references to weak symbols - this might
+-			 * have been intentional.  We should not be linking local symbols
+-			 * here, so all bases should be covered.
+-			 */
+-
+-			if (!symbol_addr
+-				&& (ELF_ST_TYPE(symtab[symtab_index].st_info) != STT_TLS)
+-				&& (ELF32_ST_BIND(symtab[symtab_index].st_info) != STB_WEAK)) {
+-				_dl_dprintf(2, "%s: can't resolve symbol '%s'\n",
+-				            _dl_progname, strtab + symtab[symtab_index].st_name);
+-
+-				/* Let the caller to handle the error: it may be non fatal if called from dlopen */
+-				return 1;
+-			}
+-		} else
+-			/* Resolve protected symbols locally */
+-			symbol_addr = DL_FIND_HASH_VALUE(tpnt, elf_machine_type_class(reloc_type),
+-											&symtab[symtab_index]);
++		symbol_addr = (unsigned long) _dl_find_hash(symname, scope, tpnt,
++							    elf_machine_type_class(reloc_type), &tls_tpnt);
++		/*
++		 * We want to allow undefined references to weak symbols - this might
++		 * have been intentional.  We should not be linking local symbols
++		 * here, so all bases should be covered.
++		 */
++
++		if (!symbol_addr
++			&& (ELF_ST_TYPE(symtab[symtab_index].st_info) != STT_TLS)
++			&& (ELF32_ST_BIND(symtab[symtab_index].st_info) != STB_WEAK)) {
++			_dl_dprintf(2, "%s: can't resolve symbol '%s'\n",
++			            _dl_progname, strtab + symtab[symtab_index].st_name);
++
++			/* Let the caller to handle the error: it may be non fatal if called from dlopen */
++			return 1;
++		}
+ 	}
+ 
+ #if defined (__SUPPORT_LD_DEBUG__)
+-- 
+1.7.3.4
+
