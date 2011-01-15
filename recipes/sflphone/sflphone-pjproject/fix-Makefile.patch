@@ -1,0 +1,42 @@
+diff -Nurd pjproject-orig/aconfigure pjproject/aconfigure
+--- pjproject-orig/aconfigure	2011-01-14 20:29:03.000000000 +0100
++++ pjproject/aconfigure	2011-01-15 03:08:28.000000000 +0100
+@@ -534,7 +534,7 @@
+ #
+ # Initializations.
+ #
+-ac_default_prefix=/usr/local
++ac_default_prefix=/usr
+ ac_clean_files=
+ ac_config_libobj_dir=.
+ LIBOBJS=
+diff -Nurd pjproject-orig/libpj.pc.in pjproject/libpj.pc.in
+--- pjproject-orig/libpj.pc.in	2011-01-14 20:29:03.000000000 +0100
++++ pjproject/libpj.pc.in	2011-01-15 03:06:31.000000000 +0100
+@@ -1,6 +1,6 @@
+ # Package Information for pkg-config
+ 
+-prefix=@PREFIX@
++prefix=/usr
+ exec_prefix=${prefix}
+ libdir=${exec_prefix}/lib
+ includedir=${prefix}/include
+@@ -8,5 +8,5 @@
+ Name: libpj
+ Description: Multimedia communication library
+ Version: 0.5.10.3
+-Libs: -L${libdir} -lpjsua -lpjsip -lpjmedia -lpjsip-ua -lpjsip-simple -lpjsip-ua -lpjmedia-codec -lpjlib-util -lpj
++Libs: -L${libdir} -lpjnath -lpjsua -lpjsip -lpjmedia -lpjsip-simple -lpjsip-ua -lpjmedia-codec -lpjlib-util -lpj -lpjsdp
+ Cflags: -I${includedir}
+diff -Nurd pjproject-orig/Makefile pjproject/Makefile
+--- pjproject-orig/Makefile	2011-01-14 20:29:03.000000000 +0100
++++ pjproject/Makefile	2011-01-15 13:43:07.000000000 +0100
+@@ -90,7 +90,7 @@
+ pjsua-test:
+ 	cd tests/pjsua && python runall.py
+ 
+-prefix = /usr/local
++prefix = /usr
+ install:
+ 	mkdir -p $(DESTDIR)$(prefix)/lib
+ 	cp -L $$(find . -name '*.a') $(DESTDIR)$(prefix)/lib

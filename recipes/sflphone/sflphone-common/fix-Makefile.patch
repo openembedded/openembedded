@@ -1,0 +1,295 @@
+diff -Nurd sflphone-common-orig/configure.ac sflphone-common/configure.ac
+--- sflphone-common-orig/configure.ac	2011-01-14 20:29:03.000000000 +0100
++++ sflphone-common/configure.ac	2011-01-15 03:01:11.000000000 +0100
+@@ -44,10 +44,6 @@
+ 			libs/utilspp/Makefile \
+ 			libs/utilspp/functor/Makefile \
+ 			libs/utilspp/singleton/Makefile \
+-			libs/dbus-c++/Makefile \
+-			libs/dbus-c++/src/Makefile \
+-			libs/dbus-c++/tools/Makefile \
+-			libs/dbus-c++/data/Makefile \
+ 			libs/iax2/Makefile])
+ 
+ 	AC_CONFIG_FILES([src/Makefile \
+@@ -154,12 +150,9 @@
+ 	dnl Check for GNU ccRTP
+ 	PKG_PROG_PKG_CONFIG
+ 
+-#Trying to set PJSIP using pkg-config
+-#PKG_CHECK_MODULES(SIP, libpj-sfl, have_libpj=true, have_libpj=false)
+-#if test "x${have_libpj}" = "xfalse" ; then
+-#   AC_MSG_ERROR([PJSIP not found. http://www.pjsip.org/download.htm])
+-#fi
+-#AC_SUBST(SIP_CFLAGS)
++	PKG_CHECK_MODULES(PJLIB, libpj)
++	AC_SUBST(PJLIB_CFLAGS)
++	AC_SUBST(PJLIB_LIBS)
+ 
+ 	dnl Check for uuid development package - name: uuid-dev 
+ 	dnl PKG_CHECK_MODULES(UUID, uuid >= ${UUID_MIN_VERSION})
+@@ -191,7 +184,7 @@
+ 	LIBCCGNU2_MIN_VERSION=1.3.1
+ 	PKG_CHECK_MODULES(CCGNU2, libccgnu2 >= ${LIBCCGNU2_MIN_VERSION})
+ 	AC_SUBST(CCGNU2_LIBS)
+-AC_SUBST(CCGNU2_FLAGS)
++AC_SUBST(CCGNU2_CFLAGS)
+ 
+ 	LIBCCEXT2_MIN_VERSION=1.3.1
+ 	PKG_CHECK_MODULES(CCEXT2, libccext2 >= ${LIBCCEXT2_MIN_VERSION})
+@@ -214,6 +207,10 @@
+ 	AC_SUBST(ZRTPCPP_LIBS)
+ AC_SUBST(ZRTPCPP_CFLAGS)
+ 
++	LIBDBUSCPLUSPLUS_MIN_VERSION=0.6.0-pre1
++	PKG_CHECK_MODULES(DBUSCPLUSPLUS, dbus-c++-1 >= ${LIBDBUSCPLUSPLUS_MIN_VERSION})
++	AC_SUBST(DBUSCPLUSPLUS_LIBS)
++AC_SUBST(DBUSCPLUSPLUS_CFLAGS)
+ 
+ dnl DBus-C++ detection (used to be in library own build system)
+ 	DBUS_REQUIRED_VERSION=0.60
+diff -Nurd sflphone-common-orig/globals.mak sflphone-common/globals.mak
+--- sflphone-common-orig/globals.mak	2011-01-14 20:29:03.000000000 +0100
++++ sflphone-common/globals.mak	2011-01-15 03:00:04.000000000 +0100
+@@ -7,34 +7,6 @@
+ sflcodecdir=$(sfllibdir)/codecs
+ sflplugindir=$(sfllibdir)/plugins
+ 
+-ASTYLERC="$(top_srcdir)/../astylerc"
+-indent="/usr/bin/astyle"
+-
+-# for pjsip
+-PJSIP_LIBS= \
+-			-L$(src)/libs/pjproject/pjnath/lib/ \
+-			-L$(src)/libs/pjproject/pjsip/lib/ \
+-			-L$(src)/libs/pjproject/pjlib/lib/ \
+-			-L$(src)/libs/pjproject/pjlib-util/lib/ \
+-			-L$(src)/libs/pjproject/pjmedia/lib/ \
+-			-lpjnath-$(target) \
+-			-lpjsua-$(target) \
+-			-lpjsip-$(target) \
+-			-lpjmedia-$(target) \
+-			-lpjsip-simple-$(target) \
+-			-lpjsip-ua-$(target) \
+-			-lpjmedia-codec-$(target) \
+-			-lpjlib-util-$(target) \
+-			-lpj-$(target) 
+-
+-SIP_CFLAGS=-I$(src)/libs/pjproject/pjsip/include \
+-		   -I$(src)/libs/pjproject/pjlib/include \
+-		   -I$(src)/libs/pjproject/pjlib-util/include \
+-		   -I$(src)/libs/pjproject/pjmedia/include \
+-		   -I$(src)/libs/pjproject/pjnath/include
+-
+-DBUSCPP_CFLAGS=$(top_srcdir)/libs/dbus-c++/include/dbus-c++
+-
+ if BUILD_SPEEX
+ SPEEXCODEC=-DHAVE_SPEEX_CODEC
+ else
+@@ -50,7 +22,6 @@
+ # Preprocessor flags
+ AM_CPPFLAGS = \
+ 	-I$(src)/libs \
+-	-I$(src)/libs/dbus-c++/include \
+ 	-I$(src)/libs/iax2 \
+ 	-I$(src)/libs/pjproject \
+ 	-I$(src)/src \
+@@ -69,10 +40,3 @@
+ 	-DENABLE_TRACE \
+          $(SPEEXCODEC) \
+          $(GSMCODEC)
+-
+-
+-indent:
+-	@echo "Indenting code:"
+-	if [ -f $(ASTYLERC) ] ; then \
+-                find $(top_srcdir)/src/ -name \*.cpp -o -name \*.h | xargs $(indent) --options=$(ASTYLERC) ; \
+-	fi
+diff -Nurd sflphone-common-orig/libs/Makefile.am sflphone-common/libs/Makefile.am
+--- sflphone-common-orig/libs/Makefile.am	2011-01-14 20:29:03.000000000 +0100
++++ sflphone-common/libs/Makefile.am	2011-01-15 02:59:49.000000000 +0100
+@@ -1 +1 @@
+-SUBDIRS = utilspp iax2 dbus-c++
++SUBDIRS = utilspp iax2
+diff -Nurd sflphone-common-orig/src/audio/alsa/Makefile.am sflphone-common/src/audio/alsa/Makefile.am
+--- sflphone-common-orig/src/audio/alsa/Makefile.am	2011-01-14 20:29:03.000000000 +0100
++++ sflphone-common/src/audio/alsa/Makefile.am	2011-01-15 02:59:49.000000000 +0100
+@@ -4,5 +4,7 @@
+ 
+ libalsalayer_la_SOURCES = alsalayer.cpp 
+ 
++libalsalayer_la_CXXFLAGS = @DBUSCPLUSPLUS_CFLAGS@
++
+ noinst_HEADERS = alsalayer.h
+ 
+diff -Nurd sflphone-common-orig/src/audio/audiortp/Makefile.am sflphone-common/src/audio/audiortp/Makefile.am
+--- sflphone-common-orig/src/audio/audiortp/Makefile.am	2011-01-14 20:29:03.000000000 +0100
++++ sflphone-common/src/audio/audiortp/Makefile.am	2011-01-15 02:59:49.000000000 +0100
+@@ -10,6 +10,8 @@
+ 		ZrtpSessionCallback.cpp \
+ 		AudioSrtpSession.cpp
+ 
++libaudiortp_la_CXXFLAGS = @DBUSCPLUSPLUS_CFLAGS@
++
+ noinst_HEADERS = \
+ 		AudioRtpRecordHandler.h \
+ 		AudioRtpFactory.h \
+diff -Nurd sflphone-common-orig/src/audio/Makefile.am sflphone-common/src/audio/Makefile.am
+--- sflphone-common-orig/src/audio/Makefile.am	2011-01-14 20:29:03.000000000 +0100
++++ sflphone-common/src/audio/Makefile.am	2011-01-15 02:59:49.000000000 +0100
+@@ -45,6 +45,8 @@
+ 		dcblocker.h \
+ 		samplerateconverter.h
+ 
++libaudio_la_CXXFLAGS = @DBUSCPLUSPLUS_CFLAGS@
++
+ libaudio_la_LIBADD = \
+ 	./audiortp/libaudiortp.la \
+ 	./codecs/libcodecdescriptor.la \
+diff -Nurd sflphone-common-orig/src/audio/pulseaudio/Makefile.am sflphone-common/src/audio/pulseaudio/Makefile.am
+--- sflphone-common-orig/src/audio/pulseaudio/Makefile.am	2011-01-14 20:29:03.000000000 +0100
++++ sflphone-common/src/audio/pulseaudio/Makefile.am	2011-01-15 02:59:49.000000000 +0100
+@@ -6,6 +6,7 @@
+ 		audiostream.cpp \
+ 		pulselayer.cpp
+ 
++libpulselayer_la_CXXFLAGS = @DBUSCPLUSPLUS_CFLAGS@
+ 
+ noinst_HEADERS = \
+ 		audiostream.h \
+diff -Nurd sflphone-common-orig/src/dbus/Makefile.am sflphone-common/src/dbus/Makefile.am
+--- sflphone-common-orig/src/dbus/Makefile.am	2011-01-14 20:29:03.000000000 +0100
++++ sflphone-common/src/dbus/Makefile.am	2011-01-15 02:59:49.000000000 +0100
+@@ -1,6 +1,6 @@
+ include $(top_srcdir)/globals.mak
+ 
+-DBUSXX=$(top_srcdir)/libs/dbus-c++/tools/dbusxx-xml2cpp
++DBUSXX=dbusxx-xml2cpp
+ 
+ noinst_LTLIBRARIES = libdbus.la
+ 
+@@ -26,9 +26,7 @@
+ NETWORKMANAGER=
+ endif
+ 
+-libdbus_la_CXXFLAGS = -DPREFIX=\"$(prefix)\" -DPROGSHAREDIR=\"${datadir}/sflphone\" $(NETWORKMANAGER)
+-
+-libdbus_la_LIBADD = $(top_srcdir)/libs/dbus-c++/src/libdbus-c++-1.la
++libdbus_la_CXXFLAGS = -DPREFIX=\"$(prefix)\" -DPROGSHAREDIR=\"${datadir}/sflphone\" $(NETWORKMANAGER) @DBUSCPLUSPLUS_CFLAGS@
+ 
+ noinst_HEADERS =            \
+     callmanager.h           \
+diff -Nurd sflphone-common-orig/src/history/Makefile.am sflphone-common/src/history/Makefile.am
+--- sflphone-common-orig/src/history/Makefile.am	2011-01-14 20:29:03.000000000 +0100
++++ sflphone-common/src/history/Makefile.am	2011-01-15 02:59:49.000000000 +0100
+@@ -4,6 +4,8 @@
+ 
+ noinst_LTLIBRARIES = libhistory.la
+ 
++libhistory_la_CXXFLAGS = @DBUSCPLUSPLUS_CFLAGS@
++
+ libhistory_la_SOURCES =         \
+     historyitem.h               \
+     historyitem.cpp             \
+diff -Nurd sflphone-common-orig/src/iax/Makefile.am sflphone-common/src/iax/Makefile.am
+--- sflphone-common-orig/src/iax/Makefile.am	2011-01-14 20:29:03.000000000 +0100
++++ sflphone-common/src/iax/Makefile.am	2011-01-15 02:59:49.000000000 +0100
+@@ -10,7 +10,8 @@
+ 		iaxvoiplink.cpp
+ 
+ libiaxlink_la_CXXFLAGS = \
+-		-DUSE_IAX
++		-DUSE_IAX \
++		@DBUSCPLUSPLUS_CFLAGS@
+ 
+ noinst_HEADERS = \
+ 		iaxaccount.h \
+diff -Nurd sflphone-common-orig/src/Makefile.am sflphone-common/src/Makefile.am
+--- sflphone-common-orig/src/Makefile.am	2011-01-14 20:29:03.000000000 +0100
++++ sflphone-common/src/Makefile.am	2011-01-15 03:02:12.000000000 +0100
+@@ -38,11 +38,12 @@
+ 
+ sflphoned_CXXFLAGS = \
+ 		-DPREFIX=\"$(prefix)\" -DPROGSHAREDIR=\"${datadir}/sflphone\" $(IAX_CXXFLAG) $(NETWORKMANAGER) \
+-		-DVERSION=\"$(VERSION)\"
++		-DVERSION=\"$(VERSION)\" \
++		@DBUSCPLUSPLUS_CFLAGS@
+ 
+ # libsflphone 
+ 
+-sflphoned_LDADD = ./libsflphone.la $(libssl_LIBS) -lcrypto
++sflphoned_LDADD = ./libsflphone.la $(libssl_LIBS) -lcrypto @PJLIB_LIBS@
+ noinst_LTLIBRARIES = libsflphone.la
+ 
+ noinst_HEADERS = \
+@@ -64,7 +65,6 @@
+ libsflphone_la_LIBADD = \
+ 	$(src)/libs/utilspp/libutilspp.la \
+ 	$(src)/libs/iax2/libiax2.la \
+-	$(src)/libs/dbus-c++/src/libdbus-c++-1.la \
+ 	$(IAX_LIB) \
+ 	./im/libim.la \
+ 	./sip/libsiplink.la \
+@@ -76,10 +76,11 @@
+ 	./history/libhistory.la
+ 
+ libsflphone_la_LDFLAGS = \
++		@DBUSCPLUSPLUS_LIBS@ \
+ 		@CCGNU2_LIBS@ \
+ 		@CCEXT2_LIBS@ \
+ 		@ZRTPCPP_LIBS@ \
+-		$(PJSIP_LIBS) \
++		@PJLIB_LIBS@ \
+ 		@CCRTP_LIBS@ \
+ 		@ALSA_LIBS@ \
+ 		@PULSEAUDIO_LIBS@ \
+@@ -90,10 +91,11 @@
+ 		@xml_LIBS@
+ 
+ libsflphone_la_CFLAGS = \
++		@DBUSCPLUSPLUS_CFLAGS@ \
+ 		@CCGNU2_CFLAGS@ \
+ 		@CCEXT2_CFLAGS@ \
+ 		@ZRTPCPP_CFLAGS@ \
+-		$(PJSIP_CFLAGS) \
++		@PJLIB_CFLAGS@ \
+ 		@CCRTP_CFLAGS@ \
+ 		@ALSA_CFLAGS@ \
+ 		@PULSEAUDIO_CFLAGS@ \
+@@ -104,5 +106,3 @@
+ 	 	@xml_CFLAGS@
+ 
+ libsflphone_la_SOURCES =
+-
+-all: indent
+diff -Nurd sflphone-common-orig/src/sip/Makefile.am sflphone-common/src/sip/Makefile.am
+--- sflphone-common-orig/src/sip/Makefile.am	2011-01-14 20:29:03.000000000 +0100
++++ sflphone-common/src/sip/Makefile.am	2011-01-15 02:59:49.000000000 +0100
+@@ -21,4 +21,8 @@
+ 		sipvoiplink.h
+ 
+ libsiplink_la_CXXFLAGS = \
+-		@PCRE_LIBS@
++		@DBUSCPLUSPLUS_CFLAGS@
++libsiplink_la_LIBADD = \
++		@PCRE_LIBS@ \
++		@DBUSCPLUSPLUS_LIBS@ \
++		@PJLIB_LIBS@
+diff -Nurd sflphone-common-orig/src/sip/sipvoiplink.cpp sflphone-common/src/sip/sipvoiplink.cpp
+--- sflphone-common/src/sip/sipvoiplink.cpp	2011-01-15 12:14:14.000000000 +0100
++++ sflphone-common/src/sip/sipvoiplink.cpp	2011-01-15 12:14:14.000000000 +0100
+@@ -49,10 +49,10 @@
+ 
+ #include "audio/audiolayer.h"
+ 
+-#include "pjsip/sip_endpoint.h"
+-#include "pjsip/sip_transport_tls.h"
+-#include "pjsip/sip_transport_tls.h"
+-#include "pjsip/sip_uri.h"
++#include <pjsip/sip_endpoint.h>
++#include <pjsip/sip_transport_tls.h>
++#include <pjsip/sip_transport_tls.h>
++#include <pjsip/sip_uri.h>
+ #include <pjnath.h>
+ 
+ #include <netinet/in.h>
