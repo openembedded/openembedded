@@ -1,0 +1,13 @@
+Index: Python-2.6.5/configure.in
+===================================================================
+--- Python-2.6.5.orig/configure.in	2011-01-15 14:42:42.068656002 -0800
++++ Python-2.6.5/configure.in	2011-01-15 15:18:39.668656002 -0800
+@@ -2951,7 +2951,7 @@
+ buggygetaddrinfo=yes
+ ])
+ 
+-if test "$buggygetaddrinfo" = "yes"; then
++if test "$buggygetaddrinfo" = "yes" -a x"$cross_compiling" != "xyes"; then
+ 	if test "$ipv6" = "yes"; then
+ 		echo 'Fatal: You must get working getaddrinfo() function.'
+ 		echo '       or you can specify "--disable-ipv6"'.

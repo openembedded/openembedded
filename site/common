@@ -8,3 +8,7 @@ ac_cv_file__dev_random=${ac_cv_file__dev_random=yes}
 rd_cv_ieee_works=${rd_cv_ieee_works=yes}
 
 ac_cv_sys_symbol_underscore=no
+
+# its a runtime check which fails for cross-compiling
+# python 2.7.1 uses this variable
+ac_cv_buggy_getaddrinfo=no
