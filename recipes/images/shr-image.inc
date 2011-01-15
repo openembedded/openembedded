@@ -3,12 +3,13 @@
 #------------------------------------------------------
 
 PV = "2.0"
-PR = "r15"
+PR = "r16"
 
 DEPENDS += "task-shr-minimal"
 IMAGE_LOGIN_MANAGER = "shadow"
 IMAGE_DEV_MANAGER_om-gta01 = ""
 IMAGE_DEV_MANAGER_om-gta02 = ""
+IMAGE_DEV_MANAGER_palmpre = ""
 
 RDEPENDS_${PN} += "\
   task-shr-minimal-base \
