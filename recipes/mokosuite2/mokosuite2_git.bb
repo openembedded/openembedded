@@ -7,7 +7,7 @@ SECTION = "misc/utils"
 
 PV = "1.0.99+gitr${SRCPV}"
 PR = "r2"
-SRCREV = "da6981b5c9426f68d616bebb9a62b8337a21ad60"
+SRCREV = "d884a48ca633a9ddc4ed650232fc41e86328b0ab"
 
 SRC_URI = "git://gitorious.org/mokosuite2/appbunch.git;protocol=git"
 S = "${WORKDIR}/git"
