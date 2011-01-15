@@ -24,6 +24,9 @@ PREFERRED_VERSION_uclibc-cross-intermediate ?= "${PREFERRED_UCLIBC_VERSION}"
 #mess with compiler flags to use -Os instead of -O2
 #Please see http://free-electrons.com/doc/embedded_linux_optimizations/img47.html for some more info
 FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -Os"
+# -Os compiled root file system does not boot for powerpc, root cause it still at large
+# we use -O2 meanwhile
+FULL_OPTIMIZATION_powerpc = "-O2"
 
 #Gcc will die with 'internal consistency error when using the above optimizations
 #with gcc-4.2.1-atmel.1.0.3 (and probably most other avr32 gcc ports).
