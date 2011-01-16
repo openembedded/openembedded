@@ -3,9 +3,11 @@ HOMEPAGE = "http://stgt.berlios.de/"
 LICENSE = "GPLv2"
 DEPENDS = "openssl"
 RDEPENDS_${PN} = "iscsi-target"
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "http://stgt.berlios.de/releases/tgt-${PV}.tar.gz"
+SRC_URI = "http://stgt.berlios.de/releases/tgt-${PV}.tar.gz \
+	   file://use-ftruncate-on-uclibc.patch \
+	  "
 SRC_URI[md5sum] = "d3bc4098d0ec6f4418e574ea7fdd18eb"
 SRC_URI[sha256sum] = "4d90567997e16194b86cc3ab0a55c7aa5c5054681176b60c6635b20a1feaffe2"
 
