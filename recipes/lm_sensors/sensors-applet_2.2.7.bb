@@ -3,14 +3,14 @@ LICENSE = "GPLv2"
 
 inherit gnome
 
+SRC_URI[md5sum] = "f342fab98be4f1b9a25af0689af20130"
+SRC_URI[sha256sum] = "368bae3baf983e192a0751f89d563ab9052c3ab2ab28bf62002a0d78d1ffcefe"
+
 DEPENDS += "gnome-panel libnotify"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/sensors-applet/sensors-applet-${PV}.tar.gz"
 
 EXTRA_OECONF = " --disable-scrollkeeper --with-libsensors=${STAGING_LIBDIR}/../ "
 
-FILES_${PN}-dbg += "${libdir}/sensors-applet/plugins/"
+FILES_${PN}-dbg += "${libdir}/sensors-applet/plugins/.debug"
 
-
-SRC_URI[md5sum] = "778f637524a90a9b6475ab77b0e90dd9"
-SRC_URI[sha256sum] = "a52214f2cf2b23a49394804dc589be51eecd4b8674f141047a46a550882f28f6"
