@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r6"
+PR = "r7"
 
 module_autoload_ohci-hcd_omap5912osk = "ohci-hcd"
 
