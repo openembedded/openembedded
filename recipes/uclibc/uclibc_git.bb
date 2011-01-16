@@ -14,7 +14,7 @@ DEFAULT_PREFERENCE = "-1"
 # precedence.
 
 require uclibc.inc
-PR = "${INC_PR}.4"
+PR = "${INC_PR}.5"
 PROVIDES += "virtual/${TARGET_PREFIX}libc-for-gcc"
 
 #recent versions uclibc require real kernel headers
