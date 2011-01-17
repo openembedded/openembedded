@@ -12,13 +12,13 @@ SRC_URI_append_nylon = "file://gcc-3-compatibility.patch "
 
 PARALLEL_MAKE = ""
 
-PR = "r6"
+PR = "r7"
 
 EXTRA_OEMAKE += "'STRIP = ' PREFIX=${prefix} LIBDIR=${libdir}"
 export SHARED=yes
 export DESTDIR = "${D}"
 export PREFIX = "${prefix}"
-export SBINDIR = "${sbindir}"
+export SBINDIR = "${bindir}"
 export SHAREDIR = "${datadir}"
 export MANDIR = "${mandir}"
 export IDSDIR = "${datadir}"
