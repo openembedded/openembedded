@@ -4,9 +4,9 @@ AUTHOR = "FreeSmartphone.Org Development Team"
 SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
-SRCREV = "c46f3e92c629ead0f9d1a966660bc53c08b50eeb"
+SRCREV = "64d40c68c656b7926dfd7eb91101f1f9547a948b"
 PV = "0.9.5.9+gitr${SRCPV}"
-PR = "r7"
+PR = "r8"
 PE = "1"
 
 inherit distutils update-rc.d python-dir
@@ -15,34 +15,33 @@ INITSCRIPT_NAME = "frameworkd"
 INITSCRIPT_PARAMS = "defaults 29"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/framework.git;protocol=git;branch=master \
-           file://frameworkd \
-           file://frameworkd.conf \
-	   "
-SRC_URI_append_shr = "file://oeventsd-use-opimd-signals.patch \
-                      file://0001-oeventsd-workaround-buggy-kernel-to-get-full-vibrati.patch \
-                      "
+           file://oeventsd-use-opimd-signals.patch \
+           file://0001-oeventsd-workaround-buggy-kernel-to-get-full-vibrati.patch \
+"
 
 S = "${WORKDIR}/git"
 
 do_configure_append() {
-	echo "version=\"${PV}\"" >framework/__version__.py
+        echo "version=\"${PV}\"" >framework/__version__.py
 }
 
 do_install_append() {
-	install -d ${D}${sysconfdir}/init.d/
-	install -m 0755 ${WORKDIR}/frameworkd ${D}${sysconfdir}/init.d/
-	install -m 0644 ${WORKDIR}/frameworkd.conf ${D}${sysconfdir}
-}
+        #Check for machine specific conf.
+        CONF_PATH="${S}/etc"
+        CONF_PATH_MACHINE="${CONF_PATH}"
+        if [ -d "${CONF_PATH}/${MACHINE}" ] ; then
+                CONF_PATH_MACHINE="${CONF_PATH}/${MACHINE}"
+        fi
+        # Install machine specific files
+        install -m 0644 ${CONF_PATH_MACHINE}/frameworkd.conf ${D}${sysconfdir}
 
-pkg_postinst_${PN} () {
-	echo "*IMPORTANT NOTICE*: There has been a change in internal opimd database structure as well as in the backend mechanism."
-	echo "  This change is not backwards compatible so a conversion is needed, furthermore, since new opimd does not (and will not) support working with SIM, importing your SIM data is also required."
-	echo "  In order to import SIM contacts, please use PISI."
-	echo "  If you still have old contacts with 'tel:' prefix instead of field types (i.e you haven't upgraded since 26.1.2010) please run the 'remove-tel' script first."
-	echo "  For the database conversion:"
-	echo "    1) stop frameworkd '/etc/init.d/frameworkd stop'"
-	echo "    2) use the conversion script, called: 'opimd_convert_db' which is already installed in your system"
-	echo "    3) restart your device"
+        #Check for machine specific conf.
+        CONF_PATH="${S}/etc/freesmartphone/oevents"
+        CONF_PATH_MACHINE="${CONF_PATH}"
+        if [ -d "${CONF_PATH}/${MACHINE}" ] ; then
+                CONF_PATH_MACHINE="${CONF_PATH}/${MACHINE}"
+        fi
+        install -m 0644 ${CONF_PATH_MACHINE}/rules.yaml ${D}${sysconfdir}/freesmartphone/oevents/
 }
 
 RDEPENDS_${PN} += "\
@@ -80,12 +79,9 @@ RRECOMMENDS_${PN} += "\
 PACKAGES =+ "${PN}-config"
 PACKAGE_ARCH_${PN}-config = "${MACHINE_ARCH}"
 
-# machine specific stuff, should ideally be elsewhere
-# - recommend MUXer on platforms that require one, no longer used on om-gta0*
-# RDEPENDS_${PN}-config_append_om-gta01 = " fso-abyss"
-# RDEPENDS_${PN}-config_append_om-gta02 = " fso-abyss"
 # - add wmiconfig for wireless configuration
 RDEPENDS_${PN}-config_append_om-gta02 = " wmiconfig"
+RREPLACES_${PN}-config = "frameworkd-config-shr"
 
 FILES_${PN}-config = "\
   ${sysconfdir}/frameworkd.conf \
@@ -95,11 +91,14 @@ CONFFILES_${PN}-config = "\
   ${sysconfdir}/frameworkd.conf \
   ${sysconfdir}/freesmartphone/opreferences/conf/phone/silent.yaml \
   ${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml \
+  ${sysconfdir}/freesmartphone/opreferences/conf/phone/vibrate.yaml \
+  ${sysconfdir}/freesmartphone/opreferences/conf/phone/ring.yaml \
   ${sysconfdir}/freesmartphone/opreferences/conf/profiles/default.yaml \
   ${sysconfdir}/freesmartphone/opreferences/conf/rules/silent.yaml \
   ${sysconfdir}/freesmartphone/opreferences/conf/rules/default.yaml \
+  ${sysconfdir}/freesmartphone/opreferences/conf/rules/vibrate.yaml \
+  ${sysconfdir}/freesmartphone/opreferences/conf/rules/ring.yaml \
   ${sysconfdir}/freesmartphone/oevents/rules.yaml \
-  ${sysconfdir}/freesmartphone/ogsmd/networks.tab \
   "
 
 PACKAGE_ARCH_${PN} = "${BASE_PACKAGE_ARCH}"
