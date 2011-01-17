@@ -1,0 +1,32 @@
+From 85a2b9666ba2b65920f4ad0e2216405dc14340d4 Mon Sep 17 00:00:00 2001
+From: Paul Menzel <paulepanter@users.sourceforge.net>
+Date: Mon, 17 Jan 2011 23:35:18 +0100
+Subject: [PATCH] configure.ac: remove `-Werror` from `CFLAGS`
+
+These options should be set when compiling the program and passed by an environment variable. Or there should be an option to turn these restrictive options off.
+
+Currently the build fails at least with GCC 4.5. It is known to work with GCC 4.3.3 [1].
+
+[1] http://sourceforge.net/mailarchive/message.php?msg_id=26911808
+
+Signed-off-by: Paul Menzel <paulepanter@users.sourceforge.net>
+---
+ configure.ac |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index d6e0bc9..fb5c8c8 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -5,7 +5,7 @@ AM_INIT_AUTOMAKE()
+ AC_PREREQ([2.59])
+ 
+ AC_CONFIG_HEADERS([config.h])
+-CFLAGS="${CFLAGS} -Wall -Werror"
++CFLAGS="${CFLAGS} -Wall"
+ 
+ ################################################################################
+ # Set the shared versioning info, according to section 6.3 of the libtool info #
+-- 
+1.7.2.3
+
