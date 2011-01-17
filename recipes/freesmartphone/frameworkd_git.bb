@@ -6,7 +6,7 @@ DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
 SRCREV = "64d40c68c656b7926dfd7eb91101f1f9547a948b"
 PV = "0.9.5.9+gitr${SRCPV}"
-PR = "r8"
+PR = "r9"
 PE = "1"
 
 inherit distutils update-rc.d python-dir
@@ -26,7 +26,9 @@ do_configure_append() {
 }
 
 do_install_append() {
-        #Check for machine specific conf.
+        # Fix permissions
+        chmod 755 ${D}${sysconfdir}/init.d/frameworkd
+        # Check for machine specific conf.
         CONF_PATH="${S}/etc"
         CONF_PATH_MACHINE="${CONF_PATH}"
         if [ -d "${CONF_PATH}/${MACHINE}" ] ; then
@@ -35,7 +37,7 @@ do_install_append() {
         # Install machine specific files
         install -m 0644 ${CONF_PATH_MACHINE}/frameworkd.conf ${D}${sysconfdir}
 
-        #Check for machine specific conf.
+        # Check for machine specific conf.
         CONF_PATH="${S}/etc/freesmartphone/oevents"
         CONF_PATH_MACHINE="${CONF_PATH}"
         if [ -d "${CONF_PATH}/${MACHINE}" ] ; then
@@ -82,6 +84,7 @@ PACKAGE_ARCH_${PN}-config = "${MACHINE_ARCH}"
 # - add wmiconfig for wireless configuration
 RDEPENDS_${PN}-config_append_om-gta02 = " wmiconfig"
 RREPLACES_${PN}-config = "frameworkd-config-shr"
+RCONFLICTS_${PN}-config = "frameworkd-config-shr"
 
 FILES_${PN}-config = "\
   ${sysconfdir}/frameworkd.conf \
