@@ -222,7 +222,6 @@ kernel_do_configure() {
 		done
 	fi
 }
-# XXX: Once we depend on bitbake 1.10.1 or newer this can be kernel_do_...
 do_configure[depends] += "${INITRAMFS_TASK}"
 
 pkg_postinst_kernel () {
