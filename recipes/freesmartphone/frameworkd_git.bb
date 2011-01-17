@@ -6,7 +6,7 @@ DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
 SRCREV = "c46f3e92c629ead0f9d1a966660bc53c08b50eeb"
 PV = "0.9.5.9+gitr${SRCPV}"
-PR = "r6"
+PR = "r7"
 PE = "1"
 
 inherit distutils update-rc.d python-dir
@@ -81,9 +81,9 @@ PACKAGES =+ "${PN}-config"
 PACKAGE_ARCH_${PN}-config = "${MACHINE_ARCH}"
 
 # machine specific stuff, should ideally be elsewhere
-# - recommend MUXer on platforms that require one
-RDEPENDS_${PN}-config_append_om-gta01 = " fso-abyss"
-RDEPENDS_${PN}-config_append_om-gta02 = " fso-abyss"
+# - recommend MUXer on platforms that require one, no longer used on om-gta0*
+# RDEPENDS_${PN}-config_append_om-gta01 = " fso-abyss"
+# RDEPENDS_${PN}-config_append_om-gta02 = " fso-abyss"
 # - add wmiconfig for wireless configuration
 RDEPENDS_${PN}-config_append_om-gta02 = " wmiconfig"
 
