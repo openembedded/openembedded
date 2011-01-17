@@ -9,7 +9,7 @@
 UCLIBC_BASE ?= "0.9.30"
 
 require uclibc-old.inc
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 PROVIDES += "virtual/${TARGET_PREFIX}libc-for-gcc"
 
