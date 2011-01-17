@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r90"
+PR = "r91"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -207,7 +207,11 @@ RDEPENDS_${PN} += "\
 		font-sun-misc \
 		font-winitzki-cyrillic \
 #		font-xfree86-type1 \
-		ttf-droid \
+		ttf-droid-sans \
+		ttf-droid-sans-mono \
+		ttf-droid-sans-fallback \
+		ttf-droid-sans-japanese \
+		ttf-droid-serif \
 #		msn-pecan \
 		qwo \
 		fso-apm \
