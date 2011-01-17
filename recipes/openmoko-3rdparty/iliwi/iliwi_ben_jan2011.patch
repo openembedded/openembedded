@@ -1,0 +1,86 @@
+--- a/src/wifi.vala	2011-01-17 21:32:07.000000000 +0000
++++ b/src/wifi.vala	2011-01-17 21:33:10.000000000 +0000
+@@ -52,19 +52,19 @@
+     }
+     public void set_ascii_state(Network network,bool new_state) {
+       network.password_in_ascii = new_state;
+-      WifiThread.preferred_ascii_password_state_change(network);
++      WifiThread.preferred_state_change(network);
+     }
+     
+     public void preferred_network_password_change(Network network) {
+-      WifiThread.preferred_network_password_change(network);
++      WifiThread.preferred_state_change(network);
+     }
+ 
+     public void preferred_network_username_change(Network network) {
+-      WifiThread.preferred_network_username_change(network);
++      WifiThread.preferred_state_change(network);
+     }
+ 
+     public void preferred_network_certificate_change(Network network) {
+-      WifiThread.preferred_network_certificate_change(network);
++      WifiThread.preferred_state_change(network);
+     }
+ 
+     // Callback from thread
+@@ -251,24 +251,6 @@
+           preferred_networks.unset(network.address);
+       }
+     }
+-    public static void preferred_ascii_password_state_change(Network network) {
+-      if(network.preferred_network)
+-        preferred_networks.get(network.address).password_in_ascii = network.password_in_ascii;
+-    }
+-    public static void preferred_network_password_change(Network network) {
+-      if(network.preferred_network)
+-        preferred_networks.get(network.address).password = network.password;
+-    }
+-    public static void preferred_network_username_change(Network network) {
+-      if(network.preferred_network)
+-        preferred_networks.get(network.address).username = network.username;
+-    }
+-    public static void preferred_network_certificate_change(Network network) {
+-      if(network.preferred_network) {
+-        preferred_networks.get(network.address).cert = network.cert;
+-        preferred_networks.get(network.address).cert_dir = network.cert_dir;
+-      }
+-    }
+     public static void connect_to_network(Network network) {
+       disconnectt();
+       wifi.set_new_status("connecting..");
+@@ -286,7 +268,7 @@
+       stream.puts( "  ssid=\"%s\"\n".printf(network.essid) );
+     if( network.encryption )
+       if ( network.wpa_encryption && (!network.authentication) ) // WPA-Personal
+-        stream.puts("  psk=%s\n".printf(network.password));
++        stream.puts("  psk=%s\n".printf(password));
+       else if ( network.wpa_encryption && network.authentication ) { // WPA-Enterprise
+         stream.puts("  password=\"%s\"\n".printf(network.password));
+         stream.puts("  key_mgmt=WPA-EAP\n");
+@@ -301,7 +283,7 @@
+       }
+       else { // WEP encryption                                                                                                                           
+         stream.puts("  key_mgmt=NONE\n");
+-        stream.puts("  wep_key0=%s\n".printf(network.password));
++        stream.puts("  wep_key0=%s\n".printf(password));
+       }
+     else
+       stream.puts( "  key_mgmt=NONE\n" ); // No encryption
+@@ -356,7 +338,6 @@
+       } catch(Error e) {
+         debug("DBus error!");
+       }
+-      
+       try {
+         line_regex_start_address = new Regex(""" Address: ([0-9A-Z:]{17})$""");
+         line_regex_essid = new Regex("""^\s+ESSID:\"(.*)\"$""");
+@@ -392,7 +373,7 @@
+             
+             preferred_networks.set(result.fetch(1), PreferredNetwork() {
+               password = result.fetch(2),
+-              password_in_ascii = (result.fetch(3)==null), 
++              password_in_ascii = (result.fetch(3)!="h"), 
+               username = result.fetch(4),
+               cert = result.fetch(5),
+               cert_dir = result.fetch(6)
