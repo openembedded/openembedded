@@ -207,6 +207,7 @@ RDEPENDS_${PN} += "\
 		font-sun-misc \
 		font-winitzki-cyrillic \
 #		font-xfree86-type1 \
+		ttf-droid \
 #		msn-pecan \
 		qwo \
 		fso-apm \
