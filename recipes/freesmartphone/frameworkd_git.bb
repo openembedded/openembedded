@@ -6,7 +6,7 @@ DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
 SRCREV = "64d40c68c656b7926dfd7eb91101f1f9547a948b"
 PV = "0.9.5.9+gitr${SRCPV}"
-PR = "r9"
+PR = "r10"
 PE = "1"
 
 inherit distutils update-rc.d python-dir
@@ -26,6 +26,25 @@ do_configure_append() {
 }
 
 do_install_append() {
+  frameworkd_install_machine_specific_configs
+}
+
+# machines with enabled ogsmd
+do_install_append_a780() {
+  frameworkd_install_ogsmd_configs
+}
+do_install_append_eten-m800() {
+  frameworkd_install_ogsmd_configs
+}
+
+frameworkd_install_ogsmd_configs() {
+        # Install machine specific files
+        install -d ${D}${sysconfdir}/freesmartphone/ogsmd
+        install -m 0644 ${S}/etc/freesmartphone/ogsmd/cell.db ${D}${sysconfdir}/freesmartphone/ogsmd
+        install -m 0644 ${S}/etc/freesmartphone/ogsmd/la.db ${D}${sysconfdir}/freesmartphone/ogsmd
+        install -m 0644 ${S}/etc/freesmartphone/ogsmd/networks.tab ${D}${sysconfdir}/freesmartphone/ogsmd
+}
+frameworkd_install_machine_specific_configs() {
         # Fix permissions
         chmod 755 ${D}${sysconfdir}/init.d/frameworkd
         # Check for machine specific conf.
@@ -107,3 +126,5 @@ CONFFILES_${PN}-config = "\
 PACKAGE_ARCH_${PN} = "${BASE_PACKAGE_ARCH}"
 FILES_${PN} += "${sysconfdir}/dbus-1 ${sysconfdir}/freesmartphone ${sysconfdir}/init.d ${datadir}"
 FILES_${PN}-dbg += "${PYTHON_SITEPACKAGES_DIR}/framework/subsystems/*/.debug"
+
+#EXPORT_FUNCTIONS install_machine_specific_configs install_ogsmd_configs
