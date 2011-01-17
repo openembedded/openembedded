@@ -2,16 +2,14 @@ DESCRIPTION = "multi-protocol instant messaging client"
 SECTION = "x11/network"
 LICENSE = "GPL"
 DEPENDS = "python startup-notification avahi gtk+ ncurses gnutls virtual/libintl gstreamer dbus"
-INC_PR = "r3"
+INC_PR = "r0"
 
 inherit autotools gettext pkgconfig gconf
 
 EXTRA_OECONF = " \
-		--enable-audio \
 		--enable-vv \
 		--disable-perl \
 		--disable-tcl \
-		--disable-deprecated \
 		--disable-gevolution \
 		--disable-schemas-install \
 		--x-includes=${STAGING_INCDIR} \
@@ -21,6 +19,10 @@ EXTRA_OECONF = " \
 		--with-gnutls-includes=${STAGING_INCDIR} \
 		--with-gnutls-libs=${STAGING_LIBDIR} \
 		"
+
+do_configure_prepend() {
+	touch ${S}/po/Makefile
+}
 
 OE_LT_RPATH_ALLOW=":${libdir}/purple-2:"
 OE_LT_RPATH_ALLOW[export]="1"
