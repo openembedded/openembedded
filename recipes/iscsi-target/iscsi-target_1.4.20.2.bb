@@ -3,7 +3,7 @@ HOMEPAGE = "http://iscsitarget.sourceforge.net/"
 LICENSE = "GPL"
 DEPENDS = "openssl"
 RRECOMMENDS_${PN} = "kernel-module-crc32c kernel-module-libcrc32c"
-PR = "r0"
+PR = "r1"
 
 # this recipe has a DEFAULT_PREFERENCE -1 for beagleboard 
 # actually this probably is only needed for angstrom and minimal
@@ -20,6 +20,8 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/iscsitarget/iscsitarget-${PV}.tar.gz \
            file://ietd.conf \
            file://init \
            file://Makefile.patch \
+           file://iscsi-target-svnr373.patch \
+           file://2.6.37-compat.patch \
            "
 SRC_URI[md5sum] = "2f23c0bfe124d79f5c20e34ef2aaff82"
 SRC_URI[sha256sum] = "0f3c8e2c2038fbbd7059d1efdd428260013212daca75c1d56abbeec33cb8d388"

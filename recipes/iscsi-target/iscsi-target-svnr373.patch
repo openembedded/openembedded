@@ -1,0 +1,47 @@
+Index: trunk/kernel/conn.c
+===================================================================
+--- trunk/kernel/conn.c	(revision 372)
++++ trunk/kernel/conn.c	(revision 373)
+@@ -44,7 +44,7 @@
+ 		switch (sk->sk_family) {
+ 		case AF_INET:
+ 			snprintf(buf, sizeof(buf),
+-				 "%u.%u.%u.%u", NIPQUAD(inet_sk(sk)->inet_daddr));
++				 "%pI4", inet_sk(sk)->inet_daddr);
+ 			break;
+ 		case AF_INET6:
+ 			snprintf(buf, sizeof(buf), "[%pI6]",
+Index: trunk/patches/compat-2.6.33-2.6.35.patch
+===================================================================
+--- trunk/patches/compat-2.6.33-2.6.35.patch	(revision 0)
++++ trunk/patches/compat-2.6.33-2.6.35.patch	(revision 373)
+@@ -0,0 +1,13 @@
++diff --git b/kernel/conn.c a/kernel/conn.c
++index c7b8ea1..ec6dada 100644
++--- b/kernel/conn.c
+++++ a/kernel/conn.c
++@@ -44,7 +44,7 @@ void conn_info_show(struct seq_file *seq, struct iscsi_session *session)
++ 		switch (sk->sk_family) {
++ 		case AF_INET:
++ 			snprintf(buf, sizeof(buf),
++-				 "%pI4", inet_sk(sk)->inet_daddr);
+++				 "%u.%u.%u.%u", NIPQUAD(inet_sk(sk)->inet_daddr));
++ 			break;
++ 		case AF_INET6:
++ 			snprintf(buf, sizeof(buf), "[%pI6]",
+Index: trunk/Makefile
+===================================================================
+--- trunk/Makefile	(revision 372)
++++ trunk/Makefile	(revision 373)
+@@ -56,6 +56,11 @@
+ # base first the earlier patch sets will not need to be modified.
+ #
+ 
++# Compatibility patch for kernels > 2.6.32 <= 2.6.35
++ifeq ($(call kver_le,2,6,35),1)
++	PATCHES := $(PATCHES) compat-2.6.33-2.6.35.patch
++endif
++
+ # Compatibility patch for kernels <= 2.6.32
+ ifeq ($(call kver_le,2,6,32),1)
+ 	PATCHES := $(PATCHES) compat-2.6.32.patch
