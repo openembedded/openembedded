@@ -1,0 +1,98 @@
+From cd07863b25a009a304766ab4eef94b00028dfcd8 Mon Sep 17 00:00:00 2001
+From: Pau Espin Pedrol <pespin.shar@gmail.com>
+Date: Mon, 17 Jan 2011 23:23:18 +0100
+Subject: [PATCH] Port iliwi to gdbus
+
+---
+ configure.ac             |    4 ++--
+ src/Makefile.am          |    2 +-
+ src/dbus_interfaces.vala |   13 ++++++++-----
+ src/wifi.vala            |    8 +++-----
+ 4 files changed, 14 insertions(+), 13 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 637597b..de4080b 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -5,9 +5,9 @@ AC_CONFIG_SRCDIR([src/main.vala])
+ 
+ AC_PROG_CC
+ m4_pattern_allow
+-AM_PROG_VALAC([0.7.4])
++AM_PROG_VALAC([0.11.4])
+ 
+-PKG_CHECK_MODULES([DEPS], [glib-2.0 gio-2.0 dbus-glib-1 elementary gee-1.0])
++PKG_CHECK_MODULES([DEPS], [glib-2.0 gio-2.0 elementary gee-1.0])
+ 
+ AC_CHECK_LIB(gthread-2.0, g_thread_init)
+ AC_CHECK_LIB(libeflvala)
+diff --git a/src/Makefile.am b/src/Makefile.am
+index d34b539..70bf8c9 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -1,5 +1,5 @@
+ AM_VALAFLAGS =  \
+-	--pkg "gio-2.0"  --pkg "glib-2.0" --pkg "dbus-glib-1" --pkg "elm" --pkg "gee-1.0" \
++	--pkg "gio-2.0"  --pkg "glib-2.0" --pkg "elm" --pkg "gee-1.0" \
+ 	--thread
+ 
+ AM_CFLAGS = $(DEPS_CFLAGS)
+diff --git a/src/dbus_interfaces.vala b/src/dbus_interfaces.vala
+index bb760e6..949972b 100644
+--- a/src/dbus_interfaces.vala
++++ b/src/dbus_interfaces.vala
+@@ -15,10 +15,13 @@
+ */
+ 
+ 
+-[DBus (name = "org.freesmartphone.Usage")]
+-interface Usage : GLib.Object {
+-  public abstract void RequestResource(string resource) throws DBus.Error;
+-  public abstract void ReleaseResource(string resource) throws DBus.Error;
++[DBus (name = "org.freesmartphone.Usage", timeout = 120000)]
++public interface Usage: GLib.Object {
++
++	public abstract void RequestResource(string resource) throws IOError;
++	public abstract void ReleaseResource(string resource) throws IOError;
++
++
+ }
+ 
+ /*
+@@ -88,4 +91,4 @@ $ mdbus -s org.moblin.connman / org.moblin.connman.Manager.GetProperties
+     'Services': [   op'/profile/default/wifi_0012cf8f1b2d_6876656d6465722e646b_managed_rsn',
+                     op'/profile/default/wifi_0012cf8f1b2d_474c61444f53_managed_wep'],
+     'State': 'offline'}
+-*/
+\ No newline at end of file
++*/
+diff --git a/src/wifi.vala b/src/wifi.vala
+index 9995f16..9eeeb18 100644
+--- a/src/wifi.vala
++++ b/src/wifi.vala
+@@ -164,7 +164,6 @@ namespace iliwi {
+   
+   private class WifiThread : GLib.Object {
+     static MainLoop loop;
+-    static DBus.Connection conn;
+     //static Manager manager;
+     static Usage fso_usage;
+     
+@@ -348,12 +347,11 @@ namespace iliwi {
+     
+     private static void initialize() {
+       try {
+-        conn = DBus.Bus.get (DBus.BusType.SYSTEM);
+-        fso_usage = (Usage) conn.get_object("org.freesmartphone.ousaged",
+-                                      "/org/freesmartphone/Usage");
++        fso_usage = Bus.get_proxy_sync (BusType.SYSTEM, "org.freesmartphone.ousaged",
++														"/org/freesmartphone/Usage");
+         fso_usage.RequestResource("WiFi"); // Turn on wifi
+         fso_usage.RequestResource("CPU");
+-      } catch(Error e) {
++      } catch(IOError e) {
+         debug("DBus error!");
+       }
+       
+-- 
+1.7.3.5

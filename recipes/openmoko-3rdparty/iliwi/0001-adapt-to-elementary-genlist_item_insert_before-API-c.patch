@@ -16,11 +16,11 @@ index 2aafdcc..03f561e 100644
            if( network.preferred_network && list_network.preferred_network==false ) {
              found_place = true;
 -            network.listitem = wifilist.item_insert_before( itc, (void*)network, listitem_tmp, Elm.GenlistItemFlags.NONE, item_select );
-+            network.listitem = wifilist.item_insert_before( itc, (void*)network, listitem_tmp, null, Elm.GenlistItemFlags.NONE, item_select );
++            network.listitem = wifilist.item_insert_before( itc, (void*)network, null, listitem_tmp, Elm.GenlistItemFlags.NONE, item_select );
            } else if( list_network.preferred_network==network.preferred_network && list_network.strength<=network.strength ) {
              found_place = true;
 -            network.listitem = wifilist.item_insert_before( itc, (void*)network, listitem_tmp, Elm.GenlistItemFlags.NONE, item_select );
-+            network.listitem = wifilist.item_insert_before( itc, (void*)network, listitem_tmp, null, Elm.GenlistItemFlags.NONE, item_select );
++            network.listitem = wifilist.item_insert_before( itc, (void*)network, null, listitem_tmp, Elm.GenlistItemFlags.NONE, item_select );
            } else { // Couldn't find a place to put it
              listitem_tmp2 = listitem_tmp.next_get();
              listitem_tmp = listitem_tmp2;
