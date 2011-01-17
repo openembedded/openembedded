@@ -5,10 +5,10 @@ SRC_URI = "git://anongit.freedesktop.org/hal/;protocol=git \
         file://20hal \
         file://99_hal"
 
-SRCREV = "6dccf8e3ad181e8f56b1d2a994ec50a1953a1c2d"
+SRCREV = "0763f4900a32ac01d4b259fe010ab8ebfc83ad0f"
 
 PV = "0.5.14"
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 PR_append = "+gitr${SRCREV}"
 
 S = "${WORKDIR}/git"
