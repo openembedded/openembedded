@@ -1,0 +1,30 @@
+Index: git/libpthread/nptl/sysdeps/unix/sysv/linux/mips/Makefile.arch
+===================================================================
+--- git.orig/libpthread/nptl/sysdeps/unix/sysv/linux/mips/Makefile.arch	2011-01-16 21:23:04.612324001 -0800
++++ git/libpthread/nptl/sysdeps/unix/sysv/linux/mips/Makefile.arch	2011-01-16 21:27:57.342324000 -0800
+@@ -10,7 +10,9 @@
+ 
+ libc_linux_arch_CSRC = fork.c
+ libc_linux_arch_SSRC = clone.S vfork.S
+-
++ifneq ($(CONFIG_MIPS_O32_ABI),y)
++libc_linux_arch_SSRC-OMIT = waitpid.S
++endif
+ ASFLAGS += -DUSE___THREAD
+ 
+ CFLAGS-OMIT-fork.c = -DNOT_IN_libc -DIS_IN_libpthread
+Index: git/libc/sysdeps/linux/common/Makefile.in
+===================================================================
+--- git.orig/libc/sysdeps/linux/common/Makefile.in	2011-01-16 21:33:51.302324000 -0800
++++ git/libc/sysdeps/linux/common/Makefile.in	2011-01-16 21:41:01.812324000 -0800
+@@ -44,6 +44,10 @@
+ CSRC := $(filter-out vfork.c, $(CSRC))
+ else ifeq ($(TARGET_ARCH),x86_64)
+ CSRC := $(filter-out vfork.c, $(CSRC))
++else ifeq ($(TARGET_ARCH),mips)
++ifeq ($(CONFIG_MIPS_O32_ABI),y)
++CSRC := $(filter-out waitpid.c, $(CSRC))
++endif
+ else
+ CSRC := $(filter-out waitpid.c, $(CSRC))
+ endif
