@@ -5,9 +5,9 @@ KERNEL_IMAGETYPE = "uImage"
 
 COMPATIBLE_MACHINE = "bug20"
 
-MACHINE_KERNEL_PR = "r94"
+MACHINE_KERNEL_PR = "r95"
 
-SRCREV = "e8ddcacc9fcc2a4ba190c02be99f5f23b50c9600"
+SRCREV = "37974263d42fe943dd347d27f4ed711a61a560da"
 
 SRC_URI = "git://github.com/buglabs/bug20-2.6.31-omap.git;branch=master;protocol=git"
 
