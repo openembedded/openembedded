@@ -1,7 +1,8 @@
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 SRC_URI = "${GNU_MIRROR}/wget/wget-${PV}.tar.gz \
            file://gnutls.bzr.patch \
+           file://CVE-2010-2252.patch;striplevel=0 \
 "
 
 SRC_URI[md5sum] = "141461b9c04e454dc8933c9d1f2abf83"
