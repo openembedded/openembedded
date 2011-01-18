@@ -9,7 +9,7 @@ LICENSE = "GPL"
 DEPENDS = "ncurses"
 RDEPENDS_${PN} = "ncurses-terminfo"
 
-INC_PR = "r13"
+INC_PR = "r14"
 
 SRC_URI = "http://procps.sourceforge.net/procps-${PV}.tar.gz;name=tarball \
 	   file://sysctl.conf \
@@ -48,6 +48,7 @@ do_install_append () {
 	mv ${D}${base_sbindir}/sysctl ${D}${base_sbindir}/sysctl.${PN}
 	mv ${D}${bindir}/pkill ${D}${bindir}/pkill.${PN}
 	mv ${D}${bindir}/pgrep ${D}${bindir}/pgrep.${PN}
+	mv ${D}${bindir}/pmap ${D}${bindir}/pmap.${PN}
 }
 
 pkg_postinst() {
@@ -59,6 +60,7 @@ pkg_postinst() {
 	update-alternatives --install ${base_sbindir}/sysctl sysctl sysctl.${PN} 90
 	update-alternatives --install ${bindir}/pkill pkill pkill.${PN} 90
 	update-alternatives --install ${bindir}/pgrep pgrep pgrep.${PN} 90
+	update-alternatives --install ${bindir}/pmap pmap pmap.${PN} 90
 }
 
 pkg_postrm() {
@@ -70,4 +72,5 @@ pkg_postrm() {
 	update-alternatives --remove sysctl sysctl.${PN}
 	update-alternatives --remove pkill pkill.${PN}
 	update-alternatives --remove pgrep pgrep.${PN}
+	update-alternatives --remove pmap pmap.${PN}
 }
