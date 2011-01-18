@@ -2,13 +2,14 @@ DESCRIPTION = "libmikmod is a module player library supporting many formats, inc
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/mikmod/libmikmod-${PV}.tar.gz \
   file://m4.patch \
   file://autofoo.patch \
   file://ldflags.patch \
+  file://CVE-2010-2971.patch \
 "
 
 inherit autotools binconfig

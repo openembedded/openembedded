@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 
-PR="r2"
+PR = "r3"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -13,6 +13,7 @@ SRC_URI = "\
   http://mikmod.raphnet.net/files/libmikmod-${PV}.tar.gz \
   file://m4.patch \
   file://autofoo.patch \
+  file://CVE-2010-2971.patch \
 "
 
 inherit autotools binconfig
