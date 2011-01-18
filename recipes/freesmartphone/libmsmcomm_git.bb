@@ -1,8 +1,15 @@
 require msmcomm.inc
 
-PR = "${INC_PR}.0"
-PV = "0.5.0+gitr${SRCPV}"
+PR = "${INC_PR}.1"
+PV = "0.6.0+gitr${SRCPV}"
 
 S = "${WORKDIR}/git/libmsmcomm"
 
-inherit autotools
+DEPENDS = " \
+  vala-native \
+  glib-2.0 \
+  libgee \
+  libfsobasics \
+"
+
+inherit autotools vala
