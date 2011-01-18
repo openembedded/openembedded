@@ -6,7 +6,7 @@ DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
 SRCREV = "e31fa77906981a56be2271246693fd929c973abf"
 PV = "0.9.5.9+gitr${SRCPV}"
-PR = "r10"
+PR = "r11"
 PE = "1"
 
 inherit distutils update-rc.d python-dir
@@ -101,6 +101,7 @@ PACKAGES =+ "${PN}-config"
 PACKAGE_ARCH_${PN}-config = "${MACHINE_ARCH}"
 
 # - add wmiconfig for wireless configuration
+RDEPENDS_${PN}-config = "fso-sounds"
 RDEPENDS_${PN}-config_append_om-gta02 = " wmiconfig"
 RREPLACES_${PN}-config = "frameworkd-config-shr"
 RCONFLICTS_${PN}-config = "frameworkd-config-shr"
