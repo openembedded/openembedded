@@ -4,6 +4,7 @@ HOMEPAGE = "http://sourceforge.net/projects/gkernel/"
 SECTION = "console/network"
 LICENSE = "GPL"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/gkernel/ethtool-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/gkernel/ethtool-${PV}.tar.gz \
+           file://fifo.patch"
 
 inherit autotools

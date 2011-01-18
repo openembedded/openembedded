@@ -1,0 +1,100 @@
+* Mon May 15 2006 Stuarth Hughes <stuarth@freescale.com> u
+on behalf of Joseph Palazzo:
+
+This patch provides user access for three additional TSEC parameters. These are:
+
+fifo-tx-thr
+fifo-tx-starve
+fifo-tx-starve-shutoff
+
+
+---
+ ethtool-copy.h |   15 +++++++++++++++
+ ethtool.c      |   23 ++++++++++++++++++++---
+ 2 files changed, 35 insertions(+), 3 deletions(-)
+
+--- ethtool-2.6.35.orig/ethtool-copy.h
++++ ethtool-2.6.35/ethtool-copy.h
+@@ -201,6 +201,21 @@ struct ethtool_coalesce {
+	 * measured in seconds.  Must not be zero.
+	 */
+	__u32	rate_sample_interval;
++	/* The main purpose of the threshold register is to trigger the unloading of FIFO data to the PHY. It
++	 * represents the numerical SRAM entry (0-511 for 2-Kbyte FIFO) to trigger the threshold function.
++	 * If the number of valid entries in the FIFO is equal to or greater than the threshold register,
++	 * transmission can begin.
++	 */
++	__u32 fifo_tx_thr;
++	/* The purpose of the starve register is to inform the system of extremely
++	 * imminent underrun conditions.
++	 */
++	__u32 fifo_tx_starve;
++	/* The starve shutoff register contains the watermark level to be used for
++	 * exiting the starve state.
++	 */
++	__u32 fifo_tx_starve_shutoff;
++
+ };
+
+ /* for configuring RX/TX ring parameters */
+--- ethtool-2.6.35.orig/ethtool.c
++++ ethtool-2.6.35/ethtool.c
+@@ -183,7 +183,10 @@ static struct option {
+		"		[rx-frames-high N]\n"
+		"		[tx-usecs-high N]\n"
+		"		[tx-frames-high N]\n"
+-	        "		[sample-interval N]\n" },
++		"		[fifo-tx-thr N] \n"
++		"		[fifo-tx-starve N] \n"
++		"		[fifo-tx-starve-shutoff N] \n"
++		"		[sample-interval N]\n" },
+     { "-g", "--show-ring", MODE_GRING, "Query RX/TX ring parameters" },
+     { "-G", "--set-ring", MODE_SRING, "Set RX/TX ring parameters",
+		"		[ rx N ]\n"
+@@ -330,6 +333,9 @@ static s32 coal_rx_usec_high_wanted = -1
+ static s32 coal_rx_frames_high_wanted = -1;
+ static s32 coal_tx_usec_high_wanted = -1;
+ static s32 coal_tx_frames_high_wanted = -1;
++static int coal_fifo_tx_thr = -1;
++static int coal_fifo_tx_starve = -1;
++static int coal_fifo_tx_starve_shutoff = -1;
+
+ static int speed_wanted = -1;
+ static int duplex_wanted = -1;
+@@ -477,6 +483,9 @@ static struct cmdline_info cmdline_coale
+	{ "rx-frames-high", CMDL_S32, &coal_rx_frames_high_wanted, &ecoal.rx_max_coalesced_frames_high },
+	{ "tx-usecs-high", CMDL_S32, &coal_tx_usec_high_wanted, &ecoal.tx_coalesce_usecs_high },
+	{ "tx-frames-high", CMDL_S32, &coal_tx_frames_high_wanted, &ecoal.tx_max_coalesced_frames_high },
++	{ "fifo-tx-thr", CMDL_S32, &coal_fifo_tx_thr, &ecoal.fifo_tx_thr },
++	{ "fifo-tx-starve", CMDL_S32, &coal_fifo_tx_starve, &ecoal.fifo_tx_starve },
++	{ "fifo-tx-starve-shutoff", CMDL_S32, &coal_fifo_tx_starve_shutoff, &ecoal.fifo_tx_starve_shutoff },
+ };
+
+ static struct cmdline_info cmdline_ntuple[] = {
+@@ -1702,6 +1711,10 @@ static int dump_coalesce(void)
+		"rx-frame-high: %u\n"
+		"tx-usecs-high: %u\n"
+		"tx-frame-high: %u\n"
++		"\n"
++		"fifo-tx-thr: %u\n"
++		"fifo-tx-starve: %u\n"
++		"fifo-tx-starve-shutoff: %u\n"
+		"\n",
+		ecoal.stats_block_coalesce_usecs,
+		ecoal.rate_sample_interval,
+@@ -1726,9 +1739,13 @@ static int dump_coalesce(void)
+		ecoal.rx_coalesce_usecs_high,
+		ecoal.rx_max_coalesced_frames_high,
+		ecoal.tx_coalesce_usecs_high,
+-		ecoal.tx_max_coalesced_frames_high);
++		ecoal.tx_max_coalesced_frames_high,
+
+-	return 0;
++		ecoal.fifo_tx_thr,
++		ecoal.fifo_tx_starve,
++		ecoal.fifo_tx_starve_shutoff
++		);
++		return 0;
+ }
+
+ static int dump_offload(int rx, int tx, int sg, int tso, int ufo, int gso,
