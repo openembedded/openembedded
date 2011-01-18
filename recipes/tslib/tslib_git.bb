@@ -7,6 +7,9 @@ PR = "${INC_PR}.5"
 
 DEFAULT_PREFERENCE = "-1"
 
+# force old revision, because include-cy8mrln-header.patch does not apply to current
+SRCREV_palmpre = "5243db505b109df3001f"
+
 # move this to tslib.inc when upstream releases a new version which includes support for
 # the palmpre machine
 SRC_URI_append_palmpre = " \
