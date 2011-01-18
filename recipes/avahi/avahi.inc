@@ -5,7 +5,7 @@ SECTION = "network"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "expat virtual/libintl libdaemon dbus glib-2.0"
-
+INC_PR = "r11"
 # uclibc has no nss
 RRECOMMENDS_avahi-daemon_append_libc-glibc = "libnss-mdns"
 RDEPENDS_avahi-daemon += "sysvinit-pidof update-rc.d"
@@ -25,6 +25,7 @@ AVAHI_GTK = "--disable-gtk"
 
 LDFLAGS_append_linux-uclibc = " -lintl"
 LDFLAGS_append_linux-uclibceabi = " -lintl "
+LDFLAGS_append_linux-uclibcspe = " -lintl "
 LDFLAGS_append_uclinux-uclibc = " -lintl"
 
 PACKAGES =+ "avahi-daemon avahi-discover libavahi-common libavahi-core libavahi-client avahi-dnsconfd libavahi-glib libavahi-ui avahi-discover-standalone avahi-autoipd avahi-utils"
