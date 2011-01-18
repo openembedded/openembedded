@@ -34,7 +34,7 @@ DISTRO_FEATURES = "largefile ipv4 ipv6 nfs smbfs wifi ppp alsa bluetooth ext2 vf
 # We may also wish to enable raid support at some point (space permitting)
 #DISTRO_FEATURES += " raid"
 
-IMAGE_BASENAME = "${@['slugos${SITEINFO_ENDIANNESS}', 'ucslugc'][bb.data.getVar('TARGET_OS', d, 1) == 'linux-uclibc']}"
+IMAGE_BASENAME = "${@['slugos${SITEINFO_ENDIANNESS}', 'ucslugc'][bb.data.getVar('TARGET_OS', d, 1) == 'linux-uclibceabi']}"
 
 # The following need not be set, the defaults should be adequate
 #USE_NLS = "no" or "yes"
