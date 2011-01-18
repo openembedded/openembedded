@@ -1,0 +1,28 @@
+diff --exclude CVS -uNr netperf-2.4.3/src/netserver.c netperf-2.4.3.modified/src/netserver.c
+--- netperf-2.4.3/src/netserver.c	2007-02-15 18:22:40.000000000 -0700
++++ netperf-2.4.3.modified/src/netserver.c	2007-12-05 11:42:25.000000000 -0700
+@@ -567,7 +567,11 @@
+   fflush (stdin);
+   fflush (stdout);
+   fflush (stderr);
++#if defined(HAVE_FORK)
+   switch (fork())
++#else
++  switch (vfork())
++#endif
+     {
+     case -1:
+       perror("netperf server error");
+@@ -711,8 +715,11 @@
+		}
+ #else
+       signal(SIGCLD, SIG_IGN);
+-
++#if defined(HAVE_FORK)
+	  switch (fork())
++#else
++	  switch (vfork())
++#endif
+	    {
+	    case -1:
+	      /* something went wrong */

@@ -2,10 +2,11 @@ DESCRIPTION="Network performance benchmark including tests for TCP, UDP, sockets
 SECTION = "console/network"
 HOMEPAGE = "http://www.netperf.org/"
 LICENSE = "netperf"
-PR = "r1"
+PR = "r2"
 
 SRC_URI="ftp://ftp.netperf.org/netperf/archive/netperf-${PV}.tar.bz2 \
          file://cpu_set.patch \
+         file://vfork.patch \
          file://init"
 
 inherit update-rc.d autotools
