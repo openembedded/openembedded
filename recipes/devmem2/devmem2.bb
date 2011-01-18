@@ -1,10 +1,12 @@
 DESCRIPTION = "Simple program to read/write from/to any location in memory."
 LICENSE = "GPLv2"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "http://www.lartmaker.nl/lartware/port/devmem2.c \
            file://devmem2-fixups-2.patch;apply=yes;striplevel=0"
 S = "${WORKDIR}"
+
+CFLAGS += "-DFORCE_STRICT_ALIGNMENT"
 
 do_compile() {
 	${CC} -o devmem2 devmem2.c ${CFLAGS} ${LDFLAGS}
