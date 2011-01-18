@@ -1,3 +1,4 @@
+From fujita.tomonori@lab.ntt.co.jp Sun Jan 16 19:40:56 2011
 Delivered-To: raj.khem@gmail.com
 Received: by 10.90.55.10 with SMTP id d10cs170645aga;
         Sun, 16 Jan 2011 19:40:57 -0800 (PST)
@@ -24,10 +25,12 @@ Mime-Version: 1.0
 Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Message-Id: <20110117122804H.fujita.tomonori@lab.ntt.co.jp>
-Lines: 58
 X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-3.0 (sh.osrg.net [192.16.179.4]); Mon, 17 Jan 2011 12:40:54 +0900 (JST)
 X-Virus-Scanned: clamav-milter 0.96.5 at sh
 X-Virus-Status: Clean
+Status: RO
+Content-Length: 1415
+Lines: 58
 
 On Sun, 16 Jan 2011 13:41:31 +0100
 Paul Menzel <paulepanter@users.sourceforge.net> wrote:
@@ -82,8 +85,9 @@ index 9530d2a..4a0e303 100644
 +#else
 +static inline int __fallocate(int fd, off_t offset, off_t len)
 +{
-+	return 0
++	return 0;
 +}
 +#endif
 +
  #endif
+
