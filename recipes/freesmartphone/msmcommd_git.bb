@@ -1,18 +1,16 @@
 require msmcomm.inc
 
-PR = "${INC_PR}.2"
-PV = "0.5.0+gitr${SRCPV}"
+PR = "${INC_PR}.3"
+PV = "0.6.0+gitr${SRCPV}"
 
 DEPENDS = " \
  vala-native \
  glib-2.0 \
- dbus \
- dbus-glib \
  libfso-glib \
  libfsotransport \
  libgee \
  libmsmcomm \
- msmcommd-specs \
+ msmcomm-specs \
 "
 
 SRC_URI += "file://msmcommd"
