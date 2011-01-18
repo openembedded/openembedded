@@ -1,7 +1,7 @@
 require cornucopia.inc
 inherit fso-plugin
 SRCREV = "${FSO_CORNUCOPIA_SRCREV}"
-PR = "${INC_PR}.5"
+PR = "${INC_PR}.6"
 PV = "0.5.0+gitr${SRCPV}"
 PE = "1"
 
@@ -14,7 +14,7 @@ EXTRA_OECONF_append = "\
 
 # On the palmpre we need the msmcomm daemon to talk to the modem
 PACKAGE_ARCH_palmpre = "${MACHINE_ARCH}"
-DEPENDS_append_palmpre = " msmcommd-specs"
+DEPENDS_append_palmpre = " msmcomm-specs"
 RDEPENDS_append_palmpre = " msmcommd"
 EXTRA_OECONF_append_palmpre = " --enable-modem-qualcomm-palm"
 
