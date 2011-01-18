@@ -1,7 +1,7 @@
-From 39af22a79232373764904576f31572f1db76af10 Mon Sep 17 00:00:00 2001
+From b4edc88b911049a85162600f579d0364ee311d4e Mon Sep 17 00:00:00 2001
 From: Nicolas Pitre <nicolas.pitre@linaro.org>
 Date: Wed, 15 Dec 2010 15:14:45 -0500
-Subject: [PATCH 03/66] ARM: get rid of kmap_high_l1_vipt()
+Subject: [PATCH 03/65] ARM: get rid of kmap_high_l1_vipt()
 
 Since commit 3e4d3af501 "mm: stack based kmap_atomic()", it is no longer
 necessary to carry an ad hoc version of kmap_atomic() added in commit

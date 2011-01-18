@@ -1,7 +1,7 @@
-From 42ce7fd6319bed8ecb26d656c476365da46b29e9 Mon Sep 17 00:00:00 2001
+From 72ce69f5fe32170f9662b5c87b0226d6ba19462f Mon Sep 17 00:00:00 2001
 From: Gregory CLEMENT <gregory.clement@free-electrons.com>
 Date: Wed, 29 Dec 2010 11:52:53 +0100
-Subject: [PATCH 28/66] spi/omap2_mcspi.c: Force CS to be in inactive state after off-mode transition
+Subject: [PATCH 28/65] spi/omap2_mcspi.c: Force CS to be in inactive state after off-mode transition
 
 When SPI wake up from OFF mode, CS is in the wrong state: force it to the
 inactive state.

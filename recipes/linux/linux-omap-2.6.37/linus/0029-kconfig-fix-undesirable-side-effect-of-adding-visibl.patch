@@ -1,7 +1,7 @@
-From 7ad1227818f09242cfe9bf1845fd24211f5f99bd Mon Sep 17 00:00:00 2001
+From 38f5b0c391281eded0e6e5b2bc75a28ae72d0abe Mon Sep 17 00:00:00 2001
 From: Jan Beulich <JBeulich@novell.com>
 Date: Thu, 9 Dec 2010 08:11:38 +0000
-Subject: [PATCH 29/66] kconfig: fix undesirable side effect of adding "visible" menu attribute
+Subject: [PATCH 29/65] kconfig: fix undesirable side effect of adding "visible" menu attribute
 
 This lead to non-selected, non-user-selectable options to be written
 out to .config. This is not only pointless, but also preventing the

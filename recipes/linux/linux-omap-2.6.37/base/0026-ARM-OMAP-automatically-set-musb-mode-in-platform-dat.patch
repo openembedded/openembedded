@@ -1,0 +1,49 @@
+From dd53a7c1ab8addfd2a943ea44b5ccc5700648323 Mon Sep 17 00:00:00 2001
+From: Steve Sakoman <steve@sakoman.com>
+Date: Wed, 24 Feb 2010 10:37:22 -0800
+Subject: [PATCH 26/28] ARM: OMAP: automatically set musb mode in platform data based on CONFIG options
+
+---
+ arch/arm/mach-omap2/board-omap3beagle.c |    6 ++++++
+ arch/arm/mach-omap2/board-overo.c       |    6 ++++++
+ 2 files changed, 12 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index 9259780..ad0c1d8 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -785,7 +785,13 @@ static struct omap_board_mux board_mux[] __initdata = {
+ 
+ static struct omap_musb_board_data musb_board_data = {
+ 	.interface_type		= MUSB_INTERFACE_ULPI,
++#if defined(CONFIG_USB_MUSB_OTG)
+ 	.mode			= MUSB_OTG,
++#elif defined(CONFIG_USB_GADGET_MUSB_HDRC)
++	.mode			= MUSB_PERIPHERAL,
++#else
++	.mode			= MUSB_HOST,
++#endif
+ 	.power			= 100,
+ };
+ 
+diff --git a/arch/arm/mach-omap2/board-overo.c b/arch/arm/mach-omap2/board-overo.c
+index 17f066a..b28a9d5 100644
+--- a/arch/arm/mach-omap2/board-overo.c
++++ b/arch/arm/mach-omap2/board-overo.c
+@@ -447,7 +447,13 @@ static struct omap_board_mux board_mux[] __initdata = {
+ 
+ static struct omap_musb_board_data musb_board_data = {
+ 	.interface_type		= MUSB_INTERFACE_ULPI,
++#if defined(CONFIG_USB_MUSB_OTG)
+ 	.mode			= MUSB_OTG,
++#elif defined(CONFIG_USB_GADGET_MUSB_HDRC)
++	.mode			= MUSB_PERIPHERAL,
++#else
++	.mode			= MUSB_HOST,
++#endif
+ 	.power			= 100,
+ };
+ 
+-- 
+1.6.6.1
+

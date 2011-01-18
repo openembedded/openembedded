@@ -1,7 +1,7 @@
-From da280f51d0b341282b4181eb3235f774b0446584 Mon Sep 17 00:00:00 2001
+From 2f2f23c75c1c055ca6274b04bd2dc71d0a6e8c62 Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
 Date: Tue, 28 Dec 2010 21:38:02 +0100
-Subject: [PATCH 24/66] ASoC: codecs: wm9090: Fix register cache incoherency
+Subject: [PATCH 24/65] ASoC: codecs: wm9090: Fix register cache incoherency
 
 The multi-component patch(commit f0fba2ad1) moved the allocation of the
 register cache from the driver to the ASoC core. Most drivers where adjusted to

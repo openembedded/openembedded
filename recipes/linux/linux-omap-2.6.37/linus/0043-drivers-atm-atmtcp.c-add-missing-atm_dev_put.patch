@@ -1,7 +1,7 @@
-From b9556f9a1abdc56a179ac7ba6053469373b6de0f Mon Sep 17 00:00:00 2001
+From 0af81f1e48cd0f4a1cdce5939408e1d9ad508190 Mon Sep 17 00:00:00 2001
 From: Julia Lawall <julia@diku.dk>
 Date: Wed, 29 Dec 2010 04:01:03 +0000
-Subject: [PATCH 43/66] drivers/atm/atmtcp.c: add missing atm_dev_put
+Subject: [PATCH 43/65] drivers/atm/atmtcp.c: add missing atm_dev_put
 
 The earlier call to atm_dev_lookup increases the reference count of dev,
 so decrease it on the way out.

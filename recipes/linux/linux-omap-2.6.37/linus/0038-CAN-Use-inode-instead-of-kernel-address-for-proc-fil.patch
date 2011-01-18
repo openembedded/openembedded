@@ -1,7 +1,7 @@
-From 9f260e0efa4766e56d0ac14f1aeea6ee5eb8fe83 Mon Sep 17 00:00:00 2001
+From 177f55e48f91842a6e33e896d64ebb9a44db298b Mon Sep 17 00:00:00 2001
 From: Dan Rosenberg <drosenberg@vsecurity.com>
 Date: Sun, 26 Dec 2010 06:54:53 +0000
-Subject: [PATCH 38/66] CAN: Use inode instead of kernel address for /proc file
+Subject: [PATCH 38/65] CAN: Use inode instead of kernel address for /proc file
 
 Since the socket address is just being used as a unique identifier, its
 inode number is an alternative that does not leak potentially sensitive

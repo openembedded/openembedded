@@ -1,7 +1,7 @@
-From a74b74a5555c741ed3df896096e33b853995631e Mon Sep 17 00:00:00 2001
+From 679fd7bc2af7980a4b9360ff42f515c3cc4e3674 Mon Sep 17 00:00:00 2001
 From: Lennert Buytenhek <buytenh@wantstofly.org>
 Date: Wed, 15 Dec 2010 07:20:16 +0800
-Subject: [PATCH 01/66] ARM: pxa: PXA_ESERIES depends on FB_W100.
+Subject: [PATCH 01/65] ARM: pxa: PXA_ESERIES depends on FB_W100.
 
 As arch/arm/mach-pxa/eseries.c references w100fb_gpio_{read,write}()
 directly.

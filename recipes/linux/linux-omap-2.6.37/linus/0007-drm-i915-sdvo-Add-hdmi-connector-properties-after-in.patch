@@ -1,7 +1,7 @@
-From f797d22121404eac7b63f1291409f96bcab51c11 Mon Sep 17 00:00:00 2001
+From 184e12ee6bca758bee292970ed045d7a0405168c Mon Sep 17 00:00:00 2001
 From: Chris Wilson <chris@chris-wilson.co.uk>
 Date: Thu, 23 Dec 2010 09:43:48 +0000
-Subject: [PATCH 07/66] drm/i915/sdvo: Add hdmi connector properties after initing the connector
+Subject: [PATCH 07/65] drm/i915/sdvo: Add hdmi connector properties after initing the connector
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit

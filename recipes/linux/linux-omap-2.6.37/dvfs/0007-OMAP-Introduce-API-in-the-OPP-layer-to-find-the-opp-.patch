@@ -1,7 +1,7 @@
-From 717bd73868e57fde49a25104af9bb8b9c6400b67 Mon Sep 17 00:00:00 2001
+From dac6c4c03140835b758e32c72eb004d379c35fec Mon Sep 17 00:00:00 2001
 From: Thara Gopinath <thara@ti.com>
 Date: Fri, 29 Oct 2010 20:43:10 +0530
-Subject: [PATCH 07/19] OMAP: Introduce API in the OPP layer to find the opp entry corresponding to a voltage.
+Subject: [PATCH 07/20] OMAP: Introduce API in the OPP layer to find the opp entry corresponding to a voltage.
 
 This patch adds an API in the opp layer to get the opp table entry
 corresponding to the voltage passed as the parameter.

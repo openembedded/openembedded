@@ -1,0 +1,25 @@
+From 52aefa299da0c025c4e521f2a40a89c01aad5a17 Mon Sep 17 00:00:00 2001
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 4 Jan 2011 16:50:19 -0800
+Subject: [PATCH 65/65] Linux 2.6.37
+
+---
+ Makefile |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index e7c41f1..74b2555 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,7 +1,7 @@
+ VERSION = 2
+ PATCHLEVEL = 6
+ SUBLEVEL = 37
+-EXTRAVERSION = -rc8
++EXTRAVERSION =
+ NAME = Flesh-Eating Bats with Fangs
+ 
+ # *DOCUMENTATION*
+-- 
+1.6.6.1
+

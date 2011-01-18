@@ -1,7 +1,7 @@
-From f4d5900a99dbc354ef1ba384d445ff80ae4d77b4 Mon Sep 17 00:00:00 2001
+From f6a826af05cb9de0de0218f3cd05af203170fd12 Mon Sep 17 00:00:00 2001
 From: Ben Hutchings <ben@decadent.org.uk>
 Date: Wed, 29 Dec 2010 04:26:17 +0000
-Subject: [PATCH 42/66] starfire: Fix dma_addr_t size test for MIPS
+Subject: [PATCH 42/65] starfire: Fix dma_addr_t size test for MIPS
 
 Commit 56543af "starfire: use BUILD_BUG_ON for netdrv_addr_t" revealed
 that the preprocessor condition used to find the size of dma_addr_t

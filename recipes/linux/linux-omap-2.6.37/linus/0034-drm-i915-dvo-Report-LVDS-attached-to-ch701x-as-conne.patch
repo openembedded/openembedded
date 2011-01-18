@@ -1,7 +1,7 @@
-From cc6455f82edd3f9da3b03870d41cde3cb22ad40d Mon Sep 17 00:00:00 2001
+From a5cbe1d2c6eede52b1773eefcff8e3c1c171b99b Mon Sep 17 00:00:00 2001
 From: Chris Wilson <chris@chris-wilson.co.uk>
 Date: Thu, 30 Dec 2010 12:54:00 +0000
-Subject: [PATCH 34/66] drm/i915/dvo: Report LVDS attached to ch701x as connected
+Subject: [PATCH 34/65] drm/i915/dvo: Report LVDS attached to ch701x as connected
 
 As we have already detected something attached to the chip during
 initialisation, always report the LVDS connector status as connected

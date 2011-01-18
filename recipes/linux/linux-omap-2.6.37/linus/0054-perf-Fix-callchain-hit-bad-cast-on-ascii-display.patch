@@ -1,7 +1,7 @@
-From d425de5436a620de506f9e4119bf8daa1cb93718 Mon Sep 17 00:00:00 2001
+From ef44b2900e7bfd255e56ae9bd2ec03d2c13b780c Mon Sep 17 00:00:00 2001
 From: Frederic Weisbecker <fweisbec@gmail.com>
 Date: Mon, 3 Jan 2011 16:13:11 +0100
-Subject: [PATCH 54/66] perf: Fix callchain hit bad cast on ascii display
+Subject: [PATCH 54/65] perf: Fix callchain hit bad cast on ascii display
 
 ipchain__fprintf_graph() casts the number of hits in a branch as an
 int, which means we lose its highests bits.

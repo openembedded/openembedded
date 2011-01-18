@@ -1,7 +1,7 @@
-From 12f188f2e59394ec1f1c8c0a4439f48ec16bc336 Mon Sep 17 00:00:00 2001
+From c23a13703fb00384d49a00875fc12a5e00f1946a Mon Sep 17 00:00:00 2001
 From: Dan Williams <dcbw@redhat.com>
 Date: Sun, 19 Dec 2010 08:17:50 +0000
-Subject: [PATCH 13/66] ueagle-atm: fix PHY signal initialization race
+Subject: [PATCH 13/65] ueagle-atm: fix PHY signal initialization race
 
 A race exists when initializing ueagle-atm devices where the generic atm
 device may not yet be created before the driver attempts to initialize

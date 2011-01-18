@@ -18,7 +18,7 @@ SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.g
 SRC_URI_append = " \
                   file://linus/0001-ARM-pxa-PXA_ESERIES-depends-on-FB_W100.patch \
                   file://linus/0002-ARM-smp-avoid-incrementing-mm_users-on-CPU-startup.patch \
-                  file://linus/0003-ARM-get-rid-of-kmap_high_l1_vipt.patch \
+                  file://linus/0003-ARM-get-rid-of-kmap_high_l1_vipt.patch \  
                   file://linus/0004-ARM-fix-cache-xsc3l2-after-stack-based-kmap_atomic.patch \
                   file://linus/0005-ARM-fix-cache-feroceon-l2-after-stack-based-kmap_ato.patch \
                   file://linus/0006-drm-i915-Set-the-required-VFMUNIT-clock-gating-disab.patch \
@@ -63,51 +63,53 @@ SRC_URI_append = " \
                   file://linus/0045-hwmon-s3c-hwmon-Fix-compilation.patch \
                   file://linus/0046-watchdog-Improve-initialisation-error-message-and-do.patch \
                   file://linus/0047-ARM-6605-1-Add-missing-include-asm-memory.h.patch \
-                  file://linus/0048-mv_xor-fix-race-in-tasklet-function.patch \ 
+                  file://linus/0048-mv_xor-fix-race-in-tasklet-function.patch \
                   file://linus/0049-dmaengine-provide-dummy-functions-for-DMA_ENGINE-n.patch \
-                  file://linus/0050-media-cx25840-Prevent-device-probe-failure-due-to-vo.patch \
-                  file://linus/0051-media-wm8775-Revert-changeset-fcb9757333-to-avoid-a-.patch \
-                  file://linus/0052-media-em28xx-radio_fops-should-also-use-unlocked_ioc.patch \
+                  file://linus/0050-cx25840-Prevent-device-probe-failure-due-to-volume-c.patch \
+                  file://linus/0051-wm8775-Revert-changeset-fcb9757333-to-avoid-a-regres.patch \
+                  file://linus/0052-em28xx-radio_fops-should-also-use-unlocked_ioctl.patch \
                   file://linus/0053-arch-x86-oprofile-op_model_amd.c-Perform-initialisat.patch \
                   file://linus/0054-perf-Fix-callchain-hit-bad-cast-on-ascii-display.patch \
-                  file://linus/0056-ARM-it8152-add-IT8152_LAST_IRQ-definition-to-fix-bui.patch \
-                  file://linus/0057-ARM-pxa-fix-page-table-corruption-on-resume.patch \
-                  file://linus/0058-atl1-fix-oops-when-changing-tx-rx-ring-params.patch \
-                  file://linus/0059-bridge-fix-br_multicast_ipv6_rcv-for-paged-skbs.patch \
-                  file://linus/0060-name_to_dev_t-must-not-call-__init-code.patch \
-                  file://linus/0061-bridge-stp-ensure-mac-header-is-set.patch \
-                  file://linus/0062-ima-fix-add-LSM-rule-bug.patch \
-                  file://linus/0063-arch-mn10300-kernel-irq.c-fix-build.patch \
-                  file://linus/0064-remove-trim_fs-method-from-Documentation-filesystems.patch \
-                  file://linus/0065-ipv4-route.c-respect-prefsrc-for-local-routes.patch \
-                  file://linus/0066-Linux-2.6.37.patch \
+                  file://linus/0055-ARM-it8152-add-IT8152_LAST_IRQ-definition-to-fix-bui.patch \
+                  file://linus/0056-ARM-pxa-fix-page-table-corruption-on-resume.patch \
+                  file://linus/0057-atl1-fix-oops-when-changing-tx-rx-ring-params.patch \
+                  file://linus/0058-bridge-fix-br_multicast_ipv6_rcv-for-paged-skbs.patch \
+                  file://linus/0059-name_to_dev_t-must-not-call-__init-code.patch \
+                  file://linus/0060-bridge-stp-ensure-mac-header-is-set.patch \
+                  file://linus/0061-ima-fix-add-LSM-rule-bug.patch \
+                  file://linus/0062-arch-mn10300-kernel-irq.c-fix-build.patch \
+                  file://linus/0063-remove-trim_fs-method-from-Documentation-filesystems.patch \
+                  file://linus/0064-ipv4-route.c-respect-prefsrc-for-local-routes.patch \
+                  file://linus/0065-Linux-2.6.37.patch \
                   \
-                  file://base/0001-ARM-OMAP-Power-on-EHCI-serial-camera-and-DVI-on-beag.patch \
-                  file://base/0002-omap-Beagle-detect-new-xM-revision-B.patch \
-                  file://base/0003-ARM-OMAP-beagleboard-Add-infrastructure-to-do-fixups.patch \
-                  file://base/0004-ARM-OMAP-beagleboard-pre-export-GPIOs-to-userspace-w.patch \
-                  file://base/0005-modedb.c-add-proper-720p60-mode.patch \
-                  file://base/0006-mmc-don-t-display-single-block-read-console-messages.patch \
-                  file://base/0007-MTD-silence-ecc-errors-on-mtdblock0.patch \
-                  file://base/0008-Miracle-patch.patch \
-                  file://base/0009-ARM-OMAP-add-omap_rev_-macros.patch \
-                  file://base/0010-OMAP-DSS2-enable-hsclk-in-dsi_pll_init-for-OMAP36XX.patch \
-                  file://base/0011-omap3-beagleboard-add-WIP-support-for-beagleboardtoy.patch \
-                  file://base/0012-drivers-net-smsc911x-return-ENODEV-if-device-is-not-.patch \
-                  file://base/0013-drivers-input-touchscreen-ads7846-return-ENODEV-if-d.patch \
-                  file://base/0014-ASoC-enable-audio-capture-by-default-for-twl4030.patch \
-                  file://base/0015-MFD-enable-madc-clock.patch \
-                  file://base/0016-MFD-add-twl4030-madc-driver.patch \
-                  file://base/0017-ARM-OMAP-Add-twl4030-madc-support-to-Overo.patch \
-                  file://base/0018-ARM-OMAP-Add-twl4030-madc-support-to-Beagle.patch \
-                  file://base/0019-OMAP-DSS2-Add-support-for-Samsung-LTE430WQ-F0C-panel.patch \
-                  file://base/0020-OMAP-DSS2-Add-support-for-LG-Philips-LB035Q02-panel.patch \
-                  file://base/0021-OMAP-DSS2-add-bootarg-for-selecting-svideo-or-compos.patch \
-                  file://base/0022-ARM-OMAP2-mmc-twl4030-move-clock-input-selection-pri.patch \
-                  file://base/0023-RTC-add-support-for-backup-battery-recharge.patch \
-                  file://base/0024-ARM-OMAP-automatically-set-musb-mode-in-platform-dat.patch \
-                  file://base/0025-OMAP-DSS2-check-for-both-cpu-type-and-revision-rathe.patch \
-                  file://base/0026-OMAP-DSS2-Add-DSS2-support-for-Overo.patch \
+                  file://base/0001-omap3-beaglexm-fix-EHCI-power-up-GPIO-dir.patch \
+                  file://base/0002-omap3-beaglexm-fix-DVI-reset-GPIO.patch \
+                  file://base/0003-omap3-beaglexm-fix-power-on-of-DVI.patch \
+                  file://base/0004-omap-Beagle-detect-new-xM-revision-B.patch \
+                  file://base/0005-ARM-OMAP-beagleboard-Add-infrastructure-to-do-fixups.patch \
+                  file://base/0006-ARM-OMAP-beagleboard-pre-export-GPIOs-to-userspace-w.patch \
+                  file://base/0007-modedb.c-add-proper-720p60-mode.patch \
+                  file://base/0008-mmc-don-t-display-single-block-read-console-messages.patch \
+                  file://base/0009-MTD-silence-ecc-errors-on-mtdblock0.patch \
+                  file://base/0010-Miracle-patch.patch \
+                  file://base/0011-ARM-OMAP-add-omap_rev_-macros.patch \
+                  file://base/0012-OMAP-DSS2-enable-hsclk-in-dsi_pll_init-for-OMAP36XX.patch \
+                  file://base/0013-omap3-beagleboard-add-WIP-support-for-beagleboardtoy.patch \
+                  file://base/0014-drivers-net-smsc911x-return-ENODEV-if-device-is-not-.patch \
+                  file://base/0015-drivers-input-touchscreen-ads7846-return-ENODEV-if-d.patch \
+                  file://base/0016-ASoC-enable-audio-capture-by-default-for-twl4030.patch \
+                  file://base/0017-MFD-enable-madc-clock.patch \
+                  file://base/0018-MFD-add-twl4030-madc-driver.patch \
+                  file://base/0019-ARM-OMAP-Add-twl4030-madc-support-to-Overo.patch \
+                  file://base/0020-ARM-OMAP-Add-twl4030-madc-support-to-Beagle.patch \
+                  file://base/0021-OMAP-DSS2-Add-support-for-Samsung-LTE430WQ-F0C-panel.patch \
+                  file://base/0022-OMAP-DSS2-Add-support-for-LG-Philips-LB035Q02-panel.patch \
+                  file://base/0023-OMAP-DSS2-add-bootarg-for-selecting-svideo-or-compos.patch \
+                  file://base/0024-ARM-OMAP2-mmc-twl4030-move-clock-input-selection-pri.patch \
+                  file://base/0025-RTC-add-support-for-backup-battery-recharge.patch \
+                  file://base/0026-ARM-OMAP-automatically-set-musb-mode-in-platform-dat.patch \
+                  file://base/0027-OMAP-DSS2-check-for-both-cpu-type-and-revision-rathe.patch \
+                  file://base/0028-OMAP-DSS2-Add-DSS2-support-for-Overo.patch \
                   \
                   file://dvfs/0001-OMAP3-PM-Adding-T2-enabling-of-smartreflex.patch \
                   file://dvfs/0002-OMAP-CPUfreq-ensure-driver-initializes-after-cpufreq.patch \
@@ -128,11 +130,7 @@ SRC_URI_append = " \
                   file://dvfs/0017-OMAP3-Add-voltage-dependency-table-for-VDD1.patch \
                   file://dvfs/0018-omap3-4-opp-make-omapx_opp_init-non-static.patch \
                   file://dvfs/0019-OMAP3-beagle-xm-enable-upto-1GHz-OPP.patch \
-                  \
-                  file://dvfs/0001-omap3-add-support-for-720MHz-MPU-OPP.patch \
-                  file://dvfs/0002-OMAP35x-Add-support-for-720MHz-part.patch \
-                  file://dvfs/0003-OMAP3-beagle-C4-enable-upto-720MHz-OPP.patch \
-                  file://dvfs/0004-OMAP3-Overo-Tide-enable-upto-720MHz-OPP.patch \
+                  file://dvfs/0020-omap3-Add-basic-support-for-720MHz-part.patch \
                  "
 
 SRC_URI_append_usrp-e1xx = "\

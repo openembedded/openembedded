@@ -1,7 +1,7 @@
-From d0dfc6b74a0c6e9ee46b62713256e2b025244d3c Mon Sep 17 00:00:00 2001
+From 1e144569ab9d311fa5e08efc9a7fb35853d697d9 Mon Sep 17 00:00:00 2001
 From: Avi Kivity <avi@redhat.com>
 Date: Fri, 31 Dec 2010 10:52:15 +0200
-Subject: [PATCH 44/66] KVM: i8259: initialize isr_ack
+Subject: [PATCH 44/65] KVM: i8259: initialize isr_ack
 
 isr_ack is never initialized.  So, until the first PIC reset, interrupts
 may fail to be injected.  This can cause Windows XP to fail to boot, as

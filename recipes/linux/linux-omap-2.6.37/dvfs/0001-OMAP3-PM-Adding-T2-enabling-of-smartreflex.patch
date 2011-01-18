@@ -1,7 +1,7 @@
-From 405be95c4b7c397815b20052dbaa43ce36c1a724 Mon Sep 17 00:00:00 2001
+From 8548db6d3cf115b29142f803d701122dc4cbb775 Mon Sep 17 00:00:00 2001
 From: Thara Gopinath <thara@ti.com>
 Date: Fri, 31 Dec 2010 13:35:02 +0530
-Subject: [PATCH 01/19] OMAP3: PM: Adding T2 enabling of smartreflex
+Subject: [PATCH 01/20] OMAP3: PM: Adding T2 enabling of smartreflex
 
 The smartreflex bit on twl4030 needs to be enabled by default irrespective
 of whether smartreflex module is enabled on the OMAP side or not.

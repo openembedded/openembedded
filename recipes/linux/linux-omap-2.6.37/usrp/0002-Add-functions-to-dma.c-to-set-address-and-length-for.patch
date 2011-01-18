@@ -1,7 +1,7 @@
-From a734ac5eef1dd8ee8cba4eea5d2db568247c484c Mon Sep 17 00:00:00 2001
+From fa589f1ad83e8795ba0509e7899dd1a6926c5fbd Mon Sep 17 00:00:00 2001
 From: Philip Balister <philip@opensdr.com>
 Date: Thu, 22 Apr 2010 19:41:58 -0700
-Subject: [PATCH 02/22] Add functions to dma.c to set address and length for src and dest.
+Subject: [PATCH 2/3] Add functions to dma.c to set address and length for src and dest.
 
 ---
  arch/arm/plat-omap/dma.c              |   30 ++++++++++++++++++++++++++++++

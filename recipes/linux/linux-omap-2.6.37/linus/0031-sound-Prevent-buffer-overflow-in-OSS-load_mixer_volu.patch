@@ -1,7 +1,7 @@
-From d81a12bc29ae4038770e05dce4ab7f26fd5880fb Mon Sep 17 00:00:00 2001
+From 6540a62434750fe29b877293e54dbf05c0fb54c4 Mon Sep 17 00:00:00 2001
 From: Dan Rosenberg <drosenberg@vsecurity.com>
 Date: Sat, 25 Dec 2010 16:23:40 -0500
-Subject: [PATCH 31/66] sound: Prevent buffer overflow in OSS load_mixer_volumes
+Subject: [PATCH 31/65] sound: Prevent buffer overflow in OSS load_mixer_volumes
 
 The load_mixer_volumes() function, which can be triggered by
 unprivileged users via the SOUND_MIXER_SETLEVELS ioctl, is vulnerable to

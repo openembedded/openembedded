@@ -1,7 +1,7 @@
-From c7c25802b39c443b3745cfa973dc49a97a3491f8 Mon Sep 17 00:00:00 2001
+From b376276870006eabba46427b79a3f3be70b3e3ea Mon Sep 17 00:00:00 2001
 From: Robert Richter <robert.richter@amd.com>
 Date: Mon, 3 Jan 2011 12:15:14 +0100
-Subject: [PATCH 53/66] arch/x86/oprofile/op_model_amd.c: Perform initialisation on a single CPU
+Subject: [PATCH 53/65] arch/x86/oprofile/op_model_amd.c: Perform initialisation on a single CPU
 
 Disable preemption in init_ibs(). The function only checks the
 ibs capabilities and sets up pci devices (if necessary). It runs

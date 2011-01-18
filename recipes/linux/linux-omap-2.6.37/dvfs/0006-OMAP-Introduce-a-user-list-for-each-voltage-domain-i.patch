@@ -1,7 +1,7 @@
-From c37bb21e4f82e5d88af21f7dbcef407e7a9d5306 Mon Sep 17 00:00:00 2001
+From a4107498616e8dafa2a0155a6d45a990766b161b Mon Sep 17 00:00:00 2001
 From: Thara Gopinath <thara@ti.com>
 Date: Fri, 29 Oct 2010 20:43:07 +0530
-Subject: [PATCH 06/19] OMAP: Introduce a user list for each voltage domain instance in the voltage driver.
+Subject: [PATCH 06/20] OMAP: Introduce a user list for each voltage domain instance in the voltage driver.
 
 This patch introduces a user list of devices associated with each
 voltage domain instance. The user list is implemented using plist

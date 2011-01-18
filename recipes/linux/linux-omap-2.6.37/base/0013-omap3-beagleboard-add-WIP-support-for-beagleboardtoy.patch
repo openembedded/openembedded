@@ -1,0 +1,102 @@
+From 92cbd878f5b92d915dadb5bed412eb013141fdfe Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@beagleboard.org>
+Date: Mon, 20 Dec 2010 11:57:56 +0100
+Subject: [PATCH 13/28] omap3: beagleboard: add WIP support for beagleboardtoys WL12xx board
+
+Based on a patch by Luciano Coelho <luciano.coelho@nokia.com>
+
+Signed-off-by: Koen Kooi <koen@beagleboard.org>
+---
+ arch/arm/mach-omap2/board-omap3beagle.c |   68 +++++++++++++++++++++++++++++++
+ 1 files changed, 68 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index 64a181e..f699701 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -146,6 +146,67 @@ fail0:
+ 
+ char expansionboard_name[16];
+ 
++#if defined(CONFIG_WL1271) || defined(CONFIG_WL1271_MODULE)
++#include <linux/regulator/fixed.h>
++#include <linux/wl12xx.h>
++
++#define OMAP_BEAGLE_WLAN_EN_GPIO    (139)
++#define OMAP_BEAGLE_WLAN_IRQ_GPIO   (137)
++
++struct wl12xx_platform_data omap_beagle_wlan_data __initdata = {
++	.irq = OMAP_GPIO_IRQ(OMAP_BEAGLE_WLAN_IRQ_GPIO),
++	.board_ref_clock = 2, /* 38.4 MHz */
++};
++
++ static struct omap2_hsmmc_info mmcbbt[] = {
++ 	{
++ 		.mmc		= 1,
++ 		.caps		= MMC_CAP_4_BIT_DATA | MMC_CAP_8_BIT_DATA,
++ 		.gpio_wp	= 29,
++ 	},
++	{
++		.name           = "wl1271",
++		.mmc            = 2,
++		.caps		= MMC_CAP_4_BIT_DATA,
++		.gpio_wp        = -EINVAL,
++		.gpio_cd        = -EINVAL,
++		.nonremovable   = true,
++	},
++ 	{}	/* Terminator */
++ };
++
++static struct regulator_consumer_supply beagle_vmmc2_supply = {
++	.supply         = "vmmc",
++	.dev_name       = "mmci-omap-hs.1",
++};
++
++static struct regulator_init_data beagle_vmmc2 = {
++	.constraints = {
++		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
++	},
++	.num_consumer_supplies = 1,
++	.consumer_supplies = &beagle_vmmc2_supply,
++};
++
++static struct fixed_voltage_config beagle_vwlan = {
++	.supply_name = "vwl1271",
++	.microvolts = 1800000,  /* 1.8V */
++	.gpio = OMAP_BEAGLE_WLAN_EN_GPIO,
++	.startup_delay = 70000, /* 70ms */
++	.enable_high = 1,
++	.enabled_at_boot = 0,
++	.init_data = &beagle_vmmc2,
++};
++
++static struct platform_device omap_vwlan_device = {
++	.name           = "reg-fixed-voltage",
++	.id             = 1,
++	.dev = {
++		.platform_data = &beagle_vwlan,
++	},
++};
++#endif
++
+ #if defined(CONFIG_ENC28J60) || defined(CONFIG_ENC28J60_MODULE)
+ 
+ #include <plat/mcspi.h>
+@@ -384,7 +445,14 @@ static int beagle_twl_gpio_setup(struct device *dev,
+ 	}
+ 	/* gpio + 0 is "mmc0_cd" (input/IRQ) */
+ 	mmc[0].gpio_cd = gpio + 0;
++#if defined(CONFIG_WL1271) || defined(CONFIG_WL1271_MODULE)
++	if(!strcmp(expansionboard_name, "fixme-beagletoy")) 
++		omap2_hsmmc_init(mmcbbt);
++	else
++		omap2_hsmmc_init(mmc);
++#else
+ 	omap2_hsmmc_init(mmc);
++#endif
+ 
+ 	/* link regulators to MMC adapters */
+ 	beagle_vmmc1_supply.dev = mmc[0].dev;
+-- 
+1.6.6.1
+

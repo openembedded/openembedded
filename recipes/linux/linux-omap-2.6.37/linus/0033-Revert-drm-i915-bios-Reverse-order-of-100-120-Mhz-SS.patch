@@ -1,7 +1,7 @@
-From bcfbbce822d219eb587acaba8a6e062bbeae4761 Mon Sep 17 00:00:00 2001
+From 5cd3371a75c27fe5b105037b1a9a53b661a3624e Mon Sep 17 00:00:00 2001
 From: Chris Wilson <chris@chris-wilson.co.uk>
 Date: Thu, 30 Dec 2010 09:07:15 +0000
-Subject: [PATCH 33/66] Revert "drm/i915/bios: Reverse order of 100/120 Mhz SSC clocks"
+Subject: [PATCH 33/65] Revert "drm/i915/bios: Reverse order of 100/120 Mhz SSC clocks"
 
 As I feared, whilst this fixed the clocks for the Lenovo U160, it broke
 many other machines. So lets reverts commit 448f53a1ede54eb854d036abf

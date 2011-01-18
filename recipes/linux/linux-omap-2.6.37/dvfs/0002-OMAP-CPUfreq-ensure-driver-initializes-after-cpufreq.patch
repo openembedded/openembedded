@@ -1,7 +1,7 @@
-From a1df976c51e22bed9d95fcb07832571ef3520f2a Mon Sep 17 00:00:00 2001
+From e446cbf4aa8359d58180a81282df70045b8a41c1 Mon Sep 17 00:00:00 2001
 From: Peter 'p2' De Schrijver <peter.de-schrijver@nokia.com>
 Date: Wed, 11 Aug 2010 17:02:43 -0700
-Subject: [PATCH 02/19] OMAP: CPUfreq: ensure driver initializes after cpufreq framework and governors
+Subject: [PATCH 02/20] OMAP: CPUfreq: ensure driver initializes after cpufreq framework and governors
 
 Signed-off-by: Peter 'p2' De Schrijver <peter.de-schrijver@nokia.com>
 Signed-off-by: Kevin Hilman <khilman@deeprootsystems.com>

@@ -1,7 +1,7 @@
-From c4711786986af0cce654f493426ee0a1055e4b17 Mon Sep 17 00:00:00 2001
+From a6b08e88ed5a716b2f27989c949cdfa0704c1dfd Mon Sep 17 00:00:00 2001
 From: Breno Leitao <leitao@linux.vnet.ibm.com>
 Date: Mon, 20 Dec 2010 09:02:37 +0000
-Subject: [PATCH 14/66] ehea: Avoid changing vlan flags
+Subject: [PATCH 14/65] ehea: Avoid changing vlan flags
 
 This patch avoids disabling the vlan flags using ethtool.
 

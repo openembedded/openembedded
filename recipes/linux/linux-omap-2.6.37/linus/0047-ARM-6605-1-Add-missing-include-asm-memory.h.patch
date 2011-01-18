@@ -1,7 +1,7 @@
-From 7c0ab43e6ab09d72dc8dbac2521b2f819ccc4026 Mon Sep 17 00:00:00 2001
+From ff3df95843c9713d7b7247c461b955b1f794db76 Mon Sep 17 00:00:00 2001
 From: Axel Lin <axel.lin@gmail.com>
 Date: Mon, 3 Jan 2011 02:26:53 +0100
-Subject: [PATCH 47/66] ARM: 6605/1: Add missing include "asm/memory.h"
+Subject: [PATCH 47/65] ARM: 6605/1: Add missing include "asm/memory.h"
 
 This patch fixes below build error by adding the missing asm/memory.h,
 which is needed for arch_is_coherent().

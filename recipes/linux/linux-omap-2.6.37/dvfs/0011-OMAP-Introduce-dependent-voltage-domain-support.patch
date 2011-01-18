@@ -1,7 +1,7 @@
-From 444b19e90ae45ccd68c84285fe8339d797a08911 Mon Sep 17 00:00:00 2001
+From b1b41c78d5a19260605fcb259a51ca7cd71c097a Mon Sep 17 00:00:00 2001
 From: Thara Gopinath <thara@ti.com>
 Date: Fri, 2 Jul 2010 13:06:57 +0530
-Subject: [PATCH 11/19] OMAP: Introduce dependent voltage domain support.
+Subject: [PATCH 11/20] OMAP: Introduce dependent voltage domain support.
 
 There could be dependencies between various voltage domains for
 maintaining system performance or hardware limitation reasons

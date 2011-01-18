@@ -1,7 +1,7 @@
-From e983dc2428164698571e1dd1b25c4322181adbac Mon Sep 17 00:00:00 2001
+From 9214e9d423fea726c5497ae5be07d3069246e6bd Mon Sep 17 00:00:00 2001
 From: Nitin Gupta <ngupta@vflare.org>
 Date: Thu, 30 Dec 2010 04:07:58 -0500
-Subject: [PATCH 37/66] Revert "Staging: zram: work around oops due to startup ordering snafu"
+Subject: [PATCH 37/65] Revert "Staging: zram: work around oops due to startup ordering snafu"
 
 This reverts commit 7e24cce38a99f373450db67bf576fe73e8168d66 because it
 was never appropriate for mainline.

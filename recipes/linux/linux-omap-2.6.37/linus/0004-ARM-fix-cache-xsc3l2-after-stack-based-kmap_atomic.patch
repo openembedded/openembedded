@@ -1,7 +1,7 @@
-From 25cbe45440ea89a3b0f6f7ed326d3d476d53068b Mon Sep 17 00:00:00 2001
+From fc077c0fbb09ca255691d05789076d121ae11789 Mon Sep 17 00:00:00 2001
 From: Nicolas Pitre <nicolas.pitre@linaro.org>
 Date: Wed, 15 Dec 2010 23:29:04 -0500
-Subject: [PATCH 04/66] ARM: fix cache-xsc3l2 after stack based kmap_atomic()
+Subject: [PATCH 04/65] ARM: fix cache-xsc3l2 after stack based kmap_atomic()
 
 Since commit 3e4d3af501 "mm: stack based kmap_atomic()", it is actively
 wrong to rely on fixed kmap type indices (namely KM_L2_CACHE) as

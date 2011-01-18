@@ -1,7 +1,7 @@
-From 551423748a4eba55f2eb0fc250d757986471f187 Mon Sep 17 00:00:00 2001
+From 358160309eeeb8e29b74240874267ea9f7e43d36 Mon Sep 17 00:00:00 2001
 From: Ben Hutchings <ben@decadent.org.uk>
 Date: Sun, 2 Jan 2011 23:02:42 +0000
-Subject: [PATCH 46/66] watchdog: Improve initialisation error message and documentation
+Subject: [PATCH 46/65] watchdog: Improve initialisation error message and documentation
 
 The error message 'NMI watchdog failed to create perf event...'
 does not make it clear that this is a fatal error for the

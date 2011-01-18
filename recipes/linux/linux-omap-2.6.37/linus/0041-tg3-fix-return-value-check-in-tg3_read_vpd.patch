@@ -1,7 +1,7 @@
-From 824f5f38d3005c346a043dedcfe8b048b699b81a Mon Sep 17 00:00:00 2001
+From 8742365f4de2afdd0168366b49a3118e67354a21 Mon Sep 17 00:00:00 2001
 From: David Sterba <dsterba@suse.cz>
 Date: Wed, 29 Dec 2010 03:40:31 +0000
-Subject: [PATCH 41/66] tg3: fix return value check in tg3_read_vpd()
+Subject: [PATCH 41/65] tg3: fix return value check in tg3_read_vpd()
 
 Besides -ETIMEDOUT and -EINTR, pci_read_vpd may return other error
 values like -ENODEV or -EINVAL which are ignored due to the buggy

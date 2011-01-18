@@ -1,0 +1,63 @@
+From 8b0c56b910811acd23c15bed273b3dbd959ef96a Mon Sep 17 00:00:00 2001
+From: Steve Sakoman <steve@sakoman.com>
+Date: Mon, 26 Apr 2010 11:17:26 -0700
+Subject: [PATCH 09/28] MTD: silence ecc errors on mtdblock0
+
+mtdblock0 is the x-load partition, which uses hw ecc
+this confuses linux, which uses sw ecc
+this patch silences ecc error messages when linux peeks into mtdblock0
+* not for upstream submission *
+---
+ block/blk-core.c            |    7 ++++---
+ drivers/mtd/nand/nand_ecc.c |    2 +-
+ fs/buffer.c                 |    3 ++-
+ 3 files changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/block/blk-core.c b/block/blk-core.c
+index 4ce953f..1ef9a01 100644
+--- a/block/blk-core.c
++++ b/block/blk-core.c
+@@ -2028,9 +2028,10 @@ bool blk_update_request(struct request *req, int error, unsigned int nr_bytes)
+ 
+ 	if (error && req->cmd_type == REQ_TYPE_FS &&
+ 	    !(req->cmd_flags & REQ_QUIET)) {
+-		printk(KERN_ERR "end_request: I/O error, dev %s, sector %llu\n",
+-				req->rq_disk ? req->rq_disk->disk_name : "?",
+-				(unsigned long long)blk_rq_pos(req));
++		if (req->rq_disk && (strcmp(req->rq_disk->disk_name, "mtdblock0") != 0))
++				printk(KERN_ERR "end_request: I/O error, dev %s, sector %llu\n",
++					req->rq_disk ? req->rq_disk->disk_name : "?",
++					(unsigned long long)blk_rq_pos(req));
+ 	}
+ 
+ 	blk_account_io_completion(req, nr_bytes);
+diff --git a/drivers/mtd/nand/nand_ecc.c b/drivers/mtd/nand/nand_ecc.c
+index 271b8e7..5924ba7 100644
+--- a/drivers/mtd/nand/nand_ecc.c
++++ b/drivers/mtd/nand/nand_ecc.c
+@@ -507,7 +507,7 @@ int __nand_correct_data(unsigned char *buf,
+ 	if ((bitsperbyte[b0] + bitsperbyte[b1] + bitsperbyte[b2]) == 1)
+ 		return 1;	/* error in ecc data; no action needed */
+ 
+-	printk(KERN_ERR "uncorrectable error : ");
++//	printk(KERN_ERR "uncorrectable error : ");
+ 	return -1;
+ }
+ EXPORT_SYMBOL(__nand_correct_data);
+diff --git a/fs/buffer.c b/fs/buffer.c
+index 5930e38..06a00d5 100644
+--- a/fs/buffer.c
++++ b/fs/buffer.c
+@@ -114,7 +114,8 @@ static int quiet_error(struct buffer_head *bh)
+ static void buffer_io_error(struct buffer_head *bh)
+ {
+ 	char b[BDEVNAME_SIZE];
+-	printk(KERN_ERR "Buffer I/O error on device %s, logical block %Lu\n",
++	if (strcmp(bdevname(bh->b_bdev, b), "mtdblock0") != 0)
++		printk(KERN_ERR "Buffer I/O error on device %s, logical block %Lu\n",
+ 			bdevname(bh->b_bdev, b),
+ 			(unsigned long long)bh->b_blocknr);
+ }
+-- 
+1.6.6.1
+

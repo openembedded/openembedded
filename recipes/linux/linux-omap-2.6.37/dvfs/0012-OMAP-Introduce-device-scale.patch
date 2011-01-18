@@ -1,7 +1,7 @@
-From 40c41b250b9430b9d9998751fdf7e03201d1784e Mon Sep 17 00:00:00 2001
+From b461bd17384c73bbb243c54bf1d6466c94e594c3 Mon Sep 17 00:00:00 2001
 From: Thara Gopinath <thara@ti.com>
 Date: Fri, 2 Jul 2010 13:07:35 +0530
-Subject: [PATCH 12/19] OMAP: Introduce device scale
+Subject: [PATCH 12/20] OMAP: Introduce device scale
 
 This patch adds omap_device_scale API  which can be used to generic
 device rate scaling.

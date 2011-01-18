@@ -1,7 +1,7 @@
-From 6d3e6d3640052cac958d61c44597cc216f6ee09f Mon Sep 17 00:00:00 2001
+From ccb2858c9bd5fff216feab665db14ca32be8d6fe Mon Sep 17 00:00:00 2001
 From: Nicolas Pitre <nicolas.pitre@linaro.org>
 Date: Thu, 16 Dec 2010 14:56:34 -0500
-Subject: [PATCH 05/66] ARM: fix cache-feroceon-l2 after stack based kmap_atomic()
+Subject: [PATCH 05/65] ARM: fix cache-feroceon-l2 after stack based kmap_atomic()
 
 Since commit 3e4d3af501 "mm: stack based kmap_atomic()", it is actively
 wrong to rely on fixed kmap type indices (namely KM_L2_CACHE) as

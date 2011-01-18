@@ -1,7 +1,7 @@
-From 0c5c41f6bcf77b388f49615ac28ccde294e7a5bd Mon Sep 17 00:00:00 2001
+From d8fae1dcedb636a37096ee92e6b81b112d5f32a5 Mon Sep 17 00:00:00 2001
 From: Thara Gopinath <thara@ti.com>
 Date: Fri, 2 Jul 2010 13:07:49 +0530
-Subject: [PATCH 15/19] OMAP3: Update cpufreq driver to use the new set_rate API
+Subject: [PATCH 15/20] OMAP3: Update cpufreq driver to use the new set_rate API
 
 This patch updates the cpufreq driver to use the device
 set rate API to scale the mpu frequency for OMAP3.

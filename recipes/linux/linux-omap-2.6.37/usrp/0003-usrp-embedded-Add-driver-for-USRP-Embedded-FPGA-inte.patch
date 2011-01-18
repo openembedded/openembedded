@@ -1,7 +1,7 @@
-From 31d1ee0e615ad0fc84bd781d905f1cd56ae02909 Mon Sep 17 00:00:00 2001
+From 56a2e5e0ace395e94f176a90a12d3cfcd8b7f68f Mon Sep 17 00:00:00 2001
 From: Philip Balister <balister@moose.(none)>
 Date: Wed, 13 Jan 2010 14:35:39 -0500
-Subject: [PATCH 03/22] usrp-embedded : Add driver for USRP Embedded FPGA interface.
+Subject: [PATCH 3/3] usrp-embedded : Add driver for USRP Embedded FPGA interface.
 
 ---
  arch/arm/mach-omap2/board-overo.c |  176 +++++-

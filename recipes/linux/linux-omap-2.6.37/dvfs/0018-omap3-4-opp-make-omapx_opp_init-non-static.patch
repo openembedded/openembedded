@@ -1,7 +1,7 @@
-From 53d08ca85f9b623e25ba9a976bc3315f3784a3a7 Mon Sep 17 00:00:00 2001
+From 16c7667d2908631149ef38b7b6dd7b08d6d5502e Mon Sep 17 00:00:00 2001
 From: Nishanth Menon <nm@ti.com>
 Date: Wed, 5 Jan 2011 14:14:55 -0600
-Subject: [PATCH 18/19] omap3|4: opp: make omapx_opp_init non-static
+Subject: [PATCH 18/20] omap3|4: opp: make omapx_opp_init non-static
 
 omap3 and omap4 opp_init should be made non-static to allow
 for platform specific opp table tweaking. making these static

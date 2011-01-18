@@ -1,7 +1,7 @@
-From b518a64983cbf2ff31aed530898de2d80e4573d5 Mon Sep 17 00:00:00 2001
+From cdca50978acd2a0be9ef675b8cdd3b77fadab492 Mon Sep 17 00:00:00 2001
 From: Maurus Cuelenaere <mcuelenaere@gmail.com>
 Date: Sun, 2 Jan 2011 14:48:16 -0500
-Subject: [PATCH 45/66] hwmon: (s3c-hwmon) Fix compilation
+Subject: [PATCH 45/65] hwmon: (s3c-hwmon) Fix compilation
 
 The owner field was removed from struct attribute in
 6fd69dc578fa0b1bbc3aad70ae3af9a137211707, so don't assign it anymore.

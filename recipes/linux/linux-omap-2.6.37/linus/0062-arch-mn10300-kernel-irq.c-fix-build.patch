@@ -1,0 +1,31 @@
+From 942dd5c14797f41c9e6d960ae95940ccdb7cb044 Mon Sep 17 00:00:00 2001
+From: Andrew Morton <akpm@linux-foundation.org>
+Date: Mon, 3 Jan 2011 14:59:11 -0800
+Subject: [PATCH 62/65] arch/mn10300/kernel/irq.c: fix build
+
+Addresses https://bugzilla.kernel.org/show_bug.cgi?id=25702
+
+Reported-by: Martin Ettl <ettl.martin@gmx.de>
+Cc: David Howells <dhowells@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+---
+ arch/mn10300/kernel/irq.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/mn10300/kernel/irq.c b/arch/mn10300/kernel/irq.c
+index c2e4459..ac11754 100644
+--- a/arch/mn10300/kernel/irq.c
++++ b/arch/mn10300/kernel/irq.c
+@@ -459,7 +459,7 @@ void migrate_irqs(void)
+ 			tmp = CROSS_GxICR(irq, new);
+ 
+ 			x &= GxICR_LEVEL | GxICR_ENABLE;
+-			if (GxICR(irq) & GxICR_REQUEST) {
++			if (GxICR(irq) & GxICR_REQUEST)
+ 				x |= GxICR_REQUEST | GxICR_DETECT;
+ 			CROSS_GxICR(irq, new) = x;
+ 			tmp = CROSS_GxICR(irq, new);
+-- 
+1.6.6.1
+

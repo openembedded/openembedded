@@ -1,7 +1,7 @@
-From 7f87e30ef29951f4509a7f86acf00e1ba48af54a Mon Sep 17 00:00:00 2001
+From 9760063610bb4890c0f88c1dd839ec1531706f33 Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
 Date: Tue, 28 Dec 2010 21:38:01 +0100
-Subject: [PATCH 23/66] ASoC: codecs: wm8962: Fix register cache incoherency
+Subject: [PATCH 23/65] ASoC: codecs: wm8962: Fix register cache incoherency
 
 The multi-component patch(commit f0fba2ad1) moved the allocation of the
 register cache from the driver to the ASoC core. Most drivers where adjusted to

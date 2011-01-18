@@ -1,7 +1,7 @@
-From 649497d1a3676020802ebba04a3d9bb31253adb5 Mon Sep 17 00:00:00 2001
+From 22c5ed7018eb4157e317c8513fe2ced2c8ec5e0c Mon Sep 17 00:00:00 2001
 From: Avi Kivity <avi@redhat.com>
 Date: Tue, 28 Dec 2010 12:09:07 +0200
-Subject: [PATCH 26/66] KVM: MMU: Fix incorrect direct gfn for unpaged mode shadow
+Subject: [PATCH 26/65] KVM: MMU: Fix incorrect direct gfn for unpaged mode shadow
 
 We use the physical address instead of the base gfn for the four
 PAE page directories we use in unpaged mode.  When the guest accesses

@@ -1,7 +1,7 @@
-From d39cd5e99a0ad88aba6793fb5e5f34e29cda6e6f Mon Sep 17 00:00:00 2001
+From 3b4878d988f13c50a8a6d68e9359eb28cc432a4f Mon Sep 17 00:00:00 2001
 From: stephen hemminger <shemminger@vyatta.com>
 Date: Mon, 20 Dec 2010 17:58:33 +0000
-Subject: [PATCH 15/66] ppp: allow disabling multilink protocol ID compression
+Subject: [PATCH 15/65] ppp: allow disabling multilink protocol ID compression
 
 Linux would not connect to other router running old version Cisco IOS (12.0).
 This is most likely a bug in that version of IOS, since it is fixed

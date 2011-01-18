@@ -1,7 +1,7 @@
-From e03fa055bc126e536c7f65862e08a9b143138ea9 Mon Sep 17 00:00:00 2001
+From 927b580b918babc2ecc22a1ae1b6deef428d933f Mon Sep 17 00:00:00 2001
 From: Daniel T Chen <crimsun@ubuntu.com>
 Date: Tue, 28 Dec 2010 17:20:02 -0500
-Subject: [PATCH 32/66] ALSA: hda: Use LPIB quirk for Dell Inspiron m101z/1120
+Subject: [PATCH 32/65] ALSA: hda: Use LPIB quirk for Dell Inspiron m101z/1120
 
 Sjoerd Simons reports that, without using position_fix=1, recording
 experiences overruns. Work around that by applying the LPIB quirk

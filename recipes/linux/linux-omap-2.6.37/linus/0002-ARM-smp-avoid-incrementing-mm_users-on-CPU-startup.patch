@@ -1,7 +1,7 @@
-From 1ae1b5f053cf36bd0f913e83f3b136fec8152d4d Mon Sep 17 00:00:00 2001
+From d7bbfe094baebc1515d3919a1e886fcfa655ff5a Mon Sep 17 00:00:00 2001
 From: Russell King <rmk+kernel@arm.linux.org.uk>
 Date: Sat, 18 Dec 2010 13:57:00 +0000
-Subject: [PATCH 02/66] ARM: smp: avoid incrementing mm_users on CPU startup
+Subject: [PATCH 02/65] ARM: smp: avoid incrementing mm_users on CPU startup
 
 We should not be incrementing mm_users when we startup a secondary
 CPU - doing so results in mm_users incrementing by one each time we

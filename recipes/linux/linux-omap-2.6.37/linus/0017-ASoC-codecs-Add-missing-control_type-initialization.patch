@@ -1,7 +1,7 @@
-From 7f984b55acb6530bf854bfcac13104228f3336c1 Mon Sep 17 00:00:00 2001
+From d03eac98a7ae4af982f3c19161f850effbfd0f57 Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
 Date: Tue, 28 Dec 2010 21:08:57 +0100
-Subject: [PATCH 17/66] ASoC: codecs: Add missing control_type initialization
+Subject: [PATCH 17/65] ASoC: codecs: Add missing control_type initialization
 
 Some codec drivers do not initialize the control_type field in their private
 device struct, but still use it when calling snd_soc_codec_set_cache_io.

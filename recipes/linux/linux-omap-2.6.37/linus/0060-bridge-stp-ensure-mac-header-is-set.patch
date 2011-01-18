@@ -1,0 +1,38 @@
+From ff26fe4db962b41b794fb81518b8e407093239d9 Mon Sep 17 00:00:00 2001
+From: Florian Westphal <fw@strlen.de>
+Date: Mon, 3 Jan 2011 04:16:28 +0000
+Subject: [PATCH 60/65] bridge: stp: ensure mac header is set
+
+commit bf9ae5386bca8836c16e69ab8fdbe46767d7452a
+(llc: use dev_hard_header) removed the
+skb_reset_mac_header call from llc_mac_hdr_init.
+
+This seems fine itself, but br_send_bpdu() invokes ebtables LOCAL_OUT.
+
+We oops in ebt_basic_match() because it assumes eth_hdr(skb) returns
+a meaningful result.
+
+Cc: acme@ghostprotocols.net
+References: https://bugzilla.kernel.org/show_bug.cgi?id=24532
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+---
+ net/bridge/br_stp_bpdu.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/net/bridge/br_stp_bpdu.c b/net/bridge/br_stp_bpdu.c
+index 35cf270..e3d7aef 100644
+--- a/net/bridge/br_stp_bpdu.c
++++ b/net/bridge/br_stp_bpdu.c
+@@ -50,6 +50,8 @@ static void br_send_bpdu(struct net_bridge_port *p,
+ 
+ 	llc_mac_hdr_init(skb, p->dev->dev_addr, p->br->group_addr);
+ 
++	skb_reset_mac_header(skb);
++
+ 	NF_HOOK(NFPROTO_BRIDGE, NF_BR_LOCAL_OUT, skb, NULL, skb->dev,
+ 		dev_queue_xmit);
+ }
+-- 
+1.6.6.1
+

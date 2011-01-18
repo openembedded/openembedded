@@ -1,0 +1,38 @@
+From 012cfd55bb9075c4697cc068ba0a8c0d0069433a Mon Sep 17 00:00:00 2001
+From: Christoph Hellwig <hch@lst.de>
+Date: Tue, 4 Jan 2011 07:14:24 +0100
+Subject: [PATCH 63/65] remove trim_fs method from Documentation/filesystems/Locking
+
+The ->trim_fs has been removed meanwhile, so remove it from the documentation
+as well.
+
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reported-by: Ryusuke Konishi <konishi.ryusuke@lab.ntt.co.jp>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+---
+ Documentation/filesystems/Locking |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/filesystems/Locking b/Documentation/filesystems/Locking
+index 7686e76..33fa3e5 100644
+--- a/Documentation/filesystems/Locking
++++ b/Documentation/filesystems/Locking
+@@ -115,7 +115,6 @@ prototypes:
+ 	ssize_t (*quota_read)(struct super_block *, int, char *, size_t, loff_t);
+ 	ssize_t (*quota_write)(struct super_block *, int, const char *, size_t, loff_t);
+ 	int (*bdev_try_to_free_page)(struct super_block*, struct page*, gfp_t);
+-	int (*trim_fs) (struct super_block *, struct fstrim_range *);
+ 
+ locking rules:
+ 	All may block [not true, see below]
+@@ -138,7 +137,6 @@ show_options:		no		(namespace_sem)
+ quota_read:		no		(see below)
+ quota_write:		no		(see below)
+ bdev_try_to_free_page:	no		(see below)
+-trim_fs:		no
+ 
+ ->statfs() has s_umount (shared) when called by ustat(2) (native or
+ compat), but that's an accident of bad API; s_umount is used to pin
+-- 
+1.6.6.1
+

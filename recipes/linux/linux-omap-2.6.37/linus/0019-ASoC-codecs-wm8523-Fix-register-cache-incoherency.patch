@@ -1,7 +1,7 @@
-From beebca312009e9567d5e0229ea6b82bdf9a864cf Mon Sep 17 00:00:00 2001
+From 50e75c326e4d3278b73385a3baf78fc4660d3610 Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
 Date: Tue, 28 Dec 2010 21:37:57 +0100
-Subject: [PATCH 19/66] ASoC: codecs: wm8523: Fix register cache incoherency
+Subject: [PATCH 19/65] ASoC: codecs: wm8523: Fix register cache incoherency
 
 The multi-component patch(commit f0fba2ad1) moved the allocation of the
 register cache from the driver to the ASoC core. Most drivers where adjusted to

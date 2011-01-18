@@ -1,7 +1,7 @@
-From d13e5edd7284bedcf5952e1b6490e39ad843cb91 Mon Sep 17 00:00:00 2001
+From d0427fe2982e2f4f644b936fe39636916b69fee1 Mon Sep 17 00:00:00 2001
 From: Todd Android Poynor <toddpoynor@google.com>
 Date: Thu, 23 Dec 2010 01:52:44 +0100
-Subject: [PATCH 12/66] ARM: 6540/1: Stop irqsoff trace on return to user
+Subject: [PATCH 12/65] ARM: 6540/1: Stop irqsoff trace on return to user
 
 If the irqsoff tracer is in use, stop tracing the interrupt disable
 interval when returning to userspace.  Tracing userspace execution time

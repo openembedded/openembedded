@@ -1,7 +1,7 @@
-From 0bc463426ab5eb39e76df637b29a4f191d01b8a0 Mon Sep 17 00:00:00 2001
+From 806e90c4e5253095f9576113edc6fc78b2d5fec1 Mon Sep 17 00:00:00 2001
 From: Jate Sujjavanich <jsujjavanich@syntech-fuelmaster.com>
 Date: Wed, 29 Sep 2010 09:44:32 -0400
-Subject: [PATCH 30/66] spi/m68knommu: Coldfire QSPI platform support
+Subject: [PATCH 30/65] spi/m68knommu: Coldfire QSPI platform support
 
 After grabbing a msg from the msgq, the mcfqspi_work function calls
 list_del_init on the mcfqspi->msgq which unintentionally deletes the rest

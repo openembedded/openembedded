@@ -1,7 +1,7 @@
-From 715920d04c787ed718327da53cf51689e51ef3ce Mon Sep 17 00:00:00 2001
+From 8febc5cbe3b8d4a4a056df364e4a82958a6eb1df Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
 Date: Tue, 28 Dec 2010 21:38:00 +0100
-Subject: [PATCH 22/66] ASoC: codecs: wm8955: Fix register cache incoherency
+Subject: [PATCH 22/65] ASoC: codecs: wm8955: Fix register cache incoherency
 
 The multi-component patch(commit f0fba2ad1) moved the allocation of the
 register cache from the driver to the ASoC core. Most drivers where adjusted to

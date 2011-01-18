@@ -1,0 +1,57 @@
+From 0c2c9a4d7fd299444b66e08aa34acc868261003f Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Sun, 5 Dec 2010 13:25:00 +0100
+Subject: [PATCH 06/28] ARM: OMAP: beagleboard: pre-export GPIOs to userspace when using a Tincantools trainerboard
+
+This really needs a for loop, patches welcome
+
+Signed-off-by: Koen Kooi <koen@beagleboard.org>
+---
+ arch/arm/mach-omap2/board-omap3beagle.c |   31 +++++++++++++++++++++++++++++++
+ 1 files changed, 31 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index d777b3b..64a181e 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -757,6 +757,37 @@ static void __init omap3_beagle_init(void)
+ 		mmc[1].gpio_cd = 162;
+ 	}
+ 
++	if(!strcmp(expansionboard_name, "trainer"))
++	{
++		printk(KERN_INFO "Beagle expansionboard: exporting GPIOs 130-141,162 to userspace\n");
++		gpio_request(130, "sysfs");
++		gpio_export(130, 1);
++		gpio_request(131, "sysfs");
++		gpio_export(131, 1);
++		gpio_request(132, "sysfs");
++		gpio_export(132, 1);
++		gpio_request(133, "sysfs");
++		gpio_export(133, 1);
++		gpio_request(134, "sysfs");
++		gpio_export(134, 1);
++		gpio_request(135, "sysfs");
++		gpio_export(135, 1);
++		gpio_request(136, "sysfs");
++		gpio_export(136, 1);
++		gpio_request(137, "sysfs");
++		gpio_export(137, 1);
++		gpio_request(138, "sysfs");
++		gpio_export(138, 1);
++		gpio_request(139, "sysfs");
++		gpio_export(139, 1);
++		gpio_request(140, "sysfs");
++		gpio_export(140, 1);
++		gpio_request(141, "sysfs");
++		gpio_export(141, 1);
++		gpio_request(162, "sysfs");
++		gpio_export(162, 1);
++	}
++
+ 	usb_musb_init(&musb_board_data);
+ 	usb_ehci_init(&ehci_pdata);
+ 	omap3beagle_flash_init();
+-- 
+1.6.6.1
+

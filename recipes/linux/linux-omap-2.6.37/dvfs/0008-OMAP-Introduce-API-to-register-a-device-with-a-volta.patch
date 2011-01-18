@@ -1,7 +1,7 @@
-From be5bdabb6206f106f0dcf91b0e90474d23773416 Mon Sep 17 00:00:00 2001
+From 3fcad983e7df504ecb1d0db79e3fe2e3abc44850 Mon Sep 17 00:00:00 2001
 From: Thara Gopinath <thara@ti.com>
 Date: Fri, 29 Oct 2010 20:43:24 +0530
-Subject: [PATCH 08/19] OMAP: Introduce API to register a device with a voltagedomain
+Subject: [PATCH 08/20] OMAP: Introduce API to register a device with a voltagedomain
 
 This patch adds an API in the voltage layer that
 can be used  during omap_device_build to register the built

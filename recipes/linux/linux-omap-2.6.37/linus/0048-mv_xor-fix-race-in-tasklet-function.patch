@@ -1,7 +1,7 @@
-From 8333f65ef094e47020cd01452b4637e7daf5a77f Mon Sep 17 00:00:00 2001
+From b4c914578637d1d92b92842c50b02a98f2a7357d Mon Sep 17 00:00:00 2001
 From: Saeed Bishara <saeed@marvell.com>
 Date: Tue, 21 Dec 2010 16:53:39 +0200
-Subject: [PATCH 48/66] mv_xor: fix race in tasklet function
+Subject: [PATCH 48/65] mv_xor: fix race in tasklet function
 
 use mv_xor_slot_cleanup() instead of __mv_xor_slot_cleanup() as the former function
 aquires the spin lock that needed to protect the drivers data.

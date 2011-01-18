@@ -1,7 +1,7 @@
-From 537de3a67c0c86586eacffde40673b727242dc3a Mon Sep 17 00:00:00 2001
+From 233828cbb5d2331e47cba932130428ea5f915f91 Mon Sep 17 00:00:00 2001
 From: Stephen Warren <swarren@nvidia.com>
 Date: Wed, 22 Dec 2010 04:52:05 +0100
-Subject: [PATCH 10/66] ARM: 6536/1: Add missing SZ_{32,64,128}
+Subject: [PATCH 10/65] ARM: 6536/1: Add missing SZ_{32,64,128}
 
 ... and also remove misleading comment stating that this header is
 auto-generated.

@@ -1,7 +1,7 @@
-From 3a51f3ffe8299bcc28a6be1bdcd0e0ea39af2042 Mon Sep 17 00:00:00 2001
+From 25ea605d0aaf1d60030b4df122a3384c7878d86e Mon Sep 17 00:00:00 2001
 From: Silesh C V <silesh@ti.com>
 Date: Wed, 29 Sep 2010 14:52:54 +0530
-Subject: [PATCH 05/19] OMAP: PM: CPUFREQ: Fix conditional compilation
+Subject: [PATCH 05/20] OMAP: PM: CPUFREQ: Fix conditional compilation
 
 Fix conditional compilation. A conditional expresiion
 should follow "#elif", in this case #elif clause should

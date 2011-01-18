@@ -1,7 +1,7 @@
-From 4ef9e11d6867f88951e30db910fa015300e31871 Mon Sep 17 00:00:00 2001
+From 2bffbb04acdf2e58726ba8192d468f2bda528fdf Mon Sep 17 00:00:00 2001
 From: Hillf Danton <dhillf@gmail.com>
 Date: Wed, 29 Dec 2010 21:55:28 +0800
-Subject: [PATCH 27/66] fix freeing user_struct in user cache
+Subject: [PATCH 27/65] fix freeing user_struct in user cache
 
 When racing on adding into user cache, the new allocated from mm slab
 is freed without putting user namespace.

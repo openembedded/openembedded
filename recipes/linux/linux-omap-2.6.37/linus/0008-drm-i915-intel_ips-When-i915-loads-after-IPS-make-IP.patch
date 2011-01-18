@@ -1,7 +1,7 @@
-From 63ee41d794d9c555f84205517a68509848988760 Mon Sep 17 00:00:00 2001
+From 38684934e58030113d3e89a3f60472e22e2e1ea6 Mon Sep 17 00:00:00 2001
 From: Eric Anholt <eric@anholt.net>
 Date: Mon, 20 Dec 2010 18:40:06 -0800
-Subject: [PATCH 08/66] drm/i915, intel_ips: When i915 loads after IPS, make IPS relink to i915.
+Subject: [PATCH 08/65] drm/i915, intel_ips: When i915 loads after IPS, make IPS relink to i915.
 
 The IPS driver is designed to be able to run detached from i915 and
 just not enable GPU turbo in that case, in order to avoid module

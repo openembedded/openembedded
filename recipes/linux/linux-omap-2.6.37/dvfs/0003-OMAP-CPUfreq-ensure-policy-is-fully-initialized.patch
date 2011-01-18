@@ -1,7 +1,7 @@
-From fe6bc036ebf31ca377051ff0ea99da3cdc66854f Mon Sep 17 00:00:00 2001
+From 647691beb64312327646a84dc161faf35935e7f7 Mon Sep 17 00:00:00 2001
 From: Kevin Hilman <khilman@deeprootsystems.com>
 Date: Wed, 11 Aug 2010 17:05:38 -0700
-Subject: [PATCH 03/19] OMAP: CPUfreq: ensure policy is fully initialized
+Subject: [PATCH 03/20] OMAP: CPUfreq: ensure policy is fully initialized
 
 Ensure policy min/max/cur values are initialized when OMAP
 CPUfreq driver starts.

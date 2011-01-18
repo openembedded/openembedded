@@ -1,0 +1,31 @@
+From edb8dd77b87534a3cc6bf4e2a234216d2cc68f89 Mon Sep 17 00:00:00 2001
+From: Jan Beulich <JBeulich@novell.com>
+Date: Mon, 3 Jan 2011 15:07:02 +0000
+Subject: [PATCH 59/65] name_to_dev_t() must not call __init code
+
+The function can't be __init itself (being called from some sysfs
+handler), and hence none of the functions it calls can be either.
+
+Signed-off-by: Jan Beulich <jbeulich@novell.com>
+Acked-by: Randy Dunlap <randy.dunlap@oracle.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+---
+ init/do_mounts.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/init/do_mounts.c b/init/do_mounts.c
+index 830aaec..2b54bef 100644
+--- a/init/do_mounts.c
++++ b/init/do_mounts.c
+@@ -93,7 +93,7 @@ no_match:
+  *
+  * Returns the matching dev_t on success or 0 on failure.
+  */
+-static dev_t __init devt_from_partuuid(char *uuid_str)
++static dev_t devt_from_partuuid(char *uuid_str)
+ {
+ 	dev_t res = 0;
+ 	struct device *dev = NULL;
+-- 
+1.6.6.1
+

@@ -1,7 +1,7 @@
-From f7e4c9775ea648deed4a8193951e50d0c7706173 Mon Sep 17 00:00:00 2001
+From dcb64d3c0d57e8bc674ec4ca6bf7f4812f49f7b2 Mon Sep 17 00:00:00 2001
 From: Jesper Juhl <jj@chaosbits.net>
 Date: Fri, 31 Dec 2010 11:18:48 -0800
-Subject: [PATCH 40/66] Broadcom CNIC core network driver: fix mem leak on allocation failures in cnic_alloc_uio_rings()
+Subject: [PATCH 40/65] Broadcom CNIC core network driver: fix mem leak on allocation failures in cnic_alloc_uio_rings()
 
 We are leaking memory in drivers/net/cnic.c::cnic_alloc_uio_rings() if
 either of the calls to dma_alloc_coherent() fail. This patch fixes it by

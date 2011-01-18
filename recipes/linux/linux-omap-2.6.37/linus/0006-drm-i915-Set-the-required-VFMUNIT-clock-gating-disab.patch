@@ -1,7 +1,7 @@
-From 06f37751af77192b424b2b0ff17dc08de65faba0 Mon Sep 17 00:00:00 2001
+From b4defd15cd77597734bab7089fa721fde6e3cfd5 Mon Sep 17 00:00:00 2001
 From: Eric Anholt <eric@anholt.net>
 Date: Tue, 14 Dec 2010 10:06:46 -0800
-Subject: [PATCH 06/66] drm/i915: Set the required VFMUNIT clock gating disable on Ironlake.
+Subject: [PATCH 06/65] drm/i915: Set the required VFMUNIT clock gating disable on Ironlake.
 
 It's required by the specs, but we don't know why.  Let's not find out
 why.

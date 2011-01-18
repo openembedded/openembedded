@@ -1,7 +1,7 @@
-From 4a5fc4e179d79c79ad87bfc12a2d7e9b2371e40c Mon Sep 17 00:00:00 2001
+From 276d3ef4021021959540cdb7a5041c477432d29e Mon Sep 17 00:00:00 2001
 From: Dan Carpenter <error27@gmail.com>
 Date: Thu, 23 Dec 2010 19:17:34 +0000
-Subject: [PATCH 16/66] skfp: testing the wrong variable in skfp_driver_init()
+Subject: [PATCH 16/65] skfp: testing the wrong variable in skfp_driver_init()
 
 The intent here was to test if the allocation failed but we tested
 "SharedMemSize" instead of "SharedMemAddr" by mistake.

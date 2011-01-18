@@ -1,7 +1,7 @@
-From 4d3024428f5c3ef5295e6f6fb257ae118b3f93a1 Mon Sep 17 00:00:00 2001
+From b3ae260de2254a0aed982b5964396a9914859c0e Mon Sep 17 00:00:00 2001
 From: Chris Wilson <chris@chris-wilson.co.uk>
 Date: Tue, 14 Dec 2010 19:21:29 +0000
-Subject: [PATCH 09/66] drm/i915: Verify Ironlake eDP presence on DP_A using the capability fuse
+Subject: [PATCH 09/65] drm/i915: Verify Ironlake eDP presence on DP_A using the capability fuse
 
 Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
 ---

@@ -1,7 +1,7 @@
-From 50f4db415d1ee9ee5100214cc89cf5df1ee1c1e2 Mon Sep 17 00:00:00 2001
+From 6ec7cf889c9a8ddf97fbbcbda4888b0f17930e04 Mon Sep 17 00:00:00 2001
 From: Thara Gopinath <thara@ti.com>
 Date: Fri, 29 Oct 2010 20:43:29 +0530
-Subject: [PATCH 09/19] OMAP: Introduce device specific set rate and get rate in omap_device structure
+Subject: [PATCH 09/20] OMAP: Introduce device specific set rate and get rate in omap_device structure
 
 This patch extends the omap_device structure to contain
 pointers to scale the operating rate of the

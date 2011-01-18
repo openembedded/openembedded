@@ -1,7 +1,7 @@
-From d24eb0db9c8a7ceecae860bdc636ed1e8a86943a Mon Sep 17 00:00:00 2001
+From 0ff8217bd7272d8aef1e58250d84cf5680b16b2d Mon Sep 17 00:00:00 2001
 From: Lars-Peter Clausen <lars@metafoo.de>
 Date: Tue, 28 Dec 2010 21:37:56 +0100
-Subject: [PATCH 18/66] ASoC: codecs: max98088: Fix register cache incoherency
+Subject: [PATCH 18/65] ASoC: codecs: max98088: Fix register cache incoherency
 
 The multi-component patch(commit f0fba2ad1) moved the allocation of the
 register cache from the driver to the ASoC core. Most drivers where adjusted to

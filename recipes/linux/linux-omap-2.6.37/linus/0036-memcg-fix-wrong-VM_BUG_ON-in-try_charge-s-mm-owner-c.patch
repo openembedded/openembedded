@@ -1,7 +1,7 @@
-From ebb76ce16daf6908dc030dec1c00827d37129fe5 Mon Sep 17 00:00:00 2001
+From 06410121f430702f9f482331a1f6d9ba3ebe5911 Mon Sep 17 00:00:00 2001
 From: KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>
 Date: Wed, 29 Dec 2010 14:07:11 -0800
-Subject: [PATCH 36/66] memcg: fix wrong VM_BUG_ON() in try_charge()'s mm->owner check
+Subject: [PATCH 36/65] memcg: fix wrong VM_BUG_ON() in try_charge()'s mm->owner check
 
 At __mem_cgroup_try_charge(), VM_BUG_ON(!mm->owner) is checked.
 But as commented in mem_cgroup_from_task(), mm->owner can be NULL

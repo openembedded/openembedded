@@ -1,7 +1,7 @@
-From 8f33d5277fada0291ea495f7fd44a3e7b7aa41d3 Mon Sep 17 00:00:00 2001
+From 8948bfb494b67389d7ea6249b3d6e765f4500d88 Mon Sep 17 00:00:00 2001
 From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 Date: Wed, 22 Dec 2010 14:46:46 +0100
-Subject: [PATCH 49/66] dmaengine: provide dummy functions for DMA_ENGINE=n
+Subject: [PATCH 49/65] dmaengine: provide dummy functions for DMA_ENGINE=n
 
 This lets drivers, optionally using the dmaengine, build with DMA_ENGINE
 unselected.

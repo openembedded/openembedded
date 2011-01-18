@@ -1,7 +1,7 @@
-From 2393c944d5d60eedaede80273ede8a816b5fa3e0 Mon Sep 17 00:00:00 2001
+From 7b63a1b5eed2e8f4c90cef7ba893dd95ab1d71ae Mon Sep 17 00:00:00 2001
 From: Jesper Juhl <jj@chaosbits.net>
 Date: Sun, 26 Dec 2010 09:59:58 +0000
-Subject: [PATCH 39/66] ISDN, Gigaset: Fix memory leak in do_disconnect_req()
+Subject: [PATCH 39/65] ISDN, Gigaset: Fix memory leak in do_disconnect_req()
 
 Hi,
 

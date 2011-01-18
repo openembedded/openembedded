@@ -1,0 +1,48 @@
+From e1dd1afba99853083da545f632a1f7c6899ae379 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@beagleboard.org>
+Date: Tue, 11 Jan 2011 17:13:36 +0000
+Subject: [PATCH 02/28] omap3: beaglexm: fix DVI reset GPIO
+
+GPIO reset line for Beagle XM is different from vanilla beagle
+so we populate it as part of gpio update routine.
+
+This in part fixes the issue of display not functioning on beagle XM
+platform.
+
+[nm@ti.com: split up, added descriptive changelogs]
+Signed-off-by: Nishanth Menon <nm@ti.com>
+Signed-off-by: Koen Kooi <koen@beagleboard.org>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
+ arch/arm/mach-omap2/board-omap3beagle.c |    8 +++++++-
+ 1 files changed, 7 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index af1166b..673deb9 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -199,7 +199,7 @@ static struct omap_dss_device beagle_dvi_device = {
+ 	.name = "dvi",
+ 	.driver_name = "generic_panel",
+ 	.phy.dpi.data_lines = 24,
+-	.reset_gpio = 170,
++	.reset_gpio = -EINVAL,
+ 	.platform_enable = beagle_enable_dvi,
+ 	.platform_disable = beagle_disable_dvi,
+ };
+@@ -307,6 +307,12 @@ static int beagle_twl_gpio_setup(struct device *dev,
+ 	else
+ 		gpio_direction_output(gpio + TWL4030_GPIO_MAX, 0);
+ 
++	/* DVI reset GPIO is different between beagle revisions */
++	if (omap3_beagle_get_rev() == OMAP3BEAGLE_BOARD_XM)
++		beagle_dvi_device.reset_gpio = 129;
++	else
++		beagle_dvi_device.reset_gpio = 170;
++
+ 	/* TWL4030_GPIO_MAX + 1 == ledB, PMU_STAT (out, active low LED) */
+ 	gpio_leds[2].gpio = gpio + TWL4030_GPIO_MAX + 1;
+ 
+-- 
+1.6.6.1
+

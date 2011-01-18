@@ -1,7 +1,7 @@
-From b83be6f20a0e468f715b14225c9f897538dfe5ad Mon Sep 17 00:00:00 2001
+From 84a03bcb1f1fb5b6a9f6f508fa0a1fae41a5827a Mon Sep 17 00:00:00 2001
 From: Christoph Hellwig <hch>
 Date: Thu, 16 Dec 2010 12:04:54 +0100
-Subject: [PATCH 35/66] update Documentation/filesystems/Locking
+Subject: [PATCH 35/65] update Documentation/filesystems/Locking
 
 Mostly inspired by all the recent BKL removal changes, but a lot of older
 updates also weren't properly recorded.

@@ -1,0 +1,28 @@
+From ed12d865de851c5aed3ae7685337551b831bb045 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Mon, 8 Mar 2010 14:38:31 +0100
+Subject: [PATCH 07/28] modedb.c: add proper 720p60 mode
+
+Signed-off-by: Koen Kooi <koen@beagleboard.org>
+---
+ drivers/video/modedb.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/video/modedb.c b/drivers/video/modedb.c
+index de450c1..1cd8153 100644
+--- a/drivers/video/modedb.c
++++ b/drivers/video/modedb.c
+@@ -46,6 +46,10 @@ static const struct fb_videomode modedb[] = {
+ 	NULL, 60, 640, 480, 39721, 40, 24, 32, 11, 96, 2,
+ 	0, FB_VMODE_NONINTERLACED
+     }, {
++	/* 1280x720 @ 60 Hz, 45 kHz hsync, CEA 681-E Format 4 */
++	"hd720", 60, 1280, 720, 13468, 220, 110, 20, 5, 40, 5,
++	0, FB_VMODE_NONINTERLACED
++    }, {
+ 	/* 800x600 @ 56 Hz, 35.15 kHz hsync */
+ 	NULL, 56, 800, 600, 27777, 128, 24, 22, 1, 72, 2,
+ 	0, FB_VMODE_NONINTERLACED
+-- 
+1.6.6.1
+
