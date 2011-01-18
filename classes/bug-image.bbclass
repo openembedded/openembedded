@@ -30,7 +30,7 @@ ROOTFS_POSTPROCESS_COMMAND += "rootfs_update_buildinfo"
 
 rootfs_update_buildinfo () {
 	echo "BUG Linux Build Information"	> ${IMAGE_ROOTFS}/etc/buildinfo
-	echo "Version:    2.0.2"		>> ${IMAGE_ROOTFS}/etc/buildinfo
+	echo "Version:    2.1.0"		>> ${IMAGE_ROOTFS}/etc/buildinfo
 	echo "Build Host: `uname -a`"		>> ${IMAGE_ROOTFS}/etc/buildinfo
 	echo "Build User: `whoami`"		>> ${IMAGE_ROOTFS}/etc/buildinfo
 	echo "Build Time: `date -u`"		>> ${IMAGE_ROOTFS}/etc/buildinfo
