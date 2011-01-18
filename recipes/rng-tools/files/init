@@ -5,32 +5,40 @@
 # > update-rc.d rng-tools defaults 60
 #
 
-rngd=/usr/local/sbin/rngd
+rngd=/usr/sbin/rngd
 test -x "$rngd" || exit 1
+
+if [ -e /etc/default/rng-tools ]; then
+    . /etc/default/rng-tools
+fi
+
+if [ -n "$RNG_DEVICE" ]; then
+    EXTRA_ARGS="-- -r $RNG_DEVICE"
+fi
 
 
 case "$1" in
   start)
     echo -n "Starting random number generator daemon"
-    start-stop-daemon --start --quiet --exec $rngd
+    start-stop-daemon -S -q -x $rngd $EXTRA_ARGS
     echo "."
     ;;
   stop)
     echo -n "Stopping random number generator daemon"
-    start-stop-daemon --stop --quiet -n rngd
+    start-stop-daemon -K -q -n rngd
     echo "."
     ;;
   reload|force-reload)
     echo -n "Signalling rng daemon restart"
-    start-stop-daemon --stop --quiet --signal 1 --exec $rngd
-    start-stop-daemon --stop --quiet --signal 1 --exec $rngd
+    start-stop-daemon -K -q -s 1 -x $rngd
+    start-stop-daemon -K -q -s 1 -x $rngd
     ;;
   restart)
     echo -n "Stopping random number generator daemon"
-    start-stop-daemon --stop --quiet -n rngd
+    start-stop-daemon -K -q -n rngd
     echo "."
     echo -n "Starting random number generator daemon"
-    start-stop-daemon --start --quiet --exec $rngd
+    start-stop-daemon -S -q -x $rngd $EXTRA_ARGS
     echo "."
     ;;
   *)
