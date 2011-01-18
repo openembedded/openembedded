@@ -1,0 +1,374 @@
+Index: gdb-7.0/gdb/gdbserver/remote-utils.c
+===================================================================
+--- gdb-7.0.orig/gdb/gdbserver/remote-utils.c	2009-07-06 11:31:20.000000000 -0700
++++ gdb-7.0/gdb/gdbserver/remote-utils.c	2009-10-13 15:16:16.495396950 -0700
+@@ -778,7 +778,12 @@ input_interrupt (int unused)
+ 
+       cc = read (remote_desc, &c, 1);
+ 
++#ifdef _WIN32_WINNT
++      // its normal in windows for current_inferior to be null.
++      if (cc != 1 || c != '\003' /*|| current_inferior == NULL*/)
++#else
+       if (cc != 1 || c != '\003' || current_inferior == NULL)
++#endif
+ 	{
+ 	  fprintf (stderr, "input_interrupt, count = %d c = %d ('%c')\n",
+ 		   cc, c, c);
+Index: gdb-7.0/gdb/gdbserver/server.c
+===================================================================
+--- gdb-7.0.orig/gdb/gdbserver/server.c	2009-06-30 09:35:25.000000000 -0700
++++ gdb-7.0/gdb/gdbserver/server.c	2009-10-13 15:18:08.065401029 -0700
+@@ -31,6 +31,9 @@
+ #if HAVE_MALLOC_H
+ #include <malloc.h>
+ #endif
++#ifdef _WIN32
++#include <windows.h>
++#endif
+ 
+ ptid_t cont_thread;
+ ptid_t general_thread;
+@@ -502,6 +505,20 @@ monitor_show_help (void)
+   monitor_output ("    Enable h/w breakpoint/watchpoint debugging messages\n");
+   monitor_output ("  set remote-debug <0|1>\n");
+   monitor_output ("    Enable remote protocol debugging messages\n");
++#ifdef _WIN32
++  monitor_output ("  get processlist\n");
++  monitor_output ("    List remote processes with names and pid\n");
++  monitor_output ("  get processlistmi\n");
++  monitor_output ("    Process list in an MI-like format\n");
++#endif
++  monitor_output ("  set env <name=value>\n");
++  monitor_output ("    Set environment variable in remote environment\n");
++  monitor_output ("  cd <directory>\n");
++  monitor_output ("    Change current working directory\n");
++  monitor_output ("  pwd\n");
++  monitor_output ("    Print current working directory\n");
++  monitor_output ("  shell <command line>\n");
++  monitor_output ("    Execute command on remote target\n");
+   monitor_output ("  exit\n");
+   monitor_output ("    Quit GDBserver\n");
+ }
+@@ -660,6 +677,47 @@ handle_search_memory (char *own_buf, int
+       return;					\
+     }
+ 
++#ifdef _WIN32
++typedef DWORD (__stdcall *GETPROCESSIMAGEFILENAME)(HANDLE hProcess, LPTSTR lpImageFileName, DWORD nSize);
++typedef BOOL (__stdcall *ENUMPROCESSES)(DWORD* pProcessIds, DWORD cb, DWORD* pBytesReturned);
++
++# define HAS_DEVICE(P) \
++((((P)[0] >= 'A' && (P)[0] <= 'Z') || ((P)[0] >= 'a' && (P)[0] <= 'z')) \
++&& (P)[1] == ':')
++# define FILE_SYSTEM_PREFIX_LEN(P) (HAS_DEVICE (P) ? 2 : 0)
++# define ISSLASH(C) ((C) == '/' || (C) == '\\')
++
++char *
++__basename (char const *name)
++{
++	char const *base = name += FILE_SYSTEM_PREFIX_LEN (name);
++	int all_slashes = 1;
++	char const *p;
++	
++	for (p = name; *p; p++)
++    {
++		if (ISSLASH (*p))
++			base = p + 1;
++		else
++			all_slashes = 0;
++    }
++	
++	/* If NAME is all slashes, arrange to return `/'.  */
++	if (*base == '\0' && ISSLASH (*name) && all_slashes)
++		--base;
++	
++	/* Make sure the last byte is not a slash.  */
++	//assert (all_slashes || !ISSLASH (*(p - 1)));
++	
++	return (char *) base;
++}
++#endif
++
++#ifndef _POSIX_PATH_MAX
++#define _POSIX_PATH_MAX 1024
++#define _POSIX_PATH_MAX_WAS_UNDEFINED
++#endif
++
+ /* Handle all of the extended 'q' packets.  */
+ void
+ handle_query (char *own_buf, int packet_len, int *new_packet_len_p)
+@@ -1216,6 +1274,158 @@ handle_query (char *own_buf, int packet_
+ 	  debug_threads = 1;
+ 	  monitor_output ("Debug output enabled.\n");
+ 	}
++#ifdef _WIN32
++  else if (strncmp (mon, "get processlist", 15) == 0)
++  {
++	  HINSTANCE lib = LoadLibrary("PSAPI.DLL");
++	  GETPROCESSIMAGEFILENAME imageFilename = (GETPROCESSIMAGEFILENAME)GetProcAddress(lib, "GetProcessImageFileNameA");
++	  ENUMPROCESSES enumProcesses = (ENUMPROCESSES)GetProcAddress(lib, "EnumProcesses");
++	  
++	  char* name = (char*)malloc(MAX_PATH);
++	  
++	  int miMode = (strcmp(mon, "get processlistmi") == 0);
++	  
++	  DWORD* pids = (DWORD*)malloc(sizeof(DWORD)*1024);
++	  memset(pids, 0, sizeof(pids));
++	  DWORD size = 0;
++	  
++	  if (!enumProcesses(pids, 1024 * sizeof(DWORD), &size))
++	  {
++		  free(pids);
++		  free(mon);
++		  return;
++	  }
++	  
++	  int cnt = 0;
++	  int number = size / sizeof(DWORD);
++	  
++	  char* miOutput = NULL;
++	  
++	  if (!miMode) 
++		  monitor_output("Remote process list:\n");
++	  else
++	  {
++		  miOutput = (char*)malloc((number * 255) * sizeof(char));
++		  strcpy(miOutput, "^done,processlist=[");
++	  }
++	  
++	  for (cnt = 0; cnt < number; cnt++)
++	  {
++		  HMODULE hProcess = (HMODULE)OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pids[cnt]);
++		  strcpy(name, "");
++		  printf(name);
++		  
++		  imageFilename(hProcess, name, MAX_PATH);
++		  
++		  if (pids[cnt] > 4 && strcmp(name, "") != 0)
++		  {
++			  char item[2048] = "";
++			  char tmp[24] = "0";
++			  itoa(pids[cnt], tmp, 10);
++			  strcat(item, tmp);
++			  strcat(item, "=");
++			  strcat(item, __basename(name));
++			  
++			  if (!miMode)
++			  {
++				  strcat(item, "\n");
++				  monitor_output(item);
++			  }
++			  else
++			  {
++				  strcat(miOutput, item);
++				  strcat(miOutput, ",");
++			  }
++		  }
++		  
++		  CloseHandle(hProcess);
++	  }
++	  
++	  if (miMode)
++	  {
++		  strcat(miOutput, "]\n");
++		  monitor_output(miOutput);
++		  free(miOutput);
++	  }
++	  
++	  FreeLibrary(lib);
++	  
++	  free(pids);
++	  free(name);	  
++  }
++#endif		
++  else if (strncmp (mon, "set env ", 8) == 0)
++  {
++	  char* envLine = mon + 8;
++	  char* envName = strtok(envLine, "= ");
++	  char* envValue = strtok(NULL, "= ");
++	  if (envName && envValue)
++	  {
++#ifdef _WIN32
++		  SetEnvironmentVariable(envName, envValue);
++#else
++		  setenv(envName, envValue, 1);
++#endif 
++		  monitor_output("Target environment variable set (");
++		  monitor_output(envName);
++		  monitor_output(" = ");
++		  monitor_output(envValue);
++		  monitor_output(").\n");
++	  }
++	  else
++		  monitor_output("Incorrect format for environment variable.\n");
++  }
++  else if (strncmp (mon, "cd ", 3) == 0)
++  {
++	  char* dir = mon + 3;
++	  if (strlen(dir) > 0)
++		  chdir(dir);
++  }
++  else if (strcmp(mon, "pwd") == 0)
++  {
++	  long size = _POSIX_PATH_MAX;
++	  char* current_directory = (char*)malloc(size);	  
++	  getcwd(current_directory, size);
++	  if (strlen(current_directory) > 0)
++	  {
++		  monitor_output(current_directory);
++		  monitor_output("\n");
++	  }
++	  free(current_directory);
++  }
++  else if (strncmp (mon, "shell ", 6) == 0)
++  {
++	  char* arg = mon + 6;
++	  
++	  if (strlen(arg) == 0)
++	  {
++		  monitor_output("Inferior shells are not supported.");
++		  free(mon);
++		  return;
++	  }
++	  
++	  long size = _POSIX_PATH_MAX;
++	  char* current_directory = (char*)malloc(size);  
++	  getcwd(current_directory, size);
++
++	  int rc = system (arg);
++	  char msg[255];
++	  if (rc == -1)
++	  {
++		  sprintf(msg, "Cannot execute '%s': %s.\n", arg, strerror(errno));
++		  monitor_output(msg);
++	  }
++	  else if (rc != -1)
++	  {
++		  sprintf(msg, "'%s' exited with status %d.\n", arg, rc);
++		  monitor_output(msg);
++	  }
++
++	  /* Make sure to return to the directory GDB thinks it is, in case the
++	   shell command we just ran changed it.  */
++	  chdir(current_directory);
++	  free(current_directory);
++  }
+       else if (strcmp (mon, "set debug 0") == 0)
+ 	{
+ 	  debug_threads = 0;
+@@ -1295,6 +1505,11 @@ handle_query (char *own_buf, int packet_
+   own_buf[0] = 0;
+ }
+ 
++#ifdef _POSIX_PATH_MAX_WAS_UNDEFINED
++#undef _POSIX_PATH_MAX
++#undef _POSIX_PATH_MAX_WAS_UNDEFINED
++#endif
++
+ /* Parse vCont packets.  */
+ void
+ handle_v_cont (char *own_buf)
+Index: gdb-7.0/gdb/gdbserver/win32-low.c
+===================================================================
+--- gdb-7.0.orig/gdb/gdbserver/win32-low.c	2009-07-04 11:13:28.000000000 -0700
++++ gdb-7.0/gdb/gdbserver/win32-low.c	2009-10-13 15:16:16.495396950 -0700
+@@ -38,7 +38,7 @@
+ #include <sys/cygwin.h>
+ #endif
+ 
+-#define LOG 0
++#define LOG 1
+ 
+ #define OUTMSG(X) do { printf X; fflush (stdout); } while (0)
+ #if LOG
+@@ -556,9 +556,9 @@ win32_create_inferior (char *program, ch
+     }
+   OUTMSG2 (("Command line is \"%s\"\n", args));
+ 
+-#ifdef CREATE_NEW_PROCESS_GROUP
++//#ifdef CREATE_NEW_PROCESS_GROUP
+   flags |= CREATE_NEW_PROCESS_GROUP;
+-#endif
++//#endif
+ 
+   ret = create_process (program, args, flags, &pi);
+   err = GetLastError ();
+@@ -699,8 +699,37 @@ win32_kill (int pid)
+   if (current_process_handle == NULL)
+     return -1;
+ 
+-  TerminateProcess (current_process_handle, 0);
+-  for (;;)
++	TerminateProcess (current_process_handle, 0);
++
++	// BKS - fix for terminating apps prior to their exit, lets go of execs.
++	winapi_DebugActiveProcessStop DebugActiveProcessStop = NULL;
++	winapi_DebugSetProcessKillOnExit DebugSetProcessKillOnExit = NULL;
++#ifdef _WIN32_WCE
++	HMODULE dll = GetModuleHandle (_T("COREDLL.DLL"));
++#else
++	HMODULE dll = GetModuleHandle (_T("KERNEL32.DLL"));
++#endif
++	DebugActiveProcessStop = GETPROCADDRESS (dll, DebugActiveProcessStop);
++	DebugSetProcessKillOnExit = GETPROCADDRESS (dll, DebugSetProcessKillOnExit);
++
++	if (DebugSetProcessKillOnExit != NULL
++		&& DebugActiveProcessStop != NULL)
++	{
++		{
++			struct thread_resume resume;
++			resume.thread = -1;
++			resume.step = 0;
++			resume.sig = 0;
++			resume.leave_stopped = 0;
++			win32_resume (&resume);
++		}
++
++		DebugActiveProcessStop (current_process_id);
++		DebugSetProcessKillOnExit (FALSE);
++	}
++	// end BKS
++
++   for (;;)
+     {
+       if (!child_continue (DBG_CONTINUE, -1))
+ 	break;
+@@ -1207,6 +1236,7 @@ handle_exception (struct target_waitstat
+ 
+   ourstatus->kind = TARGET_WAITKIND_STOPPED;
+ 
++	//printf("handle exception....................%X\n", (unsigned int)code);
+   switch (code)
+     {
+     case EXCEPTION_ACCESS_VIOLATION:
+@@ -1217,7 +1247,13 @@ handle_exception (struct target_waitstat
+       OUTMSG2 (("STATUS_STACK_OVERFLOW"));
+       ourstatus->value.sig = TARGET_SIGNAL_SEGV;
+       break;
+-    case STATUS_FLOAT_DENORMAL_OPERAND:
++	// BKS
++	case STATUS_INVALID_HANDLE:
++      OUTMSG2 (("STATUS_INVALID_HANDLE"));
++	  ourstatus->value.sig = TARGET_SIGNAL_TRAP;
++	  break;
++	// BKS
++	case STATUS_FLOAT_DENORMAL_OPERAND:
+       OUTMSG2 (("STATUS_FLOAT_DENORMAL_OPERAND"));
+       ourstatus->value.sig = TARGET_SIGNAL_FPE;
+       break;
+Index: gdb-7.0/gdb/windows-nat.c
+===================================================================
+--- gdb-7.0.orig/gdb/windows-nat.c	2009-09-30 00:40:10.000000000 -0700
++++ gdb-7.0/gdb/windows-nat.c	2009-10-13 15:16:16.505397243 -0700
+@@ -1035,6 +1035,10 @@ handle_exception (struct target_waitstat
+       DEBUG_EXCEPTION_SIMPLE ("STATUS_STACK_OVERFLOW");
+       ourstatus->value.sig = TARGET_SIGNAL_SEGV;
+       break;
++	case STATUS_INVALID_HANDLE:
++	  DEBUG_EXCEPTION_SIMPLE ("STATUS_INVALID_HANDLE");
++	  ourstatus->value.sig = TARGET_SIGNAL_TRAP;
++	  break;
+     case STATUS_FLOAT_DENORMAL_OPERAND:
+       DEBUG_EXCEPTION_SIMPLE ("STATUS_FLOAT_DENORMAL_OPERAND");
+       ourstatus->value.sig = TARGET_SIGNAL_FPE;

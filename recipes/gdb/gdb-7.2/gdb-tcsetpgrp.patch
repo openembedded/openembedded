@@ -1,0 +1,43 @@
+Stuart Hughes, stuarth@freescale.com 8th April 05
+
+Extracted from:
+
+From: Davin Milun (milun@cs.buffalo.edu)
+Subject: Re: xxgdb for Solaris
+View: Complete Thread (4 articles)
+Original Format
+Newsgroups: comp.unix.solaris
+Date: 1995/05/05
+
+Geraldo Veiga <ggv@research.att.com> wrote:
+>Now, how do I avoid those
+>
+>[tcsetpgrp failed in terminal_inferior: Inappropriate ioctl for device]
+>
+>messages at every step the program takes under mxgdb (and xxgdb)?.  I am
+>running GDB4.13 under Solaris 2.4.  
+
+You need to patch inflow.c.
+
+
+ diff --exclude CVS -uNr gdb-6.0/gdb/inflow.c gdb-6.0.modified/gdb/inflow.c
+Index: gdb-7.1/gdb/inflow.c
+===================================================================
+--- gdb-7.1.orig/gdb/inflow.c	2010-01-21 06:26:12.000000000 -0800
++++ gdb-7.1/gdb/inflow.c	2010-06-09 13:59:33.761358724 -0700
+@@ -308,13 +308,13 @@ terminal_inferior (void)
+ 	{
+ #ifdef HAVE_TERMIOS
+ 	  result = tcsetpgrp (0, tinfo->process_group);
+-	  if (!inf->attach_flag)
++	  if (!inf->attach_flag && errno != ENOTTY)
+ 	    OOPSY ("tcsetpgrp");
+ #endif
+ 
+ #ifdef HAVE_SGTTY
+ 	  result = ioctl (0, TIOCSPGRP, &tinfo->process_group);
+-	  if (!inf->attach_flag)
++	  if (!inf->attach_flag && errno != ENOTTY)
+ 	    OOPSY ("TIOCSPGRP");
+ #endif
+ 	}
