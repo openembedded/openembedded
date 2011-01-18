@@ -5,7 +5,7 @@ SECTION = "console/network"
 LICENSE ="BSD"
 DEPENDS = "docbook-utils-native sgmlspl-native"
 
-PR = "r3"
+PR = "r4"
 
 DEFAULT_PREFERENCE_angstrom = "2"
 
@@ -18,6 +18,7 @@ SRC_URI = "http://ftp.de.debian.org/debian/pool/main/i/iputils/iputils_${PV}.ori
            file://debian/targets.diff \
            file://debian/fix-tracepath-docs.diff \
            file://debian/fix-arping-timeouts.diff \
+           file://CVE-2010-2529.patch \
 "
 
 S = "${WORKDIR}/iputils_20071127.orig"
