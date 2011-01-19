@@ -3,7 +3,7 @@ HOMEPAGE = "http://shr-project.org/"
 LICENSE = "GPL"
 SECTION = "x11/applications"
 DEPENDS += " libfso-glib libshr-glib sqlite3 shr-specs libfsoframework"
-SRCREV = "c94b6ef3900bfe850ec3b92e2c8721fb0b5fbf9a"
+SRCREV = "374548a6d9d53f4b3d26b70cbb5ab7257e6ce26d"
 PV = "0.0.0+gitr${SRCPV}"
 PR = "r5"
 
