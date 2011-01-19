@@ -5,7 +5,7 @@ NATIVEDEPS = "mpfr-native gmp-native"
 
 COMPATIBLE_TARGET_SYS = "."
 
-INC_PR = "r26"
+INC_PR = "r27"
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=archive \
 	file://100-uclibc-conf.patch \
