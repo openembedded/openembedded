@@ -5,7 +5,7 @@
 DESCRIPTION = "This is a library for accessing the new AIO system calls (asynchronous i/o) for the Linux kernel."
 HOMEPAGE = "http://oss.oracle.com/projects/libaio-oracle"
 LICENSE = "LGPL"
-PR  =  "r2"
+PR  =  "r3"
 
 SRC_URI = "http://oss.oracle.com/projects/libaio-oracle/dist/files/${PN}-${PV}.tar.gz"
 
@@ -17,7 +17,7 @@ inherit autotools
 FILES_${PN} = "/usr"
 
 #We don't have a raw.h with uClibc, so copy in the one from glibc
-SRC_URI_append_linux-uclibc = " file://raw.h"
+SRC_URI_append_libc-uclibc = " file://raw.h"
 
 do_configure_prepend_linux-uclibc () {
 	install -D -m 0644 ${WORKDIR}/raw.h ${S}/sys/raw.h
