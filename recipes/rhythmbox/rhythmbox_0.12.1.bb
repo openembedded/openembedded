@@ -4,6 +4,7 @@ DEPENDS = "dbus-glib-native gtk+ glib-2.0 gnome-doc-utils gnome-media gstreamer 
 # optional dependencies:
 DEPENDS += "avahi gnome-keyring hal libgpod libmusicbrainz nautilus-cd-burner python-pygtk vala"
 #DEPENDS += "brasero mtp"
+PR = "r1"
 
 inherit gnome
 
@@ -14,7 +15,7 @@ do_configure_prepend() {
 
 EXTRA_OECONF = "--disable-static --disable-scrollkeeper ac_cv_strftime_supports_E_O=yes"
 # FIXME: Verify that in uclibc:
-EXTRA_OECONF_linux-uclibc += "ac_cv_strftime_supports_E_O=no"
+EXTRA_OECONF_libc-uclibc += "ac_cv_strftime_supports_E_O=no"
 
 EXTRA_OEMAKE = "DBUS_GLIB_BIN=${STAGING_BINDIR_NATIVE} VALAC=${STAGING_BINDIR_NATIVE}/valac"
 
