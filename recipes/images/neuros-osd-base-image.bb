@@ -8,7 +8,7 @@ PR = "r1"
 
 # Select which Secure Shell Daemon gets included into the rootfs
 DISTRO_SSH_DAEMON ?= "dropbear"
-DISTRO_DEV_MANAGER = "mdev"
+IMAGE_DEV_MANAGER = "mdev"
 PREFERRED_PROVIDER_hotplug = "mdev"
 
 # Include a timestamp that initscripts can use to set the time to a 
