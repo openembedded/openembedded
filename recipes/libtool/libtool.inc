@@ -6,7 +6,7 @@ HOMEPAGE = "http://www.gnu.org/software/libtool/libtool.html"
 LICENSE = "GPLv2+"
 SECTION = "devel"
 
-INC_PR = "r27"
+INC_PR = "r28"
 
 FILESPATHPKG=. "libtool-${PV}:"
 
@@ -20,6 +20,7 @@ SRC_URI = "${GNU_MIRROR}/libtool/libtool-${PV}.tar.gz \
 	   file://rename-with-sysroot.patch \
 	   file://resolve-sysroot.patch \
 	   file://use-sysroot-in-libpath.patch \
+	   file://fix-final-rpath.patch \
           "
 do_configure_prepend () {
 	if ${@['true', 'false'][bb.data.inherits_class('native', d) or bb.data.inherits_class('sdk', d) or (bb.data.getVar('PN', d, 1) == 'libtool-cross')]}
