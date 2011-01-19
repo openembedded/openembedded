@@ -136,6 +136,8 @@ SRC_URI = "git://arago-project.org/git/projects/linux-omap3.git;protocol=http;br
            file://0001-BeagleBoard-Adjust-USER-button-pin-for-xM.patch \
            file://0001-PSP-3.0.1.6-kernel-source-patched-with-OCF-Linux.patch \
            file://porches.patch \
+           file://0001-OMAP3-craneboard-print-expansionboard-name-detected-.patch \
+           file://0002-OMAP3-craneboard-add-support-for-TinCanTools-Trainer.patch \
            file://defconfig"
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
