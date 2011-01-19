@@ -4,7 +4,7 @@ PRIORITY = "required"
 DEPENDS = "makedevs"
 RDEPENDS_${PN} = "makedevs"
 LICENSE = "GPL"
-PR = "r125"
+PR = "r126"
 
 SRC_URI = "file://functions \
            file://halt \
@@ -140,10 +140,6 @@ do_install_append_hipox () {
 }
 
 # uclibc's date does support only SUSv3 strptime()
-do_install_append_linux-uclibc() {
-	install -m 0755    ${WORKDIR}/save-rtc-uclibc.sh ${D}${sysconfdir}/init.d/save-rtc.sh
-}
-
-do_install_append_linux-uclibceabi() {
+do_install_append_libc-uclibc() {
 	install -m 0755    ${WORKDIR}/save-rtc-uclibc.sh ${D}${sysconfdir}/init.d/save-rtc.sh
 }
