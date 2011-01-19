@@ -15,7 +15,7 @@ DEPENDS = "flex flex-native"
 # PAM is not a lot of use without configuration files and the plugins
 RRECOMMENDS_${PN} = "libpam-meta libpam-base-files"
 
-PR = "r1"
+PR = "r2"
 
 # The project is actually called Linux-PAM but that gives
 # a bad OE package name because of the upper case characters
@@ -33,8 +33,7 @@ UCLIBC_PATCHES = " file://Linux-PAM-1.1.0-uclibc.patch \
                    file://pam-no-innetgr.patch \
                  "
 
-SRC_URI_append_linux-uclibc = ${UCLIBC_PATCHES}
-SRC_URI_append_linux-uclibceabi = ${UCLIBC_PATCHES}
+SRC_URI_append_libc-uclibc = ${UCLIBC_PATCHES}
 
 inherit autotools gettext
 
