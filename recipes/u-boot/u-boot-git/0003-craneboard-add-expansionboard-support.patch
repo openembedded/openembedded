@@ -1,0 +1,227 @@
+From 4727db0f161869a41045e7a52f938a6f88400b73 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Wed, 19 Jan 2011 14:55:22 +0100
+Subject: [PATCH 3/3] craneboard: add expansionboard support
+
+Signed-off-by: Koen Kooi <koen@dominion.thruhere.net>
+---
+ board/ti/am3517crane/am3517crane.c |   99 ++++++++++++++++++++++++++++++++++++
+ board/ti/am3517crane/am3517crane.h |   42 +++++++++++++++
+ include/configs/am3517_crane.h     |    6 ++-
+ 3 files changed, 146 insertions(+), 1 deletions(-)
+
+diff --git a/board/ti/am3517crane/am3517crane.c b/board/ti/am3517crane/am3517crane.c
+index 2f525b6..0822503 100644
+--- a/board/ti/am3517crane/am3517crane.c
++++ b/board/ti/am3517crane/am3517crane.c
+@@ -45,6 +45,27 @@
+ 
+ DECLARE_GLOBAL_DATA_PTR;
+ 
++#define TWL4030_I2C_BUS			0
++#define EXPANSION_EEPROM_I2C_BUS	1
++#define EXPANSION_EEPROM_I2C_ADDRESS	0x50
++
++#define TINCANTOOLS_ZIPPY		0x01000100
++#define TINCANTOOLS_ZIPPY2		0x02000100
++#define TINCANTOOLS_TRAINER		0x04000100
++#define TINCANTOOLS_SHOWDOG		0x03000100
++#define KBADC_BEAGLEFPGA		0x01000600
++
++#define BEAGLE_NO_EEPROM		0xffffffff
++
++static struct {
++	unsigned int device_vendor;
++	unsigned char revision;
++	unsigned char content;
++	char fab_revision[8];
++	char env_var[16];
++	char env_setting[64];
++} expansion_config;
++
+ /*
+  * Routine: board_init
+  * Description: Early hardware init.
+@@ -61,6 +82,32 @@ int board_init(void)
+ }
+ 
+ /*
++ * Routine: get_expansion_id
++ * Description: This function checks for expansion board by checking I2C
++ *		bus 1 for the availability of an AT24C01B serial EEPROM.
++ *		returns the device_vendor field from the EEPROM
++ */
++unsigned int get_expansion_id(void)
++{
++	i2c_set_bus_num(EXPANSION_EEPROM_I2C_BUS);
++
++	/* return BEAGLE_NO_EEPROM if eeprom doesn't respond */
++	if (i2c_probe(EXPANSION_EEPROM_I2C_ADDRESS) == 1) {
++		i2c_set_bus_num(TWL4030_I2C_BUS);
++		return BEAGLE_NO_EEPROM;
++	}
++
++	/* read configuration data */
++	i2c_read(EXPANSION_EEPROM_I2C_ADDRESS, 0, 1, (u8 *)&expansion_config,
++		 sizeof(expansion_config));
++
++	i2c_set_bus_num(TWL4030_I2C_BUS);
++
++	return expansion_config.device_vendor;
++}
++
++
++/*
+  * Routine: misc_init_r
+  * Description: Init ethernet (done here so udelay works)
+  */
+@@ -95,9 +142,61 @@ int misc_init_r(void)
+ 	reset &= (~CPGMACSS_SW_RST);
+ 	writel(reset, AM3517_IP_SW_RESET);
+ #endif
++
++	switch (get_expansion_id()) {
++	case TINCANTOOLS_ZIPPY:
++		printf("Recognized Tincantools Zippy board (rev %d %s)\n",
++			expansion_config.revision,
++			expansion_config.fab_revision);
++		//MUX_TINCANTOOLS_ZIPPY();
++		setenv("buddy", "zippy");
++		break;
++	case TINCANTOOLS_ZIPPY2:
++		printf("Recognized Tincantools Zippy2 board (rev %d %s)\n",
++			expansion_config.revision,
++			expansion_config.fab_revision);
++		//MUX_TINCANTOOLS_ZIPPY();
++		setenv("buddy", "zippy2");
++		break;
++	case TINCANTOOLS_TRAINER:
++		printf("Recognized Tincantools Trainer board (rev %d %s)\n",
++			expansion_config.revision,
++			expansion_config.fab_revision);
++		//MUX_TINCANTOOLS_ZIPPY();
++		//MUX_TINCANTOOLS_TRAINER();
++		setenv("buddy", "trainer");
++		break;
++	case TINCANTOOLS_SHOWDOG:
++		printf("Recognized Tincantools Showdow board (rev %d %s)\n",
++			expansion_config.revision,
++			expansion_config.fab_revision);
++		/* Place holder for DSS2 definition for showdog lcd */
++		setenv("defaultdisplay", "showdoglcd");
++		setenv("buddy", "showdog");
++		break;
++	case KBADC_BEAGLEFPGA:
++		printf("Recognized KBADC Beagle FPGA board\n");
++		//MUX_KBADC_BEAGLEFPGA();
++		setenv("buddy", "beaglefpga");
++		break;
++	case BEAGLE_NO_EEPROM:
++		printf("No EEPROM on expansion board\n");
++		setenv("buddy", "none");
++		break;
++	default:
++		printf("Unrecognized expansion board: %x\n",
++			expansion_config.device_vendor);
++		setenv("buddy", "unknown");
++	}
++
++	if (expansion_config.content == 1)
++		setenv(expansion_config.env_var, expansion_config.env_setting);
++
+ 	return 0;
+ }
+ 
++
++
+ /*
+  * Initializes on-chip ethernet controllers.
+  * to override, implement board_eth_init()
+diff --git a/board/ti/am3517crane/am3517crane.h b/board/ti/am3517crane/am3517crane.h
+index dbe2c34..83fe858 100644
+--- a/board/ti/am3517crane/am3517crane.h
++++ b/board/ti/am3517crane/am3517crane.h
+@@ -336,4 +336,46 @@ const omap3_sysinfo sysinfo = {
+ 	MUX_VAL(CP(JTAG_EMU0),		(IEN  | PTD | DIS | M0)) \
+ 	MUX_VAL(CP(JTAG_EMU1),		(IEN  | PTD | DIS | M0)) \
+ 
++#define MUX_TINCANTOOLS_ZIPPY() \
++	MUX_VAL(CP(MMC2_CLK),       (IEN  | PTU | EN  | M0)) /*MMC2_CLK*/\
++	MUX_VAL(CP(MMC2_CMD),       (IEN  | PTU | EN  | M0)) /*MMC2_CMD*/\
++	MUX_VAL(CP(MMC2_DAT0),      (IEN  | PTU | EN  | M0)) /*MMC2_DAT0*/\
++	MUX_VAL(CP(MMC2_DAT1),      (IEN  | PTU | EN  | M0)) /*MMC2_DAT1*/\
++	MUX_VAL(CP(MMC2_DAT2),      (IEN  | PTU | EN  | M0)) /*MMC2_DAT2*/\
++	MUX_VAL(CP(MMC2_DAT3),      (IEN  | PTU | EN  | M0)) /*MMC2_DAT3*/\
++	MUX_VAL(CP(MMC2_DAT4),      (IEN  | PTU | EN  | M1)) /*MMC2_DIR_DAT0*/\
++	MUX_VAL(CP(MMC2_DAT5),      (IEN  | PTU | EN  | M1)) /*MMC2_DIR_DAT1*/\
++	MUX_VAL(CP(MMC2_DAT6),      (IEN  | PTU | EN  | M1)) /*MMC2_DIR_CMD*/\
++	MUX_VAL(CP(MMC2_DAT7),      (IEN  | PTU | EN  | M1)) /*MMC2_CLKIN*/\
++	MUX_VAL(CP(MCBSP1_CLKR),    (IEN  | PTU | EN  | M1)) /*MCSPI4_CLK*/\
++	MUX_VAL(CP(MCBSP1_FSR),     (IEN  | PTU | EN  | M4)) /*GPIO_157*/\
++	MUX_VAL(CP(MCBSP1_DX),      (IEN  | PTD | EN  | M1)) /*MCSPI4_SIMO*/\
++	MUX_VAL(CP(MCBSP1_DR),      (IEN  | PTD | DIS | M1)) /*MCSPI4_SOMI*/\
++	MUX_VAL(CP(MCBSP1_FSX),     (IEN  | PTD | EN  | M1)) /*MCSPI4_CS0*/\
++	MUX_VAL(CP(MCBSP1_CLKX),    (IEN  | PTD | DIS | M4)) /*GPIO_162*/\
++	MUX_VAL(CP(MCBSP3_DX),      (IEN  | PTD | DIS | M4)) /*GPIO_140*/\
++	MUX_VAL(CP(MCBSP3_DR),      (IEN  | PTD | DIS | M4)) /*GPIO_142*/\
++	MUX_VAL(CP(MCBSP3_CLKX),    (IEN  | PTD | DIS | M4)) /*GPIO_141*/
++
++#define MUX_TINCANTOOLS_TRAINER() \
++	MUX_VAL(CP(MMC2_CLK),       (IEN  | PTU | EN  | M4)) /*GPIO_130*/\
++	MUX_VAL(CP(MMC2_CMD),       (IEN  | PTU | EN  | M4)) /*GPIO_131*/\
++	MUX_VAL(CP(MMC2_DAT0),      (IEN  | PTU | EN  | M4)) /*GPIO_132*/\
++	MUX_VAL(CP(MMC2_DAT1),      (IEN  | PTU | EN  | M4)) /*GPIO_133*/\
++	MUX_VAL(CP(MMC2_DAT2),      (IEN  | PTU | EN  | M4)) /*GPIO_134*/\
++	MUX_VAL(CP(MMC2_DAT3),      (IEN  | PTU | EN  | M4)) /*GPIO_135*/\
++	MUX_VAL(CP(MMC2_DAT4),      (IEN  | PTU | EN  | M4)) /*GPIO_136*/\
++	MUX_VAL(CP(MMC2_DAT5),      (IEN  | PTU | EN  | M4)) /*GPIO_137*/\
++	MUX_VAL(CP(MMC2_DAT6),      (IEN  | PTU | EN  | M4)) /*GPIO_138*/\
++	MUX_VAL(CP(MMC2_DAT7),      (IEN  | PTU | EN  | M4)) /*GPIO_139*/\
++	MUX_VAL(CP(MCBSP3_DX),      (IEN  | PTU | EN  | M4)) /*GPIO_140*/\
++	MUX_VAL(CP(MCBSP3_CLKX),    (IEN  | PTU | EN  | M4)) /*GPIO_141*/\
++	MUX_VAL(CP(MCBSP1_CLKX),    (IEN  | PTU | EN  | M4)) /*GPIO_162*/
++
++#define MUX_KBADC_BEAGLEFPGA() \
++	MUX_VAL(CP(MCBSP1_CLKR),    (IEN  | PTU | DIS | M1)) /*MCSPI4_CLK*/\
++	MUX_VAL(CP(MCBSP1_DX),      (IDIS | PTU | DIS | M1)) /*MCSPI4_SIMO*/\
++	MUX_VAL(CP(MCBSP1_DR),      (IEN  | PTU | EN  | M1)) /*MCSPI4_SOMI*/\
++	MUX_VAL(CP(MCBSP1_FSX),     (IDIS | PTU | DIS | M1)) /*MCSPI4_CS0*/
++
+ #endif /* _AM3517CRANE_H_ */
+diff --git a/include/configs/am3517_crane.h b/include/configs/am3517_crane.h
+index 9637e9d..f059dc7 100644
+--- a/include/configs/am3517_crane.h
++++ b/include/configs/am3517_crane.h
+@@ -162,6 +162,7 @@
+ #define CONFIG_SYS_I2C_SLAVE		1
+ #define CONFIG_SYS_I2C_BUS		0
+ #define CONFIG_SYS_I2C_BUS_SELECT	1
++#define CONFIG_I2C_MULTI_BUS           1
+ #define CONFIG_DRIVER_OMAP34XX_I2C	1
+ 
+ #define CONFIG_CMD_NET
+@@ -186,17 +187,20 @@
+ #define CONFIG_JFFS2_PART_SIZE		0xf980000	/* sz of jffs2 part */
+ 
+ /* Environment information */
+-#define CONFIG_BOOTDELAY	10
++#define CONFIG_BOOTDELAY	1
+ 
+ #define CONFIG_BOOTFILE		uImage
+ 
+ #define CONFIG_EXTRA_ENV_SETTINGS \
+ 	"loadaddr=0x82000000\0" \
+ 	"console=ttyS2,115200n8\0" \
++	"buddy=none\0" \
+ 	"mmcargs=setenv bootargs console=${console} " \
++		"buddy=${buddy} "\
+ 		"root=/dev/mmcblk0p2 rw " \
+ 		"rootfstype=ext3 rootwait eth=${ethaddr} ip=dhcp\0" \
+ 	"nandargs=setenv bootargs console=${console} " \
++		"buddy=${buddy} "\
+ 		"root=/dev/mtdblock4 rw " \
+ 		"rootfstype=jffs2 eth=${ethaddr} ip=dhcp\0" \
+ 	"loadbootscript=fatload mmc 0 ${loadaddr} boot.scr\0" \
+-- 
+1.6.6.1
+

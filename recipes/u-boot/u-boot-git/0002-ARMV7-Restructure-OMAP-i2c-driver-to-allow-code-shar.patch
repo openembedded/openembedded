@@ -1,0 +1,491 @@
+From c678f89db2968af02f2902f1a187bea7db95f6fb Mon Sep 17 00:00:00 2001
+From: Steve Sakoman <steve@sakoman.com>
+Date: Sat, 12 Jun 2010 06:42:57 -0700
+Subject: [PATCH 2/3] ARMV7: Restructure OMAP i2c driver to allow code sharing between OMAP3 and OMAP4
+
+This patch modifies the omap24xx driver so that it will also work with OMAP4.
+
+Signed-off-by: Steve Sakoman <steve@sakoman.com>
+Signed-off-by: Sandeep Paulraj <s-paulraj@ti.com>
+---
+ arch/arm/include/asm/arch-omap4/i2c.h |   74 +++++++++++++++
+ drivers/i2c/omap24xx_i2c.c            |   17 +++-
+ drivers/i2c/omap24xx_i2c.h            |  166 +++++++++++++++++++++++++++++++++
+ include/asm-arm/arch-omap3/i2c.h      |  149 +----------------------------
+ 4 files changed, 258 insertions(+), 148 deletions(-)
+ create mode 100644 arch/arm/include/asm/arch-omap4/i2c.h
+ create mode 100644 drivers/i2c/omap24xx_i2c.h
+
+diff --git a/arch/arm/include/asm/arch-omap4/i2c.h b/arch/arm/include/asm/arch-omap4/i2c.h
+new file mode 100644
+index 0000000..a91b4c2
+--- /dev/null
++++ b/arch/arm/include/asm/arch-omap4/i2c.h
+@@ -0,0 +1,74 @@
++/*
++ * (C) Copyright 2004-2010
++ * Texas Instruments, <www.ti.com>
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++#ifndef _OMAP4_I2C_H_
++#define _OMAP4_I2C_H_
++
++#define I2C_BUS_MAX	3
++#define I2C_DEFAULT_BASE	I2C_BASE1
++
++struct i2c {
++	unsigned short revnb_lo;	/* 0x00 */
++	unsigned short res1;
++	unsigned short revnb_hi;	/* 0x04 */
++	unsigned short res2[13];
++	unsigned short sysc;		/* 0x20 */
++	unsigned short res3;
++	unsigned short irqstatus_raw;	/* 0x24 */
++	unsigned short res4;
++	unsigned short stat;		/* 0x28 */
++	unsigned short res5;
++	unsigned short ie;		/* 0x2C */
++	unsigned short res6;
++	unsigned short irqenable_clr;	/* 0x30 */
++	unsigned short res7;
++	unsigned short iv;		/* 0x34 */
++	unsigned short res8[45];
++	unsigned short syss;		/* 0x90 */
++	unsigned short res9;
++	unsigned short buf;		/* 0x94 */
++	unsigned short res10;
++	unsigned short cnt;		/* 0x98 */
++	unsigned short res11;
++	unsigned short data;		/* 0x9C */
++	unsigned short res13;
++	unsigned short res14;		/* 0xA0 */
++	unsigned short res15;
++	unsigned short con;		/* 0xA4 */
++	unsigned short res16;
++	unsigned short oa;		/* 0xA8 */
++	unsigned short res17;
++	unsigned short sa;		/* 0xAC */
++	unsigned short res18;
++	unsigned short psc;		/* 0xB0 */
++	unsigned short res19;
++	unsigned short scll;		/* 0xB4 */
++	unsigned short res20;
++	unsigned short sclh;		/* 0xB8 */
++	unsigned short res21;
++	unsigned short systest;		/* 0xBC */
++	unsigned short res22;
++	unsigned short bufstat;		/* 0xC0 */
++	unsigned short res23;
++};
++
++#endif /* _OMAP4_I2C_H_ */
+diff --git a/drivers/i2c/omap24xx_i2c.c b/drivers/i2c/omap24xx_i2c.c
+index ff18991..3256133 100644
+--- a/drivers/i2c/omap24xx_i2c.c
++++ b/drivers/i2c/omap24xx_i2c.c
+@@ -25,6 +25,8 @@
+ #include <asm/arch/i2c.h>
+ #include <asm/io.h>
+ 
++#include "omap24xx_i2c.h"
++
+ static void wait_for_bb (void);
+ static u16 wait_for_pin (void);
+ static void flush_fifo(void);
+@@ -176,7 +178,8 @@ static int i2c_read_byte (u8 devaddr, u8 regoffset, u8 * value)
+ 
+ 		status = wait_for_pin ();
+ 		if (status & I2C_STAT_RRDY) {
+-#if defined(CONFIG_OMAP243X) || defined(CONFIG_OMAP34XX)
++#if defined(CONFIG_OMAP243X) || defined(CONFIG_OMAP34XX) || \
++    defined(CONFIG_OMAP44XX)
+ 			*value = readb (&i2c_base->data);
+ #else
+ 			*value = readw (&i2c_base->data);
+@@ -221,7 +224,8 @@ static int i2c_write_byte (u8 devaddr, u8 regoffset, u8 value)
+ 	status = wait_for_pin ();
+ 
+ 	if (status & I2C_STAT_XRDY) {
+-#if defined(CONFIG_OMAP243X) || defined(CONFIG_OMAP34XX)
++#if defined(CONFIG_OMAP243X) || defined(CONFIG_OMAP34XX) || \
++    defined(CONFIG_OMAP44XX)
+ 		/* send out 1 byte */
+ 		writeb (regoffset, &i2c_base->data);
+ 		writew (I2C_STAT_XRDY, &i2c_base->stat);
+@@ -274,7 +278,8 @@ static void flush_fifo(void)
+ 	while(1){
+ 		stat = readw(&i2c_base->stat);
+ 		if(stat == I2C_STAT_RRDY){
+-#if defined(CONFIG_OMAP243X) || defined(CONFIG_OMAP34XX)
++#if defined(CONFIG_OMAP243X) || defined(CONFIG_OMAP34XX) || \
++    defined(CONFIG_OMAP44XX)
+ 			readb(&i2c_base->data);
+ #else
+ 			readw(&i2c_base->data);
+@@ -435,3 +440,9 @@ int i2c_set_bus_num(unsigned int bus)
+ 
+ 	return 0;
+ }
++
++int i2c_get_bus_num(void)
++{
++	return (int) current_bus;
++}
++
+diff --git a/drivers/i2c/omap24xx_i2c.h b/drivers/i2c/omap24xx_i2c.h
+new file mode 100644
+index 0000000..92a3416
+--- /dev/null
++++ b/drivers/i2c/omap24xx_i2c.h
+@@ -0,0 +1,166 @@
++/*
++ * (C) Copyright 2004-2010
++ * Texas Instruments, <www.ti.com>
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++#ifndef _OMAP24XX_I2C_H_
++#define _OMAP24XX_I2C_H_
++
++/* I2C masks */
++
++/* I2C Interrupt Enable Register (I2C_IE): */
++#define I2C_IE_GC_IE	(1 << 5)
++#define I2C_IE_XRDY_IE	(1 << 4) /* Transmit data ready interrupt enable */
++#define I2C_IE_RRDY_IE	(1 << 3) /* Receive data ready interrupt enable */
++#define I2C_IE_ARDY_IE	(1 << 2) /* Register access ready interrupt enable */
++#define I2C_IE_NACK_IE	(1 << 1) /* No acknowledgment interrupt enable */
++#define I2C_IE_AL_IE	(1 << 0) /* Arbitration lost interrupt enable */
++
++/* I2C Status Register (I2C_STAT): */
++
++#define I2C_STAT_SBD	(1 << 15) /* Single byte data */
++#define I2C_STAT_BB	(1 << 12) /* Bus busy */
++#define I2C_STAT_ROVR	(1 << 11) /* Receive overrun */
++#define I2C_STAT_XUDF	(1 << 10) /* Transmit underflow */
++#define I2C_STAT_AAS	(1 << 9)  /* Address as slave */
++#define I2C_STAT_GC	(1 << 5)
++#define I2C_STAT_XRDY	(1 << 4)  /* Transmit data ready */
++#define I2C_STAT_RRDY	(1 << 3)  /* Receive data ready */
++#define I2C_STAT_ARDY	(1 << 2)  /* Register access ready */
++#define I2C_STAT_NACK	(1 << 1)  /* No acknowledgment interrupt enable */
++#define I2C_STAT_AL	(1 << 0)  /* Arbitration lost interrupt enable */
++
++/* I2C Interrupt Code Register (I2C_INTCODE): */
++
++#define I2C_INTCODE_MASK	7
++#define I2C_INTCODE_NONE	0
++#define I2C_INTCODE_AL		1	/* Arbitration lost */
++#define I2C_INTCODE_NAK		2	/* No acknowledgement/general call */
++#define I2C_INTCODE_ARDY	3	/* Register access ready */
++#define I2C_INTCODE_RRDY	4	/* Rcv data ready */
++#define I2C_INTCODE_XRDY	5	/* Xmit data ready */
++
++/* I2C Buffer Configuration Register (I2C_BUF): */
++
++#define I2C_BUF_RDMA_EN		(1 << 15) /* Receive DMA channel enable */
++#define I2C_BUF_XDMA_EN		(1 << 7)  /* Transmit DMA channel enable */
++
++/* I2C Configuration Register (I2C_CON): */
++
++#define I2C_CON_EN	(1 << 15)  /* I2C module enable */
++#define I2C_CON_BE	(1 << 14)  /* Big endian mode */
++#define I2C_CON_STB	(1 << 11)  /* Start byte mode (master mode only) */
++#define I2C_CON_MST	(1 << 10)  /* Master/slave mode */
++#define I2C_CON_TRX	(1 << 9)   /* Transmitter/receiver mode */
++				   /* (master mode only) */
++#define I2C_CON_XA	(1 << 8)   /* Expand address */
++#define I2C_CON_STP	(1 << 1)   /* Stop condition (master mode only) */
++#define I2C_CON_STT	(1 << 0)   /* Start condition (master mode only) */
++
++/* I2C System Test Register (I2C_SYSTEST): */
++
++#define I2C_SYSTEST_ST_EN	(1 << 15) /* System test enable */
++#define I2C_SYSTEST_FREE	(1 << 14) /* Free running mode, on brkpoint) */
++#define I2C_SYSTEST_TMODE_MASK	(3 << 12) /* Test mode select */
++#define I2C_SYSTEST_TMODE_SHIFT	(12)	  /* Test mode select */
++#define I2C_SYSTEST_SCL_I	(1 << 3)  /* SCL line sense input value */
++#define I2C_SYSTEST_SCL_O	(1 << 2)  /* SCL line drive output value */
++#define I2C_SYSTEST_SDA_I	(1 << 1)  /* SDA line sense input value */
++#define I2C_SYSTEST_SDA_O	(1 << 0)  /* SDA line drive output value */
++
++#define I2C_SCLL_SCLL		0
++#define I2C_SCLL_SCLL_M		0xFF
++#define I2C_SCLL_HSSCLL		8
++#define I2C_SCLH_HSSCLL_M	0xFF
++#define I2C_SCLH_SCLH		0
++#define I2C_SCLH_SCLH_M		0xFF
++#define I2C_SCLH_HSSCLH		8
++#define I2C_SCLH_HSSCLH_M	0xFF
++
++#define OMAP_I2C_STANDARD	100000
++#define OMAP_I2C_FAST_MODE	400000
++#define OMAP_I2C_HIGH_SPEED	3400000
++
++#define SYSTEM_CLOCK_12		12000000
++#define SYSTEM_CLOCK_13		13000000
++#define SYSTEM_CLOCK_192	19200000
++#define SYSTEM_CLOCK_96		96000000
++
++/* Use the reference value of 96MHz if not explicitly set by the board */
++#ifndef I2C_IP_CLK
++#define I2C_IP_CLK		SYSTEM_CLOCK_96
++#endif
++
++/*
++ * The reference minimum clock for high speed is 19.2MHz.
++ * The linux 2.6.30 kernel uses this value.
++ * The reference minimum clock for fast mode is 9.6MHz
++ * The reference minimum clock for standard mode is 4MHz
++ * In TRM, the value of 12MHz is used.
++ */
++#ifndef I2C_INTERNAL_SAMPLING_CLK
++#define I2C_INTERNAL_SAMPLING_CLK	19200000
++#endif
++
++/*
++ * The equation for the low and high time is
++ * tlow = scll + scll_trim = (sampling clock * tlow_duty) / speed
++ * thigh = sclh + sclh_trim = (sampling clock * (1 - tlow_duty)) / speed
++ *
++ * If the duty cycle is 50%
++ *
++ * tlow = scll + scll_trim = sampling clock / (2 * speed)
++ * thigh = sclh + sclh_trim = sampling clock / (2 * speed)
++ *
++ * In TRM
++ * scll_trim = 7
++ * sclh_trim = 5
++ *
++ * The linux 2.6.30 kernel uses
++ * scll_trim = 6
++ * sclh_trim = 6
++ *
++ * These are the trim values for standard and fast speed
++ */
++#ifndef I2C_FASTSPEED_SCLL_TRIM
++#define I2C_FASTSPEED_SCLL_TRIM		6
++#endif
++#ifndef I2C_FASTSPEED_SCLH_TRIM
++#define I2C_FASTSPEED_SCLH_TRIM		6
++#endif
++
++/* These are the trim values for high speed */
++#ifndef I2C_HIGHSPEED_PHASE_ONE_SCLL_TRIM
++#define I2C_HIGHSPEED_PHASE_ONE_SCLL_TRIM	I2C_FASTSPEED_SCLL_TRIM
++#endif
++#ifndef I2C_HIGHSPEED_PHASE_ONE_SCLH_TRIM
++#define I2C_HIGHSPEED_PHASE_ONE_SCLH_TRIM	I2C_FASTSPEED_SCLH_TRIM
++#endif
++#ifndef I2C_HIGHSPEED_PHASE_TWO_SCLL_TRIM
++#define I2C_HIGHSPEED_PHASE_TWO_SCLL_TRIM	I2C_FASTSPEED_SCLL_TRIM
++#endif
++#ifndef I2C_HIGHSPEED_PHASE_TWO_SCLH_TRIM
++#define I2C_HIGHSPEED_PHASE_TWO_SCLH_TRIM	I2C_FASTSPEED_SCLH_TRIM
++#endif
++
++#define I2C_PSC_MAX		0x0f
++#define I2C_PSC_MIN		0x00
++
++#endif /* _OMAP24XX_I2C_H_ */
+diff --git a/include/asm-arm/arch-omap3/i2c.h b/include/asm-arm/arch-omap3/i2c.h
+index 490e03b..7a4a73a 100644
+--- a/include/asm-arm/arch-omap3/i2c.h
++++ b/include/asm-arm/arch-omap3/i2c.h
+@@ -20,9 +20,10 @@
+  * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+  * MA 02111-1307 USA
+  */
+-#ifndef _I2C_H_
+-#define _I2C_H_
++#ifndef _OMAP3_I2C_H_
++#define _OMAP3_I2C_H_
+ 
++#define I2C_BUS_MAX	3
+ #define I2C_DEFAULT_BASE	I2C_BASE1
+ 
+ struct i2c {
+@@ -58,146 +59,4 @@ struct i2c {
+ 	unsigned short res15;
+ };
+ 
+-#define I2C_BUS_MAX	3
+-
+-/* I2C masks */
+-
+-/* I2C Interrupt Enable Register (I2C_IE): */
+-#define I2C_IE_GC_IE	(1 << 5)
+-#define I2C_IE_XRDY_IE	(1 << 4) /* Transmit data ready interrupt enable */
+-#define I2C_IE_RRDY_IE	(1 << 3) /* Receive data ready interrupt enable */
+-#define I2C_IE_ARDY_IE	(1 << 2) /* Register access ready interrupt enable */
+-#define I2C_IE_NACK_IE	(1 << 1) /* No acknowledgment interrupt enable */
+-#define I2C_IE_AL_IE	(1 << 0) /* Arbitration lost interrupt enable */
+-
+-/* I2C Status Register (I2C_STAT): */
+-
+-#define I2C_STAT_SBD	(1 << 15) /* Single byte data */
+-#define I2C_STAT_BB	(1 << 12) /* Bus busy */
+-#define I2C_STAT_ROVR	(1 << 11) /* Receive overrun */
+-#define I2C_STAT_XUDF	(1 << 10) /* Transmit underflow */
+-#define I2C_STAT_AAS	(1 << 9)  /* Address as slave */
+-#define I2C_STAT_GC	(1 << 5)
+-#define I2C_STAT_XRDY	(1 << 4)  /* Transmit data ready */
+-#define I2C_STAT_RRDY	(1 << 3)  /* Receive data ready */
+-#define I2C_STAT_ARDY	(1 << 2)  /* Register access ready */
+-#define I2C_STAT_NACK	(1 << 1)  /* No acknowledgment interrupt enable */
+-#define I2C_STAT_AL	(1 << 0)  /* Arbitration lost interrupt enable */
+-
+-/* I2C Interrupt Code Register (I2C_INTCODE): */
+-
+-#define I2C_INTCODE_MASK	7
+-#define I2C_INTCODE_NONE	0
+-#define I2C_INTCODE_AL		1	/* Arbitration lost */
+-#define I2C_INTCODE_NAK		2	/* No acknowledgement/general call */
+-#define I2C_INTCODE_ARDY	3	/* Register access ready */
+-#define I2C_INTCODE_RRDY	4	/* Rcv data ready */
+-#define I2C_INTCODE_XRDY	5	/* Xmit data ready */
+-
+-/* I2C Buffer Configuration Register (I2C_BUF): */
+-
+-#define I2C_BUF_RDMA_EN		(1 << 15) /* Receive DMA channel enable */
+-#define I2C_BUF_XDMA_EN		(1 << 7)  /* Transmit DMA channel enable */
+-
+-/* I2C Configuration Register (I2C_CON): */
+-
+-#define I2C_CON_EN	(1 << 15)  /* I2C module enable */
+-#define I2C_CON_BE	(1 << 14)  /* Big endian mode */
+-#define I2C_CON_STB	(1 << 11)  /* Start byte mode (master mode only) */
+-#define I2C_CON_MST	(1 << 10)  /* Master/slave mode */
+-#define I2C_CON_TRX	(1 << 9)   /* Transmitter/receiver mode */
+-				   /* (master mode only) */
+-#define I2C_CON_XA	(1 << 8)   /* Expand address */
+-#define I2C_CON_STP	(1 << 1)   /* Stop condition (master mode only) */
+-#define I2C_CON_STT	(1 << 0)   /* Start condition (master mode only) */
+-
+-/* I2C System Test Register (I2C_SYSTEST): */
+-
+-#define I2C_SYSTEST_ST_EN	(1 << 15) /* System test enable */
+-#define I2C_SYSTEST_FREE	(1 << 14) /* Free running mode, on brkpoint) */
+-#define I2C_SYSTEST_TMODE_MASK	(3 << 12) /* Test mode select */
+-#define I2C_SYSTEST_TMODE_SHIFT	(12)	  /* Test mode select */
+-#define I2C_SYSTEST_SCL_I	(1 << 3)  /* SCL line sense input value */
+-#define I2C_SYSTEST_SCL_O	(1 << 2)  /* SCL line drive output value */
+-#define I2C_SYSTEST_SDA_I	(1 << 1)  /* SDA line sense input value */
+-#define I2C_SYSTEST_SDA_O	(1 << 0)  /* SDA line drive output value */
+-
+-#define I2C_SCLL_SCLL		0
+-#define I2C_SCLL_SCLL_M		0xFF
+-#define I2C_SCLL_HSSCLL		8
+-#define I2C_SCLH_HSSCLL_M	0xFF
+-#define I2C_SCLH_SCLH		0
+-#define I2C_SCLH_SCLH_M		0xFF
+-#define I2C_SCLH_HSSCLH		8
+-#define I2C_SCLH_HSSCLH_M	0xFF
+-
+-#define OMAP_I2C_STANDARD	100000
+-#define OMAP_I2C_FAST_MODE	400000
+-#define OMAP_I2C_HIGH_SPEED	3400000
+-
+-#define SYSTEM_CLOCK_12		12000000
+-#define SYSTEM_CLOCK_13		13000000
+-#define SYSTEM_CLOCK_192	19200000
+-#define SYSTEM_CLOCK_96		96000000
+-
+-/* Use the reference value of 96MHz if not explicitly set by the board */
+-#ifndef I2C_IP_CLK
+-#define I2C_IP_CLK		SYSTEM_CLOCK_96
+-#endif
+-
+-/*
+- * The reference minimum clock for high speed is 19.2MHz.
+- * The linux 2.6.30 kernel uses this value.
+- * The reference minimum clock for fast mode is 9.6MHz
+- * The reference minimum clock for standard mode is 4MHz
+- * In TRM, the value of 12MHz is used.
+- */
+-#ifndef I2C_INTERNAL_SAMPLING_CLK
+-#define I2C_INTERNAL_SAMPLING_CLK	19200000
+-#endif
+-
+-/*
+- * The equation for the low and high time is
+- * tlow = scll + scll_trim = (sampling clock * tlow_duty) / speed
+- * thigh = sclh + sclh_trim = (sampling clock * (1 - tlow_duty)) / speed
+- *
+- * If the duty cycle is 50%
+- *
+- * tlow = scll + scll_trim = sampling clock / (2 * speed)
+- * thigh = sclh + sclh_trim = sampling clock / (2 * speed)
+- *
+- * In TRM
+- * scll_trim = 7
+- * sclh_trim = 5
+- *
+- * The linux 2.6.30 kernel uses
+- * scll_trim = 6
+- * sclh_trim = 6
+- *
+- * These are the trim values for standard and fast speed
+- */
+-#ifndef I2C_FASTSPEED_SCLL_TRIM
+-#define I2C_FASTSPEED_SCLL_TRIM		6
+-#endif
+-#ifndef I2C_FASTSPEED_SCLH_TRIM
+-#define I2C_FASTSPEED_SCLH_TRIM		6
+-#endif
+-
+-/* These are the trim values for high speed */
+-#ifndef I2C_HIGHSPEED_PHASE_ONE_SCLL_TRIM
+-#define I2C_HIGHSPEED_PHASE_ONE_SCLL_TRIM	I2C_FASTSPEED_SCLL_TRIM
+-#endif
+-#ifndef I2C_HIGHSPEED_PHASE_ONE_SCLH_TRIM
+-#define I2C_HIGHSPEED_PHASE_ONE_SCLH_TRIM	I2C_FASTSPEED_SCLH_TRIM
+-#endif
+-#ifndef I2C_HIGHSPEED_PHASE_TWO_SCLL_TRIM
+-#define I2C_HIGHSPEED_PHASE_TWO_SCLL_TRIM	I2C_FASTSPEED_SCLL_TRIM
+-#endif
+-#ifndef I2C_HIGHSPEED_PHASE_TWO_SCLH_TRIM
+-#define I2C_HIGHSPEED_PHASE_TWO_SCLH_TRIM	I2C_FASTSPEED_SCLH_TRIM
+-#endif
+-
+-#define I2C_PSC_MAX		0x0f
+-#define I2C_PSC_MIN		0x00
+-
+-#endif /* _I2C_H_ */
++#endif /* _OMAP3_I2C_H_ */
+-- 
+1.6.6.1
+

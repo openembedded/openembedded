@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r68"
+PR ="r69"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -167,7 +167,11 @@ PV_dm37x-evm = "2009.11+${PR}+gitr${SRCREV}"
 # ~ TI PSP v2009.11_OMAPPSP_03.00.01.06 (+ couple of commits)
 SRC_URI_am3517-crane = "git://arago-project.org/git/projects/u-boot-omap3.git;protocol=git \
                         file://0001-Added-Support-for-AM3517-05-based-CraneBoard.patch \
+                        file://0001-OMAP2-3-I2C-Add-support-for-second-and-third-bus.patch \
+                        file://0002-ARMV7-Restructure-OMAP-i2c-driver-to-allow-code-shar.patch \
+                        file://0003-craneboard-add-expansionboard-support.patch \
 "
+
 SRCREV_am3517-crane = "c0a8fb217fdca7888d89f9a3dee74a4cec865620"
 PV_am3517-crane = "2009.11+${PR}+gitr${SRCREV}"
 
