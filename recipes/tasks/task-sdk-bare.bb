@@ -1,7 +1,7 @@
 DESCRIPTION = "Packages for a standalone  SDK or external toolchain"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
-PR = "r1"
+PR = "r2"
 
 PACKAGES = "${PN}"
 
@@ -14,12 +14,8 @@ GLIBC_PKGS = "\
     glibc-thread-db \
 "
 
-LIBC_PKGS_linux = "${GLIBC_PKGS}"
-LIBC_PKGS_linux-gnueabi = "${GLIBC_PKGS}"
-LIBC_PKGS_linux-gnuspe = "${GLIBC_PKGS}"
-LIBC_PKGS_linux-uclibc = "uclibc uclibc-dev uclibc-thread-db"
-LIBC_PKGS_linux-uclibceabi = "uclibc uclibc-dev uclibc-thread-db"
-LIBC_PKGS_linux-uclibcspe = "uclibc uclibc-dev uclibc-thread-db"
+LIBC_PKGS_libc-glibc = "${GLIBC_PKGS}"
+LIBC_PKGS_libc-uclibc = "uclibc uclibc-dev uclibc-thread-db"
 
 RDEPENDS_${PN} = "\
     ${LIBC_PKGS} \
