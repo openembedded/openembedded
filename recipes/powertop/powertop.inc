@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.linuxpowertop.org/"
 LICENSE = "GPLv2"
 DEPENDS = "virtual/libintl ncurses"
 
-INC_PR = "r2"
+INC_PR = "r3"
 
 SRC_URI = "http://www.lesswatts.org/projects/powertop/download/powertop-${PV}.tar.gz \
 	   file://ldflags.patch \
@@ -22,6 +22,4 @@ do_install() {
 }
 
 
-LDFLAGS_append_linux-uclibc = " -lintl"
-LDFLAGS_append_linux-uclibceabi = " -lintl"
-LDFLAGS_append_linux-uclibcspe = " -lintl"
+LDFLAGS_append_libc-uclibc = " -lintl"
