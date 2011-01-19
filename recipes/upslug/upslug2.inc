@@ -1,6 +1,6 @@
 # This package builds the 'upslug2' binary upload/flash tool
 # for the NSLU2.  It is not useful for anything else.
-PR = "r2"
+PR = "r3"
 DESCRIPTION = "NSLU2 binary upload tool (version 2)"
 HOMEPAGE = "http://www.nslu2-linux.org/wiki/Main/UpSlug2"
 SECTION = "console/network"
@@ -14,10 +14,10 @@ COMPATIBLE_MACHINE = "nslu2"
 # systems.
 LIBPCAP_OECONF = "--with-libpcap"
 LIBPCAP_OECONF_linux = ""
-LIBPCAP_OECONF_linux-uclibc = ""
+LIBPCAP_OECONF_libc-uclibc = ""
 LIBPCAP_RDEPENDS = "libpcap"
 LIBPCAP_RDEPENDS_linux = ""
-LIBPCAP_RDEPENDS_linux-uclibc = ""
+LIBPCAP_RDEPENDS_libc-uclibc = ""
 
 RDEPENDS_${PN} += "${LIBPCAP_RDEPENDS}"
 
