@@ -61,22 +61,11 @@ ICEDTEAPATCHES = "\
         file://icedtea-libnet-renaming.patch;apply=no \
 	"
 
-ICEDTEAPATCHES_append_linux-uclibc = " \
+ICEDTEAPATCHES_append_libc-uclibc = " \
         file://icedtea-hotspot-isfinte.patch;apply=no \
         file://icedtea-hotspot-glibc-version.patch;apply=no \
         file://icedtea-hotspot-loadavg.patch;apply=no \
         file://icedtea-hotspot-isnanf.patch;apply=no \
-        file://icedtea-jdk-iconv-uclibc.patch;apply=no \
-        file://icedtea-jdk-remove-unused-backtrace.patch;apply=no \
-        file://icedtea-jdk-RTLD_NOLOAD.patch;apply=no \
-        file://icedtea-jdk-unpack-uclibc.patch;apply=no \
-        "
-
-ICEDTEAPATCHES_append_linux-uclibceabi = " \
-        file://icedtea-hotspot-isfinte.patch;apply=no \
-        file://icedtea-hotspot-isnanf.patch;apply=no \
-        file://icedtea-hotspot-glibc-version.patch;apply=no \
-        file://icedtea-hotspot-loadavg.patch;apply=no \
         file://icedtea-jdk-iconv-uclibc.patch;apply=no \
         file://icedtea-jdk-remove-unused-backtrace.patch;apply=no \
         file://icedtea-jdk-RTLD_NOLOAD.patch;apply=no \
@@ -95,17 +84,7 @@ DISTRIBUTION_PATCHES = "\
         patches/icedtea-libnet-renaming.patch \
 	"
 
-DISTRIBUTION_PATCHES_append_linux-uclibc = "\
-        patches/icedtea-hotspot-isfinte.patch \
-        patches/icedtea-hotspot-isnanf.patch \
-        patches/icedtea-hotspot-glibc-version.patch \
-        patches/icedtea-hotspot-loadavg.patch \
-        patches/icedtea-jdk-iconv-uclibc.patch \
-        patches/icedtea-jdk-remove-unused-backtrace.patch \
-        patches/icedtea-jdk-RTLD_NOLOAD.patch \
-        patches/icedtea-jdk-unpack-uclibc.patch \
-        "
-DISTRIBUTION_PATCHES_append_linux-uclibceabi = "\
+DISTRIBUTION_PATCHES_append_libc-uclibc = "\
         patches/icedtea-hotspot-isfinte.patch \
         patches/icedtea-hotspot-isnanf.patch \
         patches/icedtea-hotspot-glibc-version.patch \
