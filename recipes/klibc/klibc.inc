@@ -6,7 +6,7 @@ minimal entaglement, and portability, not speed."
 LICENSE = "BSD-ADV"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-INC_PR = "r3"
+INC_PR = "r4"
 
 KLIBC_ARCH = '${TARGET_ARCH}'
 KLIBC_ARCH_armeb = 'arm'
@@ -38,7 +38,6 @@ SRC_URI += "file://fstype-sane-vfat-and-jffs2-for-1.5.patch \
             file://socket.h.patch \
             file://isystem.patch \
             file://getrusage.patch \
-            file://klcc_prefix.patch \
             "
 
 S = "${WORKDIR}/klibc-${PV}"
