@@ -131,6 +131,8 @@ SRC_URI_append = " \
                   file://dvfs/0018-omap3-4-opp-make-omapx_opp_init-non-static.patch \
                   file://dvfs/0019-OMAP3-beagle-xm-enable-upto-1GHz-OPP.patch \
                   file://dvfs/0020-omap3-Add-basic-support-for-720MHz-part.patch \
+                  \
+                  file://new/0001-OMAP-Enable-Magic-SysRq-on-serial-console-ttyOx.patch \
                  "
 
 SRC_URI_append_usrp-e1xx = "\

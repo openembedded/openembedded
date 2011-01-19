@@ -1,0 +1,35 @@
+From a43b9359708691eb3aec983da36461720fb4a556 Mon Sep 17 00:00:00 2001
+From: Thomas Weber <weber@corscience.de>
+Date: Wed, 19 Jan 2011 09:41:01 +0100
+Subject: [PATCH] OMAP: Enable Magic SysRq on serial console ttyOx
+
+Magic SysRq key is not working for OMAP on new serial
+console ttyOx because SUPPORT_SYSRQ is not defined
+for omap-serial.
+
+This patch defines SUPPORT_SYSRQ in omap-serial and
+enables handling of Magic SysRq character.
+
+Signed-off-by: Thomas Weber <weber@corscience.de>
+---
+ drivers/serial/omap-serial.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/serial/omap-serial.c b/drivers/serial/omap-serial.c
+index 1201eff..907be9b 100644
+--- a/drivers/serial/omap-serial.c
++++ b/drivers/serial/omap-serial.c
+@@ -20,6 +20,10 @@
+  * this driver as required for the omap-platform.
+  */
+ 
++#if defined(CONFIG_SERIAL_OMAP_CONSOLE) && defined(CONFIG_MAGIC_SYSRQ)
++#define SUPPORT_SYSRQ
++#endif
++
+ #include <linux/module.h>
+ #include <linux/init.h>
+ #include <linux/console.h>
+-- 
+1.6.6.1
+
