@@ -57,6 +57,8 @@ $MIDPATH_HOME/jsr226-svg-core.jar:\
 $MIDPATH_HOME/jsr226-svg-midp2.jar:\
 $CVM_HOME/lib/foundation.jar:\
 $CVM_HOME/lib/btclasses.zip:\
+$JAR_HOME/microemu-nokiaui.jar:\
+$JAR_HOME/microemu-siemensapi.jar:\
 $JAR_HOME/kxml2.jar:\
 $JAR_HOME/xmlpull.jar:\
 $JAR_HOME/swt.jar
