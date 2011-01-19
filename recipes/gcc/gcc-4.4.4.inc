@@ -8,7 +8,7 @@ LICENSE = "GPLv3"
 DEPENDS = "mpfr gmp"
 NATIVEDEPS = "mpfr-native gmp-native"
 
-INC_PR = "r7"
+INC_PR = "r8"
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2;name=gcc444tarbz2 \
         file://gcc-4.3.1-ARCH_FLAGS_FOR_TARGET.patch \
@@ -41,6 +41,4 @@ EXTRA_OECONF_BASE = " --enable-libssp \
 EXTRA_OECONF_INITIAL = "--disable-libmudflap --disable-libgomp --disable-libssp --enable-decimal-float=no"
 EXTRA_OECONF_INTERMEDIATE = "--disable-libmudflap --disable-libgomp --disable-libssp"
 
-EXTRA_OECONF_append_linux-uclibc = " --disable-decimal-float "
-EXTRA_OECONF_append_linux-uclibceabi = " --disable-decimal-float "
-EXTRA_OECONF_append_linux-uclibcspe = " --disable-decimal-float "
+EXTRA_OECONF_append_libc-uclibc = " --disable-decimal-float "
