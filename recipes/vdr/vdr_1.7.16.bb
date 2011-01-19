@@ -1,11 +1,11 @@
 require vdr.inc
-PR = "r0"
+PR = "r1"
 
 SRC_URI += "file://0001-Makefile-Pass-LDFLAGS.patch \
             file://0002-tools.h-include-stdarg.h.patch \
            "
 
-SRC_URI_append_linux-uclibceabi = " file://0003-uclibc-Add-lintl-to-LIBS.patch "
+SRC_URI_append_libc-uclibceabi = " file://0003-uclibc-Add-lintl-to-LIBS.patch "
 SRC_URI_append_uclinux-uclibc = " file://0003-uclibc-Add-lintl-to-LIBS.patch "
 
 EXTRA_OEMAKE += "INCLUDES=-I${STAGING_INCDIR}/freetype2"
