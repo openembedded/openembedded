@@ -5,7 +5,7 @@ HOMEPAGE = "http://kotisivu.dnainternet.net/askok/bin/lanes/index.html"
 DEPENDS += "lua5.1-native"
 RDEPENDS_${PN} += "lua5.1"
 
-PR = "r0"
+PR = "r1"
 S = "${WORKDIR}/lanes-${PV}"
 
 SRC_URI = "http://luaforge.net/frs/download.php/4652/lanes-2.0.6.tgz \
@@ -14,8 +14,7 @@ SRC_URI = "http://luaforge.net/frs/download.php/4652/lanes-2.0.6.tgz \
           "
 
 UCLIBC_PATCHES = "file://uclibc.patch"
-SRC_URI_append_linux-uclibc = "${UCLIBC_PATCHES}"
-SRC_URI_append_linux-uclibceabi = "${UCLIBC_PATCHES}"
+SRC_URI_append_libc-uclibc = "${UCLIBC_PATCHES}"
 
 LUA_LIB_DIR =  "${libdir}/lua/5.1"
 LUA_SHARE_DIR = "${datadir}/lua/5.1"
