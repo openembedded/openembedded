@@ -2,7 +2,7 @@ DESCRIPTION = "The GNU internationalization library."
 HOMEPAGE = "http://www.gnu.org/software/gettext/gettext.html"
 SECTION = "libs"
 LICENSE = "GPLv3"
-PR = "r8"
+PR = "r9"
 DEPENDS = "gettext-native virtual/libiconv ncurses expat"
 DEPENDS_virtclass-native = "libxml2-native"
 PROVIDES = "virtual/libintl"
@@ -19,8 +19,7 @@ SRC_URI = "${GNU_MIRROR}/gettext/gettext-${PV}.tar.gz \
 	   file://m4_copy.patch \
 	  "
 
-SRC_URI_append_linux-uclibc = " file://gettext-error_print_progname.patch"
-SRC_URI_append_linux-uclibceabi = " file://gettext-error_print_progname.patch"
+SRC_URI_append_libc-uclibc = " file://gettext-error_print_progname.patch"
 
 PARALLEL_MAKE = ""
 
