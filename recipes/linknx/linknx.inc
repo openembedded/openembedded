@@ -4,10 +4,10 @@ HOMEPAGE = "http://linknx.sourceforge.net/"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "GPL"
+PR = "r1"
 
 DEPENDS = " pthsem lua5.1 curl libesmtp"
-DEPENDS_append_linux-uclibc = " argp-standalone"
-DEPENDS_append_linux-uclibceabi = " argp-standalone"
+DEPENDS_append_libc-uclibc = " argp-standalone"
 
 SRC_URI += "file://configure-libcurl.patch \
             file://linknx.start "
