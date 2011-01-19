@@ -4,9 +4,8 @@ SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
 DEPENDS = " pthsem libxml2"
-DEPENDS_append_linux-uclibc = " argp-standalone "
-DEPENDS_append_linux-uclibceabi = " argp-standalone "
-INC_PR = "r1"
+DEPENDS_append_libc-uclibc = " argp-standalone "
+INC_PR = "r2"
 
 SRC_URI += " file://eibd "
 
