@@ -32,6 +32,9 @@ do_configure_prepend () {
 	if [ "${TARGET_ARCH}" = "avr32" ] ; then
 		sed -i s:CONFIG_FEATURE_OSF_LABEL=y:CONFIG_FEATURE_OSF_LABEL=n: ${WORKDIR}/defconfig
 	fi
+        if [ -e ${WORKDIR}/default.script ]; then
+		echo "CONFIG_RUN_PARTS=y"                    >> ${WORKDIR}/defconfig
+        fi
 }
 
 do_install_append() {
