@@ -4,7 +4,7 @@ LICENSE = "MIT"
 HOMEPAGE = "http://www.lua.org/"
 
 DEPENDS += "readline"
-PR = "r9"
+PR = "r10"
 SRC_URI = "http://www.lua.org/ftp/lua-${PV}.tar.gz \
            file://bitwise_operators.patch \
            file://lua5.1.pc \
@@ -14,8 +14,7 @@ S = "${WORKDIR}/lua-${PV}"
 inherit pkgconfig binconfig
 
 UCLIBC_PATCHES += "file://uclibc-pthread.patch"
-SRC_URI_append_linux-uclibc = "${UCLIBC_PATCHES}"
-SRC_URI_append_linux-uclibceabi = "${UCLIBC_PATCHES}"
+SRC_URI_append_libc-uclibc = "${UCLIBC_PATCHES}"
 
 TARGET_CC_ARCH += " -fPIC ${LDFLAGS}"
 EXTRA_OEMAKE = "'CC=${CC} -fPIC' 'MYCFLAGS=${CFLAGS} -DLUA_USE_LINUX -fPIC' MYLDFLAGS='${LDFLAGS}'"
