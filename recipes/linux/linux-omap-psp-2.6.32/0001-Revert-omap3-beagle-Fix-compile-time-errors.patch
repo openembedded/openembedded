@@ -1,4 +1,4 @@
-From aab782ab0942d6fd654311b937596b24a0ace3c6 Mon Sep 17 00:00:00 2001
+From 09b6266a567b22e07200973312ffb8f43e7f7d43 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Fri, 30 Apr 2010 11:12:24 +0200
 Subject: [PATCH 01/45] Revert "omap3: beagle: Fix compile-time errors"
@@ -11,7 +11,7 @@ This reverts commit da5b291cba631d303cb137fa6a620c494d828197.
  1 files changed, 3 insertions(+), 31 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index 865a8d7..15e48f2 100644
+index c5da58e..330fb25 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -56,22 +56,6 @@

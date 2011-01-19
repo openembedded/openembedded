@@ -1,4 +1,4 @@
-From 26b873e74231529962132d9d80c8921b584f6e84 Mon Sep 17 00:00:00 2001
+From fc6044176be3518fee98430ebe36cc144d6feed2 Mon Sep 17 00:00:00 2001
 From: Tuukka Toivonen <tuukka.o.toivonen@nokia.com>
 Date: Thu, 2 Jul 2009 16:17:55 +0200
 Subject: [PATCH 17/75] omap3isp: set CAM_MCLK to 172.8 MHz, allows exact 9.6 MHz for camera xclka/b

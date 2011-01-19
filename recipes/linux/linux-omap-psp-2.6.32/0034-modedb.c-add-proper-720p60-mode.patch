@@ -1,4 +1,4 @@
-From 2f4193b92096394cfd56e3757c8d6ca8e13d5c4d Mon Sep 17 00:00:00 2001
+From 48fe0d059d9bd5a8486309db26c7780fe3044626 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Mon, 8 Mar 2010 14:38:31 +0100
 Subject: [PATCH 34/45] modedb.c: add proper 720p60 mode

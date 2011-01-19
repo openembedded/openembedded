@@ -1,11 +1,12 @@
-From aa85bfafe1cc81c3446952f4b9614bc6dd16fb72 Mon Sep 17 00:00:00 2001
+From 8e1595675e4f2ad795faecb30e0657ac556913d1 Mon Sep 17 00:00:00 2001
 From: Greg Turner <gregturner@ti.com>
-Date: Wed, 8 Dec 2010 11:31:30 -0600
+Date: Wed, 19 Jan 2011 16:19:37 +0100
 Subject: [PATCH] PSP 3.0.1.6 kernel source patched with OCF-Linux
 
 ---
  crypto/Kconfig                                     |    3 +
  crypto/Makefile                                    |    2 +
+ crypto/modules.builtin                             |   22 +
  crypto/ocf/Config.in                               |   36 +
  crypto/ocf/Kconfig                                 |  119 +
  crypto/ocf/Makefile                                |  124 +
@@ -193,7 +194,8 @@ Subject: [PATCH] PSP 3.0.1.6 kernel source patched with OCF-Linux
  include/linux/miscdevice.h                         |    1 +
  include/linux/random.h                             |   29 +
  kernel/pid.c                                       |    1 +
- 189 files changed, 86726 insertions(+), 0 deletions(-)
+ 190 files changed, 86748 insertions(+), 0 deletions(-)
+ create mode 100644 crypto/modules.builtin
  create mode 100644 crypto/ocf/Config.in
  create mode 100644 crypto/ocf/Kconfig
  create mode 100644 crypto/ocf/Makefile
@@ -383,7 +385,7 @@ index 81c185a..9f1c30f 100644
 +++ b/crypto/Kconfig
 @@ -822,3 +822,6 @@ config CRYPTO_ANSI_CPRNG
  source "drivers/crypto/Kconfig"
-
+ 
  endif	# if CRYPTO
 +
 +source "crypto/ocf/Kconfig"
@@ -395,12 +397,40 @@ index 9e8f619..79631fc 100644
 @@ -85,6 +85,8 @@ obj-$(CONFIG_CRYPTO_ANSI_CPRNG) += ansi_cprng.o
  obj-$(CONFIG_CRYPTO_TEST) += tcrypt.o
  obj-$(CONFIG_CRYPTO_GHASH) += ghash-generic.o
-
+ 
 +obj-$(CONFIG_OCF_OCF) += ocf/
 +
  #
  # generic algorithms and the async_tx api
  #
+diff --git a/crypto/modules.builtin b/crypto/modules.builtin
+new file mode 100644
+index 0000000..04825d1
+--- /dev/null
++++ b/crypto/modules.builtin
+@@ -0,0 +1,22 @@
++kernel/crypto/crypto.ko
++kernel/crypto/crypto_wq.ko
++kernel/crypto/crypto_algapi.ko
++kernel/crypto/aead.ko
++kernel/crypto/crypto_blkcipher.ko
++kernel/crypto/chainiv.ko
++kernel/crypto/eseqiv.ko
++kernel/crypto/crypto_hash.ko
++kernel/crypto/pcompress.ko
++kernel/crypto/cryptomgr.ko
++kernel/crypto/md5.ko
++kernel/crypto/ecb.ko
++kernel/crypto/cbc.ko
++kernel/crypto/des_generic.ko
++kernel/crypto/aes_generic.ko
++kernel/crypto/arc4.ko
++kernel/crypto/deflate.ko
++kernel/crypto/michael_mic.ko
++kernel/crypto/crc32c.ko
++kernel/crypto/lzo.ko
++kernel/crypto/rng.ko
++kernel/crypto/krng.ko
 diff --git a/crypto/ocf/Config.in b/crypto/ocf/Config.in
 new file mode 100644
 index 0000000..d722cba
@@ -700,7 +730,7 @@ index 0000000..fa951f4
 +
 diff --git a/crypto/ocf/README b/crypto/ocf/README
 new file mode 100644
-index 0000000..5ac39f7
+index 0000000..ba0a7de
 --- /dev/null
 +++ b/crypto/ocf/README
 @@ -0,0 +1,167 @@
@@ -891,7 +921,7 @@ index 0000000..e7e634b
 +
 diff --git a/crypto/ocf/c7108/aes-7108.c b/crypto/ocf/c7108/aes-7108.c
 new file mode 100644
-index 0000000..a5ac054
+index 0000000..6dbc515
 --- /dev/null
 +++ b/crypto/ocf/c7108/aes-7108.c
 @@ -0,0 +1,839 @@
@@ -1736,7 +1766,7 @@ index 0000000..a5ac054
 +MODULE_DESCRIPTION("Cypher 7108 Crypto (OCF module for kernel crypto)");
 diff --git a/crypto/ocf/c7108/aes-7108.h b/crypto/ocf/c7108/aes-7108.h
 new file mode 100644
-index 0000000..0c7bfcb
+index 0000000..48711b4
 --- /dev/null
 +++ b/crypto/ocf/c7108/aes-7108.h
 @@ -0,0 +1,134 @@
@@ -1876,7 +1906,7 @@ index 0000000..0c7bfcb
 +#endif /* __C7108_AES_7108_H__ */
 diff --git a/crypto/ocf/criov.c b/crypto/ocf/criov.c
 new file mode 100644
-index 0000000..6d7d3ad
+index 0000000..d04b984
 --- /dev/null
 +++ b/crypto/ocf/criov.c
 @@ -0,0 +1,215 @@
@@ -2097,7 +2127,7 @@ index 0000000..6d7d3ad
 +
 diff --git a/crypto/ocf/crypto.c b/crypto/ocf/crypto.c
 new file mode 100644
-index 0000000..9735f0c
+index 0000000..1adbaa7
 --- /dev/null
 +++ b/crypto/ocf/crypto.c
 @@ -0,0 +1,1784 @@
@@ -3910,7 +3940,7 @@ index 0000000..eeed0d6
 +
 diff --git a/crypto/ocf/cryptocteon/cavium_crypto.c b/crypto/ocf/cryptocteon/cavium_crypto.c
 new file mode 100644
-index 0000000..ceaf77c
+index 0000000..0254b9b
 --- /dev/null
 +++ b/crypto/ocf/cryptocteon/cavium_crypto.c
 @@ -0,0 +1,2283 @@
@@ -6779,7 +6809,7 @@ index 0000000..9940f59
 +MODULE_DESCRIPTION("Cryptocteon (OCF module for Cavium OCTEON crypto)");
 diff --git a/crypto/ocf/cryptodev.c b/crypto/ocf/cryptodev.c
 new file mode 100644
-index 0000000..87a4c37
+index 0000000..d20da17
 --- /dev/null
 +++ b/crypto/ocf/cryptodev.c
 @@ -0,0 +1,1061 @@
@@ -7846,7 +7876,7 @@ index 0000000..87a4c37
 +MODULE_DESCRIPTION("Cryptodev (user interface to OCF)");
 diff --git a/crypto/ocf/cryptodev.h b/crypto/ocf/cryptodev.h
 new file mode 100644
-index 0000000..6032317
+index 0000000..bb11a56
 --- /dev/null
 +++ b/crypto/ocf/cryptodev.h
 @@ -0,0 +1,479 @@
@@ -8331,7 +8361,7 @@ index 0000000..6032317
 +#endif /* _CRYPTO_CRYPTO_H_ */
 diff --git a/crypto/ocf/cryptosoft.c b/crypto/ocf/cryptosoft.c
 new file mode 100644
-index 0000000..52e1570
+index 0000000..fa8838e
 --- /dev/null
 +++ b/crypto/ocf/cryptosoft.c
 @@ -0,0 +1,1210 @@
@@ -9547,7 +9577,7 @@ index 0000000..52e1570
 +MODULE_DESCRIPTION("Cryptosoft (OCF module for kernel crypto)");
 diff --git a/crypto/ocf/ep80579/Makefile b/crypto/ocf/ep80579/Makefile
 new file mode 100644
-index 0000000..9aab295
+index 0000000..e488374
 --- /dev/null
 +++ b/crypto/ocf/ep80579/Makefile
 @@ -0,0 +1,119 @@
@@ -9672,7 +9702,7 @@ index 0000000..9aab295
 +endif
 diff --git a/crypto/ocf/ep80579/icp_asym.c b/crypto/ocf/ep80579/icp_asym.c
 new file mode 100644
-index 0000000..d2641c5
+index 0000000..ebdddc1
 --- /dev/null
 +++ b/crypto/ocf/ep80579/icp_asym.c
 @@ -0,0 +1,1334 @@
@@ -11012,7 +11042,7 @@ index 0000000..d2641c5
 +}
 diff --git a/crypto/ocf/ep80579/icp_common.c b/crypto/ocf/ep80579/icp_common.c
 new file mode 100644
-index 0000000..5d46c0a
+index 0000000..06a4cf2
 --- /dev/null
 +++ b/crypto/ocf/ep80579/icp_common.c
 @@ -0,0 +1,773 @@
@@ -11791,7 +11821,7 @@ index 0000000..5d46c0a
 +		  LAC_MAX_VER);
 diff --git a/crypto/ocf/ep80579/icp_ocf.h b/crypto/ocf/ep80579/icp_ocf.h
 new file mode 100644
-index 0000000..d9dde87
+index 0000000..854b306
 --- /dev/null
 +++ b/crypto/ocf/ep80579/icp_ocf.h
 @@ -0,0 +1,376 @@
@@ -12173,7 +12203,7 @@ index 0000000..d9dde87
 +/* ICP_OCF_H_ */
 diff --git a/crypto/ocf/ep80579/icp_sym.c b/crypto/ocf/ep80579/icp_sym.c
 new file mode 100644
-index 0000000..e1c7148
+index 0000000..a3edc43
 --- /dev/null
 +++ b/crypto/ocf/ep80579/icp_sym.c
 @@ -0,0 +1,1153 @@
@@ -13351,7 +13381,7 @@ index 0000000..163fed0
 +
 diff --git a/crypto/ocf/hifn/hifn7751.c b/crypto/ocf/hifn/hifn7751.c
 new file mode 100644
-index 0000000..6136e84
+index 0000000..e7a5958
 --- /dev/null
 +++ b/crypto/ocf/hifn/hifn7751.c
 @@ -0,0 +1,2976 @@
@@ -16333,7 +16363,7 @@ index 0000000..6136e84
 +MODULE_DESCRIPTION("OCF driver for hifn PCI crypto devices");
 diff --git a/crypto/ocf/hifn/hifn7751reg.h b/crypto/ocf/hifn/hifn7751reg.h
 new file mode 100644
-index 0000000..ccf54f9
+index 0000000..23d70c5
 --- /dev/null
 +++ b/crypto/ocf/hifn/hifn7751reg.h
 @@ -0,0 +1,540 @@
@@ -16879,7 +16909,7 @@ index 0000000..ccf54f9
 +#endif /* __HIFN_H__ */
 diff --git a/crypto/ocf/hifn/hifn7751var.h b/crypto/ocf/hifn/hifn7751var.h
 new file mode 100644
-index 0000000..9a5f231
+index 0000000..6146bfb
 --- /dev/null
 +++ b/crypto/ocf/hifn/hifn7751var.h
 @@ -0,0 +1,369 @@
@@ -17254,7 +17284,7 @@ index 0000000..9a5f231
 +#endif /* __HIFN7751VAR_H__ */
 diff --git a/crypto/ocf/hifn/hifnHIPP.c b/crypto/ocf/hifn/hifnHIPP.c
 new file mode 100644
-index 0000000..45ad7ba
+index 0000000..1785147
 --- /dev/null
 +++ b/crypto/ocf/hifn/hifnHIPP.c
 @@ -0,0 +1,420 @@
@@ -17732,7 +17762,7 @@ index 0000000..8c0e720
 +#endif /* __HIPP_H__ */
 diff --git a/crypto/ocf/hifn/hifnHIPPvar.h b/crypto/ocf/hifn/hifnHIPPvar.h
 new file mode 100644
-index 0000000..61d292f
+index 0000000..dde47f7
 --- /dev/null
 +++ b/crypto/ocf/hifn/hifnHIPPvar.h
 @@ -0,0 +1,93 @@
@@ -17941,7 +17971,7 @@ index 0000000..d94a3b7
 +
 diff --git a/crypto/ocf/ixp4xx/ixp4xx.c b/crypto/ocf/ixp4xx/ixp4xx.c
 new file mode 100644
-index 0000000..d5414a4
+index 0000000..7af7b0a
 --- /dev/null
 +++ b/crypto/ocf/ixp4xx/ixp4xx.c
 @@ -0,0 +1,1324 @@
@@ -19296,7 +19326,7 @@ index 0000000..6dafd00
 +
 diff --git a/crypto/ocf/kirkwood/cesa/AES/mvAes.h b/crypto/ocf/kirkwood/cesa/AES/mvAes.h
 new file mode 100644
-index 0000000..07a8601
+index 0000000..969727f
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/cesa/AES/mvAes.h
 @@ -0,0 +1,62 @@
@@ -19364,7 +19394,7 @@ index 0000000..07a8601
 +
 diff --git a/crypto/ocf/kirkwood/cesa/AES/mvAesAlg.c b/crypto/ocf/kirkwood/cesa/AES/mvAesAlg.c
 new file mode 100644
-index 0000000..a65dc28
+index 0000000..2f57e4f
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/cesa/AES/mvAesAlg.c
 @@ -0,0 +1,317 @@
@@ -19712,7 +19742,7 @@ index 0000000..ec81e40
 +#endif /* __RIJNDAEL_ALG_H */
 diff --git a/crypto/ocf/kirkwood/cesa/AES/mvAesApi.c b/crypto/ocf/kirkwood/cesa/AES/mvAesApi.c
 new file mode 100644
-index 0000000..b432dc6
+index 0000000..70ae60d
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/cesa/AES/mvAesApi.c
 @@ -0,0 +1,312 @@
@@ -20030,7 +20060,7 @@ index 0000000..b432dc6
 +
 diff --git a/crypto/ocf/kirkwood/cesa/mvCesa.c b/crypto/ocf/kirkwood/cesa/mvCesa.c
 new file mode 100644
-index 0000000..17ab086
+index 0000000..e09ad62
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/cesa/mvCesa.c
 @@ -0,0 +1,3126 @@
@@ -23162,7 +23192,7 @@ index 0000000..17ab086
 +}
 diff --git a/crypto/ocf/kirkwood/cesa/mvCesa.h b/crypto/ocf/kirkwood/cesa/mvCesa.h
 new file mode 100644
-index 0000000..c0abc9b
+index 0000000..6898699
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/cesa/mvCesa.h
 @@ -0,0 +1,412 @@
@@ -23580,7 +23610,7 @@ index 0000000..c0abc9b
 +#endif /* __mvCesa_h__ */
 diff --git a/crypto/ocf/kirkwood/cesa/mvCesaDebug.c b/crypto/ocf/kirkwood/cesa/mvCesaDebug.c
 new file mode 100644
-index 0000000..31b78a8
+index 0000000..0b7cb48
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/cesa/mvCesaDebug.c
 @@ -0,0 +1,484 @@
@@ -24070,7 +24100,7 @@ index 0000000..31b78a8
 +}
 diff --git a/crypto/ocf/kirkwood/cesa/mvCesaRegs.h b/crypto/ocf/kirkwood/cesa/mvCesaRegs.h
 new file mode 100644
-index 0000000..6b7ce12
+index 0000000..c6eecae
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/cesa/mvCesaRegs.h
 @@ -0,0 +1,357 @@
@@ -24433,7 +24463,7 @@ index 0000000..6b7ce12
 +
 diff --git a/crypto/ocf/kirkwood/cesa/mvCesaTest.c b/crypto/ocf/kirkwood/cesa/mvCesaTest.c
 new file mode 100644
-index 0000000..7463293
+index 0000000..694f780
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/cesa/mvCesaTest.c
 @@ -0,0 +1,3096 @@
@@ -27535,7 +27565,7 @@ index 0000000..7463293
 +}
 diff --git a/crypto/ocf/kirkwood/cesa/mvLru.c b/crypto/ocf/kirkwood/cesa/mvLru.c
 new file mode 100644
-index 0000000..9ab29a8
+index 0000000..4b5f877
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/cesa/mvLru.c
 @@ -0,0 +1,158 @@
@@ -27699,7 +27729,7 @@ index 0000000..9ab29a8
 +}
 diff --git a/crypto/ocf/kirkwood/cesa/mvLru.h b/crypto/ocf/kirkwood/cesa/mvLru.h
 new file mode 100644
-index 0000000..896e7f8
+index 0000000..39d2f89
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/cesa/mvLru.h
 @@ -0,0 +1,112 @@
@@ -27817,7 +27847,7 @@ index 0000000..896e7f8
 +#endif /* __mvLru_h__ */
 diff --git a/crypto/ocf/kirkwood/cesa/mvMD5.c b/crypto/ocf/kirkwood/cesa/mvMD5.c
 new file mode 100644
-index 0000000..189f629
+index 0000000..b012976
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/cesa/mvMD5.c
 @@ -0,0 +1,349 @@
@@ -28172,7 +28202,7 @@ index 0000000..189f629
 +}
 diff --git a/crypto/ocf/kirkwood/cesa/mvMD5.h b/crypto/ocf/kirkwood/cesa/mvMD5.h
 new file mode 100644
-index 0000000..d05c6b6
+index 0000000..d20281e
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/cesa/mvMD5.h
 @@ -0,0 +1,93 @@
@@ -28271,7 +28301,7 @@ index 0000000..d05c6b6
 +#endif /* __mvMD5_h__ */
 diff --git a/crypto/ocf/kirkwood/cesa/mvSHA1.c b/crypto/ocf/kirkwood/cesa/mvSHA1.c
 new file mode 100644
-index 0000000..0e0786b
+index 0000000..6342985
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/cesa/mvSHA1.c
 @@ -0,0 +1,239 @@
@@ -28516,7 +28546,7 @@ index 0000000..0e0786b
 +}
 diff --git a/crypto/ocf/kirkwood/cesa/mvSHA1.h b/crypto/ocf/kirkwood/cesa/mvSHA1.h
 new file mode 100644
-index 0000000..17df9fc
+index 0000000..1914f47
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/cesa/mvSHA1.h
 @@ -0,0 +1,88 @@
@@ -28610,7 +28640,7 @@ index 0000000..17df9fc
 +#endif /* __mvSHA1_h__ */
 diff --git a/crypto/ocf/kirkwood/cesa_ocf_drv.c b/crypto/ocf/kirkwood/cesa_ocf_drv.c
 new file mode 100644
-index 0000000..ccf9227
+index 0000000..c056b1f
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/cesa_ocf_drv.c
 @@ -0,0 +1,1296 @@
@@ -29912,7 +29942,7 @@ index 0000000..ccf9227
 +MODULE_DESCRIPTION("OCF module for Orion CESA crypto");
 diff --git a/crypto/ocf/kirkwood/mvHal/common/mv802_3.h b/crypto/ocf/kirkwood/mvHal/common/mv802_3.h
 new file mode 100644
-index 0000000..3769dde
+index 0000000..b03cdbd
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/common/mv802_3.h
 @@ -0,0 +1,213 @@
@@ -30131,7 +30161,7 @@ index 0000000..3769dde
 +#endif /* __INCmv802_3h */
 diff --git a/crypto/ocf/kirkwood/mvHal/common/mvCommon.c b/crypto/ocf/kirkwood/mvHal/common/mvCommon.c
 new file mode 100644
-index 0000000..dc0e0cf
+index 0000000..ecb41a8
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/common/mvCommon.c
 @@ -0,0 +1,277 @@
@@ -30414,7 +30444,7 @@ index 0000000..dc0e0cf
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/common/mvCommon.h b/crypto/ocf/kirkwood/mvHal/common/mvCommon.h
 new file mode 100644
-index 0000000..c8e9ce1
+index 0000000..5caf47c
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/common/mvCommon.h
 @@ -0,0 +1,308 @@
@@ -30728,7 +30758,7 @@ index 0000000..c8e9ce1
 +#endif	/* __INCmvCommonh */
 diff --git a/crypto/ocf/kirkwood/mvHal/common/mvDebug.c b/crypto/ocf/kirkwood/mvHal/common/mvDebug.c
 new file mode 100644
-index 0000000..087f36d
+index 0000000..d98a9e4
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/common/mvDebug.c
 @@ -0,0 +1,326 @@
@@ -31060,7 +31090,7 @@ index 0000000..087f36d
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/common/mvDebug.h b/crypto/ocf/kirkwood/mvHal/common/mvDebug.h
 new file mode 100644
-index 0000000..e4975be
+index 0000000..ed07a1f
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/common/mvDebug.h
 @@ -0,0 +1,178 @@
@@ -31244,7 +31274,7 @@ index 0000000..e4975be
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/common/mvDeviceId.h b/crypto/ocf/kirkwood/mvHal/common/mvDeviceId.h
 new file mode 100644
-index 0000000..4782094
+index 0000000..2e0c04f
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/common/mvDeviceId.h
 @@ -0,0 +1,225 @@
@@ -31475,7 +31505,7 @@ index 0000000..4782094
 +#endif /* __INCmvDeviceIdh */
 diff --git a/crypto/ocf/kirkwood/mvHal/common/mvHalVer.h b/crypto/ocf/kirkwood/mvHal/common/mvHalVer.h
 new file mode 100644
-index 0000000..3bfcfe1
+index 0000000..1849198
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/common/mvHalVer.h
 @@ -0,0 +1,73 @@
@@ -31555,7 +31585,7 @@ index 0000000..3bfcfe1
 \ No newline at end of file
 diff --git a/crypto/ocf/kirkwood/mvHal/common/mvStack.c b/crypto/ocf/kirkwood/mvHal/common/mvStack.c
 new file mode 100644
-index 0000000..41ca7ce
+index 0000000..7ba48ea
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/common/mvStack.c
 @@ -0,0 +1,100 @@
@@ -31661,7 +31691,7 @@ index 0000000..41ca7ce
 +}
 diff --git a/crypto/ocf/kirkwood/mvHal/common/mvStack.h b/crypto/ocf/kirkwood/mvHal/common/mvStack.h
 new file mode 100644
-index 0000000..e247e61
+index 0000000..7e33d91
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/common/mvStack.h
 @@ -0,0 +1,140 @@
@@ -31807,7 +31837,7 @@ index 0000000..e247e61
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/common/mvTypes.h b/crypto/ocf/kirkwood/mvHal/common/mvTypes.h
 new file mode 100644
-index 0000000..de212a1
+index 0000000..1538a24
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/common/mvTypes.h
 @@ -0,0 +1,245 @@
@@ -32058,7 +32088,7 @@ index 0000000..de212a1
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/dbg-trace.c b/crypto/ocf/kirkwood/mvHal/dbg-trace.c
 new file mode 100644
-index 0000000..644fd02
+index 0000000..6576d35
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/dbg-trace.c
 @@ -0,0 +1,110 @@
@@ -32174,7 +32204,7 @@ index 0000000..644fd02
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/dbg-trace.h b/crypto/ocf/kirkwood/mvHal/dbg-trace.h
 new file mode 100644
-index 0000000..a5aac26
+index 0000000..e3dd480
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/dbg-trace.h
 @@ -0,0 +1,24 @@
@@ -32204,7 +32234,7 @@ index 0000000..a5aac26
 +#endif
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/boardEnv/mvBoardEnvLib.c b/crypto/ocf/kirkwood/mvHal/kw_family/boardEnv/mvBoardEnvLib.c
 new file mode 100644
-index 0000000..5f62784
+index 0000000..8a6ba2c
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/boardEnv/mvBoardEnvLib.c
 @@ -0,0 +1,2513 @@
@@ -34723,7 +34753,7 @@ index 0000000..5f62784
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/boardEnv/mvBoardEnvLib.h b/crypto/ocf/kirkwood/mvHal/kw_family/boardEnv/mvBoardEnvLib.h
 new file mode 100644
-index 0000000..dead633
+index 0000000..522493d
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/boardEnv/mvBoardEnvLib.h
 @@ -0,0 +1,376 @@
@@ -35105,7 +35135,7 @@ index 0000000..dead633
 +#endif /* __INCmvBoardEnvLibh */
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/boardEnv/mvBoardEnvSpec.c b/crypto/ocf/kirkwood/mvHal/kw_family/boardEnv/mvBoardEnvSpec.c
 new file mode 100644
-index 0000000..e256c4f
+index 0000000..54508c0
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/boardEnv/mvBoardEnvSpec.c
 @@ -0,0 +1,848 @@
@@ -35959,7 +35989,7 @@ index 0000000..e256c4f
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/boardEnv/mvBoardEnvSpec.h b/crypto/ocf/kirkwood/mvHal/kw_family/boardEnv/mvBoardEnvSpec.h
 new file mode 100644
-index 0000000..0372eee
+index 0000000..b11dafb
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/boardEnv/mvBoardEnvSpec.h
 @@ -0,0 +1,262 @@
@@ -36227,7 +36257,7 @@ index 0000000..0372eee
 +#endif /* __INCmvBoardEnvSpech */
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/cpu/mvCpu.c b/crypto/ocf/kirkwood/mvHal/kw_family/cpu/mvCpu.c
 new file mode 100644
-index 0000000..fed0fa1
+index 0000000..9e39354
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/cpu/mvCpu.c
 @@ -0,0 +1,320 @@
@@ -36553,7 +36583,7 @@ index 0000000..fed0fa1
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/cpu/mvCpu.h b/crypto/ocf/kirkwood/mvHal/kw_family/cpu/mvCpu.h
 new file mode 100644
-index 0000000..7f58b03
+index 0000000..dd3a70e
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/cpu/mvCpu.h
 @@ -0,0 +1,99 @@
@@ -36658,7 +36688,7 @@ index 0000000..7f58b03
 +#endif /* __INCmvCpuh */
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/mvCtrlEnvAddrDec.c b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/mvCtrlEnvAddrDec.c
 new file mode 100644
-index 0000000..fbe7c56
+index 0000000..2e6226b
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/mvCtrlEnvAddrDec.c
 @@ -0,0 +1,296 @@
@@ -36960,7 +36990,7 @@ index 0000000..fbe7c56
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/mvCtrlEnvAddrDec.h b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/mvCtrlEnvAddrDec.h
 new file mode 100644
-index 0000000..946737f
+index 0000000..fcb5a31
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/mvCtrlEnvAddrDec.h
 @@ -0,0 +1,203 @@
@@ -37169,7 +37199,7 @@ index 0000000..946737f
 +#endif /* __INCmvCtrlEnvAddrDech */
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/mvCtrlEnvAsm.h b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/mvCtrlEnvAsm.h
 new file mode 100644
-index 0000000..6f6367a
+index 0000000..14a5ac4
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/mvCtrlEnvAsm.h
 @@ -0,0 +1,98 @@
@@ -37273,7 +37303,7 @@ index 0000000..6f6367a
 +#endif /* __INCmvCtrlEnvAsmh */
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/mvCtrlEnvLib.c b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/mvCtrlEnvLib.c
 new file mode 100644
-index 0000000..adf451d
+index 0000000..fa097a2
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/mvCtrlEnvLib.c
 @@ -0,0 +1,1825 @@
@@ -39104,7 +39134,7 @@ index 0000000..adf451d
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/mvCtrlEnvLib.h b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/mvCtrlEnvLib.h
 new file mode 100644
-index 0000000..6e2e813
+index 0000000..0f8d2b4
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/mvCtrlEnvLib.h
 @@ -0,0 +1,185 @@
@@ -39295,7 +39325,7 @@ index 0000000..6e2e813
 +#endif /* __INCmvCtrlEnvLibh */
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/mvCtrlEnvRegs.h b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/mvCtrlEnvRegs.h
 new file mode 100644
-index 0000000..ae3f141
+index 0000000..b889e24
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/mvCtrlEnvRegs.h
 @@ -0,0 +1,419 @@
@@ -39720,7 +39750,7 @@ index 0000000..ae3f141
 +#endif
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/mvCtrlEnvSpec.h b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/mvCtrlEnvSpec.h
 new file mode 100644
-index 0000000..e41d80a
+index 0000000..12d2066
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/mvCtrlEnvSpec.h
 @@ -0,0 +1,257 @@
@@ -39983,7 +40013,7 @@ index 0000000..e41d80a
 +#endif /* __INCmvCtrlEnvSpech */
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvAhbToMbus.c b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvAhbToMbus.c
 new file mode 100644
-index 0000000..d21bb07
+index 0000000..d22c4fc
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvAhbToMbus.c
 @@ -0,0 +1,1048 @@
@@ -41037,7 +41067,7 @@ index 0000000..d21bb07
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvAhbToMbus.h b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvAhbToMbus.h
 new file mode 100644
-index 0000000..1b352a1
+index 0000000..a1d93b7
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvAhbToMbus.h
 @@ -0,0 +1,130 @@
@@ -41173,7 +41203,7 @@ index 0000000..1b352a1
 +#endif /* __INCmvAhbToMbush */
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvAhbToMbusRegs.h b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvAhbToMbusRegs.h
 new file mode 100644
-index 0000000..97dc631
+index 0000000..c5682e8
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvAhbToMbusRegs.h
 @@ -0,0 +1,143 @@
@@ -41322,7 +41352,7 @@ index 0000000..97dc631
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvCpuIf.c b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvCpuIf.c
 new file mode 100644
-index 0000000..872dc6e
+index 0000000..396f003
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvCpuIf.c
 @@ -0,0 +1,1036 @@
@@ -42364,7 +42394,7 @@ index 0000000..872dc6e
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvCpuIf.h b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvCpuIf.h
 new file mode 100644
-index 0000000..224ed07
+index 0000000..5755a40
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvCpuIf.h
 @@ -0,0 +1,120 @@
@@ -42490,7 +42520,7 @@ index 0000000..224ed07
 +#endif /* __INCmvCpuIfh */
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvCpuIfRegs.h b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvCpuIfRegs.h
 new file mode 100644
-index 0000000..8cfeee2
+index 0000000..58c04c0
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvCpuIfRegs.h
 @@ -0,0 +1,304 @@
@@ -42800,7 +42830,7 @@ index 0000000..8cfeee2
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysAudio.c b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysAudio.c
 new file mode 100644
-index 0000000..769475f
+index 0000000..8475956
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysAudio.c
 @@ -0,0 +1,324 @@
@@ -43130,7 +43160,7 @@ index 0000000..769475f
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysAudio.h b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysAudio.h
 new file mode 100644
-index 0000000..f59eb9a
+index 0000000..7e078ff
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysAudio.h
 @@ -0,0 +1,123 @@
@@ -43259,7 +43289,7 @@ index 0000000..f59eb9a
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysCesa.c b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysCesa.c
 new file mode 100644
-index 0000000..84d0cd0
+index 0000000..9b50bae
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysCesa.c
 @@ -0,0 +1,382 @@
@@ -43647,7 +43677,7 @@ index 0000000..84d0cd0
 +}
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysCesa.h b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysCesa.h
 new file mode 100644
-index 0000000..73bcdc5
+index 0000000..9bc3fee
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysCesa.h
 @@ -0,0 +1,100 @@
@@ -43753,7 +43783,7 @@ index 0000000..73bcdc5
 +#endif
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysDram.c b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysDram.c
 new file mode 100644
-index 0000000..6f76c2c
+index 0000000..7df47b3
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysDram.c
 @@ -0,0 +1,348 @@
@@ -44107,7 +44137,7 @@ index 0000000..6f76c2c
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysDram.h b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysDram.h
 new file mode 100644
-index 0000000..7bd9c9d
+index 0000000..f16b947
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysDram.h
 @@ -0,0 +1,80 @@
@@ -44193,7 +44223,7 @@ index 0000000..7bd9c9d
 +#endif
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysGbe.c b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysGbe.c
 new file mode 100644
-index 0000000..7f6e4a5
+index 0000000..663acd3
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysGbe.c
 @@ -0,0 +1,658 @@
@@ -44857,7 +44887,7 @@ index 0000000..7f6e4a5
 +}
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysGbe.h b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysGbe.h
 new file mode 100644
-index 0000000..615af51
+index 0000000..aac5517
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysGbe.h
 @@ -0,0 +1,113 @@
@@ -44976,7 +45006,7 @@ index 0000000..615af51
 +#endif
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysPex.c b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysPex.c
 new file mode 100644
-index 0000000..b0cb466
+index 0000000..9576acb
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysPex.c
 @@ -0,0 +1,1697 @@
@@ -46679,7 +46709,7 @@ index 0000000..b0cb466
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysPex.h b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysPex.h
 new file mode 100644
-index 0000000..3505613
+index 0000000..c1555f6
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysPex.h
 @@ -0,0 +1,348 @@
@@ -47033,7 +47063,7 @@ index 0000000..3505613
 +#endif
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysSata.c b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysSata.c
 new file mode 100644
-index 0000000..f100a12
+index 0000000..4c0485f
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysSata.c
 @@ -0,0 +1,430 @@
@@ -47469,7 +47499,7 @@ index 0000000..f100a12
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysSata.h b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysSata.h
 new file mode 100644
-index 0000000..325fb8d
+index 0000000..e401992
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysSata.h
 @@ -0,0 +1,128 @@
@@ -47603,7 +47633,7 @@ index 0000000..325fb8d
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysSdmmc.c b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysSdmmc.c
 new file mode 100644
-index 0000000..6d2a919
+index 0000000..682f6f1
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysSdmmc.c
 @@ -0,0 +1,427 @@
@@ -48036,7 +48066,7 @@ index 0000000..6d2a919
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysSdmmc.h b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysSdmmc.h
 new file mode 100644
-index 0000000..4c50a2b
+index 0000000..f8357c1
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysSdmmc.h
 @@ -0,0 +1,125 @@
@@ -48167,7 +48197,7 @@ index 0000000..4c50a2b
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysTdm.c b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysTdm.c
 new file mode 100644
-index 0000000..ecf6944
+index 0000000..159d79f
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysTdm.c
 @@ -0,0 +1,462 @@
@@ -48635,7 +48665,7 @@ index 0000000..ecf6944
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysTdm.h b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysTdm.h
 new file mode 100644
-index 0000000..0d3140f
+index 0000000..3603095
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysTdm.h
 @@ -0,0 +1,106 @@
@@ -48747,7 +48777,7 @@ index 0000000..0d3140f
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysTs.c b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysTs.c
 new file mode 100644
-index 0000000..4415c7c
+index 0000000..8cd0018
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysTs.c
 @@ -0,0 +1,591 @@
@@ -49344,7 +49374,7 @@ index 0000000..4415c7c
 +}
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysTs.h b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysTs.h
 new file mode 100644
-index 0000000..4282589
+index 0000000..1478b09
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysTs.h
 @@ -0,0 +1,110 @@
@@ -49963,7 +49993,7 @@ index 0000000..195b5e1
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysUsb.h b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysUsb.h
 new file mode 100644
-index 0000000..07f98de
+index 0000000..b712900
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysUsb.h
 @@ -0,0 +1,125 @@
@@ -50094,7 +50124,7 @@ index 0000000..07f98de
 +#endif /* __INCmvUsbh */
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysXor.c b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysXor.c
 new file mode 100644
-index 0000000..f9d0ab3
+index 0000000..1e1da8f
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysXor.c
 @@ -0,0 +1,662 @@
@@ -50762,7 +50792,7 @@ index 0000000..f9d0ab3
 +}
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysXor.h b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysXor.h
 new file mode 100644
-index 0000000..73b2d9e
+index 0000000..0a7be8f
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/ctrlEnv/sys/mvSysXor.h
 @@ -0,0 +1,140 @@
@@ -50908,7 +50938,7 @@ index 0000000..73b2d9e
 +#endif
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/device/mvDevice.c b/crypto/ocf/kirkwood/mvHal/kw_family/device/mvDevice.c
 new file mode 100644
-index 0000000..80325fc
+index 0000000..a327944
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/device/mvDevice.c
 @@ -0,0 +1,75 @@
@@ -50989,7 +51019,7 @@ index 0000000..80325fc
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/device/mvDevice.h b/crypto/ocf/kirkwood/mvHal/kw_family/device/mvDevice.h
 new file mode 100644
-index 0000000..9350779
+index 0000000..a8a382b
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/device/mvDevice.h
 @@ -0,0 +1,74 @@
@@ -51069,7 +51099,7 @@ index 0000000..9350779
 +#endif /* #ifndef __INCmvDeviceH */
 diff --git a/crypto/ocf/kirkwood/mvHal/kw_family/device/mvDeviceRegs.h b/crypto/ocf/kirkwood/mvHal/kw_family/device/mvDeviceRegs.h
 new file mode 100644
-index 0000000..80778ad
+index 0000000..599dfe3
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/kw_family/device/mvDeviceRegs.h
 @@ -0,0 +1,101 @@
@@ -51176,7 +51206,7 @@ index 0000000..80778ad
 +#endif /* #ifndef __INCmvDeviceRegsH */
 diff --git a/crypto/ocf/kirkwood/mvHal/linux_oss/mvOs.c b/crypto/ocf/kirkwood/mvHal/linux_oss/mvOs.c
 new file mode 100644
-index 0000000..75f7e88
+index 0000000..749b885
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/linux_oss/mvOs.c
 @@ -0,0 +1,211 @@
@@ -51393,7 +51423,7 @@ index 0000000..75f7e88
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/linux_oss/mvOs.h b/crypto/ocf/kirkwood/mvHal/linux_oss/mvOs.h
 new file mode 100644
-index 0000000..8da562a
+index 0000000..9122a52
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/linux_oss/mvOs.h
 @@ -0,0 +1,423 @@
@@ -51822,7 +51852,7 @@ index 0000000..8da562a
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/linux_oss/mvOsSata.h b/crypto/ocf/kirkwood/mvHal/linux_oss/mvOsSata.h
 new file mode 100644
-index 0000000..c925a9e
+index 0000000..170481a
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/linux_oss/mvOsSata.h
 @@ -0,0 +1,158 @@
@@ -51986,7 +52016,7 @@ index 0000000..c925a9e
 +#endif /* __INCmvOsLinuxh */
 diff --git a/crypto/ocf/kirkwood/mvHal/mvSysHwConfig.h b/crypto/ocf/kirkwood/mvHal/mvSysHwConfig.h
 new file mode 100644
-index 0000000..d761060
+index 0000000..8352290
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mvSysHwConfig.h
 @@ -0,0 +1,375 @@
@@ -52367,7 +52397,7 @@ index 0000000..d761060
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/cntmr/mvCntmr.c b/crypto/ocf/kirkwood/mvHal/mv_hal/cntmr/mvCntmr.c
 new file mode 100644
-index 0000000..717c150
+index 0000000..6be5ea8
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/cntmr/mvCntmr.c
 @@ -0,0 +1,376 @@
@@ -52749,7 +52779,7 @@ index 0000000..717c150
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/cntmr/mvCntmr.h b/crypto/ocf/kirkwood/mvHal/mv_hal/cntmr/mvCntmr.h
 new file mode 100644
-index 0000000..b911d0f
+index 0000000..b4b1a9d
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/cntmr/mvCntmr.h
 @@ -0,0 +1,121 @@
@@ -52876,7 +52906,7 @@ index 0000000..b911d0f
 +#endif /* __INCmvTmrWtdgh */
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/cntmr/mvCntmrRegs.h b/crypto/ocf/kirkwood/mvHal/mv_hal/cntmr/mvCntmrRegs.h
 new file mode 100644
-index 0000000..b69bc66
+index 0000000..1cd9041
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/cntmr/mvCntmrRegs.h
 @@ -0,0 +1,121 @@
@@ -53003,7 +53033,7 @@ index 0000000..b69bc66
 +#endif /* __INCmvTmrwtdgRegsh */
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/cpu/mvCpuCntrs.c b/crypto/ocf/kirkwood/mvHal/mv_hal/cpu/mvCpuCntrs.c
 new file mode 100644
-index 0000000..609e674
+index 0000000..03d6d09
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/cpu/mvCpuCntrs.c
 @@ -0,0 +1,207 @@
@@ -53216,7 +53246,7 @@ index 0000000..609e674
 +}
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/cpu/mvCpuCntrs.h b/crypto/ocf/kirkwood/mvHal/mv_hal/cpu/mvCpuCntrs.h
 new file mode 100644
-index 0000000..8d49af0
+index 0000000..0b4998c
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/cpu/mvCpuCntrs.h
 @@ -0,0 +1,213 @@
@@ -53435,7 +53465,7 @@ index 0000000..8d49af0
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/cpu/mvCpuL2Cntrs.c b/crypto/ocf/kirkwood/mvHal/mv_hal/cpu/mvCpuL2Cntrs.c
 new file mode 100644
-index 0000000..0333862
+index 0000000..2401002
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/cpu/mvCpuL2Cntrs.c
 @@ -0,0 +1,143 @@
@@ -53584,7 +53614,7 @@ index 0000000..0333862
 +}
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/cpu/mvCpuL2Cntrs.h b/crypto/ocf/kirkwood/mvHal/mv_hal/cpu/mvCpuL2Cntrs.h
 new file mode 100644
-index 0000000..570d701
+index 0000000..ad6a36f
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/cpu/mvCpuL2Cntrs.h
 @@ -0,0 +1,151 @@
@@ -53741,7 +53771,7 @@ index 0000000..570d701
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/ddr1_2/mvDram.c b/crypto/ocf/kirkwood/mvHal/mv_hal/ddr1_2/mvDram.c
 new file mode 100644
-index 0000000..d1b8a3d
+index 0000000..5c6db90
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/ddr1_2/mvDram.c
 @@ -0,0 +1,1479 @@
@@ -55226,7 +55256,7 @@ index 0000000..d1b8a3d
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/ddr1_2/mvDram.h b/crypto/ocf/kirkwood/mvHal/mv_hal/ddr1_2/mvDram.h
 new file mode 100644
-index 0000000..678e224
+index 0000000..6e79d1e
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/ddr1_2/mvDram.h
 @@ -0,0 +1,191 @@
@@ -55423,7 +55453,7 @@ index 0000000..678e224
 +#endif /* __INCmvDram */
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/ddr1_2/mvDramIf.c b/crypto/ocf/kirkwood/mvHal/mv_hal/ddr1_2/mvDramIf.c
 new file mode 100644
-index 0000000..12fb26a
+index 0000000..c44dabe
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/ddr1_2/mvDramIf.c
 @@ -0,0 +1,1599 @@
@@ -57028,7 +57058,7 @@ index 0000000..12fb26a
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/ddr1_2/mvDramIf.h b/crypto/ocf/kirkwood/mvHal/mv_hal/ddr1_2/mvDramIf.h
 new file mode 100644
-index 0000000..8bfa3e8
+index 0000000..8ae67e7
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/ddr1_2/mvDramIf.h
 @@ -0,0 +1,179 @@
@@ -57213,7 +57243,7 @@ index 0000000..8bfa3e8
 +#endif /* __INCmvDramIfh */
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/ddr1_2/mvDramIfConfig.h b/crypto/ocf/kirkwood/mvHal/mv_hal/ddr1_2/mvDramIfConfig.h
 new file mode 100644
-index 0000000..a7c6644
+index 0000000..049595e
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/ddr1_2/mvDramIfConfig.h
 @@ -0,0 +1,192 @@
@@ -57411,7 +57441,7 @@ index 0000000..a7c6644
 +#endif /* __INCmvDramIfh */
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/ddr1_2/mvDramIfRegs.h b/crypto/ocf/kirkwood/mvHal/mv_hal/ddr1_2/mvDramIfRegs.h
 new file mode 100644
-index 0000000..e9cd7c4
+index 0000000..f4a2726
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/ddr1_2/mvDramIfRegs.h
 @@ -0,0 +1,306 @@
@@ -57723,7 +57753,7 @@ index 0000000..e9cd7c4
 +#endif /* __INCmvDramIfRegsh */
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/ddr2/mvDramIf.c b/crypto/ocf/kirkwood/mvHal/mv_hal/ddr2/mvDramIf.c
 new file mode 100644
-index 0000000..a214c95
+index 0000000..8c9ce24
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/ddr2/mvDramIf.c
 @@ -0,0 +1,1855 @@
@@ -59584,7 +59614,7 @@ index 0000000..a214c95
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/ddr2/mvDramIf.h b/crypto/ocf/kirkwood/mvHal/mv_hal/ddr2/mvDramIf.h
 new file mode 100644
-index 0000000..23f2e54
+index 0000000..b7b596c
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/ddr2/mvDramIf.h
 @@ -0,0 +1,172 @@
@@ -59762,7 +59792,7 @@ index 0000000..23f2e54
 +#endif /* __INCmvDramIfh */
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/ddr2/mvDramIfConfig.h b/crypto/ocf/kirkwood/mvHal/mv_hal/ddr2/mvDramIfConfig.h
 new file mode 100644
-index 0000000..6141c46
+index 0000000..b008c23
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/ddr2/mvDramIfConfig.h
 @@ -0,0 +1,157 @@
@@ -59925,7 +59955,7 @@ index 0000000..6141c46
 +#endif /* __INCmvDramIfh */
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/ddr2/mvDramIfRegs.h b/crypto/ocf/kirkwood/mvHal/mv_hal/ddr2/mvDramIfRegs.h
 new file mode 100644
-index 0000000..369eda6
+index 0000000..c2458a6
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/ddr2/mvDramIfRegs.h
 @@ -0,0 +1,423 @@
@@ -60354,7 +60384,7 @@ index 0000000..369eda6
 +#endif /* __INCmvDramIfRegsh */
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/ddr2/mvDramIfStaticInit.h b/crypto/ocf/kirkwood/mvHal/mv_hal/ddr2/mvDramIfStaticInit.h
 new file mode 100644
-index 0000000..f3bf83b
+index 0000000..5b3ed85
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/ddr2/mvDramIfStaticInit.h
 @@ -0,0 +1,179 @@
@@ -60539,7 +60569,7 @@ index 0000000..f3bf83b
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/ddr2/spd/mvSpd.c b/crypto/ocf/kirkwood/mvHal/mv_hal/ddr2/spd/mvSpd.c
 new file mode 100644
-index 0000000..7a26f90
+index 0000000..dcc8fdf
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/ddr2/spd/mvSpd.c
 @@ -0,0 +1,1474 @@
@@ -62019,7 +62049,7 @@ index 0000000..7a26f90
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/ddr2/spd/mvSpd.h b/crypto/ocf/kirkwood/mvHal/mv_hal/ddr2/spd/mvSpd.h
 new file mode 100644
-index 0000000..f955466
+index 0000000..ae692ef
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/ddr2/spd/mvSpd.h
 @@ -0,0 +1,192 @@
@@ -62217,7 +62247,7 @@ index 0000000..f955466
 +#endif /* __INCmvDram */
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/eth/gbe/mvEth.c b/crypto/ocf/kirkwood/mvHal/mv_hal/eth/gbe/mvEth.c
 new file mode 100644
-index 0000000..d24e788
+index 0000000..2acd82b
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/eth/gbe/mvEth.c
 @@ -0,0 +1,2952 @@
@@ -65175,7 +65205,7 @@ index 0000000..d24e788
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/eth/gbe/mvEthDebug.c b/crypto/ocf/kirkwood/mvHal/mv_hal/eth/gbe/mvEthDebug.c
 new file mode 100644
-index 0000000..f533475
+index 0000000..62edcb5
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/eth/gbe/mvEthDebug.c
 @@ -0,0 +1,748 @@
@@ -65929,7 +65959,7 @@ index 0000000..f533475
 +}
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/eth/gbe/mvEthDebug.h b/crypto/ocf/kirkwood/mvHal/mv_hal/eth/gbe/mvEthDebug.h
 new file mode 100644
-index 0000000..f026f96
+index 0000000..b772a74
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/eth/gbe/mvEthDebug.h
 @@ -0,0 +1,146 @@
@@ -66081,7 +66111,7 @@ index 0000000..f026f96
 +#endif
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/eth/gbe/mvEthGbe.h b/crypto/ocf/kirkwood/mvHal/mv_hal/eth/gbe/mvEthGbe.h
 new file mode 100644
-index 0000000..f4cae50
+index 0000000..83ad6ad
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/eth/gbe/mvEthGbe.h
 @@ -0,0 +1,751 @@
@@ -66838,7 +66868,7 @@ index 0000000..f4cae50
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/eth/gbe/mvEthRegs.h b/crypto/ocf/kirkwood/mvHal/mv_hal/eth/gbe/mvEthRegs.h
 new file mode 100644
-index 0000000..7b9f052
+index 0000000..0f57ee7
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/eth/gbe/mvEthRegs.h
 @@ -0,0 +1,700 @@
@@ -67544,7 +67574,7 @@ index 0000000..7b9f052
 +#endif /* __INCmvEthRegsh */
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/eth/mvEth.h b/crypto/ocf/kirkwood/mvHal/mv_hal/eth/mvEth.h
 new file mode 100644
-index 0000000..c42ed1a
+index 0000000..30f2a40
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/eth/mvEth.h
 @@ -0,0 +1,356 @@
@@ -67906,7 +67936,7 @@ index 0000000..c42ed1a
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/gpp/mvGpp.c b/crypto/ocf/kirkwood/mvHal/mv_hal/gpp/mvGpp.c
 new file mode 100644
-index 0000000..889d4d9
+index 0000000..d7a5132
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/gpp/mvGpp.c
 @@ -0,0 +1,362 @@
@@ -68274,7 +68304,7 @@ index 0000000..889d4d9
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/gpp/mvGpp.h b/crypto/ocf/kirkwood/mvHal/mv_hal/gpp/mvGpp.h
 new file mode 100644
-index 0000000..526d324
+index 0000000..801472d
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/gpp/mvGpp.h
 @@ -0,0 +1,118 @@
@@ -68398,7 +68428,7 @@ index 0000000..526d324
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/gpp/mvGppRegs.h b/crypto/ocf/kirkwood/mvHal/mv_hal/gpp/mvGppRegs.h
 new file mode 100644
-index 0000000..b6fec34
+index 0000000..14b199f
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/gpp/mvGppRegs.h
 @@ -0,0 +1,116 @@
@@ -68520,7 +68550,7 @@ index 0000000..b6fec34
 +#endif /* #ifndef __INCmvGppRegsH */
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/pci-if/mvPciIf.c b/crypto/ocf/kirkwood/mvHal/mv_hal/pci-if/mvPciIf.c
 new file mode 100644
-index 0000000..672d3e3
+index 0000000..5ee430c
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/pci-if/mvPciIf.c
 @@ -0,0 +1,669 @@
@@ -69195,7 +69225,7 @@ index 0000000..672d3e3
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/pci-if/mvPciIf.h b/crypto/ocf/kirkwood/mvHal/mv_hal/pci-if/mvPciIf.h
 new file mode 100644
-index 0000000..9c2d160
+index 0000000..5f7caaa
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/pci-if/mvPciIf.h
 @@ -0,0 +1,134 @@
@@ -69335,7 +69365,7 @@ index 0000000..9c2d160
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/pci-if/mvPciIfRegs.h b/crypto/ocf/kirkwood/mvHal/mv_hal/pci-if/mvPciIfRegs.h
 new file mode 100644
-index 0000000..08d4d2d
+index 0000000..754e837
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/pci-if/mvPciIfRegs.h
 @@ -0,0 +1,245 @@
@@ -69586,7 +69616,7 @@ index 0000000..08d4d2d
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/pci-if/pci_util/mvPciUtils.c b/crypto/ocf/kirkwood/mvHal/mv_hal/pci-if/pci_util/mvPciUtils.c
 new file mode 100644
-index 0000000..f216979
+index 0000000..6de1b0c
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/pci-if/pci_util/mvPciUtils.c
 @@ -0,0 +1,1006 @@
@@ -70598,7 +70628,7 @@ index 0000000..f216979
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/pci-if/pci_util/mvPciUtils.h b/crypto/ocf/kirkwood/mvHal/mv_hal/pci-if/pci_util/mvPciUtils.h
 new file mode 100644
-index 0000000..2ee0b17
+index 0000000..444f53c
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/pci-if/pci_util/mvPciUtils.h
 @@ -0,0 +1,323 @@
@@ -70927,7 +70957,7 @@ index 0000000..2ee0b17
 +#endif /* #ifndef __INCmvPciUtilsh */
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/pci/mvPci.c b/crypto/ocf/kirkwood/mvHal/mv_hal/pci/mvPci.c
 new file mode 100644
-index 0000000..4a08734
+index 0000000..5430f51
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/pci/mvPci.c
 @@ -0,0 +1,1047 @@
@@ -71980,7 +72010,7 @@ index 0000000..4a08734
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/pci/mvPci.h b/crypto/ocf/kirkwood/mvHal/mv_hal/pci/mvPci.h
 new file mode 100644
-index 0000000..4746336
+index 0000000..3c521db
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/pci/mvPci.h
 @@ -0,0 +1,185 @@
@@ -72171,7 +72201,7 @@ index 0000000..4746336
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/pci/mvPciRegs.h b/crypto/ocf/kirkwood/mvHal/mv_hal/pci/mvPciRegs.h
 new file mode 100644
-index 0000000..89d0ef1
+index 0000000..9ae555f
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/pci/mvPciRegs.h
 @@ -0,0 +1,411 @@
@@ -72588,7 +72618,7 @@ index 0000000..89d0ef1
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/pex/mvPex.c b/crypto/ocf/kirkwood/mvHal/mv_hal/pex/mvPex.c
 new file mode 100644
-index 0000000..068aac2
+index 0000000..709bb49
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/pex/mvPex.c
 @@ -0,0 +1,1143 @@
@@ -73737,7 +73767,7 @@ index 0000000..068aac2
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/pex/mvPex.h b/crypto/ocf/kirkwood/mvHal/mv_hal/pex/mvPex.h
 new file mode 100644
-index 0000000..d8f1cdd
+index 0000000..e84fdf9
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/pex/mvPex.h
 @@ -0,0 +1,168 @@
@@ -73911,7 +73941,7 @@ index 0000000..d8f1cdd
 +#endif /* #ifndef __INCPEXH */
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/pex/mvPexRegs.h b/crypto/ocf/kirkwood/mvHal/mv_hal/pex/mvPexRegs.h
 new file mode 100644
-index 0000000..8ac1698
+index 0000000..ea19e2f
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/pex/mvPexRegs.h
 @@ -0,0 +1,751 @@
@@ -74668,7 +74698,7 @@ index 0000000..8ac1698
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/pex/mvVrtBrgPex.c b/crypto/ocf/kirkwood/mvHal/mv_hal/pex/mvVrtBrgPex.c
 new file mode 100644
-index 0000000..19c871a
+index 0000000..59d0383
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/pex/mvVrtBrgPex.c
 @@ -0,0 +1,313 @@
@@ -74987,7 +75017,7 @@ index 0000000..19c871a
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/pex/mvVrtBrgPex.h b/crypto/ocf/kirkwood/mvHal/mv_hal/pex/mvVrtBrgPex.h
 new file mode 100644
-index 0000000..82eb72d
+index 0000000..0741713
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/pex/mvVrtBrgPex.h
 @@ -0,0 +1,82 @@
@@ -75075,7 +75105,7 @@ index 0000000..82eb72d
 +#endif /* #ifndef __INCPEXH */
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/sflash/mvSFlash.c b/crypto/ocf/kirkwood/mvHal/mv_hal/sflash/mvSFlash.c
 new file mode 100644
-index 0000000..6c5bc19
+index 0000000..2643699
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/sflash/mvSFlash.c
 @@ -0,0 +1,1522 @@
@@ -76603,7 +76633,7 @@ index 0000000..6c5bc19
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/sflash/mvSFlash.h b/crypto/ocf/kirkwood/mvHal/mv_hal/sflash/mvSFlash.h
 new file mode 100644
-index 0000000..f441a5c
+index 0000000..5bb160b
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/sflash/mvSFlash.h
 @@ -0,0 +1,166 @@
@@ -76775,7 +76805,7 @@ index 0000000..f441a5c
 +#endif /* __INCmvSFlashH */
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/sflash/mvSFlashSpec.h b/crypto/ocf/kirkwood/mvHal/mv_hal/sflash/mvSFlashSpec.h
 new file mode 100644
-index 0000000..eeb4426
+index 0000000..cef4255
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/sflash/mvSFlashSpec.h
 @@ -0,0 +1,233 @@
@@ -77014,7 +77044,7 @@ index 0000000..eeb4426
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/spi/mvSpi.c b/crypto/ocf/kirkwood/mvHal/mv_hal/spi/mvSpi.c
 new file mode 100644
-index 0000000..39e0b72
+index 0000000..efdd6ae
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/spi/mvSpi.c
 @@ -0,0 +1,576 @@
@@ -77596,7 +77626,7 @@ index 0000000..39e0b72
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/spi/mvSpi.h b/crypto/ocf/kirkwood/mvHal/mv_hal/spi/mvSpi.h
 new file mode 100644
-index 0000000..74859f0
+index 0000000..c3db297
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/spi/mvSpi.h
 @@ -0,0 +1,94 @@
@@ -78039,7 +78069,7 @@ index 0000000..329e26b
 +#endif /* __INCmvSpiCmndhH */
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/spi/mvSpiSpec.h b/crypto/ocf/kirkwood/mvHal/mv_hal/spi/mvSpiSpec.h
 new file mode 100644
-index 0000000..658159a
+index 0000000..e943787
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/spi/mvSpiSpec.h
 @@ -0,0 +1,98 @@
@@ -78143,7 +78173,7 @@ index 0000000..658159a
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/twsi/mvTwsi.c b/crypto/ocf/kirkwood/mvHal/mv_hal/twsi/mvTwsi.c
 new file mode 100644
-index 0000000..0bf8b75
+index 0000000..12d27b3
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/twsi/mvTwsi.c
 @@ -0,0 +1,1023 @@
@@ -79172,7 +79202,7 @@ index 0000000..0bf8b75
 +}
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/twsi/mvTwsi.h b/crypto/ocf/kirkwood/mvHal/mv_hal/twsi/mvTwsi.h
 new file mode 100644
-index 0000000..bd5b6d0
+index 0000000..c3eddd1
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/twsi/mvTwsi.h
 @@ -0,0 +1,121 @@
@@ -79299,7 +79329,7 @@ index 0000000..bd5b6d0
 +
 diff --git a/crypto/ocf/kirkwood/mvHal/mv_hal/twsi/mvTwsiSpec.h b/crypto/ocf/kirkwood/mvHal/mv_hal/twsi/mvTwsiSpec.h
 new file mode 100644
-index 0000000..d0c2b9e
+index 0000000..ebb6db7
 --- /dev/null
 +++ b/crypto/ocf/kirkwood/mvHal/mv_hal/twsi/mvTwsiSpec.h
 @@ -0,0 +1,160 @@
@@ -80225,7 +80255,7 @@ index 0000000..044bcac
 +
 diff --git a/crypto/ocf/ocfnull/ocfnull.c b/crypto/ocf/ocfnull/ocfnull.c
 new file mode 100644
-index 0000000..a6b76cd
+index 0000000..3df150d
 --- /dev/null
 +++ b/crypto/ocf/ocfnull/ocfnull.c
 @@ -0,0 +1,203 @@
@@ -81883,7 +81913,7 @@ index 0000000..1a0dcc8
 +#endif /* PASEMI_FNU_H */
 diff --git a/crypto/ocf/random.c b/crypto/ocf/random.c
 new file mode 100644
-index 0000000..38dad13
+index 0000000..b5d97e1
 --- /dev/null
 +++ b/crypto/ocf/random.c
 @@ -0,0 +1,322 @@
@@ -82595,7 +82625,7 @@ index 0000000..9a36b08
 +
 diff --git a/crypto/ocf/safe/md5.c b/crypto/ocf/safe/md5.c
 new file mode 100644
-index 0000000..077c42e
+index 0000000..fa10789
 --- /dev/null
 +++ b/crypto/ocf/safe/md5.c
 @@ -0,0 +1,308 @@
@@ -82991,7 +83021,7 @@ index 0000000..690f5bf
 +#endif /* ! _NETINET6_MD5_H_*/
 diff --git a/crypto/ocf/safe/safe.c b/crypto/ocf/safe/safe.c
 new file mode 100644
-index 0000000..7e65101
+index 0000000..87984f7
 --- /dev/null
 +++ b/crypto/ocf/safe/safe.c
 @@ -0,0 +1,2288 @@
@@ -85285,7 +85315,7 @@ index 0000000..7e65101
 +MODULE_DESCRIPTION("OCF driver for safenet PCI crypto devices");
 diff --git a/crypto/ocf/safe/safereg.h b/crypto/ocf/safe/safereg.h
 new file mode 100644
-index 0000000..dbaf98f
+index 0000000..d3461f9
 --- /dev/null
 +++ b/crypto/ocf/safe/safereg.h
 @@ -0,0 +1,421 @@
@@ -86329,7 +86359,7 @@ index 0000000..2591b8a
 +
 diff --git a/crypto/ocf/talitos/talitos.c b/crypto/ocf/talitos/talitos.c
 new file mode 100644
-index 0000000..9404634
+index 0000000..0cef3bd
 --- /dev/null
 +++ b/crypto/ocf/talitos/talitos.c
 @@ -0,0 +1,1359 @@
@@ -87694,7 +87724,7 @@ index 0000000..9404634
 +MODULE_DESCRIPTION("OCF driver for Freescale SEC (talitos)");
 diff --git a/crypto/ocf/talitos/talitos_dev.h b/crypto/ocf/talitos/talitos_dev.h
 new file mode 100644
-index 0000000..a8b0479
+index 0000000..86bb57c
 --- /dev/null
 +++ b/crypto/ocf/talitos/talitos_dev.h
 @@ -0,0 +1,277 @@
@@ -88119,12 +88149,12 @@ index 0000000..03a6249
 +
 +#endif
 diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 8258982..d382084 100644
+index 8258982..6509c94 100644
 --- a/drivers/char/random.c
 +++ b/drivers/char/random.c
 @@ -129,6 +129,9 @@
   *                                unsigned int value);
-  *	void add_interrupt_randomness(int irq);
+  * 	void add_interrupt_randomness(int irq);
   *
 + *      void random_input_words(__u32 *buf, size_t wordcount, int ent_count)
 + *      int random_input_wait(void);
@@ -88149,7 +88179,7 @@ index 8258982..d382084 100644
 @@ -714,6 +724,61 @@ void add_disk_randomness(struct gendisk *disk)
  }
  #endif
-
+ 
 +/*
 + * random_input_words - add bulk entropy to pool
 + *
@@ -88206,20 +88236,20 @@ index 8258982..d382084 100644
 +
 +
  #define EXTRACT_SIZE 10
-
+ 
  /*********************************************************************
 diff --git a/fs/fcntl.c b/fs/fcntl.c
 index 2cf93ec..1b6d2bb 100644
 --- a/fs/fcntl.c
 +++ b/fs/fcntl.c
 @@ -141,6 +141,7 @@ SYSCALL_DEFINE1(dup, unsigned int, fildes)
-	}
-	return ret;
+ 	}
+ 	return ret;
  }
 +EXPORT_SYMBOL(sys_dup);
-
+ 
  #define SETFL_MASK (O_APPEND | O_NONBLOCK | O_NDELAY | O_DIRECT | O_NOATIME)
-
+ 
 diff --git a/include/linux/miscdevice.h b/include/linux/miscdevice.h
 index adaf3c1..e961a9a 100644
 --- a/include/linux/miscdevice.h
@@ -88237,17 +88267,17 @@ index 25d02fe..b59ec10 100644
 --- a/include/linux/random.h
 +++ b/include/linux/random.h
 @@ -9,6 +9,7 @@
-
+ 
  #include <linux/types.h>
  #include <linux/ioctl.h>
 +#include <linux/types.h> /* for __u32 in user space */
  #include <linux/irqnr.h>
-
+ 
  /* ioctl()'s for the random number generator */
 @@ -34,6 +35,30 @@
  /* Clear the entropy pool and associated counters.  (Superuser only.) */
  #define RNDCLEARPOOL	_IO( 'R', 0x06 )
-
+ 
 +#ifdef CONFIG_FIPS_RNG
 +
 +/* Size of seed value - equal to AES blocksize */
@@ -88273,30 +88303,31 @@ index 25d02fe..b59ec10 100644
 +#endif /* #ifdef CONFIG_FIPS_RNG */
 +
  struct rand_pool_info {
-	int	entropy_count;
-	int	buf_size;
+ 	int	entropy_count;
+ 	int	buf_size;
 @@ -50,6 +75,10 @@ extern void add_input_randomness(unsigned int type, unsigned int code,
-				 unsigned int value);
+ 				 unsigned int value);
  extern void add_interrupt_randomness(int irq);
-
+ 
 +extern void random_input_words(__u32 *buf, size_t wordcount, int ent_count);
 +extern int random_input_wait(void);
 +#define HAS_RANDOM_INPUT_WAIT 1
 +
  extern void get_random_bytes(void *buf, int nbytes);
  void generate_random_uuid(unsigned char uuid_out[16]);
-
+ 
 diff --git a/kernel/pid.c b/kernel/pid.c
 index d3f722d..e041b52 100644
 --- a/kernel/pid.c
 +++ b/kernel/pid.c
 @@ -387,6 +387,7 @@ struct task_struct *find_task_by_vpid(pid_t vnr)
  {
-	return find_task_by_pid_ns(vnr, current->nsproxy->pid_ns);
+ 	return find_task_by_pid_ns(vnr, current->nsproxy->pid_ns);
  }
 +EXPORT_SYMBOL(find_task_by_vpid);
-
+ 
  struct pid *get_task_pid(struct task_struct *task, enum pid_type type)
  {
---
-1.7.0.4
+-- 
+1.6.6.1
+

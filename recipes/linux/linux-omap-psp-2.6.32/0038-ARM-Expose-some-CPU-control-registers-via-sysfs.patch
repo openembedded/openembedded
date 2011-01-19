@@ -1,4 +1,4 @@
-From b2792916bb10bdd3093bf88ca62064a3b10ad877 Mon Sep 17 00:00:00 2001
+From 9eeb533964f73b661d23f7b145b96aa5d247e950 Mon Sep 17 00:00:00 2001
 From: Mans Rullgard <mans@mansr.com>
 Date: Tue, 10 Nov 2009 00:39:21 +0000
 Subject: [PATCH 38/45] ARM: Expose some CPU control registers via sysfs

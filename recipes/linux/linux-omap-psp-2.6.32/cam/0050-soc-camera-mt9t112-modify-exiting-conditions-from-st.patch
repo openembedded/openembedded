@@ -1,4 +1,4 @@
-From c3080e6e6ea59efc7f7812951a9972229fcc5078 Mon Sep 17 00:00:00 2001
+From eb14ff193fa8cbe52f47349c0aeca2d91ea5cfd8 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <morimoto.kuninori@renesas.com>
 Date: Tue, 2 Feb 2010 13:17:54 +0900
 Subject: [PATCH 50/75] soc-camera: mt9t112: modify exiting conditions from standby mode

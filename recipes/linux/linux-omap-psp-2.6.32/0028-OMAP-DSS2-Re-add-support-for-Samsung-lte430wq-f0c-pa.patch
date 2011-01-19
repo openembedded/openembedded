@@ -1,4 +1,4 @@
-From fea02525d71cc64fb84f011768a5f5d0bb248dc7 Mon Sep 17 00:00:00 2001
+From 5e227dbb55a40c616cca8a2345a159310c729897 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Mon, 15 Feb 2010 14:38:00 +0100
 Subject: [PATCH 28/45] OMAP: DSS2: (Re)add support for Samsung lte430wq-f0c panel

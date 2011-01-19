@@ -1,4 +1,4 @@
-From 528f8c676d21e4eea4599226168f25e684f99eae Mon Sep 17 00:00:00 2001
+From e960b2c16c24198a669a7c49e6282333faa74a3e Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Thu, 17 Dec 2009 15:05:30 -0800
 Subject: [PATCH 29/45] OMAP: DSS2: Add support for LG Philips LB035Q02 panel

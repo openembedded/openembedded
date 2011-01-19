@@ -1,6 +1,6 @@
-From 0aee5eef478b55bf987c45ced3365099e28698cb Mon Sep 17 00:00:00 2001
+From b9270dc07b1b66cce33580bca6276c20f1bf68d2 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
-Date: Thu, 17 Dec 2009 14:19:34 -0800
+Date: Wed, 19 Jan 2011 16:06:42 +0100
 Subject: [PATCH 19/45] drivers: mfd: add twl4030 madc driver
 
 ---
@@ -11,12 +11,12 @@ Subject: [PATCH 19/45] drivers: mfd: add twl4030 madc driver
  create mode 100644 drivers/mfd/twl4030-madc.c
 
 diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index 8782978..aefdd66 100644
+index 306b346..6221146 100644
 --- a/drivers/mfd/Kconfig
 +++ b/drivers/mfd/Kconfig
-@@ -135,6 +135,27 @@ config TWL4030_CODEC
- 	select MFD_CORE
+@@ -148,6 +148,27 @@ config TWL4030_CODEC
  	default n
+ 
  
 +config TWL4030_MADC
 +	tristate "TWL4030 MADC Driver"
@@ -43,7 +43,7 @@ index 8782978..aefdd66 100644
  	bool
  	default n
 diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-index ca2f2c4..ec9c4f2 100644
+index 85dc3a7..44350e7 100644
 --- a/drivers/mfd/Makefile
 +++ b/drivers/mfd/Makefile
 @@ -29,6 +29,7 @@ obj-$(CONFIG_MENELAUS)		+= menelaus.o
@@ -52,7 +52,7 @@ index ca2f2c4..ec9c4f2 100644
  obj-$(CONFIG_TWL4030_CODEC)	+= twl4030-codec.o
 +obj-$(CONFIG_TWL4030_MADC)	+= twl4030-madc.o
  
- obj-$(CONFIG_MFD_MC13783)	+= mc13783-core.o
+ obj-$(CONFIG_TPS65910_CORE)     += tps65910-core.o
  
 diff --git a/drivers/mfd/twl4030-madc.c b/drivers/mfd/twl4030-madc.c
 new file mode 100644

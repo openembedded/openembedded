@@ -1,4 +1,4 @@
-From 089d3a51f0467d68c42b2df88a6f9a0488aada47 Mon Sep 17 00:00:00 2001
+From 2379628bcd6c08e472020c78019ce8ea3fce3027 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Mon, 26 Apr 2010 11:17:26 -0700
 Subject: [PATCH 43/45] MTD: silence ecc errors on mtdblock0

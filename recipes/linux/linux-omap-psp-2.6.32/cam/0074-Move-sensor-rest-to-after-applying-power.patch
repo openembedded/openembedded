@@ -1,4 +1,4 @@
-From cf2b4381eeb1bb33c60fa48ea7ba27de13bca5ab Mon Sep 17 00:00:00 2001
+From f68eb83d33624b83b4ddd77daf3966de686ffaf0 Mon Sep 17 00:00:00 2001
 From: Steve Kipisz <s-kipisz2@ti.com>
 Date: Thu, 5 Aug 2010 10:51:11 -0500
 Subject: [PATCH 74/75] Move sensor rest to after applying power.

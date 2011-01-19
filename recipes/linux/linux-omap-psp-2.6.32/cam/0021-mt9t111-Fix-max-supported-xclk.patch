@@ -1,4 +1,4 @@
-From f32acfd90df92c93328c093c2414f6a11b98ce57 Mon Sep 17 00:00:00 2001
+From 3bca76ae1008ba2b2788214a59fd7813c69f9254 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 24 Jun 2010 17:43:23 -0500
 Subject: [PATCH 21/75] mt9t111: Fix max supported xclk

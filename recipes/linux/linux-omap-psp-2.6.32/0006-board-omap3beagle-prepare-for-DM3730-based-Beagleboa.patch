@@ -1,4 +1,4 @@
-From f8b1eeb8f3dc580f24b5d2a2b140c74cfa88c5eb Mon Sep 17 00:00:00 2001
+From e36c63f1fe13a60bdf6e9b3dd46ad969d6fe418d Mon Sep 17 00:00:00 2001
 From: Koen Kooi <k-kooi@ti.com>
 Date: Wed, 27 Jan 2010 21:57:13 +0100
 Subject: [PATCH 06/45] board-omap3beagle: prepare for DM3730 based BeagleboardXM
@@ -11,7 +11,7 @@ Subject: [PATCH 06/45] board-omap3beagle: prepare for DM3730 based BeagleboardXM
  1 files changed, 54 insertions(+), 8 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index 79d43d0..b1e4d73 100644
+index 3b7f6ec..429dacb 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -53,6 +53,23 @@

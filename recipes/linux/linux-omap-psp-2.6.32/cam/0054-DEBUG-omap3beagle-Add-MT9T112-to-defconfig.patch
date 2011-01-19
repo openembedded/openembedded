@@ -1,4 +1,4 @@
-From b5eb720c7424a1018fd7b76b7bfb3a1e720ab77b Mon Sep 17 00:00:00 2001
+From f66312bff0655778847882a26dfb14a54e9b92ca Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 15 Jul 2010 00:55:43 -0500
 Subject: [PATCH 54/75] DEBUG: omap3beagle: Add MT9T112 to defconfig

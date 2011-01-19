@@ -1,4 +1,4 @@
-From 5615ccd89eb521c2365992bdb7c08879fe039daa Mon Sep 17 00:00:00 2001
+From ed355dc59a30638b914152d52752d5e0ca06ecbd Mon Sep 17 00:00:00 2001
 From: Kishore Kadiyala <kishore.kadiyala@ti.com>
 Date: Wed, 17 Feb 2010 19:34:47 +0530
 Subject: [PATCH 30/45] Fix for bus width which improves SD card's peformance.

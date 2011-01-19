@@ -1,4 +1,4 @@
-From e91589e4c2736495be6f1252599d5115b33ac8c8 Mon Sep 17 00:00:00 2001
+From 8b7b00860ac8c558c7156ff676655942027f7f53 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Fri, 11 Jun 2010 16:15:58 -0500
 Subject: [PATCH 04/75] omap3beagle: Add camera support
@@ -17,7 +17,7 @@ Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
  create mode 100644 arch/arm/mach-omap2/board-omap3beagle-camera.h
 
 diff --git a/arch/arm/mach-omap2/Makefile b/arch/arm/mach-omap2/Makefile
-index fa01859..4d9dcdd 100644
+index 9042317..a49d436 100644
 --- a/arch/arm/mach-omap2/Makefile
 +++ b/arch/arm/mach-omap2/Makefile
 @@ -87,7 +87,8 @@ obj-$(CONFIG_MACH_OMAP_2430SDP)		+= board-2430sdp.o \
@@ -312,7 +312,7 @@ index 0000000..1026aeb
 +
 +#endif		/* __BOARD_OMAP3BEAGLE_LMB_H_ */
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index 93b9e5f..31de2f9 100644
+index b313350..d6b69a6 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -712,6 +712,31 @@ static struct ehci_hcd_omap_platform_data ehci_pdata __initdata = {

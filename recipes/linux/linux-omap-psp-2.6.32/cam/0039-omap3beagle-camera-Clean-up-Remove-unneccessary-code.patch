@@ -1,4 +1,4 @@
-From 9f2341ea93de0e76d71c075791cdada7b9ce163b Mon Sep 17 00:00:00 2001
+From 6466bc74ab74cafb6aec47040b3408fc2be3455b Mon Sep 17 00:00:00 2001
 From: Vaibhav Hiremath <hvaibhav@ti.com>
 Date: Tue, 13 Jul 2010 19:38:51 +0530
 Subject: [PATCH 39/75] omap3beagle-camera:Clean up: Remove unneccessary code/printf

@@ -1,4 +1,4 @@
-From 38d07e3ffe848680df123f7422ec4b150bbc8f68 Mon Sep 17 00:00:00 2001
+From 97283f52ea7fbb9b611a65d031c997e4ae44d465 Mon Sep 17 00:00:00 2001
 From: Ajay Kumar Gupta <ajay.gupta@ti.com>
 Date: Wed, 14 Apr 2010 16:08:37 +0530
 Subject: [PATCH 42/45] musb: allow host io without gadget module
@@ -10,7 +10,7 @@ Signed-off-by: Ajay Kumar Gupta <ajay.gupta@ti.com>
  2 files changed, 9 insertions(+), 31 deletions(-)
 
 diff --git a/drivers/usb/musb/musb_core.c b/drivers/usb/musb/musb_core.c
-index 98874c5..a448fa6 100644
+index 71ec7e8..9988553 100644
 --- a/drivers/usb/musb/musb_core.c
 +++ b/drivers/usb/musb/musb_core.c
 @@ -2101,10 +2101,12 @@ bad_config:
@@ -42,7 +42,7 @@ index 98874c5..a448fa6 100644
  		musb->xceiv->default_a = 0;
  		musb->xceiv->state = OTG_STATE_B_IDLE;
 diff --git a/drivers/usb/musb/musb_gadget.c b/drivers/usb/musb/musb_gadget.c
-index fd842af..b9ef9f3 100644
+index 454f6db..d0d1cee 100644
 --- a/drivers/usb/musb/musb_gadget.c
 +++ b/drivers/usb/musb/musb_gadget.c
 @@ -1768,24 +1768,6 @@ int usb_gadget_register_driver(struct usb_gadget_driver *driver)

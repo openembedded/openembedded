@@ -1,4 +1,4 @@
-From e6af1e25ce53f1011fe6a1920cc9877ae51d2e95 Mon Sep 17 00:00:00 2001
+From bb40914cf9e313d70385e647f956a55df15e717f Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Fri, 11 Jun 2010 16:17:56 -0500
 Subject: [PATCH 03/75] mt9t111: Pass v4l2_int_device data

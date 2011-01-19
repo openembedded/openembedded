@@ -1,4 +1,4 @@
-From aa2753fcce815b4a86be5c95238cf029a948e5ff Mon Sep 17 00:00:00 2001
+From f4902a8ee1bbc739a60dcd970705c5665e98691f Mon Sep 17 00:00:00 2001
 From: Mans Rullgard <mans@mansr.com>
 Date: Mon, 13 Oct 2008 20:32:16 +0100
 Subject: [PATCH 36/45] ARM: Add prompt for CONFIG_ALIGNMENT_TRAP

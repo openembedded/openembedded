@@ -1,4 +1,4 @@
-From a03a0f8d0c856a152f477efea64e7df1c927c9b1 Mon Sep 17 00:00:00 2001
+From 4e23fe54d7f8ecc1c927d225b1b74e6b00e22997 Mon Sep 17 00:00:00 2001
 From: OpenEmbedded User <oe@OE-builder.(none)>
 Date: Tue, 9 Feb 2010 17:16:13 +0100
 Subject: [PATCH 01/75] mt9t111: first stab at merging sensor driver based on a patch by Leopard Imaging

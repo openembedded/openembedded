@@ -1,4 +1,4 @@
-From ecf53d3104b6b73b1b32a9a5b39af2f258d74f8d Mon Sep 17 00:00:00 2001
+From fad06fbbfb3e25683672d41c3f5649500d5eda73 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 15 Jul 2010 15:47:23 -0500
 Subject: [PATCH 55/75] omap3beagle: camera: Change MT9T111 references to new MT9T112 driver
@@ -171,7 +171,7 @@ index 2e49158..0b4dff7 100644
  static int beagle_cam_probe(struct platform_device *pdev)
  {
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index 239bd44..f93616b 100644
+index 0e7e8b2..7c9e40a 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -77,10 +77,10 @@ static struct omap_opp * _omap37x_l3_rate_table         = NULL;

@@ -1,4 +1,4 @@
-From 967227a235ddafbc5a5391093e95a12972e93e9d Mon Sep 17 00:00:00 2001
+From 9f31f599f847c7eab995d22a683c8b32aaa5be7f Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Fri, 25 Jun 2010 11:24:07 -0500
 Subject: [PATCH 24/75] omap3beagle: camera: Change vaux4 to 1.8v
@@ -13,7 +13,7 @@ Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
  1 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index 3d4b0bc..09e8459 100644
+index 1e9a868..af9b818 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -446,8 +446,8 @@ static struct regulator_init_data beagle_vaux3 = {

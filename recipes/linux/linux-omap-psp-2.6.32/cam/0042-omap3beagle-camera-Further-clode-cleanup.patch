@@ -1,4 +1,4 @@
-From a23ae536374534ed021479b63ec093d5e58a9186 Mon Sep 17 00:00:00 2001
+From 7f6cbc648dcf2d7805f12e7b56bb2c7b602ca61d Mon Sep 17 00:00:00 2001
 From: Vaibhav Hiremath <hvaibhav@ti.com>
 Date: Wed, 14 Jul 2010 19:07:06 +0530
 Subject: [PATCH 42/75] omap3beagle-camera: Further clode cleanup

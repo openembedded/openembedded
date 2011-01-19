@@ -1,4 +1,4 @@
-From efa8018485d29f3545e174dc10af0d01b9197077 Mon Sep 17 00:00:00 2001
+From cd05a2c5c623cc497f0d56b35b29d28a9206a3bd Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Mon, 12 Jul 2010 14:11:44 -0500
 Subject: [PATCH 38/75] omap3beagle: camera: Fix parallel i/f settings

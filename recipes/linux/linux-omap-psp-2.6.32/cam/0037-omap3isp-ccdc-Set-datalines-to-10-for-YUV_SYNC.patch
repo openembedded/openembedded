@@ -1,4 +1,4 @@
-From 67e3840b98c88da4417e386d3e955385a120138e Mon Sep 17 00:00:00 2001
+From d9c257a16e4f4c5c6bff57cbe3b9673d3cf61bfa Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Mon, 12 Jul 2010 14:09:38 -0500
 Subject: [PATCH 37/75] omap3isp: ccdc: Set datalines to 10 for YUV_SYNC

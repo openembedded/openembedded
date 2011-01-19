@@ -1,4 +1,4 @@
-From 00a84122fd2c1974f6dc79fce11a34154caab848 Mon Sep 17 00:00:00 2001
+From 91dc9ee523ad7f2a09cabf8082396eca0ef68000 Mon Sep 17 00:00:00 2001
 From: Tasslehoff Kjappfot <tasskjapp@gmail.com>
 Date: Wed, 8 Sep 2010 12:46:14 +0200
 Subject: [PATCH] OMAP: DSS2: OMAPFB: swap front and back porches for both hsync and vsync
@@ -17,10 +17,10 @@ Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
  1 files changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/video/omap2/omapfb/omapfb-main.c b/drivers/video/omap2/omapfb/omapfb-main.c
-index 39f53b1..bddfca6 100644
+index 0fe87e0..4cb8355 100644
 --- a/drivers/video/omap2/omapfb/omapfb-main.c
 +++ b/drivers/video/omap2/omapfb/omapfb-main.c
-@@ -714,10 +714,10 @@ int check_fb_var(struct fb_info *fbi, struct fb_var_screeninfo *var)
+@@ -737,10 +737,10 @@ int check_fb_var(struct fb_info *fbi, struct fb_var_screeninfo *var)
  		var->pixclock = timings.pixel_clock != 0 ?
  			KHZ2PICOS(timings.pixel_clock) :
  			0;
@@ -35,7 +35,7 @@ index 39f53b1..bddfca6 100644
  		var->hsync_len = timings.hsw;
  		var->vsync_len = timings.vsw;
  	} else {
-@@ -2059,10 +2059,10 @@ static int omapfb_mode_to_timings(const char *mode_str,
+@@ -2019,10 +2019,10 @@ static int omapfb_mode_to_timings(const char *mode_str,
  
  	if (r != 0) {
  		timings->pixel_clock = PICOS2KHZ(var.pixclock);
@@ -51,5 +51,5 @@ index 39f53b1..bddfca6 100644
  		timings->vsw = var.vsync_len;
  		timings->x_res = var.xres;
 -- 
-1.6.1
+1.6.6.1
 

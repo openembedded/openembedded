@@ -1,4 +1,4 @@
-From a9afe5db3c54dc9dcc1025d493afe854a6e86914 Mon Sep 17 00:00:00 2001
+From 52bfcc9b6bcb30cf81589c483f1344c568be7300 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 15 Jul 2010 17:53:44 -0500
 Subject: [PATCH 58/75] mt9t112: Do init_camera every powerup

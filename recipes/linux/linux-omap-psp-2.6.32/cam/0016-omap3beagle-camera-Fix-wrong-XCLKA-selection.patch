@@ -1,4 +1,4 @@
-From eb9738897009bea572be12bfb812c9a5ad8ef293 Mon Sep 17 00:00:00 2001
+From 00bfc925651aa2c35a1726f15c028ef106f350ab Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 24 Jun 2010 17:31:49 -0500
 Subject: [PATCH 16/75] omap3beagle: camera: Fix wrong XCLKA selection

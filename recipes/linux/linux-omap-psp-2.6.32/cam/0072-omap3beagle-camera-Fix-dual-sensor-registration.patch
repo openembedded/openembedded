@@ -1,4 +1,4 @@
-From 4ceb51197a0f0f2ebd9fc9530033f38de289a1cf Mon Sep 17 00:00:00 2001
+From 838aed68f8efa16e9915795ddb968157d40fca6b Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 22 Jul 2010 11:03:33 -0500
 Subject: [PATCH 72/75] omap3beagle: camera: Fix dual sensor registration

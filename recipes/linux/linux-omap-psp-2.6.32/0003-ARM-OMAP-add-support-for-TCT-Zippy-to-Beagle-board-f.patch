@@ -1,4 +1,4 @@
-From 4afa80923880088a3d6780257ccce72a88884e19 Mon Sep 17 00:00:00 2001
+From aeef52fa662c9a6d85b11474359fb9504fc1cf49 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <sakoman@gmail.com>
 Date: Tue, 15 Dec 2009 15:34:29 -0800
 Subject: [PATCH 03/45] ARM: OMAP: add support for TCT Zippy to Beagle board file
@@ -9,7 +9,7 @@ Signed-off-by: Steve Sakoman <sakoman@gmail.com>
  1 files changed, 71 insertions(+), 3 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index 15e48f2..a4a793f 100644
+index 330fb25..ddfb9c0 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -21,6 +21,7 @@
@@ -121,7 +121,7 @@ index 15e48f2..a4a793f 100644
  	/* Bus 3 is attached to the DVI port where devices like the pico DLP
  	 * projector don't work reliably with 400kHz */
  	omap_register_i2c_bus(3, 100, NULL, 0);
-@@ -453,6 +519,8 @@ static void __init omap3_beagle_init(void)
+@@ -448,6 +514,8 @@ static void __init omap3_beagle_init(void)
  	/* REVISIT leave DVI powered down until it's needed ... */
  	gpio_direction_output(170, true);
  

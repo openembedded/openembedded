@@ -1,4 +1,4 @@
-From f6b91f473fe590e80eff6fd16e6fbcc15ce12b9a Mon Sep 17 00:00:00 2001
+From 2c8e7e157de32ebc5c8d60bf642c2f29f607c3d0 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Fri, 16 Jul 2010 17:09:10 -0500
 Subject: [PATCH 64/75] mt9t112: Remove "smart" size selection

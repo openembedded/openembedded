@@ -1,4 +1,4 @@
-From 871c9ac8687787ff29c5445325acf1ca388b9563 Mon Sep 17 00:00:00 2001
+From e14b36353ea3f3d55192cf986310c275ed8cfcc9 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Fri, 25 Jun 2010 12:04:48 -0500
 Subject: [PATCH 26/75] omap3beagle: camera: Complement remainig sensor hw config settings

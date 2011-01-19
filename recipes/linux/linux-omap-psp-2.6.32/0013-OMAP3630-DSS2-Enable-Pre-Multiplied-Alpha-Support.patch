@@ -1,4 +1,4 @@
-From 37bcddac7dbfe61576489e4c55b32d8b45eb1c5a Mon Sep 17 00:00:00 2001
+From af96930d2412b4af27407a48e262ce1bb2e32427 Mon Sep 17 00:00:00 2001
 From: Sudeep Basavaraj <sudeep.basavaraj@ti.com>
 Date: Tue, 5 Jan 2010 18:58:18 +0530
 Subject: [PATCH 13/45] OMAP3630:DSS2:Enable Pre-Multiplied Alpha Support

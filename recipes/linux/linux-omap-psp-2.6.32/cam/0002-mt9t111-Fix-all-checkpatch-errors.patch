@@ -1,4 +1,4 @@
-From 29157ffef7f3813c1ec23f9d11eb485242d53454 Mon Sep 17 00:00:00 2001
+From 5609c8fe642a0517bd151ad477fcd05d0abc7dc4 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Fri, 11 Jun 2010 13:51:49 -0500
 Subject: [PATCH 02/75] mt9t111: Fix all checkpatch errors

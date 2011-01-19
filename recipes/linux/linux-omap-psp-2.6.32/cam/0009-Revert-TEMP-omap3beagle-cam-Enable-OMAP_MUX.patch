@@ -1,4 +1,4 @@
-From 0c7579c682c3eb3dc5190e1b28743be0b33571e3 Mon Sep 17 00:00:00 2001
+From 4dc4c88bdb1f4be3de42f1cf5e8d5d62b6a2a04e Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Wed, 16 Jun 2010 03:23:57 +0300
 Subject: [PATCH 09/75] Revert "TEMP: omap3beagle: cam: Enable OMAP_MUX"

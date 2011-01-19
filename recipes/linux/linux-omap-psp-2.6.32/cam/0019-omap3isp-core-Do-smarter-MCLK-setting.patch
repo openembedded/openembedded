@@ -1,4 +1,4 @@
-From 3da817ad292e1414b175484cf384f1fcca351493 Mon Sep 17 00:00:00 2001
+From 97761e2bdf286662e3c96f5a24fe568cac98fc9b Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Wed, 25 Nov 2009 12:30:46 -0600
 Subject: [PATCH 19/75] omap3isp: core: Do smarter MCLK setting

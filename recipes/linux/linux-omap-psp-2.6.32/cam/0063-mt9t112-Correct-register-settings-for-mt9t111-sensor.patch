@@ -1,4 +1,4 @@
-From 898d1ae2cad72e2b74a0a354b323ba91f2cd4a2a Mon Sep 17 00:00:00 2001
+From fa6380a53783b185189c372dd5e9d17f46c5c4d7 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Fri, 16 Jul 2010 07:52:06 -0500
 Subject: [PATCH 63/75] mt9t112: Correct register settings for mt9t111 sensor

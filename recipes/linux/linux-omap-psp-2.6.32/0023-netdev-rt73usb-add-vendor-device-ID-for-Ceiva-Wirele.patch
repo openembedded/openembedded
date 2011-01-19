@@ -1,4 +1,4 @@
-From c59df25a1d1ad6c7fbb11fac6e7404d05639f4bd Mon Sep 17 00:00:00 2001
+From 6c58da582504f23256ec656a03706a1df438f291 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Tue, 19 Jan 2010 20:00:46 -0800
 Subject: [PATCH 23/45] netdev: rt73usb - add vendor/device ID for Ceiva Wireless PartNo 81726-00702

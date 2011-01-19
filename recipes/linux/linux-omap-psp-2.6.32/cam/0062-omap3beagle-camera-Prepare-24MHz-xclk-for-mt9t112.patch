@@ -1,4 +1,4 @@
-From 00cd18c8b6bd6b7f6c627d2b1284ca8f98f1fda4 Mon Sep 17 00:00:00 2001
+From b00bc4caeb798661983eca4f548f0f69301bfb32 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 15 Jul 2010 23:43:20 -0500
 Subject: [PATCH 62/75] omap3beagle: camera: Prepare 24MHz xclk for mt9t112

@@ -1,4 +1,4 @@
-From aabf8386a23795f73722bf74901bd8aa46ebe1ba Mon Sep 17 00:00:00 2001
+From 8da9ec7ae90f238bd9b245bc80a1c6559df61f59 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 15 Jul 2010 23:41:32 -0500
 Subject: [PATCH 61/75] mt9t112: Prepare for 24MHz EXTCLK and 30 fps

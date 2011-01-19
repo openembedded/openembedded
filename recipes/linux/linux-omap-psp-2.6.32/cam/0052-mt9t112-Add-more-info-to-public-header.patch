@@ -1,4 +1,4 @@
-From 4e0c0d1ec79c097bb2e580f186a89963b9e35d8c Mon Sep 17 00:00:00 2001
+From d72241c7dc39f0976bcd7d05d43a86935e0deb68 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 1 Jul 2010 07:33:49 -0500
 Subject: [PATCH 52/75] mt9t112: Add more info to public header

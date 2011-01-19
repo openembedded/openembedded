@@ -1,4 +1,4 @@
-From d14c2924e8bb7d9a864dfeb0aca37ef9fc913f7d Mon Sep 17 00:00:00 2001
+From e998edf3c99b4f8a16519a2dc968b1841a274b7f Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Wed, 16 Jun 2010 04:28:06 +0300
 Subject: [PATCH 10/75] omap3beagle: camera: Change arch -> late_initcall

@@ -1,4 +1,4 @@
-From 77361cf426202a92395921c25e77190b8fb0cdd6 Mon Sep 17 00:00:00 2001
+From 54295e317df7f12a7b9e4f5a55f4801717863bb1 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Fri, 9 Jul 2010 16:22:38 -0500
 Subject: [PATCH 33/75] mt9v113: Fix wrong active widths

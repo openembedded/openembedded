@@ -1,4 +1,4 @@
-From 1f6871f7ea78c182ebc1ac4b743485b1d48f2882 Mon Sep 17 00:00:00 2001
+From 754e3fe541b0784ed84282b95268fbb9c68d65c5 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Fri, 11 Jun 2010 16:18:30 -0500
 Subject: [PATCH 05/75] TEMP: omap3beagle: camera: Add defconfig

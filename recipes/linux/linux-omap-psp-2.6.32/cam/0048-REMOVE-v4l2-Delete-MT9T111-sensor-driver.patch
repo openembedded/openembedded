@@ -1,4 +1,4 @@
-From 682012ca5bc9b6e3dc2536736d3eedbad3598d64 Mon Sep 17 00:00:00 2001
+From 59d42cae8d60b7e86013293055f6c989ab578f26 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 15 Jul 2010 00:50:07 -0500
 Subject: [PATCH 48/75] REMOVE: v4l2: Delete MT9T111 sensor driver

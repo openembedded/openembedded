@@ -1,4 +1,4 @@
-From 6fc2495bb9f1fa166f7f4190ecd0b988034f54ea Mon Sep 17 00:00:00 2001
+From 1c63789190687e20ddbed3084e7ae893176d0dd6 Mon Sep 17 00:00:00 2001
 From: Jason Kridner <jkridner@beagleboard.org>
 Date: Sat, 17 Jul 2010 14:28:22 -0500
 Subject: [PATCH] BeagleBoard: Adjust USER button pin for xM
@@ -8,10 +8,10 @@ Subject: [PATCH] BeagleBoard: Adjust USER button pin for xM
  1 files changed, 5 insertions(+), 0 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index 7c9e40a..f93616b 100644
+index 1e8b77b..2677b41 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
-@@ -829,6 +829,11 @@ static void __init omap3_beagle_init(void)
+@@ -854,6 +854,11 @@ static void __init omap3_beagle_init(void)
  {
  	omap3_mux_init(board_mux, OMAP_PACKAGE_CBB);
  	omap3_beagle_i2c_init();

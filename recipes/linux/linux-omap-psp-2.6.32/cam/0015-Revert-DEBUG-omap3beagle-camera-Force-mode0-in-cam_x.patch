@@ -1,4 +1,4 @@
-From 327cb4ef7120d00bcc6a725375f2eb6aa02de899 Mon Sep 17 00:00:00 2001
+From 1ae58f6d2ec41a1b7d0cdeca4de4b9d9760195bf Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 24 Jun 2010 14:27:39 -0500
 Subject: [PATCH 15/75] Revert "DEBUG: omap3beagle: camera: Force mode0 in cam_xclka"

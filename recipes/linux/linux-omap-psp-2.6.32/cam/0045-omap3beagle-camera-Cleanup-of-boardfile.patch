@@ -1,4 +1,4 @@
-From c442dbd71313f119dce989b0b8d5ebaca9296863 Mon Sep 17 00:00:00 2001
+From 62059bb8a86836a042bf1720a9bc4bdfa301026f Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Mon, 12 Jul 2010 15:44:18 -0500
 Subject: [PATCH 45/75] omap3beagle: camera: Cleanup of boardfile

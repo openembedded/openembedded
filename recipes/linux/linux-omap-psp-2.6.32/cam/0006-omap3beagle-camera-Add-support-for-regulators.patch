@@ -1,4 +1,4 @@
-From 0f967d630fb4b3e55f202b91cbabbd631107923d Mon Sep 17 00:00:00 2001
+From a8bad5bfa652d2e35575f864da6192d41c85c818 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Fri, 11 Jun 2010 16:50:39 -0500
 Subject: [PATCH 06/75] omap3beagle: camera: Add support for regulators
@@ -156,7 +156,7 @@ index e93437f..af8581a 100644
 +}
  arch_initcall(omap3beaglelmb_init);
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index 31de2f9..448ab23 100644
+index d6b69a6..aa16acd 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -403,6 +403,56 @@ static struct twl4030_gpio_platform_data beagle_gpio_data = {

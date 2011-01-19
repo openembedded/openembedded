@@ -1,4 +1,4 @@
-From ea14002af533b155db59e15b5bccc6374aa8a5d1 Mon Sep 17 00:00:00 2001
+From e102ffa8fcc1586ed7d4c1390b7b2c7d7d359c40 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Mon, 15 Feb 2010 14:20:51 +0100
 Subject: [PATCH 27/45] twl4030-madc: adjust for twl4030 -> twl api changes

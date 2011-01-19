@@ -1,4 +1,4 @@
-From b5058c1ca4af6076dff7e1f592f871030ba31a95 Mon Sep 17 00:00:00 2001
+From db7e3a7af04196e80fe15e2a651440575f9313af Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 24 Jun 2010 17:53:55 -0500
 Subject: [PATCH 22/75] omap3beagle: camera: Clarify regulators names

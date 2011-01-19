@@ -1,4 +1,4 @@
-From 42caf665931e5f86e514fcf5e011daff395836c2 Mon Sep 17 00:00:00 2001
+From 535b7f5333636f7e42f6bea67ed9f298afe0fe3c Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 15 Jul 2010 17:53:07 -0500
 Subject: [PATCH 57/75] SQUASH: omap3beagle: camera: Bring back mt9t111 support

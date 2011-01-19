@@ -1,4 +1,4 @@
-From 294459d9500c75256cff282f441b6cf68077a3e9 Mon Sep 17 00:00:00 2001
+From e4f2c3641ccae2cb1614c8fda5ce307170b20921 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 24 Jun 2010 18:21:52 -0500
 Subject: [PATCH 23/75] omap3beagle: camera: Fix powerup sequence

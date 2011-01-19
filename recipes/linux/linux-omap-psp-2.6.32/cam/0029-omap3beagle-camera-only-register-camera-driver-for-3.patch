@@ -1,4 +1,4 @@
-From 6cce810371e763a367b69a38e53635657804694c Mon Sep 17 00:00:00 2001
+From 7a8fe70470bd026b249f47c0aa37578a97fb2bb3 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Sun, 27 Jun 2010 16:11:39 +0200
 Subject: [PATCH 29/75] omap3beagle: camera: only register camera driver for 36xx based SoCs

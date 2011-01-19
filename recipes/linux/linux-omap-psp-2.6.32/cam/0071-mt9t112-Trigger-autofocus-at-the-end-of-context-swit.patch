@@ -1,4 +1,4 @@
-From a807b9f107bdcfbc9ba54ee4e67960f2e9912912 Mon Sep 17 00:00:00 2001
+From 18589703f191cee2568324b475ae479dd7f3b779 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Mon, 19 Jul 2010 17:45:38 -0500
 Subject: [PATCH 71/75] mt9t112: Trigger autofocus at the end of context switch

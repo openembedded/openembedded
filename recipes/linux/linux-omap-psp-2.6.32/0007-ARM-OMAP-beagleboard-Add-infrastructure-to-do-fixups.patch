@@ -1,4 +1,4 @@
-From 902bf175d5050e9f9892b594bd6093b65c1be8cc Mon Sep 17 00:00:00 2001
+From 25ae9895ed107a6fe9d9c4345f21bbdaee4ccde6 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Mon, 3 May 2010 14:41:29 +0200
 Subject: [PATCH 07/45] ARM: OMAP: beagleboard: Add infrastructure to do fixups based on expansionboard name passed by u-boot
@@ -9,7 +9,7 @@ And add support for zippy2
  1 files changed, 78 insertions(+), 10 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index b1e4d73..8223763 100644
+index 429dacb..ac96551 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -75,6 +75,8 @@ static struct omap_opp * _omap37x_l3_rate_table         = NULL;
@@ -131,7 +131,7 @@ index b1e4d73..8223763 100644
  static void __init omap3_beagle_init(void)
  {
  	omap3_mux_init(board_mux, OMAP_PACKAGE_CBB);
-@@ -639,8 +689,24 @@ static void __init omap3_beagle_init(void)
+@@ -634,8 +684,24 @@ static void __init omap3_beagle_init(void)
  	/* REVISIT leave DVI powered down until it's needed ... */
  	gpio_direction_output(170, true);
  
@@ -158,7 +158,7 @@ index b1e4d73..8223763 100644
  	usb_musb_init();
  	usb_ehci_init(&ehci_pdata);
  	omap3beagle_flash_init();
-@@ -657,6 +723,8 @@ static void __init omap3_beagle_map_io(void)
+@@ -652,6 +718,8 @@ static void __init omap3_beagle_map_io(void)
  	omap2_map_common_io();
  }
  

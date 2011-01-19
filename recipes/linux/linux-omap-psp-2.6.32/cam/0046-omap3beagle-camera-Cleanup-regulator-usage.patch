@@ -1,4 +1,4 @@
-From 240def7eda2939e944ab70726cdecf270865553d Mon Sep 17 00:00:00 2001
+From d3ea23ea580848bb5e0ed423db4d914661cd1d7d Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Mon, 12 Jul 2010 15:53:44 -0500
 Subject: [PATCH 46/75] omap3beagle: camera: Cleanup regulator usage
@@ -117,7 +117,7 @@ index befa7d4..c91529d 100644
  	gpio_free(LEOPARD_RESET_GPIO);
  
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index 6835c1a..a1535ca 100644
+index d4b0b0a..b0da483 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -414,18 +414,14 @@ static struct platform_device beagle_cam_device = {

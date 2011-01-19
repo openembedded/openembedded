@@ -1,4 +1,4 @@
-From f33e1a25ca1d7e8418f076a9aead8fa66341f964 Mon Sep 17 00:00:00 2001
+From 12b4010768d5bf36bdc1100204be1a9de913d4f4 Mon Sep 17 00:00:00 2001
 From: Vaibhav Hiremath <hvaibhav@ti.com>
 Date: Thu, 15 Jul 2010 13:53:03 +0530
 Subject: [PATCH 44/75] mt9v113: AE param tuned to get 28~30FPS

@@ -1,4 +1,4 @@
-From fab15f2df5c6ee2dc9fc5256d5c4330e6447dd3b Mon Sep 17 00:00:00 2001
+From 1164e8b10b5237d1cf60c1e9752324b62f30a6bc Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <morimoto.kuninori@renesas.com>
 Date: Fri, 11 Dec 2009 11:53:55 -0300
 Subject: [PATCH 49/75] V4L/DVB (13670): soc-camera: Add mt9t112 camera driver

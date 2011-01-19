@@ -1,4 +1,4 @@
-From 8ef0425ef8bc0d228e03666cf7d0af564882fcef Mon Sep 17 00:00:00 2001
+From 0f6b697fb422f8eb8df539f82df49f0f6f976bc3 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 1 Jul 2010 09:12:37 -0500
 Subject: [PATCH 53/75] mt9t112: Fix null pointer kernel bug

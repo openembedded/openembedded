@@ -1,4 +1,4 @@
-From 7417633c6dbf657cf3778800d59e94a9b7bf6942 Mon Sep 17 00:00:00 2001
+From 9d152df885cb6f6874259d93df558e649f62774f Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Fri, 25 Jun 2010 16:01:00 -0500
 Subject: [PATCH 28/75] omap3beagle: camera: Set padconf settings in cam init

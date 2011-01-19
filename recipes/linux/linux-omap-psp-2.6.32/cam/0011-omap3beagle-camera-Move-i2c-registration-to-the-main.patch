@@ -1,4 +1,4 @@
-From 527c026c03e34471e34a731322422eacbb30fb35 Mon Sep 17 00:00:00 2001
+From 17c85e1bf42b03f4e764280b8a626853506517e6 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Wed, 16 Jun 2010 04:58:46 +0300
 Subject: [PATCH 11/75] omap3beagle: camera: Move i2c registration to the main board
@@ -73,7 +73,7 @@ index 55a113c..1652f15 100644
  	printk(KERN_INFO MODULE_NAME ": Driver registration complete \n");
  
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index 448ab23..97ccf04 100644
+index aa16acd..757d430 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -71,6 +71,11 @@ static struct omap_opp * _omap35x_l3_rate_table         = NULL;

@@ -1,4 +1,4 @@
-From 2b3cfbcd286a0c1b0df90b7af7982c772031abd8 Mon Sep 17 00:00:00 2001
+From 1f91f7f6dea0268e23d5e3e78b6c8dc5ed245313 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Sun, 14 Feb 2010 12:52:02 +0100
 Subject: [PATCH 26/45] board-overo: add PM code and sync with http://www.sakoman.com/cgi-bin/gitweb.cgi?p=linux-omap-2.6.git;a=shortlog;h=refs/heads/omap3-2.6.32

@@ -1,4 +1,4 @@
-From a30000387ff4ec1ab0ca46c2429bfd184210bb24 Mon Sep 17 00:00:00 2001
+From 739ec82561686ad0c5cc8befef3bcd74339d205e Mon Sep 17 00:00:00 2001
 From: Koen Kooi <k-kooi@ti.com>
 Date: Thu, 11 Feb 2010 21:34:00 +0100
 Subject: [PATCH 15/45] ISP: add some more from Leopard imaging patch

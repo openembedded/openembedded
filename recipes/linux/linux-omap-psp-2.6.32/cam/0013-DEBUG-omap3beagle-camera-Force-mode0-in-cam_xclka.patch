@@ -1,4 +1,4 @@
-From 1326478d7bdb80f9d7d791e54eeead48ece93bff Mon Sep 17 00:00:00 2001
+From 7c09434499a8daa650b934a62d3f651f868e0e70 Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Wed, 23 Jun 2010 15:03:24 -0500
 Subject: [PATCH 13/75] DEBUG: omap3beagle: camera: Force mode0 in cam_xclka

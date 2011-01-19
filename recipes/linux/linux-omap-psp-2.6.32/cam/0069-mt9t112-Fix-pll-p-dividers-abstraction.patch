@@ -1,4 +1,4 @@
-From 9c37d9acd3f7909cb1f4e437e0b5fe31dd6214d6 Mon Sep 17 00:00:00 2001
+From bf70e34844f0a3984d4ca48614fa39896ce5ca5f Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Mon, 19 Jul 2010 12:31:47 -0500
 Subject: [PATCH 69/75] mt9t112: Fix pll p-dividers abstraction

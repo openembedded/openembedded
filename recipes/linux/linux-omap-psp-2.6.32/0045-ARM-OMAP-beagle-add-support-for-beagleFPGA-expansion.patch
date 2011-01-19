@@ -1,4 +1,4 @@
-From 46df6bfeaff6f64bfae3fd9ac930bd6c768a352f Mon Sep 17 00:00:00 2001
+From 1ebb6f864a831fc8efebe4a7a9f65d07fa31466a Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Sat, 15 May 2010 21:47:32 +0200
 Subject: [PATCH 45/45] ARM: OMAP: beagle: add support for beagleFPGA expansionboard: http://members.cox.net/ebrombaugh1/embedded/beagle/beagle_fpga.html
@@ -8,7 +8,7 @@ Subject: [PATCH 45/45] ARM: OMAP: beagle: add support for beagleFPGA expansionbo
  1 files changed, 26 insertions(+), 0 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index 4aa91cb..93b9e5f 100644
+index 078e026..b313350 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -24,6 +24,7 @@
@@ -52,7 +52,7 @@ index 4aa91cb..93b9e5f 100644
  static void __init omap3_beagle_init_irq(void)
  {
          if (cpu_is_omap3630())
-@@ -774,6 +794,12 @@ static void __init omap3_beagle_init(void)
+@@ -769,6 +789,12 @@ static void __init omap3_beagle_init(void)
  		gpio_export(162, 1);
  	}
  

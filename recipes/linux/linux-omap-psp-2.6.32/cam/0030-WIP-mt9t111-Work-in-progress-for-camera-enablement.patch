@@ -1,4 +1,4 @@
-From 05232a5ba68cab14877a4032cc7995c15254195d Mon Sep 17 00:00:00 2001
+From b310c5ad504443f0d125ca92106f497e14acd8bd Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Fri, 25 Jun 2010 16:01:47 -0500
 Subject: [PATCH 30/75] WIP: mt9t111: Work in progress for camera enablement

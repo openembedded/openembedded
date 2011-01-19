@@ -1,4 +1,4 @@
-From 0edbb992b0bc4e6a1b39d760695a4857b9b7ffa7 Mon Sep 17 00:00:00 2001
+From 1fc84dc95abaf51294efa10fe111d65bc0b08483 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <sakoman@gmail.com>
 Date: Tue, 15 Dec 2009 14:59:42 -0800
 Subject: [PATCH 16/45] ARM: OMAP: Overo: Add support for second ethernet port

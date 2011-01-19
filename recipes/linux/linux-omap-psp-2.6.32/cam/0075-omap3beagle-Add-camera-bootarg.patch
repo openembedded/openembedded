@@ -1,4 +1,4 @@
-From b23565171bddf4f2e454f7857d52a5a79da00ba7 Mon Sep 17 00:00:00 2001
+From d15c09a8ed5441dd843257b6a4396dd058a2e68f Mon Sep 17 00:00:00 2001
 From: Sergio Aguirre <saaguirre@ti.com>
 Date: Thu, 22 Jul 2010 15:38:43 -0500
 Subject: [PATCH 75/75] omap3beagle: Add camera bootarg
@@ -15,7 +15,7 @@ Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
  1 files changed, 34 insertions(+), 8 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index f93616b..2677b41 100644
+index 7c9e40a..1e8b77b 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -89,6 +89,7 @@ extern struct mt9t112_platform_data mt9t112_pdata;
@@ -95,7 +95,7 @@ index f93616b..2677b41 100644
  static void __init omap3_beagle_init(void)
  {
  	omap3_mux_init(board_mux, OMAP_PACKAGE_CBB);
-@@ -915,6 +940,7 @@ static void __init omap3_beagle_map_io(void)
+@@ -910,6 +935,7 @@ static void __init omap3_beagle_map_io(void)
  }
  
  early_param("buddy", expansionboard_setup);

@@ -1,4 +1,4 @@
-From b4d9f3d3f45b3f47ec243df170381b0c2d1049e7 Mon Sep 17 00:00:00 2001
+From d35c02203462b5c94c7be1abeba9be2a175646fe Mon Sep 17 00:00:00 2001
 From: Vaibhav Hiremath <hvaibhav@ti.com>
 Date: Fri, 9 Jul 2010 17:38:09 +0530
 Subject: [PATCH 32/75] MT9V113: Fixed sensor nitialization issues

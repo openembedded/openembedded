@@ -1,4 +1,4 @@
-From 664b6e1a8f1bcd0bed227b367f7ed029a5be0fa7 Mon Sep 17 00:00:00 2001
+From 297f577635fe0182e596112c33b213fd22b4efa7 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Sun, 24 Jan 2010 09:33:56 -0800
 Subject: [PATCH 25/45] ARM: OMAP2: mmc-twl4030: move clock input selection prior to vcc test

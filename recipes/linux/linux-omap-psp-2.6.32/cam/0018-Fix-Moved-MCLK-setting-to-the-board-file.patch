@@ -1,4 +1,4 @@
-From 1156c4406ff37b425c596804624ad6014006fcc1 Mon Sep 17 00:00:00 2001
+From 6e9a8ed420020b5692b511b3e8a7c2c1325e1ca2 Mon Sep 17 00:00:00 2001
 From: Penda, Naveen <pnaveen@ti.com>
 Date: Thu, 22 Oct 2009 06:07:01 +0530
 Subject: [PATCH 18/75] Fix: Moved MCLK setting to the board file

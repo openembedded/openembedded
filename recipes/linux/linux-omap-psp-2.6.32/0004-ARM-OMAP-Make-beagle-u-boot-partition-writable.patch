@@ -1,4 +1,4 @@
-From ef987a45a496dad17bafb2dead78513a7f820dc8 Mon Sep 17 00:00:00 2001
+From 701bababc8f9e458e01bdb512199ce175110fe19 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Thu, 17 Dec 2009 12:40:24 -0800
 Subject: [PATCH 04/45] ARM: OMAP: Make beagle u-boot partition writable
@@ -8,7 +8,7 @@ Subject: [PATCH 04/45] ARM: OMAP: Make beagle u-boot partition writable
  1 files changed, 0 insertions(+), 1 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index a4a793f..4b2dd65 100644
+index ddfb9c0..9f72c7a 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -112,7 +112,6 @@ static struct mtd_partition omap3beagle_nand_partitions[] = {
