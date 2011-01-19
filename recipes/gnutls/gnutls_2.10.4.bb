@@ -2,8 +2,6 @@ require gnutls.inc
 
 PR = "${INC_PR}.0"
 
-LICENSE_${PN}-extra = "GPLv3"
-
 EXTRA_OECONF += " --without-libgcrypt-prefix "
 
 SRC_URI += "file://gettextize-with-gettext-0.18.patch \
