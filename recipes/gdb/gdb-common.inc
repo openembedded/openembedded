@@ -4,7 +4,7 @@ LICENSE="GPL"
 SECTION = "devel"
 PRIORITY = "optional"
 
-INC_PR = "r8"
+INC_PR = "r9"
 
 inherit autotools
 

@@ -7,12 +7,8 @@ DEPENDS = "ncurses readline zlib flex-native bison-native"
 PACKAGES =+ "gdbserver"
 FILES_gdbserver = "${bindir}/gdbserver"
 
-RRECOMMENDS_gdb_append_linux = " glibc-thread-db "
-RRECOMMENDS_gdb_append_linux-gnueabi = " glibc-thread-db "
-
-RRECOMMENDS_gdb_append_linux-uclibc = " uclibc-thread-db "
-RRECOMMENDS_gdb_append_linux-uclibceabi = " uclibc-thread-db "
-RRECOMMENDS_gdb_append_linux-spe = " uclibc-thread-db "
+RRECOMMENDS_gdb_append_libc-glibc = " glibc-thread-db "
+RRECOMMENDS_gdb_append_libc-uclibc = " uclibc-thread-db "
 
 inherit gettext
 
