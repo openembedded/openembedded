@@ -23,9 +23,7 @@ EXTRA_OECONF = "--with-distro=debian  --disable-stack-protector --disable-nls --
 AVAHI_PYTHON = "--disable-python"
 AVAHI_GTK = "--disable-gtk"
 
-LDFLAGS_append_linux-uclibc = " -lintl"
-LDFLAGS_append_linux-uclibceabi = " -lintl "
-LDFLAGS_append_linux-uclibcspe = " -lintl "
+LDFLAGS_append_libc-uclibc = " -lintl"
 LDFLAGS_append_uclinux-uclibc = " -lintl"
 
 PACKAGES =+ "avahi-daemon avahi-discover libavahi-common libavahi-core libavahi-client avahi-dnsconfd libavahi-glib libavahi-ui avahi-discover-standalone avahi-autoipd avahi-utils"
