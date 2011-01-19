@@ -3,10 +3,9 @@ require samba-basic.inc
 
 SRC_URI += "file://configure.patch \
             "
-SRC_URI_append_linux-uclibc        = "file://uclibc-strlcpy-strlcat.patch"
-SRC_URI_append_linux-uclibceabi = "file://uclibc-strlcpy-strlcat.patch"
+SRC_URI_append_libc-uclibc        = "file://uclibc-strlcpy-strlcat.patch"
 
-PR = "r5"
+PR = "r6"
 
 PACKAGES =+ " smbfs smbfs-doc"
 
