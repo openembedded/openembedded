@@ -85,22 +85,22 @@ index 2f525b6..0822503 100644
 +		printf("Recognized Tincantools Zippy board (rev %d %s)\n",
 +			expansion_config.revision,
 +			expansion_config.fab_revision);
-+		//MUX_TINCANTOOLS_ZIPPY();
++		MUX_TINCANTOOLS_ZIPPY();
 +		setenv("buddy", "zippy");
 +		break;
 +	case TINCANTOOLS_ZIPPY2:
 +		printf("Recognized Tincantools Zippy2 board (rev %d %s)\n",
 +			expansion_config.revision,
 +			expansion_config.fab_revision);
-+		//MUX_TINCANTOOLS_ZIPPY();
++		MUX_TINCANTOOLS_ZIPPY();
 +		setenv("buddy", "zippy2");
 +		break;
 +	case TINCANTOOLS_TRAINER:
 +		printf("Recognized Tincantools Trainer board (rev %d %s)\n",
 +			expansion_config.revision,
 +			expansion_config.fab_revision);
-+		//MUX_TINCANTOOLS_ZIPPY();
-+		//MUX_TINCANTOOLS_TRAINER();
++		MUX_TINCANTOOLS_ZIPPY();
++		MUX_TINCANTOOLS_TRAINER();
 +		setenv("buddy", "trainer");
 +		break;
 +	case TINCANTOOLS_SHOWDOG:
@@ -113,7 +113,7 @@ index 2f525b6..0822503 100644
 +		break;
 +	case KBADC_BEAGLEFPGA:
 +		printf("Recognized KBADC Beagle FPGA board\n");
-+		//MUX_KBADC_BEAGLEFPGA();
++		MUX_KBADC_BEAGLEFPGA();
 +		setenv("buddy", "beaglefpga");
 +		break;
 +	case BEAGLE_NO_EEPROM:
