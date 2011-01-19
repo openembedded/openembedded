@@ -3,7 +3,7 @@ Its name stands for LiSt Open Files, and it does just that."
 SECTION = "devel"
 LICENSE = "BSD"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/lsof_${PV}.tar.bz2;name=lsof483tarbz2"
 SRC_URI[lsof483tarbz2.md5sum] = "8f731a6251b8c0143d585df0d5ca779e"
@@ -19,11 +19,8 @@ do_unpackpost() {
 addtask unpackpost before do_patch after do_unpack
 
 export LSOF_OS = "${TARGET_OS}"
-LSOF_OS_linux-uclibc = "linux"
-LSOF_OS_linux-uclibceabi = "linux"
-LSOF_OS_linux-uclibspe = "linux"
-LSOF_OS_linux-gnueabi = "linux"
-LSOF_OS_linux-gnuspe = "linux"
+LSOF_OS_libc-uclibc = "linux"
+LSOF_OS_libc-glibc = "linux"
 export LSOF_INCLUDE = "${STAGING_INCDIR}"
 
 do_configure () {
