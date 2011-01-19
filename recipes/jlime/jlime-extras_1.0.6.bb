@@ -13,5 +13,5 @@ do_install() {
 	cp -R etc usr ${D}
 }
 
-SRC_URI[md5sum] = "b1639d3176fe95b40cffcae530d2ed99"
-SRC_URI[sha256sum] = "0410832ab77dbc04a6ea440795a4d50e126cbde170e589b0d93c5fb11a69c089"
+SRC_URI[md5sum] = "d8021d921db703e10ecf98d9a88cbfa3"
+SRC_URI[sha256sum] = "2b075fc7ec06fe4d91815b300186011b7cdcb4ab7617c43773db598aac85de26"
