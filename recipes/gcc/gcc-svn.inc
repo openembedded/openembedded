@@ -1,6 +1,6 @@
 DEFAULT_PREFERENCE = "-999"
 ARM_INSTRUCTION_SET = "arm"
-INC_PR = "r0"
+INC_PR = "r1"
 SRCREV = "158653"
 
 require gcc-common.inc
@@ -35,6 +35,4 @@ EXTRA_OECONF_INTERMEDIATE = "--disable-libmudflap --disable-libgomp --disable-li
 
 S = ${WORKDIR}/${BRANCH}
 
-EXTRA_OECONF_append_linux-uclibc = " --disable-decimal-float "
-EXTRA_OECONF_append_linux-uclibceabi = " --disable-decimal-float "
-EXTRA_OECONF_append_linux-uclibcspe = " --disable-decimal-float "
+EXTRA_OECONF_append_libc-uclibc = " --disable-decimal-float "
