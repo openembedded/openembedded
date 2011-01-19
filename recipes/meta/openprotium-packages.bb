@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the Openprotium on the iomega Storcenter"
 HOMEPAGE = "http://www.openprotium.org"
 LICENSE = "MIT"
-PR = "r5"
+PR = "r6"
 CONFLICTS = "db3"
 PROVIDES += "${OPENPROTIUM_IMAGENAME}-packages"
 
@@ -239,7 +239,7 @@ SLUGOS_PACKAGES_append_linux = "\
 	xinetd \
 	"
 
-SLUGOS_PACKAGES_append_linux-uclibc = "\
+SLUGOS_PACKAGES_append_libc-uclibc = "\
 	"
 
 # These packages are not in the build because they have a significant compilation
