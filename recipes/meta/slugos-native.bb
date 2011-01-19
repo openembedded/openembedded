@@ -5,7 +5,7 @@
 #
 DESCRIPTION = "Packages that are required for the SlugOS native build environment"
 LICENSE = "MIT"
-PR = "r9"
+PR = "r10"
 
 INHIBIT_DEFAULT_DEPS = "1"
 EXCLUDE_FROM_WORLD = "1"
@@ -22,7 +22,7 @@ do_package_write_ipk() {
 SLUGOS_NATIVE_RT_prepend_linux = "\
 	glibc-extra-nss glibc-utils glibc \
 	"
-SLUGOS_NATIVE_RT_prepend_linux-uclibc = "\
+SLUGOS_NATIVE_RT_prepend_libc-uclibc = "\
 	uclibc-dev uclibc-utils \
 	"
 SLUGOS_NATIVE_RT = "\
