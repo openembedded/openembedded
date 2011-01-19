@@ -8,7 +8,7 @@ DEPENDS = "mpfr gmp libmpc libelf"
 NATIVEDEPS = "mpfr-native gmp-native libmpc-native"
 
 
-INC_PR = "r30"
+INC_PR = "r31"
 
 SRCREV = "168622"
 PV = "4.5"
@@ -185,9 +185,7 @@ EXTRA_OECONF_BASE = " --enable-lto \
 EXTRA_OECONF_INITIAL = "--disable-libmudflap --disable-libgomp --disable-libssp --enable-decimal-float=no"
 EXTRA_OECONF_INTERMEDIATE = "--disable-libmudflap --disable-libgomp --disable-libssp"
 
-EXTRA_OECONF_append_linux-uclibc = " --disable-decimal-float "
-EXTRA_OECONF_append_linux-uclibceabi = " --disable-decimal-float "
-EXTRA_OECONF_append_linux-uclibcspe = " --disable-decimal-float "
+EXTRA_OECONF_append_libc-uclibc = " --disable-decimal-float "
 
 EXTRA_OECONF_append_mips64 = " --with-arch-64=mips64 --with-tune-64=mips64"
 EXTRA_OECONF_append_mips64el = " --with-arch-64=mips64 --with-tune-64=mips64"
