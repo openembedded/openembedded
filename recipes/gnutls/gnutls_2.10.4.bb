@@ -1,6 +1,6 @@
 require gnutls.inc
 
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.0"
 
 LICENSE_${PN}-extra = "GPLv3"
 
@@ -9,7 +9,6 @@ EXTRA_OECONF += " --without-libgcrypt-prefix "
 SRC_URI += "file://gettextize-with-gettext-0.18.patch \
             file://gnutls-openssl.patch \
             file://gnutls-replace-siginterrupt.patch \
-            file://parallel-build.patch \
            "
 
 do_configure_prepend() {
@@ -24,5 +23,5 @@ do_configure_prepend() {
 
 }
 
-SRC_URI[gnutls.md5sum] = "777823f5746ab80cd6f7f7b5fcb2f91b"
-SRC_URI[gnutls.sha256sum] = "e82e7a3fc69b02cc06c291a1652789d73e45bc0732e139817838248f814f8724"
+SRC_URI[gnutls.md5sum] = "4e1517084018a8b1fdc96daabea40528"
+SRC_URI[gnutls.sha256sum] = "b8bfe36450fe671e99db5ff1e44e6b65fda8a79cacd9e77d550eff7da3745fc8"
