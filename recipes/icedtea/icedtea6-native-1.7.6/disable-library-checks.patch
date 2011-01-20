@@ -1,0 +1,141 @@
+Index: icedtea6-1.7/configure.ac
+===================================================================
+--- icedtea6-1.7.orig/configure.ac	2010-01-26 04:52:18.000000000 +0100
++++ icedtea6-1.7/configure.ac	2010-02-08 12:05:51.354556052 +0100
+@@ -205,9 +205,9 @@
+ fi
+ 
+ dnl pkgconfig cannot be used to find these headers and libraries.
+-AC_CHECK_HEADERS([cups/cups.h cups/ppd.h],[]
+-	,[AC_MSG_ERROR("CUPS headers were not found -
+-	try installing cups-devel.")])
++#AC_CHECK_HEADERS([cups/cups.h cups/ppd.h],[]
++#	,[AC_MSG_ERROR("CUPS headers were not found -
++#	try installing cups-devel.")])
+ AC_CHECK_HEADERS([X11/X.h],[]
+ 	,[AC_MSG_ERROR("xorg headers were not found -
+ 	try installing xorg-x11-proto-devel.")])
+@@ -239,12 +239,12 @@
+ AC_SUBST(XT_LIBS)
+ 
+ dnl Check for libXp headers and libraries.
+-PKG_CHECK_MODULES(XP, xp,[XP_FOUND=yes],[XP_FOUND=no])
+-if test "x${XP_FOUND}" = xno
+-then
+-  AC_MSG_ERROR([Could not find Xp - \
+-  Try installing libXp-devel.])
+-fi
++#PKG_CHECK_MODULES(XP, xp,[XP_FOUND=yes],[XP_FOUND=no])
++#if test "x${XP_FOUND}" = xno
++#then
++#  AC_MSG_ERROR([Could not find Xp - \
++#  Try installing libXp-devel.])
++#fi
+ AC_SUBST(XP_CFLAGS)
+ AC_SUBST(XP_LIBS)
+ 
+@@ -258,16 +258,16 @@
+ AC_SUBST(X11_CFLAGS)
+ AC_SUBST(X11_LIBS)
+ 
+-dnl Check for libXinerama headers and libraries.
+-PKG_CHECK_MODULES(XINERAMA, xinerama,[XINERAMA_FOUND=yes]
+-	,[XINERAMA_FOUND=no])
+-if test "x${XINERAMA_FOUND}" = xno
+-then
+-  AC_MSG_ERROR([Could not find Xinerama - \
+-  Try installing libXinerama-devel.])
+-fi
+-AC_SUBST(XINERAMA_CFLAGS)
+-AC_SUBST(XINERAMA_LIBS)
++#dnl Check for libXinerama headers and libraries.
++#PKG_CHECK_MODULES(XINERAMA, xinerama,[XINERAMA_FOUND=yes]
++#	,[XINERAMA_FOUND=no])
++#if test "x${XINERAMA_FOUND}" = xno
++#then
++#  AC_MSG_ERROR([Could not find Xinerama - \
++#  Try installing libXinerama-devel.])
++#fi
++#AC_SUBST(XINERAMA_CFLAGS)
++#AC_SUBST(XINERAMA_LIBS)
+ 
+ if test "x${ENABLE_XRENDER}" = "xyes"
+ then
+@@ -341,26 +341,26 @@
+   AC_CONFIG_FILES([tapset/jstack.stp])
+ fi
+ 
+-dnl Check for libpng headers and libraries.
+-PKG_CHECK_MODULES(LIBPNG, libpng,[LIBPNG_FOUND=yes]
+-	,[LIBPNG_FOUND=no])
+-if test "x${LIBPNG_FOUND}" = xno
+-then
+-  AC_MSG_ERROR([Could not find libpng - \
+-  Try installing libpng-devel.])
+-fi
+-AC_SUBST(LIBPNG_CFLAGS)
+-AC_SUBST(LIBPNG_LIBS)
+-
+-dnl Check for libXtst headers and libraries.
+-PKG_CHECK_MODULES(XTST, xtst,[XTST_FOUND=yes],[XTST_FOUND=no])
+-if test "x${XTST_FOUND}" = xno
+-then
+-  AC_MSG_ERROR([Could not find Xtst - \
+-  Try installing libXtst-devel.])
+-fi
+-AC_SUBST(XTST_CFLAGS)
+-AC_SUBST(XTST_LIBS)
++#dnl Check for libpng headers and libraries.
++#PKG_CHECK_MODULES(LIBPNG, libpng,[LIBPNG_FOUND=yes]
++#	,[LIBPNG_FOUND=no])
++#if test "x${LIBPNG_FOUND}" = xno
++#then
++#  AC_MSG_ERROR([Could not find libpng - \
++#  Try installing libpng-devel.])
++#fi
++#AC_SUBST(LIBPNG_CFLAGS)
++#AC_SUBST(LIBPNG_LIBS)
++
++#dnl Check for libXtst headers and libraries.
++#PKG_CHECK_MODULES(XTST, xtst,[XTST_FOUND=yes],[XTST_FOUND=no])
++#if test "x${XTST_FOUND}" = xno
++#then
++#  AC_MSG_ERROR([Could not find Xtst - \
++#  Try installing libXtst-devel.])
++#fi
++#AC_SUBST(XTST_CFLAGS)
++#AC_SUBST(XTST_LIBS)
+ 
+ dnl Check for freetype2 headers and libraries.
+ PKG_CHECK_MODULES(FREETYPE2, freetype2,[FREETYPE2_FOUND=yes]
+@@ -373,18 +373,18 @@
+ AC_SUBST(FREETYPE2_CFLAGS)
+ AC_SUBST(FREETYPE2_LIBS)
+ 
+-dnl Check for alsa headers and libraries (only required for Linux).
+-if test "x${BUILD_OS_DIR}" = "xlinux"
+-then
+-  PKG_CHECK_MODULES(ALSA, alsa,[ALSA_FOUND=yes],[ALSA_FOUND=no])
+-  if test "x${ALSA_FOUND}" = xno
+-  then
+-    AC_MSG_ERROR([Could not find alsa - \
+-    Try installing alsa-lib-devel.])
+-  fi
+-AC_SUBST(ALSA_CFLAGS)
+-AC_SUBST(ALSA_LIBS)
+-fi
++#dnl Check for alsa headers and libraries (only required for Linux).
++#if test "x${BUILD_OS_DIR}" = "xlinux"
++#then
++#  PKG_CHECK_MODULES(ALSA, alsa,[ALSA_FOUND=yes],[ALSA_FOUND=no])
++#  if test "x${ALSA_FOUND}" = xno
++#  then
++#    AC_MSG_ERROR([Could not find alsa - \
++#    Try installing alsa-lib-devel.])
++#  fi
++#AC_SUBST(ALSA_CFLAGS)
++#AC_SUBST(ALSA_LIBS)
++#fi
+ 
+ if test "x${enable_pulse_java}" = "xyes"
+ then

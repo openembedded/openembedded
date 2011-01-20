@@ -1,0 +1,29 @@
+# Backported from
+# HG changeset patch
+# User Xerxes R?nby <xerxes@zafena.se>
+# Date 1275385110 -7200
+# Node ID 7674917fa451a17a38b8cd6930068e8dc3b57b76
+# Parent cf45c29fbe48d2a0c543cbd6d03f4329010011c0
+Use full path to jar application to avoid relying on the one on the path.
+
+2010-06-01  Xerxes R?nby  <xerxes@zafena.se>
+
+	* Makefile.am:
+	(extra-lib/about.jar): Remove redundant
+	conditional that we don't need any more.
+	(rewrite-rhino.stamp): Use full path to
+	jar application to avoid relying on the one
+	on the path.
+
+diff -uNr icedtea6-1.7.3.orig/Makefile.am icedtea6-1.7.3/Makefile.am
+--- icedtea6-1.7.3.orig/Makefile.am	2010-03-31 23:34:07.000000000 +0200
++++ icedtea6-1.7.3/Makefile.am	2010-07-14 16:52:45.000000000 +0200
+@@ -1749,7 +1744,7 @@
+ stamps/rewrite-rhino.stamp: stamps/rewriter.stamp $(RHINO_JAR)
+ if WITH_RHINO
+ 	mkdir -p rhino/rhino.{old,new}
+-	(cd rhino/rhino.old ; jar xf $(RHINO_JAR))
++	(cd rhino/rhino.old ; $(ICEDTEA_BOOT_DIR)/bin/jar xf $(RHINO_JAR))
+ 	$(ICEDTEA_BOOT_DIR)/bin/java -cp $(abs_top_builddir)/rewriter \
+ 	  com.redhat.rewriter.ClassRewriter \
+ 	  $(abs_top_builddir)/rhino/rhino.old $(abs_top_builddir)/rhino/rhino.new \

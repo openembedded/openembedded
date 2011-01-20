@@ -1,0 +1,61 @@
+Index: openjdk/jdk/make/com/sun/java/pack/Makefile
+===================================================================
+--- openjdk.orig/jdk/make/com/sun/java/pack/Makefile	2009-09-29 13:48:34.538565136 +0200
++++ openjdk/jdk/make/com/sun/java/pack/Makefile	2009-09-29 14:00:26.226565853 +0200
+@@ -80,7 +80,7 @@
+   OTHER_LDLIBS += $(JVMLIB)
+ endif
+ 
+-OTHER_LDLIBS += -lz
++OTHER_LDLIBS += -L$(libdir) -lz
+ CXXFLAGS_DBG += -DFULL
+ CXXFLAGS_OPT += -DPRODUCT
+ CXXFLAGS_COMMON += -DFULL
+Index: openjdk/jdk/make/common/Defs.gmk
+===================================================================
+--- openjdk.orig/jdk/make/common/Defs.gmk	2009-09-29 13:57:14.450815511 +0200
++++ openjdk/jdk/make/common/Defs.gmk	2009-09-29 14:00:26.226565853 +0200
+@@ -289,7 +289,7 @@
+ 
+ endif # PROGRAM
+ 
+-LDLIBS_COMMON += $(EXTRA_LIBS)
++LDLIBS_COMMON += $(EXTRA_LIBS) -L$(libdir)
+ 
+ #
+ # Default is to build, not import native binaries
+@@ -425,7 +425,7 @@
+ CLASSDESTDIR = $(CLASSBINDIR)
+ endif
+ 
+-INCLUDES = -I. -I$(CLASSHDRDIR) \
++INCLUDES = -I$(includedir) -I. -I$(CLASSHDRDIR) \
+ 	$(patsubst %,-I%,$(subst $(CLASSPATH_SEPARATOR), ,$(VPATH.h))) $(OTHER_INCLUDES)
+ OTHER_CPPFLAGS = $(INCLUDES)
+ 
+Index: openjdk/jdk/make/common/Program.gmk
+===================================================================
+--- openjdk.orig/jdk/make/common/Program.gmk	2009-09-29 13:48:33.914565255 +0200
++++ openjdk/jdk/make/common/Program.gmk	2009-09-29 14:00:26.226565853 +0200
+@@ -73,7 +73,7 @@
+ # itself, as with all the Windows libraries.
+ #
+ ifneq (,$(findstring $(PLATFORM), linux solaris))	# UNIX systems
+-    LDFLAGS += -L $(LIBDIR)/$(LIBARCH)/jli
++    LDFLAGS += -L $(LIBDIR)/$(LIBARCH)/jli -L $(libdir)
+     OTHER_LDLIBS += -ljli
+     ifeq ($(PLATFORM), solaris)
+ 	ifeq ($(ARCH_DATA_MODEL), 32)
+Index: openjdk/jdk/make/java/jli/Makefile
+===================================================================
+--- openjdk.orig/jdk/make/java/jli/Makefile	2009-09-29 13:48:33.806565054 +0200
++++ openjdk/jdk/make/java/jli/Makefile	2009-09-29 14:00:26.230565844 +0200
+@@ -61,7 +61,7 @@
+ ifneq (,$(findstring $(PLATFORM), linux solaris))	# UNIX systems
+ 	LIB_LOCATION = $(LIBDIR)/$(LIBARCH)/jli
+ 	# Guarantee very limited dependencies
+-	LDLIBS = -lz -lc 
++	LDLIBS = -L$(libdir) -lz -lc
+ endif
+ 
+ ifeq ($(PLATFORM), windows)
