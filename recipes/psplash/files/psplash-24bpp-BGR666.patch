@@ -1,0 +1,25 @@
+--- a/psplash-fb.c	2011-01-20 15:04:15.000000000 +0100
++++ b/psplash-fb.c	2011-01-20 15:03:50.000000000 +0100
+@@ -3,6 +3,10 @@
+  *
+  *  Copyright (c) 2006 Matthew Allum <mallum@o-hand.com>
+  *
++ *  Modifications: 
++ *  Jan-2011 - Marco Cavallini <m.cavallini@koansoftware.com>
++ *    added case 24bpp mode BGR666 for PXA270
++ *
+  *  This program is free software; you can redistribute it and/or modify
+  *  it under the terms of the GNU General Public License as published by
+  *  the Free Software Foundation; either version 2, or (at your option)
+@@ -339,6 +343,11 @@ psplash_fb_plot_pixel (PSplashFB    *fb,
+ 	      | ((green >> (8 - fb->green_length)) << fb->green_offset)
+ 	      | ((blue >> (8 - fb->blue_length)) << fb->blue_offset);
+         break;
++      case 24:  /* BGR666 */
++        *(fb->data + off)     = (blue >> 2) | ((green & 0x0C) << 4);
++        *(fb->data + off + 1) = ((green & 0xF0) >> 4) | ((red & 0x3C) << 2);
++        *(fb->data + off + 2) = (red & 0xC0) >> 6;
++        break;
+       case 16:
+         *(volatile uint16_t *) (fb->data + off)
+ 	  = ((red >> (8 - fb->red_length)) << fb->red_offset) 
