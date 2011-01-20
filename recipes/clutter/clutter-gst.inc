@@ -2,13 +2,15 @@ DESCRIPTION = "Clutter GStreamer integration library"
 HOMEPAGE = "http://www.clutter-project.org/"
 LICENSE = "LGPLv2.1"
 
-INC_PR = "r1"
+INC_PR = "r2"
 
 DEPENDS = "clutter gstreamer gst-plugins-base"
 
 require clutter-common.inc
 
 inherit autotools pkgconfig
+
+EXTRA_OECONF = "--disable-introspection"
 
 align_examples_data_location() {
 	for full_name in $(find ${S}/examples -name *.png) ; do
