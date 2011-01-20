@@ -160,20 +160,21 @@ def package_qa_check_rpath(file,name,d, elf):
     import bb, os
     sane = True
     scanelf = os.path.join(bb.data.getVar('STAGING_BINDIR_NATIVE',d,True),'scanelf')
-    bad_dir = bb.data.getVar('TMPDIR', d, True) + "/work"
+    bad_dirs = [bb.data.getVar('TMPDIR', d, True) + "/work", bb.data.getVar('STAGING_DIR_TARGET', d, True)]
     bad_dir_test = bb.data.getVar('TMPDIR', d, True)
     if not os.path.exists(scanelf):
         bb.fatal("Can not check RPATH, scanelf (part of pax-utils-native) not found")
 
-    if not bad_dir in bb.data.getVar('WORKDIR', d, True):
+    if not bad_dirs[0] in bb.data.getVar('WORKDIR', d, True):
         bb.fatal("This class assumed that WORKDIR is ${TMPDIR}/work... Not doing any check")
 
     output = os.popen("%s -B -F%%r#F '%s'" % (scanelf,file))
     txt    = output.readline().split()
     for line in txt:
-        if bad_dir in line:
-            error_msg = "package %s contains bad RPATH %s in file %s" % (name, line, file)
-            sane = package_qa_handle_error(1, error_msg, name, file, d)
+        for dir in bad_dirs:
+            if dir in line:
+                error_msg = "package %s contains bad RPATH %s in file %s" % (name, line, file)
+                sane = sane + package_qa_handle_error(1, error_msg, name, file, d)
 
     return sane
 
