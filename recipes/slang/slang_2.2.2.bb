@@ -2,9 +2,9 @@ DESCRIPTION = "slang is a library of text functions used in editors like slrn et
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "pcre"
-PR = "r2"
+PR = "r3"
 LICENSE = "GPL Artistic"
-SRC_URI = "ftp://space.mit.edu/pub/davis/slang/v2.2/slang-${PV}.tar.bz2 \
+SRC_URI = "ftp://space.mit.edu/pub/davis/slang/v2.2/OLD/slang-${PV}.tar.bz2 \
            file://fix-uclibc.patch"
 
 inherit autotools
