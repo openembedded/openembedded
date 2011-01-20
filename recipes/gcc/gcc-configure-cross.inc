@@ -1,6 +1,6 @@
 require gcc-configure-common.inc
 
-USE_NLS = '${@base_conditional( "TARGET_OS", "linux-uclibc", "no", "", d )}'
+USE_NLS_libc-uclibc = 'no'
 
 EXTRA_OECONF_PATHS = "--with-sysroot=${STAGING_DIR_TARGET} \
                       --with-build-sysroot=${STAGING_DIR_TARGET} \

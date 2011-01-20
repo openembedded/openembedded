@@ -1,4 +1,4 @@
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 require gcc-${PV}.inc
 require gcc-cross4.inc

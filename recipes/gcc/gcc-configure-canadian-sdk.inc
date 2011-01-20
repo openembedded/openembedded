@@ -1,8 +1,6 @@
 require gcc-configure-common.inc
 
-USE_NLS = '${@base_conditional( "TARGET_OS", "linux-uclibc", "no", "", d )}'
-USE_NLS = '${@base_conditional( "TARGET_OS", "linux-uclibceabi", "no", "", d )}'
-
+USE_NLS_libc-uclibc = 'no'
 #
 # We need to override this and make sure the compiler can find staging
 #

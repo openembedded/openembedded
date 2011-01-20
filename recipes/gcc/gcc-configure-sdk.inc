@@ -1,8 +1,6 @@
 require gcc-configure-common.inc
 
-# The two lines below conflict, this needs fixing - RP
-USE_NLS = '${@base_conditional( "TARGET_OS", "linux-uclibc", "no", "", d )}'
-USE_NLS = '${@base_conditional( "TARGET_OS", "linux-uclibceabi", "no", "", d )}'
+USE_NLS_libc-uclibc = 'no'
 
 EXTRA_OECONF_PATHS = "--with-sysroot=${prefix}/${TARGET_SYS} \
                       --with-build-time-tools=${TOOLCHAIN_PATH}/${TARGET_SYS}/bin \

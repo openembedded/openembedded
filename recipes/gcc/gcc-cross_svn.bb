@@ -1,6 +1,6 @@
 require gcc-${PV}.inc
 require gcc-cross4.inc
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 DEPENDS += "libmpc-native"
 
