@@ -11,7 +11,7 @@ LICENSE = "GPLv2"
 SECTION = "base"
 PRIORITY = "required"
 
-INC_PR = "r41"
+INC_PR = "r42"
 
 SRC_URI = "\
   file://busybox-cron \
@@ -22,6 +22,8 @@ SRC_URI = "\
   file://hwclock.sh \
   file://hwclock-default \
   file://ifupdown-spurious-environ.patch \
+  file://inetd \
+  file://inetd.conf \
   file://mount.busybox \
   file://passwd \
   file://shadow \
@@ -35,7 +37,7 @@ SRC_URI_append_nylon = " file://xargs-double-size.patch"
 
 export EXTRA_CFLAGS = "${CFLAGS}"
 EXTRA_OEMAKE_append = " CROSS=${HOST_PREFIX}"
-PACKAGES =+ "${PN}-mountall ${PN}-httpd ${PN}-syslog ${PN}-udhcpd"
+PACKAGES =+ "${PN}-mountall ${PN}-httpd ${PN}-inetd ${PN}-syslog ${PN}-udhcpd"
 PACKAGES =+ "${PN}-passwd ${PN}-shadow"
 
 # We need this RRECOMMENDS_${PN} because libc dlopens libgcc
@@ -49,7 +51,11 @@ RDEPENDS_${PN} += "${PN}-mountall"
 # Make busybox recommend busybox-syslog for those images that expect it
 RRECOMMENDS_${PN} += "libgcc ${PN}-syslog"
 
+RPROVIDES_${PN}-inetd = "inetd"
+
 FILES_${PN}-httpd = "${sysconfdir}/init.d/busybox-httpd /srv/www"
+FILES_${PN}-inetd = "${sysconfdir}/init.d/inetd.${PN} \
+                     ${sysconfdir}/inetd.conf"
 FILES_${PN}-passwd = "${sysconfdir}/passwd.${PN}"
 FILES_${PN}-shadow = "${sysconfdir}/shadow.${PN}"
 FILES_${PN}-syslog = "${sysconfdir}/init.d/syslog.${PN} \
@@ -62,14 +68,17 @@ FILES_${PN} += "${datadir}/udhcpc"
 # update-rc.d and update-alternatives is important (see below)
 INITSCRIPT_PACKAGES = "${PN}-httpd ${PN}-udhcpd"
 INITSCRIPT_NAME_${PN}-httpd = "busybox-httpd"
+INITSCRIPT_NAME_${PN}-inetd = "inetd"
 INITSCRIPT_NAME_${PN}-syslog = "syslog"
 INITSCRIPT_NAME_${PN}-udhcpd = "busybox-udhcpd"
+CONFFILES_${PN}-inetd = "${sysconfdir}/inetd.conf"
 CONFFILES_${PN}-syslog = "${sysconfdir}/default/busybox-syslog"
 
 # This disables the syslog startup links in slugos (see slugos-init)
 INITSCRIPT_PARAMS_${PN}-syslog_slugos = "start 20 ."
 
 RDEPENDS_${PN}-httpd += "${PN}"
+RDEPENDS_${PN}-inetd += "${PN}"
 RDEPENDS_${PN}-passwd += "${PN}"
 RDEPENDS_${PN}-shadow += "${PN}-passwd"
 RDEPENDS_${PN}-syslog += "${PN}"
@@ -224,6 +233,10 @@ do_install () {
 		install -d ${D}${sysconfdir}/default
 		install -m 644 ${WORKDIR}/mountall ${D}${sysconfdir}/default/mountall.${PN}
 	fi
+	if grep "CONFIG_INETD=y" ${WORKDIR}/defconfig; then
+		install -m 0755 ${WORKDIR}/inetd ${D}${sysconfdir}/init.d/inetd.${PN}
+		install -m 0644 ${WORKDIR}/inetd.conf ${D}${sysconfdir}/
+	fi
 
 	install -m 0644 ${S}/busybox.links ${D}${sysconfdir}
 }
@@ -292,6 +305,34 @@ pkg_prerm_${PN}-shadow () {
 	update-alternatives --remove default_shadow shadow.${PN}
 }
 
+pkg_postinst_${PN}-inetd () {
+	update-alternatives --install ${sysconfdir}/init.d/inetd inetd-init inetd.${PN} 50
+
+	[ -n "$D" ] && OPT="-r $D" || OPT="-s"
+	# remove all rc.d-links potentially created from alternative
+	# inetd packages before creating new ones
+	update-rc.d $OPT -f inetd remove
+	update-rc.d $OPT inetd start 20 2 3 4 5 . stop 90 0 1 6 .
+}
+
+pkg_prerm_${PN}-inetd () {
+	if test "x$D" = "x"; then
+		if test "$1" = "upgrade" -o "$1" = "remove"; then
+			/etc/init.d/inetd stop
+		fi
+	fi
+
+	update-alternatives --remove inetd-init inetd.${PN}
+}
+
+pkg_postrm_${PN}-inetd () {
+	if test "$1" = "remove" -o "$1" = "purge"; then
+		if ! test -e "/etc/init.d/inetd"; then
+			[ -n "$D" ] && OPT="-r $D" || OPT="-s"
+			update-rc.d $OPT inetd remove
+		fi
+	fi
+}
 
 pkg_postinst_${PN}-syslog () {
 	update-alternatives --install ${sysconfdir}/init.d/syslog syslog-init syslog.${PN} 50
