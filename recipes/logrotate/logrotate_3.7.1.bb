@@ -5,7 +5,7 @@ DEPENDS = "popt"
 RDEPENDS_${PN} = "cron"
 SECTION = "admin"
 LICENSE = "GPL"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://ftp.debian.org/debian/pool/main/l/logrotate/logrotate_${PV}.orig.tar.gz \
 	   file://logrotate-3.7.1.patch \
@@ -28,7 +28,7 @@ do_install () {
 
 pkg_postinst () {
     # Add the logrotate line to /etc/crontab
-    grep -q "${base_sbindir}/logrotate" ${sysconfdir}/crontab || echo "*/5 * * * *   ${base_sbindir}/logrotate ${sysconfdir}/logrotate.conf" >> ${sysconfdir}/crontab
+    grep -q "${base_sbindir}/logrotate" ${sysconfdir}/crontab || echo "*/5 * * * * root ${base_sbindir}/logrotate ${sysconfdir}/logrotate.conf" >> ${sysconfdir}/crontab
 }
 
 pkg_postrm() {
