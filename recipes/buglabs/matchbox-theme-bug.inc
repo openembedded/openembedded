@@ -2,7 +2,7 @@ LICENSE = "CC-BY-SA3"
 DEPENDS = "matchbox-wm"
 SECTION = "x11/wm"
 
-SRCREV=${AUTOREV}
+SRCREV=1
 
 SRC_URI += "svn://bugcamp.net/bug/trunk/;module=com.buglabs.bug.theme/matchbox/${THEME_NAME} \
             file://session"
