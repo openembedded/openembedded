@@ -7,14 +7,14 @@
 # on whether the base patches apply to the selected (SRCDATE) svn release.
 #
 UCLIBC_BASE ?= "0.9.32"
-SRCREV="387b2e49cbb6aedcc6136fb18fb232dada563cf6"
+SRCREV="541f53cf24819079242079c5da79d9c5df9a27a8"
 PR_append = "+gitr${SRCPV}"
 DEFAULT_PREFERENCE = "-1"
 #DEFAULT_PREFERENCE is 0 (empty), releases have a preference of 1 so take
 # precedence.
 
 require uclibc.inc
-PR = "${INC_PR}.6"
+PR = "${INC_PR}.7"
 PROVIDES += "virtual/${TARGET_PREFIX}libc-for-gcc"
 
 #recent versions uclibc require real kernel headers
@@ -38,12 +38,6 @@ SRC_URI = "git://uclibc.org/uClibc.git;branch=master;protocol=git \
 	file://include-arm-asm.h.patch \
 	file://detect-bx-availibility.patch \
 	file://remove-eabi-oabi-selection.patch \
-	file://0001-Revert-ldso-i386-support-protected-symbols.patch \
-	file://0002-Revert-ldso_sh-add-support-for-protected-symbols-to-.patch \
-	file://0003-Revert-ldso-arm-Correct-protected-symbol-resolution.patch \
-	file://0004-Add-protected-symbols-support-for-all-architectures.patch \
-	file://0005-ldso-get-rid-of-_dl_lookup_hash.patch \
-	file://pro-sym-mips-fix.patch \
 	file://mips64-no-waitpid.patch \
 	"
 S = "${WORKDIR}/git"
