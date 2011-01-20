@@ -15,6 +15,8 @@ SRC_URI = "\
   file://default.script file://simple.script \
   file://hwclock.sh \
   file://hwclock-default \
+  file://inetd \
+  file://inetd.conf \
   file://mount.busybox \
   file://mountall \
   file://passwd \
