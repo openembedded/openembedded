@@ -6,15 +6,21 @@ LICENSE = "LGPL"
 # slang needs to be >= 2.2
 DEPENDS = "slang popt"
 
-SRC_URI = "http://fedorahosted.org/releases/n/e/newt/newt-${PV}.tar.gz \
-           file://support-DESTDIR.patch"
-S = "${WORKDIR}/newt-${PV}"
+PR = "r1"
+
+SRCREV = "c3c7be75f6ef1adfc2be5f99c1e8ef3f0ab58c38"
+SRC_URI = "git://git.fedorahosted.org/git/newt;protocol=git \
+           file://include-without-python.patch"
+S = "${WORKDIR}/git"
+
+EXTRA_OECONF = "--without-python --without-tcl"
 
 inherit autotools
 
 PACKAGES_prepend = "whiptail "
 
-FILES_whiptail = "${bindir}/whiptail"
+do_configure_prepend() {
+    sh autogen.sh
+}
 
-SRC_URI[md5sum] = "51b04128d9e1bf000fa769c417b74486"
-SRC_URI[sha256sum] = "2ba88dc3d118daf509c58e3707c43ad57dd3415d8164054e93fe76439f348529"
+FILES_whiptail = "${bindir}/whiptail"
