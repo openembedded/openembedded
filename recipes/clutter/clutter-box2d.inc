@@ -4,7 +4,7 @@ LICENSE = "LGPLv2.1"
 
 DEPENDS = "clutter"
 
-INC_PR = "r1"
+INC_PR = "r2"
 
 # The main clutter lib is machine specific so we need to be too
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -12,6 +12,8 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 inherit autotools pkgconfig gtk-doc
 
 require clutter-common.inc
+
+EXTRA_OECONF = "--disable-introspection"
 
 do_configure_prepend() {
 	make_all_execs_installable
