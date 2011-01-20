@@ -38,6 +38,8 @@ PREFERRED_VERSION_linux-libc-headers		?= "2.6.31"
 PREFERRED_VERSION_m4				?= "1.4.14"
 PREFERRED_VERSION_m4-native			?= "1.4.14"
 PREFERRED_VERSION_nslu2-linksys-firmware	?= "2.3r63"
+PREFERRED_VERSION_perl				?= "5.10.1"
+PREFERRED_VERSION_perl-native			?= "5.10.1"
 PREFERRED_VERSION_pkgconfig			?= "0.23"
 PREFERRED_VERSION_pkgconfig-native		?= "0.23"
 PREFERRED_VERSION_udev				?= "118"
@@ -55,6 +57,3 @@ PREFERRED_VERSION_udev				?= "118"
 
 # latest tcl recipe has a bug that overwites regex.h; use the old tcl
 #PREFERRED_VERSION_tcl				?= "8.4.19"
-
-# We need the bluez4 version of the libs, which has default_precedence = -1
-PREFERRED_VERSION_bluez-libs			?= "4.42"
