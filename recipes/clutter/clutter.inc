@@ -9,7 +9,7 @@ INC_SRC_URI = "file://sample.desktop \
 PARALLEL_MAKE = ""
 
 STDDEPENDS = "virtual/libx11 gtk-doc-native pango glib-2.0 libxfixes gtk+"
-BASE_CONF = "--disable-gtk-doc ${@get_clutter_fpu_setting(bb, d)} --enable-conformance "
+BASE_CONF = "--disable-introspection --disable-gtk-doc ${@get_clutter_fpu_setting(bb, d)} --enable-conformance "
 
 DEPENDS = "${STDDEPENDS} virtual/libgl"
 EXTRA_OECONF = "${BASE_CONF} --with-flavour=glx"
@@ -41,7 +41,7 @@ EXTRA_OECONF_mx31ads = "${BASE_CONF} --with-flavour=eglnative"
 PACKAGE_ARCH_mx31ads = "${MACHINE_ARCH}"
 LDFLAGS_append_mx31ads = " -lpvrNULLWSEGL -lstdc++ "
 
-INC_PR = "r2"
+INC_PR = "r3"
 
 inherit autotools pkgconfig gtk-doc
 
