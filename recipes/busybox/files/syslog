@@ -5,8 +5,8 @@
 #               Configuration file added by <bruno.randolf@4g-systems.biz>
 set -e
 
-if [ -f /etc/default/syslog ]; then
-	. /etc/default/syslog
+if [ -f /etc/default/busybox-syslog ]; then
+	. /etc/default/busybox-syslog
 	LOG_LOCAL=0
 	LOG_REMOTE=0
 	for D in $DESTINATION; do
