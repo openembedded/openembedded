@@ -59,6 +59,9 @@ def get_git_pkgv(d, use_tags):
 
 			gitsrcname = '%s%s' % (host, path.replace('/', '.'))
 			repodir = os.path.join(bb.data.expand('${GITDIR}', d), gitsrcname)
+			if not os.path.exists(repodir):
+				return None
+
 			rev = bb.fetch.get_srcrev(d).split('+')[1]
 
 			cwd = os.getcwd()
