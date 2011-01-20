@@ -2,12 +2,14 @@ DESCRIPTION = "Clutter GTK+ integration library"
 HOMEPAGE = "http://www.clutter-project.org/"
 LICENSE = "LGPLv2.1"
 
-INC_PR = "r1"
+INC_PR = "r2"
 
 DEPENDS = "gtk+ clutter"
 require clutter-common.inc
 
 inherit autotools pkgconfig gtk-doc
+
+EXTRA_OECONF = "--disable-introspection"
 
 do_configure_prepend() {
 	make_all_execs_installable
