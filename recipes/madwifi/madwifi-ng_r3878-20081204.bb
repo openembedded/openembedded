@@ -5,16 +5,12 @@
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_slugos = "1"
 
-# Disable stripping of kernel modules, since this action strips too
-# much out, and the resulting module won't load.
-PACKAGE_STRIP = "no"
-
 require madwifi-ng_r.inc
 
 SRCNAME = "madwifi-trunk"
 
 # PR set after the include, to override what's set in the included file.
-PR = "r1"
+PR = "${INC_PR}.0"
 
 # It's not clear that we even need the wackelf patches any longer; certainly
 # they are not required for ixp4xx builds.  This needs testing on pxa270.

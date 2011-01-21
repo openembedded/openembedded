@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 RDEPENDS_${PN} = "kernel (${KERNEL_VERSION})"
 DEPENDS = "virtual/kernel"
-PR = "r7"
+INC_PR = "r7"
 
 WACKELF_SRC_URI = ""
 WACKELF_SRC_URI_ixp4xx = " file://20-xscale-VFP-wackelf.patch"
@@ -35,20 +35,19 @@ EXTRA_OEMAKE_prepend_ixp4xxle = "TARGET=xscale-le-elf "
 EXTRA_OEMAKE_prepend_ixp4xxbe = "TARGET=xscale-be-elf "
 
 do_compile() {
-	oe_runmake all
-}
-
-do_stage() {
-	install -d ${STAGING_INCDIR}/${PN}/include
-	install -d ${STAGING_INCDIR}/${PN}/net80211
-	cp --dereference include/compat.h ${STAGING_INCDIR}/${PN}/include/
-	cp --dereference net80211/*.h ${STAGING_INCDIR}/${PN}/net80211/
+	oe_runmake tools
+	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
+	oe_runmake modules
 }
 
 do_install() {
-	install -d ${D}${sbindir}
-	unset LDFLAGS
-	oe_runmake DESTDIR=${D} BINDIR=${sbindir} install
+	oe_runmake DESTDIR=${D} BINDIR=${sbindir} MANDIR=${mandir} install-tools
+	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
+	oe_runmake DESTDIR=${D} BINDIR=${sbindir} MANDIR=${mandir} install-modules
+	install -d ${D}${includedir}/${PN}/include
+	install -m 644 include/compat.h ${D}${includedir}/${PN}/include
+	install -d ${D}${includedir}/${PN}/net80211
+	install -m 644 net80211/*.h ${D}${includedir}/${PN}/net80211
 }
 
 pkg_postinst() {
@@ -59,7 +58,7 @@ else
 fi
 }
 
-PACKAGES += "${PN}-modules ${PN}-tools"
+PACKAGES =+ "${PN}-modules ${PN}-tools"
 FILES_${PN}-modules = "/lib/modules/"
-FILES_${PN}-tools = "/usr/"
+FILES_${PN}-tools = "${sbindir}/*"
 
