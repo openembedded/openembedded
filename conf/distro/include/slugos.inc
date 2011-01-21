@@ -123,17 +123,6 @@ IGNORE_STRIP_ERRORS = ""
 # kernel, so there has to be a non-libc gcc to build the kernel!)
 
 # Virtuals:
-PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}gcc-initial	    = "gcc-cross-initial"
-PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}gcc-intermediate = "gcc-cross-intermediate"
-PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}gcc		    = "gcc-cross"
-PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}g++		    = "gcc-cross"
-
-# Set the preferred provider for a few toolchain-related items, otherwise
-# these may be selected from the external-toolchain instead.
-PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}binutils	    = "binutils-cross"
-PREFERRED_PROVIDER_virtual/arm-linux-binutils		    = "binutils-cross"
-PREFERRED_PROVIDER_virtual/armeb-linux-binutils		    = "binutils-cross"
-PREFERRED_PROVIDER_linux-libc-headers			    = "linux-libc-headers"
 
 # Select the appropriate x11 library provider.  The diet-x11 libraries are
 # much smaller, but may not be as current as the standard x11 libraries; by
