@@ -132,7 +132,7 @@ RDEPENDS_${PN} += "\
 	kernel \
 	base-files base-passwd netbase \
         busybox initscripts-slugos slugos-init \
-        update-modules udev \
+        update-modules ${IMAGE_DEV_MANAGER}  \
 	module-init-tools modutils-initscripts \
 	libgcc \
 	beep \
