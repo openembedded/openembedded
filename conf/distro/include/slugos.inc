@@ -36,6 +36,11 @@ DISTRO_FEATURES = "largefile ipv4 ipv6 nfs smbfs wifi ppp alsa bluetooth ext2 vf
 
 IMAGE_BASENAME = "${@['slugos${SITEINFO_ENDIANNESS}', 'ucslugc'][bb.data.getVar('TARGET_OS', d, 1) == 'linux-uclibceabi']}"
 
+# Define CACHE and DEPLOY_DIR so we could do multi-distro/multi-machine builds
+
+CACHE = "${TMPDIR}/cache/${LIBC}/${MACHINE}"
+DEPLOY_DIR ?= "${TMPDIR}/deploy/${LIBC}"
+
 # The following need not be set, the defaults should be adequate
 #USE_NLS = "no" or "yes"
 USE_NLS ?= "no"
