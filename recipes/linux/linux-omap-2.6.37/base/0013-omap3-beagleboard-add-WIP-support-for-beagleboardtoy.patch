@@ -1,4 +1,4 @@
-From 554ec2d3959b1cc942337b67560bfb9c7b91f645 Mon Sep 17 00:00:00 2001
+From f7d71be36165002251727019b1a03a19938bfa64 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@beagleboard.org>
 Date: Mon, 20 Dec 2010 11:57:56 +0100
 Subject: [PATCH 13/28] omap3: beagleboard: add WIP support for beagleboardtoys WL12xx board
@@ -7,11 +7,11 @@ Based on a patch by Luciano Coelho <luciano.coelho@nokia.com>
 
 Signed-off-by: Koen Kooi <koen@beagleboard.org>
 ---
- arch/arm/mach-omap2/board-omap3beagle.c |   76 +++++++++++++++++++++++++++++++
- 1 files changed, 76 insertions(+), 0 deletions(-)
+ arch/arm/mach-omap2/board-omap3beagle.c |   84 ++++++++++++++++++++++++++++++-
+ 1 files changed, 83 insertions(+), 1 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index 64a181e..f6c8152 100644
+index 64a181e..59b26da 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -146,6 +146,67 @@ fail0:
@@ -37,12 +37,12 @@ index 64a181e..f6c8152 100644
 + 		.gpio_wp	= 29,
 + 	},
 +	{
-+		.name           = "wl1271",
-+		.mmc            = 2,
-+		.caps		= MMC_CAP_4_BIT_DATA,
-+		.gpio_wp        = -EINVAL,
-+		.gpio_cd        = -EINVAL,
-+		.nonremovable   = true,
++		.name		= "wl1271",
++		.mmc		= 2,
++		.caps		= MMC_CAP_4_BIT_DATA | MMC_CAP_POWER_OFF_CARD,
++		.gpio_wp	= -EINVAL,
++		.gpio_cd	= -EINVAL,
++		.nonremovable	= true,
 +	},
 + 	{}	/* Terminator */
 + };
@@ -82,22 +82,33 @@ index 64a181e..f6c8152 100644
  #if defined(CONFIG_ENC28J60) || defined(CONFIG_ENC28J60_MODULE)
  
  #include <plat/mcspi.h>
-@@ -384,7 +445,14 @@ static int beagle_twl_gpio_setup(struct device *dev,
+@@ -384,11 +445,24 @@ static int beagle_twl_gpio_setup(struct device *dev,
  	}
  	/* gpio + 0 is "mmc0_cd" (input/IRQ) */
  	mmc[0].gpio_cd = gpio + 0;
 +#if defined(CONFIG_WL1271) || defined(CONFIG_WL1271_MODULE)
-+	if(!strcmp(expansionboard_name, "fixme-beagletoy")) 
++	if(!strcmp(expansionboard_name, "fixme-beagletoy")) { 
 +		omap2_hsmmc_init(mmcbbt);
-+	else
++		/* link regulators to MMC adapters */
++		beagle_vmmc1_supply.dev = mmcbbt[0].dev;
++		beagle_vsim_supply.dev = mmcbbt[0].dev;
++	} else {
 +		omap2_hsmmc_init(mmc);
++		/* link regulators to MMC adapters */
++		beagle_vmmc1_supply.dev = mmc[0].dev;
++		beagle_vsim_supply.dev = mmc[0].dev;
++	}
 +#else
  	omap2_hsmmc_init(mmc);
-+#endif
- 
+-
  	/* link regulators to MMC adapters */
  	beagle_vmmc1_supply.dev = mmc[0].dev;
-@@ -788,6 +856,14 @@ static void __init omap3_beagle_init(void)
+ 	beagle_vsim_supply.dev = mmc[0].dev;
++#endif
+ 
+ 	/* REVISIT: need ehci-omap hooks for external VBUS
+ 	 * power switch and overcurrent detect
+@@ -788,6 +862,14 @@ static void __init omap3_beagle_init(void)
  		gpio_export(162, 1);
  	}
  

@@ -1,0 +1,165 @@
+From 99d1c6c23faa446ec0ebdf056d8aa8f4d983d518 Mon Sep 17 00:00:00 2001
+From: Shahar Levi <shahar_levi@ti.com>
+Date: Wed, 13 Oct 2010 16:09:39 +0200
+Subject: [PATCH 02/15] wl1271: 11n Support, Add Definitions
+
+Two acx commands: ht_capabilities & ht_information, 11n sta capabilities
+macro.
+
+Signed-off-by: Shahar Levi <shahar_levi@ti.com>
+Reviewed-by: Luciano Coelho <luciano.coelho@nokia.com>
+Signed-off-by: Luciano Coelho <luciano.coelho@nokia.com>
+---
+ drivers/net/wireless/wl12xx/wl1271.h      |   11 ++++-
+ drivers/net/wireless/wl12xx/wl1271_acx.h  |   81 +++++++++++++++++++++++++++++
+ drivers/net/wireless/wl12xx/wl1271_main.c |   15 +++++
+ 3 files changed, 106 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/net/wireless/wl12xx/wl1271.h b/drivers/net/wireless/wl12xx/wl1271.h
+index 8a4cd76..45a2583 100644
+--- a/drivers/net/wireless/wl12xx/wl1271.h
++++ b/drivers/net/wireless/wl12xx/wl1271.h
+@@ -432,7 +432,12 @@ struct wl1271 {
+ 	/* Our association ID */
+ 	u16 aid;
+ 
+-	/* currently configured rate set */
++	/*
++	 * currently configured rate set:
++	 *	bits  0-15 - 802.11abg rates
++	 *	bits 16-23 - 802.11n   MCS index mask
++	 * support only 1 stream, thus only 8 bits for the MCS rates (0-7).
++	 */
+ 	u32 sta_rate_set;
+ 	u32 basic_rate_set;
+ 	u32 basic_rate;
+@@ -509,4 +514,8 @@ int wl1271_plt_stop(struct wl1271 *wl);
+ #define WL1271_PRE_POWER_ON_SLEEP 20 /* in miliseconds */
+ #define WL1271_POWER_ON_SLEEP 200 /* in miliseconds */
+ 
++/* Macros to handle wl1271.sta_rate_set */
++#define HW_BG_RATES_MASK	0xffff
++#define HW_HT_RATES_OFFSET	16
++
+ #endif
+diff --git a/drivers/net/wireless/wl12xx/wl1271_acx.h b/drivers/net/wireless/wl12xx/wl1271_acx.h
+index ebb341d..f090a04 100644
+--- a/drivers/net/wireless/wl12xx/wl1271_acx.h
++++ b/drivers/net/wireless/wl12xx/wl1271_acx.h
+@@ -964,6 +964,87 @@ struct wl1271_acx_rssi_snr_avg_weights {
+ 	u8 snr_data;
+ };
+ 
++/*
++ * ACX_PEER_HT_CAP
++ * Configure HT capabilities - declare the capabilities of the peer
++ * we are connected to.
++ */
++struct wl1271_acx_ht_capabilities {
++	struct acx_header header;
++
++	/*
++	 * bit 0 - Allow HT Operation
++	 * bit 1 - Allow Greenfield format in TX
++	 * bit 2 - Allow Short GI in TX
++	 * bit 3 - Allow L-SIG TXOP Protection in TX
++	 * bit 4 - Allow HT Control fields in TX.
++	 *         Note, driver will still leave space for HT control in packets
++	 *         regardless of the value of this field. FW will be responsible
++	 *         to drop the HT field from any frame when this Bit set to 0.
++	 * bit 5 - Allow RD initiation in TXOP. FW is allowed to initate RD.
++	 *         Exact policy setting for this feature is TBD.
++	 *         Note, this bit can only be set to 1 if bit 3 is set to 1.
++	 */
++	__le32 ht_capabilites;
++
++	/*
++	 * Indicates to which peer these capabilities apply.
++	 * For infrastructure use ff:ff:ff:ff:ff:ff that indicates relevance
++	 * for all peers.
++	 * Only valid for IBSS/DLS operation.
++	 */
++	u8 mac_address[ETH_ALEN];
++
++	/*
++	 * This the maximum A-MPDU length supported by the AP. The FW may not
++	 * exceed this length when sending A-MPDUs
++	 */
++	u8 ampdu_max_length;
++
++	/* This is the minimal spacing required when sending A-MPDUs to the AP*/
++	u8 ampdu_min_spacing;
++} __packed;
++
++/* HT Capabilites Fw Bit Mask Mapping */
++#define WL1271_ACX_FW_CAP_HT_OPERATION                 BIT(0)
++#define WL1271_ACX_FW_CAP_GREENFIELD_FRAME_FORMAT      BIT(1)
++#define WL1271_ACX_FW_CAP_SHORT_GI_FOR_20MHZ_PACKETS   BIT(2)
++#define WL1271_ACX_FW_CAP_LSIG_TXOP_PROTECTION         BIT(3)
++#define WL1271_ACX_FW_CAP_HT_CONTROL_FIELDS            BIT(4)
++#define WL1271_ACX_FW_CAP_RD_INITIATION                BIT(5)
++
++
++/*
++ * ACX_HT_BSS_OPERATION
++ * Configure HT capabilities - AP rules for behavior in the BSS.
++ */
++struct wl1271_acx_ht_information {
++	struct acx_header header;
++
++	/* Values: 0 - RIFS not allowed, 1 - RIFS allowed */
++	u8 rifs_mode;
++
++	/* Values: 0 - 3 like in spec */
++	u8 ht_protection;
++
++	/* Values: 0 - GF protection not required, 1 - GF protection required */
++	u8 gf_protection;
++
++	/*Values: 0 - TX Burst limit not required, 1 - TX Burst Limit required*/
++	u8 ht_tx_burst_limit;
++
++	/*
++	 * Values: 0 - Dual CTS protection not required,
++	 *         1 - Dual CTS Protection required
++	 * Note: When this value is set to 1 FW will protect all TXOP with RTS
++	 * frame and will not use CTS-to-self regardless of the value of the
++	 * ACX_CTS_PROTECTION information element
++	 */
++	u8 dual_cts_protection;
++
++	u8 padding[3];
++} __packed;
++
+ struct wl1271_acx_fw_tsf_information {
+ 	struct acx_header header;
+ 
+diff --git a/drivers/net/wireless/wl12xx/wl1271_main.c b/drivers/net/wireless/wl12xx/wl1271_main.c
+index 591de0e..785b73c 100644
+--- a/drivers/net/wireless/wl12xx/wl1271_main.c
++++ b/drivers/net/wireless/wl12xx/wl1271_main.c
+@@ -2134,6 +2134,21 @@ static const u8 wl1271_rate_to_idx_2ghz[] = {
+ 	0                              /* CONF_HW_RXTX_RATE_1    */
+ };
+ 
++/* 11n STA capabilities */
++#define HW_RX_HIGHEST_RATE	72
++
++#define WL1271_HT_CAP { \
++	.cap = IEEE80211_HT_CAP_GRN_FLD | IEEE80211_HT_CAP_SGI_20, \
++	.ht_supported = true, \
++	.ampdu_factor = IEEE80211_HT_MAX_AMPDU_8K, \
++	.ampdu_density = IEEE80211_HT_MPDU_DENSITY_8, \
++	.mcs = { \
++		.rx_mask = { 0xff, 0, 0, 0, 0, 0, 0, 0, 0, 0, }, \
++		.rx_highest = cpu_to_le16(HW_RX_HIGHEST_RATE), \
++		.tx_params = IEEE80211_HT_MCS_TX_DEFINED, \
++		}, \
++}
++
+ /* can't be const, mac80211 writes to this */
+ static struct ieee80211_supported_band wl1271_band_2ghz = {
+ 	.channels = wl1271_channels,
+-- 
+1.6.6.1
+

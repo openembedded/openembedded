@@ -1,0 +1,249 @@
+From 9685ab91494ae35d2cb7e0033c5ee1bf3cdf0c64 Mon Sep 17 00:00:00 2001
+From: Shahar Levi <shahar_levi@ti.com>
+Date: Wed, 13 Oct 2010 16:09:41 +0200
+Subject: [PATCH 04/15] wl1271: 11n Support, functionality and configuration ability
+
+Add 11n ability in scan, connection and using MCS rates.
+The configuration is temporary due to the code incomplete and
+still in testing process. That plans to be remove in the future.
+
+Signed-off-by: Shahar Levi <shahar_levi@ti.com>
+Reviewed-by: Luciano Coelho <luciano.coelho@nokia.com>
+Signed-off-by: Luciano Coelho <luciano.coelho@nokia.com>
+---
+ drivers/net/wireless/wl12xx/Kconfig       |   10 +++
+ drivers/net/wireless/wl12xx/wl1271_main.c |   96 +++++++++++++++++++++++------
+ drivers/net/wireless/wl12xx/wl1271_rx.c   |    6 ++
+ drivers/net/wireless/wl12xx/wl1271_tx.c   |   11 +++
+ 4 files changed, 105 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/net/wireless/wl12xx/Kconfig b/drivers/net/wireless/wl12xx/Kconfig
+index b447559..1b3b7bd 100644
+--- a/drivers/net/wireless/wl12xx/Kconfig
++++ b/drivers/net/wireless/wl12xx/Kconfig
+@@ -18,6 +18,16 @@ config WL1271
+ 	  If you choose to build a module, it'll be called wl1271. Say N if
+ 	  unsure.
+ 
++config WL1271_HT
++        bool "TI wl1271 802.11 HT support (EXPERIMENTAL)"
++        depends on WL1271 && EXPERIMENTAL
++        default n
++        ---help---
++          This will enable 802.11 HT support for TI wl1271 chipset.
++
++	  That configuration is temporary due to the code incomplete and
++	  still in testing process.
++
+ config WL1271_SPI
+ 	tristate "TI wl1271 SPI support"
+ 	depends on WL1271 && SPI_MASTER
+diff --git a/drivers/net/wireless/wl12xx/wl1271_main.c b/drivers/net/wireless/wl12xx/wl1271_main.c
+index 785b73c..49ec0ef 100644
+--- a/drivers/net/wireless/wl12xx/wl1271_main.c
++++ b/drivers/net/wireless/wl12xx/wl1271_main.c
+@@ -851,12 +851,32 @@ static int wl1271_op_tx(struct ieee80211_hw *hw, struct sk_buff *skb)
+ 	struct ieee80211_sta *sta = txinfo->control.sta;
+ 	unsigned long flags;
+ 
+-	/* peek into the rates configured in the STA entry */
++	/*
++	 * peek into the rates configured in the STA entry.
++	 * The rates set after connection stage, The first block only BG sets:
++	 * the compare is for bit 0-16 of sta_rate_set. The second block add
++	 * HT rates in case of HT supported.
++	 */
+ 	spin_lock_irqsave(&wl->wl_lock, flags);
+-	if (sta && sta->supp_rates[conf->channel->band] != wl->sta_rate_set) {
++	if (sta &&
++	    (sta->supp_rates[conf->channel->band] !=
++	    (wl->sta_rate_set & HW_BG_RATES_MASK))) {
+ 		wl->sta_rate_set = sta->supp_rates[conf->channel->band];
+ 		set_bit(WL1271_FLAG_STA_RATES_CHANGED, &wl->flags);
+ 	}
++
++#ifdef CONFIG_WL1271_HT
++	if (sta &&
++	    sta->ht_cap.ht_supported &&
++	    ((wl->sta_rate_set >> HW_HT_RATES_OFFSET) !=
++	      sta->ht_cap.mcs.rx_mask[0])) {
++		/* Clean MCS bits before setting them */
++		wl->sta_rate_set &= HW_BG_RATES_MASK;
++		wl->sta_rate_set |=
++			(sta->ht_cap.mcs.rx_mask[0] << HW_HT_RATES_OFFSET);
++		set_bit(WL1271_FLAG_STA_RATES_CHANGED, &wl->flags);
++	}
++#endif
+ 	spin_unlock_irqrestore(&wl->wl_lock, flags);
+ 
+ 	/* queue the packet */
+@@ -1709,6 +1729,7 @@ static void wl1271_op_bss_info_changed(struct ieee80211_hw *hw,
+ {
+ 	enum wl1271_cmd_ps_mode mode;
+ 	struct wl1271 *wl = hw->priv;
++	struct ieee80211_sta *sta = ieee80211_find_sta(vif, bss_conf->bssid);
+ 	bool do_join = false;
+ 	bool set_assoc = false;
+ 	int ret;
+@@ -1927,6 +1948,37 @@ static void wl1271_op_bss_info_changed(struct ieee80211_hw *hw,
+ 		}
+ 	}
+ 
++	/*
++	 * Takes care of: New association with HT enable,
++	 *                HT information change in beacon.
++	 */
++	if (sta &&
++	    (changed & BSS_CHANGED_HT) &&
++	    (bss_conf->channel_type != NL80211_CHAN_NO_HT)) {
++		ret = wl1271_acx_set_ht_capabilities(wl, &sta->ht_cap, true);
++		if (ret < 0) {
++			wl1271_warning("Set ht cap true failed %d", ret);
++			goto out_sleep;
++		}
++			ret = wl1271_acx_set_ht_information(wl,
++				bss_conf->ht_operation_mode);
++		if (ret < 0) {
++			wl1271_warning("Set ht information failed %d", ret);
++			goto out_sleep;
++		}
++	}
++	/*
++	 * Takes care of: New association without HT,
++	 *                Disassociation.
++	 */
++	else if (sta && (changed & BSS_CHANGED_ASSOC)) {
++		ret = wl1271_acx_set_ht_capabilities(wl, &sta->ht_cap, false);
++		if (ret < 0) {
++			wl1271_warning("Set ht cap false failed %d", ret);
++			goto out_sleep;
++		}
++	}
++
+ 	if (changed & BSS_CHANGED_ARP_FILTER) {
+ 		__be32 addr = bss_conf->arp_addr_list[0];
+ 		WARN_ON(wl->bss_type != BSS_TYPE_STA_BSS);
+@@ -2107,14 +2159,14 @@ static struct ieee80211_channel wl1271_channels[] = {
+ /* mapping to indexes for wl1271_rates */
+ static const u8 wl1271_rate_to_idx_2ghz[] = {
+ 	/* MCS rates are used only with 11n */
+-	CONF_HW_RXTX_RATE_UNSUPPORTED, /* CONF_HW_RXTX_RATE_MCS7 */
+-	CONF_HW_RXTX_RATE_UNSUPPORTED, /* CONF_HW_RXTX_RATE_MCS6 */
+-	CONF_HW_RXTX_RATE_UNSUPPORTED, /* CONF_HW_RXTX_RATE_MCS5 */
+-	CONF_HW_RXTX_RATE_UNSUPPORTED, /* CONF_HW_RXTX_RATE_MCS4 */
+-	CONF_HW_RXTX_RATE_UNSUPPORTED, /* CONF_HW_RXTX_RATE_MCS3 */
+-	CONF_HW_RXTX_RATE_UNSUPPORTED, /* CONF_HW_RXTX_RATE_MCS2 */
+-	CONF_HW_RXTX_RATE_UNSUPPORTED, /* CONF_HW_RXTX_RATE_MCS1 */
+-	CONF_HW_RXTX_RATE_UNSUPPORTED, /* CONF_HW_RXTX_RATE_MCS0 */
++	7,                            /* CONF_HW_RXTX_RATE_MCS7 */
++	6,                            /* CONF_HW_RXTX_RATE_MCS6 */
++	5,                            /* CONF_HW_RXTX_RATE_MCS5 */
++	4,                            /* CONF_HW_RXTX_RATE_MCS4 */
++	3,                            /* CONF_HW_RXTX_RATE_MCS3 */
++	2,                            /* CONF_HW_RXTX_RATE_MCS2 */
++	1,                            /* CONF_HW_RXTX_RATE_MCS1 */
++	0,                            /* CONF_HW_RXTX_RATE_MCS0 */
+ 
+ 	11,                            /* CONF_HW_RXTX_RATE_54   */
+ 	10,                            /* CONF_HW_RXTX_RATE_48   */
+@@ -2137,6 +2189,7 @@ static const u8 wl1271_rate_to_idx_2ghz[] = {
+ /* 11n STA capabilities */
+ #define HW_RX_HIGHEST_RATE	72
+ 
++#ifdef CONFIG_WL1271_HT
+ #define WL1271_HT_CAP { \
+ 	.cap = IEEE80211_HT_CAP_GRN_FLD | IEEE80211_HT_CAP_SGI_20, \
+ 	.ht_supported = true, \
+@@ -2148,6 +2201,11 @@ static const u8 wl1271_rate_to_idx_2ghz[] = {
+ 		.tx_params = IEEE80211_HT_MCS_TX_DEFINED, \
+ 		}, \
+ }
++#else
++#define WL1271_HT_CAP { \
++	.ht_supported = false, \
++}
++#endif
+ 
+ /* can't be const, mac80211 writes to this */
+ static struct ieee80211_supported_band wl1271_band_2ghz = {
+@@ -2155,6 +2213,7 @@ static struct ieee80211_supported_band wl1271_band_2ghz = {
+ 	.n_channels = ARRAY_SIZE(wl1271_channels),
+ 	.bitrates = wl1271_rates,
+ 	.n_bitrates = ARRAY_SIZE(wl1271_rates),
++	.ht_cap	= WL1271_HT_CAP,
+ };
+ 
+ /* 5 GHz data rates for WL1273 */
+@@ -2237,14 +2296,14 @@ static struct ieee80211_channel wl1271_channels_5ghz[] = {
+ /* mapping to indexes for wl1271_rates_5ghz */
+ static const u8 wl1271_rate_to_idx_5ghz[] = {
+ 	/* MCS rates are used only with 11n */
+-	CONF_HW_RXTX_RATE_UNSUPPORTED, /* CONF_HW_RXTX_RATE_MCS7 */
+-	CONF_HW_RXTX_RATE_UNSUPPORTED, /* CONF_HW_RXTX_RATE_MCS6 */
+-	CONF_HW_RXTX_RATE_UNSUPPORTED, /* CONF_HW_RXTX_RATE_MCS5 */
+-	CONF_HW_RXTX_RATE_UNSUPPORTED, /* CONF_HW_RXTX_RATE_MCS4 */
+-	CONF_HW_RXTX_RATE_UNSUPPORTED, /* CONF_HW_RXTX_RATE_MCS3 */
+-	CONF_HW_RXTX_RATE_UNSUPPORTED, /* CONF_HW_RXTX_RATE_MCS2 */
+-	CONF_HW_RXTX_RATE_UNSUPPORTED, /* CONF_HW_RXTX_RATE_MCS1 */
+-	CONF_HW_RXTX_RATE_UNSUPPORTED, /* CONF_HW_RXTX_RATE_MCS0 */
++	7,                            /* CONF_HW_RXTX_RATE_MCS7 */
++	6,                            /* CONF_HW_RXTX_RATE_MCS6 */
++	5,                            /* CONF_HW_RXTX_RATE_MCS5 */
++	4,                            /* CONF_HW_RXTX_RATE_MCS4 */
++	3,                            /* CONF_HW_RXTX_RATE_MCS3 */
++	2,                            /* CONF_HW_RXTX_RATE_MCS2 */
++	1,                            /* CONF_HW_RXTX_RATE_MCS1 */
++	0,                            /* CONF_HW_RXTX_RATE_MCS0 */
+ 
+ 	7,                             /* CONF_HW_RXTX_RATE_54   */
+ 	6,                             /* CONF_HW_RXTX_RATE_48   */
+@@ -2269,6 +2328,7 @@ static struct ieee80211_supported_band wl1271_band_5ghz = {
+ 	.n_channels = ARRAY_SIZE(wl1271_channels_5ghz),
+ 	.bitrates = wl1271_rates_5ghz,
+ 	.n_bitrates = ARRAY_SIZE(wl1271_rates_5ghz),
++	.ht_cap	= WL1271_HT_CAP,
+ };
+ 
+ static const u8 *wl1271_band_rate_to_idx[] = {
+diff --git a/drivers/net/wireless/wl12xx/wl1271_rx.c b/drivers/net/wireless/wl12xx/wl1271_rx.c
+index bea133b..ac13f7d 100644
+--- a/drivers/net/wireless/wl12xx/wl1271_rx.c
++++ b/drivers/net/wireless/wl12xx/wl1271_rx.c
+@@ -53,6 +53,12 @@ static void wl1271_rx_status(struct wl1271 *wl,
+ 	status->band = wl->band;
+ 	status->rate_idx = wl1271_rate_to_idx(wl, desc->rate);
+ 
++#ifdef CONFIG_WL1271_HT
++	/* 11n support */
++	if (desc->rate <= CONF_HW_RXTX_RATE_MCS0)
++		status->flag |= RX_FLAG_HT;
++#endif
++
+ 	status->signal = desc->rssi;
+ 
+ 	/*
+diff --git a/drivers/net/wireless/wl12xx/wl1271_tx.c b/drivers/net/wireless/wl12xx/wl1271_tx.c
+index e3dc13c..6a87633 100644
+--- a/drivers/net/wireless/wl12xx/wl1271_tx.c
++++ b/drivers/net/wireless/wl12xx/wl1271_tx.c
+@@ -201,6 +201,17 @@ u32 wl1271_tx_enabled_rates_get(struct wl1271 *wl, u32 rate_set)
+ 		rate_set >>= 1;
+ 	}
+ 
++#ifdef CONFIG_WL1271_HT
++	/* MCS rates indication are on bits 16 - 23 */
++	rate_set >>= HW_HT_RATES_OFFSET - band->n_bitrates;
++
++	for (bit = 0; bit < 8; bit++) {
++		if (rate_set & 0x1)
++			enabled_rates |= (CONF_HW_BIT_RATE_MCS_0 << bit);
++		rate_set >>= 1;
++	}
++#endif
++
+ 	return enabled_rates;
+ }
+ 
+-- 
+1.6.6.1
+

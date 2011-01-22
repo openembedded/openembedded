@@ -1,0 +1,44 @@
+From 54b32b60bed66ac4ecf00279466496d9d4e80afa Mon Sep 17 00:00:00 2001
+From: Juuso Oikarinen <juuso.oikarinen@nokia.com>
+Date: Mon, 22 Nov 2010 12:59:08 +0200
+Subject: [PATCH 06/15] wl12xx: Unset bssid filter, ssid and bssid from firmware on disassoc
+
+On the disassociation event from the mac80211, the wl12xx driver does not
+clear the chipset configuration related to the AP - i.e. it does not perform
+a DISCONNECT and then a JOIN with zero SSID and dummy BSSID. Also, it does not
+unset the BSSID filter.
+
+Often this is not a problem, as the above is performed upon entering idle
+state. But if a scenario arises where a new association is attempted without
+cycling through idle state, the new association will fail.
+
+Fix this by resetting the firmware state on disassociation.
+
+Signed-off-by: Juuso Oikarinen <juuso.oikarinen@nokia.com>
+Reviewed-by: Luciano Coelho <luciano.coelho@nokia.com>
+Signed-off-by: Luciano Coelho <luciano.coelho@nokia.com>
+---
+ drivers/net/wireless/wl12xx/wl1271_main.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/net/wireless/wl12xx/wl1271_main.c b/drivers/net/wireless/wl12xx/wl1271_main.c
+index 78273c9..db97648 100644
+--- a/drivers/net/wireless/wl12xx/wl1271_main.c
++++ b/drivers/net/wireless/wl12xx/wl1271_main.c
+@@ -1919,9 +1919,12 @@ static void wl1271_op_bss_info_changed(struct ieee80211_hw *hw,
+ 
+ 			/* Disable the keep-alive feature */
+ 			ret = wl1271_acx_keep_alive_mode(wl, false);
+-
+ 			if (ret < 0)
+ 				goto out_sleep;
++
++			/* restore the bssid filter and go to dummy bssid */
++			wl1271_unjoin(wl);
++			wl1271_dummy_join(wl);
+ 		}
+ 
+ 	}
+-- 
+1.6.6.1
+
