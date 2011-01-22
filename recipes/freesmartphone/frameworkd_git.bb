@@ -6,7 +6,7 @@ DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
 SRCREV = "e31fa77906981a56be2271246693fd929c973abf"
 PV = "0.9.5.9+gitr${SRCPV}"
-PR = "r11"
+PR = "r12"
 PE = "1"
 
 inherit distutils update-rc.d python-dir
@@ -26,6 +26,7 @@ do_configure_append() {
 }
 
 do_install_append() {
+  install -d ${D}${sysconfdir}/freesmartphone/opim/
   frameworkd_install_machine_specific_configs
 }
 
