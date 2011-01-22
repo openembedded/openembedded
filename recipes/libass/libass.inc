@@ -10,7 +10,7 @@ SRC_URI = "http://${PN}.googlecode.com/files/${P}.tar.bz2"
 inherit autotools pkgconfig
 
 OE_EXTRACONF = " \
-  --enable-enca \
+	--enable-enca \
 	--enable-fontconfig \
 	--enable-png \
 "
@@ -18,5 +18,5 @@ OE_EXTRACONF = " \
 PACKAGES =+ "${PN}-tests"
 
 FILES_${PN}-tests = " \
-	${libdir}/test/test
+	${libdir}/test/test \
 "
