@@ -2,7 +2,7 @@ require mono.inc
 
 DEPENDS = "mono-native mono-mcs-intermediate glib-2.0 perl-native"
 
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 # mono makes use of non-thumb-compatible inline asm.
 ARM_INSTRUCTION_SET = "arm"
@@ -16,9 +16,7 @@ EXTRA_OECONF += " --disable-mcs-build "
 
 do_install_prepend() {
 	install -d ${D}
-	pushd ${D}
-	tar -xzf ${STAGING_DATADIR_NATIVE}/mono-mcs/mono-mcs-${PV}.tar.gz
-	popd
+	(cd ${D}; tar -xzf ${STAGING_DATADIR_NATIVE}/mono-mcs/mono-mcs-${PV}.tar.gz)
 }
 
 do_install_append() {
@@ -26,11 +24,10 @@ do_install_append() {
 	# however, jay is not being cross-compiled and thus only
 	# available for the buildhost architecture, so remove it
 	# entirely
-	pushd ${D}
+	(cd ${D};
 	rm -rf ./usr/share/man/man1/jay.1 ./usr/share/jay \
 	    ./usr/share/jay/README.jay \
-	    ./usr/bin/jay
-	popd
+	    ./usr/bin/jay)
 
 	# Not packaged with the default rules and apparently
 	# not used for anything
@@ -65,7 +62,7 @@ FILES_libmono-dbg =+ " /usr/lib/.debug/libmono*.so.* /usr/lib/.debug/libikvm-nat
 # Packages not included in Debian
 PACKAGES_prepend = "libnunit2.2-cil-dbg libnunit2.2-cil-dev libnunit2.2-cil \
 	libmono-cecil0.5-cil-dbg libmono-cecil0.5-cil-dev libmono-cecil0.5-cil \
-	libmono-db2-1.0-cil-dbg libmono-db2-1.0-cil-dev libmono-db2-1.0-cil"
+	libmono-db2-1.0-cil-dev"
 
 FILES_libnunit2.2-cil = "/usr/lib/mono/gac/nunit.*/2.2.* /usr/lib/mono/1.0/nunit.*.dll"
 FILES_libnunit2.2-cil-dev = "/usr/lib/pkgconfig/mono-nunit.pc"
