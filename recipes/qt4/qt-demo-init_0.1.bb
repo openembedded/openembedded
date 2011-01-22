@@ -1,7 +1,7 @@
 DESCRIPTION = "Init script for qtdemo"
 LICENSE = "MIT"
 SRC_URI = "file://qtdemo-init"
-PR = "r1"
+PR = "r2"
 
 PACKAGE_ARCH = "all"
 

@@ -3,7 +3,7 @@
 set -e
 
 if [ -f /usr/bin/qtdemo ]; then
-	QTDEMO="qtdemo > /var/log/Xsession.log 2>&1"
+	QTDEMO="qtdemo > /var/log/Xsession.log 2> &1"
 else
 	QTDEMO="qtdemoE -qws"
 fi
