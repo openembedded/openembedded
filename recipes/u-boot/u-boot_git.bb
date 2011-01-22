@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r69"
+PR ="r70"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -290,6 +290,7 @@ SRCREV_sequoa = "cf3b41e0c1111dbb865b6e34e9f3c3d3145a6093"
 SRC_URI_sequoia = "git://www.denx.de/git/u-boot.git;protocol=git;tag=cf3b41e0c1111dbb865b6e34e9f3c3d3145a6093 "
 
 SRC_URI_mini2440 = "git://repo.or.cz/u-boot-openmoko/mini2440.git;protocol=git;branch=dev-mini2440-stable"
+SRC_URI_mini2440 += "file://dont-inline-weak-symbols-mini2440.patch"
 SRCREV_mini2440 = "3516c35fb777ca959e5cadf2156a792ca10e1cff"
 
 SRC_URI_micro2440 = "git://repo.or.cz/u-boot-openmoko/mini2440.git;protocol=git;branch=dev-mini2440-stable"
