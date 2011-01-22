@@ -2,9 +2,9 @@ DESCRIPTION = "Ncurses library"
 HOMEPAGE = "http://www.gnu.org/software/ncurses/ncurses.html"
 LICENSE = "MIT"
 SECTION = "libs"
-PATCHDATE = "20100501"
+PATCHDATE = "20110115"
 PKGV = "${PV}+${PATCHDATE}"
-PR = "r15"
+PR = "r16"
 
 DEPENDS = "ncurses-native unifdef-native"
 DEPENDS_virtclass-native = "unifdef-native"
@@ -12,19 +12,19 @@ DEPENDS_virtclass-native = "unifdef-native"
 inherit autotools binconfig test
 
 SRC_URI = "${GNU_MIRROR}/ncurses/ncurses-${PV}.tar.gz;name=tarball \
-        ftp://invisible-island.net/ncurses/5.7/ncurses-5.7-20100424-patch.sh.bz2;apply=yes;name=p20100424sh \
+        ftp://invisible-island.net/ncurses/5.7/ncurses-5.7-20110108-patch.sh.bz2;apply=yes;name=p20110108sh \
 \
-        ftp://invisible-island.net/ncurses/5.7/ncurses-5.7-${PATCHDATE}.patch.gz;name=p20100501 \
+        ftp://invisible-island.net/ncurses/5.7/ncurses-5.7-${PATCHDATE}.patch.gz;name=p${PATCHDATE} \
         file://tic-hang.patch \
         file://config.cache \
 "
 
 SRC_URI[tarball.md5sum] = "cce05daf61a64501ef6cd8da1f727ec6"
 SRC_URI[tarball.sha256sum] = "0a9bdea5c7de8ded5c9327ed642915f2cc380753f12d4ad120ef7da3ea3498f4"
-SRC_URI[p20100424sh.md5sum] = "3a5f76613f0f7ec3e0e73b835bc24864"
-SRC_URI[p20100424sh.sha256sum] = "1e9d70d2d1fe1fea471868832c52f1b9cc6065132102e49e2a3755f2f4f5be53"
-SRC_URI[p20100501.md5sum] = "6518cfa5d45e9069a1e042468161448b"
-SRC_URI[p20100501.sha256sum] = "a97ccc30e4bd6fbb89564f3058db0fe84bd35cfefee831556c500793b477abde"
+SRC_URI[p20110108sh.md5sum] = "ccc7b56c5b4e99d40aa2d3bb7a08f4c6"
+SRC_URI[p20110108sh.sha256sum] = "814a23f0bf4e60ff177ee4dca82be0b94c81daa9dfb59a145e7213718d6f0d97"
+SRC_URI[p20110115.md5sum] = "811cd49a8666395092383f1d0bb66e05"
+SRC_URI[p20110115.sha256sum] = "1992e8149ba11cbabe6d699407de40cbdc49f61db76655d8a06ae0ac5229634e"
 
 PARALLEL_MAKE = ""
 EXTRA_AUTORECONF = "-I m4"
