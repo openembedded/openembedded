@@ -3,7 +3,7 @@
 require madwifi-ng_r.inc
 
 # PR set after the include, to override what's set in the included file.
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 # versions of OpenWrt backfire (10.03)
 HAL_VERSION = "20090508"
@@ -25,6 +25,7 @@ addtask postpatch after do_patch before do_configure
 do_postpatch() {
         rm -rf hal
         cp -a ${WORKDIR}/ath_hal-${HAL_VERSION} hal
+        rm -f ${WORKDIR}/patches/104-autocreate_none.patch
         rm -f ${WORKDIR}/patches/446-single_module.patch
         for i in ${WORKDIR}/patches/*.patch; do
                 oenote "Applying openwrt patch '$i'"
