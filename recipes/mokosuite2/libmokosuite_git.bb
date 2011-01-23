@@ -7,7 +7,7 @@ SECTION = "misc/utils"
 
 PV = "1.0.99+gitr${SRCPV}"
 PR = "r1"
-SRCREV = "5aaea316b963a103dad1f34196425d2759b54061"
+SRCREV = "e9928127713adc889c678ee11c42f4930deb7bb6"
 
 SRC_URI = "git://gitorious.org/mokosuite2/libmokosuite.git;protocol=git"
 S = "${WORKDIR}/git"

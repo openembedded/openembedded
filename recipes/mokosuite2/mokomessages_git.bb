@@ -6,7 +6,7 @@ DEPENDS = "libmokosuite libfreesmartphone-glib libphone-utils glib-2.0 dbus-glib
 SECTION = "misc/utils"
 
 PV = "1.0.99+gitr${SRCPV}"
-SRCREV = "3f6063472437623471d7133b2c5f097e94c39b5a"
+SRCREV = "33ffe5171ec2a7b46809247edaf62ca48c54871b"
 
 SRC_URI = "git://gitorious.org/mokosuite2/mokomessages.git;protocol=git"
 S = "${WORKDIR}/git"
