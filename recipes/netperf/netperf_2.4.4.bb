@@ -2,7 +2,7 @@ DESCRIPTION="Network performance benchmark including tests for TCP, UDP, sockets
 SECTION = "console/network"
 HOMEPAGE = "http://www.netperf.org/"
 LICENSE = "netperf"
-PR = "r2"
+PR = "r3"
 
 SRC_URI="ftp://ftp.netperf.org/netperf/archive/netperf-${PV}.tar.bz2 \
          file://cpu_set.patch \
