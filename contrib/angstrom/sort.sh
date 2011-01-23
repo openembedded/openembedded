@@ -100,7 +100,7 @@ case "$arch" in
 	"mips")
 			machines="qemumips" ;;
 	"mipsel")
-			machines="ben-nanonote db1200 lsmipsel mtx-1 mtx-2 qemumipsel rb500 stb225 wgt634u wl500g wrt54 xxs1500" ;;
+			machines="ben-nanonote db1200 lsmipsel mtx-1 mtx-2 qemumipsel rb500 stb225 wgt634u wl500g wrt54" ;;
 	"powerpc")
 			machines="gamecube p2020ds" ;;
 	"ppc405")
