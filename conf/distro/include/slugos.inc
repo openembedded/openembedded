@@ -39,7 +39,7 @@ IMAGE_BASENAME = "${@['slugos${SITEINFO_ENDIANNESS}', 'ucslugc'][bb.data.getVar(
 # Define CACHE and DEPLOY_DIR so we could do multi-distro/multi-machine builds
 
 CACHE = "${TMPDIR}/cache/${LIBC}/${MACHINE}"
-DEPLOY_DIR ?= "${TMPDIR}/deploy/${LIBC}"
+DEPLOY_DIR = "${TMPDIR}/deploy/${LIBC}"
 
 # The following need not be set, the defaults should be adequate
 #USE_NLS = "no" or "yes"
