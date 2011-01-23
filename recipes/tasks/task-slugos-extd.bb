@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the SlugOS Extended image"
-PR = "r1"
+PR = "r2"
 LICENSE = "MIT"
 
 inherit task
@@ -9,7 +9,7 @@ RNG_TOOLS_PACKAGE_libc-uclibc = ""
 
 RDEPENDS_${PN} = "\
   ${RNG_TOOLS_PACKAGE} \
-  kexec-tools \
+  kexec \
 "
 
 RRECOMMENDS_${PN} = "\
