@@ -17,9 +17,9 @@ IMAGE_INSTALL = "task-slugos"
 
 COMPATIBLE_MACHINE = "(nslu2|ixp4xx|sheevaplug|qemuarm)"
 
-IMAGE_NAME = "${IMAGE_BASENAME}-${DISTRO_VERSION}"
+IMAGE_NAME = "${IMAGE_BASENAME}-${DISTRO_VERSION}-${MACHINE}"
 IMAGE_LINK_NAME = "${IMAGE_BASENAME}-${MACHINE}"
-IMAGE_FSTYPES = "jffs2 tar.gz"
+IMAGE_FSTYPES = "jffs2 tar.gz ext2.gz"
 IMAGE_DEVICE_TABLES = "files/device_table-slugos.txt"
 IMAGE_LINGUAS = ""
 
