@@ -1,16 +1,17 @@
 DESCRIPTION = "Linux Kernel for Psion/Teklogix netbookpro  compatible machines"
 SECTION = "kernel"
 LICENSE = "GPLv2"
-PR = "r2"
+PR = "r3"
 
 COMPATIBLE_MACHINE = "netbook-pro"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.17.tar.bz2;name=kernel \
-	http://linuxtogo.org/~koen/netbook-base-r3.patch;name=patch1 \
-	http://linuxtogo.org/~koen/netbook-pcon-r0.patch;name=patch2 \
-	http://linuxtogo.org/~koen/netbook-pcon-i2c-r1.patch;name=patch3 \
-	http://linuxtogo.org/~koen/defconfig;name=config \
-		   "
+	http://www.linuxtogo.org/~koen/netbook-base-r3.patch;name=patch1 \
+	http://www.linuxtogo.org/~koen/netbook-pcon-r0.patch;name=patch2 \
+	http://www.linuxtogo.org/~koen/netbook-pcon-i2c-r1.patch;name=patch3 \
+	http://www.linuxtogo.org/~koen/defconfig;name=config \
+	file://sumversion-include-limit.h.patch \
+	"
 
 S = "${WORKDIR}/linux-2.6.17"
 

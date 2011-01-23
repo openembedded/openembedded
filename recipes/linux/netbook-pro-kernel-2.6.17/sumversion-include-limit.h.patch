@@ -1,0 +1,24 @@
+commit fc31c7716355a226b8ed4e16f4581e5c8fa53570
+Author: Mike Frysinger <vapier@gentoo.org>
+Date:   Thu May 17 14:57:20 2007 -0400
+
+    kbuild: include limits.h in sumversion.c for PATH_MAX
+    
+    POSIX says limits.h defines PATH_MAX so we should include it (which fixes
+    compiling on some systems like OS X).
+    
+    Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+    Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+
+Index: linux-2.6.17/scripts/mod/sumversion.c
+===================================================================
+--- linux-2.6.17.orig/scripts/mod/sumversion.c
++++ linux-2.6.17/scripts/mod/sumversion.c
+@@ -7,6 +7,7 @@
+ #include <ctype.h>
+ #include <errno.h>
+ #include <string.h>
++#include <limits.h>
+ #include "modpost.h"
+ 
+ /*
