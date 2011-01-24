@@ -1,10 +1,11 @@
 require busybox_1.1x.inc
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.3"
 
 SRC_URI += " \
 	http://busybox.net/downloads/fixes-1.18.2/busybox-1.18.2-modprobe-small.patch;name=patch01 \
 	http://busybox.net/downloads/fixes-1.18.2/busybox-1.18.2-buildsys.patch;name=patch02 \
 	http://busybox.net/downloads/fixes-1.18.2/busybox-1.18.2-hush.patch;name=patch03 \
+	http://busybox.net/downloads/fixes-1.18.2/busybox-1.18.2-wc.patch;name=patch04 \
 	"
 
 SRC_URI[md5sum] = "69a82091e5710b72db5ce0e14e7c0cd7"
@@ -15,3 +16,5 @@ SRC_URI[patch02.md5sum] = "c7ae920c8adb767fc35b3a8ca3ad7351"
 SRC_URI[patch02.sha256sum] = "d9398bc5e65b7eff261f20526b6e07d61bef64dd978c92e6317334bfaa135938"
 SRC_URI[patch03.md5sum] = "854045f4b713df759b49945550843acf"
 SRC_URI[patch03.sha256sum] = "b70c4406307942f38b2c8d94675b7ca7db8ba0351ae916f838d04856b5aad33f"
+SRC_URI[patch04.md5sum] = "4414f080287c22c9bbc42d1d70f488d4"
+SRC_URI[patch04.sha256sum] = "e2abd861538b586ef4a3439b68a2ef41db99b65e4a37c7442ffc8edfe67ae549"
