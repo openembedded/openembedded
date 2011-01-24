@@ -3,7 +3,6 @@
 # This recipe needs testing by other than ixp4xx distros before
 # it can become the default:
 DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_slugos = "1"
 
 require madwifi-ng_r.inc
 
