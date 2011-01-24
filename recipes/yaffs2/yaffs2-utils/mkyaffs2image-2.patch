@@ -1,0 +1,118 @@
+Sergey Kubushin (KSI) did a lot of hacks on mkyaffs2image.c, thanks
+for his big patch.
+
+But it still didn't work in my environment.  There was 2 problems:
+
+(1) In yaffs_mtdif2.c, spareBuffer is memcpy-ed to a struct
+yaffs_PackedTags2 directly, so here pt2_byte_buf must have the same
+layout of a struct yaffs_PackedTags2 in the nandmtd2_pt2buf function.
+Layout of struct yaffs_PackedTags2 on the target machine, possibly
+a 32-bit ARM, but not the host machine to run mkyaffs2image, maybe
+a 64-bit x86_64.
+
+(2) Original mkyaffs2image doesn't calculate ECC in the spare buffer.
+Maybe that's a bootloader's duty in the process flashing the image to
+Nand?  After all, the supervivi bootloader in Mini2440 board doesn't
+do that.  So I have to make ECC calculated correctly in the generated
+image.
+
+This patch should be applied after KSI's mkyaffs2image.patch.
+
+diff -purN yaffs2.orig/utils/mkyaffs2image.c yaffs2/utils/mkyaffs2image.c
+--- yaffs2.orig/utils/mkyaffs2image.c	2010-11-10 00:57:12.000000000 +0800
++++ yaffs2/utils/mkyaffs2image.c	2010-11-10 01:32:48.000000000 +0800
+@@ -41,7 +41,7 @@ unsigned yaffs_traceMask=0;
+ 
+ #define chunkSize 2048
+ #define spareSize 64
+-#define PT2_BYTES 25
++#define PT2_BYTES 28
+  
+ const char * mkyaffsimage_c_version = "$Id: mkyaffs2image.c,v 1.5 2010-01-11 21:43:18 charles Exp $";
+ 
+@@ -202,19 +202,34 @@ void nandmtd2_pt2buf(unsigned char *buf,
+ 	int		i, j = 0, k, n;
+ 	unsigned char	pt2_byte_buf[PT2_BYTES];
+ 	
+-	*((unsigned int *) &pt2_byte_buf[0]) = pt->t.sequenceNumber;
+-	*((unsigned int *) &pt2_byte_buf[4]) = pt->t.objectId;
+-	*((unsigned int *) &pt2_byte_buf[8]) = pt->t.chunkId;
+-	*((unsigned int *) &pt2_byte_buf[12]) = pt->t.byteCount;
++	pt2_byte_buf[0] = pt->t.sequenceNumber & 0xff;
++	pt2_byte_buf[1] = (pt->t.sequenceNumber >> 8) & 0xff;
++	pt2_byte_buf[2] = (pt->t.sequenceNumber >> 16) & 0xff;
++	pt2_byte_buf[3] = (pt->t.sequenceNumber >> 24) & 0xff;
++	pt2_byte_buf[4] = pt->t.objectId & 0xff;
++	pt2_byte_buf[5] = (pt->t.objectId >> 8) & 0xff;
++	pt2_byte_buf[6] = (pt->t.objectId >> 16) & 0xff;
++	pt2_byte_buf[7] = (pt->t.objectId >> 24) & 0xff;
++	pt2_byte_buf[8] = pt->t.chunkId & 0xff;
++	pt2_byte_buf[9] = (pt->t.chunkId >> 8) & 0xff;
++	pt2_byte_buf[10] = (pt->t.chunkId >> 16) & 0xff;
++	pt2_byte_buf[11] = (pt->t.chunkId >> 24) & 0xff;
++	pt2_byte_buf[12] = pt->t.byteCount & 0xff;
++	pt2_byte_buf[13] = (pt->t.byteCount >> 8) & 0xff;
++	pt2_byte_buf[14] = (pt->t.byteCount >> 16) & 0xff;
++	pt2_byte_buf[15] = (pt->t.byteCount >> 24) & 0xff;
+ 	pt2_byte_buf[16] = pt->ecc.colParity;
+-	pt2_byte_buf[17] = pt->ecc.lineParity & 0xff;
+-	pt2_byte_buf[18] = (pt->ecc.lineParity >> 8) & 0xff;
+-	pt2_byte_buf[19] = (pt->ecc.lineParity >> 16) & 0xff;
+-	pt2_byte_buf[20] = (pt->ecc.lineParity >> 24) & 0xff;
+-	pt2_byte_buf[21] = pt->ecc.lineParityPrime & 0xff;
+-	pt2_byte_buf[22] = (pt->ecc.lineParityPrime >> 8) & 0xff;
+-	pt2_byte_buf[23] = (pt->ecc.lineParityPrime >> 16) & 0xff;
+-	pt2_byte_buf[24] = (pt->ecc.lineParityPrime >> 24) & 0xff;
++	pt2_byte_buf[17] = 0;
++	pt2_byte_buf[18] = 0;
++	pt2_byte_buf[19] = 0;
++	pt2_byte_buf[20] = pt->ecc.lineParity & 0xff;
++	pt2_byte_buf[21] = (pt->ecc.lineParity >> 8) & 0xff;
++	pt2_byte_buf[22] = (pt->ecc.lineParity >> 16) & 0xff;
++	pt2_byte_buf[23] = (pt->ecc.lineParity >> 24) & 0xff;
++	pt2_byte_buf[24] = pt->ecc.lineParityPrime & 0xff;
++	pt2_byte_buf[25] = (pt->ecc.lineParityPrime >> 8) & 0xff;
++	pt2_byte_buf[26] = (pt->ecc.lineParityPrime >> 16) & 0xff;
++	pt2_byte_buf[27] = (pt->ecc.lineParityPrime >> 24) & 0xff;
+ 
+ 	k = oob_layout[layout_no].oobfree[j][0];
+ 	n = oob_layout[layout_no].oobfree[j][1];
+@@ -239,6 +254,30 @@ void nandmtd2_pt2buf(unsigned char *buf,
+ 	}
+ }
+ 
++static void nandmtd2_eccbuf(unsigned char *buf, const __u8 *data)
++{
++	unsigned char ecc[3];
++
++	int eccnum = chunkSize / 256;
++	__u32 *eccpos = oob_layout[layout_no].eccpos;
++	int i = 0;
++
++	if (eccnum * 3 != oob_layout[layout_no].eccbytes) {
++		fprintf(stderr, "Chunk size and number of ECC bytes in OOB mismatch");
++		exit(-1);
++	}
++
++	while (eccnum--) {
++		yaffs_ECCCalculate(data, ecc);
++
++		buf[eccpos[i++]] = ecc[0];
++		buf[eccpos[i++]] = ecc[1];
++		buf[eccpos[i++]] = ecc[2];
++
++		data += 256;
++	}
++}
++
+ static int write_chunk(__u8 *data, __u32 objId, __u32 chunkId, __u32 nBytes)
+ {
+ 	yaffs_ExtendedTags t;
+@@ -280,6 +319,7 @@ static int write_chunk(__u8 *data, __u32
+ 		memcpy(spare_buf, &pt, sizeof(yaffs_PackedTags2));
+ 	} else {
+ 		nandmtd2_pt2buf(spare_buf, &pt);
++		nandmtd2_eccbuf(spare_buf, data);
+ 	}
+ 
+ 	return write(outFile,spare_buf,spareSize);

@@ -3,11 +3,12 @@ SECTION = "base"
 HOMEPAGE = "http://www.yaffs.net"
 LICENSE = "GPLv2"
 PV = "0.0.0+cvs${SRCDATE}"
-PR = "r2"
+PR = "r3"
 DEPENDS = "mtd-utils"
 
 SRC_URI = "cvs://anonymous@cvs.aleph1.co.uk/home/aleph1/cvs;module=yaffs2 \
            file://mkyaffs2image.patch \
+           file://mkyaffs2image-2.patch \
 	   file://devextras.h.patch"
 
 S = "${WORKDIR}/yaffs2"
