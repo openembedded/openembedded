@@ -70,7 +70,7 @@ do_package_update_index_ipk[lockfiles] = "${DEPLOY_DIR_IPK}.lock"
 do_package_update_index_ipk[nostamp] = "1"
 do_package_update_index_ipk[recrdeptask] += "do_package_write_ipk"
 do_package_update_index_ipk[recrdeptask] += "do_package_write_ipk"
-do_package_update_index_ipk[depends] += "ipkg-utils-native:do_populate_sysroot"
+do_package_update_index_ipk[depends] += "opkg-utils-native:do_populate_sysroot"
 
 #
 # Update the Packages index files in ${DEPLOY_DIR_IPK}
@@ -315,7 +315,7 @@ python do_package_ipk () {
 python () {
     if bb.data.getVar('PACKAGES', d, True) != '':
         deps = (bb.data.getVarFlag('do_package_write_ipk', 'depends', d) or "").split()
-        deps.append('ipkg-utils-native:do_populate_sysroot')
+        deps.append('opkg-utils-native:do_populate_sysroot')
         deps.append('fakeroot-native:do_populate_sysroot')
         bb.data.setVarFlag('do_package_write_ipk', 'depends', " ".join(deps), d)
 }
