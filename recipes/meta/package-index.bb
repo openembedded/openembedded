@@ -1,6 +1,6 @@
 DESCRIPTION = "Rebuild the package index"
 LICENSE = "MIT"
-DEPENDS = "ipkg-utils-native"
+DEPENDS = "opkg-utils-native"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 

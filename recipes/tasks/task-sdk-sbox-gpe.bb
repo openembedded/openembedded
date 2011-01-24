@@ -11,7 +11,7 @@ RDEPENDS_${PN} = "\
     gdk-pixbuf-loader-xpm \
     intltool \
     intltool-dev \
-    ipkg-utils \
+    opkg-utils \
     gettext-dev \
     pkgconfig-dev \
     autoconf \

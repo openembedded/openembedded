@@ -1,6 +1,6 @@
 DESCRIPTION = "Meta package for building a installable toolchain"
 LICENSE = "MIT"
-DEPENDS = "opkg-native ipkg-utils-native fakeroot-native sed-native zip-native"
+DEPENDS = "opkg-native opkg-utils-native fakeroot-native sed-native zip-native"
 PR = "r5"
 
 # NOTE: We need to save and restore PACKAGE_ARCHS, because sdk.bbclass
