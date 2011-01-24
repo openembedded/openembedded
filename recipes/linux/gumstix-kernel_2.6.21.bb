@@ -51,6 +51,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
        file://smc91x-fail-if-no-chip.patch \
        file://one-wire.patch \
        ${@base_contains('MACHINE_FEATURES', 'rgb16','file://pxafb-backto16.patch', '',d)} \
+       file://sumversion-include-limit.h.patch \
        "
 
 do_configure_prepend() {
