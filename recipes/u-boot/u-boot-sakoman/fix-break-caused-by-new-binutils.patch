@@ -1,0 +1,31 @@
+Index: git/arch/arm/cpu/armv7/omap4/Makefile
+===================================================================
+--- git.orig/arch/arm/cpu/armv7/omap4/Makefile
++++ git/arch/arm/cpu/armv7/omap4/Makefile
+@@ -26,6 +26,8 @@ include $(TOPDIR)/config.mk
+ LIB	=  $(obj)lib$(SOC).o
+ 
+ SOBJS	+= lowlevel_init.o
++plus_sec := $(call as-instr,.arch_extension sec,+sec)
++lowlevel_init.o: AFLAGS += -Wa,-march=armv7-a$(plus_sec)
+ 
+ COBJS	+= board.o
+ COBJS	+= mem.o
+Index: git/config.mk
+===================================================================
+--- git.orig/config.mk
++++ git/config.mk
+@@ -266,3 +266,13 @@ cmd_link_o_target = $(if $(strip $1),\
+ 		      rm -f $@; $(AR) rcs $@ )
+ 
+ #########################################################################
++
++# Tries to compile an assembly instruction
++as-instr = $(shell if echo -e "$(1)" | \
++            $(CC) $(AFLAGS) -c -xassembler - \
++             -o $(TMPOUT)astest$$$$.out > /dev/null 2>&1; \
++         then rm $(TMPOUT)astest$$$$.out; echo "$(2)"; \
++         else echo "$(3)"; fi)
++
++#########################################################################
++
