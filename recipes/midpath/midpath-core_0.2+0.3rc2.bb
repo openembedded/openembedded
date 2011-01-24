@@ -1,17 +1,17 @@
 DESCRIPTION = "MIDPath is a Java library which provides a MIDP2 implementation"
 
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/midpath/midpath-0.3rc2.tar.gz \
-	   file://configuration.cfg \
-	   file://ui-colors.patch \
-	   file://sdl-fixes.patch"
+	   file://configuration.cfg"
 
 S = "${WORKDIR}/midpath-0.3rc2"
 
 require midpath-common.inc
 
 SRC_URI += "\
+  http://jlime.com/downloads/development/patches/sdl-fixes.patch;name=patch \
+  file://ui-colors.patch \
   file://fix-openfile.patch \
   file://hci_read_local_name.patch \
   file://midpath-suitemanager \
@@ -92,3 +92,6 @@ FILES_${PN} = "\
 
 SRC_URI[md5sum] = "d03cd88f51f82bbcfcfa5b65df0da5b0"
 SRC_URI[sha256sum] = "e235ca7470e7cdfb90e3806fbcc1b2c450db286276136a2523c7ae26a804a100"
+
+SRC_URI[patch.md5sum] = "31d8e20f9d89fd77e9c855bfefc58c22"
+SRC_URI[patch.sha256sum] = "5fadd05567ed95c4012ba1685344a34ee73c67016cfab43b0db5a1508f4c22da"
