@@ -15,5 +15,6 @@ do_compile () {
 do_install () {
 	cd gcc
 	oe_runmake 'DESTDIR=${D}' installdirs install-common install-headers install-libgcc
-	install -m 0755 xgcc ${D}${STAGING_DIR_NATIVE}${prefix_native}/bin/${TARGET_PREFIX}gcc-${PV}
+	install -d ${D}${STAGING_BINDIR}
+	install -m 0755 xgcc ${D}${STAGING_BINDIR}/${TARGET_PREFIX}gcc-${PV}
 }
