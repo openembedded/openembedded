@@ -66,7 +66,6 @@ PREFERRED_VERSION_samba		= "3.3.9"
 PREFERRED_VERSION_tiff 		= "3.9.4+4.0.0beta6"
 
 PREFERRED_VERSION_udev 		= "165"
-PREFERRED_VERSION_udev_libc-uclibc = "141"
 UDEV_GE_141 = "1"
 
 PREFERRED_VERSION_usbutils = "0.86"
