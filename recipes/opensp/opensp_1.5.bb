@@ -4,10 +4,12 @@ XML documents."
 HOMEPAGE = "http://openjade.sourceforge.net/"
 SECTION = "libs"
 LICENSE = "MIT"
-PR = "r2"
+PR = "r3"
 
-# sh4/gcc3.4.4 with -O2 triggers internal compiler errors
-FULL_OPTIMIZATION_sh4 = "-O1"
+# At Os it encounters calls to some inline functions which are them not found
+# in anyother objects with gcc 4.5
+
+FULL_OPTIMIZATION += "-O2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openjade/OpenSP-${PV}.tar.gz \
            file://m4.patch \
