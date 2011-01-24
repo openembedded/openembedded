@@ -46,15 +46,7 @@ do_configure () {
 	ln -sf apps/openssl.pod crypto/crypto.pod ssl/ssl.pod doc/
 
 	os=${HOST_OS}
-	if [ "x$os" = "xlinux-uclibc" ]; then
-		os=linux
-	elif [ "x$os" = "xlinux-uclibceabi" ]; then
-		os=linux
-	elif [ "x$os" = "xlinux-gnueabi" ]; then
-		os=linux
-	elif [ "x$os" = "xlinux-uclibcspe" ]; then
-		os=linux
-	elif [ "x$os" = "xlinux-gnuspe" ]; then
+	if [ `echo $os | grep -q linux; echo $?` -eq 0 ]; then
 		os=linux
 	fi
 	target="$os-${HOST_ARCH}"
