@@ -1,0 +1,26 @@
+From da58d36fb6b13899249bf1efbf25f7385d048bb3 Mon Sep 17 00:00:00 2001
+From: Tim Gardner <tim.gardner@canonical.com>
+Date: Tue, 14 Dec 2010 06:56:34 -0700
+Subject: [PATCH 2/2] Add AFLAGS for sleep44xx to fix FTBS
+
+Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+---
+ arch/arm/mach-omap2/Makefile |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/Makefile b/arch/arm/mach-omap2/Makefile
+index 0241b4d..865a3e2 100644
+--- a/arch/arm/mach-omap2/Makefile
++++ b/arch/arm/mach-omap2/Makefile
+@@ -59,6 +59,8 @@ obj-$(CONFIG_ARCH_OMAP4)		+= pm44xx.o pm_bus.o cpuidle44xx.o \
+ 					   omap4-mpuss-lowpower.o sleep44xx.o \
+ 					   voltage.o opp44xx_data.o
+ 
++AFLAGS_sleep44xx.o                  :=-Wa,-march=armv7-a$(plus_sec)
++
+ obj-$(CONFIG_PM_DEBUG)			+= pm-debug.o
+ obj-$(CONFIG_OMAP_SMARTREFLEX)          += sr_device.o smartreflex.o
+ obj-$(CONFIG_OMAP_SMARTREFLEX_CLASS3)	+= smartreflex-class3.o
+-- 
+1.7.0.2
+

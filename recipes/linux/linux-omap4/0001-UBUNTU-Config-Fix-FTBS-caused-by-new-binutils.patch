@@ -1,0 +1,38 @@
+From 7699704e011db864c56f333bce9936a36522fb79 Mon Sep 17 00:00:00 2001
+From: Tim Gardner <tim.gardner@canonical.com>
+Date: Thu, 9 Dec 2010 08:16:52 -0700
+Subject: [PATCH 1/2] UBUNTU: [Config] Fix FTBS caused by new binutils
+
+New assemblers need -march=armv7-a+sec on command line or
+.arch_extension sec inline to enable use of the smc instruction.
+
+This patch uses as-instr to check the latter to conditionally
+enable the former in AFLAGS for files that use smc.
+
+Checked on both old and new binutils to verify that it does
+not break old versions.
+
+Signed-off-by: John Rigby <john.rigby@linaro.org>
+Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+---
+ arch/arm/mach-omap2/Makefile |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/Makefile b/arch/arm/mach-omap2/Makefile
+index 75251b4..0241b4d 100644
+--- a/arch/arm/mach-omap2/Makefile
++++ b/arch/arm/mach-omap2/Makefile
+@@ -29,7 +29,9 @@ obj-$(CONFIG_HOTPLUG_CPU)		+= omap-hotplug.o
+ obj-$(CONFIG_ARCH_OMAP4)		+= omap44xx-smc.o omap4-common.o \
+ 					   omap4-wakeupgen.o
+ 
+-AFLAGS_omap44xx-smc.o			:=-Wa,-march=armv7-a
++plus_sec := $(call as-instr,.arch_extension sec,+sec)
++AFLAGS_omap-headsmp.o                  :=-Wa,-march=armv7-a$(plus_sec)
++AFLAGS_omap44xx-smc.o                  :=-Wa,-march=armv7-a$(plus_sec)
+ 
+ # Functions loaded to SRAM
+ obj-$(CONFIG_ARCH_OMAP2420)		+= sram242x.o
+-- 
+1.7.0.2
+
