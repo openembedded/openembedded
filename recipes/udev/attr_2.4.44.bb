@@ -13,7 +13,8 @@ EXTRA_OECONF = " --enable-gettext=yes \
 		 PLATFORM="linux" \
 		"
 
-LDFLAGS_append_libc-uclibc += " -lintl"
+# Only append ldflags for target recipe
+LDFLAGS_libc-uclibc += "${@['', '-lintl']['${PN}' == '${BPN}']}"
 
 TOPDIR[unexport] = "1"
 
