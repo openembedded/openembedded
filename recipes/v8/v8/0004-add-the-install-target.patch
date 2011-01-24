@@ -1,0 +1,39 @@
+--- trunk/SConstruct.orig	2010-11-20 21:41:59.000000000 +0000
++++ trunk/SConstruct	2010-11-20 21:45:56.000000000 +0000
+@@ -665,6 +665,7 @@
+   result.Add('mode', 'compilation mode (debug, release)', 'release')
+   result.Add('sample', 'build sample (shell, process)', '')
+   result.Add('env', 'override environment settings (NAME0:value0,NAME1:value1,...)', '')
++  result.Add('install', 'install result files', '')
+   result.Add('importenv', 'import environment settings (NAME0,NAME1,...)', '')
+   for (name, option) in SIMPLE_OPTIONS.iteritems():
+     help = '%s (%s)' % (name, ", ".join(option['values']))
+@@ -997,8 +998,28 @@
+   env.Alias('sample', samples)
+   env.Alias('d8', d8s)
+ 
++  install_dirs = []
++  destdir = ARGUMENTS.get('DESTDIR', '')
++  prefix = ARGUMENTS.get('PREFIX', '/usr')
++  libdir = [ destdir + prefix + '/lib/' ]
++  incdir = [ destdir + prefix + '/include/' ]
++  for lib in libraries:
++    env.Install(libdir, lib[0])
++    if dir not in install_dirs:
++      install_dirs += libdir
++  for include in [ 'include/v8.h', 'include/v8-debug.h' ]:
++    env.Install(incdir, include);
++  install_dirs += incdir
++  env.Alias('install', install_dirs)
++
++  # Always build at least the library
++  env.Default('library')
++
+   if env['sample']:
+     env.Default('sample')
++  elif env['install']:
++    env.Default('install')
++
+   else:
+     env.Default('library')
+ 

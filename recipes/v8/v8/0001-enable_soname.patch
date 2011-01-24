@@ -1,0 +1,13 @@
+patch to enable the soname that is not automatically shipped with SConstruct
+
+--- a/src/version.cc
++++ b/src/version.cc
+@@ -41,7 +41,7 @@
+ // Define SONAME to have the SCons build the put a specific SONAME into the
+ // shared library instead the generic SONAME generated from the V8 version
+ // number. This define is mainly used by the SCons build script.
+-#define SONAME            ""
++#define SONAME            "libv8.so.2.2.24"
+ 
+ namespace v8 {
+ namespace internal {
