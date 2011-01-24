@@ -141,9 +141,6 @@ PREFERRED_PROVIDER_virtual/libx11-native        ?= "libx11-native"
 PREFERRED_PROVIDER_virtual/db			= "db"
 PREFERRED_PROVIDER_virtual/db-native		= "db-native"
 
-SRCDATE_ipkg-utils				?= "20060106"
-SRCDATE_ipkg-utils-native			?= "20060106"
-SRCDATE_ipkg-link				?= "20060106"
 SRCDATE_irssi					?= "20050930"
 
 # We want the newer util-linux package
