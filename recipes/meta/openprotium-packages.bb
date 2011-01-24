@@ -106,7 +106,7 @@ OPENPROTIUM_PACKAGES = "\
 	gzip \
 	hdparm \
 	ifupdown \
-	ipkg-utils \
+	opkg-utils \
 	iptables \
 	ircp \
 	joe \

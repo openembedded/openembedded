@@ -79,7 +79,7 @@ RDEPENDS_${PN} += "\
 		mtpaint \
 		telepathy-python \
 		intone-video \
-		ipkg-utils \
+		opkg-utils \
 		mysql \
 		fltk-chess \
 		remoko \

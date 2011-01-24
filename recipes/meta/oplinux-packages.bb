@@ -201,7 +201,7 @@ PACKAGES_LIST = "\
         hydra \
 	ifupdown \
         iputils \
-	ipkg-utils \
+	opkg-utils \
 	iptables \
         intercom \
 	ircp \

@@ -74,7 +74,7 @@ FOONAS_PACKAGES = "\
 	gtk-doc \
 	gzip \
 	hdparm \
-	ipkg-utils \
+	opkg-utils \
 	iptables \
 	ircp \
 	joe \

@@ -99,7 +99,7 @@ SLUGOS_PACKAGES = "\
 	ifupdown \
 	iozone3 \
 	iperf \
-	ipkg-utils \
+	opkg-utils \
 	iptables \
 	joe \
 	jpeg \
