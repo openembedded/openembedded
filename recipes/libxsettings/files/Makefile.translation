@@ -2,8 +2,8 @@
 
 CONTROL = `if test -e familiar/control1; then echo control1; else echo control; fi`
 
-# use ipkg-build or ipkg-deb-build
-IPKG_BUILD := ipkg-build
+# use opkg-build or opkg-deb-build
+IPKG_BUILD := opkg-build
 
 TRANSLATION_SITE := http://www.iro.umontreal.ca/~gnutra/maint
 
