@@ -92,9 +92,9 @@ python __anonymous() {
 
 PSTAGE_MACHCONFIG   = "${PSTAGE_WORKDIR}/opkg.conf"
 
-PSTAGE_PKGMANAGER = "stage-manager-ipkg"
+PSTAGE_PKGMANAGER = "stage-manager-opkg"
 
-PSTAGE_BUILD_CMD        = "stage-manager-ipkg-build -o 0 -g 0"
+PSTAGE_BUILD_CMD        = "stage-manager-opkg-build -o 0 -g 0"
 PSTAGE_INSTALL_CMD      = "${PSTAGE_PKGMANAGER} -f ${PSTAGE_MACHCONFIG} -force-depends -o ${TMPDIR} install"
 PSTAGE_UPDATE_CMD       = "${PSTAGE_PKGMANAGER} -f ${PSTAGE_MACHCONFIG} -o ${TMPDIR} update"
 PSTAGE_REMOVE_CMD       = "${PSTAGE_PKGMANAGER} -f ${PSTAGE_MACHCONFIG} -force-depends -o ${TMPDIR} remove"

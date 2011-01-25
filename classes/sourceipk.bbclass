@@ -31,13 +31,13 @@
 # CREATE_SRCIPK_pn-<package name> = "1" in your local.conf
 #
 #TODO: 
-# Need to figure out how to use ipkg-build in this class.
+# Need to figure out how to use opkg-build in this class.
 # I tried adding it as a dependency for the do_create_srcipk
 # task using:
 #   do_create_srcipk[depends] += "opkg-utils-native:do_populate_sysroot"
 # But then there is a circular dependency between sourcipk.bbclass and
 # opkg-utils-native.  Until I can figure out how to resolve this
-# circular dependency I am extracting the needed pieces from ipkg-build
+# circular dependency I am extracting the needed pieces from opkg-build
 # into this class and building the source ipk myself.
 
 
