@@ -3,7 +3,8 @@ HOMEPAGE = "http://htop.sf.net"
 SECTION = "console/utils"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
-PR = "r2"
+
+LIC_FILES_CHKSUM = "file://COPYING;md5=c312653532e8e669f30e5ec8bdc23be3"
 
 DEPENDS = "ncurses"
 RDEPENDS_${PN} = "ncurses-terminfo"
@@ -13,5 +14,6 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/htop/htop-${PV}.tar.gz \
 
 inherit autotools
 
-SRC_URI[md5sum] = "4afc961fa709167e1b434682897991f9"
-SRC_URI[sha256sum] = "1361f4f0b92d7e6bdac25a4b7ee138a7ee83b5a9368820f5aa518051ca82862b"
+SRC_URI[md5sum] = "7c5507f35f363f3f40183a2ba3c561f8"
+SRC_URI[sha256sum] = "4de65c38e1886bccd30ed692b30eb9bf195240680781bfe1eaf5faf84ee6fbfd"
+
