@@ -4,7 +4,7 @@ LICENSE = "BSD"
 SECTION = "multimedia"
 PRIORITY = "optional"
 
-INC_PR = "r6"
+INC_PR = "r7"
 
 COMPATIBLE_MACHINE = "(dm365|omapl138|omap3|ti816x)"
 
@@ -34,6 +34,7 @@ do_install() {
     install -m 0644 ${S}/${PLATFORM}/html/* ${D}/${datadir}/matrix/html
     install -d ${D}/${datadir}/matrix/images
     install -m 0644 ${S}/images/*.png ${D}/${datadir}/matrix/images/
+    install -m 0644 ${S}/images/*.svg ${D}/${datadir}/matrix/images/
 
 }
 
