@@ -16,6 +16,6 @@ SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/galak/powerpc.git;proto
 	   file://defconfig"
 
 # Use format (x|y|z) when adding y, z
-COMPATIBLE_MACHINE = "(p1020rdb)"
+COMPATIBLE_MACHINE = "(p1020rdb|p2020rdb)"
 
 S = "${WORKDIR}/git"
