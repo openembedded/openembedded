@@ -10,7 +10,7 @@ needed to link programs with libvolume_id."
 
 require udev.inc
 
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 LD = "${CC}"
 

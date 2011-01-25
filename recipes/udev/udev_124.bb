@@ -5,7 +5,7 @@ RPROVIDES_${PN} = "hotplug"
 
 require udev.inc
 
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 LD = "${CC}"
 
