@@ -99,7 +99,7 @@ diff -Naur blueprobe.orig/Makefile.dpkg_ipkg blueprobe/Makefile.dpkg_ipkg
 +	if test -e familiar/postrm;    then install familiar/postrm    familiar/dist/CONTROL; fi
 +	$(MAKE) DESTDIR=`pwd`/familiar/dist PREFIX=/usr prefix=/usr DEBUG=no install-program
 +	rm -rf familiar/dist.list
-+	ipkg-build -o 0 -g 0 familiar/dist | sed 's/^Packaged .*into //; t 1; d; : 1; s:.*/::' >> familiar/dist.list
++	opkg-build -o 0 -g 0 familiar/dist | sed 's/^Packaged .*into //; t 1; d; : 1; s:.*/::' >> familiar/dist.list
 +	if [ "x$(LINGUAS)" != "x" ]; then make translation-ipkg; tr ' ' '\n' < translation-ipkgs.txt >> familiar/dist.list; fi
 +	md5sum `cat familiar/dist.list` > $(PACKAGE)_$(VERSION).batch
 +	rm -rf familiar/dist familiar/dist.list
@@ -146,7 +146,7 @@ diff -Naur blueprobe.orig/Makefile.translation blueprobe/Makefile.translation
 +CONTROL = `if test -e familiar/control1; then echo control1; else echo control; fi`
 +
 +# use ipkg-build or ipkg-deb-build
-+IPKG_BUILD := ipkg-build
++IPKG_BUILD := opkg-build
 +
 +TRANSLATION_SITE := http://www.iro.umontreal.ca/~gnutra/maint
 +
