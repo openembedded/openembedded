@@ -45,7 +45,7 @@ echo "Starting rsync..."
 rsync -vz --partial --copy-links --progress --files-from=files-trans upload-queue/ personal-feed/
 
 echo "Generating index for your personal feed..."
-( cd personal-feed ; PATH=$PATH:$(find ../../../sysroots/$(uname -m)* -name "ipkg-make-index" | sed s:/ipkg-make-index::g) ipkg-make-index -p Packages -m . >& /dev/null )
+( cd personal-feed ; PATH=$PATH:$(find ../../../sysroots/$(uname -m)* -name "opkg-make-index" | sed s:/opkg-make-index::g) opkg-make-index -p Packages -m . >& /dev/null )
 
 
 # Clean up temporary files

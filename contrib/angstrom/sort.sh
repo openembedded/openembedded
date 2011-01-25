@@ -164,7 +164,7 @@ for i in ../* ; do
   if [ -d $i ]; then
       cd $i
       echo -n "building index for $i:" |sed s:\.\./::
-      ${ipkg_tools_path}/ipkg-make-index -m -p Packages -l Packages.filelist  -L ../locales  . >& /tmp/index-log
+      ${ipkg_tools_path}/opkg-make-index -m -p Packages -l Packages.filelist  -L ../locales  . >& /tmp/index-log
       echo " DONE"
   fi
 done
@@ -175,7 +175,7 @@ echo -n "building index for locales:"
 for i in ../* ; do
   if [ -d $i ]; then
    echo -n " $i" |sed s:\.\./::
-   ${ipkg_tools_path}/ipkg-make-index -m -p Packages -l Packages.filelist . >& /dev/null;
+   ${ipkg_tools_path}/opkg-make-index -m -p Packages -l Packages.filelist . >& /dev/null;
    cd $i
   fi
  done
@@ -189,7 +189,7 @@ for i in ./* ; do
   if [ -d $i ]; then
      cd $i
      echo -n "building index for machine $i:"
-     ${ipkg_tools_path}/ipkg-make-index -m -p Packages -l Packages.filelist . >& /dev/null
+     ${ipkg_tools_path}/opkg-make-index -m -p Packages -l Packages.filelist . >& /dev/null
      echo " DONE"
      cd ../
   fi
@@ -200,10 +200,10 @@ cd ${BPWD}
 
 echo "Processing 'all' feed"
 for i in `find . -name  "*.ipk"| grep _all` ; do mkdir -p ../all/ || true ;mv $i ../all/ ; done
- (mkdir -p ../all ; cd ../all && ${ipkg_tools_path}/ipkg-make-index -p Packages -m . >& /dev/null ; touch Packages.sig )
+ (mkdir -p ../all ; cd ../all && ${ipkg_tools_path}/opkg-make-index -p Packages -m . >& /dev/null ; touch Packages.sig )
 
 mkdir -p ../sdk ; mv *sdk.ipk ../sdk/ || true
- (mkdir -p ../sdk ; cd ../sdk && ${ipkg_tools_path}/ipkg-make-index -p Packages -m . >& /dev/null ; touch Packages.sig )
+ (mkdir -p ../sdk ; cd ../sdk && ${ipkg_tools_path}/opkg-make-index -p Packages -m . >& /dev/null ; touch Packages.sig )
 
 for arch in 486sx armv4t armv4 armv5teb armv5te armv6-novfp armv6 armv7a-vfp armv7a avr32 bfin geode i486 i586 i686 iwmmxt mips mipsel powerpc ppc405 ppc440e ppc603e ppce300c2 ppce300c3 ppce500v2 ppce500 ppce600 sh4 sparc x86_64 x86; do
 	do_sort
