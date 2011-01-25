@@ -1015,7 +1015,7 @@ ipkg_upgrade_pkg() {
 
 			if [ "$avail_ver" = "$inst_ver" ]; then 
 				echo "Package $pkg ($inst_ver) installed in $dest_name is up to date"
-			elif ipkg-compare-versions $avail_ver '>>' $inst_ver; then
+			elif opkg-compare-versions $avail_ver '>>' $inst_ver; then
 				echo "Upgrading $pkg ($dest_name) from $inst_ver to $avail_ver"
 				ipkg_get_install_dest $dest $pkg
 			else

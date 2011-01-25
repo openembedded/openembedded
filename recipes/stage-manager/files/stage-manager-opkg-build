@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# ipkg-build -- construct a .ipk from a directory
+# opkg-build -- construct a .ipk from a directory
 # Carl Worth <cworth@east.isi.edu>
 # based on a script by Steve Redler IV, steve@sr-tech.com 5-21-2001
 # 2003-04-25 rea@sr.unh.edu
@@ -11,14 +11,14 @@ set -e
 
 version=1.0
 
-ipkg_extract_value() {
+opkg_extract_value() {
 	sed -e "s/^[^:]*:[[:space:]]*//"
 }
 
 required_field() {
 	field=$1
 
-	value=`grep "^$field:" < $CONTROL/control | ipkg_extract_value`
+	value=`grep "^$field:" < $CONTROL/control | opkg_extract_value`
 	if [ -z "$value" ]; then
 		echo "*** Error: $CONTROL/control is missing field $field" >&2
 		return 1
@@ -30,7 +30,7 @@ required_field() {
 disallowed_field() {
 	field=$1
 
-	value=`grep "^$field:" < $CONTROL/control | ipkg_extract_value`
+	value=`grep "^$field:" < $CONTROL/control | opkg_extract_value`
 	if [ -n "$value" ]; then
 		echo "*** Error: $CONTROL/control contains disallowed field $field" >&2
 		return 1
@@ -128,7 +128,7 @@ You probably want to chown these to a system user: " >&2
 		bad_fields=`echo $bad_fields`
 		echo "*** Error: The following fields in $CONTROL/control are missing a ':'" >&2
 		echo "	$bad_fields" >&2
-		echo "ipkg-build: This may be due to a missing initial space for a multi-line field value" >&2
+		echo "opkg-build: This may be due to a missing initial space for a multi-line field value" >&2
 		PKG_ERROR=1
 	fi
 
@@ -153,7 +153,7 @@ You probably want to chown these to a system user: " >&2
 }
 
 ###
-# ipkg-build "main"
+# opkg-build "main"
 ###
 ogargs=""
 outer=ar
@@ -218,7 +218,7 @@ fi
 
 if ! pkg_appears_sane $pkg_dir; then
 	echo >&2
-	echo "ipkg-build: Please fix the above errors and try again." >&2
+	echo "opkg-build: Please fix the above errors and try again." >&2
 	exit 1
 fi
 
