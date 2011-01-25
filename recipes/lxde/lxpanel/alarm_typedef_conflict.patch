@@ -1,0 +1,138 @@
+=== modified file 'src/plugins/batt/batt.c'
+--- src/plugins/batt/batt.c	2010-11-04 03:31:44 +0000
++++ src/plugins/batt/batt.c	2010-11-04 03:33:54 +0000
+@@ -89,21 +89,21 @@
+     sem_t alarmProcessLock;
+     battery* b;
+     gboolean has_ac_adapter;
+-} lx_battery;
++} lx_battery_t;
+ 
+ 
+ typedef struct {
+     char *command;
+     sem_t *lock;
+-} alarm;
++} lx_battery_alarm_t;
+ 
+ static void destructor(Plugin *p);
+-static void update_display(lx_battery *lx_b, gboolean repaint);
++static void update_display(lx_battery_t *lx_b, gboolean repaint);
+ 
+ /* alarmProcess takes the address of a dynamically allocated alarm struct (which
+    it must free). It ensures that alarm commands do not run concurrently. */
+ static void * alarmProcess(void *arg) {
+-    alarm *a = (alarm *) arg;
++    lx_battery_alarm_t *a = (lx_battery_alarm_t *) arg;
+ 
+     sem_wait(a->lock);
+     system(a->command);
+@@ -116,7 +116,7 @@
+ 
+ /* FIXME:
+    Don't repaint if percentage of remaining charge and remaining time aren't changed. */
+-void update_display(lx_battery *lx_b, gboolean repaint) {
++void update_display(lx_battery_t *lx_b, gboolean repaint) {
+     char tooltip[ 256 ];
+     battery *b = lx_b->b;
+     /* unit: mW */
+@@ -157,7 +157,7 @@
+ 	/* Run the alarm command if it isn't already running */
+ 	if (alarmCanRun) {
+ 	    
+-	    alarm *a = (alarm *) malloc(sizeof(alarm));
++	    lx_battery_alarm_t *a = (lx_battery_alarm_t *) malloc(sizeof(lx_battery_alarm_t));
+ 	    a->command = lx_b->alarmCommand;
+ 	    a->lock = &(lx_b->alarmProcessLock);
+ 	    
+@@ -241,7 +241,7 @@
+ }
+ 
+ /* This callback is called every 3 seconds */
+-static int update_timout(lx_battery *lx_b) {
++static int update_timout(lx_battery_t *lx_b) {
+     GDK_THREADS_ENTER();
+     lx_b->state_elapsed_time++;
+     lx_b->info_elapsed_time++;
+@@ -259,7 +259,7 @@
+ static gint buttonPressEvent(GtkWidget *widget, GdkEventButton *event,
+         Plugin* plugin) {
+ 
+-    lx_battery *lx_b = (lx_battery*)plugin->priv;
++    lx_battery_t *lx_b = (lx_battery_t*)plugin->priv;
+ 
+     update_display(lx_b, TRUE);
+ 
+@@ -274,7 +274,7 @@
+ 
+ 
+ static gint configureEvent(GtkWidget *widget, GdkEventConfigure *event,
+-        lx_battery *lx_b) {
++        lx_battery_t *lx_b) {
+ 
+     ENTER;
+ 
+@@ -304,7 +304,7 @@
+ }
+ 
+ 
+-static gint exposeEvent(GtkWidget *widget, GdkEventExpose *event, lx_battery *lx_b) {
++static gint exposeEvent(GtkWidget *widget, GdkEventExpose *event, lx_battery_t *lx_b) {
+ 
+     ENTER;
+ 
+@@ -322,8 +322,8 @@
+ {
+     ENTER;
+ 
+-    lx_battery *lx_b;
+-    p->priv = lx_b = g_new0(lx_battery, 1);
++    lx_battery_t *lx_b;
++    p->priv = lx_b = g_new0(lx_battery_t, 1);
+ 
+     /* get available battery */
+     lx_b->b = battery_get ();
+@@ -480,7 +480,7 @@
+ {
+     ENTER;
+ 
+-    lx_battery *b = (lx_battery *) p->priv;
++    lx_battery_t *b = (lx_battery_t *) p->priv;
+ 
+     if (b->pixmap)
+         g_object_unref(b->pixmap);
+@@ -511,7 +511,7 @@
+ 
+     ENTER;
+ 
+-    lx_battery *b = (lx_battery *) p->priv;
++    lx_battery_t *b = (lx_battery_t *) p->priv;
+ 
+     if (b->orientation != p->panel->orientation) {
+         b->orientation = p->panel->orientation;
+@@ -529,7 +529,7 @@
+ {
+     ENTER;
+ 
+-    lx_battery *b = (lx_battery *) p->priv;
++    lx_battery_t *b = (lx_battery_t *) p->priv;
+ 
+     /* Update colors */
+     if (b->backgroundColor &&
+@@ -572,7 +572,7 @@
+     ENTER;
+ 
+     GtkWidget *dialog;
+-    lx_battery *b = (lx_battery *) p->priv;
++    lx_battery_t *b = (lx_battery_t *) p->priv;
+     dialog = create_generic_config_dlg(_(p->class->name),
+             GTK_WIDGET(parent),
+             (GSourceFunc) applyConfig, (gpointer) p,
+@@ -596,7 +596,7 @@
+ 
+ 
+ static void save(Plugin* p, FILE* fp) {
+-    lx_battery *lx_b = (lx_battery *) p->priv;
++    lx_battery_t *lx_b = (lx_battery_t *) p->priv;
+ 
+     lxpanel_put_bool(fp, "HideIfNoBa
