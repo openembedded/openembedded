@@ -14,7 +14,7 @@ DEFAULT_PREFERENCE = "-1"
 # precedence.
 
 require uclibc.inc
-PR = "${INC_PR}.7"
+PR = "${INC_PR}.8"
 PROVIDES += "virtual/${TARGET_PREFIX}libc-for-gcc"
 
 #recent versions uclibc require real kernel headers
@@ -39,5 +39,6 @@ SRC_URI = "git://uclibc.org/uClibc.git;branch=master;protocol=git \
 	file://detect-bx-availibility.patch \
 	file://remove-eabi-oabi-selection.patch \
 	file://mips64-no-waitpid.patch \
+	file://powerpc_copysignl.patch \
 	"
 S = "${WORKDIR}/git"
