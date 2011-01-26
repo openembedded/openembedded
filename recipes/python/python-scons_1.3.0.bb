@@ -3,6 +3,7 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "GPL"
 SRCNAME = "scons"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/scons/scons-${PV}.tar.gz;name=scons \
            file://toolchain-from-env.SConscript \
@@ -21,3 +22,11 @@ do_install_append() {
 
 NATIVE_INSTALL_WORKS = "1"
 BBCLASSEXTEND = "native"
+
+RDEPENDS_${PN} = "python-shell \
+	       python-stringold \
+	       python-lang \
+	       python-io \
+	       python-fcntl \
+	       python-pickle \
+	       python-crypt"
