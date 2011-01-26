@@ -1,7 +1,7 @@
 DESCRIPTION = "A Software Construction Tool"
 SECTION = "devel/python"
 PRIORITY = "optional"
-LICENSE = "GPL"
+LICENSE = "MIT"
 SRCNAME = "scons"
 PR = "r1"
 
