@@ -1,0 +1,27 @@
+From c605472e05594df9fa7c3c3c94ee86b1517aa159 Mon Sep 17 00:00:00 2001
+From: Mans Rullgard <mans@mansr.com>
+Date: Wed, 26 Jan 2011 18:36:52 +0000
+Subject: [PATCH 3/3] Print allocated and displayed frame size
+
+---
+ omapfbplay.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/omapfbplay.c b/omapfbplay.c
+index 2daed18..ad35bd5 100644
+--- a/omapfbplay.c
++++ b/omapfbplay.c
+@@ -306,6 +306,10 @@ init_frames(struct frame_format *ff)
+     int offsets[3];
+     int i, j;
+ 
++    fprintf(stderr, "Frame size %dx%d, display %dx%d @ %d,%d\n",
++            ff->width, ff->height, ff->disp_w, ff->disp_h,
++            ff->disp_x, ff->disp_y);
++
+     ofbp_get_plane_offsets(offsets, pf, ff->disp_x, ff->disp_y,
+                            frames->linesize);
+ 
+-- 
+1.6.6.1
+

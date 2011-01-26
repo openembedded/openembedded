@@ -2,12 +2,15 @@ DESCRIPTION = "Simple ffmpeg-based player that uses the omapfb overlays"
 DEPENDS = "bzip2 lame ffmpeg virtual/kernel"
 LICENSE = "MIT"
 
-PR = "r27"
+PR = "r28"
 
 PV = "0.0+${PR}+gitr${SRCREV}"
 
 SRCREV = "1d217676ba71e8740524e9814c47da39880ed3bc"
 SRC_URI = "git://git.mansr.com/omapfbplay;protocol=git \
+           file://0001-Remove-pointless-function-frame_format.patch \
+           file://0002-avcodec-fix-frame-size-calculation.patch \
+           file://0003-Print-allocated-and-displayed-frame-size.patch \
 "
 
 S = "${WORKDIR}/git"

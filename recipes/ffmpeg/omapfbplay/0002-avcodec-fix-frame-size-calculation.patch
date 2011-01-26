@@ -1,0 +1,27 @@
+From a1232ad05e004dbb2253e78223e886c32ccfb9a1 Mon Sep 17 00:00:00 2001
+From: Mans Rullgard <mans@mansr.com>
+Date: Wed, 26 Jan 2011 18:36:29 +0000
+Subject: [PATCH 2/3] avcodec: fix frame size calculation
+
+---
+ avcodec.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/avcodec.c b/avcodec.c
+index f2af6ed..d527924 100644
+--- a/avcodec.c
++++ b/avcodec.c
+@@ -112,8 +112,8 @@ static int lavc_open(const char *name, AVCodecContext *params,
+     x_off      = ALIGN(edge_width, 32);
+     y_off      = edge_width;
+ 
+-    ff->width  = ALIGN(params->width, 32) + 2 * x_off;
+-    ff->height = params->height           + 2 * y_off;
++    ff->width  = ALIGN(params->width  + 2 * x_off, 32);
++    ff->height = ALIGN(params->height + 2 * y_off, 32);
+     ff->disp_x = x_off;
+     ff->disp_y = y_off;
+     ff->disp_w = params->width;
+-- 
+1.6.6.1
+
