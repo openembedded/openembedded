@@ -2,12 +2,15 @@ require xorg-driver-video.inc
 DESCRIPTION = "X.Org X server -- OMAP display driver"
 PE = "1"
 PV = "0.1.1+${PR}+gitr${SRCREV}"
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 SRC_URI = "git://git.pingu.fi/xf86-video-omapfb.git;protocol=http \
+           file://0001-blacklist-tv-out.patch \
+           file://0002-Revert-Set-virtual-size-when-configuring-framebuffer.patch \
+           file://0003-force-plain-mode.patch \
           "
 
-SRCREV = "6fd9caf9fd4a5b6105c45198eb6fdd98c451db14"
+SRCREV = "044617665d6737f4909aab96f91b06261dff05d2"
 S = "${WORKDIR}/git"
 
 EXTRA_OECONF_armv7a = " --enable-neon "
