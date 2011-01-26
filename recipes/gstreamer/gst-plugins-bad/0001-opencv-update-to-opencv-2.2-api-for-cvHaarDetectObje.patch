@@ -1,0 +1,57 @@
+From 9355663d5d6328aa77fc43c0def9f56d4aab1386 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Wed, 26 Jan 2011 19:14:01 +0100
+Subject: [PATCH] opencv: update to opencv 2.2 api for cvHaarDetectObjects
+
+From upstream: "We added another parameter to the function maxSize, which you may set to cvSize(0,0). It regulates the maximum size of the face that the function detects. When the parameter is cvSize(0,0), the maximum size is set to the image size."
+
+Signed-off-by: Koen Kooi <koen@dominion.thruhere.net>
+---
+ configure.ac               |    2 +-
+ ext/opencv/gstfaceblur.c   |    2 +-
+ ext/opencv/gstfacedetect.c |    3 ++-
+ 3 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index fa6193d..37a2f00 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1226,7 +1226,7 @@ AG_GST_CHECK_FEATURE(OPENCV, [opencv plugins], opencv, [
+   dnl a new version and the no-backward-compatibility define. (There doesn't
+   dnl seem to be a switch to suppress the warnings the cvcompat.h header
+   dnl causes.)
+-  PKG_CHECK_MODULES(OPENCV, opencv >= 2.0.0 opencv <= 2.1.0 , [
++  PKG_CHECK_MODULES(OPENCV, opencv >= 2.0.0 opencv <= 2.2.0 , [
+     AC_PROG_CXX
+     AC_LANG_CPLUSPLUS
+     OLD_CPPFLAGS=$CPPFLAGS
+diff --git a/ext/opencv/gstfaceblur.c b/ext/opencv/gstfaceblur.c
+index 3ac2af4..8625491 100644
+--- a/ext/opencv/gstfaceblur.c
++++ b/ext/opencv/gstfaceblur.c
+@@ -269,7 +269,7 @@ gst_faceblur_chain (GstPad * pad, GstBuffer * buf)
+   if (filter->cvCascade) {
+     faces =
+         cvHaarDetectObjects (filter->cvGray, filter->cvCascade,
+-        filter->cvStorage, 1.1, 2, 0, cvSize (30, 30));
++        filter->cvStorage, 1.1, 2, 0, cvSize (30, 30), cvSize(0,0));
+ 
+     if (faces && faces->total > 0) {
+       buf = gst_buffer_make_writable (buf);
+diff --git a/ext/opencv/gstfacedetect.c b/ext/opencv/gstfacedetect.c
+index 0254b74..ab4b5eb 100644
+--- a/ext/opencv/gstfacedetect.c
++++ b/ext/opencv/gstfacedetect.c
+@@ -409,7 +409,8 @@ gst_facedetect_transform_ip (GstOpencvVideoFilter * base, GstBuffer * buf,
+         cvHaarDetectObjects (filter->cvGray, filter->cvCascade,
+         filter->cvStorage, filter->scale_factor, filter->min_neighbors,
+         filter->flags,
+-        cvSize (filter->min_size_width, filter->min_size_height));
++        cvSize (filter->min_size_width, filter->min_size_height),
++		cvSize(0,0));
+ 
+     if (faces && faces->total > 0) {
+       msg = gst_facedetect_message_new (filter, buf);
+-- 
+1.6.6.1
+
