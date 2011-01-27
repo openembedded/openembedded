@@ -3,13 +3,9 @@ SECTION = "x11/base"
 
 DEPENDS = "virtual/libx11 exo libxfcegui4 xfce4-panel thunar gtk+"
 RDEPENDS_${PN} = "libxfcegui4 libxml2 xfce4-panel thunar exo gtk+"
-PR = "r0"
+PR = "r1"
 
 inherit xfce46
-
-do_configure() { 
-   oe_runconf
-}
 
 FILES_xfdesktop-backdrops = "${datadir}/xfce4/backdrops/*"
 FILES_${PN} += "${libdir}/xfce4/panel-plugins/*.so \
