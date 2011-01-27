@@ -2,7 +2,7 @@ DESCRIPTION = "Util-linux is a suite of essential utilities for any Linux system
 SECTION = "base"
 LICENSE = "GPL"
 DEPENDS = "zlib ncurses"
-INC_PR = "r16"
+INC_PR = "r17"
 inherit autotools
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/util-linux/util-linux-${PV}.tar.bz2 \
@@ -29,6 +29,8 @@ FILES_util-linux-readprofile = "/usr/sbin/readprofile"
 
 RRECOMMENDS_${PN} = "util-linux-fdisk util-linux-cfdisk util-linux-sfdisk util-linux-mount util-linux-readprofile "
 RDEPENDS_${PN} = "util-linux-umount util-linux-swaponoff util-linux-losetup"
+
+CFLAGS_append = "${@base_contains('DISTRO_FEATURES', 'largefile', '-D_FILE_OFFSET_BITS=64', '', d)}"
 
 do_compile () {
 	set -e
