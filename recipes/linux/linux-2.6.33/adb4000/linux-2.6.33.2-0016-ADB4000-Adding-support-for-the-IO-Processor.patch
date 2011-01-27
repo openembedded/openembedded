@@ -1,0 +1,1785 @@
+From babb2d6e7ec94f3ff102298a34862baf47eb466f Mon Sep 17 00:00:00 2001
+From: Benjamin Tietz <benjamin.tietz@in-circuit.de>
+Date: Thu, 16 Dec 2010 13:53:13 +0100
+Subject: [PATCH 16/18] [ADB4000] Adding support for the IO-Processor
+
+The ICnova ADB4000 is equipped with an IO-Processor, adding more IOs,
+analog inputs and a buzzer.
+---
+ drivers/misc/Kconfig              |    1 +
+ drivers/misc/Makefile             |    1 +
+ drivers/misc/adb4000/Kconfig      |   86 +++
+ drivers/misc/adb4000/Makefile     |    2 +
+ drivers/misc/adb4000/spi_comm.c   |  107 +++
+ drivers/misc/adb4000/spi_comm.h   |   49 ++
+ drivers/misc/adb4000/supervisor.c | 1411 +++++++++++++++++++++++++++++++++++++
+ drivers/misc/adb4000/supervisor.h |   46 ++
+ 8 files changed, 1703 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/misc/adb4000/Kconfig
+ create mode 100644 drivers/misc/adb4000/Makefile
+ create mode 100644 drivers/misc/adb4000/spi_comm.c
+ create mode 100644 drivers/misc/adb4000/spi_comm.h
+ create mode 100644 drivers/misc/adb4000/supervisor.c
+ create mode 100644 drivers/misc/adb4000/supervisor.h
+
+diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+index 8d0a517..c8aa1e2 100644
+--- a/drivers/misc/Kconfig
++++ b/drivers/misc/Kconfig
+@@ -296,6 +296,7 @@ source "drivers/misc/c2port/Kconfig"
+ source "drivers/misc/eeprom/Kconfig"
+ source "drivers/misc/cb710/Kconfig"
+ source "drivers/misc/iwmc3200top/Kconfig"
++source "drivers/misc/adb4000/Kconfig"
+ 
+ config FPGA_SRAM
+ 	tristate "FPGA-SRAM Interface"
+diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
+index 61fe337..1b1e4f4 100644
+--- a/drivers/misc/Makefile
++++ b/drivers/misc/Makefile
+@@ -29,3 +29,4 @@ obj-$(CONFIG_IWMC3200TOP)      += iwmc3200top/
+ obj-$(CONFIG_FPGA_SRAM)		+= fpga_sram.o
+ obj-y				+= eeprom/
+ obj-y				+= cb710/
++obj-y				+= adb4000/
+diff --git a/drivers/misc/adb4000/Kconfig b/drivers/misc/adb4000/Kconfig
+new file mode 100644
+index 0000000..945b643
+--- /dev/null
++++ b/drivers/misc/adb4000/Kconfig
+@@ -0,0 +1,86 @@
++config SPI_COMM
++	tristate
++	default n
++	help
++	  Communication-layer for supervisor
++
++config SUPERVISOR
++	depends on SPI
++	select SPI_COMM
++	tristate "ADB4000 Supervisor"
++	default y
++	help
++	  The supervisor expands the board by a couple of UART-lines as
++	  well as some buttons and GPIOs.
++
++config SUPERVISOR_ATOI
++	bool
++	default n
++	help
++	  Provide a simple str2int function
++
++config SUPERVISOR_LED
++	depends on SUPERVISOR
++	bool "Support LEDs on Supervisor"
++	default y
++	help
++	  This will utilize the Supervisors LEDs as those and not as GPIO.
++
++config SUPERVISOR_IRQ
++	depends on SUPERVISOR
++	bool "Support for Interrupt driven GPIOs on Supervisor"
++	default y
++	help
++	  This will make the GPIOs on the Supervisor be able to trigger
++	  interrupts on the system.
++
++config SUPERVISOR_UART
++	depends on SUPERVISOR
++	bool "Make UARTs available"
++	default y
++	help
++	  The Supervisor can provide a set of UART, connected to some
++	  Radios or utilized for RS232/RS422/RS485
++
++config SUPERVISOR_SYSFS
++	depends on SUPERVISOR
++	bool
++	default n
++
++config SUPERVISOR_BUZZER
++	depends on SUPERVISOR
++	select SUPERVISOR_SYSFS
++	select SUPERVISOR_ATOI
++	bool "Give access to the buzzer"
++	default y
++	help
++	  This will give access to the supervisor's buzzer via a sysfs-file
++
++config SUPERVISOR_ADC
++	depends on SUPERVISOR
++	select SUPERVISOR_SYSFS
++	select SUPERVISOR_ATOI
++	bool "Utilize the Analog input Streams"
++	default y
++	help
++	  To use the analog inputs and switch them from 0-10V to 4-20mA and
++	  vice versa, this will be needed.
++
++config SUPERVISOR_CNTIN
++	depends on SUPERVISOR
++	select SUPERVISOR_SYSFS
++	select SUPERVISOR_ATOI
++	bool "Use digital inputs as counter"
++	default y
++
++config SUPERVISOR_NOCHECK
++	depends on SUPERVISOR
++	bool "Do not test for the presence of the Supervisor"
++	default n
++
++config SUPERVISOR_BOOTLOADER
++	depends on SUPERVISOR
++	select SUPERVISOR_SYSFS
++	bool "Allow Firmwareupgrades to the Supervisor"
++	default y
++
+diff --git a/drivers/misc/adb4000/Makefile b/drivers/misc/adb4000/Makefile
+new file mode 100644
+index 0000000..7857f0a
+--- /dev/null
++++ b/drivers/misc/adb4000/Makefile
+@@ -0,0 +1,2 @@
++obj-$(CONFIG_SPI_COMM)	+= spi_comm.o
++obj-$(CONFIG_SUPERVISOR)+= supervisor.o
+diff --git a/drivers/misc/adb4000/spi_comm.c b/drivers/misc/adb4000/spi_comm.c
+new file mode 100644
+index 0000000..daed9c9
+--- /dev/null
++++ b/drivers/misc/adb4000/spi_comm.c
+@@ -0,0 +1,107 @@
++#define DEBUG
++#include "spi_comm.h"
++#include <linux/crc32.h>
++
++#define CRC32_SEED 0x04C11DB7UL
++
++static int spi_comm_resend(struct spi_comm *spi) {
++	return spi_async(spi->spi, &spi->msg);
++}
++
++static int spi_comm_recv(struct spi_comm *spi, char buf[XM_SPI_BUF_SIZE]) {
++	u32 crc, crcr;
++	crc = crc32(CRC32_SEED, spi->rx+1, XM_SPI_BUF_SIZE);
++	pr_debug("Got %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
++			spi->rx[1], spi->rx[2], spi->rx[3], spi->rx[4],
++			spi->rx[5], spi->rx[6], spi->rx[7], spi->rx[8],
++			spi->rx[9], spi->rx[10], spi->rx[11], spi->rx[12]);
++	memcpy(&crcr, spi->rx + XM_SPI_BUF_SIZE+1, sizeof(crc));
++	pr_debug("CRC %08X vs %08X\n", crc, crcr);
++	if(crc == crcr) {
++		memcpy(buf, spi->rx, XM_SPI_BUF_SIZE);
++		return 1;
++	}
++	return 0;
++}
++
++static inline void spi_comm_cb(struct spi_comm *spi, char buf[XM_SPI_BUF_SIZE]) {
++	if(spi->cb == NULL) return;
++	if(spi->cb(buf, spi) >= 0) return;
++	if(spi->pckretry == 0) {
++		dev_warn(&spi->spi->dev, "Msg timed out\n");
++		return;
++	}
++	spi->pckretry--;
++	spi_comm_resend(spi);
++}
++
++static void spi_comm_complete(void *ctx) {
++	struct spi_comm *spi = ctx;
++	char buf[XM_SPI_BUF_SIZE];
++
++	if(spi->msg.status) {
++		spi->state = SPIC_ERR;
++		spi_comm_cb(spi, NULL);
++		return;
++	}
++	if(!spi_comm_recv(spi, buf)) {
++		if(spi->pckretry) {
++			spi->pckretry--;
++			spi_comm_resend(spi);
++			return;
++		}
++		spi->state = SPIC_CRCERR;
++		spi_comm_cb(spi, NULL);
++		return;
++	}
++	spi_comm_cb(spi, spi->rx + 1);
++	return;
++}
++
++int spi_comm_msg(struct spi_comm *spi, char buf[XM_SPI_BUF_SIZE]) {
++	u32 crc;
++
++	pr_debug("Msg %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
++			buf[0], buf[1], buf[2], buf[3],
++			buf[4], buf[5], buf[6], buf[7],
++			buf[8], buf[9], buf[10], buf[11]);
++	memcpy(spi->tx, buf, XM_SPI_BUF_SIZE);
++	crc = crc32(CRC32_SEED, buf, XM_SPI_BUF_SIZE);
++	pr_debug("CRC 0x%08x size %i+%i\n", crc, XM_SPI_BUF_SIZE, sizeof(crc));
++	memcpy(spi->tx + XM_SPI_BUF_SIZE, &crc, sizeof(crc));
++	spi->trans.tx_buf = spi->tx;
++	spi->trans.rx_buf = spi->rx;
++	spi->trans.len = sizeof(spi->tx);
++	spi_message_init(&spi->msg);
++	spi->msg.spi = spi->spi;
++	spi->msg.complete = spi_comm_complete;
++	spi->msg.context = spi;
++	spi->pckretry = spi->retries;
++	spi_message_add_tail(&spi->trans, &spi->msg);
++	return spi_comm_resend(spi);
++}
++
++int spi_comm_init(struct spi_comm *spic, struct spi_device *spi, int retries,
++		int busypin) {
++	spic->spi = spi;
++	spic->retries = retries;
++	spic->pckretry = retries;
++	return 0;
++}
++
++void spi_comm_destroy(struct spi_comm *spic) {
++	return;
++}
++
++int spi_comm_busy(struct spi_comm *spic) {
++	return 0;
++}
++
++EXPORT_SYMBOL(spi_comm_msg);
++EXPORT_SYMBOL(spi_comm_destroy);
++EXPORT_SYMBOL(spi_comm_init);
++EXPORT_SYMBOL(spi_comm_busy);
++
++MODULE_AUTHOR("Benjamin Tietz <benjamin.tietz@in-circuit.de>");
++MODULE_DESCRIPTION("XMEGA-SPI Communication Protocol");
++MODULE_LICENSE("GPL");
+diff --git a/drivers/misc/adb4000/spi_comm.h b/drivers/misc/adb4000/spi_comm.h
+new file mode 100644
+index 0000000..a9e3619
+--- /dev/null
++++ b/drivers/misc/adb4000/spi_comm.h
+@@ -0,0 +1,49 @@
++#ifndef __SPI_COMM_H
++#define __SPI_COMM_H
++
++#include <linux/spi/spi.h>
++#include <linux/wait.h>
++
++#define XM_SPI_BUF_SIZE 12
++//#define XM_SPI_BUF_SIZE 28
++#define CRC32_SEED 0x04C11DB7UL
++
++struct spi_comm;
++struct spi_comm {
++	/* These fields must be initialized by the driver */
++	struct spi_device *spi;
++	int (*cb)(char buf[XM_SPI_BUF_SIZE], struct spi_comm *);
++	int retries;
++	/* This imposes the actual state of the received msg */
++	enum {
++		SPIC_OK,
++		SPIC_CRCERR,
++		SPIC_ERR,
++	} state;
++	int msg_state;
++	/* These should be ignored and handled internally */
++#ifdef CONFIG_SPI_COMM_V2
++	int busypin, busyirq, sending;
++	wait_queue_head_t busywaiter;
++#else
++	int pckretry;
++	struct spi_message msg;
++	struct spi_transfer trans;
++	char rx[XM_SPI_BUF_SIZE + 5], tx[XM_SPI_BUF_SIZE + 5];
++#endif
++};
++
++/*
++ * This intializes and set up a spi_comm struct.
++ */
++int spi_comm_init(struct spi_comm *spic, struct spi_device *spi, int retries,
++		int busypin);
++void spi_comm_destroy(struct spi_comm *spic);
++
++int spi_comm_busy(struct spi_comm *spic);
++/*
++ * This set up a new message and queues it to be send
++ */
++int spi_comm_msg(struct spi_comm *spi, char buf[XM_SPI_BUF_SIZE]);
++
++#endif
+diff --git a/drivers/misc/adb4000/supervisor.c b/drivers/misc/adb4000/supervisor.c
+new file mode 100644
+index 0000000..f5c3b2a
+--- /dev/null
++++ b/drivers/misc/adb4000/supervisor.c
+@@ -0,0 +1,1411 @@
++/*
++ * This is the kernel-driver for the ADB4000 Supervisor
++ *
++ * (C) 2010 by Benjamin Tietz <benjamin.tietz@in-circuit.de>
++ */
++
++//#define DEBUG
++
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/errno.h>
++#include <linux/timer.h>
++#include <linux/wait.h>
++#include <linux/sched.h>
++#include <linux/leds.h>
++#include <linux/platform_device.h>
++#ifdef CONFIG_SUPERVISOR_IRQ
++#include <linux/interrupt.h>
++#include <linux/irq.h>
++#endif
++#ifdef CONFIG_SUPERVISOR_UART
++#include <linux/serial_core.h>
++#endif
++#ifdef CONFIG_SUPERVISOR_SYSFS
++#include <linux/hwmon-sysfs.h>
++#endif
++#ifdef CONFIG_SUPERVISOR_BOOTLOADER
++#include <linux/firmware.h>
++#include <linux/crc32.h>
++#endif
++#include <linux/delay.h>
++#include <linux/gpio.h>
++#include "spi_comm.h"
++#include "supervisor.h"
++
++#define UART_NAME	"ttyU"
++#define UART_MAJOR	204
++#define UART_MINOR	160
++#define UART_NR		4
++#define PORT_UARTEXTENDER	0xCBC
++#define UART_BUFSIZE	1024
++
++#define SUPERVISOR_SENDTO	20
++
++#define SUP_ADC_NUM	2
++#define SPI_VERSION_STRING	"ICURTGP1.1"
++#define SPI_BL_VERSION_STRING	"ICBOOTL0.1"
++
++typedef uint32_t counter_t;
++
++struct supervisor_data;
++#ifdef CONFIG_SUPERVISOR_UART
++struct uartextender_port {
++	struct uart_port uart;
++	struct supervisor_data *data;
++	int enabled:1, rx:1, tx:1;
++};
++#endif
++
++#ifdef CONFIG_SUPERVISOR_ADC
++enum supervisor_adc_type {
++	SUP_ADC_0_10_V,
++	SUP_ADC_4_20_mA,
++};
++#endif
++
++struct supervisor_data {
++	struct spi_comm spic;
++	struct gpio_chip gpioc;
++	spinlock_t lock;
++
++	/* transmission control */
++	char rx[XM_SPI_BUF_SIZE/3][3], tx[XM_SPI_BUF_SIZE/3][3];
++	wait_queue_head_t recvq;
++	int rx_valid:1, last_valid:1;
++	struct timer_list recvtimer, sendtimer;
++
++#ifdef CONFIG_SUPERVISOR_LED
++	/* LEDs */
++	struct gpio_led leds[4];
++	struct gpio_led_platform_data leds_plat;
++	struct platform_device leds_dev;
++#endif
++
++#ifdef CONFIG_SUPERVISOR_IRQ
++	/* Interrupt support */
++	int firq;
++#endif
++#if defined(CONFIG_SUPERVISOR_UART) || defined(CONFIG_SUPERVISOR_IRQ)
++	int hirq;
++#endif
++
++#ifdef CONFIG_SUPERVISOR_UART
++	struct timer_list ussendtimer;
++	struct timer_list testtimer;
++	struct uartextender_port port[UART_NR];
++	int ports_enabled;
++#endif
++#ifdef CONFIG_SUPERVISOR_BUZZER
++#endif
++#ifdef CONFIG_SUPERVISOR_ADC
++	enum supervisor_adc_type sensortype[SUP_ADC_NUM];
++#endif
++#ifndef CONFIG_SUPERVISOR_NOCHECK
++	int found:1;
++#endif
++#ifdef CONFIG_SUPERVISOR_BOOTLOADER
++	int bootloader:1;
++	enum {
++		BL_INIT = 0,
++		BL_WAIT_FW,
++		BL_CONTACTING,
++		BL_LOADING,
++		BL_VERIFYING,
++		BL_DONE,
++		BL_ERR,
++	} blstate;
++	wait_queue_head_t blw;
++	struct workqueue_struct *blwq;
++	struct work_struct blwork;
++	char blbuf[XM_SPI_BUF_SIZE];
++#endif
++#ifdef CONFIG_SUPERVISOR_CNTIN
++	int cnt_valid:1, cnt_tx_sent:1;
++	char cnt_buf[sizeof(counter_t)];
++	char cnt_tx_buf[XM_SPI_BUF_SIZE];
++#endif
++};
++
++#ifdef CONFIG_SUPERVISOR_BUZZER
++static ssize_t sp_buzzer(struct device *dev,
++		struct device_attribute *dattr, const char *buf, size_t len);
++#endif
++#ifdef CONFIG_SUPERVISOR_ADC
++static ssize_t sen_val(struct device *dev,
++		struct device_attribute *dattr, char *buf);
++static ssize_t sen_get_type(struct device *dev,
++		struct device_attribute *dattr, char *buf);
++static ssize_t sen_set_type(struct device *dev,
++		struct device_attribute *dattr, const char *buf, size_t len);
++static ssize_t sen_get_cal(struct device *dev,
++		struct device_attribute *dattr, char *buf);
++static ssize_t sen_set_cal(struct device *dev,
++		struct device_attribute *dattr, const char *buf, size_t len);
++
++#define ADCCALVMIN	(0<<8)
++#define ADCCALVMAX	(1<<8)
++#define ADCCALCMIN	(2<<8)
++#define ADCCALCMAX	(3<<8)
++#endif
++#ifdef CONFIG_SUPERVISOR_BOOTLOADER
++static ssize_t bl_start_load(struct device *dev,
++		struct device_attribute *dattr, const char *buf, size_t len);
++static ssize_t bl_get_state(struct device *dev,
++		struct device_attribute *dattr, char *buf);
++#endif
++#ifdef CONFIG_SUPERVISOR_CNTIN
++static ssize_t cnt_set(struct device *dev,
++		struct device_attribute *dattr, const char *buf, size_t len);
++static ssize_t cnt_get(struct device *dev,
++		struct device_attribute *dattr, char *buf);
++#endif
++
++
++#ifdef CONFIG_SUPERVISOR_SYSFS
++static struct sensor_device_attribute sp_sensors[] = {
++#ifdef CONFIG_SUPERVISOR_BUZZER
++	SENSOR_ATTR(buzzer, 0222, NULL, sp_buzzer, GE_BUZZER),
++#endif
++#ifdef CONFIG_SUPERVISOR_ADC
++	SENSOR_ATTR(adc0raw, 0444, sen_val, NULL, GE_ADC(0)),
++	SENSOR_ATTR(adc1raw, 0444, sen_val, NULL, GE_ADC(1)),
++	SENSOR_ATTR(adc0type, 0666, sen_get_type, sen_set_type, 0),
++	SENSOR_ATTR(adc1type, 0666, sen_get_type, sen_set_type, 1),
++	SENSOR_ATTR(adc0value, 0444, sen_val, NULL, GE_ADCCALIB(0)),
++	SENSOR_ATTR(adc1value, 0444, sen_val, NULL, GE_ADCCALIB(1)),
++	SENSOR_ATTR(adc0calibVmax, 0644,
++			sen_get_cal, sen_set_cal, ADCCALVMAX | 0),
++	SENSOR_ATTR(adc1calibVmax, 0644,
++			sen_get_cal, sen_set_cal, ADCCALVMAX | 1),
++	SENSOR_ATTR(adc0calibVmin, 0644,
++			sen_get_cal, sen_set_cal, ADCCALVMIN | 0),
++	SENSOR_ATTR(adc1calibVmin, 0644,
++			sen_get_cal, sen_set_cal, ADCCALVMIN | 1),
++	SENSOR_ATTR(adc0calibCmax, 0644,
++			sen_get_cal, sen_set_cal, ADCCALCMAX | 0),
++	SENSOR_ATTR(adc1calibCmax, 0644,
++			sen_get_cal, sen_set_cal, ADCCALCMAX | 1),
++	SENSOR_ATTR(adc0calibCmin, 0644,
++			sen_get_cal, sen_set_cal, ADCCALCMIN | 0),
++	SENSOR_ATTR(adc1calibCmin, 0644,
++			sen_get_cal, sen_set_cal, ADCCALCMIN | 1),
++#endif
++#ifdef CONFIG_SUPERVISOR_BOOTLOADER
++	SENSOR_ATTR(firmware, 0640, bl_get_state, bl_start_load, 0),
++#endif
++#ifdef CONFIG_SUPERVISOR_CNTIN
++	SENSOR_ATTR(counter0, 0666, cnt_get, cnt_set, 0),
++	SENSOR_ATTR(counter1, 0666, cnt_get, cnt_set, 1),
++	SENSOR_ATTR(counter2, 0666, cnt_get, cnt_set, 2),
++	SENSOR_ATTR(counter3, 0666, cnt_get, cnt_set, 3),
++	SENSOR_ATTR(counter4, 0666, cnt_get, cnt_set, 4),
++#endif
++};
++#endif
++
++#ifdef CONFIG_SUPERVISOR_ATOI
++static int sp_atoi(const uint8_t *buf, size_t len) {
++	int value = 0;
++	int i;
++	for(i=0; i<len; i++) {
++		if(buf[i] < '0') break;
++		if(buf[i] > '9') break;
++		value = value * 10 + buf[i] - '0';
++	}
++	return value;
++}
++#endif
++
++#ifdef CONFIG_SUPERVISOR_UART
++static struct uart_driver uartextender_uart = {
++	.owner		= THIS_MODULE,
++	.driver_name	= "spi_uartextender",
++	.dev_name	= UART_NAME,
++	.major		= UART_MAJOR,
++	.minor		= UART_MINOR,
++	.nr		= UART_NR,
++	.cons		= NULL,
++};
++
++static void uartextender_send_pck(struct supervisor_data *data,
++		uint8_t buf[XM_SPI_BUF_SIZE]) {
++	unsigned long flags;
++	spin_lock_irqsave(&data->lock, flags);
++	if(timer_pending(&data->ussendtimer)) del_timer(&data->ussendtimer);
++	if(data->ports_enabled)
++		mod_timer(&data->testtimer, jiffies + msecs_to_jiffies(100));
++	spi_comm_msg(&data->spic, buf);
++	spin_unlock_irqrestore(&data->lock, flags);
++
++}
++
++static unsigned int uartextender_tx_empty(struct uart_port *port) {
++	return TIOCSER_TEMT;
++}
++
++static void uartextender_set_mctrl(struct uart_port *port, unsigned int mctrl) {
++	return;
++}
++
++static unsigned int uartextender_get_mctrl(struct uart_port *port) {
++	return (TIOCM_CTS|TIOCM_DSR);
++}
++
++static void uartextender_start_tx(struct uart_port *uport) {
++	struct uartextender_port *port = (struct uartextender_port *) uport;
++	if(port->enabled == 0)
++		return;
++	port->tx = 1;
++}
++
++static void uartextender_stop_tx(struct uart_port *uport) {
++	struct uartextender_port *port = (struct uartextender_port *) uport;
++	if(port->enabled == 0)
++		return;
++	port->tx = 0;
++}
++
++static void uartextender_stop_rx(struct uart_port *uport) {
++	struct uartextender_port *port = (struct uartextender_port *) uport;
++	if(port->enabled == 0)
++		return;
++	port->rx = 1;
++}
++
++static int uartextender_startup(struct uart_port *uport) {
++	struct uartextender_port *port = (struct uartextender_port *) uport;
++	pr_debug("startup port %i\n", uport->line);
++	if(port->enabled) return 0;
++	port->enabled = 1;
++	port->data->ports_enabled++;
++	return 0;
++}
++
++static void uartextender_shutdown(struct uart_port *uport) {
++	struct uartextender_port *port = (struct uartextender_port *) uport;
++	pr_debug("shutdown port %i\n", uport->line);
++	if(!port->enabled) return;
++	port->enabled = 0;
++	port->data->ports_enabled--;
++}
++
++static void uartextender_flush_buffer(struct uart_port *port) {
++	return;
++}
++
++static void uartextender_set_termios(struct uart_port *port,
++		struct ktermios *termios, struct ktermios *old) {
++	struct uartextender_port *uport = (struct uartextender_port *) port;
++	uint8_t buf[XM_SPI_BUF_SIZE] = {0x80, port->line, 1, };
++	unsigned int baud;
++	baud = uart_get_baud_rate(port, termios, old, 0, 32000000UL);
++	buf[3] = baud >> 16;
++	buf[4] = baud >> 8;
++	buf[5] = baud & 0xFF;
++	switch(termios->c_cflag & CSIZE) {
++		case CS5: buf[10] = 5; break;
++		case CS6: buf[10] = 6; break;
++		case CS7: buf[10] = 7; break;
++		default: buf[10] = 8; break;
++	}
++	if(termios->c_cflag & PARENB) {
++		if(termios->c_cflag & PARODD)
++			buf[11] = 2;
++		else
++			buf[11] = 1;
++	}
++	if(termios->c_cflag & CSTOPB)
++		buf[11] |= (1<<7);
++	uartextender_send_pck(uport->data, buf);
++};
++
++static const char *uartextender_type(struct uart_port *port) {
++	if(port->type == PORT_UARTEXTENDER) return "UARTEXTENDER";
++	return NULL;
++}
++
++static void uartextender_config_port(struct uart_port *port, int flags) {
++	if(flags & UART_CONFIG_TYPE) {
++		port->type = PORT_UARTEXTENDER;
++	}
++}
++
++static int uartextender_verify_port(struct uart_port *port,
++		struct serial_struct *ser) {
++	if(port->type == PORT_UARTEXTENDER) return 0;
++	if(port->type == PORT_UNKNOWN)	return 0;
++	return -EINVAL;
++}
++
++static struct uart_ops uartextender_uops = {
++	.tx_empty	= uartextender_tx_empty,
++	.set_mctrl	= uartextender_set_mctrl,
++	.get_mctrl	= uartextender_get_mctrl,
++	.stop_tx	= uartextender_stop_tx,
++	.start_tx	= uartextender_start_tx,
++	.stop_rx	= uartextender_stop_rx,
++	.startup	= uartextender_startup,
++	.shutdown	= uartextender_shutdown,
++	.flush_buffer	= uartextender_flush_buffer,
++	.set_termios	= uartextender_set_termios,
++	.type		= uartextender_type,
++	.config_port	= uartextender_config_port,
++	.verify_port	= uartextender_verify_port,
++};
++
++/*********************************************************
++ * UART Stuff
++ *********************************************************/
++static int uartextender_send(struct uartextender_port *port) {
++	uint8_t buf[XM_SPI_BUF_SIZE] = {GE_USART(port->uart.line),};
++	struct circ_buf *xmit = &port->uart.state->xmit;
++	int ret = 0;
++	if(!port->enabled) return 0;
++	if(port->uart.x_char) {
++		buf[1]++;
++		buf[buf[1]+1] = port->uart.x_char;
++		port->uart.x_char = 0;
++	}
++	if(uart_tx_stopped(&port->uart)) {
++		if(buf[1]) 
++			uartextender_send_pck(port->data, buf);
++		return buf[1];
++	}
++	while(!uart_circ_empty(xmit) && (buf[1] < (XM_SPI_BUF_SIZE-2))) {
++		buf[1]++;
++		buf[buf[1]+1] = xmit->buf[xmit->tail];
++		xmit->tail = (xmit->tail+1)&(UART_XMIT_SIZE-1);
++		ret++;
++	}
++	if(buf[1])
++		uartextender_send_pck(port->data, buf);
++
++	if(uart_circ_chars_pending(xmit) < WAKEUP_CHARS)
++		uart_write_wakeup(&port->uart);
++
++	return buf[1];
++}
++
++static void ue_noptrans(unsigned long _data) {
++	struct supervisor_data *data = (void *) _data;
++	char rbuf[XM_SPI_BUF_SIZE] = {};
++	int i;
++	unsigned long flags;
++
++#ifdef CONFIG_SUPERVISOR_BOOTLOADER
++	if(data->bootloader) return;
++#endif
++	spin_lock_irqsave(&data->lock, flags);
++	for(i=0;i<UART_NR;i++) {
++		if(uartextender_send(&data->port[i]) != 0) break;
++	}
++	if(i==UART_NR)
++		spi_comm_msg(&data->spic, rbuf);
++	spin_unlock_irqrestore(&data->lock, flags);
++}
++
++static void ue_starttrans(unsigned long _data) {
++	struct supervisor_data *data = (void *) _data;
++	int i;
++	unsigned long flags;
++
++#ifdef CONFIG_SUPERVISOR_BOOTLOADER
++	if(data->bootloader) return;
++#endif
++	spin_lock_irqsave(&data->lock, flags);
++	for(i=0;i<UART_NR;i++) {
++		if(uartextender_send(&data->port[i]) != 0) break;
++	}
++	if(i==UART_NR && data->ports_enabled)
++		mod_timer(&data->testtimer, jiffies + msecs_to_jiffies(100));
++	spin_unlock_irqrestore(&data->lock, flags);
++}
++
++static struct uart_port uartextender_porttemplate = {
++	.iotype		= UPIO_MEM,
++	.ops		= &uartextender_uops,
++	.type		= PORT_UARTEXTENDER,
++	.fifosize	= 10,
++};
++
++#endif // CONFIG_SUPERVISOR_UART
++
++static void supervisor_rxinval(unsigned long _data) {
++	struct supervisor_data *data = (struct supervisor_data *) _data;
++	unsigned long flags;
++	spin_lock_irqsave(&data->lock, flags);
++	data->rx_valid = 0;
++	spin_unlock_irqrestore(&data->lock, flags);
++}
++
++static void supervisor_send(unsigned long _data) {
++	struct supervisor_data *data = (struct supervisor_data *) _data;
++	unsigned long flags;
++	pr_debug("Send Msg\n");
++	spin_lock_irqsave(&data->lock, flags);
++	if(data->tx[0][0]) {
++		data->last_valid = 1;
++		spi_comm_msg(&data->spic, (char *) data->tx);
++#ifdef CONFIG_SUPERVISOR_CNTIN
++	} else if(data->cnt_tx_buf[0] && !data->cnt_tx_sent) {
++		data->last_valid = 1;
++		data->cnt_tx_sent = 1;
++		spi_comm_msg(&data->spic, data->cnt_tx_buf);
++#endif
++	} else {
++		data->last_valid = 0;
++		spi_comm_msg(&data->spic, (char *) data->tx);
++	}
++	memset(data->tx, 0, sizeof(data->tx));
++	spin_unlock_irqrestore(&data->lock, flags);
++}
++
++#ifdef CONFIG_SUPERVISOR_CNTIN
++
++static void supervisor_reset_send(struct supervisor_data *data,
++		char buf[XM_SPI_BUF_SIZE]) {
++	unsigned long flags;
++	spin_lock_irqsave(&data->lock, flags);
++	memcpy(data->cnt_tx_buf, buf, XM_SPI_BUF_SIZE);
++	data->cnt_tx_sent = 0;
++	if(!timer_pending(&data->sendtimer)) {
++		data->sendtimer.expires =
++			jiffies + msecs_to_jiffies(SUPERVISOR_SENDTO);
++		add_timer(&data->sendtimer);
++	}
++	spin_unlock_irqrestore(&data->lock, flags);
++}
++static void supervisor_cntreg_set(struct supervisor_data *data, int counter,
++		uint32_t value) {
++	char buf[XM_SPI_BUF_SIZE] = { GE_CNTER_SET, counter,
++		//value >> 24, value >> 16, value >> 8, value >> 0,
++		value >> 0, value >> 8, value >> 16, value >> 24,
++	};
++
++#ifdef CONFIG_SUPERVISOR_BOOTLOADER
++	if(data->bootloader) return;
++#endif
++	supervisor_reset_send(data, buf);
++}
++
++static counter_t supervisor_cntreg_get(struct supervisor_data *data, int num) {
++	unsigned long flags;
++	char buf[XM_SPI_BUF_SIZE] = { GE_CNTER_GET, num, };
++	counter_t ret;
++	int i;
++
++#ifdef CONFIG_SUPERVISOR_BOOTLOADER
++	if(data->bootloader) return 0;
++#endif
++	pr_debug("Recv Counter\n");
++	data->cnt_valid = 0;
++	do {
++		supervisor_reset_send(data, buf);
++		wait_event_interruptible_timeout(data->recvq, data->cnt_valid,
++				msecs_to_jiffies(10));
++		if(data->cnt_valid) {
++			spin_lock_irqsave(&data->lock, flags);
++			ret = 0;
++			for(i=sizeof(ret);i>0;i--) {
++				ret = ret<<8;
++				ret += data->cnt_buf[i-1];
++			}
++			spin_unlock_irqrestore(&data->lock, flags);
++			return ret;
++		}
++	} while(1);
++}
++
++static ssize_t cnt_set(struct device *dev,
++		struct device_attribute *dattr, const char *buf, size_t len) {
++	struct supervisor_data *data = dev_get_drvdata(dev);
++	struct sensor_device_attribute *attr = to_sensor_dev_attr(dattr);
++	int value = sp_atoi(buf, len);
++	if((buf[0] == 'r') || (buf[0] == 'R'))
++		value = 0xFFFFFFFFUL;
++	supervisor_cntreg_set(data, attr->index, value);
++	return len;
++}
++
++static ssize_t cnt_get(struct device *dev,
++		struct device_attribute *dattr, char *buf) {
++	struct supervisor_data *data = dev_get_drvdata(dev);
++	struct sensor_device_attribute *attr = to_sensor_dev_attr(dattr);
++	return sprintf(buf, "%li\n",
++			(long) supervisor_cntreg_get(data, attr->index));
++}
++#endif
++/*********************************************************
++ * Register handling
++ *********************************************************/
++static void supervisor_setreg_mask(struct supervisor_data *data, int reg,
++		int port, int mask) {
++	int i;
++	unsigned long flags;
++
++#ifdef CONFIG_SUPERVISOR_BOOTLOADER
++	if(data->bootloader) return;
++#endif
++	spin_lock_irqsave(&data->lock, flags);
++	for(i=0; i<ARRAY_SIZE(data->tx); i++) {
++		if((data->tx[i][0] == reg) && (data->tx[i][1] == port)) {
++			data->tx[i][2] |= mask;
++			spin_unlock_irqrestore(&data->lock, flags);
++			return;
++		}
++		if(data->tx[i][0] != 0) continue;
++		data->tx[i][0] = reg;
++		data->tx[i][1] = port;
++		data->tx[i][2] = mask;
++		if(!timer_pending(&data->sendtimer)) {
++			data->sendtimer.expires =
++				jiffies + msecs_to_jiffies(SUPERVISOR_SENDTO);
++			add_timer(&data->sendtimer);
++		}
++		spin_unlock_irqrestore(&data->lock, flags);
++		return;
++	}
++	// Queue is full, schedule transfer and open next.
++	del_timer(&data->sendtimer);
++	spin_unlock_irqrestore(&data->lock, flags);
++	supervisor_send((unsigned long) data);
++	data->tx[0][0] = reg;
++	data->tx[0][1] = port;
++	data->tx[0][2] = mask;
++	for(i=1;i<ARRAY_SIZE(data->tx); i++) {
++		data->tx[i][0] = 0;
++		data->tx[i][1] = 0;
++		data->tx[i][2] = 0;
++	}
++	data->sendtimer.expires = jiffies + msecs_to_jiffies(SUPERVISOR_SENDTO);
++	add_timer(&data->sendtimer);
++}
++
++static void supervisor_setreg(struct supervisor_data *data, int reg, int pin) {
++	supervisor_setreg_mask(data, reg, pin>>3, 1<<(pin &0x07));
++}
++
++static int supervisor_getreg_raw(struct supervisor_data *data, int reg,
++		int port, int testport) {
++	int i, ignore = 0;
++	unsigned long flags;
++
++#ifdef CONFIG_SUPERVISOR_BOOTLOADER
++	if(data->bootloader) return 0;
++#endif
++	do {
++		spin_lock_irqsave(&data->lock, flags);
++		for(i=0;i<ARRAY_SIZE(data->rx);i++) {
++			if(!data->rx_valid) break;
++			if(data->rx[i][0] == 0) break;
++			if(data->rx[i][0] != reg) continue;
++			if(testport && (data->rx[i][1] != port)) continue;
++			spin_unlock_irqrestore(&data->lock, flags);
++			return (data->rx[i][1]<<8)|data->rx[i][2];
++		}
++		// No actual data got
++		if(!ignore) {
++			supervisor_setreg_mask(data, reg, port, 0);
++			del_timer(&data->recvtimer);
++		}
++		ignore = !ignore;
++		data->rx_valid = 0;
++		spin_unlock_irqrestore(&data->lock, flags);
++		wait_event_interruptible(data->recvq, data->rx_valid);
++	} while(1);
++}
++
++static int supervisor_getreg_mask(struct supervisor_data *data, int reg,
++		int port, int mask) {
++	return supervisor_getreg_raw(data, reg, port, 1) & mask;
++}
++
++static int supervisor_getreg(struct supervisor_data *data, int reg, int pin) {
++	return supervisor_getreg_mask(data, reg, pin>>3, 1<<(pin&0x07))?1:0;
++}
++
++/*********************************************************
++ * GPIO handling
++ *********************************************************/
++
++static int supervisor_dirin(struct gpio_chip *gpio, unsigned int offset) {
++	struct supervisor_data *data =
++		container_of(gpio, struct supervisor_data, gpioc);
++	int ret = 0;
++	if(offset < 8) {
++		supervisor_setreg(data, GE_IER, offset);
++	} else if(offset < 24) {
++		ret = -EACCES;
++	}
++	return ret;
++}
++
++static int supervisor_dirout(struct gpio_chip *gpio, unsigned int offset,
++		int value) {
++	struct supervisor_data *data =
++		container_of(gpio, struct supervisor_data, gpioc);
++	int ret = 0;
++	int reg = value?GE_OER:GE_ODR;
++	if(offset < 8) {
++		supervisor_setreg(data, GE_IDR, offset);
++	}
++	if(offset >= 24) {
++		ret = -EACCES;
++	} else if (ret == 0) {
++		supervisor_setreg(data, reg, offset);
++	}
++	return ret;
++}
++
++static int supervisor_get(struct gpio_chip *gpio, unsigned int offset) {
++	struct supervisor_data *data =
++		container_of(gpio, struct supervisor_data, gpioc);
++	int ret = 0;
++	ret = supervisor_getreg(data, GE_PPR, offset)?1:0;
++	return ret;
++}
++
++static void supervisor_set(struct gpio_chip *gpio, unsigned int offset, int value) {
++	struct supervisor_data *data =
++		container_of(gpio, struct supervisor_data, gpioc);
++	int reg = value?GE_OER:GE_ODR;
++
++	supervisor_setreg(data, reg, offset);
++}
++
++#ifdef CONFIG_SUPERVISOR_IRQ
++static int supervisor_to_irq(struct gpio_chip *gpio, unsigned offset) {
++	struct supervisor_data *data =
++		container_of(gpio, struct supervisor_data, gpioc);
++	pr_debug("gpio %i to irq %i\n", offset, data->firq+offset);
++	if(offset < 16) {
++		return data->firq + offset;
++	}
++	return -1;
++}
++#else
++#define supervisor_to_irq	NULL
++#endif
++
++static struct gpio_chip supervisor_gpio = {
++	 .owner			= THIS_MODULE,
++	 .direction_input	= supervisor_dirin,
++	 .direction_output	= supervisor_dirout,
++	 .get			= supervisor_get,
++	 .set			= supervisor_set,
++	 .to_irq		= supervisor_to_irq,
++	 .base			= -1,
++	 .ngpio			= 16,
++	 .can_sleep		= 1,
++	 .label			= "supervisor0",
++};
++
++#ifdef CONFIG_SUPERVISOR_IRQ
++/*********************************************************
++ * IRQ Stuff
++ *********************************************************/
++
++static void supervisor_irq_mask(unsigned irq) {
++	struct supervisor_data *data = get_irq_chip_data(irq);
++
++	supervisor_setreg(data, GE_IDR, irq - data->firq);
++}
++
++static void supervisor_irq_unmask(unsigned irq) {
++	struct supervisor_data *data = get_irq_chip_data(irq);
++
++	supervisor_setreg(data, GE_IER, irq - data->firq);
++}
++
++static int supervisor_irq_type(unsigned irq, unsigned type) {
++	if (type != IRQ_TYPE_EDGE_BOTH && type != IRQ_TYPE_NONE)
++		return -EINVAL;
++	return 0;
++}
++
++static struct irq_chip supervisor_irq = {
++	.name		= "supervisor",
++	.mask		= supervisor_irq_mask,
++	.unmask		= supervisor_irq_unmask,
++	.set_type	= supervisor_irq_type,
++};
++
++#endif
++
++#if defined(CONFIG_SUPERVISOR_UART) || defined(CONFIG_SUPERVISOR_IRQ)
++
++static irqreturn_t supervisor_irqh(int irq, void *_data) {
++	struct supervisor_data *data = _data;
++#ifdef CONFIG_SUPERVISOR_UART
++	unsigned long flags;
++#endif
++
++#ifdef CONFIG_SUPERVISOR_IRQ
++	supervisor_setreg(data, GE_ISR, 0);
++	supervisor_setreg(data, GE_ISR, 8);
++#endif
++#ifdef CONFIG_SUPERVISOR_UART
++	spin_lock_irqsave(&data->lock, flags);
++	if(timer_pending(&data->ussendtimer))
++		mod_timer(&data->ussendtimer, jiffies + msecs_to_jiffies(1));
++	spin_unlock_irqrestore(&data->lock, flags);
++#endif
++
++	return IRQ_HANDLED;
++}
++
++#endif
++
++/*********************************************************
++ * Buzzer
++ *********************************************************/
++#ifdef CONFIG_SUPERVISOR_BUZZER
++static ssize_t sp_buzzer(struct device *dev,
++		struct device_attribute *dattr, const char *buf, size_t len) {
++	struct supervisor_data *data = dev_get_drvdata(dev);
++	struct sensor_device_attribute *attr = to_sensor_dev_attr(dattr);
++	int value = sp_atoi(buf, len);
++	supervisor_setreg_mask(data, attr->index, value >> 8, value & 0xFFU);
++	return len;
++}
++#endif
++
++/*********************************************************
++ * A/D Converter
++ *********************************************************/
++#ifdef CONFIG_SUPERVISOR_ADC
++static ssize_t sen_val(struct device *dev,
++		struct device_attribute *dattr, char *buf) {
++	struct supervisor_data *data = dev_get_drvdata(dev);
++	struct sensor_device_attribute *attr = to_sensor_dev_attr(dattr);
++	return sprintf(buf, "%i\n",
++			supervisor_getreg_raw(data, attr->index, 0, 0));
++}
++
++static ssize_t sen_get_type(struct device *dev,
++		struct device_attribute *dattr, char *buf) {
++	struct supervisor_data *data = dev_get_drvdata(dev);
++	struct sensor_device_attribute *attr = to_sensor_dev_attr(dattr);
++	return sprintf(buf, "%s\n",
++			(data->sensortype[attr->index] == SUP_ADC_0_10_V)?
++			"[voltage] current":"voltage [current]");
++}
++
++#define _cal2num(attr) ((attr) & 0xFFU)
++static uint8_t _get_cal_byte(int attr) {
++	switch(attr & 0xFF00U) {
++		case ADCCALVMIN: return GE_ADCSET_V|GE_ADCSET_CALMIN;
++		case ADCCALVMAX: return GE_ADCSET_V|GE_ADCSET_CALMAX;
++		case ADCCALCMIN: return GE_ADCSET_I|GE_ADCSET_CALMIN;
++		case ADCCALCMAX: return GE_ADCSET_I|GE_ADCSET_CALMAX;
++	}
++	return 0;
++}
++
++static ssize_t sen_set_type(struct device *dev,
++		struct device_attribute *dattr, const char *buf, size_t len) {
++	struct supervisor_data *data = dev_get_drvdata(dev);
++	struct sensor_device_attribute *attr = to_sensor_dev_attr(dattr);
++	int value = ((buf[0]|(1<<5)) == 'v')?GE_ADCSET_V:GE_ADCSET_I;
++
++	data->sensortype[attr->index] = value?SUP_ADC_4_20_mA:SUP_ADC_0_10_V;
++	supervisor_setreg_mask(data, GE_ADCSET, _cal2num(attr->index), value);
++	return len;
++}
++
++static ssize_t sen_get_cal(struct device *dev,
++		struct device_attribute *dattr, char *buf) {
++	struct supervisor_data *data = dev_get_drvdata(dev);
++	struct sensor_device_attribute *attr = to_sensor_dev_attr(dattr);
++	
++	// invalidate cache, as the result may come from another sensor
++	data->rx_valid=0;
++
++	supervisor_setreg_mask(data, GE_ADCSET, _cal2num(attr->index),
++			_get_cal_byte(attr->index));
++	return sprintf(buf, "%i\n", supervisor_getreg_raw(data,
++				GE_ADCGCAL(_cal2num(attr->index)), 0, 0));
++}
++
++static ssize_t sen_set_cal(struct device *dev,
++		struct device_attribute *dattr, const char *buf, size_t len) {
++	struct supervisor_data *data = dev_get_drvdata(dev);
++	struct sensor_device_attribute *attr = to_sensor_dev_attr(dattr);
++	int value = sp_atoi(buf, len);
++
++	supervisor_setreg_mask(data, GE_ADCSET, _cal2num(attr->index),
++			_get_cal_byte(attr->index));
++	supervisor_setreg_mask(data, GE_ADCSCAL(_cal2num(attr->index)),
++			value >> 8, value & 0xFFU);
++	return len;
++}
++
++#endif
++
++/*********************************************************
++ * Protocol Stuff
++ *********************************************************/
++#ifndef CONFIG_SUPERVISOR_NOCHECK
++static int supervisor_init_cb(char buf[XM_SPI_BUF_SIZE], struct spi_comm *spi) {
++	struct supervisor_data *data =
++		container_of(spi, struct supervisor_data, spic);
++	if(buf == NULL) {
++		dev_info(&spi->spi->dev, "got init-pck NULL spic:%i, spi:%i\n",
++				spi->state, spi->msg_state);
++		if(spi->state == SPIC_CRCERR) return -1;
++		return 0;
++	}
++	dev_info(&spi->spi->dev, "got init-pck '%x%s'\n", buf[0], buf +1);
++	data->found = (strncmp(buf+1, SPI_VERSION_STRING,
++			strlen(SPI_VERSION_STRING)) == 0);
++#ifdef CONFIG_SUPERVISOR_BOOTLOADER
++	if((!data->found) && strncmp(buf + 1, SPI_BL_VERSION_STRING,
++				strlen(SPI_BL_VERSION_STRING)) == 0) {
++		dev_warn(&spi->spi->dev,
++				"Supervisor is in Bootloadermode during init!\n"
++				"Supply a new firmware first!");
++		data->found = 1;
++		data->bootloader = 1;
++	}
++#endif
++	wake_up(&data->recvq);
++	return 0;
++}
++#endif
++
++static int supervisor_cb(char buf[XM_SPI_BUF_SIZE], struct spi_comm *spi) {
++	struct supervisor_data *data =
++		container_of(spi, struct supervisor_data, spic);
++	int i, valid;
++	unsigned long flags, expires;
++#ifdef CONFIG_SUPERVISOR_IRQ
++	int pin, offset;
++#endif
++#ifdef CONFIG_SUPERVISOR_UART
++	struct uart_port *port;
++#endif
++
++	if(buf == NULL) {
++		if(spi->state == SPIC_CRCERR) return -1; // resend last pck
++		return 0;
++	}
++	pr_debug("valid data received\n");
++	spin_lock_irqsave(&data->lock, flags);
++#ifdef CONFIG_SUPERVISOR_UART
++	if((GE_BUSART(buf[0]) >= 0) && (GE_BUSART(buf[0]) < UART_NR) &&
++			(data->port[GE_BUSART(buf[0])].enabled)) {
++		port = &data->port[GE_BUSART(buf[0])].uart;
++		pr_debug("p%02x %p (%ib): ", buf[0], port, buf[1]);
++		for(i=0; i<buf[1]; i++) {
++#ifdef DEBUG
++			printk("%02x ", buf[i+2]);
++#endif
++			if(uart_handle_sysrq_char(port, buf[i+2])) continue;
++			uart_insert_char(port, 0, 0, buf[i+2], 0);
++		}
++#ifdef DEBUG
++		printk("\n");
++#endif
++		tty_flip_buffer_push(port->state->port.tty);
++	}
++#endif
++#ifdef CONFIG_SUPERVISOR_CNTIN
++	if(buf[0] == GE_CNTER_GET) {
++		memcpy(data->cnt_buf, buf + 2, sizeof(counter_t));
++		data->cnt_valid = 1;
++	} else if(buf[0] != GE_CNTER_SET) {
++#endif
++		expires = jiffies + msecs_to_jiffies(100);
++		mod_timer(&data->recvtimer, expires);
++		memcpy(data->rx, buf, XM_SPI_BUF_SIZE);
++		data->rx_valid = 1;
++#ifdef CONFIG_SUPERVISOR_CNTIN
++	}
++#endif
++	wake_up(&data->recvq);
++	/* If the device send valid data, it is possible, that it has more
++	 * data left. So schedule a new transmission then */
++	valid = 0;
++	for(i=0; i<ARRAY_SIZE(data->rx); i++) {
++		if(data->rx[i][0] == 0x00) continue; // No data
++		valid = 1;
++#ifdef CONFIG_SUPERVISOR_IRQ
++		if(data->rx[i][0] != GE_ISR) continue;
++		offset = 8 * data->rx[i][1] + data->firq;
++		for(pin=0;pin<8;pin++) {
++			if(!(data->rx[i][2] & (1<<pin)))
++				continue;
++			pr_debug("handle IRQ %i\n", offset + pin);
++			generic_handle_irq(offset + pin);
++		}
++#else
++		break;
++#endif
++	}
++#ifdef CONFIG_SUPERVISOR_UART
++	for(i=0; i<UART_NR; i++) {
++		if(uartextender_send(&data->port[i]) != 0) break;
++	}
++	if(i==UART_NR && ((buf[0] & 0x90) == 0x90)) // There might be more data
++		mod_timer(&data->ussendtimer, jiffies + msecs_to_jiffies(10));
++	if(data->ports_enabled)
++		mod_timer(&data->testtimer, jiffies + msecs_to_jiffies(100));
++#endif
++	if(valid || data->last_valid) {
++		mod_timer(&data->sendtimer,
++				jiffies + msecs_to_jiffies(SUPERVISOR_SENDTO));
++	}
++	spin_unlock_irqrestore(&data->lock, flags);
++	return 0;
++}
++
++#ifdef CONFIG_SUPERVISOR_BOOTLOADER
++/*********************************************************
++ * Bootloader logic
++ *********************************************************/
++static int supervisor_bootloader_cb(char buf[XM_SPI_BUF_SIZE],
++		struct spi_comm *spi) {
++	unsigned long flags;
++	struct supervisor_data *data =
++		container_of(spi, struct supervisor_data, spic);
++
++	if(buf == NULL) {
++		if(spi->state == SPIC_CRCERR) return -1; // resend last pck
++		return 0;
++	}
++	pr_debug("valid data received\n");
++	spin_lock_irqsave(&data->lock, flags);
++	memcpy(data->blbuf, buf, XM_SPI_BUF_SIZE);
++	wake_up(&data->blw);
++	spin_unlock_irqrestore(&data->lock, flags);
++	return 0;
++}
++
++#define bl_mk_cmd(buf, cmd, size) _bl_mk_cmd(buf, GE_BL_CMD_ ## cmd, size)
++static void _bl_mk_cmd(char buf[XM_SPI_BUF_SIZE], char cmd, int size) {
++	buf[0] = GE_BL_CMD;
++	buf[1] = cmd;
++	buf[2] = size >> 8;
++	buf[3] = size & 0xFFU;
++}
++
++static void bl_mk_data(char buf[XM_SPI_BUF_SIZE], int addr, const char *data,
++		int size) {
++	int i;
++	buf[0] = GE_BL_DATA;
++	buf[1] = addr >> 8;
++	buf[2] = addr & 0xFFU;
++	//buf[3] = (1<<size)-1;
++	for(i=0; i<size; i++) buf[i+4] = data[i];
++}
++
++static void bl_mk_chk(char buf[XM_SPI_BUF_SIZE], int start, int end, long seed)
++{
++	buf[0] = GE_BL_CHKSUM;
++	buf[1] = start >> 16;
++	buf[2] = start >> 8;
++	buf[3] = start;
++	buf[4] = 0;
++	buf[5] = end >> 16;
++	buf[6] = end >> 8;
++	buf[7] = end;
++	buf[8] = seed >> 24;
++	buf[9] = seed >> 16;
++	buf[10] = seed >> 8;
++	buf[11] = seed;
++}
++
++static void update_thread(struct work_struct *work) {
++	struct supervisor_data *data = 
++		container_of(work, struct supervisor_data, blwork);
++	const struct firmware *fw;
++	int addr, i, counter;
++	int blpagecount, blpagesize;
++	int status, size, chsize;
++	unsigned long flags;
++	char buf[XM_SPI_BUF_SIZE] = {};
++	char *_dbuf;
++#define dbuf(i) (&_dbuf[(i) * XM_SPI_BUF_SIZE])
++
++	init_waitqueue_head(&data->blw);
++	data->blstate = BL_WAIT_FW;
++	status = request_firmware(&fw, "adb4000.bin", &data->spic.spi->dev);
++	if(status != 0) {
++		dev_warn(&data->spic.spi->dev, "Firmware not found");
++		data->blstate = BL_ERR;
++		goto bl_up_fwnotfound;
++	}
++
++	dev_info(&data->spic.spi->dev, "Contacting Bootloader...");
++	data->blstate = BL_CONTACTING;
++	data->bootloader = 1;
++	data->spic.cb = supervisor_bootloader_cb;
++	do {
++		spin_lock_irqsave(&data->lock, flags);
++		buf[0] = GE_BL_INFO;
++		msleep(40);
++		spi_comm_msg(&data->spic, buf);
++		wait_event_interruptible(data->blw, 1);
++		spin_unlock_irqrestore(&data->lock, flags);
++		blpagesize = data->blbuf[2]<<8|data->blbuf[3];
++		blpagecount = data->blbuf[4]<<8|data->blbuf[5];
++	} while((data->blbuf[0] != GE_BL_INFO) || (blpagesize == 0) || (blpagecount == 0) );
++	dev_info(&data->spic.spi->dev,
++			"Bootloader has %iB per %i pages. Size is %iB",
++			blpagesize, blpagecount, blpagesize * blpagecount);
++	if(fw->size > (blpagesize * blpagecount)) {
++		dev_warn(&data->spic.spi->dev, "Firmware too large");
++		data->blstate = BL_ERR;
++		goto bl_up_tolarge;
++	}
++
++	dev_info(&data->spic.spi->dev, "Loading Firmware...");
++	data->blstate = BL_LOADING;
++	_dbuf = kzalloc(((blpagesize / 8) + 4) * XM_SPI_BUF_SIZE, GFP_KERNEL);
++	for(addr = 0; addr < fw->size; addr += blpagesize) {
++		//spin_lock_irqsave(&data->lock, flags);
++		bl_mk_cmd(dbuf(0), LOAD, addr / blpagesize);
++		spi_comm_msg(&data->spic, dbuf(0));
++		size = blpagesize;
++		if((fw->size - addr) < size) size = fw->size - addr;
++		for(i = addr % blpagesize; i < size; i+=chsize) {
++			chsize = fw->size - addr -i;
++			if(chsize > size - i) chsize = size - i;
++			if(chsize > 8) chsize = 8;
++			//if(i%0x80 == 0) msleep(100);
++			bl_mk_data(dbuf(i/8+3), i, fw->data + addr + i, chsize);
++			spi_comm_msg(&data->spic, dbuf(i/8+1));
++		} 
++		//spi_comm_msg(&data->spic, dbuf(1));
++		bl_mk_cmd(dbuf(2), WRITE, addr/blpagesize);
++		//spi_comm_msg(&data->spic, dbuf(2)); 
++		//spin_unlock_irqrestore(&data->lock, flags);
++		// Wait for write done
++		counter = 0;
++		while((data->blbuf[0] != GE_BL_CMD) ||
++				(data->blbuf[1] != GE_BL_CMD_WRITE)) {
++			wait_event_interruptible_timeout(data->blw, 1,
++					msecs_to_jiffies(100));
++			if(counter == 0) {
++				spi_comm_msg(&data->spic, dbuf(2));
++				counter = 10;
++			} else {
++				spi_comm_msg(&data->spic, dbuf(1));
++				counter --;
++			}
++			msleep(40);
++		}
++	}
++
++	dev_info(&data->spic.spi->dev, "Verifying Firmware...");
++	data->blstate = BL_VERIFYING;
++	spi_comm_msg(&data->spic, dbuf(1));
++	bl_mk_chk(buf, 0, fw->size, CRC32_SEED);
++	counter = 0;
++	do {
++		wait_event_interruptible_timeout(data->blw, 1,
++				msecs_to_jiffies(100));
++		if(counter == 0) {
++			spi_comm_msg(&data->spic, buf);
++			counter = 10;
++		} else {
++			spi_comm_msg(&data->spic, dbuf(1));
++			counter --;
++		}
++		msleep(40);
++	} while(data->blbuf[0] != GE_BL_CHKSUM);
++
++	i  = data->blbuf[8]<<24;
++	i |= data->blbuf[9]<<16;
++	i |= data->blbuf[10]<<8;
++	i |= data->blbuf[11];
++	if(i != crc32(CRC32_SEED, fw->data, fw->size)) {
++		data->blstate = BL_ERR;
++		dev_warn(&data->spic.spi->dev, "Checksum doesn't match");
++		goto bl_up_chkerr;
++	}
++
++	dev_info(&data->spic.spi->dev, "Uploading Firmware done");
++	data->blstate = BL_DONE;
++	bl_mk_cmd(buf, RESET, 0);
++	spi_comm_msg(&data->spic, buf);
++
++bl_up_chkerr:
++	kfree(_dbuf);
++bl_up_tolarge:
++	data->spic.cb = supervisor_cb;
++	data->bootloader = 0;
++	release_firmware(fw);
++bl_up_fwnotfound:
++//	destroy_workqueue(data->blwq);
++	return;
++}
++
++
++static void bl_init(struct supervisor_data *data) {
++	data->blwq = create_singlethread_workqueue("Supervisor_update");
++	INIT_WORK(&data->blwork, update_thread);
++	queue_work(data->blwq, &data->blwork);
++}
++
++static ssize_t bl_start_load(struct device *dev,
++		struct device_attribute *dattr, const char *buf, size_t len) {
++	struct supervisor_data *data = dev_get_drvdata(dev);
++	bl_init(data);
++	return len;
++}
++
++static ssize_t bl_get_state(struct device *dev,
++		struct device_attribute *dattr, char *buf) {
++	const char *msg = NULL;
++	struct supervisor_data *data = dev_get_drvdata(dev);
++	switch(data->blstate) {
++		case BL_INIT: msg = "not used"; break;
++		case BL_WAIT_FW: msg = "waiting for firmware"; break;
++		case BL_CONTACTING: msg = "contacting"; break;
++		case BL_LOADING: msg = "uploading"; break;
++		case BL_VERIFYING: msg = "verifying"; break;
++		case BL_DONE: msg = "OK"; break;
++		case BL_ERR: msg = "Error"; break;
++	}
++	return sprintf(buf, "%s\n", msg);
++}
++#endif
++
++
++static int __devinit supervisor_probe(struct spi_device *spi) {
++	struct supervisor_data *data;
++	int status = 0;
++	int i;
++
++	i = 0;
++
++	data = kzalloc(sizeof(*data), GFP_KERNEL);
++	if(!data)
++		return -ENOMEM;
++	status = spi_comm_init(&data->spic, spi, 10, (3*32+9));
++	if(status < 0) goto spi_comm_err;
++
++	data->rx_valid = 0;
++	init_waitqueue_head(&data->recvq);
++	spin_lock_init(&data->lock);
++
++	// Timer
++	setup_timer(&data->recvtimer, supervisor_rxinval, (unsigned long) data);
++	setup_timer(&data->sendtimer, supervisor_send, (unsigned long) data);
++
++	// SPI
++	spi_set_drvdata(spi, data);
++#ifndef CONFIG_SUPERVISOR_NOCHECK
++	data->spic.cb = supervisor_init_cb;
++	for(i=3;i>0;i--) {
++		unsigned long flags;
++		char buf[XM_SPI_BUF_SIZE] = { GE_VERSION, };
++		spin_lock_irqsave(&data->lock, flags);
++		if(spi_comm_busy(&data->spic)) {
++			msleep(100);
++			continue;
++		}
++		spi_comm_msg(&data->spic, buf);
++		spin_unlock_irqrestore(&data->lock, flags);
++		wait_event_interruptible_timeout(data->recvq, data->found,
++				msecs_to_jiffies(20));
++		if(data->found) break;
++	}
++	if(!data->found) {
++		dev_warn(&spi->dev, "No Supervisor-Chip found!\n");
++		status = -ENODEV;
++		goto notfound;
++	}
++#endif
++	data->spic.cb = supervisor_cb;
++#ifdef CONFIG_SUPERVISOR_BOOTLOADER
++	if(data->bootloader) bl_init(data);
++#endif
++	
++	// GPIO
++	memcpy(&data->gpioc, &supervisor_gpio, sizeof(supervisor_gpio));
++	data->gpioc.dev = &spi->dev;
++	status = gpiochip_add(&data->gpioc);
++	if(status < 0)
++		goto gpioerr;
++
++#ifdef CONFIG_SUPERVISOR_LED
++	// LEDs
++	for(i=0;i<ARRAY_SIZE(data->leds);i++) {
++		data->leds[i].name = kasprintf(GFP_KERNEL, "%s:led%i",
++				dev_name(&spi->dev), i);
++		if(data->leds[i].name == NULL) {
++			status = -ENOMEM;
++			goto ledmemerr;
++		}
++		data->leds[i].gpio = data->gpioc.base + i + 3;
++		data->leds[i].active_low = 1;
++	}
++	data->leds[0].default_trigger = "heartbeat";
++	data->leds[1].default_trigger = "nand-disk";
++	data->leds[2].default_trigger = "mmc0";
++	data->leds[3].default_trigger = "mmc1";
++	data->leds_plat.num_leds = i;
++	data->leds_plat.leds = data->leds;
++	data->leds_dev.name = "leds-gpio";
++	data->leds_dev.dev.platform_data = &data->leds_plat;
++	status = platform_device_register(&data->leds_dev);
++	if(status < 0)
++		goto lederr;
++#endif
++
++#ifdef CONFIG_SUPERVISOR_IRQ
++	data->firq = data->gpioc.base;
++	for(i=data->firq;i<(data->firq + 16);i++) {
++		set_irq_chip(i, &supervisor_irq);
++		set_irq_handler(i, handle_simple_irq);
++		set_irq_flags(i, IRQF_VALID);
++		set_irq_chip_data(i, data);
++	}
++#endif
++
++#ifdef CONFIG_SUPERVISOR_UART
++	setup_timer(&data->ussendtimer, ue_noptrans, (unsigned long) data);
++	setup_timer(&data->testtimer, ue_starttrans, (unsigned long) data);
++
++	for(i=0; i < UART_NR; i++) {
++		memcpy(&data->port[i].uart, &uartextender_porttemplate,
++				sizeof(uartextender_porttemplate));
++		pr_debug("set up uart %i (%p)\n", i, &data->port[i].uart);
++		data->port[i].uart.line = i;
++		data->port[i].uart.dev = &spi->dev;
++		data->port[i].data = data;
++		status = uart_add_one_port(&uartextender_uart,
++				&data->port[i].uart);
++		if(status)
++			pr_warning("Can't add port%i (%i)\n", i, status);
++	}
++#endif
++
++#if defined(CONFIG_SUPERVISOR_IRQ) || defined(CONFIG_SUPERVISOR_UART)
++//	data->hirq = (int) spi_get_drvdata(spi);
++	data->hirq = gpio_to_irq(4*32+18);
++	if(data->hirq <= 0) {
++		dev_warn(&spi->dev, "No interrupt!\n");
++		goto irqerr;
++	}
++	status = request_irq(data->hirq, supervisor_irqh, IRQ_TYPE_EDGE_BOTH,
++			"supervisor", data);
++	if(status < 0)
++		goto irqerr;
++#endif
++#ifdef CONFIG_SUPERVISOR_SYSFS
++	for(i=0; i< ARRAY_SIZE(sp_sensors); i++) {
++		if((status = device_create_file(&spi->dev,
++						&sp_sensors[i].dev_attr))<0)
++			goto sysfserr;
++	}
++#endif
++#ifdef CONFIG_SUPERVISOR_CNTIN
++	data->cnt_valid = 0;
++#endif
++
++	return 0;
++
++#ifdef CONFIG_SUPERVISOR_SYSFS
++	i = ARRAY_SIZE(sp_sensors);
++sysfserr:
++	for(;i>0;i--)
++		device_remove_file(&spi->dev, &sp_sensors[i-1].dev_attr);
++#endif
++#if defined(CONFIG_SUPERVISOR_IRQ) || defined(CONFIG_SUPERVISOR_UART)
++	free_irq(data->hirq, data);
++irqerr:
++#endif
++#ifdef CONFIG_SUPERVISOR_LED
++	platform_device_unregister(&data->leds_dev);
++	i = ARRAY_SIZE(data->leds);
++ledmemerr:
++	for(;i>0;i--)
++		kfree(data->leds[i].name);
++lederr:
++#endif
++	if(gpiochip_remove(&data->gpioc) < 0)
++		dev_warn(&spi->dev, "Can't remove GPIO-CHIP!");
++gpioerr:
++notfound:
++	spi_comm_destroy(&data->spic);
++spi_comm_err:
++	kfree(data);
++	return status;
++}
++
++static int __devexit supervisor_remove(struct spi_device *spi) {
++	struct supervisor_data *data = spi_get_drvdata(spi);
++	int i;
++
++#ifdef CONFIG_SUPERVISOR_SYSFS
++	for(i=0; i<ARRAY_SIZE(sp_sensors); i++)
++		device_remove_file(&spi->dev, &sp_sensors[i].dev_attr);
++#endif
++#if defined(CONFIG_SUPERVISOR_IRQ) || defined(CONFIG_SUPERVISOR_UART)
++	free_irq(data->hirq, data);
++#endif
++#ifdef CONFIG_SUPERVISOR_LED
++	platform_device_unregister(&data->leds_dev);
++	for(i=0;i<ARRAY_SIZE(data->leds);i++)
++		kfree(data->leds[i].name);
++#else
++	i = 0;
++#endif
++	if(gpiochip_remove(&data->gpioc) < 0)
++		dev_warn(&spi->dev, "Can't remove GPIO-CHIP!");
++	spi_comm_destroy(&data->spic);
++	kfree(data);
++	return 0;
++}
++
++static struct spi_driver supervisor_driver = {
++	.driver = {
++		.name = "supervisor",
++		.owner = THIS_MODULE,
++	},
++	.probe = supervisor_probe,
++	.remove = __devexit_p(supervisor_remove),
++};
++
++/*********************************************************
++ * Module Stuff
++ *********************************************************/
++static int __init supervisor_init(void) {
++	int status;
++#ifdef CONFIG_SUPERVISOR_UART
++	status = uart_register_driver(&uartextender_uart);
++	if(status < 0)
++		goto uart_err;
++#endif
++	status = spi_register_driver(&supervisor_driver);
++	if(status < 0)
++		goto spi_err;
++
++	return 0;
++
++	spi_unregister_driver(&supervisor_driver);
++spi_err:
++#ifdef CONFIG_SUPERVISOR_UART
++	uart_unregister_driver(&uartextender_uart);
++uart_err:
++#endif
++	return status;
++}
++module_init(supervisor_init);
++
++static void __exit supervisor_exit(void) {
++	spi_unregister_driver(&supervisor_driver);
++#ifdef CONFIG_SUPERVISOR_UART
++	uart_unregister_driver(&uartextender_uart);
++#endif
++}
++module_exit(supervisor_exit);
++
++MODULE_AUTHOR("Benjamin Tietz <benjamin.tietz@in-circuit.de>");
++MODULE_DESCRIPTION("ADB4000 Supervisor");
++MODULE_LICENSE("GPL");
++
+diff --git a/drivers/misc/adb4000/supervisor.h b/drivers/misc/adb4000/supervisor.h
+new file mode 100644
+index 0000000..6fdff83
+--- /dev/null
++++ b/drivers/misc/adb4000/supervisor.h
+@@ -0,0 +1,46 @@
++#ifndef __GPIOEXT_H
++#define __GPIOEXT_H
++
++#define GE_SOR	0x12
++#define GE_SIR	0x11
++#define GE_IOSR	0x10
++#define GE_PPR	0x20
++#define GE_ISR	0x33
++#define GE_IER	0x32
++#define GE_IDR	0x31
++#define GE_IMR	0x30
++#define GE_PER	0x42
++#define GE_PDR	0x41
++#define GE_PSR	0x40
++#define GE_OER	0x52
++#define GE_ODR	0x51
++#define GE_OSR	0x50
++#define GE_BUZZER	0x60
++#define GE_ADCSET	0x6F
++#define 	GE_ADCSET_V		(0<<0)
++#define 	GE_ADCSET_I		(1<<0)
++#define		GE_ADCSET_NOCAL		(0<<1)
++#define		GE_ADCSET_CALMIN	(1<<1)
++#define		GE_ADCSET_CALMAX	(2<<1)
++#define 	GE_ADCSET_CALMASK	(3<<1)
++#define GE_ADC(x)	(0x70 + (x))
++#define GE_ADCCALIB(x)	(0x74 + (x))
++#define GE_ADCGCAL(x)	(0x78 + (x))
++#define GE_ADCSCAL(x)	(0x7C + (x))
++#define GE_SETUP_USART	0x80
++#define	GE_VERSION	0x81
++#define GE_USART(x)	(0x90 + (x))
++#define GE_BUSART(x)	((int) (x) - 0x90)
++#define GE_CNTER_GET	0xA0
++#define GE_CNTER_SET	0xA1
++#define GE_BL_INFO	0xF0
++#define GE_BL_CMD	0xF1
++#define 	GE_BL_CMD_ERASEALL	0x10
++#define		GE_BL_CMD_ERASE		0x11
++#define		GE_BL_CMD_WRITE		0x12
++#define		GE_BL_CMD_LOAD		0x13
++#define		GE_BL_CMD_RESET		0xFF
++#define GE_BL_DATA	0xF2
++#define GE_BL_CHKSUM	0xF3
++
++#endif
+-- 
+1.7.3.3
+

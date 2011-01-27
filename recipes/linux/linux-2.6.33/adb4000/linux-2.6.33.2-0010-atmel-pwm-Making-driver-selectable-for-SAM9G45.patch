@@ -1,0 +1,26 @@
+From 636100a205fc74fe9a580792e0c81753faa827cf Mon Sep 17 00:00:00 2001
+From: Benjamin Tietz <benjamin@marvin.local.in-circuit.de>
+Date: Wed, 15 Dec 2010 14:03:02 +0100
+Subject: [PATCH 10/18] [atmel-pwm] Making driver selectable for SAM9G45
+
+The Core of the AT91SAM9G45 is compatible with this PWMdriver.
+---
+ drivers/misc/Kconfig |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+index 072c8a4..8d0a517 100644
+--- a/drivers/misc/Kconfig
++++ b/drivers/misc/Kconfig
+@@ -29,7 +29,7 @@ config AD525X_DPOT
+ 
+ config ATMEL_PWM
+ 	tristate "Atmel AT32/AT91 PWM support"
+-	depends on AVR32 || ARCH_AT91SAM9263 || ARCH_AT91SAM9RL || ARCH_AT91CAP9
++	depends on AVR32 || ARCH_AT91SAM9263 || ARCH_AT91SAM9RL || ARCH_AT91CAP9 || ARCH_AT91SAM9G45
+ 	help
+ 	  This option enables device driver support for the PWM channels
+ 	  on certain Atmel processors.  Pulse Width Modulation is used for
+-- 
+1.7.3.3
+

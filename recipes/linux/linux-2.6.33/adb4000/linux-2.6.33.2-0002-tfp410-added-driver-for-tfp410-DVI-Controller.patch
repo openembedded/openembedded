@@ -1,0 +1,270 @@
+From 29e785edcbd8e97eadc37bfbb7e22a66c3bbac6d Mon Sep 17 00:00:00 2001
+From: Benjamin Tietz <benjamin@marvin.local.in-circuit.de>
+Date: Wed, 15 Dec 2010 12:42:21 +0100
+Subject: [PATCH 02/18] [tfp410] added driver for tfp410 DVI-Controller
+
+This chip can be configured via I2C.
+Currently the gpio is coded into this driver.
+---
+ drivers/video/backlight/Kconfig  |    6 +
+ drivers/video/backlight/Makefile |    1 +
+ drivers/video/backlight/tfp410.c |  218 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 225 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/video/backlight/tfp410.c
+
+diff --git a/drivers/video/backlight/Kconfig b/drivers/video/backlight/Kconfig
+index 09bfa96..acf8a64 100644
+--- a/drivers/video/backlight/Kconfig
++++ b/drivers/video/backlight/Kconfig
+@@ -91,6 +91,12 @@ config LCD_TOSA
+ 	  If you have an Sharp SL-6000 Zaurus say Y to enable a driver
+ 	  for its LCD.
+ 
++config LCD_TFP410
++	tristate "TFP410 support"
++	depends on LCD_CLASS_DEVICE && I2C
++	default n
++
++
+ config LCD_HP700
+ 	tristate "HP Jornada 700 series LCD Driver"
+ 	depends on LCD_CLASS_DEVICE
+diff --git a/drivers/video/backlight/Makefile b/drivers/video/backlight/Makefile
+index 9a40554..846c2cc 100644
+--- a/drivers/video/backlight/Makefile
++++ b/drivers/video/backlight/Makefile
+@@ -10,6 +10,7 @@ obj-$(CONFIG_LCD_PLATFORM)	   += platform_lcd.o
+ obj-$(CONFIG_LCD_VGG2432A4)	   += vgg2432a4.o
+ obj-$(CONFIG_LCD_TDO24M)	   += tdo24m.o
+ obj-$(CONFIG_LCD_TOSA)		   += tosa_lcd.o
++obj-$(CONFIG_LCD_TFP410)	   += tfp410.o
+ 
+ obj-$(CONFIG_BACKLIGHT_CLASS_DEVICE) += backlight.o
+ obj-$(CONFIG_BACKLIGHT_ATMEL_PWM)    += atmel-pwm-bl.o
+diff --git a/drivers/video/backlight/tfp410.c b/drivers/video/backlight/tfp410.c
+new file mode 100644
+index 0000000..347a700
+--- /dev/null
++++ b/drivers/video/backlight/tfp410.c
+@@ -0,0 +1,218 @@
++/*
++ * Driver for the TFP410 DVI-Chip
++ *
++ * This currently just enables the chip
++ *
++ */
++
++#include <linux/i2c.h>
++#include <linux/sysfs.h>
++#include <linux/hwmon-sysfs.h>
++#include <linux/delay.h>
++#include <mach/gpio.h>
++
++#define TFP_VEN_ID	0x00
++#define TFP_VEN_ID1	0x01
++#define 	TFP_VEN_ID_TFP	0x014C
++#define TFP_DEV_ID	0x02
++#define TFP_DEV_ID1	0x03
++#define 	TFP_DEV_ID_TFP	0x0410
++#define TFP_REV_ID	0x04
++#define TFP_CTL1	0x08
++#define 	TFP_CTL1_nPD	(1<<0)
++#define 	TFP_CTL1_EDGE	(1<<1)
++#define 	TFP_CTL1_BSEL	(1<<2)
++#define 	TFP_CTL1_DSEL	(1<<3)
++#define 	TFP_CTL1_HEN	(1<<4)
++#define 	TFP_CTL1_VEN	(1<<5)
++#define 	TFP_CTL1_TDIS	(1<<6)
++#define TFP_CTL2	0x09
++#define 	TFP_CTL2_MDI	(1<<0)
++#define 	TFP_CTL2_HTPLG	(1<<1)
++#define 	TFP_CTL2_RSEN	(1<<2)
++#define 	TFP_CTL2_TSEL	(1<<3)
++#define 	TFP_CTL2_MSEL(x)	((x)<<4)
++#define			TFP_MSEL_DIS	0x00
++#define			TFP_MSEL_MDI	0x01
++#define			TFP_MSEL_RSEN	0x02
++#define			TFP_MSEL_HTPLG	0x03
++#define 	TFP_CTL2_VLOW	(1<<7)
++#define TFP_CTL3	0x0A
++#define		TFP_CTL3_CTL(x)	((x)<<1)
++#define		TFP_CTL3_DKEN	(1<<4)
++#define		TFP_CTL3_DK(x)	((x)<<5)
++#define TFP_CFG		0x0B
++#define TFP_DE_DLY	0x32
++#define TFP_DE_CTL	0x33
++#define		TFP_DE_CTL_DLY8		(1<<0)
++#define		TFP_DE_CTL_HS_POL	(1<<4)
++#define		TFP_DE_CTL_VS_POL	(1<<5)
++#define		TFP_DE_CTL_DE_GEN	(1<<6)
++#define TFP_DE_TOP	0x34
++#define TFP_DE_CNT	0x36
++#define TFP_DE_CNT1	0x37
++#define TFP_DE_LIN	0x38
++#define TFP_DE_LIN1	0x39
++#define TFP_H_RES	0x3A
++#define TFP_H_RES1	0x3B
++#define TFP_V_RES	0x3C
++#define TFP_V_RES1	0x3D
++
++
++static inline int tfp410_write_byte(struct i2c_client *client,
++		char reg, char data) {
++	return i2c_smbus_write_byte_data(client,reg,data);
++}
++
++static inline int tfp410_write_word(struct i2c_client *client,
++		char reg, short data) {
++	int ret;
++	ret = i2c_smbus_write_byte_data(client,reg,(data & 0x00FF));
++	if(ret < 0) return ret;
++	ret = i2c_smbus_write_byte_data(client,reg+1,(data >> 8));
++	if(ret < 0) return ret;
++	return 2;
++}
++
++static inline int tfp410_write_dword(struct i2c_client *client,
++		char reg, long data) {
++	int ret;
++	ret = i2c_smbus_write_byte_data(client,reg+0,((data >>  0) & 0x00FF));
++	if(ret < 0) return ret;
++	ret = i2c_smbus_write_byte_data(client,reg+1,((data >>  8) & 0x00FF));
++	if(ret < 0) return ret;
++	ret = i2c_smbus_write_byte_data(client,reg+2,((data >> 16) & 0x00FF));
++	if(ret < 0) return ret;
++	ret = i2c_smbus_write_byte_data(client,reg+3,((data >> 24) & 0x00FF));
++	if(ret < 0) return ret;
++	return 2;
++}
++
++static inline int tfp410_read_byte(struct i2c_client *client, char reg) {
++	return i2c_smbus_read_byte_data(client, reg);
++}
++
++static inline int tfp410_read_word(struct i2c_client *client, char reg) {
++	int ret, ret2;
++
++	ret = i2c_smbus_read_byte_data(client, reg);
++	if(ret < 0) return ret;
++	ret2 = i2c_smbus_read_byte_data(client, reg+1);
++	if(ret2 < 0) return ret2;
++	return (ret & 0x00FF) | (ret2 << 8);
++}
++
++static ssize_t dump_regs(struct device *dev, struct device_attribute *attr, 
++		char *buf) {
++	struct i2c_client *client = to_i2c_client(dev);
++
++	return sprintf(buf, 
++			"Vendor: %04x\nDevice: %04x\nRevision: %02x\n"
++			"CTL1: %02x\nCTL2: %02x\nCTL3: %02x\nCFG: %02x\n"
++			"DE_DLY: %04x\nDE_CTL: %02x\nDE_TOP: %02x\n"
++			"DE_CNT: %04i\nDE_LIN: %04i\n"
++			"H_RES: %04i\nV_RES: %04i\n",
++			tfp410_read_word(client, TFP_VEN_ID),
++			tfp410_read_word(client, TFP_DEV_ID),
++			tfp410_read_byte(client, TFP_REV_ID),
++			tfp410_read_byte(client, TFP_CTL1),
++			tfp410_read_byte(client, TFP_CTL2),
++			tfp410_read_byte(client, TFP_CTL3),
++			tfp410_read_byte(client, TFP_CFG),
++			tfp410_read_byte(client, TFP_DE_DLY),
++			tfp410_read_byte(client, TFP_DE_CTL),
++			tfp410_read_byte(client, TFP_DE_TOP),
++			tfp410_read_word(client, TFP_DE_CNT),
++			tfp410_read_word(client, TFP_DE_LIN),
++			tfp410_read_word(client, TFP_H_RES),
++			tfp410_read_word(client, TFP_V_RES));
++
++}
++
++static SENSOR_DEVICE_ATTR(regs, S_IRUGO, dump_regs, NULL, 0);
++
++static struct attribute *tfp410_attributes[] = {
++	&sensor_dev_attr_regs.dev_attr.attr,
++	NULL,
++};
++
++static const struct attribute_group tfp410_group = {
++	.attrs = tfp410_attributes,
++};
++
++#ifdef CONFIG_ARCH_AT91SAM9G45
++#define TFP410_RESET_PIN	65 // PB1
++#else
++#define TFP410_RESET_PIN	1 // PA1
++#endif
++
++static int tfp410_probe(struct i2c_client *client,
++		const struct i2c_device_id *dev_id) {
++	int ret = 0;
++	int reg;
++	if(!i2c_check_functionality(client->adapter,
++				I2C_FUNC_SMBUS_BYTE_DATA))
++		goto exit;
++	dev_info(&client->dev, "chip found\n");
++	gpio_request(TFP410_RESET_PIN, "tfp410.reset");
++	gpio_direction_output(TFP410_RESET_PIN, 0);
++	msleep(4);
++	gpio_set_value(TFP410_RESET_PIN, 1);
++	msleep(4);
++	reg = tfp410_read_word(client, TFP_VEN_ID);
++	if(reg != TFP_VEN_ID_TFP) {
++		dev_warn(&client->dev, "VID doesn't match %04x vs. %04x\n",
++				reg, TFP_VEN_ID_TFP);
++		goto exit;
++	}
++	// Init the chip
++	tfp410_write_byte(client, TFP_CTL1,
++			(TFP_CTL1_nPD | tfp410_read_byte(client, TFP_CTL1)) 
++			& ~TFP_CTL1_TDIS);
++	tfp410_write_byte(client, TFP_DE_CTL,0
++			|TFP_DE_CTL_VS_POL|TFP_DE_CTL_HS_POL
++			);
++	ret = sysfs_create_group(&client->dev.kobj, &tfp410_group);
++	if(ret) goto exit;
++
++
++	return 0;
++
++	sysfs_remove_group(&client->dev.kobj, &tfp410_group);
++exit:
++	return ret;
++}
++
++static int __devexit tfp410_remove(struct i2c_client *client) {
++	sysfs_remove_group(&client->dev.kobj, &tfp410_group);
++	return 0;
++}
++
++static const struct i2c_device_id tfp410_id[] = {
++	{ "tfp410", 0x3F },
++	{},
++};
++
++static struct i2c_driver tfp410_driver = {
++	.driver = {
++		.name = "tfp410",
++	},
++	.probe = tfp410_probe,
++	.remove = __devexit_p(tfp410_remove),
++	.id_table = tfp410_id,
++};
++
++static int __init tfp410_init(void) {
++	return i2c_add_driver(&tfp410_driver);
++}
++module_init(tfp410_init);
++
++static void __exit tfp410_exit(void) {
++	i2c_del_driver(&tfp410_driver);
++}
++module_exit(tfp410_exit);
++
++MODULE_AUTHOR("Benjamin Tietz <benjamin.tietz@in-circuit.de>");
++MODULE_DESCRIPTION("TFP410 Display Driver");
++MODULE_LICENSE("GPL");
++
+-- 
+1.7.3.3
+

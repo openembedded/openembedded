@@ -1,0 +1,448 @@
+From f5432c38d18ae2b36483ab485ea4d2a3363302de Mon Sep 17 00:00:00 2001
+From: Benjamin Tietz <benjamin.tietz@in-circuit.de>
+Date: Thu, 16 Dec 2010 13:55:21 +0100
+Subject: [PATCH 18/18] [ICnova] Adding ADB4000
+
+This will add support for the ICnova ADB4000 equipped with an
+ICnova SAM9G45 SO-Dimm.
+---
+ arch/arm/mach-at91/Kconfig                |    9 +-
+ arch/arm/mach-at91/Makefile               |    1 +
+ arch/arm/mach-at91/at91sam9g45_devices.c  |    2 +
+ arch/arm/mach-at91/board-icnova_adb4000.c |  371 +++++++++++++++++++++++++++++
+ 4 files changed, 381 insertions(+), 2 deletions(-)
+ create mode 100644 arch/arm/mach-at91/board-icnova_adb4000.c
+
+diff --git a/arch/arm/mach-at91/Kconfig b/arch/arm/mach-at91/Kconfig
+index 3c984e1..82fb410 100644
+--- a/arch/arm/mach-at91/Kconfig
++++ b/arch/arm/mach-at91/Kconfig
+@@ -386,8 +386,7 @@ config MACH_ICNOVA_ADB1004
+ 	bool "In-Circuit ADB1004 G45 Evaluation Kit"
+ 	help
+ 	  Select this if you are using In-Circuit's ICnova G45 on an ADB1004
+-	  Development Board. The Configration currently supports the version
+-	  using the 4.3inch Display
++	  Development Board.
+ 
+ config MACH_ICNOVA_ADB3000
+ 	bool "In-Circuit ADB3000 G45/FPGA Evaluation Kit"
+@@ -395,6 +394,12 @@ config MACH_ICNOVA_ADB3000
+ 	  Select this if you are using In-Circuit's ICnova G45 on an ADB3000
+ 	  Development Board.
+ 
++config MACH_ICNOVA_ADB4000
++	bool "In-Circuit ADB4000 G45-SODIMM Evaluation Kit"
++	help
++	  Select this if you are using In-Circuit's ICnova G45 SO-Dimm on an
++	  ADB4000 Development Board.
++
+ endif
+ 
+ config ICNOVA_ET050000
+diff --git a/arch/arm/mach-at91/Makefile b/arch/arm/mach-at91/Makefile
+index be44d7f..c982c06 100644
+--- a/arch/arm/mach-at91/Makefile
++++ b/arch/arm/mach-at91/Makefile
+@@ -69,6 +69,7 @@ obj-$(CONFIG_MACH_ICNOVA_ADB1000) += board-icnova_adb1000.o
+ obj-$(CONFIG_MACH_ICNOVA_ADB1002) += board-icnova_adb1002.o
+ obj-$(CONFIG_MACH_ICNOVA_ADB1004) += board-icnova_adb1004.o
+ obj-$(CONFIG_MACH_ICNOVA_ADB3000) += board-icnova_adb3000.o
++obj-$(CONFIG_MACH_ICNOVA_ADB4000) += board-icnova_adb4000.o
+ 
+ # AT91CAP9 board-specific support
+ obj-$(CONFIG_MACH_AT91CAP9ADK)	+= board-cap9adk.o
+diff --git a/arch/arm/mach-at91/at91sam9g45_devices.c b/arch/arm/mach-at91/at91sam9g45_devices.c
+index 0f9955f..f0126de 100644
+--- a/arch/arm/mach-at91/at91sam9g45_devices.c
++++ b/arch/arm/mach-at91/at91sam9g45_devices.c
+@@ -502,7 +502,9 @@ void __init at91_add_device_eth(struct at91_eth_data *data)
+ 		at91_set_B_periph(AT91_PIN_PA28, 0);	/* ERXCK */
+ 		at91_set_B_periph(AT91_PIN_PA6,  0);	/* ETX2 */
+ 		at91_set_B_periph(AT91_PIN_PA7,  0);	/* ETX3 */
++#ifndef CONFIG_MACH_ICNOVA_ADB4000
+ 		at91_set_B_periph(AT91_PIN_PA27, 0);	/* ETXER */
++#endif
+ 	}
+ 
+ 	eth_data = *data;
+diff --git a/arch/arm/mach-at91/board-icnova_adb4000.c b/arch/arm/mach-at91/board-icnova_adb4000.c
+new file mode 100644
+index 0000000..f079b4c
+--- /dev/null
++++ b/arch/arm/mach-at91/board-icnova_adb4000.c
+@@ -0,0 +1,371 @@
++/*
++ *  Board-specific setup code for the AT91SAM9M10G45 Evaluation Kit family
++ *
++ *  Covers: * AT91SAM9G45-EKES  board
++ *          * AT91SAM9M10G45-EK board
++ *
++ *  Copyright (C) 2009 Atmel Corporation.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ */
++
++#include <linux/types.h>
++#include <linux/init.h>
++#include <linux/mm.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/spi/spi.h>
++#include <linux/spi/ads7846.h>
++#include <linux/fb.h>
++#include <linux/gpio_keys.h>
++#include <linux/input.h>
++#include <linux/leds.h>
++#include <linux/clk.h>
++
++#include <mach/hardware.h>
++#include <video/atmel_lcdc.h>
++
++#include <asm/setup.h>
++#include <asm/mach-types.h>
++#include <asm/irq.h>
++
++#include <asm/mach/arch.h>
++#include <asm/mach/map.h>
++#include <asm/mach/irq.h>
++
++#include <mach/hardware.h>
++#include <mach/board.h>
++#include <mach/gpio.h>
++#include <mach/at91sam9_smc.h>
++#include <mach/at91_shdwc.h>
++
++#include "sam9_smc.h"
++#include "generic.h"
++
++
++static void __init ek_map_io(void)
++{
++	/* Initialize processor: 12.000 MHz crystal */
++	at91sam9g45_initialize(12000000);
++
++	/* DGBU on ttyS0. (Rx & Tx only) */
++	at91_register_uart(0, 0, 0);
++
++	// For RS485 you might enable ATMEL_UART_RTS instead of 0
++	at91_register_uart(AT91SAM9G45_ID_US0, 1, 0);
++	at91_register_uart(AT91SAM9G45_ID_US1, 2, 0);
++	at91_register_uart(AT91SAM9G45_ID_US2, 3, 0);
++	//at91_register_uart(AT91SAM9G45_ID_US3, 4, 0);
++
++	/* set serial console to ttyS0 (ie, DBGU) */
++	at91_set_serial_console(0);
++}
++
++static void __init ek_init_irq(void)
++{
++	at91sam9g45_init_interrupts(NULL);
++}
++
++
++/*
++ * USB HS Host port (common to OHCI & EHCI)
++ */
++static struct at91_usbh_data __initdata ek_usbh_hs_data = {
++	.ports		= 2,
++//	.vbus_pin	= {AT91_PIN_PB12, AT91_PIN_PB13, },
++};
++
++/*
++ * I2C devices
++ */
++static struct i2c_board_info icnova_i2c[] = {
++	{ I2C_BOARD_INFO("m41t82", 0x68) },
++};
++
++static struct i2c_board_info icnova_i2c2[] = {
++};
++
++/*
++ * SPI devices.
++ */
++
++#define CONFIG_BOARD_ICNOVA_ADS7846_IRQ	AT91_PIN_PC30
++#define CONFIG_BOARD_ICNOVA_ADS7846_CS	1
++static struct ads7846_platform_data ads_info = {
++	.model                  = 7846,
++	.vref_delay_usecs       = 100,
++	.gpio_pendown           = CONFIG_BOARD_ICNOVA_ADS7846_IRQ,
++	.x_min                  = 180,//330,
++	.y_min                  = 3827,//3700,
++	.x_max                  = 3900,//3700,
++	.y_max                  = 150,//330,
++	.xy_fuzz		= 40,
++	.pressure_max		= 0xFFF0,
++	.pressure_min		= 0xF100,
++	.settle_delay_usecs     = 200,
++	.debounce_rep		= 4,
++	.debounce_tol		= 40,
++	.debounce_max		= 10,
++};
++
++static struct spi_board_info ek_spi_devices[] = {
++	{
++		.modalias       = "ads7846",
++		.max_speed_hz   = 125000 * 26,
++		.chip_select    = CONFIG_BOARD_ICNOVA_ADS7846_CS,
++		.platform_data  = &ads_info,
++		.bus_num        = 0,
++		.controller_data = (void *) AT91_PIN_PD24,
++	},
++	{
++		.modalias       = "supervisor",
++		.max_speed_hz   = 550000,
++		.chip_select    = 0,
++		.platform_data  = NULL,
++		.bus_num        = 0,
++	},
++
++};
++
++
++/*
++ * MACB Ethernet device
++ */
++static struct at91_eth_data __initdata ek_macb_data = {
++	.phy_irq_pin	= AT91_PIN_PA27,
++};
++
++
++/*
++ * NAND flash
++ */
++static struct mtd_partition __initdata ek_nand_partition[] = {
++	{
++		.name	= "Kernel",
++		.offset	= 0,
++		.size	= SZ_4M,
++	},
++	{
++		.name	= "Data",
++		.offset	= MTDPART_OFS_NXTBLK,
++		.size	= MTDPART_SIZ_FULL,
++	},
++};
++
++static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
++{
++	*num_partitions = ARRAY_SIZE(ek_nand_partition);
++	return ek_nand_partition;
++}
++
++/* det_pin is not connected */
++static struct atmel_nand_data __initdata ek_nand_data = {
++	.ale		= 21,
++	.cle		= 22,
++	.rdy_pin	= AT91_PIN_PC8,
++	.enable_pin	= AT91_PIN_PC14,
++	.partition_info	= nand_partitions,
++	.bus_width_16	= 0,
++};
++
++static struct sam9_smc_config __initdata ek_nand_smc_config = {
++	.ncs_read_setup		= 0,
++	.nrd_setup		= 10,
++	.ncs_write_setup	= 0,
++	.nwe_setup		= 10,
++
++	.ncs_read_pulse		= 50,
++	.nrd_pulse		= 30,
++	.ncs_write_pulse	= 50,
++	.nwe_pulse		= 30,
++
++	.read_cycle		= 60,
++	.write_cycle		= 60,
++
++	.mode			= AT91_SMC_READMODE | AT91_SMC_WRITEMODE | AT91_SMC_EXNWMODE_DISABLE | AT91_SMC_DBW_8,
++	.tdf_cycles		= 4,
++};
++
++static void __init ek_add_device_nand(void)
++{
++	/* configure chip-select 3 (NAND) */
++	sam9_smc_configure(3, &ek_nand_smc_config);
++
++	at91_add_device_nand(&ek_nand_data);
++}
++
++/*
++ * MCI (SD/MMC)
++ */
++static struct mci_platform_data __initdata ek_mmc_data = {
++	.slot[0] = {
++		.bus_width	= 4,
++		.detect_pin	= AT91_PIN_PC6,
++		.wp_pin		= -1,
++	},
++};
++
++static struct mci_platform_data __initdata ek_mmc_data1 = {
++	.slot[0] = {
++		.bus_width	= 4,
++		.detect_pin	= AT91_PIN_PC7,
++		.wp_pin		= -1,
++	},
++};
++
++
++/*
++ * LCD Controller
++ */
++#if defined(CONFIG_FB_ATMEL) || defined(CONFIG_FB_ATMEL_MODULE)
++static struct fb_videomode at91_tft_vga_modes[] = {
++	{
++		.name           = "VGA",
++		.refresh	= 50,
++		.xres		= 800,		.yres		= 480,
++		.pixclock	= 25000,
++
++		.left_margin	= 178,		.right_margin	= 38,
++		.upper_margin	= 35,		.lower_margin	= 8,
++		.hsync_len	= 40,		.vsync_len	= 2,
++
++		.vmode		= FB_VMODE_NONINTERLACED,
++	}
++};
++
++static struct fb_monspecs at91fb_default_monspecs = {
++	.manufacturer	= "Hita",
++	.monitor        = "TX20D26VM0APA",
++
++	.modedb		= at91_tft_vga_modes,
++	.modedb_len	= ARRAY_SIZE(at91_tft_vga_modes),
++	.hfmin		= 16700,
++	.hfmax		= 41700,
++	.vfmin		= 47,
++	.vfmax		= 75,
++};
++
++#define AT91SAM9G45_DEFAULT_LCDCON2 	(ATMEL_LCDC_MEMOR_LITTLE \
++					| ATMEL_LCDC_DISTYPE_TFT \
++					| ATMEL_LCDC_INVCLK \
++					| ATMEL_LCDC_CLKMOD_ALWAYSACTIVE)
++					//| ATMEL_LCDC_INVDVAL 
++
++/* Driver datas */
++static struct atmel_lcdfb_info __initdata ek_lcdc_data = {
++	.lcdcon_is_backlight		= true,
++	.default_bpp			= /*24*/16,
++	.default_dmacon			= ATMEL_LCDC_DMAEN | ATMEL_LCDC_DMA2DEN,
++	.default_lcdcon2		= AT91SAM9G45_DEFAULT_LCDCON2,
++	.default_monspecs		= &at91fb_default_monspecs,
++	.guard_time			= 9,
++	.lcd_wiring_mode		= ATMEL_LCDC_WIRING_RGB,
++};
++
++#else
++static struct atmel_lcdfb_info __initdata ek_lcdc_data;
++#endif
++
++#if 0
++static struct platform_device icnova_pwmdev = {
++	.name = "atmel-pwm-hwmon",
++	.id = 0,
++};
++#endif
++
++/*
++ * Btns
++ */
++static struct gpio_keys_button buttons[] = {
++#ifdef CONFIG_SUPERVISOR_IRQ
++	{
++		.code		= KEY_BACK,
++		.gpio		= 240,
++		.active_low	= 1,
++		.desc		= "back",
++		.wakeup		= 1,
++	},
++	{
++		.code		= KEY_HOME,
++		.gpio		= 241,
++		.active_low	= 1,
++		.desc		= "home",
++		.wakeup		= 1,
++	},
++	{
++		.code		= KEY_MENU,
++		.gpio		= 242,
++		.active_low	= 1,
++		.desc		= "menu",
++		.wakeup		= 1,
++	},
++#endif
++};
++
++static struct gpio_keys_platform_data button_data = {
++	.buttons	= buttons,
++	.nbuttons	= ARRAY_SIZE(buttons),
++};
++
++static struct platform_device button_device = {
++	.name		= "gpio-keys",
++	.id		= -1,
++	.num_resources	= 0,
++	.dev		= {
++		.platform_data	= &button_data,
++	},
++};
++
++
++static void __init ek_board_init(void)
++{
++	/* Serial */
++	at91_add_device_serial();
++	/* USB HS Host */
++	gpio_request(AT91_PIN_PB8, "usbhub.reset");
++	gpio_direction_output(AT91_PIN_PB8, 1);
++	at91_add_device_usbh_ehci(&ek_usbh_hs_data);
++	at91_add_device_usbh_ohci(&ek_usbh_hs_data);
++	/* USB HS Device */
++	at91_add_device_usba(NULL);
++	/* SPI */
++	ek_spi_devices[0].irq = gpio_to_irq(CONFIG_BOARD_ICNOVA_ADS7846_IRQ),
++	at91_add_device_spi(ek_spi_devices, ARRAY_SIZE(ek_spi_devices));
++	/* MMC */
++	at91_add_device_mci(0, &ek_mmc_data);
++	at91_add_device_mci(1, &ek_mmc_data1);
++	/* Ethernet */
++	at91_add_device_eth(&ek_macb_data);
++	/* NAND */
++	ek_add_device_nand();
++	/* I2C */
++	at91_add_device_i2c(0, icnova_i2c, ARRAY_SIZE(icnova_i2c));
++	at91_add_device_i2c(1, icnova_i2c2, ARRAY_SIZE(icnova_i2c2));
++	/* LCD Controller */
++	gpio_request(AT91_PIN_PE1, "lcdc.mode");
++	gpio_direction_output(AT91_PIN_PE1, 1);
++	gpio_request(AT91_PIN_PE0, "lcdc.pwr");
++	gpio_direction_output(AT91_PIN_PE0, 1);
++
++	at91_add_device_lcdc(&ek_lcdc_data);
++	/* SSC (for SSM2603) */
++	at91_add_device_ssc(AT91SAM9G45_ID_SSC0,
++			ATMEL_SSC_TX|ATMEL_SSC_RD|ATMEL_SSC_RF);
++	/* BTN */
++	platform_device_register(&button_device);
++}
++
++MACHINE_START(AT91SAM9G45EKES, "In-Circuit ICnova SAM9G45 SO-DIMM")
++	/* Maintainer: Atmel */
++	.phys_io	= AT91_BASE_SYS,
++	.io_pg_offst	= (AT91_VA_BASE_SYS >> 18) & 0xfffc,
++	.boot_params	= AT91_SDRAM_BASE + 0x100,
++	.timer		= &at91sam926x_timer,
++	.map_io		= ek_map_io,
++	.init_irq	= ek_init_irq,
++	.init_machine	= ek_board_init,
++MACHINE_END
+-- 
+1.7.3.3
+

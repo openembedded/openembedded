@@ -1,0 +1,215 @@
+From e301c6a08d806a0afe79681c5ff55282def3f0ba Mon Sep 17 00:00:00 2001
+From: Benjamin Tietz <benjamin@marvin.local.in-circuit.de>
+Date: Wed, 15 Dec 2010 13:57:22 +0100
+Subject: [PATCH 07/18] [atmel_tsadcc] adding support for pressure-measurement
+
+Needed for a properly working tslib.
+---
+ drivers/input/touchscreen/atmel_tsadcc.c |  123 ++++++++++++++++++++----------
+ 1 files changed, 84 insertions(+), 39 deletions(-)
+
+diff --git a/drivers/input/touchscreen/atmel_tsadcc.c b/drivers/input/touchscreen/atmel_tsadcc.c
+index 3d9b516..722fba5 100644
+--- a/drivers/input/touchscreen/atmel_tsadcc.c
++++ b/drivers/input/touchscreen/atmel_tsadcc.c
+@@ -12,6 +12,7 @@
+  *  it under the terms of the GNU General Public License version 2 as
+  *  published by the Free Software Foundation.
+  */
++#define DEBUG
+ #include <linux/init.h>
+ #include <linux/err.h>
+ #include <linux/kernel.h>
+@@ -25,6 +26,8 @@
+ #include <mach/board.h>
+ #include <mach/cpu.h>
+ 
++#define CONFIG_ATMEL_TSADCC_PRESS	1
++
+ /* Register definitions based on AT91SAM9RL64 preliminary draft datasheet */
+ 
+ #define ATMEL_TSADCC_CR		0x00	/* Control register */
+@@ -74,6 +77,9 @@
+ #define	  ATMEL_TSADCC_RXBUFF	(1 << 19)	/* TX Buffer full */
+ #define	  ATMEL_TSADCC_PENCNT	(1 << 20)	/* Pen contact */
+ #define	  ATMEL_TSADCC_NOCNT	(1 << 21)	/* No contact */
++#define   ATMEL_TSADCC_EOCXP	(1 << 24)	/* End of conversion Xposition */
++#define   ATMEL_TSADCC_EOCZ1	(1 << 25)	/* End of conversion Z1 */
++#define   ATMEL_TSADCC_EOCZ2	(1 << 26)	/* End of conversion Z2 */
+ 
+ #define ATMEL_TSADCC_LCDR	0x20	/* Last Converted Data register */
+ #define	  ATMEL_TSADCC_DATA	(0x3ff << 0)	/* Channel data */
+@@ -103,6 +109,7 @@ struct atmel_tsadcc {
+ 	int			irq;
+ 	unsigned int		prev_absx;
+ 	unsigned int		prev_absy;
++	unsigned int		prev_press;
+ 	unsigned char		bufferedmeasure;
+ };
+ 
+@@ -110,6 +117,47 @@ static void __iomem		*tsc_base;
+ 
+ #define atmel_tsadcc_read(reg)		__raw_readl(tsc_base + (reg))
+ #define atmel_tsadcc_write(reg, val)	__raw_writel((val), tsc_base + (reg))
++#ifdef CONFIG_ATMEL_TSADCC_PRESS
++#define ATMEL_TSADCC_IRQ_MASK	\
++	(ATMEL_TSADCC_EOC(3) | ATMEL_TSADCC_EOC(1) | ATMEL_TSADCC_EOCXP | ATMEL_TSADCC_NOCNT)
++#else
++#define ATMEL_TSADCC_IRQ_MASK	\
++	(ATMEL_TSADCC_EOC(3) | ATMEL_TSADCC_EOC(1) | ATMEL_TSADCC_NOCNT)
++#endif
++
++
++static inline void atmel_tsadcc_irq_nocnt(struct input_dev *input_dev) {
++	unsigned int reg;
++	/* Contact lost */
++	reg = atmel_tsadcc_read(ATMEL_TSADCC_MR) | ATMEL_TSADCC_PENDBC;
++
++	atmel_tsadcc_write(ATMEL_TSADCC_MR, reg);
++	atmel_tsadcc_write(ATMEL_TSADCC_TRGR, ATMEL_TSADCC_TRGMOD_NONE);
++	atmel_tsadcc_write(ATMEL_TSADCC_IDR, ATMEL_TSADCC_IRQ_MASK);
++	atmel_tsadcc_write(ATMEL_TSADCC_IER, ATMEL_TSADCC_PENCNT);
++
++	input_report_abs(input_dev, ABS_PRESSURE, 0);
++	input_report_key(input_dev, BTN_TOUCH, 0);
++	input_sync(input_dev);
++	return;
++}
++
++static inline void atmel_tsadcc_irq_pencnt(struct input_dev *input_dev) {
++	unsigned int reg;
++	/* Pen detected */
++	reg = atmel_tsadcc_read(ATMEL_TSADCC_MR);
++	reg &= ~ATMEL_TSADCC_PENDBC;
++
++	atmel_tsadcc_write(ATMEL_TSADCC_IDR, ATMEL_TSADCC_PENCNT);
++	atmel_tsadcc_write(ATMEL_TSADCC_MR, reg);
++	atmel_tsadcc_write(ATMEL_TSADCC_IER, ATMEL_TSADCC_IRQ_MASK);
++	atmel_tsadcc_write(ATMEL_TSADCC_TRGR,
++			   ATMEL_TSADCC_TRGMOD_PERIOD | (0x0FFF << 16));
++	return;
++}
++
++#define atmel_tsadcc_irq_posresult(reg0, reg1) \
++	((atmel_tsadcc_read(reg1) << 10) / atmel_tsadcc_read(reg0))
+ 
+ static irqreturn_t atmel_tsadcc_interrupt(int irq, void *dev)
+ {
+@@ -117,59 +165,48 @@ static irqreturn_t atmel_tsadcc_interrupt(int irq, void *dev)
+ 	struct input_dev	*input_dev = ts_dev->input;
+ 
+ 	unsigned int status;
+-	unsigned int reg;
++
++	unsigned int z1, z2, xp;
+ 
+ 	status = atmel_tsadcc_read(ATMEL_TSADCC_SR);
+ 	status &= atmel_tsadcc_read(ATMEL_TSADCC_IMR);
+ 
+ 	if (status & ATMEL_TSADCC_NOCNT) {
+-		/* Contact lost */
+-		reg = atmel_tsadcc_read(ATMEL_TSADCC_MR) | ATMEL_TSADCC_PENDBC;
+-
+-		atmel_tsadcc_write(ATMEL_TSADCC_MR, reg);
+-		atmel_tsadcc_write(ATMEL_TSADCC_TRGR, ATMEL_TSADCC_TRGMOD_NONE);
+-		atmel_tsadcc_write(ATMEL_TSADCC_IDR,
+-				   ATMEL_TSADCC_EOC(3) | ATMEL_TSADCC_NOCNT);
+-		atmel_tsadcc_write(ATMEL_TSADCC_IER, ATMEL_TSADCC_PENCNT);
+-
+-		input_report_key(input_dev, BTN_TOUCH, 0);
++		atmel_tsadcc_irq_nocnt(input_dev);
+ 		ts_dev->bufferedmeasure = 0;
+-		input_sync(input_dev);
+-
++		pr_debug("no contact\n");
+ 	} else if (status & ATMEL_TSADCC_PENCNT) {
+-		/* Pen detected */
+-		reg = atmel_tsadcc_read(ATMEL_TSADCC_MR);
+-		reg &= ~ATMEL_TSADCC_PENDBC;
+-
+-		atmel_tsadcc_write(ATMEL_TSADCC_IDR, ATMEL_TSADCC_PENCNT);
+-		atmel_tsadcc_write(ATMEL_TSADCC_MR, reg);
+-		atmel_tsadcc_write(ATMEL_TSADCC_IER,
+-				   ATMEL_TSADCC_EOC(3) | ATMEL_TSADCC_NOCNT);
+-		atmel_tsadcc_write(ATMEL_TSADCC_TRGR,
+-				   ATMEL_TSADCC_TRGMOD_PERIOD | (0x0FFF << 16));
+-
++		atmel_tsadcc_irq_pencnt(input_dev);
++		pr_debug("contact\n");
++#ifdef CONFIG_ATMEL_TSADCC_PRESS
++	} else if (status & ATMEL_TSADCC_EOCXP) {
++		z1 = atmel_tsadcc_read(ATMEL_TSADCC_Z1DAT);
++		z2 = atmel_tsadcc_read(ATMEL_TSADCC_Z2DAT);
++		xp = atmel_tsadcc_read(ATMEL_TSADCC_XPOS);
++		pr_debug("z = %i/%i*%i\n", z2, z1, xp);
++		ts_dev->prev_press = ((z2 - z1) * xp)/z1;
++#endif
++	} else if (status & ATMEL_TSADCC_EOC(1)) {
++		ts_dev->prev_absy = atmel_tsadcc_irq_posresult(
++					ATMEL_TSADCC_CDR0, ATMEL_TSADCC_CDR1);
+ 	} else if (status & ATMEL_TSADCC_EOC(3)) {
+-		/* Conversion finished */
+-
+-		if (ts_dev->bufferedmeasure) {
++		ts_dev->prev_absx = atmel_tsadcc_irq_posresult(
++					ATMEL_TSADCC_CDR2, ATMEL_TSADCC_CDR3);
++		//if (ts_dev->bufferedmeasure) {
+ 			/* Last measurement is always discarded, since it can
+ 			 * be erroneous.
+ 			 * Always report previous measurement */
++			pr_debug("send x=%i, y=%i, z=%i\n", ts_dev->prev_absx,
++					ts_dev->prev_absy, ts_dev->prev_press);
+ 			input_report_abs(input_dev, ABS_X, ts_dev->prev_absx);
+ 			input_report_abs(input_dev, ABS_Y, ts_dev->prev_absy);
++			input_report_abs(input_dev, ABS_PRESSURE, 
++					3072 - ts_dev->prev_press);
+ 			input_report_key(input_dev, BTN_TOUCH, 1);
+ 			input_sync(input_dev);
+-		} else
+-			ts_dev->bufferedmeasure = 1;
+-
+-		/* Now make new measurement */
+-		ts_dev->prev_absx = atmel_tsadcc_read(ATMEL_TSADCC_CDR3) << 10;
+-		ts_dev->prev_absx /= atmel_tsadcc_read(ATMEL_TSADCC_CDR2);
+-
+-		ts_dev->prev_absy = atmel_tsadcc_read(ATMEL_TSADCC_CDR1) << 10;
+-		ts_dev->prev_absy /= atmel_tsadcc_read(ATMEL_TSADCC_CDR0);
++		//} else
++		//	ts_dev->bufferedmeasure = 1;
+ 	}
+-
+ 	return IRQ_HANDLED;
+ }
+ 
+@@ -254,8 +291,11 @@ static int __devinit atmel_tsadcc_probe(struct platform_device *pdev)
+ 	input_dev->dev.parent = &pdev->dev;
+ 
+ 	__set_bit(EV_ABS, input_dev->evbit);
++	__set_bit(EV_KEY, input_dev->evbit);
++	input_dev->keybit[BIT_WORD(BTN_TOUCH)] = BIT_MASK(BTN_TOUCH);
+ 	input_set_abs_params(input_dev, ABS_X, 0, 0x3FF, 0, 0);
+ 	input_set_abs_params(input_dev, ABS_Y, 0, 0x3FF, 0, 0);
++	input_set_abs_params(input_dev, ABS_PRESSURE, 0, 3072, 0, 0);
+ 
+ 	input_set_capability(input_dev, EV_KEY, BTN_TOUCH);
+ 
+@@ -284,9 +324,14 @@ static int __devinit atmel_tsadcc_probe(struct platform_device *pdev)
+ 
+ 	dev_info(&pdev->dev, "Prescaler is set at: %d\n", prsc);
+ 
++	ts_dev->prev_press = 1024;
++
+ 	reg = ATMEL_TSADCC_TSAMOD_TS_ONLY_MODE		|
+-		((0x00 << 5) & ATMEL_TSADCC_SLEEP)	|	/* Normal Mode */
+-		((0x01 << 6) & ATMEL_TSADCC_PENDET)	|	/* Enable Pen Detect */
++		// (ATMEL_TSADCC_SLEEP)	|
++#ifdef CONFIG_ATMEL_TSADCC_PRESS
++		(ATMEL_TSADCC_PRES)	|
++#endif
++		(ATMEL_TSADCC_PENDET)	|	/* Enable Pen Detect */
+ 		(prsc << 8)				|
+ 		((0x26 << 16) & ATMEL_TSADCC_STARTUP)	|
+ 		((pdata->pendet_debounce << 28) & ATMEL_TSADCC_PENDBC);
+-- 
+1.7.3.3
+

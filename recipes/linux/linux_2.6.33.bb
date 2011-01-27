@@ -12,6 +12,7 @@ DEFAULT_PREFERENCE_mpc8315e-rdb = "1"
 DEFAULT_PREFERENCE_mpc8544ds = "1"
 DEFAULT_PREFERENCE_imote2 = "1"
 DEFAULT_PREFERENCE_afeb9260 = "1"
+DEFAULT_PREFERENCE_adb4000 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/${P}.tar.bz2;name=kernel \
            file://defconfig"
@@ -47,5 +48,26 @@ SRC_URI_append_afeb9260 = " \
                         file://0007-Adding-4th-serial-port.patch \
                         "
 
+SRC_URI_append_adb4000 = " \
+			http://www.kernel.org/pub/linux/kernel/v2.6/patch-2.6.33.2.bz2 \
+			file://linux-2.6.33.2-0001-misc-fpga_sram-added-driver-for-a-memory-connected-F.patch \
+                        file://linux-2.6.33.2-0002-tfp410-added-driver-for-tfp410-DVI-Controller.patch \
+                        file://linux-2.6.33.2-0003-drivers-at91_mci-modified-MMC-Host-to-work-on-G45.patch \
+                        file://linux-2.6.33.2-0004-.gitignore-ignore-arm-image-output.patch \
+                        file://linux-2.6.33.2-0005-arm-mach-at91-Add-support-for-icnova-boards.patch \
+                        file://linux-2.6.33.2-0006-ICnova-Add-support-for-ADB1004revB-and-5In-Displays.patch \
+                        file://linux-2.6.33.2-0007-atmel_tsadcc-adding-support-for-pressure-measurement.patch \
+                        file://linux-2.6.33.2-0008-atmel_serial-adding-support-for-RS485.patch \
+                        file://linux-2.6.33.2-0009-ICnova-add-support-for-ADB3000-revB.patch \
+                        file://linux-2.6.33.2-0010-atmel-pwm-Making-driver-selectable-for-SAM9G45.patch \
+                        file://linux-2.6.33.2-0011-hwmon-atm_pwm-adding-new-Userspace-atmel-pwm-interfa.patch \
+                        file://linux-2.6.33.2-0012-ICnova-configuring-the-buzzer.patch \
+                        file://linux-2.6.33.2-0013-sound-soc-adding-ssm2603-attached-to-atmel-ssc.patch \
+                        file://linux-2.6.33.2-0014-ICnova-ADB1000-Adding-BPP-to-16.patch \
+                        file://linux-2.6.33.2-0015-ADS7846-Adding-option-to-support-fuzz-on-input.patch \
+                        file://linux-2.6.33.2-0016-ADB4000-Adding-support-for-the-IO-Processor.patch \
+                        file://linux-2.6.33.2-0017-AT91-raising-the-number-of-GPIOs-to-support-addition.patch \
+                        file://linux-2.6.33.2-0018-ICnova-Adding-ADB4000.patch \
+			"
 
 

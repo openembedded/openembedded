@@ -1,0 +1,21 @@
+From 85507d9d515fb864112d5b0785fad0d34c49efc2 Mon Sep 17 00:00:00 2001
+From: Benjamin Tietz <benjamin@marvin.local.in-circuit.de>
+Date: Wed, 15 Dec 2010 13:41:06 +0100
+Subject: [PATCH 04/18] [.gitignore] ignore arm image output
+
+---
+ .gitignore |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/.gitignore b/.gitignore
+index de6344e..e218170 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -71,3 +71,4 @@ GTAGS
+ *.orig
+ *~
+ \#*#
++arch/arm/boot/compressed/*
+-- 
+1.7.3.3
+

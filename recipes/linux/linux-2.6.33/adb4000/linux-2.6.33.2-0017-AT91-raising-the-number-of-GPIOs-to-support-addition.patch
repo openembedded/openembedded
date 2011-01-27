@@ -1,0 +1,25 @@
+From 7a34372ce1f84edc36fde3ab3bdf3943c21d2e6a Mon Sep 17 00:00:00 2001
+From: Benjamin Tietz <benjamin.tietz@in-circuit.de>
+Date: Thu, 16 Dec 2010 13:53:49 +0100
+Subject: [PATCH 17/18] [AT91] raising the number of GPIOs to support additional GPIO-Chips
+
+---
+ arch/arm/mach-at91/include/mach/irqs.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/mach-at91/include/mach/irqs.h b/arch/arm/mach-at91/include/mach/irqs.h
+index 36bd55f..97cd0fe 100644
+--- a/arch/arm/mach-at91/include/mach/irqs.h
++++ b/arch/arm/mach-at91/include/mach/irqs.h
+@@ -40,7 +40,7 @@
+  * symbols in gpio.h for ones handled indirectly as GPIOs.
+  * We make provision for 5 banks of GPIO.
+  */
+-#define	NR_IRQS		(NR_AIC_IRQS + (5 * 32))
++#define	NR_IRQS		256 /*(NR_AIC_IRQS + (5 * 32))*/
+ 
+ /* FIQ is AIC source 0. */
+ #define FIQ_START AT91_ID_FIQ
+-- 
+1.7.3.3
+

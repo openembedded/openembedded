@@ -1,0 +1,47 @@
+From 5a9ad893301d24de3b9c3c43ddd8948dc426817b Mon Sep 17 00:00:00 2001
+From: Benjamin Tietz <benjamin.tietz@in-circuit.de>
+Date: Thu, 16 Dec 2010 13:46:55 +0100
+Subject: [PATCH 15/18] [ADS7846] Adding option to support fuzz on input.
+
+To calm down the reactness of the touch input, the fuzzing can be
+set. Now the board-driver is able to set this value for a specific
+board, too.
+---
+ drivers/input/touchscreen/ads7846.c |    4 ++--
+ include/linux/spi/ads7846.h         |    2 ++
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
+index 52d2ca1..64d6f04 100644
+--- a/drivers/input/touchscreen/ads7846.c
++++ b/drivers/input/touchscreen/ads7846.c
+@@ -968,11 +968,11 @@ static int __devinit ads7846_probe(struct spi_device *spi)
+ 	input_set_abs_params(input_dev, ABS_X,
+ 			pdata->x_min ? : 0,
+ 			pdata->x_max ? : MAX_12BIT,
+-			0, 0);
++			pdata->xy_fuzz, 0);
+ 	input_set_abs_params(input_dev, ABS_Y,
+ 			pdata->y_min ? : 0,
+ 			pdata->y_max ? : MAX_12BIT,
+-			0, 0);
++			pdata->xy_fuzz, 0);
+ 	input_set_abs_params(input_dev, ABS_PRESSURE,
+ 			pdata->pressure_min, pdata->pressure_max, 0, 0);
+ 
+diff --git a/include/linux/spi/ads7846.h b/include/linux/spi/ads7846.h
+index 51948eb..c52a1e6 100644
+--- a/include/linux/spi/ads7846.h
++++ b/include/linux/spi/ads7846.h
+@@ -39,6 +39,8 @@ struct ads7846_platform_data {
+ 	u16	y_min, y_max;
+ 	u16	pressure_min, pressure_max;
+ 
++	u16	xy_fuzz;
++
+ 	u16	debounce_max;		/* max number of additional readings
+ 					 * per sample */
+ 	u16	debounce_tol;		/* tolerance used for filtering */
+-- 
+1.7.3.3
+

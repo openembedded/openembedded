@@ -1,0 +1,38 @@
+From d88aa9d978fd2eca603204e33e452437dad8ce70 Mon Sep 17 00:00:00 2001
+From: Benjamin Tietz <benjamin@marvin.local.in-circuit.de>
+Date: Wed, 15 Dec 2010 14:16:58 +0100
+Subject: [PATCH 12/18] [ICnova] configuring the buzzer
+
+The buzzer is now accessible via the hwmon interface
+---
+ arch/arm/mach-at91/board-icnova_adb1000.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-at91/board-icnova_adb1000.c b/arch/arm/mach-at91/board-icnova_adb1000.c
+index b292acf..dec1597 100644
+--- a/arch/arm/mach-at91/board-icnova_adb1000.c
++++ b/arch/arm/mach-at91/board-icnova_adb1000.c
+@@ -303,6 +303,10 @@ static struct gpio_led ek_leds[] = {
+ 	},
+ };
+ 
++static struct platform_device icnova_pwmdev = {
++	.name = "atmel-pwm-hwmon",
++	.id = 0,
++};
+ 
+ static void __init ek_board_init(void)
+ {
+@@ -339,6 +343,9 @@ static void __init ek_board_init(void)
+ 	at91_add_device_lcdc(&ek_lcdc_data);
+ 	/* LEDs */
+ 	at91_gpio_leds(ek_leds, ARRAY_SIZE(ek_leds));
++	/* Buzzer */
++	at91_add_device_pwm(1<<AT91_PWM1);
++	platform_device_register(&icnova_pwmdev);
+ }
+ 
+ MACHINE_START(AT91SAM9G45EKES, "In-Circuit ICnova G45")
+-- 
+1.7.3.3
+

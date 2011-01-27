@@ -1,0 +1,27 @@
+From c500d362b621070c95ed85a5bf9b2ed4e8797d14 Mon Sep 17 00:00:00 2001
+From: Benjamin Tietz <benjamin.tietz@in-circuit.de>
+Date: Thu, 16 Dec 2010 13:44:47 +0100
+Subject: [PATCH 14/18] [ICnova ADB1000] Adding BPP to 16
+
+As this increases the overall system-performance massivly, the
+BitsPerPixel where reduced to 16.
+---
+ arch/arm/mach-at91/board-icnova_adb1000.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/mach-at91/board-icnova_adb1000.c b/arch/arm/mach-at91/board-icnova_adb1000.c
+index dec1597..c6c0d50 100644
+--- a/arch/arm/mach-at91/board-icnova_adb1000.c
++++ b/arch/arm/mach-at91/board-icnova_adb1000.c
+@@ -261,7 +261,7 @@ static struct fb_monspecs at91fb_default_monspecs = {
+ /* Driver datas */
+ static struct atmel_lcdfb_info __initdata ek_lcdc_data = {
+ 	.lcdcon_is_backlight		= true,
+-	.default_bpp			= 24,
++	.default_bpp			= 16,
+ 	.default_dmacon			= ATMEL_LCDC_DMAEN | ATMEL_LCDC_DMA2DEN,
+ 	.default_lcdcon2		= AT91SAM9G45_DEFAULT_LCDCON2,
+ 	.default_monspecs		= &at91fb_default_monspecs,
+-- 
+1.7.3.3
+

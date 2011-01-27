@@ -1,0 +1,572 @@
+From a581d8cc2ec44930b697a602d22ae6a4179a8bf1 Mon Sep 17 00:00:00 2001
+From: Benjamin Tietz <benjamin@marvin.local.in-circuit.de>
+Date: Wed, 15 Dec 2010 13:40:28 +0100
+Subject: [PATCH 03/18] [drivers/at91_mci] modified MMC-Host to work on G45
+
+---
+ arch/arm/mach-at91/at91sam9g45_devices.c   |  170 +++++++++++++++++++++++++++-
+ arch/arm/mach-at91/include/mach/at91_mci.h |   24 ++++
+ arch/arm/mach-at91/include/mach/board.h    |    8 +-
+ drivers/mmc/host/Kconfig                   |    2 +-
+ drivers/mmc/host/at91_mci.c                |  147 ++++++++++++++++++------
+ 5 files changed, 308 insertions(+), 43 deletions(-)
+
+diff --git a/arch/arm/mach-at91/at91sam9g45_devices.c b/arch/arm/mach-at91/at91sam9g45_devices.c
+index 809114d..c40e4cd 100644
+--- a/arch/arm/mach-at91/at91sam9g45_devices.c
++++ b/arch/arm/mach-at91/at91sam9g45_devices.c
+@@ -25,6 +25,8 @@
+ #include <mach/at91sam9g45_matrix.h>
+ #include <mach/at91sam9_smc.h>
+ #include <mach/at_hdmac.h>
++#include <mach/atmel-mci.h>
++#include <linux/atmel-mci.h>
+ 
+ #include "generic.h"
+ 
+@@ -276,6 +278,168 @@ void __init at91_add_device_usba(struct usba_platform_data *data) {}
+ 
+ 
+ /* --------------------------------------------------------------------
++ *  MMC / SD
++ * -------------------------------------------------------------------- */
++
++#if defined(CONFIG_MMC_ATMELMCI) || defined(CONFIG_MMC_ATMELMCI_MODULE)
++static u64 mmc_dmamask = DMA_BIT_MASK(32);
++static struct mci_platform_data mmc0_data, mmc1_data;
++
++static struct resource mmc0_resources[] = {
++	[0] = {
++		.start	= AT91SAM9G45_BASE_MCI0,
++		.end	= AT91SAM9G45_BASE_MCI0 + SZ_16K - 1,
++		.flags	= IORESOURCE_MEM,
++	},
++	[1] = {
++		.start	= AT91SAM9G45_ID_MCI0,
++		.end	= AT91SAM9G45_ID_MCI0,
++		.flags	= IORESOURCE_IRQ,
++	},
++};
++
++static struct platform_device at91sam9g45_mmc0_device = {
++	.name		= "atmel_mci",
++	.id		= 0,
++	.dev		= {
++				.dma_mask		= &mmc_dmamask,
++				.coherent_dma_mask	= DMA_BIT_MASK(32),
++				.platform_data		= &mmc0_data,
++	},
++	.resource	= mmc0_resources,
++	.num_resources	= ARRAY_SIZE(mmc0_resources),
++};
++
++static struct resource mmc1_resources[] = {
++	[0] = {
++		.start	= AT91SAM9G45_BASE_MCI1,
++		.end	= AT91SAM9G45_BASE_MCI1 + SZ_16K - 1,
++		.flags	= IORESOURCE_MEM,
++	},
++	[1] = {
++		.start	= AT91SAM9G45_ID_MCI1,
++		.end	= AT91SAM9G45_ID_MCI1,
++		.flags	= IORESOURCE_IRQ,
++	},
++};
++
++static struct platform_device at91sam9g45_mmc1_device = {
++	.name		= "atmel_mci",
++	.id		= 1,
++	.dev		= {
++				.dma_mask		= &mmc_dmamask,
++				.coherent_dma_mask	= DMA_BIT_MASK(32),
++				.platform_data		= &mmc1_data,
++	},
++	.resource	= mmc1_resources,
++	.num_resources	= ARRAY_SIZE(mmc1_resources),
++};
++
++/* Consider only one slot : slot 0 */
++void __init at91_add_device_mci(short mmc_id, struct mci_platform_data *data)
++{
++
++                 if (!data)
++                                  return;
++
++                 /* Must have at least one usable slot */
++                 if (!data->slot[0].bus_width)
++                                  return;
++
++#if defined(CONFIG_MMC_ATMELMCI_DMA)
++                 {
++                 struct mci_dma_data                 *slave;
++
++                 slave = kzalloc(sizeof(struct mci_dma_data), GFP_KERNEL);
++
++                 /* DMA slave channel configuration */
++                 slave->sdata.dma_dev = &at_hdmac_device.dev;
++                 slave->sdata.reg_width = DW_DMA_SLAVE_WIDTH_32BIT;
++                 slave->sdata.cfg = ATC_FIFOCFG_HALFFIFO
++                                                    | ATC_SRC_H2SEL_HW | ATC_DST_H2SEL_HW;
++                 slave->sdata.ctrla = ATC_SCSIZE_16 | ATC_DCSIZE_16;
++                 if (mmc_id == 0)                 /* MCI0 */
++                                  slave->sdata.cfg |= ATC_SRC_PER(AT_DMA_ID_MCI0)
++                                                                     | ATC_DST_PER(AT_DMA_ID_MCI0);
++
++                 else                                                   /* MCI1 */
++                                  slave->sdata.cfg |= ATC_SRC_PER(AT_DMA_ID_MCI1)
++                                                                     | ATC_DST_PER(AT_DMA_ID_MCI1);
++
++                 data->dma_slave = slave;
++                 }
++#endif
++
++
++                 /* input/irq */
++                 if (data->slot[0].detect_pin) {
++                                  at91_set_gpio_input(data->slot[0].detect_pin, 1);
++                                  at91_set_deglitch(data->slot[0].detect_pin, 1);
++                 }
++                 if (data->slot[0].wp_pin)
++                                  at91_set_gpio_input(data->slot[0].wp_pin, 1);
++
++                 if (mmc_id == 0) {                                  /* MCI0 */
++
++                                  /* CLK */
++                                  at91_set_A_periph(AT91_PIN_PA0, 0);
++
++                                  /* CMD */
++                                  at91_set_A_periph(AT91_PIN_PA1, 1);
++
++                                  /* DAT0, maybe DAT1..DAT3 and maybe DAT4..DAT7 */
++                                  at91_set_A_periph(AT91_PIN_PA2, 1);
++                                  if (data->slot[0].bus_width == 4) {
++                                                   at91_set_A_periph(AT91_PIN_PA3, 1);
++                                                   at91_set_A_periph(AT91_PIN_PA4, 1);
++                                                   at91_set_A_periph(AT91_PIN_PA5, 1);
++                                                   if (data->slot[0].bus_width == 8) {
++                                                                    at91_set_A_periph(AT91_PIN_PA6, 1);
++                                                                    at91_set_A_periph(AT91_PIN_PA7, 1);
++                                                                    at91_set_A_periph(AT91_PIN_PA8, 1);
++                                                                    at91_set_A_periph(AT91_PIN_PA9, 1);
++                                                   }
++                                  }
++
++                                  mmc0_data = *data;
++                                  at91_clock_associate("mci0_clk", &at91sam9g45_mmc0_device.dev, "mci_clk");
++                                  platform_device_register(&at91sam9g45_mmc0_device);
++
++                 } else {                                                   /* MCI1 */
++
++                                  /* CLK */
++                                  at91_set_A_periph(AT91_PIN_PA31, 0);
++
++                                  /* CMD */
++                                  at91_set_A_periph(AT91_PIN_PA22, 1);
++
++                                  /* DAT0, maybe DAT1..DAT3 and maybe DAT4..DAT7 */
++                                  at91_set_A_periph(AT91_PIN_PA23, 1);
++                                  if (data->slot[0].bus_width == 4) {
++                                                   at91_set_A_periph(AT91_PIN_PA24, 1);
++                                                   at91_set_A_periph(AT91_PIN_PA25, 1);
++                                                   at91_set_A_periph(AT91_PIN_PA26, 1);
++                                                   if (data->slot[0].bus_width == 8) {
++                                                                    at91_set_A_periph(AT91_PIN_PA27, 1);
++                                                                    at91_set_A_periph(AT91_PIN_PA28, 1);
++                                                                    at91_set_A_periph(AT91_PIN_PA29, 1);
++                                                                    at91_set_A_periph(AT91_PIN_PA30, 1);
++                                                   }
++                                  }
++
++                                  mmc1_data = *data;
++                                  at91_clock_associate("mci1_clk", &at91sam9g45_mmc1_device.dev, "mci_clk");
++                                  platform_device_register(&at91sam9g45_mmc1_device);
++
++                 }
++}
++
++#else
++void __init at91_add_device_mci(short mmc_id, struct mci_platform_data *data) {}
++#endif
++
++
++/* --------------------------------------------------------------------
+  *  Ethernet
+  * -------------------------------------------------------------------- */
+ 
+@@ -746,13 +910,17 @@ void __init at91_add_device_lcdc(struct atmel_lcdfb_info *data)
+ 	if (!data)
+ 		return;
+ 
+-	at91_set_A_periph(AT91_PIN_PE0, 0);	/* LCDDPWR */
++	//at91_set_A_periph(AT91_PIN_PE0, 0);	/* LCDDPWR */
+ 
+ 	at91_set_A_periph(AT91_PIN_PE2, 0);	/* LCDCC */
+ 	at91_set_A_periph(AT91_PIN_PE3, 0);	/* LCDVSYNC */
+ 	at91_set_A_periph(AT91_PIN_PE4, 0);	/* LCDHSYNC */
+ 	at91_set_A_periph(AT91_PIN_PE5, 0);	/* LCDDOTCK */
++#ifndef CONFIG_MACH_ICNOVA_ADB1004
++#ifndef CONFIG_MACH_ICNOVA_ADB3000
+ 	at91_set_A_periph(AT91_PIN_PE6, 0);	/* LCDDEN */
++#endif
++#endif
+ 	at91_set_A_periph(AT91_PIN_PE7, 0);	/* LCDD0 */
+ 	at91_set_A_periph(AT91_PIN_PE8, 0);	/* LCDD1 */
+ 	at91_set_A_periph(AT91_PIN_PE9, 0);	/* LCDD2 */
+diff --git a/arch/arm/mach-at91/include/mach/at91_mci.h b/arch/arm/mach-at91/include/mach/at91_mci.h
+index 550d503..6cabe7d 100644
+--- a/arch/arm/mach-at91/include/mach/at91_mci.h
++++ b/arch/arm/mach-at91/include/mach/at91_mci.h
+@@ -79,6 +79,18 @@
+ #define		AT91_MCI_BLKR_BCNT(n)	((0xffff & (n)) << 0)	/* Block count */
+ #define		AT91_MCI_BLKR_BLKLEN(n)	((0xffff & (n)) << 16)	/* Block lenght */
+ 
++#define AT91_MCI_CSTOR		0x08		/* Complete Signal Timeout Register */
++#define		AT91_MCI_CSTOCYC		(0xf << 0)	/* CS Timeout Cycle Number */
++#define		AT91_MCI_CSTOMUL		(7   << 4)	/* CS Timeout Multiplier */
++#define		AT91_MCI_CSTOMUL_1		(0 <<  4)
++#define		AT91_MCI_CSTOMUL_16		(1 <<  4)
++#define		AT91_MCI_CSTOMUL_128		(2 <<  4)
++#define		AT91_MCI_CSTOMUL_256		(3 <<  4)
++#define		AT91_MCI_CSTOMUL_1K		(4 <<  4)
++#define		AT91_MCI_CSTOMUL_4K		(5 <<  4)
++#define		AT91_MCI_CSTOMUL_64K		(6 <<  4)
++#define		AT91_MCI_CSTOMUL_1M		(7 <<  4)
++
+ #define AT91_MCI_RSPR(n)	(0x20 + ((n) * 4))	/* Response Registers 0-3 */
+ #define AT91_MCR_RDR		0x30		/* Receive Data Register */
+ #define AT91_MCR_TDR		0x34		/* Transmit Data Register */
+@@ -103,6 +115,8 @@
+ #define		AT91_MCI_RTOE		(1 << 20)	/* Reponse Time-out Error */
+ #define		AT91_MCI_DCRCE		(1 << 21)	/* Data CRC Error */
+ #define		AT91_MCI_DTOE		(1 << 22)	/* Data Time-out Error */
++#define		AT91_MCI_FIFOEMPTY	(1 << 26)	/* FIFO Empty (g45) */
++#define		AT91_MCI_XFRDONE	(1 << 27)	/* Transfer Done (g45) */
+ #define		AT91_MCI_OVRE		(1 << 30)	/* Overrun */
+ #define		AT91_MCI_UNRE		(1 << 31)	/* Underrun */
+ 
+@@ -110,4 +124,14 @@
+ #define AT91_MCI_IDR		0x48		/* Interrupt Disable Register */
+ #define AT91_MCI_IMR		0x4c		/* Interrupt Mask Register */
+ 
++#define AT91_MCI_HSDMA		0x50		/* DMA-Register on HSMCI */
++#define 	AT91_MCI_OFFSET		(3<<0)		/* DMA Write Buffer Offset */
++#define		AT91_MCI_CHKSIZE	(3<<4)		/* DMA Channel Read and Write Chunk Size */
++#define		AT91_MCI_CHKSIZE1	(0<<4)		/* DMA Channel Read and Write Chunk Size */
++#define		AT91_MCI_CHKSIZE4	(1<<4)		/* DMA Channel Read and Write Chunk Size */
++#define		AT91_MCI_CHKSIZE8	(2<<4)		/* DMA Channel Read and Write Chunk Size */
++#define		AT91_MCI_CHKSIZE16	(3<<4)		/* DMA Channel Read and Write Chunk Size */
++#define 	AT91_MCI_DMAEN		(1<<8)		/* DMA Hardware Handshaking Enable */
++#define 	AT91_MCI_ROPT		(1<<12)		/* Read Optimization with padding */
++
+ #endif
+diff --git a/arch/arm/mach-at91/include/mach/board.h b/arch/arm/mach-at91/include/mach/board.h
+index bb6f6a7..b0d0e12 100644
+--- a/arch/arm/mach-at91/include/mach/board.h
++++ b/arch/arm/mach-at91/include/mach/board.h
+@@ -39,6 +39,7 @@
+ #include <linux/usb/atmel_usba_udc.h>
+ #include <linux/atmel-mci.h>
+ #include <sound/atmel-ac97c.h>
++#include <linux/serial.h>
+ 
+  /* USB Device */
+ struct at91_udc_data {
+@@ -143,9 +144,10 @@ extern struct platform_device *atmel_default_console_device;
+ extern void __init __deprecated at91_init_serial(struct at91_uart_config *config);
+ 
+ struct atmel_uart_data {
+-	short		use_dma_tx;	/* use transmit DMA? */
+-	short		use_dma_rx;	/* use receive DMA? */
+-	void __iomem	*regs;		/* virtual base address, if any */
++	short			use_dma_tx;	/* use transmit DMA? */
++	short			use_dma_rx;	/* use receive DMA? */
++	void __iomem		*regs;		/* virt. base address, if any */
++	struct serial_rs485	rs485;		/* rs485 settings */
+ };
+ extern void __init at91_add_device_serial(void);
+ 
+diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
+index ce1d288..1454a9d 100644
+--- a/drivers/mmc/host/Kconfig
++++ b/drivers/mmc/host/Kconfig
+@@ -219,7 +219,7 @@ endchoice
+ 
+ config MMC_ATMELMCI_DMA
+ 	bool "Atmel MCI DMA support (EXPERIMENTAL)"
+-	depends on MMC_ATMELMCI && AVR32 && DMA_ENGINE && EXPERIMENTAL
++	depends on MMC_ATMELMCI && (AVR32 || ARCH_AT91SAM9G45) && DMA_ENGINE && EXPERIMENTAL
+ 	help
+ 	  Say Y here to have the Atmel MCI driver use a DMA engine to
+ 	  do data transfers and thus increase the throughput and
+diff --git a/drivers/mmc/host/at91_mci.c b/drivers/mmc/host/at91_mci.c
+index 63924e0..90fda9e 100644
+--- a/drivers/mmc/host/at91_mci.c
++++ b/drivers/mmc/host/at91_mci.c
+@@ -53,6 +53,7 @@
+      Gets the status of the write protect pin, if available.
+ */
+ 
++#define DEBUG
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+ #include <linux/init.h>
+@@ -268,44 +269,77 @@ static void at91_mci_pre_dma_read(struct at91mci_host *host)
+ 		return;
+ 	}
+ 
+-	for (i = 0; i < 2; i++) {
+-		/* nothing left to transfer */
+-		if (host->transfer_index >= data->sg_len) {
+-			pr_debug("Nothing left to transfer (index = %d)\n", host->transfer_index);
+-			break;
+-		}
+-
+-		/* Check to see if this needs filling */
+-		if (i == 0) {
+-			if (at91_mci_read(host, ATMEL_PDC_RCR) != 0) {
+-				pr_debug("Transfer active in current\n");
+-				continue;
+-			}
+-		}
+-		else {
+-			if (at91_mci_read(host, ATMEL_PDC_RNCR) != 0) {
+-				pr_debug("Transfer active in next\n");
+-				continue;
+-			}
+-		}
++	if(cpu_is_at91sam9g45()) {
++		/*if(at91_mci_read(host, AT91_MCI_HSDMA) & AT91_MCI_DMAEN) {
++			pr_warning("DMA Transfer in progress\n");
++			return;
++		}*/
+ 
+-		/* Setup the next transfer */
+ 		pr_debug("Using transfer index %d\n", host->transfer_index);
+ 
+ 		sg = &data->sg[host->transfer_index++];
+ 		pr_debug("sg = %p\n", sg);
+ 
++		i = 0;
++		switch(sg->length) {
++			case 1:
++				i |= AT91_MCI_CHKSIZE1;
++				break;
++			case 4:
++				i |= AT91_MCI_CHKSIZE4;
++				break;
++			case 8:
++				i |= AT91_MCI_CHKSIZE8;
++				break;
++			case 16:
++				i |= AT91_MCI_CHKSIZE16;
++				break;
++		}
++		at91_mci_write(host, AT91_MCI_HSDMA, i|AT91_MCI_DMAEN);
++
+ 		sg->dma_address = dma_map_page(NULL, sg_page(sg), sg->offset, sg->length, DMA_FROM_DEVICE);
+ 
+ 		pr_debug("dma address = %08X, length = %d\n", sg->dma_address, sg->length);
++	} else {
++		for (i = 0; i < 2; i++) {
++			/* nothing left to transfer */
++			if (host->transfer_index >= data->sg_len) {
++				pr_debug("Nothing left to transfer (index = %d)\n", host->transfer_index);
++				break;
++			}
+ 
+-		if (i == 0) {
+-			at91_mci_write(host, ATMEL_PDC_RPR, sg->dma_address);
+-			at91_mci_write(host, ATMEL_PDC_RCR, (data->blksz & 0x3) ? sg->length : sg->length / 4);
+-		}
+-		else {
+-			at91_mci_write(host, ATMEL_PDC_RNPR, sg->dma_address);
+-			at91_mci_write(host, ATMEL_PDC_RNCR, (data->blksz & 0x3) ? sg->length : sg->length / 4);
++			/* Check to see if this needs filling */
++			if (i == 0) {
++				if (at91_mci_read(host, ATMEL_PDC_RCR) != 0) {
++					pr_debug("Transfer active in current\n");
++					continue;
++				}
++			}
++			else {
++				if (at91_mci_read(host, ATMEL_PDC_RNCR) != 0) {
++					pr_debug("Transfer active in next\n");
++					continue;
++				}
++			}
++
++			/* Setup the next transfer */
++			pr_debug("Using transfer index %d\n", host->transfer_index);
++
++			sg = &data->sg[host->transfer_index++];
++			pr_debug("sg = %p\n", sg);
++
++			sg->dma_address = dma_map_page(NULL, sg_page(sg), sg->offset, sg->length, DMA_FROM_DEVICE);
++
++			pr_debug("dma address = %08X, length = %d\n", sg->dma_address, sg->length);
++
++			if (i == 0) {
++				at91_mci_write(host, ATMEL_PDC_RPR, sg->dma_address);
++				at91_mci_write(host, ATMEL_PDC_RCR, (data->blksz & 0x3) ? sg->length : sg->length / 4);
++			}
++			else {
++				at91_mci_write(host, ATMEL_PDC_RNPR, sg->dma_address);
++				at91_mci_write(host, ATMEL_PDC_RNCR, (data->blksz & 0x3) ? sg->length : sg->length / 4);
++			}
+ 		}
+ 	}
+ 
+@@ -358,6 +392,9 @@ static void at91_mci_post_dma_read(struct at91mci_host *host)
+ 
+ 			kunmap_atomic(buffer, KM_BIO_SRC_IRQ);
+ 		}
++		if (cpu_is_at91sam9g45()) {
++			at91_mci_write(host, AT91_MCI_HSDMA, 0);
++		}
+ 
+ 		flush_dcache_page(sg_page(sg));
+ 
+@@ -368,8 +405,13 @@ static void at91_mci_post_dma_read(struct at91mci_host *host)
+ 	if (host->transfer_index < data->sg_len)
+ 		at91_mci_pre_dma_read(host);
+ 	else {
+-		at91_mci_write(host, AT91_MCI_IDR, AT91_MCI_ENDRX);
+-		at91_mci_write(host, AT91_MCI_IER, AT91_MCI_RXBUFF);
++		if(cpu_is_at91sam9g45()) {
++			at91_mci_write(host, AT91_MCI_IDR, AT91_MCI_FIFOEMPTY);
++			at91_mci_write(host, AT91_MCI_IER, AT91_MCI_XFRDONE);
++		} else {
++			at91_mci_write(host, AT91_MCI_IDR, AT91_MCI_ENDRX);
++			at91_mci_write(host, AT91_MCI_IER, AT91_MCI_RXBUFF);
++		}
+ 	}
+ 
+ 	pr_debug("post dma read done\n");
+@@ -399,7 +441,11 @@ static void at91_mci_handle_transmitted(struct at91mci_host *host)
+ 
+ 	if (cmd->data->blocks > 1) {
+ 		pr_debug("multiple write : wait for BLKE...\n");
+-		at91_mci_write(host, AT91_MCI_IER, AT91_MCI_BLKE);
++		if(cpu_is_at91sam9g45()) {
++			at91_mci_write(host, AT91_MCI_IER, AT91_MCI_XFRDONE);
++		} else {
++			at91_mci_write(host, AT91_MCI_IER, AT91_MCI_BLKE);
++		}
+ 	} else
+ 		at91_mci_write(host, AT91_MCI_IER, AT91_MCI_NOTBUSY);
+ }
+@@ -461,7 +507,7 @@ static void at91_mci_enable(struct at91mci_host *host)
+ 	at91_mci_write(host, AT91_MCI_DTOR, AT91_MCI_DTOMUL_1M | AT91_MCI_DTOCYC);
+ 	mr = AT91_MCI_PDCMODE | 0x34a;
+ 
+-	if (cpu_is_at91sam9260() || cpu_is_at91sam9263())
++	if (cpu_is_at91sam9260() || cpu_is_at91sam9263() || cpu_is_at91sam9g45())
+ 		mr |= AT91_MCI_RDPROOF | AT91_MCI_WRPROOF;
+ 
+ 	at91_mci_write(host, AT91_MCI_MR, mr);
+@@ -592,7 +638,8 @@ static void at91_mci_send_command(struct at91mci_host *host, struct mmc_command
+ 		/*
+ 		 * Disable the PDC controller
+ 		 */
+-		at91_mci_write(host, ATMEL_PDC_PTCR, ATMEL_PDC_RXTDIS | ATMEL_PDC_TXTDIS);
++		if(!cpu_is_at91sam9g45())
++			at91_mci_write(host, ATMEL_PDC_PTCR, ATMEL_PDC_RXTDIS | ATMEL_PDC_TXTDIS);
+ 
+ 		if (cmdr & AT91_MCI_TRCMD_START) {
+ 			data->bytes_xfered = 0;
+@@ -606,7 +653,11 @@ static void at91_mci_send_command(struct at91mci_host *host, struct mmc_command
+ 				host->total_length = 0;
+ 
+ 				at91_mci_pre_dma_read(host);
+-				ier = AT91_MCI_ENDRX /* | AT91_MCI_RXBUFF */;
++				if(cpu_is_at91sam9g45()) {
++					ier = AT91_MCI_FIFOEMPTY;
++				} else {
++					ier = AT91_MCI_ENDRX /* | AT91_MCI_RXBUFF */;
++				}
+ 			}
+ 			else {
+ 				/*
+@@ -655,8 +706,13 @@ static void at91_mci_send_command(struct at91mci_host *host, struct mmc_command
+ 	at91_mci_write(host, AT91_MCI_CMDR, cmdr);
+ 
+ 	if (cmdr & AT91_MCI_TRCMD_START) {
+-		if (cmdr & AT91_MCI_TRDIR)
+-			at91_mci_write(host, ATMEL_PDC_PTCR, ATMEL_PDC_RXTEN);
++		if (cmdr & AT91_MCI_TRDIR) {
++			if(cpu_is_at91sam9g45()) {
++				//at91_mci_write(host, AT91_MCI_HSDMA, AT91_MCI_DMAEN);
++			} else {
++				at91_mci_write(host, ATMEL_PDC_PTCR, ATMEL_PDC_RXTEN);
++			}
++		}
+ 	}
+ 
+ 	/* Enable selected interrupts */
+@@ -668,6 +724,7 @@ static void at91_mci_send_command(struct at91mci_host *host, struct mmc_command
+  */
+ static void at91_mci_process_next(struct at91mci_host *host)
+ {
++	pr_debug("process next\n");
+ 	if (!(host->flags & FL_SENT_COMMAND)) {
+ 		host->flags |= FL_SENT_COMMAND;
+ 		at91_mci_send_command(host, host->request->cmd);
+@@ -676,6 +733,7 @@ static void at91_mci_process_next(struct at91mci_host *host)
+ 		host->flags |= FL_SENT_STOP;
+ 		at91_mci_send_command(host, host->request->stop);
+ 	} else {
++		pr_debug("del timer\n");
+ 		del_timer(&host->timer);
+ 		/* the at91rm9200 mci controller hangs after some transfers,
+ 		 * and the workaround is to reset it after each transfer.
+@@ -742,6 +800,7 @@ static void at91_mci_completed_command(struct at91mci_host *host, unsigned int s
+ 	else
+ 		cmd->error = 0;
+ 
++	pr_debug("command_complete");
+ 	at91_mci_process_next(host);
+ }
+ 
+@@ -756,6 +815,7 @@ static void at91_mci_request(struct mmc_host *mmc, struct mmc_request *mrq)
+ 
+ 	mod_timer(&host->timer, jiffies +  HZ);
+ 
++	pr_debug("request\n");
+ 	at91_mci_process_next(host);
+ }
+ 
+@@ -862,10 +922,21 @@ static irqreturn_t at91_mci_irq(int irq, void *devid)
+ 			at91_mci_handle_transmitted(host);
+ 		}
+ 
+-		if (int_status & AT91_MCI_ENDRX) {
++		if ((int_status & AT91_MCI_ENDRX) && !cpu_is_at91sam9g45()) {
+ 			pr_debug("ENDRX\n");
+ 			at91_mci_post_dma_read(host);
+ 		}
++		if ((int_status & AT91_MCI_XFRDONE) && cpu_is_at91sam9g45()) {
++			pr_debug("XFRDONE\n");
++			at91_mci_write(host, AT91_MCI_HSDMA, 0);
++			completed = 1;
++		}
++		if ((int_status & AT91_MCI_FIFOEMPTY) && cpu_is_at91sam9g45()) {
++			pr_debug("FIFOEMPTY\n");
++			at91_mci_post_dma_read(host);
++			if (host->transfer_index >= host->cmd->data->sg_len)
++				completed = 1;
++		}
+ 
+ 		if (int_status & AT91_MCI_RXBUFF) {
+ 			pr_debug("RX buffer full\n");
+@@ -1017,7 +1088,7 @@ static int __init at91_mci_probe(struct platform_device *pdev)
+ 	host->bus_mode = 0;
+ 	host->board = pdev->dev.platform_data;
+ 	if (host->board->wire4) {
+-		if (cpu_is_at91sam9260() || cpu_is_at91sam9263())
++		if (cpu_is_at91sam9260() || cpu_is_at91sam9263() || cpu_is_at91sam9g45())
+ 			mmc->caps |= MMC_CAP_4_BIT_DATA;
+ 		else
+ 			dev_warn(&pdev->dev, "4 wire bus mode not supported"
+-- 
+1.7.3.3
+

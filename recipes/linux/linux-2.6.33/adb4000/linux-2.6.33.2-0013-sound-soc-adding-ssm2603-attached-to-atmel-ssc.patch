@@ -1,0 +1,337 @@
+From 8e5d4b938e4aeb0e091eaccfdfa4824a23a007aa Mon Sep 17 00:00:00 2001
+From: Benjamin Tietz <benjamin.tietz@in-circuit.de>
+Date: Thu, 16 Dec 2010 13:42:52 +0100
+Subject: [PATCH 13/18] [sound/soc] adding ssm2603 attached to atmel-ssc
+
+This will add support for an SSM2603 I2S-Codec connected to
+an Atmel SSC-Interface.
+---
+ sound/soc/atmel/Kconfig           |    9 ++
+ sound/soc/atmel/Makefile          |    1 +
+ sound/soc/atmel/atmel_ssc_dai.c   |    9 +-
+ sound/soc/atmel/snd-soc-ssm2603.c |  254 +++++++++++++++++++++++++++++++++++++
+ 4 files changed, 270 insertions(+), 3 deletions(-)
+ create mode 100644 sound/soc/atmel/snd-soc-ssm2603.c
+
+diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+index e720d5e..ad2b560 100644
+--- a/sound/soc/atmel/Kconfig
++++ b/sound/soc/atmel/Kconfig
+@@ -14,6 +14,15 @@ config SND_ATMEL_SOC_SSC
+ 	  ATMEL SSC interface. You will also needs to select the individual
+ 	  machine drivers to support below.
+ 
++config SND_AT91_SOC_ICNOVA_SSM2603
++	tristate "SoC Audio support for SSM2603-based ICnova board"
++	depends on ATMEL_SSC && ( MACH_ICNOVA_ADB1000 || MACH_ICNOVA_ADB4000) && SND_ATMEL_SOC
++	select SND_ATMEL_SOC_SSC
++	select SND_SOC_SSM2602
++	help
++	  Say Y or M if you want to add support for SoC audio on SSM2603
++	  based board.
++
+ config SND_AT91_SOC_SAM9G20_WM8731
+ 	tristate "SoC Audio support for WM8731-based At91sam9g20 evaluation board"
+ 	depends on ATMEL_SSC && ARCH_AT91SAM9G20 && SND_ATMEL_SOC
+diff --git a/sound/soc/atmel/Makefile b/sound/soc/atmel/Makefile
+index e7ea56b..85f553e 100644
+--- a/sound/soc/atmel/Makefile
++++ b/sound/soc/atmel/Makefile
+@@ -14,3 +14,4 @@ snd-soc-playpaq-objs := playpaq_wm8510.o
+ obj-$(CONFIG_SND_AT91_SOC_SAM9G20_WM8731) += snd-soc-sam9g20-wm8731.o
+ obj-$(CONFIG_SND_AT32_SOC_PLAYPAQ) += snd-soc-playpaq.o
+ obj-$(CONFIG_SND_AT91_SOC_AFEB9260) += snd-soc-afeb9260.o
++obj-$(CONFIG_SND_AT91_SOC_ICNOVA_SSM2603) += snd-soc-ssm2603.o
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+index e588e63..fc2da03 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -48,7 +48,7 @@
+ #include "atmel_ssc_dai.h"
+ 
+ 
+-#if defined(CONFIG_ARCH_AT91SAM9260) || defined(CONFIG_ARCH_AT91SAM9G20)
++#if defined(CONFIG_ARCH_AT91SAM9260) || defined(CONFIG_ARCH_AT91SAM9G20) || defined(CONFIG_ARCH_AT91SAM9G45)
+ #define NUM_SSC_DEVICES		1
+ #else
+ #define NUM_SSC_DEVICES		3
+@@ -165,11 +165,14 @@ static irqreturn_t atmel_ssc_interrupt(int irq, void *dev_id)
+ 	struct atmel_ssc_info *ssc_p = dev_id;
+ 	struct atmel_pcm_dma_params *dma_params;
+ 	u32 ssc_sr;
++	u32 ssc_imr;
+ 	u32 ssc_substream_mask;
+ 	int i;
+ 
+-	ssc_sr = (unsigned long)ssc_readl(ssc_p->ssc->regs, SR)
+-			& (unsigned long)ssc_readl(ssc_p->ssc->regs, IMR);
++	ssc_imr = (unsigned long) ssc_readl(ssc_p->ssc->regs, IMR);
++	ssc_sr = (unsigned long)ssc_readl(ssc_p->ssc->regs, SR);
++	pr_debug("SSC_DAI got IRQ: %08lx & %08lx\n", ssc_sr, ssc_imr);
++	ssc_sr &= ssc_imr;
+ 
+ 	/*
+ 	 * Loop through the substreams attached to this SSC.  If
+diff --git a/sound/soc/atmel/snd-soc-ssm2603.c b/sound/soc/atmel/snd-soc-ssm2603.c
+new file mode 100644
+index 0000000..c471102
+--- /dev/null
++++ b/sound/soc/atmel/snd-soc-ssm2603.c
+@@ -0,0 +1,254 @@
++/*
++ * File:         sound/soc/atmel/snd-soc-ssm2602.c
++ * Author:       Benjamin Tietz <benjamin.tietz@in-circuit.de>
++ *
++ * Created:      Thu Octobre 21 2010
++ * Description:  board driver for SSM2603 sound chip
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, see the file COPYING, or write
++ * to the Free Software Foundation, Inc.,
++ * 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ */
++
++#define DEBUG
++
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/device.h>
++
++#include <linux/atmel-ssc.h>
++
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <sound/pcm_params.h>
++
++#include <asm/dma.h>
++#include <linux/gpio.h>
++#include "../codecs/ssm2602.h"
++#include "atmel-pcm.h"
++#include "atmel_ssc_dai.h"
++
++static struct snd_soc_card atmel_ssm2603;
++
++static int atmel_ssm2603_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	unsigned int clk = 0;
++	int ret = 0;
++
++	pr_debug("%s rate %d format %x\n", __func__, params_rate(params),
++		params_format(params));
++	/*
++	 * If you are using a crystal source which frequency is not 12MHz
++	 * then modify the below case statement with frequency of the crystal.
++	 *
++	 * If you are using the SPORT to generate clocking then this is
++	 * where to do it.
++	 */
++
++	switch (params_rate(params)) {
++	case 8000:
++	case 16000:
++	case 48000:
++	case 96000:
++	case 11025:
++	case 22050:
++	case 44100:
++		clk = 12000000;
++		break;
++	}
++
++	/*
++	 * CODEC is master for BCLK and LRC in this configuration.
++	 */
++
++	/* set codec DAI configuration */
++	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
++		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM);
++	if (ret < 0)
++		return ret;
++	/* set cpu DAI configuration */
++	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
++		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM);
++	if (ret < 0)
++		return ret;
++
++	ret = snd_soc_dai_set_sysclk(codec_dai, SSM2602_SYSCLK, clk,
++		SND_SOC_CLOCK_IN);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++
++#if 0
++static const struct snd_soc_dapm_widget at91sam9g20ek_dapm_widgets[] = {
++	SND_SOC_DAPM_MIC("Int Mic", NULL),
++	SND_SOC_DAPM_SPK("Ext Spk", NULL),
++};
++
++static const struct snd_soc_dapm_route intercon[] = {
++
++	/* speaker connected to LHPOUT */
++	{"Ext Spk", NULL, "LHPOUT"},
++
++	/* mic is connected to Mic Jack, with WM8731 Mic Bias */
++	{"MICIN", NULL, "Mic Bias"},
++	{"Mic Bias", NULL, "Int Mic"},
++};
++
++/*
++ * Logic for a wm8731 as connected on a at91sam9g20ek board.
++ */
++static int at91sam9g20ek_wm8731_init(struct snd_soc_codec *codec)
++{
++	struct snd_soc_dai *codec_dai = &codec->dai[0];
++	int ret;
++
++	printk(KERN_DEBUG
++			"at91sam9g20ek_wm8731 "
++			": at91sam9g20ek_wm8731_init() called\n");
++
++	ret = snd_soc_dai_set_sysclk(codec_dai, SSM2602_SYSCLK, 12000000,
++		SND_SOC_CLOCK_IN);
++	if (ret < 0) {
++		printk(KERN_ERR "Failed to set WM8731 SYSCLK: %d\n", ret);
++		return ret;
++	}
++
++	/* Add specific widgets */
++	snd_soc_dapm_new_controls(codec, at91sam9g20ek_dapm_widgets,
++				  ARRAY_SIZE(at91sam9g20ek_dapm_widgets));
++	/* Set up specific audio path interconnects */
++	snd_soc_dapm_add_routes(codec, intercon, ARRAY_SIZE(intercon));
++
++	/* not connected */
++	snd_soc_dapm_nc_pin(codec, "RLINEIN");
++	snd_soc_dapm_nc_pin(codec, "LLINEIN");
++
++	snd_soc_dapm_enable_pin(codec, "Int Mic");
++
++	/* always connected */
++	snd_soc_dapm_enable_pin(codec, "Ext Spk");
++
++	snd_soc_dapm_sync(codec);
++
++	return 0;
++}
++#endif
++
++static struct snd_soc_ops atmel_ssm2603_ops = {
++	.hw_params = atmel_ssm2603_hw_params,
++};
++
++static struct snd_soc_dai_link atmel_ssm2603_dai = {
++	.name = "ssm2603",
++	.stream_name = "SSM2603",
++	.cpu_dai = &atmel_ssc_dai[0],
++	.codec_dai = &ssm2602_dai,
++#if 0
++	.init = at91sam9g20ek_wm8731_init,
++#endif
++	.ops = &atmel_ssm2603_ops,
++};
++
++/*
++ * SSM2603 2 wire address is determined by CSB
++ * state during powerup.
++ *    low  = 0x1a
++ *    high = 0x1b
++ */
++
++static struct ssm2602_setup_data atmel_ssm2603_setup = {
++	.i2c_bus = 1,
++	.i2c_address = 0x1b,
++};
++
++static struct snd_soc_card atmel_ssm2603 = {
++	.name = "atmel_ssm2603",
++	.platform = &atmel_soc_platform,
++	.dai_link = &atmel_ssm2603_dai,
++	.num_links = 1,
++};
++
++static struct snd_soc_device atmel_ssm2603_snd_devdata = {
++	.card = &atmel_ssm2603,
++	.codec_dev = &soc_codec_dev_ssm2602,
++	.codec_data = &atmel_ssm2603_setup,
++};
++
++static struct platform_device *atmel_ssm2603_snd_device;
++
++static int __init atmel_ssm2603_init(void)
++{
++	struct atmel_ssc_info *ssc_p = atmel_ssm2603_dai.cpu_dai->private_data;
++	struct ssc_device *ssc = NULL;
++	int ret;
++
++	pr_debug("%s enter\n", __func__);
++	/*
++	 * Request SSC device
++	 */
++	ssc = ssc_request(0);
++	if (IS_ERR(ssc)) {
++		printk(KERN_ERR "ASoC: Failed to request SSC 0\n");
++		ret = PTR_ERR(ssc);
++		ssc = NULL;
++		goto err_ssc;
++	}
++	ssc_p->ssc = ssc;
++
++	atmel_ssm2603_snd_device = platform_device_alloc("soc-audio", -1);
++	if (!atmel_ssm2603_snd_device) {
++		pr_debug("Can't allocate device\n");
++		return -ENOMEM;
++	}
++
++	platform_set_drvdata(atmel_ssm2603_snd_device,
++				&atmel_ssm2603_snd_devdata);
++	atmel_ssm2603_snd_devdata.dev = &atmel_ssm2603_snd_device->dev;
++	ret = platform_device_add(atmel_ssm2603_snd_device);
++
++	if (ret) {
++		pr_debug("Can't add device\n");
++		platform_device_put(atmel_ssm2603_snd_device);
++	}
++
++	return ret;
++
++	ssc_free(ssc);
++	ssc_p->ssc = NULL;
++err_ssc:
++	return ret;
++}
++
++static void __exit atmel_ssm2603_exit(void)
++{
++	pr_debug("%s enter\n", __func__);
++	platform_device_unregister(atmel_ssm2603_snd_device);
++}
++
++module_init(atmel_ssm2603_init);
++module_exit(atmel_ssm2603_exit);
++
++/* Module information */
++MODULE_AUTHOR("Benjamin Tietz");
++MODULE_DESCRIPTION("ALSA SoC SSM2603 ADB4000");
++MODULE_LICENSE("GPL");
++
+-- 
+1.7.3.3
+
