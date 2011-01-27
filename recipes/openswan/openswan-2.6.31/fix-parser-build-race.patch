@@ -1,0 +1,13 @@
+---
+ lib/libipsecconf/Makefile.depend.linux |    1 +
+ 1 file changed, 1 insertion(+)
+
+Index: openswan-2.6.31/lib/libipsecconf/Makefile.depend.linux
+===================================================================
+--- openswan-2.6.31.orig/lib/libipsecconf/Makefile.depend.linux
++++ openswan-2.6.31/lib/libipsecconf/Makefile.depend.linux
+@@ -124,3 +124,4 @@ virtif.o: virtif.c \
+   ../../include/ipsecconf/exec.h \
+   ../../include/ipsecconf/files.h \
+   ../../include/ipsecconf/starterlog.h
++parser.tab.c: parser.tab.h
