@@ -1,0 +1,93 @@
+From 4dc43ce10d8b66537a680635d4f2dbe0a1daa1d9 Mon Sep 17 00:00:00 2001
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Date: Mon, 2 Aug 2010 00:05:09 +0200
+Subject: [PATCH 25/43] v4l: subdev: Add a new file operations class
+
+V4L2 sub-devices store pad formats and crop settings in the file handle.
+To let drivers initialize those settings properly, add a file::open
+operation that is called when the subdev is opened as well as a
+corresponding file::close operation.
+
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+---
+ drivers/media/video/v4l2-subdev.c |   13 ++++++++++---
+ include/media/v4l2-subdev.h       |   10 ++++++++++
+ 2 files changed, 20 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/media/video/v4l2-subdev.c b/drivers/media/video/v4l2-subdev.c
+index 15449fc..0f904e2 100644
+--- a/drivers/media/video/v4l2-subdev.c
++++ b/drivers/media/video/v4l2-subdev.c
+@@ -61,7 +61,7 @@ static int subdev_open(struct file *file)
+ 	struct v4l2_subdev *sd = vdev_to_v4l2_subdev(vdev);
+ 	struct v4l2_subdev_fh *subdev_fh;
+ #if defined(CONFIG_MEDIA_CONTROLLER)
+-	struct media_entity *entity;
++	struct media_entity *entity = NULL;
+ #endif
+ 	int ret;
+ 
+@@ -104,9 +104,17 @@ static int subdev_open(struct file *file)
+ 	}
+ #endif
+ 
++	ret = v4l2_subdev_call(sd, file, open, subdev_fh);
++	if (ret < 0 && ret != -ENOIOCTLCMD)
++		goto err;
++
+ 	return 0;
+ 
+ err:
++#if defined(CONFIG_MEDIA_CONTROLLER)
++	if (entity)
++		media_entity_put(entity);
++#endif
+ 	v4l2_fh_del(&subdev_fh->vfh);
+ 	v4l2_fh_exit(&subdev_fh->vfh);
+ 	subdev_fh_free(subdev_fh);
+@@ -117,13 +125,12 @@ err:
+ 
+ static int subdev_close(struct file *file)
+ {
+-#if defined(CONFIG_MEDIA_CONTROLLER)
+ 	struct video_device *vdev = video_devdata(file);
+ 	struct v4l2_subdev *sd = vdev_to_v4l2_subdev(vdev);
+-#endif
+ 	struct v4l2_fh *vfh = file->private_data;
+ 	struct v4l2_subdev_fh *subdev_fh = to_v4l2_subdev_fh(vfh);
+ 
++	v4l2_subdev_call(sd, file, close, subdev_fh);
+ #if defined(CONFIG_MEDIA_CONTROLLER)
+ 	if (sd->v4l2_dev->mdev)
+ 		media_entity_put(&sd->entity);
+diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
+index f8704ff..af704df 100644
+--- a/include/media/v4l2-subdev.h
++++ b/include/media/v4l2-subdev.h
+@@ -175,6 +175,15 @@ struct v4l2_subdev_core_ops {
+ 				 struct v4l2_event_subscription *sub);
+ };
+ 
++/* open: called when the subdev device node is opened by an application.
++
++   close: called when the subdev device node is close.
++ */
++struct v4l2_subdev_file_ops {
++	int (*open)(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh);
++	int (*close)(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh);
++};
++
+ /* s_mode: switch the tuner to a specific tuner mode. Replacement of s_radio.
+ 
+    s_radio: v4l device was opened in Radio mode, to be replaced by s_mode.
+@@ -416,6 +425,7 @@ struct v4l2_subdev_ir_ops {
+ 
+ struct v4l2_subdev_ops {
+ 	const struct v4l2_subdev_core_ops	*core;
++	const struct v4l2_subdev_file_ops	*file;
+ 	const struct v4l2_subdev_tuner_ops	*tuner;
+ 	const struct v4l2_subdev_audio_ops	*audio;
+ 	const struct v4l2_subdev_video_ops	*video;
+-- 
+1.6.6.1
+

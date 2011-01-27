@@ -1,0 +1,35 @@
+From 859b5c38e30c3d41e7987a6bb46f7d062f7e02ad Mon Sep 17 00:00:00 2001
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Date: Thu, 23 Dec 2010 15:14:50 +0100
+Subject: [PATCH 38/43] v4l: Add 12 bits bayer pixel formats
+
+Add FCCs for the following pixel formats:
+
+- V4L2_PIX_FMT_SBGGR12
+- V4L2_PIX_FMT_SGBRG12
+- V4L2_PIX_FMT_SGRBG12
+- V4L2_PIX_FMT_SRGGB12
+
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+---
+ include/linux/videodev2.h |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/include/linux/videodev2.h b/include/linux/videodev2.h
+index 5f6f470..02da9e7 100644
+--- a/include/linux/videodev2.h
++++ b/include/linux/videodev2.h
+@@ -328,6 +328,10 @@ struct v4l2_pix_format {
+ #define V4L2_PIX_FMT_SGBRG10 v4l2_fourcc('G', 'B', '1', '0') /* 10  GBGB.. RGRG.. */
+ #define V4L2_PIX_FMT_SGRBG10 v4l2_fourcc('B', 'A', '1', '0') /* 10  GRGR.. BGBG.. */
+ #define V4L2_PIX_FMT_SRGGB10 v4l2_fourcc('R', 'G', '1', '0') /* 10  RGRG.. GBGB.. */
++#define V4L2_PIX_FMT_SBGGR12 v4l2_fourcc('B', 'G', '1', '2') /* 12  BGBG.. GRGR.. */
++#define V4L2_PIX_FMT_SGBRG12 v4l2_fourcc('G', 'B', '1', '2') /* 12  GBGB.. RGRG.. */
++#define V4L2_PIX_FMT_SGRBG12 v4l2_fourcc('B', 'A', '1', '2') /* 12  GRGR.. BGBG.. */
++#define V4L2_PIX_FMT_SRGGB12 v4l2_fourcc('R', 'G', '1', '2') /* 12  RGRG.. GBGB.. */
+ 	/* 10bit raw bayer DPCM compressed to 8 bits */
+ #define V4L2_PIX_FMT_SGRBG10DPCM8 v4l2_fourcc('B', 'D', '1', '0')
+ 	/*
+-- 
+1.6.6.1
+

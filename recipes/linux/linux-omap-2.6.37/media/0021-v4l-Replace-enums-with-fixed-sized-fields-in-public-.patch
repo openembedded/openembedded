@@ -1,0 +1,50 @@
+From fb1156d3125e36952f884b09afb9d0815ddeafd7 Mon Sep 17 00:00:00 2001
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Date: Wed, 6 Oct 2010 08:30:26 +0200
+Subject: [PATCH 21/43] v4l: Replace enums with fixed-sized fields in public structure
+
+The v4l2_mbus_framefmt structure will be part of the public userspace
+API and used (albeit indirectly) as an ioctl argument. As such, its size
+must be fixed across userspace ABIs.
+
+Replace the v4l2_field and v4l2_colorspace enums by __u32 fields and add
+padding for future enhancements.
+
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+---
+ include/linux/v4l2-mediabus.h |   17 +++++++++--------
+ 1 files changed, 9 insertions(+), 8 deletions(-)
+
+diff --git a/include/linux/v4l2-mediabus.h b/include/linux/v4l2-mediabus.h
+index a62cd64..feeb88c 100644
+--- a/include/linux/v4l2-mediabus.h
++++ b/include/linux/v4l2-mediabus.h
+@@ -63,16 +63,17 @@ enum v4l2_mbus_pixelcode {
+  * struct v4l2_mbus_framefmt - frame format on the media bus
+  * @width:	frame width
+  * @height:	frame height
+- * @code:	data format code
+- * @field:	used interlacing type
+- * @colorspace:	colorspace of the data
++ * @code:	data format code (from enum v4l2_mbus_pixelcode)
++ * @field:	used interlacing type (from enum v4l2_field)
++ * @colorspace:	colorspace of the data (from enum v4l2_colorspace)
+  */
+ struct v4l2_mbus_framefmt {
+-	__u32				width;
+-	__u32				height;
+-	__u32				code;
+-	enum v4l2_field			field;
+-	enum v4l2_colorspace		colorspace;
++	__u32			width;
++	__u32			height;
++	__u32			code;
++	__u32			field;
++	__u32			colorspace;
++	__u32			reserved[7];
+ };
+ 
+ #endif
+-- 
+1.6.6.1
+

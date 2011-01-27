@@ -1,0 +1,70 @@
+From 5cc262328a97b1d048ae42234909ac33c2fc342c Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Mon, 15 Nov 2010 08:29:54 -0600
+Subject: [PATCH 42/43] omap2: Fix camera resources for multiomap
+
+Make sure the kernel can be compiled with both OMAP2 and OMAP3 camera
+support linked in, and give public symbols proper omap2/omap3 prefixes.
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+Acked-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+---
+ arch/arm/mach-omap2/devices.c |   25 ++++++++++++-------------
+ 1 files changed, 12 insertions(+), 13 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/devices.c b/arch/arm/mach-omap2/devices.c
+index 9b243be..c132c65 100644
+--- a/arch/arm/mach-omap2/devices.c
++++ b/arch/arm/mach-omap2/devices.c
+@@ -38,7 +38,7 @@
+ 
+ #if defined(CONFIG_VIDEO_OMAP2) || defined(CONFIG_VIDEO_OMAP2_MODULE)
+ 
+-static struct resource cam_resources[] = {
++static struct resource omap2cam_resources[] = {
+ 	{
+ 		.start		= OMAP24XX_CAMERA_BASE,
+ 		.end		= OMAP24XX_CAMERA_BASE + 0xfff,
+@@ -50,21 +50,12 @@ static struct resource cam_resources[] = {
+ 	}
+ };
+ 
+-static struct platform_device omap_cam_device = {
++static struct platform_device omap2cam_device = {
+ 	.name		= "omap24xxcam",
+ 	.id		= -1,
+-	.num_resources	= ARRAY_SIZE(cam_resources),
+-	.resource	= cam_resources,
++	.num_resources	= ARRAY_SIZE(omap2cam_resources),
++	.resource	= omap2cam_resources,
+ };
+-
+-static inline void omap_init_camera(void)
+-{
+-	platform_device_register(&omap_cam_device);
+-}
+-#else
+-static inline void omap_init_camera(void)
+-{
+-}
+ #endif
+ 
+ static struct resource omap3isp_resources[] = {
+@@ -158,6 +149,14 @@ int omap3_init_camera(void *pdata)
+ }
+ EXPORT_SYMBOL_GPL(omap3_init_camera);
+ 
++static inline void omap_init_camera(void)
++{
++#if defined(CONFIG_VIDEO_OMAP2) || defined(CONFIG_VIDEO_OMAP2_MODULE)
++	if (cpu_is_omap24xx())
++		platform_device_register(&omap2cam_device);
++#endif
++}
++
+ #if defined(CONFIG_OMAP_MBOX_FWK) || defined(CONFIG_OMAP_MBOX_FWK_MODULE)
+ 
+ #define MBOX_REG_SIZE   0x120
+-- 
+1.6.6.1
+

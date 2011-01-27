@@ -1,0 +1,32 @@
+From 70b39450b2de8e96504332730c9b00c663cfeaf9 Mon Sep 17 00:00:00 2001
+From: Sergio Aguirre <saaguirre@ti.com>
+Date: Mon, 15 Nov 2010 08:29:56 -0600
+Subject: [PATCH 40/43] omap3: Remove unusued ISP CBUFF resource
+
+The ISP CBUFF module isn't use, its resource isn't needed.
+
+Signed-off-by: Sergio Aguirre <saaguirre@ti.com>
+Acked-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+---
+ arch/arm/mach-omap2/devices.c |    5 -----
+ 1 files changed, 0 insertions(+), 5 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/devices.c b/arch/arm/mach-omap2/devices.c
+index 40c64b9..60cb86f 100644
+--- a/arch/arm/mach-omap2/devices.c
++++ b/arch/arm/mach-omap2/devices.c
+@@ -69,11 +69,6 @@ static struct resource omap3isp_resources[] = {
+ 		.flags		= IORESOURCE_MEM,
+ 	},
+ 	{
+-		.start		= OMAP3430_ISP_CBUFF_BASE,
+-		.end		= OMAP3430_ISP_CBUFF_END,
+-		.flags		= IORESOURCE_MEM,
+-	},
+-	{
+ 		.start		= OMAP3430_ISP_CCP2_BASE,
+ 		.end		= OMAP3430_ISP_CCP2_END,
+ 		.flags		= IORESOURCE_MEM,
+-- 
+1.6.6.1
+

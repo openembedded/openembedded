@@ -149,6 +149,49 @@ SRC_URI_append = " \
                   file://wl1271/0013-drivers-media-radio-Update-Kconfig-and-Makefile-for-.patch \
                   file://wl1271/0014-drivers-misc-ti-st-change-protocol-parse-logic.patch \
                   file://wl1271/0015-Bluetooth-btwilink-driver.patch \
+                  \
+                  file://media/0001-v4l-Share-code-between-video_usercopy-and-video_ioct.patch \
+                  file://media/0002-v4l-subdev-Don-t-require-core-operations.patch \
+                  file://media/0003-v4l-subdev-Merge-v4l2_i2c_new_subdev_cfg-and-v4l2_i2.patch \
+                  file://media/0004-v4l-subdev-Add-device-node-support.patch \
+                  file://media/0005-v4l-subdev-Uninline-the-v4l2_subdev_init-function.patch \
+                  file://media/0006-v4l-subdev-Control-ioctls-support.patch \
+                  file://media/0007-v4l-subdev-Events-support.patch \
+                  file://media/0008-media-Media-device-node-support.patch \
+                  file://media/0009-media-Media-device.patch \
+                  file://media/0010-media-Entities-pads-and-links.patch \
+                  file://media/0011-media-Entity-graph-traversal.patch \
+                  file://media/0012-media-Entity-use-count.patch \
+                  file://media/0013-media-Media-device-information-query.patch \
+                  file://media/0014-media-Entities-pads-and-links-enumeration.patch \
+                  file://media/0015-media-Links-setup.patch \
+                  file://media/0016-media-Pipelines-and-media-streams.patch \
+                  file://media/0017-v4l-Add-a-media_device-pointer-to-the-v4l2_device-st.patch \
+                  file://media/0018-v4l-Make-video_device-inherit-from-media_entity.patch \
+                  file://media/0019-v4l-Make-v4l2_subdev-inherit-from-media_entity.patch \
+                  file://media/0020-v4l-Move-the-media-v4l2-mediabus.h-header-to-include.patch \
+                  file://media/0021-v4l-Replace-enums-with-fixed-sized-fields-in-public-.patch \
+                  file://media/0022-v4l-Rename-V4L2_MBUS_FMT_GREY8_1X8-to-V4L2_MBUS_FMT_.patch \
+                  file://media/0023-v4l-Group-media-bus-pixel-codes-by-types-and-sort-th.patch \
+                  file://media/0024-v4l-Create-v4l2-subdev-file-handle-structure.patch \
+                  file://media/0025-v4l-subdev-Add-a-new-file-operations-class.patch \
+                  file://media/0026-v4l-v4l2_subdev-pad-level-operations.patch \
+                  file://media/0028-v4l-v4l2_subdev-userspace-format-API.patch \
+                  file://media/0029-v4l-v4l2_subdev-userspace-frame-interval-API.patch \
+                  file://media/0030-v4l-v4l2_subdev-userspace-crop-API.patch \
+                  file://media/0031-v4l-subdev-Generic-ioctl-support.patch \
+                  file://media/0032-v4l-Add-subdev-sensor-g_skip_frames-operation.patch \
+                  file://media/0033-v4l-Include-linux-videodev2.h-in-media-v4l2-ctrls.h.patch \
+                  file://media/0034-v4l-Fix-a-use-before-set-in-the-control-framework.patch \
+                  file://media/0035-v4l-Add-8-bit-YUYV-on-16-bit-bus-and-SGRBG10-media-b.patch \
+                  file://media/0036-v4l-Add-remaining-RAW10-patterns-w-DPCM-pixel-code-v.patch \
+                  file://media/0037-v4l-Add-missing-12-bits-bayer-media-bus-formats.patch \
+                  file://media/0038-v4l-Add-12-bits-bayer-pixel-formats.patch \
+                  file://media/0039-ARM-OMAP3-Update-Camera-ISP-definitions-for-OMAP3630.patch \
+                  file://media/0040-omap3-Remove-unusued-ISP-CBUFF-resource.patch \
+                  file://media/0041-omap3-Add-function-to-register-omap3isp-platform-dev.patch \
+                  file://media/0042-omap2-Fix-camera-resources-for-multiomap.patch \
+                  file://media/0043-OMAP3-ISP-driver.patch \
                   "
 
 SRC_URI_append_usrp-e1xx = "\

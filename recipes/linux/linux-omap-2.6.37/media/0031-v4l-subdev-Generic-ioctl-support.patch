@@ -1,0 +1,46 @@
+From 3378e81670a983f084f6d8e6be654234b258e482 Mon Sep 17 00:00:00 2001
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Date: Fri, 26 Feb 2010 16:23:10 +0100
+Subject: [PATCH 31/43] v4l: subdev: Generic ioctl support
+
+Instead of returning an error when receiving an ioctl call with an
+unsupported command, forward the call to the subdev core::ioctl handler.
+
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+---
+ Documentation/video4linux/v4l2-framework.txt |    5 +++++
+ drivers/media/video/v4l2-subdev.c            |    2 +-
+ 2 files changed, 6 insertions(+), 1 deletions(-)
+
+diff --git a/Documentation/video4linux/v4l2-framework.txt b/Documentation/video4linux/v4l2-framework.txt
+index d0fb880..1bb5f22 100644
+--- a/Documentation/video4linux/v4l2-framework.txt
++++ b/Documentation/video4linux/v4l2-framework.txt
+@@ -407,6 +407,11 @@ VIDIOC_UNSUBSCRIBE_EVENT
+ 	To properly support events, the poll() file operation is also
+ 	implemented.
+ 
++Private ioctls
++
++	All ioctls not in the above list are passed directly to the sub-device
++	driver through the core::ioctl operation.
++
+ 
+ I2C sub-device drivers
+ ----------------------
+diff --git a/drivers/media/video/v4l2-subdev.c b/drivers/media/video/v4l2-subdev.c
+index e706c4c..1710a64 100644
+--- a/drivers/media/video/v4l2-subdev.c
++++ b/drivers/media/video/v4l2-subdev.c
+@@ -276,7 +276,7 @@ static long subdev_do_ioctl(struct file *file, unsigned int cmd, void *arg)
+ 	}
+ #endif
+ 	default:
+-		return -ENOIOCTLCMD;
++		return v4l2_subdev_call(sd, core, ioctl, cmd, arg);
+ 	}
+ 
+ 	return 0;
+-- 
+1.6.6.1
+

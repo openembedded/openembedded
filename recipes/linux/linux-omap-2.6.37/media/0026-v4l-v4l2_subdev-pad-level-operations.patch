@@ -1,0 +1,49 @@
+From 7a089b741d5c2ca3881d61e81971a1a0e464aa27 Mon Sep 17 00:00:00 2001
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Date: Wed, 9 Dec 2009 12:39:52 +0100
+Subject: [PATCH 26/43] v4l: v4l2_subdev pad-level operations
+
+Add a v4l2_subdev_pad_ops structure for the operations that need to be
+performed at the pad level such as format-related operations.
+
+Pad format-related operations use v4l2_mbus_framefmt instead of
+v4l2_format.
+
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+---
+ include/media/v4l2-subdev.h |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
+index af704df..4f6ddba 100644
+--- a/include/media/v4l2-subdev.h
++++ b/include/media/v4l2-subdev.h
+@@ -42,6 +42,7 @@ struct v4l2_ctrl_handler;
+ struct v4l2_event_subscription;
+ struct v4l2_fh;
+ struct v4l2_subdev;
++struct v4l2_subdev_fh;
+ struct tuner_setup;
+ 
+ /* decode_vbi_line */
+@@ -423,6 +424,9 @@ struct v4l2_subdev_ir_ops {
+ 				struct v4l2_subdev_ir_parameters *params);
+ };
+ 
++struct v4l2_subdev_pad_ops {
++};
++
+ struct v4l2_subdev_ops {
+ 	const struct v4l2_subdev_core_ops	*core;
+ 	const struct v4l2_subdev_file_ops	*file;
+@@ -432,6 +436,7 @@ struct v4l2_subdev_ops {
+ 	const struct v4l2_subdev_vbi_ops	*vbi;
+ 	const struct v4l2_subdev_ir_ops		*ir;
+ 	const struct v4l2_subdev_sensor_ops	*sensor;
++	const struct v4l2_subdev_pad_ops	*pad;
+ };
+ 
+ #define V4L2_SUBDEV_NAME_SIZE 32
+-- 
+1.6.6.1
+
