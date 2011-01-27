@@ -2,8 +2,8 @@ DESCRIPTION = "A tool for automatically generating Makefiles."
 LICENSE = "GPL"
 HOMEPAGE = "http://www.gnu.org/software/automake/"
 SECTION = "devel"
-DEPENDS_virtclass-native = "autoconf-native"
-RDEPENDS_automake-native = "autoconf-native perl-native-runtime"
+DEPENDS_virtclass-native = "autoconf-native perl-native"
+RDEPENDS_automake-native = "autoconf-native perl-native"
 RDEPENDS_automake += "\
     autoconf \
     perl \
