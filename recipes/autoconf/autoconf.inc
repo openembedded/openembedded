@@ -3,10 +3,10 @@ automatically configure sourcecode."
 LICENSE = "GPLv3+-with-Autoconf-Configure-Script-Exception-v3.0"
 HOMEPAGE = "http://www.gnu.org/software/autoconf/"
 SECTION = "devel"
-DEPENDS += "m4-native"
+DEPENDS += "m4-native perl-native"
 RDEPENDS_${PN} = "m4 perl gnu-config"
-DEPENDS_virtclass-native = "m4-native gnu-config-native"
-RDEPENDS_${PN}_virtclass-native = "m4-native gnu-config-native"
+DEPENDS_virtclass-native = "m4-native gnu-config-native perl-native"
+RDEPENDS_${PN}_virtclass-native = "m4-native gnu-config-native perl-native"
 
 INC_PR = "r13"
 
