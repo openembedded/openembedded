@@ -1,6 +1,6 @@
 #!/bin/sh
 
-source $(dirname $0)/wrapper.sh
+. $(dirname $0)/wrapper.sh
 
 saved=""
 while getopts dbCcMpSsvB:f:g:m:o:D opt; do
@@ -28,7 +28,7 @@ for arg; do
     save "$arg"
 done
 
-if [ $# == 2 -a -n "$createleading" ]; then
+if [ $# -eq 2 -a -n "$createleading" ]; then
     install -d $(dirname $2)
 fi
 
