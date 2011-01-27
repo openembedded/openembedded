@@ -18,7 +18,7 @@ python __anonymous () {
     	bb.data.setVar("DEPENDS", depends, d)
 
     image = bb.data.getVar('INITRAMFS_IMAGE', d, True)
-    if image != '' and image is not None:
+    if image:
         bb.data.setVar('INITRAMFS_TASK', '${INITRAMFS_IMAGE}:do_rootfs', d)
 
     machine_kernel_pr = bb.data.getVar('MACHINE_KERNEL_PR', d, True)
