@@ -3,6 +3,12 @@ PR = "${INC_PR}.0"
 export INST=${D}
 
 do_install() {
+
+# klcc for target host needs to be fixed
+# removed also from FILES_${PN}-dev
+
+        rm klcc/klcc
+
         oe_runmake install
         install -d ${D}${base_bindir}
         install -m 755 usr/dash/sh.${KLIBC_UTILS_VARIANT} ${D}${base_bindir}/sh
@@ -18,7 +24,7 @@ FILES_${PN} = "${base_libdir}/klibc-*.so"
 FILES_${PN}-dev = "${base_libdir}/klibc.so \
                    ${base_libdir}/klibc/lib/* \
                    ${base_libdir}/klibc/include/* \
-                   ${base_bindir}/klcc \
+#                   ${base_bindir}/klcc \
                   "
 
 # Yes we want exactly the klibc that was compiled with the utils
