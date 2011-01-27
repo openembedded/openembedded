@@ -1,7 +1,7 @@
 DESCRIPTION = "Log::Dispatch - Dispatches messages to one or more outputs"
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/Log-Dispatch-${PV}.tar.gz"
 

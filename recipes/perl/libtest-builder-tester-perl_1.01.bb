@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
 RDEPENDS_${PN} += "perl-module-strict perl-module-carp perl-module-exporter \
              perl-module-symbol perl-module-vars"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/M/MA/MARKF/Test-Builder-Tester-${PV}.tar.gz"
 

@@ -1,7 +1,7 @@
 DESCRIPTION = "Linux::DVB - interface to (some parts of) the Linux DVB API"
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/M/ML/MLEHMANN/Linux-DVB-${PV}.tar.gz"
 

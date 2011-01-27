@@ -2,7 +2,7 @@ DESCRIPTION = "Convert::BinHex - extract data from Macintosh BinHex files"
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
 BBCLASSEXTEND = "native"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/E/ER/ERYQ/Convert-BinHex-${PV}.tar.gz;name=convert-binhex-perl-${PV}"
 SRC_URI[convert-binhex-perl-1.119.md5sum] = "ba70ad1772abac6270078f28197a7961"

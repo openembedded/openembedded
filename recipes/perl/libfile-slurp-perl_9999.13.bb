@@ -2,7 +2,7 @@ DESCRIPTION = "File::Slurp - Efficient Reading/Writing of Complete Files"
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
 HOMEPAGE = "http://search.cpan.org/~uri/"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/File-Slurp-${PV}.tar.gz"
 

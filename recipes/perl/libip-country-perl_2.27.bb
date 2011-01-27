@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
 RDEPENDS_${PN} += "perl-module-extutils-makemaker"
 BBCLASSEXTEND = "native"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/N/NW/NWETTERS/IP-Country-${PV}.tar.gz;name=ip-country-perl-${PV}"
 SRC_URI[ip-country-perl-2.27.md5sum] = "32932280ee4729145e85e08dad5ab8c6"

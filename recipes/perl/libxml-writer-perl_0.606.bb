@@ -2,7 +2,7 @@ DESCRIPTION = "XML::Writer - Perl extension for writing XML documents."
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
 HOMEPAGE = "http://search.cpan.org/dist/XML-Writer/"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/J/JO/JOSEPHW/XML-Writer-${PV}.tar.gz"
 

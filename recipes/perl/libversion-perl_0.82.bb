@@ -2,7 +2,7 @@ DESCRIPTION = "version - Perl extension for Version Objects"
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
 RDEPENDS_${PN} += "perl-module-file-temp perl-module-test-more"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/J/JP/JPEACOCK/version-${PV}.tar.gz"
 SRC_URI[md5sum] = "c073f079557297003d805b535711c5d1"

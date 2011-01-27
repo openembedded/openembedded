@@ -1,7 +1,7 @@
 DESCRIPTION = "XML::DOM - A perl module for building DOM Level 1 compliant document structures"
 SECTION = "libs"
 LICENSE = "unknown"
-PR = "r3"
+PR = "r4"
 
 DEPENDS += "libxml-parser-perl-native libxml-regexp-perl-native \
 	libhtml-parser-perl-native libhtml-tagset-perl-native \

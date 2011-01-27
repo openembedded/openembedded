@@ -6,7 +6,7 @@ RDEPENDS_${PN} = " \
 	 perl-module-warnings \
 	 "
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/S/SH/SHLOMIF/Error-${PV}.tar.gz;name=error-perl-${PV}"
 SRC_URI[error-perl-0.17016.md5sum] = "eedcd3c6970568dd32092b5334328eff"

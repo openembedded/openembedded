@@ -8,7 +8,7 @@ RDEPENDS_${PN} += " \
 	perl-module-xsloader \
 	"
 
-PR = "r0"
+PR = "r1"
 
 export STAGING_LIBDIR
 

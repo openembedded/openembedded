@@ -1,7 +1,7 @@
 DESCRIPTION = "DateTime::Format::Strptime - Parse and format strp and strf time patterns"
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/R/RI/RICKM/DateTime-Format-Strptime-${PV}.tgz"
 

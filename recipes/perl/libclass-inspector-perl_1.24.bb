@@ -1,7 +1,7 @@
 DESCRIPTION = "Class::Inspector - Get information about a class and its structure"
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/A/AD/ADAMK/Class-Inspector-${PV}.tar.gz"
 

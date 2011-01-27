@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
 RDEPENDS_${PN} += "perl-module-carp perl-module-scalar-util perl-module-strict \
              perl-module-warnings"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS/Sub-Install-${PV}.tar.gz"
 

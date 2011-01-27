@@ -1,6 +1,7 @@
 DESCRIPTION = "Crypt::UnixCrypt - perl-only implementation of the crypt function."
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
+PR = "r1"
 BBCLASSEXTEND = "native"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/M/MV/MVORL/Crypt-UnixCrypt-${PV}.tar.gz;name=crypt-unixcrypt-perl-${PV}"

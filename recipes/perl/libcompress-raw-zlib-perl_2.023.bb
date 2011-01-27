@@ -2,7 +2,7 @@ DESCRIPTION = "Compress::Raw::Zlib - Low-Level Interface to zlib compression lib
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
 DEPENDS += "expat expat-native"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/P/PM/PMQS/Compress-Raw-Zlib-${PV}.tar.gz"
 

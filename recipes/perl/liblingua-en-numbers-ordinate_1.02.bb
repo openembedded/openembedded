@@ -1,7 +1,7 @@
 DESCRIPTION = "Lingua::EN::Numbers::Ordinate -- go from cardinal number (3) to ordinal ("3rd")"
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/S/SB/SBURKE/Lingua-EN-Numbers-Ordinate-${PV}.tar.gz"
 

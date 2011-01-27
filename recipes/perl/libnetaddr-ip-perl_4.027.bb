@@ -4,7 +4,7 @@ LICENSE = "Artistic|GPLv1+"
 RDEPENDS_${PN} += "perl-module-test-more"
 BBCLASSEXTEND = "native"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/M/MI/MIKER/NetAddr-IP-${PV}.tar.gz;name=netaddr-ip-perl-${PV}"
 SRC_URI[netaddr-ip-perl-4.027.md5sum] = "c4a21a76e5b1b9f4c8e9810b78559d7b"

@@ -9,7 +9,7 @@ RDEPENDS_${PN} += "libxml2 \
         libxml-sax-perl \
         zlib \
 "
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/P/PA/PAJAS/XML-LibXML-${PV}.tar.gz;name=libxml \
         file://libxml-libxml-perl-disable-libxml2-check.patch \

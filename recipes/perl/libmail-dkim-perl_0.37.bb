@@ -15,7 +15,7 @@ RDEPENDS_${PN} += " \
 	libnet-dns-perl \
 	"
 BBCLASSEXTEND = "native"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/J/JA/JASLONG/Mail-DKIM-${PV}.tar.gz;name=mail-dkim-perl-${PV}"
 SRC_URI[mail-dkim-perl-0.37.md5sum] = "f3e84ec6b5e42d4cbcc7c42ea2900649"

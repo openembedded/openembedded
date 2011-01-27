@@ -11,7 +11,7 @@ RDEPENDS_${PN} += " \
 	"
 BBCLASSEXTEND = "native"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/O/OL/OLAF/Net-DNS-${PV}.tar.gz;name=net-dns-perl-${PV}"
 SRC_URI[net-dns-perl-0.66.md5sum] = "1635d876324e3c2f6e277d5778bfe94c"

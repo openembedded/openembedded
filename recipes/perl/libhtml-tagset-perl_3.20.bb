@@ -1,7 +1,7 @@
 DESCRIPTION = "HTML Tagset bits."
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/P/PE/PETDANCE/HTML-Tagset-${PV}.tar.gz"
 

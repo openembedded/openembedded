@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
 DEPENDS = "libcompress-zlib-perl-native"
 RDEPENDS_${PN} += "libcompress-zlib-perl perl-module-tie-handle"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/T/TO/TOMHUGHES/IO-Zlib-${PV}.tar.gz;name=io-zlib-${PV}"
 SRC_URI[io-zlib-1.10.md5sum] = "078a9387009b928068f70759e61bd08f"

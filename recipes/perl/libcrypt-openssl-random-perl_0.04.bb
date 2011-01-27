@@ -2,6 +2,7 @@ DESCRIPTION = "Perl: random routines for Crypt::OpenSSL::RSA"
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
 DEPENDS = "openssl"
+PR = "r1"
 BBCLASSEXTEND = "native"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/I/IR/IROBERTS/Crypt-OpenSSL-Random-${PV}.tar.gz;name=crypt-openssl-random-perl-${PV}"

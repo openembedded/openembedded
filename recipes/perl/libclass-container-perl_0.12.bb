@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
 DEPENDS = "libparams-validate-perl-native"
 RDEPENDS_${PN} = "libparams-validate-perl"
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/K/KW/KWILLIAMS/Class-Container-${PV}.tar.gz"
 

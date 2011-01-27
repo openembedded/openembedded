@@ -10,9 +10,6 @@ PR = "r21"
 # 5.10.1 has Module::Build built-in
 PROVIDES += "libmodule-build-perl"
 
-# Not tested enough
-DEFAULT_PREFERENCE = "-1"
-
 # Major part of version
 PVM = "5.10"
 

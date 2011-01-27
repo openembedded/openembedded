@@ -2,7 +2,7 @@ DESCRIPTION = "An Encode::Encoding subclass that detects the encoding of data"
 SECTION = "libs"
 LICENSE = "MPL"
 RDEPENDS_${PN} += "perl-module-module-build perl-module-extutils-cbuilder"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/J/JG/JGMYERS/Encode-Detect-${PV}.tar.gz;name=encode-detect-perl-${PV}"
 SRC_URI[encode-detect-perl-1.01.md5sum] = "ee9faf55d7105c97b02b8ebe590819c7"

@@ -1,7 +1,7 @@
 DESCRIPTION = "Class::MethodMaker - Create generic methods for OO Perl"
 SECTION = "libs"
 LICENSE = "unknown"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/S/SC/SCHWIGON/class-methodmaker/Class-MethodMaker-${PV}.tar.gz"
 

@@ -4,7 +4,7 @@ LICENSE = "Artistic|GPLv1+"
 DEPENDS = "libdigest-sha1-perl-native liberror-perl-native \
            libipc-sharelite-perl-native"
 RDEPENDS_${PN} = "libdigest-sha1-perl liberror-perl libipc-sharelite-perl"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/J/JS/JSWARTZ/Cache-Cache-${PV}.tar.gz"
 

@@ -1,7 +1,7 @@
 DESCRIPTION = "version - Perl extension for Version Objects"
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
-PR = "r9"
+PR = "r20"
 
 DEFAULT_PREFERENCE = "-1"
 

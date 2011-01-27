@@ -2,7 +2,7 @@ DESCRIPTION = "Compress::Zlib - Interface to zlib compression library"
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
 DEPENDS += "expat expat-native"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.cpan.org/modules/by-module/IO/IO-Compress-Zlib-${PV}.tar.gz"
 

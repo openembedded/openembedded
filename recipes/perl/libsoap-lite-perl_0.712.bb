@@ -6,7 +6,7 @@ DEPENDS = " libmime-tools-perl-native libwww-perl-native libxml-parser-perl-nati
 RDEPENDS_${PN} = " libmime-tools-perl libwww-perl libxml-parser-perl libtask-weaken-perl \
              libio-socket-ssl-perl libclass-inspector-perl \
 	     perl-module-scalar-util perl-module-constant"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://www.cpan.org/authors/id/M/MK/MKUTTER/SOAP-Lite-${PV}.tar.gz"
 

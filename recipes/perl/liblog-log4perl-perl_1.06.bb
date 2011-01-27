@@ -1,7 +1,7 @@
 DESCRIPTION = "Log::Log4perl - Log4j implementation for Perl"
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/M/MS/MSCHILLI/Log-Log4perl-${PV}.tar.gz"
 

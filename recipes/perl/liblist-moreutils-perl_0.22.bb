@@ -2,7 +2,7 @@ DESCRIPTION = "List::MoreUtils - Provide the stuff missing in List::Util"
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
 HOMEPAGE = "http://datetime.perl.org/"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/V/VP/VPARSEVAL/List-MoreUtils-${PV}.tar.gz"
 SRC_URI[md5sum] = "3a6ec506f40662ab1296c48c5eb72016"

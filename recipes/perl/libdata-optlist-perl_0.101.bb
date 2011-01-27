@@ -4,7 +4,7 @@ LICENSE = "Artistic|GPLv1+"
 DEPENDS += "libsub-install-perl-native libparams-util-perl-native"
 RDEPENDS_${PN} += "perl-module-list-util libparams-util-perl perl-module-strict \
              libsub-install-perl perl-module-warnings "
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS/Data-OptList-${PV}.tar.gz"
 

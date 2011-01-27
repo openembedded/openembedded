@@ -8,7 +8,7 @@ RDEPENDS_${PN} += "libdbi-perl \
          perl-module-test-simple \
          perl-module-storable \
 "
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/J/JU/JUERD/DBIx-Simple-${PV}.tar.gz"
 SRC_URI[md5sum] = "c1d7bf0ab453e7e00715d9d4e71102d8"

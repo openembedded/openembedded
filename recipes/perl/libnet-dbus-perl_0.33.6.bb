@@ -6,7 +6,7 @@ RDEPENDS_${PN} = "perl-module-vars perl-module-locale perl-module-io-handle \
             perl-module-symbol perl-module-selectsaver perl-module-io \
             perl-module-integer perl-module-exporter-heavy"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/D/DA/DANBERR/Net-DBus-${PV}.tar.gz"
 

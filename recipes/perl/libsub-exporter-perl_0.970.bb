@@ -5,7 +5,7 @@ DEPENDS += "libdata-optlist-perl-native libsub-install-perl-native \
             libparams-util-perl-native"
 RDEPENDS_${PN} += "perl-module-carp libdata-optlist-perl libparams-util-perl \
              perl-module-strict libsub-install-perl perl-module-warnings"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS/Sub-Exporter-${PV}.tar.gz"
 

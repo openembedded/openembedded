@@ -1,7 +1,7 @@
 DESCRIPTION = "ExtUtils::CBuilder - Compile and link C code for Perl modules"
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/K/KW/KWILLIAMS/ExtUtils-CBuilder-${PV}.tar.gz"
 

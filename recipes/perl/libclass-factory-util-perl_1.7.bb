@@ -2,7 +2,7 @@ DESCRIPTION = "Class::Factory::Util - Provide utility methods for factory classe
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
 DEPENDS = "libmodule-build-perl-native"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/Class-Factory-Util-${PV}.tar.gz"
 SRC_URI[md5sum] = "aebd79da361b676a7ecd3245fc3d1b3f"

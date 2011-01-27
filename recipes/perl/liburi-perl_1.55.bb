@@ -2,7 +2,7 @@ DESCRIPTION = "Manipulates and accesses URI strings"
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
 RDEPENDS_${PN} += " perl-module-extutils-makemaker perl-module-mime-base64"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/URI-${PV}.tar.gz"
 

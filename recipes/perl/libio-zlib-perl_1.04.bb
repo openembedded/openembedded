@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
 DEPENDS = "libcompress-zlib-perl-native"
 RDEPENDS_${PN} += "libcompress-zlib-perl"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/T/TO/TOMHUGHES/IO-Zlib-${PV}.tar.gz"
 

@@ -1,7 +1,7 @@
 DESCRIPTION = "Task::Weaken - Ensure that a platform has weaken support"
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/A/AD/ADAMK/Task-Weaken-${PV}.tar.gz"
 SRC_URI[md5sum] = "056ce36c576450d22e6b23b4dbfacd02"

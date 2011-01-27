@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
 DEPENDS = "virtual/db"
 RDEPENDS_${PN} += "perl-module-extutils-makemaker"
-PR = "r0"
+PR = "r1"
 
 BBCLASSEXTEND = "native"
 

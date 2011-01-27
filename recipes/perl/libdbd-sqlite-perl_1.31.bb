@@ -16,7 +16,7 @@ RDEPENDS_${PN} += "libdbi-perl \
          perl-module-locale \
          perl-module-tie-hash \
 "
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/A/AD/ADAMK/DBD-SQLite-${PV}.tar.gz"
 SRC_URI[md5sum] = "67b3575104efd606c8093bc416e3338d"

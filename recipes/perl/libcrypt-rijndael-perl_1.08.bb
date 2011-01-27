@@ -2,7 +2,7 @@ DESCRIPTION = "Crypt::Rijndael - Crypt::CBC compliant Rijndael encryption module
 SECTION = "libs"
 LICENSE = "GPLv2"
 DEPENDS += "expat expat-native"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/B/BD/BDFOY/Crypt-Rijndael-${PV}.tar.gz"
 

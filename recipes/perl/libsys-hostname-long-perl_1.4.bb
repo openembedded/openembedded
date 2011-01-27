@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
 BBCLASSEXTEND = "native"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/S/SC/SCOTT/Sys-Hostname-Long-${PV}.tar.gz;name=sys-hostname-long-perl-${PV}"
 SRC_URI[sys-hostname-long-perl-1.4.md5sum] = "a5b3c23754cbcff10e283d16c42ec3d3"

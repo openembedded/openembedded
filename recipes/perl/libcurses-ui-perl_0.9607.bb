@@ -11,7 +11,7 @@ RDEPENDS_${PN} += " \
 	 "
 BBCLASSEXTEND = "native"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/M/MD/MDXI/Curses-UI-${PV}.tar.gz;name=curses-ui-perl-${PV}"
 SRC_URI[curses-ui-perl-0.9607.md5sum] = "8970c72e378aa386e0e79a884ef5863a"

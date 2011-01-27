@@ -11,7 +11,7 @@ RDEPENDS_${PN} += " \
 	"
 
 BBCLASSEXTEND = "native"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/F/FL/FLORA/Net-SSLeay-${PV}.tar.gz;name=net-ssleay-${PV}"
 SRC_URI[net-ssleay-1.36.md5sum] = "54061638720dd6a325395331c77f21d8"

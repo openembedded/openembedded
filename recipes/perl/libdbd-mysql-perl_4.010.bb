@@ -1,4 +1,5 @@
 require libdbd-mysql-perl.inc
+PR = "${INC_PR}.0"
 
 DEPENDS = "libdbi-perl mysql"
 RDEPENDS_${PN} = "perl-module-data-dumper \

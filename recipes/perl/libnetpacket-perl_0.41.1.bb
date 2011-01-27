@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "Artistic"
 BBCLASSEXTEND = "native"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/Y/YA/YANICK/NetPacket-${PV}.tar.gz;name=netpacket-perl-${PV}"
 SRC_URI[netpacket-perl-0.41.1.md5sum] = "77c1482927c6892b9571404485ffe591"

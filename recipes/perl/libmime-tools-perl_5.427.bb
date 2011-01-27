@@ -22,7 +22,7 @@ RDEPENDS_${PN} += "\
 	"
 BBCLASSEXTEND = "native"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/D/DO/DONEILL/MIME-tools-${PV}.tar.gz;name=mime-tools-perl-${PV}"
 SRC_URI[mime-tools-perl-5.427.md5sum] = "4333caa7238cb9eafb5f7fb39fcbd8e7"

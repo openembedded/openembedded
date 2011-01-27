@@ -11,7 +11,7 @@ RDEPENDS_${PN} = "libexception-class-perl libparams-validate-perl \
         perl-module-exporter-heavy perl-module-cwd perl-module-scalar-util \
         perl-module-list-util perl-module-bytes perl-module-file-glob \
         perl-module-data-dumper"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/HTML-Mason-${PV}.tar.gz"
 

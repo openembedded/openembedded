@@ -1,7 +1,7 @@
 DESCRIPTION = "ExtUtils::Depends - Easily build XS extensions that depend on XS extensions"
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/R/RM/RMCFARLA/Gtk2-Perl/ExtUtils-Depends-${PV}.tar.gz"
 

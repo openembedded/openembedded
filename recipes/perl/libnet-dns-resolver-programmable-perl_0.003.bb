@@ -8,7 +8,7 @@ RDEPENDS_${PN} += " \
 	"
 BBCLASSEXTEND = "native"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/J/JM/JMEHNLE/net-dns-resolver-programmable/Net-DNS-Resolver-Programmable-v${PV}.tar.gz;name=net-dns-resolver-programmable-perl-${PV}"
 SRC_URI[net-dns-resolver-programmable-perl-0.003.md5sum] = "8d44bf331d6115e7fb4ea21f6cf4b96b"
