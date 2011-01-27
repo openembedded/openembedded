@@ -172,7 +172,8 @@ fakeroot do_rootfs () {
 
 	rootfs_${IMAGE_PKGTYPE}_do_rootfs
 
-	insert_feed_uris
+	[ "${ONLINE_PACKAGE_MANAGEMENT}" != "none" ] && \
+		insert_feed_uris
 
 	${IMAGE_PREPROCESS_COMMAND}
 
