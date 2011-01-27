@@ -1,7 +1,7 @@
 DEPENDS = "openssl"
 RPEDENDS = ""
 DESCRIPTION = "ISC Internet Domain Name Server"
-PR = "r2"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.isc.org/isc/bind9/9.3.1/bind-9.3.1.tar.gz \
            file://lib_dns_Makefile.in.patch \
@@ -9,9 +9,7 @@ SRC_URI = "ftp://ftp.isc.org/isc/bind9/9.3.1/bind-9.3.1.tar.gz \
 	   file://conf.patch \
 	   "
 
-EXTRA_OECONF = "--with-randomdev=/dev/random --disable-threads \
-                --sysconfdir=/etc/bind --localstatedir=/var --prefix=/usr \
-                ${@base_contains('DISTRO_FEATURES', 'ipv6', '--enable-ipv6=yes', '--enable-ipv6=no', d)}"
+EXTRA_OECONF = " --enable-ipv6=no --with-randomdev=/dev/random --disable-threads --sysconfdir=/etc/bind --localstatedir=/var --prefix=/usr"
 inherit autotools update-rc.d
 
 INITSCRIPT_NAME = "bind"
