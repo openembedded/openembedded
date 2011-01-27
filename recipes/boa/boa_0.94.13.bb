@@ -6,6 +6,8 @@ RDEPENDS_${PN} = "mime-support"
 RPROVIDES_${PN} = "httpd"
 PR = "r4"
 
+PARALLEL_MAKE = ""
+
 SRC_URI = "http://www.boa.org/boa-${PV}.tar.gz \
            file://cgi.patch;striplevel=2 \
            file://debian-patch.diff;striplevel=2 \
