@@ -2,9 +2,10 @@ DESCRIPTION = "Perl is a popular scripting language."
 HOMEPAGE = "http://www.perl.org/"
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
-DEPENDS = "virtual/db-native gdbm-native"
-PR = "r8"
+PR = "r9"
 NATIVE_INSTALL_WORKS = "1"
+INHIBIT_DEFAULT_DEPS = "1"
+PATCHTOOL = "patch"
 
 # 5.10.1 has this module built-in
 PROVIDES += "libmodule-build-perl-native"
@@ -34,19 +35,21 @@ do_configure () {
         -Dcflags="${CFLAGS}" \
         -Dldflags="${LDFLAGS}" \
         -Dcf_by="Open Embedded" \
+        \
         -Dprefix=${prefix} \
         -Dvendorprefix=${prefix} \
         -Dvendorprefix=${prefix} \
         -Dsiteprefix=${prefix} \
+         \
+        -Dprivlib=.../../lib/perl/${PV} \
+        -Darchlib=.../../lib/perl/${PV} \
+        -Dvendorlib=.../../lib/perl/${PV} \
+        -Dvendorarch=.../../lib/perl/${PV} \
+        -Dsitelib=.../../lib/perl/${PV} \
+        -Dsitearch=.../../lib/perl/${PV} \
+        -Duserelocatableinc="y" \
         \
-        -Dprivlib=${STAGING_LIBDIR}/perl/${PV} \
-        -Darchlib=${STAGING_LIBDIR}/perl/${PV} \
-        -Dvendorlib=${STAGING_LIBDIR}/perl/${PV} \
-        -Dvendorarch=${STAGING_LIBDIR}/perl/${PV} \
-        -Dsitelib=${STAGING_LIBDIR}/perl/${PV} \
-        -Dsitearch=${STAGING_LIBDIR}/perl/${PV} \
-        \
-        -Duseshrplib \
+        -Uuseshrplib \
         -Dusethreads \
         -Duseithreads \
         -Duselargefiles \
@@ -63,11 +66,6 @@ do_configure () {
         -Ud_csh \
         -Uusesfio \
         -Uusenm -des
-    sed "s!${STAGING_DIR}/bin!${STAGING_BINDIR}!;
-         s!${STAGING_DIR}/lib!${STAGING_LIBDIR}!;
-	 s!^installbin=.*!installbin=\'${STAGING_BINDIR}\'!;
-	 s!^installsitebin=.*!installsitebin=\'${STAGING_BINDIR}\'!" < config.sh > config.sh.new
-    mv config.sh.new config.sh
 }
 
 do_install() {
@@ -103,8 +101,8 @@ do_install() {
 	sed -i -r "s,^\tdie\ (\"Errno\ architecture.+)$,\twarn\ \1," ${D}${libdir}/perl/${PV}/Errno.pm
 
 	# Make sure we use /usr/bin/env perl
-	for PERLSCRIPT in `grep -rIl ${bindir}/perl ${D}${bindir}`; do
-		sed -i -e 's|^#!${bindir}/perl|#!/usr/bin/env perl|' $PERLSCRIPT
+	for PERLSCRIPT in `grep -rIEl '#!.*/perl' ${D}${bindir}`; do
+		sed -i -e '1s|^#!.*|#!/usr/bin/env perl|' $PERLSCRIPT
 	done
 }
 
