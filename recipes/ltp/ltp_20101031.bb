@@ -7,9 +7,8 @@ PR = "r0"
 
 inherit autotools
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/ltp/ltp-full-${PV}.tgz \
-	   file://runalltests.patch \
-	  "
+SRC_URI = "${SOURCEFORGE_MIRROR}/ltp/ltp-full-${PV}.bz2 \
+	  file://runalltests.patch"
 
 S = "${WORKDIR}/ltp-full-${PV}"
 
@@ -34,6 +33,6 @@ do_install(){
         oe_runmake DESTDIR=${D} install
 }
 
-SRC_URI[md5sum] = "fc5a36a7dcc8f7d5fa7b34dd4f43f25b"
-SRC_URI[sha256sum] = "c0ce2599ea0daf94b6259ba8fdbdd4cf42c7a3424314974df16fcb4c4599aed2"
+SRC_URI[md5sum] = "553e13e8f2b0cd75fa93f832a8f734a7"
+SRC_URI[sha256sum] = "df8c7607f8887aafc51510c04966ecb91e52135e5a86298f73fd30c148960ce8"
 
