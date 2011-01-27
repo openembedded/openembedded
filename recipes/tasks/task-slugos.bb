@@ -6,7 +6,7 @@
 DESCRIPTION = "Task packages for the SlugOS distribution"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r28"
+PR = "r29"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 COMPATIBLE_MACHINE = "(nslu2|ixp4xx|sheevaplug|qemuarm)"
 ALLOW_EMPTY = "1"
@@ -84,6 +84,9 @@ kernel-module-uhci-hcd \
 #kernel-module-raid1 \
 #"
 ## End - MJW
+
+# Add kexec, for convenience for developers (remove for release)
+SLUGOS_STANDARD_RRECOMMENDS += "kexec"
 
 # Add the machine-specific RRECOMMENDS_${PN} stuff -- kernel modules required for
 # network support.

@@ -40,6 +40,7 @@ IMAGE_BASENAME = "${@['slugos${SITEINFO_ENDIANNESS}', 'ucslugc'][bb.data.getVar(
 
 CACHE = "${TMPDIR}/cache/${LIBC}/${MACHINE}"
 DEPLOY_DIR = "${TMPDIR}/deploy/${LIBC}"
+IMAGE_ROOTFS = "${TMPDIR}/rootfs/${MACHINE}-${LIBC}-${PN}"
 
 # The following need not be set, the defaults should be adequate
 #USE_NLS = "no" or "yes"
@@ -57,7 +58,7 @@ USE_NLS_glib-2.0 = "yes"
 USE_NLS_glib-2.0-native = "yes"
 USE_NLS_gcc-cross = "no"
 
-INHERIT += "package_ipk debian testlab siteinfo"
+INHERIT += "package_ipk debian testlab siteinfo devshell"
 
 # FULL_OPTIMIZATION
 #    Optimization settings.  Os works fine and is significantly better than O2.
