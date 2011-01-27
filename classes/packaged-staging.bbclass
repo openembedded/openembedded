@@ -6,6 +6,10 @@
 #
 # INHERIT += "packaged-staging"
 #
+# To use the prebuilt pstage packages, save them away..
+# $ rsync --delete -a tmp/pstage/ /there/oe/build/pstage_mirror
+# .. and use it as mirror in your conf/local.conf:
+# PSTAGE_MIRROR = "file:///there/oe/build/pstage_mirror"
 
 
 #
@@ -185,16 +189,20 @@ def staging_fetch(stagepkg, d):
         pd = d.createCopy()
         dldir = bb.data.expand("${PSTAGE_DIR}/${PSTAGE_PKGPATH}", pd)
         mirror = bb.data.expand("${PSTAGE_MIRROR}/${PSTAGE_PKGPATH}/", pd)
-        srcuri = mirror + os.path.basename(stagepkg)
+        bn = os.path.basename(stagepkg)
+        srcuri = mirror + bn
         bb.data.setVar('DL_DIR', dldir, pd)
         bb.data.setVar('SRC_URI', srcuri, pd)
 
         # Try a fetch from the pstage mirror, if it fails just return and
         # we will build the package
+        bb.debug(1, "Attempting to fetch staging package %s" % (bn))
         try:
             bb.fetch.init([srcuri], pd)
             bb.fetch.go(pd, [srcuri])
-        except:
+	    bb.debug(1, "Fetched staging package %s" % (bn))
+        except Exception as ex:
+	    bb.debug(1, "Failed to fetch staging package %s: %s" % (bn, ex))
             return
 
 PSTAGE_TASKS_COVERED = "fetch unpack munge patch configure qa_configure rig_locales compile sizecheck install deploy package populate_sysroot package_write_deb package_write_ipk package_write package_stage qa_staging"
