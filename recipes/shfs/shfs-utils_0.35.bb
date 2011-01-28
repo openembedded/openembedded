@@ -3,7 +3,7 @@ It supports some nice features like number of different caches for access speedu
 SECTION = "kernel/userland"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS_${PN} = "shfs-modules (${PV})"
+RDEPENDS_${PN} = "shfs-modules (= ${PV})"
 DEPENDS = "virtual/kernel"
 PR = "r1"
 
