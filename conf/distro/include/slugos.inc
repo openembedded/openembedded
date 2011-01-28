@@ -114,7 +114,7 @@ DISTRO_EXTRA_DEPENDS ?= ""
 DISTRO_EXTRA_RDEPENDS ?= ""
 DISTRO_EXTRA_RRECOMMENDS ?= ""
 
-SOURCE_MIRROR_URL = "http://sources.nslu2-linux.org/sources/"
+SOURCE_MIRROR_URL ?= "http://sources.nslu2-linux.org/sources/"
 INHERIT += "own-mirrors"
 
 #FIXME: HACK: REMOVE THIS
