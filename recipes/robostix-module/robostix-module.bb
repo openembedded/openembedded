@@ -2,7 +2,7 @@ DESCRIPTION = "Linux Driver for Gumstix robostix daughtercards"
 SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS_${PN} = "kernel (${KERNEL_VERSION})"
+RDEPENDS_${PN} = "kernel (= ${KERNEL_VERSION})"
 DEPENDS = "virtual/kernel"
 
 PR = "r2"
