@@ -16,6 +16,16 @@ Recipes:    Maintained recipes (should match package names, can include wildcard
 
 -----------------------------------------------------------------------------
 
+Person:     Andrea Adami
+Mail:       andrea.adami@gmail.com
+Machines:   Zaurus family (direct testing only on c7x0 and spitz)
+Recipes:    zaurus-updater, zaurus-installer, nandlogical
+Recipes:    linux, linux-kexecboot (Zaurus kernels)
+Recipes:    kexecboot, kexec-tools, initramfs-kexecboot-image
+Recipes:    klibc, klcc-cross
+Classes:    klibc.bbclass
+Interests:  Early boot, initramfs, klibc-static binaries, kernel, sysadm, networking
+
 Person:     Andreas Holzer
 Mail:       a.holzer@cheese.at
 Website:    http://members.cheese.at/woody/zaurus/
@@ -218,7 +228,6 @@ Interests:  OE Eclipse plugins, x86, ARM, wxWidgets, xorg, xinput, xinput-calibr
 Person:     Martin 'JaMa' Jansa
 Mail:       Martin.Jansa@gmail.com
 Machines:   spitz, om-gta02
-Distros:    SHR, Ångström
 Interests:  xorg
 Recipes:    shr/*, xorg-*/*, linux/*openmoko*
 
