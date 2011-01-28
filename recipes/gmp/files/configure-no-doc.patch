@@ -1,0 +1,22 @@
+--- a/configure.in.old	2011-01-28 17:22:16.383634484 +0100
++++ b/configure.in	2011-01-28 17:22:23.637966213 +0100
+@@ -3376,7 +3376,7 @@
+   tests/mpf/Makefile tests/mpn/Makefile tests/mpq/Makefile		\
+   tests/mpz/Makefile tests/rand/Makefile tests/misc/Makefile		\
+   tests/cxx/Makefile							\
+-  doc/Makefile tune/Makefile						\
++  tune/Makefile						\
+   demos/Makefile demos/calc/Makefile demos/expr/Makefile		\
+   gmp.h:gmp-h.in mp.h:mp-h.in])
+ AC_OUTPUT
+--- a/Makefile.am.old	2011-01-28 17:30:47.657966226 +0100
++++ b/Makefile.am	2011-01-28 17:31:01.302633088 +0100
+@@ -92,7 +92,7 @@
+ LIBMP_LT_AGE =      1
+ 
+ 
+-SUBDIRS = tests mpn mpz mpq mpf printf scanf cxx mpbsd demos tune doc
++SUBDIRS = tests mpn mpz mpq mpf printf scanf cxx mpbsd demos tune
+ 
+ EXTRA_DIST = configfsf.guess configfsf.sub .gdbinit INSTALL.autoconf
+ 

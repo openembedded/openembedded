@@ -1,0 +1,21 @@
+--- a/configure.in	2011-01-28 16:53:37.554253281 +0100
++++ b/configure.in	2011-01-28 16:53:06.833979262 +0100
+@@ -35,12 +35,12 @@
+ # $build_alias, $host_alias and $target_alias are set to
+ # "athlon-pc-freebsd3.5".
+ #
+-if test -n "$target_alias" && test "$target_alias" != "$host_alias"; then
+-  AC_MSG_ERROR([--target is not appropriate for GMP
+-Use --build=CPU-VENDOR-OS if you need to specify your CPU and/or system
+-explicitly.  Use --host if cross-compiling (see "Installing GMP" in the
+-manual for more on this).])
+-fi
++#if test -n "$target_alias" && test "$target_alias" != "$host_alias"; then
++#  AC_MSG_ERROR([--target is not appropriate for GMP
++#Use --build=CPU-VENDOR-OS if you need to specify your CPU and/or system
++#explicitly.  Use --host if cross-compiling (see "Installing GMP" in the
++#manual for more on this).])
++#fi
+ 
+ GMP_INIT(config.m4)
+ 
