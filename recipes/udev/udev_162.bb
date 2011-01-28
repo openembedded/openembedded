@@ -3,7 +3,7 @@ DESCRIPTION = "udev is a daemon which dynamically creates and removes device nod
 the hotplug package and requires a kernel not older than 2.6.12."
 LICENSE = "GPLv2+"
 
-PR = "r9"
+PR = "r10"
 
 # Untested
 #DEFAULT_PREFERENCE = "-1"
@@ -100,6 +100,10 @@ do_unpack_append_c7x0() {
 }
 RDEPENDS_udev_append_poodle = " udev-compat"
 do_unpack_append_poodle() {
+	bb.build.exec_func('do_apply_compat_wrapper', d)
+}
+RDEPENDS_udev_append_palmpre = " udev-compat"
+do_unpack_append_palmpre() {
 	bb.build.exec_func('do_apply_compat_wrapper', d)
 }
 
