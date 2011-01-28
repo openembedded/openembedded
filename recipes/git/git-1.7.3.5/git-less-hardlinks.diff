@@ -35,7 +35,7 @@ Index: git-1.7.3.5/Makefile
  	ln -s $< $@ 2>/dev/null || \
  	cp $< $@
  
-@@ -2134,20 +2132,18 @@ endif
+@@ -2134,20 +2132,17 @@ endif
  	} && \
  	for p in $(filter $(install_bindir_programs),$(BUILT_INS)); do \
  		$(RM) "$$bindir/$$p" && \
@@ -53,7 +53,6 @@ Index: git-1.7.3.5/Makefile
  	for p in $$remote_curl_aliases; do \
  		$(RM) "$$execdir/$$p" && \
 -		ln "$$execdir/git-remote-http$X" "$$execdir/$$p" 2>/dev/null || \
-+ || \
  		ln -s "git-remote-http$X" "$$execdir/$$p" 2>/dev/null || \
  		cp "$$execdir/git-remote-http$X" "$$execdir/$$p" || exit; \
  	done && \
