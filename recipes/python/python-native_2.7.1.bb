@@ -1,6 +1,6 @@
 require python2.7.inc
 DEPENDS = "openssl-native bzip2-full-native zlib-native readline-native sqlite3-native"
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 FILESPATHPKG .= ":python-${PV}:python"
 SRC_URI = "http://www.python.org/ftp/python/${PV}/Python-${PV}.tar.bz2 \
@@ -34,5 +34,10 @@ EXTRA_OEMAKE = '\
 do_install() {
 	oe_runmake 'DESTDIR=${D}' install
 	install -d ${D}${bindir}/
+
+	# Make sure we use /usr/bin/env python
+	for PYTHSCRIPT in `grep -rIl ${bindir}/python ${D}${bindir}`; do
+		sed -i -e '1s|^#!.*|#!/usr/bin/env python|' $PYTHSCRIPT
+	done
 	install -m 0755 Parser/pgen ${D}${bindir}/
 }
