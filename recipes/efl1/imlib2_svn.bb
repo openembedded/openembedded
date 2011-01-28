@@ -8,6 +8,8 @@ PR = "r2"
 SRCREV = "${EFL_SRCREV}"
 
 inherit efl
+SRC_URI = "${E_SVN}/trunk;module=${SRCNAME};proto=http;scmdata=keep"
+S = "${WORKDIR}/${SRCNAME}"
 
 EXTRA_OECONF = "--with-x \
 		--x-includes=${STAGING_INCDIR} \

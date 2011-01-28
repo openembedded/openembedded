@@ -2,12 +2,12 @@ require ecore.inc
 SRCREV = "${EFL_SRCREV}"
 PR = "r12"
 
-SRC_URI += "\
-  file://iconv.patch;maxrev=43996 \
-  file://exit_uclibc_dns.patch;maxrev=47076 \
-  file://exit_uclibc.patch;maxrev=50815 \
-  file://exit_uclibc_newer.patch;minrev=50816 \
+SRC_URI = "\
+  ${E_SVN}/trunk;module=${SRCNAME};proto=http;scmdata=keep \
+  file://exit_uclibc.patch \
+  file://fix-ecore-fb-initialization.patch \
 "
+S = "${WORKDIR}/${SRCNAME}"
 
 ECORE_OECONF = "\
   --x-includes=${STAGING_INCDIR}/X11 \

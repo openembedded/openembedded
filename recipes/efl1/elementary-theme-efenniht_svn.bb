@@ -6,8 +6,8 @@ RSUGGESTS_${PN} = "e-wm-theme-illume-efenniht"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT/BSD"
 
-SRCREV_pn-elementary-theme-efenniht_THM_REV ?= "${EFL_SRCREV}"
-SRCREV_pn-elementary-theme-efenniht_ELM_REV ?= "${EFL_SRCREV}"
+SRCREV_pn-elementary-theme-efenniht_THM_REV ?= "${EFL_SRCREV_1.0.0}"
+SRCREV_pn-elementary-theme-efenniht_ELM_REV ?= "${EFL_SRCREV_1.0.0}"
 
 SRCREV_FORMAT = "THM_REV"
 PV = "0.0+svnr${SRCPV}"
@@ -16,8 +16,9 @@ PACKAGE_ARCH = "all"
 inherit e-base
 
 SRCNAME = "efenniht"
-SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/THEMES;module=${SRCNAME};proto=http;name=THM_REV"
-SRC_URI += "svn://svn.enlightenment.org/svn/e/trunk/TMP/st/elementary/data;module=themes;proto=http;name=ELM_REV"
+SRC_URI = "${E_SVN}/trunk/THEMES;module=${SRCNAME};proto=http;name=THM_REV"
+SRC_URI += "${E_SVN}/trunk/elementary/data;module=themes;proto=http;name=ELM_REV"
+S = "${WORKDIR}/${SRCNAME}"
 
 do_compile() {
 	${STAGING_BINDIR_NATIVE}/edje_cc -id ${S}/images -id ${WORKDIR}/themes/ ${S}/elm-efenniht.edc -o ${S}/elm-efenniht.edj

@@ -4,7 +4,7 @@ SECTION = "x11"
 DEPENDS = "edje-native"
 PV = "1.0+svnr${SRCPV}"
 PR = "r6"
-SRCREV = "${EFL_SRCREV}"
+SRCREV = "${EFL_SRCREV_1.0.0}"
 
 inherit e-base update-alternatives
 
@@ -15,7 +15,8 @@ ALTERNATIVE_PRIORITY = "10"
 
 SRCNAME = "b_and_w"
 
-SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/THEMES;module=${SRCNAME};proto=http"
+SRC_URI = "${E_SVN}/trunk/THEMES;module=${SRCNAME};proto=http"
+S = "${WORKDIR}/${SRCNAME}"
 
 do_compile() {
    ${STAGING_BINDIR_NATIVE}/edje_cc exquisite.edc illume.edj

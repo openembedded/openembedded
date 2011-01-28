@@ -7,9 +7,8 @@ PR = "r2"
 SRCREV = "${EFL_SRCREV}"
 
 inherit e
-
-SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/TMP/st;module=elementary-alarm;proto=http"
-S = "${WORKDIR}/elementary-alarm"
+SRC_URI = "${E_SVN}/trunk/TMP/st;module=${SRCNAME};proto=http;scmdata=keep"
+S = "${WORKDIR}/${SRCNAME}"
 
 RDEPENDS_${PN} = "waker"
 FILES_${PN} += "${bindir}/*"

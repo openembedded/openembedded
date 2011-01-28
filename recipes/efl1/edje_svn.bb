@@ -7,6 +7,9 @@ SRCREV = "${EFL_SRCREV}"
 
 inherit efl
 
+SRC_URI = "${E_SVN}/trunk;module=${SRCNAME};proto=http;scmdata=keep"
+S = "${WORKDIR}/${SRCNAME}"
+
 # The new lua stuff is a bit broken...
 do_configure_append() {
 	for i in $(find "${S}" -name "Makefile") ; do

@@ -3,11 +3,11 @@ DEPENDS = "evas ecore edje emotion efreet"
 LICENSE = "MIT BSD"
 PV = "0.5.3.050+svnr${SRCPV}"
 PR = "r2"
-SRCREV = "${EFL_SRCREV}"
+SRCREV = "${EFL_SRCREV_1.0.0}"
 
 inherit efl
-
-SRC_URI = "svn://svn.enlightenment.org/svn/e/BROKEN;module=${PN};proto=http;scmdata=keep"
+SRC_URI = "${E_SVN}/BROKEN;module=${SRCNAME};proto=http;scmdata=keep"
+S = "${WORKDIR}/${SRCNAME}"
 
 EXTRA_OECONF = "\
   --enable-software-x11 \

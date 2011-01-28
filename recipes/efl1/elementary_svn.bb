@@ -6,14 +6,13 @@ PR = "r11"
 SRCREV = "${EFL_SRCREV}"
 
 inherit efl
+SRC_URI = "${E_SVN}/trunk;module=${SRCNAME};proto=http;scmdata=keep"
+S = "${WORKDIR}/${SRCNAME}"
 
 EXTRA_OECONF = "\
   --with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc \
   --with-eet-eet=${STAGING_BINDIR_NATIVE}/eet \
 "
-
-SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/TMP/st;module=elementary;proto=http;scmdata=keep"
-S = "${WORKDIR}/elementary"
 
 do_compile_append() {
         sed -i -e s:${STAGING_DIR_TARGET}::g \

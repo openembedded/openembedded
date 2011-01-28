@@ -10,6 +10,8 @@ SRCREV = "${EFL_SRCREV}"
 PR = "r1"
 
 inherit e
+SRC_URI = "${E_SVN}/trunk;module=${SRCNAME};proto=http;scmdata=keep"
+S = "${WORKDIR}/${SRCNAME}"
 
 EXTRA_OECONF = " \
 --with-wpa_supplicant=${sbindir}/wpa_supplicant \

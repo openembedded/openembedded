@@ -8,8 +8,8 @@ SRCREV = "${EFL_SRCREV}"
 
 inherit efl
 
-SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/TMP/st;module=waker;proto=http"
-S = "${WORKDIR}/waker"
+SRC_URI = "${E_SVN}/trunk/TMP/st;module=${SRCNAME};proto=http"
+S = "${WORKDIR}/${SRCNAME}"
 
 FILES_${PN} += "${bindir}/* ${libdir}/lib*.so.*"
 FILES_${PN} += "/etc/X11/Xsession.d/80x-enlightenment-wakerd"

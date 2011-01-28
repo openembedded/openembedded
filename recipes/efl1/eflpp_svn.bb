@@ -8,8 +8,8 @@ PV = "0.1.0+svnr${SRCPV}"
 PR = "r1" 
 
 inherit efl
+SRCNAME = "cxx"
+SRC_URI = "${E_SVN}/trunk/BINDINGS;module=${SRCNAME};proto=http;scmdata=keep"
+S = "${WORKDIR}/${SRCNAME}"
 
 EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc"
-
-SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/BINDINGS;module=cxx;proto=http;scmdata=keep"
-S = "${WORKDIR}/cxx"

@@ -6,6 +6,8 @@ PR = "r4"
 SRCREV = "${EFL_SRCREV}"
 
 inherit efl
+SRC_URI = "${E_SVN}/trunk;module=${SRCNAME};proto=http;scmdata=keep"
+S = "${WORKDIR}/${SRCNAME}"
 
 PACKAGES =+ "${PN}-mime ${PN}-trash"
 FILES_${PN}-mime = "${libdir}/libefreet_mime.so.*"

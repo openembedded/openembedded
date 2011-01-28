@@ -8,7 +8,8 @@ SRCREV = "${EFL_SRCREV}"
 
 inherit e update-alternatives
 
-SRC_URI += "\
+SRC_URI = "\
+  ${E_SVN}/trunk;module=${SRCNAME};proto=http \
   file://enlightenment_start.oe \
   file://applications.menu \
   file://gsm-segfault-fix.patch;maxrev=37617 \

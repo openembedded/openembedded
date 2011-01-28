@@ -7,6 +7,8 @@ SRCREV = "${EFL_SRCREV}"
 SRCNAME = "E-MODULES-EXTRA/${PN}"
 
 inherit e
+SRC_URI = "${E_SVN}/trunk;module=${SRCNAME};proto=http;scmdata=keep"
+S = "${WORKDIR}/${SRCNAME}"
 
 EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc"
 
