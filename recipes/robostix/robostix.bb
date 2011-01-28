@@ -2,7 +2,7 @@ DESCRIPTION = "Robostix programs"
 PRIORITY = "optional"
 SECTION = "base"
 LICENSE = "GPL"
-RDEPENDS_${PN} = "kernel (${KERNEL_VERSION})"
+RDEPENDS_${PN} = "kernel (= ${KERNEL_VERSION})"
 DEPENDS = "virtual/kernel"
 
 PR = "r1"
