@@ -31,6 +31,12 @@ PREFERRED_VERSION_u-boot = "git"
 XLOAD_MACHINE = "omap3530beagle_config"
 
 MACHINE_FEATURES = "kernel26 screen apm usbgadget usbhost vfat alsa phone bluetooth touchscreen keyboard wifi"
-MACHINE_EXTRA_RDEPENDS = "tsmd read-tokens tellbootie lvm2 palmpre-audio-scripts"
+MACHINE_EXTRA_RDEPENDS = " \
+ tsmd \
+ read-tokens \
+ tellbootie \
+ lvm2 \
+ palmpre-audio-scripts \
+"
 
 PREFERRED_PROVIDER_udev-compat = "udev-compat141"
