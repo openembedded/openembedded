@@ -2,7 +2,7 @@ DESCRIPTION = "A C library for multiple-precision floating-point computations wi
 HOMEPAGE = "http://www.mpfr.org/"
 LICENSE = "GPL LGPL"
 SECTION = "libs"
-BBCLASSEXTEND = "native nativesdk"
+BBCLASSEXTEND = "native nativesdk sdk"
 INC_PR = "r3"
 
 inherit autotools
