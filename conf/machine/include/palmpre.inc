@@ -19,7 +19,7 @@ require conf/machine/include/omap3.inc
 
 # Copied from include/omap3.inc (as we do not use linux-omap recipes):
 # Increase this everytime you change something in the kernel
-MACHINE_KERNEL_PR = "r92"
+MACHINE_KERNEL_PR = "r93"
 
 PREFERRED_PROVIDER_virtual/kernel = "linux-palmpre"
 
