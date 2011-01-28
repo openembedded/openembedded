@@ -8,7 +8,7 @@ PR = "r2"
 DEPENDS = "libffi libtool popt \
            sablevm-classpath"
 #          unzip"
-RRECOMMENDS_${PN} = "sablevm-classpath (${PV})"
+RRECOMMENDS_${PN} = "sablevm-classpath (= ${PV})"
 
 SRC_URI = "http://sablevm.org/download/release/${PV}/${PN}-${PV}.tar.gz"
 
