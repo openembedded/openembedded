@@ -1,8 +1,5 @@
 require git.inc
 
-SRC_URI[src.md5sum] = "76518fa774b36de81d160b85fa4f19c1"
-SRC_URI[src.sha256sum] = "5601df7fc282fdd66de196b282694eb77dcfc50438f01587de144b3ead1a6b2f"
-
 SRC_URI += "file://git-less-hardlinks.diff"
 
 EXTRA_OECONF += "ac_cv_snprintf_returns_bogus=no ac_cv_c_c99_format=yes"
@@ -13,8 +10,9 @@ RDEPENDS_${PN} = "findutils sed"
 
 # Dropbear ssh needs a wrapper script, so install openssh-ssh to make it work out of the box
 RRECOMMENDS_${PN} = "openssh-ssh"
-
-PR = "r10"
+SRC_URI[src.md5sum] = "8a8cd93b8a4dff0a03c0fdc77253af3e"
+SRC_URI[src.sha256sum] = "41682e4c13b43591b61a96b6f7a549b24863f62dfc4a917b6147c8e708e288a6"
+PR = "r0"
 
 do_install_append() {
 	# Fix broken hardlinks
