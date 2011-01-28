@@ -15,9 +15,11 @@ This patch isn't complete though:
 
 ---
 
---- /tmp/Makefile	2010-05-15 09:39:26.000000000 +0200
-+++ git-1.7.0.2/Makefile	2010-05-15 09:44:21.000000000 +0200
-@@ -1453,7 +1453,6 @@
+Index: git-1.7.3.5/Makefile
+===================================================================
+--- git-1.7.3.5.orig/Makefile
++++ git-1.7.3.5/Makefile
+@@ -1619,7 +1619,6 @@ builtin/help.s builtin/help.o: EXTRA_CPP
  
  $(BUILT_INS): git$X
  	$(QUIET_BUILT_IN)$(RM) $@ && \
@@ -25,7 +27,7 @@ This patch isn't complete though:
  	ln -s git$X $@ 2>/dev/null || \
  	cp git$X $@
  
-@@ -1626,7 +1625,6 @@
+@@ -1936,7 +1935,6 @@ git-http-push$X: revision.o http.o http-
  
  $(REMOTE_CURL_ALIASES): $(REMOTE_CURL_PRIMARY)
  	$(QUIET_LNCP)$(RM) $@ && \
@@ -33,17 +35,25 @@ This patch isn't complete though:
  	ln -s $< $@ 2>/dev/null || \
  	cp $< $@
  
-@@ -1830,13 +1828,11 @@
- 		cp "$$bindir/git$X" "$$execdir/git$X"; } ; } && \
- 	{ for p in $(BUILT_INS); do \
+@@ -2134,20 +2132,18 @@ endif
+ 	} && \
+ 	for p in $(filter $(install_bindir_programs),$(BUILT_INS)); do \
+ 		$(RM) "$$bindir/$$p" && \
+-		ln "$$bindir/git$X" "$$bindir/$$p" 2>/dev/null || \
+ 		ln -s "git$X" "$$bindir/$$p" 2>/dev/null || \
+ 		cp "$$bindir/git$X" "$$bindir/$$p" || exit; \
+ 	done && \
+ 	for p in $(BUILT_INS); do \
  		$(RM) "$$execdir/$$p" && \
 -		ln "$$execdir/git$X" "$$execdir/$$p" 2>/dev/null || \
  		ln -s "git$X" "$$execdir/$$p" 2>/dev/null || \
  		cp "$$execdir/git$X" "$$execdir/$$p" || exit; \
- 	  done; } && \
- 	{ for p in $(REMOTE_CURL_ALIASES); do \
+ 	done && \
+ 	remote_curl_aliases="$(REMOTE_CURL_ALIASES)" && \
+ 	for p in $$remote_curl_aliases; do \
  		$(RM) "$$execdir/$$p" && \
 -		ln "$$execdir/git-remote-http$X" "$$execdir/$$p" 2>/dev/null || \
++ || \
  		ln -s "git-remote-http$X" "$$execdir/$$p" 2>/dev/null || \
  		cp "$$execdir/git-remote-http$X" "$$execdir/$$p" || exit; \
- 	  done; } && \
+ 	done && \
