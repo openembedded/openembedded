@@ -3,11 +3,11 @@ LICENSE = "MIT BSD"
 DEPENDS = "evas ecore edje imlib2 libtool"
 PV = "0.9.0.050+svnr${SRCPV}"
 PR = "r2"
-SRCREV = "${EFL_SRCREV}"
+SRCREV = "${EFL_SRCREV_1.0.0}"
 
 inherit efl
-
-SRC_URI = "svn://svn.enlightenment.org/svn/e/OLD;module=${PN};proto=http;scmdata=keep"
+SRC_URI = "${E_SVN}/OLD;module=${SRCNAME};proto=http;scmdata=keep"
+S = "${WORKDIR}/${SRCNAME}"
 
 EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc"
 

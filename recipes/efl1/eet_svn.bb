@@ -6,6 +6,8 @@ PV = "1.3.2+svnr${SRCPV}"
 PR = "r2"
 
 inherit efl
+SRC_URI = "${E_SVN}/trunk;module=${SRCNAME};proto=http;scmdata=keep"
+S = "${WORKDIR}/${SRCNAME}"
 
 BBCLASSEXTEND="native"
 

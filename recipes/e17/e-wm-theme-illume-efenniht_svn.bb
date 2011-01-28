@@ -7,13 +7,14 @@ RSUGGESTS_${PN} = "elementary-theme-efenniht"
 PACKAGE_ARCH = "all"
 LICENSE = "MIT/BSD"
 
-SRCREV = "${EFL_SRCREV}"
+SRCREV = "${EFL_SRCREV_1.0.0}"
 PV = "0.0+svnr${SRCPV}"
 
 inherit e-base
 
 SRCNAME = "efenniht"
-SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/THEMES;module=${SRCNAME};proto=http"
+SRC_URI = "${E_SVN}/trunk/THEMES;module=${SRCNAME};proto=http"
+S = "${WORKDIR}/${SRCNAME}"
 
 do_compile() {
 	${STAGING_BINDIR_NATIVE}/edje_cc -id ${S}/images ${S}/efenniht.edc -o ${S}/efenniht.edj

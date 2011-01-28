@@ -8,6 +8,8 @@ SRCREV = "${EFL_SRCREV}"
 inherit efl
 
 SRCNAME = "e_dbus"
+SRC_URI = "${E_SVN}/trunk;module=${SRCNAME};proto=http;scmdata=keep"
+S = "${WORKDIR}/${SRCNAME}"
 
 EXTRA_OECONF = "--enable-build-test-gui"
 

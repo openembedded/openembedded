@@ -15,7 +15,9 @@ export HOST_SYS
 
 inherit e-base autotools pkgconfig distutils-base
 
-SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/BINDINGS/python;module=${SRCNAME};proto=http"
+SRC_URI = "${E_SVN}/trunk/BINDINGS/python;module=${SRCNAME};proto=http"
+S = "${WORKDIR}/${SRCNAME}"
+
 
 do_configure_prepend() {
 	# prefix CYTHON_.*_INCLUDEDIR with path to STAGING_DIR_HOST also use $PKG_CONFIG instead of pkg-config directly

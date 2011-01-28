@@ -8,5 +8,7 @@ SRCREV = "${EFL_SRCREV}"
 inherit e
 
 SRCNAME = "edje_viewer"
+SRC_URI = "${E_SVN}/trunk;module=${SRCNAME};proto=http;scmdata=keep"
+S = "${WORKDIR}/${SRCNAME}"
 
 FILES_${PN} += "${datadir}"

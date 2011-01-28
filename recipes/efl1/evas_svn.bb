@@ -1,4 +1,9 @@
 require evas.inc
+
+SRC_URI = "\
+  ${E_SVN}/trunk;module=${SRCNAME};proto=http;scmdata=keep \
+"
+S = "${WORKDIR}/${SRCNAME}"
 PR = "r8"
 
 EVAS_CPU_TWEAKS = ""

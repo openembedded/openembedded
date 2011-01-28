@@ -7,6 +7,8 @@ PR = "r5"
 SRCREV = "${EFL_SRCREV}"
 
 inherit e
+SRC_URI = "${E_SVN}/trunk;module=${SRCNAME};proto=http;scmdata=keep"
+S = "${WORKDIR}/${SRCNAME}"
 
 EXTRA_OECONF = "\
   --x-includes=${STAGING_INCDIR}/X11 \

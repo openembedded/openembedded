@@ -4,8 +4,8 @@ LICENSE = "MIT"
 DEPENDS = "evas ecore"
 PV = "0.0.0+svnr${SRCPV}"
 PR = "r1"
-SRCREV = "${EFL_SRCREV}"
+SRCREV = "${EFL_SRCREV_1.0.0}"
 
 inherit efl
-
-SRC_URI = "svn://svn.enlightenment.org/svn/e/OLD;module=${PN};proto=http;scmdata=keep"
+SRC_URI = "${E_SVN}/OLD;module=${SRCNAME};proto=http;scmdata=keep"
+S = "${WORKDIR}/${SRCNAME}"

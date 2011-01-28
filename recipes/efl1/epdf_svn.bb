@@ -6,14 +6,14 @@ PR = "r4"
 SRCREV = "${EFL_SRCREV}"
 
 inherit efl
+SRC_URI = "${E_SVN}/trunk/PROTO;module=${SRCNAME};proto=http;scmdata=keep"
+S = "${WORKDIR}/${SRCNAME}"
 
 EXTRA_OECONF = "\
     --enable-poppler \
     --disable-ewl \
     --disable-mupdf \
 "
-
-SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/PROTO;module=epdf;proto=http;scmdata=keep"
 
 # Some upgrade path tweaking, as in evas
 AUTO_LIBNAME_PKGS = ""
