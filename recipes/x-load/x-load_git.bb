@@ -5,10 +5,10 @@ DEFAULT_PREFERENCE_omap3-pandora = "-1"
 FILESPATHPKG_prepend = "x-load-git:x-load-git/${MACHINE}"
 
 PV = "1.44+${PR}+gitr${SRCREV}"
-PR ="r19"
+PR ="r20"
 PE = "1"
 
-SRCREV = "6f3a26101303051e0f91b6213735b68ce804e94e"
+SRCREV = "24b8b7f41a83540433024854736518876257672c"
 SRC_URI = "git://gitorious.org/x-loader/x-loader.git;branch=master;protocol=git \
            file://0001-OMAP4-clocks-Enable-only-required-clks.patch \
            file://0002-OMAP4-Select-DPLL-PER-Clock-as-source-for-SGX-FCLK.patch \

@@ -1,4 +1,4 @@
-From 4af562525c7779cd41ae9a68d56771407df558d7 Mon Sep 17 00:00:00 2001
+From 14a48e4b24aee2387f8e4cd3b480236451fe1294 Mon Sep 17 00:00:00 2001
 From: Rajendra Nayak <rnayak@ti.com>
 Date: Mon, 4 Oct 2010 18:49:18 +0530
 Subject: [PATCH 4/5] OMAP4: clocks: Disable slimbus and pad_clks
@@ -16,7 +16,7 @@ Signed-off-by: Ricardo Salveti de Araujo <ricardo.salveti@canonical.com>
  1 files changed, 0 insertions(+), 3 deletions(-)
 
 diff --git a/board/omap4430panda/clock.c b/board/omap4430panda/clock.c
-index 0961f51..c591a9f 100644
+index 4404cc5..e41f327 100644
 --- a/board/omap4430panda/clock.c
 +++ b/board/omap4430panda/clock.c
 @@ -333,9 +333,6 @@ static void configure_abe_dpll(u32 clk_index)

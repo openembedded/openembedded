@@ -1,4 +1,4 @@
-From daaaf036f3336e01a83a13dd93b8030b00a0af50 Mon Sep 17 00:00:00 2001
+From 3421142b95238893a90032c3056123544c353752 Mon Sep 17 00:00:00 2001
 From: Ricardo Salveti de Araujo <ricardo.salveti@canonical.com>
 Date: Tue, 21 Dec 2010 12:03:50 -0200
 Subject: [PATCH 3/5] MUX: Configure SYS_NIRQ2 pin in safe mode
@@ -16,7 +16,7 @@ Signed-off-by: Ricardo Salveti de Araujo <ricardo.salveti@canonical.com>
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/board/omap4430panda/omap4430panda.c b/board/omap4430panda/omap4430panda.c
-index 5695733..814b2cb 100644
+index a91e2aa..f6f515b 100644
 --- a/board/omap4430panda/omap4430panda.c
 +++ b/board/omap4430panda/omap4430panda.c
 @@ -910,7 +910,7 @@ int dram_init(void)

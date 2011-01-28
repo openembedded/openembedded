@@ -1,4 +1,4 @@
-From ce1ae065d5eb875990f55ede0405e061e4d4b8d3 Mon Sep 17 00:00:00 2001
+From 76ebc9fdbfff91f226bc559706e3e7ece43ec30d Mon Sep 17 00:00:00 2001
 From: Sebastien Jan <s-jan@ti.com>
 Date: Wed, 22 Dec 2010 13:53:18 +0100
 Subject: [PATCH 5/5] omap4: Make 1GHz as default MPU clock
@@ -9,18 +9,19 @@ Signed-off-by: Santosh Shilimkar <santosh.shilimkar@ti.com>
 Signed-off-by: Sebastien Jan <s-jan@ti.com>
 Signed-off-by: Ricardo Salveti de Araujo <ricardo.salveti@canonical.com>
 ---
- Makefile                        |    8 ++++++++
+ Makefile                        |    9 +++++++++
  include/configs/omap4430panda.h |    1 -
- 2 files changed, 8 insertions(+), 1 deletions(-)
+ 2 files changed, 9 insertions(+), 1 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index d134fdc..1c4fdd5 100644
+index fd85142..6258324 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -170,6 +170,14 @@ omap3530beagle_config :    unconfig
+@@ -235,6 +235,15 @@ igep0020_config :    unconfig
  #########################################################################
  omap4430panda_config :    unconfig
- 	@./mkconfig $(@:_config=) arm omap4 omap4430panda
+ 	@./mkconfig $(@:_config=) arm omap4 omap4430panda 1
++	@./mkconfig $(@:_config=) arm omap4 omap4430panda 1
 +	@[ -n "$(findstring _MPU_600MHz,$@)" ] || \
 +		{ echo "#define CONFIG_MPU_1000 1"	>> $(obj)include/config.h; \
 +		  echo "MPU at 1GHz revision.."; \

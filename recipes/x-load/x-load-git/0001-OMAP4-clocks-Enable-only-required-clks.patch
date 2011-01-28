@@ -1,4 +1,4 @@
-From 94fee465a6d63b6f0551037fe14cec4410bb9af2 Mon Sep 17 00:00:00 2001
+From 7c5a2dd1e20702d220bd75910f7cfb6141230e5b Mon Sep 17 00:00:00 2001
 From: Rajendra Nayak <rnayak@ti.com>
 Date: Tue, 21 Dec 2010 11:55:01 -0200
 Subject: [PATCH 1/5] OMAP4: clocks: Enable only required clks
@@ -17,7 +17,7 @@ Signed-off-by: Ricardo Salveti de Araujo <ricardo.salveti@canonical.com>
  1 files changed, 117 insertions(+), 108 deletions(-)
 
 diff --git a/board/omap4430panda/clock.c b/board/omap4430panda/clock.c
-index 792e5d6..149fc85 100644
+index a83f1c6..b323885 100644
 --- a/board/omap4430panda/clock.c
 +++ b/board/omap4430panda/clock.c
 @@ -552,71 +552,73 @@ static void enable_all_clocks(void)
