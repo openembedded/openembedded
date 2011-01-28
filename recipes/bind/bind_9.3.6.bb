@@ -2,7 +2,7 @@ DESCRIPTION = "ISC Internet Domain Name Server"
 SECTION = "console/network"
 HOMEPAGE = "http://www.isc.org/sw/bind/"
 LICENSE = "BSD"
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "openssl"
 
@@ -11,7 +11,10 @@ SRC_URI = "ftp://ftp.isc.org/isc/bind9/${PV}/${PN}-${PV}.tar.gz \
 	   file://configure.in.patch \
 	   "
 
-EXTRA_OECONF = " --enable-ipv6=no --with-randomdev=/dev/random --disable-threads --sysconfdir=/etc/bind --localstatedir=/var --prefix=/usr --disable-devpoll --disable-epoll"
+EXTRA_OECONF = "--with-randomdev=/dev/random --disable-threads \
+                --sysconfdir=/etc/bind --localstatedir=/var --prefix=/usr --disable-devpoll \
+                --disable-epoll \
+                ${@base_contains('DISTRO_FEATURES', 'ipv6', '--enable-ipv6=yes', '--enable-ipv6=no', d)}"
 inherit autotools update-rc.d
 
 INITSCRIPT_NAME = "bind"
