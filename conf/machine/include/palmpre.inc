@@ -37,6 +37,7 @@ MACHINE_EXTRA_RDEPENDS = " \
  tellbootie \
  lvm2 \
  palmpre-audio-scripts \
+ compat-wireless-2.6-old \
 "
 
 PREFERRED_PROVIDER_udev-compat = "udev-compat141"
