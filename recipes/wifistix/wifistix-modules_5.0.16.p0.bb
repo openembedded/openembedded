@@ -6,7 +6,7 @@ SECTION = "base"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.gumstix.com"
 LICENSE = "GPL"
-RDEPENDS_${PN} = "kernel (${KERNEL_VERSION})"
+RDEPENDS_${PN} = "kernel (= ${KERNEL_VERSION})"
 DEPENDS = "virtual/kernel"
 PR = "r1"
 
