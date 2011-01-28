@@ -15,6 +15,7 @@ DEFAULT_PREFERENCE_qemumips64 = "1"
 DEFAULT_PREFERENCE_qemuppc = "1"
 DEFAULT_PREFERENCE_qemux86 = "1"
 DEFAULT_PREFERENCE_nokia900 = "1"
+DEFAULT_PREFERENCE_vmx25 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/${P}.tar.bz2;name=kernel \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.${STABLEV}.bz2;apply=yes;name=stablepatch \
@@ -115,6 +116,8 @@ SRC_URI_nokia900 = "\
 #fix inconsistent mmc device naming at boot time which prevent booting sometimes
 	file://inconsistent-mmc-fix-2.6.35.patch \
 	file://defconfig "
+
+SRC_URI_append_vmx25 = "file://linux-2.6.35-vmx25-20110112.patch"
 
 CMDLINE_nokia900_shr = "snd-soc-rx51.hp_lim=42 snd-soc-tlv320aic3x.hp_dac_lim=6 console=tty1 root=/dev/mmcblk1p1 rootwait panic=20 debug"
 
