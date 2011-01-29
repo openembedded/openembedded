@@ -254,7 +254,14 @@ python build_summary() {
         statusvars = bb.data.getVar("BUILDCFG_VARS", e.data, 1).split()
         statuslines = ["%-17s = \"%s\"" % (i, bb.data.getVar(i, e.data, 1) or '') for i in statusvars]
         statusmsg = "\n%s\n%s\n" % (bb.data.getVar("BUILDCFG_HEADER", e.data, 1), "\n".join(statuslines))
-        bb.plain(statusmsg)
+
+        # bitbake 1.8.x has a broken bb.plain and that stops the BB_MIN_VERSION
+        # check from happening.
+        version = [int(c) for c in bb.__version__.split('.')]
+        if version >= [1, 9, 0]:
+            bb.plain(statusmsg)
+        else:
+            print statusmsg
 
         needed_vars = oe.types.value("BUILDCFG_NEEDEDVARS", e.data)
         pesteruser = []
