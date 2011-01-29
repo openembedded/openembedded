@@ -8,5 +8,5 @@ SRC_URI = "\
   file://exit_uclibc.patch \
 "
 
-SRC_URI[md5sum] = "db2ef62d7c877e54087a4ce805368419"
-SRC_URI[sha256sum] = "8a1f89a7cef27d93d87155d53d54f651b3fae810f8995b3c634b4d709ef4e1fa"
+SRC_URI[md5sum] = "56fa814282f48c346b398e16de81145f"
+SRC_URI[sha256sum] = "93a15704a9ba8126fac0da5c8802f09cecd0b68547121a4ab4146113f0d15eb7"
