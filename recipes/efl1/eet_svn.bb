@@ -1,21 +1,11 @@
-DESCRIPTION = "EET is the Enlightenment data storage library"
-DEPENDS = "pkgconfig zlib jpeg openssl eina gnutls"
-LICENSE = "MIT BSD"
+require eet.inc
+
 SRCREV = "${EFL_SRCREV}"
-PV = "1.3.2+svnr${SRCPV}"
-PR = "r2"
+PV = "1.4.999+svnr${SRCPV}"
+PR = "${INC_PR}.0"
+DEFAULT_PREFERENCE = "-1"
 
-inherit efl
-SRC_URI = "${E_SVN}/trunk;module=${SRCNAME};proto=http;scmdata=keep"
-S = "${WORKDIR}/${SRCNAME}"
-
-BBCLASSEXTEND="native"
-
-EXTRA_OECONF = "\
-  --enable-openssl \
-  --enable-cypher \
-  --enable-signature \
-  --disable-coverage \
-  --enable-old-eet-file-format \
-  --disable-assert \
+SRC_URI = "\
+  ${E_SVN}/trunk;module=${SRCNAME};proto=http;scmdata=keep \
 "
+S = "${WORKDIR}/${SRCNAME}"
