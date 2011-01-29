@@ -7,7 +7,7 @@
 # on whether the base patches apply to the selected (SRCDATE) svn release.
 #
 UCLIBC_BASE ?= "0.9.32"
-SRCREV="541f53cf24819079242079c5da79d9c5df9a27a8"
+SRCREV="094d82d3b3e8f8c8460a802b7a9548f3ae4fda46"
 PR_append = "+gitr${SRCPV}"
 DEFAULT_PREFERENCE = "-1"
 #DEFAULT_PREFERENCE is 0 (empty), releases have a preference of 1 so take
@@ -38,7 +38,6 @@ SRC_URI = "git://uclibc.org/uClibc.git;branch=master;protocol=git \
 	file://include-arm-asm.h.patch \
 	file://detect-bx-availibility.patch \
 	file://remove-eabi-oabi-selection.patch \
-	file://mips64-no-waitpid.patch \
 	file://powerpc_copysignl.patch \
 	"
 S = "${WORKDIR}/git"
