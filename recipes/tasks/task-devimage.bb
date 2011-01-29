@@ -1,5 +1,5 @@
 DESCRIPTION = "Image for development testing"
-PR = "r6"
+PR = "r7"
 LICENSE = "MIT"
 
 inherit task
@@ -14,7 +14,7 @@ RDEPENDS_${PN} = "\
     module-init-tools pcmciautils \
     wireless-tools wpa-supplicant \
     irda-utils acx-firmware \
-    kexec-tools \
+    kexec kdump \
     ${DEVIMAGE_EXTRA_RDEPENDS} \
     "
 
