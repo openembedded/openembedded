@@ -7,22 +7,18 @@ PR = "r18"
 SRCREV = "${EFL_SRCREV}"
 
 inherit e update-alternatives
+S = "${WORKDIR}/${SRCNAME}"
 
 SRC_URI = "\
   ${E_SVN}/trunk;module=${SRCNAME};proto=http \
   file://enlightenment_start.oe \
   file://applications.menu \
-  file://gsm-segfault-fix.patch;maxrev=37617 \
-  file://fix-profiles.diff;maxrev=39889 \
 "
-
-SRC_URI_append_openmoko = " file://illume-disable-screensaver.patch"
 
 SRC_URI_append_shr = " \
   file://illume-disable-screensaver.patch \
   file://wizard-module-skipping.patch \
   file://illume-flaunch-fix.patch \
-  file://illume-keyboard-flow.patch;maxrev=46549 \
 "
 
 EXTRA_OECONF = "\
