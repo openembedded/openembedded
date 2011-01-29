@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r92"
+PR = "r93"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -119,7 +119,7 @@ RDEPENDS_${PN} += "\
 		ppp \
 		bluez-hcidump \
 		kbdd \
-		kexec-tools \
+		kexec \
 		mc \
 		iotop \
 		xprop \
