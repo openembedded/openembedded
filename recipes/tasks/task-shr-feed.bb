@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r91"
+PR = "r92"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -325,6 +325,7 @@ RDEPENDS_${PN} += "\
 		enjoy \
 		shr-theme-efenniht \
 		gwaterpas \
+		sflphone-common \
 "
 
 # this is only usefull on gta02 and on other devices it's trying to pull mesa-dri (not respecting DEFAULT_PROVIDER for virtual/libgl)
