@@ -10,7 +10,6 @@ RDEPENDS_${PN} = "\
   emotion \
   edbus \
   efreet \
-  ewl \
   epdf \
   ethumb \
   elementary \
