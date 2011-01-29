@@ -5,21 +5,18 @@ DEPENDS = "gettext-native virtual/libiconv tslib curl eet evas glib-2.0 \
 DEPENDS_virtclass-native = "eet-native evas-native"	   
 # optional
 # DEPENDS += "directfb virtual/libsdl openssl virtual/libiconv"
-PV = "0.9.9.060+svnr${SRCPV}"
-PR = "r5"
 
 inherit efl
 
 BBCLASSEXTEND = "native"
-
-SRC_URI += "file://fix-ecore-fb-initialization.patch"
+INC_PR = "r0"
 
 do_configure_prepend() {
 	touch ${S}/po/Makefile.in.in || true
 	sed -i -e 's: po::g' ${S}/Makefile.am
 }
 
-FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/ecore"
+FILESPATHPKG =. "${BPN}-${PV}:${BPN}:"
 
 PACKAGES =+ "\
     ${PN}-con \
@@ -76,3 +73,39 @@ FILES_${PN}-txt = "${libdir}/libecore_txt*.so.*"
 FILES_${PN}-x = "${libdir}/libecore_x*.so.*"
 FILES_${PN}-input = "${libdir}/libecore_input*.so.*"
 
+ECORE_OECONF = "\
+  --x-includes=${STAGING_INCDIR}/X11 \
+  --x-libraries=${STAGING_LIBDIR} \
+  --enable-simple-x11 \
+  --enable-ecore-config \
+  --enable-ecore-x \
+  --enable-ecore-job \
+  --enable-ecore-fb \
+  --enable-ecore-evas \
+  --enable-ecore-evas-software-16-x11 \
+  --enable-ecore-evas-xrender \
+  --enable-abstract-sockets \
+  --enable-ecore-con \
+  --enable-ecore-ipc \
+  --enable-ecore-file \
+  --enable-inotify \
+  --disable-ecore-desktop \
+  --disable-ecore-x-xcb \
+  --disable-ecore-directfb \
+  --disable-ecore-sdl \
+  --enable-ecore-evas-opengl-x11 \
+  --disable-ecore-evas-dfb \
+  --disable-ecore-evas-sdl \
+  --disable-openssl \
+  --disable-poll \
+  --enable-xim \
+"
+
+EXTRA_OECONF = "${ECORE_OECONF} \
+                 --enable-curl \
+"
+
+EXTRA_OECONF_virtclass-native = "\
+                 ${ECORE_OECONF} \
+                 --disable-curl \
+"
