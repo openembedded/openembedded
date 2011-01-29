@@ -6,14 +6,15 @@ LICENSE = "GPLv2"
 DEPENDS = "gmp flex-native bison-native"
 RRECOMMENDS_${PN} = "kernel-module-ipsec"
 RDEPENDS_append_nylon = "perl"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://www.openswan.org/download/openswan-${PV}.tar.gz \
-           file://fix-parser-build-race.patch"
+           file://fix-parser-build-race.patch \
+           file://installcmd.patch"
 
 EXTRA_OEMAKE = "DESTDIR=${D} \
-                USERCOMPILE="${CFLAGS}" \
-                USERLINK="${LDFLAGS}" \
+                USERCOMPILE='${CFLAGS}' \
+                USERLINK='${LDFLAGS}' \
                 FINALCONFDIR=${sysconfdir}/ipsec \
                 FINALLIBDIR=${libdir}/ipsec \
                 FINALLIBEXECDIR=${libexecdir}/ipsec \

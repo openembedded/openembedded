@@ -1,0 +1,17 @@
+---
+ Makefile.inc |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- openswan-2.6.31.orig/Makefile.inc
++++ openswan-2.6.31/Makefile.inc
+@@ -163,8 +163,8 @@ INSTALL=install
+ # how backup names are composed.
+ # Note that the install procedures will never overwrite an existing config
+ # file, which is why -b is not specified for them.
+-INSTBINFLAGS=-b --suffix=.old
+-INSTSUIDFLAGS=--mode=u+rxs,g+rx,o+rx --group=root -b --suffix=.old
++INSTBINFLAGS=-b
++INSTSUIDFLAGS=-m u+rxs,g+rx,o+rx -g root -b
+ INSTMANFLAGS=
+ INSTCONFFLAGS=
+ # For OSX use
