@@ -5,8 +5,6 @@ PR = "r4"
 
 require e-module.inc
 
-SRC_URI += "file://fix-api.diff;maxrev=39830;striplevel=3"
-
 do_configure_prepend() {
        sed -i -e /po/d -e /AM_GNU_GETTEXT/d configure.ac
        sed -i -e s:\ po::g Makefile.am
