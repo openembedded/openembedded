@@ -38506,7 +38506,6 @@ index 0000000..eb044e8
 +MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
 +MODULE_DESCRIPTION("GPIO driver for the PCF50633");
 +MODULE_LICENSE("GPL");
-
 diff --git a/drivers/input/misc/Kconfig b/drivers/input/misc/Kconfig
 index 23140a3..c75d165 100644
 --- a/drivers/input/misc/Kconfig
