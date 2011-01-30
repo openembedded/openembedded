@@ -1,5 +1,5 @@
-#===============================================================================#
-#===============================================================================#
+#===========================================================================#
+#===========================================================================#
 #                              NOTE NOTE NOTE
 #
 # This *forces* the preferred kernel version; making it unable to be overridden
@@ -11,10 +11,10 @@
 # This *must* be removed after initial testing is completed.  MJW 08-Dec-2008
 #
 SRCREV_pn-linux-ixp4xx ?= "1090"
-PREFERRED_VERSION_linux-ixp4xx = "2.6.27.8+svnr${SRCREV_pn-linux-ixp4xx}"
+PREFERRED_VERSION_linux-ixp4xx = "2.6.29+svnr${SRCREV_pn-linux-ixp4xx}"
 #
-#===============================================================================#
-#===============================================================================#
+#===========================================================================#
+#===========================================================================#
 
 ### Standard package preferred versions go here, sorted
 ### alphabetically.  Note that the main slugos.inc file
