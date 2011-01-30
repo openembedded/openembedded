@@ -182,6 +182,8 @@ sysconf_reload(){
 		echo "# address, netmask and gateway are ignored for 'dhcp'"
 		echo "# but required for 'static'"
 		echo "iface $iface inet $boot"
+		# The following is used by DHCP to register the hostname
+		test -n "$host"    && echo "	hostname $host"
 		# The following are ignored for DHCP but are harmless
 		test -n "$ip"      && echo "	address $ip"
 		test -n "$netmask" && echo "	netmask $netmask"
