@@ -575,7 +575,7 @@ CONFIG_SCSI_LOWLEVEL=y
 CONFIG_ATA=y
 # CONFIG_ATA_NONSTANDARD is not set
 # CONFIG_ATA_VERBOSE_ERROR is not set
-CONFIG_SATA_PMP=y
+# CONFIG_SATA_PMP is not set
 
 #
 # Controllers with non-SFF native interface
@@ -601,7 +601,7 @@ CONFIG_ATA_BMDMA=y
 # PIO-only SFF controllers
 #
 CONFIG_PATA_PCMCIA=y
-CONFIG_PATA_PLATFORM=y
+# CONFIG_PATA_PLATFORM is not set
 # CONFIG_PATA_QDI is not set
 # CONFIG_PATA_WINBOND_VLB is not set
 
