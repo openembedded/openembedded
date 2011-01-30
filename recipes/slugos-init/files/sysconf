@@ -259,7 +259,7 @@ sysconf_save_conffiles(){
 		then
 			exec cpio -p -d -m -u "$saved"
 		else
-			exec cpio -o -H crc >"$saved"
+			exec cpio -o -H newc >"$saved"
 		fi
 	)
 }
