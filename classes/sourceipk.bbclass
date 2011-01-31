@@ -144,7 +144,18 @@ EXPORT_FUNCTIONS do_create_srcipk
 
 do_create_srcipk[deptask] = "do_patch"
 
-addtask create_srcipk after do_patch before do_configure
+# Add a blank compileconfigs task.  This allows the sourceipk to schedule
+# its copy of the sources for kernels using the multi-kernel functionality
+# before the compileconfigs task.  Failure to do this results in a race
+# condition where in the best case the sources packaged may contain binary
+# builds and in the worst case binary files being cleaned cause an error
+# in the copy command for the sourceipk.
+do_compileconfigs() {
+    :
+}
+addtask compileconfigs after do_patch before do_configure
+
+addtask create_srcipk after do_patch before do_compileconfigs
 
 #Add source packages to list of packages OE knows about
 PACKAGES_DYNAMIC += "${PN}-src"
