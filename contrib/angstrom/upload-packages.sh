@@ -5,7 +5,7 @@
 # Run this from inside ${DEPLOY_DIR} e.g. tmp/deploy/glibc/
 
 # Angstrom webserver
-REMOTEM=angstrom@linuxtogo.org
+REMOTEM=angstrom@feeds.angstrom-distribution.org
 
 # Feed dir we want to upload to
 REMOTED=website/feeds/unstable/ipk/$(basename $PWD)
