@@ -1,10 +1,10 @@
 DESCRIPTION = "Python GObject bindings"
 SECTION = "devel/python"
 LICENSE = "LGPL"
-DEPENDS = "libffi python-pygobject-native-${PV}"
+DEPENDS = "libffi python-pygobject-native-${PV} glib-2.0"
 PE = "1"
 
-PR = "r2"
+PR = "r3"
 
 MAJ_VER = "${@bb.data.getVar('PV',d,1).split('.')[0]}.${@bb.data.getVar('PV',d,1).split('.')[1]}"
 
