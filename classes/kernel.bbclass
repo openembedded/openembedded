@@ -32,6 +32,7 @@ INITRAMFS_TASK ?= ""
 
 inherit kernel-arch
 
+PACKAGES_DYNAMIC += "kernel-*"
 PACKAGES_DYNAMIC += "kernel-module-*"
 PACKAGES_DYNAMIC += "kernel-image-*"
 PACKAGES_DYNAMIC += "kernel-firmware-*"
