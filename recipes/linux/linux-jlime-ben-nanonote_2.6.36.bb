@@ -13,7 +13,9 @@ KERNEL_IMAGETYPE = "vmlinux.bin"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/kristoffer/linux-hpc.git;protocol=git;branch=v2.6.36-hpc \
 	   file://logo_linux_clut224.tar.gz \
-	   file://modifier-keys.patch"
+	   file://modifier-keys.patch \
+	   file://config-ben-nanonote \
+	   file://jz4740-udc.patch"
 
 S = "${WORKDIR}/git"
 
@@ -22,7 +24,7 @@ inherit kernel
 FILES_kernel-image = "/boot/uImage*"
 
 do_configure_prepend() {
-	install -m 0644 ${S}/config-ben-nanonote ${S}/.config
+	install -m 0644 ${WORKDIR}/config-ben-nanonote ${S}/.config
 	mv -f ${WORKDIR}/logo_linux_clut224.ppm ${S}/drivers/video/logo
 }
 
