@@ -57,6 +57,7 @@ FILES_${PN}-cally-examples = "${bindir}/cally-*-example"
 require clutter-common.inc
 
 do_configure_prepend() {
+	glib-gettextize --force --copy || true
 	# Fix up some weirdness in the docs
 	copy_gtk_doc_make
 
