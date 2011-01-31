@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux/arm 2.6.37-rc7 Kernel Configuration
-# Wed Dec 22 09:58:15 2010
+# Linux/arm 2.6.37 Kernel Configuration
+# Wed Jan  5 11:35:19 2011
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -387,7 +387,7 @@ CONFIG_ALIGNMENT_TRAP=y
 #
 CONFIG_ZBOOT_ROM_TEXT=0
 CONFIG_ZBOOT_ROM_BSS=0
-CONFIG_CMDLINE="console=tty1 console=ttyS0,115200n8 fbcon=rotate:1 loglevel=3"
+CONFIG_CMDLINE="console=tty1 console=ttyS0,115200n8 fbcon=rotate:1"
 # CONFIG_CMDLINE_FORCE is not set
 # CONFIG_XIP_KERNEL is not set
 CONFIG_KEXEC=y
@@ -604,7 +604,7 @@ CONFIG_SCSI_LOWLEVEL=y
 CONFIG_ATA=y
 # CONFIG_ATA_NONSTANDARD is not set
 # CONFIG_ATA_VERBOSE_ERROR is not set
-CONFIG_SATA_PMP=y
+# CONFIG_SATA_PMP is not set
 
 #
 # Controllers with non-SFF native interface
@@ -631,7 +631,7 @@ CONFIG_PATA_PXA=y
 # PIO-only SFF controllers
 #
 CONFIG_PATA_PCMCIA=y
-CONFIG_PATA_PLATFORM=y
+# CONFIG_PATA_PLATFORM is not set
 
 #
 # Generic fallback / legacy drivers
@@ -767,9 +767,6 @@ CONFIG_I2C_BOARDINFO=y
 # CONFIG_I2C_CHARDEV is not set
 # CONFIG_I2C_MUX is not set
 CONFIG_I2C_HELPER_AUTO=y
-# CONFIG_I2C_ALGOBIT is not set
-# CONFIG_I2C_ALGOPCF is not set
-# CONFIG_I2C_ALGOPCA is not set
 
 #
 # I2C Hardware Bus support
