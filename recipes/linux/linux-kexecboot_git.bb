@@ -12,4 +12,4 @@ SRC_URI += "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git
 S = "${WORKDIR}/git"
 
 # Mark archs/machines that this kernel supports
-DEFAULT_PREFERENCE = "-2"
+DEFAULT_PREFERENCE = "2"
