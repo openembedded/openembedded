@@ -110,7 +110,7 @@ index 0000000..b26ee3a
 +#include "video_out.h"
 +#include "video_out_internal.h"
 +#include "fastmemcpy.h"
-+#include "sub.h"
++#include "sub/sub.h"
 +#include "mp_msg.h"
 +#include "omapfb.h"
 +#include "x11_common.h"

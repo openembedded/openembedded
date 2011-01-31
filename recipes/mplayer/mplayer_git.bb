@@ -20,7 +20,7 @@ SRC_URI_append_armv7a = " \
 # ie. for all armv4 machines.
 SRC_URI_append_collie = "file://disable-executable-stack-test.patch"
 
-SRCREV = "81f0b8dacff926d46438faedb1a56da3946a8d2a"
+SRCREV = "17c4546a5123774a8832c083b9227a5abb3b2716"
 
 PACKAGE_ARCH_collie = "collie"
 PACKAGE_ARCH_c7x0 = "c7x0"
@@ -93,18 +93,14 @@ EXTRA_OECONF = " \
 	--disable-xanim \
 	--disable-real \
 	--disable-xvid \
-	--disable-x264 \
 	\
 	--enable-tremor-low \
 	\
 	--disable-speex \
 	--enable-theora \
-	--disable-faac \
 	--disable-ladspa \
 	--disable-libdv \
 	--enable-mad \
-	--disable-toolame \
-	--disable-twolame \
 	--disable-xmms \
 	--disable-mp3lib \
 	--enable-libmpeg2 \
@@ -130,7 +126,6 @@ EXTRA_OECONF = " \
 	--disable-xinerama \
 	--enable-x11 \
 	--enable-fbdev \
-	--disable-mlib \
 	--disable-3dfx \
 	--disable-tdfxfb \
 	--disable-s3fb \
