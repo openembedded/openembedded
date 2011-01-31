@@ -12,12 +12,10 @@ SRC_URI += " \
             file://dolt-fix.patch \
             file://randr-support.patch \
             file://hack-fbdev-ignore-return-mode.patch \
+            file://hack-assume-pixman-supports-overlapped-blt.patch \
            "
-SRC_URI[archive.md5sum] = "f22831fdddecbe4eecf006380d659ac8"
-SRC_URI[archive.sha256sum] = "1a77c1cf699e0430c9ab2b9c830861c998ef390517700d4c3a4b7265693c2747"
-
-SRC_URI_append_angstrom = " file://hack-assume-pixman-supports-overlapped-blt.patch"
-SRC_URI_append_shr = " file://hack-assume-pixman-supports-overlapped-blt.patch"
+SRC_URI[archive.md5sum] = "9a9f3f1f843b23a3c343cec6fb179242"
+SRC_URI[archive.sha256sum] = "8f6dbb113b9ca0314f9467c34647edda106fcb99db5ed9f8a5db04a9175abbe6"
 
 do_install_prepend() {
         mkdir -p ${D}/${libdir}/X11/fonts
