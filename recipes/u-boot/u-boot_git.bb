@@ -228,12 +228,10 @@ do_compile_omapzoom36x () {
         oe_runmake tools
 }
 
-SRC_URI_overo = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap3-dev;protocol=git \
-                 file://fw-env.patch \
-                 file://dss2.patch \
+SRC_URI_overo = "git://www.sakoman.com/git/u-boot.git;branch=omap4-exp;protocol=git \
 "
-SRCREV_overo = "2dea1db2a3b7c12ed70bbf8ee50755089c5e5170"
-PV_overo = "2009.03+${PR}+gitr${SRCREV}"
+SRCREV_overo = "261733408a27d14590cf3ec6b596461808050e32"
+PV_overo = "2010.12+${PR}+gitr${SRCREV}"
 
 # DaVinci dm355-evm/dm365-evm/dm6446-evm/dm6467-evm/dm6467t-evm - PSP 3.1.0/3.2.0 (build 35)
 
