@@ -12,12 +12,11 @@ def autotools_deps(d):
 		return deps
 	deps += 'autoconf-native automake-native help2man-native '
 
-	if not pn in ['libtool', 'libtool-native', 'libtool-cross']:
+	if pn not in ['libtool', 'libtool-native', 'libtool-cross']:
 		deps += 'libtool-native '
-		if not bb.data.inherits_class('native', d) \
-                        and not bb.data.inherits_class('cross', d) \
-                        and not bb.data.inherits_class('sdk', d) \
-                        and not bb.data.getVar('INHIBIT_DEFAULT_DEPS', d, 1):
+		if (not oe.utils.inherits(d, 'native', 'nativesdk', 'cross',
+		                          'sdk') and
+		    not d.getVar('INHIBIT_DEFAULT_DEPS', True)):
                     deps += 'libtool-cross '
 
 	return deps + 'gnu-config-native '
@@ -31,11 +30,7 @@ DEPENDS_virtclass-nativesdk_prepend = "${@autotools_deps(d)}"
 inherit siteinfo
 
 def _autotools_get_sitefiles(d):
-    def inherits(d, *classes):
-        if any(bb.data.inherits_class(cls, d) for cls in classes):
-            return True
-
-    if inherits(d, "native", "nativesdk"):
+    if oe.utils.inherits(d, 'native', 'nativesdk'):
         return
 
     sitedata = siteinfo_data(d)
