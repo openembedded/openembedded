@@ -49,6 +49,7 @@ do_install () {
 	install -d ${D}${sysconfdir}
 	install -d ${D}${sysconfdir}/default
 	install -d ${D}${sysconfdir}/init.d
+	install -d ${D}${sysconfdir}/event.d
 
 	install -m 0644	${WORKDIR}/init/rcS-default	${D}${sysconfdir}/default/rcS
 	install -m 0755 ${WORKDIR}/init/rc		${D}${sysconfdir}/init.d
