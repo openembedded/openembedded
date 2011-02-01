@@ -14,7 +14,9 @@ SRC_URI_append_angstrom = " file://kdrive-1.4-fixes.patch \
                             file://xorg-fixes.patch \
 			    file://gta-xorg-fixes.patch \
                             file://default.xmodmap \
-                            file://98keymap-fixup "
+                            file://98keymap-fixup \
+			    file://xserver-common-at91sam9.patch "
+
 
 do_install_append() {
 	install -m 0755 "${WORKDIR}/setDPI.sh" "${D}/etc/X11/Xinit.d/50setdpi"
