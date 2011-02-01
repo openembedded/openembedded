@@ -1,0 +1,289 @@
+From 4e319cdec2e32cc29f545830a4c1534c056e3abc Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Sun, 23 Jan 2011 20:02:23 +0100
+Subject: [PATCH v3 07/08] Add board support for alternate boot
+
+---
+ board/at91sam9g45ek/at91sam9g45ek.c     |   29 +++++++++++++++++++++++++
+ board/at91sam9g45ek/at91sam9g45ek.h     |   10 ++++++++
+ board/at91sam9g45ekes/at91sam9g45ekes.c |   30 ++++++++++++++++++++++++++
+ board/at91sam9g45ekes/at91sam9g45ekes.h |    9 ++++++++
+ board/at91sam9m10ek/at91sam9m10ek.c     |   29 +++++++++++++++++++++++++
+ board/at91sam9m10ek/at91sam9m10ek.h     |   10 ++++++++
+ board/at91sam9m10ekes/at91sam9m10ekes.c |   35 +++++++++++++++++++++++++++++++
+ board/at91sam9m10ekes/at91sam9m10ekes.h |   10 ++++++++
+ 8 files changed, 162 insertions(+), 0 deletions(-)
+
+diff --git a/board/at91sam9g45ek/at91sam9g45ek.c b/board/at91sam9g45ek/at91sam9g45ek.c
+index f000927..d896bf1 100644
+--- a/board/at91sam9g45ek/at91sam9g45ek.c
++++ b/board/at91sam9g45ek/at91sam9g45ek.c
+@@ -42,6 +42,7 @@
+ #include "debug.h"
+ #include "main.h"
+ #include "ddramc.h"
++#include "gpio.h"
+ #ifdef CONFIG_NANDFLASH
+ #include "nandflash.h"
+ #endif
+@@ -57,6 +58,34 @@ int get_cpsr(void);
+ 
+ void set_cpsr(unsigned int value);
+ 
++/*------------------------------------------------------------------------------*/
++/* \fn    alternate_boot							*/
++/* \brief This function returns 1 if LEFT BUTTON is pressed			*/
++/*        during boot sequence							*/
++/*------------------------------------------------------------------------------*/
++int alternate_boot_button(void)
++{
++	/* Configure PIOs */
++	const struct pio_desc button_pio[] = {
++		{"LEFT", LEFT_BUTTON, 0, PIO_PULLUP, PIO_INPUT},
++		{(char *) 0, 0, 0, PIO_DEFAULT, PIO_PERIPH_A},
++	};
++
++	/* Configure PIO B controller */
++	writel((1 << AT91C_ID_PIOB), PMC_PCER + AT91C_BASE_PMC);
++	pio_setup(button_pio);
++
++	/* Return "1" if LEFT BUTTON is pressed during Boot sequence */
++	dbgu_print("Checking for Alternate boot: ...\n\r");
++	if ( !pio_get_value(LEFT_BUTTON) ) {
++		dbgu_print("[Alternate]\n\r");		
++		return 1;
++	} else {
++		dbgu_print("[Normal]\n\r");		
++		return 0;
++	}
++}
++
+ #ifdef CONFIG_HW_INIT
+ /*----------------------------------------------------------------------------*/
+ /* \fn    hw_init							      */
+diff --git a/board/at91sam9g45ek/at91sam9g45ek.h b/board/at91sam9g45ek/at91sam9g45ek.h
+index d443433..06a8069 100644
+--- a/board/at91sam9g45ek/at91sam9g45ek.h
++++ b/board/at91sam9g45ek/at91sam9g45ek.h
+@@ -122,4 +122,14 @@
+ #define BOARD_SD_PINS \
+     {(0x3E <<  0), AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_PULLUP}, \
+     {(0x1 <<  0), AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_DEFAULT}
++
++#define	LEFT_BUTTON		AT91C_PIN_PB(6)
++#define	RIGHT_BUTTON		AT91C_PIN_PB(7)
++
++#define	JOY_LEFT		AT91C_PIN_PB(14)
++#define	JOY_RIGHT		AT91C_PIN_PB(15)
++#define	JOY_UP			AT91C_PIN_PB(16)
++#define	JOY_DOWN		AT91C_PIN_PB(17)
++#define	JOY_PUSH		AT91C_PIN_PB(18)
++
+ #endif                          /* _AT91SAM9G45EK_H */
+diff --git a/board/at91sam9g45ekes/at91sam9g45ekes.c b/board/at91sam9g45ekes/at91sam9g45ekes.c
+index b261849..2a4d792 100644
+--- a/board/at91sam9g45ekes/at91sam9g45ekes.c
++++ b/board/at91sam9g45ekes/at91sam9g45ekes.c
+@@ -42,6 +42,7 @@
+ #include "debug.h"
+ #include "main.h"
+ #include "ddramc.h"
++#include "gpio.h"
+ #ifdef CONFIG_NANDFLASH
+ #include "nandflash.h"
+ #endif
+@@ -58,6 +59,35 @@ int get_cpsr(void);
+ void set_cpsr(unsigned int value);
+ 
+ void WM9711L_enble(void);
++
++/*------------------------------------------------------------------------------*/
++/* \fn    alternate_boot							*/
++/* \brief This function returns 1 if LEFT BUTTON is pressed			*/
++/*        during boot sequence							*/
++/*------------------------------------------------------------------------------*/
++int alternate_boot_button(void)
++{
++	/* Configure PIOs */
++	const struct pio_desc button_pio[] = {
++		{"LEFT", LEFT_BUTTON, 0, PIO_PULLUP, PIO_INPUT},
++		{(char *) 0, 0, 0, PIO_DEFAULT, PIO_PERIPH_A},
++	};
++
++	/* Configure PIO B controller */
++	writel((1 << AT91C_ID_PIOB), PMC_PCER + AT91C_BASE_PMC);
++	pio_setup(button_pio);
++
++	/* Return "1" if LEFT BUTTON is pressed during Boot sequence */
++	dbgu_print("Checking for Alternate boot: ...\n\r");
++	if ( !pio_get_value(LEFT_BUTTON) ) {
++		dbgu_print("[Alternate]\n\r");		
++		return 1;
++	} else {
++		dbgu_print("[Normal]\n\r");		
++		return 0;
++	}
++}
++
+ #ifdef CONFIG_HW_INIT
+ /*----------------------------------------------------------------------------*/
+ /* \fn    hw_init							      */
+diff --git a/board/at91sam9g45ekes/at91sam9g45ekes.h b/board/at91sam9g45ekes/at91sam9g45ekes.h
+index 01e79be..5519c8f 100644
+--- a/board/at91sam9g45ekes/at91sam9g45ekes.h
++++ b/board/at91sam9g45ekes/at91sam9g45ekes.h
+@@ -124,4 +124,13 @@
+     {(0x3E <<  0), AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_PULLUP}, \
+     {(0x1 <<  0), AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_DEFAULT}
+ 
++#define	LEFT_BUTTON		AT91C_PIN_PB(6)
++#define	RIGHT_BUTTON		AT91C_PIN_PB(7)
++
++#define	JOY_LEFT		AT91C_PIN_PB(14)
++#define	JOY_RIGHT		AT91C_PIN_PB(15)
++#define	JOY_UP			AT91C_PIN_PB(16)
++#define	JOY_DOWN		AT91C_PIN_PB(17)
++#define	JOY_PUSH		AT91C_PIN_PB(18)
++
+ #endif                          /* _AT91SAM9G45EKES_H */
+diff --git a/board/at91sam9m10ek/at91sam9m10ek.c b/board/at91sam9m10ek/at91sam9m10ek.c
+index d1b87c3..5f66658 100644
+--- a/board/at91sam9m10ek/at91sam9m10ek.c
++++ b/board/at91sam9m10ek/at91sam9m10ek.c
+@@ -42,6 +42,7 @@
+ #include "debug.h"
+ #include "main.h"
+ #include "ddramc.h"
++#include "gpio.h"
+ #ifdef CONFIG_NANDFLASH
+ #include "nandflash.h"
+ #endif
+@@ -59,6 +60,34 @@ void set_cpsr(unsigned int value);
+ 
+ void WM9711L_enble(void);
+ 
++/*------------------------------------------------------------------------------*/
++/* \fn    alternate_boot							*/
++/* \brief This function returns 1 if LEFT BUTTON is pressed			*/
++/*        during boot sequence							*/
++/*------------------------------------------------------------------------------*/
++int alternate_boot_button(void)
++{
++	/* Configure PIOs */
++	const struct pio_desc button_pio[] = {
++		{"LEFT", LEFT_BUTTON, 0, PIO_PULLUP, PIO_INPUT},
++		{(char *) 0, 0, 0, PIO_DEFAULT, PIO_PERIPH_A},
++	};
++
++	/* Configure PIO B controller */
++	writel((1 << AT91C_ID_PIOB), PMC_PCER + AT91C_BASE_PMC);
++	pio_setup(button_pio);
++
++	/* Return "1" if LEFT BUTTON is pressed during Boot sequence */
++	dbgu_print("Checking for Alternate boot: ...\n\r");
++	if ( !pio_get_value(LEFT_BUTTON) ) {
++		dbgu_print("[Alternate]\n\r");		
++		return 1;
++	} else {
++		dbgu_print("[Normal]\n\r");		
++		return 0;
++	}
++}
++
+ #ifdef CONFIG_HW_INIT
+ /*----------------------------------------------------------------------------*/
+ /* \fn    hw_init							      */
+diff --git a/board/at91sam9m10ek/at91sam9m10ek.h b/board/at91sam9m10ek/at91sam9m10ek.h
+index 581bbaa..b457e24 100644
+--- a/board/at91sam9m10ek/at91sam9m10ek.h
++++ b/board/at91sam9m10ek/at91sam9m10ek.h
+@@ -123,4 +123,14 @@
+ #define BOARD_SD_PINS \
+     {(0x3E <<  0), AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_PULLUP}, \
+     {(0x1 <<  0), AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_DEFAULT}
++
++#define	LEFT_BUTTON		AT91C_PIN_PB(6)
++#define	RIGHT_BUTTON		AT91C_PIN_PB(7)
++
++#define	JOY_LEFT		AT91C_PIN_PB(14)
++#define	JOY_RIGHT		AT91C_PIN_PB(15)
++#define	JOY_UP			AT91C_PIN_PB(16)
++#define	JOY_DOWN		AT91C_PIN_PB(17)
++#define	JOY_PUSH		AT91C_PIN_PB(18)
++
+ #endif                          /* _AT91SAM9M10EK_H */
+diff --git a/board/at91sam9m10ekes/at91sam9m10ekes.c b/board/at91sam9m10ekes/at91sam9m10ekes.c
+index 8fd882c..8c0e979 100644
+--- a/board/at91sam9m10ekes/at91sam9m10ekes.c
++++ b/board/at91sam9m10ekes/at91sam9m10ekes.c
+@@ -42,6 +42,7 @@
+ #include "debug.h"
+ #include "main.h"
+ #include "ddramc.h"
++#include "gpio.h"
+ #ifdef CONFIG_NANDFLASH
+ #include "nandflash.h"
+ #endif
+@@ -57,6 +58,40 @@ int get_cpsr(void);
+ 
+ void set_cpsr(unsigned int value);
+ 
++/*------------------------------------------------------------------------------*/
++/* \fn    alternate_boot							*/
++/* \brief This function returns 1 if LEFT BUTTON is pressed			*/
++/*        during boot sequence							*/
++/*------------------------------------------------------------------------------*/
++int alternate_boot_button(void)
++{
++	/* Configure PIOs */
++	const struct pio_desc button_pio[] = {
++		{"LEFT", LEFT_BUTTON, 0, PIO_PULLUP, PIO_INPUT},
++		{(char *) 0, 0, 0, PIO_DEFAULT, PIO_PERIPH_A},
++	};
++
++	/* Configure PIO B controller */
++	writel((1 << AT91C_ID_PIOB), PMC_PCER + AT91C_BASE_PMC);
++	pio_setup(button_pio);
++		dbgu_print("[Alternate]\n\r");		
++		return 1;
++	} else {
++		dbgu_print("[Normal]\n\r");		
++		return 0;
++	}
++}
++	/* Return "1" if LEFT BUTTON is pressed during Boot sequence */
++	dbgu_print("Checking for Alternate boot: ...\n\r");
++	if ( !pio_get_value(LEFT_BUTTON) ) {
++		dbgu_print("[Alternate]\n\r");		
++		return 1;
++	} else {
++		dbgu_print("[Normal]\n\r");		
++		return 0;
++	}
++}
++
+ #ifdef CONFIG_HW_INIT
+ /*----------------------------------------------------------------------------*/
+ /* \fn    hw_init							      */
+diff --git a/board/at91sam9m10ekes/at91sam9m10ekes.h b/board/at91sam9m10ekes/at91sam9m10ekes.h
+index 222c953..e6abfa7 100644
+--- a/board/at91sam9m10ekes/at91sam9m10ekes.h
++++ b/board/at91sam9m10ekes/at91sam9m10ekes.h
+@@ -122,4 +122,14 @@
+ #define BOARD_SD_PINS \
+     {(0x3E <<  0), AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_PULLUP}, \
+     {(0x1 <<  0), AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_DEFAULT}
++
++#define	LEFT_BUTTON		AT91C_PIN_PB(6)
++#define	RIGHT_BUTTON		AT91C_PIN_PB(7)
++
++#define	JOY_LEFT		AT91C_PIN_PB(14)
++#define	JOY_RIGHT		AT91C_PIN_PB(15)
++#define	JOY_UP			AT91C_PIN_PB(16)
++#define	JOY_DOWN		AT91C_PIN_PB(17)
++#define	JOY_PUSH		AT91C_PIN_PB(18)
++
+ #endif                          /* _AT91SAM9M10EK_H */
+-- 
+1.7.1
+

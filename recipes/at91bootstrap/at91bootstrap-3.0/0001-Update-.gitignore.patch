@@ -1,0 +1,42 @@
+From 91717f6a6591a6fae538447261ddbe58f6df3d38 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Tue, 25 Jan 2011 22:20:29 +0100
+Subject: [PATCH v3] Update .gitignore
+
+---
+ .gitignore |   13 ++++++++-----
+ 1 files changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/.gitignore b/.gitignore
+index 5578395..b8878be 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,4 +1,11 @@
++*~
++*.orig
++*.o
++*.rej
++.config.*
+ .config
++.auto.deps
++..make.deps.tmp
+ log
+ log/*
+ config/at91bootstrap-config/
+@@ -10,12 +17,8 @@ config/zconf.hash.c
+ config/zconf.tab.c
+ config/zconf.tab.o
+ config/.depend
+-.config.cmd
+-.config.old
+-.auto.deps
+ build
+ result
+ binaries
+-*~
+-*.orig
++install
+ 
+-- 
+1.7.1
+

@@ -1,0 +1,331 @@
+From 102651cd96baa14c35febb1ea1ee66a2ff7e5f0d Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Sun, 23 Jan 2011 19:34:13 +0100
+Subject: [PATCH v3 04/08] Add support for dual boot
+
+---
+ Config.in          |   32 +++++++++++++++++++++++++++++++-
+ Makefile           |   18 +++++++++++++++---
+ board/Config.in    |    4 ++++
+ driver/MEDSdcard.c |   10 +++++++++-
+ include/gpio.h     |    4 ++++
+ main.c             |   46 ++++++++++++++++++++++++++--------------------
+ toplevel_cpp.mk    |    9 ++++++++-
+ 7 files changed, 97 insertions(+), 26 deletions(-)
+
+diff --git a/Config.in b/Config.in
+index 47da4e6..8c68e41 100644
+--- a/Config.in
++++ b/Config.in
+@@ -75,6 +75,33 @@ config CONFIG_LOAD_4MB
+ 
+ endchoice
+ 
++config CONFIG_DUAL_BOOT
++	bool "Support dual application boot"
++	depends on ALLOW_DUAL_BOOT
++	default	n
++	help
++	  Allow booting a secondary application if a button is pressed
++
++config CONFIG_ALT_IMG_ADDRESS
++	string
++	default "0x00040000" if CONFIG_FLASH
++	default "0x00063000" if CONFIG_DATAFLASH
++	default "0x00040000" if CONFIG_NANDFLASH
++	default	"0x00000000" if CONFIG_SDCARD
++	help
++	  Where the secondary application is stored.
++
++config CONFIG_ALT_IMG_SIZE
++	string
++	default	"0x00010000"
++	help
++	  at91bootstrap will copy this amount of data
++
++config CONFIG_ALT_IMAGE_NAME
++	depends on CONFIG_SDCARD && CONFIG_DUAL_BOOT
++	string "Binary Name on SD Card"
++	default "program.bin"
++
+ #
+ # Linux Image Storage Setup
+ #
+@@ -329,7 +356,7 @@ config CONFIG_GLBDRV_ADDR
+ 	default "0x20068000" if CONFIG_AT91SAM9G10EK
+ 	default "0x23F00000"
+ 	help
+-	
++
+ config CONFIG_LONG_TEST
+ 	bool "Perform a memory test at startup"
+ 	default n
+@@ -351,6 +378,9 @@ config CONFIG_DEBUG_VERY_LOUD
+ 	bool "Even louder debug output"
+ endchoice
+ 
++config ALLOW_DUAL_BOOT
++	bool
++
+ config CONFIG_HW_INIT
+ 	bool "Call Hardware Initialization"
+ 	default y
+diff --git a/Makefile b/Makefile
+index 5c66729..0fcd5ba 100644
+--- a/Makefile
++++ b/Makefile
+@@ -12,14 +12,17 @@ CONFIG=config
+ 
+ CONFIG_SHELL=$(shell which bash)
+ ifeq ($(CONFIG_SHELL),)
+-$(error GNU Bash is needed to build Bootstrap!)
++$(error GNU Bash is needed to build Bootstrap!)+ALT_IMG_ADDRESS=$(strip $(subst ",,$(CONFIG_ALT_IMG_ADDRESS)))
+++#"))
+++ALT_IMG_SIZE=$(strip $(subst ",,$(CONFIG_ALT_IMG_SIZE)))
+++#"))
+ endif
+ 
+ BINDIR:=$(TOPDIR)/binaries
+ 
+ DATE:=$(shell date +%Y%m%d)
+ 
+-VERSION:=3.0
++VERSION:=3.0.1
+ 
+  
+ noconfig_targets:= menuconfig defconfig $(CONFIG) oldconfig
+@@ -88,9 +91,12 @@ else
+ ##  Have DOT Config
+ #
+ 
++nocompile_targets:= distrib config-clean clean distclean mrproper
++ifeq ($(filter $(nocompile_targets),$(MAKECMDGOALS)),)
+ ifeq ($(CROSS_COMPILE),)
+ $(error Environment variable "CROSS_COMPILE" must be defined!)
+ endif
++endif
+ 
+ AS=$(CROSS_COMPILE)gcc
+ CC=$(CROSS_COMPILE)gcc
+@@ -114,6 +120,12 @@ IMG_ADDRESS := $(strip $(subst ",,$(CONFIG_IMG_ADDRESS)))
+ 
+ IMG_SIZE := $(strip $(subst ",,$(CONFIG_IMG_SIZE)))
+ 
++ALT_IMG_ADDRESS :=$(strip $(subst ",,$(CONFIG_ALT_IMG_ADDRESS)))
++
++ALT_IMG_SIZE :=$(strip $(subst ",,$(CONFIG_ALT_IMG_SIZE)))
++
++ALT_IMAGE_NAME :=$(strip $(subst ",,$(CONFIG_ALT_IMAGE_NAME)))
++
+ JUMP_ADDR := $(strip $(subst ",,$(CONFIG_JUMP_ADDR)))
+ 
+ BOOTSTRAP_MAXSIZE := $(strip $(subst ",,$(CONFIG_BOOTSTRAP_MAXSIZE)))
+@@ -189,7 +201,7 @@ IMAGE=$(BOOT_NAME).bin
+ endif
+ 
+ ifeq ($(SYMLINK),)
+-SYMLINK=at91bootstrap.bin
++SYMLINK=at91bootstrap.bin+ifeq ($(CONFIG_DUAL_BOOT),y)
+ endif
+ 
+ EXTRA_INSTALL=
+diff --git a/board/Config.in b/board/Config.in
+index 45af1f9..78ac102 100644
+--- a/board/Config.in
++++ b/board/Config.in
+@@ -126,6 +126,7 @@ config	CONFIG_AT91SAM9G45EK
+ 	select ALLOW_CRYSTAL_18_432MHZ
+ 	select ALLOW_BOOT_FROM_DATAFLASH_CS0
+ 	select ALLOW_DATAFLASH_RECOVERY
++	select ALLOW_DUAL_BOOT
+ 	help
+ 	  Use the AT91SAM9G45EK Development board
+ 	  Can also be used for AT91SAM9M10/M11
+@@ -142,6 +143,7 @@ config	CONFIG_AT91SAM9G45EKES
+ 	select ALLOW_CRYSTAL_18_432MHZ
+ 	select ALLOW_BOOT_FROM_DATAFLASH_CS0
+ 	select ALLOW_DATAFLASH_RECOVERY
++	select ALLOW_DUAL_BOOT
+ 	help
+ 	  Use the AT91SAM9G45EK-ES Development board
+ 	  Can also be used for AT91SAM9M10/M11-ES
+@@ -158,6 +160,7 @@ config	CONFIG_AT91SAM9M10EK
+ 	select ALLOW_CRYSTAL_18_432MHZ
+ 	select ALLOW_BOOT_FROM_DATAFLASH_CS0
+ 	select ALLOW_DATAFLASH_RECOVERY
++	select ALLOW_DUAL_BOOT
+ 	help
+ 	  Use the AT91SAM9M10EK Development board
+ 	  Can also be used for AT91SAM9G45
+@@ -174,6 +177,7 @@ config	CONFIG_AT91SAM9M10EKES
+ 	select ALLOW_CRYSTAL_18_432MHZ
+ 	select ALLOW_BOOT_FROM_DATAFLASH_CS0
+ 	select ALLOW_DATAFLASH_RECOVERY
++	select ALLOW_DUAL_BOOT
+ 	help
+ 	  Use the AT91SAM9M10EKES Development board
+ 	  Can also be used for AT91SAM9G45
+diff --git a/driver/MEDSdcard.c b/driver/MEDSdcard.c
+index 123acee..e6a660f 100644
+--- a/driver/MEDSdcard.c
++++ b/driver/MEDSdcard.c
+@@ -686,7 +686,15 @@ unsigned int load_SDCard()
+         return 0;
+     }
+ 
+-    res = f_open(&fileObject, OS_IMAGE_NAME, FA_OPEN_EXISTING | FA_READ);
++#if defined(CONFIG_DUAL_BOOT)
++    if(alternate_boot_button()) {
++	res = f_open(&fileObject, ALT_IMAGE_NAME, FA_OPEN_EXISTING | FA_READ);
++    } else {
++#else
++    {
++#endif
++	res = f_open(&fileObject, OS_IMAGE_NAME, FA_OPEN_EXISTING | FA_READ);
++    }
+ 
+     if (res != FR_OK) {
+         return 0;
+diff --git a/include/gpio.h b/include/gpio.h
+index 7c7e57b..fff9539 100644
+--- a/include/gpio.h
++++ b/include/gpio.h
+@@ -73,4 +73,8 @@ extern int pio_setup(const struct pio_desc *pio_desc);
+ #define	AT91C_PIN_PD(io)	(3 * PIO_NB_IO + io)
+ #define	AT91C_PIN_PE(io)	(4 * PIO_NB_IO + io)
+ 
++#if defined(CONFIG_DUAL_BOOT)
++extern	int	alternate_boot_button(void);
++#endif
++
+ #endif                          /* GPIO_H_ */
+diff --git a/main.c b/main.c
+index c7dc662..9ca56ac 100644
+--- a/main.c
++++ b/main.c
+@@ -37,6 +37,7 @@
+ #include "dataflash.h"
+ #include "nandflash.h"
+ #include "flash.h"
++#include "gpio.h"
+ #ifdef CONFIG_USER_HW_INIT
+ void user_hw_init(void);
+ #endif
+@@ -51,6 +52,9 @@ void LoadLinux();
+ 
+ void LoadWince();
+ 
++unsigned int	img_address	= IMG_ADDRESS;
++unsigned int	img_size	= IMG_SIZE;
++
+ /*------------------------------------------------------------------------------*/
+ /* Function Name       : main							*/
+ /* Object              : Main function						*/
+@@ -59,6 +63,10 @@ void LoadWince();
+ /*------------------------------------------------------------------------------*/
+ int main(void)
+ {
++
++
++// unsigned int	jump_addr	= JUMP_ADDR;
++
+     /*
+      * ================== 1st step: Hardware Initialization ================= 
+      */
+@@ -79,46 +87,44 @@ int main(void)
+     /*
+      * Load from Dataflash in RAM 
+      */
+-#if defined(CONFIG_DATAFLASH) || defined(CONFIG_DATAFLASH_CARD)
++
++#if defined(CONFIG_DUAL_BOOT)
++	if(alternate_boot_button()) {
++		dbgu_print(">Alternate image\r\n");
++		img_address	= ALT_IMG_ADDRESS;
++		img_size	= ALT_IMG_SIZE;
++	} else {
++#else
++	{
++#endif
++
+ #if defined(CONFIG_LOAD_LINUX)
+     LoadLinux();
+ #elif defined(CONFIG_LOAD_NK) || defined(CONFIG_LOAD_EBOOT)
+     LoadWince();
+ #else
+-    load_df(AT91C_SPI_PCS_DATAFLASH, IMG_ADDRESS, IMG_SIZE, JUMP_ADDR);
+-#endif
+-#endif
+ 
++#if defined(CONFIG_DATAFLASH) || defined(CONFIG_DATAFLASH_CARD)
++    load_df(AT91C_SPI_PCS_DATAFLASH, img_address, img_size, JUMP_ADDR);
++#endif
+     /*
+      * Load from Nandflash in RAM 
+      */
+ #if defined(CONFIG_NANDFLASH)
+-#if defined(CONFIG_LOAD_LINUX)
+-    LoadLinux();
+-#elif defined(CONFIG_LOAD_NK) || defined(CONFIG_LOAD_EBOOT)
+-    LoadWince();
+-#else
+-    read_nandflash((unsigned char *)JUMP_ADDR, (unsigned long)IMG_ADDRESS,
+-                   (int)IMG_SIZE);
+-#endif
++    read_nandflash((unsigned char *)JUMP_ADDR, (unsigned long)img_address,
++                   (int)img_size);
+ #endif
+-
+     /*
+      * Load from Norflash in RAM 
+      */
+ #ifdef CONFIG_FLASH
+-    load_norflash(IMG_ADDRESS, IMG_SIZE, JUMP_ADDR);
++    load_norflash(img_address, img_size, JUMP_ADDR);
+ #endif
+-
+ #if defined(CONFIG_SDCARD)
+-#if defined(CONFIG_LOAD_LINUX)
+-    LoadLinux();
+-#elif defined(CONFIG_LOAD_NK) || defined(CONFIG_LOAD_EBOOT)
+-    LoadWince();
+-#else
+     load_SDCard();
+ #endif
+ #endif
++	}
+ 
+     /*
+      * ==================== 3rd step:  Process the Image =================== 
+diff --git a/toplevel_cpp.mk b/toplevel_cpp.mk
+index af3e9fb..315dc31 100644
+--- a/toplevel_cpp.mk
++++ b/toplevel_cpp.mk
+@@ -6,12 +6,15 @@ CPPFLAGS += \
+ 	-DOS_MEM_SIZE=$(OS_MEM_SIZE) \
+ 	-DOS_IMG_SIZE=$(OS_IMG_SIZE) \
+ 	-DOS_IMAGE_NAME="\"$(OS_IMAGE_NAME)\"" \
++	-DALT_IMG_ADDRESS=$(ALT_IMG_ADDRESS)	\
++	-DALT_IMG_SIZE=$(ALT_IMG_SIZE)		\
++	-DALT_IMAGE_NAME="\"$(ALT_IMAGE_NAME)\"" \
+ 	-DLINUX_IMG_NAND_OFFSET=$(LINUX_IMG_NAND_OFFSET) \
+ 	-DLINUX_KERNEL_ARG_STRING="\"$(LINUX_KERNEL_ARG_STRING)\"" \
+ 	-DGLBDRV_ADDR=$(GLBDRV_ADDR)		\
+ 	-DSETTING_ADDRESS=$(SETTING_ADDRESS)		\
+ 	-DSETTING_SIZE=$(SETTING_SIZE)		\
+-    -DTOP_OF_MEMORY=$(TOP_OF_MEMORY)	\
++	-DTOP_OF_MEMORY=$(TOP_OF_MEMORY)	\
+ 	-DMACH_TYPE=$(MACH_TYPE)		\
+ 
+ ASFLAGS += -DJUMP_ADDR=$(JUMP_ADDR)		\
+@@ -38,3 +41,7 @@ ifeq ($(CONFIG_USER_HW_INIT),y)
+ CPPFLAGS += -DCONFIG_USER_HW_INIT
+ endif
+ 
++ifeq ($(CONFIG_DUAL_BOOT),y)
++CPPFLAGS += -DCONFIG_DUAL_BOOT
++endif
++
+-- 
+1.7.1
+

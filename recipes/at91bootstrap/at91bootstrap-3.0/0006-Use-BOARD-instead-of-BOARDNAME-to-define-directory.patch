@@ -1,0 +1,28 @@
+From d2db62d2c891693358d0cfd79a462609441715ed Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Sun, 23 Jan 2011 19:38:04 +0100
+Subject: [PATCH v3 06/08] Use BOARD instead of BOARDNAME to define directory
+
+---
+ Makefile |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 0fcd5ba..93ec72d 100644
+--- a/Makefile
++++ b/Makefile
+@@ -223,9 +223,9 @@ SX_AT91=$(BINDIR)/sx-at91
+ EXTRA_INSTALL+=$(BINDIR)/sx-at91
+ endif
+ 
+-COBJS-y:= $(TOPDIR)/main.o $(TOPDIR)/board/$(BOARDNAME)/$(BOARD).o
++COBJS-y:= $(TOPDIR)/main.o $(TOPDIR)/board/$(BOARD)/$(BOARD).o
+ SOBJS-y:= $(TOPDIR)/crt0_gnu.o
+-DIRS:=$(TOPDIR) $(TOPDIR)/board/$(BOARDNAME) $(TOPDIR)/lib $(TOPDIR)/driver
++DIRS:=$(TOPDIR) $(TOPDIR)/board/$(BOARD) $(TOPDIR)/lib $(TOPDIR)/driver
+ 
+ 
+ include 	lib/libc.mk
+-- 
+1.7.1
+

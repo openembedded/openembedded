@@ -1,0 +1,3402 @@
+From 0f9b0b7586d1e66998fead980dd8d54a90f40a5c Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Sun, 23 Jan 2011 20:05:45 +0100
+Subject: [PATCH v3 09/08] Update configs
+
+---
+ board/afeb9260/afeb9260_defconfig                  |   22 ++++-
+ board/at91cap9adk/at91cap9adk_defconfig            |   25 ++++-
+ board/at91cap9adk/at91cap9df_defconfig             |   25 ++++-
+ board/at91cap9adk/at91cap9f_defconfig              |   25 ++++-
+ board/at91cap9stk/at91cap9stk_defconfig            |   25 ++++-
+ board/at91cap9stk/at91cap9stkdf_defconfig          |   25 ++++-
+ board/at91cap9stk/at91cap9stkf_defconfig           |   25 ++++-
+ board/at91sam9260ek/at91sam9260df_defconfig        |   13 ++-
+ board/at91sam9260ek/at91sam9260dfc_defconfig       |   21 +++-
+ board/at91sam9260ek/at91sam9260ek_defconfig        |   11 ++-
+ board/at91sam9260ek/at91sam9260nf_defconfig        |   13 ++-
+ board/at91sam9261ek/at91sam9261df_defconfig        |   13 ++-
+ board/at91sam9261ek/at91sam9261dfc_defconfig       |   24 ++++-
+ board/at91sam9261ek/at91sam9261ek_defconfig        |   11 ++-
+ board/at91sam9261ek/at91sam9261nf_defconfig        |   13 ++-
+ board/at91sam9263ek/at91sam9263df_defconfig        |   15 ++-
+ board/at91sam9263ek/at91sam9263dfc_defconfig       |   26 ++++-
+ board/at91sam9263ek/at91sam9263ek_defconfig        |   13 ++-
+ board/at91sam9263ek/at91sam9263nf_defconfig        |   15 ++-
+ board/at91sam9g10ek/at91sam9g10df_defconfig        |   15 ++-
+ board/at91sam9g10ek/at91sam9g10ek_defconfig        |   13 ++-
+ board/at91sam9g10ek/at91sam9g10nf_defconfig        |   15 ++-
+ board/at91sam9g10ek/at91sam9g10sd_defconfig        |   12 ++-
+ board/at91sam9g20ek/at91sam9g20df_defconfig        |   15 ++-
+ board/at91sam9g20ek/at91sam9g20dfc_defconfig       |   30 ++++--
+ board/at91sam9g20ek/at91sam9g20ek_defconfig        |   13 ++-
+ board/at91sam9g20ek/at91sam9g20nf_defconfig        |   15 ++-
+ board/at91sam9g20ek/at91sam9g20sd_defconfig        |   10 +-
+ board/at91sam9g45ek/at91sam9g45df_defconfig        |   17 +++-
+ board/at91sam9g45ek/at91sam9g45ek_defconfig        |   15 ++-
+ board/at91sam9g45ek/at91sam9g45nf_defconfig        |   17 +++-
+ board/at91sam9g45ek/at91sam9g45sd_defconfig        |   12 ++-
+ board/at91sam9g45ekes/at91sam9g45dfes_defconfig    |   17 +++-
+ board/at91sam9g45ekes/at91sam9g45ekes_defconfig    |   15 ++-
+ board/at91sam9g45ekes/at91sam9g45nfes_defconfig    |   17 +++-
+ .../at91sam9g45sdes_android_defconfig              |    8 +-
+ board/at91sam9g45ekes/at91sam9g45sdes_defconfig    |   12 ++-
+ board/at91sam9m10ek/at91sam9m10df_defconfig        |   17 +++-
+ board/at91sam9m10ek/at91sam9m10ek_defconfig        |   15 ++-
+ board/at91sam9m10ek/at91sam9m10nf_defconfig        |   17 +++-
+ .../at91sam9m10ek/at91sam9m10sd_android_defconfig  |    8 +-
+ board/at91sam9m10ek/at91sam9m10sd_defconfig        |   12 ++-
+ board/at91sam9m10ek/at91sam9m10sdu_defconfig       |  107 ++++++++++++++++++++
+ board/at91sam9m10ekes/at91sam9m10dfes_defconfig    |   17 +++-
+ board/at91sam9m10ekes/at91sam9m10ekes_defconfig    |   15 ++-
+ board/at91sam9m10ekes/at91sam9m10nfes_defconfig    |   17 +++-
+ board/at91sam9m10ekes/at91sam9m10sdes_defconfig    |   12 ++-
+ board/at91sam9rlek/at91sam9rldf_defconfig          |   15 ++-
+ board/at91sam9rlek/at91sam9rlek_defconfig          |   13 ++-
+ board/at91sam9rlek/at91sam9rlnf_defconfig          |   15 ++-
+ board/at91sam9rlek/at91sam9rlsd_defconfig          |   10 +-
+ board/at91sam9xeek/at91sam9xedf_defconfig          |   11 ++-
+ board/at91sam9xeek/at91sam9xedfc_defconfig         |   28 ++++-
+ board/at91sam9xeek/at91sam9xeek_defconfig          |    9 ++-
+ board/at91sam9xeek/at91sam9xenf_defconfig          |   15 ++-
+ 55 files changed, 783 insertions(+), 198 deletions(-)
+ create mode 100644 board/at91sam9m10ek/at91sam9m10sdu_defconfig
+
+diff --git a/board/afeb9260/afeb9260_defconfig b/board/afeb9260/afeb9260_defconfig
+index ee84d2f..516b29b 100644
+--- a/board/afeb9260/afeb9260_defconfig
++++ b/board/afeb9260/afeb9260_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jan 12 22:00:55 2010
++# Sun Jan 16 21:42:56 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="afeb9260"
+@@ -14,6 +14,7 @@ CONFIG_BOARDNAME="afeb9260"
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ CONFIG_AFEB9260=y
+@@ -22,7 +23,6 @@ CONFIG_BOARD="afeb9260"
+ CONFIG_MACH_TYPE="1859"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x301000"
+-CONFIG_BOOTSTRAP_MAXSIZE="4096"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -53,6 +53,7 @@ ALLOW_DATAFLASH=y
+ # ALLOW_FLASH is not set
+ ALLOW_NANDFLASH=y
+ # ALLOW_SDCARD is not set
++# ALLOW_HSMCI is not set
+ # ALLOW_PSRAM is not set
+ # ALLOW_SDRAM_16BIT is not set
+ # CONFIG_RAM_32MB is not set
+@@ -64,6 +65,7 @@ CONFIG_DATAFLASH=y
+ # CONFIG_NANDFLASH is not set
+ # CONFIG_SDCARD is not set
+ CONFIG_MEMORY="dataflash"
++# CONFIG_SDCARD_HS is not set
+ 
+ #
+ # SPI configuration
+@@ -92,18 +94,30 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="4096"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
++# CONFIG_LOAD_EBOOT is not set
++# CONFIG_LOAD_LINUX is not set
++# CONFIG_LOAD_NK is not set
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
++CONFIG_SETTING_ADDRESS="0x00408400"
++CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
+-CONFIG_APP_CHECK=y
++CONFIG_GLBDRV_ADDR="0x23F00000"
+ # CONFIG_LONG_TEST is not set
+ # CONFIG_DEBUG is not set
+-# CONFIG_VERBOSE is not set
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ # CONFIG_THUMB is not set
+diff --git a/board/at91cap9adk/at91cap9adk_defconfig b/board/at91cap9adk/at91cap9adk_defconfig
+index b9edc91..a0d8856 100644
+--- a/board/at91cap9adk/at91cap9adk_defconfig
++++ b/board/at91cap9adk/at91cap9adk_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jan 12 22:00:30 2010
++# Sun Jan 16 21:43:19 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91cap9adk"
+@@ -14,6 +14,7 @@ CONFIG_BOARDNAME="at91cap9adk"
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91CAP9ADK=y
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -22,7 +23,6 @@ CONFIG_BOARD="at91cap9adk"
+ CONFIG_MACH_TYPE="0x61E"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x108000"
+-CONFIG_BOOTSTRAP_MAXSIZE="13000"
+ CONFIG_CRYSTAL_12_000MHZ=y
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -53,6 +53,7 @@ ALLOW_DATAFLASH=y
+ ALLOW_FLASH=y
+ # ALLOW_NANDFLASH is not set
+ # ALLOW_SDCARD is not set
++# ALLOW_HSMCI is not set
+ # ALLOW_PSRAM is not set
+ # ALLOW_SDRAM_16BIT is not set
+ # CONFIG_RAM_32MB is not set
+@@ -64,6 +65,7 @@ CONFIG_DATAFLASH=y
+ # CONFIG_NANDFLASH is not set
+ # CONFIG_SDCARD is not set
+ CONFIG_MEMORY="dataflash"
++# CONFIG_SDCARD_HS is not set
+ 
+ #
+ # SPI configuration
+@@ -91,18 +93,33 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
++# CONFIG_LOAD_EBOOT is not set
++# CONFIG_LOAD_LINUX is not set
++# CONFIG_LOAD_NK is not set
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
++CONFIG_SETTING_ADDRESS="0x00408400"
++CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x73F00000"
+-CONFIG_APP_CHECK=y
++CONFIG_GLBDRV_ADDR="0x70000000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+-CONFIG_VERBOSE=y
++CONFIG_DEBUG_INFO=y
++# CONFIG_DEBUG_LOUD is not set
++# CONFIG_DEBUG_VERY_LOUD is not set
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ # CONFIG_THUMB is not set
+diff --git a/board/at91cap9adk/at91cap9df_defconfig b/board/at91cap9adk/at91cap9df_defconfig
+index 8ccd36d..9f9723f 100644
+--- a/board/at91cap9adk/at91cap9df_defconfig
++++ b/board/at91cap9adk/at91cap9df_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jan 12 22:00:30 2010
++# Sun Jan 16 21:43:18 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91cap9df"
+@@ -14,6 +14,7 @@ CONFIG_BOARDNAME="at91cap9df"
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91CAP9ADK=y
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -22,7 +23,6 @@ CONFIG_BOARD="at91cap9adk"
+ CONFIG_MACH_TYPE="0x61E"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x108000"
+-CONFIG_BOOTSTRAP_MAXSIZE="13000"
+ CONFIG_CRYSTAL_12_000MHZ=y
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -53,6 +53,7 @@ ALLOW_DATAFLASH=y
+ ALLOW_FLASH=y
+ # ALLOW_NANDFLASH is not set
+ # ALLOW_SDCARD is not set
++# ALLOW_HSMCI is not set
+ # ALLOW_PSRAM is not set
+ # ALLOW_SDRAM_16BIT is not set
+ # CONFIG_RAM_32MB is not set
+@@ -64,6 +65,7 @@ CONFIG_DATAFLASH=y
+ # CONFIG_NANDFLASH is not set
+ # CONFIG_SDCARD is not set
+ CONFIG_MEMORY="dataflash"
++# CONFIG_SDCARD_HS is not set
+ 
+ #
+ # SPI configuration
+@@ -91,18 +93,33 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
++# CONFIG_LOAD_EBOOT is not set
++# CONFIG_LOAD_LINUX is not set
++# CONFIG_LOAD_NK is not set
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
++CONFIG_SETTING_ADDRESS="0x00408400"
++CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x73F00000"
+-CONFIG_APP_CHECK=y
++CONFIG_GLBDRV_ADDR="0x70000000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+-CONFIG_VERBOSE=y
++CONFIG_DEBUG_INFO=y
++# CONFIG_DEBUG_LOUD is not set
++# CONFIG_DEBUG_VERY_LOUD is not set
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ # CONFIG_THUMB is not set
+diff --git a/board/at91cap9adk/at91cap9f_defconfig b/board/at91cap9adk/at91cap9f_defconfig
+index 7110cf1..5cba669 100644
+--- a/board/at91cap9adk/at91cap9f_defconfig
++++ b/board/at91cap9adk/at91cap9f_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jan 12 22:00:31 2010
++# Sun Jan 16 21:43:18 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91cap9f"
+@@ -14,6 +14,7 @@ CONFIG_BOARDNAME="at91cap9f"
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91CAP9ADK=y
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -22,7 +23,6 @@ CONFIG_BOARD="at91cap9adk"
+ CONFIG_MACH_TYPE="0x61E"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x108000"
+-CONFIG_BOOTSTRAP_MAXSIZE="13000"
+ CONFIG_CRYSTAL_12_000MHZ=y
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -53,6 +53,7 @@ ALLOW_DATAFLASH=y
+ ALLOW_FLASH=y
+ # ALLOW_NANDFLASH is not set
+ # ALLOW_SDCARD is not set
++# ALLOW_HSMCI is not set
+ # ALLOW_PSRAM is not set
+ # ALLOW_SDRAM_16BIT is not set
+ # CONFIG_RAM_32MB is not set
+@@ -64,20 +65,36 @@ CONFIG_FLASH=y
+ # CONFIG_NANDFLASH is not set
+ # CONFIG_SDCARD is not set
+ CONFIG_MEMORY="flash"
++# CONFIG_SDCARD_HS is not set
+ ALLOW_BOOT_FROM_DATAFLASH_CS0=y
+ DATAFLASHCARD_ON_CS0=y
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="flash"
+ CONFIG_LOAD_UBOOT=y
++# CONFIG_LOAD_EBOOT is not set
++# CONFIG_LOAD_LINUX is not set
++# CONFIG_LOAD_NK is not set
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00040000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008000"
++CONFIG_SETTING_ADDRESS="0x00008000"
++CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x73F00000"
+-CONFIG_APP_CHECK=y
++CONFIG_GLBDRV_ADDR="0x70000000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+-CONFIG_VERBOSE=y
++CONFIG_DEBUG_INFO=y
++# CONFIG_DEBUG_LOUD is not set
++# CONFIG_DEBUG_VERY_LOUD is not set
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ # CONFIG_THUMB is not set
+diff --git a/board/at91cap9stk/at91cap9stk_defconfig b/board/at91cap9stk/at91cap9stk_defconfig
+index dea9253..f505e19 100644
+--- a/board/at91cap9stk/at91cap9stk_defconfig
++++ b/board/at91cap9stk/at91cap9stk_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jan 12 22:00:32 2010
++# Sun Jan 16 21:43:17 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91cap9stk"
+@@ -14,6 +14,7 @@ CONFIG_BOARDNAME="at91cap9stk"
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ CONFIG_AT91CAP9STK=y
+ # CONFIG_AFEB9260 is not set
+@@ -22,7 +23,6 @@ CONFIG_BOARD="at91cap9stk"
+ CONFIG_MACH_TYPE="0x85E"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x108000"
+-CONFIG_BOOTSTRAP_MAXSIZE="13000"
+ CONFIG_CRYSTAL_12_000MHZ=y
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -53,6 +53,7 @@ ALLOW_DATAFLASH=y
+ ALLOW_FLASH=y
+ # ALLOW_NANDFLASH is not set
+ # ALLOW_SDCARD is not set
++# ALLOW_HSMCI is not set
+ # ALLOW_PSRAM is not set
+ # ALLOW_SDRAM_16BIT is not set
+ # CONFIG_RAM_32MB is not set
+@@ -64,6 +65,7 @@ CONFIG_DATAFLASH=y
+ # CONFIG_NANDFLASH is not set
+ # CONFIG_SDCARD is not set
+ CONFIG_MEMORY="dataflash"
++# CONFIG_SDCARD_HS is not set
+ 
+ #
+ # SPI configuration
+@@ -91,18 +93,33 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
++# CONFIG_LOAD_EBOOT is not set
++# CONFIG_LOAD_LINUX is not set
++# CONFIG_LOAD_NK is not set
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
++CONFIG_SETTING_ADDRESS="0x00408400"
++CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x73F00000"
+-CONFIG_APP_CHECK=y
++CONFIG_GLBDRV_ADDR="0x70000000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+-CONFIG_VERBOSE=y
++CONFIG_DEBUG_INFO=y
++# CONFIG_DEBUG_LOUD is not set
++# CONFIG_DEBUG_VERY_LOUD is not set
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ # CONFIG_THUMB is not set
+diff --git a/board/at91cap9stk/at91cap9stkdf_defconfig b/board/at91cap9stk/at91cap9stkdf_defconfig
+index b572d64..00bc7d1 100644
+--- a/board/at91cap9stk/at91cap9stkdf_defconfig
++++ b/board/at91cap9stk/at91cap9stkdf_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jan 12 22:00:33 2010
++# Sun Jan 16 21:43:17 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91cap9stkdf"
+@@ -14,6 +14,7 @@ CONFIG_BOARDNAME="at91cap9stkdf"
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ CONFIG_AT91CAP9STK=y
+ # CONFIG_AFEB9260 is not set
+@@ -22,7 +23,6 @@ CONFIG_BOARD="at91cap9stk"
+ CONFIG_MACH_TYPE="0x85E"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x108000"
+-CONFIG_BOOTSTRAP_MAXSIZE="13000"
+ CONFIG_CRYSTAL_12_000MHZ=y
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -53,6 +53,7 @@ ALLOW_DATAFLASH=y
+ ALLOW_FLASH=y
+ # ALLOW_NANDFLASH is not set
+ # ALLOW_SDCARD is not set
++# ALLOW_HSMCI is not set
+ # ALLOW_PSRAM is not set
+ # ALLOW_SDRAM_16BIT is not set
+ # CONFIG_RAM_32MB is not set
+@@ -64,6 +65,7 @@ CONFIG_DATAFLASH=y
+ # CONFIG_NANDFLASH is not set
+ # CONFIG_SDCARD is not set
+ CONFIG_MEMORY="dataflash"
++# CONFIG_SDCARD_HS is not set
+ 
+ #
+ # SPI configuration
+@@ -91,18 +93,33 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
++# CONFIG_LOAD_EBOOT is not set
++# CONFIG_LOAD_LINUX is not set
++# CONFIG_LOAD_NK is not set
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
++CONFIG_SETTING_ADDRESS="0x00408400"
++CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x73F00000"
+-CONFIG_APP_CHECK=y
++CONFIG_GLBDRV_ADDR="0x70000000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+-CONFIG_VERBOSE=y
++CONFIG_DEBUG_INFO=y
++# CONFIG_DEBUG_LOUD is not set
++# CONFIG_DEBUG_VERY_LOUD is not set
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ # CONFIG_THUMB is not set
+diff --git a/board/at91cap9stk/at91cap9stkf_defconfig b/board/at91cap9stk/at91cap9stkf_defconfig
+index b024769..94b3ea9 100644
+--- a/board/at91cap9stk/at91cap9stkf_defconfig
++++ b/board/at91cap9stk/at91cap9stkf_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jan 12 22:00:33 2010
++# Sun Jan 16 21:43:17 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91cap9stkf"
+@@ -14,6 +14,7 @@ CONFIG_BOARDNAME="at91cap9stkf"
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ CONFIG_AT91CAP9STK=y
+ # CONFIG_AFEB9260 is not set
+@@ -22,7 +23,6 @@ CONFIG_BOARD="at91cap9stk"
+ CONFIG_MACH_TYPE="0x85E"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x108000"
+-CONFIG_BOOTSTRAP_MAXSIZE="13000"
+ CONFIG_CRYSTAL_12_000MHZ=y
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -53,6 +53,7 @@ ALLOW_DATAFLASH=y
+ ALLOW_FLASH=y
+ # ALLOW_NANDFLASH is not set
+ # ALLOW_SDCARD is not set
++# ALLOW_HSMCI is not set
+ # ALLOW_PSRAM is not set
+ # ALLOW_SDRAM_16BIT is not set
+ # CONFIG_RAM_32MB is not set
+@@ -64,20 +65,36 @@ CONFIG_FLASH=y
+ # CONFIG_NANDFLASH is not set
+ # CONFIG_SDCARD is not set
+ CONFIG_MEMORY="flash"
++# CONFIG_SDCARD_HS is not set
+ ALLOW_BOOT_FROM_DATAFLASH_CS0=y
+ DATAFLASHCARD_ON_CS0=y
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="flash"
+ CONFIG_LOAD_UBOOT=y
++# CONFIG_LOAD_EBOOT is not set
++# CONFIG_LOAD_LINUX is not set
++# CONFIG_LOAD_NK is not set
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00040000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008000"
++CONFIG_SETTING_ADDRESS="0x00008000"
++CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x73F00000"
+-CONFIG_APP_CHECK=y
++CONFIG_GLBDRV_ADDR="0x70000000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+-CONFIG_VERBOSE=y
++CONFIG_DEBUG_INFO=y
++# CONFIG_DEBUG_LOUD is not set
++# CONFIG_DEBUG_VERY_LOUD is not set
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ # CONFIG_THUMB is not set
+diff --git a/board/at91sam9260ek/at91sam9260df_defconfig b/board/at91sam9260ek/at91sam9260df_defconfig
+index 2d4c565..78b6a84 100644
+--- a/board/at91sam9260ek/at91sam9260df_defconfig
++++ b/board/at91sam9260ek/at91sam9260df_defconfig
+@@ -1,9 +1,9 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 13:45:28 2010
++# Sun Jan 16 21:43:20 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9260ek"
++CONFIG_BOARDNAME="at91sam9260df"
+ CONFIG_AT91SAM9260EK=y
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9260ek"
+ CONFIG_MACH_TYPE="0x44B"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x301000"
+-CONFIG_BOOTSTRAP_MAXSIZE="4096"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -94,6 +93,7 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="4096"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -102,6 +102,13 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
+ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+diff --git a/board/at91sam9260ek/at91sam9260dfc_defconfig b/board/at91sam9260ek/at91sam9260dfc_defconfig
+index 790782e..4ff3fe1 100644
+--- a/board/at91sam9260ek/at91sam9260dfc_defconfig
++++ b/board/at91sam9260ek/at91sam9260dfc_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jan 12 22:00:52 2010
++# Sun Jan 16 21:43:19 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9260dfc"
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9260ek"
+ CONFIG_MACH_TYPE="0x44B"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x301000"
+-CONFIG_BOOTSTRAP_MAXSIZE="4096"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -53,6 +52,7 @@ ALLOW_DATAFLASH=y
+ # ALLOW_FLASH is not set
+ ALLOW_NANDFLASH=y
+ # ALLOW_SDCARD is not set
++# ALLOW_HSMCI is not set
+ # ALLOW_PSRAM is not set
+ # ALLOW_SDRAM_16BIT is not set
+ # CONFIG_RAM_32MB is not set
+@@ -64,6 +64,7 @@ CONFIG_DATAFLASH=y
+ # CONFIG_NANDFLASH is not set
+ # CONFIG_SDCARD is not set
+ CONFIG_MEMORY="dataflash"
++# CONFIG_SDCARD_HS is not set
+ 
+ #
+ # SPI configuration
+@@ -92,18 +93,30 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="4096"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
++# CONFIG_LOAD_EBOOT is not set
++# CONFIG_LOAD_LINUX is not set
++# CONFIG_LOAD_NK is not set
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
++CONFIG_SETTING_ADDRESS="0x00408400"
++CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
+-CONFIG_APP_CHECK=y
++CONFIG_GLBDRV_ADDR="0x20058000"
+ # CONFIG_LONG_TEST is not set
+ # CONFIG_DEBUG is not set
+-# CONFIG_VERBOSE is not set
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ # CONFIG_THUMB is not set
+diff --git a/board/at91sam9260ek/at91sam9260ek_defconfig b/board/at91sam9260ek/at91sam9260ek_defconfig
+index 2d4c565..c05d5c0 100644
+--- a/board/at91sam9260ek/at91sam9260ek_defconfig
++++ b/board/at91sam9260ek/at91sam9260ek_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 13:45:28 2010
++# Sun Jan 16 21:43:20 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9260ek"
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9260ek"
+ CONFIG_MACH_TYPE="0x44B"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x301000"
+-CONFIG_BOOTSTRAP_MAXSIZE="4096"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -94,6 +93,7 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="4096"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -102,6 +102,13 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
+ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+diff --git a/board/at91sam9260ek/at91sam9260nf_defconfig b/board/at91sam9260ek/at91sam9260nf_defconfig
+index 8a23c3f..e30fcab 100644
+--- a/board/at91sam9260ek/at91sam9260nf_defconfig
++++ b/board/at91sam9260ek/at91sam9260nf_defconfig
+@@ -1,9 +1,9 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 13:46:29 2010
++# Sun Jan 16 21:43:19 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9260ek"
++CONFIG_BOARDNAME="at91sam9260nf"
+ CONFIG_AT91SAM9260EK=y
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9260ek"
+ CONFIG_MACH_TYPE="0x44B"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x301000"
+-CONFIG_BOOTSTRAP_MAXSIZE="4096"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -76,6 +75,7 @@ DATAFLASHCARD_ON_CS0=y
+ # NAND Flash configuration
+ #
+ # CONFIG_NANDFLASH_SMALL_BLOCKS is not set
++CONFIG_BOOTSTRAP_MAXSIZE="4096"
+ CONFIG_PROJECT="nandflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -84,6 +84,13 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00040000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00020000"
+ CONFIG_SETTING_ADDRESS="0x01FE0000"
+ CONFIG_SETTING_SIZE="0x00001000"
+diff --git a/board/at91sam9261ek/at91sam9261df_defconfig b/board/at91sam9261ek/at91sam9261df_defconfig
+index 0473e42..a98e46d 100644
+--- a/board/at91sam9261ek/at91sam9261df_defconfig
++++ b/board/at91sam9261ek/at91sam9261df_defconfig
+@@ -1,9 +1,9 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 13:49:49 2010
++# Sun Jan 16 21:43:23 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9261ek"
++CONFIG_BOARDNAME="at91sam9261df"
+ # CONFIG_AT91SAM9260EK is not set
+ CONFIG_AT91SAM9261EK=y
+ # CONFIG_AT91SAM9263EK is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9261ek"
+ CONFIG_MACH_TYPE="0x350"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x328000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -94,6 +93,7 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -102,6 +102,13 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
+ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+diff --git a/board/at91sam9261ek/at91sam9261dfc_defconfig b/board/at91sam9261ek/at91sam9261dfc_defconfig
+index 8c6822c..ac632d0 100644
+--- a/board/at91sam9261ek/at91sam9261dfc_defconfig
++++ b/board/at91sam9261ek/at91sam9261dfc_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jan 12 22:00:57 2010
++# Sun Jan 16 21:43:22 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9261dfc"
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9261ek"
+ CONFIG_MACH_TYPE="0x350"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x328000"
+-CONFIG_BOOTSTRAP_MAXSIZE="13000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -54,6 +53,7 @@ ALLOW_DATAFLASH=y
+ # ALLOW_FLASH is not set
+ ALLOW_NANDFLASH=y
+ # ALLOW_SDCARD is not set
++# ALLOW_HSMCI is not set
+ # ALLOW_PSRAM is not set
+ # ALLOW_SDRAM_16BIT is not set
+ # CONFIG_RAM_32MB is not set
+@@ -65,6 +65,7 @@ CONFIG_DATAFLASH=y
+ # CONFIG_NANDFLASH is not set
+ # CONFIG_SDCARD is not set
+ CONFIG_MEMORY="dataflash"
++# CONFIG_SDCARD_HS is not set
+ 
+ #
+ # SPI configuration
+@@ -92,18 +93,33 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
++# CONFIG_LOAD_EBOOT is not set
++# CONFIG_LOAD_LINUX is not set
++# CONFIG_LOAD_NK is not set
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
++CONFIG_SETTING_ADDRESS="0x00408400"
++CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
+-CONFIG_APP_CHECK=y
++CONFIG_GLBDRV_ADDR="0x20058000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+-CONFIG_VERBOSE=y
++CONFIG_DEBUG_INFO=y
++# CONFIG_DEBUG_LOUD is not set
++# CONFIG_DEBUG_VERY_LOUD is not set
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ # CONFIG_THUMB is not set
+diff --git a/board/at91sam9261ek/at91sam9261ek_defconfig b/board/at91sam9261ek/at91sam9261ek_defconfig
+index 0473e42..f2c14d0 100644
+--- a/board/at91sam9261ek/at91sam9261ek_defconfig
++++ b/board/at91sam9261ek/at91sam9261ek_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 13:49:49 2010
++# Sun Jan 16 21:43:23 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9261ek"
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9261ek"
+ CONFIG_MACH_TYPE="0x350"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x328000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -94,6 +93,7 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -102,6 +102,13 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
+ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+diff --git a/board/at91sam9261ek/at91sam9261nf_defconfig b/board/at91sam9261ek/at91sam9261nf_defconfig
+index 5c80c14..d7d1a75 100644
+--- a/board/at91sam9261ek/at91sam9261nf_defconfig
++++ b/board/at91sam9261ek/at91sam9261nf_defconfig
+@@ -1,9 +1,9 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 13:51:01 2010
++# Sun Jan 16 21:43:22 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9261ek"
++CONFIG_BOARDNAME="at91sam9261nf"
+ # CONFIG_AT91SAM9260EK is not set
+ CONFIG_AT91SAM9261EK=y
+ # CONFIG_AT91SAM9263EK is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9261ek"
+ CONFIG_MACH_TYPE="0x350"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x328000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -75,6 +74,7 @@ ALLOW_BOOT_FROM_DATAFLASH_CS3=y
+ # NAND Flash configuration
+ #
+ # CONFIG_NANDFLASH_SMALL_BLOCKS is not set
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="nandflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -83,6 +83,13 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00040000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00020000"
+ CONFIG_SETTING_ADDRESS="0x01FE0000"
+ CONFIG_SETTING_SIZE="0x00001000"
+diff --git a/board/at91sam9263ek/at91sam9263df_defconfig b/board/at91sam9263ek/at91sam9263df_defconfig
+index 5e59bbb..65264ff 100644
+--- a/board/at91sam9263ek/at91sam9263df_defconfig
++++ b/board/at91sam9263ek/at91sam9263df_defconfig
+@@ -1,12 +1,11 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 13:52:29 2010
++# Sun Jan 16 21:43:24 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9263ek"
++CONFIG_BOARDNAME="at91sam9263df"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9263EK=y
+ # CONFIG_AT91SAM9RLEK is not set
+ # CONFIG_AT91SAM9XEEK is not set
+@@ -15,6 +14,7 @@ CONFIG_AT91SAM9263EK=y
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9263ek"
+ CONFIG_MACH_TYPE="0x4B2"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x314000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ CONFIG_CRYSTAL_16_36766MHZ=y
+@@ -97,6 +96,7 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -105,6 +105,13 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
+ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+diff --git a/board/at91sam9263ek/at91sam9263dfc_defconfig b/board/at91sam9263ek/at91sam9263dfc_defconfig
+index abf3e00..ce626d4 100644
+--- a/board/at91sam9263ek/at91sam9263dfc_defconfig
++++ b/board/at91sam9263ek/at91sam9263dfc_defconfig
+@@ -1,12 +1,11 @@
+ #
+ # Automatically generated make config: don't edit
+-# Wed May 19 10:11:15 2010
++# Sun Jan 16 21:43:24 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9263ek"
++CONFIG_BOARDNAME="at91sam9263dfc"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9263EK=y
+ # CONFIG_AT91SAM9RLEK is not set
+ # CONFIG_AT91SAM9XEEK is not set
+@@ -15,6 +14,7 @@ CONFIG_AT91SAM9263EK=y
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9263ek"
+ CONFIG_MACH_TYPE="0x4B2"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x314000"
+-CONFIG_BOOTSTRAP_MAXSIZE="13000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ CONFIG_CRYSTAL_16_36766MHZ=y
+@@ -54,7 +53,8 @@ CONFIG_SDRAM=y
+ ALLOW_DATAFLASH=y
+ # ALLOW_FLASH is not set
+ ALLOW_NANDFLASH=y
+-# ALLOW_SDCARD is not set
++ALLOW_SDCARD=y
++# ALLOW_HSMCI is not set
+ ALLOW_PSRAM=y
+ ALLOW_SDRAM_16BIT=y
+ # CONFIG_RAM_32MB is not set
+@@ -68,6 +68,7 @@ CONFIG_DATAFLASH=y
+ # CONFIG_NANDFLASH is not set
+ # CONFIG_SDCARD is not set
+ CONFIG_MEMORY="dataflash"
++# CONFIG_SDCARD_HS is not set
+ 
+ #
+ # SPI configuration
+@@ -95,15 +96,28 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
++# CONFIG_LOAD_EBOOT is not set
++# CONFIG_LOAD_LINUX is not set
++# CONFIG_LOAD_NK is not set
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
++CONFIG_SETTING_ADDRESS="0x00408400"
++CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
+-CONFIG_APP_CHECK=y
++CONFIG_GLBDRV_ADDR="0x2006b000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+ CONFIG_DEBUG_INFO=y
+diff --git a/board/at91sam9263ek/at91sam9263ek_defconfig b/board/at91sam9263ek/at91sam9263ek_defconfig
+index 5e59bbb..87b4d33 100644
+--- a/board/at91sam9263ek/at91sam9263ek_defconfig
++++ b/board/at91sam9263ek/at91sam9263ek_defconfig
+@@ -1,12 +1,11 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 13:52:29 2010
++# Sun Jan 16 21:43:23 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9263ek"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9263EK=y
+ # CONFIG_AT91SAM9RLEK is not set
+ # CONFIG_AT91SAM9XEEK is not set
+@@ -15,6 +14,7 @@ CONFIG_AT91SAM9263EK=y
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9263ek"
+ CONFIG_MACH_TYPE="0x4B2"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x314000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ CONFIG_CRYSTAL_16_36766MHZ=y
+@@ -97,6 +96,7 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -105,6 +105,13 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
+ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+diff --git a/board/at91sam9263ek/at91sam9263nf_defconfig b/board/at91sam9263ek/at91sam9263nf_defconfig
+index 90fff96..6093466 100644
+--- a/board/at91sam9263ek/at91sam9263nf_defconfig
++++ b/board/at91sam9263ek/at91sam9263nf_defconfig
+@@ -1,12 +1,11 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 13:54:40 2010
++# Sun Jan 16 21:43:24 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9263ek"
++CONFIG_BOARDNAME="at91sam9263nf"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9263EK=y
+ # CONFIG_AT91SAM9RLEK is not set
+ # CONFIG_AT91SAM9XEEK is not set
+@@ -15,6 +14,7 @@ CONFIG_AT91SAM9263EK=y
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9263ek"
+ CONFIG_MACH_TYPE="0x4B2"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x314000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ CONFIG_CRYSTAL_16_36766MHZ=y
+@@ -78,6 +77,7 @@ DATAFLASHCARD_ON_CS0=y
+ # NAND Flash configuration
+ #
+ # CONFIG_NANDFLASH_SMALL_BLOCKS is not set
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="nandflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -86,6 +86,13 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00040000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00020000"
+ CONFIG_SETTING_ADDRESS="0x01FE0000"
+ CONFIG_SETTING_SIZE="0x00001000"
+diff --git a/board/at91sam9g10ek/at91sam9g10df_defconfig b/board/at91sam9g10ek/at91sam9g10df_defconfig
+index d909b74..b9358af 100644
+--- a/board/at91sam9g10ek/at91sam9g10df_defconfig
++++ b/board/at91sam9g10ek/at91sam9g10df_defconfig
+@@ -1,20 +1,20 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 14:08:24 2010
++# Sun Jan 16 21:43:03 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9g10ek"
++CONFIG_BOARDNAME="at91sam9g10df"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+ # CONFIG_AT91SAM9RLEK is not set
+ # CONFIG_AT91SAM9XEEK is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9G10EK=y
+ # CONFIG_AT91SAM9G20EK is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9g10ek"
+ CONFIG_MACH_TYPE="0x86F"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x304000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -94,6 +93,7 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="12288"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -102,6 +102,13 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
+ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+diff --git a/board/at91sam9g10ek/at91sam9g10ek_defconfig b/board/at91sam9g10ek/at91sam9g10ek_defconfig
+index d909b74..2436cdc 100644
+--- a/board/at91sam9g10ek/at91sam9g10ek_defconfig
++++ b/board/at91sam9g10ek/at91sam9g10ek_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 14:08:24 2010
++# Sun Jan 16 21:43:02 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g10ek"
+@@ -9,12 +9,12 @@ CONFIG_BOARDNAME="at91sam9g10ek"
+ # CONFIG_AT91SAM9263EK is not set
+ # CONFIG_AT91SAM9RLEK is not set
+ # CONFIG_AT91SAM9XEEK is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9G10EK=y
+ # CONFIG_AT91SAM9G20EK is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9g10ek"
+ CONFIG_MACH_TYPE="0x86F"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x304000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -94,6 +93,7 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="12288"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -102,6 +102,13 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
+ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+diff --git a/board/at91sam9g10ek/at91sam9g10nf_defconfig b/board/at91sam9g10ek/at91sam9g10nf_defconfig
+index 9f74fff..ed42d16 100644
+--- a/board/at91sam9g10ek/at91sam9g10nf_defconfig
++++ b/board/at91sam9g10ek/at91sam9g10nf_defconfig
+@@ -1,20 +1,20 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 14:09:46 2010
++# Sun Jan 16 21:43:03 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9g10ek"
++CONFIG_BOARDNAME="at91sam9g10nf"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+ # CONFIG_AT91SAM9RLEK is not set
+ # CONFIG_AT91SAM9XEEK is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9G10EK=y
+ # CONFIG_AT91SAM9G20EK is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9g10ek"
+ CONFIG_MACH_TYPE="0x86F"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x304000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -75,6 +74,7 @@ ALLOW_BOOT_FROM_DATAFLASH_CS3=y
+ # NAND Flash configuration
+ #
+ # CONFIG_NANDFLASH_SMALL_BLOCKS is not set
++CONFIG_BOOTSTRAP_MAXSIZE="12288"
+ CONFIG_PROJECT="nandflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -83,6 +83,13 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00040000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00020000"
+ CONFIG_SETTING_ADDRESS="0x01FE0000"
+ CONFIG_SETTING_SIZE="0x00001000"
+diff --git a/board/at91sam9g10ek/at91sam9g10sd_defconfig b/board/at91sam9g10ek/at91sam9g10sd_defconfig
+index e1a02c2..5bcfe96 100644
+--- a/board/at91sam9g10ek/at91sam9g10sd_defconfig
++++ b/board/at91sam9g10ek/at91sam9g10sd_defconfig
+@@ -1,20 +1,20 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 14:13:49 2010
++# Sun Jan 16 21:43:03 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9g10ek"
++CONFIG_BOARDNAME="at91sam9g10sd"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+ # CONFIG_AT91SAM9RLEK is not set
+ # CONFIG_AT91SAM9XEEK is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9G10EK=y
+ # CONFIG_AT91SAM9G20EK is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9g10ek"
+ CONFIG_MACH_TYPE="0x86F"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x304000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -69,6 +68,7 @@ CONFIG_MEMORY="sdcard"
+ # CONFIG_SDCARD_HS is not set
+ ALLOW_BOOT_FROM_DATAFLASH_CS0=y
+ ALLOW_BOOT_FROM_DATAFLASH_CS3=y
++CONFIG_BOOTSTRAP_MAXSIZE="8192"
+ CONFIG_PROJECT="sdcard"
+ # CONFIG_LOAD_UBOOT is not set
+ # CONFIG_LOAD_EBOOT is not set
+@@ -77,6 +77,8 @@ CONFIG_LOAD_LINUX=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00000000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
+ 
+ #
+ # Linux Image Storage Setup
+@@ -85,7 +87,7 @@ CONFIG_OS_MEM_BANK="0x20000000"
+ CONFIG_OS_MEM_SIZE="0x4000000"
+ CONFIG_LINUX_KERNEL_ARG_STRING="mem=64M console=ttyS0,115200 root=/dev/mmcblk0p2 rootdelay=2"
+ CONFIG_OS_IMAGE_NAME="image.bin"
+-CONFIG_OS_IMG_SIZE="0x280000"
++CONFIG_OS_IMG_SIZE="0x40000"
+ CONFIG_IMG_ADDRESS="0x00000000"
+ CONFIG_SETTING_ADDRESS="0x00000000"
+ CONFIG_SETTING_SIZE="0x00001000"
+diff --git a/board/at91sam9g20ek/at91sam9g20df_defconfig b/board/at91sam9g20ek/at91sam9g20df_defconfig
+index e0229a3..287594b 100644
+--- a/board/at91sam9g20ek/at91sam9g20df_defconfig
++++ b/board/at91sam9g20ek/at91sam9g20df_defconfig
+@@ -1,20 +1,20 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 14:46:28 2010
++# Sun Jan 16 21:43:21 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9g20ek"
++CONFIG_BOARDNAME="at91sam9g20df"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+ # CONFIG_AT91SAM9RLEK is not set
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9G20EK=y
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9g20ek"
+ CONFIG_MACH_TYPE="0x658"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x304000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -94,6 +93,7 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -102,6 +102,13 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
+ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+diff --git a/board/at91sam9g20ek/at91sam9g20dfc_defconfig b/board/at91sam9g20ek/at91sam9g20dfc_defconfig
+index dc1c239..345847c 100644
+--- a/board/at91sam9g20ek/at91sam9g20dfc_defconfig
++++ b/board/at91sam9g20ek/at91sam9g20dfc_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jan 12 22:00:34 2010
++# Sun Jan 16 21:43:21 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g20dfc"
+@@ -10,11 +10,11 @@ CONFIG_BOARDNAME="at91sam9g20dfc"
+ # CONFIG_AT91SAM9RLEK is not set
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9G20EK=y
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -22,8 +22,7 @@ CONFIG_CHIP="AT91SAM9G20"
+ CONFIG_BOARD="at91sam9g20ek"
+ CONFIG_MACH_TYPE="0x658"
+ CONFIG_LINK_ADDR="0x000000"
+-CONFIG_TOP_OF_MEMORY="0x301000"
+-CONFIG_BOOTSTRAP_MAXSIZE="13000"
++CONFIG_TOP_OF_MEMORY="0x304000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -52,7 +51,8 @@ CONFIG_SDRAM=y
+ ALLOW_DATAFLASH=y
+ # ALLOW_FLASH is not set
+ ALLOW_NANDFLASH=y
+-# ALLOW_SDCARD is not set
++ALLOW_SDCARD=y
++# ALLOW_HSMCI is not set
+ # ALLOW_PSRAM is not set
+ # ALLOW_SDRAM_16BIT is not set
+ # CONFIG_RAM_32MB is not set
+@@ -64,6 +64,7 @@ CONFIG_DATAFLASH=y
+ # CONFIG_NANDFLASH is not set
+ # CONFIG_SDCARD is not set
+ CONFIG_MEMORY="dataflash"
++# CONFIG_SDCARD_HS is not set
+ 
+ #
+ # SPI configuration
+@@ -92,18 +93,33 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
++# CONFIG_LOAD_EBOOT is not set
++# CONFIG_LOAD_LINUX is not set
++# CONFIG_LOAD_NK is not set
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
++CONFIG_SETTING_ADDRESS="0x00408400"
++CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
+-CONFIG_APP_CHECK=y
++CONFIG_GLBDRV_ADDR="0x20058000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+-CONFIG_VERBOSE=y
++CONFIG_DEBUG_INFO=y
++# CONFIG_DEBUG_LOUD is not set
++# CONFIG_DEBUG_VERY_LOUD is not set
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ # CONFIG_THUMB is not set
+diff --git a/board/at91sam9g20ek/at91sam9g20ek_defconfig b/board/at91sam9g20ek/at91sam9g20ek_defconfig
+index e0229a3..d134be9 100644
+--- a/board/at91sam9g20ek/at91sam9g20ek_defconfig
++++ b/board/at91sam9g20ek/at91sam9g20ek_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 14:46:28 2010
++# Sun Jan 16 21:43:22 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g20ek"
+@@ -10,11 +10,11 @@ CONFIG_BOARDNAME="at91sam9g20ek"
+ # CONFIG_AT91SAM9RLEK is not set
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9G20EK=y
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9g20ek"
+ CONFIG_MACH_TYPE="0x658"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x304000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -94,6 +93,7 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -102,6 +102,13 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
+ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+diff --git a/board/at91sam9g20ek/at91sam9g20nf_defconfig b/board/at91sam9g20ek/at91sam9g20nf_defconfig
+index 07448b9..d6d9dd5 100644
+--- a/board/at91sam9g20ek/at91sam9g20nf_defconfig
++++ b/board/at91sam9g20ek/at91sam9g20nf_defconfig
+@@ -1,20 +1,20 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 14:53:27 2010
++# Sun Jan 16 21:43:20 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9g20ek"
++CONFIG_BOARDNAME="at91sam9g20nf"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+ # CONFIG_AT91SAM9RLEK is not set
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9G20EK=y
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9g20ek"
+ CONFIG_MACH_TYPE="0x658"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x304000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -76,6 +75,7 @@ DATAFLASHCARD_ON_CS0=y
+ # NAND Flash configuration
+ #
+ # CONFIG_NANDFLASH_SMALL_BLOCKS is not set
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="nandflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -84,6 +84,13 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00040000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00020000"
+ CONFIG_SETTING_ADDRESS="0x01FE0000"
+ CONFIG_SETTING_SIZE="0x00001000"
+diff --git a/board/at91sam9g20ek/at91sam9g20sd_defconfig b/board/at91sam9g20ek/at91sam9g20sd_defconfig
+index 8c3bd11..87442b8 100644
+--- a/board/at91sam9g20ek/at91sam9g20sd_defconfig
++++ b/board/at91sam9g20ek/at91sam9g20sd_defconfig
+@@ -1,20 +1,20 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 14:54:55 2010
++# Sun Jan 16 21:43:21 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9g20ek"
++CONFIG_BOARDNAME="at91sam9g20sd"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+ # CONFIG_AT91SAM9RLEK is not set
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9G20EK=y
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9g20ek"
+ CONFIG_MACH_TYPE="0x658"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x304000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -70,6 +69,7 @@ ALLOW_DATAFLASH_RECOVERY=y
+ ALLOW_BOOT_FROM_DATAFLASH_CS0=y
+ ALLOW_BOOT_FROM_DATAFLASH_CS1=y
+ DATAFLASHCARD_ON_CS0=y
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="sdcard"
+ # CONFIG_LOAD_UBOOT is not set
+ # CONFIG_LOAD_EBOOT is not set
+@@ -78,6 +78,8 @@ CONFIG_LOAD_LINUX=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00000000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
+ 
+ #
+ # Linux Image Storage Setup
+diff --git a/board/at91sam9g45ek/at91sam9g45df_defconfig b/board/at91sam9g45ek/at91sam9g45df_defconfig
+index bcece6f..3a1bafc 100644
+--- a/board/at91sam9g45ek/at91sam9g45df_defconfig
++++ b/board/at91sam9g45ek/at91sam9g45df_defconfig
+@@ -1,9 +1,9 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 14:58:38 2010
++# Sun Jan 16 21:43:29 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9g45ek"
++CONFIG_BOARDNAME="at91sam9g45df"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+@@ -11,10 +11,10 @@ CONFIG_BOARDNAME="at91sam9g45ek"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9G45EK=y
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9g45ek"
+ CONFIG_MACH_TYPE="1830"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x30A000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -94,6 +93,7 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -102,6 +102,14 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++# CONFIG_DUAL_BOOT is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
+ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+@@ -113,6 +121,7 @@ CONFIG_DEBUG=y
+ CONFIG_DEBUG_INFO=y
+ # CONFIG_DEBUG_LOUD is not set
+ # CONFIG_DEBUG_VERY_LOUD is not set
++ALLOW_DUAL_BOOT=y
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ CONFIG_THUMB=y
+diff --git a/board/at91sam9g45ek/at91sam9g45ek_defconfig b/board/at91sam9g45ek/at91sam9g45ek_defconfig
+index bcece6f..f9c620e 100644
+--- a/board/at91sam9g45ek/at91sam9g45ek_defconfig
++++ b/board/at91sam9g45ek/at91sam9g45ek_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 14:58:38 2010
++# Sun Jan 16 21:43:28 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g45ek"
+@@ -11,10 +11,10 @@ CONFIG_BOARDNAME="at91sam9g45ek"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9G45EK=y
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9g45ek"
+ CONFIG_MACH_TYPE="1830"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x30A000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -94,6 +93,7 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -102,6 +102,14 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++# CONFIG_DUAL_BOOT is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
+ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+@@ -113,6 +121,7 @@ CONFIG_DEBUG=y
+ CONFIG_DEBUG_INFO=y
+ # CONFIG_DEBUG_LOUD is not set
+ # CONFIG_DEBUG_VERY_LOUD is not set
++ALLOW_DUAL_BOOT=y
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ CONFIG_THUMB=y
+diff --git a/board/at91sam9g45ek/at91sam9g45nf_defconfig b/board/at91sam9g45ek/at91sam9g45nf_defconfig
+index af5f6df..bfef651 100644
+--- a/board/at91sam9g45ek/at91sam9g45nf_defconfig
++++ b/board/at91sam9g45ek/at91sam9g45nf_defconfig
+@@ -1,9 +1,9 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 14:59:57 2010
++# Sun Jan 16 21:43:30 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9g45ek"
++CONFIG_BOARDNAME="at91sam9g45nf"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+@@ -11,10 +11,10 @@ CONFIG_BOARDNAME="at91sam9g45ek"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9G45EK=y
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9g45ek"
+ CONFIG_MACH_TYPE="1830"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x30A000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -75,6 +74,7 @@ DATAFLASHCARD_ON_CS0=y
+ # NAND Flash configuration
+ #
+ # CONFIG_NANDFLASH_SMALL_BLOCKS is not set
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="nandflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -83,6 +83,14 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++# CONFIG_DUAL_BOOT is not set
++CONFIG_ALT_IMG_ADDRESS="0x00040000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00020000"
+ CONFIG_SETTING_ADDRESS="0x01FE0000"
+ CONFIG_SETTING_SIZE="0x00001000"
+@@ -94,6 +102,7 @@ CONFIG_DEBUG=y
+ CONFIG_DEBUG_INFO=y
+ # CONFIG_DEBUG_LOUD is not set
+ # CONFIG_DEBUG_VERY_LOUD is not set
++ALLOW_DUAL_BOOT=y
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ CONFIG_THUMB=y
+diff --git a/board/at91sam9g45ek/at91sam9g45sd_defconfig b/board/at91sam9g45ek/at91sam9g45sd_defconfig
+index 9ec2b0c..df17dc9 100644
+--- a/board/at91sam9g45ek/at91sam9g45sd_defconfig
++++ b/board/at91sam9g45ek/at91sam9g45sd_defconfig
+@@ -1,9 +1,9 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 15:01:00 2010
++# Sun Jan 16 21:43:31 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9g45ek"
++CONFIG_BOARDNAME="at91sam9g45sd"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+@@ -11,10 +11,10 @@ CONFIG_BOARDNAME="at91sam9g45ek"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9G45EK=y
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9g45ek"
+ CONFIG_MACH_TYPE="1830"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x30A000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -69,6 +68,7 @@ CONFIG_SDCARD_HS=y
+ ALLOW_DATAFLASH_RECOVERY=y
+ ALLOW_BOOT_FROM_DATAFLASH_CS0=y
+ DATAFLASHCARD_ON_CS0=y
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="sdcard"
+ # CONFIG_LOAD_UBOOT is not set
+ # CONFIG_LOAD_EBOOT is not set
+@@ -77,6 +77,9 @@ CONFIG_LOAD_LINUX=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++# CONFIG_DUAL_BOOT is not set
++CONFIG_ALT_IMG_ADDRESS="0x00000000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
+ 
+ #
+ # Linux Image Storage Setup
+@@ -97,6 +100,7 @@ CONFIG_DEBUG=y
+ CONFIG_DEBUG_INFO=y
+ # CONFIG_DEBUG_LOUD is not set
+ # CONFIG_DEBUG_VERY_LOUD is not set
++ALLOW_DUAL_BOOT=y
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ CONFIG_THUMB=y
+diff --git a/board/at91sam9g45ekes/at91sam9g45dfes_defconfig b/board/at91sam9g45ekes/at91sam9g45dfes_defconfig
+index db80f63..ddf19e1 100644
+--- a/board/at91sam9g45ekes/at91sam9g45dfes_defconfig
++++ b/board/at91sam9g45ekes/at91sam9g45dfes_defconfig
+@@ -1,9 +1,9 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 15:04:10 2010
++# Sun Jan 16 21:43:16 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9g45ekes"
++CONFIG_BOARDNAME="at91sam9g45dfes"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+@@ -12,9 +12,9 @@ CONFIG_BOARDNAME="at91sam9g45ekes"
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
+ # CONFIG_AT91SAM9G45EK is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9G45EKES=y
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9g45ekes"
+ CONFIG_MACH_TYPE="2212"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x30A000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -94,6 +93,7 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -102,6 +102,14 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++# CONFIG_DUAL_BOOT is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
+ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+@@ -113,6 +121,7 @@ CONFIG_DEBUG=y
+ CONFIG_DEBUG_INFO=y
+ # CONFIG_DEBUG_LOUD is not set
+ # CONFIG_DEBUG_VERY_LOUD is not set
++ALLOW_DUAL_BOOT=y
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ CONFIG_THUMB=y
+diff --git a/board/at91sam9g45ekes/at91sam9g45ekes_defconfig b/board/at91sam9g45ekes/at91sam9g45ekes_defconfig
+index db80f63..79f8d2e 100644
+--- a/board/at91sam9g45ekes/at91sam9g45ekes_defconfig
++++ b/board/at91sam9g45ekes/at91sam9g45ekes_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 15:04:10 2010
++# Sun Jan 16 21:43:15 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g45ekes"
+@@ -12,9 +12,9 @@ CONFIG_BOARDNAME="at91sam9g45ekes"
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
+ # CONFIG_AT91SAM9G45EK is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9G45EKES=y
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9g45ekes"
+ CONFIG_MACH_TYPE="2212"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x30A000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -94,6 +93,7 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -102,6 +102,14 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++# CONFIG_DUAL_BOOT is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
+ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+@@ -113,6 +121,7 @@ CONFIG_DEBUG=y
+ CONFIG_DEBUG_INFO=y
+ # CONFIG_DEBUG_LOUD is not set
+ # CONFIG_DEBUG_VERY_LOUD is not set
++ALLOW_DUAL_BOOT=y
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ CONFIG_THUMB=y
+diff --git a/board/at91sam9g45ekes/at91sam9g45nfes_defconfig b/board/at91sam9g45ekes/at91sam9g45nfes_defconfig
+index 2351f41..903680e 100644
+--- a/board/at91sam9g45ekes/at91sam9g45nfes_defconfig
++++ b/board/at91sam9g45ekes/at91sam9g45nfes_defconfig
+@@ -1,9 +1,9 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 15:05:18 2010
++# Sun Jan 16 21:43:16 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9g45ekes"
++CONFIG_BOARDNAME="at91sam9g45nfes"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+@@ -12,9 +12,9 @@ CONFIG_BOARDNAME="at91sam9g45ekes"
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
+ # CONFIG_AT91SAM9G45EK is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9G45EKES=y
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9g45ekes"
+ CONFIG_MACH_TYPE="2212"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x30A000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -75,6 +74,7 @@ DATAFLASHCARD_ON_CS0=y
+ # NAND Flash configuration
+ #
+ # CONFIG_NANDFLASH_SMALL_BLOCKS is not set
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="nandflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -83,6 +83,14 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++# CONFIG_DUAL_BOOT is not set
++CONFIG_ALT_IMG_ADDRESS="0x00040000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00020000"
+ CONFIG_SETTING_ADDRESS="0x01FE0000"
+ CONFIG_SETTING_SIZE="0x00001000"
+@@ -94,6 +102,7 @@ CONFIG_DEBUG=y
+ CONFIG_DEBUG_INFO=y
+ # CONFIG_DEBUG_LOUD is not set
+ # CONFIG_DEBUG_VERY_LOUD is not set
++ALLOW_DUAL_BOOT=y
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ CONFIG_THUMB=y
+diff --git a/board/at91sam9g45ekes/at91sam9g45sdes_android_defconfig b/board/at91sam9g45ekes/at91sam9g45sdes_android_defconfig
+index f16fc32..b423ab4 100644
+--- a/board/at91sam9g45ekes/at91sam9g45sdes_android_defconfig
++++ b/board/at91sam9g45ekes/at91sam9g45sdes_android_defconfig
+@@ -1,9 +1,9 @@
+ #
+ # Automatically generated make config: don't edit
+-# Fri Sep 10 17:13:00 2010
++# Sun Jan 16 21:43:12 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9g45ekes"
++CONFIG_BOARDNAME="at91sam9g45sdes_android"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+@@ -77,6 +77,9 @@ CONFIG_LOAD_LINUX=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++# CONFIG_DUAL_BOOT is not set
++CONFIG_ALT_IMG_ADDRESS="0x00000000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
+ 
+ #
+ # Linux Image Storage Setup
+@@ -97,6 +100,7 @@ CONFIG_DEBUG=y
+ CONFIG_DEBUG_INFO=y
+ # CONFIG_DEBUG_LOUD is not set
+ # CONFIG_DEBUG_VERY_LOUD is not set
++ALLOW_DUAL_BOOT=y
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ CONFIG_THUMB=y
+diff --git a/board/at91sam9g45ekes/at91sam9g45sdes_defconfig b/board/at91sam9g45ekes/at91sam9g45sdes_defconfig
+index 244cb4e..194f561 100644
+--- a/board/at91sam9g45ekes/at91sam9g45sdes_defconfig
++++ b/board/at91sam9g45ekes/at91sam9g45sdes_defconfig
+@@ -1,9 +1,9 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 15:05:49 2010
++# Sun Jan 16 21:43:14 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9g45ekes"
++CONFIG_BOARDNAME="at91sam9g45sdes"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+@@ -12,9 +12,9 @@ CONFIG_BOARDNAME="at91sam9g45ekes"
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
+ # CONFIG_AT91SAM9G45EK is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9G45EKES=y
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9g45ekes"
+ CONFIG_MACH_TYPE="2212"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x30A000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -69,6 +68,7 @@ CONFIG_SDCARD_HS=y
+ ALLOW_DATAFLASH_RECOVERY=y
+ ALLOW_BOOT_FROM_DATAFLASH_CS0=y
+ DATAFLASHCARD_ON_CS0=y
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="sdcard"
+ # CONFIG_LOAD_UBOOT is not set
+ # CONFIG_LOAD_EBOOT is not set
+@@ -77,6 +77,9 @@ CONFIG_LOAD_LINUX=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++# CONFIG_DUAL_BOOT is not set
++CONFIG_ALT_IMG_ADDRESS="0x00000000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
+ 
+ #
+ # Linux Image Storage Setup
+@@ -97,6 +100,7 @@ CONFIG_DEBUG=y
+ CONFIG_DEBUG_INFO=y
+ # CONFIG_DEBUG_LOUD is not set
+ # CONFIG_DEBUG_VERY_LOUD is not set
++ALLOW_DUAL_BOOT=y
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ CONFIG_THUMB=y
+diff --git a/board/at91sam9m10ek/at91sam9m10df_defconfig b/board/at91sam9m10ek/at91sam9m10df_defconfig
+index d8ac768..626e318 100644
+--- a/board/at91sam9m10ek/at91sam9m10df_defconfig
++++ b/board/at91sam9m10ek/at91sam9m10df_defconfig
+@@ -1,9 +1,9 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 15:07:56 2010
++# Sun Jan 16 21:42:54 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9m10ek"
++CONFIG_BOARDNAME="at91sam9m10df"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+@@ -13,8 +13,8 @@ CONFIG_BOARDNAME="at91sam9m10ek"
+ # CONFIG_AT91SAM9G20EK is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9M10EK=y
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9m10ek"
+ CONFIG_MACH_TYPE="1830"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x30A000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -94,6 +93,7 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -102,6 +102,14 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++# CONFIG_DUAL_BOOT is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
+ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+@@ -113,6 +121,7 @@ CONFIG_DEBUG=y
+ CONFIG_DEBUG_INFO=y
+ # CONFIG_DEBUG_LOUD is not set
+ # CONFIG_DEBUG_VERY_LOUD is not set
++ALLOW_DUAL_BOOT=y
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ CONFIG_THUMB=y
+diff --git a/board/at91sam9m10ek/at91sam9m10ek_defconfig b/board/at91sam9m10ek/at91sam9m10ek_defconfig
+index d8ac768..6da1390 100644
+--- a/board/at91sam9m10ek/at91sam9m10ek_defconfig
++++ b/board/at91sam9m10ek/at91sam9m10ek_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 15:07:56 2010
++# Sun Jan 16 21:42:53 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9m10ek"
+@@ -13,8 +13,8 @@ CONFIG_BOARDNAME="at91sam9m10ek"
+ # CONFIG_AT91SAM9G20EK is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9M10EK=y
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9m10ek"
+ CONFIG_MACH_TYPE="1830"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x30A000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -94,6 +93,7 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -102,6 +102,14 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++# CONFIG_DUAL_BOOT is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
+ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+@@ -113,6 +121,7 @@ CONFIG_DEBUG=y
+ CONFIG_DEBUG_INFO=y
+ # CONFIG_DEBUG_LOUD is not set
+ # CONFIG_DEBUG_VERY_LOUD is not set
++ALLOW_DUAL_BOOT=y
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ CONFIG_THUMB=y
+diff --git a/board/at91sam9m10ek/at91sam9m10nf_defconfig b/board/at91sam9m10ek/at91sam9m10nf_defconfig
+index 2ecf5be..c146201 100644
+--- a/board/at91sam9m10ek/at91sam9m10nf_defconfig
++++ b/board/at91sam9m10ek/at91sam9m10nf_defconfig
+@@ -1,9 +1,9 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 15:13:52 2010
++# Sun Jan 16 21:42:56 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9m10ek"
++CONFIG_BOARDNAME="at91sam9m10nf"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+@@ -13,8 +13,8 @@ CONFIG_BOARDNAME="at91sam9m10ek"
+ # CONFIG_AT91SAM9G20EK is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9M10EK=y
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9m10ek"
+ CONFIG_MACH_TYPE="1830"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x30A000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -75,6 +74,7 @@ DATAFLASHCARD_ON_CS0=y
+ # NAND Flash configuration
+ #
+ # CONFIG_NANDFLASH_SMALL_BLOCKS is not set
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="nandflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -83,6 +83,14 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++# CONFIG_DUAL_BOOT is not set
++CONFIG_ALT_IMG_ADDRESS="0x00040000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00020000"
+ CONFIG_SETTING_ADDRESS="0x01FE0000"
+ CONFIG_SETTING_SIZE="0x00001000"
+@@ -94,6 +102,7 @@ CONFIG_DEBUG=y
+ CONFIG_DEBUG_INFO=y
+ # CONFIG_DEBUG_LOUD is not set
+ # CONFIG_DEBUG_VERY_LOUD is not set
++ALLOW_DUAL_BOOT=y
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ CONFIG_THUMB=y
+diff --git a/board/at91sam9m10ek/at91sam9m10sd_android_defconfig b/board/at91sam9m10ek/at91sam9m10sd_android_defconfig
+index 74d56b4..8693ad4 100644
+--- a/board/at91sam9m10ek/at91sam9m10sd_android_defconfig
++++ b/board/at91sam9m10ek/at91sam9m10sd_android_defconfig
+@@ -1,9 +1,9 @@
+ #
+ # Automatically generated make config: don't edit
+-# Fri Sep 10 14:31:41 2010
++# Sun Jan 16 21:42:51 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9m10ek"
++CONFIG_BOARDNAME="at91sam9m10sd_android"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+@@ -77,6 +77,9 @@ CONFIG_LOAD_LINUX=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++# CONFIG_DUAL_BOOT is not set
++CONFIG_ALT_IMG_ADDRESS="0x00000000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
+ 
+ #
+ # Linux Image Storage Setup
+@@ -97,6 +100,7 @@ CONFIG_DEBUG=y
+ CONFIG_DEBUG_INFO=y
+ # CONFIG_DEBUG_LOUD is not set
+ # CONFIG_DEBUG_VERY_LOUD is not set
++ALLOW_DUAL_BOOT=y
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ CONFIG_THUMB=y
+diff --git a/board/at91sam9m10ek/at91sam9m10sd_defconfig b/board/at91sam9m10ek/at91sam9m10sd_defconfig
+index 83676dd..670664b 100644
+--- a/board/at91sam9m10ek/at91sam9m10sd_defconfig
++++ b/board/at91sam9m10ek/at91sam9m10sd_defconfig
+@@ -1,9 +1,9 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 16:46:19 2010
++# Sun Jan 16 21:42:55 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9m10ek"
++CONFIG_BOARDNAME="at91sam9m10sd"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+@@ -13,8 +13,8 @@ CONFIG_BOARDNAME="at91sam9m10ek"
+ # CONFIG_AT91SAM9G20EK is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9M10EK=y
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9m10ek"
+ CONFIG_MACH_TYPE="1830"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x30A000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -69,6 +68,7 @@ CONFIG_SDCARD_HS=y
+ ALLOW_DATAFLASH_RECOVERY=y
+ ALLOW_BOOT_FROM_DATAFLASH_CS0=y
+ DATAFLASHCARD_ON_CS0=y
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="sdcard"
+ # CONFIG_LOAD_UBOOT is not set
+ # CONFIG_LOAD_EBOOT is not set
+@@ -77,6 +77,9 @@ CONFIG_LOAD_LINUX=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++# CONFIG_DUAL_BOOT is not set
++CONFIG_ALT_IMG_ADDRESS="0x00000000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
+ 
+ #
+ # Linux Image Storage Setup
+@@ -97,6 +100,7 @@ CONFIG_DEBUG=y
+ CONFIG_DEBUG_INFO=y
+ # CONFIG_DEBUG_LOUD is not set
+ # CONFIG_DEBUG_VERY_LOUD is not set
++ALLOW_DUAL_BOOT=y
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ CONFIG_THUMB=y
+diff --git a/board/at91sam9m10ek/at91sam9m10sdu_defconfig b/board/at91sam9m10ek/at91sam9m10sdu_defconfig
+new file mode 100644
+index 0000000..747329a
+--- /dev/null
++++ b/board/at91sam9m10ek/at91sam9m10sdu_defconfig
+@@ -0,0 +1,107 @@
++#
++# Automatically generated make config: don't edit
++# Sun Jan 16 21:42:51 2011
++#
++HAVE_DOT_CONFIG=y
++CONFIG_BOARDNAME="at91sam9m10sdu"
++# CONFIG_AT91SAM9260EK is not set
++# CONFIG_AT91SAM9261EK is not set
++# CONFIG_AT91SAM9263EK is not set
++# CONFIG_AT91SAM9RLEK is not set
++# CONFIG_AT91SAM9XEEK is not set
++# CONFIG_AT91SAM9G10EK is not set
++# CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G45EK is not set
++# CONFIG_AT91SAM9G45EKES is not set
++CONFIG_AT91SAM9M10EK=y
++# CONFIG_AT91SAM9M10EKES is not set
++# CONFIG_AT91CAP9ADK is not set
++# CONFIG_AT91CAP9STK is not set
++# CONFIG_AFEB9260 is not set
++CONFIG_CHIP="AT91SAM9M10"
++CONFIG_BOARD="at91sam9m10ek"
++CONFIG_MACH_TYPE="1830"
++CONFIG_LINK_ADDR="0x000000"
++CONFIG_TOP_OF_MEMORY="0x30A000"
++# CONFIG_CRYSTAL_12_000MHZ is not set
++# CONFIG_CRYSTAL_16_000MHZ is not set
++# CONFIG_CRYSTAL_16_36766MHZ is not set
++CONFIG_CRYSTAL_18_432MHZ=y
++ALLOW_CRYSTAL_18_432MHZ=y
++CONFIG_CRYSTAL="CRYSTAL_18_432MHZ"
++# CONFIG_CPU_CLK_166MHZ is not set
++# CONFIG_CPU_CLK_180MHZ is not set
++# CONFIG_CPU_CLK_200MHZ is not set
++# CONFIG_CPU_CLK_240MHZ is not set
++# CONFIG_CPU_CLK_266MHZ is not set
++CONFIG_CPU_CLK_400MHZ=y
++ALLOW_CPU_CLK_400MHZ=y
++# DISABLE_CPU_CLK_240MHZ is not set
++# CONFIG_BUS_SPEED_83MHZ is not set
++# CONFIG_BUS_SPEED_90MHZ is not set
++# CONFIG_BUS_SPEED_100MHZ is not set
++CONFIG_BUS_SPEED_133MHZ=y
++
++#
++# Memory selection
++#
++# CONFIG_SDRAM is not set
++# CONFIG_SDDRC is not set
++CONFIG_DDR2=y
++ALLOW_DATAFLASH=y
++# ALLOW_FLASH is not set
++ALLOW_NANDFLASH=y
++ALLOW_SDCARD=y
++ALLOW_HSMCI=y
++# ALLOW_PSRAM is not set
++# ALLOW_SDRAM_16BIT is not set
++# CONFIG_RAM_32MB is not set
++# CONFIG_RAM_64MB is not set
++CONFIG_RAM_128MB=y
++# CONFIG_RAM_256MB is not set
++# CONFIG_DATAFLASH is not set
++# CONFIG_FLASH is not set
++# CONFIG_NANDFLASH is not set
++CONFIG_SDCARD=y
++CONFIG_MEMORY="sdcard"
++CONFIG_SDCARD_HS=y
++ALLOW_DATAFLASH_RECOVERY=y
++ALLOW_BOOT_FROM_DATAFLASH_CS0=y
++DATAFLASHCARD_ON_CS0=y
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
++CONFIG_PROJECT="sdcard"
++CONFIG_LOAD_UBOOT=y
++# CONFIG_LOAD_EBOOT is not set
++# CONFIG_LOAD_LINUX is not set
++# CONFIG_LOAD_NK is not set
++# CONFIG_LOAD_64KB is not set
++# CONFIG_LOAD_1MB is not set
++# CONFIG_LOAD_4MB is not set
++CONFIG_DUAL_BOOT=y
++CONFIG_ALT_IMG_ADDRESS="0x00000000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_ALT_IMAGE_NAME="program.bin"
++CONFIG_OS_IMAGE_NAME="uimage.bin"
++CONFIG_OS_IMG_SIZE="0x280000"
++
++#
++# U-Boot Image Storage Setup
++#
++CONFIG_IMG_ADDRESS="0x00000000"
++CONFIG_SETTING_ADDRESS="0x00000000"
++CONFIG_SETTING_SIZE="0x00001000"
++CONFIG_IMG_SIZE="0x00040000"
++CONFIG_JUMP_ADDR="0x73F00000"
++CONFIG_GLBDRV_ADDR="0x7006b000"
++# CONFIG_LONG_TEST is not set
++CONFIG_DEBUG=y
++CONFIG_DEBUG_INFO=y
++# CONFIG_DEBUG_LOUD is not set
++# CONFIG_DEBUG_VERY_LOUD is not set
++ALLOW_DUAL_BOOT=y
++CONFIG_HW_INIT=y
++# CONFIG_USER_HW_INIT is not set
++CONFIG_THUMB=y
++# CONFIG_SCLK is not set
++# CONFIG_SX_AT91 is not set
++# CONFIG_RAW_AT91 is not set
+diff --git a/board/at91sam9m10ekes/at91sam9m10dfes_defconfig b/board/at91sam9m10ekes/at91sam9m10dfes_defconfig
+index e7c65a1..6a49475 100644
+--- a/board/at91sam9m10ekes/at91sam9m10dfes_defconfig
++++ b/board/at91sam9m10ekes/at91sam9m10dfes_defconfig
+@@ -1,9 +1,9 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 15:07:56 2010
++# Sun Jan 16 21:43:01 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9m10ekes"
++CONFIG_BOARDNAME="at91sam9m10dfes"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+@@ -20,10 +20,9 @@ CONFIG_AT91SAM9M10EKES=y
+ # CONFIG_AFEB9260 is not set
+ CONFIG_CHIP="AT91SAM9M10"
+ CONFIG_BOARD="at91sam9m10ekes"
+-CONFIG_MACH_TYPE="1830"
++CONFIG_MACH_TYPE="2509"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x30A000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -94,6 +93,7 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -102,6 +102,14 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++# CONFIG_DUAL_BOOT is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
+ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+@@ -113,6 +121,7 @@ CONFIG_DEBUG=y
+ CONFIG_DEBUG_INFO=y
+ # CONFIG_DEBUG_LOUD is not set
+ # CONFIG_DEBUG_VERY_LOUD is not set
++ALLOW_DUAL_BOOT=y
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ CONFIG_THUMB=y
+diff --git a/board/at91sam9m10ekes/at91sam9m10ekes_defconfig b/board/at91sam9m10ekes/at91sam9m10ekes_defconfig
+index e7c65a1..e6b3027 100644
+--- a/board/at91sam9m10ekes/at91sam9m10ekes_defconfig
++++ b/board/at91sam9m10ekes/at91sam9m10ekes_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 15:07:56 2010
++# Sun Jan 16 21:43:00 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9m10ekes"
+@@ -20,10 +20,9 @@ CONFIG_AT91SAM9M10EKES=y
+ # CONFIG_AFEB9260 is not set
+ CONFIG_CHIP="AT91SAM9M10"
+ CONFIG_BOARD="at91sam9m10ekes"
+-CONFIG_MACH_TYPE="1830"
++CONFIG_MACH_TYPE="2509"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x30A000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -94,6 +93,7 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -102,6 +102,14 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++# CONFIG_DUAL_BOOT is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
+ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+@@ -113,6 +121,7 @@ CONFIG_DEBUG=y
+ CONFIG_DEBUG_INFO=y
+ # CONFIG_DEBUG_LOUD is not set
+ # CONFIG_DEBUG_VERY_LOUD is not set
++ALLOW_DUAL_BOOT=y
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ CONFIG_THUMB=y
+diff --git a/board/at91sam9m10ekes/at91sam9m10nfes_defconfig b/board/at91sam9m10ekes/at91sam9m10nfes_defconfig
+index 9a473d9..5f03396 100644
+--- a/board/at91sam9m10ekes/at91sam9m10nfes_defconfig
++++ b/board/at91sam9m10ekes/at91sam9m10nfes_defconfig
+@@ -1,9 +1,9 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 15:13:52 2010
++# Sun Jan 16 21:42:58 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9m10ekes"
++CONFIG_BOARDNAME="at91sam9m10nfes"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+@@ -20,10 +20,9 @@ CONFIG_AT91SAM9M10EKES=y
+ # CONFIG_AFEB9260 is not set
+ CONFIG_CHIP="AT91SAM9M10"
+ CONFIG_BOARD="at91sam9m10ekes"
+-CONFIG_MACH_TYPE="1830"
++CONFIG_MACH_TYPE="2509"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x30A000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -75,6 +74,7 @@ DATAFLASHCARD_ON_CS0=y
+ # NAND Flash configuration
+ #
+ # CONFIG_NANDFLASH_SMALL_BLOCKS is not set
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="nandflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -83,6 +83,14 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++# CONFIG_DUAL_BOOT is not set
++CONFIG_ALT_IMG_ADDRESS="0x00040000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00020000"
+ CONFIG_SETTING_ADDRESS="0x01FE0000"
+ CONFIG_SETTING_SIZE="0x00001000"
+@@ -94,6 +102,7 @@ CONFIG_DEBUG=y
+ CONFIG_DEBUG_INFO=y
+ # CONFIG_DEBUG_LOUD is not set
+ # CONFIG_DEBUG_VERY_LOUD is not set
++ALLOW_DUAL_BOOT=y
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ CONFIG_THUMB=y
+diff --git a/board/at91sam9m10ekes/at91sam9m10sdes_defconfig b/board/at91sam9m10ekes/at91sam9m10sdes_defconfig
+index 9f193d3..1d413ca 100644
+--- a/board/at91sam9m10ekes/at91sam9m10sdes_defconfig
++++ b/board/at91sam9m10ekes/at91sam9m10sdes_defconfig
+@@ -1,9 +1,9 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 16:46:19 2010
++# Sun Jan 16 21:42:59 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9m10ekes"
++CONFIG_BOARDNAME="at91sam9m10sdes"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+@@ -20,10 +20,9 @@ CONFIG_AT91SAM9M10EKES=y
+ # CONFIG_AFEB9260 is not set
+ CONFIG_CHIP="AT91SAM9M10"
+ CONFIG_BOARD="at91sam9m10ekes"
+-CONFIG_MACH_TYPE="1830"
++CONFIG_MACH_TYPE="2509"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x30A000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -69,6 +68,7 @@ CONFIG_SDCARD_HS=y
+ ALLOW_DATAFLASH_RECOVERY=y
+ ALLOW_BOOT_FROM_DATAFLASH_CS0=y
+ DATAFLASHCARD_ON_CS0=y
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="sdcard"
+ # CONFIG_LOAD_UBOOT is not set
+ # CONFIG_LOAD_EBOOT is not set
+@@ -77,6 +77,9 @@ CONFIG_LOAD_LINUX=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++# CONFIG_DUAL_BOOT is not set
++CONFIG_ALT_IMG_ADDRESS="0x00000000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
+ 
+ #
+ # Linux Image Storage Setup
+@@ -97,6 +100,7 @@ CONFIG_DEBUG=y
+ CONFIG_DEBUG_INFO=y
+ # CONFIG_DEBUG_LOUD is not set
+ # CONFIG_DEBUG_VERY_LOUD is not set
++ALLOW_DUAL_BOOT=y
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ CONFIG_THUMB=y
+diff --git a/board/at91sam9rlek/at91sam9rldf_defconfig b/board/at91sam9rlek/at91sam9rldf_defconfig
+index 258c16a..9c0011a 100644
+--- a/board/at91sam9rlek/at91sam9rldf_defconfig
++++ b/board/at91sam9rlek/at91sam9rldf_defconfig
+@@ -1,13 +1,12 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 14:01:58 2010
++# Sun Jan 16 21:43:32 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9rlek"
++CONFIG_BOARDNAME="at91sam9rldf"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9RLEK=y
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+@@ -15,6 +14,7 @@ CONFIG_AT91SAM9RLEK=y
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9rlek"
+ CONFIG_MACH_TYPE="1326"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x310000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -94,6 +93,7 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -102,6 +102,13 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
+ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+diff --git a/board/at91sam9rlek/at91sam9rlek_defconfig b/board/at91sam9rlek/at91sam9rlek_defconfig
+index 258c16a..9a3a9b6 100644
+--- a/board/at91sam9rlek/at91sam9rlek_defconfig
++++ b/board/at91sam9rlek/at91sam9rlek_defconfig
+@@ -1,13 +1,12 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 14:01:58 2010
++# Sun Jan 16 21:43:32 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9rlek"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9RLEK=y
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+@@ -15,6 +14,7 @@ CONFIG_AT91SAM9RLEK=y
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9rlek"
+ CONFIG_MACH_TYPE="1326"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x310000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -94,6 +93,7 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -102,6 +102,13 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
+ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+diff --git a/board/at91sam9rlek/at91sam9rlnf_defconfig b/board/at91sam9rlek/at91sam9rlnf_defconfig
+index 215b5ec..2dcab82 100644
+--- a/board/at91sam9rlek/at91sam9rlnf_defconfig
++++ b/board/at91sam9rlek/at91sam9rlnf_defconfig
+@@ -1,13 +1,12 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 14:03:36 2010
++# Sun Jan 16 21:43:31 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9rlek"
++CONFIG_BOARDNAME="at91sam9rlnf"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9RLEK=y
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+@@ -15,6 +14,7 @@ CONFIG_AT91SAM9RLEK=y
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9rlek"
+ CONFIG_MACH_TYPE="1326"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x310000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -74,6 +73,7 @@ ALLOW_BOOT_FROM_DATAFLASH_CS0=y
+ # NAND Flash configuration
+ #
+ # CONFIG_NANDFLASH_SMALL_BLOCKS is not set
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="nandflash"
+ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_EBOOT is not set
+@@ -82,6 +82,13 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00040000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00020000"
+ CONFIG_SETTING_ADDRESS="0x01FE0000"
+ CONFIG_SETTING_SIZE="0x00001000"
+diff --git a/board/at91sam9rlek/at91sam9rlsd_defconfig b/board/at91sam9rlek/at91sam9rlsd_defconfig
+index 940cb61..5bb004d 100644
+--- a/board/at91sam9rlek/at91sam9rlsd_defconfig
++++ b/board/at91sam9rlek/at91sam9rlsd_defconfig
+@@ -1,13 +1,12 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jun  1 14:06:02 2010
++# Sun Jan 16 21:43:32 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9rlek"
++CONFIG_BOARDNAME="at91sam9rlsd"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+ CONFIG_AT91SAM9RLEK=y
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+@@ -15,6 +14,7 @@ CONFIG_AT91SAM9RLEK=y
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -23,7 +23,6 @@ CONFIG_BOARD="at91sam9rlek"
+ CONFIG_MACH_TYPE="1326"
+ CONFIG_LINK_ADDR="0x000000"
+ CONFIG_TOP_OF_MEMORY="0x310000"
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -68,6 +67,7 @@ CONFIG_SDCARD=y
+ CONFIG_MEMORY="sdcard"
+ # CONFIG_SDCARD_HS is not set
+ ALLOW_BOOT_FROM_DATAFLASH_CS0=y
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="sdcard"
+ # CONFIG_LOAD_UBOOT is not set
+ # CONFIG_LOAD_EBOOT is not set
+@@ -76,6 +76,8 @@ CONFIG_LOAD_LINUX=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00000000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
+ 
+ #
+ # Linux Image Storage Setup
+diff --git a/board/at91sam9xeek/at91sam9xedf_defconfig b/board/at91sam9xeek/at91sam9xedf_defconfig
+index 3663e94..9700b85 100644
+--- a/board/at91sam9xeek/at91sam9xedf_defconfig
++++ b/board/at91sam9xeek/at91sam9xedf_defconfig
+@@ -1,9 +1,9 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Aug  3 10:24:29 2010
++# Sun Jan 16 21:43:01 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9xeek"
++CONFIG_BOARDNAME="at91sam9xedf"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+@@ -103,6 +103,13 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
+ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+diff --git a/board/at91sam9xeek/at91sam9xedfc_defconfig b/board/at91sam9xeek/at91sam9xedfc_defconfig
+index fc83730..dac40a4 100644
+--- a/board/at91sam9xeek/at91sam9xedfc_defconfig
++++ b/board/at91sam9xeek/at91sam9xedfc_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Jan 12 22:00:49 2010
++# Sun Jan 16 21:43:02 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9xedfc"
+@@ -14,6 +14,7 @@ CONFIG_AT91SAM9XEEK=y
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
+ # CONFIG_AT91CAP9ADK is not set
+ # CONFIG_AT91CAP9STK is not set
+ # CONFIG_AFEB9260 is not set
+@@ -21,8 +22,8 @@ CONFIG_CHIP="AT91SAM9XE"
+ CONFIG_BOARD="at91sam9xeek"
+ CONFIG_MACH_TYPE="0x44B"
+ CONFIG_LINK_ADDR="0x000000"
+-CONFIG_TOP_OF_MEMORY="0x301000"
+-CONFIG_BOOTSTRAP_MAXSIZE="13000"
++CONFIG_DATA_SECTION_ADDR="0x304000"
++CONFIG_TOP_OF_MEMORY="0x306000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -52,6 +53,7 @@ ALLOW_DATAFLASH=y
+ # ALLOW_FLASH is not set
+ ALLOW_NANDFLASH=y
+ # ALLOW_SDCARD is not set
++# ALLOW_HSMCI is not set
+ # ALLOW_PSRAM is not set
+ # ALLOW_SDRAM_16BIT is not set
+ # CONFIG_RAM_32MB is not set
+@@ -63,6 +65,7 @@ CONFIG_DATAFLASH=y
+ # CONFIG_NANDFLASH is not set
+ # CONFIG_SDCARD is not set
+ CONFIG_MEMORY="dataflash"
++# CONFIG_SDCARD_HS is not set
+ 
+ #
+ # SPI configuration
+@@ -91,18 +94,33 @@ CONFIG_SPI_MODE_0=y
+ # CONFIG_SPI_MODE_2 is not set
+ # CONFIG_SPI_MODE_3 is not set
+ CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
+ CONFIG_PROJECT="dataflash"
+ CONFIG_LOAD_UBOOT=y
++# CONFIG_LOAD_EBOOT is not set
++# CONFIG_LOAD_LINUX is not set
++# CONFIG_LOAD_NK is not set
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
++CONFIG_SETTING_ADDRESS="0x00408400"
++CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
+-CONFIG_APP_CHECK=y
++CONFIG_GLBDRV_ADDR="0x23F00000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+-CONFIG_VERBOSE=y
++CONFIG_DEBUG_INFO=y
++# CONFIG_DEBUG_LOUD is not set
++# CONFIG_DEBUG_VERY_LOUD is not set
+ CONFIG_HW_INIT=y
+ # CONFIG_USER_HW_INIT is not set
+ # CONFIG_THUMB is not set
+diff --git a/board/at91sam9xeek/at91sam9xeek_defconfig b/board/at91sam9xeek/at91sam9xeek_defconfig
+index 3663e94..4fdf865 100644
+--- a/board/at91sam9xeek/at91sam9xeek_defconfig
++++ b/board/at91sam9xeek/at91sam9xeek_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Tue Aug  3 10:24:29 2010
++# Sun Jan 16 21:43:01 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9xeek"
+@@ -103,6 +103,13 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00008400"
+ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+diff --git a/board/at91sam9xeek/at91sam9xenf_defconfig b/board/at91sam9xeek/at91sam9xenf_defconfig
+index fe43c96..a51926c 100644
+--- a/board/at91sam9xeek/at91sam9xenf_defconfig
++++ b/board/at91sam9xeek/at91sam9xenf_defconfig
+@@ -1,9 +1,9 @@
+ #
+ # Automatically generated make config: don't edit
+-# Wed Jul 14 10:49:18 2010
++# Sun Jan 16 21:43:02 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9xeek"
++CONFIG_BOARDNAME="at91sam9xenf"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+@@ -22,8 +22,8 @@ CONFIG_CHIP="AT91SAM9XE"
+ CONFIG_BOARD="at91sam9xeek"
+ CONFIG_MACH_TYPE="0x44B"
+ CONFIG_LINK_ADDR="0x000000"
+-CONFIG_DATA_SECTION_ADDR="0x300000"
+-CONFIG_TOP_OF_MEMORY="0x301000"
++CONFIG_DATA_SECTION_ADDR="0x304000"
++CONFIG_TOP_OF_MEMORY="0x306000"
+ # CONFIG_CRYSTAL_12_000MHZ is not set
+ # CONFIG_CRYSTAL_16_000MHZ is not set
+ # CONFIG_CRYSTAL_16_36766MHZ is not set
+@@ -85,6 +85,13 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00040000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMG_SIZE="0x40000"
++
++#
++# U-Boot Image Storage Setup
++#
+ CONFIG_IMG_ADDRESS="0x00020000"
+ CONFIG_SETTING_ADDRESS="0x01FE0000"
+ CONFIG_SETTING_SIZE="0x00001000"
+-- 
+1.7.1
+

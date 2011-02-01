@@ -1,0 +1,31 @@
+From a8685e5dd8f32b77d83e3a5dfb39146a913e4ca0 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Sun, 23 Jan 2011 20:13:58 +0100
+Subject: [PATCH v3 11/08] Fix Cut-n-Paste error
+
+---
+ board/at91sam9m10ekes/at91sam9m10ekes.c |    8 +-------
+ 1 files changed, 1 insertions(+), 7 deletions(-)
+
+diff --git a/board/at91sam9m10ekes/at91sam9m10ekes.c b/board/at91sam9m10ekes/at91sam9m10ekes.c
+index 8c0e979..6aa846a 100644
+--- a/board/at91sam9m10ekes/at91sam9m10ekes.c
++++ b/board/at91sam9m10ekes/at91sam9m10ekes.c
+@@ -74,13 +74,7 @@ int alternate_boot_button(void)
+ 	/* Configure PIO B controller */
+ 	writel((1 << AT91C_ID_PIOB), PMC_PCER + AT91C_BASE_PMC);
+ 	pio_setup(button_pio);
+-		dbgu_print("[Alternate]\n\r");		
+-		return 1;
+-	} else {
+-		dbgu_print("[Normal]\n\r");		
+-		return 0;
+-	}
+-}
++
+ 	/* Return "1" if LEFT BUTTON is pressed during Boot sequence */
+ 	dbgu_print("Checking for Alternate boot: ...\n\r");
+ 	if ( !pio_get_value(LEFT_BUTTON) ) {
+-- 
+1.7.1
+

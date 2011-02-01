@@ -1,0 +1,35 @@
+From 7213e685dcaac83610352316bd94938b31f9e3a5 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Sun, 23 Jan 2011 19:32:31 +0100
+Subject: [PATCH v3 03/08] Generate a "BOOT.BIN" file, instead of "boot.bin"
+
+---
+ Makefile |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index e53fee6..5c66729 100644
+--- a/Makefile
++++ b/Makefile
+@@ -176,6 +176,9 @@ obj=build/$(BOARDNAME)/
+ BOOT_NAME=$(BOARDNAME)-$(PROJECT)$(CARD_SUFFIX)boot-$(VERSION)$(REV)
+ 
+ AT91BOOTSTRAP:=$(BINDIR)/$(BOOT_NAME).bin
++AT91BOOTSTRAP_BOOTABLE:=$(BINDIR)/$(BOOT_NAME).bin.fixboot
++BOOT_BIN_DIR:=$(BINDIR)/$(BOOT_NAME)
++AT91SD_BOOTSTRAP:=$(BOOT_BIN_DIR)/BOOT.BIN
+ 
+ ifeq ($(DESTDIR),)
+ DESTDIR=install
+@@ -302,6 +305,8 @@ $(AT91BOOTSTRAP).fixboot:	$(AT91BOOTSTRAP)
+ 	./scripts/fixboot.py $(AT91BOOTSTRAP)
+ 
+ boot:	$(AT91BOOTSTRAP).fixboot
++	mkdir -p $(BOOT_BIN_DIR)
++	cp $(AT91BOOTSTRAP_BOOTABLE) $(AT91SD_BOOTSTRAP)
+ 
+ install:	bootstrap	utilities
+ 
+-- 
+1.7.1
+

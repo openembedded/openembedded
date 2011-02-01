@@ -1,0 +1,36 @@
+From 07cb6b03e0bd1d8f643f497128f05776f943fe69 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Sun, 23 Jan 2011 19:16:46 +0100
+Subject: [PATCH v3 02/08] Add KConfig support for booting U-Boot
+
+---
+ Config.in |   13 +++++++++++++
+ 1 files changed, 13 insertions(+), 0 deletions(-)
+
+diff --git a/Config.in b/Config.in
+index 6ed8d8f..47da4e6 100644
+--- a/Config.in
++++ b/Config.in
+@@ -189,6 +189,19 @@ config CONFIG_WINCE_IMG_NAND_OFFSET
+ 	default "0x200000"
+ endmenu
+ 
++menu "U-Boot Image Storage Setup"
++	depends on CONFIG_LOAD_UBOOT
++config CONFIG_OS_IMAGE_NAME
++	depends on CONFIG_SDCARD
++	string "U-Boot Image Name on SD Card"
++	default "u-boot.bin"
++
++config CONFIG_OS_IMG_SIZE
++	string "OS Image Size"
++	default "0x40000"
++
++endmenu
++
+ config CONFIG_IMG_ADDRESS
+ 	string
+ 	depends on CONFIG_LOAD_UBOOT || CONFIG_LOAD_NK || CONFIG_LOAD_LINUX || CONFIG_LOAD_EBOOT
+-- 
+1.7.1
+

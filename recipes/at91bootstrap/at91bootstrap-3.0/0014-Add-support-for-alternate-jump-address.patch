@@ -1,0 +1,280 @@
+From e480f602a4b5e6481f4c0590fca16a9cd7ee3570 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Mon, 24 Jan 2011 19:37:15 +0100
+Subject: [PATCH v3 14/08] Add support for alternate jump address
+
+---
+ Config.in          |   11 +++++++++
+ Makefile           |    2 +
+ driver/MEDSdcard.c |   49 ++++++++++++++++++++++++++++++++++-----
+ main.c             |   64 ++++++++++++++++++++++++++++++++++++---------------
+ toplevel_cpp.mk    |    1 +
+ 5 files changed, 101 insertions(+), 26 deletions(-)
+
+diff --git a/Config.in b/Config.in
+index 8c68e41..0ef8da1 100644
+--- a/Config.in
++++ b/Config.in
+@@ -340,6 +340,17 @@ config CONFIG_JUMP_ADDR
+ 	help
+ 	  The entry point to which the bootstrap will pass control.
+ 
++config CONFIG_ALT_JUMP_ADDR
++	string
++	default "0x70000000" if CONFIG_AT91CAP9ADK
++	default "0x70000000" if CONFIG_AT91SAM9G45EK
++	default "0x70000000" if CONFIG_AT91SAM9M10EK
++	default "0x70000000" if CONFIG_AT91SAM9M10EKES
++	default "0x70000000" if CONFIG_AT91SAM9G45EKES
++	default "0x20000000"
++	help
++	  The entry point to which the bootstrap will pass control.
++
+ config CONFIG_GLBDRV_ADDR
+ 	string
+ 	default "0x70000000" if CONFIG_AT91CAP9ADK
+diff --git a/Makefile b/Makefile
+index 3dc3b65..d0235b3 100644
+--- a/Makefile
++++ b/Makefile
+@@ -128,6 +128,8 @@ ALT_IMAGE_NAME :=$(strip $(subst ",,$(CONFIG_ALT_IMAGE_NAME)))
+ 
+ JUMP_ADDR := $(strip $(subst ",,$(CONFIG_JUMP_ADDR)))
+ 
++ALT_JUMP_ADDR := $(strip $(subst ",,$(CONFIG_ALT_JUMP_ADDR)))
++
+ BOOTSTRAP_MAXSIZE := $(strip $(subst ",,$(CONFIG_BOOTSTRAP_MAXSIZE)))
+ 
+ MEMORY := $(strip $(subst ",,$(CONFIG_MEMORY)))
+diff --git a/driver/MEDSdcard.c b/driver/MEDSdcard.c
+index 9f0bec0..4e18b41 100644
+--- a/driver/MEDSdcard.c
++++ b/driver/MEDSdcard.c
+@@ -670,12 +670,18 @@ SdCard *MEDSdcard_GetDriver(unsigned int slot)
+ }
+ #endif
+ 
++extern	unsigned int altboot;
++
+ unsigned int load_SDCard()
+ {
+     DWORD dwAddress;
+ 
+     unsigned int ByteRead = 0;
+ 
++#if	defined(CONFIG_DEBUG)
++	dbgu_print("Loading from SD-Card\r\n");
++#endif
++
+     MEDSdcard_Initialize(&medias[0], BOARD_SD_MCI_ID_USE);
+ 
+     memset(&fs, 0, sizeof (FATFS));     // Clear file system object    
+@@ -687,20 +693,49 @@ unsigned int load_SDCard()
+     }
+ 
+ #if defined(CONFIG_DUAL_BOOT)
+-    if(alternate_boot_button()) {
+-	res = f_open(&fileObject, ALT_IMAGE_NAME, FA_OPEN_EXISTING | FA_READ);
+-    } else {
+-#else
+-    {
++	if(altboot) {
++#if	defined(CONFIG_DEBUG)
++		dbgu_print("Open: ");
++		dbgu_print(ALT_IMAGE_NAME);
++		dbgu_print("\r\n");
++#endif
++		res = f_open(&fileObject, ALT_IMAGE_NAME, FA_OPEN_EXISTING | FA_READ);
++	}
++#endif
++
++	if(altboot == 0) {
++#if	defined(CONFIG_DEBUG)
++		dbgu_print("Open: ");
++		dbgu_print(OS_IMAGE_NAME);
++		dbgu_print("\r\n");
+ #endif
+ 	res = f_open(&fileObject, OS_IMAGE_NAME, FA_OPEN_EXISTING | FA_READ);
+-    }
++	}
++
++
+ 
+     if (res != FR_OK) {
++#if	defined(CONFIG_DEBUG)
++	dbgu_print("Could not find:");
++	if(altboot) {
++		dbgu_print(ALT_IMAGE_NAME);
++	} else {
++		dbgu_print(OS_IMAGE_NAME);
++	}
++	dbgu_print("\r\n");
++#endif
+         return 0;
+     }
+ 
+-    dwAddress = JUMP_ADDR;
++#if	defined(CONFIG_DEBUG)
++	dbgu_print("Loading from SD-Card - Success\r\n");
++#endif
++
++	if(altboot) {
++	    dwAddress = ALT_JUMP_ADDR;
++	} else {
++	    dwAddress = JUMP_ADDR;
++	}
+ 
+     do {
+         ByteRead = 0;
+diff --git a/main.c b/main.c
+index 9ca56ac..6ff8f63 100644
+--- a/main.c
++++ b/main.c
+@@ -54,6 +54,8 @@ void LoadWince();
+ 
+ unsigned int	img_address	= IMG_ADDRESS;
+ unsigned int	img_size	= IMG_SIZE;
++unsigned int	jump_addr	= JUMP_ADDR;
++unsigned int	altboot		= 0;
+ 
+ /*------------------------------------------------------------------------------*/
+ /* Function Name       : main							*/
+@@ -65,7 +67,6 @@ int main(void)
+ {
+ 
+ 
+-// unsigned int	jump_addr	= JUMP_ADDR;
+ 
+     /*
+      * ================== 1st step: Hardware Initialization ================= 
+@@ -90,41 +91,62 @@ int main(void)
+ 
+ #if defined(CONFIG_DUAL_BOOT)
+ 	if(alternate_boot_button()) {
++#if	defined(CONFIG_DEBUG)
+ 		dbgu_print(">Alternate image\r\n");
++#endif
+ 		img_address	= ALT_IMG_ADDRESS;
+ 		img_size	= ALT_IMG_SIZE;
+-	} else {
+-#else
+-	{
++		jump_addr	= ALT_JUMP_ADDR;
++		altboot=1;
++	 }
+ #endif
+ 
+ #if defined(CONFIG_LOAD_LINUX)
+-    LoadLinux();
+-#elif defined(CONFIG_LOAD_NK) || defined(CONFIG_LOAD_EBOOT)
+-    LoadWince();
+-#else
++#if	defined(CONFIG_DEBUG)
++	dbgu_print("Load Linux direct\r\n");
++#endif
++	LoadLinux();
++#endif
++
++#if defined(CONFIG_LOAD_NK) || defined(CONFIG_LOAD_EBOOT)
++#if	defined(CONFIG_DEBUG)
++	dbgu_print("Load WinCE\r\n");
++#endif
++	LoadWince();
++#endif
+ 
+ #if defined(CONFIG_DATAFLASH) || defined(CONFIG_DATAFLASH_CARD)
+-    load_df(AT91C_SPI_PCS_DATAFLASH, img_address, img_size, JUMP_ADDR);
++#if	defined(CONFIG_DEBUG)
++	dbgu_print("Load from Dataflash\r\n");
+ #endif
++	load_df(AT91C_SPI_PCS_DATAFLASH, img_address, img_size, jump_addr);
++#endif
++
++#if defined(CONFIG_NANDFLASH)
+     /*
+      * Load from Nandflash in RAM 
+      */
+-#if defined(CONFIG_NANDFLASH)
+-    read_nandflash((unsigned char *)JUMP_ADDR, (unsigned long)img_address,
++#if	defined(CONFIG_DEBUG)
++	dbgu_print("Load from NAND Flash\r\n");
++#endif
++	read_nandflash((unsigned char *)jump_addr, (unsigned long)img_address,
+                    (int)img_size);
+ #endif
+     /*
+      * Load from Norflash in RAM 
+      */
+ #ifdef CONFIG_FLASH
+-    load_norflash(img_address, img_size, JUMP_ADDR);
++#if	defined(CONFIG_DEBUG)
++	dbgu_print("Load from NOR Flash\r\n");
++#endif
++	load_norflash(img_address, img_size, jump_addr);
+ #endif
+ #if defined(CONFIG_SDCARD)
+-    load_SDCard();
++#if	defined(CONFIG_DEBUG)
++	dbgu_print("Load from SD-Card\r\n");
+ #endif
++	load_SDCard();
+ #endif
+-	}
+ 
+     /*
+      * ==================== 3rd step:  Process the Image =================== 
+@@ -133,7 +155,7 @@ int main(void)
+      * Uncompress the image 
+      */
+ #ifdef CONFIG_GUNZIP
+-    decompress_image((void *)IMG_ADDRESS, (void *)JUMP_ADDR, IMG_SIZE); /* NOT IMPLEMENTED YET */
++    decompress_image((void *)IMG_ADDRESS, (void *)jump_addr, IMG_SIZE); /* NOT IMPLEMENTED YET */
+     msg_print(MSG_DECOMPRESS);
+ #endif
+ 
+@@ -144,6 +166,10 @@ int main(void)
+      * Set linux arguments 
+      */
+ #ifdef CONFIG_LINUX_ARG
++#if	defined(CONFIG_DEBUG)
++	dbgu_print(LINUX_ARG);
++	dbgu_print("\r\n");
++#endif
+     linux_arg(LINUX_ARG);       /* NOT IMPLEMENTED YET */
+     msg_print(MSG_LINUX);
+ #endif                          /* LINUX_ARG */
+@@ -154,15 +180,15 @@ int main(void)
+ 
+ #ifdef WINCE
+ #ifdef CONFIG_LOAD_NK
+-    Jump(JUMP_ADDR + 0x1000);
++    Jump(jump_addr + 0x1000);
+ #else
+-    Jump(JUMP_ADDR);
++    Jump(jump_addr);
+ #endif
+ #else /* !WINCE */
+ #ifdef CONFIG_LOAD_NK
+-    return (JUMP_ADDR + 0x1000);
++    return (jump_addr + 0x1000);
+ #else
+-    return JUMP_ADDR;
++    return jump_addr;
+ #endif
+ #endif
+ }
+diff --git a/toplevel_cpp.mk b/toplevel_cpp.mk
+index 315dc31..569f297 100644
+--- a/toplevel_cpp.mk
++++ b/toplevel_cpp.mk
+@@ -2,6 +2,7 @@ CPPFLAGS += \
+ 	-DIMG_ADDRESS=$(IMG_ADDRESS)		\
+ 	-DIMG_SIZE=$(IMG_SIZE)			\
+ 	-DJUMP_ADDR=$(JUMP_ADDR)		\
++	-DALT_JUMP_ADDR=$(ALT_JUMP_ADDR)		\
+ 	-DOS_MEM_BANK=$(OS_MEM_BANK) \
+ 	-DOS_MEM_SIZE=$(OS_MEM_SIZE) \
+ 	-DOS_IMG_SIZE=$(OS_IMG_SIZE) \
+-- 
+1.7.1
+

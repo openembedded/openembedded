@@ -1,0 +1,41 @@
+From 044592d20881ee9f61c29db3bc7b00424145e136 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Mon, 24 Jan 2011 19:37:56 +0100
+Subject: [PATCH v3 15/08] Make MAKENEW useful
+
+---
+ MAKENEW |   12 ++++++++----
+ 1 files changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/MAKENEW b/MAKENEW
+index efb388a..d041ecc 100755
+--- a/MAKENEW
++++ b/MAKENEW
+@@ -12,16 +12,20 @@ else
+ 	exit 0
+ fi
+ 
+-MAKEFLAGS="CROSS_COMPILE=${CROSS_COMPILE} CONFIG_NO_DWARF_CFI_ASM=y"
++MAKEFLAGS="CROSS_COMPILE=${CROSS_COMPILE}"
++# CONFIG_NO_DWARF_CFI_ASM=y"
+ 
+ function build()
+ {
+ 	if [ ${skip} == "0" ] ; then
+ 		rm .config
+ 		make $1_defconfig
+-		make menuconfig
+-		make BOARD=$2 update
+-#		make ${MAKEFLAGS}	> log/$1.log 2>&1 || mv log/$1.log log/FAIL/$1.log.FAIL
++#		make menuconfig
++#		make BOARD=$2 update
++		make ${MAKEFLAGS}
++		make ${MAKEFLAGS}	boot
++		make ${MAKEFLAGS}	install
++#	> log/$1.log 2>&1 || mv log/$1.log log/FAIL/$1.log.FAIL
+ 	fi
+ }
+ 
+-- 
+1.7.1
+

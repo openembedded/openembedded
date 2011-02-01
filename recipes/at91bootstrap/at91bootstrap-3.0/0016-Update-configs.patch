@@ -1,0 +1,1175 @@
+From 03db7b119864eb99b6d6abd6d0e44f3d369f6212 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Mon, 24 Jan 2011 19:41:35 +0100
+Subject: [PATCH v3 16/08] Update configs
+
+---
+ board/afeb9260/afeb9260_defconfig                  |    3 ++-
+ board/at91cap9adk/at91cap9adk_defconfig            |    3 ++-
+ board/at91cap9adk/at91cap9df_defconfig             |    3 ++-
+ board/at91cap9adk/at91cap9f_defconfig              |    3 ++-
+ board/at91cap9stk/at91cap9stk_defconfig            |    3 ++-
+ board/at91cap9stk/at91cap9stkdf_defconfig          |    3 ++-
+ board/at91cap9stk/at91cap9stkf_defconfig           |    3 ++-
+ board/at91sam9260ek/at91sam9260df_defconfig        |    3 ++-
+ board/at91sam9260ek/at91sam9260dfc_defconfig       |    3 ++-
+ board/at91sam9260ek/at91sam9260ek_defconfig        |    3 ++-
+ board/at91sam9260ek/at91sam9260nf_defconfig        |    3 ++-
+ board/at91sam9261ek/at91sam9261df_defconfig        |    3 ++-
+ board/at91sam9261ek/at91sam9261dfc_defconfig       |    3 ++-
+ board/at91sam9261ek/at91sam9261ek_defconfig        |    3 ++-
+ board/at91sam9261ek/at91sam9261nf_defconfig        |    3 ++-
+ board/at91sam9263ek/at91sam9263df_defconfig        |    3 ++-
+ board/at91sam9263ek/at91sam9263dfc_defconfig       |    3 ++-
+ board/at91sam9263ek/at91sam9263ek_defconfig        |    3 ++-
+ board/at91sam9263ek/at91sam9263nf_defconfig        |    3 ++-
+ board/at91sam9g10ek/at91sam9g10df_defconfig        |    3 ++-
+ board/at91sam9g10ek/at91sam9g10ek_defconfig        |    3 ++-
+ board/at91sam9g10ek/at91sam9g10nf_defconfig        |    3 ++-
+ board/at91sam9g10ek/at91sam9g10sd_defconfig        |    3 ++-
+ board/at91sam9g20ek/at91sam9g20df_defconfig        |    3 ++-
+ board/at91sam9g20ek/at91sam9g20dfc_defconfig       |    3 ++-
+ board/at91sam9g20ek/at91sam9g20ek_defconfig        |    3 ++-
+ board/at91sam9g20ek/at91sam9g20nf_defconfig        |    3 ++-
+ board/at91sam9g20ek/at91sam9g20sd_defconfig        |    3 ++-
+ board/at91sam9g45ek/at91sam9g45df_defconfig        |    3 ++-
+ board/at91sam9g45ek/at91sam9g45ek_defconfig        |    3 ++-
+ board/at91sam9g45ek/at91sam9g45nf_defconfig        |    3 ++-
+ board/at91sam9g45ek/at91sam9g45sd_defconfig        |    3 ++-
+ board/at91sam9g45ekes/at91sam9g45dfes_defconfig    |    3 ++-
+ board/at91sam9g45ekes/at91sam9g45ekes_defconfig    |    3 ++-
+ board/at91sam9g45ekes/at91sam9g45nfes_defconfig    |    3 ++-
+ .../at91sam9g45sdes_android_defconfig              |    3 ++-
+ board/at91sam9g45ekes/at91sam9g45sdes_defconfig    |    3 ++-
+ board/at91sam9m10ek/at91sam9m10df_defconfig        |    3 ++-
+ board/at91sam9m10ek/at91sam9m10ek_defconfig        |    3 ++-
+ board/at91sam9m10ek/at91sam9m10nf_defconfig        |    3 ++-
+ .../at91sam9m10ek/at91sam9m10sd_android_defconfig  |    3 ++-
+ board/at91sam9m10ek/at91sam9m10sd_defconfig        |    3 ++-
+ board/at91sam9m10ek/at91sam9m10sdu_defconfig       |    5 +++--
+ board/at91sam9m10ekes/at91sam9m10dfes_defconfig    |    3 ++-
+ board/at91sam9m10ekes/at91sam9m10ekes_defconfig    |    3 ++-
+ board/at91sam9m10ekes/at91sam9m10nfes_defconfig    |    3 ++-
+ board/at91sam9m10ekes/at91sam9m10sdes_defconfig    |    3 ++-
+ board/at91sam9rlek/at91sam9rldf_defconfig          |    3 ++-
+ board/at91sam9rlek/at91sam9rlek_defconfig          |    3 ++-
+ board/at91sam9rlek/at91sam9rlnf_defconfig          |    3 ++-
+ board/at91sam9rlek/at91sam9rlsd_defconfig          |    3 ++-
+ board/at91sam9xeek/at91sam9xedf_defconfig          |    3 ++-
+ board/at91sam9xeek/at91sam9xedfc_defconfig         |    3 ++-
+ board/at91sam9xeek/at91sam9xeek_defconfig          |    3 ++-
+ board/at91sam9xeek/at91sam9xenf_defconfig          |    3 ++-
+ 55 files changed, 111 insertions(+), 56 deletions(-)
+
+diff --git a/board/afeb9260/afeb9260_defconfig b/board/afeb9260/afeb9260_defconfig
+index 516b29b..289059a 100644
+--- a/board/afeb9260/afeb9260_defconfig
++++ b/board/afeb9260/afeb9260_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:42:56 2011
++# Mon Jan 24 19:40:09 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="afeb9260"
+@@ -115,6 +115,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x23F00000"
+ # CONFIG_LONG_TEST is not set
+ # CONFIG_DEBUG is not set
+diff --git a/board/at91cap9adk/at91cap9adk_defconfig b/board/at91cap9adk/at91cap9adk_defconfig
+index a0d8856..48cfb20 100644
+--- a/board/at91cap9adk/at91cap9adk_defconfig
++++ b/board/at91cap9adk/at91cap9adk_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:19 2011
++# Mon Jan 24 19:40:30 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91cap9adk"
+@@ -114,6 +114,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x73F00000"
++CONFIG_ALT_JUMP_ADDR="0x70000000"
+ CONFIG_GLBDRV_ADDR="0x70000000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91cap9adk/at91cap9df_defconfig b/board/at91cap9adk/at91cap9df_defconfig
+index 9f9723f..8f22b1a 100644
+--- a/board/at91cap9adk/at91cap9df_defconfig
++++ b/board/at91cap9adk/at91cap9df_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:18 2011
++# Mon Jan 24 19:40:29 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91cap9df"
+@@ -114,6 +114,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x73F00000"
++CONFIG_ALT_JUMP_ADDR="0x70000000"
+ CONFIG_GLBDRV_ADDR="0x70000000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91cap9adk/at91cap9f_defconfig b/board/at91cap9adk/at91cap9f_defconfig
+index 5cba669..cbb8990 100644
+--- a/board/at91cap9adk/at91cap9f_defconfig
++++ b/board/at91cap9adk/at91cap9f_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:18 2011
++# Mon Jan 24 19:40:28 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91cap9f"
+@@ -89,6 +89,7 @@ CONFIG_SETTING_ADDRESS="0x00008000"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x73F00000"
++CONFIG_ALT_JUMP_ADDR="0x70000000"
+ CONFIG_GLBDRV_ADDR="0x70000000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91cap9stk/at91cap9stk_defconfig b/board/at91cap9stk/at91cap9stk_defconfig
+index f505e19..14905d6 100644
+--- a/board/at91cap9stk/at91cap9stk_defconfig
++++ b/board/at91cap9stk/at91cap9stk_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:17 2011
++# Mon Jan 24 19:40:27 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91cap9stk"
+@@ -114,6 +114,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x73F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x70000000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91cap9stk/at91cap9stkdf_defconfig b/board/at91cap9stk/at91cap9stkdf_defconfig
+index 00bc7d1..07a3fe1 100644
+--- a/board/at91cap9stk/at91cap9stkdf_defconfig
++++ b/board/at91cap9stk/at91cap9stkdf_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:17 2011
++# Mon Jan 24 19:40:26 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91cap9stkdf"
+@@ -114,6 +114,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x73F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x70000000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91cap9stk/at91cap9stkf_defconfig b/board/at91cap9stk/at91cap9stkf_defconfig
+index 94b3ea9..8b363c5 100644
+--- a/board/at91cap9stk/at91cap9stkf_defconfig
++++ b/board/at91cap9stk/at91cap9stkf_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:17 2011
++# Mon Jan 24 19:40:27 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91cap9stkf"
+@@ -89,6 +89,7 @@ CONFIG_SETTING_ADDRESS="0x00008000"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x73F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x70000000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9260ek/at91sam9260df_defconfig b/board/at91sam9260ek/at91sam9260df_defconfig
+index 78b6a84..2467dca 100644
+--- a/board/at91sam9260ek/at91sam9260df_defconfig
++++ b/board/at91sam9260ek/at91sam9260df_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:20 2011
++# Mon Jan 24 19:40:33 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9260df"
+@@ -114,6 +114,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x20058000"
+ # CONFIG_LONG_TEST is not set
+ # CONFIG_DEBUG is not set
+diff --git a/board/at91sam9260ek/at91sam9260dfc_defconfig b/board/at91sam9260ek/at91sam9260dfc_defconfig
+index 4ff3fe1..05f4fe6 100644
+--- a/board/at91sam9260ek/at91sam9260dfc_defconfig
++++ b/board/at91sam9260ek/at91sam9260dfc_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:19 2011
++# Mon Jan 24 19:40:32 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9260dfc"
+@@ -114,6 +114,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x20058000"
+ # CONFIG_LONG_TEST is not set
+ # CONFIG_DEBUG is not set
+diff --git a/board/at91sam9260ek/at91sam9260ek_defconfig b/board/at91sam9260ek/at91sam9260ek_defconfig
+index c05d5c0..59a871c 100644
+--- a/board/at91sam9260ek/at91sam9260ek_defconfig
++++ b/board/at91sam9260ek/at91sam9260ek_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:20 2011
++# Mon Jan 24 19:40:33 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9260ek"
+@@ -114,6 +114,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x20058000"
+ # CONFIG_LONG_TEST is not set
+ # CONFIG_DEBUG is not set
+diff --git a/board/at91sam9260ek/at91sam9260nf_defconfig b/board/at91sam9260ek/at91sam9260nf_defconfig
+index e30fcab..71de347 100644
+--- a/board/at91sam9260ek/at91sam9260nf_defconfig
++++ b/board/at91sam9260ek/at91sam9260nf_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:19 2011
++# Mon Jan 24 19:40:31 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9260nf"
+@@ -96,6 +96,7 @@ CONFIG_SETTING_ADDRESS="0x01FE0000"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x20058000"
+ # CONFIG_LONG_TEST is not set
+ # CONFIG_DEBUG is not set
+diff --git a/board/at91sam9261ek/at91sam9261df_defconfig b/board/at91sam9261ek/at91sam9261df_defconfig
+index a98e46d..c55a281 100644
+--- a/board/at91sam9261ek/at91sam9261df_defconfig
++++ b/board/at91sam9261ek/at91sam9261df_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:23 2011
++# Mon Jan 24 19:40:43 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9261df"
+@@ -114,6 +114,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x20058000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9261ek/at91sam9261dfc_defconfig b/board/at91sam9261ek/at91sam9261dfc_defconfig
+index ac632d0..4912c7b 100644
+--- a/board/at91sam9261ek/at91sam9261dfc_defconfig
++++ b/board/at91sam9261ek/at91sam9261dfc_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:22 2011
++# Mon Jan 24 19:40:40 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9261dfc"
+@@ -114,6 +114,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x20058000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9261ek/at91sam9261ek_defconfig b/board/at91sam9261ek/at91sam9261ek_defconfig
+index f2c14d0..831bd90 100644
+--- a/board/at91sam9261ek/at91sam9261ek_defconfig
++++ b/board/at91sam9261ek/at91sam9261ek_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:23 2011
++# Mon Jan 24 19:40:42 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9261ek"
+@@ -114,6 +114,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x20058000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9261ek/at91sam9261nf_defconfig b/board/at91sam9261ek/at91sam9261nf_defconfig
+index d7d1a75..13068d2 100644
+--- a/board/at91sam9261ek/at91sam9261nf_defconfig
++++ b/board/at91sam9261ek/at91sam9261nf_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:22 2011
++# Mon Jan 24 19:40:41 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9261nf"
+@@ -95,6 +95,7 @@ CONFIG_SETTING_ADDRESS="0x01FE0000"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x20058000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9263ek/at91sam9263df_defconfig b/board/at91sam9263ek/at91sam9263df_defconfig
+index 65264ff..eee3abd 100644
+--- a/board/at91sam9263ek/at91sam9263df_defconfig
++++ b/board/at91sam9263ek/at91sam9263df_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:24 2011
++# Mon Jan 24 19:40:47 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9263df"
+@@ -117,6 +117,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x2006b000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9263ek/at91sam9263dfc_defconfig b/board/at91sam9263ek/at91sam9263dfc_defconfig
+index ce626d4..00e88bc 100644
+--- a/board/at91sam9263ek/at91sam9263dfc_defconfig
++++ b/board/at91sam9263ek/at91sam9263dfc_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:24 2011
++# Mon Jan 24 19:40:48 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9263dfc"
+@@ -117,6 +117,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x2006b000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9263ek/at91sam9263ek_defconfig b/board/at91sam9263ek/at91sam9263ek_defconfig
+index 87b4d33..1c6b5cd 100644
+--- a/board/at91sam9263ek/at91sam9263ek_defconfig
++++ b/board/at91sam9263ek/at91sam9263ek_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:23 2011
++# Mon Jan 24 19:40:44 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9263ek"
+@@ -117,6 +117,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x2006b000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9263ek/at91sam9263nf_defconfig b/board/at91sam9263ek/at91sam9263nf_defconfig
+index 6093466..2365ab5 100644
+--- a/board/at91sam9263ek/at91sam9263nf_defconfig
++++ b/board/at91sam9263ek/at91sam9263nf_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:24 2011
++# Mon Jan 24 19:40:45 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9263nf"
+@@ -98,6 +98,7 @@ CONFIG_SETTING_ADDRESS="0x01FE0000"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x2006b000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9g10ek/at91sam9g10df_defconfig b/board/at91sam9g10ek/at91sam9g10df_defconfig
+index b9358af..bb1ae6d 100644
+--- a/board/at91sam9g10ek/at91sam9g10df_defconfig
++++ b/board/at91sam9g10ek/at91sam9g10df_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:03 2011
++# Mon Jan 24 19:40:20 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g10df"
+@@ -114,6 +114,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x20068000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9g10ek/at91sam9g10ek_defconfig b/board/at91sam9g10ek/at91sam9g10ek_defconfig
+index 2436cdc..5f2bbbd 100644
+--- a/board/at91sam9g10ek/at91sam9g10ek_defconfig
++++ b/board/at91sam9g10ek/at91sam9g10ek_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:02 2011
++# Mon Jan 24 19:40:18 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g10ek"
+@@ -114,6 +114,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x20068000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9g10ek/at91sam9g10nf_defconfig b/board/at91sam9g10ek/at91sam9g10nf_defconfig
+index ed42d16..6c219f1 100644
+--- a/board/at91sam9g10ek/at91sam9g10nf_defconfig
++++ b/board/at91sam9g10ek/at91sam9g10nf_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:03 2011
++# Mon Jan 24 19:40:19 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g10nf"
+@@ -95,6 +95,7 @@ CONFIG_SETTING_ADDRESS="0x01FE0000"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x20068000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9g10ek/at91sam9g10sd_defconfig b/board/at91sam9g10ek/at91sam9g10sd_defconfig
+index 5bcfe96..ffdd9dd 100644
+--- a/board/at91sam9g10ek/at91sam9g10sd_defconfig
++++ b/board/at91sam9g10ek/at91sam9g10sd_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:03 2011
++# Mon Jan 24 19:40:21 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g10sd"
+@@ -93,6 +93,7 @@ CONFIG_SETTING_ADDRESS="0x00000000"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00280000"
+ CONFIG_JUMP_ADDR="0x22000000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x20068000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9g20ek/at91sam9g20df_defconfig b/board/at91sam9g20ek/at91sam9g20df_defconfig
+index 287594b..284e62e 100644
+--- a/board/at91sam9g20ek/at91sam9g20df_defconfig
++++ b/board/at91sam9g20ek/at91sam9g20df_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:21 2011
++# Mon Jan 24 19:40:38 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g20df"
+@@ -114,6 +114,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x20058000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9g20ek/at91sam9g20dfc_defconfig b/board/at91sam9g20ek/at91sam9g20dfc_defconfig
+index 345847c..2507515 100644
+--- a/board/at91sam9g20ek/at91sam9g20dfc_defconfig
++++ b/board/at91sam9g20ek/at91sam9g20dfc_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:21 2011
++# Mon Jan 24 19:40:36 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g20dfc"
+@@ -114,6 +114,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x20058000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9g20ek/at91sam9g20ek_defconfig b/board/at91sam9g20ek/at91sam9g20ek_defconfig
+index d134be9..952c809 100644
+--- a/board/at91sam9g20ek/at91sam9g20ek_defconfig
++++ b/board/at91sam9g20ek/at91sam9g20ek_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:22 2011
++# Mon Jan 24 19:40:39 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g20ek"
+@@ -114,6 +114,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x20058000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9g20ek/at91sam9g20nf_defconfig b/board/at91sam9g20ek/at91sam9g20nf_defconfig
+index d6d9dd5..72edcb6 100644
+--- a/board/at91sam9g20ek/at91sam9g20nf_defconfig
++++ b/board/at91sam9g20ek/at91sam9g20nf_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:20 2011
++# Mon Jan 24 19:40:35 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g20nf"
+@@ -96,6 +96,7 @@ CONFIG_SETTING_ADDRESS="0x01FE0000"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x20058000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9g20ek/at91sam9g20sd_defconfig b/board/at91sam9g20ek/at91sam9g20sd_defconfig
+index 87442b8..7d96f2a 100644
+--- a/board/at91sam9g20ek/at91sam9g20sd_defconfig
++++ b/board/at91sam9g20ek/at91sam9g20sd_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:21 2011
++# Mon Jan 24 19:40:37 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g20sd"
+@@ -94,6 +94,7 @@ CONFIG_SETTING_ADDRESS="0x00000000"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00280000"
+ CONFIG_JUMP_ADDR="0x22000000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x20058000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9g45ek/at91sam9g45df_defconfig b/board/at91sam9g45ek/at91sam9g45df_defconfig
+index 3a1bafc..ec660f9 100644
+--- a/board/at91sam9g45ek/at91sam9g45df_defconfig
++++ b/board/at91sam9g45ek/at91sam9g45df_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:29 2011
++# Mon Jan 24 19:40:50 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g45df"
+@@ -115,6 +115,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x73F00000"
++CONFIG_ALT_JUMP_ADDR="0x70000000"
+ CONFIG_GLBDRV_ADDR="0x7006b000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9g45ek/at91sam9g45ek_defconfig b/board/at91sam9g45ek/at91sam9g45ek_defconfig
+index f9c620e..1121938 100644
+--- a/board/at91sam9g45ek/at91sam9g45ek_defconfig
++++ b/board/at91sam9g45ek/at91sam9g45ek_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:28 2011
++# Mon Jan 24 19:40:49 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g45ek"
+@@ -115,6 +115,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x73F00000"
++CONFIG_ALT_JUMP_ADDR="0x70000000"
+ CONFIG_GLBDRV_ADDR="0x7006b000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9g45ek/at91sam9g45nf_defconfig b/board/at91sam9g45ek/at91sam9g45nf_defconfig
+index bfef651..35b8b91 100644
+--- a/board/at91sam9g45ek/at91sam9g45nf_defconfig
++++ b/board/at91sam9g45ek/at91sam9g45nf_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:30 2011
++# Mon Jan 24 19:40:51 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g45nf"
+@@ -96,6 +96,7 @@ CONFIG_SETTING_ADDRESS="0x01FE0000"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x73F00000"
++CONFIG_ALT_JUMP_ADDR="0x70000000"
+ CONFIG_GLBDRV_ADDR="0x7006b000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9g45ek/at91sam9g45sd_defconfig b/board/at91sam9g45ek/at91sam9g45sd_defconfig
+index df17dc9..6e1070f 100644
+--- a/board/at91sam9g45ek/at91sam9g45sd_defconfig
++++ b/board/at91sam9g45ek/at91sam9g45sd_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:31 2011
++# Mon Jan 24 19:40:52 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g45sd"
+@@ -94,6 +94,7 @@ CONFIG_SETTING_ADDRESS="0x00000000"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00280000"
+ CONFIG_JUMP_ADDR="0x72000000"
++CONFIG_ALT_JUMP_ADDR="0x70000000"
+ CONFIG_GLBDRV_ADDR="0x7006b000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9g45ekes/at91sam9g45dfes_defconfig b/board/at91sam9g45ekes/at91sam9g45dfes_defconfig
+index ddf19e1..43e7e01 100644
+--- a/board/at91sam9g45ekes/at91sam9g45dfes_defconfig
++++ b/board/at91sam9g45ekes/at91sam9g45dfes_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:16 2011
++# Mon Jan 24 19:40:24 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g45dfes"
+@@ -115,6 +115,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x73F00000"
++CONFIG_ALT_JUMP_ADDR="0x70000000"
+ CONFIG_GLBDRV_ADDR="0x7006b000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9g45ekes/at91sam9g45ekes_defconfig b/board/at91sam9g45ekes/at91sam9g45ekes_defconfig
+index 79f8d2e..6e5cc6a 100644
+--- a/board/at91sam9g45ekes/at91sam9g45ekes_defconfig
++++ b/board/at91sam9g45ekes/at91sam9g45ekes_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:15 2011
++# Mon Jan 24 19:40:23 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g45ekes"
+@@ -115,6 +115,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x73F00000"
++CONFIG_ALT_JUMP_ADDR="0x70000000"
+ CONFIG_GLBDRV_ADDR="0x7006b000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9g45ekes/at91sam9g45nfes_defconfig b/board/at91sam9g45ekes/at91sam9g45nfes_defconfig
+index 903680e..6b73899 100644
+--- a/board/at91sam9g45ekes/at91sam9g45nfes_defconfig
++++ b/board/at91sam9g45ekes/at91sam9g45nfes_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:16 2011
++# Mon Jan 24 19:40:25 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g45nfes"
+@@ -96,6 +96,7 @@ CONFIG_SETTING_ADDRESS="0x01FE0000"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x73F00000"
++CONFIG_ALT_JUMP_ADDR="0x70000000"
+ CONFIG_GLBDRV_ADDR="0x7006b000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9g45ekes/at91sam9g45sdes_android_defconfig b/board/at91sam9g45ekes/at91sam9g45sdes_android_defconfig
+index b423ab4..994cdfc 100644
+--- a/board/at91sam9g45ekes/at91sam9g45sdes_android_defconfig
++++ b/board/at91sam9g45ekes/at91sam9g45sdes_android_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:12 2011
++# Mon Jan 24 19:40:21 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g45sdes_android"
+@@ -94,6 +94,7 @@ CONFIG_SETTING_ADDRESS="0x00000000"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00280000"
+ CONFIG_JUMP_ADDR="0x72000000"
++CONFIG_ALT_JUMP_ADDR="0x70000000"
+ CONFIG_GLBDRV_ADDR="0x7006b000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9g45ekes/at91sam9g45sdes_defconfig b/board/at91sam9g45ekes/at91sam9g45sdes_defconfig
+index 194f561..96b2c6d 100644
+--- a/board/at91sam9g45ekes/at91sam9g45sdes_defconfig
++++ b/board/at91sam9g45ekes/at91sam9g45sdes_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:14 2011
++# Mon Jan 24 19:40:22 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g45sdes"
+@@ -94,6 +94,7 @@ CONFIG_SETTING_ADDRESS="0x00000000"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00280000"
+ CONFIG_JUMP_ADDR="0x72000000"
++CONFIG_ALT_JUMP_ADDR="0x70000000"
+ CONFIG_GLBDRV_ADDR="0x7006b000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9m10ek/at91sam9m10df_defconfig b/board/at91sam9m10ek/at91sam9m10df_defconfig
+index 626e318..91589fa 100644
+--- a/board/at91sam9m10ek/at91sam9m10df_defconfig
++++ b/board/at91sam9m10ek/at91sam9m10df_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:42:54 2011
++# Mon Jan 24 19:40:06 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9m10df"
+@@ -115,6 +115,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x73F00000"
++CONFIG_ALT_JUMP_ADDR="0x70000000"
+ CONFIG_GLBDRV_ADDR="0x7006b000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9m10ek/at91sam9m10ek_defconfig b/board/at91sam9m10ek/at91sam9m10ek_defconfig
+index 6da1390..f5f68eb 100644
+--- a/board/at91sam9m10ek/at91sam9m10ek_defconfig
++++ b/board/at91sam9m10ek/at91sam9m10ek_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:42:53 2011
++# Mon Jan 24 19:40:05 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9m10ek"
+@@ -115,6 +115,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x73F00000"
++CONFIG_ALT_JUMP_ADDR="0x70000000"
+ CONFIG_GLBDRV_ADDR="0x7006b000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9m10ek/at91sam9m10nf_defconfig b/board/at91sam9m10ek/at91sam9m10nf_defconfig
+index c146201..9cf0410 100644
+--- a/board/at91sam9m10ek/at91sam9m10nf_defconfig
++++ b/board/at91sam9m10ek/at91sam9m10nf_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:42:56 2011
++# Mon Jan 24 19:40:08 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9m10nf"
+@@ -96,6 +96,7 @@ CONFIG_SETTING_ADDRESS="0x01FE0000"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x73F00000"
++CONFIG_ALT_JUMP_ADDR="0x70000000"
+ CONFIG_GLBDRV_ADDR="0x7006b000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9m10ek/at91sam9m10sd_android_defconfig b/board/at91sam9m10ek/at91sam9m10sd_android_defconfig
+index 8693ad4..5b72a1e 100644
+--- a/board/at91sam9m10ek/at91sam9m10sd_android_defconfig
++++ b/board/at91sam9m10ek/at91sam9m10sd_android_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:42:51 2011
++# Mon Jan 24 19:40:02 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9m10sd_android"
+@@ -94,6 +94,7 @@ CONFIG_SETTING_ADDRESS="0x00000000"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00280000"
+ CONFIG_JUMP_ADDR="0x72000000"
++CONFIG_ALT_JUMP_ADDR="0x70000000"
+ CONFIG_GLBDRV_ADDR="0x7006b000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9m10ek/at91sam9m10sd_defconfig b/board/at91sam9m10ek/at91sam9m10sd_defconfig
+index 670664b..6bb69c8 100644
+--- a/board/at91sam9m10ek/at91sam9m10sd_defconfig
++++ b/board/at91sam9m10ek/at91sam9m10sd_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:42:55 2011
++# Mon Jan 24 19:40:07 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9m10sd"
+@@ -94,6 +94,7 @@ CONFIG_SETTING_ADDRESS="0x00000000"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00280000"
+ CONFIG_JUMP_ADDR="0x72000000"
++CONFIG_ALT_JUMP_ADDR="0x70000000"
+ CONFIG_GLBDRV_ADDR="0x7006b000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9m10ek/at91sam9m10sdu_defconfig b/board/at91sam9m10ek/at91sam9m10sdu_defconfig
+index 747329a..07ba3f9 100644
+--- a/board/at91sam9m10ek/at91sam9m10sdu_defconfig
++++ b/board/at91sam9m10ek/at91sam9m10sdu_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:42:51 2011
++# Mon Jan 24 19:40:04 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9m10sdu"
+@@ -81,7 +81,7 @@ CONFIG_DUAL_BOOT=y
+ CONFIG_ALT_IMG_ADDRESS="0x00000000"
+ CONFIG_ALT_IMG_SIZE="0x00010000"
+ CONFIG_ALT_IMAGE_NAME="program.bin"
+-CONFIG_OS_IMAGE_NAME="uimage.bin"
++CONFIG_OS_IMAGE_NAME="u-boot.bin"
+ CONFIG_OS_IMG_SIZE="0x280000"
+ 
+ #
+@@ -92,6 +92,7 @@ CONFIG_SETTING_ADDRESS="0x00000000"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x73F00000"
++CONFIG_ALT_JUMP_ADDR="0x70000000"
+ CONFIG_GLBDRV_ADDR="0x7006b000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9m10ekes/at91sam9m10dfes_defconfig b/board/at91sam9m10ekes/at91sam9m10dfes_defconfig
+index 6a49475..09c9d51 100644
+--- a/board/at91sam9m10ekes/at91sam9m10dfes_defconfig
++++ b/board/at91sam9m10ekes/at91sam9m10dfes_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:01 2011
++# Mon Jan 24 19:40:13 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9m10dfes"
+@@ -115,6 +115,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x73F00000"
++CONFIG_ALT_JUMP_ADDR="0x70000000"
+ CONFIG_GLBDRV_ADDR="0x7006b000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9m10ekes/at91sam9m10ekes_defconfig b/board/at91sam9m10ekes/at91sam9m10ekes_defconfig
+index e6b3027..2ba49eb 100644
+--- a/board/at91sam9m10ekes/at91sam9m10ekes_defconfig
++++ b/board/at91sam9m10ekes/at91sam9m10ekes_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:00 2011
++# Mon Jan 24 19:40:12 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9m10ekes"
+@@ -115,6 +115,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x73F00000"
++CONFIG_ALT_JUMP_ADDR="0x70000000"
+ CONFIG_GLBDRV_ADDR="0x7006b000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9m10ekes/at91sam9m10nfes_defconfig b/board/at91sam9m10ekes/at91sam9m10nfes_defconfig
+index 5f03396..093cc86 100644
+--- a/board/at91sam9m10ekes/at91sam9m10nfes_defconfig
++++ b/board/at91sam9m10ekes/at91sam9m10nfes_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:42:58 2011
++# Mon Jan 24 19:40:10 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9m10nfes"
+@@ -96,6 +96,7 @@ CONFIG_SETTING_ADDRESS="0x01FE0000"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x73F00000"
++CONFIG_ALT_JUMP_ADDR="0x70000000"
+ CONFIG_GLBDRV_ADDR="0x7006b000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9m10ekes/at91sam9m10sdes_defconfig b/board/at91sam9m10ekes/at91sam9m10sdes_defconfig
+index 1d413ca..f21e663 100644
+--- a/board/at91sam9m10ekes/at91sam9m10sdes_defconfig
++++ b/board/at91sam9m10ekes/at91sam9m10sdes_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:42:59 2011
++# Mon Jan 24 19:40:11 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9m10sdes"
+@@ -94,6 +94,7 @@ CONFIG_SETTING_ADDRESS="0x00000000"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00280000"
+ CONFIG_JUMP_ADDR="0x72000000"
++CONFIG_ALT_JUMP_ADDR="0x70000000"
+ CONFIG_GLBDRV_ADDR="0x7006b000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9rlek/at91sam9rldf_defconfig b/board/at91sam9rlek/at91sam9rldf_defconfig
+index 9c0011a..e78d085 100644
+--- a/board/at91sam9rlek/at91sam9rldf_defconfig
++++ b/board/at91sam9rlek/at91sam9rldf_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:32 2011
++# Mon Jan 24 19:40:54 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9rldf"
+@@ -114,6 +114,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x2006b000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9rlek/at91sam9rlek_defconfig b/board/at91sam9rlek/at91sam9rlek_defconfig
+index 9a3a9b6..8422f33 100644
+--- a/board/at91sam9rlek/at91sam9rlek_defconfig
++++ b/board/at91sam9rlek/at91sam9rlek_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:32 2011
++# Mon Jan 24 19:40:55 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9rlek"
+@@ -114,6 +114,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x2006b000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9rlek/at91sam9rlnf_defconfig b/board/at91sam9rlek/at91sam9rlnf_defconfig
+index 2dcab82..53d1e32 100644
+--- a/board/at91sam9rlek/at91sam9rlnf_defconfig
++++ b/board/at91sam9rlek/at91sam9rlnf_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:31 2011
++# Mon Jan 24 19:40:53 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9rlnf"
+@@ -94,6 +94,7 @@ CONFIG_SETTING_ADDRESS="0x01FE0000"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x2006b000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9rlek/at91sam9rlsd_defconfig b/board/at91sam9rlek/at91sam9rlsd_defconfig
+index 5bb004d..ea00655 100644
+--- a/board/at91sam9rlek/at91sam9rlsd_defconfig
++++ b/board/at91sam9rlek/at91sam9rlsd_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:32 2011
++# Mon Jan 24 19:40:54 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9rlsd"
+@@ -92,6 +92,7 @@ CONFIG_SETTING_ADDRESS="0x00000000"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00280000"
+ CONFIG_JUMP_ADDR="0x22000000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x2006b000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9xeek/at91sam9xedf_defconfig b/board/at91sam9xeek/at91sam9xedf_defconfig
+index 9700b85..6e9e1c0 100644
+--- a/board/at91sam9xeek/at91sam9xedf_defconfig
++++ b/board/at91sam9xeek/at91sam9xedf_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:01 2011
++# Mon Jan 24 19:40:15 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9xedf"
+@@ -115,6 +115,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x23F00000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9xeek/at91sam9xedfc_defconfig b/board/at91sam9xeek/at91sam9xedfc_defconfig
+index dac40a4..20a9cdc 100644
+--- a/board/at91sam9xeek/at91sam9xedfc_defconfig
++++ b/board/at91sam9xeek/at91sam9xedfc_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:02 2011
++# Mon Jan 24 19:40:16 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9xedfc"
+@@ -115,6 +115,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x23F00000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9xeek/at91sam9xeek_defconfig b/board/at91sam9xeek/at91sam9xeek_defconfig
+index 4fdf865..0291bd1 100644
+--- a/board/at91sam9xeek/at91sam9xeek_defconfig
++++ b/board/at91sam9xeek/at91sam9xeek_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:01 2011
++# Mon Jan 24 19:40:14 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9xeek"
+@@ -115,6 +115,7 @@ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x23F00000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9xeek/at91sam9xenf_defconfig b/board/at91sam9xeek/at91sam9xenf_defconfig
+index a51926c..aa1cba8 100644
+--- a/board/at91sam9xeek/at91sam9xenf_defconfig
++++ b/board/at91sam9xeek/at91sam9xenf_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Jan 16 21:43:02 2011
++# Mon Jan 24 19:40:17 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9xenf"
+@@ -97,6 +97,7 @@ CONFIG_SETTING_ADDRESS="0x01FE0000"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00040000"
+ CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x23F00000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+-- 
+1.7.1
+

@@ -1,0 +1,194 @@
+From 0db54ff2e7a532bcb04db3f6130fbcdd1f2ff853 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Sun, 23 Jan 2011 20:07:06 +0100
+Subject: [PATCH v3 10/08] Update build scripts
+
+---
+ ALLCONFIGS |   17 +++++++++++++
+ MAKEALL    |   76 +++++++++++++++--------------------------------------------
+ configs    |   55 +++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 92 insertions(+), 56 deletions(-)
+ create mode 100644 ALLCONFIGS
+ create mode 100644 configs
+
+diff --git a/ALLCONFIGS b/ALLCONFIGS
+new file mode 100644
+index 0000000..5d07924
+--- /dev/null
++++ b/ALLCONFIGS
+@@ -0,0 +1,17 @@
++#!/bin/sh
++export	GCCROOT=/home/ulf/projects/OE_atmel/build/tmp-angstrom_2008_1/sysroots/i686-linux/usr/armv5te/bin
++export	PATH=${GCCROOT}:${PATH}
++export	CROSS_COMPILE=${GCCROOT}/arm-angstrom-linux-gnueabi-
++
++function	build ()
++{
++	make	$1_defconfig
++	make	menuconfig
++	make	CROSS_COMPILE=arm-linux- update
++}
++
++for f in `cat configs` ; do
++	build	$f
++done
++
++
+diff --git a/MAKEALL b/MAKEALL
+index b0eb73b..caf000c 100755
+--- a/MAKEALL
++++ b/MAKEALL
+@@ -1,69 +1,33 @@
+ #!/bin/sh
+-rm -f binaries/*
+-rm -rf log
+-rm -fr result
+-mkdir -p log/FAIL
+-mkdir result
++rm	-f	binaries/*
++rm	-rf	log
++rm	-fr	result
++mkdir	-p	log
++mkdir	-p	result/FAIL
++mkdir	-p	result/OK
++mkdir	-p	result/binaries
++mkdir	-p	result
++mkdir	-p	result/map
++mkdir	-p	result/elf
+ skip=0
+ 
+ function build()
+ {
+ 	make mrproper
+ 	make $1_defconfig
+-	make > log/$1.log 2>&1 || mv log/$1.log log/FAIL/$1.log.FAIL
+-	mv binaries/* result/
+-	mv log/* result/
++	make > log/$1.log 2>&1 || mv log/$1.log result/FAIL/$1.log.FAIL
++	mv log/$1.log result/OK/$1.log.OK	|| echo
++	mv binaries/*.elf	result/elf
++	mv binaries/*.map	result/map
++	mv binaries/*.bin	result/binaries
+ }
+ 
+-#build	at91cap9adk
+-#build	at91cap9df
+-#build	at91cap9f
++for f in `cat configs` ; do
++	build	$f
++done
+ 
+-#build	at91cap9stk
+-#build	at91cap9stkdf
+-#build	at91cap9stkf
+-
+-build	at91sam9260df
+-build	at91sam9260nf
+-
+-build	at91sam9g20df
+-build	at91sam9g20sd
+-build	at91sam9g20nf
+-
+-
+-build	at91sam9261df
+-build	at91sam9261nf
+-
+-build	at91sam9g10df
+-build	at91sam9g10sd
+-build	at91sam9g10nf
+-
+-build	at91sam9rldf
+-build	at91sam9rlsd
+-build	at91sam9rlnf
+-
+-build	at91sam9263df
+-build	at91sam9263nf
+-
+-build	at91sam9g45dfes
+-build	at91sam9g45sdes
+-build	at91sam9g45nfes
+-
+-build	at91sam9g45df
+-build	at91sam9g45sd
+-build	at91sam9g45nf
+-
+-build	at91sam9m10df
+-build	at91sam9m10sd
+-build	at91sam9m10nf
+-
+-build	at91sam9xedf
+-build	at91sam9xenf
+-#build	at91sam9xedfc
+-#build	at91sam9xeek
+-
+-rm -fr binaries
+-rm -fr log
++#rm -fr binaries
++#rm -fr log
+ echo
+ echo
+ echo "### Done!"
+diff --git a/configs b/configs
+new file mode 100644
+index 0000000..e72edae
+--- /dev/null
++++ b/configs
+@@ -0,0 +1,55 @@
++at91sam9m10sd_android
++at91sam9m10sdu
++at91sam9m10ek
++at91sam9m10df
++at91sam9m10sd
++at91sam9m10nf
++afeb9260
++at91sam9m10nfes
++at91sam9m10sdes
++at91sam9m10ekes
++at91sam9m10dfes
++at91sam9xeek
++at91sam9xedf
++at91sam9xedfc
++at91sam9xenf
++at91sam9g10ek
++at91sam9g10nf
++at91sam9g10df
++at91sam9g10sd
++at91sam9g45sdes_android
++at91sam9g45sdes
++at91sam9g45ekes
++at91sam9g45dfes
++at91sam9g45nfes
++at91cap9stkdf
++at91cap9stkf
++at91cap9stk
++at91cap9f
++at91cap9df
++at91cap9adk
++at91sam9260nf
++at91sam9260dfc
++at91sam9260df
++at91sam9260ek
++at91sam9g20nf
++at91sam9g20dfc
++at91sam9g20sd
++at91sam9g20df
++at91sam9g20ek
++at91sam9261dfc
++at91sam9261nf
++at91sam9261ek
++at91sam9261df
++at91sam9263ek
++at91sam9263nf
++at91sam9263df
++at91sam9263dfc
++at91sam9g45ek
++at91sam9g45df
++at91sam9g45nf
++at91sam9g45sd
++at91sam9rlnf
++at91sam9rldf
++at91sam9rlsd
++at91sam9rlek
+-- 
+1.7.1
+

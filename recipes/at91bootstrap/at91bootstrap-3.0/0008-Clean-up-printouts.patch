@@ -1,0 +1,199 @@
+From 8512356f4eb3b6e796fef0fc1d8d4cfca7f66934 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Sun, 23 Jan 2011 20:03:30 +0100
+Subject: [PATCH v3 08/08] Clean up printouts
+
+---
+ driver/MEDSdcard.c |    4 ++--
+ driver/dataflash.c |   41 +++++------------------------------------
+ driver/dbgu.c      |    2 +-
+ driver/gpio.c      |    4 ++--
+ driver/mci.c       |   10 +++++-----
+ 5 files changed, 15 insertions(+), 46 deletions(-)
+
+diff --git a/driver/MEDSdcard.c b/driver/MEDSdcard.c
+index e6a660f..9f0bec0 100644
+--- a/driver/MEDSdcard.c
++++ b/driver/MEDSdcard.c
+@@ -464,7 +464,7 @@ unsigned char MEDSdcard_Initialize(Media * media, unsigned char mciID)
+                  MCI_POLLING_MODE);
+ //        IRQ_EnableIT(BOARD_SD_MCI_ID);
+     } else {
+-//              dbg_print("pos2.2\r\n");
++//              dbgu_print("pos2.2\r\n");
+ #ifdef BOARD_SD_MCI1_ID
+ //        IRQ_ConfigureIT(BOARD_SD_MCI1_ID,  1, MCI0_IrqHandler);
+         MCI_Init(mciDrv, BOARD_SD_MCI1_BASE, BOARD_SD_MCI1_ID,
+@@ -474,7 +474,7 @@ unsigned char MEDSdcard_Initialize(Media * media, unsigned char mciID)
+ 
+ #endif
+     }
+-//      dbg_print("pos2.3\r\n");
++//      dbgu_print("pos2.3\r\n");
+ #if MCI_BUSY_CHECK_FIX && defined(BOARD_SD_DAT0)
+     MCI_SetBusyFix(mciDrv, &pinSdDAT0);
+ #endif
+diff --git a/driver/dataflash.c b/driver/dataflash.c
+index dd2000a..3c5e1fd 100644
+--- a/driver/dataflash.c
++++ b/driver/dataflash.c
+@@ -58,23 +58,6 @@ static void msg_df_detect(int i)
+ {
+ #if	defined(CONFIG_VERBOSE)
+     char *pn;
+-
+-#ifdef	CONFIG_DEBUG
+-#if 0
+-    msg_print(MSG_PROMPT);
+-    msg_print(MSG_DATAFLASH);
+-    msg_print(MSG_SPACE);
+-    msg_print(MSG_CODE);
+-    msg_print(MSG_SPACE);
+-    dbg_print_hex(i);
+-    msg_print(MSG_NEWLINE);
+-#endif
+-#endif
+-#if 0
+-    msg_print(MSG_PROMPT);
+-    msg_print(MSG_AT45);
+-    msg_print(MSG_DB);
+-#endif
+     switch (i) {
+     case AT45DB011D:
+         pn = "011D";
+@@ -97,26 +80,12 @@ static void msg_df_detect(int i)
+     case AT45DB642D:
+         pn = "642D";
+         break;
+-#if	0
+-    case AT45DB1282D:
+-        pn = "1282";
+-        break;
+-    case AT45DB2562D:
+-        pn = "2562";
+-        break;
+-    case AT45DB5122D:
+-        pn = "5122";
+-        break;
+-#endif
+     default:
+         pn = "????";
+         break;
+     }
+-#if 0
+-    dbg_print(pn);
+-    msg_print_ws(MSG_DETECTED);
+-    msg_print(MSG_NEWLINE);
+-#endif
++    dbgu_print(pn);
++    dbgu_print("detected\r\n");
+ #endif
+ }
+ 
+@@ -326,14 +295,14 @@ void df_write(AT91PS_DF pDf, unsigned int addr, int size, unsigned long offset)
+         for (i = 0; i < 32; i += 4) {
+ #if 0
+             if (!(i & 4))
+-                dbg_print_hex(i + j);
++                dbgu_print_hex(i + j);
+ #endif
+ #if 0
+             if (LONG_VAL(0x200000 + i + j) == LONG_VAL(&rxBuffer[i]))
+                 msg_print(MSG_SPACE);
+             else
+                 msg_print(MSG_EXCLAMATION);
+-            dbg_print_hex(LONG_VAL(&rxBuffer[i]));
++            dbgu_print_hex(LONG_VAL(&rxBuffer[i]));
+             if (i & 4)
+                 msg_print(MSG_NEWLINE);
+ #endif
+@@ -424,7 +393,7 @@ static int df_probe(AT91PS_DF pDf)
+     if ((pResult[1] & 0x1) == 0x1) {
+         pDf->dfDescription.binaryPageMode = 1;
+ #ifdef CONFIG_VERBOSE
+-        //dbg_print("> DataFlash in binary mode\n\r");
++        dbgu_print("> DataFlash in binary mode\n\r");
+ #endif                          /* CONFIG_DEBUG */
+     } else {
+         pDf->dfDescription.binaryPageMode = 0;
+diff --git a/driver/dbgu.c b/driver/dbgu.c
+index 3a43a38..dbfc33a 100644
+--- a/driver/dbgu.c
++++ b/driver/dbgu.c
+@@ -73,7 +73,7 @@ void dbgu_init(unsigned int baudrate)
+ }
+ 
+ //*----------------------------------------------------------------------------
+-//* \fn    dbg_print
++//* \fn    dbgu_print
+ //* \brief This function is used to send data to DBGU
+ //*---------------------------------------------------------------------------*/
+ void dbgu_print(const char *ptr)
+diff --git a/driver/gpio.c b/driver/gpio.c
+index 7231712..b5f037b 100644
+--- a/driver/gpio.c
++++ b/driver/gpio.c
+@@ -197,7 +197,7 @@ int pio_set_value(unsigned pin, int value)
+     return 0;
+ }
+ #endif
+-#if !defined (CONFIG_SDCARD)
++
+ /*------------------------------------------------------------------------------*/
+ /* \fn    pio_get_value								*/
+ /* \brief read the pin's value (works even if it's not muxed as a gpio).	*/
+@@ -216,7 +216,7 @@ int pio_get_value(unsigned pin)
+     pdsr = read_pio(PIO_PDSR(pio));
+     return (pdsr & mask) != 0;
+ }
+-#endif
++
+ /*------------------------------------------------------------------------------*/
+ /* \fn    pio_device_pio_setup							*/
+ /* \brief Configure PIO in periph mode according to the platform informations	*/
+diff --git a/driver/mci.c b/driver/mci.c
+index 9e52024..41ae079 100644
+--- a/driver/mci.c
++++ b/driver/mci.c
+@@ -260,9 +260,9 @@ unsigned int MCI_SetSpeed(Mci * pMci,
+     unsigned int comparevalue = 0;
+ 
+     mciMr = READ_MCI(pMciHw, MCI_MR) & (~AT91C_MCI_CLKDIV);
+-//      dbg_print("pos2.4.2\r\n");
++//      dbgu_print("pos2.4.2\r\n");
+ 
+-//      dbg_printnum("mciLimit:", mciLimit);
++//      dbgu_printnum("mciLimit:", mciLimit);
+ 
+     // Multimedia Card Interface clock (MCCK or MCI_CK) is Master Clock (MCK)
+     // divided by (2*(CLKDIV+1))
+@@ -272,7 +272,7 @@ unsigned int MCI_SetSpeed(Mci * pMci,
+ //        divLimit = (mck / 2 / mciLimit);
+         divLimit = (mck / 2);
+         divLimit = (divLimit / mciLimit);
+-//              dbg_printnum("mck1:", mck);
++//              dbgu_printnum("mck1:", mck);
+ //        if ((mck / 2) % mciLimit) divLimit ++;
+ 
+         comparevalue = (mck / 2);
+@@ -281,7 +281,7 @@ unsigned int MCI_SetSpeed(Mci * pMci,
+         if (comparevalue)
+             divLimit++;
+     }
+-//      dbg_printnum("mck:", mck);
++//      dbgu_printnum("mck:", mck);
+     if (mciSpeed > 0) {
+         /*
+          * mciSpeed = 0x8000000;
+@@ -312,7 +312,7 @@ unsigned int MCI_SetSpeed(Mci * pMci,
+     //MCI_SetTimeout(pMciHw, mciSpeed / 2, mciSpeed);
+ 
+     WRITE_MCI(pMciHw, MCI_MR, mciMr | clkdiv);
+-//      dbg_print("pos2.4.3\r\n");
++//      dbgu_print("pos2.4.3\r\n");
+     return (mciSpeed);
+ }
+ 
+-- 
+1.7.1
+

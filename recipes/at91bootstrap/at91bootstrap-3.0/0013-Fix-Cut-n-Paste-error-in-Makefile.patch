@@ -1,0 +1,25 @@
+From 6c5e9dd8b079ce8bf07240a81cd991d9bba7c4cd Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Sun, 23 Jan 2011 20:23:29 +0100
+Subject: [PATCH v3 13/08] Fix Cut-n-Paste error in Makefile
+
+---
+ Makefile |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 93ec72d..3dc3b65 100644
+--- a/Makefile
++++ b/Makefile
+@@ -201,7 +201,7 @@ IMAGE=$(BOOT_NAME).bin
+ endif
+ 
+ ifeq ($(SYMLINK),)
+-SYMLINK=at91bootstrap.bin+ifeq ($(CONFIG_DUAL_BOOT),y)
++SYMLINK=at91bootstrap.bin
+ endif
+ 
+ EXTRA_INSTALL=
+-- 
+1.7.1
+
