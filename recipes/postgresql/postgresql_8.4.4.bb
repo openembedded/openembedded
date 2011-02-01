@@ -1,5 +1,7 @@
 require postgresql.inc
 
+PR = "${INC_PR}.0"
+
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "ftp://ftp.postgresql.org/pub/source/v${PV}/${P}.tar.bz2 \

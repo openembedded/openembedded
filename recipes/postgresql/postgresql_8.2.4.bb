@@ -1,6 +1,7 @@
 require postgresql.inc
 
-PR = "r4"
+PR = "${INC_PR}.0"
+
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI += "file://no-ecpg-test.patch"
