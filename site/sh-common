@@ -25,7 +25,6 @@ ac_cv_sizeof_signed_char=${ac_cv_sizeof_signed_char=1}
 # lzo
 ac_cv_sizeof_char_p=${ac_cv_sizeof_char_p=4}
 
-ac_cv_sys_restartable_syscalls=yes
 ac_cv_uchar=${ac_cv_uchar=no}
 ac_cv_uint=${ac_cv_uint=yes}
 ac_cv_ulong=${ac_cv_ulong=yes}
