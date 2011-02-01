@@ -158,7 +158,6 @@ mono_cv_sizeof_sunpath=108
 # mysql
 mysql_cv_func_atomic_sub=${mysql_cv_func_atomic_sub=yes}
 mysql_cv_func_atomic_add=${mysql_cv_func_atomic_add=yes}
-ac_cv_conv_longlong_to_float=${ac_cv_conv_longlong_to_float=yes}
 
 # ORBit2
 ac_cv_alignof_CORBA_boolean=1
