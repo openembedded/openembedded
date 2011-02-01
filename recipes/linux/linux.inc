@@ -76,7 +76,9 @@ do_configure_prepend() {
         # see https://patchwork.kernel.org/patch/11166/
         # committed in 2.6.29 (commit d15bd1067b1fcb2b7250d22bc0c7c7fea0b759f7)
 
-        sed -i -e 's/getline/parseline/g' ${S}/scripts/unifdef.c
+        if [ -e ${S}/scripts/unifdef.c ]; then
+                sed -i -e 's/getline/parseline/g' ${S}/scripts/unifdef.c
+        fi
 
 
         echo "" > ${S}/.config
