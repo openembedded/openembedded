@@ -1,0 +1,1563 @@
+diff -urN barebox-2010.10.0/arch/arm/boards/vmx25/config.h barebox-2010.10.0-vmx25/arch/arm/boards/vmx25/config.h
+--- barebox-2010.10.0/arch/arm/boards/vmx25/config.h	1970-01-01 01:00:00.000000000 +0100
++++ barebox-2010.10.0-vmx25/arch/arm/boards/vmx25/config.h	2010-10-06 15:13:29.136153433 +0200
+@@ -0,0 +1,26 @@
++/*
++ * (c) 2010 Voipac Technologies <support@voipac.com>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++#ifndef __CONFIG_H
++#define __CONFIG_H
++
++#define CONFIG_MX25_HCLK_FREQ	24000000
++
++#endif
++
+diff -urN barebox-2010.10.0/arch/arm/boards/vmx25/env/bin/boot barebox-2010.10.0-vmx25/arch/arm/boards/vmx25/env/bin/boot
+--- barebox-2010.10.0/arch/arm/boards/vmx25/env/bin/boot	1970-01-01 01:00:00.000000000 +0100
++++ barebox-2010.10.0-vmx25/arch/arm/boards/vmx25/env/bin/boot	2010-10-10 21:29:51.030982830 +0200
+@@ -0,0 +1,65 @@
++#!/bin/sh
++
++. /env/config
++
++image=/dev/nand0.kernel.bb
++
++if [ x$1 = xjffS2 ]; then
++	root=jffs2
++	kernel=nand
++fi
++
++if [ x$1 = xubifs ]; then
++	root=ubifs
++	kernel=nand
++fi
++
++if [ x$1 = xnet ]; then
++	root=net
++	kernel=net
++	image=$zimage
++fi
++
++if [ $# = 2 ]; then
++	image=$2
++fi
++
++if [ x$ip = xdhcp ]; then
++	if [ x$root = xnet ]; then
++		bootargs="$bootargs ip=dhcp"
++	fi
++else
++	if [ x$ip = xoff ]; then
++		bootargs="$bootargs ip=off"
++	else
++		bootargs="$bootargs ip=$eth0.ipaddr:$eth0.serverip:$eth0.gateway:$eth0.netmask:::"
++	fi
++fi
++
++if [ x$root = xjffs2 ]; then
++	bootargs="$bootargs root=/dev/mtdblock$rootpartnum_nand rootfstype=jffs2"
++fi
++
++if [ x$root = xubifs ]; then
++	bootargs="$bootargs root=ubi0:$ubiroot ubi.mtd=$rootpartnum_nand rootfstype=ubifs"
++fi
++
++if [ x$root = xnet ]; then
++	bootargs="$bootargs root=/dev/nfs"
++	if [ ! -z "$rootpath" ]; then
++		bootargs="$bootargs nfsroot=$eth0.serverip:$rootpath"
++	fi
++fi
++
++bootargs="$bootargs mtdparts=mxc_nand:$nand_parts"
++
++if [ $kernel = net ]; then
++	if [ x$ip = xdhcp ]; then
++		dhcp
++	fi
++	tftp $image zImage || exit 1
++	bootz zImage
++else
++	bootz $image
++fi
++
+diff -urN barebox-2010.10.0/arch/arm/boards/vmx25/env/bin/init barebox-2010.10.0-vmx25/arch/arm/boards/vmx25/env/bin/init
+--- barebox-2010.10.0/arch/arm/boards/vmx25/env/bin/init	1970-01-01 01:00:00.000000000 +0100
++++ barebox-2010.10.0-vmx25/arch/arm/boards/vmx25/env/bin/init	2010-10-06 17:59:45.185384513 +0200
+@@ -0,0 +1,38 @@
++#!/bin/sh
++
++PATH=/env/bin
++export PATH
++
++. /env/config
++if [ -e /dev/nand0 ]; then
++	addpart /dev/nand0 $nand_parts
++
++	# hush workaround
++	nand0_parts="/dev/nand0.*"
++	nand -a $nand0_parts
++fi
++
++if [ -f /env/logo.bmp ]; then
++	bmp /env/logo.bmp
++elif [ -f /env/logo.bmp.lzo ]; then
++	unlzo /env/logo.bmp.lzo /logo.bmp
++	bmp /logo.bmp
++fi
++
++if [ -z $eth0.ethaddr ]; then
++	while [ -z $eth0.ethaddr ]; do
++		readline "No MAC address set for eth0. Please enter the one found on your module: " eth0.ethaddr
++	done
++	echo -a /env/config "eth0.ethaddr=$eth0.ethaddr"
++	saveenv
++fi
++
++echo
++echo -n "Hit any key to stop autoboot: "
++timeout -a $autoboot_timeout
++if [ $? != 0 ]; then
++	exit
++fi
++
++boot
++
+diff -urN barebox-2010.10.0/arch/arm/boards/vmx25/env/bin/update barebox-2010.10.0-vmx25/arch/arm/boards/vmx25/env/bin/update
+--- barebox-2010.10.0/arch/arm/boards/vmx25/env/bin/update	1970-01-01 01:00:00.000000000 +0100
++++ barebox-2010.10.0-vmx25/arch/arm/boards/vmx25/env/bin/update	2010-10-06 16:51:48.635384355 +0200
+@@ -0,0 +1,54 @@
++#!/bin/sh
++
++. /env/config
++
++if [ x$1 = xbarebox ]; then
++	image=$barebox
++	part=/dev/nand0.barebox.bb
++fi
++
++if [ x$1 = xkernel ]; then
++	image=$zimage
++	part=/dev/nand0.kernel.bb
++fi
++
++if [ x$1 = xrootfs ]; then
++	image=$rootfs
++	part=/dev/nand0.rootfs.bb
++fi
++
++if [ -z "$part" -o -z "$image" ]; then
++	echo "update barebox|kernel|rootfs [<imagename>]"
++	exit 1
++fi
++
++if [ ! -e "$part" ]; then
++	echo "Partition $part does not exist"
++	exit 1
++fi
++
++if [ $# = 2 ]; then
++	image=$2
++fi
++
++if [ x$ip = xdhcp ]; then
++	dhcp
++fi
++
++ping $eth0.serverip
++if [ $? -ne 0 ] ; then
++	echo "update aborted"
++	exit 1
++fi
++
++unprotect $part
++
++echo
++echo "erasing partition $part"
++erase $part
++
++echo
++echo "flashing $image to $part"
++echo
++tftp $image $part
++
+diff -urN barebox-2010.10.0/arch/arm/boards/vmx25/env/config barebox-2010.10.0-vmx25/arch/arm/boards/vmx25/env/config
+--- barebox-2010.10.0/arch/arm/boards/vmx25/env/config	1970-01-01 01:00:00.000000000 +0100
++++ barebox-2010.10.0-vmx25/arch/arm/boards/vmx25/env/config	2010-10-06 15:13:29.136153433 +0200
+@@ -0,0 +1,28 @@
++#!/bin/sh
++
++# can be either 'net' or 'jffs2' or 'ubifs'
++kernel=nand
++root=ubifs
++
++basedir=vmx25
++barebox=$basedir/barebox.bin
++zimage=$basedir/zImage
++rootfs=$basedir/rootfs.bin
++
++autoboot_timeout=3
++
++bootargs="console=ttymxc0,115200"
++
++nand_parts="256k(barebox)ro,128k(bareboxenv),2688k(kernel),-(rootfs)"
++rootpartnum_nand=3
++ubiroot="rootfs-vmx25"
++
++# ip=off|static|dhcp
++# use 'dhcp' to do dhcp in barebox and in kernel
++ip=dhcp
++
++# or set your networking parameters here
++#eth0.ipaddr=a.b.c.d
++#eth0.netmask=a.b.c.d
++#eth0.gateway=a.b.c.d
++#eth0.serverip=a.b.c.d
+diff -urN barebox-2010.10.0/arch/arm/boards/vmx25/lowlevel_init.S barebox-2010.10.0-vmx25/arch/arm/boards/vmx25/lowlevel_init.S
+--- barebox-2010.10.0/arch/arm/boards/vmx25/lowlevel_init.S	1970-01-01 01:00:00.000000000 +0100
++++ barebox-2010.10.0-vmx25/arch/arm/boards/vmx25/lowlevel_init.S	2010-11-23 02:00:54.874097981 +0100
+@@ -0,0 +1,267 @@
++/*
++ * (C) Copyright 2009 DENX Software Engineering
++ * Author: John Rigby <jrigby@gmail.com>
++ *
++ * Based on U-Boot and RedBoot sources for several different i.mx
++ * platforms.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++#include <config.h>
++#include <mach/imx-regs.h>
++#include <asm-generic/memory_layout.h>
++
++/* #include <asm/macro.h> */
++.macro  write32, addr, data
++        ldr     r4, =\addr
++        ldr     r5, =\data
++        str     r5, [r4]
++.endm
++
++.section ".text_bare_init","ax"
++
++init_aips:
++	write32	0x43f00000, 0x77777777
++	write32	0x43f00004, 0x77777777
++	write32	0x43f00000, 0x77777777
++	write32	0x53f00004, 0x77777777
++	mov	pc, lr
++
++init_max:
++	write32	0x43f04000, 0x43210
++	write32	0x43f04100, 0x43210
++	write32	0x43f04200, 0x43210
++	write32	0x43f04300, 0x43210
++	write32	0x43f04400, 0x43210
++
++	write32	0x43f04010, 0x10
++	write32	0x43f04110, 0x10
++	write32	0x43f04210, 0x10
++	write32	0x43f04310, 0x10
++	write32	0x43f04410, 0x10
++
++	write32	0x43f04800, 0x0
++	write32	0x43f04900, 0x0
++	write32	0x43f04a00, 0x0
++	write32	0x43f04b00, 0x0
++	write32	0x43f04c00, 0x0
++	mov	pc, lr
++
++init_clocks:
++	/*
++	 * clocks
++	 *
++	 * first enable CLKO debug output
++	 * 0x40000000 enables the debug CLKO signal
++	 * 0x05000000 sets CLKO divider to 6
++	 * 0x00600000 makes CLKO parent clk the USB clk
++	 */
++	write32	0x53f80064, 0x45600000
++	write32	0x53f80008, 0x20034000
++
++	/*
++	 * enable all implemented clocks in all three
++	 * clock control registers
++	 */
++	write32	0x53f8000c, 0x1fffffff
++	write32	0x53f80010, 0xffffffff
++	write32	0x53f80014, 0xfdfff
++	mov	pc, lr
++
++.macro init_ddrtype
++	/*
++	 * ddr_type is 3.3v SDRAM
++	 */
++	write32	0x43fac454, 0x800
++.endm
++
++/*
++ * reset SDRAM controller
++ * then wait for initialization to complete
++ * r3 = 0xb8001000
++ */
++reset_sdram_ctrl:
++	ldr	r1, =(1 << 1)
++	str	r1, [r3, #0x10]
++1:	ldr	r0, [r3, #0x10]
++	tst	r0, #(1 << 31)
++	beq	1b
++	mov	pc, lr
++
++/*
++ * sdram controller init
++ * 13 ROWs, 10 COLs
++ * r2 = bank mem base
++ * r3 = bank regs base
++ */
++init_sdram_bank:
++	ldr	r1, =0x95728
++	str	r1, [r3, #0x04]		/* config */
++
++	ldr	r1, =0x92216480		/* control | precharge */
++	str	r1, [r3]		/* write command to controller */
++	str	r1, [r2, #0x400]	/* command encoded in address */
++
++	ldr	r1, =0xa2216480		/* auto refresh */
++	str	r1, [r3]
++	ldrb	r0, [r2]		/* read dram twice to auto refresh */
++	ldrb	r0, [r2]
++
++	ldr	r1, =0xb2216480		/* control | load mode */
++	str	r1, [r3]		/* write command to controller */
++	strb	r1, [r2, #0x33]		/* command encoded in address */
++
++	ldr	r1, =0x82216480		/* control  | normal (0)*/
++	str	r1, [r3]		/* write command to controller */
++
++	mov	r0, #0			/* detect sdram bank presence pass1: r0=0 */
++	str	r0, [r2]
++	ldr	r1, [r2]
++	cmp     r0, r1			/* compare, set flags */
++	bne	bank_disable
++
++	ldr	r0, =0xdeadbeef		/* detect sdram presence pass2: r0=0xdeadbeef */
++	str     r0, [r2]
++	ldr     r1, [r2]
++	cmp     r0, r1			/* compare, set flags */
++	moveq	pc, lr			/* return if equal */
++
++bank_disable:				/* disable sdram bank */
++	mov	r0, #0
++	str	r0, [r3]
++	str	r0, [r3, #0x04 ]
++	mov	pc, lr
++
++set_columns:
++	mov     r0, r2		/* r0 = 80000000 */
++
++/* 8cols:  0x80000000 = 0x80000200 = 0x80000400 = 0x80000600 */
++/* 9cols:  0x80000000 = 0x80000400 */
++/* 10cols: 0x80000000 */
++
++	str     r0, [r0], #0x400	/* [80000000] = 0 */
++	str     r0, [r0], #0x200	/* [80000400] = 80000400 */
++	str     r0, [r0]		/* [80000600] = 80000600 */
++
++	ldrh	r0, [r2]
++	movs	r0, r0, LSL #0x0B
++	addeq	r0, #0x100000
++	eor	r0, #0x300000
++	and	r0, #0x300000		/* r0 = #cols */
++
++	ldr	r1, [r3]		/* set cols */
++	bic	r1, #0x300000
++	orr	r1, r0
++	str	r1, [r3]
++	mov	pc, lr
++
++set_rows:
++	mov     r0, r2		/* r0 = 80000000 */
++	mov	r1, #0x400000
++
++/* 13rows (32M16): 0x80000000 = 0x84000000 */
++/* 13rows (16M16): 0x80000000 = 0x82000000 = 0x84000000 */
++/* 12rows (8M16):  0x80000000 = 0x80400000 */
++/* 12rows (4M16):  0x80000000 = 0x80100000 = 0x80200000 = 0x80300000 = 0x80400000 */
++
++	str     r0, [r0], r1	/* [80000000] = 0 */
++	str     r0, [r0], r1	/* [80400000] = 80400000 */
++
++	ldr	r0, [r2]
++	mov	r0, r0, LSL #0x2
++	ands	r0, #0x1000000
++	addeq	r0, #0x2000000
++	and	r0, #0x7000000		/* r0 = #rows */
++
++	ldr	r1, [r3]		/* set rows */
++	bic	r1, #0x7000000
++	orr	r1, r0
++	str	r1, [r3]
++	mov	pc, lr
++
++.globl board_init_lowlevel
++board_init_lowlevel:
++	mov	r10, lr
++
++	bl	init_aips
++	bl	init_max
++
++	write32 0xb8003000, 0x1		/* init_m3if */
++
++	bl	init_clocks
++
++	/* init_sdram_bank 0x80000000, 0x0, 0x4	*/
++	ldr	r2, =0x80000000
++	ldr	r3, =0xb8001000
++	
++	bl	reset_sdram_ctrl
++	bl	init_sdram_bank
++
++	bne	bank0_disabled
++
++	bl	set_columns
++	bl	set_rows
++
++bank0_disabled:
++	/* init_sdram_bank 0x90000000, 0x8, 0xc	*/
++	ldr	r2, =0x90000000
++	ldr	r3, =0xb8001008
++	
++	bl	init_sdram_bank
++
++	bne	bank1_disabled
++
++	bl	set_columns
++	bl	set_rows
++
++bank1_disabled:
++
++#ifdef CONFIG_NAND_IMX_BOOT
++        ldr     sp, STACK_BASE_W        /* Setup a temporary stack */
++
++        ldr     r0, =IMX_NFC_BASE               /* start of NFC SRAM                */
++        ldr     r2, =IMX_NFC_BASE + 0x1000      /* end of NFC SRAM                  */
++
++        /* skip NAND boot if not running from NFC space */
++        cmp     pc, r0
++        bls     ret
++        cmp     pc, r2
++        bhi     ret
++
++        /* Move ourselves out of NFC SRAM */
++        ldr     r1, =TEXT_BASE
++
++copy_loop:
++        ldmia   r0!, {r3-r9}            /* copy from source address [r0]    */
++        stmia   r1!, {r3-r9}            /* copy to   target address [r1]    */
++        cmp     r0, r2                  /* until source end addreee [r2]    */
++        ble     copy_loop
++
++        ldr     pc, =1f                 /* Jump to SDRAM                    */
++1:
++        bl      nand_boot               /* Load barebox from NAND Flash      */
++
++        ldr     r1, =IMX_NFC_BASE - TEXT_BASE
++        sub     r10, r10, r1            /* adjust return address from NFC SRAM */
++                                        /* to SDRAM                            */
++
++#endif /* CONFIG_NAND_IMX_BOOT */
++ret:
++	mov	pc, r10
++
++STACK_BASE_W:          .word	(STACK_BASE + STACK_SIZE -12)
++
+diff -urN barebox-2010.10.0/arch/arm/boards/vmx25/Makefile barebox-2010.10.0-vmx25/arch/arm/boards/vmx25/Makefile
+--- barebox-2010.10.0/arch/arm/boards/vmx25/Makefile	1970-01-01 01:00:00.000000000 +0100
++++ barebox-2010.10.0-vmx25/arch/arm/boards/vmx25/Makefile	2010-10-06 15:13:29.136153433 +0200
+@@ -0,0 +1,24 @@
++#
++# (c) 2010 Voipac Technologies <support@voipac.com>
++#
++# See file CREDITS for list of people who contributed to this
++# project.
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write to the Free Software
++# Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++# MA 02111-1307 USA
++#
++
++obj-y += lowlevel_init.o
++obj-y += vmx25.o
+diff -urN barebox-2010.10.0/arch/arm/boards/vmx25/vmx25.c barebox-2010.10.0-vmx25/arch/arm/boards/vmx25/vmx25.c
+--- barebox-2010.10.0/arch/arm/boards/vmx25/vmx25.c	1970-01-01 01:00:00.000000000 +0100
++++ barebox-2010.10.0-vmx25/arch/arm/boards/vmx25/vmx25.c	2010-11-06 00:04:01.167954869 +0100
+@@ -0,0 +1,379 @@
++/*
++ * (C) 2009 Pengutronix, Sascha Hauer <s.hauer@pengutronix.de>
++ * (c) 2010 Eukrea Electromatique, Eric BÃ©nard <eric@eukrea.com>
++ * (c) 2010 Voipac Technologies <support@voipac.com>
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ *
++ */
++
++#include <common.h>
++#include <init.h>
++#include <driver.h>
++#include <environment.h>
++#include <mach/imx-regs.h>
++#include <asm/armlinux.h>
++#include <mach/gpio.h>
++#include <asm/io.h>
++#include <asm/mmu.h>
++
++#include <partition.h>
++#include <asm/mach-types.h>
++#include <mach/imx-nand.h>
++#include <mach/imxfb.h>
++#include <fec.h>
++#include <nand.h>
++#include <mach/imx-flash-header.h>
++#include <mach/iomux-mx25.h>
++
++extern unsigned long _stext;
++
++void __naked __flash_header_start go(void)
++{
++	__asm__ __volatile__("b exception_vectors\n");
++}
++
++struct imx_dcd_entry __dcd_entry_0x400 dcd_entry[] = {
++	{ .ptr_type = 4, .addr = 0xb8001004, .val = 0x00095728, },	/* config */
++	{ .ptr_type = 4, .addr = 0xb8001000, .val = 0x92116480, },	/* control | precharge */
++	{ .ptr_type = 1, .addr = 0x80000400, .val = 0x12344321, },	/* command encoded in address */
++	{ .ptr_type = 4, .addr = 0xb8001000, .val = 0xa2116480, },	/* auto refresh */
++	{ .ptr_type = 4, .addr = 0x80000000, .val = 0x12344321, },	/* read dram twice to auto refresh */
++	{ .ptr_type = 4, .addr = 0x80000000, .val = 0x12344321, },
++	{ .ptr_type = 4, .addr = 0xb8001000, .val = 0xb2116480, },	/* control | load mode */
++	{ .ptr_type = 1, .addr = 0x80000033, .val = 0x12344321, },	/* command encoded in address */
++	{ .ptr_type = 4, .addr = 0xb8001000, .val = 0x82116480, },	/* control  | normal (0)*/
++	{ .ptr_type = 4, .addr = 0x53f80008, .val = 0x20034000, },	
++};
++
++struct imx_flash_header __flash_header_0x400 vmx25_header = {
++	.app_code_jump_vector	= TEXT_BASE + 0x2000,
++	.app_code_barker	= APP_CODE_BARKER,
++	.app_code_csf		= 0,
++	.dcd_ptr_ptr		= TEXT_BASE + 0x400 + offsetof(struct imx_flash_header, dcd),
++	.super_root_key		= 0,
++	.dcd			= TEXT_BASE + 0x400 + offsetof(struct imx_flash_header, dcd_barker),
++	.app_dest		= TEXT_BASE,
++	.dcd_barker		= DCD_BARKER,
++	.dcd_block_len		= sizeof(dcd_entry),
++};
++
++extern unsigned long __bss_start;
++
++unsigned long __image_len_0x400 barebox_len = 0x40000;
++
++static struct fec_platform_data fec_info = {
++	.xcv_type	= RMII,
++	.phy_addr	= 1,
++};
++
++static struct device_d fec_dev = {
++	.name     = "fec_imx",
++	.map_base = IMX_FEC_BASE,
++	.platform_data	= &fec_info,
++};
++
++static struct memory_platform_data sdram0_pdata = {
++	.name	= "ram0",
++	.flags	= DEVFS_RDWR,
++};
++
++static struct device_d sdram0_dev = {
++	.name     = "mem",
++	.map_base = IMX_SDRAM_CS0,
++	.size     = 0,
++	.platform_data = &sdram0_pdata,
++};
++
++static struct memory_platform_data sdram1_pdata = {
++	.name	= "ram1",
++	.flags	= DEVFS_RDWR,
++};
++
++static struct device_d sdram1_dev = {
++	.name     = "mem",
++	.map_base = IMX_SDRAM_CS1,
++	.size     = 0,
++	.platform_data = &sdram1_pdata,
++};
++
++static struct memory_platform_data sram_pdata = {
++	.name   = "sram0",
++	.flags  = DEVFS_RDWR,
++};
++
++static struct device_d sram0_dev = {
++	.name     = "mem",
++	.map_base = 0x78000000,
++	.size     = 128 * 1024,
++	.platform_data = &sram_pdata,
++};
++
++struct imx_nand_platform_data nand_info = {
++	.width	= 1,
++	.hw_ecc	= 1,
++};
++
++static struct device_d nand_dev = {
++	.name     = "imx_nand",
++	.map_base = IMX_NFC_BASE,
++	.platform_data	= &nand_info,
++};
++
++#ifdef CONFIG_DRIVER_VIDEO_IMX
++static struct imx_fb_videomode imxfb_mode = {
++	.mode = {
++		.name		= "VGA",
++		.refresh	= 60,
++		.xres		= 640,
++		.yres		= 480,
++		.pixclock	= 30076,
++		.hsync_len	= 64,
++		.left_margin	= 96,
++		.right_margin	= 48,
++		.vsync_len	= 2,
++		.upper_margin	= 33,
++		.lower_margin	= 10,
++	},
++	.pcr		= 0xFAC00080,
++	.bpp		= 16,
++};
++
++static struct imx_fb_platform_data vmx25_fb_data = {
++	.mode		= &imxfb_mode,
++	.pwmr		= 0x0,
++	.lscr1		= 0x0,
++	.dmacr		= 0x80040060,
++};
++
++
++static struct device_d imxfb_dev = {
++	.name		= "imxfb",
++	.map_base	= 0x53fbc000,
++	.size		= 0x1000,
++	.platform_data	= &vmx25_fb_data,
++};
++#endif
++
++#ifdef CONFIG_MMU
++static void vmx25_mmu_init(void)
++{
++	mmu_init();
++
++	arm_create_section(0x80000000, 0x80000000, 128, PMD_SECT_DEF_CACHED);
++	arm_create_section(0x90000000, 0x80000000, 128, PMD_SECT_DEF_UNCACHED);
++
++	setup_dma_coherent(0x10000000);
++
++	mmu_enable();
++}
++#else
++static void vmx25_mmu_init(void)
++{
++}
++#endif
++
++static struct pad_desc vmx25_pads[] = {
++	/* FEC */
++	MX25_PAD_D11__GPIO9,	// FEC_PEN
++//	MX25_PAD_D12__GPIO8,	// FEC_RESET_B
++	MX25_PAD_D13__GPIO7,	// FEC_RESET_B
++	MX25_PAD_FEC_MDC__MDC,
++	MX25_PAD_FEC_MDIO__MDIO,
++	MX25_PAD_FEC_RDATA0__RDATA0,
++	MX25_PAD_FEC_RDATA1__RDATA1,
++	MX25_PAD_FEC_RX_DV__RX_DV,
++	MX25_PAD_FEC_TDATA0__TDATA0,
++	MX25_PAD_FEC_TDATA1__TDATA1,
++	MX25_PAD_FEC_TX_CLK__TX_CLK,
++	MX25_PAD_FEC_TX_EN__TX_EN,
++	/* UART1 */
++	MX25_PAD_UART1_RXD__RXD_MUX,
++	MX25_PAD_UART1_TXD__TXD_MUX,
++	MX25_PAD_UART1_RTS__RTS,
++	MX25_PAD_UART1_CTS__CTS,
++#ifdef CONFIG_DRIVER_VIDEO_IMX
++	/* LCDC */
++	MX25_PAD_LD0__LCDC_LD0,
++	MX25_PAD_LD1__LCDC_LD1,
++	MX25_PAD_LD2__LCDC_LD2,
++	MX25_PAD_LD3__LCDC_LD3,
++	MX25_PAD_LD4__LCDC_LD4,
++	MX25_PAD_LD5__LCDC_LD5,
++	MX25_PAD_LD6__LCDC_LD6,
++	MX25_PAD_LD7__LCDC_LD7,
++	MX25_PAD_LD8__LCDC_LD8,
++	MX25_PAD_LD9__LCDC_LD9,
++	MX25_PAD_LD10__LCDC_LD10,
++	MX25_PAD_LD11__LCDC_LD11,
++	MX25_PAD_LD12__LCDC_LD12,
++	MX25_PAD_LD13__LCDC_LD13,
++	MX25_PAD_LD14__LCDC_LD14,
++	MX25_PAD_LD15__LCDC_LD15,
++	MX25_PAD_GPIO_E__LCDC_LD16,
++	MX25_PAD_GPIO_F__LCDC_LD17,
++	MX25_PAD_LSCLK__LCDC_LSCLK,
++	MX25_PAD_OE_ACD__LCDC_OE_ACD,
++	MX25_PAD_VSYNC__LCDC_VSYN,
++	MX25_PAD_HSYNC__LCDC_HSYN,
++	/* BACKLIGHT CONTROL */
++	MX25_PAD_PWM__GPIO26,
++#endif
++	/* RESET OUT */
++	MX25_PAD_VSTBY_ACK__GPIO18,	/* GPIO3_18 */
++};
++
++static void vmx25_fec_init(void)
++{
++	struct pad_desc fec_gpio_pads[] = {
++		MX25_PAD_D11__GPIO9,	// FEC_PEN
++		MX25_PAD_D13__GPIO7,	// FEC_RESET_B
++		MX25_PAD_FEC_RDATA0__GPIO10,
++		MX25_PAD_FEC_RDATA1__GPIO11,
++		MX25_PAD_FEC_RX_DV__GPIO12,
++	};
++
++	mxc_iomux_v3_setup_multiple_pads(fec_gpio_pads,
++                ARRAY_SIZE(fec_gpio_pads));
++
++	// assert PHY reset, turn on PHY power
++	gpio_direction_output(103, 0);	// GPIO4_7
++	gpio_direction_output(105, 1);	// GPIO4_9
++
++	mdelay(10);
++
++	// set PHY mode pins to 1
++	gpio_direction_output(74, 1);	// GPIO3_10
++	gpio_direction_output(75, 1);	// GPIO3_11
++	gpio_direction_output(76, 1);	// GPIO3_12
++
++	mdelay(22);
++
++	// deassert PHY reset
++	gpio_set_value(103, 1);	// GPIO4_7
++
++	mdelay(5);
++}
++
++static void vmx25_sdram_init(void)
++{
++	uchar	rows, cols;
++	uint32_t size, esdctl;
++
++	esdctl = readl(IMX_ESD_BASE);
++	rows = ((esdctl >> 24) & 7);
++	cols = ((esdctl >> 20) & 3);
++	size = (esdctl)? 1 << (rows + cols + 22) : 0;
++
++	sdram0_dev.size = size;
++
++	printk("SDRAM at 0x%08x: %dMB (%dMb, %d ROWs, %d COLs)\n",
++		 IMX_SDRAM_CS0, size >> 20, size >> 17, rows + 11, cols + 8);
++
++	esdctl = readl(IMX_ESD_BASE + 0x08);
++	rows = ((esdctl >> 24) & 7);
++	cols = ((esdctl >> 20) & 3);
++	size = (esdctl)? 1 << (rows + cols + 22) : 0;
++
++	sdram1_dev.size = size;
++
++	printk("SDRAM at 0x%08x: %dMB (%dMb, %d ROWs, %d COLs)\n",
++		 IMX_SDRAM_CS1, size >> 20, size >> 17, rows + 11, cols + 8);
++}
++
++static int vmx25_devices_init(void)
++{
++	/* assert RESET_OUT_B */
++	gpio_direction_output(82, 0);   // GPIO3_18
++
++	vmx25_sdram_init();
++
++	vmx25_mmu_init();
++
++	vmx25_fec_init();
++
++	mxc_iomux_v3_setup_multiple_pads(vmx25_pads,
++		ARRAY_SIZE(vmx25_pads));
++	register_device(&fec_dev);
++
++	nand_info.width = 1;
++	register_device(&nand_dev);
++
++	devfs_add_partition("nand0", 0x00000, 0x40000,
++		PARTITION_FIXED, "self_raw");
++	dev_add_bb_dev("self_raw", "self0");
++
++	devfs_add_partition("nand0", 0x40000, 0x20000,
++		PARTITION_FIXED, "env_raw");
++	dev_add_bb_dev("env_raw", "env0");
++
++	if( sdram0_dev.size)
++		register_device(&sdram0_dev);
++	
++	if( sdram1_dev.size)
++		register_device(&sdram1_dev);
++
++	register_device(&sram0_dev);
++
++#ifdef CONFIG_DRIVER_VIDEO_IMX
++	/* enable LCD */
++	gpio_direction_output(26, 1);	// GPIO1_26
++
++	register_device(&imxfb_dev);
++#endif
++	armlinux_add_dram(&sdram0_dev);
++	armlinux_add_dram(&sdram1_dev);
++
++	armlinux_set_bootparams((void *)0x80000100);
++	armlinux_set_architecture(MACH_TYPE_VMX25);
++
++	return 0;
++}
++
++device_initcall(vmx25_devices_init);
++
++static struct device_d vmx25_serial_device = {
++	.name     = "imx_serial",
++	.map_base = IMX_UART1_BASE,
++	.size     = 16 * 1024,
++};
++
++static int vmx25_console_init(void)
++{
++	writel(0x03010101, IMX_CCM_BASE + CCM_PCDR3);
++	register_device(&vmx25_serial_device);
++	return 0;
++}
++
++console_initcall(vmx25_console_init);
++
++#ifdef CONFIG_NAND_IMX_BOOT
++void __bare_init nand_boot(void)
++{
++	imx_nand_load_image((void *)TEXT_BASE, 256 * 1024);
++}
++#endif
++
++static int vmx25_core_setup(void)
++{
++	writel(0x01010103, IMX_CCM_BASE + CCM_PCDR2);
++	return 0;
++
++}
++core_initcall(vmx25_core_setup);
+diff -urN barebox-2010.10.0/arch/arm/configs/voipac_vmx25_defconfig barebox-2010.10.0-vmx25/arch/arm/configs/voipac_vmx25_defconfig
+--- barebox-2010.10.0/arch/arm/configs/voipac_vmx25_defconfig	1970-01-01 01:00:00.000000000 +0100
++++ barebox-2010.10.0-vmx25/arch/arm/configs/voipac_vmx25_defconfig	2010-11-05 17:32:30.818410283 +0100
+@@ -0,0 +1,254 @@
++#
++# Automatically generated make config: don't edit
++# Linux barebox version: 2010.10.0
++# Fri Nov  5 17:32:15 2010
++#
++# CONFIG_BOARD_LINKER_SCRIPT is not set
++CONFIG_GENERIC_LINKER_SCRIPT=y
++CONFIG_ARM=y
++
++#
++# System Type
++#
++# CONFIG_ARCH_AT91 is not set
++# CONFIG_ARCH_EP93XX is not set
++CONFIG_ARCH_IMX=y
++# CONFIG_ARCH_NETX is not set
++# CONFIG_ARCH_NOMADIK is not set
++# CONFIG_ARCH_OMAP is not set
++# CONFIG_ARCH_S3C24xx is not set
++
++#
++# Processor Type
++#
++CONFIG_CPU_32=y
++CONFIG_CPU_ARM926T=y
++CONFIG_CPU_32v5=y
++
++#
++# processor features
++#
++CONFIG_ARCH_TEXT_BASE=0x81f00000
++CONFIG_BOARDINFO="Voipac VMX25"
++CONFIG_ARCH_HAS_FEC_IMX=y
++# CONFIG_ARCH_IMX_INTERNAL_BOOT is not set
++
++#
++# Freescale i.MX System-on-Chip
++#
++# CONFIG_ARCH_IMX1 is not set
++# CONFIG_ARCH_IMX21 is not set
++CONFIG_ARCH_IMX25=y
++# CONFIG_ARCH_IMX27 is not set
++# CONFIG_ARCH_IMX31 is not set
++# CONFIG_ARCH_IMX35 is not set
++# CONFIG_MACH_EUKREA_CPUIMX25 is not set
++# CONFIG_MACH_FREESCALE_MX25_3STACK is not set
++CONFIG_MACH_VMX25=y
++
++#
++# Board specific settings       
++#
++
++#
++# i.MX specific settings        
++#
++# CONFIG_IMX_CLKO is not set
++CONFIG_IMX_IIM=y
++CONFIG_IMX_IIM_FUSE_BLOW=y
++CONFIG_AEABI=y
++
++#
++# Arm specific settings         
++#
++CONFIG_CMD_ARM_CPUINFO=y
++# CONFIG_ARM_OPTIMZED_STRING_FUNCTIONS is not set
++CONFIG_DEFCONFIG_LIST="$ARCH_DEFCONFIG"
++CONFIG_HAS_KALLSYMS=y
++CONFIG_HAS_MODULES=y
++CONFIG_CMD_MEMORY=y
++CONFIG_ENV_HANDLING=y
++CONFIG_GENERIC_GPIO=y
++
++#
++# General Settings              
++#
++CONFIG_LOCALVERSION_AUTO=y
++
++#
++# memory layout                 
++#
++CONFIG_HAVE_MMU=y
++# CONFIG_MMU is not set
++CONFIG_HAVE_CONFIGURABLE_TEXT_BASE=y
++CONFIG_TEXT_BASE=0x81f00000
++CONFIG_HAVE_CONFIGURABLE_MEMORY_LAYOUT=y
++CONFIG_MEMORY_LAYOUT_DEFAULT=y
++# CONFIG_MEMORY_LAYOUT_FIXED is not set
++CONFIG_STACK_SIZE=0x8000
++CONFIG_MALLOC_SIZE=0x800000
++# CONFIG_BROKEN is not set
++# CONFIG_EXPERIMENTAL is not set
++CONFIG_MACH_HAS_LOWLEVEL_INIT=y
++CONFIG_MACH_DO_LOWLEVEL_INIT=y
++CONFIG_PROMPT="barebox:"
++CONFIG_BAUDRATE=115200
++CONFIG_LONGHELP=y
++CONFIG_CBSIZE=1024
++CONFIG_MAXARGS=16
++CONFIG_SHELL_HUSH=y
++# CONFIG_SHELL_SIMPLE is not set
++CONFIG_GLOB=y
++CONFIG_PROMPT_HUSH_PS2="> "
++# CONFIG_HUSH_FANCY_PROMPT is not set
++CONFIG_CMDLINE_EDITING=y
++CONFIG_AUTO_COMPLETE=y
++# CONFIG_MENU is not set
++CONFIG_DYNAMIC_CRC_TABLE=y
++CONFIG_ERRNO_MESSAGES=y
++# CONFIG_TIMESTAMP is not set
++CONFIG_CONSOLE_FULL=y
++CONFIG_CONSOLE_ACTIVATE_FIRST=y
++# CONFIG_OF_FLAT_TREE is not set
++# CONFIG_PARTITION is not set
++CONFIG_DEFAULT_ENVIRONMENT=y
++CONFIG_DEFAULT_ENVIRONMENT_PATH="arch/arm/boards/vmx25/env"
++
++#
++# Debugging                     
++#
++# CONFIG_DEBUG_INFO is not set
++# CONFIG_ENABLE_FLASH_NOISE is not set
++# CONFIG_ENABLE_PARTITION_NOISE is not set
++# CONFIG_ENABLE_DEVICE_NOISE is not set
++
++#
++# Commands                      
++#
++
++#
++# scripting                     
++#
++CONFIG_CMD_EDIT=y
++CONFIG_CMD_SLEEP=y
++CONFIG_CMD_SAVEENV=y
++CONFIG_CMD_LOADENV=y
++CONFIG_CMD_EXPORT=y
++CONFIG_CMD_PRINTENV=y
++CONFIG_CMD_READLINE=y
++CONFIG_CMD_TRUE=y
++CONFIG_CMD_FALSE=y
++
++#
++# file commands                 
++#
++CONFIG_CMD_LS=y
++CONFIG_CMD_RM=y
++CONFIG_CMD_CAT=y
++CONFIG_CMD_MKDIR=y
++CONFIG_CMD_RMDIR=y
++CONFIG_CMD_CP=y
++CONFIG_CMD_PWD=y
++CONFIG_CMD_CD=y
++# CONFIG_CMD_MOUNT is not set
++# CONFIG_CMD_UMOUNT is not set
++
++#
++# console                       
++#
++CONFIG_CMD_CLEAR=y
++CONFIG_CMD_ECHO=y
++# CONFIG_CMD_ECHO_E is not set
++
++#
++# memory                        
++#
++# CONFIG_CMD_LOADB is not set
++CONFIG_CMD_MEMINFO=y
++# CONFIG_CMD_CRC is not set
++CONFIG_CMD_MTEST=y
++# CONFIG_CMD_MTEST_ALTERNATIVE is not set
++
++#
++# flash                         
++#
++CONFIG_CMD_FLASH=y
++# CONFIG_CMD_UBI is not set
++
++#
++# booting                       
++#
++# CONFIG_CMD_BOOTM is not set
++CONFIG_CMD_BOOTZ=y
++# CONFIG_CMD_BOOTU is not set
++# CONFIG_CMD_LINUX16 is not set
++CONFIG_CMD_RESET=y
++CONFIG_CMD_GO=y
++CONFIG_CMD_TIMEOUT=y
++CONFIG_CMD_PARTITION=y
++CONFIG_CMD_TEST=y
++CONFIG_CMD_VERSION=y
++CONFIG_CMD_HELP=y
++CONFIG_CMD_DEVINFO=y
++CONFIG_CMD_GPIO=y
++# CONFIG_CMD_UNLZO is not set
++CONFIG_NET=y
++CONFIG_NET_DHCP=y
++# CONFIG_NET_NFS is not set
++CONFIG_NET_PING=y
++CONFIG_NET_TFTP=y
++# CONFIG_NET_TFTP_PUSH is not set
++# CONFIG_NET_NETCONSOLE is not set
++# CONFIG_NET_RESOLV is not set
++
++#
++# Drivers                       
++#
++
++#
++# serial drivers                
++#
++# CONFIG_DRIVER_SERIAL_ARM_DCC is not set
++CONFIG_DRIVER_SERIAL_IMX=y
++# CONFIG_DRIVER_SERIAL_NS16550 is not set
++CONFIG_MIIDEV=y
++
++#
++# Network drivers               
++#
++# CONFIG_DRIVER_NET_SMC911X is not set
++# CONFIG_DRIVER_NET_SMC91111 is not set
++CONFIG_DRIVER_NET_FEC_IMX=y
++
++#
++# SPI drivers                   
++#
++# CONFIG_SPI is not set
++# CONFIG_I2C is not set
++
++#
++# flash drivers                 
++#
++# CONFIG_DRIVER_CFI is not set
++CONFIG_MTD=y
++CONFIG_NAND=y
++CONFIG_NAND_IMX=y
++CONFIG_NAND_IMX_BOOT=y
++# CONFIG_MTD_NAND_VERIFY_WRITE is not set
++# CONFIG_MTD_NAND_ECC_SMC is not set
++CONFIG_MTD_NAND_IDS=y
++# CONFIG_UBI is not set
++# CONFIG_ATA is not set
++# CONFIG_USB is not set
++# CONFIG_USB_GADGET is not set
++# CONFIG_VIDEO is not set
++
++#
++# Filesystem support            
++#
++# CONFIG_FS_CRAMFS is not set
++CONFIG_FS_RAMFS=y
++CONFIG_FS_DEVFS=y
++CONFIG_CRC32=y
++# CONFIG_GENERIC_FIND_NEXT_BIT is not set
++# CONFIG_PROCESS_ESCAPE_SEQUENCE is not set
+diff -urN barebox-2010.10.0/arch/arm/cpu/start.c barebox-2010.10.0-vmx25/arch/arm/cpu/start.c
+--- barebox-2010.10.0/arch/arm/cpu/start.c	2010-10-02 13:00:45.000000000 +0200
++++ barebox-2010.10.0-vmx25/arch/arm/cpu/start.c	2010-10-06 15:13:29.136153433 +0200
+@@ -59,6 +59,9 @@
+ #ifdef CONFIG_ARCH_HAS_LOWLEVEL_INIT
+ 	arch_init_lowlevel();
+ #endif
++#ifdef CONFIG_MACH_DO_LOWLEVEL_INIT
++	board_init_lowlevel();
++#endif
+ 	__asm__ __volatile__ (
+ 		"bl __mmu_cache_flush;"
+ 		:
+@@ -72,9 +75,6 @@
+ 	r |= CR_A | CR_I;
+ 	set_cr(r);
+ 
+-#ifdef CONFIG_MACH_DO_LOWLEVEL_INIT
+-	board_init_lowlevel();
+-#endif
+ 	board_init_lowlevel_return();
+ }
+ 
+diff -urN barebox-2010.10.0/arch/arm/mach-imx/iim.c barebox-2010.10.0-vmx25/arch/arm/mach-imx/iim.c
+--- barebox-2010.10.0/arch/arm/mach-imx/iim.c	2010-10-02 13:00:45.000000000 +0200
++++ barebox-2010.10.0-vmx25/arch/arm/mach-imx/iim.c	2010-10-06 17:59:21.206131814 +0200
+@@ -299,13 +299,13 @@
+ 
+ int imx_iim_get_mac(unsigned char *mac)
+ {
+-	int i;
++	int i, sum = 0;
+ 
+ 	if (mac_addr_base == 0)
+ 		return -EINVAL;
+ 
+ 	for (i = 0; i < 6; i++)
+-		 mac[i] = readb(mac_addr_base + i*4);
++		 sum += mac[i] = readb(mac_addr_base + i*4);
+ 
+-	return 0;
++	return (sum > 0)? 0 : -EINVAL;
+ }
+diff -urN barebox-2010.10.0/arch/arm/mach-imx/Kconfig barebox-2010.10.0-vmx25/arch/arm/mach-imx/Kconfig
+--- barebox-2010.10.0/arch/arm/mach-imx/Kconfig	2010-10-02 13:00:45.000000000 +0200
++++ barebox-2010.10.0-vmx25/arch/arm/mach-imx/Kconfig	2010-10-06 15:13:29.145895633 +0200
+@@ -17,6 +17,7 @@
+ 	default 0x87f00000 if MACH_PCM043
+ 	default 0x08f80000 if MACH_SCB9328
+ 	default 0xa7e00000 if MACH_NESO
++	default 0x81f00000 if MACH_VMX25
+ 
+ config BOARDINFO
+ 	default "Eukrea CPUIMX25" if MACH_EUKREA_CPUIMX25
+@@ -32,6 +33,7 @@
+ 	default "Phytec phyCORE-i.MX35" if MACH_PCM043
+ 	default "Synertronixx scb9328" if MACH_SCB9328
+ 	default "Garz+Fricke Neso" if MACH_NESO
++	default "Voipac VMX25" if MACH_VMX25
+ 
+ config ARCH_HAS_FEC_IMX
+ 	bool
+@@ -148,6 +150,14 @@
+ 	  Say Y here if you are using the Freescale MX25 3stack board equipped
+ 	  with a Freescale i.MX25 Processor
+ 
++config MACH_VMX25
++	bool "Voipac VMX25"
++	select MACH_HAS_LOWLEVEL_INIT
++	select HAVE_MMU
++	help
++	  Say Y here if you are using the Voipac Technologies VMX25 module
++	  equipped with a Freescale i.MX25 Processor
++
+ endchoice
+ 
+ endif
+diff -urN barebox-2010.10.0/arch/arm/Makefile barebox-2010.10.0-vmx25/arch/arm/Makefile
+--- barebox-2010.10.0/arch/arm/Makefile	2010-10-02 13:00:45.000000000 +0200
++++ barebox-2010.10.0-vmx25/arch/arm/Makefile	2010-10-06 15:13:29.145895633 +0200
+@@ -79,6 +79,7 @@
+ board-$(CONFIG_MACH_PM9263)			:= pm9263
+ board-$(CONFIG_MACH_SCB9328)			:= scb9328
+ board-$(CONFIG_MACH_NESO)			:= guf-neso
++board-$(CONFIG_MACH_VMX25)			:= vmx25
+ 
+ machdirs := $(patsubst %,arch/arm/mach-%/,$(machine-y))
+ 
+diff -urN barebox-2010.10.0/arch/arm/tools/mach-types barebox-2010.10.0-vmx25/arch/arm/tools/mach-types
+--- barebox-2010.10.0/arch/arm/tools/mach-types	2010-10-02 13:00:45.000000000 +0200
++++ barebox-2010.10.0-vmx25/arch/arm/tools/mach-types	2010-10-06 15:13:29.145895633 +0200
+@@ -12,7 +12,7 @@
+ #
+ #   http://www.arm.linux.org.uk/developer/machines/?action=new
+ #
+-# Last update: Mon May 24 21:27:47 2010
++# Last update: Wed Sep 8 21:15:58 2010
+ #
+ # machine_is_xxx	CONFIG_xxxx		MACH_TYPE_xxx		number
+ #
+@@ -1994,7 +1994,7 @@
+ benzina			MACH_BENZINA		BENZINA			2003
+ blaze			MACH_BLAZE		BLAZE			2004
+ linkstation_ls_hgl	MACH_LINKSTATION_LS_HGL	LINKSTATION_LS_HGL	2005
+-htckovsky		MACH_HTCVENUS		HTCVENUS		2006
++htckovsky		MACH_HTCKOVSKY		HTCKOVSKY		2006
+ sony_prs505		MACH_SONY_PRS505	SONY_PRS505		2007
+ hanlin_v3		MACH_HANLIN_V3		HANLIN_V3		2008
+ sapphira		MACH_SAPPHIRA		SAPPHIRA		2009
+@@ -2561,7 +2561,7 @@
+ emxx			MACH_EMXX		EMXX			2574
+ outlaw			MACH_OUTLAW		OUTLAW			2575
+ riot_bei2		MACH_RIOT_BEI2		RIOT_BEI2		2576
+-riot_vox		MACH_RIOT_VOX		RIOT_VOX		2577
++riot_gx2		MACH_RIOT_VOX		RIOT_VOX		2577
+ riot_x37		MACH_RIOT_X37		RIOT_X37		2578
+ mega25mx		MACH_MEGA25MX		MEGA25MX		2579
+ benzina2		MACH_BENZINA2		BENZINA2		2580
+@@ -2609,7 +2609,7 @@
+ lexikon			MACH_LEXIKON		LEXIKON			2622
+ mini2440v2		MACH_MINI2440V2		MINI2440V2		2623
+ icontrol		MACH_ICONTROL		ICONTROL		2624
+-sheevad			MACH_SHEEVAD		SHEEVAD			2625
++gplugd			MACH_SHEEVAD		SHEEVAD			2625
+ qsd8x50a_st1_1		MACH_QSD8X50A_ST1_1	QSD8X50A_ST1_1		2626
+ qsd8x50a_st1_5		MACH_QSD8X50A_ST1_5	QSD8X50A_ST1_5		2627
+ bee			MACH_BEE		BEE			2628
+@@ -2622,7 +2622,7 @@
+ gw2388			MACH_GW2388		GW2388			2635
+ jadecpu			MACH_JADECPU		JADECPU			2636
+ carlisle		MACH_CARLISLE		CARLISLE		2637
+-lux_sf9			MACH_LUX_SFT9		LUX_SFT9		2638
++lux_sf9			MACH_LUX_SF9		LUX_SF9			2638
+ nemid_tb		MACH_NEMID_TB		NEMID_TB		2639
+ terrier			MACH_TERRIER		TERRIER			2640
+ turbot			MACH_TURBOT		TURBOT			2641
+@@ -2812,7 +2812,7 @@
+ acer_a4			MACH_ACER_A4		ACER_A4			2825
+ davinci_dm368_bip	MACH_DAVINCI_DM368_BIP	DAVINCI_DM368_BIP	2826
+ eshare			MACH_ESHARE		ESHARE			2827
+-hw_omapl138_europa	MACH_HW_OMAPL138_EUROPA	HW_OMAPL138_EUROPA	2828
++omapl138_europa		MACH_HW_OMAPL138_EUROPA	HW_OMAPL138_EUROPA	2828
+ wlbargn			MACH_WLBARGN		WLBARGN			2829
+ bm170			MACH_BM170		BM170			2830
+ netspace_mini_v2	MACH_NETSPACE_MINI_V2	NETSPACE_MINI_V2	2831
+@@ -2859,3 +2859,191 @@
+ coconut			MACH_COCONUT		COCONUT			2872
+ durian			MACH_DURIAN		DURIAN			2873
+ cayenne			MACH_CAYENNE		CAYENNE			2874
++fuji			MACH_FUJI		FUJI			2875
++synology_6282		MACH_SYNOLOGY_6282	SYNOLOGY_6282		2876
++em1sy			MACH_EM1SY		EM1SY			2877
++m502			MACH_M502		M502			2878
++matrix518		MACH_MATRIX518		MATRIX518		2879
++tiny_gurnard		MACH_TINY_GURNARD	TINY_GURNARD		2880
++spear1310		MACH_SPEAR1310		SPEAR1310		2881
++bv07			MACH_BV07		BV07			2882
++mxt_td61		MACH_MXT_TD61		MXT_TD61		2883
++openrd_ultimate		MACH_OPENRD_ULTIMATE	OPENRD_ULTIMATE		2884
++devixp			MACH_DEVIXP		DEVIXP			2885
++miccpt			MACH_MICCPT		MICCPT			2886
++mic256			MACH_MIC256		MIC256			2887
++as1167			MACH_AS1167		AS1167			2888
++omap3_ibiza		MACH_OMAP3_IBIZA	OMAP3_IBIZA		2889
++u5500			MACH_U5500		U5500			2890
++davinci_picto		MACH_DAVINCI_PICTO	DAVINCI_PICTO		2891
++mecha			MACH_MECHA		MECHA			2892
++bubba3			MACH_BUBBA3		BUBBA3			2893
++pupitre			MACH_PUPITRE		PUPITRE			2894
++tegra_harmony		MACH_TEGRA_HARMONY	TEGRA_HARMONY		2895
++tegra_vogue		MACH_TEGRA_VOGUE	TEGRA_VOGUE		2896
++tegra_e1165		MACH_TEGRA_E1165	TEGRA_E1165		2897
++simplenet		MACH_SIMPLENET		SIMPLENET		2898
++ec4350tbm		MACH_EC4350TBM		EC4350TBM		2899
++pec_tc			MACH_PEC_TC		PEC_TC			2900
++pec_hc2			MACH_PEC_HC2		PEC_HC2			2901
++esl_mobilis_a		MACH_ESL_MOBILIS_A	ESL_MOBILIS_A		2902
++esl_mobilis_b		MACH_ESL_MOBILIS_B	ESL_MOBILIS_B		2903
++esl_wave_a		MACH_ESL_WAVE_A		ESL_WAVE_A		2904
++esl_wave_b		MACH_ESL_WAVE_B		ESL_WAVE_B		2905
++unisense_mmm		MACH_UNISENSE_MMM	UNISENSE_MMM		2906
++blueshark		MACH_BLUESHARK		BLUESHARK		2907
++e10			MACH_E10		E10			2908
++app3k_robin		MACH_APP3K_ROBIN	APP3K_ROBIN		2909
++pov15hd			MACH_POV15HD		POV15HD			2910
++stella			MACH_STELLA		STELLA			2911
++htc_iolite		MACH_MACH_HTC_IOLITE	MACH_HTC_IOLITE		2912
++linkstation_lschl	MACH_LINKSTATION_LSCHL	LINKSTATION_LSCHL	2913
++netwalker		MACH_NETWALKER		NETWALKER		2914
++acsx106			MACH_ACSX106		ACSX106			2915
++atlas5_c1		MACH_ATLAS5_C1		ATLAS5_C1		2916
++nsb3ast			MACH_NSB3AST		NSB3AST			2917
++gnet_slc		MACH_GNET_SLC		GNET_SLC		2918
++af4000			MACH_AF4000		AF4000			2919
++ark9431			MACH_ARK9431		ARK9431			2920
++fs_s5pc100		MACH_FS_S5PC100		FS_S5PC100		2921
++omap3505nova8		MACH_OMAP3505NOVA8	OMAP3505NOVA8		2922
++omap3621_edp1		MACH_OMAP3621_EDP1	OMAP3621_EDP1		2923
++oratisaes		MACH_ORATISAES		ORATISAES		2924
++smdkv310		MACH_SMDKV310		SMDKV310		2925
++siemens_l0		MACH_SIEMENS_L0		SIEMENS_L0		2926
++ventana			MACH_VENTANA		VENTANA			2927
++wm8505_7in_netbook	MACH_WM8505_7IN_NETBOOK	WM8505_7IN_NETBOOK	2928
++ec4350sdb		MACH_EC4350SDB		EC4350SDB		2929
++mimas			MACH_MIMAS		MIMAS			2930
++titan			MACH_TITAN		TITAN			2931
++craneboard		MACH_CRANEBOARD		CRANEBOARD		2932
++es2440			MACH_ES2440		ES2440			2933
++najay_a9263		MACH_NAJAY_A9263	NAJAY_A9263		2934
++htctornado		MACH_HTCTORNADO		HTCTORNADO		2935
++dimm_mx257		MACH_DIMM_MX257		DIMM_MX257		2936
++jigen301		MACH_JIGEN		JIGEN			2937
++smdk6450		MACH_SMDK6450		SMDK6450		2938
++meno_qng		MACH_MENO_QNG		MENO_QNG		2939
++ns2416			MACH_NS2416		NS2416			2940
++rpc353			MACH_RPC353		RPC353			2941
++tq6410			MACH_TQ6410		TQ6410			2942
++sky6410			MACH_SKY6410		SKY6410			2943
++dynasty			MACH_DYNASTY		DYNASTY			2944
++vivo			MACH_VIVO		VIVO			2945
++bury_bl7582		MACH_BURY_BL7582	BURY_BL7582		2946
++bury_bps5270		MACH_BURY_BPS5270	BURY_BPS5270		2947
++basi			MACH_BASI		BASI			2948
++tn200			MACH_TN200		TN200			2949
++c2mmi			MACH_C2MMI		C2MMI			2950
++meson_6236m		MACH_MESON_6236M	MESON_6236M		2951
++meson_8626m		MACH_MESON_8626M	MESON_8626M		2952
++tube			MACH_TUBE		TUBE			2953
++messina			MACH_MESSINA		MESSINA			2954
++mx50_arm2		MACH_MX50_ARM2		MX50_ARM2		2955
++cetus9263		MACH_CETUS9263		CETUS9263		2956
++brownstone		MACH_BROWNSTONE		BROWNSTONE		2957
++vmx25			MACH_VMX25		VMX25			2958
++vmx51			MACH_VMX51		VMX51			2959
++abacus			MACH_ABACUS		ABACUS			2960
++cm4745			MACH_CM4745		CM4745			2961
++oratislink		MACH_ORATISLINK		ORATISLINK		2962
++davinci_dm365_dvr	MACH_DAVINCI_DM365_DVR	DAVINCI_DM365_DVR	2963
++netviz			MACH_NETVIZ		NETVIZ			2964
++flexibity		MACH_FLEXIBITY		FLEXIBITY		2965
++wlan_computer		MACH_WLAN_COMPUTER	WLAN_COMPUTER		2966
++lpc24xx			MACH_LPC24XX		LPC24XX			2967
++spica			MACH_SPICA		SPICA			2968
++gpsdisplay		MACH_GPSDISPLAY		GPSDISPLAY		2969
++bipnet			MACH_BIPNET		BIPNET			2970
++overo_ctu_inertial	MACH_OVERO_CTU_INERTIAL	OVERO_CTU_INERTIAL	2971
++davinci_dm355_mmm	MACH_DAVINCI_DM355_MMM	DAVINCI_DM355_MMM	2972
++pc9260_v2		MACH_PC9260_V2		PC9260_V2		2973
++ptx7545			MACH_PTX7545		PTX7545			2974
++tm_efdc			MACH_TM_EFDC		TM_EFDC			2975
++remove_me		MACH_WALDO1		WALDO1			2976
++omap3_waldo1		MACH_OMAP3_WALDO1	OMAP3_WALDO1		2977
++flyer			MACH_FLYER		FLYER			2978
++tornado3240		MACH_TORNADO3240	TORNADO3240		2979
++soli_01			MACH_SOLI_01		SOLI_01			2980
++omapl138_europalc	MACH_OMAPL138_EUROPALC	OMAPL138_EUROPALC	2981
++helios_v1		MACH_HELIOS_V1		HELIOS_V1		2982
++netspace_lite_v2	MACH_NETSPACE_LITE_V2	NETSPACE_LITE_V2	2983
++ssc			MACH_SSC		SSC			2984
++premierwave_en		MACH_PREMIERWAVE_EN	PREMIERWAVE_EN		2985
++wasabi			MACH_WASABI		WASABI			2986
++vivo_w			MACH_VIVOW		VIVOW			2987
++mx50_rdp		MACH_MX50_RDP		MX50_RDP		2988
++universal		MACH_UNIVERSAL		UNIVERSAL		2989
++real6410		MACH_REAL6410		REAL6410		2990
++spx_sakura		MACH_SPX_SAKURA		SPX_SAKURA		2991
++ij3k_2440		MACH_IJ3K_2440		IJ3K_2440		2992
++omap3_bc10		MACH_OMAP3_BC10		OMAP3_BC10		2993
++thebe			MACH_THEBE		THEBE			2994
++rv082			MACH_RV082		RV082			2995
++armlguest		MACH_ARMLGUEST		ARMLGUEST		2996
++tjinc1000		MACH_TJINC1000		TJINC1000		2997
++dockstar		MACH_DOCKSTAR		DOCKSTAR		2998
++ax8008			MACH_AX8008		AX8008			2999
++gnet_sgce		MACH_GNET_SGCE		GNET_SGCE		3000
++pxwnas_500_1000		MACH_PXWNAS_500_1000	PXWNAS_500_1000		3001
++ea20			MACH_EA20		EA20			3002
++awm2			MACH_AWM2		AWM2			3003
++ti8148evm		MACH_TI8148EVM		TI8148EVM		3004
++tegra_seaboard		MACH_TEGRA_SEABOARD	TEGRA_SEABOARD		3005
++linkstation_chlv2	MACH_LINKSTATION_CHLV2	LINKSTATION_CHLV2	3006
++tera_pro2_rack		MACH_TERA_PRO2_RACK	TERA_PRO2_RACK		3007
++rubys			MACH_RUBYS		RUBYS			3008
++aquarius		MACH_AQUARIUS		AQUARIUS		3009
++mx53_ard		MACH_MX53_ARD		MX53_ARD		3010
++mx53_smd		MACH_MX53_SMD		MX53_SMD		3011
++lswxl			MACH_LSWXL		LSWXL			3012
++dove_avng_v3		MACH_DOVE_AVNG_V3	DOVE_AVNG_V3		3013
++sdi_ess_9263		MACH_SDI_ESS_9263	SDI_ESS_9263		3014
++jocpu550		MACH_JOCPU550		JOCPU550		3015
++msm8x60_rumi3		MACH_MSM8X60_RUMI3	MSM8X60_RUMI3		3016
++msm8x60_ffa		MACH_MSM8X60_FFA	MSM8X60_FFA		3017
++yanomami		MACH_YANOMAMI		YANOMAMI		3018
++gta04			MACH_GTA04		GTA04			3019
++cm_a510			MACH_CM_A510		CM_A510			3020
++omap3_rfs200		MACH_OMAP3_RFS200	OMAP3_RFS200		3021
++kx33xx			MACH_KX33XX		KX33XX			3022
++ptx7510			MACH_PTX7510		PTX7510			3023
++top9000			MACH_TOP9000		TOP9000			3024
++teenote			MACH_TEENOTE		TEENOTE			3025
++ts3			MACH_TS3		TS3			3026
++a0			MACH_A0			A0			3027
++fsm9xxx_surf		MACH_FSM9XXX_SURF	FSM9XXX_SURF		3028
++fsm9xxx_ffa		MACH_FSM9XXX_FFA	FSM9XXX_FFA		3029
++frrhwcdma60w		MACH_FRRHWCDMA60W	FRRHWCDMA60W		3030
++remus			MACH_REMUS		REMUS			3031
++at91cap7xdk		MACH_AT91CAP7XDK	AT91CAP7XDK		3032
++at91cap7stk		MACH_AT91CAP7STK	AT91CAP7STK		3033
++kt_sbc_sam9_1		MACH_KT_SBC_SAM9_1	KT_SBC_SAM9_1		3034
++at91sam9263router	MACH_ORATISROUTER	ORATISROUTER		3035
++armada_xp_db		MACH_ARMADA_XP_DB	ARMADA_XP_DB		3036
++spdm			MACH_SPDM		SPDM			3037
++gtib			MACH_GTIB		GTIB			3038
++dgm3240			MACH_DGM3240		DGM3240			3039
++iv_atlas_i_lpe		MACH_ATLAS_I_LPE	ATLAS_I_LPE		3040
++htcmega			MACH_HTCMEGA		HTCMEGA			3041
++tricorder		MACH_TRICORDER		TRICORDER		3042
++tx28			MACH_TX28		TX28			3043
++bstbrd			MACH_BSTBRD		BSTBRD			3044
++pwb3090			MACH_PWB3090		PWB3090			3045
++idea6410		MACH_IDEA6410		IDEA6410		3046
++qbc9263			MACH_QBC9263		QBC9263			3047
++borabora		MACH_BORABORA		BORABORA		3048
++valdez			MACH_VALDEZ		VALDEZ			3049
++ls9g20			MACH_LS9G20		LS9G20			3050
++mios_v1			MACH_MIOS_V1		MIOS_V1			3051
++s5pc110_crespo		MACH_S5PC110_CRESPO	S5PC110_CRESPO		3052
++controltek9g20		MACH_CONTROLTEK9G20	CONTROLTEK9G20		3053
++tin307			MACH_TIN307		TIN307			3054
++tin510			MACH_TIN510		TIN510			3055
++ep3505			MACH_EP3517		EP3517			3056
++bluecheese		MACH_BLUECHEESE		BLUECHEESE		3057
++tem3x30			MACH_TEM3X30		TEM3X30			3058
++harvest_desoto		MACH_HARVEST_DESOTO	HARVEST_DESOTO		3059
++msm8x60_qrdc		MACH_MSM8X60_QRDC	MSM8X60_QRDC		3060
++spear900		MACH_SPEAR900		SPEAR900		3061
++pcontrol_g20		MACH_PCONTROL_G20	PCONTROL_G20		3062
+diff -urN barebox-2010.10.0/commands/gpio.c barebox-2010.10.0-vmx25/commands/gpio.c
+--- barebox-2010.10.0/commands/gpio.c	2010-10-02 13:00:45.000000000 +0200
++++ barebox-2010.10.0-vmx25/commands/gpio.c	2010-10-06 15:13:29.145895633 +0200
+@@ -37,7 +37,7 @@
+ }
+ 
+ static const __maybe_unused char cmd_gpio_get_value_help[] =
+-"Usage: gpio_set_value <gpio>\n";
++"Usage: gpio_get_value <gpio>\n";
+ 
+ BAREBOX_CMD_START(gpio_get_value)
+ 	.cmd		= do_gpio_get_value,
+diff -urN barebox-2010.10.0/drivers/mtd/nand/nand_base.c barebox-2010.10.0-vmx25/drivers/mtd/nand/nand_base.c
+--- barebox-2010.10.0/drivers/mtd/nand/nand_base.c	2010-10-02 13:00:45.000000000 +0200
++++ barebox-2010.10.0-vmx25/drivers/mtd/nand/nand_base.c	2010-10-10 22:53:51.609734576 +0200
+@@ -2251,7 +2251,12 @@
+ 	}
+ 
+ 	if (!type)
++	{
++		printk(KERN_INFO "%s: Undefined device (Manufacturer ID:"
++                       " 0x%02x, Chip ID: 0x%02x)\n", __func__, *maf_id, dev_id);
++
+ 		return ERR_PTR(-ENODEV);
++	}
+ 
+ 	if (!mtd->name)
+ 		mtd->name = type->name;
+diff -urN barebox-2010.10.0/drivers/mtd/nand/nand_ids.c barebox-2010.10.0-vmx25/drivers/mtd/nand/nand_ids.c
+--- barebox-2010.10.0/drivers/mtd/nand/nand_ids.c	2010-10-02 13:00:45.000000000 +0200
++++ barebox-2010.10.0-vmx25/drivers/mtd/nand/nand_ids.c	2010-10-10 22:53:44.329736684 +0200
+@@ -84,6 +84,7 @@
+ 	/* 1 Gigabit */
+ 	{"NAND 128MiB 1,8V 8-bit",	0xA1, 0, 128, 0, LP_OPTIONS},
+ 	{"NAND 128MiB 3,3V 8-bit",	0xF1, 0, 128, 0, LP_OPTIONS},
++	{"NAND 128MiB 3,3V 8-bit",	0xD1, 0, 128, 0, LP_OPTIONS},
+ 	{"NAND 128MiB 1,8V 16-bit",	0xB1, 0, 128, 0, LP_OPTIONS16},
+ 	{"NAND 128MiB 3,3V 16-bit",	0xC1, 0, 128, 0, LP_OPTIONS16},
+ 
+diff -urN barebox-2010.10.0/Makefile barebox-2010.10.0-vmx25/Makefile
+--- barebox-2010.10.0/Makefile	2010-10-02 13:00:45.000000000 +0200
++++ barebox-2010.10.0-vmx25/Makefile	2010-10-06 15:13:29.145895633 +0200
+@@ -163,8 +163,10 @@
+ # Alternatively CROSS_COMPILE can be set in the environment.
+ # Default value for CROSS_COMPILE is not to prefix executables
+ 
+-ARCH            ?= sandbox
+-CROSS_COMPILE   ?=
++#ARCH            ?= sandbox
++ARCH            ?= arm
++#CROSS_COMPILE   ?=
++CROSS_COMPILE   ?= arm-none-linux-gnueabi-
+ 
+ # Architecture as present in compile.h
+ UTS_MACHINE := $(ARCH)
