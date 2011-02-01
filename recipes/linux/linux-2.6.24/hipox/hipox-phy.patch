@@ -1,0 +1,90 @@
+diff -Nurd linux-2.6.24.orig/arch/arm/mach-hipox/gmac-napi.c linux-2.6.24/arch/arm/mach-hipox/gmac-napi.c
+--- linux-2.6.24.orig/arch/arm/mach-hipox/gmac-napi.c	2011-02-07 13:19:51.000000000 +0100
++++ linux-2.6.24/arch/arm/mach-hipox/gmac-napi.c	2011-02-07 12:47:23.000000000 +0100
+@@ -2290,7 +2290,7 @@
+     }
+ 
+     // Power down the PHY
+-    phy_powerdown(dev);
++//    phy_powerdown(dev);
+ }
+ 
+ static int stop(struct net_device *dev)
+@@ -2489,6 +2489,10 @@
+     } else {
+         DBG(1, KERN_INFO "open() %s: PHY in 1000Mb mode\n", dev->name);
+     }
++
++    // MST 7.2.2011: On hipox board OXE is directly connected (full duplex) with the switch.
++    priv->mii.full_duplex = 1;
++
+     if (priv->mii.full_duplex) {
+         reg_contents |= (1UL << MAC_CONFIG_DM_BIT);
+     }
+@@ -2705,8 +2709,8 @@
+                            (1UL << DMA_INT_ENABLE_TS_BIT)));
+ 
+     // (Re)start the link/PHY state monitoring timer
+-    start_watchdog_timer(priv);
+-
++//    start_watchdog_timer(priv);
++    netif_carrier_on(priv->mii.dev);
+     // Allow the network stack to call hard_start_xmit()
+     netif_start_queue(dev);
+ 
+@@ -2937,11 +2941,11 @@
+ 
+     // Reset the PHY to get it into a known state and ensure we have TX/RX clocks
+     // to allow the GMAC reset to complete
+-    if (phy_reset(priv->netdev)) {
+-        DBG(1, KERN_ERR "open() %s: Failed to reset PHY\n", dev->name);
+-        status = -EIO;
+-        goto open_err_out;
+-    }
++//    if (phy_reset(priv->netdev)) {
++//        DBG(1, KERN_ERR "open() %s: Failed to reset PHY\n", dev->name);
++//        status = -EIO;
++//        goto open_err_out;
++//    }
+ 
+ 	// Set PHY specfic features
+ 	initialise_phy(priv);
+@@ -3282,6 +3286,19 @@
+ }
+ #endif // CONFIG_NET_POLL_CONTROLLER
+ 
++static int hipox_do_ioctl(struct net_device *netdev, struct ifreq *ifr, int cmd)
++{
++    gmac_priv_t* priv = netdev_priv(netdev);
++
++    if(netif_carrier_ok(netdev))
++    {
++        printk("hipox_do_ioctl() %s phy_id: %d reg: %d val: 0x%X\n", netdev->name, if_mii(ifr)->phy_id, if_mii(ifr)->reg_num, if_mii(ifr)->val_in);
++        return generic_mii_ioctl(&priv->mii, if_mii(ifr), cmd, NULL);
++    }
++    printk(KERN_WARNING "hipox_do_ioctl() gmac is down\n");
++    return -ENETDOWN; 
++}
++
+ static int probe(
+     struct net_device *netdev,
+     u32                vaddr,
+@@ -3410,6 +3427,7 @@
+     netdev->stop               = &stop;
+     netdev->get_stats          = &get_stats;
+     netdev->change_mtu         = &change_mtu;
++    netdev->do_ioctl           = hipox_do_ioctl;
+ #ifdef CONFIG_NET_POLL_CONTROLLER
+     netdev->poll_controller    = &netpoll;
+ #endif // CONFIG_NET_POLL_CONTROLLER
+@@ -3446,8 +3464,8 @@
+     priv->mii.reg_num_mask  = 0x1f;
+     priv->mii.force_media   = 0;
+     priv->mii.full_duplex   = 1;
+-    priv->mii.using_100     = 0;
+-    priv->mii.using_1000    = 1;
++    priv->mii.using_100     = 1;
++    priv->mii.using_1000    = 0;
+ 	priv->mii.using_pause   = 1;
+     priv->mii.dev           = netdev;
+     priv->mii.mdio_read     = phy_read;
