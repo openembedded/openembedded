@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r71"
+PR = "r72"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2|ixp4xx"
@@ -103,7 +103,7 @@ SLUGOS_PACKAGES = "\
 	iptables \
 	joe \
 	jpeg \
-	kexec \
+	kexec-tools \
 	lcdproc \
 	less \
 	libdvb \
