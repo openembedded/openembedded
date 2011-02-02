@@ -31,7 +31,7 @@ do_configure_prepend () {
 
 do_configure_append() {
 	# replace paths to STAGING_BINDIR_NATIVE/perl with ${bindir}/perl
-	sed -i -e "s:#! @PERL@ -w:#! /usr/bin/env perl:" ${S}/bin/*.in
+	sed -i -e "1s:#!.*:#! /usr/bin/env perl:" ${S}/bin/*.in
 }
 
 PARALLEL_MAKE = ""
