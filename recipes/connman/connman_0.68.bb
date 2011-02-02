@@ -1,7 +1,7 @@
 require connman.inc
 # connman requires libXtables now
 DEPENDS += "iptables"
-PR = "r0"
+PR = "r1"
 
 EXTRA_OECONF += "\
   --disable-gtk-doc \
@@ -12,24 +12,13 @@ EXTRA_OECONF += "\
   --enable-wifi \
   --disable-wimax \
   --enable-bluetooth \
-  --enable-udhcp \
-  --enable-dhclient \
+  --enable-ofono \
   --enable-resolvconf \
   --enable-dnsproxy \
   --enable-tools \
-  --disable-novatel \
-  --disable-huawei \
-  --disable-hso \
-  --enable-ppp \
-# needs udev >= 129
-  --disable-udev \
   --disable-polkit \
   --enable-client \
   --enable-fake \
-#  --with-udhcpc=PROGRAM \
-#  --with-dhclient=PROGRAM \
-#  --with-resolvconf=PROGRAM \
-#  --with-pppd=PROGRAM \
 "
 
 SRC_URI  = "\
