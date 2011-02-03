@@ -174,7 +174,7 @@ def package_qa_check_rpath(file,name,d, elf):
         for dir in bad_dirs:
             if dir in line:
                 error_msg = "package %s contains bad RPATH %s in file %s" % (name, line, file)
-                sane = sane + package_qa_handle_error(1, error_msg, name, file, d)
+                sane = package_qa_handle_error(1, error_msg, name, file, d)
 
     return sane
 
