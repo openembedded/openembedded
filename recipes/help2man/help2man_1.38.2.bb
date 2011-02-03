@@ -4,6 +4,7 @@ LICENSE = "GPLv3"
 DEPENDS = "gettext-native perl-native liblocale-gettext-perl-native"
 DEPENDS_virtclass-native = "perl-native autoconf-native automake-native"
 RDEPENDS_${PN} = "gettext perl liblocale-gettext-perl"
+RDEPENDS_${PN}_virtclass-native = ""
 PR = "r2"
 
 SRC_URI = "${GNU_MIRROR}/${BPN}/${BPN}-${PV}.tar.gz"
