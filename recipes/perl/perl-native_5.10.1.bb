@@ -2,7 +2,7 @@ DESCRIPTION = "Perl is a popular scripting language."
 HOMEPAGE = "http://www.perl.org/"
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
-PR = "r9"
+PR = "r10"
 NATIVE_INSTALL_WORKS = "1"
 INHIBIT_DEFAULT_DEPS = "1"
 PATCHTOOL = "patch"
@@ -41,15 +41,14 @@ do_configure () {
         -Dvendorprefix=${prefix} \
         -Dsiteprefix=${prefix} \
          \
-        -Dprivlib=.../../lib/perl/${PV} \
-        -Darchlib=.../../lib/perl/${PV} \
-        -Dvendorlib=.../../lib/perl/${PV} \
-        -Dvendorarch=.../../lib/perl/${PV} \
-        -Dsitelib=.../../lib/perl/${PV} \
-        -Dsitearch=.../../lib/perl/${PV} \
-        -Duserelocatableinc="y" \
+        -Dprivlib=${STAGING_LIBDIR}/perl/${PV} \
+        -Darchlib=${STAGING_LIBDIR}/perl/${PV} \
+        -Dvendorlib=${STAGING_LIBDIR}/perl/${PV} \
+        -Dvendorarch=${STAGING_LIBDIR}/perl/${PV} \
+        -Dsitelib=${STAGING_LIBDIR}/perl/${PV} \
+        -Dsitearch=${STAGING_LIBDIR}/perl/${PV} \
         \
-        -Uuseshrplib \
+        -Duseshrplib \
         -Dusethreads \
         -Duseithreads \
         -Duselargefiles \
@@ -104,6 +103,8 @@ do_install() {
 	for PERLSCRIPT in `grep -rIEl '#!.*/perl' ${D}${bindir}`; do
 		sed -i -e '1s|^#!.*|#!/usr/bin/env perl|' $PERLSCRIPT
 	done
+
+	create_wrapper ${D}${bindir}/perl PERL5LIB='$PERL5LIB:${STAGING_LIBDIR}/perl/${PV}:${STAGING_LIBDIR}/perl/'
 }
 
 do_install_append_nylon() {
