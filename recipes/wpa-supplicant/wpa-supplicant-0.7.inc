@@ -6,7 +6,7 @@ LICENSE = "GPLv2 | BSD"
 LIC_FILES_CHKSUM = "file://../COPYING;md5=c54ce9345727175ff66d17b67ff51f58 \
                     file://../README;md5=54cfc88015d3ce83f7156e63c6bb1738 \
                     file://wpa_supplicant.c;beginline=1;endline=17;md5=acdc5a4b0d6345f21f136eace747260e"
-DEPENDS = "gnutls dbus"
+DEPENDS = "gnutls dbus libnl2"
 RRECOMMENDS_${PN} = "wpa-supplicant-passphrase wpa-supplicant-cli"
 
 SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
@@ -18,6 +18,11 @@ SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
            file://99_wpa_supplicant"
 
 S = "${WORKDIR}/wpa_supplicant-${PV}/wpa_supplicant"
+
+# We stage libnl2 header files not directly as they clash with libnl files. Once
+# we only use libnl2 and stage the headers at the normal place we can remove
+# this.
+CFLAGS += "-I${STAGING_INCDIR}/libnl2/"
 
 PACKAGES_prepend = "wpa-supplicant-passphrase wpa-supplicant-cli "
 FILES_wpa-supplicant-passphrase = "/usr/sbin/wpa_passphrase"
