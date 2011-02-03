@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPLv1+"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r21"
+PR = "r22"
 
 # 5.10.1 has Module::Build built-in
 PROVIDES += "libmodule-build-perl"
@@ -157,22 +157,18 @@ do_configure() {
 			;;
 	esac
 
-        if test "${MACHINE}" != "native"; then
-            # These are strewn all over the source tree
-            for foo in `grep -I -m1 \/usr\/include\/.*\\.h ${WORKDIR}/* -r | cut -f 1 -d ":"` ; do
-                echo Fixing: $foo
-                sed -e "s%/usr/include/%${STAGING_INCDIR}/%g" -i $foo
-            done
-        fi
+        # These are strewn all over the source tree
+        for foo in `grep -I -m1 \/usr\/include\/.*\\.h ${WORKDIR}/* -r | cut -f 1 -d ":"` ; do
+            echo Fixing: $foo
+            sed -e "s%/usr/include/%${STAGING_INCDIR}/%g" -i $foo
+        done
 
         rm -f config
         echo "ARCH = ${TARGET_ARCH}" > config
         echo "OS = ${TARGET_OS}" >> config
 }
 do_compile() {
-        if test "${MACHINE}" != "native"; then
-            sed -i -e 's|/usr/include|${STAGING_INCDIR}|g' ext/Errno/Errno_pm.PL
-        fi
+        sed -i -e 's|/usr/include|${STAGING_INCDIR}|g' ext/Errno/Errno_pm.PL
         cd Cross
         oe_runmake perl LD="${CCLD}"
 }
@@ -195,24 +191,23 @@ do_install() {
         ln -sf libperl.so.${PV} ${D}/${libdir}/libperl.so.5
 
         # Fix up installed configuration
-        if test "${MACHINE}" != "native"; then
-            sed -i -e "s,${D},,g" \
-                   -e "s,-isystem${STAGING_INCDIR} ,,g" \
-                   -e "s,${STAGING_LIBDIR},${libdir},g" \
-                   -e "s,${STAGING_BINDIR},${bindir},g" \
-                   -e "s,${STAGING_INCDIR},${includedir},g" \
-                   -e "s,${TOOLCHAIN_PATH}${base_bindir}/,,g" \
-                ${D}${bindir}/h2xs \
-                ${D}${bindir}/h2ph \
-                ${D}${datadir}/perl/${PV}/pod/*.pod \
-                ${D}${datadir}/perl/${PV}/cacheout.pl \
-                ${D}${datadir}/perl/${PV}/FileCache.pm \
-                ${D}${libdir}/perl/${PV}/Config.pm \
-                ${D}${libdir}/perl/${PV}/Config_heavy.pl \
-                ${D}${libdir}/perl/${PV}/CORE/perl.h \
-                ${D}${libdir}/perl/${PV}/CORE/pp.h
-        fi
+        sed -i -e "s,${D},,g" \
+               -e "s,-isystem${STAGING_INCDIR} ,,g" \
+               -e "s,${STAGING_LIBDIR},${libdir},g" \
+               -e "s,${STAGING_BINDIR},${bindir},g" \
+               -e "s,${STAGING_INCDIR},${includedir},g" \
+               -e "s,${TOOLCHAIN_PATH}${base_bindir}/,,g" \
+            ${D}${bindir}/h2xs \
+            ${D}${bindir}/h2ph \
+            ${D}${datadir}/perl/${PV}/pod/*.pod \
+            ${D}${datadir}/perl/${PV}/cacheout.pl \
+            ${D}${datadir}/perl/${PV}/FileCache.pm \
+            ${D}${libdir}/perl/${PV}/Config.pm \
+            ${D}${libdir}/perl/${PV}/Config_heavy.pl \
+            ${D}${libdir}/perl/${PV}/CORE/perl.h \
+            ${D}${libdir}/perl/${PV}/CORE/pp.h
 }
+
 do_stage() {
         install -d ${STAGING_LIBDIR_NATIVE}/perl/${PV} \
                    ${STAGING_LIBDIR}/perl/${PV}/CORE \
