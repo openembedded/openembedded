@@ -22,6 +22,7 @@ S = "${WORKDIR}/wpa_supplicant-${PV}/wpa_supplicant"
 PACKAGES_prepend = "wpa-supplicant-passphrase wpa-supplicant-cli "
 FILES_wpa-supplicant-passphrase = "/usr/sbin/wpa_passphrase"
 FILES_wpa-supplicant-cli = "/usr/sbin/wpa_cli"
+FILES_${PN} += " /usr/share/dbus-1/system-services/*"
 
 do_configure () {
 	install -m 0755 ${WORKDIR}/defconfig-gnutls .config
