@@ -1,0 +1,63 @@
+diff --git a/clutter/cally/cally.pc.in b/clutter/cally/cally.pc.in
+index 224668f..b313ad6 100644
+--- a/clutter/cally/cally.pc.in
++++ b/clutter/cally/cally.pc.in
+@@ -13,6 +13,6 @@ Name: Cally
+ Description: Clutter Accessibility Implementation Library
+ Version: @VERSION@
+ Requires: atk clutter-1.0
+-Libs: -L${libdir} -lclutter-${winsys}-${apiversion}
++Libs: -L${libdir} -lclutter-${soname_infix}-${apiversion}
+ Cflags: -I${includedir}/clutter-${apiversion}
+ Requires: ${requires}
+diff --git a/clutter/cogl/cogl/cogl.pc.in b/clutter/cogl/cogl/cogl.pc.in
+index 7975f4f..39358ca 100644
+--- a/clutter/cogl/cogl/cogl.pc.in
++++ b/clutter/cogl/cogl/cogl.pc.in
+@@ -8,10 +8,11 @@ backend=@COGL_WINSYS@ #only kept for backward compatability
+ winsys=@COGL_WINSYS@
+ cogl=@COGL_DRIVER@ #only kept for backward compatability
+ driver=@COGL_DRIVER@
++soname_infix=@CLUTTER_SONAME_INFIX@
+ 
+ Name: COGL
+ Description: Clutter GL abstraction library (${winsys}/${driver} backend)
+ Version: @VERSION@
+-Libs: -L${libdir} -lclutter-${winsys}-${apiversion}
++Libs: -L${libdir} -lclutter-${soname_infix}-${apiversion}
+ Cflags: -I${includedir}/clutter-${apiversion}
+ Requires: ${requires}
+diff --git a/clutter/win32/clutter-win32.pc.in b/clutter/win32/clutter-win32.pc.in
+index ad9a2b4..36b7a6f 100644
+--- a/clutter/win32/clutter-win32.pc.in
++++ b/clutter/win32/clutter-win32.pc.in
+@@ -7,10 +7,11 @@ requires=@CLUTTER_REQUIRES@
+ backend=@CLUTTER_WINSYS@ #only kept for backward compatability
+ winsys=@CLUTTER_WINSYS@
+ cogl_driver=@COGL_DRIVER@
++soname_infix=@CLUTTER_SONAME_INFIX@
+ 
+ Name: Clutter
+ Description: Clutter Core Library (${winsys}/${cogl_driver} backend)
+ Version: @VERSION@
+-Libs: -L${libdir} -lclutter-${winsys}-${apiversion}
++Libs: -L${libdir} -lclutter-${soname_infix}-${apiversion}
+ Cflags: -I${includedir}/clutter-${apiversion}
+ Requires: ${requires}
+diff --git a/clutter/x11/clutter-x11.pc.in b/clutter/x11/clutter-x11.pc.in
+index ad9a2b4..36b7a6f 100644
+--- a/clutter/x11/clutter-x11.pc.in
++++ b/clutter/x11/clutter-x11.pc.in
+@@ -7,10 +7,11 @@ requires=@CLUTTER_REQUIRES@
+ backend=@CLUTTER_WINSYS@ #only kept for backward compatability
+ winsys=@CLUTTER_WINSYS@
+ cogl_driver=@COGL_DRIVER@
++soname_infix=@CLUTTER_SONAME_INFIX@
+ 
+ Name: Clutter
+ Description: Clutter Core Library (${winsys}/${cogl_driver} backend)
+ Version: @VERSION@
+-Libs: -L${libdir} -lclutter-${winsys}-${apiversion}
++Libs: -L${libdir} -lclutter-${soname_infix}-${apiversion}
+ Cflags: -I${includedir}/clutter-${apiversion}
+ Requires: ${requires}
