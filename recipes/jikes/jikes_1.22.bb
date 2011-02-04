@@ -13,7 +13,7 @@ BBCLASSEXTEND = "native"
 
 RDEPENDS_${PN} = "classpath"
 PROVIDES_virtclass-native = ""
-RDEPENDS_virtclass-native = ""
+RDEPENDS_${PN}_virtclass-native = ""
 
 EXTRA_OECONF = "--disable-fp-emulation --enable-source15"
 
