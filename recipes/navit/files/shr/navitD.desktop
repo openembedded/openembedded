@@ -1,11 +1,10 @@
 [Desktop Entry]
 Name=NavitD
 Comment=GPS Navigation Display blanking disabled
-Exec=unset LC_ALL && fsoraw -fr CPU,GPS,Display -- navit
+Exec=unset LC_ALL \\\&\\\& fsoraw -fr CPU,GPS,Display -- navit
 Icon=navitD
 Terminal=false
 Type=Application
-Categories=GTK;
+Categories=Utility;
 MimeType=text/x-vcard;
 StartupNotify=true
-SingleInstance=true
