@@ -46,14 +46,12 @@ SRC_URI += "file://navit.xml \
             file://osd.xml \
             file://speech.xml \
             file://plugins.xml \
-            file://navit.desktop \
-            file://navit.png \
            "
 
 #Second launcher for shr
-SRC_URI_append_shr = "file://navitD.desktop \
-                      file://navitD.png \
-                     "
+SRC_URI_append_shr = "file://navitD.png \
+                      file://navit.launcher.sh \
+"
 
 FILES_${PN} += "${libdir}/${PN}/*/*.so"
 FILES_${PN}-dbg += "${libdir}/${PN}/*/.debug"
@@ -78,9 +76,11 @@ do_configure_prepend() {
 
 do_install_append() {
         install -d ${D}${datadir}/applications/
-        install -m 0644 ${WORKDIR}/navit.desktop ${D}${datadir}/applications/
+        install -m 0644 ${S}/navit/xpm/desktop_icons/navit.desktop ${D}${datadir}/applications/
         install -d ${D}${datadir}/pixmaps/
-        install -m 0644 ${WORKDIR}/navit.png ${D}${datadir}/pixmaps/
+        install -m 0644 ${S}/navit/xpm/desktop_icons/128x128/navit.png ${D}${datadir}/pixmaps/
+	# fix QA issue
+	sed -i 's#Categories=GTK;Utility;Geography;#Categories=Graphics;#g' ${D}${datadir}/applications/navit.desktop
 
 	rm ${D}${libdir}/${PN}/*/*.la
 
@@ -94,7 +94,15 @@ do_install_append() {
 }
 
 do_install_append_shr() {
-        #Install second launcher for shr
-        install -m 0644 ${WORKDIR}/navitD.desktop ${D}${datadir}/applications/
-        install -m 0644 ${WORKDIR}/navitD.png ${D}${datadir}/pixmaps/
+        # Install second launcher for shr
+        install -m 0644 ${S}/navit/xpm/desktop_icons/navit.desktop ${D}${datadir}/applications/navitD.desktop
+        install -m 0644 ${WORKDIR}/navitD.png ${D}${datadir}/pixmaps/navitD.png
+        install -m 0755 ${WORKDIR}/navit.launcher.sh ${D}${bindir}/
+        # Change .desktop files a bit
+	sed -i 's#Exec=navit#Exec=fsoraw -fr CPU,GPS -- navit.launcher.sh#g' ${D}${datadir}/applications/navit.desktop
+	sed -i 's#Exec=navit#Exec=fsoraw -fr CPU,GPS,Display -- navit.launcher.sh#g' ${D}${datadir}/applications/navitD.desktop
+	sed -i 's#Categories=GTK;Utility;Geography;#Categories=Graphics;#g' ${D}${datadir}/applications/navitD.desktop
+	sed -i 's#Comment=GPS Navigation#Comment=GPS Navigation Display blanking disabled#g' ${D}${datadir}/applications/navitD.desktop
+	sed -i 's#Icon=navit#Icon=navitD#g' ${D}${datadir}/applications/navitD.desktop
+	sed -i 's#Navit#NavitD#g' ${D}${datadir}/applications/navitD.desktop
 }

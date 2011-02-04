@@ -20,9 +20,14 @@
 # This can be worked around by doing
 # "echo 1 > /proc/sys/vm/overcommit_memory"
 
-# check if navit already running:
-pgrep '^navit$'
-not_running=$?
+# if we have procps installed check if navit already running:
+if test -e /usr/bin/pgrep; then
+  pgrep '^navit$'
+  not_running=$?
+else
+  # we assume it's not running
+  not_running=1
+fi
 
 if [ $not_running = 0 ]; then
         echo "navit already running !!"
@@ -46,12 +51,12 @@ else
 	                echo "Enabling low-mem workaround..."
 	                OLD=`cat /proc/sys/vm/overcommit_memory`
 	                echo 1 > /proc/sys/vm/overcommit_memory
-	                navit.real $*
+	                navit $*
 	                echo ${OLD} > /proc/sys/vm/overcommit_memory
 	                exit
 	        else
 	                echo "I need root-privs to enable the low-mem workaround!"
 	        fi
 	fi
-        navit.real $*
+        navit $*
 fi
