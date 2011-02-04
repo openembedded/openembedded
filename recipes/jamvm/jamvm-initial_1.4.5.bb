@@ -36,9 +36,9 @@ do_compile() {
     GLIBJ_ZIP=${STAGING_DATADIR_NATIVE}/classpath-initial/glibj.zip
 }
 
-do_stage_append() {
-  install -d ${STAGING_BINDIR}
-  install -m 0755 java-initial ${STAGING_BINDIR}
+do_install_append() {
+  install -d ${D}${bindir}/
+  install -m 0755 java-initial ${D}${bindir}/
 }
 
 SRC_URI[md5sum] = "3f538bab6e1c77aed331e5e71f754f5b"
