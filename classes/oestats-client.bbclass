@@ -11,7 +11,8 @@
 
 def oestats_setid(d, val):
 	import bb
-	f = file(bb.data.getVar('TMPDIR', d, True) + '/oestats.id', 'w')
+	import os
+	f = open(os.path.join(bb.data.getVar('TMPDIR', d, True), 'oestats.id'), 'w')
 	f.write(val)
 
 def oestats_getid(d):
@@ -19,6 +20,11 @@ def oestats_getid(d):
 	f = file(bb.data.getVar('TMPDIR', d, True) + '/oestats.id', 'r')
 	return f.read()
 	
+def get_exc_info():
+	import sys
+	exctype, value = sys.exc_info()[:2]
+	return "exception " + str(exctype) + ", value " + str(value)
+
 def oestats_send(d, server, action, vars = {}, files = {}):
 	import bb
 	import urllib2
@@ -27,13 +33,12 @@ def oestats_send(d, server, action, vars = {}, files = {}):
 	output = []
 	bound = '----------ThIs_Is_tHe_bouNdaRY_$'
 	for key in vars:
-		assert vars[key]
 		output.append('--' + bound)
 		output.append('Content-Disposition: form-data; name="%s"' % key)
 		output.append('')
 		output.append(vars[key])
 	for key in files:
-		assert files[key]
+		if not vars[key]: continue
 		output.append('--' + bound)
 		output.append('Content-Disposition: form-data; name="%s"; filename="%s"' % (key, files[key]['filename']))
 		output.append('Content-Type: %s' % files[key]['content-type'])
@@ -81,13 +86,14 @@ def oestats_start(server, builder, d):
 		})
 		if re.match("^\d+$", data): id=data
 	except:
+		bb.warn("oestats: %s" % get_exc_info())
 		pass
 
 	# save the build id
 	if id:
 		bb.note("oestats: build %s" % id)
 	else:
-		bb.note("oestats: error starting build, disabling stats")
+		bb.warn("oestats: error starting build, disabling stats")
 	oestats_setid(d, id)
 
 def oestats_stop(server, d, failures):
@@ -108,9 +114,9 @@ def oestats_stop(server, d, failures):
 			'status': status,
 		})
 		if status == 'Failed':
-			bb.note("oestats: build failed, see %s%s" % (server, response))
+			bb.warn("oestats: build failed, see %s%s" % (server, response))
 	except:
-		bb.note("oestats: error stopping build")
+		bb.warn("oestats: error stopping build (%s)" % get_exc_info())
 
 def oestats_task(server, d, task, status):
 	import bb
@@ -132,7 +138,7 @@ def oestats_task(server, d, task, status):
 	files = {}
 	if status == 'Failed':
 		logs = glob.glob("%s/log.%s.*" % (bb.data.getVar('T', d, True), task))
-        	if len(logs) > 0:
+		if len(logs) > 0:
 			log = logs[0]
 			files['log'] = {
 				'filename': 'log.txt',
@@ -163,12 +169,13 @@ def oestats_task(server, d, task, status):
 		vars['bug_tracker'] = bug_tracker
 
 	# send report
+	# FIXME: resend on http/url error?
 	try:
 		response = oestats_send(d, server, "/tasks/", vars, files)
 		if status == 'Failed':
-			bb.note("oestats: task failed, see %s%s" % (server, response))
+			bb.warn("oestats: task failed, see %s%s" % (server, response))
 	except:
-		bb.note("oestats: error sending task, disabling stats")
+		bb.warn("oestats: error sending task (%s), disabling stats" % get_exc_info())
 		oestats_setid(d, "")
 
 addhandler oestats_eventhandler
