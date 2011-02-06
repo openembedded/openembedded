@@ -17,6 +17,8 @@ PACKAGES_DYNAMIC = "pango-module-*"
 PACKAGES_DYNAMIC_virtclass-native = ""
 
 RRECOMMENDS_${PN} = "pango-module-basic-x pango-module-basic-fc" 
+RRECOMMENDS_${PN}_virtclass-native = ""
+
 
 INC_PR = "r1"
 
