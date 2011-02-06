@@ -1,5 +1,6 @@
 DEPENDS_append = " update-rc.d update-rc.d-native"
 RDEPENDS_${PN}_append = " ${@base_conditional("ONLINE_PACKAGE_MANAGEMENT", "none", "", "update-rc.d", d)}"
+RDEPENDS_${PN}_virtclass-native = ""
 
 INITSCRIPT_PARAMS ?= "defaults"
 
