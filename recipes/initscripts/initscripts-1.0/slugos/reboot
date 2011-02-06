@@ -5,15 +5,12 @@
 
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 
-# Test if we should boot into the new kernel
-if test -x /usr/sbin/kexec -a -f /sys/kernel/kexec_loaded ; then
-    read loaded < /sys/kernel/kexec_loaded
-    if test "$loaded" = "1" ; then
-        echo -n "Loaded kernel image found, executing ... "
-        /usr/sbin/kexec --exec --force --no-ifdown
-        echo "${warn}failed, doing normal reboot${norm}"
-    fi
+echo "Rebooting... "
+
+if test -x /usr/sbin/kexec ; then
+    echo " Trying kexec first..."
+    /usr/sbin/kexec --force --exec #--no-ifdown
+    echo " No kexec kernel loaded (or kexec failed), doing normal reboot..."
 fi
 
-echo -n "Rebooting... "
 reboot -d -f -i

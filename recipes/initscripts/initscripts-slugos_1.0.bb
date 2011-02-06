@@ -17,7 +17,7 @@ RDEPENDS_${PN} = "update-rc.d"
 # All other standard definitions inherited from initscripts
 # Except the PR which is hacked here.  The format used is
 # a suffix
-PR := "${PR}.26"
+PR := "${PR}.27"
 
 # Avoid a clash on /etc/device_table by ensuring that it gets removed
 # from the list of configuration files handled specially by opkg.
@@ -173,9 +173,6 @@ do_install_append() {
 	# This is the special, correct, slugos umountfs, it will umount
 	# any network file systems which failed to umount before.
 	update-rc.d -r ${D} umountfs		start 70 0 6 .
-
-	# Remount /sys here, the reboot script needs it to check for kexec
-	update-rc.d -r ${D} sysfs.sh		start 80 6 .
 
 	update-rc.d -r ${D} halt		start 90 0 .
 	update-rc.d -r ${D} reboot		start 90 6 .
