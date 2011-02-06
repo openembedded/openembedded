@@ -5,8 +5,9 @@ require apt.inc
 
 SRC_URI += "file://no-doxygen.patch \
             file://no-ko-translation.patch \
+            file://fix-gcc-4.4-compile.patch \
             file://use-host.patch "
-PR = "r2"
+PR = "r3"
 
 require apt-package.inc
 
