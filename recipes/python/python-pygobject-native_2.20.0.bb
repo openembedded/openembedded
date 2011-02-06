@@ -3,6 +3,7 @@ require python-pygobject_${PV}.bb
 inherit native
 
 DEPENDS = "python-native glib-2.0-native"
+RDEPENDS_${PN} = ""
 
 PARALLEL_MAKE = ""
 
