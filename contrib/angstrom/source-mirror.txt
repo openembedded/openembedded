@@ -2,6 +2,7 @@
 
 rsync ~/OE/downloads/ angstrom@linuxtogo.org:~/website/unstable/sources/ -aPvz \
 	--exclude "*.md5" \
+	--exclude "*.done" \
 	--exclude "svn" \
 	--exclude "hg" \
 	--exclude "bzr" \
