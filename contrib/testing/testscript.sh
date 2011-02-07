@@ -18,16 +18,16 @@ fi
 (cd openembedded; git checkout testing-next)
 
 # test if bitbake exist; if not; fetch it and untar it
-if [ ! -d bitbake-1.10.1 ]
+if [ ! -d bitbake-1.10.2 ]
 then
-    (wget http://download.berlios.de/bitbake/bitbake-1.10.1.tar.gz; tar xf bitbake-1.10.1.tar.gz; rm bitbake-1.10.0.tar.gz) 
+    (wget http://download.berlios.de/bitbake/bitbake-1.10.2.tar.gz; tar xf bitbake-1.10.2.tar.gz; rm bitbake-1.10.2.tar.gz) 
 fi
 
 # TOPDIR is where we are now
 TOPDIR=`pwd`
 
 # add bitbake to the path
-export PATH=${TOPDIR}/bitbake-1.10.1/bin:$PATH
+export PATH=${TOPDIR}/bitbake-1.10.2/bin:$PATH
 
 # create a local.conf by using a here document
 cat > ${TOPDIR}/openembedded/conf/local.conf << EOF
