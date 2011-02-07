@@ -12,7 +12,7 @@ SUMMARY = "BitBake build tool"
 RDEPENDS_${PN} += "python-shell python-lang python-textutils python-pickle python-crypt python-netclient"
 
 # crypt for md5
-# netclient for tinderclient.bbclass
+# netclient for oestats-client.bbclass (urllib2)
 
 # We don't need a toolchain...
 INHIBIT_DEFAULT_DEPS = "1"
