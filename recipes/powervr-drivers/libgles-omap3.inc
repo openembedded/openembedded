@@ -1,28 +1,13 @@
 DESCRIPTION = "libGLES for the omap3"
 LICENSE = "proprietary-binary"
 
-PR = "r10"
+PR = "r11"
 
 COMPATIBLE_MACHINE = "(omap3|ti816x)"
 
 DEPENDS = "virtual/libx11 libxau libxdmcp"
 
 PROVIDES += "virtual/egl"
-
-# some hints to get you going. as this isnt a totally "open" library, you need
-# to do some work. follow the steps below.
-#
-# 1. if you don't already have a ti account get one here. it's free:
-#  http://www.ti.com/hdr_my_ti
-# 2. fetch the gl-es bin (full OMAP Graphics SDK) from here:
-#  http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/gfxsdk/latest/index_FDS.html
-# 3. put the OMAP35x_*.bin file in $DL_DIR, i.e. downloads/
-#  mv OMAP35x_Graphics_SDK_setuplinux_3_01_00_06.bin ./downloads/
-# 4. make the checksum file in ./downloads/ directory:
-#  cd ./downloads/
-#  md5sum OMAP35x_Graphics_SDK_setuplinux_3_01_00_06.bin > OMAP35x_Graphics_SDK_setuplinux_3_01_00_06.bin.md5
-# 
-# voila!
 
 SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/gfxsdk/${SGXPV}/exports/OMAP35x_Graphics_SDK_setuplinux_${SGXPV}.bin \
 		   file://cputype \
