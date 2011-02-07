@@ -25,3 +25,7 @@ INHIBIT_DEFAULT_DEPS = "1"
 ARM_INSTRUCTION_SET = "arm"
 
 PACKAGES = "glibc catchsegv sln nscd ldd localedef glibc-utils glibc-dev glibc-doc glibc-locale libsegfault glibc-extra-nss glibc-thread-db glibc-pcprofile"
+
+# Work around issues with pstage package install order and intermediate steps
+# in the toolchain build.
+do_setscene[deptask] = "do_setscene"

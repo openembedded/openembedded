@@ -45,3 +45,6 @@ BINV = "${PV}"
 S = "${WORKDIR}/gcc-${PV}"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
+# Work around issues with pstage package install order and intermediate steps
+# in the toolchain build.
+do_setscene[deptask] = "do_setscene"

@@ -46,3 +46,7 @@ OE_FEATURES := "${@features_to_eglibc_settings(d)}"
 do_configure_prepend() {
 	echo '${OE_FEATURES}' > ${B}/option-groups.config
 }
+
+# Work around issues with pstage package install order and intermediate steps
+# in the toolchain build.
+do_setscene[deptask] = "do_setscene"
