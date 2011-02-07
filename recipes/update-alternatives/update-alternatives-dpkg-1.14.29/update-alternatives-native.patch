@@ -1,0 +1,233 @@
+--- dpkg-1.14.29.orig/scripts/update-alternatives.pl	2010-03-08 21:27:35.000000000 +0100
++++ dpkg-1.14.29/scripts/update-alternatives.pl	2011-02-06 20:20:19.000000000 +0100
+@@ -1,4 +1,4 @@
+-#!/usr/bin/perl --
++#!/usr/bin/env perl
+ 
+ BEGIN { # Work-around for bug #479711 in perl
+     $ENV{PERL_DL_NONLAZY} = 1;
+@@ -16,6 +16,7 @@
+ # Global variables:
+ 
+ my $altdir = '/etc/alternatives';
++my $naltdir = $ENV{D} . $altdir;
+ # FIXME: this should not override the previous assignment.
+ $admindir = $admindir . '/alternatives';
+ 
+@@ -43,6 +44,7 @@
+ my $alink;            # Alternative we are managing (ie the symlink we're making/removing) (install only)
+ my $name;             # Name of the alternative (the symlink) we are processing
+ my $apath;            # Path of alternative we are offering
++my $napath;           # Native path of alternative we are offering
+ my $apriority;        # Priority of link (only when we are installing an alternative)
+ my %aslavelink;
+ my %aslavepath;
+@@ -190,7 +192,7 @@
+ sub display_link_group
+ {
+     pr(sprintf(_g("%s - status is %s."), $name, $mode));
+-    $linkname = readlink("$altdir/$name");
++    $linkname = readlink("$naltdir/$name");
+ 
+     if (defined($linkname)) {
+ 	pr(sprintf(_g(" link currently points to %s"), $linkname));
+@@ -226,25 +228,26 @@
+ sub checked_alternative($$$)
+ {
+     my ($name, $link, $path) = @_;
++    my $nlink = $ENV{D} . $link;
+ 
+-    $linkname = readlink($link);
++    $linkname = readlink($nlink);
+     if (!defined($linkname) && $! != ENOENT) {
+ 	pr(sprintf(_g("warning: %s is supposed to be a symlink to %s, \n".
+ 	              "or nonexistent; however, readlink failed: %s"),
+-	           $link, "$altdir/$name", $!))
++	           $nlink, "$altdir/$name", $!))
+ 	    if $verbosemode > 0;
+     } elsif (!defined($linkname) ||
+             (defined($linkname) && $linkname ne "$altdir/$name")) {
+-	checked_rm("$link.dpkg-tmp");
+-	checked_symlink("$altdir/$name", "$link.dpkg-tmp");
+-	checked_mv("$link.dpkg-tmp", $link);
++	checked_rm("$nlink.dpkg-tmp");
++	checked_symlink("$altdir/$name", "$nlink.dpkg-tmp");
++	checked_mv("$nlink.dpkg-tmp", $nlink);
+     }
+-    $linkname = readlink("$altdir/$name");
++    $linkname = readlink("$naltdir/$name");
+     if (defined($linkname) && $linkname eq $path) {
+-	pr(sprintf(_g("Leaving %s (%s) pointing to %s."), $name, $link, $path))
++	pr(sprintf(_g("Leaving %s (%s) pointing to %s."), $name, $nlink, $path))
+ 	    if $verbosemode > 0;
+     } else {
+-	pr(sprintf(_g("Updating %s (%s) to point to %s."), $name, $link, $path))
++	pr(sprintf(_g("Updating %s (%s) to point to %s."), $name, $nlink, $path))
+ 	    if $verbosemode > 0;
+     }
+ }
+@@ -254,8 +257,8 @@
+     my ($spath, $preferred) = (@_);
+ 
+     printf STDOUT _g("Using '%s' to provide '%s'.") . "\n", $spath, $name;
+-    checked_symlink("$spath","$altdir/$name.dpkg-tmp");
+-    checked_mv("$altdir/$name.dpkg-tmp", "$altdir/$name");
++    checked_symlink("$spath","$naltdir/$name.dpkg-tmp");
++    checked_mv("$naltdir/$name.dpkg-tmp", "$naltdir/$name");
+ 
+     # Link slaves...
+     for (my $slnum = 0; $slnum < @slavenames; $slnum++) {
+@@ -264,13 +267,13 @@
+ 	    checked_alternative($slave, $slavelinks[$slnum],
+ 	                  $slavepath{$preferred, $slnum});
+ 	    checked_symlink($slavepath{$preferred, $slnum},
+-	                    "$altdir/$slave.dpkg-tmp");
+-	    checked_mv("$altdir/$slave.dpkg-tmp", "$altdir/$slave");
++	                    "$naltdir/$slave.dpkg-tmp");
++	    checked_mv("$naltdir/$slave.dpkg-tmp", "$naltdir/$slave");
+ 	} else {
+ 	    pr(sprintf(_g("Removing %s (%s), not appropriate with %s."), $slave,
+ 	               $slavelinks[$slnum], $versions[$preferred]))
+ 	        if $verbosemode > 0;
+-	    checked_rm("$altdir/$slave");
++	    checked_rm("$naltdir/$slave");
+ 	}
+     }
+ }
+@@ -311,6 +314,14 @@
+ 	check_many_actions();
+         @ARGV >= 4 || &badusage(_g("--install needs <link> <name> <path> <priority>"));
+         ($alink,$name,$apath,$apriority,@ARGV) = @ARGV;
++	$napath = $ENV{'D'} . $apath;
++	if (! -e $napath) {
++		$apath = substr($alink, 0, rindex($alink, "/") + 1) . $apath;
++		$napath = $ENV{'D'} . $apath;
++	}
++	if (! -e $napath) {
++		&quit(sprintf(_g("Error: file not found: %s"), $napath));
++	}
+         $apriority =~ m/^[-+]?\d+/ || &badusage(_g("priority must be an integer"));
+ 	$action = 'install';
+     } elsif (m/^--(remove|set)$/) {
+@@ -390,10 +401,10 @@
+     set_alternatives($name);
+ }
+ 
+-if (defined($linkname= readlink("$altdir/$name"))) {
++if (defined($linkname= readlink("$naltdir/$name"))) {
+     if ($linkname eq $best) {
+         $state= 'expected';
+-    } elsif (defined(readlink("$altdir/$name.dpkg-tmp"))) {
++    } elsif (defined(readlink("$naltdir/$name.dpkg-tmp"))) {
+         $state= 'expected-inprogress';
+     } else {
+         $state= 'unexpected';
+@@ -413,8 +424,8 @@
+ if ($action eq 'auto') {
+     &pr(sprintf(_g("Setting up automatic selection of %s."), $name))
+       if $verbosemode > 0;
+-    checked_rm("$altdir/$name.dpkg-tmp");
+-    checked_rm("$altdir/$name");
++    checked_rm("$naltdir/$name.dpkg-tmp");
++    checked_rm("$naltdir/$name");
+     $state= 'nonexistent';
+     $mode = 'auto';
+ }
+@@ -426,7 +437,7 @@
+ 
+ if ($state eq 'unexpected' && $mode eq 'auto') {
+     &pr(sprintf(_g("%s has been changed (manually or by a script).\n".
+-                   "Switching to manual updates only."), "$altdir/$name"))
++                   "Switching to manual updates only."), "$naltdir/$name"))
+       if $verbosemode > 0;
+     $mode = 'manual';
+ }
+@@ -438,7 +449,7 @@
+ # state=unexpected => mode=manual
+ 
+ &pr(sprintf(_g("Checking available versions of %s, updating links in %s ...\n".
+-    "(You may modify the symlinks there yourself if desired - see \`man ln'.)"), $name, $altdir))
++    "(You may modify the symlinks there yourself if desired - see \`man ln'.)"), $name, $naltdir))
+   if $verbosemode > 0;
+ 
+ if ($action eq 'install') {
+@@ -527,7 +538,7 @@
+     if ($i > $#versions) {
+         &pr(sprintf(_g("Discarding obsolete slave link %s (%s)."), $slavenames[$j], $slavelinks[$j]))
+           if $verbosemode > 0;
+-        checked_rm("$altdir/$slavenames[$j]");
++        checked_rm("$naltdir/$slavenames[$j]");
+         checked_rm($slavelinks[$j]);
+         my $k = $#slavenames;
+         $slavenum{$slavenames[$k]}= $j;
+@@ -544,14 +555,14 @@
+ }
+         
+ if ($mode eq 'manual') {
+-    &pr(sprintf(_g("Automatic updates of %s are disabled, leaving it alone."), "$altdir/$name"))
++    &pr(sprintf(_g("Automatic updates of %s are disabled, leaving it alone."), "$naltdir/$name"))
+       if $verbosemode > 0;
+     &pr(sprintf(_g("To return to automatic updates use \`update-alternatives --auto %s'."), $name))
+       if $verbosemode > 0;
+ } else {
+     if ($state eq 'expected-inprogress') {
+         &pr(sprintf(_g("Recovering from previous failed update of %s ..."), $name));
+-	checked_mv("$altdir/$name.dpkg-tmp", "$altdir/$name");
++	checked_mv("$naltdir/$name.dpkg-tmp", "$naltdir/$name");
+         $state= 'expected';
+     }
+ }
+@@ -589,36 +600,36 @@
+     if ($best eq '') {
+         &pr(sprintf(_g("Last package providing %s (%s) removed, deleting it."), $name, $link))
+           if $verbosemode > 0;
+-        checked_rm("$altdir/$name");
++        checked_rm("$naltdir/$name");
+         checked_rm("$link");
+         checked_rm("$admindir/$name.dpkg-new");
+         checked_rm("$admindir/$name");
+         exit(0);
+     } else {
+ 	checked_alternative($name, $link, $best);
+-        checked_rm("$altdir/$name.dpkg-tmp");
+-        symlink($best,"$altdir/$name.dpkg-tmp");
++        checked_rm("$naltdir/$name.dpkg-tmp");
++        symlink($best,"$naltdir/$name.dpkg-tmp");
+     }
+ }
+ 
+ checked_mv("$admindir/$name.dpkg-new", "$admindir/$name");
+ 
+ if ($mode eq 'auto') {
+-    checked_mv("$altdir/$name.dpkg-tmp", "$altdir/$name");
++    checked_mv("$naltdir/$name.dpkg-tmp", "$naltdir/$name");
+     for (my $j = 0; $j <= $#slavenames; $j++) {
+         $sname= $slavenames[$j];
+         $slink= $slavelinks[$j];
+         $spath= $slavepath{$bestnum,$j};
+-        checked_rm("$altdir/$sname.dpkg-tmp");
++        checked_rm("$naltdir/$sname.dpkg-tmp");
+         if ($spath eq '') {
+             &pr(sprintf(_g("Removing %s (%s), not appropriate with %s."), $sname, $slink, $best))
+               if $verbosemode > 0;
+-            checked_rm("$altdir/$sname");
++            checked_rm("$naltdir/$sname");
+             checked_rm("$slink");
+         } else {
+ 	    checked_alternative($sname, $slink, $spath);
+-	    checked_symlink("$spath", "$altdir/$sname.dpkg-tmp");
+-	    checked_mv("$altdir/$sname.dpkg-tmp", "$altdir/$sname");
++	    checked_symlink("$spath", "$naltdir/$sname.dpkg-tmp");
++	    checked_mv("$naltdir/$sname.dpkg-tmp", "$naltdir/$sname");
+         }
+     }
+ }
+@@ -643,7 +654,7 @@
+                   $#versions+1, $name);
+     for (my $i = 0; $i <= $#versions; $i++) {
+ 	printf(STDOUT "%s%s %8s    %s\n",
+-	    (readlink("$altdir/$name") eq $versions[$i]) ? '*' : ' ',
++	    (readlink("$naltdir/$name") eq $versions[$i]) ? '*' : ' ',
+ 	    ($best eq $versions[$i]) ? '+' : ' ',
+ 	    $i+1, $versions[$i]);
+     }

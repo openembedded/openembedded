@@ -5,7 +5,7 @@ PROVIDES += "virtual/update-alternatives-native"
 DEPENDS = "perl-native"
 DEFAULT_PREFERENCE = "-1"
 
-SRC_URI += "file://paths.patch"
+SRC_URI += "file://update-alternatives-native.patch"
 
 do_stage () {
     install -d ${sbindir} \
@@ -15,5 +15,5 @@ do_stage () {
     install -m 0755 scripts/update-alternatives ${sbindir}/update-alternatives
 }
 
-SRC_URI[md5sum] = "88effb358aa04d25036b662d588433a6"
-SRC_URI[sha256sum] = "a525f321e875a8c16f5b6942bc02ac66b0d284cc6c61704f93e74789ef89d817"
+SRC_URI[md5sum] = "4326172a959b5b6484b4bc126e9f628d"
+SRC_URI[sha256sum] = "ea7ec1c861af43ba534a0d7997774a5f1fd4e25a7eea4ff229c9c7bf89aed633"
