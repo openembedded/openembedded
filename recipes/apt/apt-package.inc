@@ -1,10 +1,4 @@
-apt-manpages="doc/apt-cache.8 \
-	      doc/apt-cdrom.8 \
-	      doc/apt-config.8 \
-	      doc/apt-get.8 \
-	      doc/apt.8 \
-	      doc/apt.conf.5 \
-	      doc/apt_preferences.5 \
+apt-manpages="doc/apt.8 \
 	      doc/fr/apt-cache.fr.8 \
 	      doc/fr/apt-cdrom.fr.8 \
 	      doc/fr/apt-config.fr.8 \
@@ -24,11 +18,8 @@ apt-manpages="doc/apt-cache.8 \
 	      doc/ja/apt-cache.ja.8 \
 	      doc/ja/apt-cdrom.ja.8 \
 	      doc/ja/apt-get.ja.8 \
-	      doc/ja/apt.conf.ja.5 \
-	      doc/sources.list.5"
-apt-utils-manpages="doc/apt-extracttemplates.1 \
-		    doc/apt-sortpkgs.1 \
-		    doc/fr/apt-extracttemplates.fr.1 \
+	      doc/ja/apt.conf.ja.5"
+apt-utils-manpages="doc/fr/apt-extracttemplates.fr.1 \
 		    doc/fr/apt-sortpkgs.fr.1"
 #		    doc/fr/apt-ftparchive.fr.1
 #		    doc/apt-ftparchive.1

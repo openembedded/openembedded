@@ -12,7 +12,6 @@ PR = "r3"
 require apt-package.inc
 
 FILES_${PN} += "${bindir}/apt-key"
-apt-manpages += "doc/apt-key.8"
 
 do_stage() {
 	install -d ${STAGING_LIBDIR} ${STAGING_INCDIR}/apt-pkg
