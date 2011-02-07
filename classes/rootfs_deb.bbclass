@@ -123,8 +123,9 @@ fakeroot rootfs_deb_do_rootfs () {
 	set -e
 
 	# Hacks to allow opkg's update-alternatives and opkg to coexist for now
-	mkdir -p ${IMAGE_ROOTFS}${libdir}/opkg
+	mkdir -p ${IMAGE_ROOTFS}${libdir}/opkg/alternatives
 	if [ -e ${IMAGE_ROOTFS}/var/dpkg/alternatives ]; then
+		mv ${IMAGE_ROOTFS}/var/dpkg/alternatives/* ${IMAGE_ROOTFS}${libdir}/opkg/alternatives/
 		rmdir ${IMAGE_ROOTFS}/var/dpkg/alternatives
 	fi
 	ln -s ${libdir}/opkg/alternatives ${IMAGE_ROOTFS}/var/dpkg/alternatives
