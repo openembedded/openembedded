@@ -8,7 +8,7 @@ DEPENDS = "mpfr gmp libmpc libelf"
 NATIVEDEPS = "mpfr-native gmp-native libmpc-native"
 
 
-INC_PR = "r31"
+INC_PR = "r32"
 
 SRCREV = "170123"
 PV = "4.5"
@@ -32,6 +32,7 @@ SRC_URI = "svn://gcc.gnu.org/svn/gcc/branches;module=${BRANCH} \
 	   file://Makefile.in.patch \
 	   file://gcc-armv4-pass-fix-v4bx-to-ld.patch \
 	   file://sh4-multilib.patch \
+	   file://arm-lib1funcs.as-fix-mismatch-between-conditions-of-an-IT-block.patch \
 	   file://linaro/gcc-4.5-linaro-r99297.patch \
 	   file://linaro/gcc-4.5-linaro-r99298.patch \
 	   file://linaro/gcc-4.5-linaro-r99299.patch \
