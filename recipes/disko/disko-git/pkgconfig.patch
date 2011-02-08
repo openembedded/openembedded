@@ -1,0 +1,111 @@
+Index: git/SConstruct
+===================================================================
+--- git.orig/SConstruct	2011-02-08 20:28:50.000000000 +0100
++++ git/SConstruct	2011-02-08 22:25:08.512491454 +0100
+@@ -678,6 +678,7 @@
+ #######################################################################
+ # TODO: handle disko_pc_libs                                          #
+ if 'install' in BUILD_TARGETS:
++	PKG_CCFLAGS = ''
+ 	disko_pc = open('disko.pc', 'w')
+ 	disko_pc_requires = 'libxml-2.0 >= 2.6, sigc++-2.0, freetype2'
+ 	if (env['enable_curl']):
+@@ -712,6 +713,9 @@
+ 		else:
+ 			disko_pc_libs_private += ' -ltiff'
+ 
++	if('fbdev' in env['graphics']):
++		PKG_CCFLAGS += '-D__HAVE_FBDEV__ '
++
+ 	if env.has_key('libdl'):
+ 		disko_pc_libs_private += ' -ldl'
+ 
+@@ -720,6 +724,10 @@
+ 	 
+ 	if 'x11' in env['graphics']:
+ 		disko_pc_requires += ', x11, xv, xxf86vm, xcomposite, xrender'
++		PKG_CCFLAGS += '-D__HAVE_XLIB__ '
++		PKG_CCFLAGS += '-D__ENABLE_MMSFB_X11_CORE__ '
++		PKG_CCFLAGS += '-D__ENABLE_MMSFBSURFACE_X11_CORE__ '
++
+ 		if '-D__HAVE_OPENGL__' in env['CCFLAGS']:
+ 			disko_pc_requires += ', gl, glu'
+ 	
+@@ -733,23 +741,30 @@
+ 	if env['media'] and env['media'] != 'none':
+ 		if not env['big_lib'] and not env['static_lib']:
+ 			disko_pc_libs += ' -lmmsmedia'
++                        PKG_CCFLAGS += '-D__HAVE_MMSMEDIA__ -D__HAVE_MIXER__ '
+ 		
+ 		if 'xine' in env['media']:
+ 			if('x11' in env['graphics']):
+ 				disko_pc_requires += ', libxine >= 1.1.15'
+ 			else:
+ 				disko_pc_requires += ', libxine'
++			PKG_CCFLAGS += '-D__HAVE_XINE__ '
++			if conf.checkXineBlDvb():
++				PKG_CCFLAGS += '-D__HAVE_XINE_BLDVB__ '
+ 
+ 		if 'gstreamer' in env['media']:
+ 			disko_pc_requires += ', gstreamer-0.10'
++			PKG_CCFLAGS += '-D__HAVE_GSTREAMER__ '
+ 
+ 	if env['enable_flash']:
+ 		disko_pc_requires += ', swfdec-' + swfdecversion
++		PKG_CCFLAGS += '-D__HAVE_MMSFLASH__ '
+ 		if not env['big_lib'] and not env['static_lib']:
+ 			disko_pc_libs += ' -lmmsflash'
+ 
+ 	if env['enable_sip']:
+ 		disko_pc_requires += ', libpj'
++		PKG_CCFLAGS += '-D__HAVE_MMSSIP__ '
+ 		if not env['big_lib'] and not env['static_lib']:
+ 			disko_pc_libs += ' -lmmssip'
+ 		if('uuid' in env['LIBS']):
+@@ -757,19 +772,32 @@
+ 		
+ 	if env['enable_mail']:
+ 		disko_pc_requires += ', vmime'
++		PKG_CCFLAGS += '-D__HAVE_VMIME__ '
+ 		
+ 	if env['enable_crypt']:
+ 		disko_pc_requires += ', openssl'
++		PKG_CCFLAGS += '-D__HAVE_MMSCRYPT__ '
+ 
+ 	if 'sqlite3' in env['database']:
+ 		disko_pc_requires += ', sqlite3'
++		PKG_CCFLAGS += '-D__ENABLE_SQLITE__ '
+ 		
+ 	if 'mysql' in env['database']:
+ 		disko_pc_requires += ', mysql'
+ 
++	if 'odbc' in env['database']:
++		PKG_CCFLAGS += '-D__ENABLE_FREETDS__ '
++
+ 	if env['enable_swscale']:
+ 		disko_pc_libs_private += ' -lswscale -lavutil'
+ 
++	if env['messages']:
++		PKG_CCFLAGS += '-D__ENABLE_LOG__ '
++
++	if env['debug']:
++		PKG_CCFLAGS += '-D__ENABLE_DEBUG__ '
++
++
+ 	disko_pc.write('prefix=')
+ 	if env['destdir'] and env['destdir'] != 'none':
+ 		disko_pc.write(env['destdir'] + '/')
+@@ -784,12 +812,7 @@
+ 	disko_pc.write('Libs: -L${libdir} ' + disko_pc_libs + '\n')
+ 	disko_pc.write('Libs.private: ' + disko_pc_libs_private + '\n')
+ 	disko_pc.write('Cflags: -I${includedir}/ ')
+-
+-	for ccflag in env['CCFLAGS']:
+-		if(type(ccflag).__name__ == 'str'):
+-			disko_pc.write(' ' + ccflag)
+-		else:
+-			disko_pc.write(' ' + ' '.join(ccflag))
++	disko_pc.write(PKG_CCFLAGS)
+ 	disko_pc.write('\n')
+ 	
+ 	disko_pc.close()

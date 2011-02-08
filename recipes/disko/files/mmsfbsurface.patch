@@ -1,0 +1,49 @@
+Index: git/src/mmsgui/fb/mmsfbsurface.cpp
+===================================================================
+--- git.orig/src/mmsgui/fb/mmsfbsurface.cpp	2011-02-08 20:58:00.966348752 +0100
++++ git/src/mmsgui/fb/mmsfbsurface.cpp	2011-02-08 21:27:16.189512109 +0100
+@@ -911,7 +911,7 @@
+     	planes->ptr2 = ((unsigned char *)planes->ptr) + planes->pitch * height;
+     	planes->pitch2 = planes->pitch / 4;
+     	planes->ptr3 = NULL;
+-    	planes->pitch3 = NULL;
++    	planes->pitch3 = 0;
+     	break;
+     default:
+     	break;
+@@ -5035,7 +5035,7 @@
+ 
+ 	    // blit
+ 		if (!this->is_sub_surface) {
+-			if (!extendedAccelBlit(source, &src, x, y))
++			if (!extendedAccelBlit(source, &src, x, y, blittingflags))
+ 				if ((dfbres=this->dfb_surface->Blit(this->dfb_surface, (IDirectFBSurface *)source->getDFBSurface(), (DFBRectangle*)&src, x, y)) != DFB_OK) {
+ #ifndef USE_DFB_SUBSURFACE
+ 					// reset source rectangle
+@@ -5062,7 +5062,7 @@
+ 			SETSUBSURFACE_BLITTINGFLAGS;
+ #endif
+ 
+-			if (extendedAccelBlit(source, &src, x, y))
++			if (extendedAccelBlit(source, &src, x, y, blittingflags))
+ 				ret = true;
+ 			else
+ 				if (this->dfb_surface->Blit(this->dfb_surface, (IDirectFBSurface *)source->getDFBSurface(), (DFBRectangle*)&src, x, y) == DFB_OK)
+@@ -5393,7 +5393,7 @@
+ 					dfbres=((IDirectFBSurface *)tempsuf->getDFBSurface())->StretchBlit((IDirectFBSurface *)tempsuf->getDFBSurface(), (IDirectFBSurface *)source->getDFBSurface(), (DFBRectangle*)&src, (DFBRectangle*)&temp);
+ 					if (dfbres == DFB_OK) {
+ 						if (!this->is_sub_surface) {
+-							if (extendedAccelBlit(tempsuf, &temp, dst.x, dst.y)) {
++							if (extendedAccelBlit(tempsuf, &temp, dst.x, dst.y, MMSFB_BLIT_NOFX)) {
+ 								blit_done = true;
+ 								ret = true;
+ 							}
+@@ -5414,7 +5414,7 @@
+ 							SETSUBSURFACE_BLITTINGFLAGS;
+ #endif
+ 
+-							if (!extendedAccelBlit(tempsuf, &temp, dst.x, dst.y))
++							if (!extendedAccelBlit(tempsuf, &temp, dst.x, dst.y, MMSFB_BLIT_NOFX))
+ 								this->dfb_surface->Blit(this->dfb_surface, (IDirectFBSurface *)tempsuf->getDFBSurface(), (DFBRectangle*)&temp, dst.x, dst.y);
+ 
+ #ifndef USE_DFB_SUBSURFACE
