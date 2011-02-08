@@ -1,0 +1,74 @@
+From 05c4ef3b0963cef095075486820b030226ced7c3 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Tue, 8 Feb 2011 12:02:46 +0100
+Subject: [PATCH 51/51] add support for beagleboardtoys expansionboards
+
+Signed-off-by: Koen Kooi <koen@dominion.thruhere.net>
+---
+ board/ti/beagle/beagle.c |   15 +++++++++++++++
+ board/ti/beagle/beagle.h |   10 ++++++++++
+ 2 files changed, 25 insertions(+), 0 deletions(-)
+
+diff --git a/board/ti/beagle/beagle.c b/board/ti/beagle/beagle.c
+index ee6bad2..fdd9c09 100644
+--- a/board/ti/beagle/beagle.c
++++ b/board/ti/beagle/beagle.c
+@@ -62,12 +62,16 @@ static struct {
+ #define HYR_VENDORID			0x0400
+ #define MENTOREL_VENDORID		0x0500
+ #define KBADC_VENDORID			0x0600
++#define BBTOYS_VENDORID			0x0B00
+ 
+ #define TINCANTOOLS_ZIPPY		0x01000100
+ #define TINCANTOOLS_ZIPPY2		0x02000100
+ #define TINCANTOOLS_TRAINER		0x04000100
+ #define TINCANTOOLS_SHOWDOG		0x03000100
+ #define KBADC_BEAGLEFPGA		0x01000600
++#define BBTOYS_WIFI				0x01000B00
++#define BBTOYS_VGA				0x02000B00
++#define BBTOYS_LCD				0x03000B00
+ 
+ #define BEAGLE_NO_EEPROM		0xffffffff
+ 
+@@ -209,6 +213,17 @@ int misc_init_r(void)
+ 			MUX_KBADC_BEAGLEFPGA();
+ 			setenv("buddy", "beaglefpga");
+ 			break;
++		case BBTOYS_WIFI:
++			printf("Recognized Beagleboardtoys wifi board\n");
++			MUX_BBTOYS_WIFI()
++			setenv("buddy", "bbtoys-wifi");		
++			break;;
++		case BBTOYS_VGA:
++			printf("Recognized Beagleboardtoys VGA board\n");
++			break;;
++		case BBTOYS_LCD:
++			printf("Recognized Beagleboardtoys LCD board\n");
++			break;;	
+ 		case BEAGLE_NO_EEPROM:
+ 			printf("No EEPROM on expansion board\n");
+ 			setenv("buddy", "none");
+diff --git a/board/ti/beagle/beagle.h b/board/ti/beagle/beagle.h
+index cb7fd1c..2dc6ee6 100644
+--- a/board/ti/beagle/beagle.h
++++ b/board/ti/beagle/beagle.h
+@@ -459,6 +459,16 @@ const omap3_sysinfo sysinfo = {
+ 	MUX_VAL(CP(MCBSP1_DR),      (IEN  | PTU | EN  | M1)) /*MCSPI4_SOMI*/\
+ 	MUX_VAL(CP(MCBSP1_FSX),     (IDIS | PTU | DIS | M1)) /*MCSPI4_CS0*/\
+ 
++#define MUX_BBTOYS_WIFI() \
++	MUX_VAL(CP(MMC2_CLK),       (IEN  | PTU | EN  | M0)) /*MMC2_CLK*/\
++	MUX_VAL(CP(MMC2_CMD),       (IEN  | PTU | EN  | M0)) /*MMC2_CMD*/\
++	MUX_VAL(CP(MMC2_DAT0),      (IEN  | PTU | EN  | M0)) /*MMC2_DAT0*/\
++	MUX_VAL(CP(MMC2_DAT1),      (IEN  | PTU | EN  | M0)) /*MMC2_DAT1*/\
++	MUX_VAL(CP(MMC2_DAT2),      (IEN  | PTU | EN  | M0)) /*MMC2_DAT2*/\
++	MUX_VAL(CP(MMC2_DAT3),      (IEN  | PTU | EN  | M0)) /*MMC2_DAT3*/\
++	MUX_VAL(CP(MMC2_DAT5),      (IEN  | PTU | EN  | M4)) /*GPIO_137*/\
++	MUX_VAL(CP(MMC2_DAT7),      (IDIS | PTD | DIS | M4)) /*GPIO_139*/\
++
+ /*
+  * Display Configuration
+  */
+-- 
+1.6.6.1
+
