@@ -15,10 +15,3 @@ for i in `find ${S}/ ${D}/${libdir}/pkgconfig -name "*.pc" -type f` ; do \
             sed -i -e 's:${D}::g' $i
         done
 }
-
-scons_do_stage_append () {
-        STAGE_PKG_SEARCHPATH="${S}/ ${@['','${WORKDIR}/staging-pkg/'][bb.data.inherits_class('packaged-staging',d)]}"
-        for i in `find ${STAGE_PKG_SEARCHPATH} -name "*.pc" -type f` ; do \
-            sed -i -e 's:${STAGING_DIR_HOST}::g' $i
-        done
-}
