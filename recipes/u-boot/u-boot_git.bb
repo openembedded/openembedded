@@ -203,6 +203,7 @@ PV_omapzoom2 = "1.1.4+${PR}+gitr${SRCREV}"
 PE_omapzoom2 = "1"
 
 do_compile_omapzoom2 () {
+	sed -i -e "s|OPTFLAGS=.*|OPTFLAGS=|" config.mk
         unset LDFLAGS
         unset CFLAGS
         unset CPPFLAGS
@@ -221,6 +222,7 @@ PV_omapzoom36x = "1.1.4+${PR}+gitr${SRCREV}"
 PE_omapzoom36x = "1"
 
 do_compile_omapzoom36x () {
+	sed -i -e "s|OPTFLAGS=.*|OPTFLAGS=|" config.mk
         unset LDFLAGS
         unset CFLAGS
         unset CPPFLAGS
