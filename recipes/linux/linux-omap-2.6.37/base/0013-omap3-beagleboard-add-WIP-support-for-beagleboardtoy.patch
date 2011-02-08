@@ -87,7 +87,7 @@ index 64a181e..59b26da 100644
  	/* gpio + 0 is "mmc0_cd" (input/IRQ) */
  	mmc[0].gpio_cd = gpio + 0;
 +#if defined(CONFIG_WL1271) || defined(CONFIG_WL1271_MODULE)
-+	if(!strcmp(expansionboard_name, "fixme-beagletoy")) { 
++	if(!strcmp(expansionboard_name, "bbtoys-wifi")) { 
 +		omap2_hsmmc_init(mmcbbt);
 +		/* link regulators to MMC adapters */
 +		beagle_vmmc1_supply.dev = mmcbbt[0].dev;
@@ -112,7 +112,7 @@ index 64a181e..59b26da 100644
  		gpio_export(162, 1);
  	}
  
-+	if(!strcmp(expansionboard_name, "fixme-beagletoy"))
++	if(!strcmp(expansionboard_name, "bbtoys-wifi"))
 +	{
 +		if (wl12xx_set_platform_data(&omap_beagle_wlan_data))
 +			pr_err("error setting wl12xx data\n");
