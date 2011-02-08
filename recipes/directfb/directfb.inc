@@ -6,36 +6,25 @@ Linux framebuffer device."
 SECTION = "libs"
 LICENSE = "LGPL"
 HOMEPAGE = "http://directfb.org"
-DEPENDS = "jpeg libpng freetype zlib tslib"
+DEPENDS = "jpeg libpng freetype zlib tslib sysfsutils"
 
-SRC_URI = " \
-    http://www.directfb.org/downloads/Old/DirectFB-${PV}.tar.gz \
-    file://fix-pkgconfig-cflags.patch \
-    file://fix-font-missing-char.patch \
-    file://getpagesize.patch \
-    file://mkdfiff.patch \
-    file://dont-use-linux-config.patch \
-    file://ts_lib_autotools.patch \
-"
+INC_PR = "r1"
+
 S = "${WORKDIR}/DirectFB-${PV}"
 
-LDFLAGS_append =" -lts -lm"
+#LDFLAGS_append =" -lts -lm"
 
 inherit autotools binconfig pkgconfig
 
 EXTRA_OECONF = "\
+  --enable-freetype=yes \
+  --enable-zlib \
   --with-gfxdrivers=none \
   --enable-libmpeg3=no \
-  --enable-freetype=yes \
   --enable-sdl=no \
   --enable-vnc=no \
   --disable-x11 \
 "
-
-do_install() {
-        oe_runmake 'DESTDIR=${D}' install
-}
-
 
 #PACKAGES_DYNAMIC = "directfb-inputdrivers-*"
 #
@@ -46,8 +35,6 @@ do_install() {
 #}
 
 # NOTE: monolithic packaging for now, should improve that eventually
-
-
 
 FILES_${PN}-dbg += "\
   ${libdir}/directfb-${RV}/*/*/.debug/*.so \

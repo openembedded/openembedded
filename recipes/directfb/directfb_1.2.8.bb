@@ -1,10 +1,11 @@
 require directfb.inc
 
 RV = "1.2-0"
+PR = "${INC_PR}.0"
 
 DEPENDS += "sysfsutils"
 
-SRC_URI = " \
+SRC_URI += " \
     http://directfb.org/downloads/Core/DirectFB-1.2/DirectFB-${PV}.tar.gz \
     file://directfb-1.2.x-fix-pkgconfig-cflags.patch \
     file://mkdfiff.patch \
