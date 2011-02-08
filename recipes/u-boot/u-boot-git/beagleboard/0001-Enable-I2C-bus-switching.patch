@@ -1,7 +1,7 @@
-From 9c1581dd7f6057d5d25d6b2dcf8bacef95d526d2 Mon Sep 17 00:00:00 2001
+From 5b5eb18bfb80fa9595eb258a911a94f2807e7497 Mon Sep 17 00:00:00 2001
 From: Syed Mohammed Khasim <khasim@ti.com>
 Date: Mon, 18 Jan 2010 18:11:14 +0530
-Subject: [PATCH] Enable I2C bus switching
+Subject: [PATCH 01/50] Enable I2C bus switching
 
 OMAP3 supports Multiple I2C channels, this patch allows
 us to use i2c dev <bus no> command to switch between busses.
@@ -15,7 +15,7 @@ Acked-by: Heiko Schocher <hs@denx.de>
  2 files changed, 11 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/i2c/omap24xx_i2c.c b/drivers/i2c/omap24xx_i2c.c
-index f00468d..0af230d 100644
+index ff18991..e8c8184 100644
 --- a/drivers/i2c/omap24xx_i2c.c
 +++ b/drivers/i2c/omap24xx_i2c.c
 @@ -435,3 +435,8 @@ int i2c_set_bus_num(unsigned int bus)
@@ -28,10 +28,10 @@ index f00468d..0af230d 100644
 +	return (int) current_bus;
 +}
 diff --git a/include/configs/omap3_beagle.h b/include/configs/omap3_beagle.h
-index ad73a66..1a76004 100644
+index 08d79ac..d522c77 100644
 --- a/include/configs/omap3_beagle.h
 +++ b/include/configs/omap3_beagle.h
-@@ -113,6 +113,12 @@
+@@ -100,6 +100,12 @@
  /* DDR - I use Micron DDR */
  #define CONFIG_OMAP3_MICRON_DDR		1
  
@@ -45,5 +45,5 @@ index ad73a66..1a76004 100644
  #define CONFIG_MUSB_UDC			1
  #define CONFIG_USB_OMAP3		1
 -- 
-1.6.1
+1.6.6.1
 

@@ -1,7 +1,7 @@
-From 4fb2bbcae8f283c46e762aa93b25cbbd55bab8b6 Mon Sep 17 00:00:00 2001
+From 831504a9514c2cb4b1dc8c9a261fd4d1a037235f Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Tue, 16 Feb 2010 09:58:01 -0800
-Subject: [PATCH 08/37] OMAP3: Overo: enable config eeprom to set u-boot env variable
+Subject: [PATCH 08/50] OMAP3: Overo: enable config eeprom to set u-boot env variable
 
 ---
  board/overo/overo.c |   21 +++++++++++++--------

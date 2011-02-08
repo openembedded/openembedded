@@ -1,7 +1,7 @@
-From c8d02f2a8500f06de39681aed60ea5c9894f8087 Mon Sep 17 00:00:00 2001
+From 21738fa5ae05dd5060cf755ac0460f5d1f27e910 Mon Sep 17 00:00:00 2001
 From: Jason Kridner <jkridner@beagleboard.org>
 Date: Wed, 11 Aug 2010 14:50:38 -0500
-Subject: [PATCH] BeagleBoard: move ramdisk parameters
+Subject: [PATCH 50/50] BeagleBoard: move ramdisk parameters
 
 This will make it easier to reprogram the ramdisk size.
 
@@ -34,5 +34,5 @@ index 48ad805..4f5c1d4 100644
  	"loadramdisk=fatload mmc ${mmcdev} ${rdaddr} ramdisk.gz\0" \
  	"bootscript=echo Running bootscript from mmc ...; " \
 -- 
-1.5.6.4
+1.6.6.1
 

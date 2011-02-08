@@ -1,7 +1,7 @@
-From 794e4aa6a5aa5fbe71b08bfe8f5f5f65078fbc68 Mon Sep 17 00:00:00 2001
+From a9b4ba0446bd55d98243de2f3e3a747f8842811f Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Tue, 23 Mar 2010 09:12:16 -0700
-Subject: [PATCH 16/37] env_nand.c:  fail gracefully if no nand is present
+Subject: [PATCH 16/50] env_nand.c: fail gracefully if no nand is present
 
 ---
  common/env_nand.c |    4 ++++

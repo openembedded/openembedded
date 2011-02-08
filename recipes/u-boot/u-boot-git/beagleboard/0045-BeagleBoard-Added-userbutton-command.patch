@@ -1,7 +1,7 @@
-From c053723cc5a73781a4954e6c93d280436623e3d6 Mon Sep 17 00:00:00 2001
+From f5146ac9d3af9c9cd4f4bc940c343d3ef75ac6f0 Mon Sep 17 00:00:00 2001
 From: Jason Kridner <jkridner@beagleboard.org>
 Date: Wed, 21 Jul 2010 07:41:25 -0500
-Subject: [PATCH] BeagleBoard: Added userbutton command
+Subject: [PATCH 45/50] BeagleBoard: Added userbutton command
 
 Based on commit f1099c7c43caf5bac3bf6a65aa266fade4747072
     Author: Greg Turner <gregturner@ti.com>
@@ -93,5 +93,5 @@ index a6a4961..66df719 100644
 +);
 +
 -- 
-1.6.1
+1.6.6.1
 

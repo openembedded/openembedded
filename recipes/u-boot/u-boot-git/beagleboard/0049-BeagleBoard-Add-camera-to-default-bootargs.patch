@@ -1,8 +1,7 @@
-From 519ecc8a8f441d30e55c7e4552c63e2363fa6dd5 Mon Sep 17 00:00:00 2001
+From 0a49d60caf30738f13b60a71e740e28f4e7af902 Mon Sep 17 00:00:00 2001
 From: Jason Kridner <jkridner@beagleboard.org>
 Date: Thu, 5 Aug 2010 13:54:12 -0500
-Subject: [PATCH] BeagleBoard: Add camera to default bootargs
-
+Subject: [PATCH 49/50] BeagleBoard: Add camera to default bootargs
 
 Signed-off-by: Jason Kridner <jkridner@beagleboard.org>
 ---
@@ -46,5 +45,5 @@ index 1a76004..48ad805 100644
  		"omapfb.mode=dvi:${dvimode} " \
  		"omapdss.def_disp=${defaultdisplay} " \
 -- 
-1.5.6.4
+1.6.6.1
 

@@ -1,7 +1,7 @@
-From 6ddb5d4e28801907af7be39e47d502fd5c8e73e1 Mon Sep 17 00:00:00 2001
+From 1e795a2c3e44002c3512222dd3da07ac3ea42d7d Mon Sep 17 00:00:00 2001
 From: Mans Rullgard <mans@mansr.com>
 Date: Wed, 14 Apr 2010 16:49:57 +0100
-Subject: [PATCH 29/37] OMAP3: convert setup_auxcr() to pure asm
+Subject: [PATCH 29/50] OMAP3: convert setup_auxcr() to pure asm
 
 This function consists entirely of inline asm statements, so writing
 it directly in a .S file is simpler. Additionally, the inline asm is

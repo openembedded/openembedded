@@ -1,7 +1,7 @@
-From 8480eb0272865078290146031e09eb70baed3f6e Mon Sep 17 00:00:00 2001
+From f8a42576fac8349ae8ff9d6673b229f6b3103798 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Tue, 23 Mar 2010 09:17:59 -0700
-Subject: [PATCH 18/37] OMAP3 sys_info: update cpu detection for 36XX/37XX
+Subject: [PATCH 18/50] OMAP3 sys_info: update cpu detection for 36XX/37XX
 
 ---
  cpu/arm_cortexa8/omap3/sys_info.c |  137 ++++++++++++++++++++++++++++---------

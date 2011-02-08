@@ -1,7 +1,7 @@
-From 9a5d5518c3d3844cc49cf2d9ef5aeabca1e87c30 Mon Sep 17 00:00:00 2001
+From 94462a5c200adbad2c4fc47d7fc0ca24aeb14a2a Mon Sep 17 00:00:00 2001
 From: Jason Kridner <jkridner@beagleboard.org>
 Date: Wed, 5 May 2010 14:53:49 -0500
-Subject: [PATCH 38/38] Added configurations for xM Rev A board
+Subject: [PATCH 38/50] Added configurations for xM Rev A board
 
 This defaults to "on" condition for USB and DVI.  May want to revise for
 power savings.

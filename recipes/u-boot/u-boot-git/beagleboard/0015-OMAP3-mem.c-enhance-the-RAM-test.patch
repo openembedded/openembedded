@@ -1,7 +1,7 @@
-From f2e3d22fb1963d08844edee45f7d7d6beba32152 Mon Sep 17 00:00:00 2001
+From 379ff04432ffdef234c2f85b1801cf7df2d3d5ee Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Tue, 23 Mar 2010 09:06:49 -0700
-Subject: [PATCH 15/37] OMAP3: mem.c: enhance the RAM test
+Subject: [PATCH 15/50] OMAP3: mem.c: enhance the RAM test
 
 ---
  cpu/arm_cortexa8/omap3/mem.c |   28 +++++++++++++++-------------

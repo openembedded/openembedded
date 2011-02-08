@@ -1,7 +1,7 @@
-From 9db5da6e8a0d6fb973b71902525ad3298faa39d9 Mon Sep 17 00:00:00 2001
+From fae6228e203436ce0d82ce32da769bd91206865f Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Wed, 10 Feb 2010 14:51:48 -0800
-Subject: [PATCH 03/37] OMAP3: update Beagle revision detection to recognize C4 boards
+Subject: [PATCH 03/50] OMAP3: update Beagle revision detection to recognize C4 boards
 
 ---
  board/ti/beagle/beagle.c |   77 +++++++++++++++++++++++++++-------------------

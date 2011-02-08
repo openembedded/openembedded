@@ -1,7 +1,7 @@
-From ae05ca488390671516bd4ed021eb43901fee740f Mon Sep 17 00:00:00 2001
+From 0d2821af767b7cfe1a5d868a14f8a18e01070e37 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Tue, 27 Apr 2010 13:44:16 +0200
-Subject: [PATCH 32/37] OMAP3: beagle: set mpurate to 600 for revB and revC1-3
+Subject: [PATCH 32/50] OMAP3: beagle: set mpurate to 600 for revB and revC1-3
 
 ---
  board/ti/beagle/beagle.c |    2 ++

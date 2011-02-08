@@ -1,7 +1,7 @@
-From 157b125b905b6dc69164d3f43eeb5e40d3744648 Mon Sep 17 00:00:00 2001
+From bb88a9c0ffa5b6006d689635028177be4ce83104 Mon Sep 17 00:00:00 2001
 From: Jason Kridner <jkridner@beagleboard.org>
 Date: Thu, 20 May 2010 06:14:01 -0500
-Subject: [PATCH] BeagleBoard: Added LED driver
+Subject: [PATCH 42/50] BeagleBoard: Added LED driver
 
 Added LED driver using status_led.  USR0 is set to monitor the boot
 status.  USR1 is set to be the green LED.
@@ -33,7 +33,7 @@ index f797112..4cc675c 100644
  OBJS	:= $(addprefix $(obj),$(COBJS))
  
 diff --git a/board/ti/beagle/beagle.c b/board/ti/beagle/beagle.c
-index 556e995..d21b9c8 100644
+index cdba3dd..a6a4961 100644
 --- a/board/ti/beagle/beagle.c
 +++ b/board/ti/beagle/beagle.c
 @@ -30,6 +30,9 @@
@@ -57,7 +57,7 @@ index 556e995..d21b9c8 100644
  	return 0;
  }
  
-@@ -278,3 +285,4 @@ void set_muxconf_regs(void)
+@@ -282,3 +289,4 @@ void set_muxconf_regs(void)
  {
  	MUX_BEAGLE();
  }
@@ -160,5 +160,5 @@ index 0000000..df26552
 +}
 +
 -- 
-1.5.6.4
+1.6.6.1
 

@@ -1,7 +1,7 @@
-From 851d35fab7f93400a1d714524b5e986206d9b0c4 Mon Sep 17 00:00:00 2001
+From b48754f4c77924a9351867e17e2f09fbe5a83b82 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Thu, 25 Mar 2010 16:07:23 +0100
-Subject: [PATCH 22/37] OMAP3: beagle: implement expansionboard detection based on board/overo.c code
+Subject: [PATCH 22/50] OMAP3: beagle: implement expansionboard detection based on board/overo.c code
 
 ---
  board/ti/beagle/beagle.c |   78 ++++++++++++++++++++++++++++++++++++++++++++++

@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r70"
+PR ="r71"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -26,7 +26,7 @@ SRC_URI_append_bug20 = "file://bug-uboot.patch"
 SRC_URI_append_bug20 += "file://bug-video-setting.patch"
 
 SRC_URI_beagleboard = "git://www.denx.de/git/u-boot.git;protocol=git \
-                       file://0001-OMAP3-enable-i2c-bus-switching-for-Beagle-and-Overo.patch \
+                       file://0001-Enable-I2C-bus-switching.patch \
                        file://0002-OMAP3-add-board-revision-detection-for-Overo.patch \
                        file://0003-OMAP3-update-Beagle-revision-detection-to-recognize-.patch \
                        file://0004-OMAP3-Set-VAUX2-to-1.8V-for-EHCI-PHY-on-Beagle-Rev-C.patch \
@@ -65,17 +65,18 @@ SRC_URI_beagleboard = "git://www.denx.de/git/u-boot.git;protocol=git \
                        file://0037-OMAP3-beagle-pass-expansionboard-name-in-bootargs.patch \
                        file://0038-Added-configurations-for-xM-Rev-A-board.patch \
                        file://0039-OMAP3-beagle-setenv-beaglerev-for-AxBx-Cx-xMA-for-be.patch \
-                       file://0001-OMAP-mmc-add-support-for-second-and-third-mmc-chan.patch \
-                       file://0001-OMAP3-Beagle-enable-support-for-second-and-third-m.patch \
-                       file://0038-BeagleBoard-Added-LED-driver.patch \
-                       file://0039-Add-led-command.patch \
-                       file://0041-BeagleBoard-Enabled-LEDs.patch \
-                       file://0042-BeagleBoard-New-command-for-status-of-USER-button.patch \
-                       file://0043-BeagleBoard-Add-CONFIG_SYS_MEMTEST_SCRATCH.patch \
-                       file://0044-Beagleboard-Adjust-boot.patch \
-                       file://0045-BeagleBoard-Enable-pullups-on-i2c2.patch \
-                       file://0046-BeagleBoard-Add-camera-to-default-bootargs.patch \
-		       file://0001-BeagleBoard-move-ramdisk-parameters.patch \
+                       file://0040-OMAP-mmc-add-support-for-second-and-third-mmc-channe.patch \
+                       file://0041-OMAP3-Beagle-enable-support-for-second-and-third-mmc.patch \
+                       file://0042-BeagleBoard-Added-LED-driver.patch \
+                       file://0043-Add-led-command.patch \
+                       file://0044-BeagleBoard-Enabled-LEDs.patch \
+                       file://0045-BeagleBoard-Added-userbutton-command.patch \
+                       file://0046-BeagleBoard-Add-CONFIG_SYS_MEMTEST_SCRATCH.patch \
+                       file://0047-BeagleBoard-Adjust-boot-command-on-USER-button.patch \
+                       file://0048-BeagleBoard-Enable-pullups-on-i2c2.patch \
+                       file://0049-BeagleBoard-Add-camera-to-default-bootargs.patch \
+                       file://0050-BeagleBoard-move-ramdisk-parameters.patch \
+                       file://0051-add-support-for-beagleboardtoys-expansionboards.patch \
                        file://fw_env.config \
 "
 SRCREV_beagleboard = "ca6e1c136ddb720c3bb2cc043b99f7f06bc46c55"

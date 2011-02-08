@@ -1,7 +1,7 @@
-From 63de99ce613bbfce792ee46d14b324273e6a0d29 Mon Sep 17 00:00:00 2001
+From 7f50d09f9a00b7f2a392a5b0b9f2f19a96a90c16 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Tue, 23 Mar 2010 09:04:50 -0700
-Subject: [PATCH 14/37] OMAP3: board.c: don't attempt to set up second RAM bank, assume x-load has already done this
+Subject: [PATCH 14/50] OMAP3: board.c: don't attempt to set up second RAM bank, assume x-load has already done this
 
 ---
  cpu/arm_cortexa8/omap3/board.c |   19 +++++++++----------

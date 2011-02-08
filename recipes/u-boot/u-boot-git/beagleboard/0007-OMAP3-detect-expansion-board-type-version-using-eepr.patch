@@ -1,7 +1,7 @@
-From 129dccd106ea5862f3ff25c368102bf656472f7f Mon Sep 17 00:00:00 2001
+From f1ad90ae5fd07257ea42aa771e16a7798cd440bb Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Fri, 12 Feb 2010 12:17:48 -0800
-Subject: [PATCH 07/37] OMAP3: detect expansion board type/version using eeprom contents
+Subject: [PATCH 07/50] OMAP3: detect expansion board type/version using eeprom contents
 
 ---
  board/overo/overo.c |   92 +++++++++++++++++++++++++++++++++++++++++++++++++++

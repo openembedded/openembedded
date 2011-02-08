@@ -1,17 +1,17 @@
-From 39f15722db5595411ec085e36b7fd7657415a554 Mon Sep 17 00:00:00 2001
+From 13b74d6ec2b88620515d0060f6276f744f058e44 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Fri, 30 Apr 2010 13:26:01 +0200
-Subject: [PATCH 36/37] OMAP3: Beagle: decrease bootdelay to 3, use VGA for default resolution
+Subject: [PATCH 36/50] OMAP3: Beagle: decrease bootdelay to 3, use VGA for default resolution
 
 ---
  include/configs/omap3_beagle.h |    4 ++--
  1 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/include/configs/omap3_beagle.h b/include/configs/omap3_beagle.h
-index 7bcbe9b..93a6a5a 100644
+index 52d727a..47bc971 100644
 --- a/include/configs/omap3_beagle.h
 +++ b/include/configs/omap3_beagle.h
-@@ -178,7 +178,7 @@
+@@ -183,7 +183,7 @@
  							/* partition */
  
  /* Environment information */
@@ -20,7 +20,7 @@ index 7bcbe9b..93a6a5a 100644
  
  #define CONFIG_EXTRA_ENV_SETTINGS \
  	"loadaddr=0x82000000\0" \
-@@ -186,7 +186,7 @@
+@@ -191,7 +191,7 @@
  	"console=ttyS2,115200n8\0" \
  	"mpurate=500\0" \
  	"vram=12M\0" \

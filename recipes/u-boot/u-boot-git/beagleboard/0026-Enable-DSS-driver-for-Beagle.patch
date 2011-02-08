@@ -1,7 +1,7 @@
-From a8adb8e29aba9d2c83731839063f1381fce3906c Mon Sep 17 00:00:00 2001
+From 89a879905e59c837626b6a9425bcc27b097e02ad Mon Sep 17 00:00:00 2001
 From: Syed Mohammed Khasim <khasim@ti.com>
 Date: Sun, 11 Apr 2010 17:44:39 +0200
-Subject: [PATCH 26/37] Enable DSS driver for Beagle
+Subject: [PATCH 26/50] Enable DSS driver for Beagle
 
 Configures DSS to display color bar on Svideo
 Configures DSS to display background color on DVID
@@ -142,10 +142,10 @@ index ec4f831..69f9398 100644
 +
  #endif
 diff --git a/include/configs/omap3_beagle.h b/include/configs/omap3_beagle.h
-index c156cea..7bcbe9b 100644
+index 8bedf7d..52d727a 100644
 --- a/include/configs/omap3_beagle.h
 +++ b/include/configs/omap3_beagle.h
-@@ -131,6 +131,7 @@
+@@ -137,6 +137,7 @@
  #define CONFIG_CMD_I2C		/* I2C serial bus support	*/
  #define CONFIG_CMD_MMC		/* MMC support			*/
  #define CONFIG_CMD_NAND		/* NAND support			*/

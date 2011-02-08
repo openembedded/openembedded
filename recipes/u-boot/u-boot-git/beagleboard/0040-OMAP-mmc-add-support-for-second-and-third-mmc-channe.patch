@@ -1,7 +1,7 @@
-From 7252b81ec10aea48672f66e33cb6962b98fb0782 Mon Sep 17 00:00:00 2001
+From 0dd14c6a6f40cb47fd8517e9e9d48f0a119e9aa9 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Thu, 29 Apr 2010 10:28:14 -0700
-Subject: [PATCH] OMAP: mmc: add support for second and third mmc channels
+Subject: [PATCH 40/50] OMAP: mmc: add support for second and third mmc channels
 
 Boards wishing to use this feature should define CONFIG_SYS_MMC_SET_DEV
 
@@ -122,5 +122,5 @@ index aa751c9..43dd705 100644
  typedef struct hsmmc {
  	unsigned char res1[0x10];
 -- 
-1.5.6.4
+1.6.6.1
 

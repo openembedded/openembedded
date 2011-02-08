@@ -1,7 +1,7 @@
-From bf4b655c6c02bbf95bd6ebbf820e53dbd8eb4803 Mon Sep 17 00:00:00 2001
+From 35e971eea9c9d9cb690da0509e0f8a48a2cb1269 Mon Sep 17 00:00:00 2001
 From: Steve Kipisz <s-kipisz2@ti.com>
 Date: Thu, 5 Aug 2010 10:36:07 -0500
-Subject: [PATCH] BeagleBoard: Enable pullups on i2c2.
+Subject: [PATCH 48/50] BeagleBoard: Enable pullups on i2c2.
 
 ---
  board/ti/beagle/beagle.c           |    2 ++
@@ -9,10 +9,10 @@ Subject: [PATCH] BeagleBoard: Enable pullups on i2c2.
  2 files changed, 11 insertions(+), 0 deletions(-)
 
 diff --git a/board/ti/beagle/beagle.c b/board/ti/beagle/beagle.c
-index cdba3dd..eeb37bc 100644
+index 66df719..ee6bad2 100644
 --- a/board/ti/beagle/beagle.c
 +++ b/board/ti/beagle/beagle.c
-@@ -163,6 +163,8 @@ int misc_init_r(void)
+@@ -171,6 +171,8 @@ int misc_init_r(void)
  	struct gpio *gpio5_base = (struct gpio *)OMAP34XX_GPIO5_BASE;
  	struct gpio *gpio6_base = (struct gpio *)OMAP34XX_GPIO6_BASE;
  

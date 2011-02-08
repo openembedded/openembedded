@@ -1,16 +1,15 @@
-From 629a01965677e680ffa1fe76579ace7f69dd45b9 Mon Sep 17 00:00:00 2001
+From 8da9e2bac6daf2d61d7ca9d689790fc9ce5de9cb Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Fri, 7 May 2010 07:40:26 -0700
-Subject: [PATCH] OMAP3: Beagle: enable support for second and third mmc channels
+Subject: [PATCH 41/50] OMAP3: Beagle: enable support for second and third mmc channels
 
 Based on 629a01965677e680ffa1fe76579ace7f69dd45b9, but removed BOOTDELAY change.
-
 ---
- include/configs/omap3_beagle.h |   8 +++++---
+ include/configs/omap3_beagle.h |    8 +++++---
  1 files changed, 5 insertions(+), 3 deletions(-)
 
 diff --git a/include/configs/omap3_beagle.h b/include/configs/omap3_beagle.h
-index f2d0f53..74d4159 100644
+index 8ad52aa..e4c88f2 100644
 --- a/include/configs/omap3_beagle.h
 +++ b/include/configs/omap3_beagle.h
 @@ -95,6 +95,7 @@
@@ -21,15 +20,15 @@ index f2d0f53..74d4159 100644
  #define CONFIG_DOS_PARTITION		1
  
  /* DDR - I use Micron DDR */
-@@ -186,6 +187,7 @@
+@@ -194,6 +195,7 @@
  	"vram=12M\0" \
- 	"dvimode=1024x768MR-16@60\0" \
+ 	"dvimode=640x480MR-16@60\0" \
  	"defaultdisplay=dvi\0" \
 +	"mmcdev=1\0" \
  	"mmcroot=/dev/mmcblk0p2 rw\0" \
  	"mmcrootfstype=ext3 rootwait\0" \
  	"nandroot=/dev/mtdblock4 rw\0" \
-@@ -204,10 +206,10 @@
+@@ -214,10 +216,10 @@
  		"omapdss.def_disp=${defaultdisplay} " \
  		"root=${nandroot} " \
  		"rootfstype=${nandrootfstype}\0" \
@@ -42,7 +41,7 @@ index f2d0f53..74d4159 100644
  	"mmcboot=echo Booting from mmc ...; " \
  		"run mmcargs; " \
  		"bootm ${loadaddr}\0" \
-@@ -217,7 +219,7 @@
+@@ -227,7 +229,7 @@
  		"bootm ${loadaddr}\0" \
  
  #define CONFIG_BOOTCOMMAND \
@@ -52,5 +51,5 @@ index f2d0f53..74d4159 100644
  			"run bootscript; " \
  		"else " \
 -- 
-1.5.6.4
+1.6.6.1
 

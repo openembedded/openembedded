@@ -1,7 +1,7 @@
-From 27072274450ea8de1994744782397452b99814cc Mon Sep 17 00:00:00 2001
+From 13ed8be9848adff30bcfdcbe16bce3d2c6bb02f1 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Wed, 3 Feb 2010 12:26:30 -0800
-Subject: [PATCH 05/37] OMAP3: add entry for rev 3.1.2, check and display max cpu clock for rev > 3.0
+Subject: [PATCH 05/50] OMAP3: add entry for rev 3.1.2, check and display max cpu clock for rev > 3.0
 
 ---
  cpu/arm_cortexa8/omap3/sys_info.c  |   24 ++++++++++++++++++++++--

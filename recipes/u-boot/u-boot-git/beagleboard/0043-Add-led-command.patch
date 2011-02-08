@@ -1,7 +1,7 @@
-From 609524ecd54526b3f3c7d52cc43a3c9795970f6b Mon Sep 17 00:00:00 2001
+From 1fc5c28bc260c72b4f9cefdf55bfd10504916457 Mon Sep 17 00:00:00 2001
 From: Jason Kridner <jkridner@beagleboard.org>
 Date: Thu, 20 May 2010 05:41:26 -0500
-Subject: [PATCH] Add 'led' command
+Subject: [PATCH 43/50] Add 'led' command
 
 This patch allows any board implementing the coloured LED API
 to control the LEDs from the console.
@@ -252,5 +252,5 @@ index 0000000..3b7b534
 +);
 +
 -- 
-1.5.6.4
+1.6.6.1
 

@@ -1,7 +1,7 @@
-From bbfb38ccd1e2bb19a1eb698bd37cd1ab50c87b37 Mon Sep 17 00:00:00 2001
+From ccbe10687806b6504c87bd3ad80bd406bc6263f4 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Fri, 23 Apr 2010 10:50:43 +0200
-Subject: [PATCH 31/37] OMAP3: beagle: add more expansionboards, based on http://www.elinux.org/BeagleBoardPinMux#Vendor_and_Device_IDs
+Subject: [PATCH 31/50] OMAP3: beagle: add more expansionboards, based on http://www.elinux.org/BeagleBoardPinMux#Vendor_and_Device_IDs
 
 ---
  board/ti/beagle/beagle.c |    8 ++++++++

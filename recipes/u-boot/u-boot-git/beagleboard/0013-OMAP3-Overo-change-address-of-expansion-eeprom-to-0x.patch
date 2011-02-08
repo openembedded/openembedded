@@ -1,7 +1,7 @@
-From 305e2cb16f4f6e8c7f13120e6a98bb1e999c764f Mon Sep 17 00:00:00 2001
+From 90119d705d2c56254d4b27efb8e8c61e62f014c1 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Fri, 26 Feb 2010 12:42:30 -0800
-Subject: [PATCH 13/37] OMAP3: Overo: change address of expansion eeprom to 0x51 so as to not conflict with EDID address
+Subject: [PATCH 13/50] OMAP3: Overo: change address of expansion eeprom to 0x51 so as to not conflict with EDID address
 
 ---
  board/overo/overo.c |    2 +-

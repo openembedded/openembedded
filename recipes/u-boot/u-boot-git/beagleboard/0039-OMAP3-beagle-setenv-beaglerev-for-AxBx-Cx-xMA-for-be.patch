@@ -1,7 +1,7 @@
-From c48581ecc0b060e4c1b5fa973d053e81e18f676b Mon Sep 17 00:00:00 2001
+From 4b5bb4a7656dc1c4a1b985b6f5454c58ad060112 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Thu, 3 Jun 2010 19:50:57 +0200
-Subject: [PATCH 39/39] OMAP3: beagle: setenv beaglerev for AxBx/Cx/xMA for better bootscripts
+Subject: [PATCH 39/50] OMAP3: beagle: setenv beaglerev for AxBx/Cx/xMA for better bootscripts
 
 ---
  board/ti/beagle/beagle.c |    4 ++++

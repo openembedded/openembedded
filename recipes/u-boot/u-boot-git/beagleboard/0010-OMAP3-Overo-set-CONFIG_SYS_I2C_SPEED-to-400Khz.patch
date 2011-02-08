@@ -1,14 +1,14 @@
-From 405a5a151c8d42f157dc48731f6e607675156774 Mon Sep 17 00:00:00 2001
+From 6ced8e0d859ea9cddbc2ec4a94a4c7394f1ee4c5 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Tue, 16 Feb 2010 10:03:14 -0800
-Subject: [PATCH 10/37] OMAP3: Overo: set CONFIG_SYS_I2C_SPEED to 400Khz
+Subject: [PATCH 10/50] OMAP3: Overo: set CONFIG_SYS_I2C_SPEED to 400Khz
 
 ---
  include/configs/omap3_overo.h |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/include/configs/omap3_overo.h b/include/configs/omap3_overo.h
-index 295cce6..fdbeb67 100644
+index 113c6df..27b5476 100644
 --- a/include/configs/omap3_overo.h
 +++ b/include/configs/omap3_overo.h
 @@ -112,7 +112,7 @@

@@ -1,7 +1,7 @@
-From c45e93aef4d54b262f0d8e1ecf6b111f5e1c2a4c Mon Sep 17 00:00:00 2001
+From 442e5d80723e2772f38fe473d32287200d802907 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Fri, 30 Apr 2010 13:25:41 +0200
-Subject: [PATCH 35/37] OMAP3: Beagle: set mpurate to 1000 for xM
+Subject: [PATCH 35/50] OMAP3: Beagle: set mpurate to 1000 for xM
 
 ---
  board/ti/beagle/beagle.c |    1 +

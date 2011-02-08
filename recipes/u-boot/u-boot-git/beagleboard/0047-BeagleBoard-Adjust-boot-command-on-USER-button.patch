@@ -1,7 +1,7 @@
-From c8d52ff17d71be0c632f20092d96e9530088c786 Mon Sep 17 00:00:00 2001
+From d3f9ba7264111551ea11f33aadbecc15c87a4332 Mon Sep 17 00:00:00 2001
 From: Jason Kridner <jkridner@beagleboard.org>
 Date: Wed, 21 Jul 2010 08:47:59 -0500
-Subject: [PATCH] BeagleBoard: Adjust boot command on USER button
+Subject: [PATCH 47/50] BeagleBoard: Adjust boot command on USER button
 
 When the USER button is pressed, the default boot command will attempt
 to load user.scr.  If that fails, it will try to load a ramdisk image.
@@ -14,10 +14,10 @@ attempts to load the user.scr file.
  1 files changed, 44 insertions(+), 7 deletions(-)
 
 diff --git a/include/configs/omap3_beagle.h b/include/configs/omap3_beagle.h
-index f372de2..6d1166f 100644
+index b265b0c..1a76004 100644
 --- a/include/configs/omap3_beagle.h
 +++ b/include/configs/omap3_beagle.h
-@@ -195,9 +195,12 @@
+@@ -200,9 +200,12 @@
  #define CONFIG_BOOTDELAY		3
  
  #define CONFIG_EXTRA_ENV_SETTINGS \
@@ -31,7 +31,7 @@ index f372de2..6d1166f 100644
  	"mpurate=500\0" \
  	"buddy=none\0" \
  	"vram=12M\0" \
-@@ -208,7 +211,10 @@
+@@ -213,7 +216,10 @@
  	"mmcrootfstype=ext3 rootwait\0" \
  	"nandroot=/dev/mtdblock4 rw\0" \
  	"nandrootfstype=jffs2\0" \
@@ -42,7 +42,7 @@ index f372de2..6d1166f 100644
  		"mpurate=${mpurate} " \
  		"buddy=${buddy} "\
  		"vram=${vram} " \
-@@ -217,6 +223,7 @@
+@@ -222,6 +228,7 @@
  		"root=${mmcroot} " \
  		"rootfstype=${mmcrootfstype}\0" \
  	"nandargs=setenv bootargs console=${console} " \
@@ -50,7 +50,7 @@ index f372de2..6d1166f 100644
  		"mpurate=${mpurate} " \
  		"buddy=${buddy} "\
  		"vram=${vram} " \
-@@ -224,7 +231,18 @@
+@@ -229,7 +236,18 @@
  		"omapdss.def_disp=${defaultdisplay} " \
  		"root=${nandroot} " \
  		"rootfstype=${nandrootfstype}\0" \
@@ -70,7 +70,7 @@ index f372de2..6d1166f 100644
  	"bootscript=echo Running bootscript from mmc ...; " \
  		"source ${loadaddr}\0" \
  	"loaduimage=fatload mmc ${mmcdev} ${loadaddr} uImage\0" \
-@@ -235,15 +253,34 @@
+@@ -240,15 +258,34 @@
  		"run nandargs; " \
  		"nand read ${loadaddr} 280000 400000; " \
  		"bootm ${loadaddr}\0" \
@@ -111,5 +111,5 @@ index f372de2..6d1166f 100644
  		"fi; " \
  	"else run nandboot; fi"
 -- 
-1.6.1
+1.6.6.1
 

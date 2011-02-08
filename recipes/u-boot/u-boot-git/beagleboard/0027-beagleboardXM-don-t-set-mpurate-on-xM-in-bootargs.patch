@@ -1,7 +1,7 @@
-From 85d4ffbc3a12b28cae00fc88d4adba7df4907fe4 Mon Sep 17 00:00:00 2001
+From 4aca3c70a18da58e263b08e37b288a06b2b6655c Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Tue, 13 Apr 2010 22:04:07 +0200
-Subject: [PATCH 27/37] beagleboardXM: don't set mpurate on xM in bootargs
+Subject: [PATCH 27/50] beagleboardXM: don't set mpurate on xM in bootargs
 
 ---
  board/ti/beagle/beagle.c |    1 -

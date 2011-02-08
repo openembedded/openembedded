@@ -1,7 +1,7 @@
-From 9d3e56ba351348b6329c488a981d3e2d8f848164 Mon Sep 17 00:00:00 2001
+From 40049e97a5a97d597f8754ff1b39d931053eb465 Mon Sep 17 00:00:00 2001
 From: Jason Kridner <jkridner@beagleboard.org>
 Date: Wed, 19 May 2010 05:14:43 -0500
-Subject: [PATCH] BeagleBoard: Enabled LEDs
+Subject: [PATCH 44/50] BeagleBoard: Enabled LEDs
 
 Added LED driver using status_led.  USR0 is set to monitor the boot
 status.  USR1 is set to be the GREEN LED.
@@ -12,7 +12,7 @@ Signed-off-by: Jason Kridner <jkridner@beagleboard.org>
  1 files changed, 13 insertions(+), 0 deletions(-)
 
 diff --git a/include/configs/omap3_beagle.h b/include/configs/omap3_beagle.h
-index c2fc6ba..eaa8779 100644
+index e4c88f2..053f5df 100644
 --- a/include/configs/omap3_beagle.h
 +++ b/include/configs/omap3_beagle.h
 @@ -98,6 +98,18 @@
@@ -34,7 +34,7 @@ index c2fc6ba..eaa8779 100644
  /* DDR - I use Micron DDR */
  #define CONFIG_OMAP3_MICRON_DDR		1
  
-@@ -132,6 +144,7 @@
+@@ -138,6 +150,7 @@
  #define CONFIG_CMD_I2C		/* I2C serial bus support	*/
  #define CONFIG_CMD_MMC		/* MMC support			*/
  #define CONFIG_CMD_NAND		/* NAND support			*/
@@ -43,5 +43,5 @@ index c2fc6ba..eaa8779 100644
  
  #undef CONFIG_CMD_FLASH		/* flinfo, erase, protect	*/
 -- 
-1.5.6.4
+1.6.6.1
 

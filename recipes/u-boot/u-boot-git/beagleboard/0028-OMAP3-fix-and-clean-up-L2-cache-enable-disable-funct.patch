@@ -1,7 +1,7 @@
-From c18bda32fdb048ea38b7ff579f365ea8858053d7 Mon Sep 17 00:00:00 2001
+From 72e1ab470e483c91ab3aa38bec31faf3dad52735 Mon Sep 17 00:00:00 2001
 From: Mans Rullgard <mans@mansr.com>
 Date: Wed, 14 Apr 2010 12:08:00 +0100
-Subject: [PATCH 28/37] OMAP3: fix and clean up L2 cache enable/disable functions
+Subject: [PATCH 28/50] OMAP3: fix and clean up L2 cache enable/disable functions
 
 On OMAP34xx ES1.0, the L2 enable bit can only be set in secure mode,
 so an SMC call to the ROM monitor is required.  On later versions,

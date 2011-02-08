@@ -1,7 +1,7 @@
-From 0bf419a0faa8c9dc73d7a84f93d7fcb89be3ea21 Mon Sep 17 00:00:00 2001
+From 276236da04d67dfad61ccab5d4700613ae8527f9 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Tue, 23 Mar 2010 09:20:56 -0700
-Subject: [PATCH 19/37] OMAP3: clocks: update clock setup for 36XX/37XX
+Subject: [PATCH 19/50] OMAP3: clocks: update clock setup for 36XX/37XX
 
 ---
  cpu/arm_cortexa8/omap3/clock.c            |  559 +++++++++++++++++++++--------
@@ -675,7 +675,7 @@ index 6330c9e..538a183 100644
  }
 +
 diff --git a/cpu/arm_cortexa8/omap3/lowlevel_init.S b/cpu/arm_cortexa8/omap3/lowlevel_init.S
-index 73063ec..2045e4e 100644
+index 73063ec..061d75f 100644
 --- a/cpu/arm_cortexa8/omap3/lowlevel_init.S
 +++ b/cpu/arm_cortexa8/omap3/lowlevel_init.S
 @@ -359,3 +359,72 @@ per_dpll_param:

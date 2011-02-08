@@ -1,7 +1,7 @@
-From 59c9245c9a52954c8c084e257bbe55443201614b Mon Sep 17 00:00:00 2001
+From 8cea9443be01ccc2525ff1de17b0dddd7c27984e Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Wed, 10 Feb 2010 14:40:56 -0800
-Subject: [PATCH 02/37] OMAP3: add board revision detection for Overo
+Subject: [PATCH 02/50] OMAP3: add board revision detection for Overo
 
 ---
  board/overo/overo.c |   90 +++++++++++++++++++++++++++++++++++++++++++++++++++

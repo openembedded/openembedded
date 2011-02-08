@@ -1,7 +1,7 @@
-From efc587fb24a5246f5a436a057320687a1b7847c6 Mon Sep 17 00:00:00 2001
+From a1a4ba7a5fce36522a994cb06d6d76931964578c Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Wed, 10 Feb 2010 15:23:19 -0800
-Subject: [PATCH 04/37] OMAP3: Set VAUX2 to 1.8V for EHCI PHY on Beagle Rev C4 boards
+Subject: [PATCH 04/50] OMAP3: Set VAUX2 to 1.8V for EHCI PHY on Beagle Rev C4 boards
 
 ---
  board/ti/beagle/beagle.c |    5 +++++

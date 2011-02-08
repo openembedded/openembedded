@@ -1,7 +1,7 @@
-From 1b082bb4a8ba5b7bee727baf3cd048e1785c8abd Mon Sep 17 00:00:00 2001
+From b03bad6826a2f3a0a03f6cdd5682e0a628fff851 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Wed, 3 Feb 2010 14:39:14 -0800
-Subject: [PATCH 06/37] OMAP3: add mpurate boot arg for overo and beagle
+Subject: [PATCH 06/50] OMAP3: add mpurate boot arg for overo and beagle
 
 allows one to set the omap clock rate via "setenv mpurate 720" for example
 ---
@@ -10,10 +10,10 @@ allows one to set the omap clock rate via "setenv mpurate 720" for example
  2 files changed, 6 insertions(+), 0 deletions(-)
 
 diff --git a/include/configs/omap3_beagle.h b/include/configs/omap3_beagle.h
-index 87e3dd0..ce347cd 100644
+index d522c77..35ae8af 100644
 --- a/include/configs/omap3_beagle.h
 +++ b/include/configs/omap3_beagle.h
-@@ -182,6 +182,7 @@
+@@ -187,6 +187,7 @@
  	"loadaddr=0x82000000\0" \
  	"usbtty=cdc_acm\0" \
  	"console=ttyS2,115200n8\0" \
@@ -21,7 +21,7 @@ index 87e3dd0..ce347cd 100644
  	"vram=12M\0" \
  	"dvimode=1024x768MR-16@60\0" \
  	"defaultdisplay=dvi\0" \
-@@ -190,6 +191,7 @@
+@@ -195,6 +196,7 @@
  	"nandroot=/dev/mtdblock4 rw\0" \
  	"nandrootfstype=jffs2\0" \
  	"mmcargs=setenv bootargs console=${console} " \
@@ -29,7 +29,7 @@ index 87e3dd0..ce347cd 100644
  		"vram=${vram} " \
  		"omapfb.mode=dvi:${dvimode} " \
  		"omapfb.debug=y " \
-@@ -197,6 +199,7 @@
+@@ -202,6 +204,7 @@
  		"root=${mmcroot} " \
  		"rootfstype=${mmcrootfstype}\0" \
  	"nandargs=setenv bootargs console=${console} " \
@@ -38,10 +38,10 @@ index 87e3dd0..ce347cd 100644
  		"omapfb.mode=dvi:${dvimode} " \
  		"omapfb.debug=y " \
 diff --git a/include/configs/omap3_overo.h b/include/configs/omap3_overo.h
-index 0d24758..295cce6 100644
+index a43500b..113c6df 100644
 --- a/include/configs/omap3_overo.h
 +++ b/include/configs/omap3_overo.h
-@@ -152,6 +152,7 @@
+@@ -151,6 +151,7 @@
  #define CONFIG_EXTRA_ENV_SETTINGS \
  	"loadaddr=0x82000000\0" \
  	"console=ttyS2,115200n8\0" \
@@ -49,7 +49,7 @@ index 0d24758..295cce6 100644
  	"vram=12M\0" \
  	"dvimode=1024x768MR-16@60\0" \
  	"defaultdisplay=dvi\0" \
-@@ -160,6 +161,7 @@
+@@ -159,6 +160,7 @@
  	"nandroot=/dev/mtdblock4 rw\0" \
  	"nandrootfstype=jffs2\0" \
  	"mmcargs=setenv bootargs console=${console} " \
@@ -57,7 +57,7 @@ index 0d24758..295cce6 100644
  		"vram=${vram} " \
  		"omapfb.mode=dvi:${dvimode} " \
  		"omapfb.debug=y " \
-@@ -167,6 +169,7 @@
+@@ -166,6 +168,7 @@
  		"root=${mmcroot} " \
  		"rootfstype=${mmcrootfstype}\0" \
  	"nandargs=setenv bootargs console=${console} " \

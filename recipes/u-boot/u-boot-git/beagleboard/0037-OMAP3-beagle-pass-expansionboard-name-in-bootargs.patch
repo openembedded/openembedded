@@ -1,7 +1,7 @@
-From 8ad472139f7b8b7c59c0192f3e2f50a20beadf59 Mon Sep 17 00:00:00 2001
+From 02dba49bdab65e1a96fd4593f5847b38252b66e0 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Mon, 3 May 2010 10:17:41 +0200
-Subject: [PATCH 37/37] OMAP3: beagle: pass expansionboard name in bootargs
+Subject: [PATCH 37/50] OMAP3: beagle: pass expansionboard name in bootargs
 
 This makes it possible to do in-kernel fixups for expansionboards like reclaiming GPIOs
 ---
@@ -55,10 +55,10 @@ index 9300984..556e995 100644
  
  	if (expansion_config.content == 1)
 diff --git a/include/configs/omap3_beagle.h b/include/configs/omap3_beagle.h
-index 93a6a5a..affabf1 100644
+index 47bc971..8ad52aa 100644
 --- a/include/configs/omap3_beagle.h
 +++ b/include/configs/omap3_beagle.h
-@@ -185,6 +185,7 @@
+@@ -190,6 +190,7 @@
  	"usbtty=cdc_acm\0" \
  	"console=ttyS2,115200n8\0" \
  	"mpurate=500\0" \
@@ -66,7 +66,7 @@ index 93a6a5a..affabf1 100644
  	"vram=12M\0" \
  	"dvimode=640x480MR-16@60\0" \
  	"defaultdisplay=dvi\0" \
-@@ -194,6 +195,7 @@
+@@ -199,6 +200,7 @@
  	"nandrootfstype=jffs2\0" \
  	"mmcargs=setenv bootargs console=${console} " \
  		"mpurate=${mpurate} " \
@@ -74,7 +74,7 @@ index 93a6a5a..affabf1 100644
  		"vram=${vram} " \
  		"omapfb.mode=dvi:${dvimode} " \
  		"omapdss.def_disp=${defaultdisplay} " \
-@@ -201,6 +203,7 @@
+@@ -206,6 +208,7 @@
  		"rootfstype=${mmcrootfstype}\0" \
  	"nandargs=setenv bootargs console=${console} " \
  		"mpurate=${mpurate} " \

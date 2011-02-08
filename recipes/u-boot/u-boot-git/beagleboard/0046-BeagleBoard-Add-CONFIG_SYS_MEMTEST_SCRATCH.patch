@@ -1,7 +1,7 @@
-From d912a6d2d546faf55d07e91816b47096879137cc Mon Sep 17 00:00:00 2001
+From 631cd4e4a02faa5726c058626390bee97188f456 Mon Sep 17 00:00:00 2001
 From: Steven Kipisz <s-kipisz2@ti.com>
 Date: Fri, 4 Jun 2010 10:31:04 -0500
-Subject: [PATCH] BeagleBoard: Add CONFIG_SYS_MEMTEST_SCRATCH
+Subject: [PATCH 46/50] BeagleBoard: Add CONFIG_SYS_MEMTEST_SCRATCH
 
 Add CONFIG_SYS_MEMTEST_SCRATCH to point to a scratch memory area.
 
@@ -11,10 +11,10 @@ Signed-off-by: Jason Kridner <jkridner@beagleboard.org>
  1 files changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/include/configs/omap3_beagle.h b/include/configs/omap3_beagle.h
-index 555b350..0c6fce6 100644
+index 053f5df..b265b0c 100644
 --- a/include/configs/omap3_beagle.h
 +++ b/include/configs/omap3_beagle.h
-@@ -297,10 +297,11 @@
+@@ -269,10 +269,11 @@
  /* Boot Argument Buffer Size */
  #define CONFIG_SYS_BARGSIZE		(CONFIG_SYS_CBSIZE)
  
@@ -31,5 +31,5 @@ index 555b350..0c6fce6 100644
  #define CONFIG_SYS_LOAD_ADDR		(OMAP34XX_SDRC_CS0)	/* default */
  							/* load address */
 -- 
-1.5.6.4
+1.6.6.1
 

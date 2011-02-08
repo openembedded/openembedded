@@ -1,7 +1,7 @@
-From ad1a2c047554deae2e1608d025c4f6891cf8f116 Mon Sep 17 00:00:00 2001
+From 2c02d9b024b58bbea920d3d6c40d62b30e448f60 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Fri, 26 Feb 2010 12:40:26 -0800
-Subject: [PATCH 12/37] OMAP3: Overo: allow expansion boards with any vendor ID
+Subject: [PATCH 12/50] OMAP3: Overo: allow expansion boards with any vendor ID
 
 ---
  board/overo/overo.c |   10 +++-------

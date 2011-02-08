@@ -1,7 +1,7 @@
-From a4fa85edf5ff6aa6a06f437acc8694dd866f6618 Mon Sep 17 00:00:00 2001
+From a0f21f7418dfa81a40bf99b7e926153a310ba457 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Sun, 11 Apr 2010 12:14:43 +0200
-Subject: [PATCH 24/37] beagleboard: fix TCT expansionboard IDs
+Subject: [PATCH 24/50] beagleboard: fix TCT expansionboard IDs
 
 ---
  board/ti/beagle/beagle.c |    4 ++--
