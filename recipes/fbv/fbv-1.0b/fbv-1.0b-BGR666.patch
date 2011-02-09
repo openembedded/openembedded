@@ -1,0 +1,98 @@
+Index: fbv-1.0b/ChangeLog
+===================================================================
+--- fbv-1.0b.orig/ChangeLog
++++ fbv-1.0b/ChangeLog
+@@ -1,3 +1,10 @@
++1.0c     2011-02-09      Marco Cavallini <m.cavallini@koansoftware.com>
++      * Added BGR666@24bpp
++      * set #define DEFAULT_FRAMEBUFFER "/dev/fb0"
++
++1.0b	2004-09-07
++      * unkown modification
++
+ 0.99    2003-08-24      Mateusz Golicz mtg@elsat.net.pl
+       * fixes in transparent and interlaced GIF & PNG support
+       * support for using the alpha channel
+Index: fbv-1.0b/fb_display.c
+===================================================================
+--- fbv-1.0b.orig/fb_display.c
++++ fbv-1.0b/fb_display.c
+@@ -3,6 +3,9 @@
+     Copyright (C) 2000  Tomasz Sterna
+     Copyright (C) 2003  Mateusz Golicz
+ 
++    Copyright (C) 2011  Marco Cavallini <m.cavallini@koansoftware.com>
++    Added BGR666@24bpp
++
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+@@ -43,6 +46,11 @@
+  *
+  */
+ 
++
++#define DEFAULT_FRAMEBUFFER 	"/dev/fb0"
++
++
++
+ unsigned short red[256], green[256], blue[256];
+ struct fb_cmap map332 = {0, 256, red, green, blue, NULL};
+ unsigned short red_b[256], green_b[256], blue_b[256];
+@@ -215,6 +223,23 @@ void blit2FB(int fh, void *fbbuff, unsig
+ 	
+     xc = (pic_xs > scr_xs) ? scr_xs : pic_xs;
+     yc = (pic_ys > scr_ys) ? scr_ys : pic_ys;
++
++#if 0
++	/* if you need to debug */
++	printf("-----------------\n") ;
++	printf("pic_xs=%d\n", pic_xs) ;
++	printf("pic_ys=%d\n", pic_ys) ;
++	printf("scr_xs=%d\n", scr_xs) ;
++	printf("scr_ys=%d\n", scr_ys) ;
++	printf("xp=%d\n", xp) ;
++	printf("yp=%d\n", yp) ;
++	printf("xoffs=%d\n", xoffs) ;
++	printf("yoffs=%d\n", yoffs) ;
++	printf("cpp=%d\n", cpp) ;
++	printf("xc=%d\n", xc) ;
++	printf("yc=%d\n", yc) ;
++	printf("-----------------\n") ;
++#endif
+     
+ 	fb = mmap(NULL, scr_xs * scr_ys * cpp, PROT_WRITE | PROT_READ, MAP_SHARED, fh, 0);
+ 	
+@@ -337,7 +362,18 @@ void* convertRGB2FB(int fh, unsigned cha
+ 		s_fbbuff[i] = make16color(rgbbuff[i*3], rgbbuff[i*3+1], rgbbuff[i*3+2]);
+ 	    fbbuff = (void *) s_fbbuff;
+ 	    break;
+-	case 24:
++    case 24:  /* BGR666 */
++	    *cpp = 3;
++	    i_fbbuff = (unsigned int *) malloc(count * sizeof(unsigned int));
++	    for(i = 0; i < count * 3 ; i += 3)
++		{   // Skip 24 bit at a time
++			c_fbbuff = (u_int8_t  *)i_fbbuff ;
++		    c_fbbuff[i + 0] = (u_int8_t)( (rgbbuff[i+2] >> 2) | ((rgbbuff[i+1] & 0x0C) << 4) );
++		    c_fbbuff[i + 1] = (u_int8_t)( ((rgbbuff[i+1] & 0xF0) >> 4) | ((rgbbuff[i+0] & 0x3C) << 2) );
++		    c_fbbuff[i + 2] = (u_int8_t)( (rgbbuff[i+0] & 0xC0) >> 6 );
++		}
++	    fbbuff = (void *) i_fbbuff;
++	    break;
+ 	case 32:
+ 	    *cpp = 4;
+ 	    i_fbbuff = (unsigned int *) malloc(count * sizeof(unsigned int));
+Index: fbv-1.0b/main.c
+===================================================================
+--- fbv-1.0b.orig/main.c
++++ fbv-1.0b/main.c
+@@ -461,7 +461,7 @@ void help(char *name)
+ 		   " n            : Rotate the image 90 degrees left\n"
+ 		   " m            : Rotate the image 90 degrees right\n"
+ 		   " p            : Disable all transformations\n"
+-		   "Copyright (C) 2000 - 2004 Mateusz Golicz, Tomasz Sterna.\n", name);
++		   "[v.1.0c] Copyright (C)2000-2011 Mateusz Golicz, Tomasz Sterna, Marco Cavallini.\n", name);
+ }
+ 
+ void sighandler(int s)
