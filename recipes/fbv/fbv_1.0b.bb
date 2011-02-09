@@ -1,11 +1,12 @@
 DESCRIPTION = "Frame Buffer Viewer"
 LICENSE = "GPL"
 DEPENDS = "libpng jpeg"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://s-tech.elsat.net.pl/fbv/fbv-1.0b.tar.gz \
 	file://cross_compile.patch \
 	file://fbv-1.0b.patch \
+        file://fbv-1.0b-BGR666.patch \
 	"
 
 do_configure() {
