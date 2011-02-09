@@ -27,7 +27,8 @@ def factory(var_type):
     try:
         return types[var_type]
     except KeyError:
-        raise TypeError("Invalid type '%s'" % var_type)
+        raise TypeError("Invalid type '%s':\n  Valid types: %s" %
+                        (var_type, ', '.join(types)))
 
 def create(value, var_type, **flags):
     """Create an object of the specified type, given the specified flags and
