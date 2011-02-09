@@ -1,5 +1,5 @@
 import unittest
-from oe.types import create, factory
+from oe.maketype import create, factory
 
 class TestTypes(unittest.TestCase):
     def assertIsInstance(self, obj, cls):

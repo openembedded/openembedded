@@ -1,108 +1,104 @@
-"""OpenEmbedded variable typing support
+import re
 
-Types are defined in the metadata by name, using the 'type' flag on a
-variable.  Other flags may be utilized in the construction of the types.  See
-the arguments of the type's factory for details.
-"""
+class OEList(list):
+    """OpenEmbedded 'list' type
 
-import bb
-import inspect
-import _types
+    Acts as an ordinary list, but is constructed from a string value and a
+    separator (optional), and re-joins itself when converted to a string with
+    str().  Set the variable type flag to 'list' to use this type, and the
+    'separator' flag may be specified (defaulting to whitespace)."""
 
-types = {}
+    name = "list"
 
-class MissingFlag(TypeError):
-    """A particular flag is required to construct the type, but has not been
-    provided."""
-    def __init__(self, flag, type):
-        self.flag = flag
-        self.type = type
-        TypeError.__init__(self)
+    def __init__(self, value, separator = None):
+        if value is not None:
+            list.__init__(self, value.split(separator))
+        else:
+            list.__init__(self)
+
+        if separator is None:
+            self.separator = " "
+        else:
+            self.separator = separator
 
     def __str__(self):
-        return "Type '%s' requires flag '%s'" % (self.type, self.flag)
+        return self.separator.join(self)
 
-def factory(var_type):
-    """Return the factory for a specified type."""
+def choice(value, choices):
+    """OpenEmbedded 'choice' type
+
+    Acts as a multiple choice for the user.  To use this, set the variable
+    type flag to 'choice', and set the 'choices' flag to a space separated
+    list of valid values."""
+    if not isinstance(value, basestring):
+        raise TypeError("choice accepts a string, not '%s'" % type(value))
+
+    value = value.lower()
+    choices = choices.lower()
+    if value not in choices.split():
+        raise ValueError("Invalid choice '%s'.  Valid choices: %s" %
+                         (value, choices))
+    return value
+
+def regex(value, regexflags=None):
+    """OpenEmbedded 'regex' type
+
+    Acts as a regular expression, returning the pre-compiled regular
+    expression pattern object.  To use this type, set the variable type flag
+    to 'regex', and optionally, set the 'regexflags' type to a space separated
+    list of the flags to control the regular expression matching (e.g.
+    FOO[regexflags] += 'ignorecase').  See the python documentation on the
+    're' module for a list of valid flags."""
+
+    flagval = 0
+    if regexflags:
+        for flag in regexflags.split():
+            flag = flag.upper()
+            try:
+                flagval |= getattr(re, flag)
+            except AttributeError:
+                raise ValueError("Invalid regex flag '%s'" % flag)
+
     try:
-        return types[var_type]
-    except KeyError:
-        raise TypeError("Invalid type '%s':\n  Valid types: %s" %
-                        (var_type, ', '.join(types)))
+        return re.compile(value, flagval)
+    except re.error, exc:
+        raise ValueError("Invalid regex value '%s': %s" %
+                         (value, exc.args[0]))
 
-def create(value, var_type, **flags):
-    """Create an object of the specified type, given the specified flags and
-    string value."""
-    obj = factory(var_type)
-    objflags = {}
-    for flag in obj.flags:
-        if flag not in flags:
-            if flag not in obj.optflags:
-                raise MissingFlag(flag, var_type)
-        else:
-            objflags[flag] = flags[flag]
+def boolean(value):
+    """OpenEmbedded 'boolean' type
 
-    return obj(value, **objflags)
+    Valid values for true: 'yes', 'y', 'true', 't', '1'
+    Valid values for false: 'no', 'n', 'false', 'f', '0'
+    """
 
-def value(key, d):
-    """Construct a value for the specified metadata variable, using its flags
-    to determine the type and parameters for construction."""
-    var_type = d.getVarFlag(key, 'type')
-    flags = d.getVarFlags(key)
+    if not isinstance(value, basestring):
+        raise TypeError("boolean accepts a string, not '%s'" % type(value))
 
-    try:
-        return create(d.getVar(key, True) or '', var_type, **flags)
-    except (TypeError, ValueError), exc:
-        bb.fatal("%s: %s" % (key, str(exc)))
+    value = value.lower()
+    if value in ('yes', 'y', 'true', 't', '1'):
+        return True
+    elif value in ('no', 'n', 'false', 'f', '0'):
+        return False
+    raise ValueError("Invalid boolean value '%s'" % value)
 
-def get_callable_args(obj):
-    """Grab all but the first argument of the specified callable, returning
-    the list, as well as a list of which of the arguments have default
-    values."""
-    if type(obj) is type:
-        obj = obj.__init__
+def integer(value, numberbase=10):
+    """OpenEmbedded 'integer' type
 
-    args, varargs, keywords, defaults = inspect.getargspec(obj)
-    flaglist = []
-    if args:
-        if len(args) > 1 and args[0] == 'self':
-            args = args[1:]
-        flaglist.extend(args)
+    Defaults to base 10, but this can be specified using the optional
+    'numberbase' flag."""
 
-    optional = set()
-    if defaults:
-        optional |= set(flaglist[-len(defaults):])
-    return flaglist, optional
+    return int(value, int(numberbase))
 
-def factory_setup(name, obj):
-    """Prepare a factory for use."""
-    args, optional = get_callable_args(obj)
-    extra_args = args[1:]
-    if extra_args:
-        obj.flags, optional = extra_args, optional
-        obj.optflags = set(optional)
+_float = float
+def float(value, fromhex='false'):
+    """OpenEmbedded floating point type
+
+    To use this type, set the type flag to 'float', and optionally set the
+    'fromhex' flag to a true value (obeying the same rules as for the
+    'boolean' type) if the value is in base 16 rather than base 10."""
+
+    if boolean(fromhex):
+        return _float.fromhex(value)
     else:
-        obj.flags = obj.optflags = ()
-
-    if not hasattr(obj, 'name'):
-        obj.name = name
-
-def register(name, factory):
-    """Register a type, given its name and a factory callable.
-
-    Determines the required and optional flags from the factory's
-    arguments."""
-    factory_setup(name, factory)
-    types[factory.name] = factory
-
-
-# Register all our included types
-for name in dir(_types):
-    if name.startswith('_'):
-        continue
-
-    obj = getattr(_types, name)
-    if not callable(obj):
-        continue
-
-    register(name, obj)
+        return _float(value)
