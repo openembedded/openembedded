@@ -10,7 +10,7 @@ inherit utils
 inherit utility-tasks
 inherit metadata_scm
 
-OE_IMPORTS += "oe.path oe.utils oe.packagegroup oe.types sys os time"
+OE_IMPORTS += "oe.path oe.utils oe.packagegroup oe.data sys os time"
 OE_IMPORTS[type] = "list"
 
 python oe_import () {
@@ -86,7 +86,7 @@ python base_scenefunction () {
 }
 
 python base_do_setscene () {
-	for func in oe.types.value('SCENEFUNCS', d):
+	for func in oe.data.typed_value('SCENEFUNCS', d):
 		bb.build.exec_func(func, d)
 	if not os.path.exists(bb.data.getVar('STAMP', d, 1) + ".do_setscene"):
 		bb.build.make_stamp("do_setscene", d)
@@ -102,7 +102,7 @@ python base_do_fetch() {
 	localdata = bb.data.createCopy(d)
 	bb.data.update_data(localdata)
 
-	src_uri = oe.types.value('SRC_URI', localdata)
+	src_uri = oe.data.typed_value('SRC_URI', localdata)
 	if not src_uri:
 		return 1
 	try:
@@ -192,11 +192,11 @@ do_unpack[dirs] = "${WORKDIR}"
 python base_do_unpack() {
     from glob import glob
 
-    src_uri = oe.types.value("SRC_URI", d)
+    src_uri = oe.data.typed_value("SRC_URI", d)
     if not src_uri:
         return
     srcurldata = bb.fetch.init(src_uri, d, True)
-    filespath = oe.types.value("FILESPATH", d)
+    filespath = oe.data.typed_value("FILESPATH", d)
 
     for url in src_uri:
         urldata = srcurldata[url]
@@ -263,7 +263,7 @@ python build_summary() {
         else:
             print statusmsg
 
-        needed_vars = oe.types.value("BUILDCFG_NEEDEDVARS", e.data)
+        needed_vars = oe.data.typed_value("BUILDCFG_NEEDEDVARS", e.data)
         pesteruser = []
         for v in needed_vars:
             val = bb.data.getVar(v, e.data, 1)
@@ -328,7 +328,7 @@ def set_multimach_arch(d):
 
     multiarch = pkg_arch
 
-    for pkg in oe.types.value('PACKAGES', d):
+    for pkg in oe.data.typed_value('PACKAGES', d):
         pkgarch = bb.data.getVar("PACKAGE_ARCH_%s" % pkg, d, 1)
 
         # We could look for != PACKAGE_ARCH here but how to choose

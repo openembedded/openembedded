@@ -20,6 +20,6 @@ ENABLE_WIDEC[type] = "boolean"
 
 EXTRA_OECONF += "\
     --with-gnu-ld \
-    ${@oe.utils.ifelse(oe.types.value('ENABLE_WIDEC', d), \
+    ${@oe.utils.ifelse(oe.data.typed_value('ENABLE_WIDEC', d), \
                        '--enable-widec', '')} \
 "
