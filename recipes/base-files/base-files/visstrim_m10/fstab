@@ -1,0 +1,9 @@
+# Visstrim_M10 fstab
+
+proc                 /proc                proc       defaults              0  0
+sys                  /sys                 sysfs      defaults              0  0
+usbfs                /proc/bus/usb        usbfs      defaults              0  0
+tmpfs                /media/ram           tmpfs      defaults              0  0
+devpts               /dev/pts             devpts     defaults              0  0
+
+/dev/mmcblk0p1       /opt                 auto       defaults,sync,noauto  0  0

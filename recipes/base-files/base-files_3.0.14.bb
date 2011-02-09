@@ -165,6 +165,11 @@ do_install_append_tb5200l() {
 	ln -s var/tmp ${D}/tmp
 }
 
+do_install_append_visstrim_m10() {
+	mkdir -p ${D}/opt
+	mkdir -p ${D}/mnt/jffs2
+	mkdir -p ${D}/mnt/defaults/etc
+}
 
 PACKAGES = "${PN}-dbg ${PN}-doc ${PN}"
 FILES_${PN} = "/*"
