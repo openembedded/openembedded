@@ -1,6 +1,7 @@
 require networkmanager-0.7.inc
 
 DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_angstrom = "1"
 
 SRCREV = "9b61ec7c58e8106c28d01b33ad0b263aefb1f347"
 PV = "0.8.2+git"
