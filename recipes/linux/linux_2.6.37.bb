@@ -14,6 +14,7 @@ DEFAULT_PREFERENCE_qemush4 = "1"
 DEFAULT_PREFERENCE_qemumips = "1"
 DEFAULT_PREFERENCE_qemumipsel = "1"
 DEFAULT_PREFERENCE_qemumips64 = "1"
+DEFAULT_PREFERENCE_visstrim_m10 = "1"
 # needs more testing before making it new default
 # DEFAULT_PREFERENCE_om-gta02 = "1"
 # DEFAULT_PREFERENCE_om-gta01 = "1"
