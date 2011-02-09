@@ -1,0 +1,91 @@
+#!/bin/sh
+#
+# Do not configure this file. Edit /etc/default/dropbear instead!
+#
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+DAEMON=/usr/sbin/dropbear
+NAME=dropbear
+DESC="Dropbear SSH server"
+PIDFILE=/var/run/dropbear.pid
+
+DROPBEAR_PORT=22
+DROPBEAR_EXTRA_ARGS=
+NO_START=0
+
+test ! -r /etc/default/dropbear || . /etc/default/dropbear
+test "$NO_START" = "0" || exit 0
+test -x "$DAEMON" || exit 0
+test ! -h /var/service/dropbear || exit 0
+
+# Allows comma-separated list of addresses/ports
+DROPBEAR_PORT=`echo $DROPBEAR_PORT | sed "s/,/ -p /g"`
+DROPBEAR_RSAKEY_DEFAULT="/etc/dropbear/dropbear_rsa_host_key"
+DROPBEAR_DSSKEY_DEFAULT="/etc/dropbear/dropbear_dss_host_key"
+
+
+test -z "$DROPBEAR_BANNER" || \
+  DROPBEAR_EXTRA_ARGS="$DROPBEAR_EXTRA_ARGS -b $DROPBEAR_BANNER"
+test -n "$DROPBEAR_RSAKEY" || \
+  DROPBEAR_RSAKEY=$DROPBEAR_RSAKEY_DEFAULT
+test -n "$DROPBEAR_DSSKEY" || \
+  DROPBEAR_DSSKEY=$DROPBEAR_DSSKEY_DEFAULT
+test -n "$DROPBEAR_KEYTYPES" || \
+  DROPBEAR_KEYTYPES="rsa"
+
+gen_keys() {
+for t in $DROPBEAR_KEYTYPES; do
+  case $t in
+    rsa)
+	if [ ! -f $DROPBEAR_RSAKEY ]; then
+	    echo "Creating $DESC RSA host key."
+	    dropbearkey -t rsa -f $DROPBEAR_RSAKEY
+	fi
+	;;
+    dsa)
+	if [ ! -f $DROPBEAR_DSSKEY ]; then
+	    echo "Creating $DESC DSA host key."
+	    dropbearkey -t dss -f $DROPBEAR_DSSKEY
+	fi
+	;;
+  esac
+done
+}
+
+case "$1" in
+  start)
+	gen_keys
+	echo -n "Starting $DESC: "
+	KEY_ARGS=""
+	test -f $DROPBEAR_DSSKEY && KEY_ARGS="$KEY_ARGS -d $DROPBEAR_DSSKEY"
+	test -f $DROPBEAR_RSAKEY && KEY_ARGS="$KEY_ARGS -r $DROPBEAR_RSAKEY"
+	start-stop-daemon -S -p $PIDFILE \
+	  -x "$DAEMON" -- $KEY_ARGS \
+	    -p $DROPBEAR_PORT $DROPBEAR_EXTRA_ARGS
+	echo "$NAME."
+	;;
+  stop)
+	echo -n "Stopping $DESC: "
+	start-stop-daemon -K -x "$DAEMON" -p $PIDFILE
+	echo "$NAME."
+	;;
+  restart|force-reload)
+	echo -n "Restarting $DESC: "
+	start-stop-daemon -K -x "$DAEMON" -p $PIDFILE
+	sleep 1
+	KEY_ARGS=""
+	test -f $DROPBEAR_DSSKEY && KEY_ARGS="$KEY_ARGS -d $DROPBEAR_DSSKEY"
+	test -f $DROPBEAR_RSAKEY && KEY_ARGS="$KEY_ARGS -r $DROPBEAR_RSAKEY"
+	start-stop-daemon -S -p $PIDFILE \
+	  -x "$DAEMON" -- $KEY_ARGS \
+	    -p $DROPBEAR_PORT $DROPBEAR_EXTRA_ARGS
+	echo "$NAME."
+	;;
+  *)
+	N=/etc/init.d/$NAME
+	echo "Usage: $N {start|stop|restart|force-reload}" >&2
+	exit 1
+	;;
+esac
+
+exit 0
