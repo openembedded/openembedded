@@ -9,33 +9,39 @@ class TestTypes(unittest.TestCase):
         return self.assertFalse(obj is other)
 
     def assertFactoryCreated(self, value, type, **flags):
-        obj = factory(type)
-        self.assertIsNot(obj, None)
-        self.assertIsInstance(create(value, type, **flags), obj)
+        cls = factory(type)
+        self.assertIsNot(cls, None)
+        self.assertIsInstance(create(value, type, **flags), cls)
 
 class TestBooleanType(TestTypes):
-    def test_boolean(self):
+    def test_invalid(self):
         self.assertRaises(ValueError, create, '', 'boolean')
         self.assertRaises(ValueError, create, 'foo', 'boolean')
         self.assertRaises(TypeError, create, object(), 'boolean')
 
-    def test_boolean_true(self):
-        self.assertEqual(create('y', 'boolean'), True)
-        self.assertEqual(create('yes', 'boolean'), True)
-        self.assertEqual(create('1', 'boolean'), True)
-        self.assertEqual(create('t', 'boolean'), True)
-        self.assertEqual(create('true', 'boolean'), True)
-        self.assertEqual(create('TRUE', 'boolean'), True)
-        self.assertEqual(create('truE', 'boolean'), True)
+    def test_true(self):
+        self.assertTrue(create('y', 'boolean'))
+        self.assertTrue(create('yes', 'boolean'))
+        self.assertTrue(create('1', 'boolean'))
+        self.assertTrue(create('t', 'boolean'))
+        self.assertTrue(create('true', 'boolean'))
+        self.assertTrue(create('TRUE', 'boolean'))
+        self.assertTrue(create('truE', 'boolean'))
 
-    def test_boolean_false(self):
+    def test_false(self):
+        self.assertFalse(create('n', 'boolean'))
+        self.assertFalse(create('no', 'boolean'))
+        self.assertFalse(create('0', 'boolean'))
+        self.assertFalse(create('f', 'boolean'))
+        self.assertFalse(create('false', 'boolean'))
+        self.assertFalse(create('FALSE', 'boolean'))
+        self.assertFalse(create('faLse', 'boolean'))
+
+    def test_bool_equality(self):
         self.assertEqual(create('n', 'boolean'), False)
-        self.assertEqual(create('no', 'boolean'), False)
-        self.assertEqual(create('0', 'boolean'), False)
-        self.assertEqual(create('f', 'boolean'), False)
-        self.assertEqual(create('false', 'boolean'), False)
-        self.assertEqual(create('FALSE', 'boolean'), False)
-        self.assertEqual(create('faLse', 'boolean'), False)
+        self.assertNotEqual(create('n', 'boolean'), True)
+        self.assertEqual(create('y', 'boolean'), True)
+        self.assertNotEqual(create('y', 'boolean'), False)
 
 class TestList(TestTypes):
     def assertListEqual(self, value, valid, sep=None):
