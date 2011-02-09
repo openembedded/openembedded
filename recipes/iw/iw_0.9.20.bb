@@ -3,7 +3,7 @@ HOMEPAGE = "http://linuxwireless.org/en/users/Documentation/iw"
 SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "BSD"
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "libnl2 pkgconfig"
 
