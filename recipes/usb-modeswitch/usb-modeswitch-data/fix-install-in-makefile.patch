@@ -1,0 +1,22 @@
+Index: usb-modeswitch-data-20100826/Makefile
+===================================================================
+--- usb-modeswitch-data-20100826.orig/Makefile	2011-02-10 16:33:59.000000000 +0100
++++ usb-modeswitch-data-20100826/Makefile	2011-02-10 16:39:24.000000000 +0100
+@@ -18,14 +18,14 @@
+ 
+ files-install:
+ 	install -d $(ETCDIR)/usb_modeswitch.d
+-	install -D --mode=644 40-usb_modeswitch.rules $(RULESDIR)/40-usb_modeswitch.rules
++	install -D -m 644 40-usb_modeswitch.rules $(RULESDIR)/40-usb_modeswitch.rules
+ 
+ db-install:
+-	install --mode=644 -t $(ETCDIR)/usb_modeswitch.d ./usb_modeswitch.d/*
++	install -m 644 ./usb_modeswitch.d/* $(ETCDIR)/usb_modeswitch.d
+ 
+ db-install-packed:
+ 	cd ./usb_modeswitch.d; tar -czf ../configPack.tar.gz *
+-	install --mode=644 -t $(ETCDIR)/usb_modeswitch.d ./configPack.tar.gz
++	install -m 644 ./configPack.tar.gz $(ETCDIR)/usb_modeswitch.d
+ 	rm -f ./configPack.tar.gz
+ 
+ 
