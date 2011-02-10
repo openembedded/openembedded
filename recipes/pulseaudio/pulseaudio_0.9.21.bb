@@ -1,6 +1,6 @@
 require pulseaudio.inc
 
-PR = ${INC_PR}.1
+PR = ${INC_PR}.2
 
 DEPENDS += "gdbm speex"
 
@@ -16,6 +16,7 @@ SRC_URI += "\
   file://tls_m4.patch \
   file://configure_silent_rules.patch \
   file://armv4+v5asm.patch \
+  file://fixbluezbuild.patch \
 "
 
 do_compile_prepend() {

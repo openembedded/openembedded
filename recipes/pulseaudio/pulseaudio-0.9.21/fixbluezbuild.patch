@@ -1,0 +1,13 @@
+Index: pulseaudio-0.9.15/src/Makefile.am
+===================================================================
+--- pulseaudio-0.9.15.orig/src/Makefile.am	2009-07-07 22:04:21.313945421 +0200
++++ pulseaudio-0.9.15/src/Makefile.am	2009-07-07 22:04:32.503184920 +0200
+@@ -1534,7 +1534,7 @@
+ 
+ libbluetooth_ipc_la_SOURCES = modules/bluetooth/ipc.c modules/bluetooth/ipc.h
+ libbluetooth_ipc_la_LDFLAGS = -avoid-version
+-libbluetooth_ipc_la_LIBADD = $(AM_LIBADD)libpulsecore-@PA_MAJORMINORMICRO@.la libpulsecommon-@PA_MAJORMINORMICRO@.la libpulse.la
++libbluetooth_ipc_la_LIBADD = $(AM_LIBADD) libpulsecore-@PA_MAJORMINORMICRO@.la libpulsecommon-@PA_MAJORMINORMICRO@.la libpulse.la
+ libbluetooth_ipc_la_CFLAGS = $(AM_CFLAGS)
+ BLUETOOTH_IPC_FILES = $(subst modules/bluetooth/,,$(libbluetooth_ipc_la_SOURCES)) rtp.h
+ 
