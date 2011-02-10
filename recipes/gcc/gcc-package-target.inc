@@ -156,7 +156,7 @@ GROUP ( libgcc_s.so.1 libgcc.a )" > ${D}${libdir}/libgcc_s.so
 	rm -f ${TARGET_ARCH}-*${TARGET_ARCH}-*
 
 	# Symlinks so we can use these trivially on the target
-	ln -sf ${TARGET_PREFIX}g77 g77 || true
+	ln -sf ${TARGET_PREFIX}gfortran g77 || true
 	ln -sf ${TARGET_PREFIX}gfortran gfortran || true
 	ln -sf ${TARGET_PREFIX}g++ g++
 	ln -sf ${TARGET_PREFIX}gcc gcc
