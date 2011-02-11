@@ -1,6 +1,6 @@
 inherit linux-kernel-base module_strip
 
-PROVIDES += "virtual/kernel"
+PROVIDES += "virtual/kernel virtual/kernel-${PV}"
 DEPENDS += "virtual/${TARGET_PREFIX}gcc virtual/${TARGET_PREFIX}depmod-${@get_kernelmajorversion('${PV}')} virtual/${TARGET_PREFIX}gcc${KERNEL_CCSUFFIX} update-modules bluez-dtl1-workaround"
 
 # we include gcc above, we dont need virtual/libc
