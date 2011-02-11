@@ -1,21 +1,27 @@
 # this script can be used for testing purposes.
 # see also http://wiki.openembedded.net/index.php/TestingScript
 
-# you can define your machine/distro/recipe below (remove the #) 
-# or you can pick them up from the environment
-#MACHINE="beagleboard"
-#DISTRO="minimal"
-#TARGET_RECIPE="console-image"
+# you can set your machine/distro/recipe/branch in the environment
+# or use these defaults
+[ -n "${MACHINE}" ] || MACHINE="beagleboard"
+[ -n "${DISTRO}" ] || DISTRO="minimal"
+[ -n "${TARGET_RECIPE}" ] || TARGET_RECIPE="console-image"
+[ -n "${TESTING_BRANCH}" ] || TESTING_BRANCH="testing-next"
 
 # test if we have an openembedded dir, clone it if it does not exist
 if [ ! -d openembedded ]
 then
     (git clone git://git.openembedded.org/openembedded)
-    (cd openembedded; git checkout -b testing-next origin/testing-next)
+else
+    # fetch latest objects and refs
+    (cd openembedded; git fetch)
 fi
 
+# create local testing branch if it does not exist yet
+(cd openembedded; git branch --set-upstream ${TESTING_BRANCH} origin/${TESTING_BRANCH})
+
 # switch to the testing branch
-(cd openembedded; git checkout testing-next)
+(cd openembedded; git checkout ${TESTING_BRANCH})
 
 # test if bitbake exist; if not; fetch it and untar it
 if [ ! -d bitbake-1.10.2 ]
@@ -80,7 +86,7 @@ export BBPATH=${TOPDIR}/openembedded
 rm -rf ${TOPDIR}/tmp
 
 # add an echo about the vars so we can see what has been done in a log file
-echo $MACHINE $DISTRO $TARGET_RECIPE
+echo ${MACHINE} ${DISTRO} ${TARGET_RECIPE} ${TESTING_BRANCH} `(cd openembedded;git --no-pager log --max-count=1 --pretty=format:%H)`
 
 # and do the actual work.
 bitbake ${TARGET_RECIPE}
