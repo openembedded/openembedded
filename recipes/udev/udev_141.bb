@@ -7,7 +7,7 @@ DEFAULT_PREFERENCE = "-1"
 
 require udev.inc
 
-PR = "${INC_PR}.4"
+PR = "${INC_PR}.5"
 
 SRC_URI += "file://mount.blacklist \
 	    file://run.rules \
