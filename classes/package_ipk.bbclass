@@ -250,28 +250,18 @@ python do_package_ipk () {
 
 		bb.build.exec_func("mapping_rename_hook", localdata)
 
-		rdepends = explode_deps(bb.data.getVar("RDEPENDS", localdata, 1) or "")
-		rrecommends = explode_deps(bb.data.getVar("RRECOMMENDS", localdata, 1) or "")
-		rsuggests = (bb.data.getVar("RSUGGESTS", localdata, 1) or "").split()
-		rprovides = (bb.data.getVar("RPROVIDES", localdata, 1) or "").split()
-		rreplaces = (bb.data.getVar("RREPLACES", localdata, 1) or "").split()
-		rconflicts = (bb.data.getVar("RCONFLICTS", localdata, 1) or "").split()
+		def write_dep_field(varname, outstring):
+			var = bb.data.getVar(varname, localdata, True)
+			if var:
+				ctrlfile.write('%s: %s\n' % (outstring, ", ".join(explode_deps(var))))
 
-		if not '-locale-' and not '-dbg' and not '-dev' in pkgname:
-			rdepends.append('%s-locale*' % pkgname)
+		write_dep_field('RDEPENDS', 'Depends')
+		write_dep_field('RSUGGESTS', 'Suggests')
+		write_dep_field('RRECOMMENDS', 'Recommends')
+		write_dep_field('RPROVIDES', 'Provides')
+		write_dep_field('RREPLACES', 'Replaces')
+		write_dep_field('RCONFLICTS', 'Conflicts')
 
-		if rdepends:
-			ctrlfile.write("Depends: %s\n" % ", ".join(rdepends))
-		if rsuggests:
-			ctrlfile.write("Suggests: %s\n" % ", ".join(rsuggests))
-		if rrecommends:
-			ctrlfile.write("Recommends: %s\n" % ", ".join(rrecommends))
-		if rprovides:
-			ctrlfile.write("Provides: %s\n" % ", ".join(rprovides))
-		if rreplaces:
-			ctrlfile.write("Replaces: %s\n" % ", ".join(rreplaces))
-		if rconflicts:
-			ctrlfile.write("Conflicts: %s\n" % ", ".join(rconflicts))
 		src_uri = bb.data.getVar("SRC_URI", localdata, 1) or d.getVar("FILE", True)
 		src_uri = re.sub("\s+", " ", src_uri)
 		ctrlfile.write("Source: %s\n" % " ".join(src_uri.split()))
