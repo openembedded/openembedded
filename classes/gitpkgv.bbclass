@@ -40,7 +40,7 @@
 GITPKGV = "${@get_git_pkgv(d, False)}"
 GITPKGVTAG = "${@get_git_pkgv(d, True)}"
 
-def git_drop_tag_prefix(version):
+def gitpkgv_drop_tag_prefix(version):
     import re
     if re.match("v\d", version):
         return version[1:]
@@ -71,7 +71,7 @@ def get_git_pkgv(d, use_tags):
 
 			if use_tags:
 				try:
-					ver = git_drop_tag_prefix(bb.fetch.runfetchcmd("git describe %s 2>/dev/null" % rev, d, quiet=True).strip())
+					ver = gitpkgv_drop_tag_prefix(bb.fetch.runfetchcmd("git describe %s 2>/dev/null" % rev, d, quiet=True).strip())
 				except Exception:
 					ver = "0.0-%s-g%s" % (commits, rev[:7])
 			else:
