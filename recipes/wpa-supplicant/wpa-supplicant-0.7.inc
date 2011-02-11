@@ -58,11 +58,19 @@ do_install () {
 	cd ${D}${sysconfdir}/network/ && \
 	ln -sf ../if-pre-up.d/wpa-supplicant if-post-down.d/wpa-supplicant
 
-	install -d ${D}/${sysconfdir}/dbus-1/system.d
-	install -m 644 ${S}/dbus/dbus-wpa_supplicant.conf ${D}/${sysconfdir}/dbus-1/system.d
-	install -d ${D}/${datadir}/dbus-1/system-services
-	sed -i -e s:${base_sbindir}:${sbindir}:g ${S}/dbus/*.service
-	install -m 644 ${S}/dbus/*.service ${D}/${datadir}/dbus-1/system-services
+	if grep -q ^CONFIG_CTRL_IFACE_DBUS=y .config || grep -q ^CONFIG_CTRL_IFACE_DBUS_NEW=y .config; then
+		install -d ${D}/${sysconfdir}/dbus-1/system.d
+		install -m 644 ${S}/dbus/dbus-wpa_supplicant.conf ${D}/${sysconfdir}/dbus-1/system.d
+		install -d ${D}/${datadir}/dbus-1/system-services
+		if grep -q ^CONFIG_CTRL_IFACE_DBUS=y .config; then
+			sed -i -e s:/sbin:${sbindir}:g ${S}/dbus/fi.epitest.hostap.WPASupplicant.service
+			install -m 644 ${S}/dbus/fi.epitest.hostap.WPASupplicant.service ${D}/${datadir}/dbus-1/system-services
+		fi
+		if grep -q ^CONFIG_CTRL_IFACE_DBUS_NEW=y .config; then
+			sed -i -e s:/sbin:${sbindir}:g ${S}/dbus/fi.w1.wpa_supplicant1.service
+			install -m 644 ${S}/dbus/fi.w1.wpa_supplicant1.service ${D}/${datadir}/dbus-1/system-services
+		fi
+	fi
 
 	install -d ${D}/etc/default/volatiles
 	install -m 0644 ${WORKDIR}/99_wpa_supplicant ${D}/etc/default/volatiles
