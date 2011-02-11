@@ -13,7 +13,7 @@ MACHINE_KERNEL_PR_append = "+gitr${SRCREV}"
 
 SRC_URI = "git://arago-project.org/git/projects/linux-omap3.git;protocol=http;branch=master \
            file://0001-Added-Crane-Board-support.patch \
-	   file://0001-Revert-omap3-beagle-Fix-compile-time-errors.patch \
+           file://0001-Revert-omap3-beagle-Fix-compile-time-errors.patch \
            file://0002-board-omap3touchbook-make-it-build-against-TI-linux-.patch \
            file://0003-ARM-OMAP-add-support-for-TCT-Zippy-to-Beagle-board-f.patch \
            file://0004-ARM-OMAP-Make-beagle-u-boot-partition-writable.patch \
