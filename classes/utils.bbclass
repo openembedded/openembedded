@@ -423,7 +423,21 @@ def check_app_exists(app, d):
 	return bool(which(path, app))
 
 def explode_deps(s):
-	return bb.utils.explode_deps(s)
+	r = []
+	l = s.split()
+	flag = False
+	for i in l:
+		if i[0] == '(':
+			flag = True
+			j = []
+		if flag:
+			j.append(i)
+			if i.endswith(')'):
+				flag = False
+				r[-1] += ' ' + ' '.join(j)
+		else:
+			r.append(i)
+	return r
 
 def base_set_filespath(path, d):
 	bb.note("base_set_filespath usage is deprecated, %s should be fixed" % d.getVar("P", 1))
