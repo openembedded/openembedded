@@ -10,7 +10,7 @@ DEPENDS = "gnutls dbus libnl2"
 RRECOMMENDS_${PN} = "wpa-supplicant-passphrase wpa-supplicant-cli"
 
 SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
-           file://defconfig-gnutls \
+           file://defconfig \
            file://defaults-sane \
            file://wpa-supplicant.sh \
            file://wpa_supplicant.conf \
@@ -30,7 +30,7 @@ FILES_wpa-supplicant-cli = "/usr/sbin/wpa_cli"
 FILES_${PN} += " /usr/share/dbus-1/system-services/*"
 
 do_configure () {
-	install -m 0755 ${WORKDIR}/defconfig-gnutls .config
+	install -m 0755 ${WORKDIR}/defconfig .config
 }
 
 do_compile () {
