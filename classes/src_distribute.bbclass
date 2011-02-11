@@ -17,7 +17,11 @@ python do_distribute_sources () {
 
 	licenses = (bb.data.getVar('LICENSE', d, 1) or "unknown").split()
 	urldatadict = bb.fetch.init(d.getVar("SRC_URI", True).split(), d, True)
-	for url, urldata in urldatadict.iteritems():
+	src_uri = oe.data.typed_value("SRC_URI", d)
+	if not src_uri:
+		return
+	for url in src_uri:
+		urldata = urldatadict[url]
 		if not urldata.setup:
 			urldata.setup_localpath(d)
 
