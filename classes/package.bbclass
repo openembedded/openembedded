@@ -517,7 +517,7 @@ python populate_packages () {
 						break
 			if found == False:
 				bb.note("%s contains dangling symlink to %s" % (pkg, l))
-		bb.data.setVar('RDEPENDS_' + pkg, " " + " ".join(rdepends), d)
+		bb.data.setVar('RDEPENDS_' + pkg, " ".join(rdepends), d)
 }
 populate_packages[dirs] = "${D}"
 
@@ -897,7 +897,7 @@ python read_shlibdeps () {
 				fd.close()
 				for l in lines:
 					rdepends.append(l.rstrip())
-		bb.data.setVar('RDEPENDS_' + pkg, " " + " ".join(rdepends), d)
+		bb.data.setVar('RDEPENDS_' + pkg, " ".join(rdepends), d)
 }
 
 python package_depchains() {
