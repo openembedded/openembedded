@@ -9,7 +9,7 @@ PRIORITY = "optional"
 LICENSE = "PD"
 PR = "r0"
 
-SRC_URI = "http://libtom.org/files/crypt-${PV}.tar.bz2"
+SRC_URI = "http://libtomcrypt.googlecode.com/files/crypt-${PV}.tar.bz2"
 
 inherit autotools
 
