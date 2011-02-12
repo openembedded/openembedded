@@ -7,7 +7,7 @@ DEFAULT_PREFERENCE = "-1"
 
 require udev.inc
 
-PR = "${INC_PR}.5"
+PR = "${INC_PR}.6"
 
 SRC_URI += "file://mount.blacklist \
 	    file://run.rules \
@@ -73,6 +73,7 @@ do_install () {
 
 	touch ${D}${sysconfdir}/udev/saved.uname
 	touch ${D}${sysconfdir}/udev/saved.cmdline
+	touch ${D}${sysconfdir}/udev/saved.devices
 	touch ${D}${sysconfdir}/udev/saved.atags
 
 	install -d ${D}${sysconfdir}/udev/scripts/
