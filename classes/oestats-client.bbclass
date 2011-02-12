@@ -38,7 +38,8 @@ def oestats_send(d, server, action, vars = {}, files = {}):
 		output.append('')
 		output.append(vars[key])
 	for key in files:
-		if not vars[key]: continue
+		if not files[key]: continue
+		if not files[key]['content']: continue
 		output.append('--' + bound)
 		output.append('Content-Disposition: form-data; name="%s"; filename="%s"' % (key, files[key]['filename']))
 		output.append('Content-Type: %s' % files[key]['content-type'])
