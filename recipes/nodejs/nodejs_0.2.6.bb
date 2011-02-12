@@ -2,17 +2,15 @@ DESCRIPTION = "nodeJS Evented I/O for V8 JavaScript"
 HOMEPAGE = "http://nodejs.org"
 LICENSE = "MIT"
 
-PR = "r1"
-
 DEPENDS = "openssl"
 
 SRC_URI = " \
   http://nodejs.org/dist/node-v${PV}.tar.gz \
-  file://libev-cross-cc.patch \
-  file://node-cross-cc.patch \
+  file://libev-cross-cc_${PV}.patch \
+  file://node-cross-cc_${PV}.patch \
 "
-SRC_URI[md5sum] = "c6051dd216817bf0f95bea80c42cf262"
-SRC_URI[sha256sum] = "5bb7d084b2138ce43fcb34739ed894379c450a1dd569a1c710405bc39d2861c2"
+SRC_URI[md5sum] = "b1c50ceb43bee1b221be210b7bc7a216"
+SRC_URI[sha256sum] = "e97fe9c81ff4b569ae9a0d46e64a0572a1f171293573a5b5290bcc3996a19701"
 
 S = "${WORKDIR}/node-v${PV}"
 
