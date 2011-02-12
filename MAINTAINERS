@@ -79,6 +79,12 @@ Machines:   h3600, h5400
 Interests:  Kernels, Porting, Distro refinement
 Recipes:    at76c503a, handhelds-sa, handhelds-pxa
 
+Person:     Filip Zyzniewski
+Mail:       filip.zyzniewski@gmail.com
+Distros:    jlime
+Machines:   jornada720, jornada729
+Interests:  Kernels, Distro refinement
+
 Person:     Florian Boor
 Mail:       fb@kernelconcepts.de
 Website:    http://fl0rian.wordpress.com, http://www.kernelconcepts.de/~fuchs/
