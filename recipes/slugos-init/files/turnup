@@ -27,6 +27,8 @@ l root root 1777 /var/tmp /var/volatile/tmp
 d root root 0755 /var/lock/subsys none
 d root root 0755 /var/lib/dropbear none
 d root root 0755 /var/lib/misc none
+d root root 0755 /var/lib/opkg none
+d root root 0755 /var/lib/opkg/tmp none
 f root root 0664 /var/log/wtmp none
 f root root 0664 /var/log/lastlog none
 f root root 0664 /var/run/utmp none"
@@ -50,6 +52,7 @@ d root root 0755 /var/lock/subsys none
 d root root 0755 /var/lib/dropbear none
 d root root 0755 /var/lib/misc none
 d root root 0755 /var/lib/opkg none
+d root root 0755 /var/lib/opkg/tmp none
 f root root 0664 /var/log/wtmp none
 f root root 0664 /var/log/lastlog none
 f root root 0664 /var/run/utmp none"
@@ -69,6 +72,7 @@ d root root 0755 /var/lock/subsys none
 d root root 0755 /var/lib/dropbear none
 d root root 0755 /var/lib/misc none
 d root root 0755 /var/lib/opkg none
+d root root 0755 /var/lib/opkg/tmp none
 f root root 0664 /var/log/wtmp none
 f root root 0664 /var/log/lastlog none
 f root root 0664 /var/run/utmp none"
