@@ -56,7 +56,13 @@ else
 	done
 	ln -sf /proc/self/fd /dev/fd
 	ln -sf /proc/kcore /dev/core
-	/sbin/makedevs -r / -D /etc/device_table
+
+	if test `readlink -f "/sbin/makedevs"` = "/bin/busybox"; then
+		MAKEDEV_ARGS="-d /etc/device_table /"
+	else
+		MAKEDEV_ARGS="-r / -D /etc/device_table"
+	fi
+	/sbin/makedevs $MAKEDEV_ARGS
 	if test $? -ne 0; then
 		if test "$VERBOSE" != "no"; then echo "failed"; fi
 	else
