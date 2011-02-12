@@ -24,6 +24,9 @@ do_compile_append_angstrom () {
 	cat ${WORKDIR}/tmp_dir  >>${WORKDIR}/opkg.conf
 }
 
+do_compile_append_slugos () {
+	cat ${WORKDIR}/tmp_dir  >>${WORKDIR}/opkg.conf
+}
 
 do_install () {
 	install -d ${D}${sysconfdir}/opkg
@@ -35,6 +38,10 @@ do_install_append_shr () {
 }
 
 do_install_append_angstrom () {
+	install -d ${D}/var/lib/opkg/tmp
+}
+
+do_install_append_slugos () {
 	install -d ${D}/var/lib/opkg/tmp
 }
 
