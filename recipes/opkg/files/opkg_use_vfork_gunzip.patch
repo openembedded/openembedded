@@ -1,0 +1,139 @@
+# This patch allows a user to set an environment variable to cause opkg to
+# select either the built-in gunzip code or an external gunzip utility, in
+# order to dodge the OOM Killer.
+# 
+# The built-in code is, of course, is the most desirable way to use opkg,
+# since it is far more efficient.  However, the built-in code can trigger
+# the OOM (out of memory) killer on small-memory machines, like the 32MB
+# NSLU2.  This occurs because a standard fork will duplicate the entire
+# address space of the parent.  Since opkg reads the entire feed database
+# into memory, this problem is compounded by large feeds.
+#
+# This patch introduces a means for the user to cause opkg to use vfork()
+# instead -- vfork() does not behave in the same manner as fork(), and
+# does not trigger the OOM killer.  However, the semantics of vfork() are
+# such that it cannot run the built-in gunzip code.  Instead, it must
+# exec() an external utility to perform the gunzip operation.  It seems
+# counter-intuitive, but the vfork()/exec() approach is the only good way
+# to avoid triggering the dreaded OOM killer.
+#
+# In order to use this, the user must manually set the OPKG_USE_VFORK
+# environment variable to any value.  For example:
+#
+# $ OPKG_USE_VFORK=1 opkg install samba
+#
+# The external utility used to do the gunzip operation is "busybox gunzip".
+# It would have been nice to be able to just invoke "gunzip", but the
+# full gunzip executable behaves slightly differently than does busybox,
+# generating annoying warning messages.
+#
+# This is an update of the original patch by Mike Westerhof, Dec 2008.
+#
+# Mike Westerhof, Feb 2011
+#
+--- orig/libbb/gz_open.c	2011-02-12 10:58:02.035287826 -0600
++++ opkg/libbb/gz_open.c	2011-02-12 11:51:12.120033055 -0600
+@@ -29,10 +29,29 @@
+ #include <unistd.h>
+ #include "libbb.h"
+ 
++int
++gz_use_vfork()
++{
++	char *v = getenv("OPKG_USE_VFORK");
++	return (v != NULL);
++}
++
+ FILE *
+ gz_open(FILE *compressed_file, int *pid)
+ {
+ 	int unzip_pipe[2];
++	off_t floc;
++	int cfile;
++
++	if (gz_use_vfork()) {
++		/* Create a new file descriptor for the input stream
++		 * (it *must* be associated with a file), and lseek()
++		 * to the same position in that fd as the stream.
++		 */
++		cfile = dup(fileno(compressed_file));
++		floc = ftello(compressed_file);
++		lseek(cfile, floc, SEEK_SET);
++	}
+ 
+ 	if (pipe(unzip_pipe)!=0) {
+ 		perror_msg("pipe");
+@@ -44,18 +63,37 @@
+     fflush(stdout);
+     fflush(stderr);
+ 
+-	if ((*pid = fork()) == -1) {
++	if (gz_use_vfork()) {
++		*pid = vfork();
++	} else {
++		*pid = fork();
++	}
++
++	if (*pid<0) {
+ 		perror_msg("fork");
+ 		return(NULL);
+ 	}
++
+ 	if (*pid==0) {
+ 		/* child process */
+ 		close(unzip_pipe[0]);
+-		unzip(compressed_file, fdopen(unzip_pipe[1], "w"));
+-		fflush(NULL);
+-		fclose(compressed_file);
+-		close(unzip_pipe[1]);
+-		_exit(EXIT_SUCCESS);
++		if (gz_use_vfork()) {
++			dup2(unzip_pipe[1], 1);
++			dup2(cfile, 0);
++			execlp("busybox","busybox","gunzip",NULL);
++			/* If we get here, we had a failure */
++			_exit(EXIT_FAILURE);
++		} else {
++			unzip(compressed_file, fdopen(unzip_pipe[1], "w"));
++			fflush(NULL);
++			fclose(compressed_file);
++			close(unzip_pipe[1]);
++			_exit(EXIT_SUCCESS);
++		}
++	}
++	/* Parent process is executing here */
++	if (gz_use_vfork()) {
++		close(cfile);
+ 	}
+ 	close(unzip_pipe[1]);
+ 	return(fdopen(unzip_pipe[0], "r"));
+@@ -67,11 +105,29 @@
+ 	int status;
+ 	int ret;
+ 
++	if (gz_use_vfork()) {
++		/* The gunzip process remains running in the background if we
++		 * used the vfork()/exec() technique - so we have to kill it
++		 * forcibly.  There might be a better way to do this, but that
++		 * affect a lot of other parts of opkg, and this works fine.
++		 */
++		if (kill(gunzip_pid, SIGTERM) == -1) {
++			perror_msg("gz_close(): unable to kill gunzip pid.");
++			return -1;
++		}
++        }
++
++
+ 	if (waitpid(gunzip_pid, &status, 0) == -1) {
+ 		perror_msg("waitpid");
+ 		return -1;
+ 	}
+ 
++	if (gz_use_vfork()) {
++		/* Bail out here if we used the vfork()/exec() technique. */
++		return 0;
++	}
++
+ 	if (WIFSIGNALED(status)) {
+ 		error_msg("Unzip process killed by signal %d.\n",
+ 			WTERMSIG(status));
