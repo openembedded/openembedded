@@ -8,13 +8,19 @@ RDEPENDS_${PN} = "python-core python-elementary python-sqlite3 python-netclient"
 
 SRCREV = "64"
 PV = "0.4.2+svnr${SRCPV}"
-PR = "r1"
+PR = "r2"
 
 S = "${WORKDIR}/build"
 
 PACKAGE_ARCH = "all"
 
 SRC_URI = "svn://xeres.cz/spoje;module=build"
+
+# override base_do_compile with own as included Makefile calls ipkg-build and it's not usefull to us at all
+do_compile() {
+  # fix QA issue
+  sed -i '/^Encoding/d;/^Version/d;s/Categories=Application;/Categories=Utility;/g' ${S}/data/spoje.desktop
+}
 
 do_install() {
   install -d "${D}/${bindir}"
