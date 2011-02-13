@@ -1,6 +1,7 @@
 require update-alternatives-dpkg.inc
 inherit native
 
+PR = "r1"
 PROVIDES += "virtual/update-alternatives-native"
 DEPENDS = "perl-native"
 DEFAULT_PREFERENCE = "-1"
@@ -9,7 +10,7 @@ SRC_URI += "file://paths.patch"
 
 do_stage () {
     install -d ${sbindir} \
-               ${localstatedir}/dpkg/alternatives \
+               ${localstatedir}/lib/dpkg/alternatives \
                ${sysconfdir}/alternatives
 
     install -m 0755 scripts/update-alternatives ${sbindir}/update-alternatives

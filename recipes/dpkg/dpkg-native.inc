@@ -18,7 +18,7 @@ EXTRA_OECONF = "--without-static-progs \
 		--with-zlib \
 		--with-bz2lib \
 		--without-selinux \
-		--with-admindir='\$\$$ENV{D}/var/dpkg' \
+		--with-admindir='\$\$$ENV{D}/var/lib/dpkg' \
 		--without-sgml-doc"
 
 do_stage_append() {

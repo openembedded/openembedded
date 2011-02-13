@@ -9,14 +9,14 @@ do_rootfs[recrdeptask] += "do_package_write_deb"
 
 fakeroot rootfs_deb_do_rootfs () {
 	set +e
-	mkdir -p ${IMAGE_ROOTFS}/var/dpkg/info
-	mkdir -p ${IMAGE_ROOTFS}/var/dpkg/updates
+	mkdir -p ${IMAGE_ROOTFS}/var/lib/dpkg/info
+	mkdir -p ${IMAGE_ROOTFS}/var/lib/dpkg/updates
 
 	rm -f ${STAGING_ETCDIR_NATIVE}/apt/sources.list.rev
 	rm -f ${STAGING_ETCDIR_NATIVE}/apt/preferences
-	> ${IMAGE_ROOTFS}/var/dpkg/status
-	> ${IMAGE_ROOTFS}/var/dpkg/available
-	mkdir -p ${IMAGE_ROOTFS}/var/dpkg/alternatives
+	> ${IMAGE_ROOTFS}/var/lib/dpkg/status
+	> ${IMAGE_ROOTFS}/var/lib/dpkg/available
+	mkdir -p ${IMAGE_ROOTFS}/var/lib/dpkg/alternatives
 
 	priority=1
 	for arch in ${PACKAGE_ARCHS}; do
@@ -44,8 +44,8 @@ fakeroot rootfs_deb_do_rootfs () {
 
 	cat "${STAGING_ETCDIR_NATIVE}/apt/apt.conf.sample" \
 		| sed -e 's#Architecture ".*";#Architecture "${DPKG_ARCH}";#' \
-	        | sed -e 's#status ".*";#status "${IMAGE_ROOTFS}/var/dpkg/status";#' \ 
-		| sed -e 's#DPkg::Options {".*"};#DPkg::Options {"--root=${IMAGE_ROOTFS}";"--admindir=${IMAGE_ROOTFS}/var/dpkg";"--force-all";"--no-debsig"};#' \
+	        | sed -e 's#status ".*";#status "${IMAGE_ROOTFS}/var/lib/dpkg/status";#' \ 
+		| sed -e 's#DPkg::Options {".*"};#DPkg::Options {"--root=${IMAGE_ROOTFS}";"--admindir=${IMAGE_ROOTFS}/var/lib/dpkg";"--force-all";"--no-debsig"};#' \
 		> "${STAGING_ETCDIR_NATIVE}/apt/apt-rootfs.conf"
 
 	export APT_CONFIG="${STAGING_ETCDIR_NATIVE}/apt/apt-rootfs.conf"
@@ -57,10 +57,10 @@ fakeroot rootfs_deb_do_rootfs () {
 	apt-get update
 
 	_flag () {
-		sed -i -e "/^Package: $2\$/{n; s/Status: install ok .*/Status: install ok $1/;}" ${IMAGE_ROOTFS}/var/dpkg/status
+		sed -i -e "/^Package: $2\$/{n; s/Status: install ok .*/Status: install ok $1/;}" ${IMAGE_ROOTFS}/var/lib/dpkg/status
 	}
 	_getflag () {
-		cat ${IMAGE_ROOTFS}/var/dpkg/status | sed -n -e "/^Package: $2\$/{n; s/Status: install ok .*/$1/; p}"
+		cat ${IMAGE_ROOTFS}/var/lib/dpkg/status | sed -n -e "/^Package: $2\$/{n; s/Status: install ok .*/$1/; p}"
 	}
 
 	if [ x${TARGET_OS} = "xlinux" ] || [ x${TARGET_OS} = "xlinux-gnueabi" ] ; then
@@ -102,11 +102,11 @@ fakeroot rootfs_deb_do_rootfs () {
 	echo ${BUILDNAME} > ${IMAGE_ROOTFS}/${sysconfdir}/version
 
 	# Mark all packages installed
-	sed -i -e "s/Status: install ok unpacked/Status: install ok installed/;" ${IMAGE_ROOTFS}/var/dpkg/status
+	sed -i -e "s/Status: install ok unpacked/Status: install ok installed/;" ${IMAGE_ROOTFS}/var/lib/dpkg/status
 
 	# Attempt to run preinsts
 	# Mark packages with preinst failures as unpacked
-	for i in ${IMAGE_ROOTFS}/var/dpkg/info/*.preinst; do
+	for i in ${IMAGE_ROOTFS}/var/lib/dpkg/info/*.preinst; do
 		if [ -f $i ] && ! sh $i; then
 			_flag unpacked `basename $i .preinst`
 		fi
@@ -114,7 +114,7 @@ fakeroot rootfs_deb_do_rootfs () {
 
 	# Attempt to run postinsts
 	# Mark packages with postinst failures as unpacked
-	for i in ${IMAGE_ROOTFS}/var/dpkg/info/*.postinst; do
+	for i in ${IMAGE_ROOTFS}/var/lib/dpkg/info/*.postinst; do
 		if [ -f $i ] && ! sh $i configure; then
 			_flag unpacked `basename $i .postinst`
 		fi
@@ -124,13 +124,13 @@ fakeroot rootfs_deb_do_rootfs () {
 
 	# Hacks to allow opkg's update-alternatives and opkg to coexist for now
 	mkdir -p ${IMAGE_ROOTFS}${libdir}/opkg/alternatives
-	if [ -e ${IMAGE_ROOTFS}/var/dpkg/alternatives ]; then
-		mv ${IMAGE_ROOTFS}/var/dpkg/alternatives/* ${IMAGE_ROOTFS}${libdir}/opkg/alternatives/
-		rmdir ${IMAGE_ROOTFS}/var/dpkg/alternatives
+	if [ -e ${IMAGE_ROOTFS}/var/lib/dpkg/alternatives ]; then
+		mv ${IMAGE_ROOTFS}/var/lib/dpkg/alternatives/* ${IMAGE_ROOTFS}${libdir}/opkg/alternatives/
+		rmdir ${IMAGE_ROOTFS}/var/lib/dpkg/alternatives
 	fi
-	ln -s ${libdir}/opkg/alternatives ${IMAGE_ROOTFS}/var/dpkg/alternatives
-	ln -s /var/dpkg/info ${IMAGE_ROOTFS}${libdir}/opkg/info
-	ln -s /var/dpkg/status ${IMAGE_ROOTFS}${libdir}/opkg/status
+	ln -s ${libdir}/opkg/alternatives ${IMAGE_ROOTFS}/var/lib/dpkg/alternatives
+	ln -s /var/lib/dpkg/info ${IMAGE_ROOTFS}${libdir}/opkg/info
+	ln -s /var/lib/dpkg/status ${IMAGE_ROOTFS}${libdir}/opkg/status
 
 	${ROOTFS_POSTPROCESS_COMMAND}
 
