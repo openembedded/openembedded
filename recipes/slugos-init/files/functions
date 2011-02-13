@@ -394,7 +394,7 @@ umountflash(){
 		# the flash root partition we know a file which must exist...
 		case "$mp/$type" in
 		//jffs2);; # skip /
-		*/jffs2)test "$(devio "<<$mp/etc/init.d/sysconfsetup" prd 2>/dev/null)" -ne "$ffsno" ||
+		*/jffs2)test "$(devio "<<$mp/etc/init.d/sysconfsetup" prd 2>/dev/null)" != "$ffsno" ||
 			umount "$mp" || {
 				echo "$0: $mp: unable to umount $ffsdev" >&2
 				return 1
