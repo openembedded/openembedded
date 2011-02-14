@@ -3,10 +3,12 @@ LICENSE = "LGPL"
 PRIORITY = "optional"
 SECTION = "devel"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/check/check-${PV}.tar.gz \
-           file://configure_fix.patch"
+           file://configure_fix.patch \
+           file://check-m4-am-path-check-use-quadrigraphs-in-macro-names-to-unbreak-autoconf.patch \
+          "
 S = "${WORKDIR}/check-${PV}"
 
 inherit autotools pkgconfig
