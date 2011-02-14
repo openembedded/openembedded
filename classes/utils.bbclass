@@ -62,13 +62,10 @@ def is_machine_specific(d):
             return True
 
 def oe_popen_env(d):
-    env = d.getVar("__oe_popen_env", False)
-    if env is None:
-        env = {}
-        for v in d.keys():
-            if d.getVarFlag(v, "export"):
-                env[v] = d.getVar(v, True) or ""
-        d.setVar("__oe_popen_env", env)
+    env = {}
+    for v in d.keys():
+        if d.getVarFlag(v, "export"):
+            env[v] = d.getVar(v, True) or ""
     return env
 
 def oe_run(d, cmd, **kwargs):
