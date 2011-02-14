@@ -165,7 +165,7 @@ if __name__ == "__main__":
     "config/.debug lib-dynload/.debug ${bindir}/.debug ${libdir}/.debug" )
 
     m.addPackage( "${PN}-dev", "Python Development Package", "${PN}-core",
-    "${includedir} ${libdir}/libpython2.6.so config" ) # package
+    "${includedir} ${libdir}/libpython2.6.so" ) # package
 
     m.addPackage( "${PN}-idle", "Python Integrated Development Environment", "${PN}-core ${PN}-tkinter",
     "${bindir}/idle idlelib" ) # package
@@ -257,7 +257,7 @@ if __name__ == "__main__":
     "lib-dynload/_bisect.so lib-dynload/_collections.so lib-dynload/_heapq.so lib-dynload/_weakref.so lib-dynload/_functools.so " +
     "lib-dynload/array.so lib-dynload/itertools.so lib-dynload/operator.so lib-dynload/parser.so " +
     "atexit.* bisect.* code.* codeop.* collections.* dis.* functools.* heapq.* inspect.* keyword.* opcode.* symbol.* repr.* token.* " +
-    "tokenize.* traceback.* linecache.* weakref.*" )
+    "tokenize.* traceback.* weakref.*" )
 
     m.addPackage( "${PN}-logging", "Python Logging Support", "${PN}-core ${PN}-io ${PN}-lang ${PN}-pickle ${PN}-stringold",
     "logging" ) # package
