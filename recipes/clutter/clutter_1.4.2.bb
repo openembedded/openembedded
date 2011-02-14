@@ -1,6 +1,6 @@
 require clutter.inc
 
-DEPENDS += "json-glib"
+STDDEPENDS += "json-glib"
 
 PR = "${INC_PR}.1"
 
