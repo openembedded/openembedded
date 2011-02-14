@@ -61,11 +61,15 @@ python __anonymous () {
     import bb
     
     devicetree = bb.data.getVar('KERNEL_DEVICETREE', d, 1) or ''
+    machine = bb.data.getVar('MACHINE', d, 1)
     if devicetree:
     	depends = bb.data.getVar("DEPENDS", d, 1)
     	bb.data.setVar("DEPENDS", "%s dtc-native" % depends, d)
     	packages = bb.data.getVar("PACKAGES", d, 1)
     	bb.data.setVar("PACKAGES", "%s kernel-devicetree" % packages, d)
+    if 'nokia900' in machine:
+        depends = bb.data.getVar("DEPENDS", d, 1)
+        bb.data.setVar("DEPENDS", "%s lzma-native" % depends, d)
 }
 
 do_configure_prepend() {
