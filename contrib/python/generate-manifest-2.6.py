@@ -9,10 +9,10 @@ import os
 import sys
 import time
 
-VERSION = "2.6.4"
+VERSION = "2.6.6"
 
 __author__ = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
-__version__ = "20100908"
+__version__ = "20110214"
 
 class MakefileMaker:
 
@@ -65,7 +65,7 @@ class MakefileMaker:
         #
 
         provideLine = 'PROVIDES+="'
-        for name in self.packages:
+        for name in sorted(self.packages):
             provideLine += "%s " % name
         provideLine += '"'
 
@@ -77,7 +77,7 @@ class MakefileMaker:
         #
 
         packageLine = 'PACKAGES="python-core-dbg '
-        for name in self.packages:
+        for name in sorted(self.packages):
             if name != 'python-core-dbg':
                 packageLine += "%s " % name
         packageLine += 'python-modules"'
@@ -89,7 +89,7 @@ class MakefileMaker:
         # generate package variables
         #
 
-        for name, data in self.packages.iteritems():
+        for name, data in sorted(self.packages.iteritems()):
             desc, deps, files = data
 
             #
@@ -122,7 +122,7 @@ class MakefileMaker:
         self.out( 'DESCRIPTION_python-modules="All Python modules"' )
         line = 'RDEPENDS_python-modules="'
 
-        for name, data in self.packages.iteritems():
+        for name, data in sorted(self.packages.iteritems()):
             if name not in ['python-core-dbg', 'python-dev']:
                 line += "%s " % name
 
