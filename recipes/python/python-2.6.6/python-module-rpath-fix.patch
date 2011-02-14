@@ -1,0 +1,24 @@
+Index: Python-2.6.5/setup.py
+===================================================================
+--- Python-2.6.5.orig/setup.py
++++ Python-2.6.5/setup.py
+@@ -973,13 +973,18 @@ class PyBuildExt(build_ext):
+                 sqlite_extra_link_args = ('-Wl,-search_paths_first',)
+             else:
+                 sqlite_extra_link_args = ()
++	    # Check weather we are cross compiling
++            if (os.environ.get('HOST_SYS') != os.environ.get('BUILD_SYS')):
++                runtime_library_dirs_temp=[os.environ.get('libdir')]
++	    else:
++		runtime_library_dirs_temp=sqlite_libdir
+ 
+             exts.append(Extension('_sqlite3', sqlite_srcs,
+                                   define_macros=sqlite_defines,
+                                   include_dirs=["Modules/_sqlite",
+                                                 sqlite_incdir],
+                                   library_dirs=sqlite_libdir,
+-                                  runtime_library_dirs=sqlite_libdir,
++                                  runtime_library_dirs=runtime_library_dirs_temp,
+                                   extra_link_args=sqlite_extra_link_args,
+                                   libraries=["sqlite3",]))
+         else:
