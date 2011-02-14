@@ -236,8 +236,8 @@ python packagestage_scenefunc () {
         cmd = bb.data.expand("${PSTAGE_PKGMANAGER} -f ${PSTAGE_MACHCONFIG} -force-depends -o ${WORKDIR}/tstage install", d)
         try:
             oe_run(d, "%s %s" % (cmd, stagepkg))
-        except RuntimeError:
-            bb.fatal("Couldn't install the staging package to a temp directory")
+        except RuntimeError, exc:
+            bb.fatal("Couldn't install the staging package to a temp directory: %s" % exc)
 
         #
         # Grab the staging lock now so that we don't have other threads try and
@@ -253,9 +253,9 @@ python packagestage_scenefunc () {
         cmd = bb.data.expand("cp -PpR ${WORKDIR}/tstage/stamps/* ${TMPDIR}/stamps/", d)
         try:
             ret = oe_run(d, cmd)
-        except RuntimeError:
+        except RuntimeError, exc:
             bb.utils.unlockfile(lf)
-            bb.fatal("Couldn't copy the staging package stamp files")
+            bb.fatal("Couldn't copy the staging package stamp files: %s" % exc)
 
         #
         # Iterate over the stamps seeing if they're valid. If we find any that
