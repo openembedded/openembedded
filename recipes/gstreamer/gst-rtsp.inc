@@ -1,6 +1,5 @@
 require gst-common.inc
 
-DEPENEDS += "check"
 DESCRIPTION = "Gstreamer RTSP server"
 LICENSE = "LGPLv2"
 
