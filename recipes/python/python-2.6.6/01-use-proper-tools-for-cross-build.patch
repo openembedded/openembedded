@@ -2,10 +2,10 @@
 # built cross-tools (this will not work), so we introduce HOSTPYTHON and HOSTPGEN.
 # Signed-Off: Michael 'Mickey' Lauer <mickey@vanille-media.de>
 
-Index: Python-2.6.1/Makefile.pre.in
+Index: Python-2.6.6/Makefile.pre.in
 ===================================================================
---- Python-2.6.1.orig/Makefile.pre.in
-+++ Python-2.6.1/Makefile.pre.in
+--- Python-2.6.6.orig/Makefile.pre.in
++++ Python-2.6.6/Makefile.pre.in
 @@ -175,6 +175,7 @@ UNICODE_OBJS=   @UNICODE_OBJS@
  
  PYTHON=		python$(EXE)
@@ -14,7 +14,7 @@ Index: Python-2.6.1/Makefile.pre.in
  
  # The task to run while instrument when building the profile-opt target
  PROFILE_TASK=	$(srcdir)/Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
-@@ -206,7 +207,7 @@ GRAMMAR_INPUT=	$(srcdir)/Grammar/Grammar
+@@ -205,7 +206,7 @@ GRAMMAR_INPUT=	$(srcdir)/Grammar/Grammar
  ##########################################################################
  # Parser
  PGEN=		Parser/pgen$(EXE)
@@ -23,18 +23,18 @@ Index: Python-2.6.1/Makefile.pre.in
  POBJS=		\
  		Parser/acceler.o \
  		Parser/grammar1.o \
-@@ -395,8 +396,8 @@ platform: $(BUILDPYTHON)
+@@ -394,8 +395,8 @@ platform: $(BUILDPYTHON)
  # Build the shared modules
  sharedmods: $(BUILDPYTHON)
  	@case $$MAKEFLAGS in \
--	*s*) $(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' ./$(BUILDPYTHON) -E $(srcdir)/setup.py -q build;; \
--	*) $(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' ./$(BUILDPYTHON) -E $(srcdir)/setup.py build;; \
-+	*s*) $(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' $(HOSTPYTHON) -E $(srcdir)/setup.py -q build;; \
-+	*) $(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' $(HOSTPYTHON) -E $(srcdir)/setup.py build;; \
+-	*s*) $(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' LDFLAGS='$(LDFLAGS)' OPT='$(OPT)' ./$(BUILDPYTHON) -E $(srcdir)/setup.py -q build;; \
+-	*) $(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' LDFLAGS='$(LDFLAGS)' OPT='$(OPT)' ./$(BUILDPYTHON) -E $(srcdir)/setup.py build;; \
++	*s*) $(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' LDFLAGS='$(LDFLAGS)' OPT='$(OPT)' $(HOSTPYTHON) -E $(srcdir)/setup.py -q build;; \
++	*) $(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' LDFLAGS='$(LDFLAGS)' OPT='$(OPT)' $(HOSTPYTHON) -E $(srcdir)/setup.py build;; \
  	esac
  
  # Build static library
-@@ -531,7 +532,7 @@ $(GRAMMAR_H) $(GRAMMAR_C): $(GRAMMAR_STAMP)
+@@ -517,7 +518,7 @@ Modules/python.o: $(srcdir)/Modules/pyth
  
  $(GRAMMAR_STAMP): $(PGEN) $(GRAMMAR_INPUT)
  		-@$(INSTALL) -d Include
@@ -43,7 +43,7 @@ Index: Python-2.6.1/Makefile.pre.in
  		touch $(GRAMMAR_STAMP)
  
  $(PGEN):	$(PGENOBJS)
-@@ -902,23 +903,23 @@ libinstall:	build_all $(srcdir)/Lib/$(PL
+@@ -887,23 +888,23 @@ libinstall:	build_all $(srcdir)/Lib/$(PL
  	done
  	$(INSTALL_DATA) $(srcdir)/LICENSE $(DESTDIR)$(LIBDEST)/LICENSE.txt
  	PYTHONPATH=$(DESTDIR)$(LIBDEST)  $(RUNSHARED) \
@@ -72,7 +72,7 @@ Index: Python-2.6.1/Makefile.pre.in
  
  # Create the PLATDIR source directory, if one wasn't distributed..
  $(srcdir)/Lib/$(PLATDIR):
-@@ -1016,7 +1017,7 @@ libainstall:	all
+@@ -1001,7 +1002,7 @@ libainstall:	all
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
  sharedinstall:
@@ -81,11 +81,11 @@ Index: Python-2.6.1/Makefile.pre.in
  	   	--prefix=$(prefix) \
  		--install-scripts=$(BINDIR) \
  		--install-platlib=$(DESTSHARED) \
-Index: Python-2.6.1/setup.py
+Index: Python-2.6.6/setup.py
 ===================================================================
---- Python-2.6.1.orig/setup.py
-+++ Python-2.6.1/setup.py
-@@ -276,6 +276,7 @@ class PyBuildExt(build_ext):
+--- Python-2.6.6.orig/setup.py
++++ Python-2.6.6/setup.py
+@@ -322,6 +322,7 @@ class PyBuildExt(build_ext):
              self.failed.append(ext.name)
              self.announce('*** WARNING: renaming "%s" since importing it'
                            ' failed: %s' % (ext.name, why), level=3)
@@ -93,7 +93,7 @@ Index: Python-2.6.1/setup.py
              assert not self.inplace
              basename, tail = os.path.splitext(ext_filename)
              newname = basename + "_failed" + tail
-@@ -310,8 +311,8 @@ class PyBuildExt(build_ext):
+@@ -356,8 +357,8 @@ class PyBuildExt(build_ext):
  
      def detect_modules(self):
          # Ensure that /usr/local is always used
@@ -104,7 +104,7 @@ Index: Python-2.6.1/setup.py
  
          # Add paths specified in the environment variables LDFLAGS and
          # CPPFLAGS for header and library files.
-@@ -410,6 +411,9 @@ class PyBuildExt(build_ext):
+@@ -456,6 +457,9 @@ class PyBuildExt(build_ext):
  
          # XXX Omitted modules: gl, pure, dl, SGI-specific modules
  

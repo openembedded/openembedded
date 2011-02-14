@@ -1,11 +1,10 @@
 require python.inc
 DEPENDS = "openssl-native bzip2-full-native zlib-native readline-native sqlite3-native"
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.0"
 
 FILESPATHPKG .= ":python-${PV}:python"
 SRC_URI = "http://www.python.org/ftp/python/${PV}/Python-${PV}.tar.bz2 \
            file://00-fix-parallel-make.patch \
-           file://00-fix-bindir-libdir-for-cross.patch \
            file://04-default-is-optimized.patch \
            file://05-enable-ctypes-cross-build.patch \
            file://06-ctypes-libffi-fix-configure.patch \
@@ -14,8 +13,8 @@ SRC_URI = "http://www.python.org/ftp/python/${PV}/Python-${PV}.tar.bz2 \
            file://12-distutils-prefix-is-inside-staging-area.patch \
            file://debug.patch \
            file://nohostlibs.patch"
-SRC_URI[md5sum] = "6bef0417e71a1a1737ccf5750420fdb3"
-SRC_URI[sha256sum] = "62da62eb685621ede2be1275f11b89fa0e0be578db8daa5320d0a7855c0a9ebc"
+SRC_URI[md5sum] = "cf4e6881bb84a7ce6089e4a307f71f14"
+SRC_URI[sha256sum] = "134c5e0736bae2e5570d0b915693374f11108ded63c35a23a35d282737d2ce83"
 
 S = "${WORKDIR}/Python-${PV}"
 

@@ -3,24 +3,22 @@ DEPENDS = "python-native db gdbm openssl readline sqlite3 tcl zlib\
            ${@base_contains('DISTRO_FEATURES', 'tk', 'tk', '', d)}"
 DEPENDS_sharprom = "python-native db readline zlib gdbm openssl"
 # set to .0 on every increase of INC_PR
-PR = "${INC_PR}.3"
+PR = "${INC_PR}.0"
 
 SRC_URI = "\
   http://www.python.org/ftp/python/${PV}/Python-${PV}.tar.bz2 \
   file://00-fix-parallel-make.patch \
-  file://00-fix-bindir-libdir-for-cross.patch \
   file://01-use-proper-tools-for-cross-build.patch \
   file://02-remove-test-for-cross.patch \
   file://03-fix-tkinter-detection.patch \
   file://04-default-is-optimized.patch \
   file://05-enable-ctypes-cross-build.patch \
   file://06-ctypes-libffi-fix-configure.patch \
-  file://99-ignore-optimization-flag.patch \
   file://ipv6-cross.patch \
   file://sitecustomize.py \
 "
-SRC_URI[md5sum] = "6bef0417e71a1a1737ccf5750420fdb3"
-SRC_URI[sha256sum] = "62da62eb685621ede2be1275f11b89fa0e0be578db8daa5320d0a7855c0a9ebc"
+SRC_URI[md5sum] = "cf4e6881bb84a7ce6089e4a307f71f14"
+SRC_URI[sha256sum] = "134c5e0736bae2e5570d0b915693374f11108ded63c35a23a35d282737d2ce83"
 
 S = "${WORKDIR}/Python-${PV}"
 
