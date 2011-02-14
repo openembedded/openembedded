@@ -232,7 +232,7 @@ python packagestage_scenefunc () {
         #
         # Install the staging package somewhere temporarily so we can extract the stamp files
         #
-        bb.mkdirhier(bb.data.expand("${WORKDIR}/tstage/${libdir_native}/opkg/info/ ", d))
+        bb.mkdirhier(bb.data.expand("${WORKDIR}/tstage/${libdir_native}/opkg/info/", d))
         cmd = bb.data.expand("${PSTAGE_PKGMANAGER} -f ${PSTAGE_MACHCONFIG} -force-depends -o ${WORKDIR}/tstage install", d)
         try:
             oe_run(d, "%s %s" % (cmd, stagepkg))
