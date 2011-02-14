@@ -200,10 +200,10 @@ def staging_fetch(stagepkg, d):
         try:
             bb.fetch.init([srcuri], pd)
             bb.fetch.go(pd, [srcuri])
-            bb.debug(1, "Fetched staging package %s" % (bn))
-        except:
-            bb.debug(1, "Failed to fetch staging package %s" % (bn))
-            return
+        except Exception, ex:
+	    bb.debug(1, "Failed to fetch staging package %s: %s" % (bn, ex))
+        else:
+	    bb.debug(1, "Fetched staging package %s" % bn)
 
 PSTAGE_TASKS_COVERED = "fetch unpack munge patch configure qa_configure rig_locales compile sizecheck install deploy package populate_sysroot package_write_deb package_write_ipk package_write package_stage qa_staging"
 
