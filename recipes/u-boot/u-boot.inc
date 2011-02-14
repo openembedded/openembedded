@@ -26,7 +26,7 @@ do_compile () {
 	unset CFLAGS
 	unset CPPFLAGS
 	oe_runmake all
-	oe_runmake tools env
+	oe_runmake tools env HOSTCC="${CC}"
 }
 
 do_install () {

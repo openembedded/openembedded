@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r71"
+PR = "r72"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -111,7 +111,7 @@ do_compile_calamari () {
         oe_runmake MPC8536DS_SPIFLASH_config
         oe_runmake all
         mv u-boot.bin u-boot-spiflash.bin
-        oe_runmake tools env
+	oe_runmake tools env HOSTCC="${CC}"
 }
 
 do_deploy_calamari () {
