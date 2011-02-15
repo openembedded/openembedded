@@ -1,3 +1,31 @@
+2011-01-14  Bernd Schmidt  <bernds@codesourcery.com>
+
+	gcc/
+	* function.c (thread_prologue_and_epilogue_insns): Avoid uninitialized
+	variable.
+
+2011-01-12  Bernd Schmidt  <bernds@codesourcery.com>
+
+	gcc/
+	* config/s390/s390.c (s390_emit_epilogue): Don't use gen_rtx_RETURN.
+	* config/rx/rx.c (gen_rx_rtsd_vector): Likewise.
+	* config/m68hc11/m68hc11.md (return): Likewise.
+	* config/cris/cris.c (cris_expand_return): Likewise.
+	* config/m68k/m68k.c (m68k_expand_epilogue): Likewise.
+	* config/picochip/picochip.c (picochip_expand_epilogue): Likewise.
+	* config/h8300/h8300.c (h8300_push_pop, h8300_expand_epilogue):
+	Likewise.
+	* config/v850/v850.c (expand_epilogue): Likewise.
+	* config/bfin/bfin.c (bfin_expand_call): Likewise.
+
+2011-01-04  Catherine Moore  <clm@codesourcery.com>
+
+	gcc/
+	* config/rs6000/rs6000.c (rs6000_make_savres_rtx): Change
+	gen_rtx_RETURN to ret_rtx.
+	(rs6000_emit_epilogue): Likewise.
+	(rs6000_output_mi_thunk): Likewise.
+
 2011-01-03  Bernd Schmidt  <bernds@codesourcery.com>
 
 	gcc/
@@ -124,9 +152,11 @@
 	* basic-block.h (find_fallthru_edge): New inline function.
 
 === modified file 'gcc/basic-block.h'
---- old/gcc/basic-block.h	2010-09-01 13:29:58 +0000
-+++ new/gcc/basic-block.h	2011-01-05 12:12:18 +0000
-@@ -884,6 +884,7 @@
+Index: gcc-4_5-branch/gcc/basic-block.h
+===================================================================
+--- gcc-4_5-branch.orig/gcc/basic-block.h
++++ gcc-4_5-branch/gcc/basic-block.h
+@@ -884,6 +884,7 @@ extern void flow_edge_list_print (const 
  
  /* In cfgrtl.c  */
  extern basic_block force_nonfallthru (edge);
@@ -134,7 +164,7 @@
  extern rtx block_label (basic_block);
  extern bool purge_all_dead_edges (void);
  extern bool purge_dead_edges (basic_block);
-@@ -1004,6 +1005,20 @@
+@@ -1004,6 +1005,20 @@ bb_has_abnormal_pred (basic_block bb)
    return false;
  }
  
@@ -155,11 +185,11 @@
  /* In cfgloopmanip.c.  */
  extern edge mfb_kj_edge;
  extern bool mfb_keep_just (edge);
-
-=== modified file 'gcc/cfganal.c'
---- old/gcc/cfganal.c	2009-11-25 10:55:54 +0000
-+++ new/gcc/cfganal.c	2011-01-05 12:12:18 +0000
-@@ -271,6 +271,37 @@
+Index: gcc-4_5-branch/gcc/cfganal.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/cfganal.c
++++ gcc-4_5-branch/gcc/cfganal.c
+@@ -271,6 +271,37 @@ set_edge_can_fallthru_flag (void)
        EDGE_SUCC (bb, 0)->flags |= EDGE_CAN_FALLTHRU;
        EDGE_SUCC (bb, 1)->flags |= EDGE_CAN_FALLTHRU;
      }
@@ -197,11 +227,11 @@
  }
  
  /* Find unreachable blocks.  An unreachable block will have 0 in
-
-=== modified file 'gcc/cfglayout.c'
---- old/gcc/cfglayout.c	2010-05-17 16:30:54 +0000
-+++ new/gcc/cfglayout.c	2011-01-05 12:12:18 +0000
-@@ -766,6 +766,7 @@
+Index: gcc-4_5-branch/gcc/cfglayout.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/cfglayout.c
++++ gcc-4_5-branch/gcc/cfglayout.c
+@@ -766,6 +766,7 @@ fixup_reorder_chain (void)
      {
        edge e_fall, e_taken, e;
        rtx bb_end_insn;
@@ -209,7 +239,7 @@
        basic_block nb;
        edge_iterator ei;
  
-@@ -785,6 +786,7 @@
+@@ -785,6 +786,7 @@ fixup_reorder_chain (void)
        bb_end_insn = BB_END (bb);
        if (JUMP_P (bb_end_insn))
  	{
@@ -217,7 +247,7 @@
  	  if (any_condjump_p (bb_end_insn))
  	    {
  	      /* This might happen if the conditional jump has side
-@@ -899,7 +901,7 @@
+@@ -899,7 +901,7 @@ fixup_reorder_chain (void)
  	}
  
        /* We got here if we need to add a new jump insn.  */
@@ -226,7 +256,7 @@
        if (nb)
  	{
  	  nb->il.rtl->visited = 1;
-@@ -1118,24 +1120,30 @@
+@@ -1118,24 +1120,30 @@ extern bool cfg_layout_can_duplicate_bb_
  bool
  cfg_layout_can_duplicate_bb_p (const_basic_block bb)
  {
@@ -268,9 +298,9 @@
      }
  
    return true;
-@@ -1167,6 +1175,9 @@
- 	      || GET_CODE (PATTERN (insn)) == ADDR_DIFF_VEC)
- 	    break;
+@@ -1180,6 +1188,9 @@ duplicate_insn_chain (rtx from, rtx to)
+ 	      break;
+ 	    }
  	  copy = emit_copy_of_insn_after (insn, get_last_insn ());
 +	  if (JUMP_P (insn) && JUMP_LABEL (insn) != NULL_RTX
 +	      && ANY_RETURN_P (JUMP_LABEL (insn)))
@@ -278,11 +308,11 @@
            maybe_copy_epilogue_insn (insn, copy);
  	  break;
  
-
-=== modified file 'gcc/cfgrtl.c'
---- old/gcc/cfgrtl.c	2010-09-20 21:30:35 +0000
-+++ new/gcc/cfgrtl.c	2011-01-05 12:12:18 +0000
-@@ -1107,10 +1107,13 @@
+Index: gcc-4_5-branch/gcc/cfgrtl.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/cfgrtl.c
++++ gcc-4_5-branch/gcc/cfgrtl.c
+@@ -1107,10 +1107,13 @@ rtl_redirect_edge_and_branch (edge e, ba
  }
  
  /* Like force_nonfallthru below, but additionally performs redirection
@@ -299,7 +329,7 @@
  {
    basic_block jump_block, new_bb = NULL, src = e->src;
    rtx note;
-@@ -1242,11 +1245,25 @@
+@@ -1242,11 +1245,25 @@ force_nonfallthru_and_redirect (edge e, 
    e->flags &= ~EDGE_FALLTHRU;
    if (target == EXIT_BLOCK_PTR)
      {
@@ -307,14 +337,12 @@
 +	{
  #ifdef HAVE_return
 -	emit_jump_insn_after_setloc (gen_return (), BB_END (jump_block), loc);
--#else
--	gcc_unreachable ();
--#endif
 +	  emit_jump_insn_after_setloc (gen_return (), BB_END (jump_block),
 +				       loc);
-+#else
+ #else
+-	gcc_unreachable ();
 +	  gcc_unreachable ();
-+#endif
+ #endif
 +	}
 +      else
 +	{
@@ -329,7 +357,7 @@
      }
    else
      {
-@@ -1273,7 +1290,7 @@
+@@ -1273,7 +1290,7 @@ force_nonfallthru_and_redirect (edge e, 
  basic_block
  force_nonfallthru (edge e)
  {
@@ -338,7 +366,7 @@
  }
  
  /* Redirect edge even at the expense of creating new jump insn or
-@@ -1290,7 +1307,7 @@
+@@ -1290,7 +1307,7 @@ rtl_redirect_edge_and_branch_force (edge
    /* In case the edge redirection failed, try to force it to be non-fallthru
       and redirect newly created simplejump.  */
    df_set_bb_dirty (e->src);
@@ -347,11 +375,11 @@
  }
  
  /* The given edge should potentially be a fallthru edge.  If that is in
-
-=== modified file 'gcc/common.opt'
---- old/gcc/common.opt	2010-12-10 15:33:37 +0000
-+++ new/gcc/common.opt	2011-01-05 12:12:18 +0000
-@@ -1147,6 +1147,11 @@
+Index: gcc-4_5-branch/gcc/common.opt
+===================================================================
+--- gcc-4_5-branch.orig/gcc/common.opt
++++ gcc-4_5-branch/gcc/common.opt
+@@ -1147,6 +1147,11 @@ fshow-column
  Common C ObjC C++ ObjC++ Report Var(flag_show_column) Init(1)
  Show column numbers in diagnostics, when available.  Default on
  
@@ -363,10 +391,10 @@
  fsignaling-nans
  Common Report Var(flag_signaling_nans) Optimization
  Disable optimizations observable by IEEE signaling NaNs
-
-=== modified file 'gcc/config/arm/arm-protos.h'
---- old/gcc/config/arm/arm-protos.h	2010-11-04 10:45:05 +0000
-+++ new/gcc/config/arm/arm-protos.h	2011-01-05 12:12:18 +0000
+Index: gcc-4_5-branch/gcc/config/arm/arm-protos.h
+===================================================================
+--- gcc-4_5-branch.orig/gcc/config/arm/arm-protos.h
++++ gcc-4_5-branch/gcc/config/arm/arm-protos.h
 @@ -26,6 +26,7 @@
  extern void arm_override_options (void);
  extern void arm_optimization_options (int, int);
@@ -375,7 +403,7 @@
  extern enum reg_class arm_regno_class (int);
  extern void arm_load_pic_register (unsigned long);
  extern int arm_volatile_func (void);
-@@ -137,7 +138,7 @@
+@@ -137,7 +138,7 @@ extern int arm_address_offset_is_imm (rt
  extern const char *output_add_immediate (rtx *);
  extern const char *arithmetic_instr (rtx, int);
  extern void output_ascii_pseudo_op (FILE *, const unsigned char *, int);
@@ -384,11 +412,11 @@
  extern void arm_poke_function_name (FILE *, const char *);
  extern void arm_print_operand (FILE *, rtx, int);
  extern void arm_print_operand_address (FILE *, rtx);
-
-=== modified file 'gcc/config/arm/arm.c'
---- old/gcc/config/arm/arm.c	2011-01-05 11:32:50 +0000
-+++ new/gcc/config/arm/arm.c	2011-01-05 12:12:18 +0000
-@@ -2163,6 +2163,18 @@
+Index: gcc-4_5-branch/gcc/config/arm/arm.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/config/arm/arm.c
++++ gcc-4_5-branch/gcc/config/arm/arm.c
+@@ -2163,6 +2163,18 @@ arm_trampoline_adjust_address (rtx addr)
    return addr;
  }
  
@@ -407,7 +435,7 @@
  /* Return 1 if it is possible to return using a single instruction.
     If SIBLING is non-null, this is a test for a return before a sibling
     call.  SIBLING is the call insn, so we can examine its register usage.  */
-@@ -11284,6 +11296,7 @@
+@@ -11284,6 +11296,7 @@ is_jump_table (rtx insn)
  
    if (GET_CODE (insn) == JUMP_INSN
        && JUMP_LABEL (insn) != NULL
@@ -415,7 +443,7 @@
        && ((table = next_real_insn (JUMP_LABEL (insn)))
  	  == next_real_insn (insn))
        && table != NULL
-@@ -14168,7 +14181,7 @@
+@@ -14168,7 +14181,7 @@ arm_get_vfp_saved_size (void)
  /* Generate a function exit sequence.  If REALLY_RETURN is false, then do
     everything bar the final return instruction.  */
  const char *
@@ -424,7 +452,7 @@
  {
    char conditional[10];
    char instr[100];
-@@ -14206,10 +14219,15 @@
+@@ -14206,10 +14219,15 @@ output_return_instruction (rtx operand, 
  
    sprintf (conditional, "%%?%%%c0", reverse ? 'D' : 'd');
  
@@ -443,7 +471,7 @@
  
    if (live_regs_mask)
      {
-@@ -17108,6 +17126,7 @@
+@@ -17108,6 +17126,7 @@ arm_final_prescan_insn (rtx insn)
  
    /* If we start with a return insn, we only succeed if we find another one.  */
    int seeking_return = 0;
@@ -451,7 +479,7 @@
  
    /* START_INSN will hold the insn from where we start looking.  This is the
       first insn after the following code_label if REVERSE is true.  */
-@@ -17146,7 +17165,7 @@
+@@ -17146,7 +17165,7 @@ arm_final_prescan_insn (rtx insn)
  	  else
  	    return;
  	}
@@ -460,7 +488,7 @@
          {
  	  start_insn = next_nonnote_insn (start_insn);
  	  if (GET_CODE (start_insn) == BARRIER)
-@@ -17157,6 +17176,7 @@
+@@ -17157,6 +17176,7 @@ arm_final_prescan_insn (rtx insn)
  	    {
  	      reverse = TRUE;
  	      seeking_return = 1;
@@ -468,7 +496,7 @@
  	    }
  	  else
  	    return;
-@@ -17197,11 +17217,15 @@
+@@ -17197,11 +17217,15 @@ arm_final_prescan_insn (rtx insn)
  	  label = XEXP (XEXP (SET_SRC (body), 2), 0);
  	  then_not_else = FALSE;
  	}
@@ -487,7 +515,7 @@
  	  then_not_else = FALSE;
          }
        else
-@@ -17302,8 +17326,7 @@
+@@ -17302,8 +17326,7 @@ arm_final_prescan_insn (rtx insn)
  		       && !use_return_insn (TRUE, NULL)
  		       && !optimize_size)
  		fail = TRUE;
@@ -497,11 +525,11 @@
  	        {
  		  arm_ccfsm_state = 2;
  		  succeed = TRUE;
-
-=== modified file 'gcc/config/arm/arm.h'
---- old/gcc/config/arm/arm.h	2010-11-11 11:12:14 +0000
-+++ new/gcc/config/arm/arm.h	2011-01-05 12:12:18 +0000
-@@ -2622,6 +2622,8 @@
+Index: gcc-4_5-branch/gcc/config/arm/arm.h
+===================================================================
+--- gcc-4_5-branch.orig/gcc/config/arm/arm.h
++++ gcc-4_5-branch/gcc/config/arm/arm.h
+@@ -2622,6 +2622,8 @@ extern int making_const_table;
  #define RETURN_ADDR_RTX(COUNT, FRAME) \
    arm_return_addr (COUNT, FRAME)
  
@@ -510,10 +538,10 @@
  /* Mask of the bits in the PC that contain the real return address
     when running in 26-bit mode.  */
  #define RETURN_ADDR_MASK26 (0x03fffffc)
-
-=== modified file 'gcc/config/arm/arm.md'
---- old/gcc/config/arm/arm.md	2011-01-05 11:52:16 +0000
-+++ new/gcc/config/arm/arm.md	2011-01-05 12:12:18 +0000
+Index: gcc-4_5-branch/gcc/config/arm/arm.md
+===================================================================
+--- gcc-4_5-branch.orig/gcc/config/arm/arm.md
++++ gcc-4_5-branch/gcc/config/arm/arm.md
 @@ -8882,66 +8882,72 @@
    [(set_attr "type" "call")]
  )
@@ -646,10 +674,10 @@
    return arm_output_epilogue (next_nonnote_insn (insn));
    "
  ;; Length is absolute worst case
-
-=== modified file 'gcc/config/arm/thumb2.md'
---- old/gcc/config/arm/thumb2.md	2010-09-22 05:54:42 +0000
-+++ new/gcc/config/arm/thumb2.md	2011-01-05 12:12:18 +0000
+Index: gcc-4_5-branch/gcc/config/arm/thumb2.md
+===================================================================
+--- gcc-4_5-branch.orig/gcc/config/arm/thumb2.md
++++ gcc-4_5-branch/gcc/config/arm/thumb2.md
 @@ -1020,16 +1020,15 @@
  
  ;; Note: this is not predicable, to avoid issues with linker-generated
@@ -675,11 +703,59 @@
  
  (define_insn_and_split "thumb2_eh_return"
    [(unspec_volatile [(match_operand:SI 0 "s_register_operand" "r")]
-
-=== modified file 'gcc/config/i386/i386.c'
---- old/gcc/config/i386/i386.c	2010-11-16 18:05:53 +0000
-+++ new/gcc/config/i386/i386.c	2011-01-05 12:12:18 +0000
-@@ -9308,13 +9308,13 @@
+Index: gcc-4_5-branch/gcc/config/bfin/bfin.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/config/bfin/bfin.c
++++ gcc-4_5-branch/gcc/config/bfin/bfin.c
+@@ -2359,7 +2359,7 @@ bfin_expand_call (rtx retval, rtx fnaddr
+     XVECEXP (pat, 0, n++) = gen_rtx_USE (VOIDmode, picreg);
+   XVECEXP (pat, 0, n++) = gen_rtx_USE (VOIDmode, cookie);
+   if (sibcall)
+-    XVECEXP (pat, 0, n++) = gen_rtx_RETURN (VOIDmode);
++    XVECEXP (pat, 0, n++) = ret_rtx;
+   else
+     XVECEXP (pat, 0, n++) = gen_rtx_CLOBBER (VOIDmode, retsreg);
+   call = emit_call_insn (pat);
+Index: gcc-4_5-branch/gcc/config/cris/cris.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/config/cris/cris.c
++++ gcc-4_5-branch/gcc/config/cris/cris.c
+@@ -1771,7 +1771,7 @@ cris_expand_return (bool on_stack)
+      we do that until they're fixed.  Currently, all return insns in a
+      function must be the same (not really a limiting factor) so we need
+      to check that it doesn't change half-way through.  */
+-  emit_jump_insn (gen_rtx_RETURN (VOIDmode));
++  emit_jump_insn (ret_rtx);
+ 
+   CRIS_ASSERT (cfun->machine->return_type != CRIS_RETINSN_RET || !on_stack);
+   CRIS_ASSERT (cfun->machine->return_type != CRIS_RETINSN_JUMP || on_stack);
+Index: gcc-4_5-branch/gcc/config/h8300/h8300.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/config/h8300/h8300.c
++++ gcc-4_5-branch/gcc/config/h8300/h8300.c
+@@ -691,7 +691,7 @@ h8300_push_pop (int regno, int nregs, bo
+   /* Add the return instruction.  */
+   if (return_p)
+     {
+-      RTVEC_ELT (vec, i) = gen_rtx_RETURN (VOIDmode);
++      RTVEC_ELT (vec, i) = ret_rtx;
+       i++;
+     }
+ 
+@@ -975,7 +975,7 @@ h8300_expand_epilogue (void)
+     }
+ 
+   if (!returned_p)
+-    emit_jump_insn (gen_rtx_RETURN (VOIDmode));
++    emit_jump_insn (ret_rtx);
+ }
+ 
+ /* Return nonzero if the current function is an interrupt
+Index: gcc-4_5-branch/gcc/config/i386/i386.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/config/i386/i386.c
++++ gcc-4_5-branch/gcc/config/i386/i386.c
+@@ -9308,13 +9308,13 @@ ix86_expand_epilogue (int style)
  
  	  pro_epilogue_adjust_stack (stack_pointer_rtx, stack_pointer_rtx,
  				     popc, -1, true);
@@ -696,7 +772,7 @@
  
    /* Restore the state back to the state from the prologue,
       so that it's correct for the next epilogue.  */
-@@ -26596,7 +26596,7 @@
+@@ -26615,7 +26615,7 @@ ix86_pad_returns (void)
        rtx prev;
        bool replace = false;
  
@@ -705,7 +781,7 @@
  	  || optimize_bb_for_size_p (bb))
  	continue;
        for (prev = PREV_INSN (ret); prev; prev = PREV_INSN (prev))
-@@ -26626,7 +26626,10 @@
+@@ -26645,7 +26645,10 @@ ix86_pad_returns (void)
  	}
        if (replace)
  	{
@@ -717,11 +793,11 @@
  	  delete_insn (ret);
  	}
      }
-
-=== modified file 'gcc/config/i386/i386.md'
---- old/gcc/config/i386/i386.md	2010-11-27 15:24:12 +0000
-+++ new/gcc/config/i386/i386.md	2011-01-05 12:12:18 +0000
-@@ -13797,24 +13797,29 @@
+Index: gcc-4_5-branch/gcc/config/i386/i386.md
+===================================================================
+--- gcc-4_5-branch.orig/gcc/config/i386/i386.md
++++ gcc-4_5-branch/gcc/config/i386/i386.md
+@@ -13798,24 +13798,29 @@
    ""
    [(set_attr "length" "0")])
  
@@ -757,7 +833,7 @@
    "reload_completed"
    "ret"
    [(set_attr "length" "1")
-@@ -13825,8 +13830,8 @@
+@@ -13826,8 +13831,8 @@
  ;; Used by x86_machine_dependent_reorg to avoid penalty on single byte RET
  ;; instruction Athlon and K8 have.
  
@@ -768,7 +844,7 @@
     (unspec [(const_int 0)] UNSPEC_REP)]
    "reload_completed"
    "rep\;ret"
-@@ -13836,8 +13841,8 @@
+@@ -13837,8 +13842,8 @@
     (set_attr "prefix_rep" "1")
     (set_attr "modrm" "0")])
  
@@ -779,7 +855,7 @@
     (use (match_operand:SI 0 "const_int_operand" ""))]
    "reload_completed"
    "ret\t%0"
-@@ -13846,8 +13851,8 @@
+@@ -13847,8 +13852,8 @@
     (set_attr "length_immediate" "2")
     (set_attr "modrm" "0")])
  
@@ -790,11 +866,46 @@
     (use (match_operand:SI 0 "register_operand" "r"))]
    "reload_completed"
    "jmp\t%A0"
-
-=== modified file 'gcc/config/mips/mips.c'
---- old/gcc/config/mips/mips.c	2010-11-21 10:38:43 +0000
-+++ new/gcc/config/mips/mips.c	2011-01-05 12:12:18 +0000
-@@ -10497,7 +10497,8 @@
+Index: gcc-4_5-branch/gcc/config/m68hc11/m68hc11.md
+===================================================================
+--- gcc-4_5-branch.orig/gcc/config/m68hc11/m68hc11.md
++++ gcc-4_5-branch/gcc/config/m68hc11/m68hc11.md
+@@ -6576,7 +6576,7 @@
+   if (ret_size && ret_size <= 2)
+     {
+       emit_jump_insn (gen_rtx_PARALLEL (VOIDmode,
+-		      gen_rtvec (2, gen_rtx_RETURN (VOIDmode),
++		      gen_rtvec (2, ret_rtx,
+ 			         gen_rtx_USE (VOIDmode,
+ 					      gen_rtx_REG (HImode, 1)))));
+       DONE;
+@@ -6584,7 +6584,7 @@
+   if (ret_size)
+     {
+       emit_jump_insn (gen_rtx_PARALLEL (VOIDmode,
+-		      gen_rtvec (2, gen_rtx_RETURN (VOIDmode),
++		      gen_rtvec (2, ret_rtx,
+ 			         gen_rtx_USE (VOIDmode,
+ 					      gen_rtx_REG (SImode, 0)))));
+       DONE;
+Index: gcc-4_5-branch/gcc/config/m68k/m68k.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/config/m68k/m68k.c
++++ gcc-4_5-branch/gcc/config/m68k/m68k.c
+@@ -1366,7 +1366,7 @@ m68k_expand_epilogue (bool sibcall_p)
+ 			   EH_RETURN_STACKADJ_RTX));
+ 
+   if (!sibcall_p)
+-    emit_jump_insn (gen_rtx_RETURN (VOIDmode));
++    emit_jump_insn (ret_rtx);
+ }
+ 
+ /* Return true if X is a valid comparison operator for the dbcc 
+Index: gcc-4_5-branch/gcc/config/mips/mips.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/config/mips/mips.c
++++ gcc-4_5-branch/gcc/config/mips/mips.c
+@@ -10497,7 +10497,8 @@ mips_expand_epilogue (bool sibcall_p)
  	    regno = GP_REG_FIRST + 7;
  	  else
  	    regno = RETURN_ADDR_REGNUM;
@@ -804,10 +915,10 @@
  	}
      }
  
-
-=== modified file 'gcc/config/mips/mips.md'
---- old/gcc/config/mips/mips.md	2010-04-02 18:54:46 +0000
-+++ new/gcc/config/mips/mips.md	2011-01-05 12:12:18 +0000
+Index: gcc-4_5-branch/gcc/config/mips/mips.md
+===================================================================
+--- gcc-4_5-branch.orig/gcc/config/mips/mips.md
++++ gcc-4_5-branch/gcc/config/mips/mips.md
 @@ -5815,6 +5815,18 @@
    [(set_attr "type"	"jump")
     (set_attr "mode"	"none")])
@@ -842,11 +953,90 @@
  ;; Exception return.
  (define_insn "mips_eret"
    [(return)
-
-=== modified file 'gcc/config/sh/sh.c'
---- old/gcc/config/sh/sh.c	2010-12-10 15:34:19 +0000
-+++ new/gcc/config/sh/sh.c	2011-01-05 12:12:18 +0000
-@@ -5252,7 +5252,8 @@
+Index: gcc-4_5-branch/gcc/config/picochip/picochip.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/config/picochip/picochip.c
++++ gcc-4_5-branch/gcc/config/picochip/picochip.c
+@@ -1996,7 +1996,7 @@ picochip_expand_epilogue (int is_sibling
+     rtvec p;
+     p = rtvec_alloc (2);
+ 
+-    RTVEC_ELT (p, 0) = gen_rtx_RETURN (VOIDmode);
++    RTVEC_ELT (p, 0) = ret_rtx;
+     RTVEC_ELT (p, 1) = gen_rtx_USE (VOIDmode,
+ 				    gen_rtx_REG (Pmode, LINK_REGNUM));
+     emit_jump_insn (gen_rtx_PARALLEL (VOIDmode, p));
+Index: gcc-4_5-branch/gcc/config/rs6000/rs6000.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/config/rs6000/rs6000.c
++++ gcc-4_5-branch/gcc/config/rs6000/rs6000.c
+@@ -18563,7 +18563,7 @@ rs6000_make_savres_rtx (rs6000_stack_t *
+   p = rtvec_alloc ((lr ? 4 : 3) + n_regs);
+ 
+   if (!savep && lr)
+-    RTVEC_ELT (p, offset++) = gen_rtx_RETURN (VOIDmode);
++    RTVEC_ELT (p, offset++) = ret_rtx;
+ 
+   RTVEC_ELT (p, offset++)
+     = gen_rtx_CLOBBER (VOIDmode, gen_rtx_REG (Pmode, 65));
+@@ -19638,7 +19638,7 @@ rs6000_emit_epilogue (int sibcall)
+       alloc_rname = ggc_strdup (rname);
+ 
+       j = 0;
+-      RTVEC_ELT (p, j++) = gen_rtx_RETURN (VOIDmode);
++      RTVEC_ELT (p, j++) = ret_rtx;
+       RTVEC_ELT (p, j++) = gen_rtx_USE (VOIDmode,
+ 					gen_rtx_REG (Pmode,
+ 						     LR_REGNO));
+@@ -20254,7 +20254,7 @@ rs6000_emit_epilogue (int sibcall)
+       else
+ 	p = rtvec_alloc (2);
+ 
+-      RTVEC_ELT (p, 0) = gen_rtx_RETURN (VOIDmode);
++      RTVEC_ELT (p, 0) = ret_rtx;
+       RTVEC_ELT (p, 1) = ((restoring_FPRs_inline || !lr)
+ 			  ? gen_rtx_USE (VOIDmode, gen_rtx_REG (Pmode, 65))
+ 			  : gen_rtx_CLOBBER (VOIDmode,
+@@ -20695,7 +20695,7 @@ rs6000_output_mi_thunk (FILE *file, tree
+ 			gen_rtx_USE (VOIDmode,
+ 				     gen_rtx_REG (SImode,
+ 						  LR_REGNO)),
+-			gen_rtx_RETURN (VOIDmode))));
++			ret_rtx)));
+   SIBLING_CALL_P (insn) = 1;
+   emit_barrier ();
+ 
+Index: gcc-4_5-branch/gcc/config/rx/rx.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/config/rx/rx.c
++++ gcc-4_5-branch/gcc/config/rx/rx.c
+@@ -1562,7 +1562,7 @@ gen_rx_rtsd_vector (unsigned int adjust,
+ 				: plus_constant (stack_pointer_rtx,
+ 						 i * UNITS_PER_WORD)));
+ 
+-  XVECEXP (vector, 0, count - 1) = gen_rtx_RETURN (VOIDmode);
++  XVECEXP (vector, 0, count - 1) = ret_rtx;
+ 
+   return vector;
+ }
+Index: gcc-4_5-branch/gcc/config/s390/s390.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/config/s390/s390.c
++++ gcc-4_5-branch/gcc/config/s390/s390.c
+@@ -8170,7 +8170,7 @@ s390_emit_epilogue (bool sibcall)
+ 
+       p = rtvec_alloc (2);
+ 
+-      RTVEC_ELT (p, 0) = gen_rtx_RETURN (VOIDmode);
++      RTVEC_ELT (p, 0) = ret_rtx;
+       RTVEC_ELT (p, 1) = gen_rtx_USE (VOIDmode, return_reg);
+       emit_jump_insn (gen_rtx_PARALLEL (VOIDmode, p));
+     }
+Index: gcc-4_5-branch/gcc/config/sh/sh.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/config/sh/sh.c
++++ gcc-4_5-branch/gcc/config/sh/sh.c
+@@ -5252,7 +5252,8 @@ barrier_align (rtx barrier_or_label)
  	}
        if (prev
  	  && JUMP_P (prev)
@@ -856,7 +1046,7 @@
  	{
  	  rtx x;
  	  if (jump_to_next
-@@ -5951,7 +5952,7 @@
+@@ -5951,7 +5952,7 @@ split_branches (rtx first)
  			JUMP_LABEL (insn) = far_label;
  			LABEL_NUSES (far_label)++;
  		      }
@@ -865,11 +1055,24 @@
  		    far_label = 0;
  		  }
  	      }
-
-=== modified file 'gcc/df-scan.c'
---- old/gcc/df-scan.c	2010-11-16 22:17:17 +0000
-+++ new/gcc/df-scan.c	2011-01-05 12:12:18 +0000
-@@ -3296,6 +3296,7 @@
+Index: gcc-4_5-branch/gcc/config/v850/v850.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/config/v850/v850.c
++++ gcc-4_5-branch/gcc/config/v850/v850.c
+@@ -1832,7 +1832,7 @@ expand_epilogue (void)
+ 	{
+ 	  restore_all = gen_rtx_PARALLEL (VOIDmode,
+ 					  rtvec_alloc (num_restore + 2));
+-	  XVECEXP (restore_all, 0, 0) = gen_rtx_RETURN (VOIDmode);
++	  XVECEXP (restore_all, 0, 0) = ret_rtx;
+ 	  XVECEXP (restore_all, 0, 1)
+ 	    = gen_rtx_SET (VOIDmode, stack_pointer_rtx,
+ 			    gen_rtx_PLUS (Pmode,
+Index: gcc-4_5-branch/gcc/df-scan.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/df-scan.c
++++ gcc-4_5-branch/gcc/df-scan.c
+@@ -3296,6 +3296,7 @@ df_uses_record (enum df_ref_class cl, st
        }
  
      case RETURN:
@@ -877,11 +1080,11 @@
        break;
  
      case ASM_OPERANDS:
-
-=== modified file 'gcc/doc/invoke.texi'
---- old/gcc/doc/invoke.texi	2010-11-04 14:29:09 +0000
-+++ new/gcc/doc/invoke.texi	2011-01-05 12:12:18 +0000
-@@ -5750,6 +5750,7 @@
+Index: gcc-4_5-branch/gcc/doc/invoke.texi
+===================================================================
+--- gcc-4_5-branch.orig/gcc/doc/invoke.texi
++++ gcc-4_5-branch/gcc/doc/invoke.texi
+@@ -5751,6 +5751,7 @@ compilation time.
  -fipa-pure-const @gol
  -fipa-reference @gol
  -fmerge-constants
@@ -889,7 +1092,7 @@
  -fsplit-wide-types @gol
  -ftree-builtin-call-dce @gol
  -ftree-ccp @gol
-@@ -6504,6 +6505,12 @@
+@@ -6506,6 +6507,12 @@ This option has no effect until one of @
  When pipelining loops during selective scheduling, also pipeline outer loops.
  This option has no effect until @option{-fsel-sched-pipelining} is turned on.
  
@@ -902,11 +1105,11 @@
  @item -fcaller-saves
  @opindex fcaller-saves
  Enable values to be allocated in registers that will be clobbered by
-
-=== modified file 'gcc/doc/md.texi'
---- old/gcc/doc/md.texi	2009-12-15 18:36:44 +0000
-+++ new/gcc/doc/md.texi	2011-01-05 12:12:18 +0000
-@@ -4801,7 +4801,19 @@
+Index: gcc-4_5-branch/gcc/doc/md.texi
+===================================================================
+--- gcc-4_5-branch.orig/gcc/doc/md.texi
++++ gcc-4_5-branch/gcc/doc/md.texi
+@@ -4801,7 +4801,19 @@ RTL generation phase.  In this case it i
  multiple instructions are usually needed to return from a function, but
  some class of functions only requires one instruction to implement a
  return.  Normally, the applicable functions are those which do not need
@@ -927,11 +1130,11 @@
  
  @findex reload_completed
  @findex leaf_function_p
-
-=== modified file 'gcc/doc/rtl.texi'
---- old/gcc/doc/rtl.texi	2010-07-06 19:23:53 +0000
-+++ new/gcc/doc/rtl.texi	2011-01-05 12:12:18 +0000
-@@ -2888,6 +2888,13 @@
+Index: gcc-4_5-branch/gcc/doc/rtl.texi
+===================================================================
+--- gcc-4_5-branch.orig/gcc/doc/rtl.texi
++++ gcc-4_5-branch/gcc/doc/rtl.texi
+@@ -2888,6 +2888,13 @@ placed in @code{pc} to return to the cal
  Note that an insn pattern of @code{(return)} is logically equivalent to
  @code{(set (pc) (return))}, but the latter form is never used.
  
@@ -945,7 +1148,7 @@
  @findex call
  @item (call @var{function} @var{nargs})
  Represents a function call.  @var{function} is a @code{mem} expression
-@@ -3017,7 +3024,7 @@
+@@ -3017,7 +3024,7 @@ Represents several side effects performe
  brackets stand for a vector; the operand of @code{parallel} is a
  vector of expressions.  @var{x0}, @var{x1} and so on are individual
  side effect expressions---expressions of code @code{set}, @code{call},
@@ -954,7 +1157,7 @@
  
  ``In parallel'' means that first all the values used in the individual
  side-effects are computed, and second all the actual side-effects are
-@@ -3656,14 +3663,16 @@
+@@ -3656,14 +3663,16 @@ and @code{call_insn} insns:
  @table @code
  @findex PATTERN
  @item PATTERN (@var{i})
@@ -979,11 +1182,11 @@
  
  @findex INSN_CODE
  @item INSN_CODE (@var{i})
-
-=== modified file 'gcc/doc/tm.texi'
---- old/gcc/doc/tm.texi	2010-09-01 13:29:58 +0000
-+++ new/gcc/doc/tm.texi	2011-01-05 12:12:18 +0000
-@@ -3287,6 +3287,12 @@
+Index: gcc-4_5-branch/gcc/doc/tm.texi
+===================================================================
+--- gcc-4_5-branch.orig/gcc/doc/tm.texi
++++ gcc-4_5-branch/gcc/doc/tm.texi
+@@ -3287,6 +3287,12 @@ Define this if the return address of a p
  from the frame pointer of the previous stack frame.
  @end defmac
  
@@ -996,11 +1199,11 @@
  @defmac INCOMING_RETURN_ADDR_RTX
  A C expression whose value is RTL representing the location of the
  incoming return address at the beginning of any function, before the
-
-=== modified file 'gcc/dwarf2out.c'
---- old/gcc/dwarf2out.c	2010-12-21 18:46:10 +0000
-+++ new/gcc/dwarf2out.c	2011-01-05 12:12:18 +0000
-@@ -1396,7 +1396,7 @@
+Index: gcc-4_5-branch/gcc/dwarf2out.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/dwarf2out.c
++++ gcc-4_5-branch/gcc/dwarf2out.c
+@@ -1396,7 +1396,7 @@ compute_barrier_args_size_1 (rtx insn, H
      {
        rtx dest = JUMP_LABEL (insn);
  
@@ -1009,11 +1212,11 @@
  	{
  	  if (barrier_args_size [INSN_UID (dest)] < 0)
  	    {
-
-=== modified file 'gcc/emit-rtl.c'
---- old/gcc/emit-rtl.c	2010-10-04 00:50:43 +0000
-+++ new/gcc/emit-rtl.c	2011-01-05 12:12:18 +0000
-@@ -2432,6 +2432,8 @@
+Index: gcc-4_5-branch/gcc/emit-rtl.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/emit-rtl.c
++++ gcc-4_5-branch/gcc/emit-rtl.c
+@@ -2432,6 +2432,8 @@ verify_rtx_sharing (rtx orig, rtx insn)
      case CODE_LABEL:
      case PC:
      case CC0:
@@ -1022,7 +1225,7 @@
      case SCRATCH:
        return;
        /* SCRATCH must be shared because they represent distinct values.  */
-@@ -3323,14 +3325,17 @@
+@@ -3323,14 +3325,17 @@ prev_label (rtx insn)
    return insn;
  }
  
@@ -1042,7 +1245,7 @@
    for (insn = label; insn != 0 && !INSN_P (insn); insn = NEXT_INSN (insn))
      if (LABEL_P (insn))
        label = insn;
-@@ -5209,7 +5214,7 @@
+@@ -5209,7 +5214,7 @@ classify_insn (rtx x)
      return CODE_LABEL;
    if (GET_CODE (x) == CALL)
      return CALL_INSN;
@@ -1051,7 +1254,7 @@
      return JUMP_INSN;
    if (GET_CODE (x) == SET)
      {
-@@ -5715,8 +5720,10 @@
+@@ -5715,8 +5720,10 @@ init_emit_regs (void)
    init_reg_modes_target ();
  
    /* Assign register numbers to the globally defined register rtx.  */
@@ -1064,11 +1267,11 @@
    stack_pointer_rtx = gen_raw_REG (Pmode, STACK_POINTER_REGNUM);
    frame_pointer_rtx = gen_raw_REG (Pmode, FRAME_POINTER_REGNUM);
    hard_frame_pointer_rtx = gen_raw_REG (Pmode, HARD_FRAME_POINTER_REGNUM);
-
-=== modified file 'gcc/final.c'
---- old/gcc/final.c	2010-03-26 16:18:51 +0000
-+++ new/gcc/final.c	2011-01-05 12:12:18 +0000
-@@ -2428,7 +2428,7 @@
+Index: gcc-4_5-branch/gcc/final.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/final.c
++++ gcc-4_5-branch/gcc/final.c
+@@ -2428,7 +2428,7 @@ final_scan_insn (rtx insn, FILE *file, i
  	        delete_insn (insn);
  		break;
  	      }
@@ -1077,11 +1280,11 @@
  	      /* Replace (set (pc) (return)) with (return).  */
  	      PATTERN (insn) = body = SET_SRC (body);
  
-
-=== modified file 'gcc/function.c'
---- old/gcc/function.c	2010-08-16 19:18:08 +0000
-+++ new/gcc/function.c	2011-01-05 12:12:18 +0000
-@@ -147,9 +147,6 @@
+Index: gcc-4_5-branch/gcc/function.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/function.c
++++ gcc-4_5-branch/gcc/function.c
+@@ -147,9 +147,6 @@ extern tree debug_find_var_in_block_tree
     can always export `prologue_epilogue_contains'.  */
  static void record_insns (rtx, rtx, htab_t *) ATTRIBUTE_UNUSED;
  static bool contains (const_rtx, htab_t);
@@ -1091,7 +1294,7 @@
  static void prepare_function_start (void);
  static void do_clobber_return_reg (rtx, void *);
  static void do_use_return_reg (rtx, void *);
-@@ -4987,35 +4984,189 @@
+@@ -4987,35 +4984,190 @@ prologue_epilogue_contains (const_rtx in
    return 0;
  }
  
@@ -1259,6 +1462,7 @@
    rtl_profile_for_bb (ENTRY_BLOCK_PTR);
 +
 +  epilogue_end = NULL_RTX;
++  returnjump = NULL_RTX;
 +
 +  /* Can't deal with multiple successors of the entry block at the
 +     moment.  Function should always have at least one entry
@@ -1293,7 +1497,7 @@
  #ifdef HAVE_prologue
    if (HAVE_prologue)
      {
-@@ -5040,19 +5191,168 @@
+@@ -5040,20 +5192,169 @@ thread_prologue_and_epilogue_insns (void
          emit_insn (gen_blockage ());
  #endif
  
@@ -1301,21 +1505,17 @@
 +      prologue_seq = get_insns ();
        end_sequence ();
        set_insn_locators (seq, prologue_locator);
--
++    }
++#endif
+ 
 -      /* Can't deal with multiple successors of the entry block
 -         at the moment.  Function should always have at least one
 -         entry point.  */
 -      gcc_assert (single_succ_p (ENTRY_BLOCK_PTR));
--
++  bitmap_initialize (&bb_flags, &bitmap_default_obstack);
+ 
 -      insert_insn_on_edge (seq, single_succ_edge (ENTRY_BLOCK_PTR));
 -      inserted = 1;
--    }
--#endif
-+    }
-+#endif
-+
-+  bitmap_initialize (&bb_flags, &bitmap_default_obstack);
-+
 +#ifdef HAVE_simple_return
 +  /* Try to perform a kind of shrink-wrapping, making sure the
 +     prologue/epilogue is emitted only around those parts of the
@@ -1462,18 +1662,19 @@
 +      bitmap_clear (&bb_antic_flags);
 +      bitmap_clear (&bb_on_list);
 +      VEC_free (basic_block, heap, vec);
-+    }
-+#endif
-+
+     }
+ #endif
+ 
 +  if (prologue_seq != NULL_RTX)
 +    {
 +      insert_insn_on_edge (prologue_seq, entry_edge);
 +      inserted = true;
 +    }
- 
++
    /* If the exit block has no non-fake predecessors, we don't need
       an epilogue.  */
-@@ -5063,100 +5363,130 @@
+   FOR_EACH_EDGE (e, ei, EXIT_BLOCK_PTR->preds)
+@@ -5063,100 +5364,130 @@ thread_prologue_and_epilogue_insns (void
      goto epilogue_done;
  
    rtl_profile_for_bb (EXIT_BLOCK_PTR);
@@ -1508,40 +1709,65 @@
 +      if (exit_fallthru_edge == NULL)
  	goto epilogue_done;
 -      last = e->src;
--
++      label = BB_HEAD (last_bb);
+ 
 -      /* Verify that there are no active instructions in the last block.  */
 -      label = BB_END (last);
 -      while (label && !LABEL_P (label))
-+      label = BB_HEAD (last_bb);
-+
+-	{
+-	  if (active_insn_p (label))
+-	    break;
+-	  label = PREV_INSN (label);
+-	}
 +      src_bbs = VEC_alloc (basic_block, heap, EDGE_COUNT (last_bb->preds));
 +      FOR_EACH_EDGE (e, ei2, last_bb->preds)
 +	if (e->src != ENTRY_BLOCK_PTR)
 +	  VEC_quick_push (basic_block, src_bbs, e->src);
-+
+ 
+-      if (BB_HEAD (last) == label && LABEL_P (label))
 +      FOR_EACH_VEC_ELT (basic_block, src_bbs, i, bb)
  	{
--	  if (active_insn_p (label))
--	    break;
--	  label = PREV_INSN (label);
+-	  edge_iterator ei2;
 +	  bool simple_p;
 +	  rtx jump;
 +	  e = find_edge (bb, last_bb);
-+
+ 
+-	  for (ei2 = ei_start (last->preds); (e = ei_safe_edge (ei2)); )
+-	    {
+-	      basic_block bb = e->src;
+-	      rtx jump;
 +	  jump = BB_END (bb);
-+
+ 
+-	      if (bb == ENTRY_BLOCK_PTR)
+-		{
+-		  ei_next (&ei2);
+-		  continue;
+-		}
 +#ifdef HAVE_simple_return
 +	  simple_p = (entry_edge != orig_entry_edge
 +		      ? !bitmap_bit_p (&bb_flags, bb->index) : false);
 +#else
 +	  simple_p = false;
 +#endif
-+
+ 
+-	      jump = BB_END (bb);
+-	      if (!JUMP_P (jump) || JUMP_LABEL (jump) != label)
+-		{
+-		  ei_next (&ei2);
+-		  continue;
+-		}
 +	  if (!simple_p
 +	      && (!HAVE_return || !JUMP_P (jump)
 +		  || JUMP_LABEL (jump) != label))
 +	    continue;
-+
+ 
+-	      /* If we have an unconditional jump, we can replace that
+-		 with a simple return instruction.  */
+-	      if (simplejump_p (jump))
+-		{
+-		  emit_return_into_block (bb);
+-		  delete_insn (jump);
+-		}
 +	  /* If we have an unconditional jump, we can replace that
 +	     with a simple return instruction.  */
 +	  if (!JUMP_P (jump))
@@ -1558,7 +1784,16 @@
 +	    {
 +	      basic_block new_bb;
 +	      edge new_e;
-+
+ 
+-	      /* If we have a conditional jump, we can try to replace
+-		 that with a conditional return instruction.  */
+-	      else if (condjump_p (jump))
+-		{
+-		  if (! redirect_jump (jump, 0, 0))
+-		    {
+-		      ei_next (&ei2);
+-		      continue;
+-		    }
 +	      gcc_assert (simple_p);
 +	      new_bb = split_edge (e);
 +	      emit_barrier_after (BB_END (new_bb));
@@ -1568,7 +1803,16 @@
 +#endif
 +	      new_e = single_succ_edge (new_bb);
 +	      redirect_edge_succ (new_e, EXIT_BLOCK_PTR);
-+
+ 
+-		  /* If this block has only one successor, it both jumps
+-		     and falls through to the fallthru block, so we can't
+-		     delete the edge.  */
+-		  if (single_succ_p (bb))
+-		    {
+-		      ei_next (&ei2);
+-		      continue;
+-		    }
+-		}
 +	      continue;
 +	    }
 +	  /* If we have a conditional jump branching to the last
@@ -1579,17 +1823,20 @@
 +	      rtx dest;
 +	      if (simple_p)
 +		dest = simple_return_rtx;
-+	      else
+ 	      else
 +		dest = ret_rtx;
 +	      if (! redirect_jump (jump, dest, 0))
-+		{
+ 		{
+-		  ei_next (&ei2);
 +#ifdef HAVE_simple_return
 +		  if (simple_p)
 +		    unconverted_simple_returns = true;
 +#endif
-+		  continue;
-+		}
-+
+ 		  continue;
+ 		}
+ 
+-	      /* Fix up the CFG for the successful change we just made.  */
+-	      redirect_edge_succ (e, EXIT_BLOCK_PTR);
 +	      /* If this block has only one successor, it both jumps
 +		 and falls through to the fallthru block, so we can't
 +		 delete the edge.  */
@@ -1603,73 +1850,15 @@
 +		unconverted_simple_returns = true;
 +#endif
 +	      continue;
-+	    }
-+
+ 	    }
+ 
 +	  /* Fix up the CFG for the successful change we just made.  */
 +	  redirect_edge_succ (e, EXIT_BLOCK_PTR);
- 	}
++	}
 +      VEC_free (basic_block, heap, src_bbs);
- 
--      if (BB_HEAD (last) == label && LABEL_P (label))
++
 +      if (HAVE_return)
- 	{
--	  edge_iterator ei2;
--
--	  for (ei2 = ei_start (last->preds); (e = ei_safe_edge (ei2)); )
--	    {
--	      basic_block bb = e->src;
--	      rtx jump;
--
--	      if (bb == ENTRY_BLOCK_PTR)
--		{
--		  ei_next (&ei2);
--		  continue;
--		}
--
--	      jump = BB_END (bb);
--	      if (!JUMP_P (jump) || JUMP_LABEL (jump) != label)
--		{
--		  ei_next (&ei2);
--		  continue;
--		}
--
--	      /* If we have an unconditional jump, we can replace that
--		 with a simple return instruction.  */
--	      if (simplejump_p (jump))
--		{
--		  emit_return_into_block (bb);
--		  delete_insn (jump);
--		}
--
--	      /* If we have a conditional jump, we can try to replace
--		 that with a conditional return instruction.  */
--	      else if (condjump_p (jump))
--		{
--		  if (! redirect_jump (jump, 0, 0))
--		    {
--		      ei_next (&ei2);
--		      continue;
--		    }
--
--		  /* If this block has only one successor, it both jumps
--		     and falls through to the fallthru block, so we can't
--		     delete the edge.  */
--		  if (single_succ_p (bb))
--		    {
--		      ei_next (&ei2);
--		      continue;
--		    }
--		}
--	      else
--		{
--		  ei_next (&ei2);
--		  continue;
--		}
--
--	      /* Fix up the CFG for the successful change we just made.  */
--	      redirect_edge_succ (e, EXIT_BLOCK_PTR);
--	    }
--
++	{
  	  /* Emit a return insn for the exit fallthru block.  Whether
  	     this is still reachable will be determined later.  */
  
@@ -1686,7 +1875,7 @@
  	  goto epilogue_done;
  	}
      }
-@@ -5193,15 +5523,10 @@
+@@ -5193,15 +5524,10 @@ thread_prologue_and_epilogue_insns (void
      }
  #endif
  
@@ -1705,7 +1894,7 @@
      goto epilogue_done;
  
  #ifdef HAVE_epilogue
-@@ -5217,25 +5542,38 @@
+@@ -5217,25 +5543,36 @@ thread_prologue_and_epilogue_insns (void
        set_insn_locators (seq, epilogue_locator);
  
        seq = get_insns ();
@@ -1725,8 +1914,6 @@
 +	  else
 +	    JUMP_LABEL (returnjump) = ret_rtx;
 +	}
-+      else
-+	returnjump = NULL_RTX;
      }
    else
  #endif
@@ -1751,7 +1938,7 @@
        cfg_layout_initialize (0);
        FOR_EACH_BB (cur_bb)
  	if (cur_bb->index >= NUM_FIXED_BLOCKS
-@@ -5244,6 +5582,7 @@
+@@ -5244,6 +5581,7 @@ thread_prologue_and_epilogue_insns (void
        cfg_layout_finalize ();
      }
  epilogue_done:
@@ -1759,7 +1946,7 @@
    default_rtl_profile ();
  
    if (inserted)
-@@ -5260,33 +5599,93 @@
+@@ -5260,33 +5598,93 @@ epilogue_done:
  	}
      }
  
@@ -1839,14 +2026,6 @@
 -      emit_insn (gen_sibcall_epilogue ());
 -      seq = get_insns ();
 -      end_sequence ();
--
--      /* Retain a map of the epilogue insns.  Used in life analysis to
--	 avoid getting rid of sibcall epilogue insns.  Do this before we
--	 actually emit the sequence.  */
--      record_insns (seq, NULL, &epilogue_insn_hash);
--      set_insn_locators (seq, epilogue_locator);
--
--      emit_insn_before (seq, insn);
 +      ep_seq = gen_sibcall_epilogue ();
 +      if (ep_seq)
 +	{
@@ -1855,19 +2034,25 @@
 +	  emit_insn (ep_seq);
 +	  seq = get_insns ();
 +	  end_sequence ();
-+
+ 
+-      /* Retain a map of the epilogue insns.  Used in life analysis to
+-	 avoid getting rid of sibcall epilogue insns.  Do this before we
+-	 actually emit the sequence.  */
+-      record_insns (seq, NULL, &epilogue_insn_hash);
+-      set_insn_locators (seq, epilogue_locator);
 +	  /* Retain a map of the epilogue insns.  Used in life analysis to
 +	     avoid getting rid of sibcall epilogue insns.  Do this before we
 +	     actually emit the sequence.  */
 +	  record_insns (seq, NULL, &epilogue_insn_hash);
 +	  set_insn_locators (seq, epilogue_locator);
-+
+ 
+-      emit_insn_before (seq, insn);
 +	  emit_insn_before (seq, insn);
 +	}
        ei_next (&ei);
      }
  #endif
-@@ -5311,6 +5710,8 @@
+@@ -5311,6 +5709,8 @@ epilogue_done:
      }
  #endif
  
@@ -1876,11 +2061,11 @@
    /* Threading the prologue and epilogue changes the artificial refs
       in the entry and exit blocks.  */
    epilogue_completed = 1;
-
-=== modified file 'gcc/genemit.c'
---- old/gcc/genemit.c	2009-11-27 11:37:06 +0000
-+++ new/gcc/genemit.c	2011-01-05 12:12:18 +0000
-@@ -222,6 +222,12 @@
+Index: gcc-4_5-branch/gcc/genemit.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/genemit.c
++++ gcc-4_5-branch/gcc/genemit.c
+@@ -222,6 +222,12 @@ gen_exp (rtx x, enum rtx_code subroutine
      case PC:
        printf ("pc_rtx");
        return;
@@ -1893,7 +2078,7 @@
      case CLOBBER:
        if (REG_P (XEXP (x, 0)))
  	{
-@@ -544,8 +550,8 @@
+@@ -544,8 +550,8 @@ gen_expand (rtx expand)
  	  || (GET_CODE (next) == PARALLEL
  	      && ((GET_CODE (XVECEXP (next, 0, 0)) == SET
  		   && GET_CODE (SET_DEST (XVECEXP (next, 0, 0))) == PC)
@@ -1904,7 +2089,7 @@
  	printf ("  emit_jump_insn (");
        else if ((GET_CODE (next) == SET && GET_CODE (SET_SRC (next)) == CALL)
  	       || GET_CODE (next) == CALL
-@@ -660,7 +666,7 @@
+@@ -660,7 +666,7 @@ gen_split (rtx split)
  	  || (GET_CODE (next) == PARALLEL
  	      && GET_CODE (XVECEXP (next, 0, 0)) == SET
  	      && GET_CODE (SET_DEST (XVECEXP (next, 0, 0))) == PC)
@@ -1913,11 +2098,11 @@
  	printf ("  emit_jump_insn (");
        else if ((GET_CODE (next) == SET && GET_CODE (SET_SRC (next)) == CALL)
  	       || GET_CODE (next) == CALL
-
-=== modified file 'gcc/gengenrtl.c'
---- old/gcc/gengenrtl.c	2007-08-22 23:30:39 +0000
-+++ new/gcc/gengenrtl.c	2011-01-05 12:12:18 +0000
-@@ -146,6 +146,10 @@
+Index: gcc-4_5-branch/gcc/gengenrtl.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/gengenrtl.c
++++ gcc-4_5-branch/gcc/gengenrtl.c
+@@ -146,6 +146,10 @@ special_rtx (int idx)
  	  || strcmp (defs[idx].enumname, "REG") == 0
  	  || strcmp (defs[idx].enumname, "SUBREG") == 0
  	  || strcmp (defs[idx].enumname, "MEM") == 0
@@ -1928,11 +2113,11 @@
  	  || strcmp (defs[idx].enumname, "CONST_VECTOR") == 0);
  }
  
-
-=== modified file 'gcc/haifa-sched.c'
---- old/gcc/haifa-sched.c	2010-08-12 08:14:47 +0000
-+++ new/gcc/haifa-sched.c	2011-01-05 12:12:18 +0000
-@@ -4231,7 +4231,7 @@
+Index: gcc-4_5-branch/gcc/haifa-sched.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/haifa-sched.c
++++ gcc-4_5-branch/gcc/haifa-sched.c
+@@ -4231,7 +4231,7 @@ xrecalloc (void *p, size_t new_nmemb, si
  /* Helper function.
     Find fallthru edge from PRED.  */
  edge
@@ -1941,7 +2126,7 @@
  {
    edge e;
    edge_iterator ei;
-@@ -4298,7 +4298,7 @@
+@@ -4298,7 +4298,7 @@ init_before_recovery (basic_block *befor
    edge e;
  
    last = EXIT_BLOCK_PTR->prev_bb;
@@ -1950,7 +2135,7 @@
  
    if (e)
      {
-@@ -5234,6 +5234,11 @@
+@@ -5234,6 +5234,11 @@ check_cfg (rtx head, rtx tail)
  		    gcc_assert (/* Usual case.  */
                                  (EDGE_COUNT (bb->succs) > 1
                                   && !BARRIER_P (NEXT_INSN (head)))
@@ -1962,11 +2147,11 @@
                                  /* Or jump to the next instruction.  */
                                  || (EDGE_COUNT (bb->succs) == 1
                                      && (BB_HEAD (EDGE_I (bb->succs, 0)->dest)
-
-=== modified file 'gcc/ifcvt.c'
---- old/gcc/ifcvt.c	2010-11-26 12:03:32 +0000
-+++ new/gcc/ifcvt.c	2011-01-05 12:12:18 +0000
-@@ -105,7 +105,7 @@
+Index: gcc-4_5-branch/gcc/ifcvt.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/ifcvt.c
++++ gcc-4_5-branch/gcc/ifcvt.c
+@@ -105,7 +105,7 @@ static int find_if_case_1 (basic_block, 
  static int find_if_case_2 (basic_block, edge, edge);
  static int find_memory (rtx *, void *);
  static int dead_or_predicable (basic_block, basic_block, basic_block,
@@ -1975,7 +2160,7 @@
  static void noce_emit_move_insn (rtx, rtx);
  static rtx block_has_only_trap (basic_block);
  
-@@ -3791,6 +3791,7 @@
+@@ -3791,6 +3791,7 @@ find_if_case_1 (basic_block test_bb, edg
    basic_block then_bb = then_edge->dest;
    basic_block else_bb = else_edge->dest;
    basic_block new_bb;
@@ -1983,7 +2168,7 @@
    int then_bb_index;
  
    /* If we are partitioning hot/cold basic blocks, we don't want to
-@@ -3840,9 +3841,16 @@
+@@ -3840,9 +3841,16 @@ find_if_case_1 (basic_block test_bb, edg
  				    predictable_edge_p (then_edge)))))
      return FALSE;
  
@@ -2001,7 +2186,7 @@
      return FALSE;
  
    /* Conversion went ok, including moving the insns and fixing up the
-@@ -3859,6 +3867,9 @@
+@@ -3859,6 +3867,9 @@ find_if_case_1 (basic_block test_bb, edg
        redirect_edge_succ (FALLTHRU_EDGE (test_bb), else_bb);
        new_bb = 0;
      }
@@ -2011,7 +2196,7 @@
    else
      new_bb = redirect_edge_and_branch_force (FALLTHRU_EDGE (test_bb),
  					     else_bb);
-@@ -3957,7 +3968,7 @@
+@@ -3957,7 +3968,7 @@ find_if_case_2 (basic_block test_bb, edg
      return FALSE;
  
    /* Registers set are dead, or are predicable.  */
@@ -2020,7 +2205,7 @@
      return FALSE;
  
    /* Conversion went ok, including moving the insns and fixing up the
-@@ -3995,12 +4006,34 @@
+@@ -3995,12 +4006,34 @@ find_memory (rtx *px, void *data ATTRIBU
  
  static int
  dead_or_predicable (basic_block test_bb, basic_block merge_bb,
@@ -2057,7 +2242,7 @@
  
    jump = BB_END (test_bb);
  
-@@ -4220,10 +4253,9 @@
+@@ -4220,10 +4253,9 @@ dead_or_predicable (basic_block test_bb,
    old_dest = JUMP_LABEL (jump);
    if (other_bb != new_dest)
      {
@@ -2070,7 +2255,7 @@
  	goto cancel;
      }
  
-@@ -4234,7 +4266,7 @@
+@@ -4234,7 +4266,7 @@ dead_or_predicable (basic_block test_bb,
  
    if (other_bb != new_dest)
      {
@@ -2079,11 +2264,11 @@
  
        redirect_edge_succ (BRANCH_EDGE (test_bb), new_dest);
        if (reversep)
-
-=== modified file 'gcc/jump.c'
---- old/gcc/jump.c	2010-12-13 10:05:52 +0000
-+++ new/gcc/jump.c	2011-01-05 12:12:18 +0000
-@@ -29,7 +29,8 @@
+Index: gcc-4_5-branch/gcc/jump.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/jump.c
++++ gcc-4_5-branch/gcc/jump.c
+@@ -29,7 +29,8 @@ along with GCC; see the file COPYING3.  
     JUMP_LABEL internal field.  With this we can detect labels that
     become unused because of the deletion of all the jumps that
     formerly used them.  The JUMP_LABEL info is sometimes looked
@@ -2093,7 +2278,7 @@
  
     The subroutines redirect_jump and invert_jump are used
     from other passes as well.  */
-@@ -742,10 +743,10 @@
+@@ -742,10 +743,10 @@ condjump_p (const_rtx insn)
      return (GET_CODE (x) == IF_THEN_ELSE
  	    && ((GET_CODE (XEXP (x, 2)) == PC
  		 && (GET_CODE (XEXP (x, 1)) == LABEL_REF
@@ -2106,7 +2291,7 @@
  }
  
  /* Return nonzero if INSN is a (possibly) conditional jump inside a
-@@ -774,11 +775,11 @@
+@@ -774,11 +775,11 @@ condjump_in_parallel_p (const_rtx insn)
      return 0;
    if (XEXP (SET_SRC (x), 2) == pc_rtx
        && (GET_CODE (XEXP (SET_SRC (x), 1)) == LABEL_REF
@@ -2120,7 +2305,7 @@
      return 1;
    return 0;
  }
-@@ -840,8 +841,9 @@
+@@ -840,8 +841,9 @@ any_condjump_p (const_rtx insn)
    a = GET_CODE (XEXP (SET_SRC (x), 1));
    b = GET_CODE (XEXP (SET_SRC (x), 2));
  
@@ -2132,7 +2317,7 @@
  }
  
  /* Return the label of a conditional jump.  */
-@@ -878,6 +880,7 @@
+@@ -878,6 +880,7 @@ returnjump_p_1 (rtx *loc, void *data ATT
    switch (GET_CODE (x))
      {
      case RETURN:
@@ -2140,7 +2325,7 @@
      case EH_RETURN:
        return true;
  
-@@ -1200,7 +1203,7 @@
+@@ -1200,7 +1203,7 @@ delete_related_insns (rtx insn)
    /* If deleting a jump, decrement the count of the label,
       and delete the label if it is now unused.  */
  
@@ -2149,7 +2334,7 @@
      {
        rtx lab = JUMP_LABEL (insn), lab_next;
  
-@@ -1331,6 +1334,18 @@
+@@ -1331,6 +1334,18 @@ delete_for_peephole (rtx from, rtx to)
       is also an unconditional jump in that case.  */
  }
  
@@ -2168,7 +2353,7 @@
  /* Throughout LOC, redirect OLABEL to NLABEL.  Treat null OLABEL or
     NLABEL as a return.  Accrue modifications into the change group.  */
  
-@@ -1342,37 +1357,19 @@
+@@ -1342,37 +1357,19 @@ redirect_exp_1 (rtx *loc, rtx olabel, rt
    int i;
    const char *fmt;
  
@@ -2187,7 +2372,9 @@
 -	}
 -    }
 -  else if (code == RETURN && olabel == 0)
--    {
++  if ((code == LABEL_REF && XEXP (x, 0) == olabel)
++      || x == olabel)
+     {
 -      if (nlabel)
 -	x = gen_rtx_LABEL_REF (Pmode, nlabel);
 -      else
@@ -2195,9 +2382,6 @@
 -      if (loc == &PATTERN (insn))
 -	x = gen_rtx_SET (VOIDmode, pc_rtx, x);
 -      validate_change (insn, loc, x, 1);
-+  if ((code == LABEL_REF && XEXP (x, 0) == olabel)
-+      || x == olabel)
-+    {
 +      validate_change (insn, loc, redirect_target (nlabel), 1);
        return;
      }
@@ -2213,7 +2397,7 @@
        return;
      }
  
-@@ -1409,6 +1406,7 @@
+@@ -1409,6 +1406,7 @@ redirect_jump_1 (rtx jump, rtx nlabel)
    int ochanges = num_validated_changes ();
    rtx *loc, asmop;
  
@@ -2221,7 +2405,7 @@
    asmop = extract_asm_operands (PATTERN (jump));
    if (asmop)
      {
-@@ -1430,17 +1428,20 @@
+@@ -1430,17 +1428,20 @@ redirect_jump_1 (rtx jump, rtx nlabel)
     jump target label is unused as a result, it and the code following
     it may be deleted.
  
@@ -2245,7 +2429,7 @@
    if (nlabel == olabel)
      return 1;
  
-@@ -1452,7 +1453,7 @@
+@@ -1452,7 +1453,7 @@ redirect_jump (rtx jump, rtx nlabel, int
  }
  
  /* Fix up JUMP_LABEL and label ref counts after OLABEL has been replaced with
@@ -2254,7 +2438,7 @@
     If DELETE_UNUSED is positive, delete related insn to OLABEL if its ref
     count has dropped to zero.  */
  void
-@@ -1468,13 +1469,14 @@
+@@ -1468,13 +1469,14 @@ redirect_jump_2 (rtx jump, rtx olabel, r
       about this.  */
    gcc_assert (delete_unused >= 0);
    JUMP_LABEL (jump) = nlabel;
@@ -2271,7 +2455,7 @@
  	remove_note (jump, note);
        else
  	{
-@@ -1483,7 +1485,8 @@
+@@ -1483,7 +1485,8 @@ redirect_jump_2 (rtx jump, rtx olabel, r
  	}
      }
  
@@ -2281,11 +2465,11 @@
        /* Undefined labels will remain outside the insn stream.  */
        && INSN_UID (olabel))
      delete_related_insns (olabel);
-
-=== modified file 'gcc/opts.c'
---- old/gcc/opts.c	2010-12-10 15:33:37 +0000
-+++ new/gcc/opts.c	2011-01-05 12:12:18 +0000
-@@ -908,6 +908,7 @@
+Index: gcc-4_5-branch/gcc/opts.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/opts.c
++++ gcc-4_5-branch/gcc/opts.c
+@@ -909,6 +909,7 @@ decode_options (unsigned int argc, const
    flag_ipa_cp = opt2;
    flag_ipa_sra = opt2;
    flag_ee = opt2;
@@ -2293,11 +2477,11 @@
  
    /* Track fields in field-sensitive alias analysis.  */
    set_param_value ("max-fields-for-field-sensitive",
-
-=== modified file 'gcc/print-rtl.c'
---- old/gcc/print-rtl.c	2010-03-26 16:18:51 +0000
-+++ new/gcc/print-rtl.c	2011-01-05 12:12:18 +0000
-@@ -308,9 +308,16 @@
+Index: gcc-4_5-branch/gcc/print-rtl.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/print-rtl.c
++++ gcc-4_5-branch/gcc/print-rtl.c
+@@ -308,9 +308,16 @@ print_rtx (const_rtx in_rtx)
  	      }
  	  }
  	else if (i == 8 && JUMP_P (in_rtx) && JUMP_LABEL (in_rtx) != NULL)
@@ -2317,11 +2501,11 @@
  	else if (i == 0 && GET_CODE (in_rtx) == VALUE)
  	  {
  #ifndef GENERATOR_FILE
-
-=== modified file 'gcc/reorg.c'
---- old/gcc/reorg.c	2010-09-15 22:51:44 +0000
-+++ new/gcc/reorg.c	2011-01-05 12:12:18 +0000
-@@ -161,8 +161,11 @@
+Index: gcc-4_5-branch/gcc/reorg.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/reorg.c
++++ gcc-4_5-branch/gcc/reorg.c
+@@ -161,8 +161,11 @@ static rtx *unfilled_firstobj;
  #define unfilled_slots_next	\
    ((rtx *) obstack_next_free (&unfilled_slots_obstack))
  
@@ -2335,7 +2519,7 @@
  
  /* Mapping between INSN_UID's and position in the code since INSN_UID's do
     not always monotonically increase.  */
-@@ -175,7 +178,7 @@
+@@ -175,7 +178,7 @@ static int stop_search_p (rtx, int);
  static int resource_conflicts_p (struct resources *, struct resources *);
  static int insn_references_resource_p (rtx, struct resources *, bool);
  static int insn_sets_resource_p (rtx, struct resources *, bool);
@@ -2344,7 +2528,7 @@
  static rtx emit_delay_sequence (rtx, rtx, int);
  static rtx add_to_delay_list (rtx, rtx);
  static rtx delete_from_delay_slot (rtx);
-@@ -220,6 +223,15 @@
+@@ -220,6 +223,15 @@ static void relax_delay_slots (rtx);
  static void make_return_insns (rtx);
  #endif
  
@@ -2360,7 +2544,7 @@
  /* Return TRUE if this insn should stop the search for insn to fill delay
     slots.  LABELS_P indicates that labels should terminate the search.
     In all cases, jumps terminate the search.  */
-@@ -335,23 +347,29 @@
+@@ -335,23 +347,29 @@ insn_sets_resource_p (rtx insn, struct r
  
     ??? There may be a problem with the current implementation.  Suppose
     we start with a bare RETURN insn and call find_end_label.  It may set
@@ -2396,7 +2580,7 @@
  
    /* Otherwise, see if there is a label at the end of the function.  If there
       is, it must be that RETURN insns aren't needed, so that is our return
-@@ -366,44 +384,44 @@
+@@ -366,44 +384,44 @@ find_end_label (void)
  
    /* When a target threads its epilogue we might already have a
       suitable return insn.  If so put a label before it for the
@@ -2454,7 +2638,7 @@
  	}
        else
  	{
-@@ -413,19 +431,16 @@
+@@ -413,19 +431,16 @@ find_end_label (void)
  	      && ! HAVE_return
  #endif
  	      )
@@ -2480,7 +2664,7 @@
  #ifdef HAVE_return
  	  /* We don't bother trying to create a return insn if the
  	     epilogue has filled delay-slots; we would have to try and
-@@ -437,19 +452,21 @@
+@@ -437,19 +452,21 @@ find_end_label (void)
  	      /* The return we make may have delay slots too.  */
  	      rtx insn = gen_return ();
  	      insn = emit_jump_insn (insn);
@@ -2504,7 +2688,7 @@
  }
  
  /* Put INSN and LIST together in a SEQUENCE rtx of LENGTH, and replace
-@@ -797,10 +814,8 @@
+@@ -797,10 +814,8 @@ optimize_skip (rtx insn)
    if ((next_trial == next_active_insn (JUMP_LABEL (insn))
         && ! (next_trial == 0 && crtl->epilogue_delay_list != 0))
        || (next_trial != 0
@@ -2517,7 +2701,7 @@
      {
        if (eligible_for_annul_false (insn, 0, trial, flags))
  	{
-@@ -819,13 +834,11 @@
+@@ -819,13 +834,11 @@ optimize_skip (rtx insn)
  	 branch, thread our jump to the target of that branch.  Don't
  	 change this into a RETURN here, because it may not accept what
  	 we have in the delay slot.  We'll fix this up later.  */
@@ -2534,7 +2718,7 @@
  
  	  if (target_label)
  	    {
-@@ -866,7 +879,7 @@
+@@ -866,7 +879,7 @@ get_jump_flags (rtx insn, rtx label)
    if (JUMP_P (insn)
        && (condjump_p (insn) || condjump_in_parallel_p (insn))
        && INSN_UID (insn) <= max_uid
@@ -2543,7 +2727,7 @@
        && INSN_UID (label) <= max_uid)
      flags
        = (uid_to_ruid[INSN_UID (label)] > uid_to_ruid[INSN_UID (insn)])
-@@ -1038,7 +1051,7 @@
+@@ -1038,7 +1051,7 @@ get_branch_condition (rtx insn, rtx targ
      pat = XVECEXP (pat, 0, 0);
  
    if (GET_CODE (pat) == RETURN)
@@ -2552,7 +2736,7 @@
  
    else if (GET_CODE (pat) != SET || SET_DEST (pat) != pc_rtx)
      return 0;
-@@ -1318,7 +1331,11 @@
+@@ -1318,7 +1331,11 @@ steal_delay_list_from_target (rtx insn, 
      }
  
    /* Show the place to which we will be branching.  */
@@ -2565,7 +2749,7 @@
  
    /* Add any new insns to the delay list and update the count of the
       number of slots filled.  */
-@@ -1358,8 +1375,7 @@
+@@ -1358,8 +1375,7 @@ steal_delay_list_from_fallthrough (rtx i
    /* We can't do anything if SEQ's delay insn isn't an
       unconditional branch.  */
  
@@ -2575,7 +2759,7 @@
      return delay_list;
  
    for (i = 1; i < XVECLEN (seq, 0); i++)
-@@ -1827,7 +1843,7 @@
+@@ -1827,7 +1843,7 @@ own_thread_p (rtx thread, rtx label, int
    rtx insn;
  
    /* We don't own the function end.  */
@@ -2584,7 +2768,7 @@
      return 0;
  
    /* Get the first active insn, or THREAD, if it is an active insn.  */
-@@ -2245,7 +2261,8 @@
+@@ -2245,7 +2261,8 @@ fill_simple_delay_slots (int non_jumps_p
  	  && (!JUMP_P (insn)
  	      || ((condjump_p (insn) || condjump_in_parallel_p (insn))
  		  && ! simplejump_p (insn)
@@ -2594,7 +2778,7 @@
  	{
  	  /* Invariant: If insn is a JUMP_INSN, the insn's jump
  	     label.  Otherwise, zero.  */
-@@ -2270,7 +2287,7 @@
+@@ -2270,7 +2287,7 @@ fill_simple_delay_slots (int non_jumps_p
  		target = JUMP_LABEL (insn);
  	    }
  
@@ -2603,7 +2787,7 @@
  	    for (trial = next_nonnote_insn (insn); trial; trial = next_trial)
  	      {
  		next_trial = next_nonnote_insn (trial);
-@@ -2349,6 +2366,7 @@
+@@ -2349,6 +2366,7 @@ fill_simple_delay_slots (int non_jumps_p
  	      && JUMP_P (trial)
  	      && simplejump_p (trial)
  	      && (target == 0 || JUMP_LABEL (trial) == target)
@@ -2611,7 +2795,7 @@
  	      && (next_trial = next_active_insn (JUMP_LABEL (trial))) != 0
  	      && ! (NONJUMP_INSN_P (next_trial)
  		    && GET_CODE (PATTERN (next_trial)) == SEQUENCE)
-@@ -2371,7 +2389,7 @@
+@@ -2371,7 +2389,7 @@ fill_simple_delay_slots (int non_jumps_p
  	      if (new_label != 0)
  		new_label = get_label_before (new_label);
  	      else
@@ -2620,7 +2804,7 @@
  
  	      if (new_label)
  	        {
-@@ -2503,7 +2521,8 @@
+@@ -2503,7 +2521,8 @@ fill_simple_delay_slots (int non_jumps_p
  
  /* Follow any unconditional jump at LABEL;
     return the ultimate label reached by any such chain of jumps.
@@ -2630,7 +2814,7 @@
     If LABEL is not followed by a jump, return LABEL.
     If the chain loops or we can't find end, return LABEL,
     since that tells caller to avoid changing the insn.  */
-@@ -2518,6 +2537,7 @@
+@@ -2518,6 +2537,7 @@ follow_jumps (rtx label)
  
    for (depth = 0;
         (depth < 10
@@ -2638,7 +2822,7 @@
  	&& (insn = next_active_insn (value)) != 0
  	&& JUMP_P (insn)
  	&& ((JUMP_LABEL (insn) != 0 && any_uncondjump_p (insn)
-@@ -2527,18 +2547,22 @@
+@@ -2527,18 +2547,22 @@ follow_jumps (rtx label)
  	&& BARRIER_P (next));
         depth++)
      {
@@ -2667,7 +2851,7 @@
      }
    if (depth == 10)
      return label;
-@@ -2901,6 +2925,7 @@
+@@ -2901,6 +2925,7 @@ fill_slots_from_thread (rtx insn, rtx co
       arithmetic insn after the jump insn and put the arithmetic insn in the
       delay slot.  If we can't do this, return.  */
    if (delay_list == 0 && likely && new_thread
@@ -2675,7 +2859,7 @@
        && NONJUMP_INSN_P (new_thread)
        && GET_CODE (PATTERN (new_thread)) != ASM_INPUT
        && asm_noperands (PATTERN (new_thread)) < 0)
-@@ -2985,16 +3010,14 @@
+@@ -2985,16 +3010,14 @@ fill_slots_from_thread (rtx insn, rtx co
  
        gcc_assert (thread_if_true);
  
@@ -2695,7 +2879,7 @@
        else if (LABEL_P (new_thread))
  	label = new_thread;
        else
-@@ -3340,11 +3363,12 @@
+@@ -3340,11 +3363,12 @@ relax_delay_slots (rtx first)
  	 group of consecutive labels.  */
        if (JUMP_P (insn)
  	  && (condjump_p (insn) || condjump_in_parallel_p (insn))
@@ -2711,7 +2895,7 @@
  
  	  if (target_label && next_active_insn (target_label) == next
  	      && ! condjump_in_parallel_p (insn))
-@@ -3359,9 +3383,8 @@
+@@ -3359,9 +3383,8 @@ relax_delay_slots (rtx first)
  	  /* See if this jump conditionally branches around an unconditional
  	     jump.  If so, invert this jump and point it to the target of the
  	     second jump.  */
@@ -2722,7 +2906,7 @@
  	      && target_label
  	      && next_active_insn (target_label) == next_active_insn (next)
  	      && no_labels_between_p (insn, next))
-@@ -3403,8 +3426,7 @@
+@@ -3403,8 +3426,7 @@ relax_delay_slots (rtx first)
  	 Don't do this if we expect the conditional branch to be true, because
  	 we would then be making the more common case longer.  */
  
@@ -2732,7 +2916,7 @@
  	  && (other = prev_active_insn (insn)) != 0
  	  && any_condjump_p (other)
  	  && no_labels_between_p (other, insn)
-@@ -3445,10 +3467,10 @@
+@@ -3445,10 +3467,10 @@ relax_delay_slots (rtx first)
  	 Only do so if optimizing for size since this results in slower, but
  	 smaller code.  */
        if (optimize_function_for_size_p (cfun)
@@ -2745,7 +2929,7 @@
  	{
  	  rtx after;
  	  int i;
-@@ -3487,14 +3509,16 @@
+@@ -3487,14 +3509,16 @@ relax_delay_slots (rtx first)
  	continue;
  
        target_label = JUMP_LABEL (delay_insn);
@@ -2764,7 +2948,7 @@
  
  	  if (trial && trial != target_label
  	      && redirect_with_delay_slots_safe_p (delay_insn, trial, insn))
-@@ -3517,7 +3541,7 @@
+@@ -3517,7 +3541,7 @@ relax_delay_slots (rtx first)
  		 later incorrectly compute register live/death info.  */
  	      rtx tmp = next_active_insn (trial);
  	      if (tmp == 0)
@@ -2773,7 +2957,7 @@
  
  	      if (tmp)
  	        {
-@@ -3537,14 +3561,12 @@
+@@ -3537,14 +3561,12 @@ relax_delay_slots (rtx first)
  	     delay list and that insn is redundant, thread the jump.  */
  	  if (trial && GET_CODE (PATTERN (trial)) == SEQUENCE
  	      && XVECLEN (PATTERN (trial), 0) == 2
@@ -2791,7 +2975,7 @@
  
  	      if (target_label
  	          && redirect_with_delay_slots_safe_p (delay_insn, target_label,
-@@ -3622,16 +3644,15 @@
+@@ -3622,16 +3644,15 @@ relax_delay_slots (rtx first)
  	 a RETURN here.  */
        if (! INSN_ANNULLED_BRANCH_P (delay_insn)
  	  && any_condjump_p (delay_insn)
@@ -2811,7 +2995,7 @@
  
  	  /* find_end_label can generate a new label. Check this first.  */
  	  if (label
-@@ -3692,7 +3713,8 @@
+@@ -3692,7 +3713,8 @@ static void
  make_return_insns (rtx first)
  {
    rtx insn, jump_insn, pat;
@@ -2821,7 +3005,7 @@
    int slots, i;
  
  #ifdef DELAY_SLOTS_FOR_EPILOGUE
-@@ -3707,18 +3729,25 @@
+@@ -3707,18 +3729,25 @@ make_return_insns (rtx first)
  #endif
  
    /* See if there is a RETURN insn in the function other than the one we
@@ -2852,7 +3036,7 @@
  
    /* Clear the list of insns to fill so we can use it.  */
    obstack_free (&unfilled_slots_obstack, unfilled_firstobj);
-@@ -3726,13 +3755,27 @@
+@@ -3726,13 +3755,27 @@ make_return_insns (rtx first)
    for (insn = first; insn; insn = NEXT_INSN (insn))
      {
        int flags;
@@ -2882,7 +3066,7 @@
  	continue;
  
        pat = PATTERN (insn);
-@@ -3740,14 +3783,12 @@
+@@ -3740,14 +3783,12 @@ make_return_insns (rtx first)
  
        /* If we can't make the jump into a RETURN, try to redirect it to the best
  	 RETURN and go on to the next insn.  */
@@ -2900,7 +3084,7 @@
  	  continue;
  	}
  
-@@ -3787,7 +3828,7 @@
+@@ -3787,7 +3828,7 @@ make_return_insns (rtx first)
  	 RETURN, delete the SEQUENCE and output the individual insns,
  	 followed by the RETURN.  Then set things up so we try to find
  	 insns for its delay slots, if it needs some.  */
@@ -2909,7 +3093,7 @@
  	{
  	  rtx prev = PREV_INSN (insn);
  
-@@ -3804,13 +3845,16 @@
+@@ -3804,13 +3845,16 @@ make_return_insns (rtx first)
        else
  	/* It is probably more efficient to keep this with its current
  	   delay slot as a branch to a RETURN.  */
@@ -2928,7 +3112,7 @@
  
    fill_simple_delay_slots (1);
    fill_simple_delay_slots (0);
-@@ -3878,7 +3922,7 @@
+@@ -3878,7 +3922,7 @@ dbr_schedule (rtx first)
    init_resource_info (epilogue_insn);
  
    /* Show we haven't computed an end-of-function label yet.  */
@@ -2937,7 +3121,7 @@
  
    /* Initialize the statistics for this function.  */
    memset (num_insns_needing_delays, 0, sizeof num_insns_needing_delays);
-@@ -3900,11 +3944,23 @@
+@@ -3900,11 +3944,23 @@ dbr_schedule (rtx first)
    /* If we made an end of function label, indicate that it is now
       safe to delete it by undoing our prior adjustment to LABEL_NUSES.
       If it is now unused, delete it.  */
@@ -2964,11 +3148,11 @@
      make_return_insns (first);
  #endif
  
-
-=== modified file 'gcc/resource.c'
---- old/gcc/resource.c	2009-11-25 10:55:54 +0000
-+++ new/gcc/resource.c	2011-01-05 12:12:18 +0000
-@@ -495,6 +495,8 @@
+Index: gcc-4_5-branch/gcc/resource.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/resource.c
++++ gcc-4_5-branch/gcc/resource.c
+@@ -495,6 +495,8 @@ find_dead_or_set_registers (rtx target, 
  		  || GET_CODE (PATTERN (this_jump_insn)) == RETURN)
  		{
  		  next = JUMP_LABEL (this_jump_insn);
@@ -2977,7 +3161,7 @@
  		  if (jump_insn == 0)
  		    {
  		      jump_insn = insn;
-@@ -562,9 +564,10 @@
+@@ -562,9 +564,10 @@ find_dead_or_set_registers (rtx target, 
  		  AND_COMPL_HARD_REG_SET (scratch, needed.regs);
  		  AND_COMPL_HARD_REG_SET (fallthrough_res.regs, scratch);
  
@@ -2991,7 +3175,7 @@
  		  find_dead_or_set_registers (next,
  					      &fallthrough_res, 0, jump_count,
  					      set, needed);
-@@ -1097,6 +1100,8 @@
+@@ -1097,6 +1100,8 @@ mark_target_live_regs (rtx insns, rtx ta
        struct resources new_resources;
        rtx stop_insn = next_active_insn (jump_insn);
  
@@ -3000,11 +3184,11 @@
        mark_target_live_regs (insns, next_active_insn (jump_target),
  			     &new_resources);
        CLEAR_RESOURCE (&set);
-
-=== modified file 'gcc/rtl.c'
---- old/gcc/rtl.c	2010-12-13 10:05:52 +0000
-+++ new/gcc/rtl.c	2011-01-05 12:12:18 +0000
-@@ -256,6 +256,8 @@
+Index: gcc-4_5-branch/gcc/rtl.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/rtl.c
++++ gcc-4_5-branch/gcc/rtl.c
+@@ -256,6 +256,8 @@ copy_rtx (rtx orig)
      case CODE_LABEL:
      case PC:
      case CC0:
@@ -3013,11 +3197,11 @@
      case SCRATCH:
        /* SCRATCH must be shared because they represent distinct values.  */
        return orig;
-
-=== modified file 'gcc/rtl.def'
---- old/gcc/rtl.def	2010-04-02 18:54:46 +0000
-+++ new/gcc/rtl.def	2011-01-05 12:12:18 +0000
-@@ -296,6 +296,10 @@
+Index: gcc-4_5-branch/gcc/rtl.def
+===================================================================
+--- gcc-4_5-branch.orig/gcc/rtl.def
++++ gcc-4_5-branch/gcc/rtl.def
+@@ -296,6 +296,10 @@ DEF_RTL_EXPR(CALL, "call", "ee", RTX_EXT
  
  DEF_RTL_EXPR(RETURN, "return", "", RTX_EXTRA)
  
@@ -3028,11 +3212,11 @@
  /* Special for EH return from subroutine.  */
  
  DEF_RTL_EXPR(EH_RETURN, "eh_return", "", RTX_EXTRA)
-
-=== modified file 'gcc/rtl.h'
---- old/gcc/rtl.h	2010-11-16 22:17:17 +0000
-+++ new/gcc/rtl.h	2011-01-05 12:12:18 +0000
-@@ -411,6 +411,10 @@
+Index: gcc-4_5-branch/gcc/rtl.h
+===================================================================
+--- gcc-4_5-branch.orig/gcc/rtl.h
++++ gcc-4_5-branch/gcc/rtl.h
+@@ -411,6 +411,10 @@ struct GTY(()) rtvec_def {
    (JUMP_P (INSN) && (GET_CODE (PATTERN (INSN)) == ADDR_VEC || \
  		     GET_CODE (PATTERN (INSN)) == ADDR_DIFF_VEC))
  
@@ -3043,7 +3227,7 @@
  /* 1 if X is a unary operator.  */
  
  #define UNARY_P(X)   \
-@@ -1998,6 +2002,8 @@
+@@ -1998,6 +2002,8 @@ enum global_rtl_index
  {
    GR_PC,
    GR_CC0,
@@ -3052,7 +3236,7 @@
    GR_STACK_POINTER,
    GR_FRAME_POINTER,
  /* For register elimination to work properly these hard_frame_pointer_rtx,
-@@ -2032,6 +2038,8 @@
+@@ -2032,6 +2038,8 @@ extern GTY(()) rtx global_rtl[GR_MAX];
  
  /* Standard pieces of rtx, to be substituted directly into things.  */
  #define pc_rtx                  (global_rtl[GR_PC])
@@ -3061,11 +3245,11 @@
  #define cc0_rtx                 (global_rtl[GR_CC0])
  
  /* All references to certain hard regs, except those created
-
-=== modified file 'gcc/rtlanal.c'
---- old/gcc/rtlanal.c	2010-11-16 22:17:17 +0000
-+++ new/gcc/rtlanal.c	2011-01-05 12:12:18 +0000
-@@ -2673,6 +2673,7 @@
+Index: gcc-4_5-branch/gcc/rtlanal.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/rtlanal.c
++++ gcc-4_5-branch/gcc/rtlanal.c
+@@ -2673,6 +2673,7 @@ tablejump_p (const_rtx insn, rtx *labelp
  
    if (JUMP_P (insn)
        && (label = JUMP_LABEL (insn)) != NULL_RTX
@@ -3073,11 +3257,11 @@
        && (table = next_active_insn (label)) != NULL_RTX
        && JUMP_TABLE_DATA_P (table))
      {
-
-=== modified file 'gcc/sched-int.h'
---- old/gcc/sched-int.h	2010-06-02 16:31:39 +0000
-+++ new/gcc/sched-int.h	2011-01-05 12:12:18 +0000
-@@ -199,7 +199,7 @@
+Index: gcc-4_5-branch/gcc/sched-int.h
+===================================================================
+--- gcc-4_5-branch.orig/gcc/sched-int.h
++++ gcc-4_5-branch/gcc/sched-int.h
+@@ -199,7 +199,7 @@ extern int max_issue (struct ready_list 
  
  extern void ebb_compute_jump_reg_dependencies (rtx, regset, regset, regset);
  
@@ -3086,11 +3270,11 @@
  
  extern void (* sched_init_only_bb) (basic_block, basic_block);
  extern basic_block (* sched_split_block) (basic_block, rtx);
-
-=== modified file 'gcc/sched-vis.c'
---- old/gcc/sched-vis.c	2009-11-25 10:55:54 +0000
-+++ new/gcc/sched-vis.c	2011-01-05 12:12:18 +0000
-@@ -549,6 +549,9 @@
+Index: gcc-4_5-branch/gcc/sched-vis.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/sched-vis.c
++++ gcc-4_5-branch/gcc/sched-vis.c
+@@ -549,6 +549,9 @@ print_pattern (char *buf, const_rtx x, i
      case RETURN:
        sprintf (buf, "return");
        break;
@@ -3100,11 +3284,11 @@
      case CALL:
        print_exp (buf, x, verbose);
        break;
-
-=== modified file 'gcc/sel-sched-ir.c'
---- old/gcc/sel-sched-ir.c	2010-08-31 11:52:01 +0000
-+++ new/gcc/sel-sched-ir.c	2011-01-05 12:12:18 +0000
-@@ -686,7 +686,7 @@
+Index: gcc-4_5-branch/gcc/sel-sched-ir.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/sel-sched-ir.c
++++ gcc-4_5-branch/gcc/sel-sched-ir.c
+@@ -686,7 +686,7 @@ merge_fences (fence_t f, insn_t insn,
  
        /* Find fallthrough edge.  */
        gcc_assert (BLOCK_FOR_INSN (insn)->prev_bb);
@@ -3113,11 +3297,11 @@
  
        if (!candidate
            || (candidate->src != BLOCK_FOR_INSN (last_scheduled_insn)
-
-=== modified file 'gcc/sel-sched.c'
---- old/gcc/sel-sched.c	2010-11-12 15:47:38 +0000
-+++ new/gcc/sel-sched.c	2011-01-05 12:12:18 +0000
-@@ -617,8 +617,8 @@
+Index: gcc-4_5-branch/gcc/sel-sched.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/sel-sched.c
++++ gcc-4_5-branch/gcc/sel-sched.c
+@@ -617,8 +617,8 @@ in_fallthru_bb_p (rtx insn, rtx succ)
    if (bb == BLOCK_FOR_INSN (succ))
      return true;
  
@@ -3128,7 +3312,7 @@
    else
      return false;
  
-@@ -4911,7 +4911,7 @@
+@@ -4911,7 +4911,7 @@ move_cond_jump (rtx insn, bnd_t bnd)
    next = PREV_INSN (insn);
    BND_TO (bnd) = insn;
  
@@ -3137,11 +3321,11 @@
    block_next = ft_edge->dest;
    /* There must be a fallthrough block (or where should go
    control flow in case of false jump predicate otherwise?).  */
-
-=== modified file 'gcc/vec.h'
---- old/gcc/vec.h	2010-01-09 14:46:25 +0000
-+++ new/gcc/vec.h	2011-01-05 12:12:18 +0000
-@@ -188,6 +188,18 @@
+Index: gcc-4_5-branch/gcc/vec.h
+===================================================================
+--- gcc-4_5-branch.orig/gcc/vec.h
++++ gcc-4_5-branch/gcc/vec.h
+@@ -188,6 +188,18 @@ along with GCC; see the file COPYING3.  
  
  #define VEC_iterate(T,V,I,P)	(VEC_OP(T,base,iterate)(VEC_BASE(V),I,&(P)))
  
@@ -3160,4 +3344,3 @@
  /* Allocate new vector.
     VEC(T,A) *VEC_T_A_alloc(int reserve);
  
-
