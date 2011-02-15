@@ -1,0 +1,18 @@
+--- a/Makefile.am~	2011-02-15 18:01:03.017997415 +0100
++++ b/Makefile.am	2011-02-15 18:02:15.507693520 +0100
+@@ -1,5 +1,5 @@
+ ## Makefile.am -- Process this file with automake to produce Makefile.in
+-SUBDIRS = src tests doc
++SUBDIRS = src tests
+ 
+ include_HEADERS = src/mpc.h
+ EXTRA_DIST = Makefile.vc tests/tgeneric.c
+--- a/configure.ac~	2011-02-15 18:01:11.593996895 +0100
++++ b/configure.ac	2011-02-15 18:01:58.887679907 +0100
+@@ -175,5 +175,5 @@
+         [AC_DEFINE([NO_STREAM_REDIRECTION],1,[Do not check mpc_out_str on stdout])])
+ CFLAGS=$old_cflags
+ 
+-AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile doc/Makefile])
++AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile])
+ AC_OUTPUT
