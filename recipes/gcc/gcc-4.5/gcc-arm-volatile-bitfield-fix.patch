@@ -89,9 +89,9 @@ ChangeLog
 
 Index: gcc-4_5-branch/gcc/expr.c
 ===================================================================
---- gcc-4_5-branch.orig/gcc/expr.c	2010-12-23 00:42:11.690101002 -0800
-+++ gcc-4_5-branch/gcc/expr.c	2010-12-24 15:07:39.400101000 -0800
-@@ -9029,7 +9029,8 @@
+--- gcc-4_5-branch.orig/gcc/expr.c
++++ gcc-4_5-branch/gcc/expr.c
+@@ -9033,7 +9033,8 @@ expand_expr_real_1 (tree exp, rtx target
  		&& modifier != EXPAND_INITIALIZER)
  	    /* If the field is volatile, we always want an aligned
  	       access.  */
