@@ -92,7 +92,7 @@ BBINCLUDELOGS = "yes"
 # OE stats client (make troubleshooting easier)
 INHERIT += "oestats-client"
 OESTATS_BUILDER = "${TB_BUILDER}"
-OESTATS_SERVER = "tinderbox.openembedded.net"
+OESTATS_SERVER = "tinderbox.openembedded.org"
 
 EOF
 

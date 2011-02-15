@@ -69,7 +69,7 @@ OE_STRICT_CHECKSUMS = "1"
 
 # if you want to report build results (recommended) you need to edit OESTATS_BUILDER and add your name or nick in it, then uncomment the next 3 lines.
 #INHERIT += "oestats-client"
-#OESTATS_SERVER = "tinderbox.openembedded.net"
+#OESTATS_SERVER = "tinderbox.openembedded.org"
 #OESTATS_BUILDER = "your nick goes here"
 
 EOF
