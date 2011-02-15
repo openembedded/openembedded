@@ -7,7 +7,7 @@ DEPENDS = "libogg"
 SRC_URI = "${SOURCEFORGE_MIRROR}/flac/flac-${PV}.tar.gz \
 	   file://xmms.m4"
 
-INC_PR = "r1"
+INC_PR = "r2"
 
 inherit autotools gettext
 
@@ -18,7 +18,8 @@ EXTRA_OECONF = "--disable-oggtest --disable-id3libtest \
 		--without-xmms-prefix \
 		--without-xmms-exec-prefix \
 		--without-libiconv-prefix \
-		--without-id3lib"
+		--without-id3lib \
+               "
 
 do_configure () {
 	install -d ${S}/m4
@@ -27,6 +28,9 @@ do_configure () {
 	# removes '-read-only-relocs' which is enabled for PowerPC builds.
 	# It makes the build fail, other archs are not affected. Fixes #1775.
 	sed -i 's/-Wl,-read_only_relocs,warning//g' src/libFLAC/Makefile
+        # use same fix as libiconv
+        sed -i -e  s/^hardcode_libdir_flag_spec/#hardcode_libdir_flag_spec/ \
+               -e s/^runpath_var/#runpath_var/ ${S}/*-libtool
 }
 
 PACKAGES += "libflac libflac++ liboggflac liboggflac++"
