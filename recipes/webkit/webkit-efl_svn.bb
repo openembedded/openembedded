@@ -4,7 +4,7 @@ DEPENDS = "icu libxslt sqlite3 gperf-native bison-native flex-native jpeg \
            libpng libxt fontconfig cairo freetype glib-2.0 libsoup-2.4 \
            libxml2 pango eina ecore evas edje"
 
-SRCREV = "78547"
+SRCREV = "79192"
 PV = "1.3.11+svnr${SRCPV}"
 
 SRCREV_FORMAT = "source"
