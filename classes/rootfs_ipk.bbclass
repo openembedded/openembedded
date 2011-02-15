@@ -105,8 +105,9 @@ fakeroot rootfs_ipk_do_rootfs () {
 	log_check rootfs 	
 	rm -rf ${IPKG_TMP_DIR}
 
-	[ "${ONLINE_PACKAGE_MANAGEMENT}" != "none" ] && \
+	if [ "${ONLINE_PACKAGE_MANAGEMENT}" != "none" ]; then
 		rootfs_ipk_insert_feed_uris
+	fi
 }
 
 rootfs_ipk_insert_feed_uris () {
