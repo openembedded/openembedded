@@ -1,5 +1,5 @@
 DESCRIPTION = "QT4-X11 base Image Feed"
-PR = "r0"
+PR = "r1"
 LICENSE = "MIT"
 
 inherit task
@@ -26,7 +26,6 @@ RDEPENDS_${PN}-base = " \
         libqttest4 \
         libqtwebkit4 \
         libqtxml4 \
-        libqtxmlpatterns4 \
         qt4-fonts \
         qt4-plugin-iconengine-svgicon \
         qt4-plugin-imageformat-gif \
@@ -39,6 +38,10 @@ RDEPENDS_${PN}-base = " \
         qt4-plugin-script-dbus \
         qt4-plugin-sqldriver-sqlite2 \
         qt4-plugin-sqldriver-sqlite \
+"
+
+RRECOMMENDS_${PN}-base = " \
+        libqtxmlpatterns4 \
 "
 
 RDEPENDS_${PN}-qwt = "\
