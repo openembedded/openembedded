@@ -19,6 +19,7 @@ SRC_URI = "\
   file://busybox-udhcpd \
   file://default.script file://simple.script \
   file://dhcp-hostname.patch \
+  file://group \
   file://hwclock.sh \
   file://hwclock-default \
   file://ifupdown-spurious-environ.patch \
@@ -56,7 +57,7 @@ RPROVIDES_${PN}-inetd = "inetd"
 FILES_${PN}-httpd = "${sysconfdir}/init.d/busybox-httpd /srv/www"
 FILES_${PN}-inetd = "${sysconfdir}/init.d/inetd.${PN} \
                      ${sysconfdir}/inetd.conf"
-FILES_${PN}-passwd = "${sysconfdir}/passwd.${PN}"
+FILES_${PN}-passwd = "${sysconfdir}/passwd.${PN} ${sysconfdir}/group.${PN}"
 FILES_${PN}-shadow = "${sysconfdir}/shadow.${PN}"
 FILES_${PN}-syslog = "${sysconfdir}/init.d/syslog.${PN} \
                       ${sysconfdir}/default/busybox-syslog"
@@ -196,6 +197,7 @@ do_install () {
 
 	if grep -q "CONFIG_PASSWD=y" ${WORKDIR}/defconfig; then
 	    install -m 0644 ${WORKDIR}/passwd ${D}${sysconfdir}/passwd.${PN}
+	    install -m 0644 ${WORKDIR}/group ${D}${sysconfdir}/group.${PN}
 	    if grep -q "CONFIG_FEATURE_SHADOWPASSWDS=y" ${WORKDIR}/defconfig; then
 	        install -m 0640 ${WORKDIR}/shadow ${D}${sysconfdir}/shadow.${PN}
             fi
@@ -293,9 +295,11 @@ pkg_prerm_${PN}-mountall () {
 
 pkg_postinst_${PN}-passwd () {
 	update-alternatives --install ${sysconfdir}/passwd default_passwd passwd.${PN} 50
+	update-alternatives --install ${sysconfdir}/group default_group group.${PN} 50
 }
 pkg_prerm_${PN}-passwd () {
 	update-alternatives --remove default_passwd passwd.${PN}
+	update-alternatives --remove default_group group.${PN}
 }
 
 pkg_postinst_${PN}-shadow () {
