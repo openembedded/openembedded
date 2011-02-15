@@ -1,5 +1,5 @@
 require binutils.inc
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.3"
 LICENSE = "GPLv3"
 
 SRC_URI = "${GNU_MIRROR}/binutils/binutils-${PV}.tar.bz2 \
