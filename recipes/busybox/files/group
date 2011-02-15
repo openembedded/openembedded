@@ -1,0 +1,12 @@
+root:x:0:
+daemon:x:1:
+bin:x:2:
+sys:x:3:
+tty:x:5:
+disk:x:6:
+mail:x:8:
+man:x:12:
+www-data:x:33:
+utmp:x:43:
+nogroup:x:65534:
+users:x:100:
