@@ -172,9 +172,6 @@ fakeroot do_rootfs () {
 
 	rootfs_${IMAGE_PKGTYPE}_do_rootfs
 
-	[ "${ONLINE_PACKAGE_MANAGEMENT}" != "none" ] && \
-		insert_feed_uris
-
 	${IMAGE_PREPROCESS_COMMAND}
 
 	ROOTFS_SIZE=`du -ks ${IMAGE_ROOTFS}|awk '{size = ${IMAGE_EXTRA_SPACE} + $1; print (size > ${IMAGE_ROOTFS_SIZE} ? size : ${IMAGE_ROOTFS_SIZE}) }'`
@@ -192,35 +189,6 @@ do_deploy_to () {
 	# by DEPLOY_TO variable (likely passed via environment).
 	# Assumes ${IMAGE_FSTYPES} is a single value!
 	cp "${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.${IMAGE_FSTYPES}" ${DEPLOY_TO}
-}
-
-insert_feed_uris () {
-
-	echo "Building feeds for [${DISTRO}].."
-
-	for line in ${FEED_URIS}
-	do
-		# strip leading and trailing spaces/tabs, then split into name and uri
-		line_clean="`echo "$line"|sed 's/^[ \t]*//;s/[ \t]*$//'`"
-		feed_name="`echo "$line_clean" | sed -n 's/\(.*\)##\(.*\)/\1/p'`"
-		feed_uri="`echo "$line_clean" | sed -n 's/\(.*\)##\(.*\)/\2/p'`"
-
-		echo "Added $feed_name feed with URL $feed_uri"
-
-		# insert new feed-sources
-		echo "src/gz $feed_name $feed_uri" >> ${IMAGE_ROOTFS}/etc/opkg/${feed_name}-feed.conf
-	done
-
-	# Allow to use package deploy directory contents as quick devel-testing
-	# feed. This creates individual feed configs for each arch subdir of those
-	# specified as compatible for the current machine.
-	# NOTE: Development-helper feature, NOT a full-fledged feed.
-	if [ -n "${FEED_DEPLOYDIR_BASE_URI}" ]; then
-	    for arch in ${PACKAGE_ARCHS}
-	    do
-		echo "src/gz local-$arch ${FEED_DEPLOYDIR_BASE_URI}/$arch" >> ${IMAGE_ROOTFS}/etc/opkg/local-$arch-feed.conf
-	    done
-	fi
 }
 
 log_check() {
