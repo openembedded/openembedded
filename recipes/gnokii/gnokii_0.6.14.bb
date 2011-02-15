@@ -1,6 +1,6 @@
 LICENSE = "GPL"
 DESCRIPTION = "Cellphone tools and driver software"
-SRC_URI = "http://www.gnokii.org/download/gnokii/gnokii-${PV}.tar.bz2 \
+SRC_URI = "http://www.gnokii.org/download/gnokii/0.6.x/gnokii-${PV}.tar.bz2 \
 	file://configure.patch"
 
 DEPENDS = "libxpm gtk+"
