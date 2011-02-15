@@ -1,6 +1,6 @@
 DESCRIPTION = "Kernel based automounter for linux."
 SECTION = "base"
-LICENSE = "GPL"
+LICENSE = "GPLv2+"
 INC_PR = "r4"
 EXTRA_OEMAKE += "'RANLIB=${RANLIB}'"
 
