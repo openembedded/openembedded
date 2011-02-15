@@ -4,8 +4,8 @@
 
 inherit package
 
-BOOTSTRAP_EXTRA_RDEPENDS += "dpkg"
-DISTRO_EXTRA_RDEPENDS += "dpkg"
+BOOTSTRAP_EXTRA_RDEPENDS += "apt"
+DISTRO_EXTRA_RDEPENDS += "apt"
 IMAGE_PKGTYPE ?= "deb"
 
 # Map TARGET_ARCH to Debian's ideas about architectures
