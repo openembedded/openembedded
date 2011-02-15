@@ -4,10 +4,12 @@ PRIORITY = "optional"
 DEPENDS = "virtual/libsdl flac libmikmod libvorbis  ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad', d)}"
 LICENSE = "LGPL"
 
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-${PV}.tar.gz \
-           file://fix-flac-madness.diff"
+           file://fix-flac-madness.diff \
+           file://configure.patch \
+          "
 
 S = "${WORKDIR}/SDL_mixer-${PV}"
 
@@ -18,7 +20,7 @@ inherit autotools
 # Add support for runtime linking with libmad so we can use that for fixed point MP3 decoding.
 # Add support for runtime linking with libtremor so we can use that for fixed point OGG Vorbis decoding.
 
-EXTRA_AUTORECONF += "--include=acinclude --exclude=autoheader"
+EXTRA_AUTORECONF += "--include=acinclude"
 
 do_configure_prepend () {
         # Remove old libtool macros.
@@ -26,6 +28,8 @@ do_configure_prepend () {
         for i in ${MACROS}; do
                rm -f acinclude/$i
         done
+        cp build-scripts/* .
+        rm -rf build-scripts/
         export SYSROOT=$PKG_CONFIG_SYSROOT_DIR
 }
 
