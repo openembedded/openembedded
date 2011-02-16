@@ -35,7 +35,7 @@ def less_or_equal(variable, checkvalue, truevalue, falsevalue, d):
         return falsevalue
 
 def version_less_or_equal(variable, checkvalue, truevalue, falsevalue, d):
-    result = bb.vercmp(bb.data.getVar(variable,d,True), checkvalue)
+    result = bb.utils.vercmp_string(bb.data.getVar(variable,d,True), checkvalue)
     if result <= 0:
         return truevalue
     else:
