@@ -4,7 +4,7 @@
 
 HOMEPAGE = "http://www.xiph.org/paranoia/"
 DESCRIPTION = "Audio CD digital audio extraction application"
-PR = "r0"
+PR = "r1"
 LICENSE = "GPLv2"
 
 PV = "10.2+svnr${SRCPV}"
@@ -37,8 +37,8 @@ FILES_libcdparanoia-dev = "${includedir} ${libdir}/lib*${SOLIBSDEV}"
 FILES_libcdparanoia-static = "${libdir}/*.a"
 
 do_install() {
-	oe_runmake BINDIR="${D}/usr/bin" MANDIR="${D}/usr/share/man/" \
-		   INCLUDEDIR="${D}/usr/include/" LIBDIR="${D}/usr/lib" \
-		   PKGCONFIGDIR="${D}/usr/lib/pkgconfig" \
+	oe_runmake BINDIR="${D}${bindir}" MANDIR="${D}${datadir}/man/" \
+		   INCLUDEDIR="${D}${includedir}" LIBDIR="${D}${libdir}" \
+		   PKGCONFIGDIR="${D}${libdir}/pkgconfig" \
 		   install
 }
