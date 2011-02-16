@@ -1,4 +1,4 @@
-# Version 4 of the Berkeley DB from Oracle
+# Version 5 of the Berkeley DB from Sleepycat
 #
 # At present this package only installs the DB code
 # itself (shared libraries, .a in the dev package),
@@ -6,18 +6,21 @@
 #
 # The headers have the same names as those as v3
 # of the DB, only one version can be used *for dev*
-# at once - DB3 and DB4 can both be installed on the
+# at once - DB3 and DB5 can both be installed on the
 # same system at the same time if really necessary.
-
-
-DESCRIPTION = "Berkeley DB v4."
-HOMEPAGE = "http://www.oracle.com/technology/products/berkeley-db/db/index.html"
 SECTION = "libs"
-LICENSE = "BSD"
+DESCRIPTION = "Berkeley DB v5."
+HOMEPAGE = "http://www.oracle.com/technology/products/berkeley-db/db/index.html"
+LICENSE = "BSD Sleepycat"
 VIRTUAL_NAME ?= "virtual/db"
 CONFLICTS = "db3"
+PR = "r1"
 
-SRC_URI = "ftp://ftp.freebsd.org/pub/FreeBSD/distfiles/bdb/db-${PV}.tar.gz"
+SRC_URI = "http://download.oracle.com/berkeley-db/db-${PV}.tar.gz"
+SRC_URI += "file://arm-thumb-mutex_db5.patch"
+
+SRC_URI[md5sum] = "76fcbfeebfcd09ba0b4d96bfdf8d884d"
+SRC_URI[sha256sum] = "0194d4ca9266ba1a1c0bfbc233b18bfd05f63163453c81ebcdfdc7112d5ac850"
 
 inherit autotools
 
@@ -30,7 +33,7 @@ inherit autotools
 # to select the correct db in the build (distro) .conf
 PROVIDES += "${VIRTUAL_NAME}"
 
-# bitbake isn't quite clever enough to deal with db,
+# bitbake isn't quite clever enough to deal with sleepycat,
 # the distribution sits in the expected directory, but all
 # the builds must occur from a sub-directory.  The following
 # persuades bitbake to go to the right place
@@ -43,13 +46,18 @@ B = "${WORKDIR}/db-${PV}/build_unix"
 PACKAGES += " ${PN}-bin"
 
 # Package contents
-FILES_${PN} = "${libdir}/libdb-${PVM}${SOLIBSDEV}"
+FILES_${PN} = "${libdir}/libdb-5*so*"
 FILES_${PN}-bin = "${bindir}/*"
 # The dev package has the .so link (as in db3) and the .a's -
 # it is therefore incompatible (cannot be installed at the
 # same time) as the db3 package
+FILES_${PN}-dev = "${includedir} ${libdir}/*"
 
-EXTRA_OECONF = "${DB4_CONFIG}"
+#configuration - set in local.conf to override
+# All the --disable-* options replace --enable-smallbuild, which breaks a bunch of stuff (eg. postfix)
+DB5_CONFIG ?= "--enable-o_direct --disable-cryptography --disable-queue --disable-replication --disable-statistics --disable-verify --disable-compat185 --disable-sql"
+
+EXTRA_OECONF = "${DB5_CONFIG}"
 
 # Override the MUTEX setting here, the POSIX library is
 # the default - "POSIX/pthreads/library".
@@ -66,12 +74,20 @@ EXTRA_OECONF += "${MUTEX}"
 # configure.
 CONFIG_SITE = ""
 do_configure() {
-	( cd ${WORKDIR}/db-${PV}/dist ; gnu-configize ) 
 	oe_runconf
 }
 
-
 do_install_append() {
+	mkdir -p ${D}/${includedir}/db51
+	#mv ${D}/${includedir}/db_185.h ${D}/${includedir}/db51/.
+	mv ${D}/${includedir}/db.h ${D}/${includedir}/db51/.
+	mv ${D}/${includedir}/db_cxx.h ${D}/${includedir}/db51/.
+	#mv ${D}/${includedir}/dbsql.h ${D}/${includedir}/db51/.
+	#ln -s db51/db_185.h ${D}/${includedir}/db_185.h
+	ln -s db51/db.h ${D}/${includedir}/db.h
+	ln -s db51/db_cxx.h ${D}/${includedir}/db_cxx.h
+	#ln -s db51/dbsql.h ${D}/${includedir}/dbsql.h
+
 	# The docs end up in /usr/docs - not right.
 	if test -d "${D}/${prefix}/docs"
 	then
@@ -80,3 +96,5 @@ do_install_append() {
 		mv "${D}/${prefix}/docs" "${D}/${docdir}"
 	fi
 }
+
+BBCLASSEXTEND = "native nativesdk"
