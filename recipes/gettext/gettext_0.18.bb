@@ -2,7 +2,7 @@ DESCRIPTION = "The GNU internationalization library."
 HOMEPAGE = "http://www.gnu.org/software/gettext/gettext.html"
 SECTION = "libs"
 LICENSE = "GPLv3"
-PR = "r4"
+PR = "r5"
 DEPENDS = "gettext-native virtual/libiconv ncurses expat"
 DEPENDS_virtclass-native = "libxml2-native"
 PROVIDES = "virtual/libintl"
@@ -26,7 +26,7 @@ PARALLEL_MAKE = ""
 
 inherit autotools
 
-NATIVECONF = ""
+NATIVECONF = "--disable-rpath"
 NATIVECONF_virtclass-native += "--enable-relocatable --disable-curses"
 
 EXTRA_OECONF += "--without-lispdir \
