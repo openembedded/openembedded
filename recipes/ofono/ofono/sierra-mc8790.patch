@@ -1,0 +1,24 @@
+From 1a18604648d90b90b44a6b2d2cd65d0b4ba864ed Mon Sep 17 00:00:00 2001
+From: Jan Luebbe <jluebbe@debian.org>
+Date: Wed, 16 Feb 2011 14:50:41 +0100
+Subject: [PATCH] plugins/ofono.rules: add ID for Sierra Wireless MC8790
+
+---
+ plugins/ofono.rules |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/plugins/ofono.rules b/plugins/ofono.rules
+index 111f071..f381881 100644
+--- a/plugins/ofono.rules
++++ b/plugins/ofono.rules
+@@ -11,6 +11,7 @@ SUBSYSTEMS=="usb", ATTRS{bInterfaceNumber}=="?*", ATTRS{bInterfaceClass}=="ff",
+ ATTRS{idVendor}=="05c6", ATTRS{idProduct}=="9205", ENV{OFONO_IFACE_NUM}=="02", ENV{OFONO_GOBI_TYPE}="modem"
+ 
+ # Sierra Wireless HSPA Modem
++ATTRS{idVendor}=="1199", ATTRS{idProduct}=="683c", ENV{OFONO_IFACE_NUM}=="03", ENV{OFONO_SIERRA_TYPE}="modem"
+ ATTRS{idVendor}=="1199", ATTRS{idProduct}=="6880", ENV{OFONO_IFACE_NUM}=="03", ENV{OFONO_SIERRA_TYPE}="modem"
+ ATTRS{idVendor}=="1199", ATTRS{idProduct}=="6890", ENV{OFONO_IFACE_NUM}=="03", ENV{OFONO_SIERRA_TYPE}="modem"
+ 
+-- 
+1.7.2.3
+

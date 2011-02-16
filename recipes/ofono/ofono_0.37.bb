@@ -1,6 +1,6 @@
 require ofono.inc
 
-PR = "r0"
+PR = "${INC_PR}.0"
 
 SRC_URI  = "http://www.kernel.org/pub/linux/network/ofono/${P}.tar.bz2 \
 	          file://ofono"
