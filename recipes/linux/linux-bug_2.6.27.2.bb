@@ -2,7 +2,7 @@ DESCRIPTION = "Linux kernel for bug"
 
 PV_append = "+svnr${SRCREV}"
 KV = "2.6.27.2"
-PR = "r33"
+PR = "r34"
 
 COMPATIBLE_MACHINE = "bug"
 
