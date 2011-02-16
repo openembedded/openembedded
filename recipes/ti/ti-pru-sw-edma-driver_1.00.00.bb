@@ -6,7 +6,7 @@ COMPATIBLE_MACHINE = "omapl138"
 
 SRC_URI = "svn://gforge.ti.com/svn/pru_sw/;module=trunk;proto=https;user=anonymous;pswd=''"
 
-SRCREV = "23"
+SRCREV = "24"
 S = "${WORKDIR}/trunk/peripheral_lib/edma_driver/module"
 
 PACKAGE_STRIP = "no"
