@@ -1,7 +1,7 @@
-Index: ./python/src/eightball.py
+Index: ./src/eightball.py
 ===================================================================
---- ./python/src/eightball.py	(revision 45)
-+++ ./python/src/eightball.py	(working copy)
+--- ./src/eightball.py	(revision 45)
++++ ./src/eightball.py	(working copy)
 @@ -47,12 +47,6 @@
  	shakeTimer = None
  
@@ -29,10 +29,10 @@ Index: ./python/src/eightball.py
  		self.ee.title = "Moko Eightball"
  		self.ee.name_class = ( "MOKO_EIGHTBALL", "MOKO_EIGHTBALL" )
  #		self.ee.fullscreen = True
-Index: ./python/src/Accelerometer/__init__.py
+Index: ./src/Accelerometer/__init__.py
 ===================================================================
---- ./python/src/Accelerometer/__init__.py	(revision 45)
-+++ ./python/src/Accelerometer/__init__.py	(working copy)
+--- ./src/Accelerometer/__init__.py	(revision 45)
++++ ./src/Accelerometer/__init__.py	(working copy)
 @@ -30,7 +30,7 @@
  
  class EventManager(object):
