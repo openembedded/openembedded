@@ -1,0 +1,29 @@
+diff -urN linux-2.6.30-0rig/arch/arm/mach-at91/board-sam9m10g45ek.c linux-2.6.30/arch/arm/mach-at91/board-sam9m10g45ek.c
+--- linux-2.6.30-0rig/arch/arm/mach-at91/board-sam9m10g45ek.c	2010-03-14 11:41:36.000000000 +0100
++++ linux-2.6.30/arch/arm/mach-at91/board-sam9m10g45ek.c	2010-03-14 12:07:05.000000000 +0100
+@@ -432,9 +432,13 @@
+ 
+ #if defined(CONFIG_MACH_AT91SAM9G45EKES)
+ MACHINE_START(AT91SAM9G45EKES, "Atmel AT91SAM9G45-EKES")
+-#else
++#endif
++#if defined(CONFIG_MACH_AT91SAM9M10EKES)
+ MACHINE_START(AT91SAM9M10EKES, "Atmel AT91SAM9M10-EKES")
+ #endif
++#if defined(CONFIG_MACH_AT91SAM9M10G45EK)
++MACHINE_START(AT91SAM9M10G45EK, "Atmel AT91SAM9M10G45-EK")
++#endif
+ 	/* Maintainer: Atmel */
+ 	.phys_io	= AT91_BASE_SYS,
+ 	.io_pg_offst	= (AT91_VA_BASE_SYS >> 18) & 0xfffc,
+diff -urN linux-2.6.30-0rig/arch/arm/mach-at91/Makefile linux-2.6.30/arch/arm/mach-at91/Makefile
+--- linux-2.6.30-0rig/arch/arm/mach-at91/Makefile	2010-03-14 11:13:34.000000000 +0100
++++ linux-2.6.30/arch/arm/mach-at91/Makefile	2010-03-14 12:08:01.000000000 +0100
+@@ -74,6 +74,7 @@
+ # AT91SAM9G45 board-specific support
+ obj-$(CONFIG_MACH_AT91SAM9G45EKES) += board-sam9m10g45ek.o
+ obj-$(CONFIG_MACH_AT91SAM9M10EKES) += board-sam9m10g45ek.o
++obj-$(CONFIG_MACH_AT91SAM9M10G45EK) += board-sam9m10g45ek.o
+ 
+ # AT91CAP9 board-specific support
+ obj-$(CONFIG_MACH_AT91CAP9ADK)	+= board-cap9adk.o
