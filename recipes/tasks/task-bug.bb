@@ -1,12 +1,14 @@
 # Copyright (C) 2011 Bug Labs, Inc
 
-PR = "r87"
+PR = "r88"
 
 ALLOW_EMPTY = "1"
 
 PACKAGES += "${PN}-java ${PN}-java-osgi ${PN}-audio ${PN}-devlangs ${PN}-x11 ${PN}-network ${PN}-x11-debug ${PN}-debug"
 
-RDEPENDS_${PN} = "kernel-modules \
+PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
+
+RDEPENDS_${PN} = "${MACHINE_EXTRA_RRECOMMENDS} \
                   bug-udev \
                   repo-feed-configs \
                   diffutils \
@@ -19,12 +21,11 @@ RDEPENDS_${PN} = "kernel-modules \
                   nano \
                   lsof \
                   file \
-                  bug2v4l2 \
 "
+RDEPENDS_${PN}_append_bug20 = "bug2v4l2"
 
 RDEPENDS_${PN}-network = "\
                   dnsmasq \
-                  marvell-sdio-fw \
                   hostap-daemon \
                   iptables \
                   eject \
