@@ -8,9 +8,9 @@ SRC_URI = "ftp://ftp.gnutls.org/pub/gnutls/gnutls-${PV}.tar.bz2;name=gnutls"
 
 inherit autotools binconfig pkgconfig gettext
 
-INC_PR = "r10"
+INC_PR = "r11"
 
-EXTRA_OECONF = "--with-included-opencdk --with-included-libtasn1"
+EXTRA_OECONF = "--with-included-opencdk --with-included-libtasn1 --disable-rpath"
 
 PACKAGES =+ "${PN}-openssl ${PN}-extra ${PN}-bin ${PN}-xx"
 
