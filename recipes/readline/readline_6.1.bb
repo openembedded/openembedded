@@ -8,7 +8,8 @@ LICENSE = "GPLv3+"
 DEPENDS = "ncurses"
 LEAD_SONAME = "libreadline.so"
 
-PKGV = "${PV}+p2"
+PV = "6.1+p2"
+FILESPATHPKG =. "${BPN}-6.1:"
 PR = "r2"
 
 # Don't bring it in silently because there was a switch from GPLv2
@@ -16,12 +17,12 @@ PR = "r2"
 # preferred by default.
 DEFAULT_PREFERENCE = "-1"
 
-SRC_URI = "${GNU_MIRROR}/readline/readline-${PV}.tar.gz;name=tarball \
-  ${GNU_MIRROR}/readline/readline-${PV}-patches/readline61-001;striplevel=0;name=patch001;apply=yes \
-  ${GNU_MIRROR}/readline/readline-${PV}-patches/readline61-002;striplevel=0;name=patch002;apply=yes \
+SRC_URI = "${GNU_MIRROR}/readline/readline-6.1.tar.gz;name=tarball \
+  ${GNU_MIRROR}/readline/readline-6.1-patches/readline61-001;striplevel=0;name=patch001;apply=yes \
+  ${GNU_MIRROR}/readline/readline-6.1-patches/readline61-002;striplevel=0;name=patch002;apply=yes \
   file://libs.patch \
   file://acinclude.m4"
-S = "${WORKDIR}/readline-${PV}"
+S = "${WORKDIR}/${BPN}-6.1"
 
 EXTRA_OECONF = "--with-curses --enable-multibyte"
 
