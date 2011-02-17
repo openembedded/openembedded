@@ -6,6 +6,7 @@ UNIX-like platforms, Windows, OS/2 and BeOS."
 LICENSE = "LGPLv2+"
 SECTION = "libs"
 PRIORITY = "optional"
+PR = "r1"
 DEPENDS = "glib-2.0-native gtk-doc zlib"
 DEPENDS_virtclass-native = "gettext-native gtk-doc-native \
                             pkgconfig-native"
@@ -17,6 +18,7 @@ SRC_URI = "\
   file://g_once_init_enter.patch \
   file://gatomic-proper-pointer-get-cast.patch \
   file://60_wait-longer-for-threads-to-die.patch \
+  file://glib-mkenums-interpreter.patch \
   file://libglib2-fix-compilation-with-no-builtin-atomic.patch \
   file://configure-ipv6.patch \
 "
