@@ -2,9 +2,9 @@ DESCRIPTION = "An Embeddable SQL Database Engine"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "readline ncurses"
-DEPENDS_append_virtclass-native = " tcl-native"
+DEPENDS_virtclass-native = "tcl-native readline-native ncurses-native"
 LICENSE = "PD"
-INC_PR = "r3"
+INC_PR = "r4"
 
 SRC_URI = "http://www.sqlite.org/sqlite-${PV}.tar.gz \
 	   file://libtool.patch"
