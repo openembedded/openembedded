@@ -3,7 +3,7 @@ DEPENDS = "virtual/libiconv virtual/libsdl libsdl-image libsdl-mixer boost libpn
 LICENSE = "GPL"
 HOMEPAGE = "http://pingus.seul.org/"
 SECTION = "x11/games"
-PR = "r4"
+PR = "r5"
 
 ARM_INSTRUCTION_SET = "arm"
 
@@ -15,7 +15,6 @@ inherit scons
 SRC_URI = "\
   http://pingus.seul.org/files/pingus-0.7.2.tar.bz2 \
   file://sconstruct.diff \
-  file://boost.patch \
   file://cheader.patch \
   file://pingus.desktop \
   file://pingus.png \
