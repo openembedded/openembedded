@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/ncurses/ncurses.html"
 LICENSE = "MIT"
 SECTION = "libs"
 PATCHDATE = "20110115"
-PKGV = "${PV}+${PATCHDATE}"
+PV = "5.7+${PATCHDATE}"
 PR = "r16"
 
 DEPENDS = "ncurses-native unifdef-native"
@@ -11,7 +11,7 @@ DEPENDS_virtclass-native = "unifdef-native"
 
 inherit autotools binconfig test
 
-SRC_URI = "${GNU_MIRROR}/ncurses/ncurses-${PV}.tar.gz;name=tarball \
+SRC_URI = "${GNU_MIRROR}/ncurses/ncurses-5.7.tar.gz;name=tarball \
         ftp://invisible-island.net/ncurses/5.7/ncurses-5.7-20110108-patch.sh.bz2;apply=yes;name=p20110108sh \
 \
         ftp://invisible-island.net/ncurses/5.7/ncurses-5.7-${PATCHDATE}.patch.gz;name=p${PATCHDATE} \
@@ -25,6 +25,9 @@ SRC_URI[p20110108sh.md5sum] = "ccc7b56c5b4e99d40aa2d3bb7a08f4c6"
 SRC_URI[p20110108sh.sha256sum] = "814a23f0bf4e60ff177ee4dca82be0b94c81daa9dfb59a145e7213718d6f0d97"
 SRC_URI[p20110115.md5sum] = "811cd49a8666395092383f1d0bb66e05"
 SRC_URI[p20110115.sha256sum] = "1992e8149ba11cbabe6d699407de40cbdc49f61db76655d8a06ae0ac5229634e"
+
+FILESPATHPKG =. "${BPN}-5.7:"
+S = "${WORKDIR}/${BPN}-5.7"
 
 PARALLEL_MAKE = ""
 EXTRA_AUTORECONF = "-I m4"
