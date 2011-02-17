@@ -7,10 +7,10 @@ require openssl.inc
 DEPENDS += "ocf-linux"
 CFLAG += "-DHAVE_CRYPTODEV -DUSE_CRYPTODEV_DIGESTS"
 
-SRC_URI[src.md5sum] = "ff8fb85610aef328315a9decbb2712e4"
-SRC_URI[src.sha256sum] = "f731b36de3edaa361179ae6f449668b248a360e34e31e92902d976e9b9d604eb"
+SRC_URI[src.md5sum] = "40b6ea380cc8a5bf9734c2f8bf7e701e"
+SRC_URI[src.sha256sum] = "92511d1f0caaa298dba250426f8e7d5d00b271847886d1adc62422778d6320db"
 
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.0"
 
 DEFAULT_PREFERENCE = "-1"
 
