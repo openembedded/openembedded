@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.remotesensing.org/libtiff/"
 DEPENDS = "zlib jpeg lzo"
 PV = "3.9.4+4.0.0beta6"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://download.osgeo.org/libtiff/tiff-4.0.0beta6.tar.gz \
 	   file://tiff-lp589145.diff;striplevel=0 \
@@ -16,7 +16,13 @@ S = "${WORKDIR}/tiff-4.0.0beta6"
 
 inherit autotools
 
-EXTRA_OECONF = "--without-x"
+EXTRA_OECONF = "--without-x --disable-rpath"
+
+do_configure_append() {
+    # Fix RPATH issues.
+    sed -i ${S}/config.status -e s,^\\\(hardcode_into_libs=\\\).*$,\\1\'no\',
+    ${S}/config.status
+}
 
 PACKAGES =+ "tiffxx tiffxx-dbg tiffxx-dev tiff-utils tiff-utils-dbg"
 FILES_tiffxx = "${libdir}/libtiffxx.so.*"
