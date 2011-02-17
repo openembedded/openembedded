@@ -1,5 +1,5 @@
 DESCRIPTION = "Application task package for GPE Palmtop Environment"
-PR = "r6"
+PR = "r7"
 LICENSE = "MIT"
 
 inherit task
@@ -14,7 +14,6 @@ RDEPENDS_${PN} = "\
     gpe-watch \
     gpe-what \
     matchbox-panel-hacks \
-    gpe-aerial \
     rosetta \
     gpe-scap \
     gpe-windowlist \

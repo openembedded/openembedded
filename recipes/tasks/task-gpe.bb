@@ -89,7 +89,6 @@ RDEPENDS_gpe-task-apps = "\
     gpe-watch \
     gpe-what \
     matchbox-panel-hacks \
-    gpe-aerial \
     gpe-soundbite \
     rosetta \
     gpe-scap \
