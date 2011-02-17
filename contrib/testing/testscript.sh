@@ -49,9 +49,6 @@ TMPDIR = "${TOPDIR}/tmp"
 BBFILES = "${TOPDIR}/openembedded/recipes/*/*.bb"
 ENABLE_BINARY_LOCALE_GENERATION = "0"
 
-# Which files do we want to parse:
-BBMASK = ""
-
 # ccache always overfill $HOME....
 CCACHE=""
 
