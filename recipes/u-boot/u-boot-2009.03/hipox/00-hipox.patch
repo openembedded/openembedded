@@ -6190,10 +6190,11 @@ diff -Nurd u-boot-2009.03.orig/cpu/arm926ejs/start.S u-boot-2009.03/cpu/arm926ej
 diff -Nurd u-boot-2009.03.orig/drivers/mtd/cfi_flash.c u-boot-2009.03/drivers/mtd/cfi_flash.c
 --- u-boot-2009.03.orig/drivers/mtd/cfi_flash.c	2009-04-15 11:05:24.000000000 +0200
 +++ u-boot-2009.03/drivers/mtd/cfi_flash.c	2009-04-15 11:08:18.000000000 +0200
-@@ -1883,6 +1883,7 @@
+@@ -1883,7 +1883,8 @@
  		/* Do manufacturer-specific fixups */
  		switch (info->manufacturer_id) {
  		case 0x0001:
+ 		case 0x0037: // AMIC
 +		case 0x00da: // Winbond
  			flash_fixup_amd(info, &qry);
  			break;

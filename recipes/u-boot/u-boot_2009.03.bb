@@ -6,9 +6,12 @@ DEFAULT_PREFERENCE_hipox = "1"
 
 DEPENDS_append_hipox = " oxnas-boot-tools oxnas-boot-tools-native "
 
-SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2 "
+SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2 \
+	file://cfi-amic-fixup.patch \
+"
 
-SRC_URI_append_hipox = "file://00-hipox.patch \
+SRC_URI_append_hipox = " \
+	file://00-hipox.patch \
 	file://01-hipox-fix-gmac-reset.patch \
 	file://02-hipox-enable-mmu.patch \
 	file://03-hipox-direct-switch.patch \
