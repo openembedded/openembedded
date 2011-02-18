@@ -1,0 +1,11 @@
+diff -Nurd u-boot-2009.03.orig//drivers/mtd/cfi_flash.c u-boot-2009.03/drivers/mtd/cfi_flash.c
+--- u-boot-2009.03.orig//drivers/mtd/cfi_flash.c	2011-02-18 14:11:24.870432001 +0100
++++ u-boot-2009.03/drivers/mtd/cfi_flash.c	2011-02-18 14:11:45.440432001 +0100
+@@ -1883,6 +1883,7 @@
+ 		/* Do manufacturer-specific fixups */
+ 		switch (info->manufacturer_id) {
+ 		case 0x0001:
++		case 0x0037: // AMIC
+ 			flash_fixup_amd(info, &qry);
+ 			break;
+ 		case 0x001f:
