@@ -3,7 +3,7 @@ DESCRIPTION = "udev is a daemon which dynamically creates and removes device nod
 the hotplug package and requires a kernel not older than 2.6.12."
 LICENSE = "GPLv2+"
 
-PR = "r24"
+PR = "r25"
 
 # Untested
 DEFAULT_PREFERENCE = "-1"
@@ -40,6 +40,7 @@ SRC_URI_append_bug = " \
        file://30-BUG.rules \
        file://10-mx31.rules \
        file://bmi_eventpipe.sh "
+PACKAGE_ARCH_bug = "bug"
 
 SRC_URI_append_nokia900 = " \
        file://10-cmt_speech.rules \
@@ -48,8 +49,8 @@ SRC_URI_append_nokia900 = " \
        file://udev-rules-nokia-n900-snd.rules \
        file://nokia-n900-mac-hack.sh \
 "
+PACKAGE_ARCH_nokia900 = "nokia900"
 
-PACKAGE_ARCH_bug = "bug"
 
 inherit update-rc.d autotools
 
