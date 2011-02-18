@@ -33,3 +33,16 @@ pkg_postinst () {
 	grep -q "bin/bash" $D${sysconfdir}/shells || echo /bin/bash >> $D${sysconfdir}/shells
 	grep -q "bin/sh" $D${sysconfdir}/shells || echo /bin/sh >> $D${sysconfdir}/shells
 }
+
+PACKAGES += "bash-sh"
+RDEPENDS_bash-sh = "bash"
+
+ALLOW_EMPTY_bash-sh = "1"
+
+pkg_postinst_bash-sh() {
+	cd $D/bin && ln -sf bash sh
+}
+
+pkg_postrm_bash-sh() {
+	ln -sf /bin/busybox /bin/sh
+}
