@@ -385,7 +385,12 @@ python populate_packages_prepend () {
 		return deps
 	
 	def get_dependencies(file, pattern, format):
-		file = file.replace(bb.data.getVar('PKGD', d, 1) or '', '', 1)
+		prefix = os.path.normpath(os.path.join(
+			os.path.join(bb.data.getVar('PKGD', d, 1) or ''),
+			'lib/modules',
+			bb.data.getVar('KERNEL_VERSION', d, 1)
+		)) + '/'
+		file = file.replace(prefix, '', 1)
 
 		if module_deps.has_key(file):
 			import re
