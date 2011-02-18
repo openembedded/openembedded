@@ -1,5 +1,5 @@
 require bash.inc
-PR = "r13"
+PR = "r14"
 
 SRC_URI += "\
   file://bash-3.0-fixes.patch \
