@@ -1,12 +1,14 @@
 DEPENDS = ""
 DESCRIPTION = "Highly configurable, modular and secure inetd"
-PR ="r4"
+PR ="r0"
 
 SRC_URI = "http://www.xinetd.org/xinetd-${PV}.tar.gz \
+	  file://configure.patch \
 	  file://xinetd.init \
 	  file://xinetd.conf \
-	  file://service.c.patch \
 	  "
+SRC_URI[md5sum] = "567382d7972613090215c6c54f9b82d9"
+SRC_URI[sha256sum] = "760e0e617c609a0509ef63fc7e9580d2f1d88c6113bb6d63273de7de7cd0bc1f"
 
 EXTRA_OECONF="--disable-nls"
 
@@ -14,12 +16,6 @@ inherit autotools update-rc.d
 
 INITSCRIPT_NAME = "xinetd"
 INITSCRIPT_PARAMS = "defaults"
-
-do_configure() {
-	# Looks like configure.in is broken, so we are skipping
-	# rebuilding configure and are just using the shipped one
-	oe_runconf
-}
 
 INHIBIT_AUTO_STAGE = "1"
 
@@ -38,6 +34,3 @@ do_install() {
 }
 
 CONFFILES_${PN} = "${sysconfdir}/xinetd.conf"
-
-SRC_URI[md5sum] = "4295b5fe12350f09b5892b363348ac8b"
-SRC_URI[sha256sum] = "eddfd1bf3684eaff3a7ba424421d3126878a7469ced0f3d370c7cf66bde64522"

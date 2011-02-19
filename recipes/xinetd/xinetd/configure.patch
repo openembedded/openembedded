@@ -1,0 +1,161 @@
+Index: xinetd-2.3.14/acinclude.m4
+===================================================================
+--- /dev/null
++++ xinetd-2.3.14/acinclude.m4
+@@ -0,0 +1,28 @@
++dnl Check for variable types.
++dnl
++AC_DEFUN(XINETD_CHECK_TYPE,
++[AC_REQUIRE([AC_HEADER_STDC])dnl
++AC_MSG_CHECKING(for $1)
++AC_CACHE_VAL(xinetd_cv_type_$1,
++[AC_EGREP_CPP($1, [#include <sys/types.h>
++#if STDC_HEADERS
++#include <stdlib.h>
++#endif
++#if HAVE_NETDB_H
++#include <netdb.h>
++#endif
++#if HAVE_RLIM_T
++#include <sys/resource.h>
++#endif
++#if HAVE_STDINT_H
++#include <stdint.h>
++#endif
++#if HAVE_UNISTD_H
++#include <unistd.h>
++#endif], xinetd_cv_type_$1=yes, xinetd_cv_type_$1=no)])dnl
++AC_MSG_RESULT($xinetd_cv_type_$1)
++if test $xinetd_cv_type_$1 = no; then
++   AC_DEFINE($1, $2)
++fi
++])
++
+Index: xinetd-2.3.14/configure.in
+===================================================================
+--- xinetd-2.3.14.orig/configure.in
++++ xinetd-2.3.14/configure.in
+@@ -6,6 +6,14 @@ AC_PROG_CC
+ AC_PROG_INSTALL
+ AC_PROG_RANLIB
+ 
++AC_DEFINE(XINETD_VERSION, "xinetd Version 2.3.14", [XINETD version])
++AC_DEFINE(MISC_VERSION, "MISC Version 1.2.2", [PSET version])
++AC_DEFINE(PSET_VERSION, "PSET Version 1.2.0", [PSET version])
++AC_DEFINE(SIO_VERSION, "SIO Version 1.6.2", [SIO version])
++AC_DEFINE(STR_VERSION, "STR Version 1.4.1", [STR version])
++AC_DEFINE(TIMER_VERSION, "TIMER Version 1.2.2", [TIMER version])
++AC_DEFINE(XLOG_VERSION, "XLOG Version 1.1.2", [XLOG version])
++
+ AC_CHECK_LIB(compat, main)
+ AC_SEARCH_LIBS(gethostbyname, nsl socket resolv)
+ AC_SEARCH_LIBS(getnameinfo, nsl socket resolv)
+@@ -20,34 +28,34 @@ AC_CHECK_FUNCS(ecvt, ,
+ AC_CHECK_FUNCS(gcvt, ,
+    AC_CHECK_LIB(m, gcvt))
+ 
+-AC_CHECK_FUNC(strerror, [AC_DEFINE(HAVE_STRERROR)])
+-AC_CHECK_FUNC(strcasecmp, [AC_DEFINE(HAVE_STRCASECMP)])
++AC_CHECK_FUNC(strerror, [AC_DEFINE([HAVE_STRERROR], [1], [Define to 1 if you have 'strerr' function])])
++AC_CHECK_FUNC(strcasecmp, [AC_DEFINE([HAVE_STRCASECMP], [1], [Define to 1 if you have 'strcasecmp' function])])
+ AC_CHECK_FUNC(socket, ,
+    AC_CHECK_LIB(socket, socket, ,
+       AC_CHECK_LIB(nsl, socket)))
+ AC_CHECK_FUNC(inet_aton, ,
+ 	AC_CHECK_LIB(nsl, inet_aton, ,
+ 		AC_CHECK_LIB(socket, inet_aton, ,
+-			AC_CHECK_LIB(resolv, inet_aton, ,[AC_DEFINE(NO_INET_ATON)]))))
+-AC_CHECK_FUNC(setenv,[AC_DEFINE(HAVE_SETENV)])
+-AC_CHECK_FUNC(strsignal, [AC_DEFINE(HAVE_STRSIGNAL)])
+-AC_CHECK_LIB(c, sys_siglist, [AC_DEFINE(HAVE_SYS_SIGLIST)])
+-AC_CHECK_FUNC(gai_strerror,[AC_DEFINE(HAVE_GAI_STRERROR)])
+-AC_CHECK_FUNC(freeaddrinfo,[AC_DEFINE(HAVE_FREEADDRINFO)])
+-AC_CHECK_FUNC(getaddrinfo,[AC_DEFINE(HAVE_GETADDRINFO)])
++			AC_CHECK_LIB(resolv, inet_aton, ,[AC_DEFINE([NO_INET_ATON], [1], [Define to 1 if you have 'inet_aton' function])]))))
++AC_CHECK_FUNC(setenv,[AC_DEFINE([HAVE_SETENV], [1], [Define to 1 if you have 'setenv' function])])
++AC_CHECK_FUNC(strsignal, [AC_DEFINE([HAVE_STRSIGNAL], [1], [Define to 1 if you have 'strsignal' function])])
++AC_CHECK_LIB(c, sys_siglist, [AC_DEFINE([HAVE_SYS_SIGLIST], [1], [Define to 1 if you have 'sys_siglist' function])])
++AC_CHECK_FUNC(gai_strerror,[AC_DEFINE([HAVE_GAI_STRERROR], [1], [Define to 1 if 'gai_strerror' is defined])])
++AC_CHECK_FUNC(freeaddrinfo,[AC_DEFINE([HAVE_FREEADDRINFO], [1], [Define to 1 if you have 'freeaddrinfo' function])])
++AC_CHECK_FUNC(getaddrinfo,[AC_DEFINE([HAVE_GETADDRINFO], [1], [Define to 1 if you have 'getaddrinfo' function])])
+ 
+ AC_CHECK_HEADERS(sys/types.h sys/termios.h termios.h sys/ioctl.h sys/select.h rpc/rpc.h rpc/rpcent.h sys/file.h ftw.h machine/reg.h netdb.h)
+-AC_CHECK_HEADER(sys/resource.h, [AC_DEFINE(HAVE_SYS_RESOURCE_H)])
+-AC_CHECK_HEADER(arpa/inet.h, [AC_DEFINE(HAVE_ARPA_INET_H)])
+-AC_CHECK_HEADER(grp.h, [AC_DEFINE(HAVE_GRP_H)])
+-AC_CHECK_HEADER(rpc/pmap_clnt.h, [AC_DEFINE(HAVE_RPC_PMAP_CLNT_H)])
+-AC_CHECK_HEADER(sys/socket.h, [AC_DEFINE(HAVE_SYS_SOCKET_H)])
+-AC_CHECK_HEADER(sys/signal.h, [AC_DEFINE(HAVE_SYS_SIGNAL_H)])
+-AC_CHECK_HEADER(crypt.h, [AC_DEFINE(HAVE_CRYPT_H)])
+-AC_CHECK_HEADER(stdint.h, [AC_DEFINE(HAVE_STDINT_H)])
+-AC_CHECK_HEADER(stdbool.h, [AC_DEFINE(HAVE_STDBOOL_H)])
+-AC_CHECK_HEADER(sys/filio.h, [AC_DEFINE(HAVE_SYS_FILIO_H)])
+-AC_CHECK_HEADER(DNSServiceDiscovery/DNSServiceDiscovery.h, [AC_DEFINE(HAVE_DNSREGISTRATION) AC_DEFINE(HAVE_MDNS)])
++AC_CHECK_HEADER(sys/resource.h, [AC_DEFINE([HAVE_SYS_RESOURCE_H], [1], [Define to 1 if you have sys/resource.h])])
++AC_CHECK_HEADER(arpa/inet.h, [AC_DEFINE([HAVE_ARPA_INET_H], [1], [Define to 1 if you have 'arpa/inet.h'])])
++AC_CHECK_HEADER(grp.h, [AC_DEFINE([HAVE_GRP_H], [1], [Define to 1 if you have 'grp.h'])])
++AC_CHECK_HEADER(rpc/pmap_clnt.h, [AC_DEFINE([HAVE_RPC_PMAP_CLNT_H], [1], [Define to 1 if you have 'rpc/pmap_clnt.h'])])
++AC_CHECK_HEADER(sys/socket.h, [AC_DEFINE([HAVE_SYS_SOCKET_H], [1], [Define to 1 if you have 'sys/socket.h'])])
++AC_CHECK_HEADER(sys/signal.h, [AC_DEFINE([HAVE_SYS_SIGNAL_H], [1], [Define to 1 if you have 'sys/signal.h'])])
++AC_CHECK_HEADER(crypt.h, [AC_DEFINE([HAVE_CRYPT_H], [1], [Define to 1 if you have 'crypt.h'])])
++AC_CHECK_HEADER(stdint.h, [AC_DEFINE([HAVE_STDINT_H], [1], [Define to 1 if you have 'stdint.h'])])
++AC_CHECK_HEADER(stdbool.h, [AC_DEFINE([HAVE_STDBOOL_H], [1], [Define to 1 if you have 'stdbool.h'])])
++AC_CHECK_HEADER(sys/filio.h, [AC_DEFINE([HAVE_SYS_FILIO_H], [1], [Define to 1 if you have 'sys/fileio.h'])])
++AC_CHECK_HEADER(DNSServiceDiscovery/DNSServiceDiscovery.h, [AC_DEFINE([HAVE_DNSREGISTRATION], [1], [Define to 1 if you have 'DNSServiceDiscovery']) AC_DEFINE([HAVE_MDNS], [1], [Define to 1 if you have 'DNSServiceDiscovery.h'])])
+ 
+ AC_ARG_WITH(howl, [  --with-howl=PATH        Compile in howl support.  
+                           PATH is the prefix where howl is installed,
+@@ -56,7 +64,7 @@ AC_ARG_WITH(howl, [  --with-howl=PATH
+      OLDLDFLAGS=$LDFLAGS; LDFLAGS="-L$withval/lib/ $LDFLAGS"; 
+      OLDCPPFLAGS=$CPPFLAGS; CPPFLAGS="-I$withval/include/howl/ $CPPFLAGS";
+      AC_CHECK_HEADER($withval/include/howl/howl.h, 
+-        [AC_DEFINE(HAVE_HOWL) AC_DEFINE(HAVE_MDNS)], 
++        [AC_DEFINE([HAVE_HOWL], [1], [Define to 1 if you have 'howl/howl.h']) AC_DEFINE([HAVE_MDNS], [1], [Define to 1 if you have 'mdns.h'])],
+         [CFLAGS=$OLDCFLAGS; LDFLAGS=$OLDLDFLAGS; CPPFLAGS=$OLDCPPFLAGS;]) 
+      AC_CHECK_LIB(howl, sw_discovery_publish, [LIBS="-lhowl $LIBS"], [
+         OLDLIBS=$LIBS; LIBS="-lpthread $LIBS"; 
+@@ -88,7 +96,7 @@ AC_CACHE_CHECK([for struct addrinfo], ac
+         )
+ ])
+ if test "x$ac_cv_have_struct_addrinfo" = "xyes" ; then
+-        AC_DEFINE(HAVE_STRUCT_ADDRINFO)
++        AC_DEFINE([HAVE_STRUCT_ADDRINFO], [1], [is struct addrinfo existing])
+ fi
+ 
+ AC_CACHE_CHECK([for struct in6_addr], ac_cv_have_struct_in6_addr, [
+@@ -103,7 +111,7 @@ AC_CACHE_CHECK([for struct in6_addr], ac
+         )
+ ])
+ if test "x$ac_cv_have_struct_in6_addr" = "xyes" ; then
+-        AC_DEFINE(HAVE_STRUCT_IN6_ADDR)
++        AC_DEFINE([HAVE_STRUCT_IN6_ADDR], [1], [struct in6_addr in <netinet/in.h>])
+ fi
+ 
+ AC_CACHE_CHECK([for struct sockaddr_in6], ac_cv_have_struct_sockaddr_in6, [
+@@ -118,7 +126,7 @@ AC_CACHE_CHECK([for struct sockaddr_in6]
+         )
+ ])
+ if test "x$ac_cv_have_struct_sockaddr_in6" = "xyes" ; then
+-        AC_DEFINE(HAVE_STRUCT_SOCKADDR_IN6)
++        AC_DEFINE([HAVE_STRUCT_SOCKADDR_IN6], [1], [struct sockaddr_in6 in <netinet/in.h>])
+ fi
+ 
+ AC_CACHE_CHECK([for struct sockaddr_storage], ac_cv_have_struct_sockaddr_storage, [
+@@ -133,7 +141,7 @@ AC_CACHE_CHECK([for struct sockaddr_stor
+         )
+ ])
+ if test "x$ac_cv_have_struct_sockaddr_storage" = "xyes" ; then
+-        AC_DEFINE(HAVE_STRUCT_SOCKADDR_STORAGE)
++        AC_DEFINE([HAVE_STRUCT_SOCKADDR_STORAGE], [1], [struct sockaddr_storage in <sys/socket.h>])
+ fi
+ 
+ 
+@@ -191,7 +199,7 @@ linux*|freebsd*)
+ 			;;
+ 		yes)
+ 			AC_MSG_RESULT(yes)
+-			AC_DEFINE(HAVE_LOADAVG)
++			AC_DEFINE([HAVE_LOADAVG], [1], [Define to 1 if you have 'loadavg'])
+ 			;;
+ 		*)
+ 			AC_MSG_RESULT(yes)
