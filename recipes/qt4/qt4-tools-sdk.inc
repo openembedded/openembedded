@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.trolltech.com"
 PRIORITY = "optional"
 LICENSE = "LGPLv2.1 GPLv3"
 
-INC_PR = "r2"
+INC_PR = "r3"
 
 FILESPATHPKG =. "qt-${PV}:"
 inherit sdk
@@ -32,9 +32,9 @@ EXTRA_OECONF = "-prefix ${prefix} \
                 -verbose -release -fast -static \
                 -embedded -no-freetype -no-glib -no-iconv \
                 -qt3support \
-                -I${STAGING_DIR_NATIVE}/usr/include \
-                -I${STAGING_DIR_NATIVE}/usr/include/dbus-1.0 \
-                -I${STAGING_DIR_NATIVE}/usr/lib/dbus-1.0/include"
+                -I${STAGING_DIR}/${HOST_SYS}${target_includedir} \
+                -I${STAGING_DIR}/${HOST_SYS}${target_includedir}/dbus-1.0 \
+                -I${STAGING_DIR}/${HOST_SYS}${target_libdir}/dbus-1.0/include"
 
 # yank default -e, otherwise we get the following error:
 # moc_qbuffer.cpp: No such file or directory
