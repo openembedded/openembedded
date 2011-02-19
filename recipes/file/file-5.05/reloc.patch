@@ -5,8 +5,10 @@
  src/magic.c     |   27 +
  4 files changed, 891 insertions(+), 10 deletions(-)
 
+Index: file-5.05/src/binreloc.c
+===================================================================
 --- /dev/null
-+++ file-5.04/src/binreloc.c
++++ file-5.05/src/binreloc.c
 @@ -0,0 +1,791 @@
 +/*
 + * BinReloc - a library for creating relocatable executables
@@ -799,8 +801,10 @@
 +#endif /* __cplusplus */
 +
 +#endif /* __BINRELOC_C__ */
+Index: file-5.05/src/binreloc.h
+===================================================================
 --- /dev/null
-+++ file-5.04/src/binreloc.h
++++ file-5.05/src/binreloc.h
 @@ -0,0 +1,81 @@
 +/*
 + * BinReloc - a library for creating relocatable executables
@@ -883,9 +887,11 @@
 +#endif /* __cplusplus */
 +
 +#endif /* __BINRELOC_H__ */
---- file-5.04.orig/src/magic.c
-+++ file-5.04/src/magic.c
-@@ -32,6 +32,7 @@ FILE_RCSID("@(#)$File: magic.c,v 1.65 20
+Index: file-5.05/src/magic.c
+===================================================================
+--- file-5.05.orig/src/magic.c
++++ file-5.05/src/magic.c
+@@ -37,6 +37,7 @@ FILE_RCSID("@(#)$File: magic.c,v 1.69 20
  #endif	/* lint */
  
  #include "magic.h"
@@ -893,20 +899,21 @@
  
  #include <stdlib.h>
  #include <unistd.h>
-@@ -89,18 +90,24 @@ get_default_magic(void)
- 	char *home;
- 	char hmagicpath[MAXPATHLEN + 1];
+@@ -113,16 +114,25 @@ get_default_magic(void)
+ 	char hmagicpath[MAXPATHLEN + 1] = { 0 };
  
+ #ifndef WIN32
 -	if ((home = getenv("HOME")) == NULL)
 -		return MAGIC;
--
++	BrInitError error;
+ 
 -	(void)snprintf(hmagicpath, sizeof(hmagicpath), "%s%s", home, hmagic);
--
--	if (access(hmagicpath, R_OK) == -1)
--		return MAGIC;
 +	if ((home = getenv("HOME")) != NULL) {
 +		(void)snprintf(hmagicpath, sizeof(hmagicpath), "%s%s", home, hmagic);
  
+-	if (access(hmagicpath, R_OK) == -1)
+-		return MAGIC;
+-
 -	(void)snprintf(default_magic, sizeof(default_magic), "%s:%s",
 -	    hmagicpath, MAGIC);
 +		if (access(hmagicpath, R_OK) != -1) {
@@ -915,9 +922,7 @@
 +			return default_magic;
 +		}
 +	}
- 
--	return default_magic;
-+	BrInitError error;
++
 +	if (br_init_lib(&error) == 1) {
 +		char *etcdir = br_find_etc_dir(NULL);
 +		(void)snprintf(default_magic, sizeof(default_magic), "%s/magic", etcdir);
@@ -925,20 +930,24 @@
 +		return default_magic;
 +	}
 +	return MAGIC;
- }
- 
- public const char *
---- file-5.04.orig/src/Makefile.am
-+++ file-5.04/src/Makefile.am
-@@ -10,9 +10,11 @@ AM_CFLAGS = @WARNINGS@
+ #else
+ 	char *hmagicp = hmagicpath;
+ 	char tmppath[MAXPATHLEN + 1] = { 0 };
+Index: file-5.05/src/Makefile.am
+===================================================================
+--- file-5.05.orig/src/Makefile.am
++++ file-5.05/src/Makefile.am
+@@ -10,6 +10,7 @@ AM_CFLAGS = @WARNINGS@
  libmagic_la_SOURCES = magic.c apprentice.c softmagic.c ascmagic.c \
  	encoding.c compress.c is_tar.c readelf.c print.c fsmagic.c \
  	funcs.c file.h names.h patchlevel.h readelf.h tar.h apptype.c \
 +	binreloc.c binreloc.h \
  	file_opts.h elfclass.h mygetopt.h cdf.c cdf_time.c readcdf.c cdf.h
  libmagic_la_LDFLAGS = -no-undefined -version-info 1:0:0
- libmagic_la_LIBADD = $(LTLIBOBJS)
+ if MINGW
+@@ -21,3 +22,5 @@ libmagic_la_LIBADD = $(LTLIBOBJS) $(MING
  
  file_SOURCES = file.c
  file_LDADD = libmagic.la
 +file_LDFLAGS = -rpath \\\$$ORIGIN/../lib
++
