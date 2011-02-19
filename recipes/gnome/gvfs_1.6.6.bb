@@ -1,8 +1,12 @@
 DESCRIPTION = "gvfs is a userspace virtual filesystem"
-LICENSE = "LGPL"
+LICENSE = "LGPLv2"
 DEPENDS = "libcdio gawk-native libimobiledevice gnome-keyring glib-2.0 obexftp fuse avahi fuse hal gconf samba gphoto2"
 
+PR = "r1"
+
 inherit gnome
+
+SRC_URI += "file://async.patch"
 
 SRC_URI[archive.md5sum] = "e1f324c45ea07d630f85bd3199865fd9"
 SRC_URI[archive.sha256sum] = "902890deb6a670f642180ea958406ebb02af1d5867a464c87e493d56f1dde7bd"

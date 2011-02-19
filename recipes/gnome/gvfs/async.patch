@@ -1,0 +1,50 @@
+From 4502330afc4623fd6cf7c5cadac01413052e49bf Mon Sep 17 00:00:00 2001
+From: Henry Hoegelow <h.hoegelow@raumfeld.com>
+Date: Thu, 25 Nov 2010 21:37:43 +0000
+Subject: Fix return value of async_connection_accept_new_fd()
+
+async_connection_accept_new_fd() is a GSource callback and needs
+to return TRUE so that it is called again. Add the missing return
+value.
+
+Fixes gvfs client code on the ARM platform (and probably other
+platforms too).
+See https://bugzilla.gnome.org/show_bug.cgi?id=633330 for further
+details.
+
+Acked-by: Sven Neumann <sven@gimp.org>
+(cherry picked from commit 2b6c559ea87fc929ac43527da5cc61c6d831f357)
+---
+diff --git a/client/gvfsdaemondbus.c b/client/gvfsdaemondbus.c
+index 2f999ee..fe9702e 100644
+--- a/client/gvfsdaemondbus.c
++++ b/client/gvfsdaemondbus.c
+@@ -244,7 +244,7 @@ outstanding_fd_free (OutstandingFD *outstanding)
+   g_free (outstanding);
+ }
+ 
+-static void
++static gboolean
+ async_connection_accept_new_fd (VfsConnectionData *data,
+ 				GIOCondition condition,
+ 				int fd)
+@@ -260,7 +260,7 @@ async_connection_accept_new_fd (VfsConnectionData *data,
+       g_source_destroy (data->extra_fd_source);
+       g_source_unref (data->extra_fd_source);
+       data->extra_fd_source = NULL;
+-      return;
++      return FALSE;
+     }
+   
+   fd_id = data->extra_fd_count;
+@@ -287,6 +287,8 @@ async_connection_accept_new_fd (VfsConnectionData *data,
+ 			       outstanding_fd);
+ 	}
+     }
++
++  return TRUE;
+ }
+ 
+ static void
+--
+cgit v0.8.3.4
