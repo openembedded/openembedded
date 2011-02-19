@@ -7,6 +7,7 @@
 # or indirectly via dependency.  No need to be in 'world'.
 EXCLUDE_FROM_WORLD = "1"
 target_includedir := "${includedir}"
+target_libdir := "${libdir}"
 
 # Save MULTIMACH_ARCH
 OLD_MULTIMACH_ARCH := "${MULTIMACH_ARCH}"
