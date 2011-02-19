@@ -23,17 +23,23 @@ fi
 # switch to the testing branch
 (cd openembedded; git checkout ${TESTING_BRANCH})
 
+[ -n "${DEFAULT_BB_MIN_VERSION}" ] || DEFAULT_BB_MIN_VERSION="1.10.2"
+[ -n "${OE_SANITY}" ] || OE_SANITY="openembedded/conf/sanity.conf"
+# get the current Bitbake minimum version from sanity.conf
+[ -n "${BB_MIN_VERSION}" ] || BB_MIN_VERSION=`grep BB_MIN_VERSION $OE_SANITY 2>nul| sed -e 's|.*\"\(.*\)\"|\1|'`
+[ -n "${BB_MIN_VERSION}" ] || BB_MIN_VERSION=$DEFAULT_BB_MIN_VERSION
+
 # test if bitbake exist; if not; fetch it and untar it
-if [ ! -d bitbake-1.10.2 ]
+if [ ! -d bitbake-${BB_MIN_VERSION} ]
 then
-    (wget http://download.berlios.de/bitbake/bitbake-1.10.2.tar.gz; tar xf bitbake-1.10.2.tar.gz; rm bitbake-1.10.2.tar.gz) 
+    (wget http://download.berlios.de/bitbake/bitbake-${BB_MIN_VERSION}.tar.gz; tar xf bitbake-${BB_MIN_VERSION}.tar.gz; rm bitbake-${BB_MIN_VERSION}.tar.gz) 
 fi
 
 # TOPDIR is where we are now
 TOPDIR=`pwd`
 
 # add bitbake to the path
-export PATH=${TOPDIR}/bitbake-1.10.2/bin:$PATH
+export PATH=${TOPDIR}/bitbake-${BB_MIN_VERSION}/bin:$PATH
 
 # create a local.conf by using a here document
 cat > ${TOPDIR}/openembedded/conf/local.conf << EOF
