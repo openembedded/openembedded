@@ -116,7 +116,7 @@ def package_qa_make_fatal_error(error_class, name, path,d):
 
     TODO: Load a whitelist of known errors
     """
-    return not error_class in [0, 5, 7]
+    return not error_class in [0, 1, 5, 7]
 
 def package_qa_write_error(error_class, name, path, d):
     """
@@ -128,7 +128,7 @@ def package_qa_write_error(error_class, name, path, d):
 
     ERROR_NAMES =[
         "non dev contains .so",
-        "package contains RPATH",
+        "package contains RPATH (security issue!)",
         "package depends on debug package",
         "non dbg contains .debug",
         "wrong architecture",
@@ -145,10 +145,16 @@ def package_qa_write_error(error_class, name, path, d):
              (ERROR_NAMES[error_class], name, package_qa_clean_path(path,d))
     f.close()
 
+# Returns False is there was a fatal problem and True if we did not hit a fatal
+# error
 def package_qa_handle_error(error_class, error_msg, name, path, d):
-    bb.error("QA Issue with %s: %s" % (name, error_msg))
+    fatal = package_qa_make_fatal_error(error_class, name, path, d)
     package_qa_write_error(error_class, name, path, d)
-    return not package_qa_make_fatal_error(error_class, name, path, d)
+    if fatal:
+        bb.error("QA Issue with %s: %s" % (name, error_msg))
+    else:
+        bb.warn("QA Issue with %s: %s" % (name, error_msg))
+    return not fatal
 
 def package_qa_check_rpath(file,name,d, elf):
     """
@@ -173,7 +179,7 @@ def package_qa_check_rpath(file,name,d, elf):
     for line in txt:
         for dir in bad_dirs:
             if dir in line:
-                error_msg = "package %s contains bad RPATH %s in file %s" % (name, line, file)
+                error_msg = "package %s contains bad RPATH %s in file %s, this is a security issue" % (name, line, file)
                 sane = package_qa_handle_error(1, error_msg, name, file, d)
 
     return sane
