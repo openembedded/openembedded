@@ -9,7 +9,7 @@ PR = "r3"
 SRC_URI = "git://git.shr-project.org/repo/libphone-ui-shr.git;protocol=http;branch=master"
 S = "${WORKDIR}/git"
 
-inherit pkgconfig autotools autotools
+inherit pkgconfig autotools gettext
 
 EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc"
 
