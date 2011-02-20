@@ -2,8 +2,6 @@ DESCRIPTION = "gvfs is a userspace virtual filesystem"
 LICENSE = "LGPLv2"
 DEPENDS = "libcdio gawk-native libimobiledevice gnome-keyring glib-2.0 obexftp fuse avahi fuse hal gconf samba gphoto2"
 
-DEFAULT_PREFERENCE = "-1"
-
 inherit gnome
 
 SRC_URI[archive.md5sum] = "d8a57290a5d090b07cd2f23914f20f4e"
