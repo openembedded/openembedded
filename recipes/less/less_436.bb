@@ -5,6 +5,7 @@ HOMEPAGE = "http://www.greenwoodsoftware.com/"
 SECTION = "console/utils"
 LICENSE = "BSD"
 DEPENDS = "ncurses"
+PR = "r1"
 
 SRC_URI = "http://www.greenwoodsoftware.com/less/less-${PV}.tar.gz"
 
@@ -16,7 +17,7 @@ do_install () {
 }
 
 ALTERNATIVE_NAME = "less"
-ALTERNATIVE_PATH = "less.${PN}"
+ALTERNATIVE_PATH = "${bindir}/less.${PN}"
 ALTERNATIVE_PRIORITY = "100"
 
 SRC_URI[md5sum] = "817bf051953ad2dea825a1cdf460caa4"
