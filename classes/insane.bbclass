@@ -494,5 +494,5 @@ Rerun configure task after fixing this. The path was '%s'""" % root)
               gnu = "grep \"^[[:space:]]*AM_GNU_GETTEXT\" %s >/dev/null" % config
               if os.system(gnu) == 0:
                  bb.note("""Gettext required but not in DEPENDS for file %s.
-Missing inherit gettext?""" % config)
+Missing 'inherit gettext' in recipe?""" % config)
 }
