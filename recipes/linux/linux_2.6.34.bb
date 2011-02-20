@@ -6,6 +6,7 @@ module_autoload_ohci-hcd_omap5912osk = "ohci-hcd"
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_calamari = "1"
 DEFAULT_PREFERENCE_qemuarm = "1"
 DEFAULT_PREFERENCE_qemuppc = "1"
 DEFAULT_PREFERENCE_qemush4 = "1"

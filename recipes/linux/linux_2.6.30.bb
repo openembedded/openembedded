@@ -7,7 +7,7 @@ S = "${WORKDIR}/linux-${PV}"
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_mpc8315e-rdb = "1"
-DEFAULT_PREFERENCE_calamari = "1"
+DEFAULT_PREFERENCE_calamari = "-1"
 DEFAULT_PREFERENCE_mx27ads = "1"
 DEFAULT_PREFERENCE_kixrp435 = "1"
 DEFAULT_PREFERENCE_at91sam9g45ekes	= "2"
