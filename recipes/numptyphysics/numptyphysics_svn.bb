@@ -7,7 +7,7 @@ HOMEPAGE = "http://numptyphysics.garage.maemo.org/"
 SECTION = "x11/games"
 SRCREV = "109"
 PV = "0.2+svnr${SRCPV}"
-PR = "r3"
+PR = "r4"
 
 inherit autotools
 

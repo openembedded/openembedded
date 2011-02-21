@@ -4,7 +4,7 @@ AUTHOR = "dj@delorie.com"
 HOMEPAGE = "http://www.delorie.com/store/ace/"
 SECTION = "games"
 DEPENDS = "libpng-native libpng zlib-native libxpm"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "\
   http://www.delorie.com/store/ace/ace-${PV}.tar.gz\
