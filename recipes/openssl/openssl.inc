@@ -78,7 +78,7 @@ do_configure () {
 	linux-mipsel)
 		target=debian-mipsel
 		;;
-	linux-powerpc)
+	linux-powerpc | linux-powerpc64)
 		target=linux-ppc
 		;;
 	linux-supersparc)
