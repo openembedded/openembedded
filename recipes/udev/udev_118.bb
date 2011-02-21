@@ -5,6 +5,8 @@ RPROVIDES_${PN} = "hotplug"
 
 require udev.inc
 
+RDEPENDS_${PN}_slugos = "udev-utils"
+
 PR = "${INC_PR}.0"
 
 LD = "${CC}"
