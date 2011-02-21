@@ -1,0 +1,40 @@
+From ccbca3b163447d30352ddb94388693b320864bfc Mon Sep 17 00:00:00 2001
+From: Asen Dimov <dimov@ronetix.at>
+Date: Tue, 2 Mar 2010 01:17:56 +0200
+Subject: [PATCH] print some more info from atmel_nand.c
+
+---
+ drivers/mtd/nand/atmel_nand.c |    9 +++++++--
+ 1 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index f6dad3d..c974a56 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -411,6 +411,8 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
+ 		res = -EIO;
+ 		goto err_nand_ioremap;
+ 	}
++	printk(KERN_ERR "atmel_nand: nand chip  ioremap 0x%08x(Physical) to 0x%08x(virtual) length 0x%08x\n",
++		mem->start, host->io_base, mem->end - mem->start + 1);
+ 
+ 	mtd = &host->mtd;
+ 	nand_chip = &host->nand_chip;
+@@ -515,9 +517,12 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	printk(KERN_INFO "AT91 NAND: %i-bit, %s ECC\n",
++	printk(KERN_INFO "AT91 NAND: %i-bit, %s ECC, Sizes: %d page, %d erase block, %d oob \n",
+ 		(nand_chip->options & NAND_BUSWIDTH_16) ? 16 : 8,
+-		ecc_modes[nand_chip->ecc.mode]
++		ecc_modes[nand_chip->ecc.mode],
++		mtd->writesize,
++		mtd->erasesize,
++		mtd->oobsize
+ 	);
+ 
+ 	/* second phase scan */
+-- 
+1.5.5.6
+

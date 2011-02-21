@@ -1,0 +1,138 @@
+From 7abad9133c1bf66732a339126003f191926a202c Mon Sep 17 00:00:00 2001
+From: Asen Dimov <dimov@ronetix.at>
+Date: Fri, 27 Aug 2010 13:46:28 +0300
+Subject: [PATCH] add pm9g45 board version 1.2, and adjust memory selection
+
+
+Signed-off-by: Asen Dimov <dimov@ronetix.at>
+---
+ arch/arm/mach-at91/Kconfig                    |   36 ++++++++++++++++++++++---
+ arch/arm/mach-at91/board-pm9g45.c             |    4 +--
+ arch/arm/mach-at91/include/mach/at91sam9g45.h |   15 +++++++---
+ 3 files changed, 43 insertions(+), 12 deletions(-)
+
+diff --git a/arch/arm/mach-at91/Kconfig b/arch/arm/mach-at91/Kconfig
+index bebad5b..25e6c6b 100644
+--- a/arch/arm/mach-at91/Kconfig
++++ b/arch/arm/mach-at91/Kconfig
+@@ -414,8 +414,30 @@ config MACH_PM9G45
+          Select this if you are using Ronetix's PM9G45 board.
+          <http://ronetix.at/starter_kit_9g45.html>
+ choice
+-       prompt "System RAM base address"
++       prompt "PM9G45 board version"
+        depends on MACH_PM9G45
++       default MACH_PM9G45_V1_2
++       help
++         The version is writted out on the board.
++
++config MACH_PM9G45_V1_1
++       bool "v1.1"
++       depends on MACH_PM9G45
++       help
++         Has two RAM memories on CS1 and CS6.
++
++config MACH_PM9G45_V1_2
++       bool "v1.2"
++       depends on MACH_PM9G45
++       select AUTO_VRAM_SIZE
++       help
++         Has one RAM memory on CS6.
++
++endchoice
++
++choice
++       prompt "System RAM base address"
++       depends on (MACH_PM9G45 && MACH_PM9G45_V1_1)
+        help
+          AT91SAM9G45 has two DDR2 controlers, one CS1 on 0x20000000
+          and CS6 on 0x70000000 memmory addresses. You can choose
+@@ -423,21 +445,27 @@ choice
+ 
+ config PM9G45_SYSTEM_RAM_CS1
+        bool "System RAM: CS1 on 0x20000000 with 128MB"
+-       depends on MACH_PM9G45
+        help
+          CS1 will be used for system ram and CS6 for video memory.
+ 
+ config PM9G45_SYSTEM_RAM_CS6
+        bool "System RAM: CS6 on 0x70000000"
+-       depends on MACH_PM9G45
+        help
+          CS6 will be used for system ram and for video ram.
+ 
+ endchoice
+ 
++config AUTO_VRAM_SIZE
++       bool "Reserve video memory automatic"
++       depends on PM9G45_SYSTEM_RAM_CS6
++       default n if PM9G45_SYSTEM_RAM_CS1
++       help
++         The automatic reservasion is based on the screen resolution
++         and bits per pixel. Manualy reserver memory VRAM_SIZE for video.
++
+ config VRAM_SIZE
+        prompt "Video RAM size"
+-       depends on (MACH_PM9G45 && PM9G45_SYSTEM_RAM_CS6)
++       depends on (MACH_PM9G45_V1_1 && PM9G45_SYSTEM_RAM_CS6 && AUTO_VRAM_SIZE=n)
+        hex
+        help
+          Determine the size of ram for video. It will be located at the end of CS6.
+diff --git a/arch/arm/mach-at91/board-pm9g45.c b/arch/arm/mach-at91/board-pm9g45.c
+index fa142cf..2671445 100644
+--- a/arch/arm/mach-at91/board-pm9g45.c
++++ b/arch/arm/mach-at91/board-pm9g45.c
+@@ -270,7 +270,7 @@ static struct resource lcdc_resources[] = {
+ 		.end	= AT91SAM9G45_LCDC_BASE + SZ_4K - 1,
+ 		.flags	= IORESOURCE_MEM,
+ 	},
+-#if CONFIG_PM9G45_DEDICATED_VRAM
++#ifndef CONFIG_AUTO_VRAM_SIZE
+ /*
+  * atmel_lcdfb_probe() checks if record 1 is IORESOURCE_MEM
+  * if not then allocates spave in system ram
+@@ -280,8 +280,6 @@ static struct resource lcdc_resources[] = {
+ 		.end	= CONFIG_VRAM_BASE + CONFIG_VRAM_SIZE - 1,
+ 		.flags	= IORESOURCE_MEM,
+ 	},
+-#endif
+-#if CONFIG_PM9G45_DEDICATED_VRAM
+ 	[2] = {
+ #else
+ 	[1] = {
+diff --git a/arch/arm/mach-at91/include/mach/at91sam9g45.h b/arch/arm/mach-at91/include/mach/at91sam9g45.h
+index 826c764..446e6d9 100644
+--- a/arch/arm/mach-at91/include/mach/at91sam9g45.h
++++ b/arch/arm/mach-at91/include/mach/at91sam9g45.h
+@@ -136,18 +136,23 @@
+  */
+ #if defined(CONFIG_MACH_AT91SAM9G45EKES)
+ #define CONFIG_DRAM_BASE	AT91_CHIPSELECT_6
+-#elif defined(CONFIG_MACH_PM9G45) && defined(CONFIG_PM9G45_SYSTEM_RAM_CS1)
++#elif defined(CONFIG_MACH_PM9G45_V1_1) && defined(CONFIG_PM9G45_SYSTEM_RAM_CS1)
+ #define CONFIG_DRAM_BASE	AT91_CHIPSELECT_1
+ #define CONFIG_DRAM_SIZE	SZ_128M
+ #define CONFIG_VRAM_BASE	AT91_CHIPSELECT_6
+ #define CONFIG_VRAM_SIZE	SZ_64M
+-#elif defined(CONFIG_MACH_PM9G45) && defined(CONFIG_PM9G45_SYSTEM_RAM_CS6)
++#elif 	defined(CONFIG_MACH_PM9G45_V1_1) && \
++	defined(CONFIG_PM9G45_SYSTEM_RAM_CS6) && \
++	defined(CONFIG_AUTO_VRAM_SIZE) 
++#define CONFIG_DRAM_BASE	AT91_CHIPSELECT_6
++#elif 	defined(CONFIG_MACH_PM9G45_V1_1) && \
++	defined(CONFIG_PM9G45_SYSTEM_RAM_CS6) && \
++	CONFIG_AUTO_VRAM_SIZE == y 
+ #define CONFIG_DRAM_BASE	AT91_CHIPSELECT_6
+-/*
+-#if CONFIG_PM9G45_DEDICATED_VRAM
+ #define CONFIG_DRAM_SIZE	SZ_64M - CONFIG_VRAM_SIZE
+ #define CONFIG_VRAM_BASE	AT91_CHIPSELECT_6 + CONFIG_DRAM_SIZE
+-*/
++#elif 	defined(CONFIG_MACH_PM9G45_V1_2) 
++#define CONFIG_DRAM_BASE	AT91_CHIPSELECT_6
+ #else
+ #define CONFIG_DRAM_BASE	AT91_CHIPSELECT_6
+ #endif
+-- 
+1.5.5.6
+

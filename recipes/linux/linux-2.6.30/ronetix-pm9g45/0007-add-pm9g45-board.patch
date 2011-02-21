@@ -1,0 +1,1004 @@
+From 08b8ed8e5b8964c58daa5335831683f99228bf6a Mon Sep 17 00:00:00 2001
+From: Asen Dimov <dimov@ronetix.at>
+Date: Tue, 2 Mar 2010 01:55:54 +0200
+Subject: [PATCH] add pm9g45 board
+
+---
+ arch/arm/mach-at91/Kconfig        |   73 +++-
+ arch/arm/mach-at91/Makefile       |    1 +
+ arch/arm/mach-at91/board-pm9g45.c |  875 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 947 insertions(+), 2 deletions(-)
+ create mode 100644 arch/arm/mach-at91/board-pm9g45.c
+
+diff --git a/arch/arm/mach-at91/Kconfig b/arch/arm/mach-at91/Kconfig
+index 359b0bc..bebad5b 100644
+--- a/arch/arm/mach-at91/Kconfig
++++ b/arch/arm/mach-at91/Kconfig
+@@ -407,6 +407,75 @@ config MACH_AT91SAM9G45EKES
+ 	  "ES" at the end of the name means that this board is an
+ 	  Engineering Sample.
+ 
++config MACH_PM9G45
++       bool "Ronetix PM9G45 Evaluation Kit"
++       depends on ARCH_AT91SAM9G45
++       help
++         Select this if you are using Ronetix's PM9G45 board.
++         <http://ronetix.at/starter_kit_9g45.html>
++choice
++       prompt "System RAM base address"
++       depends on MACH_PM9G45
++       help
++         AT91SAM9G45 has two DDR2 controlers, one CS1 on 0x20000000
++         and CS6 on 0x70000000 memmory addresses. You can choose
++         the where th system RAM to be.
++
++config PM9G45_SYSTEM_RAM_CS1
++       bool "System RAM: CS1 on 0x20000000 with 128MB"
++       depends on MACH_PM9G45
++       help
++         CS1 will be used for system ram and CS6 for video memory.
++
++config PM9G45_SYSTEM_RAM_CS6
++       bool "System RAM: CS6 on 0x70000000"
++       depends on MACH_PM9G45
++       help
++         CS6 will be used for system ram and for video ram.
++
++endchoice
++
++config VRAM_SIZE
++       prompt "Video RAM size"
++       depends on (MACH_PM9G45 && PM9G45_SYSTEM_RAM_CS6)
++       hex
++       help
++         Determine the size of ram for video. It will be located at the end of CS6.
++       default 0x400000
++
++choice
++       prompt "LCD Display"
++
++config PM9G45_LCD_TX09D70
++       bool "3.5\", 320x240 Hitachi TX09D70"
++       depends on MACH_PM9G45
++
++config PM9G45_LCD_RA158
++       bool "4.3\", 800x480 Seiko RA158"
++       depends on MACH_PM9G45
++
++config PM9G45_LCD_TCG057VGLAC
++       bool "5.7\", 640x480 Kyocera TCG057VGLAC"
++       depends on MACH_PM9G45
++
++config PM9G45_LCD_GTTV57NN771E0
++       bool "5.7\", 640x480 Solomon GTTV57NN771E0"
++       depends on MACH_PM9G45
++
++config PM9G45_LCD_GLAA057VA01CW
++       bool "5.7\", 640x480 CPT CLAA057VA01CW"
++       depends on MACH_PM9G45
++
++config PM9G45_LCD_GATW70SN8H1E0
++       bool "7.0\", 800x480 Solomon GATW70SN8H1E0"
++       depends on MACH_PM9G45
++
++config PM9G45_LCD_CLAA080MB0ACW
++       bool "8.0\", 800x600 CPT CLAA080MB0ACW"
++       depends on MACH_PM9G45
++
++endchoice
++
+ endif
+ 
+ # ----------------------------------------------------------
+@@ -461,13 +530,13 @@ comment "AT91 Board Options"
+ 
+ config MTD_AT91_DATAFLASH_CARD
+ 	bool "Enable DataFlash Card support"
+-	depends on (ARCH_AT91RM9200DK || MACH_AT91RM9200EK || MACH_AT91SAM9260EK || MACH_AT91SAM9261EK || MACH_AT91SAM9G10EK || MACH_AT91SAM9263EK || MACH_AT91SAM9G20EK || MACH_ECBAT91 || MACH_SAM9_L9260 || MACH_AT91CAP9ADK || MACH_AT572D940HFEB || MACH_TOTEMNOVA || MACH_NEOCORE926)
++	depends on (ARCH_AT91RM9200DK || MACH_AT91RM9200EK || MACH_AT91SAM9260EK || MACH_AT91SAM9261EK || MACH_AT91SAM9G10EK || MACH_AT91SAM9263EK || MACH_AT91SAM9G20EK || MACH_ECBAT91 || MACH_SAM9_L9260 || MACH_AT91CAP9ADK || MACH_AT572D940HFEB || MACH_TOTEMNOVA || MACH_NEOCORE926 || MACH_PM9G45)
+ 	help
+ 	  Enable support for the DataFlash card.
+ 
+ config MTD_NAND_ATMEL_BUSWIDTH_16
+ 	bool "Enable 16-bit data bus interface to NAND flash"
+-	depends on (MACH_AT91SAM9260EK || MACH_AT91SAM9261EK || MACH_AT91SAM9G10EK || MACH_AT91SAM9263EK || MACH_AT91SAM9G20EK || MACH_AT91SAM9G20EK_2MMC || MACH_AT91SAM9G45EKES || MACH_AT91CAP9ADK || MACH_AT572D940HFEB)
++	depends on (MACH_AT91SAM9260EK || MACH_AT91SAM9261EK || MACH_AT91SAM9G10EK || MACH_AT91SAM9263EK || MACH_AT91SAM9G20EK || MACH_AT91SAM9G20EK_2MMC || MACH_AT91SAM9G45EKES || MACH_AT91CAP9ADK || MACH_AT572D940HFEB || MACH_PM9G45)
+ 	help
+ 	  On AT91SAM926x boards both types of NAND flash can be present
+ 	  (8 and 16 bit data bus width).
+diff --git a/arch/arm/mach-at91/Makefile b/arch/arm/mach-at91/Makefile
+index 761098e..ea24437 100644
+--- a/arch/arm/mach-at91/Makefile
++++ b/arch/arm/mach-at91/Makefile
+@@ -72,6 +72,7 @@ obj-$(CONFIG_MACH_SBC35_A9G20)	 += board-sbc35-a9g20.o
+ 
+ # AT91SAM9G45 board-specific support
+ obj-$(CONFIG_MACH_AT91SAM9G45EKES) += board-sam9m10g45ek.o
++obj-$(CONFIG_MACH_PM9G45) += board-pm9g45.o
+ 
+ # AT91CAP9 board-specific support
+ obj-$(CONFIG_MACH_AT91CAP9ADK)	+= board-cap9adk.o
+diff --git a/arch/arm/mach-at91/board-pm9g45.c b/arch/arm/mach-at91/board-pm9g45.c
+new file mode 100644
+index 0000000..63e5ee1
+--- /dev/null
++++ b/arch/arm/mach-at91/board-pm9g45.c
+@@ -0,0 +1,875 @@
++/*
++ *  Board-specific setup code for the AT91SAM9M10G45 Evaluation Kit family
++ *
++ *  Covers: * AT91SAM9G45-EKES  board
++ *          * AT91SAM9M10G45-EK board
++ *
++ *  Copyright (C) 2009 Atmel Corporation.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ */
++/*
++ * Based on board-sam9m10g45ek.c 
++ * filename: board-pm9g45.c
++ * date: 05.02.2010
++ */
++
++#include <linux/types.h>
++#include <linux/init.h>
++#include <linux/mm.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/spi/spi.h>
++#include <linux/spi/ads7846.h>
++#include <linux/fb.h>
++#include <linux/gpio_keys.h>
++#include <linux/input.h>
++#include <linux/leds.h>
++#include <linux/clk.h>
++#include <linux/w1-gpio.h>
++#include <linux/atmel-mci.h>
++
++#include <mach/hardware.h>
++#include <video/atmel_lcdc.h>
++
++#include <asm/setup.h>
++#include <asm/mach-types.h>
++#include <asm/irq.h>
++
++#include <asm/mach/arch.h>
++#include <asm/mach/map.h>
++#include <asm/mach/irq.h>
++
++#include <mach/at91sam9g45_matrix.h>
++
++#include <mach/hardware.h>
++#include <mach/board.h>
++#include <mach/gpio.h>
++#include <mach/at91sam9_smc.h>
++#include <mach/at91_shdwc.h>
++
++#include "sam9_smc.h"
++#include "generic.h"
++
++static void __init pm9g45_map_io(void)
++{
++	/* Initialize processor: 12.000 MHz crystal */
++	at91sam9g45_initialize(12000000);
++
++	/* DGBU on ttyS0. (Rx & Tx only) */
++	at91_register_uart(0, 0, 0);
++
++	/* USART0 not connected on the -EK board */
++	/* USART1 on ttyS2. (Rx, Tx, RTS, CTS) */
++	at91_register_uart(AT91SAM9G45_ID_US1, 2, ATMEL_UART_CTS | ATMEL_UART_RTS);
++
++	/* set serial console to ttyS0 (ie, DBGU) */
++	at91_set_serial_console(0);
++}
++
++static void __init pm9g45_init_irq(void)
++{
++	at91sam9g45_init_interrupts(NULL);
++}
++
++
++/*
++ * USB HS Host port (common to OHCI & EHCI)
++ */
++static struct at91_usbh_data __initdata pm9g45_usbh_hs_data = {
++	.ports		= 2, 
++	.vbus_pin	= { 0, 0},
++};
++
++
++/*
++ * USB HS Device port
++ */
++static struct usba_platform_data __initdata pm9g45_usba_udc_data = {
++	.vbus_pin	= AT91_PIN_PD1,
++};
++
++/*
++ * ADS7846 Touchscreen
++ */
++#if defined(CONFIG_TOUCHSCREEN_ADS7846) || defined(CONFIG_TOUCHSCREEN_ADS7846_MODULE)
++static int ads7843_pendown_state(void)
++{
++	return !at91_get_gpio_value(AT91_PIN_PD18);	/* Touchscreen PENIRQ */
++}
++
++static struct ads7846_platform_data ads_info = {
++	.model			= 7843,
++	.x_min			= 150,
++	.x_max			= 3830,
++	.y_min			= 190,
++	.y_max			= 3830,
++	.settle_delay_usecs = 2000,
++	.keep_vref_on	= 1,
++	.vref_delay_usecs	= 500,
++	.x_plate_ohms		= 607,
++	.y_plate_ohms		= 232,
++	.pressure_max		= 15000,
++	.debounce_max		= 1,
++	.debounce_rep		= 1, //0
++	.debounce_tol		= (50), //(~0)
++	.get_pendown_state	= ads7843_pendown_state,
++	.penirq_recheck_delay_usecs = 200,
++};
++
++static void __init pm9g45_add_device_ts(void)
++{
++	at91_set_gpio_input(AT91_PIN_PD18, 1);	/* External IRQ, with pullup */
++	at91_set_gpio_input(AT91_PIN_PE31, 1);	/* Touchscreen BUSY signal */
++}
++#else
++static void __init pm9g45_add_device_ts(void) {}
++#endif
++static struct at91_tsadcc_data pm9g45_tsadcc_data = {
++	.adc_clock		= 300000,
++	.pendet_debounce	= 0x0d,
++	.ts_sample_hold_time	= 0x0a,
++};
++
++/*
++ * SPI devices.
++ */
++static struct spi_board_info pm9g45_spi_devices[] = {
++#if defined(CONFIG_MTD_AT91_DATAFLASH_CARD)
++	{	/* DataFlash card */
++		.modalias	= "mtd_dataflash",
++		.chip_select	= 0,
++		.max_speed_hz	= 15 * 1000 * 1000,
++		.bus_num	= 0,
++	},
++#endif
++#if defined(CONFIG_TOUCHSCREEN_ADS7846) || defined(CONFIG_TOUCHSCREEN_ADS7846_MODULE)
++	{
++		.modalias	= "ads7846",
++		.chip_select	= 0,
++		.max_speed_hz	= 125000 * 16,	/* max sample rate * clocks per sample */
++		.bus_num	= 1,
++		.platform_data	= &ads_info,
++		.irq		= AT91_PIN_PD18, 
++	},
++#endif
++};
++
++/*
++ * MCI (SD/MMC)
++ */
++static struct mci_platform_data __initdata pm9g45_mci0_data = {
++	.slot[0] = {
++		.bus_width	= 4,
++		.detect_pin	= AT91_PIN_PD30,
++		.wp_pin		= AT91_PIN_PD29,
++		//	.vcc_pin	= ... not connected
++	}
++};
++
++/*
++ * MACB Ethernet device
++ */
++static struct at91_eth_data __initdata pm9g45_macb_data = {
++	.phy_irq_pin	= AT91_PIN_PD5,
++	.is_rmii	= 1,
++};
++
++
++/*
++ * NAND flash
++ */
++static struct mtd_partition __initdata pm9g45_nand_partition[] = {
++	{
++		.name	= "Partition 1",
++		.offset	= 0,
++ 		.size	= MTDPART_SIZ_FULL,
++	},
++
++};
++
++static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
++{
++	*num_partitions = ARRAY_SIZE(pm9g45_nand_partition);
++	return pm9g45_nand_partition;
++}
++
++/* det_pin is not connected */
++static struct atmel_nand_data __initdata pm9g45_nand_data = {
++	.ale		= 21,
++	.cle		= 22,
++ //	.det_pin	= ... not connected
++	.rdy_pin	= AT91_PIN_PD3,
++//	.rdy_pin_active_low	= 0,
++	.enable_pin	= AT91_PIN_PC14,
++	.partition_info	= nand_partitions,
++#if defined(CONFIG_MTD_NAND_AT91_BUSWIDTH_16)
++	.bus_width_16	= 1,
++#else
++	.bus_width_16	= 0,
++#endif
++};
++
++static struct sam9_smc_config __initdata pm9g45_nand_smc_config = {
++	.ncs_read_setup		= 0,
++	.nrd_setup		= 1,
++	.ncs_write_setup	= 0,
++	.nwe_setup		= 1,
++
++	.ncs_read_pulse		= 2, /* 3*/
++	.nrd_pulse		= 3, /* 3 */
++	.ncs_write_pulse	= 3, /* 3 */
++	.nwe_pulse		= 4, /* 3*/
++
++	.read_cycle		= 4, /* 5*/
++	.write_cycle		= 7, /* 5*/
++
++	.mode			= AT91_SMC_READMODE | AT91_SMC_WRITEMODE | AT91_SMC_EXNWMODE_DISABLE,
++	.tdf_cycles		= 3, /* 2*/
++};
++
++static void __init pm9g45_add_device_nand(void)
++{
++	/* setup bus-width (8 or 16) */
++	if (pm9g45_nand_data.bus_width_16)
++		pm9g45_nand_smc_config.mode |= AT91_SMC_DBW_16;
++	else
++		pm9g45_nand_smc_config.mode |= AT91_SMC_DBW_8;
++
++	/* configure chip-select 3 (NAND) */
++	sam9_smc_configure(3, &pm9g45_nand_smc_config);
++
++	at91_add_device_nand(&pm9g45_nand_data);
++}
++
++
++/*
++ * LCD Controller
++ */
++#if defined(CONFIG_FB_ATMEL) || defined(CONFIG_FB_ATMEL_MODULE)
++
++#define AT91SAM9G45_DEFAULT_LCDCON2 	(ATMEL_LCDC_MEMOR_LITTLE \
++					| ATMEL_LCDC_DISTYPE_TFT \
++					| ATMEL_LCDC_CLKMOD_ALWAYSACTIVE)
++
++static void at91_lcdc_power_control(int on)
++{
++	at91_set_gpio_value(AT91_PIN_PE6, on);
++}
++
++static u64 lcdc_dmamask = 0xffffffffUL;
++static struct atmel_lcdfb_info lcdc_data;
++
++static struct resource lcdc_resources[] = {
++	[0] = {
++		.start	= AT91SAM9G45_LCDC_BASE,
++		.end	= AT91SAM9G45_LCDC_BASE + SZ_4K - 1,
++		.flags	= IORESOURCE_MEM,
++	},
++	[1] = {
++		.start	= CONFIG_VRAM_BASE,
++		.end	= CONFIG_VRAM_BASE + CONFIG_VRAM_SIZE - 1,
++		.flags	= IORESOURCE_MEM,
++	},
++	[2] = {
++		.start	= AT91SAM9G45_ID_LCDC,
++		.end	= AT91SAM9G45_ID_LCDC,
++		.flags	= IORESOURCE_IRQ,
++	},
++};
++
++static struct platform_device at91_lcdc_device = {
++	.name		= "atmel_lcdfb",
++	.id		= 0,
++	.dev		= {
++				.dma_mask		= &lcdc_dmamask,
++				.coherent_dma_mask	= 0xffffffffUL,
++				.platform_data		= &lcdc_data,
++	},
++	.resource	= lcdc_resources,
++	.num_resources	= ARRAY_SIZE(lcdc_resources),
++};
++
++static void __init pm9g45_add_device_lcdc(struct atmel_lcdfb_info *data)
++{
++	if (!data)
++		return;
++
++	at91_set_A_periph(AT91_PIN_PE0, 0);	/* LCDDPWR */
++	at91_set_A_periph(AT91_PIN_PE3, 0);	/* LCDVSYNC */
++	at91_set_A_periph(AT91_PIN_PE4, 0);	/* LCDHSYNC */
++	at91_set_A_periph(AT91_PIN_PE5, 0);	/* LCDDOTCK */
++
++	at91_set_A_periph(AT91_PIN_PE2, 0);	/* LCDCC */
++	/* at91_set_A_periph(AT91_PIN_PE7, 0); Not used */	/* LCDD0/LCDD2 */
++	/* at91_set_A_periph(AT91_PIN_PE8, 0); Not used */	/* LCDD1/LCDD3 */
++	at91_set_A_periph(AT91_PIN_PE9, 0);	/* LCDD2_R0 */
++	at91_set_A_periph(AT91_PIN_PE10, 0);	/* LCDD3_R1 */
++	at91_set_A_periph(AT91_PIN_PE11, 0);	/* LCDD4_R2 */
++	at91_set_A_periph(AT91_PIN_PE12, 0);	/* LCDD5_R3 */
++	at91_set_A_periph(AT91_PIN_PE13, 0);	/* LCDD6_R4 */
++	at91_set_A_periph(AT91_PIN_PE14, 0);	/* LCDD7_R5 */
++	/* at91_set_A_periph(AT91_PIN_PE15, 0); Not used */	/* LCDD8/LCDD12 */
++	/* at91_set_A_periph(AT91_PIN_PE16, 0); Not used */	/* LCDD9/LCDD13 */
++	at91_set_A_periph(AT91_PIN_PE17, 0);	/* LCDD10_G0 */
++	at91_set_A_periph(AT91_PIN_PE18, 0);	/* LCDD11_G1 */
++	at91_set_A_periph(AT91_PIN_PE19, 0);	/* LCDD12_G2 */
++	at91_set_A_periph(AT91_PIN_PE20, 0);	/* LCDD13_G3 */
++	at91_set_A_periph(AT91_PIN_PE21, 0);	/* LCDD14_G4 */
++	at91_set_A_periph(AT91_PIN_PE22, 0);	/* LCDD15_G5 */
++	/* at91_set_A_periph(AT91_PIN_PE23, 0); Not used */	/* LCDD8/LCDD12 */
++	/* at91_set_A_periph(AT91_PIN_PE24, 0); Not used */	/* LCDD9/LCDD13 */
++	at91_set_A_periph(AT91_PIN_PE25, 0);	/* LCDD18_B0 */
++	at91_set_A_periph(AT91_PIN_PE26, 0);	/* LCDD19_B1 */
++	at91_set_A_periph(AT91_PIN_PE27, 0);	/* LCDD20_B2 */
++	at91_set_A_periph(AT91_PIN_PE28, 0);	/* LCDD21_B3 */
++	at91_set_A_periph(AT91_PIN_PE29, 0);	/* LCDD22_B4 */
++	at91_set_A_periph(AT91_PIN_PE30, 0);	/* LCDD23_B5 */
++
++	lcdc_data = *data;
++	platform_device_register(&at91_lcdc_device);
++}
++
++#if defined(CONFIG_PM9G45_LCD_TX09D70)
++/* Hitachi TX09D70VM1CCA - 3.5", 320x240 */
++static struct fb_videomode at91_tft_vga_modes[] = {
++	{
++		.name			= "TX09D50VM1CCA @ 60",
++		.refresh		= 60,
++		.xres			= 240,		
++		.yres			= 320,
++		.pixclock		= KHZ2PICOS(4965),
++		.left_margin	= 1,		
++		.right_margin	= 33,
++		.upper_margin	= 1,		
++		.lower_margin	= 0,
++		.hsync_len		= 5,		
++		.vsync_len		= 1,
++		.sync			= FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT,
++		.vmode			= FB_VMODE_NONINTERLACED,
++	},
++};
++
++static struct fb_monspecs at91fb_default_monspecs = {
++	.manufacturer	= "HIT",
++	.monitor	= "TX09D70VM1CCA",
++	.modedb		= at91_tft_vga_modes,
++	.modedb_len	= ARRAY_SIZE(at91_tft_vga_modes),
++	.hfmin		= 15000,
++	.hfmax		= 64000,
++	.vfmin		= 50,
++	.vfmax		= 150,
++};
++
++/* Driver datas */
++static struct atmel_lcdfb_info __initdata pm9g45_lcdc_data = {
++	.lcdcon_is_backlight	= true,
++	.default_bpp			= 16,
++	.default_dmacon			= ATMEL_LCDC_DMAEN,
++	.default_lcdcon2		= AT91SAM9G45_DEFAULT_LCDCON2,
++	.default_monspecs		= &at91fb_default_monspecs,
++	.atmel_lcdfb_power_control	= at91_lcdc_power_control,
++	.guard_time			= 1,
++	.lcd_wiring_mode		= ATMEL_LCDC_WIRING_RGB,
++};
++
++#elif defined(CONFIG_PM9G45_LCD_RA158)
++/* Seiko RA158 - 4.3", 800x480, 350cd */
++static struct fb_videomode __initdata tft_modes[] = {
++	{
++		.name			= "800x480 @ 60",
++		.refresh		= 60,
++		.xres			= 800,		
++		.yres			= 480,
++		.pixclock		= KHZ2PICOS(10000),
++		.left_margin	= 89,		
++		.right_margin	= 164,
++		.upper_margin	= 23,		
++		.lower_margin	= 10,
++		.hsync_len		= 10,		
++		.vsync_len		= 10,
++		.sync			= 0,
++		.vmode			= FB_VMODE_NONINTERLACED,
++	},
++};
++
++static struct fb_monspecs __initdata tft_default_monspecs = {
++	.manufacturer	= "SEI",
++	.monitor		= "RA158Z",
++	.modedb			= tft_modes,
++	.modedb_len		= ARRAY_SIZE(tft_modes),
++	.hfmin			= 10000,
++	.hfmax			= 35000,
++	.vfmin			= 40,
++	.vfmax			= 90,
++	.dclkmax		= 35000000,
++};
++
++static struct atmel_lcdfb_info __initdata pm9g45_lcdc_data = {
++	.default_bpp		= 24,
++	.default_dmacon		= ATMEL_LCDC_DMAEN,
++	.default_lcdcon2	= AT91SAM9G45_DEFAULT_LCDCON2,
++	.default_monspecs	= &tft_default_monspecs,
++	.guard_time			= 2,
++};
++
++
++#elif defined(CONFIG_PM9G45_LCD_TCG057VGLAC)
++/* Kyocera TCG057VGLAC - 5.7", 640x480 */
++static struct fb_videomode at91_tft_vga_modes[] = {
++	{
++		.name		= "TCG057VGLAC @ 60",
++		.refresh	= 60,
++		.xres		= 640,
++		.yres		= 480,
++		.pixclock	= KHZ2PICOS(25000),
++		.hsync_len	= 5,
++		.left_margin	= 1,
++		.right_margin	= 33,
++		.vsync_len	= 1,
++		.upper_margin	= 4,
++		.lower_margin	= 0,
++		.sync		= 0,
++		.vmode		= FB_VMODE_NONINTERLACED,
++	},
++};
++
++static struct fb_monspecs at91fb_default_monspecs = {
++	.manufacturer	= "KYO",
++	.monitor	= "TCG057VGLAC",
++	.modedb		= at91_tft_vga_modes,
++	.modedb_len	= ARRAY_SIZE(at91_tft_vga_modes),
++	.hfmin		= 15000,
++	.hfmax		= 64000,
++	.vfmin		= 50,
++	.vfmax		= 150,
++};
++
++/* Driver datas */
++static struct atmel_lcdfb_info __initdata pm9g45_lcdc_data = {
++	.lcdcon_is_backlight		= true,
++	.default_bpp			= 16,
++	.default_dmacon			= ATMEL_LCDC_DMAEN,
++	.default_lcdcon2		= AT91SAM9G45_DEFAULT_LCDCON2,
++	.default_monspecs		= &at91fb_default_monspecs,
++	.atmel_lcdfb_power_control	= at91_lcdc_power_control,
++	.guard_time			= 1,
++};
++
++#elif defined(CONFIG_PM9G45_LCD_GTTV57NN771E0)
++/* Solomon GTTV57NN771E0 - 5.7", 640x480 */
++static struct fb_videomode at91_tft_vga_modes[] = {
++	{
++		.name			= "GTTV57NN771E0 @ 60",
++		.refresh		= 60,
++		.xres			= 640,
++		.yres			= 480,
++		.pixclock		= KHZ2PICOS(50000),
++		.hsync_len		= 30,
++		.left_margin	= 114,
++		.right_margin	= 16,
++		.vsync_len		= 3,
++		.upper_margin	= 32,
++		.lower_margin	= 10,
++		.sync			= 0,
++		.vmode			= FB_VMODE_NONINTERLACED,
++	},
++};
++
++static struct fb_monspecs at91fb_default_monspecs = {
++	.manufacturer	= "SGD",
++	.monitor		= "GTTV57NN771E0",
++	.modedb			= at91_tft_vga_modes,
++	.modedb_len		= ARRAY_SIZE(at91_tft_vga_modes),
++	.hfmin			= 10000,
++	.hfmax			= 40000,
++	.vfmin			= 40,
++	.vfmax			= 90,
++};
++
++/* Driver datas */
++static struct atmel_lcdfb_info __initdata pm9g45_lcdc_data = {
++	.lcdcon_is_backlight		= true,
++	.default_bpp			= 16,
++	.default_dmacon			= ATMEL_LCDC_DMAEN,
++	.default_lcdcon2		= AT91SAM9G45_DEFAULT_LCDCON2,
++	.default_monspecs		= &at91fb_default_monspecs,
++	.atmel_lcdfb_power_control	= at91_lcdc_power_control,
++	.guard_time			= 1,
++	.lcd_wiring_mode		= ATMEL_LCDC_WIRING_RGB,
++};
++
++#elif defined(CONFIG_PM9G45_LCD_GLAA057VA01CW)
++/* CPT CLAA057VA01CW - 5.7", 640x480, 220cd */
++static struct fb_videomode __initdata tft_modes[] = {
++	{
++		.name		= "640x480 @ 60",
++		.refresh	= 60,
++		.xres		= 640,		
++		.yres		= 480,
++		.pixclock	= KHZ2PICOS(25000),
++		.left_margin	= 45,		
++		.right_margin	= 114,
++		.upper_margin	= 33,		
++		.lower_margin	= 11,
++		.hsync_len	= 1,		
++		.vsync_len	= 1,
++		.sync		= 0,
++		.vmode		= FB_VMODE_NONINTERLACED,
++	},
++};
++
++static struct fb_monspecs __initdata tft_default_monspecs = {
++	.manufacturer	= "CPT",
++	.monitor		= "CLAA057VA01CW",
++	.modedb			= tft_modes,
++	.modedb_len		= ARRAY_SIZE(tft_modes),
++	.hfmin			= 10000,
++	.hfmax			= 22350,
++	.vfmin			= 40,
++	.vfmax			= 90,
++	.dclkmax		= 30000000,
++};
++
++static struct atmel_lcdfb_info __initdata pm9g45_lcdc_data = {
++	.default_bpp		= 16,
++	.default_dmacon		= ATMEL_LCDC_DMAEN | ATMEL_LCDC_DMA2DEN,
++	.default_lcdcon2	= AT91SAM9G45_DEFAULT_LCDCON2,
++	.default_monspecs	= &tft_default_monspecs,
++	.guard_time			= 2,
++};
++
++
++#elif defined(CONFIG_PM9G45_LCD_GATW70SN8H1E0)
++/* Solomon GATW70 - 7.0", 800x480, 350cd */
++static struct fb_videomode __initdata tft_modes[] = {
++	{
++		.name			= "800x480 @ 60",
++		.refresh		= 60,
++		.xres			= 800,		
++		.yres			= 480,
++		.pixclock		= KHZ2PICOS(25000),
++		.left_margin	= 40,		
++		.right_margin	= 40,
++		.upper_margin	= 29,		
++		.lower_margin	= 13,
++		.hsync_len		= 48,		
++		.vsync_len		= 3,
++		.sync			= 0,
++		.vmode			= FB_VMODE_NONINTERLACED,
++	},
++};
++
++static struct fb_monspecs __initdata tft_default_monspecs = {
++	.manufacturer	= "SGD",
++	.monitor		= "GATW70",
++	.modedb			= tft_modes,
++	.modedb_len		= ARRAY_SIZE(tft_modes),
++	.hfmin			= 10000,
++	.hfmax			= 35000,
++	.vfmin			= 40,
++	.vfmax			= 90,
++	.dclkmax		= 35000000,
++};
++
++static struct atmel_lcdfb_info __initdata pm9g45_lcdc_data = {
++	.default_bpp		= 24,
++	.default_dmacon		= ATMEL_LCDC_DMAEN,
++	.default_lcdcon2	= AT91SAM9G45_DEFAULT_LCDCON2,
++	.default_monspecs	= &tft_default_monspecs,
++	.guard_time			= 2,
++};
++
++#elif defined(CONFIG_PM9G45_LCD_CLAA080MB0ACW)
++/* CPT CLAA080 - 8.0", 800x600, 250cd */
++static struct fb_videomode __initdata tft_modes[] = {
++	{
++		.name			= "800x600 @ 60",
++		.refresh		= 60,
++		.xres			= 800,		
++		.yres			= 600,
++		.pixclock		= KHZ2PICOS(25000),
++		.left_margin	= 0,		
++		.right_margin	= 216,
++		.upper_margin	= 0,		
++		.lower_margin	= 28,
++		.hsync_len		= 0,		
++		.vsync_len		= 0,
++		.sync			= 0,
++		.vmode			= FB_VMODE_NONINTERLACED,
++	},
++};
++
++static struct fb_monspecs __initdata tft_default_monspecs = {
++	.manufacturer	= "CPT",
++	.monitor		= "CLAA080",
++	.modedb			= tft_modes,
++	.modedb_len		= ARRAY_SIZE(tft_modes),
++	.hfmin			= 10000,
++	.hfmax			= 40000,
++	.vfmin			= 40,
++	.vfmax			= 90,
++	.dclkmax		= 40000000,
++};
++
++static struct atmel_lcdfb_info __initdata pm9g45_lcdc_data = {
++	.default_bpp		= 24,
++	.default_dmacon		= ATMEL_LCDC_DMAEN | ATMEL_LCDC_DMA2DEN,
++	.default_lcdcon2	= AT91SAM9G45_DEFAULT_LCDCON2,
++	.default_monspecs	= &tft_default_monspecs,
++	.guard_time			= 2,
++};
++
++#else
++#error "Undefined LCD display!"
++#endif
++
++#else
++static struct atmel_lcdfb_info __initdata pm9g45_lcdc_data;
++#endif
++
++/*
++ * GPIO Buttons
++ */
++#if defined(CONFIG_KEYBOARD_GPIO) || defined(CONFIG_KEYBOARD_GPIO_MODULE)
++static struct gpio_keys_button pm9g45_buttons[] = {
++	{	/* SW3 */
++		.code		= KEY_UP,
++		.gpio		= AT91_PIN_PE8,
++		.active_low	= 1,
++		.desc		= "SW3",
++		.wakeup		= 1,
++		.type		= EV_KEY,
++	},
++	{	/* SW4 */
++		.code		= KEY_RIGHT,
++		.gpio		= AT91_PIN_PE7,
++		.active_low	= 1,
++		.desc		= "SW4",
++		.wakeup		= 1,
++		.type		= EV_KEY,
++	}
++};
++
++static struct gpio_keys_platform_data pm9g45_button_data = {
++	.buttons	= pm9g45_buttons,
++	.nbuttons	= ARRAY_SIZE(pm9g45_buttons),
++};
++
++static struct platform_device pm9g45_button_device = {
++	.name		= "gpio-keys",
++	.id		= -1,
++	.num_resources	= 0,
++	.dev		= {
++	.platform_data	= &pm9g45_button_data,
++	}
++};
++
++static void __init pm9g45_add_device_buttons(void)
++{
++	int i;
++
++	printk("at91: pm9g45 registering GPIO buttons\n");
++	platform_device_register(&pm9g45_button_device);
++
++	for (i = 0; i < pm9g45_button_data.nbuttons; i ++) {
++	gpio_to_irq(pm9g45_buttons[i].gpio);
++		at91_set_gpio_input(pm9g45_buttons[i].gpio, 1);
++		at91_set_deglitch(pm9g45_buttons[i].gpio, 1);
++	}
++
++}
++#else
++static void __init pm9g45_add_device_buttons(void) {}
++#endif
++
++/*
++ * AC97
++ */
++static struct ac97c_platform_data pm9g45_ac97_data = {
++ 	.reset_pin	= 0,
++};
++
++
++/*
++ * LEDs ... these could all be PWM-driven, for variable brightness
++ */
++static struct gpio_led pm9g45_leds[] = {
++	{	/* "right" led, green, userled2 (could be driven by pwm2) */
++		.name			= "led0",
++		.gpio			= AT91_PIN_PD0,
++		.active_low		= 1,
++		.default_trigger	= "nand-disk",
++	},
++	{	/* "power" led, yellow (could be driven by pwm0) */
++		.name			= "led1",
++		.gpio			= AT91_PIN_PD31,
++		.active_low		= 1,
++		.default_trigger	= "heartbeat",
++	}
++};
++
++#if defined(CONFIG_W1_MASTER_GPIO) || defined(CONFIG_W1_MASTER_GPIO_MODULE)
++struct w1_gpio_platform_data pm9g45_w1_platdata = {
++	.pin		= AT91_PIN_PA31,
++	.is_open_drain	= 0,
++};
++
++static struct platform_device pm9g45_w1_device = {
++	.name		= "w1-gpio",
++	.id		= 0,
++	.dev		= {
++		.platform_data 	= &pm9g45_w1_platdata,
++	},
++};
++#endif
++
++#if defined(CONFIG_AT91_CF) || defined(CONFIG_AT91_CF_MODULE) || \
++    defined(CONFIG_BLK_DEV_IDE_AT91) || defined(CONFIG_BLK_DEV_IDE_AT91_MODULE)
++static struct at91_cf_data pm9g45_cf_data = {
++	.det_pin	= AT91_PIN_PD13,
++	.rst_pin	= AT91_PIN_PD14,
++	.irq_pin	= AT91_PIN_PE1,
++	// .vcc_pin	= ... always powered
++	.chipselect	= 4,
++};
++
++static struct resource pm9g45_cf_resources[] = {
++	[0] = {
++		.start	= AT91_CHIPSELECT_4,
++		.end	= AT91_CHIPSELECT_4 + (0x10000000 - 1),
++		.flags	= IORESOURCE_MEM | IORESOURCE_MEM_8AND16BIT,
++	},
++};
++
++static struct platform_device pm9g45_cf_device = {
++	.name		= "at91_cf",
++	.id		= -1,
++	.dev		= {
++		.platform_data	= &pm9g45_cf_data,
++	},
++	.resource	= pm9g45_cf_resources,
++	.num_resources	= ARRAY_SIZE(pm9g45_cf_resources),
++};
++
++#define CF_NWE_SETUP	(9 << 0)
++#define CF_NCS_WR_SETUP	(2 << 8)
++#define CF_NRD_SETUP	(9 << 16)
++#define CF_NCS_RD_SETUP	(2 << 24)
++
++#define CF_NWE_PULSE 	(17 << 0)
++#define CF_NCS_WR_PULSE	(27 << 8)
++#define CF_NRD_PULSE	(17 << 16)
++#define CF_NCS_RD_PULSE	(27 << 24)
++
++#define CF_NWE_CYCLE 	(40 << 0)
++#define CF_NRD_CYCLE	(40 << 16)
++
++#define CF_TDF		(1 << 16)
++
++static void __init pm9g45_add_device_cf(void) {
++struct at91_cf_data *data = & pm9g45_cf_data;
++unsigned int csa;
++
++	// Setup Compact flash, first enable the address range of
++	// CS4 in HMATRIX user interface
++	csa = at91_sys_read(AT91_MATRIX_EBICSA);
++	at91_sys_write(AT91_MATRIX_EBICSA, csa | AT91_MATRIX_EBI_CS4A_SMC_CF0);
++
++	/* Configure SMC CS4 */
++	at91_sys_write(AT91_SMC_SETUP(4),
++				(CF_NWE_SETUP |
++				CF_NCS_WR_SETUP |
++				CF_NRD_SETUP |
++				CF_NCS_RD_SETUP));
++
++	at91_sys_write(AT91_SMC_PULSE(4), (CF_NWE_PULSE |
++					CF_NCS_WR_PULSE |
++					CF_NRD_PULSE |
++					CF_NCS_RD_PULSE));
++	at91_sys_write(AT91_SMC_CYCLE(4), (CF_NWE_CYCLE | CF_NRD_CYCLE));
++	// 16 bit
++	at91_sys_write (AT91_SMC_MODE(4), (AT91_SMC_READMODE |
++					AT91_SMC_WRITEMODE |
++					AT91_SMC_EXNWMODE_DISABLE |
++					AT91_SMC_DBW_16 |
++					CF_TDF));
++
++	/* input/irq */
++	if (data->irq_pin) {
++		at91_set_gpio_input(data->irq_pin, 0);
++		at91_set_deglitch(data->irq_pin, 1);
++	}
++	at91_set_gpio_input(data->det_pin, 0);
++	at91_set_deglitch(data->det_pin, 1);
++
++	/* outputs, initially off */
++	if (data->vcc_pin)
++		at91_set_gpio_output(data->vcc_pin, 0);
++	if (data->rst_pin)
++		at91_set_gpio_output(data->rst_pin, 0);
++
++	/* force poweron defaults for these pins ... */
++	at91_set_A_periph(AT91_PIN_PC15, 0);	/* */
++	at91_set_A_periph(AT91_PIN_PC12, 0);	/* */
++	at91_set_A_periph(AT91_PIN_PC10, 0);	/* */
++	at91_set_A_periph(AT91_PIN_PC8, 0);	/* */
++	at91_set_A_periph(AT91_PIN_PC9, 0);	/* */
++
++	platform_device_register(&pm9g45_cf_device);
++}
++#else
++void __init pm9g45_add_device_cf(void) {}
++#endif
++
++static void __init pm9g45_board_init(void)
++{
++	/* Serial */
++	at91_add_device_serial();
++	/* USB HS Host */
++	at91_add_device_usbh_ohci(&pm9g45_usbh_hs_data);
++	at91_add_device_usbh_ehci(&pm9g45_usbh_hs_data);
++	/* USB HS Device */
++	//at91_add_device_usba(&pm9g45_usba_udc_data);
++	/* SPI */
++	at91_add_device_spi(pm9g45_spi_devices, ARRAY_SIZE(pm9g45_spi_devices));
++ 	/* Touchscreen */
++	pm9g45_add_device_ts();
++	/* at91_add_device_tsadcc(&pm9g45_tsadcc_data); Not used for now */
++ 	/* MMC */
++	at91_add_device_mci(0, &pm9g45_mci0_data);
++	/* Ethernet */
++	at91_add_device_eth(&pm9g45_macb_data);
++	/* NAND */
++	pm9g45_add_device_nand();
++	/* I2C */
++	/* No I2C used in pm9g45 */	
++	/* LCD Controller */
++	pm9g45_add_device_lcdc(&pm9g45_lcdc_data);
++	/* Push Buttons */
++	pm9g45_add_device_buttons();
++	/* AC97 */
++	at91_add_device_ac97(&pm9g45_ac97_data);
++#if defined(CONFIG_W1_MASTER_GPIO) || defined(CONFIG_W1_MASTER_GPIO_MODULE)
++	platform_device_register(&pm9g45_w1_device);
++#endif
++ 	/* Compact flash */
++	pm9g45_add_device_cf();
++	/* LEDs */
++	at91_gpio_leds(pm9g45_leds, ARRAY_SIZE(pm9g45_leds));
++}
++
++MACHINE_START(PM9G45, "Ronetix PM9G45")
++	/* Maintainer: Atmel */
++	.phys_io	= AT91_BASE_SYS,
++	.io_pg_offst	= (AT91_VA_BASE_SYS >> 18) & 0xfffc,
++	.boot_params	= AT91_SDRAM_BASE + 0x100,
++	.timer		= &at91sam926x_timer,
++	.map_io		= pm9g45_map_io,
++	.init_irq	= pm9g45_init_irq,
++	.init_machine	= pm9g45_board_init,
++MACHINE_END
+-- 
+1.5.5.6
+

@@ -1,0 +1,27 @@
+From 2c11c12dcc449228a9996b194220c51bf0bd4156 Mon Sep 17 00:00:00 2001
+From: Asen Dimov <dimov@ronetix.at>
+Date: Tue, 20 Apr 2010 16:06:20 +0300
+Subject: [PATCH] add float flags in Makefile
+
+---
+ Makefile |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index b92ad41..171e1d1 100644
+--- a/Makefile
++++ b/Makefile
+@@ -336,8 +336,8 @@ MODFLAGS	= -DMODULE
+ CFLAGS_MODULE   = $(MODFLAGS)
+ AFLAGS_MODULE   = $(MODFLAGS)
+ LDFLAGS_MODULE  =
+-CFLAGS_KERNEL	=
+-AFLAGS_KERNEL	=
++CFLAGS_KERNEL	= -mfloat-abi=soft -mfpu=vfp
++AFLAGS_KERNEL	= -mfloat-abi=soft -mfpu=vfp
+ 
+ 
+ # Use LINUXINCLUDE when you must reference the include/ directory.
+-- 
+1.5.5.6
+
