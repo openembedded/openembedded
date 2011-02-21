@@ -25,4 +25,4 @@ do_install() {
 # let the distros select if they want busybox, or some other package
 # to provide it.  Until then, the following line just removes the
 # unwanted dependencies for SlugOS.
-RDEPENDS_slugos = ""
+RDEPENDS_${PN}_slugos = ""
