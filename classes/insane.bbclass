@@ -52,7 +52,7 @@ def package_qa_get_machine_dict():
                         "mips64el":   (    8,     0,    0,          True,          False),
                         "nios2":      (  113,     0,    0,          True,          True),
                         "powerpc":    (   20,     0,    0,          False,         True),
-                        "powerpc64":  (   20,     0,    0,          False,         False),
+                        "powerpc64":  (   21,     0,    0,          False,         False),
                         "s390":       (   22,     0,    0,          False,         True),
                         "sh4":        (   42,     0,    0,          True,          True),
                         "sparc":      (    2,     0,    0,          False,         True),
@@ -72,7 +72,7 @@ def package_qa_get_machine_dict():
                         "mips64el":   (    8,     0,    0,          True,          False),
                         "nios2":      (  113,     0,    0,          True,          True),
                         "powerpc":    (   20,     0,    0,          False,         True),
-                        "powerpc64":  (   20,     0,    0,          False,         False),
+                        "powerpc64":  (   21,     0,    0,          False,         False),
                         "sh4":        (   42,     0,    0,          True,          True),
                       },
             "uclinux-uclibc" : {
