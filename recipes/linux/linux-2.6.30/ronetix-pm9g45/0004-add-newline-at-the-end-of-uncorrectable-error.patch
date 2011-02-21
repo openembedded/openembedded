@@ -1,0 +1,25 @@
+From 9581bc758367d20b9d0eedc9e4c5c678ebd6ba36 Mon Sep 17 00:00:00 2001
+From: Asen Dimov <dimov@ronetix.at>
+Date: Tue, 2 Mar 2010 01:19:44 +0200
+Subject: [PATCH] add newline at the end of uncorrectable error :
+
+---
+ drivers/mtd/nand/nand_ecc.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_ecc.c b/drivers/mtd/nand/nand_ecc.c
+index 868147a..958bf49 100644
+--- a/drivers/mtd/nand/nand_ecc.c
++++ b/drivers/mtd/nand/nand_ecc.c
+@@ -492,7 +492,7 @@ int nand_correct_data(struct mtd_info *mtd, unsigned char *buf,
+ 	if ((bitsperbyte[b0] + bitsperbyte[b1] + bitsperbyte[b2]) == 1)
+ 		return 1;	/* error in ecc data; no action needed */
+ 
+-	printk(KERN_ERR "uncorrectable error : ");
++	printk(KERN_ERR "uncorrectable error : \n");
+ 	return -1;
+ }
+ EXPORT_SYMBOL(nand_correct_data);
+-- 
+1.5.5.6
+

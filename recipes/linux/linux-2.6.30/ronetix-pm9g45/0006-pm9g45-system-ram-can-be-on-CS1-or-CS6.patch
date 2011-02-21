@@ -1,0 +1,60 @@
+From 3a12beee72e77d6cc5657a1f448483e893b401d9 Mon Sep 17 00:00:00 2001
+From: Asen Dimov <dimov@ronetix.at>
+Date: Tue, 2 Mar 2010 01:54:36 +0200
+Subject: [PATCH] pm9g45 system ram can be on CS1 or CS6
+
+---
+ arch/arm/mach-at91/Makefile.boot              |   10 ++++++++++
+ arch/arm/mach-at91/include/mach/at91sam9g45.h |   17 +++++++++++++++++
+ 2 files changed, 27 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-at91/Makefile.boot b/arch/arm/mach-at91/Makefile.boot
+index 3462b81..549c529 100644
+--- a/arch/arm/mach-at91/Makefile.boot
++++ b/arch/arm/mach-at91/Makefile.boot
+@@ -16,3 +16,13 @@ else
+ params_phys-y	:= 0x20000100
+ initrd_phys-y	:= 0x20410000
+ endif
++
++ifeq ($(CONFIG_PM9G45_SYSTEM_RAM_CS1),y)
++          zreladdr-y   := 0x20008000
++       params_phys-y   := 0x20000100
++       initrd_phys-y   := 0x20410000
++else ifeq ($(CONFIG_PM9G45_SYSTEM_RAM_CS6),y)
++          zreladdr-y   := 0x70008000
++       params_phys-y   := 0x70000100
++       initrd_phys-y   := 0x70410000
++endif
+diff --git a/arch/arm/mach-at91/include/mach/at91sam9g45.h b/arch/arm/mach-at91/include/mach/at91sam9g45.h
+index a526869..324d876 100644
+--- a/arch/arm/mach-at91/include/mach/at91sam9g45.h
++++ b/arch/arm/mach-at91/include/mach/at91sam9g45.h
+@@ -131,7 +131,24 @@
+ #define AT91SAM9G45_EHCI_BASE	0x00800000	/* USB Host controller (EHCI) */
+ #define AT91SAM9G45_VDEC_BASE	0x00900000	/* Video Decoder Controller */
+ 
++/*
++ * This one should have a better place, it is a board dependent.
++ */
++#if defined(CONFIG_MACH_AT91SAM9G45EKES)
++#define CONFIG_DRAM_BASE	AT91_CHIPSELECT_6
++#elif defined(CONFIG_MACH_PM9G45) && defined(CONFIG_PM9G45_SYSTEM_RAM_CS1)
++#define CONFIG_DRAM_BASE	AT91_CHIPSELECT_1
++#define CONFIG_DRAM_SIZE	SZ_128M
++#define CONFIG_VRAM_BASE	AT91_CHIPSELECT_6
++#define CONFIG_VRAM_SIZE	SZ_64M
++#elif defined(CONFIG_MACH_PM9G45) && defined(CONFIG_PM9G45_SYSTEM_RAM_CS6)
+ #define CONFIG_DRAM_BASE	AT91_CHIPSELECT_6
++#define CONFIG_DRAM_SIZE	SZ_64M
++#define CONFIG_VRAM_BASE	AT91_CHIPSELECT_1
++#define CONFIG_VRAM_SIZE_	SZ_128M
++#else
++#define CONFIG_DRAM_BASE	AT91_CHIPSELECT_6
++#endif
+ 
+ #define CONSISTENT_DMA_SIZE	SZ_4M
+ 
+-- 
+1.5.5.6
+

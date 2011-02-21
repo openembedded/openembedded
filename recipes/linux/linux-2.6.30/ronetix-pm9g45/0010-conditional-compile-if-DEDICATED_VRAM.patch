@@ -1,0 +1,70 @@
+From 4b46d47b680a721057519c68f0ab8f291d39858e Mon Sep 17 00:00:00 2001
+From: Asen Dimov <dimov@ronetix.at>
+Date: Wed, 12 May 2010 23:48:59 +0300
+Subject: [PATCH] conditional compile if DEDICATED_VRAM
+
+---
+ arch/arm/mach-at91/board-pm9g45.c             |   13 +++++++++++++
+ arch/arm/mach-at91/include/mach/at91sam9g45.h |    8 +++++---
+ 2 files changed, 18 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/mach-at91/board-pm9g45.c b/arch/arm/mach-at91/board-pm9g45.c
+index 63e5ee1..fa142cf 100644
+--- a/arch/arm/mach-at91/board-pm9g45.c
++++ b/arch/arm/mach-at91/board-pm9g45.c
+@@ -270,12 +270,22 @@ static struct resource lcdc_resources[] = {
+ 		.end	= AT91SAM9G45_LCDC_BASE + SZ_4K - 1,
+ 		.flags	= IORESOURCE_MEM,
+ 	},
++#if CONFIG_PM9G45_DEDICATED_VRAM
++/*
++ * atmel_lcdfb_probe() checks if record 1 is IORESOURCE_MEM
++ * if not then allocates spave in system ram
++ */
+ 	[1] = {
+ 		.start	= CONFIG_VRAM_BASE,
+ 		.end	= CONFIG_VRAM_BASE + CONFIG_VRAM_SIZE - 1,
+ 		.flags	= IORESOURCE_MEM,
+ 	},
++#endif
++#if CONFIG_PM9G45_DEDICATED_VRAM
+ 	[2] = {
++#else
++	[1] = {
++#endif		
+ 		.start	= AT91SAM9G45_ID_LCDC,
+ 		.end	= AT91SAM9G45_ID_LCDC,
+ 		.flags	= IORESOURCE_IRQ,
+@@ -349,7 +359,10 @@ static struct fb_videomode at91_tft_vga_modes[] = {
+ 		.lower_margin	= 0,
+ 		.hsync_len		= 5,		
+ 		.vsync_len		= 1,
++		/*
+ 		.sync			= FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT,
++		*/
++		.sync			= 0,
+ 		.vmode			= FB_VMODE_NONINTERLACED,
+ 	},
+ };
+diff --git a/arch/arm/mach-at91/include/mach/at91sam9g45.h b/arch/arm/mach-at91/include/mach/at91sam9g45.h
+index 324d876..826c764 100644
+--- a/arch/arm/mach-at91/include/mach/at91sam9g45.h
++++ b/arch/arm/mach-at91/include/mach/at91sam9g45.h
+@@ -143,9 +143,11 @@
+ #define CONFIG_VRAM_SIZE	SZ_64M
+ #elif defined(CONFIG_MACH_PM9G45) && defined(CONFIG_PM9G45_SYSTEM_RAM_CS6)
+ #define CONFIG_DRAM_BASE	AT91_CHIPSELECT_6
+-#define CONFIG_DRAM_SIZE	SZ_64M
+-#define CONFIG_VRAM_BASE	AT91_CHIPSELECT_1
+-#define CONFIG_VRAM_SIZE_	SZ_128M
++/*
++#if CONFIG_PM9G45_DEDICATED_VRAM
++#define CONFIG_DRAM_SIZE	SZ_64M - CONFIG_VRAM_SIZE
++#define CONFIG_VRAM_BASE	AT91_CHIPSELECT_6 + CONFIG_DRAM_SIZE
++*/
+ #else
+ #define CONFIG_DRAM_BASE	AT91_CHIPSELECT_6
+ #endif
+-- 
+1.5.5.6
+

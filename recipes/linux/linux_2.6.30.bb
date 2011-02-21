@@ -16,6 +16,7 @@ DEFAULT_PREFERENCE_at91sam9m10ekes	= "2"
 DEFAULT_PREFERENCE_at91sam9m10g45ek	= "2"
 DEFAULT_PREFERENCE_at91sam9g10ek	= "2"
 DEFAULT_PREFERENCE_at91sam9g20ek	= "2"
+DEFAULT_PREFERENCE_ronetix-pm9g45	= "2"
 
 # machine boots with it, works but was not tested too much
 DEFAULT_PREFERENCE_at91sam9263ek = "-1"
@@ -34,6 +35,27 @@ SRC_URI_at91 = " \
 	   file://at91/linux-2.6.30-002-mach-at91-Kconfig.patch \
 	   file://at91/linux-2.6.30-003-sam9m10g45ek.patch \
 	   file://defconfig"
+
+SRC_URI_ronetix-pm9g45 = " \
+	   ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.10.bz2;apply=yes;name=stablepatch \
+	   http://download.ronetix.info/boards/linux/kernel/2.6.30/2.6.30-at91.patch.gz;apply=yes \
+	   file://2.6.30-at91-exp.patch \
+           file://0001-ads7846-.c-and-.h-add-swap_xy.patch \
+           file://0002-add-pm9g45-number-in-mach-types.patch \
+           file://0003-print-some-more-info-from-atmel_nand.c.patch \
+           file://0004-add-newline-at-the-end-of-uncorrectable-error.patch \
+           file://0005-Add-CompactFlash-to-at91sam9g45-architecture.patch \
+           file://0006-pm9g45-system-ram-can-be-on-CS1-or-CS6.patch \
+           file://0007-add-pm9g45-board.patch \
+           file://0008-pm9g45-default-configuration-files.patch \
+           file://0009-add-float-flags-in-Makefile.patch \
+           file://0010-conditional-compile-if-DEDICATED_VRAM.patch \
+           file://0011-add-pm9g45-board-version-1.2-and-adjust-memory-sele.patch \
+	   file://defconfig"
+
+#	   http://download.ronetix.info/boards/linux/kernel/2.6.30/
+	
 
 SRC_URI_append_mpc8315e-rdb = " file://mpc8315erdb-add-msi-to-dts.patch"
 
