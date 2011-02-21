@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r72"
+PR = "r73"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2|ixp4xx"
@@ -21,6 +21,7 @@ ALLOW_EMPTY = "1"
 SLUGOS_PACKAGES = "\
 	alsa-lib \
 	alsa-utils \
+	apex-env \
 	apr \
 	asterisk \
 	asterisk-core-sounds-en-alaw \
@@ -97,6 +98,7 @@ SLUGOS_PACKAGES = "\
 	hdparm \
 	hostap-daemon \
 	ifupdown \
+	inetutils \
 	iozone3 \
 	iperf \
 	opkg-utils \
@@ -127,6 +129,7 @@ SLUGOS_PACKAGES = "\
 	logrotate \
 	lrzsz \
 	lsof \
+	lvm2 \
 	m4 \
 	madplay \
 	mailx \
@@ -184,7 +187,6 @@ SLUGOS_PACKAGES = "\
 	smartmontools \
 	spandsp \
 	sqlite \
-	squid \
 	sshfs-fuse \
 	ssmtp \
 	strace \
@@ -247,17 +249,14 @@ SLUGOS_X11_PACKAGES = "\
 
 # Packages that are broken but need to be fixed!
 #
-# - apex-env: gcc4.4
-# - inetutils: gcc 4.4
-# - lvm2: gcc 4.4 (suspected)
-# - madwifi-ng: gcc 4.4 (and possibly other problems)
+# - groff, man, man-pages -- groff do_install failure
+# - madwifi-ng: needs newer version for updated IXP4XX kernel
+# - squid: depends on host headers; patch pending
 # 
 SLUGOS_BROKEN_BUT_NEED_FIXING_PACKAGES = "\
-	apex-env \
 	groff man man-pages \
-	inetutils \
-	lvm2 \
 	madwifi-ng \
+	squid \
 	"
 
 # Packages currently broken on all platforms
