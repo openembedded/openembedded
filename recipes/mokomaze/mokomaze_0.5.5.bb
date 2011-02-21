@@ -7,7 +7,7 @@ DEPENDS = "libsdl-ttf libsdl-image ode"
 RDEPENDS_${PN} = "ttf-liberation-mono libpng"
 RRECOMMENDS_${PN}_shr = "fsoraw"
 PV = "0.5.5+git8"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "http://mokomaze.projects.openmoko.org/files/${PN}-${PV}.tar.gz"
 SRC_URI_append_shr = " file://fsoraw.patch"
