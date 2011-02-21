@@ -6,7 +6,7 @@
 
 valid_archs = "alpha cris ia64 \
                x86_64 i386 x86 \
-               m68knommu m68k ppc powerpc ppc64  \
+               m68knommu m68k ppc powerpc ppc64 powerpc64 \
                sparc sparc64 \
                arm  arm26 \
                m32r mips \
@@ -26,6 +26,7 @@ def map_kernel_arch(a, d):
 	elif re.match('mips(el|64|64el)$', a):	return 'mips'
 	elif re.match('sh(3|4)$', a):		return 'sh'
 	elif re.match('bfin', a):               return 'blackfin'
+	elif re.match('(p|owerpc)64$', a):      return 'powerpc'
 	elif a in valid_archs:			return a
 	else:
 		bb.error("cannot map '%s' to a linux kernel architecture" % a)
@@ -35,7 +36,7 @@ export ARCH = "${@map_kernel_arch(bb.data.getVar('TARGET_ARCH', d, 1), d)}"
 def map_uboot_arch(a, d):
 	import re
 
-	if   re.match('powerpc$', a): return 'ppc'
+	if   re.match('(powerpc|ppc)(|64)$', a): return 'ppc'
 	elif re.match('i.86$', a): return 'x86'
 	return a
 
