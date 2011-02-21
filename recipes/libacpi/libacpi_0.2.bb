@@ -14,6 +14,8 @@ FILES_${PN}-bin = "${bindir}"
 
 COMPATIBLE_HOST = '(x86_64|i.86.*)-(linux|freebsd.*)'
 
+EXTRA_OEMAKE = "LDFLAGS='${LDFLAGS}'"
+
 do_install() {
 	oe_runmake install DESTDIR=${D} PREFIX=${exec_prefix}
 }
