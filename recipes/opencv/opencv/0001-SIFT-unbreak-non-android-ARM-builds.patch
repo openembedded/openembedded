@@ -1,0 +1,30 @@
+From 041de20b0c9f3c35d02ab38fa743900cbfe1268b Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Tue, 22 Feb 2011 10:53:52 +0100
+Subject: [PATCH] SIFT: unbreak non-android ARM builds
+
+https://code.ros.org/trac/opencv/ticket/910
+
+Signed-off-by: Koen Kooi <koen@dominion.thruhere.net>
+---
+ opencv/modules/features2d/src/sift.cpp |    4 ----
+ 1 files changed, 0 insertions(+), 4 deletions(-)
+
+diff --git a/opencv/modules/features2d/src/sift.cpp b/opencv/modules/features2d/src/sift.cpp
+index e763db2..f518c92 100644
+--- a/opencv/modules/features2d/src/sift.cpp
++++ b/opencv/modules/features2d/src/sift.cpp
+@@ -48,10 +48,6 @@
+ 
+ #include "precomp.hpp"
+ 
+-#ifdef __arm__
+-#define ARM_NO_SIFT
+-#endif
+-
+ #ifdef ANDROID
+ #undef  ARM_NO_SIFT
+ #endif //ANDROID
+-- 
+1.6.6.1
+
