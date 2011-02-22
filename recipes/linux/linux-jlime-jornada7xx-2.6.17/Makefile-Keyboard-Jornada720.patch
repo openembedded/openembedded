@@ -1,8 +1,0 @@
---- linux-2.6.17-vanilla/drivers/input/keyboard/Makefile	2006-06-18 01:49:35.000000000 +0000
-+++ linux-2.6.17/drivers/input/keyboard/Makefile	2006-07-10 17:06:11.000000000 +0000
-@@ -15,4 +15,4 @@
- obj-$(CONFIG_KEYBOARD_SPITZ)		+= spitzkbd.o
- obj-$(CONFIG_KEYBOARD_HIL)		+= hil_kbd.o
- obj-$(CONFIG_KEYBOARD_HIL_OLD)		+= hilkbd.o
--
-+obj-$(CONFIG_KEYBOARD_JORNADA720)       += jornada720_kbd.o
