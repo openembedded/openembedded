@@ -1,4 +1,4 @@
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 include squid.inc
 
@@ -18,6 +18,11 @@ do_configure_prepend() {
 	export ac_cv_epoll_ctl=yes
 	export ac_cv_epoll_works=yes
 	export ac_cv_func_setresuid=yes
+	# Patch up the various config scripts to refer to sysroot
+	for i in `find ${S} -name config.test`; do
+	    sed -i -e 's|/usr|${STAGING_DIR_HOST}${exec_prefix}|g' \
+	           -e 's|/opt|${STAGING_DIR_HOST}/opt|g' "$i"
+	done
 }
 
 do_install_append() {
