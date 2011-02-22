@@ -1,4 +1,0 @@
-14c14
-< #define HP680_TS_IRQ		IRQ3_IRQ
----
-> #define HP680_TS_IRQ		35
