@@ -13,7 +13,6 @@ PR = "r11"
 SRC_URI = "git://github.com/Ebbe/Iliwi.git;protocol=http;branch=master \
            file://0001-adapt-to-elementary-genlist_item_insert_before-API-c.patch \
            file://new.vala.patch \
-           file://new.vala2.patch \
            file://iliwi_ben_jan2011.patch"
 S = "${WORKDIR}/git"
 
