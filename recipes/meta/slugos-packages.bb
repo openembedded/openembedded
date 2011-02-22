@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r73"
+PR = "r74"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2|ixp4xx"
@@ -187,6 +187,7 @@ SLUGOS_PACKAGES = "\
 	smartmontools \
 	spandsp \
 	sqlite \
+	squid \
 	sshfs-fuse \
 	ssmtp \
 	strace \
@@ -251,12 +252,10 @@ SLUGOS_X11_PACKAGES = "\
 #
 # - groff, man, man-pages -- groff do_install failure
 # - madwifi-ng: needs newer version for updated IXP4XX kernel
-# - squid: depends on host headers; patch pending
 # 
 SLUGOS_BROKEN_BUT_NEED_FIXING_PACKAGES = "\
 	groff man man-pages \
 	madwifi-ng \
-	squid \
 	"
 
 # Packages currently broken on all platforms
@@ -299,6 +298,7 @@ DEPENDS = "\
 	slugos-image \
 	slugos-native \
 	task-proper-tools \
+	task-sdk-native \
 	${SLUGOS_PACKAGES} \
 	${SLUGOS_EXTRA_PACKAGES} \
 	package-index \
