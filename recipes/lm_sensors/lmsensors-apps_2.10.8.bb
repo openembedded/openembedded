@@ -29,6 +29,9 @@ do_install() {
 	install -d ${D}${mandir}
 	rm -rf ${D}${mandir}/*
 	mv ${D}/usr/man/* ${D}${mandir}
+
+	# Remove clashing headers, libc packages i2c-dev.h
+	rm ${D}/usr/include/linux/i2c-dev.h
 }
 
 do_stage() {
