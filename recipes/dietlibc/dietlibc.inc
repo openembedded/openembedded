@@ -1,42 +1,59 @@
-SECTION = "libs"
-DESCRIPTION = "The diet libc is a libc that is optimized for small size. \
-It can be used to create small statically linked binaries"
-LICENSE = "GPLv2"
+require dietlibc-common.inc
 
-INC_PR = "r3"
+INHIBIT_DEFAULT_DEPS = "1"
+DEPENDS += "gcc-native virtual/${TARGET_PREFIX}gcc \
+            virtual/${TARGET_PREFIX}binutils"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/dietlibc/dietlibc-${PV}.tar.bz2" 
-
-#otherwise the whole run scripts got broken
-do_configure () {
-:
-}
+CFLAGS += "-fno-exceptions -std=gnu99 -Os -Wall -Wmissing-prototypes"
+_target_test_cflags = "${CFLAGS} -L ${S}/bin-${DIETLIBC_TARGET_ARCH} \
+    -fno-builtin"
 
 do_compile () {
-	oe_runmake all CC="${BUILD_CC}" CFLAGS="${BUILD_CFLAGS}" prefix=${STAGING_DIR_TARGET}/lib/dietlibc
-	oe_runmake all ARCH="${TARGET_ARCH}" CC="${BUILD_CC}" CROSS="${HOST_PREFIX}" prefix=${STAGING_DIR_TARGET}/lib/dietlibc
+    ln -sf dietfeatures-build.h dietfeatures.h
+    oe_runmake all ARCH="${DIETLIBC_BUILD_ARCH}"  \
+        CC="${BUILD_CC}" CFLAGS="${BUILD_CFLAGS}" LDFLAGS="${BUILD_LDFLAGS}" \
+        WHAT='$(OBJDIR)/diet'
+
+    ln -sf dietfeatures-target.h dietfeatures.h
+    oe_runmake all profiling ARCH="${DIETLIBC_TARGET_ARCH}" \
+        CC="${CC}" CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}"
 }
-
-#no packages needed, all binaries will be compiled with -static
-PACKAGES = ""
-
-#otherwise the whole run scripts got broken
 
 do_install () {
-	DIETLIBC_BUILD_ARCH=`echo ${BUILD_ARCH} | sed -e s'/.86/386/'`
-	DIETLIBC_TARGET_ARCH=`echo ${TARGET_ARCH} | sed -e s'/.86/386/'`
-
-	install -d ${D}${libdir}/dietlibc/include
-        for i in `find include -name \*.h`; do install -m 644 -D $i ${D}${libdir}/dietlibc/$i; done
-
-        install -d ${D}${bindir} 
-        install -m755 bin-${DIETLIBC_BUILD_ARCH}/diet-i ${D}${bindir}/diet
-	
-	cd bin-${DIETLIBC_TARGET_ARCH}
-	install -d ${D}${libdir}/dietlibc/lib-${DIETLIBC_TARGET_ARCH}
-	install -m 644 start.o libm.a libpthread.a librpc.a \
-                       liblatin1.a libcompat.a libcrypt.a \
-		       ${D}${libdir}/dietlibc/lib-${DIETLIBC_TARGET_ARCH}
-        install -m 644 dietlibc.a ${D}${libdir}/dietlibc/lib-${DIETLIBC_TARGET_ARCH}/libc.a
+    dietlibc_install_dev
+    install -D -p -m 0755 bin-${DIETLIBC_TARGET_ARCH}/diet-i ${D}${bindir}/diet
 }
 
+dietlibc_build_tests () {
+    rc=0
+    # Allow to build as much as possible and return an error code when
+    # something went wrong
+    ( oe_runmake -C test all test DIET=${S}/bin-${DIETLIBC_BUILD_ARCH}/diet \
+        CC="${CC}" CFLAGS="${_target_test_cflags}" LDFLAGS="${LDFLAGS}" \
+        "$@" ) || rc=$?
+
+    ( oe_runmake -C test/inet all DIET=${S}/bin-${DIETLIBC_BUILD_ARCH}/diet \
+        CC="${CC}" CFLAGS="${_target_test_cflags}" LDFLAGS="${LDFLAGS}" \
+        "$@" ) || rc=$?
+
+    return $rc
+}
+
+dietlibc_do_full_test () {
+    ## Check for references to __NR_ symbols which indicates missing
+    ## syscall implementations
+    if ${TARGET_PREFIX}nm bin-${DIETLIBC_TARGET_ARCH}/*.a | grep 'U __NR_' >&2; then
+        echo "ERROR: unimplemented syscalls found" >&2
+        exit 1
+    fi
+
+
+    ## Build and run the testsuite (when emulator is available)
+    dietlibc_build_tests
+
+    if type -p "$QEMU" && test x"$QEMU" != x"false"; then
+       cd test
+       env EMULATOR="${QEMU} ${QEMU_OPTIONS}" bash ${WORKDIR}/runtests-X.sh
+       cd -
+    fi
+}

@@ -1,4 +1,4 @@
-require dietlibc-${PV}.inc
+require dietlibc-cvs.inc
 require dietlibc.inc
 
 inherit test

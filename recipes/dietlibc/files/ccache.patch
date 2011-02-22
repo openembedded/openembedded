@@ -1,8 +1,8 @@
-Index: dietlibc-0.31/diet.c
+Index: dietlibc-0.32/diet.c
 ===================================================================
---- dietlibc-0.31.orig/diet.c	2006-08-27 15:49:00.000000000 +0200
-+++ dietlibc-0.31/diet.c	2009-01-31 22:56:06.828080683 +0100
-@@ -127,7 +127,12 @@
+--- dietlibc-0.32.orig/diet.c	2009-03-17 00:17:58.000000000 +0100
++++ dietlibc-0.32/diet.c	2009-10-02 14:12:14.306929201 +0200
+@@ -132,7 +132,12 @@
      }
    }
    {
@@ -16,7 +16,7 @@ Index: dietlibc-0.31/diet.c
      char *tmp=strchr(cc,0)-2;
      char *tmp2,*tmp3;
      if (tmp<cc) goto donttouch;
-@@ -139,7 +144,7 @@
+@@ -144,7 +149,7 @@
        if (tmp3<tmp2) tmp2=tmp3;
        if (tmp2-cc>90) error("platform name too long!\n");
        shortplatform=platform+len;
@@ -25,8 +25,8 @@ Index: dietlibc-0.31/diet.c
        platform[tmp2-cc+len]=0;
        if (shortplatform[0]=='i' && shortplatform[2]=='8' && shortplatform[3]=='6') shortplatform[1]='3';
      } else {
-@@ -285,6 +290,9 @@
-
+@@ -291,6 +296,9 @@
+ 
        dest=newargv;
        *dest++=argv[1];
 +      if (strcmp(argv[1],"ccache") == 0) {
@@ -35,7 +35,7 @@ Index: dietlibc-0.31/diet.c
        if (argv[2]) {
  	if (!strcmp(argv[2],"-V")) {
  	  *dest++=argv[2];
-@@ -294,9 +302,9 @@
+@@ -300,9 +308,9 @@
  	} else if (!memcmp(argv[2],"-V",2)) {
  	  *dest++=argv[2];
  	  ++argv;
@@ -46,24 +46,24 @@ Index: dietlibc-0.31/diet.c
  #ifndef __DYN_LIB
        if (_link) { *dest++=(char*)nostdlib; *dest++=dashstatic; *dest++=dashL; }
  #else
-@@ -314,7 +322,15 @@
+@@ -320,7 +328,15 @@
  #ifdef WANT_DYNAMIC
        if (_link) { *dest++=d; }
  #endif
 -      for (i=2; i<argc; ++i) {
 +      if (strcmp(argv[1],"ccache") == 0) {
-+         i=3;
++          i=3;
 +      } else {
-+         i=2;
++          i=2;
 +      }
 +      for (i; i<argc; ++i) {
-+        if (strstr(argv[i],"isystem") != NULL) {
-+		continue;
-+	}
- 	if (mangleopts)
- 	  if (argv[i][0]=='-' && (argv[i][1]=='O' || argv[i][1]=='f' ||
- 				  (argv[i][1]=='m' && argv[i][2]!='3' && argv[i][2]!='6'))) {
-@@ -322,6 +338,8 @@
++        if (strstr(argv[i],"isystem") != NULL)
++          continue;
++
+ 	if (!strcmp(argv[i],"-pthread")) {
+ 	  *dest++="-D_REENTRANT";
+ 	  if (_link) *dest++="-lpthread";
+@@ -333,6 +349,8 @@
  	      continue;
  	  }
  	*dest++=argv[i];
