@@ -2,10 +2,9 @@ DESCRIPTION = "Loudmouth is a lightweight and easy-to-use C library for programm
 HOMEPAGE = "http://www.loudmouth-project.org/"
 LICENSE = "LGPL"
 DEPENDS = "glib-2.0 gnutls check"
+PR = "r1"
 
-SRC_URI = "http://ftp.imendio.com/pub/imendio/${PN}/src/${PN}-${PV}.tar.gz"
+inherit gnomebase
 
-inherit autotools pkgconfig
-
-SRC_URI[md5sum] = "b80fb99e263dc67c2e8270bc22db8155"
-SRC_URI[sha256sum] = "d7efb5a6c777ed0f375444a57e4de75e8406adb61d1f52829f84bc5404cfb03b"
+SRC_URI[archive.md5sum] = "0bdd62dcbca0dfc8b46de6806c0cc3ca"
+SRC_URI[archive.sha256sum] = "d7efb5a6c777ed0f375444a57e4de75e8406adb61d1f52829f84bc5404cfb03b"

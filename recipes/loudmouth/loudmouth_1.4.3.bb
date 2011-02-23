@@ -4,10 +4,9 @@ LICENSE = "LGPL"
 DEPENDS = "glib-2.0 gnutls check"
 PR = "r1"
 
-SRC_URI = "http://ftp.imendio.com/pub/imendio/${PN}/src/${PN}-${PV}.tar.gz \
-           file://04-use-pkg-config-for-gnutls.patch" 
+SRC_URI += "file://04-use-pkg-config-for-gnutls.patch" 
 
-inherit autotools pkgconfig
+inherit gnomebase
 
-SRC_URI[md5sum] = "7ca8bf7c2313d7b7f27088c373d195e2"
-SRC_URI[sha256sum] = "db252747e974b6be3e31d1b11089dc6aec3780989083df9bd75d76ddae7fb613"
+SRC_URI[archive.md5sum] = "55339ca42494690c3942ee1465a96937"
+SRC_URI[archive.sha256sum] = "95a93f5d009b71ea8193d994aa11f311bc330a3efe1b7cd74dc48f11c7f929e3"
