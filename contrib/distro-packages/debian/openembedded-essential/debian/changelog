@@ -1,3 +1,9 @@
+openembedded-essential (1.5) unstable; urgency=low
+
+  * add chrpath as dependency.
+
+ -- Otavio Salvador <otavio@ossystems.com.br>  Fri, 18 Feb 2011 02:00:59 +0000
+
 openembedded-essential (1.4) unstable; urgency=low
 
   * remove gfortran from dependency after a5c7b007eaa675cc904f5285291d2f8a597efc84 caused controversy.
