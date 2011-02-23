@@ -146,11 +146,14 @@ python do_package_deb () {
             raise bb.build.FuncFailed("unable to open control file for writing.")
 
         fields = []
+	version = bb.data.getVar('PKGV', d, 1)
+	if re.match('[^0-9]+$', version):
+		version = '%s0' % version
         pe = bb.data.getVar('PE', d, 1)
         if pe and int(pe) > 0:
-            fields.append(["Version: %s:%s-%s\n", ['PE', 'PKGV', 'PKGR']])
+            fields.append(["Version: %%s:%s-%%s\n" % version, ['PE', 'PKGR']])
         else:
-            fields.append(["Version: %s-%s\n", ['PKGV', 'PKGR']])
+            fields.append(["Version: %s-%%s\n" % version, ['PKGR']])
         fields.append(["Description: %s\n", ['DESCRIPTION']])
         fields.append(["Section: %s\n", ['SECTION']])
         fields.append(["Priority: %s\n", ['PRIORITY']])
