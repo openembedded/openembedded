@@ -1,7 +1,6 @@
 LICENSE = "BSD"
 PV = "0.1.0+svnr${SRCPV}"
-
-PR = "r4"
+PR = "${INC_PR}.0"
 
 require e-module.inc
 
