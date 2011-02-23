@@ -1,10 +1,8 @@
-Index: libcap-2.16/Make.Rules
-===================================================================
---- libcap-2.16.orig/Make.Rules	2008-12-04 08:03:30.000000000 +0100
-+++ libcap-2.16/Make.Rules	2011-01-13 22:51:04.568844000 +0100
-@@ -45,25 +45,18 @@
+--- a/Make.Rules
++++ b/Make.Rules
+@@ -47,25 +47,18 @@
  KERNEL_HEADERS := $(topdir)/libcap/include
- IPATH += -I$(topdir)/libcap/include -I$(KERNEL_HEADERS)
+ IPATH += -fPIC -I$(topdir)/libcap/include -I$(KERNEL_HEADERS)
  
 -CC := gcc
 -CFLAGS := -O2
@@ -12,20 +10,19 @@ Index: libcap-2.16/Make.Rules
 -BUILD_CFLAGS := $(CFLAGS) $(IPATH)
 -AR := ar
 -RANLIB := ranlib
-+LD=$(CC) -Wl,-x -shared
  DEBUG = -g #-DDEBUG
- WARNINGS=-fPIC -Wall -Wwrite-strings \
+ WARNINGS=-Wall -Wwrite-strings \
          -Wpointer-arith -Wcast-qual -Wcast-align \
          -Wstrict-prototypes -Wmissing-prototypes \
          -Wnested-externs -Winline -Wshadow
--LD=$(CC) -Wl,-x -shared
+ LD=$(CC) -Wl,-x -shared
 -LDFLAGS := #-g
  
 -SYSTEM_HEADERS = /usr/include
 +SYSTEM_HEADERS ?= /usr/include
  INCS=$(topdir)/libcap/include/sys/capability.h
  LDFLAGS += -L$(topdir)/libcap
- CFLAGS += -Dlinux $(WARNINGS) $(DEBUG) $(IPATH)
+ CFLAGS += -Dlinux $(WARNINGS) $(DEBUG)
 -PAM_CAP := $(shell if [ -f /usr/include/security/pam_modules.h ]; then echo yes ; else echo no ; fi)
 +PAM_CAP := $(shell if [ -f $(SYSTEM_HEADERS)/security/pam_modules.h ]; then echo yes ; else echo no ; fi)
  INDENT := $(shell if [ -n "$(which indent 2>/dev/null)" ]; then echo "| indent -kr" ; fi)

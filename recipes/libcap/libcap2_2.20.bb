@@ -3,7 +3,7 @@ PRIORITY = "optional"
 SECTION = "libs"
 LICENSE = "GPL"
 DEPENDS = "bison-native flex-native attr ${@base_contains('DISTRO_FEATURES', 'pam', 'libpam', '', d)}"
-PR = "r3"
+PR = "r0"
 
 BUILD_CFLAGS += "-I${S}/libcap/include"
 CFLAGS += "-I${S}/libcap/include"
@@ -12,6 +12,9 @@ LDFLAGS =+ "-L../libcap"
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/security/linux-privs/libcap2/libcap-${PV}.tar.bz2 \
 	   file://make.patch \
 	"
+
+SRC_URI[md5sum] = "10e47ed32ca2214eb0e58780282d27b4"
+SRC_URI[sha256sum] = "20e7c1ea4d3d5c410efb3a6ff138dc417912fae316d883460dcd58d9803a9220"
 
 S = "${WORKDIR}/libcap-${PV}"
 
@@ -23,6 +26,3 @@ do_install() {
 	install -d ${D}${libdir}
 	oe_libinstall -s -C libcap libcap ${D}${libdir}
 }
-
-SRC_URI[md5sum] = "6e2c9d0f3c3118e41cd07288ba9577ce"
-SRC_URI[sha256sum] = "9c5a41a5577d6f702fe4d29e92f91f1d586a2ef272f6b7fa137bae3f0e76cc2f"
