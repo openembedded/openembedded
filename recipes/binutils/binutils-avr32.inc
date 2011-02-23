@@ -4,7 +4,7 @@
 
 DEPENDS += "autoconf-native automake-native"
 
-do_avr32_reconf () {
+do_configure_prepend () {
         if test ${TARGET_ARCH} == avr32; then
             (cd ${S} && autoconf) || die "Error running autoconf"
             for dir in bfd opcodes binutils ld; do
@@ -17,7 +17,7 @@ do_avr32_reconf () {
         fi
 }
 
-do_avr32_configure_bfd () {
+do_configure_append () {
         if test ${TARGET_ARCH} == avr32; then
 						# fix Makefile brokenness due to unmatched single quotes 
 						(cd ${B} && sed -i -e "s,'CC=ccache,'CC=${CC}'," Makefile) 
@@ -31,7 +31,3 @@ do_avr32_configure_bfd () {
             (cd ${B}/bfd && make headers) || die "Error running 'make headers'"
         fi
 }
-
-addtask avr32_reconf after do_patch before do_configure
-addtask avr32_configure_bfd after do_configure before do_compile
-          
