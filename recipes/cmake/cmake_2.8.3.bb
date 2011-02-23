@@ -4,6 +4,9 @@ inherit cmake
 
 DEPENDS += "curl expat zlib"
 
+SRC_URI[md5sum] = "a76a44b93acf5e3badda9de111385921"
+SRC_URI[sha256sum] = "689ed02786b5cefa5515c7716784ee82a82e8ece6be5a3d629ac3cc0c05fc288"
+
 SRC_URI += "file://dont-run-cross-binaries.patch"
 
 # Strip ${prefix} from ${docdir}, set result into docdir_stripped
@@ -32,9 +35,6 @@ EXTRA_OECMAKE=" \
 # If you want to enable this, add -DWKSYS_LFS_WORKS=1
     -DKWSYS_LFS_DISABLE=1 \
 "
-
-SRC_URI[md5sum] = "8c967d5264657a798f22ee23976ff0d9"
-SRC_URI[sha256sum] = "766ff169af798599d7dd42e41e9f4533d73942a2bb928235115412dce5b81406"
 
 FILES_${PN} += "${datadir}/cmake-2.8"
 
