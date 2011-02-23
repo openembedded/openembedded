@@ -6,7 +6,7 @@ inherit qt4x11
 DEPENDS += "qwt"
 
 PV = "0.5+svnr${SRCPV}"
-SRCREV = "41"
+SRCREV = "43"
 SRC_URI = "svn://qcanobserver.svn.sourceforge.net/svnroot;module=qcanobserver;proto=https \
            file://0001-messagebufferinterface.cpp-add-sys-socket.h-as-inclu.patch \
            file://candemo.xml"
