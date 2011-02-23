@@ -1,5 +1,7 @@
 require cmake.inc
 
+PR = "${INC_PR}.0"
+
 inherit cmake
 
 DEPENDS += "curl expat zlib"
