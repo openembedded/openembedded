@@ -7,7 +7,7 @@ DEPENDS_virtclass-native = "freetype-native libxext-native libpng-native jpeg-na
 inherit efl
 
 BBCLASSEXTEND = "native"
-INC_PR = "r0"
+INC_PR = "r1"
 FILESPATHPKG =. "${BPN}-${PV}:${BPN}:"
 
 python populate_packages_prepend () {
@@ -81,7 +81,7 @@ RREPLACES_evas-engine-software-x11 = "liblibevas-ver-pre-svn-00-engine-software-
 
 EVAS_CPU_TWEAKS = ""
 # Disabled for now, see http://thread.gmane.org/gmane.comp.window-managers.enlightenment.devel/25194
-#EVAS_CPU_TWEAKS_armv7a = "--enable-cpu-neon"
+EVAS_CPU_TWEAKS_armv7a = "--disable-cpu-neon"
 
 # common options
 EVAS_OECONF = " \
