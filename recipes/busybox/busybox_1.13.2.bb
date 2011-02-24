@@ -1,5 +1,5 @@
 require busybox_1.1x.inc
-PR = "${INC_PR}.3"
+PR = "${INC_PR}.4"
 
 SRC_URI += "\
   file://busybox-1.13.2-awk.patch \
