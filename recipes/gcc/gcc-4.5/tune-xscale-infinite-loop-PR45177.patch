@@ -1,0 +1,103 @@
+commit dcb4aa7b04d03ba107fd628ec3dc663d0a01c397
+Author: bernds <bernds@138bc75d-0d04-0410-961f-82ee72b054a4>
+Date:   Tue Aug 10 18:45:10 2010 +0000
+
+    	PR bootstrap/45177
+    	* config/arm/arm.c (multiple_operation_profitable_p): Move xscale
+    	test here from arm_gen_load_multiple_1.
+    	(arm_gen_load_multiple_1, arm_gen_store_multiple_1): Use
+    	multiple_operation_profitable_p.
+    
+    
+    git-svn-id: svn+ssh://gcc.gnu.org/svn/gcc/trunk@163077 138bc75d-0d04-0410-961f-82ee72b054a4
+
+Index: gcc-4_5-branch/gcc/config/arm/arm.c
+===================================================================
+--- gcc-4_5-branch.orig/gcc/config/arm/arm.c
++++ gcc-4_5-branch/gcc/config/arm/arm.c
+@@ -9716,6 +9716,36 @@ multiple_operation_profitable_p (bool is
+   if (nops == 2 && arm_ld_sched && add_offset != 0)
+     return false;
+ 
++  /* XScale has load-store double instructions, but they have stricter
++     alignment requirements than load-store multiple, so we cannot
++     use them.
++
++     For XScale ldm requires 2 + NREGS cycles to complete and blocks
++     the pipeline until completion.
++
++	NREGS		CYCLES
++	  1		  3
++	  2		  4
++	  3		  5
++	  4		  6
++
++     An ldr instruction takes 1-3 cycles, but does not block the
++     pipeline.
++
++	NREGS		CYCLES
++	  1		 1-3
++	  2		 2-6
++	  3		 3-9
++	  4		 4-12
++
++     Best case ldr will always win.  However, the more ldr instructions
++     we issue, the less likely we are to be able to schedule them well.
++     Using ldr instructions also increases code size.
++
++     As a compromise, we use ldr for counts of 1 or 2 regs, and ldm
++     for counts of 3 or 4 regs.  */
++  if (nops <= 2 && arm_tune_xscale && !optimize_size)
++    return false;
+   return true;
+ }
+ 
+@@ -10073,36 +10103,7 @@ arm_gen_load_multiple_1 (int count, int
+ {
+   int i = 0, j;
+   rtx result;
+-
+-  /* XScale has load-store double instructions, but they have stricter
+-     alignment requirements than load-store multiple, so we cannot
+-     use them.
+-
+-     For XScale ldm requires 2 + NREGS cycles to complete and blocks
+-     the pipeline until completion.
+-
+-	NREGS		CYCLES
+-	  1		  3
+-	  2		  4
+-	  3		  5
+-	  4		  6
+-
+-     An ldr instruction takes 1-3 cycles, but does not block the
+-     pipeline.
+-
+-	NREGS		CYCLES
+-	  1		 1-3
+-	  2		 2-6
+-	  3		 3-9
+-	  4		 4-12
+-
+-     Best case ldr will always win.  However, the more ldr instructions
+-     we issue, the less likely we are to be able to schedule them well.
+-     Using ldr instructions also increases code size.
+-
+-     As a compromise, we use ldr for counts of 1 or 2 regs, and ldm
+-     for counts of 3 or 4 regs.  */
+-  if (low_irq_latency || (arm_tune_xscale && count <= 2 && ! optimize_size))
++  if (!multiple_operation_profitable_p (false, count, 0))
+     {
+       rtx seq;
+ 
+@@ -10154,9 +10155,7 @@ arm_gen_store_multiple_1 (int count, int
+   if (GET_CODE (basereg) == PLUS)
+     basereg = XEXP (basereg, 0);
+ 
+-  /* See arm_gen_load_multiple_1 for discussion of
+-     the pros/cons of ldm/stm usage for XScale.  */
+-  if (low_irq_latency || (arm_tune_xscale && count <= 2 && ! optimize_size))
++  if (!multiple_operation_profitable_p (false, count, 0))
+     {
+       rtx seq;
+ 
