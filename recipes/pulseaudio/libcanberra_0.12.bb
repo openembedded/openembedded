@@ -1,8 +1,8 @@
 DESCRIPTION = "Libcanberra is an implementation of the XDG Sound Theme and Name Specifications, for generating event sounds on free desktops."
 LICENSE = "LGPL"
-DEPENDS = "gtk+ pulseaudio alsa-lib gstreamer"
+DEPENDS = "gtk+ pulseaudio alsa-lib gstreamer gconf"
 
-PR = "r2"
+PR = "r3"
 
 inherit gnome
 
