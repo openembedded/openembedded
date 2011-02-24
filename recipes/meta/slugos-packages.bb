@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r74"
+PR = "r75"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2|ixp4xx"
@@ -93,6 +93,7 @@ SLUGOS_PACKAGES = "\
 	gnu-config \
 	gphoto2 \
 	grep \
+	groff \
 	gtk-doc \
 	gzip \
 	hdparm \
@@ -134,6 +135,8 @@ SLUGOS_PACKAGES = "\
 	madplay \
 	mailx \
 	make \
+	man \
+	man-pages \
 	masqmail \
 	mdadm \
 	mediatomb \
@@ -250,11 +253,9 @@ SLUGOS_X11_PACKAGES = "\
 
 # Packages that are broken but need to be fixed!
 #
-# - groff, man, man-pages -- groff do_install failure
 # - madwifi-ng: needs newer version for updated IXP4XX kernel
 # 
 SLUGOS_BROKEN_BUT_NEED_FIXING_PACKAGES = "\
-	groff man man-pages \
 	madwifi-ng \
 	"
 
