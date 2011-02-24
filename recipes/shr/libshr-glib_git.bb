@@ -3,7 +3,7 @@ AUTHOR = "Klaus 'mrmoku' Kurzmann"
 LICENSE = "LGPL"
 SECTION = "devel"
 DEPENDS = "gdbus-binding-tool glib-2.0 shr-specs"
-SRCREV = "926654296339d88f69cd481d1cf8eb9facdf9bf3"
+SRCREV = "761dea6463326714c00342cb53ba28a1c2dfea63"
 PV = "2011.01.04.1+gitr${SRCPV}"
 PR = "r0"
 
