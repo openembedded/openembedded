@@ -1,0 +1,16 @@
+diff -uNr busybox-1.13.2.orig/examples/udhcp/simple.script busybox-1.13.2/examples/udhcp/simple.script
+--- busybox-1.13.2.orig/examples/udhcp/simple.script	2011-02-23 00:30:32.000000000 -0500
++++ busybox-1.13.2/examples/udhcp/simple.script	2011-02-23 17:05:37.873381763 -0500
+@@ -10,7 +10,12 @@
+ 
+ # return 0 if root is mounted on a network filesystem
+ root_is_nfs() {
++	# old style mounts
+ 	grep -qe '^/dev/root.*\(nfs\|smbfs\|ncp\|coda\) .*' /proc/mounts
++	if ! $? ; then
++		# new style mounts
++		grep -qe '^.*:.* / \(nfs\|smbfs\|ncp\|coda\) .*' /proc/mounts
++	fi
+ }
+ 
+ case "$1" in
