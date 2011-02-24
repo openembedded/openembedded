@@ -2,7 +2,7 @@ LICENSE = "GPL LGPL"
 DEPENDS = "libxml2 libxslt libxslt-native libxml2-native gettext-native"
 DEPENDS_virtclass-native = "libxslt-native libxml2-native gettext-native"
 
-INC_PR = "r5"
+INC_PR = "r6"
 
 inherit gnomebase
 
@@ -15,7 +15,7 @@ do_configure_prepend() {
 do_install_append() {
 	mkdir -p  ${D}${datadir}/xml/gnome/xslt/
 	cp -pPr ${S}/xslt/* ${D}${datadir}/xml/gnome/xslt/
-	sed -i "1s:/.*/python:${bindir}/python:" ${D}${bindir}/xml2po
+	sed -i "1s:.*:#!/usr/bin/env python:" ${D}${bindir}/xml2po
 }
 
 FILES_${PN} += "${datadir}/xml*"
