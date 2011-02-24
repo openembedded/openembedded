@@ -1,11 +1,11 @@
 DESCRIPTION = "Libcanberra is an implementation of the XDG Sound Theme and Name \
 Specifications, for generating event sounds on free desktops."
 LICENSE = "LGPL"
-DEPENDS = "alsa-lib gstreamer gtk+ libtool libvorbis"
+DEPENDS = "alsa-lib gstreamer gtk+ libtool libvorbis gconf"
 SECTION = "libs/multimedia"
 AUTHOR = "Lennart Poettering"
 HOMEPAGE = "http://0pointer.de/lennart/projects/libcanberra"
-PR = "r4"
+PR = "r5"
 
 inherit autotools vala
 
