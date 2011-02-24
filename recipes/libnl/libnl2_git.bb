@@ -14,7 +14,7 @@ includedir = ${prefix}/include/libnl2
 SRC_URI = "\
   git://git.kernel.org/pub/scm/libs/netlink/libnl.git;protocol=git \
   file://fix-pc-file.patch \
-  file://fix-pktloc_syntax_h-race.patch \
+  file://fix-pktloc-dep-race.patch \
 "
 S = "${WORKDIR}/git"
 
