@@ -1,7 +1,7 @@
 DESCRIPTION = "A protocol library to access an iPhone or iPod Touch in Linux"
 LICENSE = "GPLv2/LGPLv2.1"
 
-DEPENDS = "libplist swig usbmuxd glib-2.0 gnutls libgcrypt"
+DEPENDS = "libplist swig usbmuxd glib-2.0 gnutls libgcrypt libtasn1"
 
 inherit autotools
 
