@@ -7,13 +7,18 @@ inherit gnome
 
 SRC_URI += "file://pkg-config-hack.patch"
 
-PR = "r2"
+PR = "r3"
 
 FILES_${PN} += "${libdir}/*.so ${datadir}/gnome* ${datadir}/application-registry/*"
 FILES_${PN}-dbg += "${libdir}/gthumb/modules/.debug"
 
 do_configure_prepend() {
 	sed -i "s|HACK_STAGING_DIR_HOST|${STAGING_DIR_HOST}|" ${S}/add-include-prefix
+}
+
+do_configure_append() {
+	# replace paths to STAGING_BINDIR_NATIVE/perl with ${bindir}/perl
+	sed -i -e "1s:#!.*:#! /usr/bin/env perl:" ${S}/intltool*.in
 }
 
 SRC_URI[archive.md5sum] = "498c583800a05593f7493e8f27991c7d"
