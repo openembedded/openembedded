@@ -199,8 +199,8 @@ def compute_os_portion_of_target_triplet (d):
 		bb.note("DISTRO_FEATURES is not set abi suffix not set")
 		abi_suffix = ""
 
-	if bb.data.getVar('TOOLCHAIN_BRAND',d,1) is not None and \
-	bb.data.getVar('TOOLCHAIN_BRAND',d,1) in "csl":
+	if bb.data.getVar('TOOLCHAIN_BRAND', d, 1) is not None and \
+	"csl" in bb.data.getVar('TOOLCHAIN_BRAND', d, 1):
 		gnu_suffix = "gnu"
 
 	if libc_suffix + gnu_suffix + abi_suffix is not "":
