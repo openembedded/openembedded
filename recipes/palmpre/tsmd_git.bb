@@ -6,16 +6,25 @@ LICENSE = "GPL"
 
 DEPENDS = "tslib"
 
-PR = "r1"
+PR = "r2"
 PV = "1.0.0+gitr${SRCPV}"
 
 SRCREV = "9262a2e4f8f6e6c7bcacf1eeae0ad348cbfcce06"
 SRC_URI = " \
  ${FREESMARTPHONE_GIT}/utilities.git;protocol=git;branch=master \
+ file://tsmd \
 "
 
 S = "${WORKDIR}/git/palmpre/tsmd"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
-inherit autotools
+inherit autotools update-rc.d
+
+INITSCRIPT_NAME = "tsmd"
+INITSCRIPT_PARAMS = "defaults 10"
+
+do_install_append() {
+	install -d 0644 ${D}${sysconfdir}/init.d/
+	install -m 0755 ${WORKDIR}/${INITSCRIPT_NAME} ${D}${sysconfdir}/init.d/
+}
