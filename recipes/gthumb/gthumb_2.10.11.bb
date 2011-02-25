@@ -14,9 +14,6 @@ FILES_${PN}-dbg += "${libdir}/gthumb/modules/.debug"
 
 do_configure_prepend() {
 	sed -i "s|HACK_STAGING_DIR_HOST|${STAGING_DIR_HOST}|" ${S}/add-include-prefix
-}
-
-do_configure_append() {
 	# replace paths to STAGING_BINDIR_NATIVE/perl with ${bindir}/perl
 	sed -i -e "1s:#!.*:#! /usr/bin/env perl:" ${S}/intltool*.in
 }
