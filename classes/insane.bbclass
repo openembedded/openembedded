@@ -342,9 +342,9 @@ def package_qa_check_staged(path,d):
             pkgconfigcheck = workdir
             iscrossnative = True
 
-    # find all .la and .pc files
-    # read the content
-    # and check for stuff that looks wrong
+    # Grab the lock, find all .la and .pc files, read the content and check for
+    # stuff that looks wrong
+    lf = bb.utils.lockfile(bb.data.expand("${STAGING_DIR}/staging.lock", d))
     for root, dirs, files in os.walk(path):
         for file in files:
             path = os.path.join(root,file)
@@ -363,6 +363,7 @@ def package_qa_check_staged(path,d):
                 if pkgconfigcheck in file_content:
                     error_msg = "%s failed sanity test (tmpdir) in path %s" % (file,root)
                     sane = package_qa_handle_error(6, error_msg, "staging", path, d)
+    bb.utils.unlockfile(lf)
 
     return sane
 
