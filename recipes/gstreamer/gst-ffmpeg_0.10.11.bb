@@ -5,6 +5,8 @@ LICENSE = "LGPL"
 HOMEPAGE = "http://www.gstreamer.net/"
 DEPENDS = "ffmpeg gstreamer gst-plugins-base zlib"
 
+PR = "r1"
+
 inherit autotools pkgconfig
 
 SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${PV}.tar.bz2 \
@@ -23,7 +25,3 @@ EXTRA_OECONF = " --with-system-ffmpeg "
 # We do this because the install program is called with -s which causes it to
 # call "strip" and it then mangles cross compiled stuff..
 PATH_prepend := "${TOOLCHAIN_PATH}/${TARGET_SYS}/bin:"
-
-# Hack to get STAGING_LIBDIR into the linker path when building ffmpeg
-CC = "${CCACHE} ${HOST_PREFIX}gcc ${TARGET_CC_ARCH} -L${STAGING_LIBDIR}"
-
