@@ -1,0 +1,38 @@
+#! /bin/sh
+#
+# tsmd -- This shell script starts and stops the tsmd daemon
+#
+# chkconfig: 345 10 10
+# description: a simple utility daemon which forwards all events from a independent device node to a more general uinput one
+# processname: tsmd
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+NAME=tsmd
+
+case "$1" in
+    start)
+        echo -n "Starting tsmd: "
+        start-stop-daemon --start --pidfile /var/run/${NAME}.pid --make-pidfile --background -x /usr/bin/${NAME} -- -n /dev/touchscreen -f
+        if [ $? = 0 ]; then
+            echo "(ok)"
+        else
+            echo "(failed)"
+        fi
+        ;;
+    stop)
+        echo -n "Stopping tsmd: "
+        start-stop-daemon --stop --pidfile /var/run/${NAME}.pid --oknodo
+        rm -f /var/run/${NAME}.pid
+        echo "(done)"
+        ;;
+    restart|force-reload)
+        $0 stop
+        $0 start
+        ;;
+    *)
+        echo "Usage: /etc/init.d/tsmd {start|stop|restart|force-reload}"
+        exit 1
+        ;;
+esac
+
+exit 0
