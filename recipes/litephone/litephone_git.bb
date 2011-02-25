@@ -2,10 +2,10 @@ require litephone.inc
 
 SRCREV = "4c9f16d9acc6cd18fc3f647b7e4f44a2d3bdd7b6"
 PV = "0.1+gitr${SRCPV}"
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 SRC_URI = "git://git.senfdax.de/git/litephone;protocol=http \
-           file://files/litephone.desktop"
+           file://litephone.desktop"
 
 S = "${WORKDIR}/git/"
 
@@ -19,7 +19,7 @@ do_install() {
     install -d ${D}/${datadir}/litephone/translations
     install ${S}/translations/*.qm ${D}/${datadir}/litephone/translations/
     install -d ${D}/${datadir}/applications
-    install ${WORKDIR}/files/litephone.desktop ${D}/${datadir}/applications/
+    install ${WORKDIR}/litephone.desktop ${D}/${datadir}/applications/
 }
 
 FILES_${PN}-locale-pl-pl += "/usr/share/litephone/translations/litephone_pl.qm"
