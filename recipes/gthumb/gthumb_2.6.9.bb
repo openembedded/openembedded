@@ -8,7 +8,7 @@ inherit autotools pkgconfig
 
 FILES_${PN} += "${datadir}/gnome* ${datadir}/application-registry/*"
 
-do_configure_append() {
+do_configure_prepend() {
 	# replace paths to STAGING_BINDIR_NATIVE/perl with ${bindir}/perl
 	sed -i -e "1s:#!.*:#! /usr/bin/env perl:" ${S}/intltool*.in
 }
