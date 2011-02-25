@@ -543,9 +543,7 @@ python emit_pkgdata() {
 	pkgdest = bb.data.getVar('PKGDEST', d, 1)
 	pkgdatadir = bb.data.getVar('PKGDATA_DIR', d, True)
 
-	pstageactive = bb.data.getVar('PSTAGING_ACTIVE', d, True)
-	if pstageactive == "1":
-		lf = bb.utils.lockfile(bb.data.expand("${STAGING_DIR}/staging.lock", d))
+	lf = bb.utils.lockfile(bb.data.expand("${STAGING_DIR}/staging.lock", d))
 
 	data_file = pkgdatadir + bb.data.expand("/${PN}" , d)
 	f = open(data_file, 'w')
@@ -593,8 +591,7 @@ python emit_pkgdata() {
 			packagedfile = pkgdatadir + '/runtime/%s.packaged' % pkg
 			file(packagedfile, 'w').close()
 			package_stagefile(packagedfile, d)
-	if pstageactive == "1":
-		bb.utils.unlockfile(lf)
+	bb.utils.unlockfile(lf)
 }
 emit_pkgdata[dirs] = "${PKGDATA_DIR}/runtime"
 
@@ -634,10 +631,6 @@ python package_do_shlibs() {
 	shlibs_dir = bb.data.getVar('SHLIBSDIR', d, True)
 	bb.mkdirhier(shlibs_dir)
 
-	pstageactive = bb.data.getVar('PSTAGING_ACTIVE', d, True)
-	if pstageactive == "1":
-		lf = bb.utils.lockfile(bb.data.expand("${STAGING_DIR}/staging.lock", d))
-
 	if bb.data.getVar('PACKAGE_SNAP_LIB_SYMLINKS', d, True) == "1":
 		snap_symlinks = True
 	else:
@@ -650,6 +643,8 @@ python package_do_shlibs() {
 
 	needed = {}
 	private_libs = bb.data.getVar('PRIVATE_LIBS', d, True)
+
+	lf = bb.utils.lockfile(bb.data.expand("${STAGING_DIR}/staging.lock", d))
 	for pkg in packages.split():
 		needs_ldconfig = False
 		bb.debug(2, "calculating shlib provides for %s" % pkg)
@@ -715,9 +710,6 @@ python package_do_shlibs() {
 			postinst += bb.data.getVar('ldconfig_postinst_fragment', d, True)
 			bb.data.setVar('pkg_postinst_%s' % pkg, postinst, d)
 
-	if pstageactive == "1":
-		bb.utils.unlockfile(lf)
-
 	shlib_provider = {}
 	list_re = re.compile('^(.*)\.list$')
 	for dir in [shlibs_dir]: 
@@ -738,6 +730,7 @@ python package_do_shlibs() {
 					fd.close()
 				for l in lines:
 					shlib_provider[l.rstrip()] = (dep_pkg, lib_ver)
+	bb.utils.unlockfile(lf)
 
 	assumed_libs = bb.data.getVar('ASSUME_SHLIBS', d, True)
 	if assumed_libs:
@@ -831,9 +824,7 @@ python package_do_pkgconfig () {
 							if hdr == 'Requires':
 								pkgconfig_needed[pkg] += exp.replace(',', ' ').split()
 
-	pstageactive = bb.data.getVar('PSTAGING_ACTIVE', d, True)
-	if pstageactive == "1":
-		lf = bb.utils.lockfile(bb.data.expand("${STAGING_DIR}/staging.lock", d))
+	lf = bb.utils.lockfile(bb.data.expand("${STAGING_DIR}/staging.lock", d))
 
 	for pkg in packages.split():
 		pkgs_file = os.path.join(shlibs_dir, pkg + ".pclist")
@@ -881,8 +872,7 @@ python package_do_pkgconfig () {
 			fd.close()
 			package_stagefile(deps_file, d)
 
-	if pstageactive == "1":
-		bb.utils.unlockfile(lf)
+	bb.utils.unlockfile(lf)
 }
 
 python read_shlibdeps () {
