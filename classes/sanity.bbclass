@@ -186,6 +186,15 @@ def check_sanity(e):
 			messages = messages + "Error, Your PACKAGE_ARCHS field contains duplicates. Perhaps you set PACKAGE_EXTRA_ARCHS twice accidently through some tune file?\n"
 			break
 
+	#
+	# Check there isn't old persistent cache
+	#
+	cache = data.getVar('CACHE', e.data, True)
+	persistent_dir = data.getVar('PERSISTENT_DIR', e.data, True)
+	persistent_cache_filename = data.getVar('SANITY_PERSIST_DATA_FILE', e.data, True)
+	if cache != persistent_dir and os.path.exists(cache + '/' + persistent_cache_filename):
+		messages = messages + "Error, persistent cache file '%s' exists in old location '%s', please migrate it to new location '%s' and merge them together if you have one for each MACHINE.\n" % (persistent_cache_filename, cache, persistent_dir)
+
 	if messages != "":
 		raise_sanity_error(messages)
 
