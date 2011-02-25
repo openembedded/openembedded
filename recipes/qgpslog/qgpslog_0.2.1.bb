@@ -5,7 +5,7 @@ SECTION = "x11/applications"
 PRIORITY = "optional"
 LICENSE = "GPL QPL PD"
 DEPENDS = "librsvg-native"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://openmoko.senfdax.de/sources/${PN}-${PV}.tar.gz;name=archive"
 

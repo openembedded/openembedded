@@ -7,6 +7,7 @@ RRECOMMENDS_${PN} = "midori"
 RRECOMMENDS_${PN}_shr = "eve"
 
 PV = "0.4.2+gitr${SRCPV}"
+PR = "r1"
 
 SRC_URI = "git://gitorious.org/evopedia/evopedia.git;protocol=git;branch=master"
 
