@@ -3,7 +3,9 @@ SECTION = "libs/network"
 LICENSE = "LGPL"
 HOMEPAGE = "http://www.infradead.org/~tgr/libnl/"
 PE = "1"
-PR = "r1"
+PR = "r2"
+
+DEPENDS = "flex-native bison-native"
 
 inherit autotools pkgconfig
 
