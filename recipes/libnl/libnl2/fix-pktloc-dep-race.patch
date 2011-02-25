@@ -1,7 +1,3 @@
----
- lib/Makefile.am |    3 +++
- 1 file changed, 3 insertions(+)
-
 Index: libnl-2.0/lib/Makefile.am
 ===================================================================
 --- libnl-2.0.orig/lib/Makefile.am
@@ -14,9 +10,8 @@ Index: libnl-2.0/lib/Makefile.am
 +
  # Hack to avoid using ylwrap. It does not function correctly in combination
  # with --header-file=
--route/pktloc_grammar.c: route/pktloc_grammar.l
 +route/pktloc_grammar.h: route/pktloc_grammar.c
-+route/pktloc_grammar.c: route/pktloc_grammar.y
+ route/pktloc_grammar.c: route/pktloc_grammar.l
  	$(LEX) --header-file=route/pktloc_grammar.h $(LFLAGS) -o $@ $^
  
 +route/pktloc_syntax.h: route/pktloc_syntax.c
