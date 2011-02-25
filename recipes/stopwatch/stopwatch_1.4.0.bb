@@ -4,7 +4,7 @@ SECTION = "x11/applications"
 PRIORITY = "optional"
 HOMEPAGE = "http://git.senfdax.de"
 LICENSE = "GPL QPL"
-PR = "r0"
+PR = "r1"
 
 inherit qt4x11
 

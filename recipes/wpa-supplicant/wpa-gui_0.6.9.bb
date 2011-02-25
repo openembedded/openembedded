@@ -8,7 +8,7 @@ HOMEPAGE = "http://hostap.epitest.fi/wpa_supplicant/"
 DEPENDS = "librsvg-native imagemagick-native"
 RDEPENDS_${PN} = "wpa-supplicant"
 RRECOMMENDS_${PN} = "${LIBC}-gconv-utf-16"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz;name=archive\
          file://icons.patch \
