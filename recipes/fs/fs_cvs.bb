@@ -4,7 +4,13 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "libxfont xtrans"
 
-SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=FS"
+PR = "r1"
+
+SRC_URI = "${FREEDESKTOP_CVS}/xlibs;module=FS \
+           file://fontsproto.patch \
+           file://xtrans.patch \
+          "
+
 S = "${WORKDIR}/FS"
 
 inherit autotools pkgconfig

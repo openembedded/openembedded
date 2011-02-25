@@ -1,0 +1,27 @@
+Index: FS/FSlibint.h
+===================================================================
+--- FS.orig/FSlibint.h	2011-02-25 22:34:43.884558121 +0100
++++ FS/FSlibint.h	2011-02-25 22:35:15.230223119 +0100
+@@ -72,8 +72,8 @@
+ #endif /* USG */
+ 
+ #include	"FSlib.h"
+-#include	"FSproto.h"
+ #include	"FSlibos.h"
++#include	<X11/fonts/FSproto.h>
+ #include	<errno.h>
+ #include	<stddef.h>
+ 
+Index: FS/configure.ac
+===================================================================
+--- FS.orig/configure.ac	2011-02-25 22:35:23.977928121 +0100
++++ FS/configure.ac	2011-02-25 22:35:39.622413120 +0100
+@@ -19,7 +19,7 @@
+ AC_PROG_CC
+ 
+ # Checks for pkg-config packages
+-PKG_CHECK_MODULES(FS, xfont xtrans)
++PKG_CHECK_MODULES(FS, xfont xtrans fontsproto)
+ 
+ # Checks for libraries.
+ 
