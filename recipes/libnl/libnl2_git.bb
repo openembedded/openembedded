@@ -5,7 +5,9 @@ HOMEPAGE = "http://www.infradead.org/~tgr/libnl/"
 SRCREV = "d378220c96c3c8b6f27dca33e7d8ba03318f9c2d"
 PV = "1.9+gitr${SRCPV}"
 PE = "1"
-PR = "r2"
+PR = "r3"
+
+DEPENDS = "flex-native bison-native"
 
 inherit autotools
 
