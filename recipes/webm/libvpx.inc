@@ -1,10 +1,10 @@
 DESCRIPTION = "vpx Multi-Format Codec SDK"
 LICENSE = "BSD"
 
-INC_PR = "r5"
+INC_PR = "r6"
 
-SRC_URI = "git://review.webmproject.org/libvpx.git;protocol=git;tag=v${PV}"
-S = "${WORKDIR}/git"
+SRC_URI = "http://webm.googlecode.com/files/libvpx-v${PV}.tar.bz2"
+S = "${WORKDIR}/libvpx-v${PV}"
 
 CFLAGS += "-fPIC"
 
