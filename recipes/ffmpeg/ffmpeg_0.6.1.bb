@@ -2,7 +2,7 @@ require ffmpeg.inc
 
 LICENSE = "LGPLv2.1+"
 DEPENDS += "schroedinger libgsm"
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 SRC_URI = "http://ffmpeg.org/releases/ffmpeg-${PV}.tar.bz2"
 SRC_URI[md5sum] = "4f5d732d25eedfb072251b5314ba2093"
@@ -26,6 +26,7 @@ EXTRA_OECONF = " \
         --enable-swscale \
         --extra-cflags="${TARGET_CFLAGS} ${HOST_CC_ARCH}${TOOLCHAIN_OPTIONS}" \
         --extra-ldflags="${TARGET_LDFLAGS}" \
+        --sysroot="${STAGING_DIR_TARGET}" \
         --prefix=${prefix}/ \
         --target-os=linux \
         ${EXTRA_FFCONF} \

@@ -6,7 +6,7 @@ DEPENDS += "virtual/libsdl schroedinger libgsm libvpx"
 SRCREV = "a4f5af13fb00d7f55946470bb0f52e1dbf5f3c6a"
 
 PV = "0.6.1+${PR}+gitr${SRCPV}"
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "1"
@@ -47,6 +47,7 @@ EXTRA_OECONF = " \
         --enable-cross-compile \
         --extra-cflags="${TARGET_CFLAGS} ${HOST_CC_ARCH}${TOOLCHAIN_OPTIONS}" \
         --extra-ldflags="${TARGET_LDFLAGS}" \
+        --sysroot="${STAGING_DIR_TARGET}" \
         --enable-hardcoded-tables \
         ${EXTRA_FFCONF} \
 "
