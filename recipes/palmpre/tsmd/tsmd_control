@@ -1,0 +1,12 @@
+#!/bin/sh
+
+case "$1" in
+	enable)
+		kill -USR2 `pidof tsmd`
+		;;
+	disable)
+		kill -USR1 `pidof tsmd`
+		;;
+	*)
+		;;
+esac
