@@ -16,6 +16,7 @@ python do_distribute_sources () {
 	dldir = os.path.realpath(d.getVar("DL_DIR", 1) or "")
 
 	licenses = (bb.data.getVar('LICENSE', d, 1) or "unknown").split()
+	distribute_licenses = (bb.data.getVar('SRC_DISTRIBUTE_LICENSES', d, 1) or "All").split()
 	urldatadict = bb.fetch.init(d.getVar("SRC_URI", True).split(), d, True)
 	src_uri = oe.data.typed_value("SRC_URI", d)
 	if not src_uri:
@@ -33,8 +34,9 @@ python do_distribute_sources () {
 		bb.data.setVar('SRC', os.path.abspath(local), d)
 		for license in licenses:
 			for entry in license.split("|"):
-				bb.data.setVar('LIC', entry, d)
-				bb.build.exec_func('SRC_DISTRIBUTECOMMAND', d)
+				if entry in distribute_licenses or "All" in distribute_licenses:
+					bb.data.setVar('LIC', entry, d)
+					bb.build.exec_func('SRC_DISTRIBUTECOMMAND', d)
 }
 
 addtask distribute_sources_all after do_distribute_sources
