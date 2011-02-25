@@ -6,8 +6,9 @@ LICENSE = "BSD"
 PR = "0"
 
 SRC_URI = "http://dotat.at/prog/unifdef/unifdef-${PV}.tar.gz"
-SRC_URI[md5sum] = "9aba8b30187244677f25834cbc11bfe2"
-SRC_URI[sha256sum] = "52b8b5c411b3d33646b6a7518c37c3a2a308887c45ac58a13122823b02fd4f4a"
+SRC_URI[md5sum] = "18b832baea2c7b6b00bd7d4f3db38f62"
+SRC_URI[sha256sum] = "e4cbc673d32ebe10e00bc00b985c974e327e65d4b32a564d21358e458079e419"
+
 
 EXTRA_OEMAKE = "-e"
 
