@@ -1,21 +1,23 @@
 DESCRIPTION = "Frame Buffer Viewer"
 LICENSE = "GPL"
-DEPENDS = "libpng jpeg"
-PR = "r3"
+DEPENDS = "libpng jpeg libungif"
+PR = "r4"
 
 SRC_URI = "http://s-tech.elsat.net.pl/fbv/fbv-1.0b.tar.gz \
 	file://cross_compile.patch \
-	file://fbv-1.0b.patch \
         file://fbv-1.0b-BGR666.patch \
+        file://libs.patch \
+        file://cflags.patch \
 	"
 
+CFLAGS += "-D_GNU_SOURCE -D__KERNEL_STRICT_NAMES"
+
 do_configure() {
-	CC="${CC}" ./configure --without-libungif
+	CC="${CC}" ./configure
 }
 
 do_compile() {
-	oe_runmake CC="${CC}" \
-		CFLAGS="-O2 -Wall -D_GNU_SOURCE -D__KERNEL_STRICT_NAMES"		
+	oe_runmake CC="${CC}"
 }
 
 do_install() {
