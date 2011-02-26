@@ -34,6 +34,8 @@ CFLAGS = "${BUILD_CFLAGS}"
 CXXFLAGS = "${BUILD_CFLAGS}"
 LDFLAGS = "${BUILD_LDFLAGS}"
 
+TOOLCHAIN_OPTIONS = ""
+
 # Path prefixes
 prefix = "${SDK_PATH}"
 exec_prefix = "${prefix}"
