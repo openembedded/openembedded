@@ -1,0 +1,66 @@
+| checking existing, conflicting JACK installs...
+| 
+| !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+| You appear to have at least one existing installation of JACK.
+| Complete or partial JACK installs exist in: /usr/lib
+
+[...]
+
+NOTE: package jack-0.118.0-r2: task do_configure: Failed
+
+Index: RELEASE_0_118_0/configure.ac
+===================================================================
+--- RELEASE_0_118_0.orig/configure.ac	2011-02-26 06:54:25.711716288 +0100
++++ RELEASE_0_118_0/configure.ac	2011-02-26 06:54:47.061718126 +0100
+@@ -3,51 +3,6 @@
+ 
+ AC_INIT(jackd/jackd.c)
+ 
+-
+-dnl
+-dnl Check for existing JACK installs
+-dnl 
+-
+-AC_MSG_CHECKING([existing, conflicting JACK installs])
+-not_overwriting=0
+-installs=
+-for dir in /usr/lib /usr/local/lib /opt/lib ; do
+-    if test -d $dir ; then
+-	if test $(find $dir/ -name 'libjack.*' 2>/dev/null | wc -l) -gt 0 ; then
+-	    if echo $prefix/lib | grep -vs $dir >/dev/null 2>&1 ; then
+-		not_overwriting=$(expr $not_overwriting + 1)
+-	    fi
+-	    installs="$installs $dir"
+-	fi	    
+-    fi
+-done
+-
+-if test $not_overwriting -gt 0 ; then
+-    echo 
+-    echo
+-    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+-    echo "You appear to have at least one existing installation of JACK."
+-    echo
+-    echo "Complete or partial JACK installs exist in:$installs"
+-    echo 
+-    echo "Installing this version will leave at least one of these"
+-    echo "existing installations installed and this will probably break"
+-    echo "JACK on your machine. "
+-    echo
+-    echo "Before building, you should first remove the existing JACK"
+-    echo "installation(s). "
+-    echo
+-    echo "Alternatively use ./configure --prefix=... to force overwriting"
+-    echo "the existing install."
+-    echo
+-    echo "WARNING: ON ANY DEBIAN-DERIVED DISTRIBUTION (Debian, Ubuntu etc)"
+-    echo "CHANGING THE INSTALLATION PREFIX WILL NOT PRODUCE A WORKING JACK"
+-    echo "INSTALL. Please contact the distribution packager for JACK and"
+-    echo "ask them to fix their packaging."
+-    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+-    exit 1
+-fi
+-
+ AC_CONFIG_AUX_DIR(config)
+ AC_CANONICAL_TARGET
+ 

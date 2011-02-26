@@ -8,11 +8,13 @@ LICENSE = "GPLv2 LGPLv2.1"
 
 DEPENDS = "alsa-lib"
 
-PR = "r2"
+PR = "r3"
 
 SVNPV = "${@'${PV}'.replace('.', '_')}"
 SRCREV = "4084"
-SRC_URI = "svn://subversion.jackaudio.org/jack/tags;module=RELEASE_${SVNPV};proto=http"
+SRC_URI = "svn://subversion.jackaudio.org/jack/tags;module=RELEASE_${SVNPV};proto=http \
+           file://remove-wrong-host-test.patch \
+           "
 
 # This is not omap3 specific, but there is a strong correlation between using twl4030 and using omap3
 SRC_URI_append_omap3 = " file://jack_fix_TWL4030_alsa_capture.patch"
