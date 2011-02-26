@@ -1,0 +1,18 @@
+diff -urNad xawtv-3.95~/man/es/v4l-conf.8 xawtv-3.95/man/es/v4l-conf.8
+--- xawtv-3.95~/man/es/v4l-conf.8
++++ xawtv-3.95/man/es/v4l-conf.8
+@@ -1,4 +1,4 @@
+-.TH v4l-conf 1 "(c) 1997-99 Gerd Knorr"
++.TH v4l-conf 8 "(c) 1997-99 Gerd Knorr"
+ .SH NOMBRE
+ v4l-conf -  configura un driver video4linux
+ .SH SINOPSIS
+diff -urNad xawtv-3.95~/man/v4l-conf.8 xawtv-3.95/man/v4l-conf.8
+--- xawtv-3.95~/man/v4l-conf.8
++++ xawtv-3.95/man/v4l-conf.8
+@@ -1,4 +1,4 @@
+-.TH v4l-conf 1 "(c) 1997-99 Gerd Knorr"
++.TH v4l-conf 8 "(c) 1997-99 Gerd Knorr"
+ .SH NAME
+ v4l-conf -  configure a video4linux driver
+ .SH SYNOPSIS

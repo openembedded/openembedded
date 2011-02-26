@@ -1,0 +1,47 @@
+Index: xawtv-3.95/console/fbtools.c
+===================================================================
+--- xawtv-3.95.orig/console/fbtools.c	2011-02-26 22:38:35.406698306 +0100
++++ xawtv-3.95/console/fbtools.c	2011-02-26 22:39:48.986803306 +0100
+@@ -534,6 +534,6 @@
+ 
+     /* cleanup */
+     fb_cleanup();
+-    fprintf(stderr,"Oops: %s\n",sys_siglist[termsig]);
++    fprintf(stderr,"Oops: %s\n", strsignal(termsig));
+     exit(42);
+ }
+Index: xawtv-3.95/console/record.c
+===================================================================
+--- xawtv-3.95.orig/console/record.c	2003-04-03 12:51:00.000000000 +0200
++++ xawtv-3.95/console/record.c	2011-02-26 22:39:34.836398305 +0100
+@@ -428,7 +428,7 @@
+ {
+     if (verbose)
+ 	fprintf(stderr,"\n%s - exiting\n",
+-		sys_siglist[signal]);
++		strsignal(signal));
+     stop = 1;
+ }
+ 
+Index: xawtv-3.95/x11/rootv.c
+===================================================================
+--- xawtv-3.95.orig/x11/rootv.c	2003-02-14 15:14:08.000000000 +0100
++++ xawtv-3.95/x11/rootv.c	2011-02-26 22:38:35.810233306 +0100
+@@ -133,7 +133,7 @@
+     termsig = signal;
+     if (verbose)
+ 	fprintf(stderr,"received signal %d [%s]\n",
+-		termsig,sys_siglist[termsig]);
++		termsig, strsignal(termsig));
+ }
+ 
+ static void usage(FILE *fp)
+@@ -423,7 +423,7 @@
+     }
+     if (verbose && termsig)
+ 	fprintf(stderr,"exiting on signal %d [%s]\n",
+-		termsig,sys_siglist[termsig]);
++		termsig, strsignal(termsig));
+     if (do_mute && have_mute)
+ 	XvSetPortAttribute(dpy,port,XV_MUTE,1);
+     XvStopVideo(dpy,port,win);

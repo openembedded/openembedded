@@ -1,0 +1,170 @@
+diff -urNad xawtv-3.95~/man/fbtv.1 xawtv-3.95/man/fbtv.1
+--- xawtv-3.95~/man/fbtv.1
++++ xawtv-3.95/man/fbtv.1
+@@ -98,7 +98,7 @@
+ The BT8xx cards can produce images up to 768x576 pixels.  In order to
+ have fbtv make use of your entire monitor-size and get maximum image
+ quality, you need to create a 768x576 pixels framebufferconsole. This
+-can be accomplished with the fbset(1) utility, which is availabile at
++can be accomplished with the fbset(1) utility, which is available at
+ various locations.  See: http://www.cs.kuleuven.ac.be/~geert/bin/
+ .P
+ Or, you can let fbtv handle the videomode changes with the -m switch.
+diff -urNad xawtv-3.95~/man/pia.1 xawtv-3.95/man/pia.1
+--- xawtv-3.95~/man/pia.1
++++ xawtv-3.95/man/pia.1
+@@ -5,7 +5,7 @@
+ .B pia [ options ] movie
+ .SH DESCRIPTION
+ .B pia
+-is a small X11 tool which playes movie files.
++is a small X11 tool which plays movie files.
+ .SH OPTIONS
+ .B pia
+ understands the usual toolkit options (-geometry + friends).
+@@ -24,7 +24,7 @@
+ Use OSS device <dev> for sound.
+ .TP
+ .B -noxv
+-Disable Xvideo extention.
++Disable Xvideo extension.
+ .TP
+ .B -nogl
+ Disable OpenGL.
+@@ -41,7 +41,7 @@
+ .SH SUPPORTED MOVIE FORMATS
+ Main purpose of this utility is to playback movie files recorded by
+ xawtv, motv and streamer.  It should be able to playback every AVI or
+-QuickTime movie written by one of the mentioned utilites.  Feel free
++QuickTime movie written by one of the mentioned utilities.  Feel free
+ to submit a bug report if this doesn't work for some file.
+ .SS QuickTime
+ .B pia
+diff -urNad xawtv-3.95~/man/record.1 xawtv-3.95/man/record.1
+--- xawtv-3.95~/man/record.1
++++ xawtv-3.95/man/record.1
+@@ -16,7 +16,7 @@
+ .TP
+ .B -o file
+ basename for the output file(s), a number and the .wav
+-extention are added by record.  Default is "record".
++extension are added by record.  Default is "record".
+ .TP
+ .B -i dev
+ mixer control.  This should be the one where you can adjust the record
+diff -urNad xawtv-3.95~/man/rootv.1 xawtv-3.95/man/rootv.1
+--- xawtv-3.95~/man/rootv.1
++++ xawtv-3.95/man/rootv.1
+@@ -1,6 +1,6 @@
+ .TH rootv 1 "(c) 2000-2002 Gerd Knorr"
+ .SH NAME
+-rootv - display TV using the Xvideo extention
++rootv - display TV using the Xvideo extension
+ .SH SYNOPSIS
+ .B rootv [ options ]
+ .SH DESCRIPTION
+@@ -9,7 +9,7 @@
+ but you can also ask it to use the root window (thus the name) or any
+ other window.
+ .B rootv
+-needs the Xvideo extention.
++needs the Xvideo extension.
+ .P
+ .B rootv
+ itself provides no way to control video/audio/tuner.  You can use
+diff -urNad xawtv-3.95~/man/subtitles.1 xawtv-3.95/man/subtitles.1
+--- xawtv-3.95~/man/subtitles.1
++++ xawtv-3.95/man/subtitles.1
+@@ -8,7 +8,7 @@
+ fetches the given teletext page with the alevt-cap utility and
+ displays it using xawtv-remote in an endless loop.  It's most
+ useful for pages which carry subtitles for the current TV program.
+-It's page 150 in germany. 
++It's page 150 in Germany. 
+ .SH OPTIONS
+ .TP
+ .B -help
+diff -urNad xawtv-3.95~/man/v4l-conf.8 xawtv-3.95/man/v4l-conf.8
+--- xawtv-3.95~/man/v4l-conf.8
++++ xawtv-3.95/man/v4l-conf.8
+@@ -20,7 +20,7 @@
+ knows three ways to get the informations:
+ .TP 3
+  *
+-Query the X-Server using the XF86 DGA extention.  This is the default
++Query the X-Server using the XF86 DGA extension.  This is the default
+ if the DISPLAY environment variable is set.
+ .TP 3
+  * 
+@@ -63,7 +63,7 @@
+ work because the X-Server lacks DGA support.  You can put this into
+ /etc/conf.modules, as "post-install bttv ..." for example.
+ .SH BUGS
+-Hope I havn't any security flaws in there.  If you find one, drop me a 
++Hope I haven't any security flaws in there.  If you find one, drop me a 
+ note.  Mails with patches are preferred :-)
+ .SH SEE ALSO
+ xawtv(1), fbtv(1)
+diff -urNad xawtv-3.95~/man/webcam.1 xawtv-3.95/man/webcam.1
+--- xawtv-3.95~/man/webcam.1
++++ xawtv-3.95/man/webcam.1
+@@ -150,7 +150,7 @@
+ paper "Correcting Distortion of Image by Image Registration" of Toru
+ Tamaki, Tsuyoshi Yamamura and Noboru Ahnishi. More your lens has an
+ important distortion, more 'distor_k' must be neared of 0. 700 is the
+-défault value. Coefficient k of program is x100 than article.
++default value. Coefficient k of program is x100 than article.
+ .TP
+ .B distor_cx = 192
+ .TP
+diff -urNad xawtv-3.95~/man/xawtv-remote.1 xawtv-3.95/man/xawtv-remote.1
+--- xawtv-3.95~/man/xawtv-remote.1
++++ xawtv-3.95/man/xawtv-remote.1
+@@ -136,14 +136,14 @@
+ .TP
+ .B vtx line1 line2 [ ... ]
+ Display subtitles.  It pops up a small window at the bottom of the screen.
+-It is supported to be used as interface for displaying subtitles (often on
+-videotext page 150 in europe, thats why the name) by external programs.
++It is intended to be used as an interface for displaying subtitles (often on
++videotext page 150 in Europe, that's why the name) by external programs.
+ .br
+ Every command line argument is one line, zero lines removes the window.
+ You can colorize the text with the control sequence "ESC foreground
+ background".  foreground/background has the range 0-7 (ansi term colors).
+ Example: "\\03347 hello world " is blue on white.  "\\033" must be a real
+-escape character, the string does'nt work.  With the bash you'll get it
++escape character, the string doesn't work.  With the bash you'll get it
+ with ^V ESC.  vtx does also understand the ANSI tty escape sequences for
+ color.
+ .TP
+diff -urNad xawtv-3.95~/man/xawtv.1 xawtv-3.95/man/xawtv.1
+--- xawtv-3.95~/man/xawtv.1
++++ xawtv-3.95/man/xawtv.1
+@@ -70,7 +70,7 @@
+ .TP
+ \fB-remote\fP
+ X11 display is remote.  This basically disables overlay mode, you
+-might need this if xawtv failes to autodetect a remote X11 display.
++might need this if xawtv fails to autodetect a remote X11 display.
+ .br
+ Resource: xawtv.remote (bool).
+ .TP
+@@ -155,7 +155,7 @@
+ more details and hints on how to setup Xvideo.
+ .SH GETTING STARTED
+ Just start xawtv.  Then verify the settings in the options menu (right
+-mouse button) and adjust the settings (TV norm, Video source, freqency
++mouse button) and adjust the settings (TV norm, Video source, frequency
+ table).  With the cursor keys you can control the tuner and look for
+ TV Stations.  Other useful hotkeys are listed below.
+ .P
+@@ -190,7 +190,7 @@
+ Z            Channel Hopper (\fIz\fPapping, tune in every
+              station a few seconds)
+ Ctrl+Z       Fast Channel Hopping (grab the images for the
+-             Channel Bottons)
++             Channel Buttons)
+ 
+ up/down      tune up/down one channel
+ left/right   fine tuning

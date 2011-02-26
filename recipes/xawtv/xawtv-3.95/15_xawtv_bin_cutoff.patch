@@ -1,0 +1,21 @@
+diff -urNad xawtv-3.95.dfsg.1~/x11/xawtv.c xawtv-3.95.dfsg.1/x11/xawtv.c
+--- xawtv-3.95.dfsg.1~/x11/xawtv.c	2003-04-11 11:42:04.000000000 +0200
++++ xawtv-3.95.dfsg.1/x11/xawtv.c	2007-09-26 00:00:57.221442822 +0200
+@@ -1579,11 +1579,16 @@
+ main(int argc, char *argv[])
+ {
+     int            i;
++    char *         cut;
+     unsigned long  freq;
+ 
+     hello_world("xawtv");
+     progname = strdup(argv[0]);
+-
++    
++    /* cut off .bin from command name */
++    if ((cut = strstr(argv[0], ".bin")))
++        *cut = '\0';
++    
+     /* toplevel */
+     XtSetLanguageProc(NULL,NULL,NULL);
+     app_shell = XtVaAppInitialize(&app_context, "Xawtv",

@@ -1,0 +1,151 @@
+diff -urNad xawtv-3.95.dfsg.1~/console/fbtools.c xawtv-3.95.dfsg.1/console/fbtools.c
+--- xawtv-3.95.dfsg.1~/console/fbtools.c	2007-07-29 00:54:44.000000000 +0200
++++ xawtv-3.95.dfsg.1/console/fbtools.c	2007-07-29 00:55:39.000000000 +0200
+@@ -447,7 +447,7 @@
+     fb_activate_current(tty);
+ 
+     /* cls */
+-    fb_memset(fb_mem+fb_mem_offset,0,fb_fix.smem_len);
++    fb_memset(fb_mem+fb_mem_offset,0,fb_var.yres * fb_fix.line_length);
+     return fb;
+ 
+  err:
+@@ -458,15 +458,33 @@
+ void
+ fb_cleanup(void)
+ {
++    struct fb_var_screeninfo var;
++
+     /* restore console */
++    if (0 == ioctl(fb,FBIOGET_VSCREENINFO,&var)) {
++	if (!memcmp(&var, &fb_ovar, sizeof(var))) {
++	    goto skip_var;
++	}
++    }
+     if (-1 == ioctl(fb,FBIOPUT_VSCREENINFO,&fb_ovar))
+ 	perror("ioctl FBIOPUT_VSCREENINFO");
++skip_var:
+     if (-1 == ioctl(fb,FBIOGET_FSCREENINFO,&fb_fix))
+ 	perror("ioctl FBIOGET_FSCREENINFO");
+     if (fb_ovar.bits_per_pixel == 8 ||
+ 	fb_fix.visual == FB_VISUAL_DIRECTCOLOR) {
+-	if (-1 == ioctl(fb,FBIOPUTCMAP,&ocmap))
+-	    perror("ioctl FBIOPUTCMAP");
++	if (-1 == ioctl(fb,FBIOPUTCMAP,&ocmap)) {
++            /*
++             * radeonfb in 15/16bpp returns EINVAL when color
++             * map retrieved by FBIOGETCMAP is programmed back
++             * by FBIOPUTCMAP.  It still programs palette
++             * correctly, just instead of ignoring items 64-255
++             * it returns an error.
++             */
++	    if (errno != EINVAL) {
++	        perror("ioctl FBIOPUTCMAP");
++	    }
++	}
+     }
+     close(fb);
+ 
+diff -urNad xawtv-3.95.dfsg.1~/console/fbtv.c xawtv-3.95.dfsg.1/console/fbtv.c
+--- xawtv-3.95.dfsg.1~/console/fbtv.c	2005-09-30 12:09:22.000000000 +0200
++++ xawtv-3.95.dfsg.1/console/fbtv.c	2007-07-29 00:55:39.000000000 +0200
+@@ -230,6 +230,26 @@
+ }
+ 
+ static void
++fb_loadpalette(int fd)
++{
++    if (fb_var.bits_per_pixel == 8 ||
++        fb_fix.visual == FB_VISUAL_DIRECTCOLOR) {
++        if (-1 == ioctl(fd,FBIOPUTCMAP,&cmap)) {
++	    /*
++	     * radeonfb in 15/16bpp returns EINVAL when color 
++	     * map retrieved by FBIOGETCMAP is programmed back
++	     * by FBIOPUTCMAP.  It still programs palette
++	     * correctly, just instead of ignoring items 64-255
++	     * it returns an error.
++	     */
++	    if (errno != EINVAL) {
++                perror("ioctl FBIOPUTCMAP");
++	    }
++	}
++    }
++}
++
++static void
+ fb_initcolors(int fd, int gray)
+ {
+     /* get colormap */
+@@ -288,11 +308,7 @@
+     }
+ 
+     /* set colormap */
+-    if (fb_var.bits_per_pixel == 8 ||
+-	fb_fix.visual == FB_VISUAL_DIRECTCOLOR) {
+-	if (-1 == ioctl(fd,FBIOPUTCMAP,&cmap))
+-	    perror("ioctl FBIOPUTCMAP");
+-    }
++    fb_loadpalette(fd);
+ }
+ 
+ static void
+@@ -511,11 +527,17 @@
+ }
+ 
+ static void
++clear_video(void)
++{
++    fb_memset(fb_mem+fb_mem_offset,0,fb_var.yres * fb_fix.line_length);
++}
++
++static void
+ do_fullscreen(void)
+ {
+     do_va_cmd(2,"capture","off");
+     quiet = !quiet;
+-    fb_memset(fb_mem+fb_mem_offset,0,fb_fix.smem_len);
++    clear_video();
+     do_va_cmd(2,"capture","on");
+ }
+ 
+@@ -553,8 +575,9 @@
+     case FB_ACQ_REQ:
+ 	switch_last = fb_switch_state;
+         fb_switch_acquire();
+-	fb_memset(fb_mem+fb_mem_offset,0,fb_fix.smem_len);
++	clear_video();
+ 	ioctl(fb,FBIOPAN_DISPLAY,&fb_var);
++	fb_loadpalette(fb);
+ 	do_va_cmd(2,"capture","on");
+ 	break;
+     case FB_ACTIVE:
+@@ -748,7 +771,7 @@
+     }
+ #endif
+ 
+-    fb_memset(fb_mem+fb_mem_offset,0,fb_fix.smem_len);
++    clear_video();
+     for (;!sig;) {
+ 	if ((fb_switch_state == FB_ACTIVE || keep_dma_on) && !quiet) {
+ 	    /* clear first lines */
+@@ -918,7 +941,7 @@
+ 	audio_off();
+     drv->close(h_drv);
+     if (fb_switch_state == FB_ACTIVE)
+-	fb_memset(fb_mem+fb_mem_offset,0,fb_fix.smem_len);
++	clear_video();
+     tty_cleanup();
+     fb_cleanup();
+     exit(0);
+diff -urNad xawtv-3.95.dfsg.1~/console/v4l-conf.c xawtv-3.95.dfsg.1/console/v4l-conf.c
+--- xawtv-3.95.dfsg.1~/console/v4l-conf.c	2005-02-09 13:27:36.000000000 +0100
++++ xawtv-3.95.dfsg.1/console/v4l-conf.c	2007-07-29 00:55:39.000000000 +0200
+@@ -347,7 +347,7 @@
+     /* set values */
+     fb.fmt.width  = d->width;
+     fb.fmt.height = d->height;
+-    switch (d->bpp) {
++    switch (d->bpp != 16 ? d->bpp : d->depth) {
+     case  8: fb.fmt.pixelformat = V4L2_PIX_FMT_HI240;   break;
+ #if BYTE_ORDER == BIG_ENDIAN
+     case 15: fb.fmt.pixelformat = V4L2_PIX_FMT_RGB555X; break;
