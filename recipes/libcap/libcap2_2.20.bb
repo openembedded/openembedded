@@ -11,7 +11,6 @@ LDFLAGS =+ "-L../libcap"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/security/linux-privs/libcap2/libcap-${PV}.tar.bz2 \
 	   file://make.patch \
-	   file://fix-uclibc-build.patch \
 	"
 
 SRC_URI[md5sum] = "10e47ed32ca2214eb0e58780282d27b4"
