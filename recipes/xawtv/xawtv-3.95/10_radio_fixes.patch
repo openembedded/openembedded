@@ -1,0 +1,80 @@
+diff -urNad xawtv-3.95.dfsg.1~/console/radio.c xawtv-3.95.dfsg.1/console/radio.c
+--- xawtv-3.95.dfsg.1~/console/radio.c	2003-04-16 17:35:13.000000000 +0200
++++ xawtv-3.95.dfsg.1/console/radio.c	2007-07-29 00:12:03.000000000 +0200
+@@ -40,7 +40,8 @@
+ /* JMMV: WINDOWS for radio */
+ int ncurses = 0;
+ int debug = 0;
+-char *device = "/dev/radio";
++char *device_list[4] = {NULL, "/dev/radio", "/dev/v4l/radio0", NULL};
++char **device = &device_list[1];
+ WINDOW *wfreq, *woptions, *wstations, *wcommand;
+ int freqfact = 16;
+ 
+@@ -186,7 +187,7 @@
+     while (NULL != fgets(file,255,fp)) {
+ 	if (2 == sscanf(file,"%c=%d",&n,&ifreq) && n >= '1' && n <= '8') {
+ 	    fkeys[n - '1'] = ifreq;
+-	} else if (2 == sscanf(file,"%d=%30[^\n]",&ifreq,name) && stations < 99) {
++	} else if (2 == sscanf(file,"%d=%50[^\n]",&ifreq,name) && stations < 99) {
+ 	    freqs[stations]  = ifreq;
+ 	    labels[stations] = strdup(name);
+ 	    stations++;
+@@ -371,7 +372,7 @@
+ 	    "  -d       enable debug output\n"
+ 	    "  -m       mute radio\n"
+ 	    "  -f freq  tune given frequency (also unmutes)\n"
+-	    "  -c dev   use given device        [default: %s]\n"
++	    "  -c dev   try to use given device   [defaults: %s and %s]\n"
+ 	    "  -s       scan\n"
+ 	    "  -S       scan + write radio.fmmap\n"
+ 	    "  -i       scan, write initial ~/.radio config file to\n"
+@@ -383,7 +384,7 @@
+ 	    "(c) 1998-2001 Gerd Knorr <kraxel@bytesex.org>\n"
+ 	    "interface by Juli Merino <jmmv@mail.com>\n"
+ 	    "channel scan by Gunther Mayer <Gunther.Mayer@t-online.de>\n",
+-	    device);
++	    device_list[1], device_list[2]);
+ }
+ 
+ int
+@@ -432,7 +433,8 @@
+ 	    }
+ 	    break;
+ 	case 'c':
+-	    device = optarg;
++	    device_list[0] = optarg;
++	    device = &device_list[0];
+ 	    break;
+ 	case 'h':
+ 	    usage(stdout);
+@@ -443,9 +445,14 @@
+ 	}
+     }
+     
+-    if (-1 == (fd = open(device, O_RDONLY))) {
+-	fprintf(stderr,"open %s: %s\n",device,strerror(errno));
+-	exit(1);
++    while (-1 == (fd = open(*device, O_RDONLY))) {
++	fprintf(stderr,"Warning: open %s: %s\n",*device,strerror(errno));
++	if(NULL == *(++device)) {
++		fprintf(stderr,"Giving up.\n");
++		exit(1);
++	} else {
++		fprintf(stderr,"Trying alternate device: %s\n", *device);
++	}
+     }
+ 
+     memset(&tuner,0,sizeof(tuner));
+@@ -627,8 +634,10 @@
+ 		}
+ 		if (i != stations) {
+ 		    i += (key == KEY_NPAGE) ? -1 : 1;
+-		    if (i < 0 || i >= stations)
++		    if (i >= stations)
+ 			i = 0;
++		    if (i < 0)
++			i = stations - 1;
+ 		    ifreq = freqs[i];
+ 		}
+ 	    }

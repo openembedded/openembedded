@@ -1,0 +1,12 @@
+diff -urNad xawtv-3.95.dfsg.1~/man/scantv.1 xawtv-3.95.dfsg.1/man/scantv.1
+--- xawtv-3.95.dfsg.1~/man/scantv.1	2003-02-14 15:14:07.000000000 +0100
++++ xawtv-3.95.dfsg.1/man/scantv.1	2007-11-24 19:13:46.097835274 +0100
+@@ -18,7 +18,7 @@
+ none is given.
+ .TP
+ .B -o outfile
+-specify \fBo\fPutput file.  If none is specified, scantv write
++specify \fBo\fPutput file.  If none is specified, scantv writes
+ to stdout.
+ .TP
+ .B -c device

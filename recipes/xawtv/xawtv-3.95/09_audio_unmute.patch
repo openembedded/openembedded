@@ -1,0 +1,13 @@
+diff -urNad xawtv-3.95.dfsg.1~/x11/xt.c xawtv-3.95.dfsg.1/x11/xt.c
+--- xawtv-3.95.dfsg.1~/x11/xt.c	2005-01-11 10:26:43.000000000 +0100
++++ xawtv-3.95.dfsg.1/x11/xt.c	2007-07-29 00:03:50.000000000 +0200
+@@ -313,6 +313,9 @@
+ void
+ ExitCB(Widget widget, XtPointer client_data, XtPointer calldata)
+ {
++    if (cur_attrs[ATTR_ID_MUTE]) {
++	do_va_cmd(2,"volume","mute","off");
++    }
+     audio_off();
+     video_overlay(0);
+     video_close();

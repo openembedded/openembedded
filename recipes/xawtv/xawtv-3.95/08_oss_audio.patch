@@ -1,0 +1,12 @@
+diff -urNad xawtv-3.95.dfsg.1~/libng/plugins/snd-oss.c xawtv-3.95.dfsg.1/libng/plugins/snd-oss.c
+--- xawtv-3.95.dfsg.1~/libng/plugins/snd-oss.c	2003-02-14 15:14:05.000000000 +0100
++++ xawtv-3.95.dfsg.1/libng/plugins/snd-oss.c	2007-07-28 23:43:41.000000000 +0200
+@@ -441,7 +441,7 @@
+     for (;;) {
+ 	rc = read(fd,buffer+count,blocksize-count);
+ 	if (rc < 0) {
+-	    if (EINTR == errno)
++	    if ((EINTR == errno) || (EAGAIN == errno))
+ 		continue;
+ 	    perror("oss: read");
+ 	    exit(1);

@@ -1,0 +1,56 @@
+diff -urNad xawtv-3.95.dfsg.1~/libng/plugins/drv0-v4l2.c xawtv-3.95.dfsg.1/libng/plugins/drv0-v4l2.c
+--- xawtv-3.95.dfsg.1~/libng/plugins/drv0-v4l2.c	2005-02-11 18:56:24.000000000 +0100
++++ xawtv-3.95.dfsg.1/libng/plugins/drv0-v4l2.c	2007-07-29 00:39:54.000000000 +0200
+@@ -509,7 +509,22 @@
+ 	fprintf(stderr, "v4l2: close\n");
+ 
+     close(h->fd);
++
++    if (NULL != h->attr) {
++        int i;
++        for (i = 0; i < h->nattr; ++i) {
++          if ((NULL != h->attr[i].choices) &&
++              (stereo != h->attr[i].choices)) {
++                free(h->attr[i].choices);
++                h->attr[i].choices = NULL;
++            }
++        }
++        free(h->attr);
++        h->attr = NULL;
++    }
++
+     free(h);
++    h = NULL;
+     return 0;
+ }
+ 
+diff -urNad xawtv-3.95.dfsg.1~/libng/plugins/drv1-v4l.c xawtv-3.95.dfsg.1/libng/plugins/drv1-v4l.c
+--- xawtv-3.95.dfsg.1~/libng/plugins/drv1-v4l.c	2003-02-14 15:14:05.000000000 +0100
++++ xawtv-3.95.dfsg.1/libng/plugins/drv1-v4l.c	2007-07-29 00:39:54.000000000 +0200
+@@ -469,7 +469,26 @@
+ 	munmap(h->mmap,h->mbuf.size);
+     
+     close(h->fd);
++
++    if (NULL != h->attr) {
++        int i;
++        for (i = 0; i < h->nattr; ++i) {
++          if ((NULL != h->attr[i].choices) &&
++              (stereo != h->attr[i].choices)) {
++                free(h->attr[i].choices);
++                h->attr[i].choices = NULL;
++            }
++        }
++        free(h->attr);
++        h->attr = NULL;
++    }
++
++    if (NULL != h->channels) { free(h->channels); h->channels = NULL; }
++    if (NULL != h->buf_v4l)  { free(h->buf_v4l);  h->buf_v4l  = NULL; }
++    if (NULL != h->buf_me)   { free(h->buf_me);   h->buf_me   = NULL; }
++
+     free(h);
++    h = NULL;
+     return 0;
+ }
+ 
