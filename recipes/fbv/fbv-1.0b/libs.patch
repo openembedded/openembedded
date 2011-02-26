@@ -1,0 +1,13 @@
+Index: fbv-1.0b/Makefile
+===================================================================
+--- fbv-1.0b.orig/Makefile	2004-09-07 14:34:29.000000000 +0200
++++ fbv-1.0b/Makefile	2011-02-26 22:11:03.217683306 +0100
+@@ -12,7 +12,7 @@
+ OBJECTS	= ${SOURCES:.c=.o}
+ 
+ OUT	= fbv
+-#LIBS	= -lungif -L/usr/X11R6/lib -ljpeg -lpng
++#LIBS	= -lungif -ljpeg -lpng
+ 
+ all: $(OUT)
+ 	@echo Build DONE.

@@ -1,0 +1,13 @@
+Index: fbv-1.0b/Makefile
+===================================================================
+--- fbv-1.0b.orig/Makefile	2011-02-26 21:50:39.786273304 +0100
++++ fbv-1.0b/Makefile	2011-02-26 21:53:44.051693304 +0100
+@@ -6,7 +6,7 @@
+ include Make.conf
+ 
+ CC	= gcc 
+-CFLAGS  = -O2 -Wall -D_GNU_SOURCE
++CFLAGS  += -D_GNU_SOURCE
+ 
+ SOURCES	= main.c jpeg.c gif.c png.c bmp.c fb_display.c transforms.c
+ OBJECTS	= ${SOURCES:.c=.o}
