@@ -1,0 +1,16 @@
+Index: libcap-2.20/libcap/cap_file.c
+===================================================================
+--- libcap-2.20.orig/libcap/cap_file.c
++++ libcap-2.20/libcap/cap_file.c
+@@ -5,7 +5,11 @@
+  */
+ 
+ #include <sys/types.h>
++#ifdef __UCLIBC__
++#include <attr/xattr.h>
++#else
+ #include <sys/xattr.h>
++#endif
+ #include <byteswap.h>
+ #include <sys/stat.h>
+ #include <unistd.h>
