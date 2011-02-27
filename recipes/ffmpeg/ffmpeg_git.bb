@@ -3,7 +3,7 @@ require ffmpeg.inc
 DEPENDS += "virtual/libsdl schroedinger libgsm libvpx"
 
 # When bumping SRCREV make sure you bump PR here and in dependant recipes (gst-ffmpeg, gnash, omxil, etc) to account for SOVERSION changes
-SRCREV = "a4f5af13fb00d7f55946470bb0f52e1dbf5f3c6a"
+SRCREV = "0b32da90f893b3e04ead18a546252e241a6a0988"
 
 PV = "0.6.1+${PR}+gitr${SRCPV}"
 PR = "${INC_PR}.1"
