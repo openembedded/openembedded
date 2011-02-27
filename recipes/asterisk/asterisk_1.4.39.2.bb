@@ -11,6 +11,7 @@ DEPENDS = "speex readline zlib openssl curl popt gnutls sqlite libogg libvorbis"
 SRC_URI="http://downloads.asterisk.org/pub/telephony/asterisk/old-releases/asterisk-${PV}.tar.gz \
 #	file://sounds.xml.patch \
 	file://Makefile.patch \
+	file://asterisk-1.4-bugid18301.patch \
 	file://logrotate \
 	file://volatiles \
 	file://init"
@@ -54,29 +55,33 @@ export ASTCFLAGS = "-fsigned-char -I${STAGING_INCDIR} -DPATH_MAX=4096"
 export ASTLDFLAGS="${LDFLAGS} -lpthread -ldl -lresolv "
 export PROC="${ARCH}"
 
-do_configure_prepend () {
+do_configure_prepend() {
 	sed -i 's:/var:${localstatedir}:' ${WORKDIR}/logrotate
 	sed -i 's:/etc/init.d:${sysconfdir}/init.d:' ${WORKDIR}/logrotate
 	sed -i 's:/var:${localstatedir}:' ${WORKDIR}/volatiles
+
+	# Due to menuselect below we want to save off these configures
+	mv ${S}/menuselect/configure ${S}/menuselect/configure.SAVE
+	mv ${S}/menuselect/mxml/configure ${S}/menuselect/mxml/configure.SAVE
+	mv ${S}/main/editline/configure ${S}/main/editline/configure.SAVE
 }
 
-do_configure () {
-	# Looks like rebuilding configure doesn't work, so we are skipping
-	# that and are just using the shipped one
-	# gnu-configize
-	# libtoolize --force
-	oe_runconf
+do_configure_append() {
+	# Put this back
+	mv ${S}/menuselect/configure.SAVE ${S}/menuselect/configure
+	mv ${S}/menuselect/mxml/configure.SAVE ${S}/menuselect/mxml/configure
+	mv ${S}/main/editline/configure.SAVE ${S}/main/editline/configure
 }
-
 
 do_compile() {
         (
-         #make sure that menuselect gets build using host toolchain
-         unset CC LD CXX CCLD CFLAGS CPPFLAGS LDFLAGS CXXFLAGS RANLIB
+         # Make sure that menuselect gets build using host toolchain
+         unset CC CPP LD CXX CCLD CFLAGS CPPFLAGS LDFLAGS CXXFLAGS RANLIB
+         unset CONFIG_SITE
+         export ac_cv_prog_PKGCONFIG=No
          cd menuselect 
          ./configure
          oe_runmake
-         cd ../
         ) || exit 1
         oe_runmake
 }
@@ -160,5 +165,5 @@ CONFFILES_${PN} += "${sysconfdir}/asterisk/voicemail.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/vpb.conf"
 CONFFILES_${PN} += "${sysconfdir}/logrotate.d/asterisk"
 
-SRC_URI[md5sum] = "f5fdaa7e4a6d9b8dfc9e2bef8ee81681"
-SRC_URI[sha256sum] = "e78e73de5d9b920070b778cbb2ab077119a86a71a59755d67aa2c3a82b4239c4"
+SRC_URI[md5sum] = "b3c0102860cf8b5ca44660636d6eac87"
+SRC_URI[sha256sum] = "b2eb49e2198a4f05e4254cf224e0f13755889ba421a70c772ffafb3a6775271e"
