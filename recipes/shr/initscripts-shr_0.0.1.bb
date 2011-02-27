@@ -5,7 +5,7 @@ DEPENDS = ""
 RDEPENDS_${PN} = "procps"
 LICENSE = "GPL"
 PV = "0.0.1"
-PR = "r24"
+PR = "r25"
 
 RCONFLICTS_${PN} = "initscripts"
 
@@ -14,7 +14,6 @@ SRC_URI = "file://alignment.sh \
 	   file://checkroot.sh \
 	   file://finish.sh \
 	   file://functions \
-	   file://g_ether.sh \
 	   file://hostname.sh \
 	   file://mountall.sh \
 	   file://mountdevsubfs.sh \
@@ -32,7 +31,11 @@ SRC_URI = "file://alignment.sh \
 	   file://umountnfs.sh \
 	   "
 
+SRC_URI_append_om-gta02 = " file://g_ether.sh"
+PACKAGE_ARCH_om-gta02 = "om-gta02
+
 SRC_URI_append_nokia900 = " file://nokia-n900-cmt-gpio.sh"
+PACKAGE_ARCH_nokia900 = "nokia900"
 
 inherit base
 
@@ -57,7 +60,6 @@ do_install () {
 	install -m 0755	${WORKDIR}/checkroot.sh		${D}${sysconfdir}/init.d
 	install -m 0755	${WORKDIR}/finish.sh		${D}${sysconfdir}/init.d
 	install -m 0755	${WORKDIR}/functions		${D}${sysconfdir}/init.d
-	install -m 0755	${WORKDIR}/g_ether.sh		${D}${sysconfdir}/init.d
 	install -m 0755	${WORKDIR}/hostname.sh		${D}${sysconfdir}/init.d
 	install -m 0755	${WORKDIR}/mountall.sh		${D}${sysconfdir}/init.d
 	install -m 0755	${WORKDIR}/mountnfs.sh		${D}${sysconfdir}/init.d
@@ -76,6 +78,11 @@ do_install () {
 	install -m 0755	${WORKDIR}/umountfs		${D}${sysconfdir}/init.d
 	install -m 0755	${WORKDIR}/umountnfs.sh		${D}${sysconfdir}/init.d
 
+	if [ "${MACHINE}" = "om-gta02" ]; then
+		install -m 0755	${WORKDIR}/g_ether.sh		${D}${sysconfdir}/init.d
+		ln -sf ../init.d/g_ether.sh ${D}${sysconfdir}/rcS.d/S02g_ether.sh
+	fi
+
 	if [ "${MACHINE}" = "nokia900" ]; then
 		install -m 0755 ${WORKDIR}/nokia-n900-cmt-gpio.sh ${D}${sysconfdir}/init.d
 		ln -sf ../init.d/nokia-n900-cmt-gpio.sh ${D}${sysconfdir}/rcS.d/S40nokia-n900-cmt-gpio.sh
@@ -85,7 +92,6 @@ do_install () {
 # Create runlevel links
 #
 	ln -sf		../init.d/mountkernfs.sh	${D}${sysconfdir}/rcS.d/S01mountkernfs.sh
-	ln -sf		../init.d/g_ether.sh		${D}${sysconfdir}/rcS.d/S02g_ether.sh
 	ln -sf		../init.d/hostname.sh		${D}${sysconfdir}/rcS.d/S02hostname.sh
 	ln -sf		../init.d/checkroot.sh		${D}${sysconfdir}/rcS.d/S02checkroot.sh
 	ln -sf		../init.d/mountdevsubfs.sh	${D}${sysconfdir}/rcS.d/S04mountdevsubfs.sh
