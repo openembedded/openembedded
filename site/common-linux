@@ -32,3 +32,6 @@ ac_cv_conv_longlong_to_float=${ac_cv_conv_longlong_to_float=yes}
 
 # rp-pppoe
 rpppoe_cv_pack_bitfields=${rpppoe_cv_pack_bitfields=rev}
+
+# asterisk
+ac_cv_have_variable_fdset=${ac_cv_have_variable_fdset=no}
