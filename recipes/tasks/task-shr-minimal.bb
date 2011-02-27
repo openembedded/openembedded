@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r36"
+PR = "r37"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -127,6 +127,7 @@ RDEPENDS_${PN}-apps = "\
   phonefsod \
   phoneuid \
   libphone-ui \
+  libphone-ui-config \
   libphone-ui-shr \
   ffalarms \
   shr-settings \
