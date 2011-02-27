@@ -11,13 +11,20 @@ PR = "r1"
 
 SRC_URI = "git://git.shr-project.org/repo/ffphonelog.git;protocol=http;branch=master"
 
-SRCREV = "f257edad1b046d5efcc83f80c1bef314773c2bc2"
+SRCREV = "9f7b682c4be9c0f23908dc888462399d939ffa11"
 S = "${WORKDIR}/git"
 
 FILES_${PN} += "${datadir}/applications ${datadir}/pixmaps"
 
+EXTRA_OEMAKE = " \
+	CC='${CC}' \
+	CFLAGS_APPEND='${CFLAGS}' \
+	LDFLAGS_APPEND='${LDFLAGS}' \
+	DESTDIR='${D}' \
+	PREFIX=/usr"
+
 do_install() {
-       oe_runmake install DESTDIR=${D}
+       oe_runmake install
 }
 
 MAINTAINER = "Lukasz Pankowski <lukpank@o2.pl>"
