@@ -1,9 +1,10 @@
 require efreet.inc
 
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 SRC_URI = "\
   ${E_MIRROR}/${SRCNAME}-${PV}.tar.gz \
+  file://changeset_trunk_r57435.patch \
 "
 
 SRC_URI[md5sum] = "ce7dd05138335312c7eb9ac8e5e62467"
