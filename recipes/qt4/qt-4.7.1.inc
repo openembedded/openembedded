@@ -9,6 +9,7 @@ SRC_URI = "\
     file://hack-out-pg2-4.7.0.patch \
 	file://0006-freetype-host-includes.patch \
 	file://0001-Added-Openembedded-crossarch-option.patch \
+	file://0010-phonon-gstreamer-rgb-endianess.patch \
 	file://g++.conf \
 	file://linux.conf \
            "
