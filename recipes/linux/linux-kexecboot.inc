@@ -50,6 +50,7 @@ def kernel_version_less_or_equal(variable, checkvalue, truevalue, falsevalue, d)
 
 # force lzma compression for kernel (linux-kexecboot >= 2.6.32)
 # force lzma compression for initramfs (linux-kexecboot >= 2.6.30)
+DEPENDS += '${@kernel_version_less_or_equal("PV", "2.6.29", "", "lzma-native", d)}'
 
 KERNEL_COMPRESSION = '${@kernel_version_less_or_equal("PV", "2.6.31", "", "CONFIG_KERNEL_LZMA=y", d)}'
 
