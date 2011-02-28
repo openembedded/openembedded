@@ -60,6 +60,8 @@ EXTRA_OECMAKE = "\
   -DCMAKE_BUILD_TYPE:STRING=RelWithDebInfo \
   -DBUILD_SHARED_LIBS:BOOL=ON \
 "
+# We need to reset this to avoid breakage as we build out of tree
+TOOLCHAIN_OPTIONS = ""
 
 PACKAGES = "${PN} ${PN}-dev ${PN}-dbg ${PN}-doc"
 
