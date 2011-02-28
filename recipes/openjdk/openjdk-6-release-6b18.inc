@@ -29,7 +29,7 @@ JAF_URI = "http://icedtea.classpath.org/download/source/drops/jdk6-jaf-2009_10_2
 SRC_URI[jaf.md5sum] = "7a50bb540a27cdd0001885630088b758"
 SRC_URI[jaf.sha256sum] = "fdc51476fc6bcc69ea1f099f33e84601a126bfa8b11c8fa11c25dc574345aa9f"
 
-JAXP_URI = "https://jaxp.dev.java.net/files/nidaba/documents/913/147329/jdk6-jaxp-2009_10_13.zip;name=jaxp"
+JAXP_URI = "https://icedtea.classpath.org/download/source/drops/jdk6-jaxp-2009_10_13.zip;name=jaxp"
 SRC_URI[jaxp.md5sum] = "a2f7b972124cd776ff71e7754eb9a429"
 SRC_URI[jaxp.sha256sum] = "8714d55de18db48ca9da0ee986202005082f44cf4c215da8683342b70e61792b"
 
