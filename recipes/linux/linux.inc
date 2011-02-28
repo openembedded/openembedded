@@ -67,7 +67,7 @@ python __anonymous () {
     	bb.data.setVar("DEPENDS", "%s dtc-native" % depends, d)
     	packages = bb.data.getVar("PACKAGES", d, 1)
     	bb.data.setVar("PACKAGES", "%s kernel-devicetree" % packages, d)
-    if 'nokia900' in machine:
+    if 'nokia900' in machine or 'om-gta0' in machine or 'eee701' in machine:
         depends = bb.data.getVar("DEPENDS", d, 1)
         bb.data.setVar("DEPENDS", "%s lzma-native" % depends, d)
 }
