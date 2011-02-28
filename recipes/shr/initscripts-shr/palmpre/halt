@@ -20,6 +20,6 @@ then
 	hddown=""
 fi
 
-/sbin/tellbootie shutdown
+halt -d -f
 
 : exit 0
