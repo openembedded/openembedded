@@ -8,4 +8,4 @@
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 
 echo -n "Rebooting... "
-/sbin/tellbootie
+reboot -f -d
