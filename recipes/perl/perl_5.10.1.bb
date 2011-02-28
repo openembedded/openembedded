@@ -3,8 +3,7 @@ HOMEPAGE = "http://www.perl.org/"
 SECTION = "devel/perl"
 LICENSE = "Artistic|GPLv1+"
 PRIORITY = "optional"
-# We need gnugrep (for -I)
-DEPENDS = "virtual/db perl-native grep-native"
+DEPENDS = "virtual/db perl-native"
 PR = "r22"
 
 # 5.10.1 has Module::Build built-in
@@ -158,7 +157,7 @@ do_configure() {
 	esac
 
         # These are strewn all over the source tree
-        for foo in `grep -I -m1 \/usr\/include\/.*\\.h ${WORKDIR}/* -r | cut -f 1 -d ":"` ; do
+        for foo in `grep -lrI -m1 \/usr\/include\/.*\\.h ${WORKDIR}/*` ; do
             echo Fixing: $foo
             sed -e "s%/usr/include/%${STAGING_INCDIR}/%g" -i $foo
         done
