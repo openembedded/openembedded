@@ -6,7 +6,7 @@ LICENSE = "GPL"
 
 DEPENDS = "tslib"
 
-PR = "r3"
+PR = "r4"
 PV = "1.0.0+gitr${SRCPV}"
 
 SRCREV = "9262a2e4f8f6e6c7bcacf1eeae0ad348cbfcce06"
@@ -29,5 +29,5 @@ do_install_append() {
 	install -d 0644 ${D}${sysconfdir}/init.d/
 	install -m 0755 ${WORKDIR}/${INITSCRIPT_NAME} ${D}${sysconfdir}/init.d/
 	install -d 0644 ${D}${base_bindir}/
-	install -m 0755 ${WORKDIR}/tsmd_control ${D}${base_bindir}/tsmd_control
+	install -m 0755 ${WORKDIR}/tsmd_control ${D}${exec_prefix}/bin/tsmd_control
 }
