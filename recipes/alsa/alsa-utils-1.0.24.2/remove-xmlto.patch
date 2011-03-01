@@ -1,0 +1,33 @@
+From 4fa1ac725e8d8376e99a383501cdaeedfed0ed8f Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Tue, 1 Mar 2011 08:37:09 +0100
+Subject: [PATCH] alsa-utils: don't run xmlto when crosscompiling
+
+Signed-off-by: Koen Kooi <koen@dominion.thruhere.net>
+---
+ alsactl/Makefile.am |    5 -----
+ 1 files changed, 0 insertions(+), 5 deletions(-)
+
+diff --git a/alsactl/Makefile.am b/alsactl/Makefile.am
+index 5cfc415..e1fa44a 100644
+--- a/alsactl/Makefile.am
++++ b/alsactl/Makefile.am
+@@ -2,9 +2,6 @@ SUBDIRS = init
+ 
+ sbin_PROGRAMS=alsactl
+ man_MANS=alsactl.1
+-if USE_XMLTO
+-man_MANS += alsactl_init.7
+-endif
+ EXTRA_DIST=alsactl.1 alsactl_init.xml
+ 
+ alsactl_SOURCES=alsactl.c state.c utils.c init_parse.c
+@@ -55,5 +52,3 @@ CLEANFILES = \
+ 	alsa-restore.service \
+ 	90-alsa-restore.rules
+ 
+-%.7: %.xml
+-	xmlto man $?
+-- 
+1.6.6.1
+
