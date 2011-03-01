@@ -10,10 +10,10 @@
 DESCRIPTION = "Free peer-reviewed portable C++ source libraries"
 HOMEPAGE = "http://www.boost.org/"
 SECTION = "libs"
-DEPENDS = "zlib icu"
+DEPENDS = "zlib bzip2 icu"
 PRIORITY = "optional"
 LICENSE = "Boost Software License"
-INC_PR = "r9"
+INC_PR = "r10"
 
 BOOST_VER = "${@"_".join(bb.data.getVar("PV",d,1).split("."))}"
 BOOST_MAJ = "${@"_".join(bb.data.getVar("PV",d,1).split(".")[0:2])}"
