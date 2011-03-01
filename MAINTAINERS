@@ -138,6 +138,11 @@ Recipes:    quagga, iputils, ndic6, hping2, lilo-sh, conserver, ipsec-tools,
 Recipes:    lilo-sh, clamav, havp, p3scan, clamsmtp, librsync, rdiff-backup,
 Recipes:    net-snmp, ebtables, ethtool, arpwatch, lib*-perl
 
+Person:     Jan Kobler
+Mail:       eng1@koblersystems.de
+Interests:  embedded systems, powerpc, arm
+Machines:   pcm043
+
 Person:     Jan Luebbe
 Mail:       jluebbe@lasnet.de
 Website:    http://sicherheitsschwankung.de

@@ -41,6 +41,11 @@ EXTRA_OECONF_mx31ads = "${BASE_CONF} --with-flavour=eglnative"
 PACKAGE_ARCH_mx31ads = "${MACHINE_ARCH}"
 LDFLAGS_append_mx31ads = " -lpvrNULLWSEGL -lstdc++ "
 
+DEPENDS_pcm043 = "${STDDEPENDS} libgles-mx31 tslib"
+EXTRA_OECONF_pcm043 = "${BASE_CONF} --with-flavour=eglnative"
+PACKAGE_ARCH_pcm043 = "${MACHINE_ARCH}"
+LDFLAGS_append_pcm043 = " -lpvrNULLWSEGL -lstdc++ "
+
 INC_PR = "r3"
 
 inherit autotools pkgconfig gtk-doc
