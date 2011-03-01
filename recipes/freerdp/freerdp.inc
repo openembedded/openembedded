@@ -4,10 +4,11 @@
 DESCRIPTION = "FreeRDP RDP client"
 HOMEPAGE = "http://freerdp.sourceforge.net"
 DEPENDS = "virtual/libx11 openssl libxcursor cups alsa-lib"
+RDEPENDS_${PN} += "xprop"
 SECTION = "x11/network"
 LICENSE = "Apache-2.0"
 
-INC_PR = "r5"
+INC_PR = "r6"
 
 inherit pkgconfig autotools
 
