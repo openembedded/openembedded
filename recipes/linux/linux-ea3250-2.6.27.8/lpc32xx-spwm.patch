@@ -1,6 +1,7 @@
-diff -Naur -X linux/Documentation/dontdiff linux-2.6.27.8/arch/arm/mach-lpc32xx/arch-lpc32xx.c linux-2.6.27.8-new/arch/arm/mach-lpc32xx/arch-lpc32xx.c
---- linux-2.6.27.8/arch/arm/mach-lpc32xx/arch-lpc32xx.c	2009-11-24 15:42:39.000000000 +0100
-+++ linux-2.6.27.8-new/arch/arm/mach-lpc32xx/arch-lpc32xx.c	2009-11-24 15:52:40.000000000 +0100
+Index: linux-2.6.27.8/arch/arm/mach-lpc32xx/arch-lpc32xx.c
+===================================================================
+--- linux-2.6.27.8.orig/arch/arm/mach-lpc32xx/arch-lpc32xx.c	2011-03-01 16:09:18.000000000 +0100
++++ linux-2.6.27.8/arch/arm/mach-lpc32xx/arch-lpc32xx.c	2011-03-01 16:13:03.165618120 +0100
 @@ -342,6 +342,9 @@
  	tmp |= UART_UART6_IRDAMOD_BYPASS;
  #endif
@@ -11,9 +12,10 @@ diff -Naur -X linux/Documentation/dontdiff linux-2.6.27.8/arch/arm/mach-lpc32xx/
  }
  
  static struct map_desc lpc32xx_io_desc[] __initdata = {
-diff -Naur -X linux/Documentation/dontdiff linux-2.6.27.8/arch/arm/mach-lpc32xx/include/mach/lpc32xx_pwm.h linux-2.6.27.8-new/arch/arm/mach-lpc32xx/include/mach/lpc32xx_pwm.h
---- linux-2.6.27.8/arch/arm/mach-lpc32xx/include/mach/lpc32xx_pwm.h	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.27.8-new/arch/arm/mach-lpc32xx/include/mach/lpc32xx_pwm.h	2009-11-24 15:54:09.000000000 +0100
+Index: linux-2.6.27.8/arch/arm/mach-lpc32xx/include/mach/lpc32xx_pwm.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.27.8/arch/arm/mach-lpc32xx/include/mach/lpc32xx_pwm.h	2011-03-01 16:13:03.165618120 +0100
 @@ -0,0 +1,31 @@
 +/*
 + *  linux/arch/arm/mach-lpc32xx/include/mach/lpc32xx_pwm.h
@@ -46,9 +48,10 @@ diff -Naur -X linux/Documentation/dontdiff linux-2.6.27.8/arch/arm/mach-lpc32xx/
 +#define PERIPH_CLK	0x01
 +
 +#endif
-diff -Naur -X linux/Documentation/dontdiff linux-2.6.27.8/arch/arm/mach-lpc32xx/Kconfig linux-2.6.27.8-new/arch/arm/mach-lpc32xx/Kconfig
---- linux-2.6.27.8/arch/arm/mach-lpc32xx/Kconfig	2009-11-24 15:42:39.000000000 +0100
-+++ linux-2.6.27.8-new/arch/arm/mach-lpc32xx/Kconfig	2009-11-24 16:01:16.000000000 +0100
+Index: linux-2.6.27.8/arch/arm/mach-lpc32xx/Kconfig
+===================================================================
+--- linux-2.6.27.8.orig/arch/arm/mach-lpc32xx/Kconfig	2011-03-01 16:09:19.000000000 +0100
++++ linux-2.6.27.8/arch/arm/mach-lpc32xx/Kconfig	2011-03-01 16:13:03.165618120 +0100
 @@ -185,6 +185,12 @@
  	  which support is selected, the ethernet interface driver needs to be
  	  selected in the device driver networking section.
@@ -62,9 +65,10 @@ diff -Naur -X linux/Documentation/dontdiff linux-2.6.27.8/arch/arm/mach-lpc32xx/
  menu "Standard UARTS"
  
  config MACH_LPC32XX_UART5_ENABLE
-diff -Naur -X linux/Documentation/dontdiff linux-2.6.27.8/arch/arm/mach-lpc32xx/Makefile linux-2.6.27.8-new/arch/arm/mach-lpc32xx/Makefile
---- linux-2.6.27.8/arch/arm/mach-lpc32xx/Makefile	2009-11-24 15:42:39.000000000 +0100
-+++ linux-2.6.27.8-new/arch/arm/mach-lpc32xx/Makefile	2009-11-24 16:01:39.000000000 +0100
+Index: linux-2.6.27.8/arch/arm/mach-lpc32xx/Makefile
+===================================================================
+--- linux-2.6.27.8.orig/arch/arm/mach-lpc32xx/Makefile	2011-03-01 16:09:19.000000000 +0100
++++ linux-2.6.27.8/arch/arm/mach-lpc32xx/Makefile	2011-03-01 16:13:03.165618120 +0100
 @@ -7,6 +7,7 @@
  obj-y				:= timer-lpc32xx.o irq-lpc32xx.o arch-lpc32xx.o
  obj-y				+= serial-lpc32xx.o clocks-lpc32xx.o
@@ -73,9 +77,10 @@ diff -Naur -X linux/Documentation/dontdiff linux-2.6.27.8/arch/arm/mach-lpc32xx/
  obj-m				:= 
  obj-n				:=
  obj-				:=
-diff -Naur -X linux/Documentation/dontdiff linux-2.6.27.8/arch/arm/mach-lpc32xx/spwm-lpc32xx.c linux-2.6.27.8-new/arch/arm/mach-lpc32xx/spwm-lpc32xx.c
---- linux-2.6.27.8/arch/arm/mach-lpc32xx/spwm-lpc32xx.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.27.8-new/arch/arm/mach-lpc32xx/spwm-lpc32xx.c	2009-11-24 16:07:20.000000000 +0100
+Index: linux-2.6.27.8/arch/arm/mach-lpc32xx/spwm-lpc32xx.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.27.8/arch/arm/mach-lpc32xx/spwm-lpc32xx.c	2011-03-01 16:13:03.168953120 +0100
 @@ -0,0 +1,126 @@
 +/*
 + *  linux/arch/arm/mach-lpc32xx/spwm-lpc32xx.c
@@ -203,9 +208,19 @@ diff -Naur -X linux/Documentation/dontdiff linux-2.6.27.8/arch/arm/mach-lpc32xx/
 +	lpc32xx_spwm_set_clockdiv(PWM1, 1);
 +	lpc32xx_spwm_set_clockdiv(PWM2, 1);
 +}
-diff -Naur -X linux/Documentation/dontdiff linux-2.6.27.8/arch/arm/mach-lpc32xx/sys-lpc32xx.h linux-2.6.27.8-new/arch/arm/mach-lpc32xx/sys-lpc32xx.h
---- linux-2.6.27.8/arch/arm/mach-lpc32xx/sys-lpc32xx.h	2009-11-24 15:42:39.000000000 +0100
-+++ linux-2.6.27.8-new/arch/arm/mach-lpc32xx/sys-lpc32xx.h	2009-11-24 16:08:24.000000000 +0100
+Index: linux-2.6.27.8/arch/arm/mach-lpc32xx/sys-lpc32xx.h
+===================================================================
+--- linux-2.6.27.8.orig/arch/arm/mach-lpc32xx/sys-lpc32xx.h	2011-03-01 16:09:19.000000000 +0100
++++ linux-2.6.27.8/arch/arm/mach-lpc32xx/sys-lpc32xx.h	2011-03-01 16:18:36.725648119 +0100
+@@ -30,7 +30,7 @@
+ #include <mach/board.h>
+ 
+ #define TIMER0_IOBASE io_p2v(TIMER0_BASE)
+-#define TIMER1_IOBASE io_p2v(TIMER1_BASE)
++#define TIMER1_IOBASE io_p2v(TIMER1_BASE)
+ #define CLKPWR_IOBASE io_p2v(CLK_PM_BASE)
+ #define GPIO_IOBASE io_p2v(GPIO_BASE)
+ 
 @@ -83,14 +83,17 @@
  #endif
  
@@ -220,8 +235,9 @@ diff -Naur -X linux/Documentation/dontdiff linux-2.6.27.8/arch/arm/mach-lpc32xx/
  extern void __init lpc32xx_init (void);
  extern void __init lpc32xx_map_io(void);
  extern int __init clk_init(void);
-+#if defined(CONFIG_SPWM_LPC32XX)
-+extern void lpc32xx_spwm_init(void);
-+#endif
+++#if defined(CONFIG_SPWM_LPC32XX)
+++extern void lpc32xx_spwm_init(void);
+++#endif
  
  #endif
+ 
