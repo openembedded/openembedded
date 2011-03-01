@@ -6,7 +6,9 @@ SRC_URI = "http://curl.haxx.se/download/curl-${PV}.tar.bz2;name=tarball \
            file://pkgconfig_fix.patch"
 S = "${WORKDIR}/curl-${PV}"
 
-INC_PR = "r4"
+INC_PR = "r5"
+
+BBCLASSEXTEND = "native nativesdk sdk"
 
 CURL_FEATURES = ${@['zlib,cookies,crypto-auth,dict,file,ftp,http,telnet,tftp','zlib,gnutls,cookies,crypto-auth,dict,file,ftp,http,telnet,tftp']["${BPN}" == "${PN}"]}
 # other allowed features: ipv6, ares, openssl
@@ -18,6 +20,10 @@ EXTRA_OECONF = " \
 		--with-random=/dev/urandom \
 		--without-libidn \
 		"
+
+EXTRA_OECONF_append_virtclass-native = " --disable-ldap --disable-ldaps"
+EXTRA_OECONF_append_virtclass-nativesdk = " --disable-ldap --disable-ldaps"
+EXTRA_OECONF_append_virtclass-sdk = " --disable-ldap --disable-ldaps"
 
 python __anonymous() {
 	f = bb.data.getVar("CURL_FEATURES", d, True).split(",")
