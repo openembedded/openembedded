@@ -1,5 +1,5 @@
 # We set INC_PR here, since a change in the kexecboot recipe will need to get picked up by *all* the kernels:
-INC_PR = "r29"
+INC_PR = "r30"
 
 inherit kernel siteinfo
 
@@ -20,6 +20,8 @@ CMDLINE_akita = "console=tty1 console=ttyS0,115200n8 fbcon=rotate:1"
 CMDLINE_collie = "console=tty1 console=ttySA0,115200n8 fbcon=rotate:1 mem=64M"
 CMDLINE_spitz = "console=tty1 console=ttyS0,115200n8 fbcon=rotate:1"
 CMDLINE_hx4700 = "console=tty1 console=ttyS0,115200n8 fbcon=rotate:1"
+CMDLINE_ben-nanonote = "console=tty0 console=ttyS0,57600n8 mem=32M"
+
 
 # Set the verbosity of kernel messages during runtime
 # You can define CMDLINE_DEBUG in your local.conf or distro.conf to override this behaviour..
@@ -146,4 +148,23 @@ do_install() {
 }
 
 python do_package() {
+}
+
+
+# With 2.6.37 mips has no uImage target upstream.
+# use custom task in the meantime
+
+do_uboot_mkimage_ben-nanonote() {
+        cd ${S}
+        kernel_entry=`nm vmlinux | grep " kernel_entry" | cut -d' ' -f1`
+
+        cd ${S}/arch/mips/boot
+        rm -f vmlinux.bin.gz
+        gzip -c9 vmlinux.bin > vmlinux.bin.gz
+
+        mkimage -A mips -O linux -T kernel -C gzip -a 0x80010000 -e 0x${kernel_entry} \
+        -n 'MIPS' -d vmlinux.bin.gz uImage-kexecboot-${PV}-${PR}-${MACHINE}.bin
+
+        install -d ${DEPLOY_DIR_IMAGE}
+        install -m 0644 uImage-kexecboot-${PV}-${PR}-${MACHINE}.bin ${DEPLOY_DIR_IMAGE}
 }
