@@ -1,5 +1,5 @@
 # We set INC_PR here, since a change in the kexecboot recipe will need to get picked up by *all* the kernels:
-INC_PR = "r31"
+INC_PR = "r32"
 
 inherit kernel siteinfo
 
@@ -79,6 +79,7 @@ do_configure_prepend() {
 
         echo "" > ${S}/.config
 
+        echo "CONFIG_CMDLINE_BOOL=y" >> ${S}/.config
         echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
 
         #
@@ -117,10 +118,6 @@ do_configure_prepend() {
         # Force sane defaults for kexec-enabled kernels and keep size small
         sed -i -e /CONFIG_BLK_DEV_INITRD/d \
                -e /CONFIG_KEXEC/d \
-               -e /CONFIG_KERNEL/d \
-               -e /CONFIG_INITRAMFS_COMPRESSION/d \
-               -e /CONFIG_INITRAMFS_SOURCE/d \
-               -e /CONFIG_RD/d \
                -e /=m/d \
                -e /CONFIG_MODULES/d \
                -e /CONFIG_DEBUG_ERRORS/d \
@@ -130,11 +127,22 @@ do_configure_prepend() {
 
                echo 'CONFIG_BLK_DEV_INITRD=y' >>${S}/.config
                echo 'CONFIG_KEXEC=y' >>${S}/.config
+               echo 'CONFIG_MODULES=n' >> ${S}/.config
+
+        # Force lzma for arm kernels only
+        if [ "${ARCH}" = "arm" ] ; then
+
+            sed -i -e /CONFIG_KERNEL/d \
+               -e /CONFIG_INITRAMFS_COMPRESSION/d \
+               -e /CONFIG_INITRAMFS_SOURCE/d \
+               -e /CONFIG_RD/d \
+               ${S}/.config
+
                echo '${KERNEL_COMPRESSION}' >>${S}/.config
                echo '"${INITRAMFS_COMPRESSION}"' >>${S}/.config
                echo 'CONFIG_INITRAMFS_SOURCE="initramfs.cpio.${INITRAMFS_COMPRESSION_SUFFIX}"' >>${S}/.config
                echo '"${RD_COMPRESSION}"' >>${S}/.config
-               echo 'CONFIG_MODULES=n' >> ${S}/.config
+        fi
 
         yes '' | oe_runmake oldconfig
 }
@@ -152,7 +160,7 @@ python do_package() {
 # With 2.6.37 mips has no uImage target upstream.
 # use custom task in the meantime
 
-do_uboot_mkimage_ben-nanonote() {
+do_uboot_mkimage_mips() {
         cd ${S}
         kernel_entry=`nm vmlinux | grep " kernel_entry" | cut -d' ' -f1`
 
@@ -160,8 +168,8 @@ do_uboot_mkimage_ben-nanonote() {
         rm -f vmlinux.bin.gz
         gzip -c9 vmlinux.bin > vmlinux.bin.gz
 
-        mkimage -A mips -O linux -T kernel -C gzip -a 0x80010000 -e 0x${kernel_entry} \
-        -n 'MIPS' -d vmlinux.bin.gz uImage-kexecboot-${PV}-${PR}-${MACHINE}.bin
+        uboot-mkimage -A ${UBOOT_ARCH} -O linux -T kernel -C gzip -a 0x80010000 -e 0x${kernel_entry} \
+        -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d vmlinux.bin.gz uImage-kexecboot-${PV}-${PR}-${MACHINE}.bin
 
         install -d ${DEPLOY_DIR_IMAGE}
         install -m 0644 uImage-kexecboot-${PV}-${PR}-${MACHINE}.bin ${DEPLOY_DIR_IMAGE}
