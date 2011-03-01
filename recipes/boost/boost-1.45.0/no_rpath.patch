@@ -1,0 +1,42 @@
+Index: boost_1_45_0/tools/build/v2/tools/gcc.jam
+===================================================================
+--- boost_1_45_0.orig/tools/build/v2/tools/gcc.jam	2011-03-01 12:58:14.260753119 +0100
++++ boost_1_45_0/tools/build/v2/tools/gcc.jam	2011-03-01 12:59:19.683448119 +0100
+@@ -823,7 +823,7 @@
+ 
+ actions link bind LIBRARIES
+ {
+-    "$(CONFIG_COMMAND)" -L"$(LINKPATH)" -Wl,$(RPATH_OPTION:E=-R)$(SPACE)-Wl,$(RPATH) -Wl,-rpath-link$(SPACE)-Wl,"$(RPATH_LINK)" -o "$(<)" $(START-GROUP) "$(>)" "$(LIBRARIES)" $(FINDLIBS-ST-PFX) -l$(FINDLIBS-ST) $(FINDLIBS-SA-PFX) -l$(FINDLIBS-SA) $(END-GROUP) $(OPTIONS) $(USER_OPTIONS)
++    "$(CONFIG_COMMAND)" -L"$(LINKPATH)" -Wl,-rpath-link$(SPACE)-Wl,"$(RPATH_LINK)" -o "$(<)" $(START-GROUP) "$(>)" "$(LIBRARIES)" $(FINDLIBS-ST-PFX) -l$(FINDLIBS-ST) $(FINDLIBS-SA-PFX) -l$(FINDLIBS-SA) $(END-GROUP) $(OPTIONS) $(USER_OPTIONS)
+ 
+ }
+ 
+@@ -888,7 +888,7 @@
+ # Differs from 'link' above only by -shared.
+ actions link.dll bind LIBRARIES
+ {
+-    "$(CONFIG_COMMAND)" -L"$(LINKPATH)" -Wl,$(RPATH_OPTION:E=-R)$(SPACE)-Wl,$(RPATH) "$(.IMPLIB-COMMAND)$(<[1])" -o "$(<[-1])" $(HAVE_SONAME)-Wl,$(SONAME_OPTION)$(SPACE)-Wl,$(<[-1]:D=) -shared $(START-GROUP) "$(>)" "$(LIBRARIES)" $(FINDLIBS-ST-PFX) -l$(FINDLIBS-ST) $(FINDLIBS-SA-PFX) -l$(FINDLIBS-SA) $(END-GROUP) $(OPTIONS) $(USER_OPTIONS)
++    "$(CONFIG_COMMAND)" -L"$(LINKPATH)" "$(.IMPLIB-COMMAND)$(<[1])" -o "$(<[-1])" $(HAVE_SONAME)-Wl,$(SONAME_OPTION)$(SPACE)-Wl,$(<[-1]:D=) -shared $(START-GROUP) "$(>)" "$(LIBRARIES)" $(FINDLIBS-ST-PFX) -l$(FINDLIBS-ST) $(FINDLIBS-SA-PFX) -l$(FINDLIBS-SA) $(END-GROUP) $(OPTIONS) $(USER_OPTIONS)
+ }
+ 
+ rule setup-threading ( targets * : sources * : properties * )
+Index: boost_1_45_0/tools/build/v2/tools/gcc.py
+===================================================================
+--- boost_1_45_0.orig/tools/build/v2/tools/gcc.py	2011-03-01 12:59:22.784998119 +0100
++++ boost_1_45_0/tools/build/v2/tools/gcc.py	2011-03-01 12:59:49.821843119 +0100
+@@ -586,7 +586,6 @@
+ engine.register_action(
+     'gcc.link',
+     '"$(CONFIG_COMMAND)" -L"$(LINKPATH)" ' +
+-        '-Wl,$(RPATH_OPTION:E=-R)$(SPACE)-Wl,"$(RPATH)" ' +
+         '-Wl,-rpath-link$(SPACE)-Wl,"$(RPATH_LINK)" -o "$(<)" ' +
+         '$(START-GROUP) "$(>)" "$(LIBRARIES)" $(FINDLIBS-ST-PFX) ' +
+         '-l$(FINDLIBS-ST) $(FINDLIBS-SA-PFX) -l$(FINDLIBS-SA) $(END-GROUP) ' +
+@@ -648,7 +647,6 @@
+     'gcc.link.dll',
+     # Differ from 'link' above only by -shared.
+     '"$(CONFIG_COMMAND)" -L"$(LINKPATH)" ' +
+-        '-Wl,$(RPATH_OPTION:E=-R)$(SPACE)-Wl,"$(RPATH)" ' +
+         '"$(.IMPLIB-COMMAND)$(<[1])" -o "$(<[-1])" ' +
+         '$(HAVE_SONAME)-Wl,$(SONAME_OPTION)$(SPACE)-Wl,$(<[-1]:D=) ' +
+         '-shared $(START-GROUP) "$(>)" "$(LIBRARIES)" $(FINDLIBS-ST-PFX) ' +
