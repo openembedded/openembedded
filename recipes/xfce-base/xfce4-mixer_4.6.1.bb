@@ -1,10 +1,10 @@
 # xfce-mixer-plugin OE build file
 
 DESCRIPTION = "XFCE panel mixer plugin"
-DEPENDS = "libwnck xfce4-panel"
+DEPENDS = "libwnck xfce4-panel gst-plugins-base"
 RDEPENDS_${PN} = "xfce4-panel"
 SECTION = "x11"
-PR = "r3"
+PR = "r4"
 
 inherit xfce46
 
