@@ -119,6 +119,7 @@ FEED_ARCH_mx31moboard	= "armv6"
 FEED_ARCH_nokia800	= "armv6"
 FEED_ARCH_omap2420h4	= "armv6"
 FEED_ARCH_omap2430sdp   = "armv6"
+FEED_ARCH_pcm043 	= "armv6"
 
 # i486 machines
 FEED_ARCH_geodegx 	= "i486"

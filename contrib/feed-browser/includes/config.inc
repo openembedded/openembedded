@@ -245,6 +245,11 @@ $feeds = array(
 			),
 
 			array(
+				'name'=>'Phytec phyCORE-i.MX35',
+				'url'=>'armv6/machine/pcm043',
+			),
+
+			array(
 				'name'=>'Tyan thunder K7 s2462 mainboard (guinness)',
 				'url'=>'i686/machine/guinness',
 			),
