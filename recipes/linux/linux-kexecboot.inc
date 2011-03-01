@@ -127,7 +127,7 @@ do_configure_prepend() {
 
                echo 'CONFIG_BLK_DEV_INITRD=y' >>${S}/.config
                echo 'CONFIG_KEXEC=y' >>${S}/.config
-               echo 'CONFIG_MODULES=n' >> ${S}/.config
+               echo '# CONFIG_MODULES is not set' >> ${S}/.config
 
         # Force lzma for arm kernels only
         if [ "${ARCH}" = "arm" ] ; then
