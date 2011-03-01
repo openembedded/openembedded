@@ -72,7 +72,7 @@ new file mode 100644
 index 0000000..68e511a
 --- /dev/null
 +++ b/drivers/usb/gadget/jz4740_udc.c
-@@ -0,0 +1,2377 @@
+@@ -0,0 +1,2378 @@
 +/*
 + * linux/drivers/usb/gadget/jz4740_udc.c
 + *
@@ -504,12 +504,13 @@ index 0000000..68e511a
 + * Register entry point for the peripheral controller driver.
 + */
 +
-+int usb_gadget_register_driver(struct usb_gadget_driver *driver)
++int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
++		int (*bind)(struct usb_gadget *))
 +{
 +	struct jz4740_udc *dev = &jz4740_udc_controller;
 +	int retval;
 +
-+	if (!driver || !driver->bind)
++	if (!driver || !bind)
 +		return -EINVAL;
 +
 +	if (!dev)
@@ -522,7 +523,7 @@ index 0000000..68e511a
 +	dev->driver = driver;
 +	dev->gadget.dev.driver = &driver->driver;
 +
-+	retval = driver->bind(&dev->gadget);
++	retval = bind(&dev->gadget);
 +	if (retval) {
 +		DEBUG("%s: bind to driver %s --> error %d\n", dev->gadget.name,
 +		            driver->driver.name, retval);
@@ -540,7 +541,7 @@ index 0000000..68e511a
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL(usb_gadget_register_driver);
++EXPORT_SYMBOL(usb_gadget_probe_driver);
 +
 +static void stop_activity(struct jz4740_udc *dev,
 +			  struct usb_gadget_driver *driver)
@@ -2557,5 +2558,3 @@ index 0000000..53fd1da
 +}
 +
 +#endif /* __USB_GADGET_JZ4740_H__ */
-
-

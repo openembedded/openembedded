@@ -1,6 +1,6 @@
 require linux-kexecboot.inc
 
-PR = "${INC_PR}.3"
+PR = "${INC_PR}.4"
 
 S = "${WORKDIR}/linux-${PV}"
 
@@ -17,7 +17,7 @@ SRC_URI_append_collie = " file://collie-locomo-kb.patch;status=upstream "
 
 SRC_URI_append_ben-nanonote = "file://modifier-keys.patch \
             file://defconfig \
-#            file://jz4740-udc.patch \
+            file://jz4740-udc.patch \
             "
 
 SRC_URI[kernel.md5sum] = "c8ee37b4fdccdb651e0603d35350b434"
