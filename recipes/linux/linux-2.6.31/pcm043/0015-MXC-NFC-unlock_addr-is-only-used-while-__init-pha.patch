@@ -1,0 +1,28 @@
+From 7c796b820f5aee73485636f5aafc13fcbb1cfacd Mon Sep 17 00:00:00 2001
+From: Juergen Beisert <j.beisert@pengutronix.de>
+Date: Wed, 30 Sep 2009 17:21:28 +0200
+Subject: [PATCH 15/15] MXC NFC: unlock_addr() is only used while __init phase
+
+unlock_addr() is only used while __init phase, so mark is as __init.
+
+Signed-off-by: Juergen Beisert <j.beisert@pengutronix.de>
+---
+ drivers/mtd/nand/mxc_nand_v2.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/nand/mxc_nand_v2.c b/drivers/mtd/nand/mxc_nand_v2.c
+index bab3712..9dd124c 100644
+--- a/drivers/mtd/nand/mxc_nand_v2.c
++++ b/drivers/mtd/nand/mxc_nand_v2.c
+@@ -781,7 +781,7 @@ static struct nand_bbt_descr bbt_mirror_descr = {
+ 	.pattern = mirror_pattern
+ };
+ 
+-static void unlock_addr(struct mxc_nand_host *host, unsigned int start_addr, unsigned int end_addr)
++static void __init unlock_addr(struct mxc_nand_host *host, unsigned int start_addr, unsigned int end_addr)
+ {
+ 	if (nfc_is_v21()) {
+ 		writew(start_addr, host->regs + NFC_V21_UNLOCKSTART_BLKADDR);
+-- 
+1.6.1
+

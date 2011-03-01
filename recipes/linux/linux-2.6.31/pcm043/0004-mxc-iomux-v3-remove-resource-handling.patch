@@ -1,0 +1,111 @@
+From 88a85f7b168d6ee042ea2634414f2ffd43a99cff Mon Sep 17 00:00:00 2001
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Thu, 29 Oct 2009 17:18:02 +0100
+Subject: [PATCH 04/28] mxc: iomux v3: remove resource handling
+
+The current model does not allow to put a pad into different modes
+once a pins is allocated. Remove the resource handling.
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ arch/arm/plat-mxc/include/mach/iomux-v3.h |   17 +-------------
+ arch/arm/plat-mxc/iomux-v3.c              |   35 +---------------------------
+ 2 files changed, 3 insertions(+), 49 deletions(-)
+
+diff --git a/arch/arm/plat-mxc/include/mach/iomux-v3.h b/arch/arm/plat-mxc/include/mach/iomux-v3.h
+index 7cd8454..f23e579 100644
+--- a/arch/arm/plat-mxc/include/mach/iomux-v3.h
++++ b/arch/arm/plat-mxc/include/mach/iomux-v3.h
+@@ -92,9 +92,7 @@ struct pad_desc {
+ #define PAD_CTL_SLEW_RATE_FAST		1
+ 
+ /*
+- * setups a single pad:
+- * 	- reserves the pad so that it is not claimed by another driver
+- * 	- setups the iomux according to the configuration
++ * setups a single pad in the iomuxer
+  */
+ int mxc_iomux_v3_setup_pad(struct pad_desc *pad);
+ 
+@@ -104,18 +102,5 @@ int mxc_iomux_v3_setup_pad(struct pad_desc *pad);
+  */
+ int mxc_iomux_v3_setup_multiple_pads(struct pad_desc *pad_list, unsigned count);
+ 
+-/*
+- * releases a single pad:
+- * 	- make it available for a future use by another driver
+- * 	- DOES NOT reconfigure the IOMUX in its reset state
+- */
+-void mxc_iomux_v3_release_pad(struct pad_desc *pad);
+-
+-/*
+- * releases multiple pads
+- * convenvient way to call the above function with tables
+- */
+-void mxc_iomux_v3_release_multiple_pads(struct pad_desc *pad_list, int count);
+-
+ #endif /* __MACH_IOMUX_V3_H__*/
+ 
+diff --git a/arch/arm/plat-mxc/iomux-v3.c b/arch/arm/plat-mxc/iomux-v3.c
+index 77a078f..4f0e7fc 100644
+--- a/arch/arm/plat-mxc/iomux-v3.c
++++ b/arch/arm/plat-mxc/iomux-v3.c
+@@ -31,19 +31,11 @@
+ 
+ #define IOMUX_BASE	IO_ADDRESS(IOMUXC_BASE_ADDR)
+ 
+-static unsigned long iomux_v3_pad_alloc_map[0x200 / BITS_PER_LONG];
+-
+ /*
+- * setups a single pin:
+- * 	- reserves the pin so that it is not claimed by another driver
+- * 	- setups the iomux according to the configuration
++ * setups a single pad in the iomuxer
+  */
+ int mxc_iomux_v3_setup_pad(struct pad_desc *pad)
+ {
+-	unsigned int pad_ofs = pad->pad_ctrl_ofs;
+-
+-	if (test_and_set_bit(pad_ofs >> 2, iomux_v3_pad_alloc_map))
+-		return -EBUSY;
+ 	if (pad->mux_ctrl_ofs)
+ 		__raw_writel(pad->mux_mode, IOMUX_BASE + pad->mux_ctrl_ofs);
+ 
+@@ -66,33 +58,10 @@ int mxc_iomux_v3_setup_multiple_pads(struct pad_desc *pad_list, unsigned count)
+ 	for (i = 0; i < count; i++) {
+ 		ret = mxc_iomux_v3_setup_pad(p);
+ 		if (ret)
+-			goto setup_error;
++			return ret;
+ 		p++;
+ 	}
+ 	return 0;
+-
+-setup_error:
+-	mxc_iomux_v3_release_multiple_pads(pad_list, i);
+-	return ret;
+ }
+ EXPORT_SYMBOL(mxc_iomux_v3_setup_multiple_pads);
+ 
+-void mxc_iomux_v3_release_pad(struct pad_desc *pad)
+-{
+-	unsigned int pad_ofs = pad->pad_ctrl_ofs;
+-
+-	clear_bit(pad_ofs >> 2, iomux_v3_pad_alloc_map);
+-}
+-EXPORT_SYMBOL(mxc_iomux_v3_release_pad);
+-
+-void mxc_iomux_v3_release_multiple_pads(struct pad_desc *pad_list, int count)
+-{
+-	struct pad_desc *p = pad_list;
+-	int i;
+-
+-	for (i = 0; i < count; i++) {
+-		mxc_iomux_v3_release_pad(p);
+-		p++;
+-	}
+-}
+-EXPORT_SYMBOL(mxc_iomux_v3_release_multiple_pads);
+-- 
+1.6.5.2
+

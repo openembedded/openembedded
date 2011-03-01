@@ -1,0 +1,38 @@
+From 6b82a298e085e6bc47d1c241871578d66208ee0f Mon Sep 17 00:00:00 2001
+From: Juergen Beisert <j.beisert@pengutronix.de>
+Date: Tue, 29 Sep 2009 16:10:55 +0200
+Subject: [PATCH 13/15] MXC NFC: Add the cpu_is_mx25 macro
+
+To be able to compile this NFC driver we need all CPU macros to
+distinguish the different revisions of the NFC.
+Note: This macro is untested for the i.MX25 case. Tested for a
+i.MX35 case only.
+
+Signed-off-by: Juergen Beisert <j.beisert@pengutronix.de>
+---
+ arch/arm/plat-mxc/include/mach/mxc.h |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+Index: arch/arm/plat-mxc/include/mach/mxc.h
+===================================================================
+--- arch/arm/plat-mxc/include/mach/mxc.h.orig
++++ arch/arm/plat-mxc/include/mach/mxc.h
+@@ -58,6 +58,18 @@ extern unsigned int __mxc_cpu_type;
+ # define cpu_is_mx21()		(0)
+ #endif
+ 
++#ifdef CONFIG_MACH_MX25
++# ifdef mxc_cpu_type
++#  undef mxc_cpu_type
++#  define mxc_cpu_type __mxc_cpu_type
++# else
++#  define mxc_cpu_type MXC_CPU_MX25
++# endif
++# define cpu_is_mx25()		(mxc_cpu_type == MXC_CPU_MX25)
++#else
++# define cpu_is_mx25()		(0)
++#endif
++
+ #ifdef CONFIG_MACH_MX27
+ # ifdef mxc_cpu_type
+ #  undef mxc_cpu_type

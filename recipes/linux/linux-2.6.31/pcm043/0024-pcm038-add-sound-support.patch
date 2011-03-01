@@ -1,0 +1,72 @@
+From 76c72535c2ae04d10a52c1958add9a08b97a11be Mon Sep 17 00:00:00 2001
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Fri, 6 Nov 2009 09:45:42 +0100
+Subject: [PATCH 24/28] pcm038: add sound support
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ arch/arm/mach-mx2/pcm038.c |   23 ++++++++++++++++++++++-
+ 1 files changed, 22 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/mach-mx2/pcm038.c b/arch/arm/mach-mx2/pcm038.c
+index b3a8ed8..b0c38b9 100644
+--- a/arch/arm/mach-mx2/pcm038.c
++++ b/arch/arm/mach-mx2/pcm038.c
+@@ -39,7 +39,9 @@
+ #include <mach/iomux.h>
+ #include <mach/imx-uart.h>
+ #include <mach/mxc_nand.h>
++#include <mach/audmux.h>
+ #include <mach/spi.h>
++#include <mach/ssi.h>
+ 
+ #include "devices.h"
+ 
+@@ -268,7 +270,7 @@ static struct mc13783_platform_data pcm038_pmic = {
+ 	.regulators = pcm038_regulators,
+ 	.num_regulators = ARRAY_SIZE(pcm038_regulators),
+ 	.flags = MC13783_USE_ADC | MC13783_USE_REGULATOR |
+-		 MC13783_USE_TOUCHSCREEN,
++		 MC13783_USE_TOUCHSCREEN | MC13783_USE_CODEC,
+ };
+ 
+ static struct spi_board_info pcm038_spi_board_info[] __initdata = {
+@@ -283,16 +285,35 @@ static struct spi_board_info pcm038_spi_board_info[] __initdata = {
+ 	}
+ };
+ 
++struct imx_ssi_platform_data pcm038_ssi_pdata = {
++	.flags = IMX_SSI_DMA,
++};
++
+ static void __init pcm038_init(void)
+ {
+ 	mxc_gpio_setup_multiple_pins(pcm038_pins, ARRAY_SIZE(pcm038_pins),
+ 			"PCM038");
+ 
++	mxc_audmux_v1_configure_port(MX27_AUDMUX_HPCR1_SSI0,
++		MXC_AUDMUX_V1_PCR_TFSDIR |
++		MXC_AUDMUX_V1_PCR_TCLKDIR |
++		MXC_AUDMUX_V1_PCR_TFCSEL(MX27_AUDMUX_PPCR1_SSI_PINS_1) |
++		MXC_AUDMUX_V1_PCR_RFSDIR |
++		MXC_AUDMUX_V1_PCR_RCLKDIR |
++		MXC_AUDMUX_V1_PCR_RFCSEL(MX27_AUDMUX_HPCR3_SSI_PINS_4) |
++		MXC_AUDMUX_V1_PCR_RXDSEL(MX27_AUDMUX_HPCR3_SSI_PINS_4));
++	mxc_audmux_v1_configure_port(MX27_AUDMUX_HPCR3_SSI_PINS_4,
++		MXC_AUDMUX_V1_PCR_RXDSEL(MX27_AUDMUX_HPCR1_SSI0));
++	mxc_audmux_v1_configure_port(MX27_AUDMUX_PPCR1_SSI_PINS_1,
++		MXC_AUDMUX_V1_PCR_TFCSEL(MX27_AUDMUX_HPCR1_SSI0) |
++		MXC_AUDMUX_V1_PCR_RFCSEL(MX27_AUDMUX_HPCR1_SSI0));
++
+ 	pcm038_init_sram();
+ 
+ 	mxc_register_device(&mxc_uart_device0, &uart_pdata[0]);
+ 	mxc_register_device(&mxc_uart_device1, &uart_pdata[1]);
+ 	mxc_register_device(&mxc_uart_device2, &uart_pdata[2]);
++	mxc_register_device(&imx_ssi_device0, &pcm038_ssi_pdata);
+ 
+ 	mxc_gpio_mode(PE16_AF_OWIRE);
+ 	mxc_register_device(&mxc_nand_device, &pcm038_nand_board_info);
+-- 
+1.6.5.2
+

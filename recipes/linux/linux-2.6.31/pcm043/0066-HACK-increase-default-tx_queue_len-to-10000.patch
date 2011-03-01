@@ -1,0 +1,36 @@
+From c15a83d5d49ca36d827fd35faee8d9c0048e8053 Mon Sep 17 00:00:00 2001
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Fri, 19 Dec 2008 14:32:42 +0100
+Subject: [PATCH 066/101] HACK: increase default tx_queue_len to 10000
+
+HACK HACK HACK
+
+Without this patch sending CAN packages faster then they could be
+send out on the wire results in -ENOBUF. This patch increases the
+default tx_queue_len to 10000 so that in this case the sender blocks.
+Thus the CAN socket just behaves like congested a TCP/IP socket.
+
+HACK HACK HACK
+
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+
+rebased to  2.6.31.6
+Signed-off-by: Jan Weitzel <J.Weitzel@phytec.de>
+---
+
+ drivers/net/can/dev.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+Index: linux-2.6.31.6/drivers/net/can/dev.c
+===================================================================
+--- linux-2.6.31.6.orig/drivers/net/can/dev.c	2009-11-10 01:32:31.000000000 +0100
++++ linux-2.6.31.6/drivers/net/can/dev.c	2009-12-08 09:12:45.558976163 +0100
+@@ -420,7 +420,7 @@
+ 	dev->mtu = sizeof(struct can_frame);
+ 	dev->hard_header_len = 0;
+ 	dev->addr_len = 0;
+-	dev->tx_queue_len = 10;
++	dev->tx_queue_len = 10000;
+ 
+ 	/* New-style flags. */
+ 	dev->flags = IFF_NOARP;

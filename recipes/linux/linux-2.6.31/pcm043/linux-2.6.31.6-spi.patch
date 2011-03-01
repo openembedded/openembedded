@@ -1,0 +1,116 @@
+Add support for SPI and MAX7301
+Signed-off-by: Sven Dyroff <s.dyroff@phytec.de>
+
+rebased to 2.6.31.6
+Signed-off-by: Andreas Adam <a.adam@phytec.de>
+---
+Index: linux-2.6.31.6/arch/arm/mach-mx3/pcm043.c
+===================================================================
+--- linux-2.6.31.6.orig/arch/arm/mach-mx3/pcm043.c	2009-12-11 13:58:49.894701069 +0100
++++ linux-2.6.31.6/arch/arm/mach-mx3/pcm043.c	2009-12-11 14:01:08.704700136 +0100
+@@ -30,6 +30,12 @@
+ #include <linux/i2c/at24.h>
+ #include <linux/fsl_devices.h>
+ #include <linux/delay.h>
++#ifdef CONFIG_SPI
++#include <linux/spi/spi.h>
++#endif
++#ifdef CONFIG_GPIO_MAX7301
++#include <linux/spi/max7301.h>
++#endif
+ 
+ #include <asm/mach-types.h>
+ #include <asm/mach/arch.h>
+@@ -42,6 +48,9 @@
+ #if defined CONFIG_I2C_IMX || defined CONFIG_I2C_IMX_MODULE
+ #include <mach/i2c.h>
+ #endif
++#ifdef CONFIG_SPI
++#include <mach/spi.h>
++#endif
+ #include <mach/iomux-mx35.h>
+ #include <mach/ipu.h>
+ #include <mach/mx3fb.h>
+@@ -243,6 +252,18 @@
+ 	/* USB host */
+ 	MX35_PAD_I2C2_CLK__USB_TOP_USBH2_PWR,
+ 	MX35_PAD_I2C2_DAT__USB_TOP_USBH2_OC,
++	/* SPI */
++	MX35_PAD_CSPI1_SS0__CSPI1_SS0,
++	MX35_PAD_CSPI1_SS1__CSPI1_SS1,
++	MX35_PAD_CSPI1_MISO__CSPI1_MISO,
++	MX35_PAD_CSPI1_MOSI__CSPI1_MOSI,
++	MX35_PAD_CSPI1_SCLK__CSPI1_SCLK,
++	MX35_PAD_CSPI1_SPI_RDY__CSPI1_RDY,
++	MX35_PAD_STXD5__CSPI2_MOSI,
++	MX35_PAD_SRXD5__CSPI2_MISO,
++	MX35_PAD_SCK5__CSPI2_SCLK,
++	MX35_PAD_STXFS5__CSPI2_RDY,
++	MX35_PAD_HCKR__CSPI2_SS0,
+ 	/* SSI */
+ 	MX35_PAD_STXFS4__AUDMUX_AUD4_TXFS,
+ 	MX35_PAD_STXD4__AUDMUX_AUD4_TXD,
+@@ -305,6 +326,33 @@
+ 	.phy_mode	= FSL_USB2_PHY_UTMI,
+ };
+ 
++#ifdef CONFIG_SPI
++static unsigned int pcm043_spi_cs [] = {MXC_SPI_CS(0), };
++
++static struct spi_imx_master pcm043_spi_1_data = {
++	.chipselect = pcm043_spi_cs,
++	.num_chipselect = ARRAY_SIZE (pcm043_spi_cs),
++};
++#endif /* CONFIG_SPI */
++
++#ifdef CONFIG_GPIO_MAX7301
++static struct max7301_platform_data max7301_info = {
++        .base = -1,
++};
++
++// bus_num must match id in imx_spi_device struct
++static struct spi_board_info spi_board_info [] __initdata = {
++        {
++                .modalias       = "max7301",
++                .platform_data  = &max7301_info,
++                .max_speed_hz   = 13000000,
++                .bus_num        = 1,
++                .chip_select    = 0,
++                .mode           = SPI_MODE_0,
++        },
++};
++#endif /* CONFIG_GPIO_MAX7301 */
++
+ static int otg_mode_host;
+ 
+ static int __init pcm043_otg_mode(char *options)
+@@ -454,7 +502,13 @@
+ 		mxc_register_device(&mxc_otg, &otg_pdata);
+ 	else
+ 		mxc_register_device(&mxc_otg_udc_device, &usb_data);
+-
++#ifdef CONFIG_SPI
++	mxc_register_device (&imx_spi_device1, &pcm043_spi_1_data);
++#endif
++#ifdef CONFIG_GPIO_MAX7301
++	spi_register_board_info (spi_board_info,
++				ARRAY_SIZE (spi_board_info));
++#endif
+  	mxc_register_device (&flexcan_device0, &flexcan_data0);
+  	mxc_register_device (&flexcan_device1, &flexcan_data1);
+ 
+Index: linux-2.6.31.6/arch/arm/plat-mxc/include/mach/mx3x.h
+===================================================================
+--- linux-2.6.31.6.orig/arch/arm/plat-mxc/include/mach/mx3x.h	2009-11-10 01:32:31.000000000 +0100
++++ linux-2.6.31.6/arch/arm/plat-mxc/include/mach/mx3x.h	2009-12-11 13:59:13.976022108 +0100
+@@ -279,8 +279,8 @@
+ 
+ /* Mandatory defines used globally */
+ 
+-/* this CPU supports up to 96 GPIOs */
+-#define ARCH_NR_GPIOS		96
++/* this CPU supports up to 96 GPIOs (don't forget the gpio expander!) */
++#define ARCH_NR_GPIOS		(96 + 28)
+ 
+ #if !defined(__ASSEMBLY__) && !defined(__MXC_BOOT_UNCOMPRESS)
+ 

@@ -1,0 +1,101 @@
+From cd733f49a7e0fd82164138933157bbdbb9937f2c Mon Sep 17 00:00:00 2001
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Thu, 29 Oct 2009 17:17:42 +0100
+Subject: [PATCH 07/28] i.MX3: Add sound (ssi) resources
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ arch/arm/mach-mx3/clock-imx35.c |    4 +-
+ arch/arm/mach-mx3/devices.c     |   42 +++++++++++++++++++++++++++++++++++++++
+ arch/arm/mach-mx3/devices.h     |    3 +-
+ 3 files changed, 46 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/mach-mx3/clock-imx35.c b/arch/arm/mach-mx3/clock-imx35.c
+index 577ee83..02b2507 100644
+--- a/arch/arm/mach-mx3/clock-imx35.c
++++ b/arch/arm/mach-mx3/clock-imx35.c
+@@ -421,8 +421,8 @@ static struct clk_lookup lookups[] = {
+ 	_REGISTER_CLOCK(NULL, "sdma", sdma_clk)
+ 	_REGISTER_CLOCK(NULL, "spba", spba_clk)
+ 	_REGISTER_CLOCK(NULL, "spdif", spdif_clk)
+-	_REGISTER_CLOCK(NULL, "ssi", ssi1_clk)
+-	_REGISTER_CLOCK(NULL, "ssi", ssi2_clk)
++	_REGISTER_CLOCK("imx-ssi.0", NULL, ssi1_clk)
++	_REGISTER_CLOCK("imx-ssi.1", NULL, ssi2_clk)
+ 	_REGISTER_CLOCK("imx-uart.0", NULL, uart1_clk)
+ 	_REGISTER_CLOCK("imx-uart.1", NULL, uart2_clk)
+ 	_REGISTER_CLOCK("imx-uart.2", NULL, uart3_clk)
+diff --git a/arch/arm/mach-mx3/devices.c b/arch/arm/mach-mx3/devices.c
+index 9e87e08..06dab5f 100644
+--- a/arch/arm/mach-mx3/devices.c
++++ b/arch/arm/mach-mx3/devices.c
+@@ -416,6 +416,44 @@ struct platform_device mxc_fec_device = {
+ };
+ #endif
+ 
++static struct resource imx_ssi_resources0[] = {
++	{
++		.start	= SSI1_BASE_ADDR,
++		.end	= SSI1_BASE_ADDR + 0xfff,
++		.flags	= IORESOURCE_MEM,
++	}, {
++		.start	= MX31_INT_SSI1,
++		.end	= MX31_INT_SSI1,
++		.flags	= IORESOURCE_IRQ,
++	},
++};
++
++static struct resource imx_ssi_resources1[] = {
++	{
++		.start	= SSI2_BASE_ADDR,
++		.end	= SSI2_BASE_ADDR + 0xfff,
++		.flags	= IORESOURCE_MEM
++	}, {
++		.start	= MX31_INT_SSI2,
++		.end	= MX31_INT_SSI2,
++		.flags	= IORESOURCE_IRQ,
++	},
++};
++
++struct platform_device imx_ssi_device0 = {
++	.name = "imx-ssi",
++	.id = 0,
++	.num_resources = ARRAY_SIZE(imx_ssi_resources0),
++	.resource = imx_ssi_resources0,
++};
++
++struct platform_device imx_ssi_device1 = {
++	.name = "imx-ssi",
++	.id = 1,
++	.num_resources = ARRAY_SIZE(imx_ssi_resources1),
++	.resource = imx_ssi_resources1,
++};
++
+ static int mx3_devices_init(void)
+ {
+ 	if (cpu_is_mx31()) {
+@@ -426,6 +464,10 @@ static int mx3_devices_init(void)
+ 	if (cpu_is_mx35()) {
+ 		mxc_nand_resources[0].start = MX35_NFC_BASE_ADDR;
+ 		mxc_nand_resources[0].end = MX35_NFC_BASE_ADDR + 0xfff;
++		imx_ssi_resources0[1].start = MX35_INT_SSI1;
++		imx_ssi_resources0[1].end = MX35_INT_SSI1;
++		imx_ssi_resources1[1].start = MX35_INT_SSI2;
++		imx_ssi_resources1[1].end = MX35_INT_SSI2;
+ 	}
+ 
+ 	return 0;
+diff --git a/arch/arm/mach-mx3/devices.h b/arch/arm/mach-mx3/devices.h
+index ffd494d..224c2eb 100644
+--- a/arch/arm/mach-mx3/devices.h
++++ b/arch/arm/mach-mx3/devices.h
+@@ -17,4 +17,5 @@ extern struct platform_device mxcsdhc_device0;
+ extern struct platform_device mxcsdhc_device1;
+ extern struct platform_device mxc_otg_udc_device;
+ extern struct platform_device mxc_rnga_device;
+-
++extern struct platform_device imx_ssi_device0;
++extern struct platform_device imx_ssi_device1;
+-- 
+1.6.5.2
+

@@ -1,0 +1,48 @@
+From a3906c7f2019dbcb2aa6b9a356947ea91ade60b8 Mon Sep 17 00:00:00 2001
+From: Juergen Beisert <j.beisert@pengutronix.de>
+Date: Tue, 29 Sep 2009 15:10:03 +0200
+Subject: [PATCH 05/15] MXC NFC: Divide flash device detection into two steps
+
+To be able to setup the NFC hardware in accordance to the connected
+NAND device, we must detect some information about the NAND first.
+After that we are able to setup the NFC in a correct manner. The last
+step is to continue NAND device handling by the framework.
+
+Signed-off-by: Juergen Beisert <j.beisert@pengutronix.de>
+---
+ drivers/mtd/nand/mxc_nand_v2.c |   13 +++++++++----
+ 1 files changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/nand/mxc_nand_v2.c b/drivers/mtd/nand/mxc_nand_v2.c
+index 6b1eeb9..2ddd6f5 100644
+--- a/drivers/mtd/nand/mxc_nand_v2.c
++++ b/drivers/mtd/nand/mxc_nand_v2.c
+@@ -874,16 +874,21 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 
+ 	clk_disable(host->clk);
+ 
++	/* detect the device data prio setting up the ECC hardware */
++	if (nand_scan_ident(mtd, 1)) {
++		err = -ENXIO;
++		pr_err("Unable to find any NAND device\n");
++		goto escan;
++	}
++
+ 	/* use flash based bbt */
+ 	this->bbt_td = &bbt_main_descr;
+ 	this->bbt_md = &bbt_mirror_descr;
+ 	/* update flash based bbt */
+ 	this->options |= NAND_USE_FLASH_BBT;
+ 
+-	/* Scan to find existence of the device */
+-	if (nand_scan(mtd, 1)) {
+-		DEBUG(MTD_DEBUG_LEVEL0,
+-		      "MXC_ND2: Unable to find any NAND device.\n");
++	/* second phase scan */
++	if (nand_scan_tail(mtd)) {
+ 		err = -ENXIO;
+ 		goto escan;
+ 	}
+-- 
+1.6.1
+

@@ -1,0 +1,100 @@
+From f9a5d99348fb2c9cacdbbc0334f372ec6e5962de Mon Sep 17 00:00:00 2001
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Fri, 19 Dec 2008 14:32:11 +0100
+Subject: [PATCH 029/101] MX31: Add USB platform devices and resources
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+
+rebased to  2.6.31.6
+Signed-off-by: Jan Weitzel <J.Weitzel@phytec.de>
+---
+ arch/arm/mach-mx3/devices.c |   75 +++++++++++++++++++++++++++++++++++++++++++
+ arch/arm/mach-mx3/devices.h |    3 ++
+ 2 files changed, 78 insertions(+), 0 deletions(-)
+
+Index: linux-2.6.31.6/arch/arm/mach-mx3/devices.c
+===================================================================
+--- linux-2.6.31.6.orig/arch/arm/mach-mx3/devices.c	2009-12-08 11:08:01.138690103 +0100
++++ linux-2.6.31.6/arch/arm/mach-mx3/devices.c	2009-12-08 11:17:36.012748409 +0100
+@@ -395,6 +395,67 @@
+ 	.num_resources	= ARRAY_SIZE(otg_resources),
+ };
+ 
++struct platform_device mxc_otg = {
++	.name = "mxc-ehci",
++	.id = 0,
++	.dev = {
++		.coherent_dma_mask = 0xffffffff,
++		.dma_mask = &otg_dmamask,
++	},
++	.resource = otg_resources,
++	.num_resources = ARRAY_SIZE(otg_resources),
++};
++
++static u64 usbh1_dmamask = ~(u32)0;
++
++static struct resource mxc_usbh1_resources[] = {
++	{
++		.start = OTG_BASE_ADDR + 0x200,
++		.end = OTG_BASE_ADDR + 0x3ff,
++		.flags = IORESOURCE_MEM,
++	}, {
++		.start = MXC_INT_USB1,
++		.end = MXC_INT_USB1,
++		.flags = IORESOURCE_IRQ,
++	},
++};
++
++struct platform_device mxc_usbh1 = {
++	.name = "mxc-ehci",
++	.id = 1,
++	.dev = {
++		.coherent_dma_mask = 0xffffffff,
++		.dma_mask = &usbh1_dmamask,
++	},
++	.resource = mxc_usbh1_resources,
++	.num_resources = ARRAY_SIZE(mxc_usbh1_resources),
++};
++
++static u64 usbh2_dmamask = ~(u32)0;
++
++static struct resource mxc_usbh2_resources[] = {
++	{
++		.start = OTG_BASE_ADDR + 0x400,
++		.end = OTG_BASE_ADDR + 0x5ff,
++		.flags = IORESOURCE_MEM,
++	}, {
++		.start = MXC_INT_USB2,
++		.end = MXC_INT_USB2,
++		.flags = IORESOURCE_IRQ,
++	},
++};
++
++struct platform_device mxc_usbh2 = {
++	.name = "mxc-ehci",
++	.id = 2,
++	.dev = {
++		.coherent_dma_mask = 0xffffffff,
++		.dma_mask = &usbh2_dmamask,
++	},
++	.resource = mxc_usbh2_resources,
++	.num_resources = ARRAY_SIZE(mxc_usbh2_resources),
++};
++
+ #ifdef CONFIG_ARCH_MX35
+ static struct resource mxc_fec_resources[] = {
+ 	{
+Index: linux-2.6.31.6/arch/arm/mach-mx3/devices.h
+===================================================================
+--- linux-2.6.31.6.orig/arch/arm/mach-mx3/devices.h	2009-12-08 11:08:01.138690103 +0100
++++ linux-2.6.31.6/arch/arm/mach-mx3/devices.h	2009-12-08 11:16:59.408625374 +0100
+@@ -16,6 +16,9 @@
+ extern struct platform_device mxcsdhc_device0;
+ extern struct platform_device mxcsdhc_device1;
+ extern struct platform_device mxc_otg_udc_device;
++extern struct platform_device mxc_otg;
++extern struct platform_device mxc_usbh1;
++extern struct platform_device mxc_usbh2;
+ extern struct platform_device mxc_rnga_device;
+ extern struct platform_device imx_ssi_device0;
+ extern struct platform_device imx_ssi_device1;

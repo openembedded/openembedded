@@ -1,0 +1,61 @@
+From db1d93750d22c87b588ade0c8e083f8d94ddf88b Mon Sep 17 00:00:00 2001
+From: Juergen Beisert <j.beisert@pengutronix.de>
+Date: Tue, 29 Sep 2009 15:44:00 +0200
+Subject: [PATCH 10/15] MXC NFC: Add the clock resource to support NFC in i.MX35
+
+Signed-off-by: Juergen Beisert <j.beisert@pengutronix.de>
+
+rebased to  2.6.31.6
+Signed-off-by: Jan Weitzel <J.Weitzel@phytec.de>
+---
+ arch/arm/mach-mx3/clock-imx35.c |   30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
+
+Index: arch/arm/mach-mx3/clock-imx35.c
+===================================================================
+--- arch/arm/mach-mx3/clock-imx35.c.orig	2009-12-08 11:03:44.248614597 +0100
++++ arch/arm/mach-mx3/clock-imx35.c	2009-12-08 11:04:48.958686514 +0100
+@@ -387,6 +387,35 @@
+ DEFINE_CLOCK(iim_clk,    0, CCM_CGR3,  2, NULL, NULL);
+ DEFINE_CLOCK(gpu2d_clk,  0, CCM_CGR3,  4, NULL, NULL);
+ 
++static int clk_dummy_enable(struct clk *clk)
++{
++	return 0;
++}
++
++static void clk_dummy_disable(struct clk *clk)
++{
++}
++
++static unsigned long get_rate_nfc(struct clk *clk)
++{
++	unsigned long div1;
++
++	div1 = (__raw_readl(CCM_BASE + CCM_PDR4) >> 28) + 1;
++
++	return get_rate_ahb(NULL) / div1;
++}
++
++/* NAND Controller: It seems it can't be disabled */
++static struct clk nfc_clk = {
++	.id		= 0,
++	.enable_reg	= 0,
++	.enable_shift	= 0,
++	.get_rate	= get_rate_nfc,
++	.set_rate	= NULL, /* set_rate_nfc, */
++	.enable		= clk_dummy_enable,
++	.disable	= clk_dummy_disable
++};
++
+ #define _REGISTER_CLOCK(d, n, c)	\
+ 	{				\
+ 		.dev_id = d,		\
+@@ -448,6 +477,7 @@
+ 	_REGISTER_CLOCK(NULL, "csi", csi_clk)
+ 	_REGISTER_CLOCK(NULL, "iim", iim_clk)
+ 	_REGISTER_CLOCK(NULL, "gpu2d", gpu2d_clk)
++	_REGISTER_CLOCK("mxc_nand.0", NULL, nfc_clk)
+ };
+ 
+ int __init mx35_clocks_init()

@@ -1,0 +1,63 @@
+From: Wolfram Sang <w.sang@pengutronix.de>
+Subject: fix esdhc-WIP for highspeed-cards
+
+Freescale has really messed up the control register, so we have to take care
+the SDHCI-core does not accidently set standard bits which have a different
+meaning here :( Previously highspeed (not necessarily HC) cards caused
+a wrong bus-width setting.
+
+Also, mark the ADMA-engine as broken because FSL themselves don't know yet if
+it is really working. Shouldn't harm much as MX35 has just ADMA1 anyway.
+
+Furthermore, disable multi-block accesses. This might affect the throughput,
+but this part seems to be broken, too, according to the errata. We better play
+safe here, it really helps with some cards.
+
+Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+---
+ drivers/mmc/host/sdhci-esdhc.c |   11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+Index: linux-2.6.31.6/drivers/mmc/host/sdhci-esdhc.c
+===================================================================
+--- linux-2.6.31.6.orig/drivers/mmc/host/sdhci-esdhc.c	2010-09-13 11:13:43.476519017 +0200
++++ linux-2.6.31.6/drivers/mmc/host/sdhci-esdhc.c	2010-09-13 11:13:43.496492387 +0200
+@@ -34,6 +34,7 @@
+ #define ESDHC_CLOCK_HCKEN	0x00000002
+ #define ESDHC_CLOCK_IPGEN	0x00000001
+ 
++#define ESDHC_HOST_CONTROL_LE	0x20
+ #define ESDHC_HOST_CONTROL_RES	0x05
+ 
+ #ifdef CONFIG_MMC_SDHCI_BIG_ENDIAN_32BIT_BYTE_SWAPPER
+@@ -127,8 +128,10 @@
+ 		/* FSL put the DMA bits there, so skip :( */
+ 		return;
+ 	case SDHCI_HOST_CONTROL:
+-		val &= 0x07;
+-		val |= 0x20;
++		/* FSL really messed up here, so we can just keep those */
++		val &= SDHCI_CTRL_LED | SDHCI_CTRL_4BITBUS;
++		/* and ensure the endianess */
++		val |= ESDHC_HOST_CONTROL_LE;
+ 		break;
+ 	}
+ 	esdhc_clrset_le(host, 0xff, val, reg);
+@@ -163,7 +166,7 @@
+ 
+ 	temp = sdhci_readl(host, ESDHC_SYSTEM_CONTROL);
+ 	temp |= (ESDHC_CLOCK_IPGEN | ESDHC_CLOCK_HCKEN | ESDHC_CLOCK_PEREN |
+-		  div << ESDHC_DIVIDER_SHIFT | pre_div << ESDHC_PREDIV_SHIFT);
++		  (div << ESDHC_DIVIDER_SHIFT) | (pre_div << ESDHC_PREDIV_SHIFT));
+ 	sdhci_writel(host, temp, ESDHC_SYSTEM_CONTROL);
+ 	mdelay(100);
+ out:
+@@ -193,6 +196,8 @@
+ 		  SDHCI_QUIRK_PIO_NEEDS_DELAY |
+ 		  SDHCI_QUIRK_RESTORE_IRQS_AFTER_RESET |
+ 		   SDHCI_QUIRK_BROKEN_TIMEOUT_VAL |
++		  SDHCI_QUIRK_NO_MULTIBLOCK |
++		  SDHCI_QUIRK_BROKEN_ADMA |
+ 		  SDHCI_QUIRK_NO_CARD_NO_RESET,
+ 	.ops = {
+ #ifdef CONFIG_MMC_SDHCI_BIG_ENDIAN_32BIT_BYTE_SWAPPER

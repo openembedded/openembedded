@@ -1,0 +1,28 @@
+From 04683e53f18930db4f5a9e40a65fea91b949ce21 Mon Sep 17 00:00:00 2001
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Thu, 12 Nov 2009 14:09:39 +0100
+Subject: [PATCH 05/28] i.MX31 clock: rename SSI clocks to driver name
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ arch/arm/mach-mx3/clock.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/mach-mx3/clock.c b/arch/arm/mach-mx3/clock.c
+index 8b14239..f25e8be 100644
+--- a/arch/arm/mach-mx3/clock.c
++++ b/arch/arm/mach-mx3/clock.c
+@@ -545,8 +545,8 @@ static struct clk_lookup lookups[] = {
+ 	_REGISTER_CLOCK("mxc_w1.0", NULL, owire_clk)
+ 	_REGISTER_CLOCK("mxc-mmc.0", NULL, sdhc1_clk)
+ 	_REGISTER_CLOCK("mxc-mmc.1", NULL, sdhc2_clk)
+-	_REGISTER_CLOCK(NULL, "ssi", ssi1_clk)
+-	_REGISTER_CLOCK(NULL, "ssi", ssi2_clk)
++	_REGISTER_CLOCK("imx-ssi.0", NULL, ssi1_clk)
++	_REGISTER_CLOCK("imx-ssi.1", NULL, ssi2_clk)
+ 	_REGISTER_CLOCK(NULL, "firi", firi_clk)
+ 	_REGISTER_CLOCK(NULL, "ata", ata_clk)
+ 	_REGISTER_CLOCK(NULL, "rtic", rtic_clk)
+-- 
+1.6.5.2
+

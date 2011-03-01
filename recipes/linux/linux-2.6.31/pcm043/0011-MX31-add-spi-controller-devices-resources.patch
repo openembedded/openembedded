@@ -1,0 +1,97 @@
+From 5a3ba6a98a5822698ad4552a4af47b3230807952 Mon Sep 17 00:00:00 2001
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Fri, 19 Dec 2008 14:32:15 +0100
+Subject: [PATCH 11/28] MX31: add spi controller devices/resources
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ arch/arm/mach-mx3/devices.c |   61 +++++++++++++++++++++++++++++++++++++++++++
+ arch/arm/mach-mx3/devices.h |    3 ++
+ 2 files changed, 64 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-mx3/devices.c b/arch/arm/mach-mx3/devices.c
+index 06dab5f..c32049a 100644
+--- a/arch/arm/mach-mx3/devices.c
++++ b/arch/arm/mach-mx3/devices.c
+@@ -454,6 +454,67 @@ struct platform_device imx_ssi_device1 = {
+ 	.resource = imx_ssi_resources1,
+ };
+ 
++/*
++ * SPI master controller
++ * 3 channels
++ */
++static struct resource imx_spi_0_resources[] = {
++	{
++	       .start = CSPI1_BASE_ADDR,
++	       .end = CSPI1_BASE_ADDR + SZ_4K - 1,
++	       .flags = IORESOURCE_MEM,
++	}, {
++	       .start = MXC_INT_CSPI1,
++	       .end = MXC_INT_CSPI1,
++	       .flags = IORESOURCE_IRQ,
++	},
++};
++
++static struct resource imx_spi_1_resources[] = {
++	{
++		.start = CSPI2_BASE_ADDR,
++		.end = CSPI2_BASE_ADDR + SZ_4K - 1,
++		.flags = IORESOURCE_MEM,
++	}, {
++		.start = MXC_INT_CSPI2,
++		.end = MXC_INT_CSPI2,
++		.flags = IORESOURCE_IRQ,
++	},
++};
++
++static struct resource imx_spi_2_resources[] = {
++	{
++		.start = CSPI3_BASE_ADDR,
++		.end = CSPI3_BASE_ADDR + SZ_4K - 1,
++		.flags = IORESOURCE_MEM,
++	}, {
++		.start = MXC_INT_CSPI3,
++		.end = MXC_INT_CSPI3,
++		.flags = IORESOURCE_IRQ,
++	},
++};
++
++struct platform_device imx_spi_device0 = {
++	.name = "spi_imx",
++	.id = 0,
++	.num_resources = ARRAY_SIZE(imx_spi_0_resources),
++	.resource = imx_spi_0_resources,
++};
++
++struct platform_device imx_spi_device1 = {
++	.name = "spi_imx",
++	.id = 1,
++	.num_resources = ARRAY_SIZE(imx_spi_1_resources),
++	.resource = imx_spi_1_resources,
++};
++
++struct platform_device imx_spi_device2 = {
++	.name = "spi_imx",
++	.id = 2,
++	.num_resources = ARRAY_SIZE(imx_spi_2_resources),
++	.resource = imx_spi_2_resources,
++};
++
+ static int mx3_devices_init(void)
+ {
+ 	if (cpu_is_mx31()) {
+diff --git a/arch/arm/mach-mx3/devices.h b/arch/arm/mach-mx3/devices.h
+index 224c2eb..402b60e 100644
+--- a/arch/arm/mach-mx3/devices.h
++++ b/arch/arm/mach-mx3/devices.h
+@@ -19,3 +19,6 @@ extern struct platform_device mxc_otg_udc_device;
+ extern struct platform_device mxc_rnga_device;
+ extern struct platform_device imx_ssi_device0;
+ extern struct platform_device imx_ssi_device1;
++extern struct platform_device imx_spi_device0;
++extern struct platform_device imx_spi_device1;
++extern struct platform_device imx_spi_device2;
+-- 
+1.6.5.2
+

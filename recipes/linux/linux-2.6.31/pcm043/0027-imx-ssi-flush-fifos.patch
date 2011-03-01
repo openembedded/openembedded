@@ -1,0 +1,29 @@
+From 447b943dc48d3775e59be1800a3198f65265536d Mon Sep 17 00:00:00 2001
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Wed, 2 Dec 2009 11:59:05 +0100
+Subject: [PATCH 27/28] imx-ssi: flush fifos
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ sound/soc/imx/imx-ssi.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/sound/soc/imx/imx-ssi.c b/sound/soc/imx/imx-ssi.c
+index 6219df9..d25ee2b 100644
+--- a/sound/soc/imx/imx-ssi.c
++++ b/sound/soc/imx/imx-ssi.c
+@@ -333,6 +333,11 @@ static int imx_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
+ 		/* rx/tx are always enabled to access ac97 registers */
+ 		writel(scr, ssi->base + SSI_SCR);
+ 
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		writel(SSI_SOR_TX_CLR, ssi->base + SSI_SOR);
++	else
++		writel(SSI_SOR_RX_CLR, ssi->base + SSI_SOR);
++
+ 	writel(sier, ssi->base + SSI_SIER);
+ 
+ 	return 0;
+-- 
+1.6.5.2
+

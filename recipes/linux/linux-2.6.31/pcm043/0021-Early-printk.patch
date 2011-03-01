@@ -1,0 +1,106 @@
+From 286132d92272ffb0ae06ec3ecbe0cb3cfbd611c3 Mon Sep 17 00:00:00 2001
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Thu, 29 Jan 2009 16:39:15 +0100
+Subject: [PATCH 021/101] Early printk
+
+Hi,
+
+Below is a patch which I have in my repository for some time now. It
+adds an early console using the printch function. Unlike the printk
+patch this one does not require patching the kernel and you do not get
+duplicated kernel output lines. I don't know if this solution starts to
+work at a later point than the printk patch, but it has proven useful in
+several situations now. What do you think?
+
+Sascha
+
+commit 57242f4143c9ce48e3c49ddf3b206f780184991c
+Author: Sascha Hauer <s.hauer@pengutronix.de>
+Date:   Thu Jan 29 16:32:30 2009 +0100
+
+    [ARM] Add an early debug console
+
+    Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+
+rebased to  2.6.31.6
+Signed-off-by: Jan Weitzel <J.Weitzel@phytec.de>
+---
+ arch/arm/Kconfig.debug         |    8 ++++++++
+ arch/arm/kernel/Makefile       |    1 +
+ arch/arm/kernel/early_printk.c |   38 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 47 insertions(+), 0 deletions(-)
+ create mode 100644 arch/arm/kernel/early_printk.c
+
+Index: linux-2.6.31.6/arch/arm/Kconfig.debug
+===================================================================
+--- linux-2.6.31.6.orig/arch/arm/Kconfig.debug	2009-12-07 15:58:21.683889680 +0100
++++ linux-2.6.31.6/arch/arm/Kconfig.debug	2009-12-07 16:00:33.757198435 +0100
+@@ -70,6 +70,14 @@
+ 	  in the kernel.  This is helpful if you are debugging code that
+ 	  executes before the console is initialized.
+ 
++config DEBUG_LL_CONSOLE
++	bool "Kernel early console"
++	depends on DEBUG_LL
++	help
++	  Say Y here if you want to have an early console using the Kernel
++	  low-level debugging functions. Add earlyprintk to your kernel
++	  parameters to enable this console.
++
+ config DEBUG_ICEDCC
+ 	bool "Kernel low-level debugging via EmbeddedICE DCC channel"
+ 	depends on DEBUG_LL
+Index: linux-2.6.31.6/arch/arm/kernel/Makefile
+===================================================================
+--- linux-2.6.31.6.orig/arch/arm/kernel/Makefile	2009-12-07 15:58:21.673849262 +0100
++++ linux-2.6.31.6/arch/arm/kernel/Makefile	2009-12-07 16:00:33.757198435 +0100
+@@ -49,5 +49,6 @@
+ 
+ head-y			:= head$(MMUEXT).o
+ obj-$(CONFIG_DEBUG_LL)	+= debug.o
++obj-$(CONFIG_DEBUG_LL_CONSOLE)	+= early_printk.o
+ 
+ extra-y := $(head-y) init_task.o vmlinux.lds
+Index: linux-2.6.31.6/arch/arm/kernel/early_printk.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.31.6/arch/arm/kernel/early_printk.c	2009-12-07 16:00:33.757198435 +0100
+@@ -0,0 +1,38 @@
++/*
++ *  linux/arch/arm/kernel/early_printk.c
++ *
++ *  Copyright (C) 2009 Sascha Hauer <s.hauer@pengutronix.de>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++#include <linux/console.h>
++#include <linux/init.h>
++
++extern void printch(int);
++
++static void early_serial_write(struct console *con, const char *s, unsigned n)
++{
++	while (*s && n-- > 0) {
++		if (*s == '\n')
++			printch('\r');
++		printch(*s);
++		s++;
++	}
++}
++
++static struct console early_serial_console = {
++	.name =		"earlyser",
++	.write =	early_serial_write,
++	.flags =	CON_PRINTBUFFER | CON_BOOT,
++	.index =	-1,
++};
++
++static int __init setup_early_printk(char *buf)
++{
++	register_console(&early_serial_console);
++	return 0;
++}
++
++early_param("earlyprintk", setup_early_printk);

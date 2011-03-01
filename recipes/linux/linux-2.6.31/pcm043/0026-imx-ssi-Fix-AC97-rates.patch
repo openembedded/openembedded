@@ -1,0 +1,37 @@
+From da230ac4c6dce39cc85b95a08bceec2976288419 Mon Sep 17 00:00:00 2001
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Fri, 27 Nov 2009 16:28:59 +0100
+Subject: [PATCH 26/28] imx-ssi: Fix AC97 rates
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ sound/soc/imx/imx-ssi.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+diff --git a/sound/soc/imx/imx-ssi.c b/sound/soc/imx/imx-ssi.c
+index 9823425..6219df9 100644
+--- a/sound/soc/imx/imx-ssi.c
++++ b/sound/soc/imx/imx-ssi.c
+@@ -453,6 +453,10 @@ struct snd_soc_platform imx_soc_platform = {
+ };
+ EXPORT_SYMBOL_GPL(imx_soc_platform);
+ 
++#define IMX_AC97_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
++		SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 | \
++		SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000)
++
+ static struct snd_soc_dai imx_ac97_dai = {
+ 	.name = "AC97",
+ 	.ac97_control = 1,
+@@ -460,7 +464,7 @@ static struct snd_soc_dai imx_ac97_dai = {
+ 		.stream_name = "AC97 Playback",
+ 		.channels_min = 2,
+ 		.channels_max = 2,
+-		.rates = SND_SOC_STD_AC97_FMTS,
++		.rates = IMX_AC97_RATES,
+ 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+ 	},
+ 	.capture = {
+-- 
+1.6.5.2
+

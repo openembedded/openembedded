@@ -1,0 +1,41 @@
+From 406ec8e7472d4435f6f862cd2e8179ee8dddb57e Mon Sep 17 00:00:00 2001
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Thu, 4 Jun 2009 16:12:40 +0200
+Subject: [PATCH] mxc nand: remove dead code
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ drivers/mtd/nand/mxc_nand.c |   17 -----------------
+ 1 files changed, 0 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index cd09196..74c5dbc 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -620,23 +620,6 @@ static void mxc_nand_select_chip(struct mtd_info *mtd, int chip)
+ 	struct nand_chip *nand_chip = mtd->priv;
+ 	struct mxc_nand_host *host = nand_chip->priv;
+ 
+-#ifdef CONFIG_MTD_NAND_MXC_FORCE_CE
+-	if (chip > 0) {
+-		DEBUG(MTD_DEBUG_LEVEL0,
+-		      "ERROR:  Illegal chip select (chip = %d)\n", chip);
+-		return;
+-	}
+-
+-	if (chip == -1) {
+-		writew(readw(host->regs + NFC_CONFIG1) & ~NFC_CE,
+-				host->regs + NFC_CONFIG1);
+-		return;
+-	}
+-
+-	writew(readw(host->regs + NFC_CONFIG1) | NFC_CE,
+-			host->regs + NFC_CONFIG1);
+-#endif
+-
+ 	switch (chip) {
+ 	case -1:
+ 		/* Disable the NFC clock */
+-- 
+1.6.0.4
+

@@ -1,0 +1,51 @@
+From e31e8120d5552c200785a6e2f1958d7f7643a675 Mon Sep 17 00:00:00 2001
+From: Juergen Beisert <j.beisert@pengutronix.de>
+Date: Tue, 29 Sep 2009 14:55:47 +0200
+Subject: [PATCH 03/15] MXC NFC: Add a real NAND flash data width setup function
+
+Provide a real subfunction to setup the NAND flash data width.
+
+Signed-off-by: Juergen Beisert <j.beisert@pengutronix.de>
+---
+ drivers/mtd/nand/mxc_nand_v2.c |   15 ++++++++++++---
+ 1 files changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/nand/mxc_nand_v2.c b/drivers/mtd/nand/mxc_nand_v2.c
+index 3483e7d..03d1ba4 100644
+--- a/drivers/mtd/nand/mxc_nand_v2.c
++++ b/drivers/mtd/nand/mxc_nand_v2.c
+@@ -830,6 +830,14 @@ static void unlock_addr(struct mxc_nand_host *host, unsigned int start_addr, uns
+ 		BUG();
+ }
+ 
++static void __init mxc_data_width(struct mxc_nand_host *host, unsigned width)
++{
++	if ((width != 8) && (width != 16)) {
++		BUG();
++	}
++	/* TODO */
++}
++
+ static int __init mxcnd_probe(struct platform_device *pdev)
+ {
+ 	struct nand_chip *this;
+@@ -898,12 +906,13 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 	} else
+ 		BUG();
+ 
+-	/* NAND bus width determines access funtions used by upper layer */
++	/* NAND bus width determines access functions used by upper layer */
+ 	if (pdata->width == 2) {
+ 		this->read_byte = mxc_nand_read_byte16;
+ 		this->options |= NAND_BUSWIDTH_16;
+-		mxc_set_nfms(mtd, 1 << NFMS_NF_DWIDTH);
+-	}
++		mxc_data_width(host, 16);
++	} else
++		mxc_data_width(host, 8);
+ 
+ 	init_waitqueue_head(&host->irq_waitq);
+ 
+-- 
+1.6.1
+

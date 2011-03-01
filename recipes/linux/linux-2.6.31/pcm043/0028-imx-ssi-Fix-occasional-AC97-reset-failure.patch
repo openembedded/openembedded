@@ -1,0 +1,37 @@
+From fb79a42a2badc12714a50ad5cc360927a138e8a6 Mon Sep 17 00:00:00 2001
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Thu, 17 Dec 2009 11:19:38 +0100
+Subject: [PATCH 28/28] imx-ssi: Fix occasional AC97 reset failure
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ sound/soc/imx/imx-ssi.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+diff --git a/sound/soc/imx/imx-ssi.c b/sound/soc/imx/imx-ssi.c
+index d25ee2b..94ef361 100644
+--- a/sound/soc/imx/imx-ssi.c
++++ b/sound/soc/imx/imx-ssi.c
+@@ -565,6 +565,9 @@ static void imx_ssi_ac97_reset(struct snd_ac97 *ac97)
+ 
+ 	if (imx_ssi->ac97_reset)
+ 		imx_ssi->ac97_reset(ac97);
++
++	/* First read sometimes fails, do a dummy read */
++	imx_ssi_ac97_read(ac97, 0);
+ }
+ 
+ static void imx_ssi_ac97_warm_reset(struct snd_ac97 *ac97)
+@@ -573,6 +576,9 @@ static void imx_ssi_ac97_warm_reset(struct snd_ac97 *ac97)
+ 
+ 	if (imx_ssi->ac97_warm_reset)
+ 		imx_ssi->ac97_warm_reset(ac97);
++
++	/* First read sometimes fails, do a dummy read */
++	imx_ssi_ac97_read(ac97, 0);
+ }
+ 
+ struct snd_ac97_bus_ops soc_ac97_ops = {
+-- 
+1.6.5.2
+

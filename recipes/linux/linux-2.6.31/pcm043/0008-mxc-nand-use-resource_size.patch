@@ -1,0 +1,26 @@
+From de6d94479735ef944c1463f42ed6192b1b226395 Mon Sep 17 00:00:00 2001
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Thu, 4 Jun 2009 16:16:01 +0200
+Subject: [PATCH] mxc nand: use resource_size()
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ drivers/mtd/nand/mxc_nand.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index 74c5dbc..127e0b7 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -865,7 +865,7 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 		goto eres;
+ 	}
+ 
+-	host->regs = ioremap(res->start, res->end - res->start + 1);
++	host->regs = ioremap(res->start, resource_size(res));
+ 	if (!host->regs) {
+ 		err = -ENOMEM;
+ 		goto eres;
+-- 
+1.6.0.4
+

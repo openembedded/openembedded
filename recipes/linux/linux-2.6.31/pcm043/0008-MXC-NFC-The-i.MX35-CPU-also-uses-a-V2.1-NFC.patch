@@ -1,0 +1,26 @@
+From b319bc5f9a9733e534a57b6725b94f438a1e406e Mon Sep 17 00:00:00 2001
+From: Juergen Beisert <j.beisert@pengutronix.de>
+Date: Tue, 29 Sep 2009 15:31:18 +0200
+Subject: [PATCH 08/15] MXC NFC: The i.MX35 CPU also uses a V2.1 NFC
+
+Signed-off-by: Juergen Beisert <j.beisert@pengutronix.de>
+---
+ drivers/mtd/nand/mxc_nand_v2.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/nand/mxc_nand_v2.c b/drivers/mtd/nand/mxc_nand_v2.c
+index c1cbb05..3891d9a 100644
+--- a/drivers/mtd/nand/mxc_nand_v2.c
++++ b/drivers/mtd/nand/mxc_nand_v2.c
+@@ -51,7 +51,7 @@
+ #define NFC_V1_UNLOCKSTART_BLKADDR  	0xe14
+ #define NFC_V1_UNLOCKEND_BLKADDR    	0xe16
+ 
+-#define nfc_is_v21()		cpu_is_mx25()
++#define nfc_is_v21()		(cpu_is_mx25() || cpu_is_mx35())
+ #define nfc_is_v2x()		cpu_is_mx31()
+ 
+ #define NFC_ECC_EN          		(1 << 3)
+-- 
+1.6.1
+

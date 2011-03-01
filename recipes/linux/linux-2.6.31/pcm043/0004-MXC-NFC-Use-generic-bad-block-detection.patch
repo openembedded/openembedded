@@ -1,0 +1,148 @@
+From 344bc7de5f142e95a524fe2019b51344d9aa3ea7 Mon Sep 17 00:00:00 2001
+From: Juergen Beisert <j.beisert@pengutronix.de>
+Date: Tue, 29 Sep 2009 15:04:11 +0200
+Subject: [PATCH 04/15] MXC NFC: Use generic bad block detection
+
+There is no need to provide a local bad block detection. The generic
+one does a correct job. Due to hardware based ECC we must provide
+a local nand_bbt_descr structure, because the generic one conflicts
+with our ECC sum byte locations.
+
+Signed-off-by: Juergen Beisert <j.beisert@pengutronix.de>
+---
+ drivers/mtd/nand/mxc_nand_v2.c |   98 ++++-----------------------------------
+ 1 files changed, 10 insertions(+), 88 deletions(-)
+
+diff --git a/drivers/mtd/nand/mxc_nand_v2.c b/drivers/mtd/nand/mxc_nand_v2.c
+index 03d1ba4..6b1eeb9 100644
+--- a/drivers/mtd/nand/mxc_nand_v2.c
++++ b/drivers/mtd/nand/mxc_nand_v2.c
+@@ -708,26 +708,10 @@ static void mxc_nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	memcpy(host->data_buf + mtd->writesize, chip->oob_poi, mtd->oobsize);
+ }
+ 
+-/* Define some generic bad / good block scan pattern which are used
+- * while scanning a device for factory marked good / bad blocks. */
+-static uint8_t scan_ff_pattern[] = { 0xff, 0xff };
+-
+-static struct nand_bbt_descr smallpage_memorybased = {
+-	.options = NAND_BBT_SCAN2NDPAGE,
+-	.offs = 5,
+-	.len = 1,
+-	.pattern = scan_ff_pattern
+-};
+-
+-static struct nand_bbt_descr largepage_memorybased = {
+-	.options = 0,
+-	.offs = 0,
+-	.len = 2,
+-	.pattern = scan_ff_pattern
+-};
+-
+-/* Generic flash bbt decriptors
+-*/
++/*
++ * We must provide a private bbt decriptor, because the settings from
++ * the generic one collide with our ECC hardware.
++ */
+ static uint8_t bbt_pattern[] = { 'B', 'b', 't', '0' };
+ static uint8_t mirror_pattern[] = { '1', 't', 'b', 'B' };
+ 
+@@ -751,73 +735,6 @@ static struct nand_bbt_descr bbt_mirror_descr = {
+ 	.pattern = mirror_pattern
+ };
+ 
+-static void mxc_set_nfms_v21(struct mtd_info *mtd, unsigned int val)
+-{
+-	struct nand_chip *this = mtd->priv;
+-	struct mxc_nand_host *host = this->priv;
+-	unsigned int spas, tmp;
+-
+-//	NFMS |= val; /* FIXME */
+-
+-	if (val & (1 << NFMS_NF_PG_SZ)) {
+-		if (mtd->writesize == 2048)
+-			spas = NFC_SPAS_64;
+-		else if (mtd->writesize == 4096)
+-			spas = NFC_SPAS_128;
+-		else
+-			spas = NFC_SPAS_16;
+-
+-		tmp = readw(host->regs + NFC_CONFIG1);
+-		tmp |= NFC_V2_ECC_MODE_4;
+-		writew(tmp, host->regs + NFC_CONFIG1);
+-
+-		tmp = readw(host->regs + NFC_V21_SPAS);
+-		tmp &= NFC_V21_SPAS_MASK;
+-		tmp |= spas << NFC_V21_SPAS_SHIFT;
+-		writew(tmp, host->regs + NFC_V21_SPAS);
+-	}
+-}
+-
+-static void mxc_set_nfms(struct mtd_info *mtd, unsigned int val)
+-{
+-	if (nfc_is_v21())
+-		mxc_set_nfms_v21(mtd, val);
+-}
+-
+-static int mxc_nand_scan_bbt(struct mtd_info *mtd)
+-{
+-	struct nand_chip *this = mtd->priv;
+-	struct mxc_nand_host *host = this->priv;
+-
+-	if (mtd->writesize == 2048) {
+-		mxc_set_nfms(mtd, 1 << NFMS_NF_PG_SZ);
+-		this->ecc.layout = &nand_hw_eccoob_2k;
+-	} else if (mtd->writesize == 4096) {
+-		mxc_set_nfms(mtd, 1 << NFMS_NF_PG_SZ);
+-		this->ecc.layout = &nand_hw_eccoob_4k;
+-	} else {
+-		this->ecc.layout = &nand_hw_eccoob_512;
+-	}
+-
+-	/* propagate ecc.layout to mtd_info */
+-	mtd->ecclayout = this->ecc.layout;
+-
+-	/* use flash based bbt */
+-	this->bbt_td = &bbt_main_descr;
+-	this->bbt_md = &bbt_mirror_descr;
+-
+-	/* update flash based bbt */
+-	this->options |= NAND_USE_FLASH_BBT;
+-
+-	if (!this->badblock_pattern) {
+-		this->badblock_pattern = (mtd->writesize > 512) ?
+-		    &largepage_memorybased : &smallpage_memorybased;
+-	}
+-
+-	/* Build bad block table */
+-	return nand_scan_bbt(mtd, this->badblock_pattern);
+-}
+-
+ static void unlock_addr(struct mxc_nand_host *host, unsigned int start_addr, unsigned int end_addr)
+ {
+ 	if (nfc_is_v21()) {
+@@ -870,7 +787,6 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 	this->write_buf = mxc_nand_write_buf;
+ 	this->read_buf = mxc_nand_read_buf;
+ 	this->verify_buf = mxc_nand_verify_buf;
+-	this->scan_bbt = mxc_nand_scan_bbt;
+ 
+ 	host->clk = clk_get(&pdev->dev, "nfc_clk");
+ 	if (IS_ERR(host->clk)) {
+@@ -958,6 +874,12 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 
+ 	clk_disable(host->clk);
+ 
++	/* use flash based bbt */
++	this->bbt_td = &bbt_main_descr;
++	this->bbt_md = &bbt_mirror_descr;
++	/* update flash based bbt */
++	this->options |= NAND_USE_FLASH_BBT;
++
+ 	/* Scan to find existence of the device */
+ 	if (nand_scan(mtd, 1)) {
+ 		DEBUG(MTD_DEBUG_LEVEL0,
+-- 
+1.6.1
+
