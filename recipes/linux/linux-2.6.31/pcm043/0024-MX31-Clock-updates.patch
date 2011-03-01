@@ -1,0 +1,40 @@
+From f9a58060254e1c7d6d2bedf6044577aa61885ca3 Mon Sep 17 00:00:00 2001
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Fri, 20 Mar 2009 19:25:01 +0100
+Subject: [PATCH 024/101] MX31 Clock updates
+
+- register correct ehci clocks
+- update spi clock names
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+
+rebased to  2.6.31.6
+Signed-off-by: Jan Weitzel <J.Weitzel@phytec.de>
+---
+ arch/arm/mach-mx3/clock.c |   12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+Index: arch/arm/mach-mx3/clock.c
+===================================================================
+--- arch/arm/mach-mx3/clock.c.orig	2009-12-07 15:20:31.943942228 +0100
++++ arch/arm/mach-mx3/clock.c	2009-12-07 16:10:37.774566402 +0100
+@@ -523,7 +523,7 @@
+ 	_REGISTER_CLOCK("spi_imx.2", NULL, cspi3_clk)
+ 	_REGISTER_CLOCK(NULL, "gpt", gpt_clk)
+ 	_REGISTER_CLOCK(NULL, "pwm", pwm_clk)
+-	_REGISTER_CLOCK(NULL, "wdog", wdog_clk)
++	_REGISTER_CLOCK("imx-wdt.0", NULL, wdog_clk)
+ 	_REGISTER_CLOCK(NULL, "rtc", rtc_clk)
+ 	_REGISTER_CLOCK(NULL, "epit", epit1_clk)
+ 	_REGISTER_CLOCK(NULL, "epit", epit2_clk)
+@@ -531,6 +531,10 @@
+ 	_REGISTER_CLOCK("ipu-core", NULL, ipu_clk)
+ 	_REGISTER_CLOCK("mx3_sdc_fb", NULL, ipu_clk)
+ 	_REGISTER_CLOCK(NULL, "kpp", kpp_clk)
++	/* FIXME: mxc-ehci now misses the secondary clock */
++	_REGISTER_CLOCK("mxc-ehci.0", NULL, usb_clk1)
++	_REGISTER_CLOCK("mxc-ehci.1", NULL, usb_clk1)
++	_REGISTER_CLOCK("mxc-ehci.2", NULL, usb_clk1)
+ 	_REGISTER_CLOCK("fsl-usb2-udc", "usb", usb_clk1)
+ 	_REGISTER_CLOCK("fsl-usb2-udc", "usb_ahb", usb_clk2)
+ 	_REGISTER_CLOCK("mx3-camera.0", NULL, csi_clk)

@@ -1,0 +1,26 @@
+Add 1-wire
+Signed-off-by: Jan Weitzel <J.Weitzel@phytec.de>
+---
+Index: linux-2.6.31.6/arch/arm/mach-mx3/pcm043.c
+===================================================================
+--- linux-2.6.31.6.orig/arch/arm/mach-mx3/pcm043.c	2009-12-11 13:52:55.964646780 +0100
++++ linux-2.6.31.6/arch/arm/mach-mx3/pcm043.c	2009-12-11 13:55:28.858433047 +0100
+@@ -149,6 +149,7 @@
+ static struct platform_device *devices[] __initdata = {
+ 	&pcm043_flash,
+ 	&mxc_fec_device,
++	&mxc_w1_master_device,
+ };
+ 
+ static void flexcan_xcvr_enable(int id, int en)
+@@ -247,7 +248,9 @@
+ 	MX35_PAD_STXD4__AUDMUX_AUD4_TXD,
+ 	MX35_PAD_SRXD4__AUDMUX_AUD4_RXD,
+ 	MX35_PAD_SCK4__AUDMUX_AUD4_TXC,
+-  	/* CAN */
++  	/* 1-Wire*/
++	MX35_PAD_GPIO1_0__OWIRE_LINE,
++	/* CAN */
+         MX35_PAD_SD2_DATA2__CAN1_RXCAN,
+         MX35_PAD_SD2_DATA3__CAN1_TXCAN,
+         MX35_PAD_SD2_DATA1__GPIO2_3,

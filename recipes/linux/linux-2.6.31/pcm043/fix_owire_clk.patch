@@ -1,0 +1,17 @@
+Fix the owire_clk dev_id
+
+Signed-off-by: Jan Weitzel <J.Weitzel@phytec.de>
+---
+Index: linux-2.6.31.6/arch/arm/mach-mx3/clock-imx35.c
+===================================================================
+--- linux-2.6.31.6.orig/arch/arm/mach-mx3/clock-imx35.c	2009-12-14 16:50:18.915973719 +0100
++++ linux-2.6.31.6/arch/arm/mach-mx3/clock-imx35.c	2009-12-14 16:51:06.835549332 +0100
+@@ -453,7 +453,7 @@
+ 	_REGISTER_CLOCK(NULL, "kpp", kpp_clk)
+ 	_REGISTER_CLOCK(NULL, "mlb", mlb_clk)
+ 	_REGISTER_CLOCK(NULL, "mshc", mshc_clk)
+-	_REGISTER_CLOCK("mxc_w1", NULL, owire_clk)
++	_REGISTER_CLOCK("mxc_w1.0", NULL, owire_clk)
+ 	_REGISTER_CLOCK(NULL, "pwm", pwm_clk)
+ 	_REGISTER_CLOCK(NULL, "rngc", rngc_clk)
+ 	_REGISTER_CLOCK(NULL, "rtc", rtc_clk)

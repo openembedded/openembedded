@@ -1,0 +1,32 @@
+From 6e58f781f2d5bedae9ff6991ac378212a392b723 Mon Sep 17 00:00:00 2001
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Fri, 20 Mar 2009 19:25:01 +0100
+Subject: [PATCH 09/28] MX31 Fix spi clock names
+
+Fix the SPI clock names to match the device names.
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ arch/arm/mach-mx3/clock.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/mach-mx3/clock.c b/arch/arm/mach-mx3/clock.c
+index f25e8be..664148c 100644
+--- a/arch/arm/mach-mx3/clock.c
++++ b/arch/arm/mach-mx3/clock.c
+@@ -518,9 +518,9 @@ DEFINE_CLOCK(ipg_clk,     0, NULL,          0, ipg_get_rate, NULL, &ahb_clk);
+ 
+ static struct clk_lookup lookups[] = {
+ 	_REGISTER_CLOCK(NULL, "emi", emi_clk)
+-	_REGISTER_CLOCK(NULL, "cspi", cspi1_clk)
+-	_REGISTER_CLOCK(NULL, "cspi", cspi2_clk)
+-	_REGISTER_CLOCK(NULL, "cspi", cspi3_clk)
++	_REGISTER_CLOCK("spi_imx.0", NULL, cspi1_clk)
++	_REGISTER_CLOCK("spi_imx.1", NULL, cspi2_clk)
++	_REGISTER_CLOCK("spi_imx.2", NULL, cspi3_clk)
+ 	_REGISTER_CLOCK(NULL, "gpt", gpt_clk)
+ 	_REGISTER_CLOCK(NULL, "pwm", pwm_clk)
+ 	_REGISTER_CLOCK(NULL, "wdog", wdog_clk)
+-- 
+1.6.5.2
+

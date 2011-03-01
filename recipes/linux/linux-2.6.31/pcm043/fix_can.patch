@@ -1,0 +1,16 @@
+Fix problem with send and recive of can packets.
+
+Signed-off-by: Teresa Gámez <t.gamez@phytec.de>
+---
+Index: linux-2.6.31.6/drivers/net/can/flexcan/drv.c
+===================================================================
+--- linux-2.6.31.6.orig/drivers/net/can/flexcan/drv.c	2010-09-16 14:35:16.596367462 +0200
++++ linux-2.6.31.6/drivers/net/can/flexcan/drv.c	2010-09-16 14:36:07.946447792 +0200
+@@ -136,7 +136,6 @@
+ 		reg &= ~__MCR_AEN;
+ 
+ 	reg |= (flexcan->maxmb << __MCR_MAX_MB_OFFSET);
+-	reg |= __MCR_DOZE | __MCR_MAX_IDAM_C;
+ 	__raw_writel(reg, flexcan->io_base + CAN_HW_REG_MCR);
+ }
+ 

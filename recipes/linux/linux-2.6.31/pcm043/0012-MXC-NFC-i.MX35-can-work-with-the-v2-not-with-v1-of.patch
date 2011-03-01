@@ -1,0 +1,34 @@
+From 0013249e16bc7527bf63b483486ead97ea59839e Mon Sep 17 00:00:00 2001
+From: Juergen Beisert <j.beisert@pengutronix.de>
+Date: Tue, 29 Sep 2009 15:49:52 +0200
+Subject: [PATCH 12/15] MXC NFC: i.MX35 can work with the v2, not with v1 of this driver
+
+Signed-off-by: Juergen Beisert <j.beisert@pengutronix.de>
+
+rebased to  2.6.31.6
+Signed-off-by: Jan Weitzel <J.Weitzel@phytec.de>
+---
+ drivers/mtd/nand/Kconfig |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+Index: drivers/mtd/nand/Kconfig
+===================================================================
+--- drivers/mtd/nand/Kconfig.orig	2009-12-08 10:02:59.468654404 +0100
++++ drivers/mtd/nand/Kconfig	2009-12-08 10:03:38.130073936 +0100
+@@ -421,14 +421,14 @@
+ 
+ config MTD_NAND_MXC
+ 	tristate "MXC NAND support"
+-	depends on ARCH_MX2 || ARCH_MX3
++	depends on ARCH_MX2 || (ARCH_MX3 && !ARCH_MX35)
+ 	help
+ 	  This enables the driver for the NAND flash controller on the
+ 	  MXC processors.
+ 
+ config MTD_NAND_MXC_V2
+ 	tristate "MXC NAND support"
+-	depends on ARCH_MX25
++	depends on ARCH_MX25 || ARCH_MX35
+ 	help
+ 	  This enables the driver for the NAND flash controller on the
+ 	  MXC processors.

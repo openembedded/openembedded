@@ -1,0 +1,129 @@
+From 91457e95796520ecf21937c3b2578ccfe21e054f Mon Sep 17 00:00:00 2001
+From: Juergen Beisert <j.beisert@pengutronix.de>
+Date: Tue, 29 Sep 2009 15:21:44 +0200
+Subject: [PATCH 06/15] MXC NFC: Reorder structure setup to use NAND information
+
+Reorder some structure and NFC setup to use detected NAND information.
+
+Signed-off-by: Juergen Beisert <j.beisert@pengutronix.de>
+---
+ drivers/mtd/nand/mxc_nand_v2.c |   82 +++++++++++++++++++++++++++++++--------
+ 1 files changed, 65 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/mtd/nand/mxc_nand_v2.c b/drivers/mtd/nand/mxc_nand_v2.c
+index 2ddd6f5..3b1011c 100644
+--- a/drivers/mtd/nand/mxc_nand_v2.c
++++ b/drivers/mtd/nand/mxc_nand_v2.c
+@@ -84,6 +84,10 @@
+ #define NFC_V21_SPAS_SHIFT		(0)
+ #define NFC_V21_SPAS_MASK	(0xFF00)
+ 
++/* some NFCs are able to handle different ECC sizes */
++#define MXC_SMALL_ECC 0
++#define MXC_BIG_ECC 1
++
+ struct mxc_nand_host {
+ 	struct mtd_info		mtd;
+ 	struct nand_chip	nand;
+@@ -747,6 +751,30 @@ static void unlock_addr(struct mxc_nand_host *host, unsigned int start_addr, uns
+ 		BUG();
+ }
+ 
++static void __init mxc_spare_size(struct mxc_nand_host *host, unsigned size_code)
++{
++	u16 tmp;
++
++	if (nfc_is_v21()) {
++		tmp = readw(host->regs + NFC_V21_SPAS);
++		tmp &= NFC_V21_SPAS_MASK;
++		tmp |= size_code << NFC_V21_SPAS_SHIFT;
++		writew(tmp, host->regs + NFC_V21_SPAS);
++	}
++}
++
++/* ignore mode in a first step */
++static void __init mxc_ecc_mode(struct mxc_nand_host *host, int mode)
++{
++	u16 tmp;
++
++	if (nfc_is_v21()) {
++		tmp = readw(host->regs + NFC_CONFIG1);
++		tmp |= NFC_V2_ECC_MODE_4;
++		writew(tmp, host->regs + NFC_CONFIG1);
++	}
++}
++
+ static void __init mxc_data_width(struct mxc_nand_host *host, unsigned width)
+ {
+ 	if ((width != 8) && (width != 16)) {
+@@ -838,23 +866,6 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 	if (err)
+ 		goto eirq;
+ 
+-	if (pdata->hw_ecc) {
+-		this->ecc.read_page = mxc_nand_read_page;
+-		this->ecc.write_page = mxc_nand_write_page;
+-		this->ecc.read_oob = mxc_nand_read_oob;
+-		this->ecc.layout = &nand_hw_eccoob_512;
+-		this->ecc.calculate = mxc_nand_calculate_ecc;
+-		this->ecc.hwctl = mxc_nand_enable_hwecc;
+-		this->ecc.correct = mxc_nand_correct_data;
+-		this->ecc.mode = NAND_ECC_HW;
+-		this->ecc.size = 512;
+-		this->ecc.bytes = 9;
+-		mxc_nand_hwecc(host, 1);
+-	} else {
+-		this->ecc.mode = NAND_ECC_SOFT;
+-		mxc_nand_hwecc(host, 0);
+-	}
+-
+ 	clk_enable(host->clk);
+ 
+ 	/* Disable interrupt */
+@@ -887,6 +898,43 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 	/* update flash based bbt */
+ 	this->options |= NAND_USE_FLASH_BBT;
+ 
++	this->ecc.mode = NAND_ECC_SOFT;	/* start with a default */
++
++	/* Note: ECC needs at least 16 bytes oob per 512 bytes pagesize */
++	if (pdata->hw_ecc && (mtd->oobsize >= 16)) {
++		if (mtd->writesize == 512) {
++			this->ecc.mode = NAND_ECC_HW;
++			this->ecc.layout = &nand_hw_eccoob_512;
++			mxc_spare_size(host, NFC_SPAS_16);
++		}
++		if ((mtd->writesize == 2048) && (mtd->oobsize >= 64)) {
++			this->ecc.mode = NAND_ECC_HW;
++			this->ecc.layout = &nand_hw_eccoob_2k;
++			mxc_spare_size(host, NFC_SPAS_64);
++		}
++		if ((mtd->writesize == 4096) && (mtd->oobsize >= 128)) {
++			this->ecc.mode = NAND_ECC_HW;
++			this->ecc.layout = &nand_hw_eccoob_4k;
++			mxc_spare_size(host, NFC_SPAS_128);
++		}
++		/* can we use hardware ECC? */
++		if (this->ecc.mode == NAND_ECC_HW) {
++			this->ecc.read_page = mxc_nand_read_page;
++			this->ecc.write_page = mxc_nand_write_page;
++			this->ecc.read_oob = mxc_nand_read_oob;
++			this->ecc.calculate = mxc_nand_calculate_ecc;
++			this->ecc.hwctl = mxc_nand_enable_hwecc;
++			this->ecc.correct = mxc_nand_correct_data;
++			this->ecc.size = 512;
++			this->ecc.bytes = 9;
++			mxc_ecc_mode(host, MXC_SMALL_ECC);
++			mxc_nand_hwecc(host, 1);
++		}
++	}
++
++	if (this->ecc.mode == NAND_ECC_SOFT)
++		mxc_nand_hwecc(host, 0);
++
+ 	/* second phase scan */
+ 	if (nand_scan_tail(mtd)) {
+ 		err = -ENXIO;
+-- 
+1.6.1
+

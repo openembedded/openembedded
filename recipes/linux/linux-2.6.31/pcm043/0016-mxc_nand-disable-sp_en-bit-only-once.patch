@@ -1,0 +1,66 @@
+From b21f4e602fec63eb29aea9dc9bc59d31f6e027c5 Mon Sep 17 00:00:00 2001
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Mon, 5 Oct 2009 17:18:42 +0200
+Subject: [PATCH] mxc_nand: disable sp_en bit only once
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ drivers/mtd/nand/mxc_nand.c |   15 +++------------
+ 1 files changed, 3 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index f2297eb..199a5f2 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -274,16 +274,10 @@ static void send_page(struct mtd_info *mtd, unsigned int ops)
+ static void send_read_id(struct mxc_nand_host *host)
+ {
+ 	struct nand_chip *this = &host->nand;
+-	uint16_t tmp;
+ 
+ 	/* NANDFC buffer 0 is used for device ID output */
+ 	writew(0x0, host->regs + NFC_BUF_ADDR);
+ 
+-	/* Read ID into main buffer */
+-	tmp = readw(host->regs + NFC_CONFIG1);
+-	tmp &= ~NFC_SP_EN;
+-	writew(tmp, host->regs + NFC_CONFIG1);
+-
+ 	writew(NFC_ID, host->regs + NFC_CONFIG2);
+ 
+ 	/* Wait for operation to complete */
+@@ -307,7 +301,7 @@ static uint16_t get_dev_status(struct mxc_nand_host *host)
+ {
+ 	void __iomem *main_buf = host->main_area1;
+ 	uint32_t store;
+-	uint16_t ret, tmp;
++	uint16_t ret;
+ 	/* Issue status request to NAND device */
+ 
+ 	/* store the main area1 first word, later do recovery */
+@@ -316,11 +310,6 @@ static uint16_t get_dev_status(struct mxc_nand_host *host)
+ 	 * corruption of read/write buffer on status requests. */
+ 	writew(1, host->regs + NFC_BUF_ADDR);
+ 
+-	/* Read status into main buffer */
+-	tmp = readw(host->regs + NFC_CONFIG1);
+-	tmp &= ~NFC_SP_EN;
+-	writew(tmp, host->regs + NFC_CONFIG1);
+-
+ 	writew(NFC_STATUS, host->regs + NFC_CONFIG2);
+ 
+ 	/* Wait for operation to complete */
+@@ -739,8 +728,10 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 	} else
+ 		BUG();
+ 
++	/* disable interrupt and spare enable */
+ 	tmp = readw(host->regs + NFC_CONFIG1);
+ 	tmp |= NFC_INT_MSK;
++	tmp &= ~NFC_SP_EN;
+ 	writew(tmp, host->regs + NFC_CONFIG1);
+ 
+ 	init_waitqueue_head(&host->irq_waitq);
+-- 
+1.6.0.4
+

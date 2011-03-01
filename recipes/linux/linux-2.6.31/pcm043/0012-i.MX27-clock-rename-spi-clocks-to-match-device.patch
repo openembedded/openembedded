@@ -1,0 +1,30 @@
+From 3e3ef3c8c617d291bb674488cd2920ad9088451e Mon Sep 17 00:00:00 2001
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Thu, 24 Sep 2009 09:58:52 +0200
+Subject: [PATCH 12/28] i.MX27 clock: rename spi clocks to match device
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ arch/arm/mach-mx2/clock_imx27.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/mach-mx2/clock_imx27.c b/arch/arm/mach-mx2/clock_imx27.c
+index 5abb763..1e9d608 100644
+--- a/arch/arm/mach-mx2/clock_imx27.c
++++ b/arch/arm/mach-mx2/clock_imx27.c
+@@ -638,9 +638,9 @@ static struct clk_lookup lookups[] = {
+ 	_REGISTER_CLOCK("mxc-mmc.0", NULL, sdhc1_clk)
+ 	_REGISTER_CLOCK("mxc-mmc.1", NULL, sdhc2_clk)
+ 	_REGISTER_CLOCK("mxc-mmc.2", NULL, sdhc3_clk)
+-	_REGISTER_CLOCK(NULL, "cspi1", cspi1_clk)
+-	_REGISTER_CLOCK(NULL, "cspi2", cspi2_clk)
+-	_REGISTER_CLOCK(NULL, "cspi3", cspi3_clk)
++	_REGISTER_CLOCK("spi_imx.0", NULL, cspi1_clk)
++	_REGISTER_CLOCK("spi_imx.1", NULL, cspi2_clk)
++	_REGISTER_CLOCK("spi_imx.2", NULL, cspi3_clk)
+ 	_REGISTER_CLOCK("imx-fb.0", NULL, lcdc_clk)
+ 	_REGISTER_CLOCK(NULL, "csi", csi_clk)
+ 	_REGISTER_CLOCK(NULL, "usb", usb_clk)
+-- 
+1.6.5.2
+

@@ -1,0 +1,27 @@
+Fix claculation, if "ARM sel" is set a 532Mhz PLL result to a 399MHz ARM clock
+Also th AHB clock is based on this ARM clock
+
+Signed-off-by: Jan Weitzel <J.Weitzel@phytec.de>
+---
+Index: linux-2.6.31.6/arch/arm/mach-mx3/clock-imx35.c
+===================================================================
+--- linux-2.6.31.6.orig/arch/arm/mach-mx3/clock-imx35.c	2009-12-15 13:15:35.335242329 +0100
++++ linux-2.6.31.6/arch/arm/mach-mx3/clock-imx35.c	2009-12-15 13:17:59.496030198 +0100
+@@ -155,7 +155,7 @@
+ 
+ 	aad = &clk_consumer[(pdr0 >> 16) & 0xf];
+ 	if (aad->sel)
+-		fref = fref * 2 / 3;
++		fref = fref * 3 / 4;
+ 
+ 	return fref / aad->arm;
+ }
+@@ -164,7 +164,7 @@
+ {
+ 	unsigned long pdr0 = __raw_readl(CCM_BASE + CCM_PDR0);
+ 	struct arm_ahb_div *aad;
+-	unsigned long fref = get_rate_mpll();
++	unsigned long fref = get_rate_arm();
+ 
+ 	aad = &clk_consumer[(pdr0 >> 16) & 0xf];
+ 

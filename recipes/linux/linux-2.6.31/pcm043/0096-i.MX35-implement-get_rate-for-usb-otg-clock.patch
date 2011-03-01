@@ -1,0 +1,54 @@
+From d7463937b967203cee097b96593ef46cb9ea23a7 Mon Sep 17 00:00:00 2001
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Tue, 21 Apr 2009 14:50:53 +0200
+Subject: [PATCH 096/101] i.MX35: implement get_rate for usb otg clock
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+
+rebased to  2.6.31.6
+Signed-off-by: Jan Weitzel <J.Weitzel@phytec.de>
+---
+ arch/arm/mach-mx3/clock-imx35.c |   16 +++++++++++++++-
+ 1 files changed, 15 insertions(+), 1 deletions(-)
+
+Index: linux-2.6.31.6/arch/arm/mach-mx3/clock-imx35.c
+===================================================================
+--- linux-2.6.31.6.orig/arch/arm/mach-mx3/clock-imx35.c	2009-12-08 09:49:47.949859691 +0100
++++ linux-2.6.31.6/arch/arm/mach-mx3/clock-imx35.c	2009-12-08 09:56:24.498623255 +0100
+@@ -273,6 +273,19 @@
+ 	return rate / get_3_3_div((pdr2 >> 16) & 0x3f);
+ }
+ 
++static unsigned long get_rate_otg(struct clk *clk)
++{
++	unsigned long pdr4 = __raw_readl(CCM_BASE + CCM_PDR4);
++	unsigned long rate;
++
++	if (pdr4 & (1 << 9))
++		rate = get_rate_arm();
++	else
++		rate = get_rate_ppll();
++
++	return rate / get_3_3_div((pdr4 >> 22) & 0x3f);
++}
++
+ static unsigned long get_rate_ipg_per(struct clk *clk)
+ {
+ 	unsigned long pdr0 = __raw_readl(CCM_BASE + CCM_PDR0);
+@@ -365,7 +378,7 @@
+ DEFINE_CLOCK(uart1_clk,  0, CCM_CGR2, 16, get_rate_uart, NULL);
+ DEFINE_CLOCK(uart2_clk,  1, CCM_CGR2, 18, get_rate_uart, NULL);
+ DEFINE_CLOCK(uart3_clk,  2, CCM_CGR2, 20, get_rate_uart, NULL);
+-DEFINE_CLOCK(usbotg_clk, 0, CCM_CGR2, 22, NULL, NULL);
++DEFINE_CLOCK(usbotg_clk, 0, CCM_CGR2, 22, get_rate_otg, NULL);
+ DEFINE_CLOCK(wdog_clk,   0, CCM_CGR2, 24, NULL, NULL);
+ DEFINE_CLOCK(max_clk,    0, CCM_CGR2, 26, NULL, NULL);
+ DEFINE_CLOCK(audmux_clk, 0, CCM_CGR2, 30, NULL, NULL);
+@@ -428,6 +441,7 @@
+ 	_REGISTER_CLOCK("mxc-ehci.0", "usb", usbotg_clk)
+ 	_REGISTER_CLOCK("mxc-ehci.1", "usb", usbotg_clk)
+ 	_REGISTER_CLOCK("mxc-ehci.2", "usb", usbotg_clk)
++	_REGISTER_CLOCK("fsl-usb2-udc", "usb", usbotg_clk)
+ 	_REGISTER_CLOCK("imx-wdt.0", NULL, wdog_clk)
+ 	_REGISTER_CLOCK(NULL, "max", max_clk)
+ 	_REGISTER_CLOCK(NULL, "audmux", audmux_clk)

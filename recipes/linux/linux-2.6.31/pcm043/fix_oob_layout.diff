@@ -1,0 +1,67 @@
+---
+ drivers/mtd/nand/mxc_nand_v2.c |   24 +++++++++++++++++++++---
+ 1 file changed, 21 insertions(+), 3 deletions(-)
+
+Index: drivers/mtd/nand/mxc_nand_v2.c
+===================================================================
+--- drivers/mtd/nand/mxc_nand_v2.c.orig
++++ drivers/mtd/nand/mxc_nand_v2.c
+@@ -1,6 +1,7 @@
+ /*
+  * Copyright 2004-2008 Freescale Semiconductor, Inc. All Rights Reserved.
+  * Copyright 2009 Sascha Hauer, kernel@pengutronix.de
++ * Copyright 2009 Juergen Beisert, kernel@pengutronix.de
+  *
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU General Public License
+@@ -130,6 +131,19 @@ struct mxc_nand_host {
+  *      User             ECC
+  *
+  * For pages larger than 512 bytes, n structures of this type will be used.
++ *
++ * Bad block detection:
++ * As long we do not overwrite the badblock_pattern structure member, the
++ * framework will use the description 'smallpage_flashbased' in file
++ * nand_bbt.c for page sizes with 512 bytes and description
++ * 'largepage_flashbased' in the same file for page sizes larger than
++ * 512 bytes.
++ *
++ * 'smallpage_flashbased' describes the bad block marker in the byte at offset
++ * five, 'largepage_flashbased' describes theses markers at offset 0 and 1
++ * in the OOB.
++ *
++ * So, we must keep these bytes free for bad block marker usage.
+  */
+ 
+ /* OOB description for 512 byte pages with 16 byte OOB */
+@@ -139,7 +153,9 @@ static struct nand_ecclayout nand_hw_ecc
+ 		 7,  8,  9, 10, 11, 12, 13, 14, 15
+ 	},
+ 	.oobfree = {
+-		{.offset = 0, .length = 7}
++		{.offset = 0, .length = 5},
++		/* keep offset 5 free for bad block marker usage */
++		{.offset = 6, .length = 1}
+ 	}
+ };
+ 
+@@ -153,7 +169,8 @@ static struct nand_ecclayout nand_hw_ecc
+ 		55, 56, 57, 58, 59, 60, 61, 62, 63
+ 	},
+ 	.oobfree = {
+-		{.offset = 0, .length = 7},
++		/* keep offset 0,1 free for bad block marker usage */
++		{.offset = 2, .length = 5},
+ 		{.offset = 16, .length = 7},
+ 		{.offset = 32, .length = 7},
+ 		{.offset = 48, .length = 7}
+@@ -175,7 +192,8 @@ static struct nand_ecclayout nand_hw_ecc
+ /*		119, 120, 121, 122, 123, 124, 125, 126, 127 */
+ 	},
+ 	.oobfree = {
+-		{.offset = 0, .length = 7},
++		/* keep offset 0,1 free for bad block marker usage */
++		{.offset = 2, .length = 5},
+ 		{.offset = 16, .length = 7},
+ 		{.offset = 32, .length = 7},
+ 		{.offset = 48, .length = 7},

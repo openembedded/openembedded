@@ -1,0 +1,1396 @@
+From: Wolfram Sang <w.sang@pengutronix.de>
+Subject: add preliminary MMC support to MX35
+
+WIP!
+
+This is the backported SDHCI-driver from top of tree with the modifications needed
+to make the esdhc-version from FSL work with it. There are still some issues left,
+especially stylewise, this is more a proof-of-concept for the approach.
+
+WIP!
+
+Not suitable for upstream (yet).
+
+Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+---
+ arch/arm/mach-mx3/pcm043.c          |   30 ++++
+ drivers/mmc/host/Kconfig            |  137 +++++++++++++++++++--
+ drivers/mmc/host/Makefile           |   14 +-
+ drivers/mmc/host/sdhci-esdhc.c      |  215 +++++++++++++++++++++++++++++++++
+ drivers/mmc/host/sdhci-of-core.c    |  231 ++++++++++++++++++++++++++++++++++++
+ drivers/mmc/host/sdhci-of-hlwd.c    |   65 ++++++++++
+ drivers/mmc/host/sdhci-of.h         |   37 +++++
+ drivers/mmc/host/sdhci-pltfm-core.c |  187 +++++++++++++++++++++++++++++
+ drivers/mmc/host/sdhci.c            |   56 ++++----
+ drivers/mmc/host/sdhci.h            |   51 ++++---
+ 10 files changed, 964 insertions(+), 59 deletions(-)
+
+Index: drivers/mmc/host/Kconfig
+===================================================================
+--- drivers/mmc/host/Kconfig.orig
++++ drivers/mmc/host/Kconfig
+@@ -44,6 +44,19 @@ config MMC_SDHCI_IO_ACCESSORS
+ 	  This is silent Kconfig symbol that is selected by the drivers that
+ 	  need to overwrite SDHCI IO memory accessors.
+ 
++config MMC_SDHCI_BIG_ENDIAN_32BIT_BYTE_SWAPPER
++	bool
++	select MMC_SDHCI_IO_ACCESSORS
++	help
++	  This option is selected by drivers running on big endian hosts
++	  and performing I/O to a SDHCI controller through a bus that
++	  implements a hardware byte swapper using a 32-bit datum.
++	  This endian mapping mode is called "data invariance" and
++	  has the effect of scrambling the addresses and formats of data
++	  accessed in sizes other than the datum size.
++
++	  This is the case for the Freescale eSDHC and Nintendo Wii SDHCI.
++
+ config MMC_SDHCI_PCI
+ 	tristate "SDHCI support on PCI bus"
+ 	depends on MMC_SDHCI && PCI
+@@ -72,14 +85,33 @@ config MMC_RICOH_MMC
+ 
+ 	  If unsure, say Y.
+ 
++config MMC_SDHCI_ESDHC
++	bool "SDHCI support for the Freescale eSDHC controller"
++	depends on MMC_SDHCI_OF || MMC_SDHCI_PLTFM
++	select MMC_SDHCI_IO_ACCESSORS
++	select MMC_SDHCI_BIG_ENDIAN_32BIT_BYTE_SWAPPER if MMC_SDHCI_OF
++	help
++	  This selects the Freescale eSDHC controller support.
++
++	  If unsure, say N.
++
+ config MMC_SDHCI_OF
+ 	tristate "SDHCI support on OpenFirmware platforms"
+ 	depends on MMC_SDHCI && PPC_OF
+-	select MMC_SDHCI_IO_ACCESSORS
+ 	help
+ 	  This selects the OF support for Secure Digital Host Controller
+-	  Interfaces. So far, only the Freescale eSDHC controller is known
+-	  to exist on OF platforms.
++	  Interfaces.
++
++	  If unsure, say N.
++
++config MMC_SDHCI_OF_HLWD
++	bool "SDHCI OF support for the Nintendo Wii SDHCI controllers"
++	depends on MMC_SDHCI_OF
++	select MMC_SDHCI_BIG_ENDIAN_32BIT_BYTE_SWAPPER
++	help
++	  This selects the Secure Digital Host Controller Interface (SDHCI)
++	  found in the "Hollywood" chipset of the Nintendo Wii video game
++	  console.
+ 
+ 	  If unsure, say N.
+ 
+@@ -132,11 +164,11 @@ config MMC_OMAP
+ 
+ config MMC_OMAP_HS
+ 	tristate "TI OMAP High Speed Multimedia Card Interface support"
+-	depends on ARCH_OMAP2430 || ARCH_OMAP3
++	depends on ARCH_OMAP2430 || ARCH_OMAP3 || ARCH_OMAP4
+ 	help
+ 	  This selects the TI OMAP High Speed Multimedia card Interface.
+-	  If you have an OMAP2430 or OMAP3 board with a Multimedia Card slot,
+-	  say Y or M here.
++	  If you have an OMAP2430 or OMAP3 board or OMAP4 board with a
++	  Multimedia Card slot, say Y or M here.
+ 
+ 	  If unsure, say N.
+ 
+@@ -160,6 +192,12 @@ config MMC_AU1X
+ 
+ 	  If unsure, say N.
+ 
++choice
++	prompt "Atmel SD/MMC Driver"
++	default MMC_ATMELMCI if AVR32
++	help
++	  Choose which driver to use for the Atmel MCI Silicon
++
+ config MMC_AT91
+ 	tristate "AT91 SD/MMC Card Interface support"
+ 	depends on ARCH_AT91
+@@ -170,17 +208,19 @@ config MMC_AT91
+ 
+ config MMC_ATMELMCI
+ 	tristate "Atmel Multimedia Card Interface support"
+-	depends on AVR32
++	depends on AVR32 || ARCH_AT91
+ 	help
+ 	  This selects the Atmel Multimedia Card Interface driver. If
+-	  you have an AT32 (AVR32) platform with a Multimedia Card
+-	  slot, say Y or M here.
++	  you have an AT32 (AVR32) or AT91 platform with a Multimedia
++	  Card slot, say Y or M here.
+ 
+ 	  If unsure, say N.
+ 
++endchoice
++
+ config MMC_ATMELMCI_DMA
+ 	bool "Atmel MCI DMA support (EXPERIMENTAL)"
+-	depends on MMC_ATMELMCI && DMA_ENGINE && EXPERIMENTAL
++	depends on MMC_ATMELMCI && AVR32 && DMA_ENGINE && EXPERIMENTAL
+ 	help
+ 	  Say Y here to have the Atmel MCI driver use a DMA engine to
+ 	  do data transfers and thus increase the throughput and
+@@ -199,6 +239,13 @@ config MMC_IMX
+ 
+ 	  If unsure, say N.
+ 
++config MMC_MSM7X00A
++	tristate "Qualcomm MSM 7X00A SDCC Controller Support"
++	depends on MMC && ARCH_MSM
++	help
++	  This provides support for the SD/MMC cell found in the
++          MSM 7X00A controllers from Qualcomm.
++
+ config MMC_MXC
+ 	tristate "Freescale i.MX2/3 Multimedia Card Interface support"
+ 	depends on ARCH_MXC
+@@ -236,6 +283,14 @@ config MMC_MVSDIO
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called mvsdio.
+ 
++config MMC_DAVINCI
++        tristate "TI DAVINCI Multimedia Card Interface support"
++        depends on ARCH_DAVINCI
++        help
++          This selects the TI DAVINCI Multimedia card Interface.
++          If you have an DAVINCI board with a Multimedia Card slot,
++          say Y or M here.  If unsure, say N.
++
+ config MMC_SPI
+ 	tristate "MMC/SD/SDIO over SPI"
+ 	depends on SPI_MASTER && !HIGHMEM && HAS_DMA
+@@ -261,6 +316,47 @@ config MMC_S3C
+ 
+ 	  If unsure, say N.
+ 
++config MMC_S3C_HW_SDIO_IRQ
++       bool "Hardware support for SDIO IRQ"
++       depends on MMC_S3C
++       help
++         Enable the hardware support for SDIO interrupts instead of using
++	 the generic polling code.
++
++choice
++	prompt "Samsung S3C SD/MMC transfer code"
++	depends on MMC_S3C
++
++config MMC_S3C_PIO
++	bool "Use PIO transfers only"
++	help
++	  Use PIO to transfer data between memory and the hardware.
++
++	  PIO is slower than DMA as it requires CPU instructions to
++	  move the data. This has been the traditional default for
++	  the S3C MCI driver.
++
++config MMC_S3C_DMA
++	bool "Use DMA transfers only (EXPERIMENTAL)"
++	depends on EXPERIMENTAL
++	help
++	  Use DMA to transfer data between memory and the hardare.
++
++	  Currently, the DMA support in this driver seems to not be
++	  working properly and needs to be debugged before this
++	  option is useful.
++
++config MMC_S3C_PIODMA
++	bool "Support for both PIO and DMA (EXPERIMENTAL)"
++	help
++	  Compile both the PIO and DMA transfer routines into the
++	  driver and let the platform select at run-time which one
++	  is best.
++
++	  See notes for the DMA option.
++
++endchoice
++
+ config MMC_SDRICOH_CS
+ 	tristate "MMC/SD driver for Ricoh Bay1Controllers (EXPERIMENTAL)"
+ 	depends on EXPERIMENTAL && PCI && PCMCIA
+@@ -273,7 +369,7 @@ config MMC_SDRICOH_CS
+ 
+ config MMC_TMIO
+ 	tristate "Toshiba Mobile IO Controller (TMIO) MMC/SD function support"
+-	depends on MFD_TMIO || MFD_ASIC3
++	depends on MFD_TMIO || MFD_ASIC3 || SUPERH
+ 	help
+ 	  This provides support for the SD/MMC cell found in TC6393XB,
+ 	  T7L66XB and also HTC ASIC3
+@@ -301,3 +397,22 @@ config MMC_VIA_SDMMC
+ 	  If you have a controller with this interface, say Y or M here.
+ 
+ 	  If unsure, say N.
++
++config SDH_BFIN
++	tristate "Blackfin Secure Digital Host support"
++	depends on MMC && ((BF54x && !BF544) || (BF51x && !BF512))
++	help
++	  If you say yes here you will get support for the Blackfin on-chip
++	  Secure Digital Host interface.  This includes support for MMC and
++	  SD cards.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called bfin_sdh.
++
++	  If unsure, say N.
++
++config SDH_BFIN_MISSING_CMD_PULLUP_WORKAROUND
++	bool "Blackfin EZkit Missing SDH_CMD Pull Up Resistor Workaround"
++	depends on SDH_BFIN
++	help
++	  If you say yes here SD-Cards may work on the EZkit.
+Index: drivers/mmc/host/Makefile
+===================================================================
+--- drivers/mmc/host/Makefile.orig
++++ drivers/mmc/host/Makefile
+@@ -13,8 +13,6 @@ obj-$(CONFIG_MMC_MXC)		+= mxcmmc.o
+ obj-$(CONFIG_MMC_SDHCI)		+= sdhci.o
+ obj-$(CONFIG_MMC_SDHCI_PCI)	+= sdhci-pci.o
+ obj-$(CONFIG_MMC_RICOH_MMC)	+= ricoh_mmc.o
+-obj-$(CONFIG_MMC_SDHCI_OF)	+= sdhci-of.o
+-obj-$(CONFIG_MMC_SDHCI_PLTFM)	+= sdhci-pltfm.o
+ obj-$(CONFIG_MMC_SDHCI_S3C)	+= sdhci-s3c.o
+ obj-$(CONFIG_MMC_WBSD)		+= wbsd.o
+ obj-$(CONFIG_MMC_AU1X)		+= au1xmmc.o
+@@ -23,7 +21,9 @@ obj-$(CONFIG_MMC_OMAP_HS)	+= omap_hsmmc.
+ obj-$(CONFIG_MMC_AT91)		+= at91_mci.o
+ obj-$(CONFIG_MMC_ATMELMCI)	+= atmel-mci.o
+ obj-$(CONFIG_MMC_TIFM_SD)	+= tifm_sd.o
++obj-$(CONFIG_MMC_MSM7X00A)	+= msm_sdcc.o
+ obj-$(CONFIG_MMC_MVSDIO)	+= mvsdio.o
++obj-$(CONFIG_MMC_DAVINCI)       += davinci_mmc.o
+ obj-$(CONFIG_MMC_SPI)		+= mmc_spi.o
+ ifeq ($(CONFIG_OF),y)
+ obj-$(CONFIG_MMC_SPI)		+= of_mmc_spi.o
+@@ -33,6 +33,16 @@ obj-$(CONFIG_MMC_SDRICOH_CS)	+= sdricoh_
+ obj-$(CONFIG_MMC_TMIO)		+= tmio_mmc.o
+ obj-$(CONFIG_MMC_CB710)	+= cb710-mmc.o
+ obj-$(CONFIG_MMC_VIA_SDMMC)	+= via-sdmmc.o
++obj-$(CONFIG_SDH_BFIN)		+= bfin_sdh.o
++
++obj-$(CONFIG_MMC_SDHCI_OF)	+= sdhci-of.o
++sdhci-of-y				:= sdhci-of-core.o
++sdhci-of-$(CONFIG_MMC_SDHCI_ESDHC)	+= sdhci-esdhc.o
++sdhci-of-$(CONFIG_MMC_SDHCI_OF_HLWD)	+= sdhci-of-hlwd.o
++
++obj-$(CONFIG_MMC_SDHCI_PLTFM)	+= sdhci-pltfm.o
++sdhci-pltfm-y				:= sdhci-pltfm-core.o
++sdhci-pltfm-$(CONFIG_MMC_SDHCI_ESDHC)	+= sdhci-esdhc.o
+ 
+ ifeq ($(CONFIG_CB710_DEBUG),y)
+ 	CFLAGS-cb710-mmc	+= -DDEBUG
+Index: drivers/mmc/host/sdhci-esdhc.c
+===================================================================
+--- /dev/null
++++ drivers/mmc/host/sdhci-esdhc.c
+@@ -0,0 +1,215 @@
++/*
++ * Freescale eSDHC controller driver.
++ *
++ * Copyright (c) 2007 Freescale Semiconductor, Inc.
++ * Copyright (c) 2009 MontaVista Software, Inc.
++ *
++ * Authors: Xiaobo Xie <X.Xie@freescale.com>
++ *	    Anton Vorontsov <avorontsov@ru.mvista.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or (at
++ * your option) any later version.
++ */
++
++#include <linux/io.h>
++#include <linux/delay.h>
++#include <linux/mmc/host.h>
++#include "sdhci-of.h"
++#include "sdhci.h"
++
++/*
++ * Ops and quirks for the Freescale eSDHC controller.
++ */
++
++#define ESDHC_DMA_SYSCTL	0x40c
++#define ESDHC_DMA_SNOOP		0x00000040
++
++#define ESDHC_SYSTEM_CONTROL	0x2c
++#define ESDHC_CLOCK_MASK	0x0000fff0
++#define ESDHC_PREDIV_SHIFT	8
++#define ESDHC_DIVIDER_SHIFT	4
++#define ESDHC_CLOCK_PEREN	0x00000004
++#define ESDHC_CLOCK_HCKEN	0x00000002
++#define ESDHC_CLOCK_IPGEN	0x00000001
++
++#define ESDHC_HOST_CONTROL_RES	0x05
++
++#ifdef CONFIG_MMC_SDHCI_BIG_ENDIAN_32BIT_BYTE_SWAPPER
++
++static u16 esdhc_readw_be(struct sdhci_host *host, int reg)
++{
++	u16 ret;
++
++	if (unlikely(reg == SDHCI_HOST_VERSION))
++		ret = in_be16(host->ioaddr + reg);
++	else
++		ret = sdhci_be32bs_readw(host, reg);
++	return ret;
++}
++
++static void esdhc_writew_be(struct sdhci_host *host, u16 val, int reg)
++{
++	if (reg == SDHCI_BLOCK_SIZE) {
++		/*
++		 * Two last DMA bits are reserved, and first one is used for
++		 * non-standard blksz of 4096 bytes that we don't support
++		 * yet. So clear the DMA boundary bits.
++		 */
++		val &= ~SDHCI_MAKE_BLKSZ(0x7, 0);
++	}
++	sdhci_be32bs_writew(host, val, reg);
++}
++
++static void esdhc_writeb_be(struct sdhci_host *host, u8 val, int reg)
++{
++	/* Prevent SDHCI core from writing reserved bits (e.g. HISPD). */
++	if (reg == SDHCI_HOST_CONTROL)
++		val &= ~ESDHC_HOST_CONTROL_RES;
++	sdhci_be32bs_writeb(host, val, reg);
++}
++
++static int esdhc_enable_dma(struct sdhci_host *host)
++{
++	u32 temp = sdhci_readl(host, ESDHC_DMA_SYSCTL);
++
++	temp |= ESDHC_DMA_SNOOP;
++	sdhci_writel(host, temp, ESDHC_DMA_SYSCTL);
++	return 0;
++}
++
++#else
++
++static inline void esdhc_clrset_le(struct sdhci_host *host, u32 mask, u32 val, int reg)
++{
++	void __iomem *base = host->ioaddr + (reg & ~0x3);
++	u32 shift = (reg & 0x3) * 8;
++
++	writel(((readl(base) & ~(mask << shift)) | (val << shift)), base);
++}
++
++static u16 esdhc_readw_le(struct sdhci_host *host, int reg)
++{
++	if (unlikely(reg == SDHCI_HOST_VERSION))
++		reg ^= 2;
++
++	return readw(host->ioaddr + reg);
++}
++
++static void esdhc_writew_le(struct sdhci_host *host, u16 val, int reg)
++{
++	static u16 ugh;
++
++	switch (reg) {
++	case SDHCI_TRANSFER_MODE:
++		/*
++		 * Postpone this write, we must do it together with a
++		 * command write that is down below.
++		 */
++		//of_host->xfer_mode_shadow = val;
++		ugh = val;
++		return;
++	case SDHCI_COMMAND:
++		writel(val << 16 | ugh, host->ioaddr + SDHCI_TRANSFER_MODE);
++		return;
++	case SDHCI_BLOCK_SIZE:
++		val &= ~SDHCI_MAKE_BLKSZ(0x7, 0);
++		break;
++	}
++	esdhc_clrset_le(host, 0xffff, val, reg);
++}
++
++static void esdhc_writeb_le(struct sdhci_host *host, u8 val, int reg)
++{
++	switch (reg) {
++	case SDHCI_POWER_CONTROL:
++		/* FSL put the DMA bits there, so skip :( */
++		return;
++	case SDHCI_HOST_CONTROL:
++		val &= 0x07;
++		val |= 0x20;
++		break;
++	}
++	esdhc_clrset_le(host, 0xff, val, reg);
++}
++
++#endif /* CONFIG_MMC_SDHCI_BIG_ENDIAN_32BIT_BYTE_SWAPPER */
++
++static void esdhc_set_clock(struct sdhci_host *host, unsigned int clock)
++{
++	int pre_div = 2;
++	int div = 1;
++	u32 temp;
++
++	temp = sdhci_readl(host, ESDHC_SYSTEM_CONTROL);
++	temp &= ~(ESDHC_CLOCK_IPGEN | ESDHC_CLOCK_HCKEN | ESDHC_CLOCK_PEREN | ESDHC_CLOCK_MASK);
++	sdhci_writel(host, temp, ESDHC_SYSTEM_CONTROL);
++
++	if (clock == 0)
++		goto out;
++
++	while (host->max_clk / pre_div / 16 > clock && pre_div < 256)
++		pre_div *= 2;
++
++	while (host->max_clk / pre_div / div > clock && div < 16)
++		div++;
++
++	dev_dbg(mmc_dev(host->mmc), "desired SD clock: %d, actual: %d (%02x %02x)\n",
++		clock, host->max_clk / pre_div / div, pre_div, div);
++
++	pre_div >>= 1;
++	div--;
++
++	temp = sdhci_readl(host, ESDHC_SYSTEM_CONTROL);
++	temp |= (ESDHC_CLOCK_IPGEN | ESDHC_CLOCK_HCKEN | ESDHC_CLOCK_PEREN |
++		  div << ESDHC_DIVIDER_SHIFT | pre_div << ESDHC_PREDIV_SHIFT);
++	sdhci_writel(host, temp, ESDHC_SYSTEM_CONTROL);
++	mdelay(100);
++out:
++	host->clock = clock;
++}
++
++static unsigned int esdhc_get_max_clock(struct sdhci_host *host)
++{
++	struct sdhci_of_host *of_host = sdhci_priv(host);
++
++	return of_host->clock;
++}
++
++static unsigned int esdhc_get_min_clock(struct sdhci_host *host)
++{
++	struct sdhci_of_host *of_host = sdhci_priv(host);
++
++	return of_host->clock / 256 / 16;
++}
++
++struct sdhci_quirk_data sdhci_esdhc = {
++	.quirks = SDHCI_QUIRK_FORCE_BLK_SZ_2048 |
++		  SDHCI_QUIRK_BROKEN_CARD_DETECTION |
++		  SDHCI_QUIRK_NO_BUSY_IRQ |
++		  SDHCI_QUIRK_NONSTANDARD_CLOCK |
++		  SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK |
++		  SDHCI_QUIRK_PIO_NEEDS_DELAY |
++		  SDHCI_QUIRK_RESTORE_IRQS_AFTER_RESET |
++		   SDHCI_QUIRK_BROKEN_TIMEOUT_VAL |
++		  SDHCI_QUIRK_NO_CARD_NO_RESET,
++	.ops = {
++#ifdef CONFIG_MMC_SDHCI_BIG_ENDIAN_32BIT_BYTE_SWAPPER
++		.custom_readl = sdhci_be32bs_readl,
++		.custom_readw = esdhc_readw_be,
++		.custom_readb = sdhci_be32bs_readb,
++		.custom_writel = sdhci_be32bs_writel,
++		.custom_writew = esdhc_writew_be,
++		.custom_writeb = esdhc_writeb_be,
++		.enable_dma = esdhc_enable_dma,
++#else
++		.custom_readw = esdhc_readw_le,
++		.custom_writew = esdhc_writew_le,
++		.custom_writeb = esdhc_writeb_le,
++#endif
++		.set_clock = esdhc_set_clock,
++		.get_max_clock = esdhc_get_max_clock,
++		.get_min_clock = esdhc_get_min_clock,
++	},
++};
+Index: drivers/mmc/host/sdhci-of-core.c
+===================================================================
+--- /dev/null
++++ drivers/mmc/host/sdhci-of-core.c
+@@ -0,0 +1,231 @@
++/*
++ * OpenFirmware bindings for Secure Digital Host Controller Interface.
++ *
++ * Copyright (c) 2007 Freescale Semiconductor, Inc.
++ * Copyright (c) 2009 MontaVista Software, Inc.
++ *
++ * Authors: Xiaobo Xie <X.Xie@freescale.com>
++ *	    Anton Vorontsov <avorontsov@ru.mvista.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or (at
++ * your option) any later version.
++ */
++
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/io.h>
++#include <linux/interrupt.h>
++#include <linux/delay.h>
++#include <linux/of.h>
++#include <linux/of_platform.h>
++#include <linux/mmc/host.h>
++#include <asm/machdep.h>
++#include "sdhci-of.h"
++#include "sdhci.h"
++
++#ifdef CONFIG_MMC_SDHCI_BIG_ENDIAN_32BIT_BYTE_SWAPPER
++
++/*
++ * These accessors are designed for big endian hosts doing I/O to
++ * little endian controllers incorporating a 32-bit hardware byte swapper.
++ */
++
++u32 sdhci_be32bs_readl(struct sdhci_host *host, int reg)
++{
++	return in_be32(host->ioaddr + reg);
++}
++
++u16 sdhci_be32bs_readw(struct sdhci_host *host, int reg)
++{
++	return in_be16(host->ioaddr + (reg ^ 0x2));
++}
++
++u8 sdhci_be32bs_readb(struct sdhci_host *host, int reg)
++{
++	return in_8(host->ioaddr + (reg ^ 0x3));
++}
++
++void sdhci_be32bs_writel(struct sdhci_host *host, u32 val, int reg)
++{
++	out_be32(host->ioaddr + reg, val);
++}
++
++void sdhci_be32bs_writew(struct sdhci_host *host, u16 val, int reg)
++{
++	struct sdhci_of_host *of_host = sdhci_priv(host);
++	int base = reg & ~0x3;
++	int shift = (reg & 0x2) * 8;
++
++	switch (reg) {
++	case SDHCI_TRANSFER_MODE:
++		/*
++		 * Postpone this write, we must do it together with a
++		 * command write that is down below.
++		 */
++		of_host->xfer_mode_shadow = val;
++		return;
++	case SDHCI_COMMAND:
++		sdhci_be32bs_writel(host, val << 16 | of_host->xfer_mode_shadow,
++				    SDHCI_TRANSFER_MODE);
++		return;
++	}
++	clrsetbits_be32(host->ioaddr + base, 0xffff << shift, val << shift);
++}
++
++void sdhci_be32bs_writeb(struct sdhci_host *host, u8 val, int reg)
++{
++	int base = reg & ~0x3;
++	int shift = (reg & 0x3) * 8;
++
++	clrsetbits_be32(host->ioaddr + base , 0xff << shift, val << shift);
++}
++#endif /* CONFIG_MMC_SDHCI_BIG_ENDIAN_32BIT_BYTE_SWAPPER */
++
++#ifdef CONFIG_PM
++
++static int sdhci_of_suspend(struct of_device *ofdev, pm_message_t state)
++{
++	struct sdhci_host *host = dev_get_drvdata(&ofdev->dev);
++
++	return mmc_suspend_host(host->mmc, state);
++}
++
++static int sdhci_of_resume(struct of_device *ofdev)
++{
++	struct sdhci_host *host = dev_get_drvdata(&ofdev->dev);
++
++	return mmc_resume_host(host->mmc);
++}
++
++#else
++
++#define sdhci_of_suspend NULL
++#define sdhci_of_resume NULL
++
++#endif
++
++static bool __devinit sdhci_of_wp_inverted(struct device_node *np)
++{
++	if (of_get_property(np, "sdhci,wp-inverted", NULL))
++		return true;
++
++	/* Old device trees don't have the wp-inverted property. */
++	return machine_is(mpc837x_rdb) || machine_is(mpc837x_mds);
++}
++
++static int __devinit sdhci_of_probe(struct of_device *ofdev,
++				 const struct of_device_id *match)
++{
++	struct device_node *np = ofdev->node;
++	struct sdhci_quirk_data *sdhci_of_data = match->data;
++	struct sdhci_host *host;
++	struct sdhci_of_host *of_host;
++	const u32 *clk;
++	int size;
++	int ret;
++
++	if (!of_device_is_available(np))
++		return -ENODEV;
++
++	host = sdhci_alloc_host(&ofdev->dev, sizeof(*of_host));
++	if (IS_ERR(host))
++		return -ENOMEM;
++
++	of_host = sdhci_priv(host);
++	dev_set_drvdata(&ofdev->dev, host);
++
++	host->ioaddr = of_iomap(np, 0);
++	if (!host->ioaddr) {
++		ret = -ENOMEM;
++		goto err_addr_map;
++	}
++
++	host->irq = irq_of_parse_and_map(np, 0);
++	if (!host->irq) {
++		ret = -EINVAL;
++		goto err_no_irq;
++	}
++
++	host->hw_name = dev_name(&ofdev->dev);
++	if (sdhci_of_data) {
++		host->quirks = sdhci_of_data->quirks;
++		host->ops = &sdhci_of_data->ops;
++	}
++
++	if (of_get_property(np, "sdhci,1-bit-only", NULL))
++		host->quirks |= SDHCI_QUIRK_FORCE_1_BIT_DATA;
++
++	if (sdhci_of_wp_inverted(np))
++		host->quirks |= SDHCI_QUIRK_INVERTED_WRITE_PROTECT;
++
++	clk = of_get_property(np, "clock-frequency", &size);
++	if (clk && size == sizeof(*clk) && *clk)
++		of_host->clock = *clk;
++
++	ret = sdhci_add_host(host);
++	if (ret)
++		goto err_add_host;
++
++	return 0;
++
++err_add_host:
++	irq_dispose_mapping(host->irq);
++err_no_irq:
++	iounmap(host->ioaddr);
++err_addr_map:
++	sdhci_free_host(host);
++	return ret;
++}
++
++static int __devexit sdhci_of_remove(struct of_device *ofdev)
++{
++	struct sdhci_host *host = dev_get_drvdata(&ofdev->dev);
++
++	sdhci_remove_host(host, 0);
++	sdhci_free_host(host);
++	irq_dispose_mapping(host->irq);
++	iounmap(host->ioaddr);
++	return 0;
++}
++
++static const struct of_device_id sdhci_of_match[] = {
++#ifdef CONFIG_MMC_SDHCI_OF_ESDHC
++	{ .compatible = "fsl,mpc8379-esdhc", .data = &sdhci_esdhc, },
++	{ .compatible = "fsl,mpc8536-esdhc", .data = &sdhci_esdhc, },
++	{ .compatible = "fsl,esdhc", .data = &sdhci_esdhc, },
++#endif
++#ifdef CONFIG_MMC_SDHCI_OF_HLWD
++	{ .compatible = "nintendo,hollywood-sdhci", .data = &sdhci_hlwd, },
++#endif
++	{ .compatible = "generic-sdhci", },
++	{},
++};
++MODULE_DEVICE_TABLE(of, sdhci_of_match);
++
++static struct of_platform_driver sdhci_of_driver = {
++	.driver.name = "sdhci-of",
++	.match_table = sdhci_of_match,
++	.probe = sdhci_of_probe,
++	.remove = __devexit_p(sdhci_of_remove),
++	.suspend = sdhci_of_suspend,
++	.resume	= sdhci_of_resume,
++};
++
++static int __init sdhci_of_init(void)
++{
++	return of_register_platform_driver(&sdhci_of_driver);
++}
++module_init(sdhci_of_init);
++
++static void __exit sdhci_of_exit(void)
++{
++	of_unregister_platform_driver(&sdhci_of_driver);
++}
++module_exit(sdhci_of_exit);
++
++MODULE_DESCRIPTION("Secure Digital Host Controller Interface OF driver");
++MODULE_AUTHOR("Xiaobo Xie <X.Xie@freescale.com>, "
++	      "Anton Vorontsov <avorontsov@ru.mvista.com>");
++MODULE_LICENSE("GPL");
+Index: drivers/mmc/host/sdhci-of-hlwd.c
+===================================================================
+--- /dev/null
++++ drivers/mmc/host/sdhci-of-hlwd.c
+@@ -0,0 +1,65 @@
++/*
++ * drivers/mmc/host/sdhci-of-hlwd.c
++ *
++ * Nintendo Wii Secure Digital Host Controller Interface.
++ * Copyright (C) 2009 The GameCube Linux Team
++ * Copyright (C) 2009 Albert Herranz
++ *
++ * Based on sdhci-of-esdhc.c
++ *
++ * Copyright (c) 2007 Freescale Semiconductor, Inc.
++ * Copyright (c) 2009 MontaVista Software, Inc.
++ *
++ * Authors: Xiaobo Xie <X.Xie@freescale.com>
++ *	    Anton Vorontsov <avorontsov@ru.mvista.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or (at
++ * your option) any later version.
++ */
++
++#include <linux/delay.h>
++#include <linux/mmc/host.h>
++#include "sdhci-of.h"
++#include "sdhci.h"
++
++/*
++ * Ops and quirks for the Nintendo Wii SDHCI controllers.
++ */
++
++/*
++ * We need a small delay after each write, or things go horribly wrong.
++ */
++#define SDHCI_HLWD_WRITE_DELAY	5 /* usecs */
++
++static void sdhci_hlwd_writel(struct sdhci_host *host, u32 val, int reg)
++{
++	sdhci_be32bs_writel(host, val, reg);
++	udelay(SDHCI_HLWD_WRITE_DELAY);
++}
++
++static void sdhci_hlwd_writew(struct sdhci_host *host, u16 val, int reg)
++{
++	sdhci_be32bs_writew(host, val, reg);
++	udelay(SDHCI_HLWD_WRITE_DELAY);
++}
++
++static void sdhci_hlwd_writeb(struct sdhci_host *host, u8 val, int reg)
++{
++	sdhci_be32bs_writeb(host, val, reg);
++	udelay(SDHCI_HLWD_WRITE_DELAY);
++}
++
++struct sdhci_quirk_data sdhci_hlwd = {
++	.quirks = SDHCI_QUIRK_32BIT_DMA_ADDR |
++		  SDHCI_QUIRK_32BIT_DMA_SIZE,
++	.ops = {
++		.readl = sdhci_be32bs_readl,
++		.readw = sdhci_be32bs_readw,
++		.readb = sdhci_be32bs_readb,
++		.writel = sdhci_hlwd_writel,
++		.writew = sdhci_hlwd_writew,
++		.writeb = sdhci_hlwd_writeb,
++	},
++};
+Index: drivers/mmc/host/sdhci-of.h
+===================================================================
+--- /dev/null
++++ drivers/mmc/host/sdhci-of.h
+@@ -0,0 +1,37 @@
++/*
++ * OpenFirmware bindings for Secure Digital Host Controller Interface.
++ *
++ * Copyright (c) 2007 Freescale Semiconductor, Inc.
++ * Copyright (c) 2009 MontaVista Software, Inc.
++ *
++ * Authors: Xiaobo Xie <X.Xie@freescale.com>
++ *	    Anton Vorontsov <avorontsov@ru.mvista.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or (at
++ * your option) any later version.
++ */
++
++#ifndef __SDHCI_OF_H
++#define __SDHCI_OF_H
++
++#include <linux/types.h>
++#include "sdhci.h"
++
++struct sdhci_of_host {
++	unsigned int clock;
++	u16 xfer_mode_shadow;
++};
++
++extern u32 sdhci_be32bs_readl(struct sdhci_host *host, int reg);
++extern u16 sdhci_be32bs_readw(struct sdhci_host *host, int reg);
++extern u8 sdhci_be32bs_readb(struct sdhci_host *host, int reg);
++extern void sdhci_be32bs_writel(struct sdhci_host *host, u32 val, int reg);
++extern void sdhci_be32bs_writew(struct sdhci_host *host, u16 val, int reg);
++extern void sdhci_be32bs_writeb(struct sdhci_host *host, u8 val, int reg);
++
++extern struct sdhci_quirk_data sdhci_esdhc;
++extern struct sdhci_quirk_data sdhci_hlwd;
++
++#endif /* __SDHCI_OF_H */
+Index: drivers/mmc/host/sdhci-pltfm-core.c
+===================================================================
+--- /dev/null
++++ drivers/mmc/host/sdhci-pltfm-core.c
+@@ -0,0 +1,187 @@
++/*
++ * sdhci-pltfm.c Support for SDHCI platform devices
++ * Copyright (c) 2009 Intel Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ */
++
++/* Supports:
++ * SDHCI platform devices
++ *
++ * Inspired by sdhci-pci.c, by Pierre Ossman
++ */
++
++#include <linux/delay.h>
++#include <linux/highmem.h>
++#include <linux/platform_device.h>
++#include <linux/mmc/host.h>
++#include <linux/clk.h>
++#include <linux/io.h>
++
++#include "sdhci.h"
++#include "sdhci-of.h"
++
++/*****************************************************************************\
++ *                                                                           *
++ * Device probing/removal                                                    *
++ *                                                                           *
++\*****************************************************************************/
++
++static int __devinit sdhci_pltfm_probe(struct platform_device *pdev)
++{
++	struct sdhci_host *host;
++	struct resource *iomem;
++	struct sdhci_of_host *of_host;
++	struct clk *clk;
++	int ret;
++	struct sdhci_quirk_data *quirk = (struct sdhci_quirk_data *) 
++			platform_get_device_id(pdev)->driver_data;
++
++	BUG_ON(pdev == NULL);
++
++	iomem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!iomem) {
++		ret = -ENOMEM;
++		goto err;
++	}
++
++	if (resource_size(iomem) != 0x100)
++		dev_err(&pdev->dev, "Invalid iomem size. You may "
++			"experience problems.\n");
++
++	if (pdev->dev.parent)
++		host = sdhci_alloc_host(pdev->dev.parent, sizeof(struct sdhci_of_host));
++	else
++		host = sdhci_alloc_host(&pdev->dev, sizeof(struct sdhci_of_host));
++
++	if (IS_ERR(host)) {
++		ret = PTR_ERR(host);
++		goto err;
++	}
++
++	of_host = sdhci_priv(host);
++	dev_set_drvdata(&pdev->dev, host);
++
++	host->hw_name = "platform";
++	host->irq = platform_get_irq(pdev, 0);
++
++	if (!request_mem_region(iomem->start, resource_size(iomem),
++		mmc_hostname(host->mmc))) {
++		dev_err(&pdev->dev, "cannot request region\n");
++		ret = -EBUSY;
++		goto err_request;
++	}
++
++	host->ioaddr = ioremap(iomem->start, resource_size(iomem));
++	if (!host->ioaddr) {
++		dev_err(&pdev->dev, "failed to remap registers\n");
++		ret = -ENOMEM;
++		goto err_remap;
++	}
++
++	if (quirk) {
++		host->quirks = quirk->quirks;
++		host->ops = &quirk->ops;
++	}
++
++	clk = clk_get(NULL, "sdhc");
++	if (IS_ERR(clk)) {
++		dev_err(&pdev->dev, "clk err\n");
++		return -ENODEV;
++	}
++	clk_enable(clk);
++	of_host->clock = clk_get_rate(clk);
++
++	ret = sdhci_add_host(host);
++	if (ret)
++		goto err_add_host;
++
++	platform_set_drvdata(pdev, host);
++	dev_info(&pdev->dev, "registered as %s\n", platform_get_device_id(pdev)->name);
++
++	return 0;
++
++err_add_host:
++	iounmap(host->ioaddr);
++err_remap:
++	release_mem_region(iomem->start, resource_size(iomem));
++err_request:
++	sdhci_free_host(host);
++err:
++	printk(KERN_ERR"Probing of sdhci-pltfm failed: %d\n", ret);
++	return ret;
++}
++
++static int __devexit sdhci_pltfm_remove(struct platform_device *pdev)
++{
++	struct sdhci_host *host = platform_get_drvdata(pdev);
++	struct resource *iomem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	int dead;
++	u32 scratch;
++
++	dead = 0;
++	scratch = readl(host->ioaddr + SDHCI_INT_STATUS);
++	if (scratch == (u32)-1)
++		dead = 1;
++
++	sdhci_remove_host(host, dead);
++	iounmap(host->ioaddr);
++	release_mem_region(iomem->start, resource_size(iomem));
++	sdhci_free_host(host);
++	platform_set_drvdata(pdev, NULL);
++
++	return 0;
++}
++
++static struct platform_device_id sdhci_id_table[] = {
++	{ "sdhci",		0, },
++#ifdef CONFIG_MMC_SDHCI_ESDHC
++	{ "sdhci-esdhc",	(kernel_ulong_t)&sdhci_esdhc, },
++#endif
++        { },
++};
++MODULE_DEVICE_TABLE(platform, sdhci_id_table);
++
++static struct platform_driver sdhci_pltfm_driver = {
++	.driver = {
++		.name	= "sdhci",
++		.owner	= THIS_MODULE,
++	},
++	.probe		= sdhci_pltfm_probe,
++	.remove		= __devexit_p(sdhci_pltfm_remove),
++	.id_table	= sdhci_id_table,
++};
++
++/*****************************************************************************\
++ *                                                                           *
++ * Driver init/exit                                                          *
++ *                                                                           *
++\*****************************************************************************/
++
++static int __init sdhci_drv_init(void)
++{
++	return platform_driver_register(&sdhci_pltfm_driver);
++}
++
++static void __exit sdhci_drv_exit(void)
++{
++	platform_driver_unregister(&sdhci_pltfm_driver);
++}
++
++module_init(sdhci_drv_init);
++module_exit(sdhci_drv_exit);
++
++MODULE_DESCRIPTION("Secure Digital Host Controller Interface platform driver");
++MODULE_AUTHOR("Mocean Laboratories <info@mocean-labs.com>");
++MODULE_LICENSE("GPL v2");
+Index: drivers/mmc/host/sdhci.c
+===================================================================
+--- drivers/mmc/host/sdhci.c.orig
++++ drivers/mmc/host/sdhci.c
+@@ -58,7 +58,7 @@ static void sdhci_dumpregs(struct sdhci_
+ 		sdhci_readw(host, SDHCI_TRANSFER_MODE));
+ 	printk(KERN_DEBUG DRIVER_NAME ": Present:  0x%08x | Host ctl: 0x%08x\n",
+ 		sdhci_readl(host, SDHCI_PRESENT_STATE),
+-		sdhci_readb(host, SDHCI_HOST_CONTROL));
++		sdhci_readl(host, SDHCI_HOST_CONTROL));
+ 	printk(KERN_DEBUG DRIVER_NAME ": Power:    0x%08x | Blk gap:  0x%08x\n",
+ 		sdhci_readb(host, SDHCI_POWER_CONTROL),
+ 		sdhci_readb(host, SDHCI_BLOCK_GAP_CONTROL));
+@@ -591,6 +591,9 @@ static u8 sdhci_calc_timeout(struct sdhc
+ 	target_timeout = data->timeout_ns / 1000 +
+ 		data->timeout_clks / host->clock;
+ 
++	if (host->quirks & SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK)
++		host->timeout_clk = host->clock / 1000;
++
+ 	/*
+ 	 * Figure out needed cycles.
+ 	 * We do this in steps in order to fit inside a 32 bit int.
+@@ -652,7 +655,7 @@ static void sdhci_prepare_data(struct sd
+ 	count = sdhci_calc_timeout(host, data);
+ 	sdhci_writeb(host, count, SDHCI_TIMEOUT_CONTROL);
+ 
+-	if (host->flags & SDHCI_USE_DMA)
++	if (host->flags & (SDHCI_USE_SDMA | SDHCI_USE_ADMA))
+ 		host->flags |= SDHCI_REQ_USE_DMA;
+ 
+ 	/*
+@@ -991,8 +994,8 @@ static void sdhci_set_clock(struct sdhci
+ 	clk |= SDHCI_CLOCK_INT_EN;
+ 	sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
+ 
+-	/* Wait max 10 ms */
+-	timeout = 10;
++	/* Wait max 20 ms */
++	timeout = 20;
+ 	while (!((clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL))
+ 		& SDHCI_CLOCK_INT_STABLE)) {
+ 		if (timeout == 0) {
+@@ -1597,7 +1600,7 @@ int sdhci_resume_host(struct sdhci_host 
+ {
+ 	int ret;
+ 
+-	if (host->flags & SDHCI_USE_DMA) {
++	if (host->flags & (SDHCI_USE_SDMA | SDHCI_USE_ADMA)) {
+ 		if (host->ops->enable_dma)
+ 			host->ops->enable_dma(host);
+ 	}
+@@ -1678,23 +1681,20 @@ int sdhci_add_host(struct sdhci_host *ho
+ 	caps = sdhci_readl(host, SDHCI_CAPABILITIES);
+ 
+ 	if (host->quirks & SDHCI_QUIRK_FORCE_DMA)
+-		host->flags |= SDHCI_USE_DMA;
+-	else if (!(caps & SDHCI_CAN_DO_DMA))
+-		DBG("Controller doesn't have DMA capability\n");
++		host->flags |= SDHCI_USE_SDMA;
++	else if (!(caps & SDHCI_CAN_DO_SDMA))
++		DBG("Controller doesn't have SDMA capability\n");
+ 	else
+-		host->flags |= SDHCI_USE_DMA;
++		host->flags |= SDHCI_USE_SDMA;
+ 
+ 	if ((host->quirks & SDHCI_QUIRK_BROKEN_DMA) &&
+-		(host->flags & SDHCI_USE_DMA)) {
++		(host->flags & SDHCI_USE_SDMA)) {
+ 		DBG("Disabling DMA as it is marked broken\n");
+-		host->flags &= ~SDHCI_USE_DMA;
++		host->flags &= ~SDHCI_USE_SDMA;
+ 	}
+ 
+-	if (host->flags & SDHCI_USE_DMA) {
+-		if ((host->version >= SDHCI_SPEC_200) &&
+-				(caps & SDHCI_CAN_DO_ADMA2))
+-			host->flags |= SDHCI_USE_ADMA;
+-	}
++	if ((host->version >= SDHCI_SPEC_200) && (caps & SDHCI_CAN_DO_ADMA2))
++		host->flags |= SDHCI_USE_ADMA;
+ 
+ 	if ((host->quirks & SDHCI_QUIRK_BROKEN_ADMA) &&
+ 		(host->flags & SDHCI_USE_ADMA)) {
+@@ -1702,13 +1702,14 @@ int sdhci_add_host(struct sdhci_host *ho
+ 		host->flags &= ~SDHCI_USE_ADMA;
+ 	}
+ 
+-	if (host->flags & SDHCI_USE_DMA) {
++	if (host->flags & (SDHCI_USE_SDMA | SDHCI_USE_ADMA)) {
+ 		if (host->ops->enable_dma) {
+ 			if (host->ops->enable_dma(host)) {
+ 				printk(KERN_WARNING "%s: No suitable DMA "
+ 					"available. Falling back to PIO.\n",
+ 					mmc_hostname(mmc));
+-				host->flags &= ~(SDHCI_USE_DMA | SDHCI_USE_ADMA);
++				host->flags &=
++					~(SDHCI_USE_SDMA | SDHCI_USE_ADMA);
+ 			}
+ 		}
+ 	}
+@@ -1736,7 +1737,7 @@ int sdhci_add_host(struct sdhci_host *ho
+ 	 * mask, but PIO does not need the hw shim so we set a new
+ 	 * mask here in that case.
+ 	 */
+-	if (!(host->flags & SDHCI_USE_DMA)) {
++	if (!(host->flags & (SDHCI_USE_SDMA | SDHCI_USE_ADMA))) {
+ 		host->dma_mask = DMA_BIT_MASK(64);
+ 		mmc_dev(host->mmc)->dma_mask = &host->dma_mask;
+ 	}
+@@ -1757,13 +1758,15 @@ int sdhci_add_host(struct sdhci_host *ho
+ 	host->timeout_clk =
+ 		(caps & SDHCI_TIMEOUT_CLK_MASK) >> SDHCI_TIMEOUT_CLK_SHIFT;
+ 	if (host->timeout_clk == 0) {
+-		if (!host->ops->get_timeout_clock) {
++		if (host->ops->get_timeout_clock) {
++			host->timeout_clk = host->ops->get_timeout_clock(host);
++		} else if (!(host->quirks &
++				SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK)) {
+ 			printk(KERN_ERR
+ 			       "%s: Hardware doesn't specify timeout clock "
+ 			       "frequency.\n", mmc_hostname(mmc));
+ 			return -ENODEV;
+ 		}
+-		host->timeout_clk = host->ops->get_timeout_clock(host);
+ 	}
+ 	if (caps & SDHCI_TIMEOUT_CLK_UNIT)
+ 		host->timeout_clk *= 1000;
+@@ -1772,7 +1775,8 @@ int sdhci_add_host(struct sdhci_host *ho
+ 	 * Set host parameters.
+ 	 */
+ 	mmc->ops = &sdhci_ops;
+-	if (host->ops->get_min_clock)
++	if (host->quirks & SDHCI_QUIRK_NONSTANDARD_CLOCK &&
++			host->ops->set_clock && host->ops->get_min_clock)
+ 		mmc->f_min = host->ops->get_min_clock(host);
+ 	else
+ 		mmc->f_min = host->max_clk / 256;
+@@ -1810,7 +1814,7 @@ int sdhci_add_host(struct sdhci_host *ho
+ 	 */
+ 	if (host->flags & SDHCI_USE_ADMA)
+ 		mmc->max_hw_segs = 128;
+-	else if (host->flags & SDHCI_USE_DMA)
++	else if (host->flags & SDHCI_USE_SDMA)
+ 		mmc->max_hw_segs = 1;
+ 	else /* PIO */
+ 		mmc->max_hw_segs = 128;
+@@ -1893,10 +1897,10 @@ int sdhci_add_host(struct sdhci_host *ho
+ 
+ 	mmc_add_host(mmc);
+ 
+-	printk(KERN_INFO "%s: SDHCI controller on %s [%s] using %s%s\n",
++	printk(KERN_INFO "%s: SDHCI controller on %s [%s] using %s\n",
+ 		mmc_hostname(mmc), host->hw_name, dev_name(mmc_dev(mmc)),
+-		(host->flags & SDHCI_USE_ADMA)?"A":"",
+-		(host->flags & SDHCI_USE_DMA)?"DMA":"PIO");
++		(host->flags & SDHCI_USE_ADMA) ? "ADMA" :
++		(host->flags & SDHCI_USE_SDMA) ? "DMA" : "PIO");
+ 
+ 	sdhci_enable_card_detection(host);
+ 
+Index: drivers/mmc/host/sdhci.h
+===================================================================
+--- drivers/mmc/host/sdhci.h.orig
++++ drivers/mmc/host/sdhci.h
+@@ -8,6 +8,8 @@
+  * the Free Software Foundation; either version 2 of the License, or (at
+  * your option) any later version.
+  */
++#ifndef __SDHCI_H
++#define __SDHCI_H
+ 
+ #include <linux/scatterlist.h>
+ #include <linux/compiler.h>
+@@ -143,7 +145,7 @@
+ #define  SDHCI_CAN_DO_ADMA2	0x00080000
+ #define  SDHCI_CAN_DO_ADMA1	0x00100000
+ #define  SDHCI_CAN_DO_HISPD	0x00200000
+-#define  SDHCI_CAN_DO_DMA	0x00400000
++#define  SDHCI_CAN_DO_SDMA	0x00400000
+ #define  SDHCI_CAN_VDD_330	0x01000000
+ #define  SDHCI_CAN_VDD_300	0x02000000
+ #define  SDHCI_CAN_VDD_180	0x04000000
+@@ -232,6 +234,8 @@ struct sdhci_host {
+ #define SDHCI_QUIRK_FORCE_1_BIT_DATA			(1<<22)
+ /* Controller needs 10ms delay between applying power and clock */
+ #define SDHCI_QUIRK_DELAY_AFTER_POWER			(1<<23)
++/* Controller uses SDCLK instead of TMCLK for data timeouts */
++#define SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK		(1<<24)
+ 
+ 	int			irq;		/* Device IRQ */
+ 	void __iomem *		ioaddr;		/* Mapped address */
+@@ -250,7 +254,7 @@ struct sdhci_host {
+ 	spinlock_t		lock;		/* Mutex */
+ 
+ 	int			flags;		/* Host attributes */
+-#define SDHCI_USE_DMA		(1<<0)		/* Host is DMA capable */
++#define SDHCI_USE_SDMA		(1<<0)		/* Host is SDMA capable */
+ #define SDHCI_USE_ADMA		(1<<1)		/* Host is ADMA capable */
+ #define SDHCI_REQ_USE_DMA	(1<<2)		/* Use DMA for this req. */
+ #define SDHCI_DEVICE_DEAD	(1<<3)		/* Device unresponsive */
+@@ -290,12 +294,12 @@ struct sdhci_host {
+ 
+ struct sdhci_ops {
+ #ifdef CONFIG_MMC_SDHCI_IO_ACCESSORS
+-	u32		(*readl)(struct sdhci_host *host, int reg);
+-	u16		(*readw)(struct sdhci_host *host, int reg);
+-	u8		(*readb)(struct sdhci_host *host, int reg);
+-	void		(*writel)(struct sdhci_host *host, u32 val, int reg);
+-	void		(*writew)(struct sdhci_host *host, u16 val, int reg);
+-	void		(*writeb)(struct sdhci_host *host, u8 val, int reg);
++	u32		(*custom_readl)(struct sdhci_host *host, int reg);
++	u16		(*custom_readw)(struct sdhci_host *host, int reg);
++	u8		(*custom_readb)(struct sdhci_host *host, int reg);
++	void		(*custom_writel)(struct sdhci_host *host, u32 val, int reg);
++	void		(*custom_writew)(struct sdhci_host *host, u16 val, int reg);
++	void		(*custom_writeb)(struct sdhci_host *host, u8 val, int reg);
+ #endif
+ 
+ 	void	(*set_clock)(struct sdhci_host *host, unsigned int clock);
+@@ -310,48 +314,48 @@ struct sdhci_ops {
+ 
+ static inline void sdhci_writel(struct sdhci_host *host, u32 val, int reg)
+ {
+-	if (unlikely(host->ops->writel))
+-		host->ops->writel(host, val, reg);
++	if (unlikely(host->ops->custom_writel))
++		host->ops->custom_writel(host, val, reg);
+ 	else
+ 		writel(val, host->ioaddr + reg);
+ }
+ 
+ static inline void sdhci_writew(struct sdhci_host *host, u16 val, int reg)
+ {
+-	if (unlikely(host->ops->writew))
+-		host->ops->writew(host, val, reg);
++	if (unlikely(host->ops->custom_writew))
++		host->ops->custom_writew(host, val, reg);
+ 	else
+ 		writew(val, host->ioaddr + reg);
+ }
+ 
+ static inline void sdhci_writeb(struct sdhci_host *host, u8 val, int reg)
+ {
+-	if (unlikely(host->ops->writeb))
+-		host->ops->writeb(host, val, reg);
++	if (unlikely(host->ops->custom_writeb))
++		host->ops->custom_writeb(host, val, reg);
+ 	else
+ 		writeb(val, host->ioaddr + reg);
+ }
+ 
+ static inline u32 sdhci_readl(struct sdhci_host *host, int reg)
+ {
+-	if (unlikely(host->ops->readl))
+-		return host->ops->readl(host, reg);
++	if (unlikely(host->ops->custom_readl))
++		return host->ops->custom_readl(host, reg);
+ 	else
+ 		return readl(host->ioaddr + reg);
+ }
+ 
+ static inline u16 sdhci_readw(struct sdhci_host *host, int reg)
+ {
+-	if (unlikely(host->ops->readw))
+-		return host->ops->readw(host, reg);
++	if (unlikely(host->ops->custom_readw))
++		return host->ops->custom_readw(host, reg);
+ 	else
+ 		return readw(host->ioaddr + reg);
+ }
+ 
+ static inline u8 sdhci_readb(struct sdhci_host *host, int reg)
+ {
+-	if (unlikely(host->ops->readb))
+-		return host->ops->readb(host, reg);
++	if (unlikely(host->ops->custom_readb))
++		return host->ops->custom_readb(host, reg);
+ 	else
+ 		return readb(host->ioaddr + reg);
+ }
+@@ -390,6 +394,11 @@ static inline u8 sdhci_readb(struct sdhc
+ 
+ #endif /* CONFIG_MMC_SDHCI_IO_ACCESSORS */
+ 
++struct sdhci_quirk_data {
++	unsigned int quirks;
++	struct sdhci_ops ops;
++};
++
+ extern struct sdhci_host *sdhci_alloc_host(struct device *dev,
+ 	size_t priv_size);
+ extern void sdhci_free_host(struct sdhci_host *host);
+@@ -406,3 +415,5 @@ extern void sdhci_remove_host(struct sdh
+ extern int sdhci_suspend_host(struct sdhci_host *host, pm_message_t state);
+ extern int sdhci_resume_host(struct sdhci_host *host);
+ #endif
++
++#endif /* __SDHCI_H */
+Index: arch/arm/mach-mx3/pcm043.c
+===================================================================
+--- arch/arm/mach-mx3/pcm043.c.orig
++++ arch/arm/mach-mx3/pcm043.c
+@@ -279,6 +279,34 @@ static struct pad_desc pcm043_pads[] = {
+         MX35_PAD_SD2_DATA1__GPIO2_3,
+   	MX35_PAD_TX5_RX0__CAN2_TXCAN,
+   	MX35_PAD_TX4_RX1__CAN2_RXCAN,
++       /* esdhc */
++        MX35_PAD_SD1_CMD__ESDHC1_CMD,
++        MX35_PAD_SD1_CLK__ESDHC1_CLK,
++        MX35_PAD_SD1_DATA0__ESDHC1_DAT0,
++        MX35_PAD_SD1_DATA1__ESDHC1_DAT1,
++        MX35_PAD_SD1_DATA2__ESDHC1_DAT2,
++        MX35_PAD_SD1_DATA3__ESDHC1_DAT3,
++};
++
++#include <linux/mmc/host.h>
++
++static struct resource sdhci_resources[] = {
++       {
++               .start          = 0x53fb4000,
++               .end            = 0x53fb4000 + 0xff,
++               .flags          = IORESOURCE_MEM,
++       }, {
++               .start          = MX35_INT_MMC_SDHC1,
++               .end            = MX35_INT_MMC_SDHC1,
++               .flags          = IORESOURCE_IRQ,
++       },
++};
++
++static struct platform_device sdhci_device = {
++       .name           = "sdhci-esdhc",
++       .id             = 0,
++       .num_resources  = ARRAY_SIZE(sdhci_resources),
++       .resource       = sdhci_resources,
+ };
+ 
+ static int pcm043_usbh1_init(struct platform_device *pdev)
+@@ -516,6 +544,8 @@ static void __init mxc_board_init(void)
+         gpio_request (32 + 3, "can");
+         gpio_direction_output (32 + 3, 1);
+         gpio_set_value (32 + 3, 1);
++
++        platform_device_register(&sdhci_device);
+ }
+ 
+ static void __init pcm043_timer_init(void)

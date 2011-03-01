@@ -1,0 +1,132 @@
+From 4bdc922cba4f392af2adf57c9aa86c0d2241ac88 Mon Sep 17 00:00:00 2001
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Thu, 22 Oct 2009 14:50:33 +0200
+Subject: [PATCH 06/28] i.MX2: Add sound (ssi) resources
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ arch/arm/mach-mx2/clock_imx27.c |    4 +-
+ arch/arm/mach-mx2/devices.c     |   78 +++++++++++++++++++++++++++++++++++++++
+ arch/arm/mach-mx2/devices.h     |    5 ++
+ 3 files changed, 85 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/mach-mx2/clock_imx27.c b/arch/arm/mach-mx2/clock_imx27.c
+index 2c97144..5abb763 100644
+--- a/arch/arm/mach-mx2/clock_imx27.c
++++ b/arch/arm/mach-mx2/clock_imx27.c
+@@ -644,8 +644,8 @@ static struct clk_lookup lookups[] = {
+ 	_REGISTER_CLOCK("imx-fb.0", NULL, lcdc_clk)
+ 	_REGISTER_CLOCK(NULL, "csi", csi_clk)
+ 	_REGISTER_CLOCK(NULL, "usb", usb_clk)
+-	_REGISTER_CLOCK(NULL, "ssi1", ssi1_clk)
+-	_REGISTER_CLOCK(NULL, "ssi2", ssi2_clk)
++	_REGISTER_CLOCK("imx-ssi.0", NULL, ssi1_clk)
++	_REGISTER_CLOCK("imx-ssi.1", NULL, ssi2_clk)
+ 	_REGISTER_CLOCK("mxc_nand.0", NULL, nfc_clk)
+ 	_REGISTER_CLOCK(NULL, "vpu", vpu_clk)
+ 	_REGISTER_CLOCK(NULL, "dma", dma_clk)
+diff --git a/arch/arm/mach-mx2/devices.c b/arch/arm/mach-mx2/devices.c
+index a0f1b36..f877baa 100644
+--- a/arch/arm/mach-mx2/devices.c
++++ b/arch/arm/mach-mx2/devices.c
+@@ -407,6 +407,84 @@ struct platform_device mxc_sdhc_device1 = {
+        .resource       = mxc_sdhc2_resources,
+ };
+ 
++static struct resource imx_ssi_resources0[] = {
++	{
++		.start	= SSI1_BASE_ADDR,
++		.end	= SSI1_BASE_ADDR + 0x6F,
++		.flags	= IORESOURCE_MEM,
++	}, {
++		.start	= MXC_INT_SSI1,
++		.end	= MXC_INT_SSI1,
++		.flags	= IORESOURCE_IRQ,
++	}, {
++		.name	= "tx0",
++		.start	= DMA_REQ_SSI1_TX0,
++		.end	= DMA_REQ_SSI1_TX0,
++		.flags	= IORESOURCE_DMA,
++	}, {
++		.name	= "rx0",
++		.start	= DMA_REQ_SSI1_RX0,
++		.end	= DMA_REQ_SSI1_RX0,
++		.flags	= IORESOURCE_DMA,
++	}, {
++		.name	= "tx1",
++		.start	= DMA_REQ_SSI1_TX1,
++		.end	= DMA_REQ_SSI1_TX1,
++		.flags	= IORESOURCE_DMA,
++	}, {
++		.name	= "rx1",
++		.start	= DMA_REQ_SSI1_RX1,
++		.end	= DMA_REQ_SSI1_RX1,
++		.flags	= IORESOURCE_DMA,
++	},
++};
++
++static struct resource imx_ssi_resources1[] = {
++	{
++		.start	= SSI2_BASE_ADDR,
++		.end	= SSI2_BASE_ADDR + 0x6F,
++		.flags	= IORESOURCE_MEM,
++	}, {
++		.start	= MXC_INT_SSI2,
++		.end	= MXC_INT_SSI2,
++		.flags	= IORESOURCE_IRQ,
++	}, {
++		.name	= "tx0",
++		.start	= DMA_REQ_SSI2_TX0,
++		.end	= DMA_REQ_SSI2_TX0,
++		.flags	= IORESOURCE_DMA,
++	}, {
++		.name	= "rx0",
++		.start	= DMA_REQ_SSI2_RX0,
++		.end	= DMA_REQ_SSI2_RX0,
++		.flags	= IORESOURCE_DMA,
++	}, {
++		.name	= "tx1",
++		.start	= DMA_REQ_SSI2_TX1,
++		.end	= DMA_REQ_SSI2_TX1,
++		.flags	= IORESOURCE_DMA,
++	}, {
++		.name	= "rx1",
++		.start	= DMA_REQ_SSI2_RX1,
++		.end	= DMA_REQ_SSI2_RX1,
++		.flags	= IORESOURCE_DMA,
++	},
++};
++
++struct platform_device imx_ssi_device0 = {
++	.name = "imx-ssi",
++	.id = 0,
++	.num_resources = ARRAY_SIZE(imx_ssi_resources0),
++	.resource = imx_ssi_resources0,
++};
++
++struct platform_device imx_ssi_device1 = {
++	.name = "imx-ssi",
++	.id = 1,
++	.num_resources = ARRAY_SIZE(imx_ssi_resources1),
++	.resource = imx_ssi_resources1,
++};
++
+ /* GPIO port description */
+ static struct mxc_gpio_port imx_gpio_ports[] = {
+ 	[0] = {
+diff --git a/arch/arm/mach-mx2/devices.h b/arch/arm/mach-mx2/devices.h
+index 049005b..0c1f14d 100644
+--- a/arch/arm/mach-mx2/devices.h
++++ b/arch/arm/mach-mx2/devices.h
+@@ -20,3 +20,8 @@ extern struct platform_device mxc_i2c_device0;
+ extern struct platform_device mxc_i2c_device1;
+ extern struct platform_device mxc_sdhc_device0;
+ extern struct platform_device mxc_sdhc_device1;
++extern struct platform_device mxc_spi_device0;
++extern struct platform_device mxc_spi_device1;
++extern struct platform_device mxc_spi_device2;
++extern struct platform_device imx_ssi_device0;
++extern struct platform_device imx_ssi_device1;
+-- 
+1.6.5.2
+

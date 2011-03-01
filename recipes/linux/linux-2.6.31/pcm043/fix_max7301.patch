@@ -1,0 +1,28 @@
+Fix wrong setting of portconfig register.
+mask size is 2bits, so shift must be twice offset
+direction input value is 2
+
+Signed-off-by: Jan Weitzel <J.Weitzel@phytec.de>
+---
+Index: linux-2.6.28/drivers/gpio/max7301.c
+===================================================================
+--- linux-2.6.28.orig/drivers/gpio/max7301.c
++++ linux-2.6.28/drivers/gpio/max7301.c
+@@ -123,7 +123,7 @@ static int max7301_direction_input(struc
+ 
+ 	/* Standard GPIO API doesn't support pull-ups, has to be extended.
+ 	 * Hard-coding no pollup for now. */
+-	*config = (*config & ~(3 << (offset & 3))) | (1 << (offset & 3));
++	*config = (*config & ~(3 << (2*(offset & 3)))) | (2 << (2*(offset & 3)));
+ 
+ 	ret = max7301_write(ts->spi, 0x08 + (offset >> 2), *config);
+ 
+@@ -157,7 +157,7 @@ static int max7301_direction_output(stru
+ 
+ 	mutex_lock(&ts->lock);
+ 
+-	*config = (*config & ~(3 << (offset & 3))) | (1 << (offset & 3));
++	*config = (*config & ~(3 << (2*(offset & 3)))) | (1 << (2*(offset & 3)));
+ 
+ 	ret = __max7301_set(ts, offset, value);
+ 

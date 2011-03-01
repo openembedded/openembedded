@@ -1,0 +1,45 @@
+From ec0217a98d38662cc058dcc6124c5a1e7a6bc8db Mon Sep 17 00:00:00 2001
+From: Juergen Beisert <j.beisert@pengutronix.de>
+Date: Tue, 29 Sep 2009 13:51:19 +0200
+Subject: [PATCH 02/15] MXC NFC: Remove useless structure member
+
+Remove a local copy of a value always present in other structures.
+
+Signed-off-by: Juergen Beisert <j.beisert@pengutronix.de>
+---
+ drivers/mtd/nand/mxc_nand_v2.c |    5 +----
+ 1 files changed, 1 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/nand/mxc_nand_v2.c b/drivers/mtd/nand/mxc_nand_v2.c
+index b7ae2e0..3483e7d 100644
+--- a/drivers/mtd/nand/mxc_nand_v2.c
++++ b/drivers/mtd/nand/mxc_nand_v2.c
+@@ -104,7 +104,6 @@ struct mxc_nand_host {
+ 	unsigned int		buf_start;
+ 
+ 	wait_queue_head_t	irq_waitq;
+-	int			g_page_mask;
+ 
+ 	struct clk		*clk;
+ 	int			clk_enabled;
+@@ -473,7 +472,7 @@ static void mxc_do_addr_cycle(struct mtd_info *mtd, int column, int page_addr)
+ 	struct nand_chip *nand_chip = mtd->priv;
+ 	struct mxc_nand_host *host = nand_chip->priv;
+ 
+-	u32 page_mask = host->g_page_mask;
++	u32 page_mask = nand_chip->pagemask;
+ 
+ 	if (column != -1) {
+ 		send_addr(host, column & 0xFF);
+@@ -790,8 +789,6 @@ static int mxc_nand_scan_bbt(struct mtd_info *mtd)
+ 	struct nand_chip *this = mtd->priv;
+ 	struct mxc_nand_host *host = this->priv;
+ 
+-	host->g_page_mask = this->pagemask;
+-
+ 	if (mtd->writesize == 2048) {
+ 		mxc_set_nfms(mtd, 1 << NFMS_NF_PG_SZ);
+ 		this->ecc.layout = &nand_hw_eccoob_2k;
+-- 
+1.6.1
+

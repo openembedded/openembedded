@@ -1,0 +1,17 @@
+Add support for the LED on baseboard
+
+Signed-off-by: Jan Weitzel <J.Weitzel@phytec.de>
+---
+Index: linux-2.6.31.6/arch/arm/mach-mx3/pcm043.c
+===================================================================
+--- linux-2.6.31.6.orig/arch/arm/mach-mx3/pcm043.c	2009-12-11 13:56:03.526475695 +0100
++++ linux-2.6.31.6/arch/arm/mach-mx3/pcm043.c	2009-12-11 13:58:49.894701069 +0100
+@@ -250,6 +250,8 @@
+ 	MX35_PAD_SCK4__AUDMUX_AUD4_TXC,
+   	/* 1-Wire*/
+ 	MX35_PAD_GPIO1_0__OWIRE_LINE,
++	/* GPIO */
++	MX35_PAD_ATA_CS0__GPIO2_6,
+ 	/* CAN */
+         MX35_PAD_SD2_DATA2__CAN1_RXCAN,
+         MX35_PAD_SD2_DATA3__CAN1_TXCAN,

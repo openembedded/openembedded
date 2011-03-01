@@ -1,0 +1,31 @@
+From cf903eff4c30f2eca4a67951f5b66e961f0ba542 Mon Sep 17 00:00:00 2001
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Fri, 5 Jun 2009 10:55:32 +0200
+Subject: [PATCH] mxc_nand: remove unused defines
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ drivers/mtd/nand/mxc_nand.c |    7 -------
+ 1 files changed, 0 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index 04b2bf2..2988f1d 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -122,13 +122,6 @@ struct mxc_nand_host {
+ 
+ /* Define delays in microsec for NAND device operations */
+ #define TROP_US_DELAY   2000
+-/* Macros to get byte and bit positions of ECC */
+-#define COLPOS(x)  ((x) >> 3)
+-#define BITPOS(x) ((x) & 0xf)
+-
+-/* Define single bit Error positions in Main & Spare area */
+-#define MAIN_SINGLEBIT_ERROR 0x4
+-#define SPARE_SINGLEBIT_ERROR 0x1
+ 
+ /* OOB placement block for use with hardware ecc generation */
+ static struct nand_ecclayout nand_hw_eccoob_smallpage = {
+-- 
+1.6.0.4
+

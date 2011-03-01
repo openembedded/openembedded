@@ -1,0 +1,47 @@
+From cb9f37d106e5ac9672291f0ce5df5dd955d61d5d Mon Sep 17 00:00:00 2001
+From: Juergen Beisert <j.beisert@pengutronix.de>
+Date: Tue, 29 Sep 2009 17:00:18 +0200
+Subject: [PATCH 14/15] MXC NFC: Add NAND device to the pcm043 platform
+
+Phytec's PCM043 is equipped with a 1 GiB NAND.
+
+Signed-off-by: Juergen Beisert <j.beisert@pengutronix.de>
+
+rebased to  2.6.31.6
+Signed-off-by: Jan Weitzel <J.Weitzel@phytec.de>
+---
+ arch/arm/mach-mx3/pcm043.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
+
+Index: arch/arm/mach-mx3/pcm043.c
+===================================================================
+--- arch/arm/mach-mx3/pcm043.c.orig	2009-12-10 11:34:30.754671808 +0100
++++ arch/arm/mach-mx3/pcm043.c	2009-12-10 11:34:35.157145682 +0100
+@@ -48,6 +48,7 @@
+ #include <mach/mxc_ehci.h>
+ #include <mach/audmux.h>
+ #include <mach/ssi.h>
++#include <mach/mxc_nand.h>
+ 
+ #include "devices.h"
+ 
+@@ -359,6 +360,11 @@
+ 	.flags = IMX_SSI_USE_AC97,
+ };
+ 
++static struct mxc_nand_platform_data pcm043_nand_board_info = {
++	.width = 1,
++	.hw_ecc = 1,
++};
++
+ /*
+  * Board specific initialization.
+  */
+@@ -394,6 +400,7 @@
+ 	mxc_register_device(&mxc_i2c_device0, &pcm043_i2c_1_data);
+ #endif
+ 
++	mxc_register_device(&mxc_nand_device, &pcm043_nand_board_info);
+ 	mxc_register_device(&mx3_ipu, &mx3_ipu_data);
+ 	mxc_register_device(&mx3_fb, &mx3fb_pdata);
+ 

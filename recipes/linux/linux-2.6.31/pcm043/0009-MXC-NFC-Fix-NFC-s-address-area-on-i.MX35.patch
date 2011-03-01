@@ -1,0 +1,28 @@
+From aa20693d5b25d2ed31a31265687a66b29d51737b Mon Sep 17 00:00:00 2001
+From: Juergen Beisert <j.beisert@pengutronix.de>
+Date: Tue, 29 Sep 2009 15:37:47 +0200
+Subject: [PATCH 09/15] MXC NFC: Fix NFC's address area on i.MX35
+
+The address area of the NFS in the i.MX35 silicon is much larger than 4k.
+
+Signed-off-by: Juergen Beisert <j.beisert@pengutronix.de>
+
+rebased to  2.6.31.6
+Signed-off-by: Jan Weitzel <J.Weitzel@phytec.de>
+---
+ arch/arm/mach-mx3/devices.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+Index: arch/arm/mach-mx3/devices.c
+===================================================================
+--- arch/arm/mach-mx3/devices.c.orig	2009-12-10 13:38:53.334702610 +0100
++++ arch/arm/mach-mx3/devices.c	2009-12-10 13:39:18.186144277 +0100
+@@ -585,7 +585,7 @@
+ 	}
+ 	if (cpu_is_mx35()) {
+ 		mxc_nand_resources[0].start = MX35_NFC_BASE_ADDR;
+-		mxc_nand_resources[0].end = MX35_NFC_BASE_ADDR + 0xfff;
++		mxc_nand_resources[0].end = MX35_NFC_BASE_ADDR + 0x1fff;
+ 		otg_resources[0].start = MX35_OTG_BASE_ADDR;
+ 		otg_resources[0].end = MX35_OTG_BASE_ADDR + 0x1ff;
+ 		otg_resources[1].start = MXC_INT_USBOTG;

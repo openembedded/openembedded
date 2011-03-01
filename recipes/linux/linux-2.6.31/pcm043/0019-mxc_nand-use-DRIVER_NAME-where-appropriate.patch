@@ -1,0 +1,35 @@
+From b3fc73608b3fee8aa3dbccf4826fe21ffa69850b Mon Sep 17 00:00:00 2001
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Wed, 21 Oct 2009 16:06:27 +0200
+Subject: [PATCH] mxc_nand: use DRIVER_NAME where appropriate
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ drivers/mtd/nand/mxc_nand.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index dd80e88..d5445cd 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -698,7 +698,7 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 	mtd->priv = this;
+ 	mtd->owner = THIS_MODULE;
+ 	mtd->dev.parent = &pdev->dev;
+-	mtd->name = "mxc_nand";
++	mtd->name = DRIVER_NAME;
+ 
+ 	/* 50 us command delay time */
+ 	this->chip_delay = 5;
+@@ -762,7 +762,7 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 
+ 	host->irq = platform_get_irq(pdev, 0);
+ 
+-	err = request_irq(host->irq, mxc_nfc_irq, 0, "mxc_nd", host);
++	err = request_irq(host->irq, mxc_nfc_irq, 0, DRIVER_NAME, host);
+ 	if (err)
+ 		goto eirq;
+ 
+-- 
+1.6.0.4
+

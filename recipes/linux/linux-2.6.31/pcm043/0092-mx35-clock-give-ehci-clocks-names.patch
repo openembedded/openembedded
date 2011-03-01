@@ -1,0 +1,30 @@
+From 655b9879b22d1e2776c8df0a4fa77801a1b7fd97 Mon Sep 17 00:00:00 2001
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Fri, 17 Apr 2009 16:53:27 +0200
+Subject: [PATCH 092/101] mx35 clock: give ehci clocks names
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+
+rebased to  2.6.31.6
+Signed-off-by: Jan Weitzel <J.Weitzel@phytec.de>
+---
+ arch/arm/mach-mx3/clock-imx35.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+Index: linux-2.6.31.6/arch/arm/mach-mx3/clock-imx35.c
+===================================================================
+--- linux-2.6.31.6.orig/arch/arm/mach-mx3/clock-imx35.c	2009-12-08 09:39:04.798706951 +0100
++++ linux-2.6.31.6/arch/arm/mach-mx3/clock-imx35.c	2009-12-08 09:49:47.949859691 +0100
+@@ -425,9 +425,9 @@
+ 	_REGISTER_CLOCK("imx-uart.0", NULL, uart1_clk)
+ 	_REGISTER_CLOCK("imx-uart.1", NULL, uart2_clk)
+ 	_REGISTER_CLOCK("imx-uart.2", NULL, uart3_clk)
+-	_REGISTER_CLOCK("mxc-ehci.0", NULL, usbotg_clk)
+-	_REGISTER_CLOCK("mxc-ehci.1", NULL, usbotg_clk)
+-	_REGISTER_CLOCK("mxc-ehci.2", NULL, usbotg_clk)
++	_REGISTER_CLOCK("mxc-ehci.0", "usb", usbotg_clk)
++	_REGISTER_CLOCK("mxc-ehci.1", "usb", usbotg_clk)
++	_REGISTER_CLOCK("mxc-ehci.2", "usb", usbotg_clk)
+ 	_REGISTER_CLOCK("imx-wdt.0", NULL, wdog_clk)
+ 	_REGISTER_CLOCK(NULL, "max", max_clk)
+ 	_REGISTER_CLOCK(NULL, "audmux", audmux_clk)

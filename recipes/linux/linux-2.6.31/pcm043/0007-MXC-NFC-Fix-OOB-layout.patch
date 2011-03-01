@@ -1,0 +1,104 @@
+From 1b05f0fbf96df288d1ee6d0bf4175e99b7d04730 Mon Sep 17 00:00:00 2001
+From: Juergen Beisert <j.beisert@pengutronix.de>
+Date: Tue, 29 Sep 2009 15:28:21 +0200
+Subject: [PATCH 07/15] MXC NFC: Fix OOB layout
+
+This data is not from the datasheet because the datasheet conceals these
+facts. Its collected from other sources and some hints from the datasheet.
+Hope its documentation is useful.
+
+Signed-off-by: Juergen Beisert <j.beisert@pengutronix.de>
+---
+ drivers/mtd/nand/mxc_nand_v2.c |   68 ++++++++++++++++++++++++++++++++-------
+ 1 files changed, 55 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/mtd/nand/mxc_nand_v2.c b/drivers/mtd/nand/mxc_nand_v2.c
+index 3b1011c..c1cbb05 100644
+--- a/drivers/mtd/nand/mxc_nand_v2.c
++++ b/drivers/mtd/nand/mxc_nand_v2.c
+@@ -121,27 +121,69 @@ struct mxc_nand_host {
+ #define TROP_US_DELAY   2000
+ 
+ /*
+- * OOB placement block for use with hardware ecc generation
++ * ECC data seems organized in 16 byte planes in this hardware.
++ * 7 bytes can be used for user's purpose, and 9 bytes are used
++ * for the ECC sum.
++ *
++ *  0 1 2 3 4 5 6 7 8 9 A B C D E F
++ *  |<----------->|<------------->|
++ *      User             ECC
++ *
++ * For pages larger than 512 bytes, n structures of this type will be used.
+  */
++
++/* OOB description for 512 byte pages with 16 byte OOB */
+ static struct nand_ecclayout nand_hw_eccoob_512 = {
+-	.eccbytes = 9,
+-	.eccpos = {7, 8, 9, 10, 11, 12, 13, 14, 15},
+-	.oobavail = 4,
+-	.oobfree = {{0, 4}}
++	.eccbytes = 1 * 9,
++	.eccpos = {
++		 7,  8,  9, 10, 11, 12, 13, 14, 15
++	},
++	.oobfree = {
++		{.offset = 0, .length = 7}
++	}
+ };
+ 
++/* OOB description for 2048 byte pages with 64 byte OOB */
+ static struct nand_ecclayout nand_hw_eccoob_2k = {
+-	.eccbytes = 9,
+-	.eccpos = {7, 8, 9, 10, 11, 12, 13, 14, 15},
+-	.oobavail = 4,
+-	.oobfree = {{2, 4}}
++	.eccbytes = 4 * 9,
++	.eccpos = {
++		 7,  8,  9, 10, 11, 12, 13, 14, 15,
++		23, 24, 25, 26, 27, 28, 29, 30, 31,
++		39, 40, 41, 42, 43, 44, 45, 46, 47,
++		55, 56, 57, 58, 59, 60, 61, 62, 63
++	},
++	.oobfree = {
++		{.offset = 0, .length = 7},
++		{.offset = 16, .length = 7},
++		{.offset = 32, .length = 7},
++		{.offset = 48, .length = 7}
++	}
+ };
+ 
++/* OOB description for 4096 byte pages with 128 byte OOB */
+ static struct nand_ecclayout nand_hw_eccoob_4k = {
+-	.eccbytes = 9,
+-	.eccpos = {7, 8, 9, 10, 11, 12, 13, 14, 15},
+-	.oobavail = 4,
+-	.oobfree = {{2, 4}}
++	.eccbytes = 8 * 9,
++	.eccpos = {
++		 7,  8,  9, 10, 11, 12, 13, 14, 15,
++		23, 24, 25, 26, 27, 28, 29, 30, 31,
++		39, 40, 41, 42, 43, 44, 45, 46, 47,
++		55, 56, 57, 58, 59, 60, 61, 62, 63,
++		71, 72, 73, 74, 75, 76, 77, 78, 79,
++		87, 88, 89, 90, 91, 92, 93, 94, 95,
++		103, 104, 105, 106, 107, 108, 109, 110, 111,
++/* ouch, only 64 entries allowed */
++/*		119, 120, 121, 122, 123, 124, 125, 126, 127 */
++	},
++	.oobfree = {
++		{.offset = 0, .length = 7},
++		{.offset = 16, .length = 7},
++		{.offset = 32, .length = 7},
++		{.offset = 48, .length = 7},
++		{.offset = 64, .length = 7},
++		{.offset = 80, .length = 7},
++		{.offset = 96, .length = 7},
++		{.offset = 112, .length = 7}
++	}
+ };
+ 
+ #ifdef CONFIG_MTD_PARTITIONS
+-- 
+1.6.1
+

@@ -1,0 +1,28 @@
+From 3a28735748fbdeb6c8036f8f64998a4d44ab9228 Mon Sep 17 00:00:00 2001
+From: Juergen Beisert <j.beisert@pengutronix.de>
+Date: Tue, 29 Sep 2009 15:47:34 +0200
+Subject: [PATCH 11/15] MXC NFC: Fix NFC's clock name
+
+Use a name in a style like all other clocks.
+
+Signed-off-by: Juergen Beisert <j.beisert@pengutronix.de>
+---
+ drivers/mtd/nand/mxc_nand_v2.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/nand/mxc_nand_v2.c b/drivers/mtd/nand/mxc_nand_v2.c
+index 3891d9a..bab3712 100644
+--- a/drivers/mtd/nand/mxc_nand_v2.c
++++ b/drivers/mtd/nand/mxc_nand_v2.c
+@@ -858,7 +858,7 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 	this->read_buf = mxc_nand_read_buf;
+ 	this->verify_buf = mxc_nand_verify_buf;
+ 
+-	host->clk = clk_get(&pdev->dev, "nfc_clk");
++	host->clk = clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(host->clk)) {
+ 		err = PTR_ERR(host->clk);
+ 		goto eclk;
+-- 
+1.6.1
+
