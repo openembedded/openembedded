@@ -1,7 +1,7 @@
 Index: linux-2.6.27.8/arch/arm/mach-lpc32xx/arch-lpc32xx.c
 ===================================================================
---- linux-2.6.27.8.orig/arch/arm/mach-lpc32xx/arch-lpc32xx.c	2011-03-01 16:09:18.000000000 +0100
-+++ linux-2.6.27.8/arch/arm/mach-lpc32xx/arch-lpc32xx.c	2011-03-01 16:13:03.165618120 +0100
+--- linux-2.6.27.8.orig/arch/arm/mach-lpc32xx/arch-lpc32xx.c	2011-03-01 17:33:29.480903120 +0100
++++ linux-2.6.27.8/arch/arm/mach-lpc32xx/arch-lpc32xx.c	2011-03-01 17:33:29.550938120 +0100
 @@ -342,6 +342,9 @@
  	tmp |= UART_UART6_IRDAMOD_BYPASS;
  #endif
@@ -15,7 +15,7 @@ Index: linux-2.6.27.8/arch/arm/mach-lpc32xx/arch-lpc32xx.c
 Index: linux-2.6.27.8/arch/arm/mach-lpc32xx/include/mach/lpc32xx_pwm.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.27.8/arch/arm/mach-lpc32xx/include/mach/lpc32xx_pwm.h	2011-03-01 16:13:03.165618120 +0100
++++ linux-2.6.27.8/arch/arm/mach-lpc32xx/include/mach/lpc32xx_pwm.h	2011-03-01 17:33:29.550938120 +0100
 @@ -0,0 +1,31 @@
 +/*
 + *  linux/arch/arm/mach-lpc32xx/include/mach/lpc32xx_pwm.h
@@ -50,8 +50,8 @@ Index: linux-2.6.27.8/arch/arm/mach-lpc32xx/include/mach/lpc32xx_pwm.h
 +#endif
 Index: linux-2.6.27.8/arch/arm/mach-lpc32xx/Kconfig
 ===================================================================
---- linux-2.6.27.8.orig/arch/arm/mach-lpc32xx/Kconfig	2011-03-01 16:09:19.000000000 +0100
-+++ linux-2.6.27.8/arch/arm/mach-lpc32xx/Kconfig	2011-03-01 16:13:03.165618120 +0100
+--- linux-2.6.27.8.orig/arch/arm/mach-lpc32xx/Kconfig	2011-03-01 17:33:29.530928120 +0100
++++ linux-2.6.27.8/arch/arm/mach-lpc32xx/Kconfig	2011-03-01 17:33:29.550938120 +0100
 @@ -185,6 +185,12 @@
  	  which support is selected, the ethernet interface driver needs to be
  	  selected in the device driver networking section.
@@ -67,8 +67,8 @@ Index: linux-2.6.27.8/arch/arm/mach-lpc32xx/Kconfig
  config MACH_LPC32XX_UART5_ENABLE
 Index: linux-2.6.27.8/arch/arm/mach-lpc32xx/Makefile
 ===================================================================
---- linux-2.6.27.8.orig/arch/arm/mach-lpc32xx/Makefile	2011-03-01 16:09:19.000000000 +0100
-+++ linux-2.6.27.8/arch/arm/mach-lpc32xx/Makefile	2011-03-01 16:13:03.165618120 +0100
+--- linux-2.6.27.8.orig/arch/arm/mach-lpc32xx/Makefile	2011-03-01 17:33:29.530928120 +0100
++++ linux-2.6.27.8/arch/arm/mach-lpc32xx/Makefile	2011-03-01 17:33:29.550938120 +0100
 @@ -7,6 +7,7 @@
  obj-y				:= timer-lpc32xx.o irq-lpc32xx.o arch-lpc32xx.o
  obj-y				+= serial-lpc32xx.o clocks-lpc32xx.o
@@ -80,7 +80,7 @@ Index: linux-2.6.27.8/arch/arm/mach-lpc32xx/Makefile
 Index: linux-2.6.27.8/arch/arm/mach-lpc32xx/spwm-lpc32xx.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.27.8/arch/arm/mach-lpc32xx/spwm-lpc32xx.c	2011-03-01 16:13:03.168953120 +0100
++++ linux-2.6.27.8/arch/arm/mach-lpc32xx/spwm-lpc32xx.c	2011-03-01 17:33:29.550938120 +0100
 @@ -0,0 +1,126 @@
 +/*
 + *  linux/arch/arm/mach-lpc32xx/spwm-lpc32xx.c
@@ -210,8 +210,8 @@ Index: linux-2.6.27.8/arch/arm/mach-lpc32xx/spwm-lpc32xx.c
 +}
 Index: linux-2.6.27.8/arch/arm/mach-lpc32xx/sys-lpc32xx.h
 ===================================================================
---- linux-2.6.27.8.orig/arch/arm/mach-lpc32xx/sys-lpc32xx.h	2011-03-01 16:09:19.000000000 +0100
-+++ linux-2.6.27.8/arch/arm/mach-lpc32xx/sys-lpc32xx.h	2011-03-01 16:18:36.725648119 +0100
+--- linux-2.6.27.8.orig/arch/arm/mach-lpc32xx/sys-lpc32xx.h	2011-03-01 17:33:29.517588120 +0100
++++ linux-2.6.27.8/arch/arm/mach-lpc32xx/sys-lpc32xx.h	2011-03-01 17:34:00.286298119 +0100
 @@ -30,7 +30,7 @@
  #include <mach/board.h>
  
@@ -235,9 +235,9 @@ Index: linux-2.6.27.8/arch/arm/mach-lpc32xx/sys-lpc32xx.h
  extern void __init lpc32xx_init (void);
  extern void __init lpc32xx_map_io(void);
  extern int __init clk_init(void);
-++#if defined(CONFIG_SPWM_LPC32XX)
-++extern void lpc32xx_spwm_init(void);
-++#endif
++#if defined(CONFIG_SPWM_LPC32XX)
++extern void lpc32xx_spwm_init(void);
++#endif
  
  #endif
  
