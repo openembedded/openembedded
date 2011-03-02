@@ -22,4 +22,4 @@ else
 fi
 
 # delete myself
-rm -f /etc/rcS.d/S98configure
+rm -f /etc/rcS.d/S40configure
