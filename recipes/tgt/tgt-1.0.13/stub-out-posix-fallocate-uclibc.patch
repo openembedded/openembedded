@@ -1,0 +1,93 @@
+From fujita.tomonori@lab.ntt.co.jp Sun Jan 16 19:40:56 2011
+Delivered-To: raj.khem@gmail.com
+Received: by 10.90.55.10 with SMTP id d10cs170645aga;
+        Sun, 16 Jan 2011 19:40:57 -0800 (PST)
+Received: by 10.42.167.73 with SMTP id r9mr3888746icy.26.1295235656555;
+        Sun, 16 Jan 2011 19:40:56 -0800 (PST)
+Return-Path: <fujita.tomonori@lab.ntt.co.jp>
+Received: from sh.osrg.net (sh.osrg.net [192.16.179.4])
+        by mx.google.com with ESMTPS id i2si10061956icv.26.2011.01.16.19.40.55
+        (version=TLSv1/SSLv3 cipher=RC4-MD5);
+        Sun, 16 Jan 2011 19:40:56 -0800 (PST)
+Received-SPF: neutral (google.com: 192.16.179.4 is neither permitted nor denied by best guess record for domain of fujita.tomonori@lab.ntt.co.jp) client-ip=192.16.179.4;
+Authentication-Results: mx.google.com; spf=neutral (google.com: 192.16.179.4 is neither permitted nor denied by best guess record for domain of fujita.tomonori@lab.ntt.co.jp) smtp.mail=fujita.tomonori@lab.ntt.co.jp
+Received: from localhost (rose.osrg.net [10.76.0.1])
+	by sh.osrg.net (8.14.3/8.14.3/OSRG-NET) with ESMTP id p0H3erYQ001827;
+	Mon, 17 Jan 2011 12:40:53 +0900
+Date: Mon, 17 Jan 2011 12:40:53 +0900
+To: paulepanter@users.sourceforge.net
+Cc: stgt@vger.kernel.org, raj.khem@gmail.com
+Subject: Re: [PATCH] usr/tgtimg.c: use `ftruncate` to fix build with uClibc
+From: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
+In-Reply-To: <1295181691.5847.39.camel@mattotaupa>
+References: <1295181691.5847.39.camel@mattotaupa>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Message-Id: <20110117122804H.fujita.tomonori@lab.ntt.co.jp>
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-3.0 (sh.osrg.net [192.16.179.4]); Mon, 17 Jan 2011 12:40:54 +0900 (JST)
+X-Virus-Scanned: clamav-milter 0.96.5 at sh
+X-Virus-Status: Clean
+Status: RO
+Content-Length: 1415
+Lines: 58
+
+On Sun, 16 Jan 2011 13:41:31 +0100
+Paul Menzel <paulepanter@users.sourceforge.net> wrote:
+
+> From: Khem Raj <raj.khem@gmail.com>
+> Date: Sat Jan 15 16:37:19 2011 -0800
+> 
+> uClibc does not provide `posix_fallocate` so use `ftruncate`.
+
+Hmm, what posix_fallocate does is identical to what ftruncate does in
+this situation?
+
+We avoid to adding #ifdef to *.c like linux kernel coding
+style. Please add #ifdef to *.h instead.
+
+You can do something like this:
+
+diff --git a/usr/tgtimg.c b/usr/tgtimg.c
+index 169207a..8ca2a4d 100644
+--- a/usr/tgtimg.c
++++ b/usr/tgtimg.c
+@@ -38,6 +38,7 @@
+ #include "ssc.h"
+ #include "libssc.h"
+ #include "scsi.h"
++#include "util.h"
+ 
+ #define NO_LOGGING
+ #include "log.h"
+@@ -438,7 +439,7 @@ static int sbc_new(int op, char *path, char *capacity, char *media_type)
+ 			perror("Failed creating file");
+ 			exit(2);
+ 		}
+-		if (posix_fallocate(fd, 0, size*1024*1024LL) == -1) {
++		if (__fallocate(fd, 0, size*1024*1024LL) == -1) {
+ 			perror("posix_fallocate failed.");
+ 			exit(3);
+ 		}
+diff --git a/usr/util.h b/usr/util.h
+index 9530d2a..4a0e303 100644
+--- a/usr/util.h
++++ b/usr/util.h
+@@ -159,4 +159,16 @@ struct signalfd_siginfo {
+ };
+ #endif
+ 
++#ifndef __UCLIBC__
++static inline int __fallocate(int fd, off_t offset, off_t len)
++{
++	return posix_fallocate(fd, offset, len);
++}
++#else
++static inline int __fallocate(int fd, off_t offset, off_t len)
++{
++	return 0;
++}
++#endif
++
+ #endif
+
