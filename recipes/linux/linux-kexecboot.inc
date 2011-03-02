@@ -79,8 +79,18 @@ do_configure_prepend() {
 
         echo "" > ${S}/.config
 
+        #
+        # CONFIG_CMDLINE mangling
+        #
         echo "CONFIG_CMDLINE_BOOL=y" >> ${S}/.config
         echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
+
+        # mips and x86
+        echo "CONFIG_CMDLINE_OVERRIDE=y" >> ${S}/.config
+
+        # sh only
+        echo "CONFIG_CMDLINE_OVERWRITE=y" >> ${S}/.config
+        echo "# CONFIG_CMDLINE_EXTEND is not set" >> ${S}/.config
 
         #
         # endian support
@@ -105,6 +115,10 @@ do_configure_prepend() {
         fi
 
         sed -e '/CONFIG_CMDLINE=/d' \
+            -e '/CONFIG_CMDLINE_BOOL/d' \
+            -e '/CONFIG_CMDLINE_OVERRIDE/d' \
+            -e '/CONFIG_CMDLINE_OVERWRITE/d' \
+            -e '/CONFIG_CMDLINE_EXTEND/d' \
             -e '/CONFIG_CPU_BIG_ENDIAN/d' \
             -e '/CONFIG_LOGO=/d' \
             -e '/CONFIG_LOGO_LINUX_CLUT224=/d' \
