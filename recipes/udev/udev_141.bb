@@ -4,6 +4,7 @@ the hotplug package and requires a kernel not older than 2.6.12."
 
 # Untested
 DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_nios2 = "1"
 
 require udev.inc
 
