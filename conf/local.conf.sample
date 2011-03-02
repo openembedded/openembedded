@@ -90,6 +90,20 @@ PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}g++:gcc-cross"
 # Stay away from unversioned distros unless you really know what you are doing
 # DISTRO = "angstrom-2008.1"
 
+# Uncomment and modify the following lines if you wish to use an external
+# binary toolchain, in this case one built by CodeSourcery.  The following
+# example is for ARM and we set TOOLCHAIN_VENDOR to "-none" as the CodeSourcery
+# ARM tools are arm-none-linux-gnueabi-$tool.  Other arches need different
+# values here.  This assumes that the tools are already in the users PATH.
+# TOOLCHAIN_VENDOR = "-none"
+# TOOLCHAIN_TYPE = "external"
+# TOOLCHAIN_BRAND = "csl"
+# TOOLCHAIN_PATH = "/path/to/installed/copy/of/CodeSourcery/Sourcery_G++_Lite"
+
+# Uncomment this if you want to use linux-headers from the linux-lib-headers
+# recipe as opposed to those bundled with the CSL toolchain
+# PREFERRED_PROVIDER_linux-libc-headers = "linux-libc-headers"
+
 # So far, angstrom.conf sets ENABLE_BINARY_LOCALE_GENERATION
 # to generate binary locale packages at build time using qemu-native and
 # thereby guarantee i18n support on all devices. If your build breaks on 
