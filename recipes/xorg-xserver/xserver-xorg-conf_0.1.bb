@@ -1,5 +1,5 @@
 DESCRIPTION = "Machine specific xorg.conf files"
-PR = "r44"
+PR = "r45"
 
 SRC_URI = "file://xorg.conf"
 
