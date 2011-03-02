@@ -100,7 +100,7 @@ PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}g++:gcc-cross"
 # TOOLCHAIN_BRAND = "csl"
 # TOOLCHAIN_PATH = "/path/to/installed/copy/of/CodeSourcery/Sourcery_G++_Lite"
 
-# Uncomment this if you want to use linux-headers from the linux-lib-headers
+# Uncomment this if you want to use linux-headers from the linux-libc-headers
 # recipe as opposed to those bundled with the CSL toolchain
 # PREFERRED_PROVIDER_linux-libc-headers = "linux-libc-headers"
 
