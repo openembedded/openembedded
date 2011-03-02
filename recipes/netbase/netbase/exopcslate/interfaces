@@ -1,0 +1,17 @@
+# /etc/network/interfaces -- configuration file for ifup(8), ifdown(8)
+
+# The loopback interface
+auto lo
+iface lo inet loopback
+
+# Wireless interfaces
+auto wlan0
+iface wlan0 inet dhcp
+        pre-up echo nameserver 208.67.222.222 > /etc/resolv.conf
+        pre-up echo nameserver 208.67.220.220 >> /etc/resolv.conf
+wireless_mode managed
+wireless_essid any
+
+# Bluetooth networking
+iface bnep0 inet dhcp
+
