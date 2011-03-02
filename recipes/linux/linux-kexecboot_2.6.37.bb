@@ -15,8 +15,8 @@ SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=k
 
 SRC_URI_append_collie = " file://collie-locomo-kb.patch;status=upstream "
 
-SRC_URI_append_ben-nanonote = "file://modifier-keys.patch \
-            file://defconfig \
+SRC_URI_append_ben-nanonote = " \
+            file://modifier-keys.patch \
             file://jz4740-udc.patch \
             "
 
