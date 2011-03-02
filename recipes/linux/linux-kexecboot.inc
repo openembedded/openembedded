@@ -160,7 +160,7 @@ python do_package() {
 # With 2.6.37 mips has no uImage target upstream.
 # use custom task in the meantime
 
-do_uboot_mkimage_mips() {
+do_uboot_mkimage_mipsel() {
         cd ${S}
         kernel_entry=`nm vmlinux | grep " kernel_entry" | cut -d' ' -f1`
 
