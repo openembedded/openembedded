@@ -3,11 +3,12 @@ HOMEPAGE = "http://jmccloud.jm.funpic.de"
 AUTHOR = "Jesus McCloud <bernd.pruenster@gmail.com"
 RDEPENDS_${PN} += "icon-theme-neo"
 RSUGGESTS_${PN} = "elementary-theme-neo e-wm-theme-illume-neo gpe-theme-neo icon-theme-neo"
+PACKAGE_ARCH = "all"
 LICENSE = "unknown"
 
 SRCREV = "f847105c5ef5d488a4bce0c0a85d572c3509d56f"
 PV = "0.3+gitr${SRCPV}"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master"
 

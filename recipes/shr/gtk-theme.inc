@@ -2,32 +2,23 @@ RPROVIDES_${PN} += "virtual/theme-gtk"
 RDEPENDS_${PN} = "gtk+"
 SECTION = "gtk"
 
-inherit update-alternatives
-
-SRC_URI += "file://gtk-theme/gtkrc.${PN}"
+SRC_URI += "file://gtkrc"
 
 do_install() {
 	install -d "${D}${datadir}/themes/${PN}/gtk-2.0"
 	cp -R "${S}/./" "${D}${datadir}/themes/${PN}/gtk-2.0"
         install -d ${D}${sysconfdir}/gtk-2.0/
-        install -m 0644 ${WORKDIR}/gtk-theme/gtkrc.${PN} ${D}${sysconfdir}/gtk-2.0/gtkrc.${PN}
+        install -m 0644 ${WORKDIR}/gtkrc ${D}${sysconfdir}/gtk-2.0/gtkrc.${PN}
 }
 
-FILES_${PN} = "${datadir}/themes/${PN}/ \
-               ${sysconfdir}/gtk-2.0/gtkrc.${PN} \
-              "
+PACKAGES += "${PN}-gtkrc"
+FILES_${PN} = "${datadir}/themes/${PN}/"
+FILES_${PN}-gtkrc = "${sysconfdir}/gtk-2.0/gtkrc.${PN}"
+RDEPENDS_${PN} += "${PN}-gtkrc"
 
-ALTERNATIVE_NAME = "gtk-theme"
-ALTERNATIVE_LINK = "${sysconfdir}/gtk-2.0/gtkrc"
-ALTERNATIVE_PATH = "${sysconfdir}/gtk-2.0/gtkrc.${PN}"
-
-pkg_postinst() {
-        if [[ -e ${ALTERNATIVE_LINK} && ! -h ${ALTERNATIVE_LINK} ]] ; then
-                echo "warn: ${ALTERNATIVE_LINK} exists and it's not a link!"
-                echo "warn: It will be replaced with link managed by update-alternatives"
-                echo "warn: Moving ${ALTERNATIVE_LINK} to ${ALTERNATIVE_LINK}.old."
-                echo "warn: It should be empty but probably isn't!"
-                echo "warn: Check what's left there and remove it manually."
-                mv -f ${ALTERNATIVE_LINK} ${ALTERNATIVE_LINK}.old
-        fi
+pkg_postinst_${PN}-gtkrc () {
+        update-alternatives --install ${sysconfdir}/gtk-2.0/gtkrc gtk-theme ${sysconfdir}/gtk-2.0/gtkrc.${PN} 10
+}
+pkg_prerm_${PN}-gtkrc () {
+        update-alternatives --remove gtk-theme ${sysconfdir}/gtk-2.0/gtkrc.${PN}
 }

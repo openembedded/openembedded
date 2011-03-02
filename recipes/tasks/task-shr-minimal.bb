@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r38"
+PR = "r39"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -138,7 +138,7 @@ RDEPENDS_${PN}-apps = "\
 
 
 RDEPENDS_${PN}-gtk = "\
-  shr-theme-gtk-e17lookalike \
+  gtk-theme-e17lookalike \
   vala-terminal \
   pyphonelog \
   matchbox-keyboard-im \
