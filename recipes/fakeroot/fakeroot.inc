@@ -14,3 +14,4 @@ SRC_URI = "\
 
 # fakeroot needs getopt which is provided by the util-linux package
 RDEPENDS_${PN} = "util-linux"
+RDEPENDS_${PN}_virtclass-native = "util-linux-native"
