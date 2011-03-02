@@ -9,7 +9,7 @@ inherit update-rc.d
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "1"
 
 INITSCRIPT_NAME = "networking"
-INITSCRIPT_PARAMS = "start 40 S . stop 40 0 6 1 ."
+INITSCRIPT_PARAMS = "start 41 S . stop 41 0 6 1 ."
 # On MNCI etc, start very late so that our own apps come up faster
 INITSCRIPT_PARAMS_openmn = "start 85 1 2 3 4 5 . stop 85 0 6 1 ."
 # On SlugOS (NSLU2) delay the stop until after network apps have exited
