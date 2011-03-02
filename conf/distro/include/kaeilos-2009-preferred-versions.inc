@@ -53,6 +53,8 @@ PREFERRED_VERSION_pango-native     = "1.24.4"
 #PREFERRED_VERSION_pixman	= "0.13.2"
 PREFERRED_VERSION_pkgconfig	= "0.23"
 PREFERRED_VERSION_pkgconfig-native = "0.23"
+PREFERRED_VERSION_policykit     = "0.96"
+PREFERRED_VERSION_policykit-gnome = "0.96"
 PREFERRED_VERSION_pulseaudio 	= "0.9.15"
 PREFERRED_VERSION_python-pycairo = "1.8.0"
 
