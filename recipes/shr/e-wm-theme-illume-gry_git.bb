@@ -5,7 +5,7 @@ AUTHOR = "Jesus McCloud <bernd.pruenster@gmail.com"
 DEPENDS = "edje-native"
 RRECOMMENDS_${PN} = "elementary-theme-gry"
 PACKAGE_ARCH = "all"
-LICENCE = "unknown"
+LICENSE = "unknown"
 
 SRCREV = "bed3a9ac381b88717b153012fa4b9da0c860c6b0"
 PV = "0.4+gitr${SRCPV}"

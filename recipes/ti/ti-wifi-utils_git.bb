@@ -1,5 +1,5 @@
 DESCRIPTION = "The calibrator and other useful utilities for TI wireless solution based on wl12xx driver"
-LICENCE = "TI-BSD"
+LICENSE = "TI-BSD"
 
 DEPENDS = "libnl2"
 

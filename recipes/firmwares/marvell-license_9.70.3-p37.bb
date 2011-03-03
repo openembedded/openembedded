@@ -1,5 +1,5 @@
 DESCRIPTION = "License for Marvel 8686 wifi chipsets"
-LICENCE = "closed"
+LICENSE = "closed"
 
 SRC_URI = "file://Marvell-Licence.txt"
 

@@ -1,5 +1,5 @@
 DESCRIPTION = "Firmware for Texas Instruments WL1251 wifi chipset"
-LICENCE = "closed"
+LICENSE = "closed"
 
 SRC_URI = "file://*"
 S = "${WORKDIR}"

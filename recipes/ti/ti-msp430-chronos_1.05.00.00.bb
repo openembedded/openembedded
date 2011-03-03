@@ -1,6 +1,6 @@
 DESCRIPTION = "eZ430 Chronos Tools - MSP430 Development Kit/Watch"
 HOMEPAGE = "http://processors.wiki.ti.com/index.php/EZ430-Chronos"
-LICENCE = "unknown"
+LICENSE = "unknown"
 SECTION = "multimedia"
 
 PV = "1_05_00_00"

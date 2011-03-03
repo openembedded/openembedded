@@ -1,5 +1,5 @@
 DESCRIPTION = "Firmware for Marvel 8686 gspi wifi chipset"
-LICENCE = "closed"
+LICENSE = "closed"
 
 SRC_URI = "file://${PV}.tar.gz"
 
