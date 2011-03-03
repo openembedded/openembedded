@@ -1,7 +1,7 @@
 DESCRIPTION = "Test scripts for freesmartphone.org opimd interface"
 HOMEPAGE = "http://freesmartphone.org"
 SHR_RELEASE ?= "shr"
-LICENSE ?= "GPL"
+LICENSE = "GPL"
 RDEPENDS_${PN} = "python-elementary python-dbus python-codecs python-shell python python-core python-edbus frameworkd"
 SECTION = "x11/application"
 SRCREV = "328f87b80e8bf09693017790daf31104f36bdacf"

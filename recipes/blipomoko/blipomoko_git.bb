@@ -1,7 +1,7 @@
 DESCRIPTION = "python-elementary and python-blipapi based blip.pl client"
 AUTHOR = "Sebastian Krzyszkowiak <seba.dos1@gmail.com>"
 HOMEPAGE = "http://wiki.github.com/dos1/blipomoko"
-LICENSE ?= "GPL"
+LICENSE = "GPL"
 RDEPENDS_${PN} = "python-elementary python-dbus python-edbus python-ecore"
 SECTION = "x11/applications"
 

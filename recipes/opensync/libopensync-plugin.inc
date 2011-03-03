@@ -5,7 +5,7 @@ PLUGIN_SONAME ?= "${@bb.data.getVar('PLUGIN_NAME', d, 1).replace('-','_')}.so"
 SRC_URI ?= "svn://svn.opensync.org/plugins;module=${PLUGIN_NAME};proto=http"
 S ?= "${WORKDIR}/${PLUGIN_NAME}"
 
-LICENSE ?= "LGPL"
+LICENSE = "LGPL"
 DEPENDS += " libopensync"
 RRECOMMENDS_${PN} += " msynctool"
 HOMEPAGE ?= "http://www.opensync.org/"

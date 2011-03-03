@@ -1,7 +1,7 @@
 DESCRIPTION = "python-elementary and opimd based lock and today screen for the SHR distribution"
 HOMEPAGE = "http://wiki.github.com/slyon/today"
 SHR_RELEASE ?= "shr"
-LICENSE ?= "GPL"
+LICENSE = "GPL"
 RDEPENDS_${PN} = "python-edje python-dbus python-edbus python-ecore"
 SECTION = "x11/applications"
 
