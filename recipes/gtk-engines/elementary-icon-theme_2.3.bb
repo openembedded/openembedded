@@ -8,8 +8,8 @@ inherit gtk-icon-cache
 # wrapper to stop simple HTTP gets :(.
 
 SRC_URI = " \
-  http://launchpad.net/elementaryicons/2.0/2.3/+download/elementary-monochrome.tar.gz;name=mono \
-  http://launchpad.net/elementaryicons/2.0/2.3/+download/elementary.tar.gz;name=regular \
+  http://launchpad.net/elementaryicons/2.0/2.3/+download/elementary-monochrome.tar.gz;name=mono;subdir=${BPN}-${PV} \
+  http://launchpad.net/elementaryicons/2.0/2.3/+download/elementary.tar.gz;name=regular;subdir=${BPN}-${PV} \
 "
 
 SRC_URI[mono.md5sum] = "986a2475e9953450b37912d154bb325d"
@@ -17,8 +17,6 @@ SRC_URI[mono.sha256sum] = "da461bd70b2fda633f26aa7495e1efc5d97815661799566f0a8ac
 
 SRC_URI[regular.md5sum] = "674a88984f55170c17298863f72dd34d"
 SRC_URI[regular.sha256sum] = "f7cacfd0e4d3c9ea1c84b29a4f2c75fa1066d6c7f9b41ca0b96ae033c23992a6"
-
-S = "${WORKDIR}"
 
 do_install() {
 	install -d ${D}${datadir}/icons/elementary/
