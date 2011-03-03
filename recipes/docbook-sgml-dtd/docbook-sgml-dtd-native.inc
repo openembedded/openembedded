@@ -8,9 +8,7 @@ DESCRIPTION = "Document type definitions for verification of SGML data files aga
 
 DEPENDS = "sgml-common-native"
 
-SRC_URI = "http://www.docbook.org/sgml/${DTD_VERSION}/docbook-${DTD_VERSION}.zip"
-
-S = "${WORKDIR}"
+SRC_URI = "http://www.docbook.org/sgml/${DTD_VERSION}/docbook-${DTD_VERSION}.zip;subdir=${BPN}-${PV}"
 
 INC_PR = "r2"
 
