@@ -34,7 +34,7 @@ inherit autotools
 #  --enable-bpp            enable support of specified bpp modes
 #                          (all,32,24,18,16,4,2,1) [default=all]
 #  --enable-evdev-rate     change evdev (keyboard/mouse) repeat rate
-                           in milliseconds e.g. "1000,250" [default=no]
+#                           in milliseconds e.g. "1000,250" [default=no]
 #  --with-kexec-binary     look for kexec binary at path
 #                          [default="/usr/sbin/kexec"]
 ############################
