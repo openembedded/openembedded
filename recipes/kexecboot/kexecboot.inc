@@ -13,6 +13,7 @@ inherit autotools
 #
 #  --enable-static-linking compile kexecboot as static executable [default=no]
 #  --enable-fbui           support framebuffer menu [default=yes]
+#  --enable-textui         support console text user interface [default=no]
 #  --enable-cfgfiles       support config files [default=yes]
 #  --enable-icons          support custom icons (depends on fbui) [default=yes]
 #  --enable-zaurus         compile Sharp Zaurus specific code [default=no]
@@ -32,14 +33,18 @@ inherit autotools
 #                          initialization of old CF/SD cards [default=1]
 #  --enable-bpp            enable support of specified bpp modes
 #                          (all,32,24,18,16,4,2,1) [default=all]
+#  --enable-evdev-rate     change evdev (keyboard/mouse) repeat rate
+                           in milliseconds e.g. "1000,250" [default=no]
+#  --with-kexec-binary     look for kexec binary at path
+#                          [default="/usr/sbin/kexec"]
 ############################
 
-EXTRA_OECONF_akita = "--enable-zaurus --enable-delay=2"
-EXTRA_OECONF_c7x0 = "--enable-zaurus --enable-delay=2"
-EXTRA_OECONF_spitz = "--enable-zaurus --enable-delay=3"
-EXTRA_OECONF_poodle = "--enable-zaurus --enable-delay=2"
-EXTRA_OECONF_tosa = "--enable-zaurus --enable-delay=2"
-EXTRA_OECONF_collie = "--enable-delay=2"
+EXTRA_OECONF_akita = "--enable-zaurus --enable-delay=2 --enable-evdev-rate=1000,250"
+EXTRA_OECONF_c7x0 = "--enable-zaurus --enable-delay=2 --enable-evdev-rate=1000,250"
+EXTRA_OECONF_spitz = "--enable-zaurus --enable-delay=3 --enable-evdev-rate=1000,250"
+EXTRA_OECONF_poodle = "--enable-zaurus --enable-delay=2 --enable-evdev-rate=1000,250"
+EXTRA_OECONF_tosa = "--enable-zaurus --enable-delay=2 --enable-evdev-rate=1000,250"
+EXTRA_OECONF_collie = "--enable-delay=2 --enable-evdev-rate=1000,250"
 EXTRA_OECONF_ben-nanonote = "--enable-uimage"
 EXTRA_OECONF_omap3 = "--enable-uimage"
 
