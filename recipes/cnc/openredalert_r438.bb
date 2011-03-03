@@ -3,13 +3,11 @@ LICENSE = "GPLv2"
 
 DEPENDS = "virtual/libsdl libsdl-mixer" 
 
-SRC_URI = "http://openredalert.googlecode.com/files/openredalert-${PV}-src.tar.gz \
+SRC_URI = "http://openredalert.googlecode.com/files/openredalert-${PV}-src.tar.gz;subdir=${BPN}-${PV} \
            file://gcc43-fix.patch \
            file://openredalert-launcher"
 
 PR = "r1"
-
-S = "${WORKDIR}"
 
 CFLAGS_append = " -I. -I${STAGING_INCDIR}"
 
@@ -24,7 +22,7 @@ do_install() {
 	install -m 0755 ${S}/src/openredalert ${D}/${datadir}/games/redalert/
 
 	install -d ${D}/${bindir}
-	install -m 0755 ${S}/openredalert-launcher ${D}/${bindir}	
+	install -m 0755 ${WORKDIR}/openredalert-launcher ${D}/${bindir}	
 }
 
 FILES_${PN} += "${datadir}/games/redalert/"
