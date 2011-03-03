@@ -1,7 +1,6 @@
 DESCRIPTION = "A dead simple calculator. It's advantage is that it's elementary-themed"
 HOMEPAGE = "http://github.com/spaetz/calc"
 AUTHOR = "Sebastian Spaeth <Sebastian@SSpaeth.de>"
-SHR_RELEASE ?= "shr"
 LICENSE  = "MIT"
 RDEPENDS_${PN} = "python-elementary python python-edbus"
 SECTION = "x11/application"

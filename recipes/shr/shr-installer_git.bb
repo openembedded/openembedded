@@ -1,6 +1,5 @@
 DESCRIPTION = "EFL frontend for packagekit"
 HOMEPAGE = "http://shr-project.org"
-SHR_RELEASE ?= "shr"
 LICENSE = "GPL"
 RDEPENDS_${PN} = "python-elementary python-dbus python-core python-edbus packagekit"
 SECTION = "x11/application"

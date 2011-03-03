@@ -1,6 +1,5 @@
 DESCRIPTION = "Test scripts for freesmartphone.org opimd interface"
 HOMEPAGE = "http://freesmartphone.org"
-SHR_RELEASE ?= "shr"
 LICENSE = "GPL"
 RDEPENDS_${PN} = "python-elementary python-dbus python-codecs python-shell python python-core python-edbus frameworkd"
 SECTION = "x11/application"
