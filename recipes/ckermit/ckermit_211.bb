@@ -6,7 +6,7 @@ of communication tasks."
 LICENSE = "Kermit"
 HOMEPAGE = "http://www.columbia.edu/kermit/"
 SECTION = "console/network"
-SRC_URI = "ftp://kermit.columbia.edu/kermit/archives/cku${PV}.tar.gz"
+SRC_URI = "ftp://kermit.columbia.edu/kermit/archives/cku${PV}.tar.gz;subdir=${BPN}-${PV}"
 PR = "r3"
 
 #
@@ -48,8 +48,6 @@ PR = "r3"
 #
 # ... and probably other distro's as well.
 #
-
-S = "${WORKDIR}"
 
 export CC2 = "${CC}"
 export BINDIR = "${bindir}"
