@@ -153,9 +153,9 @@ do_configure_prepend() {
                ${S}/.config
 
                echo '${KERNEL_COMPRESSION}' >>${S}/.config
-               echo '"${INITRAMFS_COMPRESSION}"' >>${S}/.config
+               echo '${INITRAMFS_COMPRESSION}' >>${S}/.config
                echo 'CONFIG_INITRAMFS_SOURCE="initramfs.cpio.${INITRAMFS_COMPRESSION_SUFFIX}"' >>${S}/.config
-               echo '"${RD_COMPRESSION}"' >>${S}/.config
+               echo '${RD_COMPRESSION}' >>${S}/.config
         fi
 
         yes '' | oe_runmake oldconfig
