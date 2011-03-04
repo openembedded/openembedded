@@ -2,7 +2,7 @@ require pulseaudio.inc
 
 SRCREV = "f834150aceccd753e3ac5bab9f7d64bed9993624"
 PV = "0.9.22+git"
-PR = "${INC_PR}.0-r${SRCPV}"
+PR = "${INC_PR}.1-r${SRCPV}"
 
 DEPENDS += "orc gdbm speex"
 
@@ -21,8 +21,12 @@ SRC_URI = "git://git.0pointer.de/pulseaudio.git;protocol=git \
 
 S = "${WORKDIR}/git"
 
+EXTRA_OECONF += " --with-module-dir=${libdir}/pulse-${PV}/modules"
+
 do_configure_prepend() {
 	touch config.rpath
+	echo "${PV}" >.tarball-version
+	echo "${PV}" >.version
 }
 
 # orc.m4 calls pkg-config ----variable=orcc orc-0.4 to get the path to orcc,
