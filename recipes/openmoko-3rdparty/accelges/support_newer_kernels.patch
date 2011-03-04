@@ -1,0 +1,25 @@
+Index: trunk/accelneo/src/accelneo.c
+===================================================================
+--- trunk.orig/accelneo/src/accelneo.c	2011-03-04 15:46:24.924494001 +0100
++++ trunk/accelneo/src/accelneo.c	2011-03-04 15:46:47.554494001 +0100
+@@ -35,9 +35,9 @@
+ {
+ 	/* open one of the two accelerometers (top or bottom) */
+ 	if (w_accel == neo_accel2) {
+-		neo->accel_desc = open("/dev/input/event2", O_RDONLY);
+-	} else if (w_accel == neo_accel3) {
+ 		neo->accel_desc = open("/dev/input/event3", O_RDONLY);
++	} else if (w_accel == neo_accel3) {
++		neo->accel_desc = open("/dev/input/event4", O_RDONLY);
+ 	} else {
+ 		neo->accel_desc = -1;
+ 	}
+@@ -91,7 +91,7 @@
+ 		 * Neo sends three reports on X, Y, and Z with rel = 2
+ 		 * and another one (as a separator) with rel = 0 
+ 		 */
+-		if (rel == 2)
++		if (rel == 3)
+ 		{
+ 			unsigned short int axis_ind = *(short int *)(report + 10);
+ 			/* receives signed acceleration in milli-G */
