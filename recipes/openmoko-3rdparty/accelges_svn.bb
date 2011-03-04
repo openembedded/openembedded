@@ -5,14 +5,15 @@ LICENSE = "GPL"
 SECTION = "openmoko/utilities"
 
 PV = "0.2+svnr${SRCPV}"
-PR = "r4"
+PR = "r5"
 PE = "1"
 SRCREV = "206"
 
 DEPENDS = "curl dbus dbus-glib gtk+ libglade libnotify libxrandr notification-daemon"
 RDEPENDS_${PN} = "notification-daemon"
 
-SRC_URI = "svn://accelges.googlecode.com/svn/;module=trunk;proto=http"
+SRC_URI = "svn://accelges.googlecode.com/svn/;module=trunk;proto=http \
+           file://support_newer_kernels.patch;apply=yes"
 S = "${WORKDIR}/trunk"
 
 inherit autotools update-rc.d
