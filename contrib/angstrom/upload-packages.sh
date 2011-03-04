@@ -5,10 +5,10 @@
 # Run this from inside ${DEPLOY_DIR} e.g. tmp/deploy/glibc/
 
 # Angstrom webserver
-REMOTEM=angstrom@feeds.angstrom-distribution.org
+REMOTEM=angstrom@eu.feeds.angstrom-distribution.org
 
 # Feed dir we want to upload to
-REMOTED=website/feeds/unstable/ipk/$(basename $PWD)
+REMOTED=website/feeds/next/ipk/$(basename $PWD)
 
 # create upload dir
 mkdir -p upload-queue || true
