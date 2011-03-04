@@ -1,0 +1,26 @@
+Index: dbus-1.4.1/dbus/dbus-auth.c
+===================================================================
+--- dbus-1.4.1.orig/dbus/dbus-auth.c	2011-03-04 08:52:48.023002840 +0100
++++ dbus-1.4.1/dbus/dbus-auth.c	2011-03-04 08:53:44.473003062 +0100
+@@ -2744,19 +2744,15 @@
+ DBusCredentials*
+ _dbus_auth_get_identity (DBusAuth               *auth)
+ {
+-  if (auth->state == &common_state_authenticated)
+-    {
+-      return auth->authorized_identity;
+-    }
+-  else
++  if (auth->state != &common_state_authenticated)
+     {
+       /* FIXME instead of this, keep an empty credential around that
+        * doesn't require allocation or something
+        */
+       /* return empty credentials */
+       _dbus_assert (_dbus_credentials_are_empty (auth->authorized_identity));
+-      return auth->authorized_identity;
+     }
++    return auth->authorized_identity;
+ }
+ 
+ /**
