@@ -1,0 +1,37 @@
+From c1f96af4fba5ce05a2f090491f3646192041b491 Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Fri, 4 Mar 2011 09:51:04 +0100
+Subject: [PATCH] arm/include/asm/tlb.h: fix CONFIG_SWAP=n build for ARM
+
+* similar fix to f95ba941d1bee594d536cdcbf879a0865381b903
+| In file included from arch/arm/mm/init.c:27:0:
+| arch/arm/include/asm/tlb.h: In function 'tlb_flush_mmu':
+| arch/arm/include/asm/tlb.h:104:3: error: implicit declaration of function 'release_pages'
+| arch/arm/include/asm/tlb.h: In function 'tlb_remove_page':
+| arch/arm/include/asm/tlb.h:168:3: error: implicit declaration of function 'page_cache_release'
+
+Signed-off-by: Martin Jansa <Martin.Jansa@gmail.com>
+---
+ arch/arm/include/asm/tlb.h |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/include/asm/tlb.h b/arch/arm/include/asm/tlb.h
+index 82dfe5d..e442a6a 100644
+--- a/arch/arm/include/asm/tlb.h
++++ b/arch/arm/include/asm/tlb.h
+@@ -19,10 +19,10 @@
+ 
+ #include <asm/cacheflush.h>
+ 
+-#ifndef CONFIG_MMU
+-
+ #include <linux/pagemap.h>
+ 
++#ifndef CONFIG_MMU
++
+ #define tlb_flush(tlb)	((void) tlb)
+ 
+ #include <asm-generic/tlb.h>
+-- 
+1.7.4.1
+
