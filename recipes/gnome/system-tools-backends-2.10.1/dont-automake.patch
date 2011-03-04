@@ -1,0 +1,21 @@
+Index: system-tools-backends-2.10.1/missing
+===================================================================
+--- system-tools-backends-2.10.1.orig/missing
++++ system-tools-backends-2.10.1/missing
+@@ -140,16 +140,6 @@ WARNING: \`$1' is missing on your system
+     ;;
+ 
+   automake*)
+-    if test -z "$run" && ($1 --version) > /dev/null 2>&1; then
+-       # We have it, but it failed.
+-       exit 1
+-    fi
+-
+-    echo 1>&2 "\
+-WARNING: \`$1' is missing on your system.  You should only need it if
+-         you modified \`Makefile.am', \`acinclude.m4' or \`${configure_ac}'.
+-         You might want to install the \`Automake' and \`Perl' packages.
+-         Grab them from any GNU archive site."
+     find . -type f -name Makefile.am -print |
+ 	   sed 's/\.am$/.in/' |
+ 	   while read f; do touch "$f"; done
