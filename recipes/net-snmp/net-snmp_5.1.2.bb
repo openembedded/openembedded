@@ -1,5 +1,5 @@
 require net-snmp.inc
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/net-snmp/net-snmp-${PV}.tar.gz \
 	file://uclibc-fix.patch \
@@ -10,7 +10,6 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/net-snmp/net-snmp-${PV}.tar.gz \
 inherit autotools
 
 PARALLEL_MAKE = ""
-EXTRA_OECONF = "--enable-shared --disable-manuals --with-defaults"
 EXTRA_OEMAKE = "INSTALL_PREFIX=${D}"
 
 CONFFILES_${PN}_nylon = "${sysconfdir}/snmp/snmpd.conf ${sysconfdir}/snmp/snmptrapd.conf"
