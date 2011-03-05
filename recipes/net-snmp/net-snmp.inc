@@ -12,12 +12,8 @@ inherit autotools update-rc.d siteinfo
 
 TARGET_CC_ARCH += "${LDFLAGS}"
 
-do_configure() {
-        # Additional flag based on target endiness (see siteinfo.bbclass)
-        ENDIANESS="${@base_conditional('SITEINFO_ENDIANNESS', 'le', '--with-endianness=little', '--with-endianness=big', d)}"
-        oenote Determined endianess as: $ENDIANESS
-        oe_runconf $ENDIANESS
-}
+EXTRA_OECONF = "--enable-shared --disable-manuals --with-defaults \
+${@base_conditional('SITEINFO_ENDIANNESS', 'le', '--with-endianness=little', '--with-endianness=big', d)}"
 
 do_install_append() {
         install -d ${D}${sysconfdir}/snmp
