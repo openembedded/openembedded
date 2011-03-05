@@ -28,10 +28,9 @@ do_compile_prepend () {
 }
 
 do_install_append () {
-
     	oe_runmake install-libs DESTDIR=${D}
-	ln -sf ${D}/${base_sbindir}/tune2fs findfs
-	ln -sf ${D}/${base_sbindir}/tune2fs e2label
+	ln -sf tune2fs ${D}/${base_sbindir}/findfs
+	ln -sf tune2fs ${D}/${base_sbindir}/e2label
 }
 
 do_install_append_pn-e2fsprogs () {
@@ -43,9 +42,10 @@ do_install_append_pn-e2fsprogs () {
 	done
 	fsck=$(cd ${D}${base_sbindir}/ && ls -1 fsck.ext* | sed s/[^\.]*//)
 	for e in $fsck; do
-		rm ${D}${base_sbindir}/{fsck,mkfs}$e;
-		ln -s ${D}${base_sbindir}/e2fsck$e.${PN}$e fsck$e.${PN}
-		ln -s ${D}${base_sbindir}/mke2fs$e.${PN}$e mkfs$e.${PN}
+		rm ${D}${base_sbindir}/fsck$e
+		rm ${D}${base_sbindir}/mkfs$e
+		ln -sf e2fsck.${PN} ${D}${base_sbindir}/fsck$e.${PN}
+		ln -sf mke2fs.${PN} ${D}${base_sbindir}/mkfs$e.${PN}
 	done
 }
 
