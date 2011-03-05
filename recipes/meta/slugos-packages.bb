@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r75"
+PR = "r76"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2|ixp4xx"
@@ -212,7 +212,6 @@ SLUGOS_PACKAGES = "\
 	util-linux-ng \
 	vim \
 	vlan \
-	vsftpd \
 	w3cam \
 	wakelan \
 	watchdog \
@@ -254,9 +253,11 @@ SLUGOS_X11_PACKAGES = "\
 # Packages that are broken but need to be fixed!
 #
 # - madwifi-ng: needs newer version for updated IXP4XX kernel
+# - vsftpd: broken in general, needs libcap added to recipe
 # 
 SLUGOS_BROKEN_BUT_NEED_FIXING_PACKAGES = "\
 	madwifi-ng \
+	vsftpd \
 	"
 
 # Packages currently broken on all platforms
