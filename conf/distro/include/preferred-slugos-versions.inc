@@ -30,11 +30,7 @@ PREFERRED_VERSION_busybox			?= "1.18.3"
 PREFERRED_VERSION_dbus				?= "1.4.1"
 PREFERRED_VERSION_glib-2.0			?= "2.26.1"
 PREFERRED_VERSION_glib-2.0-native		?= "2.26.1"
-PREFERRED_VERSION_gtk+				?= "2.18.6"
-PREFERRED_VERSION_gtk+-native			?= "2.18.6"
 PREFERRED_VERSION_gvfs				?= "1.6.6"
-PREFERRED_VERSION_ipkg				?= "0.99.163"
-PREFERRED_VERSION_ipkg-native			?= "0.99.163"
 PREFERRED_VERSION_linux-libc-headers		?= "2.6.31"
 PREFERRED_VERSION_m4				?= "1.4.14"
 PREFERRED_VERSION_m4-native			?= "1.4.14"
@@ -44,17 +40,3 @@ PREFERRED_VERSION_perl-native			?= "5.10.1"
 PREFERRED_VERSION_pkgconfig			?= "0.23"
 PREFERRED_VERSION_pkgconfig-native		?= "0.23"
 PREFERRED_VERSION_udev				?= "118"
-
-##################### Stuff with special notes, and broken stuff:
-
-# Newer version required by glibc and some userspace apps
-#PREFERRED_VERSION_linux-libc-headers		?= "2.6.31"
-
-# boost 1.36 won't build
-#PREFERRED_VERSION_boost				?= "1.33.1"
-
-# pulseaudio 0.9.19 is broken (ASM errors during do_compile):
-#PREFERRED_VERSION_pulseaudio                    ?= "0.9.15"
-
-# latest tcl recipe has a bug that overwites regex.h; use the old tcl
-#PREFERRED_VERSION_tcl				?= "8.4.19"
