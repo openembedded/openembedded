@@ -1,0 +1,12 @@
+diff -urN dropbear-0.51/options.h dropbear-0.51.new/options.h
+--- dropbear-0.51/options.h	2008-03-27 14:34:39.000000000 +0100
++++ dropbear-0.51.new/options.h	2008-06-22 00:22:09.000000000 +0200
+@@ -112,7 +112,7 @@
+ /* #define DSS_PROTOK */
+ 
+ /* Whether to do reverse DNS lookups. */
+-#define DO_HOST_LOOKUP
++/* #define DO_HOST_LOOKUP */
+ 
+ /* Whether to print the message of the day (MOTD). This doesn't add much code
+  * size */

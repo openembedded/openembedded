@@ -1,0 +1,13 @@
+diff --git a/options.h b/options.h
+index d309ab4..7fbe97b 100644
+--- a/options.h
++++ b/options.h
+@@ -236,7 +236,7 @@ much traffic. */
+ /* The command to invoke for xauth when using X11 forwarding.
+  * "-q" for quiet */
+ #ifndef XAUTH_COMMAND
+-#define XAUTH_COMMAND "/usr/bin/X11/xauth -q"
++#define XAUTH_COMMAND "xauth -q"
+ #endif
+ 
+ /* if you want to enable running an sftp server (such as the one included with
