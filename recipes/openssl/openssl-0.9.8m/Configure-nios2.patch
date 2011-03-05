@@ -1,0 +1,14 @@
+Index: openssl-0.9.8m/Configure
+===================================================================
+--- openssl-0.9.8m.orig/Configure
++++ openssl-0.9.8m/Configure
+@@ -608,6 +608,9 @@ my %table=(
+ ##### Compaq Non-Stop Kernel (Tandem)
+ "tandem-c89","c89:-Ww -D__TANDEM -D_XOPEN_SOURCE -D_XOPEN_SOURCE_EXTENDED=1 -D_TANDEM_SOURCE -DB_ENDIAN::(unknown):::THIRTY_TWO_BIT:::",
+ 
++
++##### nios2
++"linux-nios2","$ENV{'CC'}:-DL_ENDIAN 	-DTERMIO -fexpensive-optimizations -frename-registers -fomit-frame-pointer -O2 -Wall::-D_REENTRANT::-ldl:BN_LLONG DES_RISC1::::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
+ );
+ 
+ my @MK1MF_Builds=qw(VC-WIN64I VC-WIN64A

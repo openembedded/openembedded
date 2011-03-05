@@ -13,4 +13,6 @@ SRC_URI += "file://configure-targets.patch \
             file://debian.patch \
             file://oe-ldflags.patch"
 
+SRC_URI_append_nios2 += "file://Configure-nios2.patch"
+
 PARALLEL_MAKE = ""
