@@ -1,0 +1,10 @@
+# Sample build from local branch
+BUILD="Build my local branch"
+OE_BRANCH="my/work"
+BB_BRANCH="master"
+DISTROS="minimal"
+IMAGES="console-image !my-own-image"
+# Note SETS absence
+# Every machine will be built in own TMPDIR
+MACHINES="tosa akita spitz"
+TASKS="build_clean !build_incremental"

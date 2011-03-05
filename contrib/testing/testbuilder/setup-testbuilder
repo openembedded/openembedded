@@ -72,12 +72,12 @@ TMPDIR = "${TMP_DIR}"
 BBFILES ?= "${OE_DIR}/recipes/*/*.bb"
 
 # ENABLE_BINARY_LOCALE_GENERATION = "0"
-# GLIBC_GENERATE_LOCALES = "en_US.UTF-8 en_GB.UTF-8 de_DE.UTF-8 fr_FR.UTF-8 ru_RU.UTF-8"
-# IMAGE_LINGUAS="en-us en-gb de-de fr-fr ru-ru"
+# GLIBC_GENERATE_LOCALES = "en_US.UTF-8 en_GB.UTF-8 de_DE.UTF-8"
+# IMAGE_LINGUAS="en-us en-gb"
 
 # jffs2, tar(.gz|bz2), cpio(.gz), cramfs, ext2(.gz), ext3(.gz)
 # squashfs, squashfs-lzma
-IMAGE_FSTYPES = "jffs2 tar.gz"
+IMAGE_FSTYPES ?= "tar.gz"
 
 # CCACHE = "${@bb.which(bb.data.getVar('PATH', d, 1), 'ccache') and 'ccache '}"
 PARALLEL_MAKE = "-j ${MAKE_NUMBER_THREADS}"
@@ -90,9 +90,9 @@ INHERIT += "rm_work"
 BBINCLUDELOGS = "yes"
 
 # OE stats client (make troubleshooting easier)
-INHERIT += "oestats-client"
-OESTATS_BUILDER = "${TB_BUILDER}"
-OESTATS_SERVER = "tinderbox.openembedded.org"
+#INHERIT += "oestats-client"
+#OESTATS_BUILDER = "${TB_BUILDER}"
+#OESTATS_SERVER = "tinderbox.openembedded.org"
 
 EOF
 

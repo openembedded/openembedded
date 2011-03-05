@@ -1,0 +1,13 @@
+# Other sample build profile
+DISABLED=yes # This build is disabled
+BUILD="Build from master branch"
+OE_BRANCH="master"
+BB_BRANCH="master"
+# Note that angstrom-2010.x is disabled below ('!' before)
+DISTROS="!angstrom-2010.x minimal"
+IMAGES="console-image"
+SETS="zauruses qemux86"
+MACHINES_zauruses="collie tosa akita"
+MACHINES_qemu="qemux86"
+TASKS="build_clean !build_incremental"
+

@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # TestBuilder for OpenEmbedded
-# Copyright (c) 2010 Yuri Bushmelev <jay4mail@gmail.com>
+# Copyright (c) 2010-2011 Yuri Bushmelev <jay4mail@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,25 +12,26 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-VERSION="0.3.1"
+VERSION="0.4"
 PACKAGE="TestBuilder"
 
 TB_DIR=`dirname $0`
 TB_NAME=`basename $0`
 cd "${TB_DIR}"
 
+CFG_FILE="${TB_DIR}/testbuilder.conf"
+CFG_DIR="${TB_DIR}/testbuilder.d"
+. "${CFG_FILE}"
+
 tb_usage() {
 	echo "${PACKAGE} v${VERSION}"
 	# Run only specified build
 	echo "Usage: ${TB_NAME} -Vh"
-	echo "   or  ${TB_NAME} [-B build [-D distro] [-M machine] [-S]]"
+	echo "   or  ${TB_NAME} [-B ${CFG_DIR}/build.conf [-D distro] [-M machine] [-S]]"
 	# Behave like DISTRO=distro MACHINE=machine bitbake images
 	# with -S testbuilder will only setup env and run interactive sub-shell
 	echo "   or  ${TB_NAME} -D distro -M machine [-T /full/path/to/tmpdir] [-S | images]"
 }
-
-CFG_FILE="${TB_DIR}/testbuilder.conf"
-. "${CFG_FILE}"
 
 # Sanity cleanup
 ORIG_PATH=${PATH}
@@ -54,10 +55,14 @@ TB_LOG="${LOG_DIR}/tb.log"
 #export LD_LIBRARY_PATH LANG PATH
 export LD_LIBRARY_PATH LANG
 
-BB_ENV_EXTRAWHITE="MACHINE DISTRO TB_BUILDER OE_DIR TMP_DIR DL_DIR MAKE_NUMBER_THREADS BB_NUMBER_THREADS"
+BB_ENV_EXTRAWHITE="MACHINE DISTRO TB_BUILDER OE_DIR TMP_DIR DL_DIR MAKE_NUMBER_THREADS BB_NUMBER_THREADS IMAGE_FSTYPES"
 export   BB_ENV_EXTRAWHITE BBPATH TB_BUILDER OE_DIR TMP_DIR DL_DIR MAKE_NUMBER_THREADS BB_NUMBER_THREADS
 
+BB_CMD=bitbake
+
 mkdir -p ${LOG_DIR}
+
+[ -f "${TB_LOG}" ] && mv "${TB_LOG}" "${TB_LOG}.0"
 
 ### Functions
 
@@ -123,10 +128,29 @@ tb_git_branch() {
 	cd "${_cwd}"
 }
 
+# detect build status by log
+tb_get_build_status() {
+	local _log=$1
+	local _line
+
+	if [ ! -f ${_log} ]; then
+		echo "UNKNOWN"
+		return
+	fi
+
+	_line=$(tail -n1 ${_log})
+	tb_log " ++ ${_line}"
+	if [ "${_line}" != "${_line#ERROR}" ]; then
+		echo "FAIL"
+	else
+		echo "OK"
+	fi
+}
 
 # Do build of image-set $bbimages for machine-set $MLIST
-# tb_build_machines "$MLIST" $bbimages
+# tb_build_machines "$btype" "$MLIST" $bbimages
 tb_build_machines() {
+	local btype=$1; shift
 	local _MLIST=$1; shift
 	local _bbimages=$@
 	local _machine
@@ -149,29 +173,30 @@ tb_build_machines() {
 			tb_interactive_shell
 		else
 
-			tb_log "${_machine} build started, images: ${_bbimages}"
+			tb_log " ++ ${_machine} build started"
 			case "${SEPARATE_BUILD}" in
 			[Yy][Ee][Ss])
 				# Build images separately
 				for _image in $_bbimages; do
-					tb_log "${_image} build started"
-					_log="${LOG_DIR}/B.${build}.${DISTRO}.${_machine}.${_image}.log"
+					tb_log " ++ ${_image} build started"
+					_log="${LOG_DIR}/B.${build}.${DISTRO}.${_machine}.${_image}.${btype}.log"
 					[ -f "${_log}" ] && mv "${_log}" "${_log}.0"
-					bitbake ${BB_OPTS} ${_image} 2>&1 | tee "${_log}"
+					${BB_CMD} ${BB_OPTS} ${_image} 2>&1 | tee "${_log}"
 					_rc=$?
-					tb_log "${_image} build finished. Exit code: ${_rc}."
+					tb_log " ++ ${_image} build finished. Exit code: ${_rc}. Build status: $(tb_get_build_status ${_log})"
 				done
 				;;
 			*)
 				# Build all images with one bitbake invocation
-				_log="${LOG_DIR}/B.${build}.${DISTRO}.${_machine}.log"
+				_log="${LOG_DIR}/B.${build}.${DISTRO}.${_machine}.${btype}.log"
 				[ -f "${_log}" ] && mv "${_log}" "${_log}.0"
-				bitbake ${BB_OPTS} ${_bbimages} 2>&1 | tee "${_log}"
+				${BB_CMD} ${BB_OPTS} ${_bbimages} 2>&1 | tee "${_log}"
 				_rc=$?
+				tb_log " ++ Build finished. Exit code: ${_rc}. Build status: $(tb_get_build_status ${_log})"
 				;;
 			esac
 			
-			tb_log "${_machine} build finished. Exit code:${_rc}."
+			tb_log " + ${_machine} build finished."
 		fi
 	done
 
@@ -257,32 +282,44 @@ fi
 [ -z "${DO_RUN_BUILDS}" ] && exit 0
 
 # Use build from cmdline if any
-[ -n "$OBUILD" ] && BUILDS=$OBUILD
+if [ -n "$OBUILD" ]; then
+	BUILDS=$OBUILD
+else
+	BUILDS="$CFG_DIR"/*.conf
+fi
 
 # Auto-building mode
 tb_log "${PACKAGE} v${VERSION}"
 
-for build in $BUILDS; do
-	[ "${build}" != "${build#!}" ] && continue
+for buildconf in ${BUILDS}; do
+	# Cleanup env
+	unset DISABLED SETS DISTROS DISTRO TASKS OE_BRANCH BB_BRANCH BUILD IMAGE_FSTYPES
+	for bset in $SETS; do
+		unset MACHINES_${bset}
+	done
 
-	eval BUILD="\$BUILD_${build}"
-	tb_log "= Started build '$build'"
-	[ -n "$BUILD" ] && tb_log "= $BUILD"
+	. ${buildconf}
+
+	[ "$DISABLED" == "yes" ] && continue
+
+	b=$(basename ${buildconf})
+	build=${b%.conf}
+
+	tb_log ""
+	tb_log "=== Started build '$build'"
+	[ -n "$BUILD" ] && tb_log "=== $BUILD"
 
 	# change BB branch
-	eval BB_BRANCH="\$BB_BRANCH_${build}"
 	if [ -n "${BB_BRANCH}" ]; then
 		tb_git_branch "$BB_DIR" "$BB_BRANCH"
 	fi
 	
 	# change OE branch
-	eval OE_BRANCH="\$OE_BRANCH_${build}"
 	if [ -n "${OE_BRANCH}" ]; then
 		tb_git_branch "$OE_DIR" "$OE_BRANCH"
 	fi
 
 	# parse tasks
-	eval TASKS="\$TASKS_${build}"
 	unset DO_BUILD_CLEAN DO_BUILD_INCREMENTAL
 	for task in $TASKS; do
 		[ "${task}" != "${task#!}" ] && continue
@@ -297,46 +334,40 @@ for build in $BUILDS; do
 	done
 
 	# distros
-	eval DISTROS="\$DISTROS_${build}"
 	for distro in $DISTROS; do
 		[ "${distro}" != "${distro#!}" ] && continue
 		[ -n "${ODISTRO}" -a "${distro#!}" != "${ODISTRO}" ] && continue
 
 		export DISTRO=$distro
 
-		# Get build sets
-		eval BSLIST="\$BUILD_SETS_${build}"
-
-		# Empty $BUILD_SETS is exception - we should use $MACHINES 
+		# Empty $SETS is exception - we should use $MACHINES 
 		# to build every machine in separate TMPDIRs
-		if [ -z "${BSLIST}" ]; then
+		if [ -z "${SETS}" ]; then
 			# Use every machine as separate build set
-			eval MACHINES="\$MACHINES_${build}"
 			for machine in $MACHINES; do
 				[ "${machine}" != "${machine#!}" ] && continue
 				eval "MACHINE_${machine}=${machine}"
-				BSLIST="${BSLIST} ${machine}"
+				SETS="${SETS} ${machine}"
 			done
 		fi
 
-		tb_log "== Processing distro ${DISTRO}, build set: ${BSLIST}"
+		tb_log "|"
+		tb_log "++= DISTRO: ${DISTRO}"
 
-		for bset in $BSLIST; do
+		for bset in $SETS; do
 			[ "${bset}" != "${bset#!}" ] && continue
 	
-			eval MLIST="\$MACHINES_${build}_${bset}"
-			[ -z "$MLIST" ] && eval MLIST="\$MACHINES_${build}"
+			eval MLIST="\$MACHINES_${bset}"
+			[ -z "$MLIST" ] && MLIST=$MACHINES
 
-			eval ILIST="\$IMAGES_${build}"
-	
-			tb_log "=== Processing set ${bset}, machines: ${MLIST}"
+			tb_log " += Processing set ${bset}"
 	
 			INC_TMP_DIR="${INC_DIR}/${build}/${distro}/${bset}"
 	
 		
 			# collect images to build in $bbimages
 			bbimages=''
-			for image in $ILIST; do
+			for image in $IMAGES; do
 				[ "${image}" != "${image#!}" ] && continue
 				bbimages="${bbimages} ${image}"
 			done
@@ -348,7 +379,7 @@ for build in $BUILDS; do
 				-a "${DO_BUILD_CLEAN}" = 'y' \
 				-a ! -d "${INC_TMP_DIR}/work" \
 			]; then
-				tb_log "Will do incremental build instead of clean to populate TMPDIR"
+				tb_log " + Will do incremental build instead of clean to populate TMPDIR"
 				DO_BUILD_CLEAN='skip-once'
 			fi
 	
@@ -358,14 +389,14 @@ for build in $BUILDS; do
 				export TMP_DIR="${CLN_DIR}"
 				mkdir -p "${TMP_DIR}"
 		
-				tb_log "=== Cleaning ${TMP_DIR}"
+				tb_log " + Cleaning ${TMP_DIR}"
 				#rm -rf ${TMP_DIR}/*
 				find ${TMP_DIR}/* -delete
 				
-				tb_log "=== Starting clean builds for machines {$MLIST}"
-				tb_build_machines "$MLIST" $bbimages
+				tb_log " + Starting clean builds for machines {$MLIST}"
+				tb_build_machines c "$MLIST" $bbimages
 	
-				tb_log "=== Cleaning ${TMP_DIR} again"
+				tb_log " + Cleaning ${TMP_DIR} again"
 				find ${TMP_DIR}/* -delete
 				;;
 			'skip-once')
@@ -381,8 +412,8 @@ for build in $BUILDS; do
 				export TMP_DIR="${INC_TMP_DIR}"
 				mkdir -p "${TMP_DIR}"
 	
-				tb_log "=== Starting incremental builds for machine-set {$MLIST}"
-				tb_build_machines "$MLIST" $bbimages
+				tb_log " + Starting incremental builds for machines {$MLIST}"
+				tb_build_machines i "$MLIST" $bbimages
 				;;
 			esac
 		done

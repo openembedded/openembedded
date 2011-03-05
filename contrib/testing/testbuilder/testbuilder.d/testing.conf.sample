@@ -1,0 +1,37 @@
+### NOTES
+# 1. All names in SETS variables should consists only of alphanumeric
+# characters and underscores, and beginning with an alphabetic character or an
+# underscore.
+# i.e. [a-zA-Z_][a-zA-Z0-9_]*
+# My recommendation is not to use underscore as well
+# 2. You can prefix any word in following 'list' variables
+# with '!' do disable it.
+# 3. All lists items will be processed in order they appears in list
+
+## BUILD: Just some text comment to show in build log
+BUILD="Regular build of testing branch"
+## DISABLED: is this build disabled ('yes' to disable)?
+DISABLED=no
+## OE_BRANCH: OE branch to use for this build
+OE_BRANCH="testing-next"
+## BB_BRANCH: bitbake branch to use for this build
+BB_BRANCH="1.10"
+## DISTROS: OE distros
+DISTROS="angstrom-2008.1 angstrom-2010.x"
+## IMAGES: OE images
+IMAGES="console-image x11-image opie-image"
+## SETS: build all machines in set within same TMPDIR
+SETS="armv5 mips32 mips64 ppc sh4 i686"
+## MACHINES: OE machines per build set
+MACHINES_armv5="qemuarm"
+MACHINES_mips32="qemumips qemumipsel"
+MACHINES_mips64="qemumips64"
+MACHINES_ppc="qemuppc"
+MACHINES_sh4="qemush4"
+MACHINES_i686="qemux86"
+# IMAGE_FSTYPE: What image types to build
+IMAGE_FSTYPE="tar.gz"
+## TASKS: What to do exactly
+# build_clean - do clean builds
+# build_incremental - do incremental builds
+TASKS="!build_clean build_incremental"
