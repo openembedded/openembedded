@@ -34,4 +34,5 @@ IMAGE_FSTYPE="tar.gz"
 ## TASKS: What to do exactly
 # build_clean - do clean builds
 # build_incremental - do incremental builds
-TASKS="!build_clean build_incremental"
+# create_mw_table - write build results in MediaWiki table format
+TASKS="build_clean build_incremental create_mw_table"

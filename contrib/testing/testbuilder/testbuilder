@@ -12,7 +12,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-VERSION="0.4"
+VERSION="0.5"
 PACKAGE="TestBuilder"
 
 TB_DIR=`dirname $0`
@@ -33,6 +33,11 @@ tb_usage() {
 	echo "   or  ${TB_NAME} -D distro -M machine [-T /full/path/to/tmpdir] [-S | images]"
 }
 
+tb_rotate_log() {
+	local _log=$1
+	[ -f "${_log}" ] && mv "${_log}" "${_log}.0"
+}
+
 # Sanity cleanup
 ORIG_PATH=${PATH}
 ORIG_LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
@@ -51,6 +56,8 @@ PATH=${BB_DIR}/bin:${PATH}
 BBPATH="${BLD_DIR}:${OE_DIR}"
 
 TB_LOG="${LOG_DIR}/tb.log"
+TB_MWR_FILE="${LOG_DIR}/MW.release.txt"
+TB_MWT_FILE="${LOG_DIR}/MW.testing.txt"
 
 #export LD_LIBRARY_PATH LANG PATH
 export LD_LIBRARY_PATH LANG
@@ -62,7 +69,9 @@ BB_CMD=bitbake
 
 mkdir -p ${LOG_DIR}
 
-[ -f "${TB_LOG}" ] && mv "${TB_LOG}" "${TB_LOG}.0"
+tb_rotate_log "${TB_MWR_FILE}"
+tb_rotate_log "${TB_MWT_FILE}"
+tb_rotate_log "${TB_LOG}"
 
 ### Functions
 
@@ -128,6 +137,16 @@ tb_git_branch() {
 	cd "${_cwd}"
 }
 
+tb_git_rev() {
+	local _dir=$1
+	local _cwd=`pwd`
+
+	cd "${_dir}"
+	#git log -1 --format=%h
+	git branch -v | awk '/^* / {print $2, $3;}'
+	cd "${_cwd}"
+}
+
 # detect build status by log
 tb_get_build_status() {
 	local _log=$1
@@ -147,15 +166,64 @@ tb_get_build_status() {
 	fi
 }
 
+# add row to mediawiki markup table file
+tb_add_mw_row() {
+	local _images=$1
+	local _btype=$2
+	local _line=$3
+	local _time=$4
+	local _bs
+	local _bl
+
+	case "${_btype}" in
+	'c')	_bs='clean';;
+	'i')	_bs='inc';;
+	'*')	_bs='';;
+	esac
+
+	[ "${_line}" != "${_line#ERROR}" ] && _bl=$_line
+
+	echo "|-" >>"${TB_MWT_FILE}"
+	echo "|${MACHINE} ||${DISTRO} ||${_images} ||${HOST_DISTRO} ||${BB_REV} ||${TB_BUILDER} ||${OE_REV} ||${_bs} ||${_bl}" >>"${TB_MWT_FILE}"
+
+	echo "|-" >>"${TB_MWR_FILE}"
+	echo "|${MACHINE} ||${DISTRO} ||${_images} ||${HOST_DISTRO} ||${BB_REV} ||${TB_BUILDER} ||${_bs} ||${_bl} ||${OE_REV} ||${HOST_MACHINE} ||${_time}" >>"${TB_MWR_FILE}"
+}
+
+tb_build_images() {
+	local _btype=$1
+	local _images=$2
+	local _log=$3
+	local _rc
+	local _bstatus
+	local _line
+	local _stime
+	local _btime
+
+	tb_rotate_log "${_log}"
+	touch "${_log}"
+
+	_stime=$(date +%s)
+	${BB_CMD} ${BB_OPTS} ${_images} 2>&1 | tee "${_log}"
+	_rc=$?
+	_btime=$( TZ=UTC0 date -d "now - $_stime seconds" '+%T' )
+
+	_line=$(tail -n1 "${_log}")
+	tb_log " ++ ${_line}"
+	[ "${_line}" != "${_line#ERROR}" ] && _bstatus="FAILED" || _bstatus="OK"
+
+	tb_log " ++ Build finished in ${_btime} with code ${_rc}. Build status: ${_bstatus}."
+	[ -n "${DO_CREATE_MW_TABLE}" ] && tb_add_mw_row "${_images}" "${_btype}" "${_line}" "${_btime}"
+}
+
+
 # Do build of image-set $bbimages for machine-set $MLIST
 # tb_build_machines "$btype" "$MLIST" $bbimages
 tb_build_machines() {
-	local btype=$1; shift
+	local _btype=$1; shift
 	local _MLIST=$1; shift
 	local _bbimages=$@
 	local _machine
-	local _rc
-	local _image
 	local _log
 	
 	# Start accounting
@@ -172,34 +240,28 @@ tb_build_machines() {
 		if [ -n "${DO_RUN_SHELL}" ]; then
 			tb_interactive_shell
 		else
-
 			tb_log " ++ ${_machine} build started"
+
 			case "${SEPARATE_BUILD}" in
 			[Yy][Ee][Ss])
 				# Build images separately
+				local _image
 				for _image in $_bbimages; do
 					tb_log " ++ ${_image} build started"
-					_log="${LOG_DIR}/B.${build}.${DISTRO}.${_machine}.${_image}.${btype}.log"
-					[ -f "${_log}" ] && mv "${_log}" "${_log}.0"
-					${BB_CMD} ${BB_OPTS} ${_image} 2>&1 | tee "${_log}"
-					_rc=$?
-					tb_log " ++ ${_image} build finished. Exit code: ${_rc}. Build status: $(tb_get_build_status ${_log})"
+					_log="${LOG_DIR}/B.${build}.${DISTRO}.${_machine}.${_image}.${_btype}.log"
+					tb_build_images "${_btype}" "${_image}" "${_log}"
 				done
 				;;
 			*)
 				# Build all images with one bitbake invocation
 				_log="${LOG_DIR}/B.${build}.${DISTRO}.${_machine}.${btype}.log"
-				[ -f "${_log}" ] && mv "${_log}" "${_log}.0"
-				${BB_CMD} ${BB_OPTS} ${_bbimages} 2>&1 | tee "${_log}"
-				_rc=$?
-				tb_log " ++ Build finished. Exit code: ${_rc}. Build status: $(tb_get_build_status ${_log})"
+				tb_build_images "${_btype}" "${_bbimages}" "${_log}"
 				;;
 			esac
-			
+
 			tb_log " + ${_machine} build finished."
 		fi
 	done
-
 }
 
 
@@ -319,8 +381,11 @@ for buildconf in ${BUILDS}; do
 		tb_git_branch "$OE_DIR" "$OE_BRANCH"
 	fi
 
+	OE_REV=$(tb_git_rev "$OE_DIR")
+	BB_REV=$(tb_git_rev "$BB_DIR")
+
 	# parse tasks
-	unset DO_BUILD_CLEAN DO_BUILD_INCREMENTAL
+	unset DO_BUILD_CLEAN DO_BUILD_INCREMENTAL DO_CREATE_MW_TABLE
 	for task in $TASKS; do
 		[ "${task}" != "${task#!}" ] && continue
 		case ${task} in
@@ -328,6 +393,8 @@ for buildconf in ${BUILDS}; do
 			DO_BUILD_CLEAN=y;;
 		'build_incremental')
 			DO_BUILD_INCREMENTAL=y;;
+		'create_mw_table')
+			DO_CREATE_MW_TABLE=y;;
 		*)
 			tb_log "Unknown task ${task}.";;
 		esac

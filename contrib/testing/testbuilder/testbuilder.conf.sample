@@ -43,8 +43,13 @@ TB_SHELL='/bin/bash --norc'
 # Use $SHELL variable or fallback to /bin/sh
 #TB_SHELL=${SHELL:-'/bin/sh'}
 
-# Name for oestats-client (empty to disable)
+# Name for oestats-client and wiki tables
 TB_BUILDER=""
+
+# Build host distro
+HOST_DISTRO=""
+# Build host machine (CPU/RAM)
+HOST_MACHINE=""
 
 # Misc dirs
 TB_BASE=`pwd`
