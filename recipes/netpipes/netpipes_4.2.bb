@@ -5,9 +5,7 @@ SECTION = "console/network"
 PR = "r0"
 LICENSE = "GPL"
 
-SRC_URI = "http://web.purplefrog.com/~thoth/netpipes/ftp/${PN}-${PV}-export.tar.gz"
-
-S = "${WORKDIR}"
+SRC_URI = "http://web.purplefrog.com/~thoth/netpipes/ftp/${PN}-${PV}-export.tar.gz;subdir=${BPN}-${PV}"
 
 
 FILES_${PN}-doc                 +="/man/man1"
