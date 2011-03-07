@@ -9,11 +9,9 @@ APPTYPE = "binary"
 APPDESKTOP = "${WORKDIR}/misc"
 PR = "r3"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/bedic/zbedic_${PV}-2.tgz \
+SRC_URI = "${SOURCEFORGE_MIRROR}/bedic/zbedic_${PV}-2.tgz;subdir=${BPN}-${PV} \
            file://opie-icons.patch \
            file://qtopia17.patch"
-
-S = "${WORKDIR}"
 
 inherit opie
 export OE_QMAKE_LINK="${CXX}"
