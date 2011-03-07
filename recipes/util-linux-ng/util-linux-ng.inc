@@ -2,7 +2,7 @@ DESCRIPTION = "Util-linux-ng is a suite of essential utilities for any Linux sys
 SECTION = "base"
 LICENSE = "GPL"
 DEPENDS = "${@base_contains('DISTRO_FEATURES', 'pam', 'libpam', '', d)} zlib ncurses virtual/libintl"
-DEPENDS_virtclass-native = "zlib-native lzo-native gettext-native"
+DEPENDS_virtclass-native = "zlib-native gettext-native"
 
 inherit autotools gettext
 
