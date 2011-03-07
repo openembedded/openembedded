@@ -10,12 +10,10 @@ inherit java-library
 DEPENDS = "xmlpull"
 RDEPENDS_${PN} = "libxmlpull-java"
 
-S = "${WORKDIR}"
-
 JAR = "${PN}-${PV}.jar"
 
 SRC_URI = "\
-    ${SOURCEFORGE_MIRROR}/kxml/${PN}-src-${PV}.zip \
+    ${SOURCEFORGE_MIRROR}/kxml/${PN}-src-${PV}.zip;subdir=${BPN}-${PV} \
     file://makefile.patch \
     "
 
