@@ -4,9 +4,8 @@ LICENSE = "GPL"
 HOMEPAGE = "http://regina-rexx.sf.net"
 DEPENDS = "regina-rexx-native"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/regina-rexx/regina33.zip \
+SRC_URI = "${SOURCEFORGE_MIRROR}/regina-rexx/regina33.zip;subdir=${BPN}-${PV} \
            file://use-proper-host-tools.patch"
-S = "${WORKDIR}"
 
 inherit autotools
 
