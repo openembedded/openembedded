@@ -2,13 +2,14 @@ LICENSE = "LGPL"
 DEPENDS = "e2fsprogs gssdp libsoup-2.4 libxml2 gtk-doc-native libgee"
 
 require gupnp.inc
+PR = "r1"
 
 SRC_URI[md5sum] = "0d562f5f02534c70c3743b2c514db8ba"
 SRC_URI[sha256sum] = "7974953f38a41236c875c3df509abc43e8218b5925fdc18212a73b1ae0d0e7e8"
 
 inherit autotools pkgconfig
 
-EXTRA_OECONF = "--disable-gtk-doc"
+EXTRA_OECONF = "--disable-gtk-doc --enable-introspection=no"
 
 do_configure() {
 	libtoolize --force
