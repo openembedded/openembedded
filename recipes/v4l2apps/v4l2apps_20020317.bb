@@ -3,8 +3,7 @@ DESCRIPTION = "Video4linux Two sample applications"
 LICENSE = "PD"
 DEPENDS = "libxaw virtual/libx11 libxt"
 
-SRC_URI = "http://www.thedirks.org/pub/v4l2/apps/apps${PV}.tgz"
-S = "${WORKDIR}"
+SRC_URI = "http://www.thedirks.org/pub/v4l2/apps/apps${PV}.tgz;subdir=${BPN}-${PV}"
 
 #FIXME: currently busted, as it requires v4l2 -kernel headers.
 #either fix the apps to use headers not in linux/, or make this package
