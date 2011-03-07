@@ -9,10 +9,8 @@ APPNAME = "zrally"
 APPTYPE = "binary"
 APPDESKTOP = "${WORKDIR}"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/zrally/zrally_0.90_src.tar.gz \
+SRC_URI = "${SOURCEFORGE_MIRROR}/zrally/zrally_0.90_src.tar.gz;subdir=${BPN}-${PV} \
 file://dir.patch;striplevel=0"
-
-S = "${WORKDIR}"
 
 inherit opie
 
