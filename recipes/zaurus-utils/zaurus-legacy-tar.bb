@@ -2,11 +2,10 @@ DESCRIPTION = "Legacy GNU-tar to unpack hd images on install for Zaurus spitz"
 LICENSE = "GPL"
 PR = "r0"
 
-SRC_URI = "file://gnu-tar.gz"
-
-S = "${WORKDIR}"
+SRC_URI = "file://gnu-tar.gz;subdir=${BPN}-${PV}"
 
 do_compile() {
+        :
 }
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
