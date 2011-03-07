@@ -2,11 +2,9 @@ DESCRIPTION = "Java XML parser and transformer APIs (DOM, SAX, JAXP, TrAX)"
 LICENSES = "AL2.0 W3C Public Domain"
 AUTHOR = "Apache Software Foundation"
 
-SRC_URI = "http://archive.apache.org/dist/xml/commons/source/xml-commons-external-${PV}-src.tar.gz"
+SRC_URI = "http://archive.apache.org/dist/xml/commons/source/xml-commons-external-${PV}-src.tar.gz;subdir=${BPN}-${PV}"
 
 inherit java-library
-
-S = "${WORKDIR}"
 
 DEPENDS = "fastjar-native"
 
