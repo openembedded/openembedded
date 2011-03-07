@@ -12,7 +12,7 @@ PROVIDES += "gst-plugins"
 # if alsa has been built and is present.  You will
 # not get an error if this is not present, just 
 # a missing alsa plugin
-DEPENDS += "cdparanoia pango libtheora alsa-lib libsm virtual/libx11 freetype gnome-vfs libxv libxrandr"
+DEPENDS += "cdparanoia pango libtheora alsa-lib libsm virtual/libx11 freetype  libxv libxrandr"
 
 
 SRC_URI[archive.md5sum] = "d29669dd79276c5cd94e1613c03cd9ab"

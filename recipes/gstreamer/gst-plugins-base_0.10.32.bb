@@ -15,7 +15,7 @@ PROVIDES += "gst-plugins"
 # if alsa has been built and is present.  You will
 # not get an error if this is not present, just
 # a missing alsa plugin
-DEPENDS += "udev cdparanoia pango libtheora alsa-lib libsm virtual/libx11 freetype gnome-vfs libxv libxrandr gtk+"
+DEPENDS += "udev cdparanoia pango libtheora alsa-lib libsm virtual/libx11 freetype  libxv libxrandr gtk+"
 
 def get_gstreamer_fpu_setting(bb, d):
     if bb.data.getVar('TARGET_FPU', d, 1) in [ 'soft' ]:

@@ -4,7 +4,7 @@ DESCRIPTION = "Gstreamer package groups"
 DEPENDS = "gstreamer gst-plugins-base gst-plugins-bad gst-plugins-good \
            ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'gst-plugins-ugly', d)}"
 
-PR = "r13"
+PR = "r14"
 
 PACKAGES = "${PN}-dbg \
     gst-meta-base \
@@ -25,7 +25,7 @@ RDEPENDS_gst-meta-base = "\
     gst-plugin-autodetect"
 
 RRECOMMENDS_gst-meta-base = "\
-    gst-plugin-gnomevfs \
+    gst-plugin-gio \
     gst-plugin-alsa \
     gst-plugin-ximagesink \
     gst-plugin-videoscale \
