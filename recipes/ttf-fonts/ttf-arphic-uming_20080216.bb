@@ -6,8 +6,7 @@ RPROVIDES_${PN} = "virtual-chinese-font"
 PR = "r2"
 
 SRC_URI = \
-"http://archive.ubuntu.com/ubuntu/pool/main/t/ttf-arphic-uming/ttf-arphic-uming_0.2.${PV}.1.orig.tar.gz"
-S = "${WORKDIR}"
+"http://archive.ubuntu.com/ubuntu/pool/main/t/ttf-arphic-uming/ttf-arphic-uming_0.2.${PV}.1.orig.tar.gz;subdir=${BPN}-${PV}"
 
 require ttf.inc
 
