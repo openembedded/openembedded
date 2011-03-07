@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 DEPENDS = "tzcode-native"
 
-INC_PR = "r8"
+INC_PR = "r9"
 
 DEFAULT_TIMEZONE ?= "Europe/London"
 
@@ -12,9 +12,7 @@ RCONFLICTS_${PN} = "timezones timezone-africa timezone-america timezone-antarcti
              timezone-australia timezone-europe timezone-indian \
              timezone-iso3166.tab timezone-pacific timezone-zone.tab"
 
-SRC_URI = "ftp://elsie.nci.nih.gov/pub/tzdata${PV}.tar.gz;name=tar"
-
-S = "${WORKDIR}"
+SRC_URI = "ftp://elsie.nci.nih.gov/pub/tzdata${PV}.tar.gz;subdir=${BPN}-${PV}"
 
 TZONES= "africa antarctica asia australasia europe northamerica southamerica  \
          factory solar87 solar88 solar89 etcetera backward systemv \
@@ -26,28 +24,28 @@ CONFFILES_${PN} = "${sysconfdir}/timezone ${sysconfdir}/localtime"
 do_compile () {
         mkdir -p build
         for zone in ${TZONES}; do \
-            ${STAGING_BINDIR_NATIVE}/zic -d ${WORKDIR}/build${datadir}/zoneinfo -L /dev/null \
+            ${STAGING_BINDIR_NATIVE}/zic -d ${S}/build${datadir}/zoneinfo -L /dev/null \
                 -y ${S}/yearistype.sh ${S}/${zone} ; \
-            ${STAGING_BINDIR_NATIVE}/zic -d ${WORKDIR}/build${datadir}/zoneinfo/posix -L /dev/null \
+            ${STAGING_BINDIR_NATIVE}/zic -d ${S}/build${datadir}/zoneinfo/posix -L /dev/null \
                 -y ${S}/yearistype.sh ${S}/${zone} ; \
-            ${STAGING_BINDIR_NATIVE}/zic -d ${WORKDIR}/build${datadir}/zoneinfo/right -L ${S}/leapseconds \
+            ${STAGING_BINDIR_NATIVE}/zic -d ${S}/build${datadir}/zoneinfo/right -L ${S}/leapseconds \
                 -y ${S}/yearistype.sh ${S}/${zone} ; \
         done
 }
 
 do_install () {
         install -d ${D}${prefix} ${D}${datadir}/zoneinfo
-        cp -pPR ${WORKDIR}/build${prefix}/* ${D}${prefix}
+        cp -pPR ${S}/build${prefix}/* ${D}${prefix}
         # Only eglibc is removing zoneinfo files from package
         if [ "${LIBC}"x = "eglibc"x ] ; then
-          cp -pP "${WORKDIR}/zone.tab" ${D}${datadir}/zoneinfo
-          cp -pP "${WORKDIR}/iso3166.tab" ${D}${datadir}/zoneinfo
+          cp -pP "${S}/zone.tab" ${D}${datadir}/zoneinfo
+          cp -pP "${S}/iso3166.tab" ${D}${datadir}/zoneinfo
         fi
 
         # Install a sane default for timezones
         install -d ${D}${sysconfdir}
         echo ${DEFAULT_TIMEZONE} > ${D}${sysconfdir}/timezone
-        cp -pPR ${WORKDIR}/build${datadir}/zoneinfo/${DEFAULT_TIMEZONE} ${D}${sysconfdir}/localtime
+        cp -pPR ${S}/build${datadir}/zoneinfo/${DEFAULT_TIMEZONE} ${D}${sysconfdir}/localtime
 }
 
 PACKAGE_ARCH = "all"
