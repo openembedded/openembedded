@@ -11,7 +11,7 @@ python () {
     gettext_after_parse(d)
 }
 
-DEPENDS_GETTEXT = "gettext gettext-native virtual/libiconv virtual/libintl"
+DEPENDS_GETTEXT = "gettext-native virtual/libiconv virtual/libintl"
 
 DEPENDS =+ "${DEPENDS_GETTEXT}"
 EXTRA_OECONF += "--enable-nls"
