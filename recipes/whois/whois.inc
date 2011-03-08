@@ -1,4 +1,3 @@
-DEPENDS += "gettext-native virtual/libintl"
 DESCRIPTION = "whois is an improved whois client"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.linux.it/~md/software/"
