@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r96"
+PR = "r97"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -329,6 +329,7 @@ RDEPENDS_${PN} += "\
 		samba \
 		bison \
 		automake \
+		elfe \
 "
 
 # this is only usefull on gta02 and on other devices it's trying to pull mesa-dri (not respecting DEFAULT_PROVIDER for virtual/libgl)
