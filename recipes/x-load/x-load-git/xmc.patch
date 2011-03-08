@@ -1,0 +1,52 @@
+From b35937bf29c828e311f1d9bb1385bd32d34ec060 Mon Sep 17 00:00:00 2001
+From: Jason Kridner <jkridner@beagleboard.org>
+Date: Mon, 7 Mar 2011 19:31:15 -0600
+Subject: [PATCH] Forced newer revisions to default to xM.
+
+---
+ board/omap3530beagle/omap3530beagle.c |   15 ++++++++++++++-
+ 1 files changed, 14 insertions(+), 1 deletions(-)
+
+diff --git a/board/omap3530beagle/omap3530beagle.c b/board/omap3530beagle/omap3530beagle.c
+index 1b3d8c7..d55d32e 100644
+--- a/board/omap3530beagle/omap3530beagle.c
++++ b/board/omap3530beagle/omap3530beagle.c
+@@ -212,6 +212,7 @@ u32 cpu_is_3410(void)
+  *		GPIO173, GPIO172, GPIO171: 1 1 0 => C1/2/3
+  *		GPIO173, GPIO172, GPIO171: 1 0 1 => C4
+  *		GPIO173, GPIO172, GPIO171: 0 0 0 => XM
++ *		default                          => XM
+  ******************************************/
+ int beagle_revision(void)
+ {
+@@ -227,6 +228,18 @@ int beagle_revision(void)
+ 	rev = omap_get_gpio_datain(173) << 2 |
+ 		omap_get_gpio_datain(172) << 1 |
+ 		omap_get_gpio_datain(171);
++
++	/* Default newer board revisions to XM */
++	switch(rev) {
++	case REVISION_AXBX:
++	case REVISION_CX:
++	case REVISION_C4:
++		break;
++	case REVISION_XM:
++	default:
++		rev = REVISION_XM;
++	}
++
+ 	omap_free_gpio(171);
+ 	omap_free_gpio(172);
+ 	omap_free_gpio(173);
+@@ -662,7 +675,7 @@ int misc_init_r(void)
+ 		printf("Beagle Rev C4\n");
+ 		break;
+ 	case REVISION_XM:
+-		printf("Beagle xM Rev A\n");
++		printf("Beagle xM\n");
+ 		break;
+ 	default:
+ 		printf("Beagle unknown 0x%02x\n", rev);
+-- 
+1.6.1
+
