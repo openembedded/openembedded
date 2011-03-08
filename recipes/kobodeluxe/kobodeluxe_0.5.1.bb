@@ -5,7 +5,7 @@ LICENSE = "GPL"
 AUTHOR = "David Olofson <david@olofson.net>"
 HOMEPAGE = "http://olofson.net/kobodl"
 
-PR = "r5"
+PR = "r6"
 
 DEPENDS = "libsdl-image virtual/libsdl"
 
@@ -18,6 +18,7 @@ SRC_URI = "http://olofson.net/kobodl/download/KoboDeluxe-${PV}.tar.bz2 \
 	   file://kobodeluxe-sysconf-support.patch \
 	   file://kobodeluxe-menu-pointer.patch \
 	   file://kobodeluxe-dimension-autoswap.patch \
+	   file://buildfix.patch \
            file://default-config \
           "
 
