@@ -1,11 +1,12 @@
 require busybox_1.1x.inc
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.3"
 
 SRC_URI += " \
 	http://busybox.net/downloads/fixes-1.18.3/busybox-1.18.3-buildsys.patch;name=patch01 \
 	http://busybox.net/downloads/fixes-1.18.3/busybox-1.18.3-modutils24.patch;name=patch02 \
 	http://busybox.net/downloads/fixes-1.18.3/busybox-1.18.3-wget.patch;name=patch03 \
         http://busybox.net/downloads/fixes-1.18.3/busybox-1.18.3-menuconfig.patch;name=patch04 \
+	http://busybox.net/downloads/fixes-1.18.3/busybox-1.18.3-klogd.patch;name=patch05 \
 	"
 
 SRC_URI[md5sum] = "660af4d44661d32b22025a66f4f78df2"
@@ -18,3 +19,5 @@ SRC_URI[patch03.md5sum] = "abe065069fed8458eedbdad48c115e1f"
 SRC_URI[patch03.sha256sum] = "22538ebee96f66916104b8143cfd16e21568da4c5a89128b9daa60d83a59120b"
 SRC_URI[patch04.md5sum] = "d12d997b66669451bd8c4cc494162a80"
 SRC_URI[patch04.sha256sum] = "f3f8466432088248492fc44631a765ed0a95a8b7d14e37483fae25158d07dc68"
+SRC_URI[patch05.md5sum] = "f2277e7a31d04295bd9d56a98ff1535b"
+SRC_URI[patch05.sha256sum] = "4c7ab0e7d940a4aaf54a0b6fd21f00ab025eaf025d47f2e085a6269e1842016c"
