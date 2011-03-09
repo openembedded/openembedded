@@ -7,7 +7,7 @@ DESCRIPTION="Java1.4-compatible GNU Classpath variant that is used as bootclassp
 
 PR = "r6"
 
-DEPENDS = "zip-native fastjar-native jikes-native gettext-native"
+DEPENDS = "zip-native fastjar-native jikes-native"
 
 SRC_URI += "\
 	file://autotools.patch \
