@@ -2,17 +2,14 @@ DESCRIPTION = "Common X11 Keyboard layouts"
 LICENSE = "MIT"
 DEPENDS = "intltool-native xkbcomp-native"
 RDEPENDS_${PN} = "xkbcomp"
-INC_PR = "r6"
+INC_PR = "r7"
 
 SRC_URI = "http://xlibs.freedesktop.org/xkbdesc/xkeyboard-config-${PV}.tar.bz2"
 
 S = "${WORKDIR}/${PN}-${PV}"
 
-inherit autotools
+EXTRA_OECONF += "--with-xkb-rules-symlink=xorg"
 
-do_install_append () {
-    install -d ${D}${datadir}/X11/xkb/compiled
-    cd ${D}${datadir}/X11/xkb/rules && ln -sf base xorg
-}
+inherit autotools
 
 FILES_${PN} += "${datadir}/X11/xkb"
