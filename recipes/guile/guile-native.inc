@@ -1,10 +1,8 @@
 SECTION = "unknown"
-LICENSE = "GPL"
-DEPENDS = "gettext-native gmp-native"
+LICENSE = "LGPLv2.1"
+DEPENDS = "gmp-native"
 
-inherit autotools native
-
-S="${WORKDIR}/guile-${PV}"
+inherit autotools native gettext
 
 do_configure_append() {
         find ${S} -name Makefile | xargs sed -i s:'-Werror':'':g

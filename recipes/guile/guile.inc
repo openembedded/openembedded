@@ -2,13 +2,13 @@ DESCRIPTION = "Guile is an interpreter for the Scheme programming language, \
 packaged as a library which can be incorporated into your programs."
 HOMEPAGE = "http://www.gnu.org/software/guile/guile.html"
 SECTION = "devel/scheme"
-DEPENDS = "guile-native gmp libtool"
-LICENSE = "GPL"
+DEPENDS = "guile-native gmp"
+LICENSE = "LGPLv2.1"
 PACKAGES =+ "${PN}-el"
 FILES_${PN}-el = "${datadir}/emacs"
 DESCRIPTION_${PN}-el = "Emacs lisp files for Guile"
 
-inherit autotools
+inherit autotools gettext
 
 acpaths = "-I ${S}/guile-config"
 
