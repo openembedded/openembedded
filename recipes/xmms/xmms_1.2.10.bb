@@ -10,7 +10,7 @@ SRC_URI = "http://www.xmms.org/files/1.2.x/xmms-${PV}.tar.bz2 \
            file://xmms-config-dequote.patch \
 	   file://acinclude.m4 \
            file://xmms.sh"
-PR = "r6"
+PR = "r7"
 
 RRECOMMENDS_${PN} = "xmms-plugin-output-oss xmms-plugin-output-alsa \
                     xmms-mad xmms-tremor"
@@ -30,6 +30,13 @@ do_configure_prepend() {
 	for i in $(find . -name "Makefile*") ; do
 		sed -i -e 's:MKINSTALLDIRS = @MKINSTALLDIRS@:MKINSTALLDIRS = @mkdir_p@:g' \ 
 	           -e 's:$(SHELL) $(MKINSTALLDIRS):$(MKINSTALLDIRS):g' $i
+	done
+}
+
+do_configure_append() {
+	for i in $(find . -name "Makefile"); do
+		sed -i -e 's:L/usr/lib:L${STAGING_LIBDIR}:g' \
+		       $i
 	done
 }
 
