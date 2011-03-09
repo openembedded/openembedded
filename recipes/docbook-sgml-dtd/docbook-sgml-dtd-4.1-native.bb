@@ -4,7 +4,7 @@ DTD_VERSION = "4.1"
 
 PR = "${INC_PR}.0"
 
-SRC_URI = "http://docbook.org/sgml/4.1/docbk41.zip"
+SRC_URI = "http://docbook.org/sgml/4.1/docbk41.zip;subdir=${BPN}-${PV}"
 
 do_compile() {
     # Refer to http://www.linuxfromscratch.org/blfs/view/stable/pst/sgml-dtd.html
