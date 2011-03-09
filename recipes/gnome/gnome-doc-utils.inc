@@ -1,10 +1,9 @@
 LICENSE = "GPL LGPL"
-DEPENDS = "libxml2 libxslt libxslt-native libxml2-native gettext-native"
-DEPENDS_virtclass-native = "libxslt-native libxml2-native gettext-native"
+DEPENDS = "libxml2 libxslt libxslt-native libxml2-native"
 
 INC_PR = "r6"
 
-inherit gnomebase
+inherit gnomebase gettext
 
 EXTRA_OECONF = "--disable-scrollkeeper"
 
@@ -21,4 +20,3 @@ do_install_append() {
 FILES_${PN} += "${datadir}/xml*"
 
 BBCLASSEXTEND = "native"
-
