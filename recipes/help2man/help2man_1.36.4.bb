@@ -2,7 +2,7 @@ DESCRIPTION = "GNU utility to convert program --help output to a man page"
 HOMEPAGE    = "http://www.gnu.org/software/help2man"
 SECTION     = "console/utils"
 LICENSE     = "GPLv2"
-DEPENDS     = "gettext-native perl-native liblocale-gettext-perl-native"
+DEPENDS     = "perl-native liblocale-gettext-perl-native"
 DEPENDS_virtclass-native = "perl-native autoconf-native automake-native"
 RDEPENDS_${PN}    = "gettext perl liblocale-gettext-perl"
 
@@ -10,11 +10,11 @@ TARGET_CC_ARCH += "${LDFLAGS}"
 
 SRC_URI = "${GNU_MIRROR}/${BPN}/${BPN}-${PV}.tar.gz"
 
-inherit autotools
+inherit autotools gettext
 
 BBCLASSEXTEND = "native"
 
-PR = "r3"
+PR = "r4"
 
 # We don't want to reconfigure things
 do_configure() {
