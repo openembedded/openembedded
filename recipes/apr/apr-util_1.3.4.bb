@@ -30,7 +30,7 @@ do_configure_prepend() {
 do_configure_append() {
 	sed -i -e  s:apr_builders=/usr/share/build-1:apr_builders=${STAGING_DATADIR}/build-1:g ${S}/build/rules.mk
 	sed -i /^LIBTOOL/d ${S}/build/rules.mk
-	echo LIBTOOL="${TARGET_PREFIX}libtool --tag=CC" >> ${S}/build/rules.mk
+	echo LIBTOOL="${HOST_SYS}-libtool --tag=CC" >> ${S}/build/rules.mk
 }
 
 

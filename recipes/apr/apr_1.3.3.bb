@@ -24,7 +24,7 @@ do_stage() {
 	cp ${S}/build/apr_rules.mk ${STAGING_DATADIR}/apr/
 	sed -i s,apr_builddir=.*,apr_builddir=,g ${STAGING_DATADIR}/apr/apr_rules.mk
 	sed -i s,apr_builders=.*,apr_builders=,g ${STAGING_DATADIR}/apr/apr_rules.mk
-	sed -i s,LIBTOOL=.*,LIBTOOL=\$\(SHELL\)\ ${TARGET_PREFIX}libtool,g ${STAGING_DATADIR}/apr/apr_rules.mk
+	sed -i s,LIBTOOL=.*,LIBTOOL=\$\(SHELL\)\ ${HOST_SYS}-libtool,g ${STAGING_DATADIR}/apr/apr_rules.mk
 	sed -i s,\$\(apr_builders\),${STAGING_DATADIR}/apr/,g ${STAGING_DATADIR}/apr/apr_rules.mk
 	cp ${S}/build/mkdir.sh ${STAGING_DATADIR}/apr/
 	cp ${S}/build/make_exports.awk ${STAGING_DATADIR}/apr/

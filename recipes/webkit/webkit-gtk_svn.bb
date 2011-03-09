@@ -42,7 +42,7 @@ EXTRA_AUTORECONF = " -I autotools "
 
 # Dolt gets used on x86 and ppc and hardcodes 'libtool'
 do_configure_append() {
-	cp ${TARGET_PREFIX}libtool libtool || true
+	cp ${HOST_SYS}-libtool libtool || true
 }
 
 do_compile_prepend() {

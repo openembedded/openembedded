@@ -21,16 +21,16 @@ EXTRA_OECONF = "--disable-gnome_ui --disable-gtk-doc --without-ffmpeg \
                 --disable-glibtest --disable-glib --disable-strict"
 
 do_configure () {
-	export LIBTOOL="${STAGING_BINDIR_NATIVE}/${TARGET_PREFIX}libtool"
+	export LIBTOOL="${STAGING_BINDIR_NATIVE}/${HOST_SYS}-libtool"
 	oe_runconf SPEEX_LIBS="-lspeex" SPEEX_CFLAGS=" "
 }
 
 do_compile () {
-	oe_runmake LIBTOOL="${STAGING_BINDIR_NATIVE}/${TARGET_PREFIX}libtool" SPEEX_LIBS="-lspeex" SPEEX_CFLAGS=" "
+	oe_runmake LIBTOOL="${STAGING_BINDIR_NATIVE}/${HOST_SYS}-libtool" SPEEX_LIBS="-lspeex" SPEEX_CFLAGS=" "
 }
 
 do_install () {
-	oe_runmake install "DESTDIR=${D}" "LIBTOOL=${STAGING_BINDIR_NATIVE}/${TARGET_PREFIX}libtool"
+	oe_runmake install "DESTDIR=${D}" "LIBTOOL=${STAGING_BINDIR_NATIVE}/${HOST_SYS}-libtool"
 }
 
 do_install_append() {
@@ -39,7 +39,7 @@ do_install_append() {
 }
 
 do_stage() {
-	export LIBTOOL="${STAGING_BINDIR_NATIVE}/${TARGET_PREFIX}libtool"
+	export LIBTOOL="${STAGING_BINDIR_NATIVE}/${HOST_SYS}-libtool"
 	autotools_stage_all
 	rm ${STAGING_LIBDIR}/libquickstream.la	
 	rm ${STAGING_LIBDIR}/libmediastreamer.la 

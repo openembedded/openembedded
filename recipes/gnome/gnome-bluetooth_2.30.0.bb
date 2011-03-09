@@ -19,7 +19,7 @@ do_configure_prepend() {
 }
 
 do_configure_append() {
-	sed -i 's,func_fatal_error "error: cannot install,echo "bogus message about,' ${TARGET_PREFIX}libtool
+	sed -i 's,func_fatal_error "error: cannot install,echo "bogus message about,' ${HOST_SYS}-libtool
 }
 
 RRECOMMENDS_${PN} += "obexd obex-data-server"

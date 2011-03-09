@@ -1,4 +1,4 @@
-Renames "libtool" -> "${TARGET_PREFIX}libtool" which makes sure
+Renames "libtool" -> "${HOST_SYS}-libtool" which makes sure
 it can't be confused with the host libtool.
 
 Originally by: RP

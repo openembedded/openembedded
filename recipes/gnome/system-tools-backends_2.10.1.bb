@@ -32,7 +32,7 @@ do_configure() {
 	aclocal
     gnu-configize
 	oe_runconf
-	cp ${STAGING_BINDIR_CROSS}/${TARGET_PREFIX}libtool ${S}
+	cp ${STAGING_BINDIR_CROSS}/${HOST_SYS}-libtool ${S}
 }
 
 do_install_append () {

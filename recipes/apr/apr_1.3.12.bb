@@ -28,7 +28,7 @@ do_install_append() {
 	cp ${S}/build/apr_rules.mk ${D}${datadir}/apr/
 	sed -i s,apr_builddir=.*,apr_builddir=,g ${D}${datadir}/apr/apr_rules.mk
 	sed -i s,apr_builders=.*,apr_builders=,g ${D}${datadir}/apr/apr_rules.mk
-	sed -i s,LIBTOOL=.*,LIBTOOL=\$\(SHELL\)\ ${TARGET_PREFIX}libtool,g ${D}${datadir}/apr/apr_rules.mk
+	sed -i s,LIBTOOL=.*,LIBTOOL=\$\(SHELL\)\ ${HOST_SYS}-libtool,g ${D}${datadir}/apr/apr_rules.mk
 	sed -i s,\$\(apr_builders\),${D}${datadir}/apr/,g ${D}${datadir}/apr/apr_rules.mk
 	cp ${S}/build/mkdir.sh ${D}${datadir}/apr/
 	cp ${S}/build/make_exports.awk ${D}${datadir}/apr/

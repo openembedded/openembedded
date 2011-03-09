@@ -22,7 +22,7 @@ do_configure_prepend() {
 
 PARALLEL_MAKE = ""
 do_compile_prepend() {
-	ln -sf ${S}/${TARGET_PREFIX}libtool ${S}/libtool
+	ln -sf ${S}/${HOST_SYS}-libtool ${S}/libtool
 }	
 
 do_install_append() {

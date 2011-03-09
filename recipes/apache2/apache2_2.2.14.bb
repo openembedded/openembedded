@@ -91,7 +91,7 @@ EXTRA_OECONF = "--enable-ssl \
 #
 
 do_configure_prepend() {
-	sed -e 's,libtool libtool15,${TARGET_PREFIX}libtool libtool115,' -i ${S}/srclib/apr/build/buildcheck.sh
+	sed -e 's,libtool libtool15,${HOST_SYS}-libtool libtool115,' -i ${S}/srclib/apr/build/buildcheck.sh
 }
 
 do_configure() {
@@ -100,7 +100,7 @@ do_configure() {
 }
 
 do_compile_prepend() {
-	ln -sf ${S}/srclib/apr/${TARGET_PREFIX}libtool ${S}/srclib/apr/libtool
+	ln -sf ${S}/srclib/apr/${HOST_SYS}-libtool ${S}/srclib/apr/libtool
 }	
 
 do_install_append() {

@@ -8,7 +8,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/utils/kernel/cpufreq/cpufrequtils-${P
 "
 
 export CROSS = "${TARGET_PREFIX}"
-export LIBTOOL = "${TARGET_PREFIX}libtool --tag cc"
+export LIBTOOL = "${HOST_SYS}-libtool --tag cc"
 
 TARGET_CC_ARCH += "${LDFLAGS}"
 

@@ -10,7 +10,7 @@ SRC_URI = "http://launchpad.net/indicator-network/trunk/0.2.6/+download/indicato
 # Fixed for wrong test in libtool without it I get this bogus error:
 # arm-angstrom-linux-gnueabi-libtool: install: error: cannot install `libnetworkmenu.la' to a directory not ending in /usr/lib/indicators/3/
 do_configure_append() {
-        sed -i 's,func_fatal_error "error: cannot install,echo "bogus message about,' ${TARGET_PREFIX}libtool
+        sed -i 's,func_fatal_error "error: cannot install,echo "bogus message about,' ${HOST_SYS}-libtool
 }
 
 FILES_${PN} += "${libdir}/indicators/3/* /usr/share/dbus-1/services/*"

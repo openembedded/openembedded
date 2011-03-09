@@ -25,8 +25,8 @@ do_configure () {
 	cd ${S}
 
 	# prevent libtool from linking libs against libstdc++, libgcc, ...
-	cat ${TARGET_PREFIX}libtool | sed -e 's/postdeps=".*"/postdeps=""/' > ${TARGET_PREFIX}libtool.tmp
-	mv ${TARGET_PREFIX}libtool.tmp ${TARGET_PREFIX}libtool
+	cat ${HOST_SYS}-libtool | sed -e 's/postdeps=".*"/postdeps=""/' > ${HOST_SYS}-libtool.tmp
+	mv ${HOST_SYS}-libtool.tmp ${HOST_SYS}-libtool
 }
 
 do_stage () {
