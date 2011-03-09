@@ -1,0 +1,69 @@
+From 6859e4b88c405ed40c898d259227f158da5f867a Mon Sep 17 00:00:00 2001
+From: Steve Kipisz <s-kipisz2@ti.com>
+Date: Thu, 5 Aug 2010 10:36:07 -0500
+Subject: [PATCH 04/16] OMAP3: BeagleBoard: Enable pullups on i2c2.
+
+This allows the reading of EEPROMS on the expansion bus without adding
+external pull-ups.
+---
+v2 updates
+ * Updated per http://patchwork.ozlabs.org/patch/71997/
+ * Added description
+ * Used OMAP34XX_CTRL_BASE
+ * Used structure and writel to perform write
+
+v3 updates
+ * Included v3 in the subject line
+ * Fixed structure name typo that got messed up in generating patch
+ * Removed some extraneous blank lines
+
+v4 updates
+ * Fixed typo in typecast
+---
+ arch/arm/include/asm/arch-omap3/omap3.h |   14 ++++++++++++++
+ board/ti/beagle/beagle.c                |    4 ++++
+ 2 files changed, 18 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/include/asm/arch-omap3/omap3.h b/arch/arm/include/asm/arch-omap3/omap3.h
+index 3957c79..cc2b541 100644
+--- a/arch/arm/include/asm/arch-omap3/omap3.h
++++ b/arch/arm/include/asm/arch-omap3/omap3.h
+@@ -50,6 +50,20 @@
+ /* CONTROL */
+ #define OMAP34XX_CTRL_BASE		(OMAP34XX_L4_IO_BASE + 0x2000)
+ 
++#ifndef __ASSEMBLY__
++/* Signal Integrity Parameter Control Registers */
++struct control_prog_io {
++	unsigned char res[0x408];
++	unsigned int io2;		/* 0x408 */
++	unsigned char res2[0x38];
++	unsigned int io0;		/* 0x444 */
++	unsigned int io1;		/* 0x448 */
++};
++#endif /* __ASSEMBLY__ */
++
++/* Bit definition for CONTROL_PROG_IO1 */
++#define PRG_I2C2_PULLUPRESX		0x00000001
++
+ /* UART */
+ #define OMAP34XX_UART1			(OMAP34XX_L4_IO_BASE + 0x6a000)
+ #define OMAP34XX_UART2			(OMAP34XX_L4_IO_BASE + 0x6c000)
+diff --git a/board/ti/beagle/beagle.c b/board/ti/beagle/beagle.c
+index 929461c..9d03b24 100644
+--- a/board/ti/beagle/beagle.c
++++ b/board/ti/beagle/beagle.c
+@@ -148,6 +148,10 @@ int misc_init_r(void)
+ {
+ 	struct gpio *gpio5_base = (struct gpio *)OMAP34XX_GPIO5_BASE;
+ 	struct gpio *gpio6_base = (struct gpio *)OMAP34XX_GPIO6_BASE;
++	struct control_prog_io *prog_io_base = (struct control_prog_io *)OMAP34XX_CTRL_BASE;
++
++	/* Enable i2c2 pullup resisters */
++	writel(~(PRG_I2C2_PULLUPRESX), &prog_io_base->io1);
+ 
+ 	switch (get_board_revision()) {
+ 	case REVISION_AXBX:
+-- 
+1.6.6.1
+

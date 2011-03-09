@@ -1,0 +1,57 @@
+From ca7179112840cdca717ac0c958a9ab226d1bdf25 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Mon, 22 Nov 2010 11:51:32 +0100
+Subject: [PATCH 09/16] OMAP3: beagle: pass expansionboard name in bootargs
+
+---
+ include/configs/omap3_beagle.h |   13 +++++++++++++
+ 1 files changed, 13 insertions(+), 0 deletions(-)
+
+diff --git a/include/configs/omap3_beagle.h b/include/configs/omap3_beagle.h
+index 51e14d0..9d569a5 100644
+--- a/include/configs/omap3_beagle.h
++++ b/include/configs/omap3_beagle.h
+@@ -191,6 +191,7 @@
+ 	"usbtty=cdc_acm\0" \
+ 	"console=ttyS2,115200n8\0" \
+ 	"mpurate=auto\0" \
++	"buddy=none "\
+ 	"vram=12M\0" \
+ 	"dvimode=1024x768MR-16@60\0" \
+ 	"defaultdisplay=dvi\0" \
+@@ -201,6 +202,7 @@
+ 	"nandrootfstype=jffs2\0" \
+ 	"mmcargs=setenv bootargs console=${console} " \
+ 		"mpurate=${mpurate} " \
++		"buddy=${buddy} "\
+ 		"vram=${vram} " \
+ 		"omapfb.mode=dvi:${dvimode} " \
+ 		"omapdss.def_disp=${defaultdisplay} " \
+@@ -208,6 +210,7 @@
+ 		"rootfstype=${mmcrootfstype}\0" \
+ 	"nandargs=setenv bootargs console=${console} " \
+ 		"mpurate=${mpurate} " \
++		"buddy=${buddy} "\
+ 		"vram=${vram} " \
+ 		"omapfb.mode=dvi:${dvimode} " \
+ 		"omapdss.def_disp=${defaultdisplay} " \
+@@ -216,6 +219,16 @@
+ 	"loadbootenv=fatload mmc ${mmcdev} ${loadaddr} uEnv.txt\0" \
+ 	"importbootenv=echo Importing environment from mmc ...; " \
+ 		"env import -t $loadaddr $filesize\0" \
++	"ramargs=setenv bootargs console=${console} " \
++		"${optargs} " \
++		"mpurate=${mpurate} " \
++		"buddy=${buddy} "\
++		"vram=${vram} " \
++		"omapfb.mode=dvi:${dvimode} " \
++		"omapdss.def_disp=${defaultdisplay} " \
++		"root=${ramroot} " \
++		"rootfstype=${ramrootfstype}\0" \
++	"loadramdisk=fatload mmc ${mmcdev} ${rdaddr} ramdisk.gz\0" \
+ 	"loaduimage=fatload mmc ${mmcdev} ${loadaddr} uImage\0" \
+ 	"mmcboot=echo Booting from mmc ...; " \
+ 		"run mmcargs; " \
+-- 
+1.6.6.1
+

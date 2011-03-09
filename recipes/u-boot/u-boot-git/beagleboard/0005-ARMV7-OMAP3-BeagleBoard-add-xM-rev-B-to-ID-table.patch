@@ -1,0 +1,111 @@
+From d2d1669e4e2d4eeb996305278c6e4df0b1e04a8d Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Wed, 3 Nov 2010 14:48:31 +0100
+Subject: [PATCH 05/16] ARMV7: OMAP3: BeagleBoard: add xM rev B to ID table
+
+Patch was updated by Jason Kridner <jkridner@beagleboard.org>:
+* Use tabs to match style of other board revisions
+* Only include board revisions that exist
+* Default to the same configuration as the latest revision, but
+  without setting 'beaglerev'
+---
+v2 Changes
+  * Updated with feedback from http://patchwork.ozlabs.org/patch/71995/
+  * Removed setting of mpurate based on board revision
+  * Set mpurate to auto in default environment variables
+
+Cc: Koen Kooi <koen@dominion.thruhere.net>
+---
+ board/ti/beagle/beagle.c       |   22 +++++++++++++++++-----
+ board/ti/beagle/beagle.h       |    3 ++-
+ include/configs/omap3_beagle.h |    2 +-
+ 3 files changed, 20 insertions(+), 7 deletions(-)
+
+diff --git a/board/ti/beagle/beagle.c b/board/ti/beagle/beagle.c
+index 9d03b24..87a952e 100644
+--- a/board/ti/beagle/beagle.c
++++ b/board/ti/beagle/beagle.c
+@@ -157,18 +157,15 @@ int misc_init_r(void)
+ 	case REVISION_AXBX:
+ 		printf("Beagle Rev Ax/Bx\n");
+ 		setenv("beaglerev", "AxBx");
+-		setenv("mpurate", "600");
+ 		break;
+ 	case REVISION_CX:
+ 		printf("Beagle Rev C1/C2/C3\n");
+ 		setenv("beaglerev", "Cx");
+-		setenv("mpurate", "600");
+ 		MUX_BEAGLE_C();
+ 		break;
+ 	case REVISION_C4:
+ 		printf("Beagle Rev C4\n");
+ 		setenv("beaglerev", "C4");
+-		setenv("mpurate", "720");
+ 		MUX_BEAGLE_C();
+ 		/* Set VAUX2 to 1.8V for EHCI PHY */
+ 		twl4030_pmrecv_vsel_cfg(TWL4030_PM_RECEIVER_VAUX2_DEDICATED,
+@@ -176,10 +173,19 @@ int misc_init_r(void)
+ 					TWL4030_PM_RECEIVER_VAUX2_DEV_GRP,
+ 					TWL4030_PM_RECEIVER_DEV_GRP_P1);
+ 		break;
+-	case REVISION_XM:
++	case REVISION_XM_A:
+ 		printf("Beagle xM Rev A\n");
+ 		setenv("beaglerev", "xMA");
+-		setenv("mpurate", "1000");
++		MUX_BEAGLE_XM();
++		/* Set VAUX2 to 1.8V for EHCI PHY */
++		twl4030_pmrecv_vsel_cfg(TWL4030_PM_RECEIVER_VAUX2_DEDICATED,
++					TWL4030_PM_RECEIVER_VAUX2_VSEL_18,
++					TWL4030_PM_RECEIVER_VAUX2_DEV_GRP,
++					TWL4030_PM_RECEIVER_DEV_GRP_P1);
++		break;
++	case REVISION_XM_B:
++		printf("Beagle xM Rev B\n");
++		setenv("beaglerev", "xMB");
+ 		MUX_BEAGLE_XM();
+ 		/* Set VAUX2 to 1.8V for EHCI PHY */
+ 		twl4030_pmrecv_vsel_cfg(TWL4030_PM_RECEIVER_VAUX2_DEDICATED,
+@@ -189,6 +195,12 @@ int misc_init_r(void)
+ 		break;
+ 	default:
+ 		printf("Beagle unknown 0x%02x\n", get_board_revision());
++		MUX_BEAGLE_XM();
++		/* Set VAUX2 to 1.8V for EHCI PHY */
++		twl4030_pmrecv_vsel_cfg(TWL4030_PM_RECEIVER_VAUX2_DEDICATED,
++					TWL4030_PM_RECEIVER_VAUX2_VSEL_18,
++					TWL4030_PM_RECEIVER_VAUX2_DEV_GRP,
++					TWL4030_PM_RECEIVER_DEV_GRP_P1);
+ 	}
+ 
+ 	switch (get_expansion_id()) {
+diff --git a/board/ti/beagle/beagle.h b/board/ti/beagle/beagle.h
+index b22b653..b0e26e5 100644
+--- a/board/ti/beagle/beagle.h
++++ b/board/ti/beagle/beagle.h
+@@ -37,7 +37,8 @@ const omap3_sysinfo sysinfo = {
+ #define REVISION_AXBX	0x7
+ #define REVISION_CX	0x6
+ #define REVISION_C4	0x5
+-#define REVISION_XM	0x0
++#define REVISION_XM_A	0x0
++#define REVISION_XM_B	0x1
+ 
+ /*
+  * IEN  - Input Enable
+diff --git a/include/configs/omap3_beagle.h b/include/configs/omap3_beagle.h
+index c85537c..51e14d0 100644
+--- a/include/configs/omap3_beagle.h
++++ b/include/configs/omap3_beagle.h
+@@ -190,7 +190,7 @@
+ 	"loadaddr=0x82000000\0" \
+ 	"usbtty=cdc_acm\0" \
+ 	"console=ttyS2,115200n8\0" \
+-	"mpurate=500\0" \
++	"mpurate=auto\0" \
+ 	"vram=12M\0" \
+ 	"dvimode=1024x768MR-16@60\0" \
+ 	"defaultdisplay=dvi\0" \
+-- 
+1.6.6.1
+

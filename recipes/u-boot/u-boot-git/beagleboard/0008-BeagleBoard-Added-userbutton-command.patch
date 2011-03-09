@@ -1,7 +1,7 @@
-From f5146ac9d3af9c9cd4f4bc940c343d3ef75ac6f0 Mon Sep 17 00:00:00 2001
+From 31110e039b1982590df08c66e53924f454e3e3f1 Mon Sep 17 00:00:00 2001
 From: Jason Kridner <jkridner@beagleboard.org>
 Date: Wed, 21 Jul 2010 07:41:25 -0500
-Subject: [PATCH 45/50] BeagleBoard: Added userbutton command
+Subject: [PATCH 08/16] BeagleBoard: Added userbutton command
 
 Based on commit f1099c7c43caf5bac3bf6a65aa266fade4747072
     Author: Greg Turner <gregturner@ti.com>
@@ -19,26 +19,29 @@ Based on commit f1099c7c43caf5bac3bf6a65aa266fade4747072
 * Flipped polarity of the return value to avoid confusion.  Success (0)
   is when the button is pressed.  Failure (1) is when the button is NOT
   pressed.
+* Used latest revision getting function.
+* Used latest macros for board revision.
 ---
- board/ti/beagle/beagle.c |   54 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 54 insertions(+), 0 deletions(-)
+ board/ti/beagle/beagle.c |   55 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 55 insertions(+), 0 deletions(-)
 
 diff --git a/board/ti/beagle/beagle.c b/board/ti/beagle/beagle.c
-index a6a4961..66df719 100644
+index 56e7afc..04e4259 100644
 --- a/board/ti/beagle/beagle.c
 +++ b/board/ti/beagle/beagle.c
-@@ -40,6 +40,7 @@
+@@ -38,6 +38,7 @@
  #include <asm/arch/gpio.h>
  #include <asm/mach-types.h>
  #include "beagle.h"
 +#include <command.h>
  
- static struct {
- 	unsigned int device_vendor;
-@@ -290,3 +291,56 @@ void set_muxconf_regs(void)
- 	MUX_BEAGLE();
+ #define TWL4030_I2C_BUS			0
+ #define EXPANSION_EEPROM_I2C_BUS	1
+@@ -339,3 +340,57 @@ int board_mmc_init(bd_t *bis)
+ 	return 0;
  }
- 
+ #endif
++
 +/*
 + * This command returns the status of the user button on beagle xM
 + * Input - none
@@ -54,13 +57,14 @@ index a6a4961..66df719 100644
 +	 * pass address parameter as argv[0] (aka command name),
 +	 * and all remaining args
 +	 */
-+	switch (beagle_revision) {
++	switch (get_board_revision()) {
 +	case REVISION_AXBX:
 +	case REVISION_CX:
 +	case REVISION_C4:
 +		gpio = 7;
 +		break;
-+	case REVISION_XM:
++	case REVISION_XM_A:
++	case REVISION_XM_B:
 +	default:
 +		gpio = 4;
 +		break;
@@ -91,7 +95,6 @@ index a6a4961..66df719 100644
 +	"Return the status of the BeagleBoard USER button",
 +	""
 +);
-+
 -- 
 1.6.6.1
 

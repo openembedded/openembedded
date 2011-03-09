@@ -1,0 +1,46 @@
+From 7b250f8be3b8c496796dcdc954c9e5959cefea2c Mon Sep 17 00:00:00 2001
+From: Bob Feretich <bob.feretich@rafresearch.com>
+Date: Thu, 24 Feb 2011 13:16:44 +0000
+Subject: [PATCH 01/16] OMAP3 Beagle Pin Mux initialization glitch fix
+
+The below patch reverses the order of two segments in the board file.
+Output pins need to have their values initialized, before they are
+exposed to the logic outside the chip.
+
+Signed-off-by: Bob Feretich <bob.feretich@rafresearch.com>
+Cc: Wolfgang Denk <wd@denx.de>
+---
+ board/ti/beagle/beagle.c |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/board/ti/beagle/beagle.c b/board/ti/beagle/beagle.c
+index c066d6e..929461c 100644
+--- a/board/ti/beagle/beagle.c
++++ b/board/ti/beagle/beagle.c
+@@ -239,17 +239,17 @@ int misc_init_r(void)
+ 	twl4030_power_init();
+ 	twl4030_led_init(TWL4030_LED_LEDEN_LEDAON | TWL4030_LED_LEDEN_LEDBON);
+ 
+-	/* Configure GPIOs to output */
+-	writel(~(GPIO23 | GPIO10 | GPIO8 | GPIO2 | GPIO1), &gpio6_base->oe);
+-	writel(~(GPIO31 | GPIO30 | GPIO29 | GPIO28 | GPIO22 | GPIO21 |
+-		GPIO15 | GPIO14 | GPIO13 | GPIO12), &gpio5_base->oe);
+-
+-	/* Set GPIOs */
++	/* Set GPIO states before they are made outputs */
+ 	writel(GPIO23 | GPIO10 | GPIO8 | GPIO2 | GPIO1,
+ 		&gpio6_base->setdataout);
+ 	writel(GPIO31 | GPIO30 | GPIO29 | GPIO28 | GPIO22 | GPIO21 |
+ 		GPIO15 | GPIO14 | GPIO13 | GPIO12, &gpio5_base->setdataout);
+ 
++	/* Configure GPIOs to output */
++	writel(~(GPIO23 | GPIO10 | GPIO8 | GPIO2 | GPIO1), &gpio6_base->oe);
++	writel(~(GPIO31 | GPIO30 | GPIO29 | GPIO28 | GPIO22 | GPIO21 |
++		GPIO15 | GPIO14 | GPIO13 | GPIO12), &gpio5_base->oe);
++
+ 	dieid_num_r();
+ 
+ 	return 0;
+-- 
+1.6.6.1
+

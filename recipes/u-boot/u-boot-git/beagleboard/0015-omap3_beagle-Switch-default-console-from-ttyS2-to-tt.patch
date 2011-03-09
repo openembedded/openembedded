@@ -1,0 +1,29 @@
+From 1a88890580917571811950eabd877cccdb643cb1 Mon Sep 17 00:00:00 2001
+From: Alexander Holler <holler@ahsoftware.de>
+Date: Thu, 17 Feb 2011 22:37:57 +0000
+Subject: [PATCH 15/16] omap3_beagle: Switch default console from ttyS2 to ttyO2
+
+Linux kernels >= 2.6.36 are using ttyOn instead ttySn for the
+serials on OMAPs.
+
+Signed-off-by: Alexander Holler <holler@ahsoftware.de>
+---
+ include/configs/omap3_beagle.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/include/configs/omap3_beagle.h b/include/configs/omap3_beagle.h
+index 73d4d4e..de572e8 100644
+--- a/include/configs/omap3_beagle.h
++++ b/include/configs/omap3_beagle.h
+@@ -211,7 +211,7 @@
+ 	"loadaddr=0x80200000\0" \
+ 	"rdaddr=0x81000000\0" \
+ 	"usbtty=cdc_acm\0" \
+-	"console=ttyS2,115200n8\0" \
++	"console=ttyO2,115200n8\0" \
+ 	"mpurate=auto\0" \
+ 	"buddy=none "\
+ 	"optargs=\0" \
+-- 
+1.6.6.1
+

@@ -1,0 +1,42 @@
+From abc09e8f0b8e02dbfec8bb3c2e024ef9f1bdf4f0 Mon Sep 17 00:00:00 2001
+From: Jason Kridner <jkridner@beagleboard.org>
+Date: Tue, 8 Mar 2011 20:42:01 -0600
+Subject: [PATCH 14/16] Corrected LED name match finding avoiding extraneous Usage printouts
+
+---
+ common/cmd_led.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/common/cmd_led.c b/common/cmd_led.c
+index 7f02fe6..ca2227f 100644
+--- a/common/cmd_led.c
++++ b/common/cmd_led.c
+@@ -83,7 +83,7 @@ int str_onoff (char *var)
+ 
+ int do_led (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
+ {
+-	int state, i;
++	int state, i, match = 0;
+ 
+ 	/* Validate arguments */
+ 	if ((argc != 3)) {
+@@ -98,6 +98,7 @@ int do_led (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
+ 	for (i = 0; led_commands[i].string; i++) {
+ 		if ((strcmp("all", argv[1]) == 0) ||
+ 		    (strcmp(led_commands[i].string, argv[1]) == 0)) {
++		    	match = 1;
+ 			if (led_commands[i].on) {
+ 				if (state) {
+ 					led_commands[i].on();
+@@ -111,7 +112,7 @@ int do_led (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
+ 	}
+ 
+ 	/* If we ran out of matches, print Usage */
+-	if (!led_commands[i].string && !(strcmp("all", argv[1]) == 0)) {
++	if (!match) {
+ 		return cmd_usage(cmdtp);
+ 	}
+ 
+-- 
+1.6.6.1
+

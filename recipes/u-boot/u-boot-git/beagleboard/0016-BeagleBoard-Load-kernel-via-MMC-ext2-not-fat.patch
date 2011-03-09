@@ -1,0 +1,26 @@
+From 03757f19b4affb531d1606e468e0411acd8d57cb Mon Sep 17 00:00:00 2001
+From: Jason Kridner <jkridner@beagleboard.org>
+Date: Wed, 9 Mar 2011 18:48:19 -0600
+Subject: [PATCH 16/16] BeagleBoard: Load kernel via MMC ext2, not fat
+
+---
+ include/configs/omap3_beagle.h |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/include/configs/omap3_beagle.h b/include/configs/omap3_beagle.h
+index de572e8..3a102e5 100644
+--- a/include/configs/omap3_beagle.h
++++ b/include/configs/omap3_beagle.h
+@@ -261,7 +261,8 @@
+ 		"root=${ramroot} " \
+ 		"rootfstype=${ramrootfstype}\0" \
+ 	"loadramdisk=fatload mmc ${mmcdev} ${rdaddr} ramdisk.gz\0" \
+-	"loaduimage=fatload mmc ${mmcdev} ${loadaddr} uImage\0" \
++	"loaduimagefat=fatload mmc ${mmcdev} ${loadaddr} uImage\0" \
++	"loaduimage=ext2load mmc ${mmcdev}:2 ${loadaddr} /boot/uImage\0" \
+ 	"mmcboot=echo Booting from mmc ...; " \
+ 		"run mmcargs; " \
+ 		"bootm ${loadaddr}\0" \
+-- 
+1.6.6.1
+
