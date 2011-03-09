@@ -2,16 +2,15 @@ DESCRIPTION = "EXT2 Filesystem Utilities"
 HOMEPAGE = "http://e2fsprogs.sf.net"
 LICENSE = "GPLv2+|LGPLv2+|NewBSD|MIT"
 SECTION = "base"
-DEPENDS = "gettext-native util-linux-ng"
-DEPENDS_virtclass-native = "gettext-native util-linux-ng-native"
+DEPENDS = "util-linux-ng"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-${PV}.tar.gz"
 
 S = "${WORKDIR}/e2fsprogs-${PV}"
 
-INC_PR = "r29"
+INC_PR = "r30"
 
-inherit autotools
+inherit autotools gettext
 
 #if uclibc ntpl is merged into trunk we can enable tls for armv4 again
 EXTRA_OECONF = "${@['','--disable-tls'][bb.data.getVar('ARM_ABI', d, 1) == 'oabi' and \
