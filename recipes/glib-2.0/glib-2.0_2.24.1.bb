@@ -7,8 +7,7 @@ LICENSE = "LGPLv2+"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "glib-2.0-native gtk-doc zlib"
-DEPENDS_virtclass-native = "gettext-native gtk-doc-native \
-                            pkgconfig-native"
+DEPENDS_virtclass-native += "pkgconfig-native"
 
 PR = "r2"
 
@@ -39,6 +38,7 @@ inherit autotools gettext
 S = "${WORKDIR}/glib-${PV}"
 
 EXTRA_OECONF = "--disable-debug "
+EXTRA_OECONF_virtclass-native = ""
 
 # Add and entry for your favourite arch if your (g)libc has a sane printf
 EXTRA_OECONF_append_glibc_arm = "  --enable-included-printf=no "
@@ -50,8 +50,6 @@ do_configure_prepend () {
 do_install_append() {
 	sed -i -e s:${STAGING_BINDIR_NATIVE}:${bindir}:g ${D}${bindir}/glib-mkenums || true
 }
-
-EXTRA_OECONF_virtclass-native = ""
 
 do_configure_prepend_virtclass-native() {
     if [ -e ${S}/${TARGET_SYS}-libtool ] ; then
