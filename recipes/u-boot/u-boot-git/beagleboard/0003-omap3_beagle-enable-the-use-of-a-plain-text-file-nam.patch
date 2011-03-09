@@ -1,0 +1,89 @@
+From 58ca6009d4101e5fd45ef9df22aa360d1662e9e9 Mon Sep 17 00:00:00 2001
+From: Alexander Holler <holler@ahsoftware.de>
+Date: Mon, 24 Jan 2011 13:08:49 +0000
+Subject: [PATCH 03/16] omap3_beagle: enable the use of a plain text file named uEnv.txt instead of boot.scr
+
+Using the new env import command it is possible to use plain text files instead
+of script-images. Plain text files are much easier to handle.
+
+E.g. If your boot.scr contains the following:
+-----------------------------------
+setenv dvimode 1024x768-16@60
+run loaduimage
+run mmcboot
+-----------------------------------
+you could create a file named uEnv.txt and use that instead of boot.scr:
+-----------------------------------
+dvimode=1024x768-16@60
+uenvcmd=run loaduimage; run mmcboot
+-----------------------------------
+The variable uenvcmd (if existent) will be executed (using run) after uEnv.txt
+was loaded. If uenvcmd doesn't exist the default boot sequence will be started,
+therefore you could just use
+-----------------------------------
+dvimode=1024x768-16@60
+-----------------------------------
+as uEnv.txt because loaduimage and mmcboot is part of the default boot sequence.
+---
+Changes for v2:
+  - Eliminated else redundant clause that would be ignored if boot
+    succeeds.
+
+Changes for v3:
+  - Removed boot.scr
+
+Changes for v4:
+  - Removed comment about boot.scr being supported.
+---
+ include/configs/omap3_beagle.h |   28 ++++++++++++++++------------
+ 1 files changed, 16 insertions(+), 12 deletions(-)
+
+diff --git a/include/configs/omap3_beagle.h b/include/configs/omap3_beagle.h
+index 8b580ef..c85537c 100644
+--- a/include/configs/omap3_beagle.h
++++ b/include/configs/omap3_beagle.h
+@@ -213,9 +213,9 @@
+ 		"omapdss.def_disp=${defaultdisplay} " \
+ 		"root=${nandroot} " \
+ 		"rootfstype=${nandrootfstype}\0" \
+-	"loadbootscript=fatload mmc ${mmcdev} ${loadaddr} boot.scr\0" \
+-	"bootscript=echo Running bootscript from mmc ...; " \
+-		"source ${loadaddr}\0" \
++	"loadbootenv=fatload mmc ${mmcdev} ${loadaddr} uEnv.txt\0" \
++	"importbootenv=echo Importing environment from mmc ...; " \
++		"env import -t $loadaddr $filesize\0" \
+ 	"loaduimage=fatload mmc ${mmcdev} ${loadaddr} uImage\0" \
+ 	"mmcboot=echo Booting from mmc ...; " \
+ 		"run mmcargs; " \
+@@ -227,15 +227,19 @@
+ 
+ #define CONFIG_BOOTCOMMAND \
+ 	"if mmc rescan ${mmcdev}; then " \
+-		"if run loadbootscript; then " \
+-			"run bootscript; " \
+-		"else " \
+-			"if run loaduimage; then " \
+-				"run mmcboot; " \
+-			"else run nandboot; " \
+-			"fi; " \
+-		"fi; " \
+-	"else run nandboot; fi"
++		"echo SD/MMC found on device ${mmcdev};" \
++		"if run loadbootenv; then " \
++			"run importbootenv;" \
++		"fi;" \
++		"if test -n $uenvcmd; then " \
++			"echo Running uenvcmd ...;" \
++			"run uenvcmd;" \
++		"fi;" \
++		"if run loaduimage; then " \
++			"run mmcboot;" \
++		"fi;" \
++	"fi;" \
++	"run nandboot;" \
+ 
+ #define CONFIG_AUTO_COMPLETE		1
+ /*
+-- 
+1.6.6.1
+

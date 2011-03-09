@@ -1,28 +1,29 @@
-From bb88a9c0ffa5b6006d689635028177be4ce83104 Mon Sep 17 00:00:00 2001
+From 35271d72072841c16687ffd51f08ec65cdac3b3e Mon Sep 17 00:00:00 2001
 From: Jason Kridner <jkridner@beagleboard.org>
 Date: Thu, 20 May 2010 06:14:01 -0500
-Subject: [PATCH 42/50] BeagleBoard: Added LED driver
+Subject: [PATCH 12/16] BeagleBoard: Added LED driver
 
 Added LED driver using status_led.  USR0 is set to monitor the boot
 status.  USR1 is set to be the green LED.
-(cherry picked from commit 048b526fd7cc0c642f27c674b3e235321c880b66)
-(cherry picked from commit 21c574d9e20f86ab757f5efdd9146e6607f2faba)
 
-Signed-off-by: Jason Kridner <jkridner@beagleboard.org>
+Included adding configuration and command to the default configuration.
+
+v2 updates
+ * Fixed USR0/USR1 to be LED 0/1 respectively
 ---
  board/ti/beagle/Makefile |    4 ++-
- board/ti/beagle/beagle.c |    8 ++++
+ board/ti/beagle/beagle.c |    7 ++++
  board/ti/beagle/led.c    |   91 ++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 102 insertions(+), 1 deletions(-)
+ 3 files changed, 101 insertions(+), 1 deletions(-)
  create mode 100644 board/ti/beagle/led.c
 
 diff --git a/board/ti/beagle/Makefile b/board/ti/beagle/Makefile
-index f797112..4cc675c 100644
+index 3b4aaac..d9f445f 100644
 --- a/board/ti/beagle/Makefile
 +++ b/board/ti/beagle/Makefile
 @@ -25,8 +25,10 @@ include $(TOPDIR)/config.mk
  
- LIB	= $(obj)lib$(BOARD).a
+ LIB	= $(obj)lib$(BOARD).o
  
 -COBJS	:= beagle.o
 +COBJS-y	:= $(BOARD).o
@@ -33,7 +34,7 @@ index f797112..4cc675c 100644
  OBJS	:= $(addprefix $(obj),$(COBJS))
  
 diff --git a/board/ti/beagle/beagle.c b/board/ti/beagle/beagle.c
-index cdba3dd..a6a4961 100644
+index 7c80a97..905b151 100644
 --- a/board/ti/beagle/beagle.c
 +++ b/board/ti/beagle/beagle.c
 @@ -30,6 +30,9 @@
@@ -45,8 +46,8 @@ index cdba3dd..a6a4961 100644
 +#endif
  #include <twl4030.h>
  #include <asm/io.h>
- #include <asm/arch/mux.h>
-@@ -83,6 +86,10 @@ int board_init(void)
+ #include <asm/arch/mmc_host_def.h>
+@@ -80,6 +83,10 @@ int board_init(void)
  	/* boot param addr */
  	gd->bd->bi_boot_params = (OMAP34XX_SDRC_CS0 + 0x100);
  
@@ -57,14 +58,9 @@ index cdba3dd..a6a4961 100644
  	return 0;
  }
  
-@@ -282,3 +289,4 @@ void set_muxconf_regs(void)
- {
- 	MUX_BEAGLE();
- }
-+
 diff --git a/board/ti/beagle/led.c b/board/ti/beagle/led.c
 new file mode 100644
-index 0000000..df26552
+index 0000000..fe80e19
 --- /dev/null
 +++ b/board/ti/beagle/led.c
 @@ -0,0 +1,91 @@
@@ -97,8 +93,8 @@ index 0000000..df26552
 +static unsigned int saved_state[2] = {STATUS_LED_OFF, STATUS_LED_OFF};
 +
 +/* GPIO pins for the LEDs */
-+#define BEAGLE_LED_USR0	149
-+#define BEAGLE_LED_USR1	150
++#define BEAGLE_LED_USR0	150
++#define BEAGLE_LED_USR1	149
 +
 +#ifdef STATUS_LED_GREEN
 +void green_LED_off (void)
