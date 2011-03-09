@@ -1,15 +1,15 @@
 DESCRIPTION = "Ecore is the Enlightenment application framework library"
 LICENSE = "MIT BSD"
-DEPENDS = "gettext-native virtual/libiconv tslib curl eet evas glib-2.0 \
-           libxtst libxcomposite libxinerama libxscrnsaver libxdamage libxrandr libxcursor libxprintutil"
+DEPENDS = "tslib curl eet evas glib-2.0 libxtst libxcomposite libxinerama \
+           libxscrnsaver libxdamage libxrandr libxcursor libxprintutil"
 DEPENDS_virtclass-native = "eet-native evas-native"	   
 # optional
-# DEPENDS += "directfb virtual/libsdl openssl virtual/libiconv"
+# DEPENDS += "directfb virtual/libsdl openssl"
 
-inherit efl
+inherit efl gettext
 
 BBCLASSEXTEND = "native"
-INC_PR = "r0"
+INC_PR = "r1"
 
 do_configure_prepend() {
 	touch ${S}/po/Makefile.in.in || true
