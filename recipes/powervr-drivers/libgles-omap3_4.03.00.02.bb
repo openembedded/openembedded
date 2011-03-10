@@ -15,7 +15,7 @@ require libgles-omap3.inc
 # http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/gfxsdk/latest/index_FDS.html
 # see libgles-omap3.inc for detailed installation instructions
 
-SGXPV = "4_03_00_01"
+SGXPV = "4_03_00_02"
 IMGPV = "1.6.16.3977"
 BINFILE := "Graphics_SDK_setuplinux_${SGXPV}.bin"
 
@@ -26,8 +26,8 @@ SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/gf
                    file://99-bufferclass.rules  \
 "
 
-SRC_URI[md5sum] = "4163ee51bc05689b6f61e7eadf5ab9cf"
-SRC_URI[sha256sum] = "1afe0dc4974c3c0a0ccf267a531d0964459d1cdf1929e732958230641973da94"
+SRC_URI[md5sum] = "ff8c1f2b8e4cb42f4ced6a613b081ada"
+SRC_URI[sha256sum] = "cdb0bd3964e107733d632aa8224e0537b05c1ffac34befc036423458c8d75255"
 
 S = "${WORKDIR}/Graphics_SDK_${SGXPV}"
 
