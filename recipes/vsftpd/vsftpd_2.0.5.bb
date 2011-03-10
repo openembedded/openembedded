@@ -1,7 +1,9 @@
 DESCRIPTION = "Secure ftp daemon"
 SECTION = "console/network"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
+
+DEPENDS = "libcap"
 
 SRC_URI = "ftp://vsftpd.beasts.org/users/cevans/vsftpd-${PV}.tar.gz \
            file://makefile.patch \
@@ -20,7 +22,7 @@ do_configure() {
 }
 
 do_compile() {
-        oe_runmake "LIBS=-lcrypt -L${STAGING_LIBDIR}"
+        oe_runmake "LIBS=-L${STAGING_LIBDIR} -lcrypt -lcap"
 }
 
 do_install() {
