@@ -7,7 +7,7 @@ LICENSE = "LGPLv2+"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "glib-2.0-native gtk-doc zlib"
-DEPENDS_virtclass-native += "pkgconfig-native"
+DEPENDS_virtclass-native_append = " pkgconfig-native"
 
 PR = "r6"
 

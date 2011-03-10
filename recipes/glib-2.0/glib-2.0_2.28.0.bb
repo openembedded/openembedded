@@ -8,7 +8,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 PR = "r1"
 DEPENDS = "glib-2.0-native gtk-doc zlib"
-DEPENDS_virtclass-native += "pkgconfig-native"
+DEPENDS_virtclass-native_append = " pkgconfig-native"
 
 SRC_URI = "\
   http://ftp.gnome.org/pub/GNOME/sources/glib/2.28/glib-${PV}.tar.bz2;name=archive \
