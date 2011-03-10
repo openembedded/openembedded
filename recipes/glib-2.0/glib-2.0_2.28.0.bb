@@ -8,7 +8,8 @@ SECTION = "libs"
 PRIORITY = "optional"
 PR = "r1"
 DEPENDS = "glib-2.0-native gtk-doc zlib"
-DEPENDS_virtclass-native_append = " pkgconfig-native"
+DEPENDS_virtclass-native = "gettext-native gtk-doc-native \
+                            pkgconfig-native"
 
 SRC_URI = "\
   http://ftp.gnome.org/pub/GNOME/sources/glib/2.28/glib-${PV}.tar.bz2;name=archive \
@@ -30,7 +31,6 @@ inherit autotools gettext
 S = "${WORKDIR}/glib-${PV}"
 
 EXTRA_OECONF = "--disable-debug "
-EXTRA_OECONF_virtclass-native = ""
 
 # Add and entry for your favourite arch if your (g)libc has a sane printf
 EXTRA_OECONF_append_glibc_arm = "  --enable-included-printf=no "
@@ -43,6 +43,8 @@ do_configure_prepend () {
 do_install_append() {
 	sed -i -e s:${STAGING_BINDIR_NATIVE}:${bindir}:g ${D}${bindir}/glib-mkenums || true
 }
+
+EXTRA_OECONF_virtclass-native = ""
 
 do_configure_prepend_virtclass-native() {
     if [ -e ${S}/${TARGET_SYS}-libtool ] ; then
