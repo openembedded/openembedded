@@ -7,7 +7,7 @@ COMPATIBLE_MACHINE = "(beagleboard|overo|omap3evm|omap3-touchbook|usrp-e1xx)"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
 PV = "2.6.37"
-MACHINE_KERNEL_PR_append = "a+gitr${SRCREV}"
+MACHINE_KERNEL_PR_append = "c+gitr${SRCREV}"
 SRCREV = "fa3b4e23ec20cfc944db7cc2b30b0d82c20e4472"
 
 FILESPATHPKG_prepend = "linux-omap-2.6.37:"
@@ -192,6 +192,11 @@ SRC_URI_append = " \
                   file://media/0041-omap3-Add-function-to-register-omap3isp-platform-dev.patch \
                   file://media/0042-omap2-Fix-camera-resources-for-multiomap.patch \
                   file://media/0043-OMAP3-ISP-driver.patch \
+                  \
+                  file://0001-beagleboard-hack-in-support-from-xM-rev-C.patch \
+                  file://0001-xM-audio-fix-from-Ashok.patch \
+                  file://0001-omap3-allow-1GHz-mpurates.patch \
+                  file://0001-BeagleBoard-Adjust-USER-button-pin-for-xM.patch \
                   "
 
 SRC_URI_append_usrp-e1xx = "\

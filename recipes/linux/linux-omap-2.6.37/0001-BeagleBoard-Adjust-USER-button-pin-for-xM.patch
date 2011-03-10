@@ -1,0 +1,29 @@
+From 3b1dc08ab568d1fdbc2a3731d7643cfeb48023e8 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Thu, 10 Mar 2011 14:16:08 +0100
+Subject: [PATCH] BeagleBoard: Adjust USER button pin for xM
+
+Signed-off-by: Koen Kooi <koen@dominion.thruhere.net>
+---
+ arch/arm/mach-omap2/board-omap3beagle.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index 731f4b5..fae3104 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -949,6 +949,11 @@ static void __init omap3_beagle_init(void)
+ 	omap3_mux_init(board_mux, OMAP_PACKAGE_CBB);
+ 	omap3_beagle_init_rev();
+ 	omap3_beagle_i2c_init();
++
++	if (cpu_is_omap3630()) {
++		gpio_buttons[0].gpio = 4;
++	}
++
+ 	platform_add_devices(omap3_beagle_devices,
+ 			ARRAY_SIZE(omap3_beagle_devices));
+ 	omap_serial_init();
+-- 
+1.7.0
+
