@@ -13,5 +13,8 @@ python () {
 
 DEPENDS_GETTEXT = "gettext-native virtual/libiconv virtual/libintl"
 
-DEPENDS =+ "${DEPENDS_GETTEXT}"
+DEPENDS_prepend += "${DEPENDS_GETTEXT} "
+DEPENDS_virtclass-native_prepend = "${DEPENDS_GETTEXT} "
+DEPENDS_virtclass-nativesdk_prepend = "${DEPENDS_GETTEXT} "
+DEPENDS_virtclass-cross_prepend = "${DEPENDS_GETTEXT} "
 EXTRA_OECONF += "--enable-nls"
