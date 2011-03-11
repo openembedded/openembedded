@@ -4,19 +4,26 @@ HOMEPAGE = "http://p910nd.sourceforge.net/"
 LICENSE = "GPLv2"
 SECTION = "console/utils"
 PR = "r1"
-RRECOMMENDS_${PN} = "avahi"
+RDEPENDS_${PN}-avahi = "avahi"
 
 inherit update-rc.d
 
 INITSCRIPT_NAME = "p910nd"
 INITSCRIPT_PARAMS = "defaults 60 "
 
-SRC_URI = "http://internap.dl.sourceforge.net/sourceforge/p910nd/p910nd-0.92.tar.bz2 \
+SRC_URI = "${SOURCEFORGE_MIRROR}/p910nd/p910nd-${PV}.tar.bz2 \
            file://p910nd.init \
            file://avahi"
 
+SRC_URI[md5sum] = "c7ac6afdf7730ac8387a8e87198d4491"
+SRC_URI[sha256sum] = "7d78642c86dc247fbdef1ff85c56629dcdc6b2a457c786420299e284fffcb029"
+
+PACKAGES_prepend = "${PN}-avahi "
+
+FILES_${PN}-avahi += "${sysconfdir}/avahi/services/p910nd.service"
+
 do_compile () {
-	${CC} -o p910nd p910nd.c 
+	${CC} ${LDFLAGS} -o p910nd p910nd.c
 }
 
 # The avahi stuff makes it work with bonjour printing
@@ -27,9 +34,9 @@ do_install () {
 	install -D -m 0755 ${WORKDIR}/avahi ${D}${sysconfdir}/avahi/services/p910nd.service
 }
 
-pkg_postinst_append() {
+pkg_postinst_${PN}-avahi_append() {
 #!/bin/sh
-           
+
 if [ "x$D" != "x" ] ; then
         exit 1
 fi
@@ -40,6 +47,3 @@ if [ "x$PAV" != "x" ] ; then
         /etc/init.d/avahi-daemon reload
 fi
 }
-
-SRC_URI[md5sum] = "94a43d28794f2445cd5f9c8b970898c4"
-SRC_URI[sha256sum] = "a2295e525febfc3a1a93ad21c0843021e2b22e6720f148bf1c4822a83aea2b8c"
