@@ -1,10 +1,9 @@
 DESCRIPTION = "GNU Classpath standard Java libraries - For native Java-dependent programs"
 HOMEPAGE = "http://www.gnu.org/software/classpath/"
 LICENSE = "Classpath"
-
-inherit autotools native gettext
-
 DEPENDS = "ecj-initial fastjar-native zip-native"
+
+inherit autotools gettext native
 
 SRC_URI = "${GNU_MIRROR}/classpath/classpath-${PV}.tar.gz"
 
