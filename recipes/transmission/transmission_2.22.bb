@@ -1,5 +1,7 @@
 require transmission.inc
 
+inherit gettext
+
 DEPENDS += "libevent"
 
 PR = ${INC_PR}.1
