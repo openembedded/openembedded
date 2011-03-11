@@ -1,0 +1,35 @@
+From 178c9df2941d0c01afc44ca1e6ae795716e3b9fd Mon Sep 17 00:00:00 2001
+From: Andreas Henriksson <andreas@fatal.se>
+Date: Thu, 1 Jul 2010 18:12:22 +0200
+Subject: [PATCH 4/7] Patch from upstream (rev 2514)
+
+Enable version stripping code in joliet extension support for iso9660.
+
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=587316
+---
+ libarchive/archive_read_support_format_iso9660.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+diff --git a/libarchive/archive_read_support_format_iso9660.c b/libarchive/archive_read_support_format_iso9660.c
+index fdef3fb..8dcfeb4 100644
+--- a/libarchive/archive_read_support_format_iso9660.c
++++ b/libarchive/archive_read_support_format_iso9660.c
+@@ -1755,7 +1755,6 @@ parse_file_info(struct archive_read *a, struct file_info *parent,
+ 		}
+ 		*wp = L'\0';
+ 
+-#if 0 /* untested code, is it at all useful on Joliet? */
+ 		/* trim trailing first version and dot from filename.
+ 		 *
+ 		 * Remember we where in UTF-16BE land!
+@@ -1775,7 +1774,6 @@ parse_file_info(struct archive_read *a, struct file_info *parent,
+ 		/* Chop off trailing '.' from filenames. */
+ 		if (*(wp-1) == '.')
+ 			*(--wp) = L'\0';
+-#endif
+ 
+ 		/* store the result in the file name field. */
+ 		archive_strappend_w_utf8(&file->name, wbuff);
+-- 
+1.7.1
+
