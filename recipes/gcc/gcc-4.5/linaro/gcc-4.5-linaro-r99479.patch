@@ -1,21 +1,19 @@
-commit dcb4aa7b04d03ba107fd628ec3dc663d0a01c397
-Author: bernds <bernds@138bc75d-0d04-0410-961f-82ee72b054a4>
-Date:   Tue Aug 10 18:45:10 2010 +0000
+2011-02-24  Chung-Lin Tang  <cltang@codesourcery.com>
 
-    	PR bootstrap/45177
-    	* config/arm/arm.c (multiple_operation_profitable_p): Move xscale
-    	test here from arm_gen_load_multiple_1.
-    	(arm_gen_load_multiple_1, arm_gen_store_multiple_1): Use
-    	multiple_operation_profitable_p.
-    
-    
-    git-svn-id: svn+ssh://gcc.gnu.org/svn/gcc/trunk@163077 138bc75d-0d04-0410-961f-82ee72b054a4
+	Backport from FSF mainline:
 
-Index: gcc-4_5-branch/gcc/config/arm/arm.c
-===================================================================
---- gcc-4_5-branch.orig/gcc/config/arm/arm.c
-+++ gcc-4_5-branch/gcc/config/arm/arm.c
-@@ -9716,6 +9716,36 @@ multiple_operation_profitable_p (bool is
+	2010-08-10  Bernd Schmidt  <bernds@codesourcery.com>
+
+	PR bootstrap/45177
+	* config/arm/arm.c (multiple_operation_profitable_p): Move xscale
+	test here from arm_gen_load_multiple_1.
+	(arm_gen_load_multiple_1, arm_gen_store_multiple_1): Use
+	multiple_operation_profitable_p.
+
+=== modified file 'gcc/config/arm/arm.c'
+--- old/gcc/config/arm/arm.c	2011-02-22 11:38:56 +0000
++++ new/gcc/config/arm/arm.c	2011-02-24 17:30:32 +0000
+@@ -9728,6 +9728,36 @@
    if (nops == 2 && arm_ld_sched && add_offset != 0)
      return false;
  
@@ -52,11 +50,10 @@ Index: gcc-4_5-branch/gcc/config/arm/arm.c
    return true;
  }
  
-@@ -10073,36 +10103,7 @@ arm_gen_load_multiple_1 (int count, int
- {
+@@ -10086,35 +10116,7 @@
    int i = 0, j;
    rtx result;
--
+ 
 -  /* XScale has load-store double instructions, but they have stricter
 -     alignment requirements than load-store multiple, so we cannot
 -     use them.
@@ -86,18 +83,19 @@ Index: gcc-4_5-branch/gcc/config/arm/arm.c
 -     As a compromise, we use ldr for counts of 1 or 2 regs, and ldm
 -     for counts of 3 or 4 regs.  */
 -  if (low_irq_latency || (arm_tune_xscale && count <= 2 && ! optimize_size))
-+  if (!multiple_operation_profitable_p (false, count, 0))
++  if (low_irq_latency || !multiple_operation_profitable_p (false, count, 0))
      {
        rtx seq;
  
-@@ -10154,9 +10155,7 @@ arm_gen_store_multiple_1 (int count, int
+@@ -10166,9 +10168,7 @@
    if (GET_CODE (basereg) == PLUS)
      basereg = XEXP (basereg, 0);
  
 -  /* See arm_gen_load_multiple_1 for discussion of
 -     the pros/cons of ldm/stm usage for XScale.  */
 -  if (low_irq_latency || (arm_tune_xscale && count <= 2 && ! optimize_size))
-+  if (!multiple_operation_profitable_p (false, count, 0))
++  if (low_irq_latency || !multiple_operation_profitable_p (false, count, 0))
      {
        rtx seq;
  
+
