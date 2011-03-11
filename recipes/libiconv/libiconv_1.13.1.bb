@@ -1,13 +1,7 @@
 require libiconv.inc
 LICENSE = "GPLv3 LGPLv2"
 
-PROVIDES = "virtual/libiconv"
-PR = "r1"
-
-#gettext.class cant be inherit here so use this hack
-DEPENDS = "${@['','gettext-native'][bb.data.getVar('USE_NLS', d, 1) == 'yes']}"
-
-EXTRA_OECONF +=  "${@['--disable-nls','--enable-nls'][bb.data.getVar('USE_NLS', d, 1) == 'yes']}"
+PR = "${INC_PR}.0"
 
 SRC_URI += "file://autoconf.patch"
 
@@ -21,4 +15,3 @@ do_configure_append () {
 LEAD_SONAME = "libiconv.so"
 SRC_URI[md5sum] = "7ab33ebd26687c744a37264a330bbe9a"
 SRC_URI[sha256sum] = "55a36168306089009d054ccdd9d013041bfc3ab26be7033d107821f1c4949a49"
-
