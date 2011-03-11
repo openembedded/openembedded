@@ -1,0 +1,39 @@
+diff -rup gsoap-2.7/gsoap/src/symbol2.c gsoap-2.7mf/gsoap/src/symbol2.c
+--- gsoap-2.7/gsoap/src/symbol2.c	2009-03-21 16:24:34.000000000 -0500
++++ gsoap-2.7mf/gsoap/src/symbol2.c	2009-05-11 10:18:32.000000000 -0500
+@@ -7334,6 +7334,7 @@ soap_instantiate_class(Tnode *typ)
+   fprintf(fhead,"\nSOAP_FMAC3 %s * SOAP_FMAC4 soap_instantiate_%s(struct soap*, int, const char*, const char*, size_t*);", c_type(typ), c_ident(typ));
+   fprintf(fout,"\n\nSOAP_FMAC3 %s * SOAP_FMAC4 soap_instantiate_%s(struct soap *soap, int n, const char *type, const char *arrayType, size_t *size)", c_type(typ), c_ident(typ));
+   fprintf(fout,"\n{");
++  fprintf(fout,"\n\t(void)type; (void)arrayType; /* appease -Wall -Werror */");
+   fprintf(fout, "\n\tDBGLOG(TEST, SOAP_MESSAGE(fdebug, \"soap_instantiate_%s(%%d, %%s, %%s)\\n\", n, type?type:\"\", arrayType?arrayType:\"\"));", c_ident(typ));
+ 
+   fprintf(fout,"\n\tstruct soap_clist *cp = soap_link(soap, NULL, %s, n, soap_fdelete);", soap_type(typ));
+@@ -7867,6 +7868,8 @@ Tnode* typ;
+         fprintf(fout,"\n\nvoid %s::soap_default(struct soap *soap)\n{", c_ident(typ)); 
+         if ((s = has_soapref(typ)))
+           fprintf(fout,"\n\tthis->%s = soap;", s);
++         else
++           fprintf(fout,"\n\t(void)soap; /* appease -Wall -Werror */");
+ 	d = get_Darraydims(typ);
+         if (d)
+ 	{ fprintf(fout,"\n\tthis->%s = NULL;", ident(p->sym->name));
+@@ -7894,6 +7897,8 @@ Tnode* typ;
+         fprintf(fout,"\n\nSOAP_FMAC3 void SOAP_FMAC4 soap_default_%s(struct soap *soap, %s)\n{", c_ident(typ),c_type_id(typ, "*a")); 
+         if ((s = has_soapref(typ)))
+           fprintf(fout,"\n\ta->%s = soap;", s);
++         else
++           fprintf(fout,"\n\t(void)soap; /* appease -Wall -Werror */");
+ 	d = get_Darraydims(typ);
+         if (d)
+ 	{ fprintf(fout,"\n\ta->%s = NULL;", ident(p->sym->name));
+@@ -9123,7 +9128,7 @@ soap_out(Tnode *typ)
+       if (is_typedef(typ))
+         fprintf(fout, "\n{\treturn soap_%s2s(soap, n);\n}", t_ident(typ));
+       else if (is_boolean(typ))
+-        fprintf(fout, "\n{\treturn soap_code_str(soap_codes_%s, n!=0);\n}", c_ident(typ));
++        fprintf(fout, "\n{\t(void)soap; /* appease -Wall -Werror */\n\treturn soap_code_str(soap_codes_%s, n!=0);\n}", c_ident(typ));
+       else if (!is_mask(typ))
+       { fprintf(fout, "\n{\tconst char *s = soap_code_str(soap_codes_%s, (long)n);", c_ident(typ));
+         fprintf(fout, "\n\tif (s)\n\t\treturn s;");
+Only in gsoap-2.7mf/gsoap/src: symbol2.c~

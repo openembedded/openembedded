@@ -6,8 +6,9 @@ EXTRA_OEMAKE = ""
 
 inherit native
 
+
 do_install() {
-	:
+	install -m 0755 ${S}/gsoap/src/soapcpp2 ${STAGING_BINDIR_NATIVE}/
 }
 
 
