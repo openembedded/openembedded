@@ -1,0 +1,10 @@
+--- http-2.2.3/srclib/pcre/Makefile.in-orig
++++ http-2.2.3/srclib/pcre/Makefile.in	2005-12-20 13:12:03.000000000 -0500
+@@ -15,6 +15,6 @@
+ 	$(LINK) $(EXTRA_LDFLAGS) dftables.lo $(EXTRA_LIBS)
+ 
+ $(srcdir)/chartables.c: dftables
+-	./dftables $@
++	dftables $@
+ 
+ pcre.lo: $(srcdir)/chartables.c
