@@ -4,7 +4,7 @@
 #@NAME: KaeilOS(R) - http://www.kaeilos.com
 #@DESCRIPTION: KaeilOS Linux Distribution preferred version
 #@MAINTAINER: Marco Cavallini <m.cavallini@koansoftware.com>
-#@VERSION: 29-11-2010
+#@VERSION: 11-03-2011
 #
 # KaeilOS is a registered trade mark of KOAN - Bergamo - Italia
 # Product website : http://www.KaeilOS.com 
@@ -31,6 +31,7 @@ PREFERRED_VERSION_hal		= "0.5.14"
 PREFERRED_VERSION_libgemwidget	= "1.0"
 PREFERRED_VERSION_libgpephone	= "0.4"
 PREFERRED_VERSION_libsdl-x11	= "1.2.14"
+PREFERRED_VERSION_libsoup-2.4   = "2.32.2"
 PREFERRED_VERSION_libtool 	= "2.2.6b"
 PREFERRED_VERSION_libtool-native = "2.2.6b"
 PREFERRED_VERSION_libtool-cross	= "2.2.6b"
@@ -58,7 +59,7 @@ PREFERRED_VERSION_python-pycairo = "1.8.0"
 KAEILOS_WX_VERSION ?= "2.8.10"
 PREFERRED_VERSION_wxwidgets = "${KAEILOS_WX_VERSION}"
 
-KAEILOS_QT_VERSION ?= "4.6.3"
+KAEILOS_QT_VERSION ?= "4.7.2"
 PREFERRED_VERSION_qt4-tools-native = "${KAEILOS_QT_VERSION}"
 PREFERRED_VERSION_qt4-tools-sdk = "${KAEILOS_QT_VERSION}"
 PREFERRED_VERSION_qt4-embedded = "${KAEILOS_QT_VERSION}"
@@ -74,10 +75,11 @@ PREFERRED_VERSION_udev_libc-uclibc = "141"
 UDEV_GE_141 = "1"
 
 PREFERRED_VERSION_usbutils = "0.86"
-PREFERRED_VERSION_wpa-supplicant = "0.6.9"
+PREFERRED_VERSION_wpa-supplicant = "0.7.3"
 PREFERRED_VERSION_wget = "1.11.4"
 PREFERRED_VERSION_xserver-common = "1.33"
 PREFERRED_VERSION_xserver-kdrive = "1.4.0.90"
+PREFERRED_VERSION_xserver-nodm-init = "2.0"
 PREFERRED_VERSION_xserver-xorg = "1.7.4"
 
 #
