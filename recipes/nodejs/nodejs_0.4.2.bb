@@ -9,8 +9,8 @@ SRC_URI = " \
   file://libev-cross-cc_${PV}.patch \
 "
 
-SRC_URI[md5sum] = "18f89256751f9b8e27dee8494f508171"
-SRC_URI[sha256sum] = "4a30bd9963373cb86a994479bdd451ab3b6f2124f0089493366315da79d3408e"
+SRC_URI[md5sum] = "9e9e791e125f6a601ebc663dc99c72a8"
+SRC_URI[sha256sum] = "09b1100ca6828eedbe52418fbeb3352d71c0b1ff3344c44a5af3efb80c5b908c"
 
 S = "${WORKDIR}/node-v${PV}"
 
