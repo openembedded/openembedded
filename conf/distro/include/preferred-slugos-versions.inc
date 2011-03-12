@@ -20,8 +20,6 @@ PREFERRED_VERSION_linux-ixp4xx = "2.6.37+svnr${SRCREV_pn-linux-ixp4xx}"
 ### alphabetically.  Note that the main slugos.inc file
 ### may include preferred versions for toolchain components.
 
-PREFERRED_VERSION_atk				?= "1.28.0"
-PREFERRED_VERSION_atk-native			?= "1.28.0"
 PREFERRED_VERSION_autoconf			?= "2.65"
 PREFERRED_VERSION_autoconf-native		?= "2.65"
 PREFERRED_VERSION_automake			?= "1.11.1"
