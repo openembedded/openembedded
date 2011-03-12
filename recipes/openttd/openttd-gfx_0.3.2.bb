@@ -1,4 +1,4 @@
-DESCRIPTION = "Freely licensed data files for OpenTTD"
+DESCRIPTION = "Freely licensed graphics data files for OpenTTD"
 HOMEPAGE = "http://bundles.openttdcoop.org"
 LICENSE = "GPLv2"
 
