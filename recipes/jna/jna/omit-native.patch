@@ -1,0 +1,13 @@
+Index: jna-3.2.7/build.xml
+===================================================================
+--- jna-3.2.7.orig/build.xml	2011-03-12 11:35:30.450283882 +0100
++++ jna-3.2.7/build.xml	2011-03-12 11:35:48.000000000 +0100
+@@ -202,7 +202,7 @@
+       </srcfiles>
+     </uptodate>
+   </target>
+-  <target name="jar" depends="-setup,native,:jar" unless="-jar"
++  <target name="jar" depends="-setup,:jar" unless="-jar"
+           description="Build primary jar">
+     <jar jarfile="${build}/${jar}">
+       <manifest>
