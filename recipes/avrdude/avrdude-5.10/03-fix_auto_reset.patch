@@ -1,0 +1,29 @@
+Author: Michal Ludvig <mludvig@logix.net.nz>
+Description: Fixed DTR on/off to make Arduino auto-reset work.
+Origin: http://svn.savannah.gnu.org/viewvc?view=rev&root=avrdude&revision=940
+Bug: http://savannah.nongnu.org/bugs/?29108
+Bug-Ubuntu: https://bugs.launchpad.net/arduino/+bug/529444
+
+=== modified file 'ser_posix.c'
+Index: avrdude/ser_posix.c
+===================================================================
+--- avrdude.orig/ser_posix.c	2010-03-22 17:28:07.000000000 -0400
++++ avrdude/ser_posix.c	2010-03-22 17:28:42.000000000 -0400
+@@ -230,13 +230,13 @@
+   }
+ 
+   if (is_on) {
+-    /* Clear DTR and RTS */
+-    ctl &= ~(TIOCM_DTR | TIOCM_RTS);
+-  }
+-  else {
+     /* Set DTR and RTS */
+     ctl |= (TIOCM_DTR | TIOCM_RTS);
+   }
++  else {
++    /* Clear DTR and RTS */
++    ctl &= ~(TIOCM_DTR | TIOCM_RTS);
++  }
+ 
+   r = ioctl(fdp->ifd, TIOCMSET, &ctl);
+   if (r < 0) {

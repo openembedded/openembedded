@@ -1,0 +1,35 @@
+Description: Fix paths in the man page
+ Update the man page to point to the correct location of the documentation
+ and config file when installed on a Debian system.
+Author: Michael Biebl <biebl@debian.org>
+Index: avrdude/avrdude.1
+===================================================================
+--- avrdude.orig/avrdude.1	2010-01-17 02:31:26.738486618 +0100
++++ avrdude/avrdude.1	2010-01-17 02:33:50.154482626 +0100
+@@ -343,7 +343,7 @@
+ does not know about, you can add it to the config file (be sure and
+ submit a patch back to the author so that it can be incorporated for
+ the next version).  See the config file, located at
+-.Pa ${PREFIX}/etc/avrdude.conf ,
++.Pa /etc/avrdude.conf ,
+ which contains a description of the format.
+ .It Fl D
+ Disable auto erase for flash.  When the
+@@ -964,7 +964,7 @@
+ .It Pa /dev/ppi0
+ default device to be used for communication with the programming
+ hardware
+-.It Pa ${PREFIX}/etc/avrdude.conf
++.It Pa /etc/avrdude.conf
+ programmer and parts configuration file
+ .It Pa ${HOME}/.avrduderc
+ programmer and parts configuration file (per-user overrides)
+@@ -972,7 +972,7 @@
+ Initialization file for the
+ .Xr readline 3
+ library
+-.It Pa ${PREFIX}/share/doc/avrdude/avrdude.pdf
++.It Pa /usr/share/doc/avrdude-doc/avrdude.pdf
+ Schematic of programming hardware
+ .El
+ .\" .Sh EXAMPLES
