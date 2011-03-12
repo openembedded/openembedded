@@ -11,10 +11,14 @@ APPIMAGE = "media/openttd.128.png"
 
 inherit siteinfo sdl
 
+# OpenTTD uses a self-made build system (meh!) that looks like the autotools.
+# When messing with it be careful not to expect it to behave the same!
 do_configure() {
   # The way the OTTD configure system handles the application's directories
   # isn't the way autotools does it. Mainly prefix is always prepended even if
-  # absolute binary-dir and data-dir is given. 
+  # absolute binary-dir and data-dir is given.
+
+  # The build system does not forgive unknown options.
 
   ${S}/configure \
 	--host=${TARGET_SYS} \
@@ -35,7 +39,8 @@ do_configure() {
 	--cxx-build='${BUILD_CXX}' \
 	--cxx-host='${CXX}' \
 	--strip='${STRIP}' \
-	--install-dir=${D}
+	--install-dir=${D} \
+	${EXTRA_OECONF}
 }
 
 do_install() {
