@@ -23,10 +23,14 @@ do_compile() {
 	# Move created jar into subdir and give it proper name
 	mv build/jna.jar ${JARFILENAME}
 
+	# Native compilation in build.xml is overly complex. With full control of the
+	# output directories we just do it on our own.
 	${CC} ${CFLAGS} ${LDFLAGS} -shared -fPIC -o libjnidispatch.so \
 		native/dispatch.c \
 		native/callback.c \
-		-Ibuild/native -I${STAGING_INCDIR}/classpath -lffi
+		-Ibuild/native \
+		-I${STAGING_INCDIR}/classpath \
+		-lffi
 }
 
 do_install_append() {
