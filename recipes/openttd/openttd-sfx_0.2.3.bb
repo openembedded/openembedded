@@ -15,8 +15,6 @@ do_install() {
 	install -m 0644 changelog.txt ${D}${datadir}/games/openttd/data/opensfx_changelog.txt
 	install -m 0644 readme.txt ${D}${datadir}/games/openttd/data/opensfx_readme.txt
 	install -m 0644 license.txt ${D}${datadir}/games/openttd/data/opensfx_license.txt
-
-	ln -s opensfx.cat ${D}${datadir}/games/openttd/data/sample.cat
 }
 
 FILES_${PN} = "${datadir}"
