@@ -73,6 +73,10 @@ PREFERRED_PROVIDER_udev-compat_poodle = "udev-compat141"
 ZAURUS_KERNEL_IMAGETYPE ?= "zImage"
 KERNEL_IMAGETYPE = "${ZAURUS_KERNEL_IMAGETYPE}"
 
+# sane defaults for devices with only 32Mb RAM
+XZ_COMPRESSION_LEVEL = "-7"
+LZMA_COMPRESSION_LEVEL = "-8"
+
 # kernel bootlogo
 LOGO_SIZE = '${@base_conditional("GUI_MACHINE_CLASS", "bigscreen", "vga", "qvga", d)}'
 
