@@ -1,10 +1,11 @@
 DESCRIPTION = "Open source clone of the Microprose game 'Transport Tycoon Deluxe' - SDL edition."
 HOMEPAGE = "http://www.openttd.org"
 LICENSE = "GPLv2"
-DEPENDS = "libsdl-net libpng zlib freetype fontconfig"
+DEPENDS = "libsdl-net libpng zlib lzo2 freetype fontconfig"
+
 RRECOMMENDS_${PN} = "openttd-gfx openttd-sfx"
 
-SRC_URI ="http://binaries.openttd.org/releases/${PV}/${P}-source.tar.bz2"
+SRC_URI ="http://binaries.openttd.org/releases/${PV}/${P}-source.tar.gz"
 
 APPIMAGE = "media/openttd.128.png"
 
@@ -26,6 +27,7 @@ do_configure() {
 	--with-zlib=${STAGING_LIBDIR} \
 	--with-png \
 	--with-freetype \
+	--with-liblzo2=${STAGING_LIBDIR} \
 	--without-icu \
 	--without-allegro \
 	--cc-build='${BUILD_CC}' \
