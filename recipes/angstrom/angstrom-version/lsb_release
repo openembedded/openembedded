@@ -1,6 +1,6 @@
 #!/bin/sh
 VERSION="$(cat /etc/angstrom-version | head -n1 | awk '{print $2}')"
-CODENAME="foo"
+CODENAME="Dureza"
 
 case $1 in
 "-v")
