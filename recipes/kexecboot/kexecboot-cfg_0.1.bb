@@ -5,16 +5,8 @@ PR = "r11"
 
 SRC_URI = "file://icon.xpm"
 
-CMDLINE_DEBUG = "${@base_conditional('DISTRO_TYPE', 'release', 'quiet', 'debug',d)}"
-
-CMDLINE_akita = "console=ttyS0,115200n8 console=tty1 fbcon=rotate:1 ${CMDLINE_DEBUG}"
-CMDLINE_ben-nanonote = "console=ttyS0,57600n8 console=tty0 mem=32M ${CMDLINE_DEBUG}"
-CMDLINE_c7x0 = "console=ttyS0,115200n8 console=tty1 ${CMDLINE_DEBUG}"
-CMDLINE_collie = "console=ttySA0,115200n8 console=tty1 mem=64M ${CMDLINE_DEBUG}"
-CMDLINE_poodle = "console=ttyS0,115200n8 console=tty1 fbcon=rotate:1 ${CMDLINE_DEBUG}"
-CMDLINE_qemuarm = "console=ttyAMA0,115200n8 console=tty1 ${CMDLINE_DEBUG}"
-CMDLINE_spitz = "console=ttyS0,115200n8 console=tty1 fbcon=rotate:1 ${CMDLINE_DEBUG}"
-CMDLINE_tosa = "console=ttyS0,115200n8 console=tty1 ${CMDLINE_DEBUG}"
+CMDLINE ?= ""
+CMDLINE_DEBUG ?= "${@base_conditional('DISTRO_TYPE', 'release', 'quiet', 'debug',d)}"
 
 do_configure_prepend () {
     install -m 0644 ${WORKDIR}/icon.xpm ${S}
@@ -29,7 +21,7 @@ KERNEL=/boot/${KERNEL_IMAGETYPE}
 LABEL=${DISTRO}-${MACHINE}
 #
 # Append this tags to the kernel cmdline.
-APPEND=${CMDLINE}
+APPEND=${CMDLINE} ${CMDLINE_DEBUG}
 #
 # Specify optional initrd/initramfs.
 # INITRD=/boot/initramfs.cpio.gz
