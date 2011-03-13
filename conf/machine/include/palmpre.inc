@@ -38,6 +38,9 @@ MACHINE_EXTRA_RDEPENDS = " \
  lvm2 \
  palmpre-audio-scripts \
  compat-wireless-2.6-old \
+ kernel-module-sirloin-wifi \
+ marvell-license \
+ marvell-sdio-fw \
 "
 
 PREFERRED_PROVIDER_udev-compat = "udev-compat141"
