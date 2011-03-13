@@ -1,16 +1,19 @@
 DESCRIPTION = "Lua Lanes is a Lua extension library providing the possibility to run multiple Lua states in parallel."
+HOMEPAGE = "https://github.com/LuaLanes/lanes"
 LICENSE = "MIT"
-HOMEPAGE = "http://kotisivu.dnainternet.net/askok/bin/lanes/index.html"
+LIC_FILES_CHKSUM = "file://COPYRIGHT;md5=8cd4045dac80d5036b8a09fed113236e"
 
 DEPENDS += "lua5.1-native"
 RDEPENDS_${PN} += "lua5.1"
 
-PR = "r1"
-S = "${WORKDIR}/lanes-${PV}"
+PR = "r0"
+PV = "2.1.0+gitr${SRCREV}"
 
-SRC_URI = "http://luaforge.net/frs/download.php/4652/lanes-2.0.6.tgz \
+S = "${WORKDIR}/git/"
+SRCREV = "507e02b20f4ce2c57c18992fe68430b0ffb3eee9"
+
+SRC_URI = "git://github.com/LuaLanes/lanes.git;protocol=git \
            file://makefile.patch \
-           file://0001-fix-LanesTimer-inifinite-thread-GC.patch \
           "
 
 UCLIBC_PATCHES = "file://uclibc.patch"
@@ -26,8 +29,5 @@ FILES_${PN}-dbg = "${LUA_LIB_DIR}/.debug/lua51-lanes.so"
 EXTRA_OEMAKE = "MYFLAGS='${CFLAGS} ${LDFLAGS}'"
 
 do_install() {
-	oe_runmake install DESTDIR='${D}/usr' 
+	oe_runmake install DESTDIR='${D}/usr'
 }
-
-SRC_URI[md5sum] = "1716bdf138fcc65b7069aaad864da677"
-SRC_URI[sha256sum] = "7b07fa1c21749981ec0addcf8e9e85acfca91efe8d3f64982a6ac0bc6a615e70"
