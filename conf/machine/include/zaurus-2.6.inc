@@ -91,6 +91,13 @@ SERIAL_CONSOLE_collie = "115200 ttySA0"
 
 PCMCIA_MANAGER ?= "pcmciautils"
 
+CMDLINE_akita = "console=ttyS0,115200n8 console=tty1 fbcon=rotate:1"
+CMDLINE_c7x0 = "console=ttyS0,115200n8 console=tty1"
+CMDLINE_collie = "console=ttySA0,115200n8 console=tty1 mem=64M fbcon=rotate:1"
+CMDLINE_poodle = "console=ttyS0,115200n8 console=tty1 fbcon=rotate:1"
+CMDLINE_spitz = "console=ttyS0,115200n8 console=tty1 fbcon=rotate:1"
+CMDLINE_tosa = "console=ttyS0,115200n8 console=tty1"
+
 MACHINE_FEATURES = "kernel26 apm alsa pcmcia irda usbgadget keyboard touchscreen screen vfat ext2"
 MACHINE_FEATURES_append_akita = " usbhost "
 MACHINE_FEATURES_append_spitz = " usbhost "
