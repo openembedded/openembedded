@@ -8,7 +8,7 @@
 REMOTEM=angstrom@eu.feeds.angstrom-distribution.org
 
 # Feed dir we want to upload to
-REMOTED=website/feeds/unstable/ipk/$(basename $PWD)
+REMOTED=website/feeds/2011.03/ipk/$(basename $PWD)
 
 # create upload dir
 mkdir -p upload-queue || true

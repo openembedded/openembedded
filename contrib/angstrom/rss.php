@@ -15,7 +15,7 @@
  *
  */
 
-$build_link_base = 'http://www.angstrom-distribution.org/unstable/autobuild/';
+$build_link_base = 'http://www.angstrom-distribution.org/2011.03/autobuild/';
 
 $builder_log_date = file('autobuilder.log');
 
