@@ -12,7 +12,7 @@ DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "1"
 DEFAULT_PREFERENCE_shr = "1"
 
-SRC_URI = "git://git.ffmpeg.org/ffmpeg.git;protocol=git"
+SRC_URI = "git://git.libav.org/libav.git;protocol=git"
 
 S = "${WORKDIR}/git"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
