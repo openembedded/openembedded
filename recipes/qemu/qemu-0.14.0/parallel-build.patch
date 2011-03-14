@@ -1,0 +1,25 @@
+This patch is taken from 
+https://bugs.gentoo.org/show_bug.cgi?id=343175
+-Khem
+
+Index: qemu-0.14.0/rules.mak
+===================================================================
+--- qemu-0.14.0.orig/rules.mak
++++ qemu-0.14.0/rules.mak
+@@ -14,13 +14,13 @@ MAKEFLAGS += -rR
+ # Flags for dependency generation
+ QEMU_DGFLAGS += -MMD -MP -MT $@ -MF $(*D)/$(*F).d
+ 
+-%.o: %.c
++%.o: %.c $(GENERATED_HEADERS)
+ 	$(call quiet-command,$(CC) $(QEMU_CFLAGS) $(QEMU_INCLUDES) $(QEMU_DGFLAGS) $(CFLAGS) -c -o $@ $<,"  CC    $(TARGET_DIR)$@")
+ 
+-%.o: %.S
++%.o: %.S $(GENERATED_HEADERS)
+ 	$(call quiet-command,$(CC) $(QEMU_CFLAGS) $(QEMU_INCLUDES) $(QEMU_DGFLAGS) $(CFLAGS) -c -o $@ $<,"  AS    $(TARGET_DIR)$@")
+ 
+-%.o: %.m
++%.o: %.m $(GENERATED_HEADERS)
+ 	$(call quiet-command,$(CC) $(QEMU_CFLAGS) $(QEMU_INCLUDES) $(QEMU_DGFLAGS) $(CFLAGS) -c -o $@ $<,"  OBJC  $(TARGET_DIR)$@")
+ 
+ LINK = $(call quiet-command,$(CC) $(QEMU_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ $(1) $(LIBS),"  LINK  $(TARGET_DIR)$@")

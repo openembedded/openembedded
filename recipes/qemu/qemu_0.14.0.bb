@@ -1,7 +1,6 @@
 LICENSE = "GPL"
 DEPENDS = "zlib ncurses gnutls"
-PR = "r2"
-DEFAULT_PREFERENCE = "-1"
+PR = "r0"
 SRC_URI = "\
     http://download.savannah.gnu.org/releases/qemu/qemu-${PV}.tar.gz \
     file://leftover.patch \
@@ -10,8 +9,9 @@ SRC_URI = "\
     file://fallback.to.safe.mmap_min_addr.patch \
     file://parallel-build.patch \
     "
-SRC_URI[md5sum] = "397a0d665da8ba9d3b9583629f3d6421"
-SRC_URI[sha256sum] = "1e6f5851b05cea6e377c835f4668408d4124cfb845f9948d922808743c5fd877"
+SRC_URI[md5sum] = "f9d145d5c09de9f0984ffe9bd1229970"
+SRC_URI[sha256sum] = "ba21e84d7853217830e167dae9999cdbff481189c6a0bb600ac7fb7201453108"
+
 BBCLASSEXTEND="native"
 
 S = "${WORKDIR}/qemu-${PV}"
@@ -22,8 +22,6 @@ EXTRA_OECONF += " --disable-curl --disable-sdl --disable-strip \
 EXTRA_OECONF_append_virtclass-native = " --extra-cflags="-I${STAGING_INCDIR_NATIVE}""
 
 inherit autotools
-
-PARALLEL_MAKE = ""
 
 do_configure() {
 	${S}/configure --prefix=${prefix} ${EXTRA_OECONF}

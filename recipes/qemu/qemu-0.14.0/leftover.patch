@@ -1,0 +1,15 @@
+Index: qemu-0.14.0/hw/pc.c
+===================================================================
+--- qemu-0.14.0.orig/hw/pc.c
++++ qemu-0.14.0/hw/pc.c
+@@ -536,8 +536,9 @@ static void bochs_bios_write(void *opaqu
+         /* LGPL'ed VGA BIOS messages */
+     case 0x501:
+     case 0x502:
++        /* according to documentation, these can be safely ignored */
+         fprintf(stderr, "VGA BIOS panic, line %d\n", val);
+-        exit(1);
++        break;
+     case 0x500:
+     case 0x503:
+ #ifdef DEBUG_BIOS
