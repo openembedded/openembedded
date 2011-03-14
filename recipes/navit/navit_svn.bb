@@ -1,7 +1,7 @@
 require navit.inc
 
-SRCREV = "3931"
-PV = "0.1.99+svnr${SRCPV}"
+SRCREV = "4345"
+PV = "0.2.0+svnr${SRCPV}"
 PR = "${INC_PR}.12"
 
 S = "${WORKDIR}/navit"
