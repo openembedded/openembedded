@@ -14,8 +14,8 @@ SRC_URI = "\
 	"
 SRC_URI[ojdk.md5sum] = "078fe0ab744c98694decc77f2456c560"
 SRC_URI[ojdk.sha256sum] = "2019a4c3d2d14620caa78d7df49fd987a041066b4631bde4fd8424033f3c1785"
-SRC_URI[iced.md5sum] = "0a865e883987665ffcb34db9dd9b35c2"
-SRC_URI[iced.sha256sum] = "b28c8bd39d9bd8a28efaaa38280288a3faa6bec0d756323c0555ad3d8c5d77f5"
+SRC_URI[iced.md5sum] = "0d61041e46253d089f1b30114716012d"
+SRC_URI[iced.sha256sum] = "dbca9d7598352d178651c8cc28ff887c59a27f0125785a58e9f9723611137f78"
 
 ICEDTEA_PATCHES = "\
 	file://icedtea-ecj-disable-compilation.patch;apply=no \
@@ -24,7 +24,6 @@ ICEDTEA_PATCHES = "\
 	file://icedtea-hotspot-make-arch-sane-for-x86.patch;apply=no \
 	file://icedtea-jdk-sane-x86-arch.patch;apply=no \
 	file://icedtea-unbreak-float.patch;apply=no \
-	file://icedtea-jdk-build-sizer-32-on-amd64.patch;apply=no \
 	"
 
 export DISTRIBUTION_PATCHES = "\
