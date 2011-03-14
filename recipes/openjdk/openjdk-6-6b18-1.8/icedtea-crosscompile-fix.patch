@@ -73,17 +73,6 @@ Index: openjdk/jdk/make/sun/xawt/Makefile
  endif
  
  ifeq ($(PLATFORM), solaris)
-@@ -237,7 +238,9 @@
- 	$(BOOT_JAVA_CMD) -cp $(WRAPPER_GENERATOR_TEMPDIR) WrapperGenerator \
- 	    $(SIZER_DIR) $(XLIBTYPES) "sizer" $(subst .,,$(suffix $(basename $@)))
- 
--$(SIZES): $(SIZERS)
-+#$(SIZES): $(SIZERS)
-+# Prevent binaries being created. Instead take what is available.
-+$(SIZES):
- 	@if [ "$(DOHACK)$@" = "true$(PREDEFINED_SIZES)" ]; then \
- 	    $(ECHO) COPYING $(PREDEFINED_SIZES_TMPL) into $@; \
- 	    $(CP) $(PREDEFINED_SIZES_TMPL) $@; \
 Index: openjdk/hotspot/make/linux/makefiles/vm.make
 ===================================================================
 --- openjdk.orig/hotspot/make/linux/makefiles/vm.make	2009-01-24 17:54:57.000000000 +0100
@@ -212,3 +201,16 @@ Index: openjdk/hotspot/make/linux/makefiles/launcher.make
    LIBS_LAUNCHER             += -l$(JVM) $(LIBS) -lstdc++
  endif
  
+Index: icedtea6-1.8.5/build/openjdk/jdk/make/sun/xawt/Makefile
+===================================================================
+--- openjdk/jdk/make/sun/xawt/Makefile	2011-03-14 14:17:03.926207269 +0100
++++ openjdk/jdk/make/sun/xawt/Makefile	2011-03-14 14:30:11.956186631 +0100
+@@ -245,7 +245,7 @@
+ 	    $(CHMOD) +w $@;\
+ 	else	\
+ 	    $(ECHO) GENERATING $@; \
+-	    $(WRAPPER_GENERATOR_DIR)/sizer$(suffix $@) > $@; \
++	    $(QEMU) $(WRAPPER_GENERATOR_DIR)/sizer$(suffix $@) > $@; \
+ 	fi
+ 	@if [ "$(DOCOMPARE)$(suffix $@)" = "true.64" ]; then \
+ 	    $(ECHO) COMPARING $@ and $(STORED_SIZES_TMPL_$(PLATFORM)_$(LIBARCH)); \

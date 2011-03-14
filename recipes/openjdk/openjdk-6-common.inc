@@ -10,7 +10,7 @@ ICEDTEA = "NEEDS TO BE SET"
 S = "${WORKDIR}/${ICEDTEA}"
 B = "${S}/build"
 
-INC_PR = "r10"
+INC_PR = "r11"
 
 SRC_URI = "\
   ${ICEDTEA_URI} \
@@ -287,12 +287,6 @@ addtask compilestepone after do_configure before do_compilesteptwo
 # This part can be shared between cacao and hotspot-zero builds.
 do_compilesteptwo() {
 	echo "2/3 Building bootstrap JDK"
-
-	# Take pre-generated binaries from -native build
-	install -d generated/sun/awt/X11/generator
-	ln -sf ${STAGING_LIBDIR_JVM_NATIVE}/icedtea6-native/generated/sizer.32 generated/sun/awt/X11/generator/sizer.32
-	install -d openjdk/${BUILD_DIR}/gensrc/sun/awt/X11/generator
-	ln -sf ${STAGING_LIBDIR_JVM_NATIVE}/icedtea6-native/generated/sizer.32 openjdk/${BUILD_DIR}/gensrc/sun/awt/X11/generator/sizer.32
 
 	# Now cross-compile bootstrap JDK
 	rm stamps/icedtea-against-ecj.stamp stamps/icedtea-ecj.stamp || true
