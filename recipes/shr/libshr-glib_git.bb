@@ -3,8 +3,8 @@ AUTHOR = "Klaus 'mrmoku' Kurzmann"
 LICENSE = "LGPL"
 SECTION = "devel"
 DEPENDS = "gdbus-binding-tool glib-2.0 shr-specs"
-SRCREV = "761dea6463326714c00342cb53ba28a1c2dfea63"
-PV = "2011.01.04.1+gitr${SRCPV}"
+SRCREV = "78ed61d459362235366372b5d2a244c378025cb8"
+PV = "2011.03.08.2+gitr${SRCPV}"
 PR = "r0"
 
 inherit autotools
