@@ -1,7 +1,7 @@
 require php.inc
 
 DEPENDS = "zlib libxml2 virtual/libiconv php-native lemon-native mysql5 \
-           libc-client openssl"
+           libc-client openssl findutils-native"
 
 PR = "${INC_PR}.0"
 
