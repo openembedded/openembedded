@@ -11,3 +11,6 @@ S = "${WORKDIR}/git"
 
 inherit autotools
 
+do_configure_prepend() {
+    touch config.rpath
+}
