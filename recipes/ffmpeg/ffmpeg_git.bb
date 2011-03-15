@@ -6,7 +6,7 @@ DEPENDS += "virtual/libsdl schroedinger libgsm libvpx"
 SRCREV = "0b32da90f893b3e04ead18a546252e241a6a0988"
 
 PV = "0.6.1+${PR}+gitr${SRCPV}"
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "1"
