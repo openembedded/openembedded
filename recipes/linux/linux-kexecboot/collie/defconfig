@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux/arm 2.6.38-rc3 Kernel Configuration
-# Wed Feb  2 00:58:22 2011
+# Linux/arm 2.6.38-rc8 Kernel Configuration
+# Tue Mar 15 02:35:02 2011
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -260,6 +260,10 @@ CONFIG_SA1100_COLLIE=y
 # CONFIG_SA1100_SHANNON is not set
 # CONFIG_SA1100_SIMPAD is not set
 # CONFIG_SA1100_SSP is not set
+
+#
+# System MMU
+#
 
 #
 # Processor Type
@@ -567,7 +571,7 @@ CONFIG_SCSI_PROC_FS=y
 #
 # SCSI support type (disk, tape, CD-ROM)
 #
-# CONFIG_BLK_DEV_SD is not set
+CONFIG_BLK_DEV_SD=y
 # CONFIG_CHR_DEV_ST is not set
 # CONFIG_CHR_DEV_OSST is not set
 # CONFIG_BLK_DEV_SR is not set
@@ -888,6 +892,7 @@ CONFIG_BATTERY_COLLIE=y
 # CONFIG_BATTERY_MAX17042 is not set
 # CONFIG_CHARGER_GPIO is not set
 # CONFIG_HWMON is not set
+# CONFIG_THERMAL is not set
 # CONFIG_WATCHDOG is not set
 CONFIG_SSB_POSSIBLE=y
 

@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux/arm 2.6.38-rc7 Kernel Configuration
-# Fri Mar  4 09:04:04 2011
+# Linux/arm 2.6.38-rc8 Kernel Configuration
+# Tue Mar 15 01:36:53 2011
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -410,7 +410,7 @@ CONFIG_ALIGNMENT_TRAP=y
 #
 CONFIG_ZBOOT_ROM_TEXT=0
 CONFIG_ZBOOT_ROM_BSS=0
-CONFIG_CMDLINE="console=tty1 console=ttyS0,115200n8 fbcon=rotate:1 debug"
+CONFIG_CMDLINE="console=tty1 console=ttyS0,115200n8 fbcon=rotate:1"
 # CONFIG_CMDLINE_FORCE is not set
 # CONFIG_XIP_KERNEL is not set
 CONFIG_KEXEC=y

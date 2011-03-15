@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux/arm 2.6.38-rc3 Kernel Configuration
-# Wed Feb  2 00:14:40 2011
+# Linux/arm 2.6.38-rc8 Kernel Configuration
+# Tue Mar 15 01:44:42 2011
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -314,6 +314,10 @@ CONFIG_MACH_POODLE=y
 # CONFIG_MACH_ZIPIT2 is not set
 CONFIG_PXA25x=y
 CONFIG_PXA_SSP=y
+
+#
+# System MMU
+#
 CONFIG_PLAT_PXA=y
 
 #
@@ -591,7 +595,7 @@ CONFIG_SCSI_PROC_FS=y
 #
 # SCSI support type (disk, tape, CD-ROM)
 #
-# CONFIG_BLK_DEV_SD is not set
+CONFIG_BLK_DEV_SD=y
 # CONFIG_CHR_DEV_ST is not set
 # CONFIG_CHR_DEV_OSST is not set
 # CONFIG_BLK_DEV_SR is not set
@@ -685,7 +689,7 @@ CONFIG_INPUT_KEYBOARD=y
 # CONFIG_KEYBOARD_ATKBD is not set
 # CONFIG_KEYBOARD_QT2160 is not set
 # CONFIG_KEYBOARD_LKKBD is not set
-# CONFIG_KEYBOARD_GPIO is not set
+CONFIG_KEYBOARD_GPIO=y
 # CONFIG_KEYBOARD_TCA6416 is not set
 # CONFIG_KEYBOARD_MATRIX is not set
 # CONFIG_KEYBOARD_LM8323 is not set
@@ -894,6 +898,7 @@ CONFIG_APM_POWER=y
 # CONFIG_BATTERY_MAX17042 is not set
 # CONFIG_CHARGER_GPIO is not set
 # CONFIG_HWMON is not set
+# CONFIG_THERMAL is not set
 # CONFIG_WATCHDOG is not set
 CONFIG_SSB_POSSIBLE=y
 
@@ -973,13 +978,13 @@ CONFIG_FRAMEBUFFER_CONSOLE=y
 # CONFIG_FRAMEBUFFER_CONSOLE_DETECT_PRIMARY is not set
 CONFIG_FRAMEBUFFER_CONSOLE_ROTATION=y
 CONFIG_FONTS=y
-CONFIG_FONT_8x8=y
+# CONFIG_FONT_8x8 is not set
 # CONFIG_FONT_8x16 is not set
 # CONFIG_FONT_6x11 is not set
 # CONFIG_FONT_7x14 is not set
 # CONFIG_FONT_PEARL_8x8 is not set
 # CONFIG_FONT_ACORN_8x8 is not set
-# CONFIG_FONT_MINI_4x6 is not set
+CONFIG_FONT_MINI_4x6=y
 # CONFIG_FONT_SUN8x16 is not set
 # CONFIG_FONT_SUN12x22 is not set
 # CONFIG_FONT_10x18 is not set

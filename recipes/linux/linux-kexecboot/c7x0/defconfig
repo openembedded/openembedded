@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux/arm 2.6.38-rc3 Kernel Configuration
-# Wed Feb  2 00:06:26 2011
+# Linux/arm 2.6.38-rc8 Kernel Configuration
+# Tue Mar 15 01:28:13 2011
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -317,6 +317,10 @@ CONFIG_PXA_SHARP_C7xx=y
 CONFIG_SHARPSL_PM=y
 CONFIG_SHARPSL_PM_MAX1111=y
 CONFIG_PXA_SSP=y
+
+#
+# System MMU
+#
 CONFIG_PLAT_PXA=y
 
 #
@@ -978,6 +982,7 @@ CONFIG_SENSORS_MAX1111=y
 # CONFIG_SENSORS_W83627EHF is not set
 # CONFIG_SENSORS_LIS3_SPI is not set
 # CONFIG_SENSORS_LIS3_I2C is not set
+# CONFIG_THERMAL is not set
 # CONFIG_WATCHDOG is not set
 CONFIG_SSB_POSSIBLE=y
 
