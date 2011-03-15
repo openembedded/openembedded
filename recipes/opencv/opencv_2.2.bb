@@ -9,12 +9,12 @@ ARM_INSTRUCTION_SET = "arm"
 DEPENDS = "python-numpy ffmpeg gtk+ libtool swig swig-native python jpeg bzip2 zlib libpng tiff glib-2.0"
 
 SRC_URI = "svn://code.ros.org/svn/opencv/branches/2.2;module=opencv;proto=https \
-           file://0001-SIFT-unbreak-non-android-ARM-builds.patch;striplevel=2 \
+           file://0001-SIFT-unbreak-non-android-ARM-builds.patch;striplevel=2i;maxrev=4811 \
 "
 
 PARALLEL_MAKE = ""
 
-SRCREV = "4462"
+SRCREV = "4812"
 PV = "2.2.0+svnr${SRCPV}"
 PR = "r1"
 
