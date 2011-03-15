@@ -1,0 +1,47 @@
+Index: e/src/bin/e_startup.c
+===================================================================
+--- e/src/bin/e_startup.c	(Revision 56372)
++++ e/src/bin/e_startup.c	(Arbeitskopie)
+@@ -19,16 +19,19 @@
+ EAPI void
+ e_startup(E_Startup_Mode mode)
+ {
++   printf("e_startup() started\n");
+    char buf[PATH_MAX];
+ 
+    if (mode == E_STARTUP_START)
+      {
++	printf("e_startup() mode = start\n");
+ 	e_user_dir_concat_static(buf, "applications/startup/.order");
+ 	if (!ecore_file_exists(buf))
+ 	  e_prefix_data_concat_static(buf, "data/applications/startup/.order");
+      }
+    else if (mode == E_STARTUP_RESTART)
+      {
++	printf("e_startup() mode = restart\n");
+ 	e_user_dir_concat_static(buf, "applications/restart/.order");
+ 	if (!ecore_file_exists(buf))
+ 	  e_prefix_data_concat_static(buf, "data/applications/restart/.order");
+@@ -49,6 +52,7 @@
+ 
+    if (!startup_apps)
+      {
++        printf("e_startup() finish\n");
+ 	e_init_done();
+ 	return;
+      }
+@@ -56,12 +60,14 @@
+    start_app_pos++;
+    if (!desktop)
+      {
++	printf("e_startup() no desktop: finish\n");
+ 	e_object_del(E_OBJECT(startup_apps));
+ 	startup_apps = NULL;
+ 	start_app_pos = -1;
+ 	e_init_done();
+ 	return;
+      }
++   printf("e_startup() starting: %s\n", desktop);
+    e_exec(NULL, desktop, NULL, NULL, NULL);
+    snprintf(buf, sizeof(buf), "%s %s", _("Starting"), desktop->name);
+    e_init_status_set(buf);   
