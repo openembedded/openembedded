@@ -1,7 +1,7 @@
 http://sourceforge.net/tracker/index.php?func=detail&aid=2902010&group_id=10894&atid=110894
 
---- ../generic/tclStrToD.c.orig
-+++ ../generic/tclStrToD.c
+--- generic/tclStrToD.c.orig
++++ generic/tclStrToD.c
 @@ -71,9 +71,10 @@
  
  /*
