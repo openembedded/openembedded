@@ -1,0 +1,38 @@
+From f44087a2bcca700c4138ff558294b824f64b08ad Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Petr=20=C5=A0tetiar?= <ynezz@true.cz>
+Date: Mon, 14 Mar 2011 20:02:58 +0100
+Subject: [PATCH 24/24] ARM: ep93xx: Fix inverted RTS and DTR signals
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+It was discovered by Roberto Bergo, that RTS/DTR signals are inverted after
+the boot, because it was causing him problems with hardware controlled modem
+connected on ttyAM0. Todd Valentic came with this patch for the issue.
+
+Signed-off-by: Todd Valentic <todd.valentic@sri.com>
+Tested-by: Roberto Bergo <roberto.bergo@robson.it>
+Signed-off-by: Petr Štetiar <ynezz@true.cz>
+---
+ arch/arm/mach-ep93xx/core.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/mach-ep93xx/core.c b/arch/arm/mach-ep93xx/core.c
+index 8207954..cf1ce32 100644
+--- a/arch/arm/mach-ep93xx/core.c
++++ b/arch/arm/mach-ep93xx/core.c
+@@ -251,9 +251,9 @@ static void ep93xx_uart_set_mctrl(struct amba_device *dev,
+ 	unsigned int mcr;
+ 
+ 	mcr = 0;
+-	if (!(mctrl & TIOCM_RTS))
++	if (mctrl & TIOCM_RTS)
+ 		mcr |= 2;
+-	if (!(mctrl & TIOCM_DTR))
++	if (mctrl & TIOCM_DTR)
+ 		mcr |= 1;
+ 
+ 	__raw_writel(mcr, base + EP93XX_UART_MCR_OFFSET);
+-- 
+1.7.1
+
