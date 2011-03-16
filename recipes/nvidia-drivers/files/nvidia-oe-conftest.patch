@@ -1,4 +1,4 @@
---- ../../../temp/NVIDIA-Linux-x86-1.0-8756-pkg1/usr/src/nv/Makefile.kbuild	2006-03-29 16:02:20.000000000 -0700
+--- nv/Makefile.kbuild	2006-03-29 16:02:20.000000000 -0700
 +++ nv/Makefile.kbuild	2006-04-26 13:50:47.249353208 -0600
 @@ -28,7 +28,7 @@
  # Christian Zander (zander@mail.minion.de) (enhancements)
@@ -33,7 +33,7 @@
  
  #
  # Build an object file suitable for further processing by the installer and
---- ../../../temp/NVIDIA-Linux-x86-1.0-8756-pkg1/usr/src/nv/Makefile.nvidia	2006-03-29 16:02:20.000000000 -0700
+--- nv/Makefile.nvidia	2006-03-29 16:02:20.000000000 -0700
 +++ nv/Makefile.nvidia	2006-04-26 13:52:19.573317832 -0600
 @@ -102,7 +102,7 @@
  

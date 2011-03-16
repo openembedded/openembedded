@@ -1,5 +1,5 @@
-diff -urNd ../gpe-aerial-0.2.11-r0/gpe-aerial-0.2.11/Makefile gpe-aerial-0.2.11/Makefile
---- ../gpe-aerial-0.2.11-r0/gpe-aerial-0.2.11/Makefile	2004-08-03 15:36:47.000000000 +0100
+diff -urNd gpe-aerial-0.2.11/Makefile gpe-aerial-0.2.11/Makefile
+--- gpe-aerial-0.2.11/Makefile	2004-08-03 15:36:47.000000000 +0100
 +++ gpe-aerial-0.2.11/Makefile	2004-08-03 15:49:42.000000000 +0100
 @@ -3,7 +3,6 @@
  CVSBUILD = no

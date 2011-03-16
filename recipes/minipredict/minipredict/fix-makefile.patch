@@ -1,5 +1,5 @@
-diff -urNd ../minipredict-1.0-r0/minipredict/Makefile minipredict/Makefile
---- ../minipredict-1.0-r0/minipredict/Makefile	2003-02-15 23:14:40 +00:00
+diff -urNd minipredict/Makefile minipredict/Makefile
+--- minipredict/Makefile	2003-02-15 23:14:40 +00:00
 +++ minipredict/Makefile	2005-03-04 05:23:24 +00:00
 @@ -1,18 +1,16 @@
  
@@ -30,8 +30,8 @@ diff -urNd ../minipredict-1.0-r0/minipredict/Makefile minipredict/Makefile
 +	rm -f *.o minipredict
 +
 +include Makefile.dpkg_ipkg
-diff -urNd ../minipredict-1.0-r0/minipredict/Makefile.dpkg_ipkg minipredict/Makefile.dpkg_ipkg
---- ../minipredict-1.0-r0/minipredict/Makefile.dpkg_ipkg	1970-01-01 01:00:00 +01:00
+diff -urNd minipredict/Makefile.dpkg_ipkg minipredict/Makefile.dpkg_ipkg
+--- minipredict/Makefile.dpkg_ipkg	1970-01-01 01:00:00 +01:00
 +++ minipredict/Makefile.dpkg_ipkg	2005-03-04 04:24:46 +00:00
 @@ -0,0 +1,114 @@
 +## Please read the README in this directory to see how to use this

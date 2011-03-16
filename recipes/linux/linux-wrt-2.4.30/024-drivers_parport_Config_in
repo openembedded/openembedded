@@ -1,4 +1,4 @@
---- ../../../kernel/linux-mips-cvs/drivers/parport/Config.in	2004-02-20 02:22:18.000000000 +0100
+--- linux-mips-cvs/drivers/parport/Config.in	2004-02-20 02:22:18.000000000 +0100
 +++ linux-2.4.29/drivers/parport/Config.in	2005-03-21 13:59:33.958193664 +0100
 @@ -11,6 +11,7 @@
  tristate 'Parallel port support' CONFIG_PARPORT

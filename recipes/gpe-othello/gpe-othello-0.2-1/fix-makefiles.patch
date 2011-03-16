@@ -1,5 +1,5 @@
-diff -urNd ../gpe-othello-0.2-1-r0/gpe-othello-0.2-1/build/Makefile.dpkg_ipkg gpe-othello-0.2-1/build/Makefile.dpkg_ipkg
---- ../gpe-othello-0.2-1-r0/gpe-othello-0.2-1/build/Makefile.dpkg_ipkg	1970-01-01 01:00:00.000000000 +0100
+diff -urNd gpe-othello-0.2-1/build/Makefile.dpkg_ipkg gpe-othello-0.2-1/build/Makefile.dpkg_ipkg
+--- gpe-othello-0.2-1/build/Makefile.dpkg_ipkg	1970-01-01 01:00:00.000000000 +0100
 +++ gpe-othello-0.2-1/build/Makefile.dpkg_ipkg	2004-09-18 20:23:29.000000000 +0100
 @@ -0,0 +1,114 @@
 +## Please read the README in this directory to see how to use this
@@ -116,8 +116,8 @@ diff -urNd ../gpe-othello-0.2-1-r0/gpe-othello-0.2-1/build/Makefile.dpkg_ipkg gp
 +
 +.c.o:;
 +	$(CC) $(CFLAGS) $(CPPFLAGS) $(PACKAGE_CFLAGS) $(PACKAGE_CPPFLAGS) -c $< -o $@
-diff -urNd ../gpe-othello-0.2-1-r0/gpe-othello-0.2-1/build/Makefile.translation gpe-othello-0.2-1/build/Makefile.translation
---- ../gpe-othello-0.2-1-r0/gpe-othello-0.2-1/build/Makefile.translation	1970-01-01 01:00:00.000000000 +0100
+diff -urNd gpe-othello-0.2-1/build/Makefile.translation gpe-othello-0.2-1/build/Makefile.translation
+--- gpe-othello-0.2-1/build/Makefile.translation	1970-01-01 01:00:00.000000000 +0100
 +++ gpe-othello-0.2-1/build/Makefile.translation	2004-09-18 20:23:29.000000000 +0100
 @@ -0,0 +1,103 @@
 +.SUFFIXES: .mo .po .pot .po8
@@ -223,8 +223,8 @@ diff -urNd ../gpe-othello-0.2-1-r0/gpe-othello-0.2-1/build/Makefile.translation 
 +
 +translation-ipkg:
 +	make PREFIX=/usr real-translation-package
-diff -urNd ../gpe-othello-0.2-1-r0/gpe-othello-0.2-1/Makefile gpe-othello-0.2-1/Makefile
---- ../gpe-othello-0.2-1-r0/gpe-othello-0.2-1/Makefile	2004-09-18 00:16:02.000000000 +0100
+diff -urNd gpe-othello-0.2-1/Makefile gpe-othello-0.2-1/Makefile
+--- gpe-othello-0.2-1/Makefile	2004-09-18 00:16:02.000000000 +0100
 +++ gpe-othello-0.2-1/Makefile	2004-09-18 20:25:16.000000000 +0100
 @@ -3,41 +3,37 @@
  DEBUG = no

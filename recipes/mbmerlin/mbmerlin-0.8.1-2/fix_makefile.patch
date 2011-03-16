@@ -1,5 +1,5 @@
-diff -urNd ../mbmerlin-0.8.1-2-r3/mbmerlin/Makefile mbmerlin/Makefile
---- ../mbmerlin-0.8.1-2-r3/mbmerlin/Makefile	2004-07-29 21:17:13.000000000 +0100
+diff -urNd mbmerlin/Makefile mbmerlin/Makefile
+--- mbmerlin/Makefile	2004-07-29 21:17:13.000000000 +0100
 +++ mbmerlin/Makefile	2004-08-01 11:32:09.000000000 +0100
 @@ -106,6 +106,7 @@
  			install mbmerlin.desktop $(DESTDIR)/usr/share/applications/inputmethods
