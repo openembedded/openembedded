@@ -13,7 +13,7 @@ XSERVER ?= "xserver-xorg \
 export IMAGE_BASENAME = "GNOME-image"
 
 IMAGE_LINGUAS = "de-de fr-fr en-gb en-us pt-br es-es kn-in ml-in ta-in"
-ROOTFS_POSTPROCESS_COMMAND += 'install_linguas;'
+ROOTFS_POSTPROCESS_COMMAND += 'install_linguas; '
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
 
 IMAGE_LOGIN_MANAGER = "shadow"
@@ -22,6 +22,7 @@ IMAGE_SPLASH = "psplash-angstrom"
 ANGSTROM_EXTRA_INSTALL ?= ""
 
 IMAGE_INSTALL += " \
+  linux-firmware-wl12xx \
   task-base-extended \
   ${ANGSTROM_EXTRA_INSTALL} \
   ${IMAGE_SPLASH} \

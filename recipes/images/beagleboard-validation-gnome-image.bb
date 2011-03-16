@@ -22,12 +22,12 @@ IMAGE_SPLASH = "psplash-angstrom"
 ANGSTROM_EXTRA_INSTALL ?= ""
 
 IMAGE_INSTALL += " \
-  task-omap-drivers \
-  task-base-extended \
+  task-beagleboard-validation-base \
   ${ANGSTROM_EXTRA_INSTALL} \
   ${IMAGE_SPLASH} \
   angstrom-task-gnome \
   angstrom-gdm-autologin-hack \
   bash-sh \
+  midori gedit \
 "
 

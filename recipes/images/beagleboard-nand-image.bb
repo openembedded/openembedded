@@ -19,6 +19,8 @@ IMAGE_INSTALL = "\
     ${XSERVER} \
     ${ANGSTROM_EXTRA_INSTALL} \
     task-beagleboard-nand \
+    linux-firmware-wl12xx \
+    iw \
     ${SPLASH} \
     "
 
