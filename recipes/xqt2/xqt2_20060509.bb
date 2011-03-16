@@ -5,7 +5,7 @@ LICENSE = "GPL"
 SECTION = "opie/applications"
 APPTYPE = "binary"
 APPNAME = "Xqt"
-PR = "r4"
+PR = "r5"
 
 inherit palmtop
 
@@ -15,21 +15,33 @@ SRC_URI = "cvs://anonymous@cvs.sourceforge.jp/cvsroot/xqt;module=xqt2;method=pse
         ftp://ftp.xfree86.org/pub/XFree86/4.3.0/source/X430src-3.tgz;name=archive3 \
         ftp://ftp.xfree86.org/pub/XFree86/4.3.0/source/X430src-4.tgz;name=archive4 \
         ftp://ftp.xfree86.org/pub/XFree86/4.3.0/source/X430src-5.tgz;name=archive5 \
-        file://KeyMap.patch \
-        file://moc_call.patch \
         file://imake-staging.patch \
         file://cross.patch \
         file://fephack.patch \
         file://xchar2b.patch \
         file://xqt-make.patch \ 
-        file://fix_qtscreen_HACK.patch \
-	file://fix_seqfault_qtscreen.patch "
+        file://KeyMap.patch;apply=false \
+        file://moc_call.patch;apply=false \
+        file://fix_qtscreen_HACK.patch;apply=false \
+	file://fix_seqfault_qtscreen.patch;apply=false"
 S = "${WORKDIR}/xc"
 
 QT_LIBRARY = '${@base_conditional("PALMTOP_USE_MULTITHREADED_QT", "yes", "qte-mt", "qte",d)}'
 QT_LIBRARY_append_c7x0 = " -laticore"
 
+do_patch_xqt2() {
+	# Apply xqt2 patches.
+	cd ${WORKDIR}/xqt2
+	patch -p1 -i ${WORKDIR}/KeyMap.patch
+	patch -p1 -i ${WORKDIR}/moc_call.patch
+	patch -p1 -i ${WORKDIR}/fix_qtscreen_HACK.patch
+	patch -p1 -i ${WORKDIR}/fix_seqfault_qtscreen.patch
+}
+
+addtask patch_xqt2 after do_unpack before do_configure
+
 do_configure() {
+
 	#general config
 	echo "#define BuildServersOnly YES" > config/cf/host.def
 	echo "#define ProjectRoot /usr" >> config/cf/host.def

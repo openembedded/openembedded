@@ -1,5 +1,5 @@
---- xc/../xqt2/xfree86/xqt-driver/KeyMap.h	2004-10-16 08:06:07.000000000 +0200
-+++ xc/../xqt2/xfree86/xqt-driver/KeyMap~.h	2006-05-10 19:41:16.000000000 +0200
+--- xqt2/xfree86/xqt-driver/KeyMap.h	2004-10-16 08:06:07.000000000 +0200
++++ xqt2/xfree86/xqt-driver/KeyMap~.h	2006-05-10 19:41:16.000000000 +0200
 @@ -75,6 +75,7 @@
  /* [          */	K(BracketLeft,	XK_bracketleft, XK_braceleft)	// Fn+T
  /* {          */	K(BraceLeft,	XK_braceleft,	NoSymbol)	// ???
