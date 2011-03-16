@@ -1,10 +1,10 @@
 DESCRIPTION = "Qt/Embedded bindings for the Scintilla source code editor component"
 SECTION = "opie/libs"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://www.mneuroth.de/privat/zaurus/qscintilla-${PV}_zaurus.tar.gz \
-           file://no-external-lexers.patch;striplevel=0"
+           file://no-external-lexers.patch;apply=false"
 
 S = "${WORKDIR}/qscintilla-${PV}/qt"
 
@@ -22,14 +22,14 @@ EXTRA_QMAKEVARS_POST += "INCLUDEPATH+=${S}/patches \
 
 PARALLEL_MAKE = ""
 
-do_stage() {
-	install -m 0644 qextscintilla*.h ${STAGING_INCDIR}/
-	oe_libinstall -so libqscintilla ${STAGING_LIBDIR}
+do_configure_prepend() {
+	(cd .. ; patch -p0 -i ${WORKDIR}/no-external-lexers.patch)
 }
 
 do_install() {
-	install -d ${D}${libdir}
+	install -d ${D}${libdir} ${D}${includedir}
 	oe_libinstall -so libqscintilla ${D}${libdir}
+	install -m 0644 qextscintilla*.h ${D}${includedir}/
 }
 
 FILES_${PN} = "${libdir}"
