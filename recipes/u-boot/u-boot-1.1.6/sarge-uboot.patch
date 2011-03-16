@@ -1,6 +1,6 @@
-diff -Nurp ../u-boot-1.1.6/arm_config.mk ./arm_config.mk
---- ../u-boot-1.1.6/arm_config.mk	2006-11-02 15:15:01.000000000 +0100
-+++ ./arm_config.mk	2007-04-23 18:07:47.000000000 +0200
+diff -Nurp u-boot-1.1.6/arm_config.mk b/arm_config.mk
+--- u-boot-1.1.6/arm_config.mk	2006-11-02 15:15:01.000000000 +0100
++++ b/arm_config.mk	2007-04-23 18:07:47.000000000 +0200
 @@ -21,4 +21,6 @@
  # MA 02111-1307 USA
  #
@@ -8,14 +8,14 @@ diff -Nurp ../u-boot-1.1.6/arm_config.mk ./arm_config.mk
 +#PLATFORM_RELFLAGS += -fno-strict-aliasing  -fno-common -ffixed-r8 -msoft-float
 +PLATFORM_CPPFLAGS += -march=armv4t -mtune=arm920t 
  PLATFORM_CPPFLAGS += -DCONFIG_ARM -D__ARM__
-diff -Nurp ../u-boot-1.1.6/board/sarge/config.mk ./board/sarge/config.mk
---- ../u-boot-1.1.6/board/sarge/config.mk	1970-01-01 01:00:00.000000000 +0100
-+++ ./board/sarge/config.mk	2007-03-21 00:31:33.000000000 +0100
+diff -Nurp u-boot-1.1.6/board/sarge/config.mk b/board/sarge/config.mk
+--- u-boot-1.1.6/board/sarge/config.mk	1970-01-01 01:00:00.000000000 +0100
++++ b/board/sarge/config.mk	2007-03-21 00:31:33.000000000 +0100
 @@ -0,0 +1 @@
 +TEXT_BASE = 0x21F00000
-diff -Nurp ../u-boot-1.1.6/board/sarge/flash.c ./board/sarge/flash.c
---- ../u-boot-1.1.6/board/sarge/flash.c	1970-01-01 01:00:00.000000000 +0100
-+++ ./board/sarge/flash.c	2007-03-09 01:25:41.000000000 +0100
+diff -Nurp u-boot-1.1.6/board/sarge/flash.c b/board/sarge/flash.c
+--- u-boot-1.1.6/board/sarge/flash.c	1970-01-01 01:00:00.000000000 +0100
++++ b/board/sarge/flash.c	2007-03-09 01:25:41.000000000 +0100
 @@ -0,0 +1,504 @@
 +/*
 + * (C) Copyright 2002
@@ -521,9 +521,9 @@ diff -Nurp ../u-boot-1.1.6/board/sarge/flash.c ./board/sarge/flash.c
 +
 +	return ERR_OK;
 +}
-diff -Nurp ../u-boot-1.1.6/board/sarge/Makefile ./board/sarge/Makefile
---- ../u-boot-1.1.6/board/sarge/Makefile	1970-01-01 01:00:00.000000000 +0100
-+++ ./board/sarge/Makefile	2007-03-14 01:05:48.000000000 +0100
+diff -Nurp u-boot-1.1.6/board/sarge/Makefile b/board/sarge/Makefile
+--- u-boot-1.1.6/board/sarge/Makefile	1970-01-01 01:00:00.000000000 +0100
++++ b/board/sarge/Makefile	2007-03-14 01:05:48.000000000 +0100
 @@ -0,0 +1,46 @@
 +#
 +# (C) Copyright 2007
@@ -571,9 +571,9 @@ diff -Nurp ../u-boot-1.1.6/board/sarge/Makefile ./board/sarge/Makefile
 +-include .depend
 +
 +#########################################################################
-diff -Nurp ../u-boot-1.1.6/board/sarge/sarge_board.c ./board/sarge/sarge_board.c
---- ../u-boot-1.1.6/board/sarge/sarge_board.c	1970-01-01 01:00:00.000000000 +0100
-+++ ./board/sarge/sarge_board.c	2007-05-11 23:45:25.000000000 +0200
+diff -Nurp u-boot-1.1.6/board/sarge/sarge_board.c b/board/sarge/sarge_board.c
+--- u-boot-1.1.6/board/sarge/sarge_board.c	1970-01-01 01:00:00.000000000 +0100
++++ b/board/sarge/sarge_board.c	2007-05-11 23:45:25.000000000 +0200
 @@ -0,0 +1,363 @@
 +/*
 + * (C) Copyright 2007
@@ -938,9 +938,9 @@ diff -Nurp ../u-boot-1.1.6/board/sarge/sarge_board.c ./board/sarge/sarge_board.c
 +	printf ("%4lu MB\n", nand_probe(AT91_SMARTMEDIA_BASE) >> 20);
 +}
 +#endif
-diff -Nurp ../u-boot-1.1.6/board/sarge/u-boot.lds ./board/sarge/u-boot.lds
---- ../u-boot-1.1.6/board/sarge/u-boot.lds	1970-01-01 01:00:00.000000000 +0100
-+++ ./board/sarge/u-boot.lds	2007-03-09 01:25:41.000000000 +0100
+diff -Nurp u-boot-1.1.6/board/sarge/u-boot.lds b/board/sarge/u-boot.lds
+--- u-boot-1.1.6/board/sarge/u-boot.lds	1970-01-01 01:00:00.000000000 +0100
++++ b/board/sarge/u-boot.lds	2007-03-09 01:25:41.000000000 +0100
 @@ -0,0 +1,57 @@
 +/*
 + * (C) Copyright 2002
@@ -999,9 +999,9 @@ diff -Nurp ../u-boot-1.1.6/board/sarge/u-boot.lds ./board/sarge/u-boot.lds
 +	.bss : { *(.bss) }
 +	_end = .;
 +}
-diff -Nurp ../u-boot-1.1.6/common/cmd_bootm.c ./common/cmd_bootm.c
---- ../u-boot-1.1.6/common/cmd_bootm.c	2006-11-02 15:15:01.000000000 +0100
-+++ ./common/cmd_bootm.c	2007-03-27 02:55:11.000000000 +0200
+diff -Nurp u-boot-1.1.6/common/cmd_bootm.c b/common/cmd_bootm.c
+--- u-boot-1.1.6/common/cmd_bootm.c	2006-11-02 15:15:01.000000000 +0100
++++ b/common/cmd_bootm.c	2007-03-27 02:55:11.000000000 +0200
 @@ -79,7 +79,10 @@ DECLARE_GLOBAL_DATA_PTR;
  # define CHUNKSZ (64 * 1024)
  #endif
@@ -1149,9 +1149,9 @@ diff -Nurp ../u-boot-1.1.6/common/cmd_bootm.c ./common/cmd_bootm.c
  
  #ifdef CONFIG_BZIP2
  void bz_internal_error(int errcode)
-diff -Nurp ../u-boot-1.1.6/cpu/arm920t/at91rm9200/Makefile ./cpu/arm920t/at91rm9200/Makefile
---- ../u-boot-1.1.6/cpu/arm920t/at91rm9200/Makefile	2006-11-02 15:15:01.000000000 +0100
-+++ ./cpu/arm920t/at91rm9200/Makefile	2007-05-13 20:19:07.000000000 +0200
+diff -Nurp u-boot-1.1.6/cpu/arm920t/at91rm9200/Makefile b/cpu/arm920t/at91rm9200/Makefile
+--- u-boot-1.1.6/cpu/arm920t/at91rm9200/Makefile	2006-11-02 15:15:01.000000000 +0100
++++ b/cpu/arm920t/at91rm9200/Makefile	2007-05-13 20:19:07.000000000 +0200
 @@ -26,7 +26,7 @@ include $(TOPDIR)/config.mk
  LIB	= $(obj)lib$(SOC).a
  
@@ -1161,9 +1161,9 @@ diff -Nurp ../u-boot-1.1.6/cpu/arm920t/at91rm9200/Makefile ./cpu/arm920t/at91rm9
  SOBJS	= lowlevel_init.o
  
  SRCS	:= $(SOBJS:.o=.S) $(COBJS:.o=.c)
-diff -Nurp ../u-boot-1.1.6/cpu/arm920t/at91rm9200/ste100p.c ./cpu/arm920t/at91rm9200/ste100p.c
---- ../u-boot-1.1.6/cpu/arm920t/at91rm9200/ste100p.c	1970-01-01 01:00:00.000000000 +0100
-+++ ./cpu/arm920t/at91rm9200/ste100p.c	2007-05-10 02:02:34.000000000 +0200
+diff -Nurp u-boot-1.1.6/cpu/arm920t/at91rm9200/ste100p.c b/cpu/arm920t/at91rm9200/ste100p.c
+--- u-boot-1.1.6/cpu/arm920t/at91rm9200/ste100p.c	1970-01-01 01:00:00.000000000 +0100
++++ b/cpu/arm920t/at91rm9200/ste100p.c	2007-05-10 02:02:34.000000000 +0200
 @@ -0,0 +1,517 @@
 +/*
 + * (C) Copyright 2007
@@ -1682,9 +1682,9 @@ diff -Nurp ../u-boot-1.1.6/cpu/arm920t/at91rm9200/ste100p.c ./cpu/arm920t/at91rm
 +#endif	/* CONFIG_COMMANDS & CFG_CMD_NET */
 +
 +#endif	/* CONFIG_DRIVER_ETHER */
-diff -Nurp ../u-boot-1.1.6/drivers/dataflash.c ./drivers/dataflash.c
---- ../u-boot-1.1.6/drivers/dataflash.c	2006-11-02 15:15:01.000000000 +0100
-+++ ./drivers/dataflash.c	2007-03-19 23:43:20.000000000 +0100
+diff -Nurp u-boot-1.1.6/drivers/dataflash.c b/drivers/dataflash.c
+--- u-boot-1.1.6/drivers/dataflash.c	2006-11-02 15:15:01.000000000 +0100
++++ b/drivers/dataflash.c	2007-03-19 23:43:20.000000000 +0100
 @@ -46,8 +46,8 @@ extern int AT91F_DataFlashRead (AT91PS_D
  				unsigned long size, char *buffer);
  extern int AT91F_DataFlashWrite( AT91PS_DataFlash pDataFlash,
@@ -1750,9 +1750,9 @@ diff -Nurp ../u-boot-1.1.6/drivers/dataflash.c ./drivers/dataflash.c
  
  	return 1;
  }
-diff -Nurp ../u-boot-1.1.6/include/asm-arm/arch-at91rm9200/AT91RM9200.h ./include/asm-arm/arch-at91rm9200/AT91RM9200.h
---- ../u-boot-1.1.6/include/asm-arm/arch-at91rm9200/AT91RM9200.h	2006-11-02 15:15:01.000000000 +0100
-+++ ./include/asm-arm/arch-at91rm9200/AT91RM9200.h	2007-03-11 16:21:22.000000000 +0100
+diff -Nurp u-boot-1.1.6/include/asm-arm/arch-at91rm9200/AT91RM9200.h b/include/asm-arm/arch-at91rm9200/AT91RM9200.h
+--- u-boot-1.1.6/include/asm-arm/arch-at91rm9200/AT91RM9200.h	2006-11-02 15:15:01.000000000 +0100
++++ b/include/asm-arm/arch-at91rm9200/AT91RM9200.h	2007-03-11 16:21:22.000000000 +0100
 @@ -625,14 +625,40 @@ typedef struct _AT91S_PDC
  #define AT91C_PA26_TWCK		((unsigned int) 1 << 26)
  #define AT91C_PA31_DTXD		((unsigned int) AT91C_PIO_PA31)	/* DBGU Debug Transmit Data */
@@ -1811,9 +1811,9 @@ diff -Nurp ../u-boot-1.1.6/include/asm-arm/arch-at91rm9200/AT91RM9200.h ./includ
  #define AT91C_PIO_PB25		((unsigned int) 1 << 25)	/* Pin Controlled by PB25 */
  #define AT91C_PB25_DSR1		((unsigned int) AT91C_PIO_PB25)	/* USART 1 Data Set ready */
  #define AT91C_PB25_EF100	((unsigned int) AT91C_PIO_PB25)	/* Ethernet MAC Force 100 Mbits */
-diff -Nurp ../u-boot-1.1.6/include/asm-arm/arch-at91rm9200/mmc.h ./include/asm-arm/arch-at91rm9200/mmc.h
---- ../u-boot-1.1.6/include/asm-arm/arch-at91rm9200/mmc.h	1970-01-01 01:00:00.000000000 +0100
-+++ ./include/asm-arm/arch-at91rm9200/mmc.h	2006-10-13 20:55:04.000000000 +0200
+diff -Nurp u-boot-1.1.6/include/asm-arm/arch-at91rm9200/mmc.h b/include/asm-arm/arch-at91rm9200/mmc.h
+--- u-boot-1.1.6/include/asm-arm/arch-at91rm9200/mmc.h	1970-01-01 01:00:00.000000000 +0100
++++ b/include/asm-arm/arch-at91rm9200/mmc.h	2006-10-13 20:55:04.000000000 +0200
 @@ -0,0 +1,117 @@
 +/*
 + *  linux/include/linux/mmc/mmc.h
@@ -1932,9 +1932,9 @@ diff -Nurp ../u-boot-1.1.6/include/asm-arm/arch-at91rm9200/mmc.h ./include/asm-a
 +extern void mmc_release_host(struct mmc_host *host);
 +
 +#endif
-diff -Nurp ../u-boot-1.1.6/include/at91rm9200_net.h ./include/at91rm9200_net.h
---- ../u-boot-1.1.6/include/at91rm9200_net.h	2006-11-02 15:15:01.000000000 +0100
-+++ ./include/at91rm9200_net.h	2007-05-04 22:14:56.000000000 +0200
+diff -Nurp u-boot-1.1.6/include/at91rm9200_net.h b/include/at91rm9200_net.h
+--- u-boot-1.1.6/include/at91rm9200_net.h	2006-11-02 15:15:01.000000000 +0100
++++ b/include/at91rm9200_net.h	2007-05-04 22:14:56.000000000 +0200
 @@ -38,6 +38,7 @@ typedef struct _AT91S_PhyOps
  	unsigned int (*IsPhyConnected)(AT91S_EMAC  *pmac);
  	unsigned char (*GetLinkSpeed)(AT91S_EMAC *pmac);
@@ -1943,9 +1943,9 @@ diff -Nurp ../u-boot-1.1.6/include/at91rm9200_net.h ./include/at91rm9200_net.h
  
  } AT91S_PhyOps,*AT91PS_PhyOps;
  
-diff -Nurp ../u-boot-1.1.6/include/configs/sarge.h ./include/configs/sarge.h
---- ../u-boot-1.1.6/include/configs/sarge.h	1970-01-01 01:00:00.000000000 +0100
-+++ ./include/configs/sarge.h	2007-05-10 00:02:56.000000000 +0200
+diff -Nurp u-boot-1.1.6/include/configs/sarge.h b/include/configs/sarge.h
+--- u-boot-1.1.6/include/configs/sarge.h	1970-01-01 01:00:00.000000000 +0100
++++ b/include/configs/sarge.h	2007-05-10 00:02:56.000000000 +0200
 @@ -0,0 +1,281 @@
 +/*
 + * Grzegorz Rajtar <mcgregor@blackmesaeast.com.pl>
@@ -2228,9 +2228,9 @@ diff -Nurp ../u-boot-1.1.6/include/configs/sarge.h ./include/configs/sarge.h
 +#define CONFIG_LOADADDR      0x21000000
 +#define CONFIG_NFSARGS       "mem=32M console=ttyS0,115200n8 root=/dev/nfs nfsroot=192.168.0.200:/tftp/at91/rootfs,timeo=200,retrans=500  ip=:::::eth0:on"
 +#endif
-diff -Nurp ../u-boot-1.1.6/include/dataflash.h ./include/dataflash.h
---- ../u-boot-1.1.6/include/dataflash.h	2006-11-02 15:15:01.000000000 +0100
-+++ ./include/dataflash.h	2007-03-19 23:29:49.000000000 +0100
+diff -Nurp u-boot-1.1.6/include/dataflash.h b/include/dataflash.h
+--- u-boot-1.1.6/include/dataflash.h	2006-11-02 15:15:01.000000000 +0100
++++ b/include/dataflash.h	2007-03-19 23:29:49.000000000 +0100
 @@ -79,6 +79,7 @@ typedef struct _AT91S_Dataflash {
  	int page_offset;			/* page offset in command */
  	int byte_mask;				/* byte mask in command */
@@ -2248,9 +2248,9 @@ diff -Nurp ../u-boot-1.1.6/include/dataflash.h ./include/dataflash.h
  
  /* DataFlash return value */
  #define DATAFLASH_BUSY			0x00
-diff -Nurp ../u-boot-1.1.6/include/_exports.h ./include/_exports.h
---- ../u-boot-1.1.6/include/_exports.h	2006-11-02 15:15:01.000000000 +0100
-+++ ./include/_exports.h	2007-03-15 23:41:08.000000000 +0100
+diff -Nurp u-boot-1.1.6/include/_exports.h b/include/_exports.h
+--- u-boot-1.1.6/include/_exports.h	2006-11-02 15:15:01.000000000 +0100
++++ b/include/_exports.h	2007-03-15 23:41:08.000000000 +0100
 @@ -18,4 +18,4 @@ EXPORT_FUNC(simple_strtoul)
  #if (CONFIG_COMMANDS & CFG_CMD_I2C)
  EXPORT_FUNC(i2c_write)
@@ -2258,9 +2258,9 @@ diff -Nurp ../u-boot-1.1.6/include/_exports.h ./include/_exports.h
 -#endif	/* CFG_CMD_I2C */
 +#endif	/* CFG_CMD_I2C */
 \ Brak znaku nowej linii na końcu pliku
-diff -Nurp ../u-boot-1.1.6/include/gunzip.h ./include/gunzip.h
---- ../u-boot-1.1.6/include/gunzip.h	1970-01-01 01:00:00.000000000 +0100
-+++ ./include/gunzip.h	2007-03-21 23:23:36.000000000 +0100
+diff -Nurp u-boot-1.1.6/include/gunzip.h b/include/gunzip.h
+--- u-boot-1.1.6/include/gunzip.h	1970-01-01 01:00:00.000000000 +0100
++++ b/include/gunzip.h	2007-03-21 23:23:36.000000000 +0100
 @@ -0,0 +1,73 @@
 +#ifndef _GUNZIP_H
 +#define _GUNZIP_H
@@ -2335,9 +2335,9 @@ diff -Nurp ../u-boot-1.1.6/include/gunzip.h ./include/gunzip.h
 +	unsigned char *outbuf, unsigned long *outsize);
 +
 +#endif	/* _GUNZIP_H */
-diff -Nurp ../u-boot-1.1.6/include/ste100p.h ./include/ste100p.h
---- ../u-boot-1.1.6/include/ste100p.h	1970-01-01 01:00:00.000000000 +0100
-+++ ./include/ste100p.h	2007-05-05 01:38:11.000000000 +0200
+diff -Nurp u-boot-1.1.6/include/ste100p.h b/include/ste100p.h
+--- u-boot-1.1.6/include/ste100p.h	1970-01-01 01:00:00.000000000 +0100
++++ b/include/ste100p.h	2007-05-05 01:38:11.000000000 +0200
 @@ -0,0 +1,163 @@
 +#ifndef _ste100p_h_
 +#define _ste100p_h_
@@ -2502,9 +2502,9 @@ diff -Nurp ../u-boot-1.1.6/include/ste100p.h ./include/ste100p.h
 +UCHAR ste100p_AutoNegotiate (AT91PS_EMAC p_mac, int *status);
 +
 +#endif // _ste100p_h_
-diff -Nurp ../u-boot-1.1.6/lib_arm/armlinux.c ./lib_arm/armlinux.c
---- ../u-boot-1.1.6/lib_arm/armlinux.c	2006-11-02 15:15:01.000000000 +0100
-+++ ./lib_arm/armlinux.c	2007-05-05 01:28:02.000000000 +0200
+diff -Nurp u-boot-1.1.6/lib_arm/armlinux.c b/lib_arm/armlinux.c
+--- u-boot-1.1.6/lib_arm/armlinux.c	2006-11-02 15:15:01.000000000 +0100
++++ b/lib_arm/armlinux.c	2007-05-05 01:28:02.000000000 +0200
 @@ -62,6 +62,10 @@ static void setup_end_tag (bd_t *bd);
  static void setup_videolfb_tag (gd_t *gd);
  # endif
@@ -2564,9 +2564,9 @@ diff -Nurp ../u-boot-1.1.6/lib_arm/armlinux.c ./lib_arm/armlinux.c
  	params = tag_next (params);
  }
  #endif /* CONFIG_INITRD_TAG */
-diff -Nurp ../u-boot-1.1.6/lib_arm/board.c ./lib_arm/board.c
---- ../u-boot-1.1.6/lib_arm/board.c	2006-11-02 15:15:01.000000000 +0100
-+++ ./lib_arm/board.c	2007-05-04 23:21:40.000000000 +0200
+diff -Nurp u-boot-1.1.6/lib_arm/board.c b/lib_arm/board.c
+--- u-boot-1.1.6/lib_arm/board.c	2006-11-02 15:15:01.000000000 +0100
++++ b/lib_arm/board.c	2007-05-04 23:21:40.000000000 +0200
 @@ -94,6 +94,8 @@ void mem_malloc_init (ulong dest_addr)
  	mem_malloc_end = dest_addr + CFG_MALLOC_LEN;
  	mem_malloc_brk = mem_malloc_start;
@@ -2604,9 +2604,9 @@ diff -Nurp ../u-boot-1.1.6/lib_arm/board.c ./lib_arm/board.c
  	/* main_loop() can return to retry autoboot, if so just run it again. */
  	for (;;) {
  		main_loop ();
-diff -Nurp ../u-boot-1.1.6/lib_generic/gunzip.c ./lib_generic/gunzip.c
---- ../u-boot-1.1.6/lib_generic/gunzip.c	1970-01-01 01:00:00.000000000 +0100
-+++ ./lib_generic/gunzip.c	2007-03-22 00:44:21.000000000 +0100
+diff -Nurp u-boot-1.1.6/lib_generic/gunzip.c b/lib_generic/gunzip.c
+--- u-boot-1.1.6/lib_generic/gunzip.c	1970-01-01 01:00:00.000000000 +0100
++++ b/lib_generic/gunzip.c	2007-03-22 00:44:21.000000000 +0100
 @@ -0,0 +1,613 @@
 +#include "gunzip.h"
 +
@@ -3221,9 +3221,9 @@ diff -Nurp ../u-boot-1.1.6/lib_generic/gunzip.c ./lib_generic/gunzip.c
 +
 +	return 0;
 +}
-diff -Nurp ../u-boot-1.1.6/lib_generic/Makefile ./lib_generic/Makefile
---- ../u-boot-1.1.6/lib_generic/Makefile	2006-11-02 15:15:01.000000000 +0100
-+++ ./lib_generic/Makefile	2007-03-25 17:49:13.000000000 +0200
+diff -Nurp u-boot-1.1.6/lib_generic/Makefile b/lib_generic/Makefile
+--- u-boot-1.1.6/lib_generic/Makefile	2006-11-02 15:15:01.000000000 +0100
++++ b/lib_generic/Makefile	2007-03-25 17:49:13.000000000 +0200
 @@ -28,7 +28,8 @@ LIB	= $(obj)libgeneric.a
  COBJS	= bzlib.o bzlib_crctable.o bzlib_decompress.o \
  	  bzlib_randtable.o bzlib_huffman.o \
@@ -3235,9 +3235,9 @@ diff -Nurp ../u-boot-1.1.6/lib_generic/Makefile ./lib_generic/Makefile
  SRCS 	:= $(COBJS:.o=.c)
  OBJS	:= $(addprefix $(obj),$(COBJS))
 Pliki ../u-boot-1.1.6/loader-sarge i ./loader-sarge różnią się
-diff -Nurp ../u-boot-1.1.6/Makefile ./Makefile
---- ../u-boot-1.1.6/Makefile	2006-11-02 15:15:01.000000000 +0100
-+++ ./Makefile	2007-03-29 20:07:54.000000000 +0200
+diff -Nurp u-boot-1.1.6/Makefile b/Makefile
+--- u-boot-1.1.6/Makefile	2006-11-02 15:15:01.000000000 +0100
++++ b/Makefile	2007-03-29 20:07:54.000000000 +0200
 @@ -1882,6 +1882,9 @@ smdk2410_config	:	unconfig
  SX1_config :		unconfig
  	@$(MKCONFIG) $(@:_config=) arm arm925t sx1
@@ -3248,9 +3248,9 @@ diff -Nurp ../u-boot-1.1.6/Makefile ./Makefile
  # TRAB default configuration:	8 MB Flash, 32 MB RAM
  trab_config \
  trab_bigram_config \
-diff -Nurp ../u-boot-1.1.6/net/bootp.c ./net/bootp.c
---- ../u-boot-1.1.6/net/bootp.c	2006-11-02 15:15:01.000000000 +0100
-+++ ./net/bootp.c	2007-05-09 23:46:31.000000000 +0200
+diff -Nurp u-boot-1.1.6/net/bootp.c b/net/bootp.c
+--- u-boot-1.1.6/net/bootp.c	2006-11-02 15:15:01.000000000 +0100
++++ b/net/bootp.c	2007-05-09 23:46:31.000000000 +0200
 @@ -35,7 +35,7 @@
  
  #define TIMEOUT		5		/* Seconds before trying BOOTP again	*/
@@ -3260,9 +3260,9 @@ diff -Nurp ../u-boot-1.1.6/net/bootp.c ./net/bootp.c
  #else
  # define TIMEOUT_COUNT	(CONFIG_NET_RETRY_COUNT)
  #endif
-diff -Nurp ../u-boot-1.1.6/net/eth.c ./net/eth.c
---- ../u-boot-1.1.6/net/eth.c	2006-11-02 15:15:01.000000000 +0100
-+++ ./net/eth.c	2007-05-09 23:47:19.000000000 +0200
+diff -Nurp u-boot-1.1.6/net/eth.c b/net/eth.c
+--- u-boot-1.1.6/net/eth.c	2006-11-02 15:15:01.000000000 +0100
++++ b/net/eth.c	2007-05-09 23:47:19.000000000 +0200
 @@ -397,10 +397,10 @@ int eth_send(volatile void *packet, int 
  }
  
@@ -3276,9 +3276,9 @@ diff -Nurp ../u-boot-1.1.6/net/eth.c ./net/eth.c
  	return eth_current->recv(eth_current);
  }
  
-diff -Nurp ../u-boot-1.1.6/net/Makefile ./net/Makefile
---- ../u-boot-1.1.6/net/Makefile	2006-11-02 15:15:01.000000000 +0100
-+++ ./net/Makefile	2007-05-09 23:52:55.000000000 +0200
+diff -Nurp u-boot-1.1.6/net/Makefile b/net/Makefile
+--- u-boot-1.1.6/net/Makefile	2006-11-02 15:15:01.000000000 +0100
++++ b/net/Makefile	2007-05-09 23:52:55.000000000 +0200
 @@ -23,7 +23,7 @@
  
  include $(TOPDIR)/config.mk
@@ -3288,9 +3288,9 @@ diff -Nurp ../u-boot-1.1.6/net/Makefile ./net/Makefile
  
  LIB	= $(obj)libnet.a
  
-diff -Nurp ../u-boot-1.1.6/net/net.c ./net/net.c
---- ../u-boot-1.1.6/net/net.c	2006-11-02 15:15:01.000000000 +0100
-+++ ./net/net.c	2007-05-09 23:47:40.000000000 +0200
+diff -Nurp u-boot-1.1.6/net/net.c b/net/net.c
+--- u-boot-1.1.6/net/net.c	2006-11-02 15:15:01.000000000 +0100
++++ b/net/net.c	2007-05-09 23:47:40.000000000 +0200
 @@ -78,6 +78,7 @@
  #include <watchdog.h>
  #include <command.h>

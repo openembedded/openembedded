@@ -1,5 +1,5 @@
-diff -urNd ../gtk+-2.4.4-r5/gtk+-2.4.4/gtk/gtkfilesel.c gtk+-2.4.4/gtk/gtkfilesel.c
---- ../gtk+-2.4.4-r5/gtk+-2.4.4/gtk/gtkfilesel.c	2004-07-10 05:02:10.000000000 +0100
+diff -urNd gtk+-2.4.4/gtk/gtkfilesel.c gtk+-2.4.4/gtk/gtkfilesel.c
+--- gtk+-2.4.4/gtk/gtkfilesel.c	2004-07-10 05:02:10.000000000 +0100
 +++ gtk+-2.4.4/gtk/gtkfilesel.c	2004-09-13 13:40:09.000000000 +0100
 @@ -68,6 +68,7 @@
  #include "gtkprivate.h"

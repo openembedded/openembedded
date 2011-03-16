@@ -1,5 +1,5 @@
-diff -urN ../gcc-cross-4.1.2-r4/gcc-4.1.2/gcc/config/arm/arm.md gcc-4.1.2/gcc/config/arm/arm.md
---- ../gcc-cross-4.1.2-r4/gcc-4.1.2/gcc/config/arm/arm.md	2007-06-14 11:50:53.000000000 +1000
+diff -urN gcc-4.1.2/gcc/config/arm/arm.md gcc-4.1.2/gcc/config/arm/arm.md
+--- gcc-4.1.2/gcc/config/arm/arm.md	2007-06-14 11:50:53.000000000 +1000
 +++ gcc-4.1.2/gcc/config/arm/arm.md	2007-06-14 11:43:17.000000000 +1000
 @@ -7488,6 +7488,22 @@
  				      arm_compare_op1);"
@@ -99,8 +99,8 @@ diff -urN ../gcc-cross-4.1.2-r4/gcc-4.1.2/gcc/config/arm/arm.md gcc-4.1.2/gcc/co
    ""
  )
  
-diff -urN ../gcc-cross-4.1.2-r4/gcc-4.1.2/gcc/config/arm/predicates.md gcc-4.1.2/gcc/config/arm/predicates.md
---- ../gcc-cross-4.1.2-r4/gcc-4.1.2/gcc/config/arm/predicates.md	2005-09-11 17:38:02.000000000 +1000
+diff -urN gcc-4.1.2/gcc/config/arm/predicates.md gcc-4.1.2/gcc/config/arm/predicates.md
+--- gcc-4.1.2/gcc/config/arm/predicates.md	2005-09-11 17:38:02.000000000 +1000
 +++ gcc-4.1.2/gcc/config/arm/predicates.md	2007-06-14 11:46:13.000000000 +1000
 @@ -172,7 +172,11 @@
  

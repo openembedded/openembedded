@@ -1,5 +1,5 @@
-diff -urNd ../gpe-watch-0.10-r0/gpe-watch-0.10/Makefile gpe-watch-0.10/Makefile
---- ../gpe-watch-0.10-r0/gpe-watch-0.10/Makefile	2004-08-03 15:43:54.000000000 +0100
+diff -urNd gpe-watch-0.10/Makefile gpe-watch-0.10/Makefile
+--- gpe-watch-0.10/Makefile	2004-08-03 15:43:54.000000000 +0100
 +++ gpe-watch-0.10/Makefile	2004-08-03 16:08:52.000000000 +0100
 @@ -8,26 +8,26 @@
  MEMBERS = gpe-watch

@@ -1,6 +1,6 @@
-diff -Nurp ../linux-2.6.21.4/drivers/mmc/at91_mci.c ./drivers/mmc/at91_mci.c
---- ../linux-2.6.21.4/drivers/mmc/at91_mci.c	2007-06-12 22:29:12.000000000 +0200
-+++ ./drivers/mmc/at91_mci.c	2007-06-12 03:52:55.000000000 +0200
+diff -Nurp linux-2.6.21.4/drivers/mmc/at91_mci.c b/drivers/mmc/at91_mci.c
+--- linux-2.6.21.4/drivers/mmc/at91_mci.c	2007-06-12 22:29:12.000000000 +0200
++++ b/drivers/mmc/at91_mci.c	2007-06-12 03:52:55.000000000 +0200
 @@ -421,8 +421,11 @@ static unsigned int at91_mci_send_comman
  	if (cmd->opcode == MMC_STOP_TRANSMISSION)
  		cmdr |= AT91_MCI_TRCMD_STOP;
@@ -29,9 +29,9 @@ diff -Nurp ../linux-2.6.21.4/drivers/mmc/at91_mci.c ./drivers/mmc/at91_mci.c
  
  	return IRQ_HANDLED;
  }
-diff -Nurp ../linux-2.6.21.4/drivers/mmc/mmc_block.c ./drivers/mmc/mmc_block.c
---- ../linux-2.6.21.4/drivers/mmc/mmc_block.c	2007-06-07 23:27:31.000000000 +0200
-+++ ./drivers/mmc/mmc_block.c	2007-06-12 04:19:36.000000000 +0200
+diff -Nurp linux-2.6.21.4/drivers/mmc/mmc_block.c b/drivers/mmc/mmc_block.c
+--- linux-2.6.21.4/drivers/mmc/mmc_block.c	2007-06-07 23:27:31.000000000 +0200
++++ b/drivers/mmc/mmc_block.c	2007-06-12 04:19:36.000000000 +0200
 @@ -256,10 +256,24 @@ static int mmc_blk_issue_rq(struct mmc_q
  		 * this rule as they support querying the number of
  		 * successfully written sectors.
@@ -58,9 +58,9 @@ diff -Nurp ../linux-2.6.21.4/drivers/mmc/mmc_block.c ./drivers/mmc/mmc_block.c
  
  		if (brq.data.blocks > 1) {
  			brq.data.flags |= MMC_DATA_MULTI;
-diff -Nurp ../linux-2.6.21.4/drivers/mmc/mmc.c ./drivers/mmc/mmc.c
---- ../linux-2.6.21.4/drivers/mmc/mmc.c	2007-06-07 23:27:31.000000000 +0200
-+++ ./drivers/mmc/mmc.c	2007-06-12 04:10:05.000000000 +0200
+diff -Nurp linux-2.6.21.4/drivers/mmc/mmc.c b/drivers/mmc/mmc.c
+--- linux-2.6.21.4/drivers/mmc/mmc.c	2007-06-07 23:27:31.000000000 +0200
++++ b/drivers/mmc/mmc.c	2007-06-12 04:10:05.000000000 +0200
 @@ -1500,12 +1500,22 @@ static void mmc_setup(struct mmc_host *h
  	mmc_set_ios(host);
  

@@ -1,5 +1,5 @@
-diff -urNd ../gpe-go-0.05-r0/gpe-go-0.05/build/Makefile.dpkg_ipkg gpe-go-0.05/build/Makefile.dpkg_ipkg
---- ../gpe-go-0.05-r0/gpe-go-0.05/build/Makefile.dpkg_ipkg	2003-11-09 20:28:40.000000000 +0000
+diff -urNd gpe-go-0.05/build/Makefile.dpkg_ipkg gpe-go-0.05/build/Makefile.dpkg_ipkg
+--- gpe-go-0.05/build/Makefile.dpkg_ipkg	2003-11-09 20:28:40.000000000 +0000
 +++ gpe-go-0.05/build/Makefile.dpkg_ipkg	2004-09-18 17:09:01.000000000 +0100
 @@ -18,8 +18,10 @@
  LIBGPEWIDGET_PC = libgpewidget
@@ -66,8 +66,8 @@ diff -urNd ../gpe-go-0.05-r0/gpe-go-0.05/build/Makefile.dpkg_ipkg gpe-go-0.05/bu
 +
 +.c.o:;
 +	$(CC) $(CFLAGS) $(CPPFLAGS) $(PACKAGE_CFLAGS) $(PACKAGE_CPPFLAGS) -c $< -o $@
-diff -urNd ../gpe-go-0.05-r0/gpe-go-0.05/build/Makefile.translation gpe-go-0.05/build/Makefile.translation
---- ../gpe-go-0.05-r0/gpe-go-0.05/build/Makefile.translation	2003-11-09 20:28:40.000000000 +0000
+diff -urNd gpe-go-0.05/build/Makefile.translation gpe-go-0.05/build/Makefile.translation
+--- gpe-go-0.05/build/Makefile.translation	2003-11-09 20:28:40.000000000 +0000
 +++ gpe-go-0.05/build/Makefile.translation	2004-09-18 17:09:01.000000000 +0100
 @@ -5,7 +5,7 @@
  # use ipkg-build or ipkg-deb-build
@@ -116,8 +116,8 @@ diff -urNd ../gpe-go-0.05-r0/gpe-go-0.05/build/Makefile.translation gpe-go-0.05/
  	done
  
  translation-ipkg:
-diff -urNd ../gpe-go-0.05-r0/gpe-go-0.05/gpe-go.c gpe-go-0.05/gpe-go.c
---- ../gpe-go-0.05-r0/gpe-go-0.05/gpe-go.c	2003-11-09 19:38:50.000000000 +0000
+diff -urNd gpe-go-0.05/gpe-go.c gpe-go-0.05/gpe-go.c
+--- gpe-go-0.05/gpe-go.c	2003-11-09 19:38:50.000000000 +0000
 +++ gpe-go-0.05/gpe-go.c	2004-09-18 17:04:24.000000000 +0100
 @@ -16,12 +16,12 @@
  #include "sgf.h"
@@ -138,8 +138,8 @@ diff -urNd ../gpe-go-0.05-r0/gpe-go-0.05/gpe-go.c gpe-go-0.05/gpe-go.c
  
  //--i18n
  #include <libintl.h>
-diff -urNd ../gpe-go-0.05-r0/gpe-go-0.05/Makefile gpe-go-0.05/Makefile
---- ../gpe-go-0.05-r0/gpe-go-0.05/Makefile	2003-11-09 20:28:40.000000000 +0000
+diff -urNd gpe-go-0.05/Makefile gpe-go-0.05/Makefile
+--- gpe-go-0.05/Makefile	2003-11-09 20:28:40.000000000 +0000
 +++ gpe-go-0.05/Makefile	2004-09-18 17:11:06.000000000 +0100
 @@ -1,19 +1,8 @@
  VERSION = 0.05

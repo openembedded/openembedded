@@ -1,5 +1,5 @@
-diff -urNd ../ipatience-0.1-r2/ipatience/build/Makefile.dpkg_ipkg ipatience/build/Makefile.dpkg_ipkg
---- ../ipatience-0.1-r2/ipatience/build/Makefile.dpkg_ipkg	1970-01-01 00:00:00.000000000 +0000
+diff -urNd ipatience/build/Makefile.dpkg_ipkg ipatience/build/Makefile.dpkg_ipkg
+--- ipatience/build/Makefile.dpkg_ipkg	1970-01-01 00:00:00.000000000 +0000
 +++ ipatience/build/Makefile.dpkg_ipkg	2006-11-08 16:41:55.000000000 +0000
 @@ -0,0 +1,114 @@
 +## Please read the README in this directory to see how to use this
@@ -116,8 +116,8 @@ diff -urNd ../ipatience-0.1-r2/ipatience/build/Makefile.dpkg_ipkg ipatience/buil
 +
 +.c.o:;
 +	$(CC) $(CFLAGS) $(CPPFLAGS) $(PACKAGE_CFLAGS) $(PACKAGE_CPPFLAGS) -c $< -o $@
-diff -urNd ../ipatience-0.1-r2/ipatience/build/Makefile.translation ipatience/build/Makefile.translation
---- ../ipatience-0.1-r2/ipatience/build/Makefile.translation	1970-01-01 00:00:00.000000000 +0000
+diff -urNd ipatience/build/Makefile.translation ipatience/build/Makefile.translation
+--- ipatience/build/Makefile.translation	1970-01-01 00:00:00.000000000 +0000
 +++ ipatience/build/Makefile.translation	2006-11-08 16:41:55.000000000 +0000
 @@ -0,0 +1,107 @@
 +.SUFFIXES: .mo .po .pot .po8
@@ -227,8 +227,8 @@ diff -urNd ../ipatience-0.1-r2/ipatience/build/Makefile.translation ipatience/bu
 +
 +translation-ipkg:
 +	make PREFIX=/usr real-translation-package
-diff -urNd ../ipatience-0.1-r2/ipatience/Imakefile ipatience/Imakefile
---- ../ipatience-0.1-r2/ipatience/Imakefile	2001-01-31 05:25:03.000000000 +0000
+diff -urNd ipatience/Imakefile ipatience/Imakefile
+--- ipatience/Imakefile	2001-01-31 05:25:03.000000000 +0000
 +++ ipatience/Imakefile	1970-01-01 00:00:00.000000000 +0000
 @@ -1,11 +0,0 @@
 -LOCAL_LIBRARIES=-lfltk $(XFTLIB) $(XLIB) -lm
@@ -242,8 +242,8 @@ diff -urNd ../ipatience-0.1-r2/ipatience/Imakefile ipatience/Imakefile
 -     tabby.o towers.o vegas.o wish.o yukon.o
 -
 -ComplexProgramTarget(ipatience)
-diff -urNd ../ipatience-0.1-r2/ipatience/ipatience.desktop ipatience/ipatience.desktop
---- ../ipatience-0.1-r2/ipatience/ipatience.desktop	1970-01-01 00:00:00.000000000 +0000
+diff -urNd ipatience/ipatience.desktop ipatience/ipatience.desktop
+--- ipatience/ipatience.desktop	1970-01-01 00:00:00.000000000 +0000
 +++ ipatience/ipatience.desktop	2006-11-11 15:59:25.000000000 +0000
 @@ -0,0 +1,9 @@
 +[Desktop Entry]
@@ -255,8 +255,8 @@ diff -urNd ../ipatience-0.1-r2/ipatience/ipatience.desktop ipatience/ipatience.d
 +Icon=ipatience.xpm
 +Categories=Games
 +StartupNotify=True
-diff -urNd ../ipatience-0.1-r2/ipatience/ipatience.xpm ipatience/ipatience.xpm
---- ../ipatience-0.1-r2/ipatience/ipatience.xpm	1970-01-01 00:00:00.000000000 +0000
+diff -urNd ipatience/ipatience.xpm ipatience/ipatience.xpm
+--- ipatience/ipatience.xpm	1970-01-01 00:00:00.000000000 +0000
 +++ ipatience/ipatience.xpm	2006-11-11 15:58:52.000000000 +0000
 @@ -0,0 +1,194 @@
 +/* XPM */
@@ -453,8 +453,8 @@ diff -urNd ../ipatience-0.1-r2/ipatience/ipatience.xpm ipatience/ipatience.xpm
 +"                      . . . . . . . . . . . . . . . . . . .     ",
 +"                      . . . . . . . . . . . . . . . . . . .     ",
 +"                                                                "};
-diff -urNd ../ipatience-0.1-r2/ipatience/main.cc ipatience/main.cc
---- ../ipatience-0.1-r2/ipatience/main.cc	2001-02-09 08:15:27.000000000 +0000
+diff -urNd ipatience/main.cc ipatience/main.cc
+--- ipatience/main.cc	2001-02-09 08:15:27.000000000 +0000
 +++ ipatience/main.cc	2006-11-02 16:37:55.000000000 +0000
 @@ -549,7 +549,7 @@
  
@@ -465,8 +465,8 @@ diff -urNd ../ipatience-0.1-r2/ipatience/main.cc ipatience/main.cc
      Fl::args(argc,argv,i,arg_cb);
      fl_open_display ();
      if (small == -1)
-diff -urNd ../ipatience-0.1-r2/ipatience/Makefile ipatience/Makefile
---- ../ipatience-0.1-r2/ipatience/Makefile	1970-01-01 00:00:00.000000000 +0000
+diff -urNd ipatience/Makefile ipatience/Makefile
+--- ipatience/Makefile	1970-01-01 00:00:00.000000000 +0000
 +++ ipatience/Makefile	2006-11-10 18:03:49.000000000 +0000
 @@ -0,0 +1,39 @@
 +PREFIX = /usr
@@ -508,8 +508,8 @@ diff -urNd ../ipatience-0.1-r2/ipatience/Makefile ipatience/Makefile
 +
 +include $(BUILD)/Makefile.dpkg_ipkg
 +-include $(DEPS)
-diff -urNd ../ipatience-0.1-r2/ipatience/table.cc ipatience/table.cc
---- ../ipatience-0.1-r2/ipatience/table.cc	2001-06-22 00:32:12.000000000 +0000
+diff -urNd ipatience/table.cc ipatience/table.cc
+--- ipatience/table.cc	2001-06-22 00:32:12.000000000 +0000
 +++ ipatience/table.cc	2006-11-10 17:06:56.000000000 +0000
 @@ -231,9 +231,9 @@
  	suit_bitmap = suit[Suit(card) >> 4];

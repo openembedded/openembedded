@@ -1,5 +1,5 @@
-diff -urNd ../gweled-0.5-r0/gweled-0.5/configure.in gweled-0.5/configure.in
---- ../gweled-0.5-r0/gweled-0.5/configure.in	2004-01-22 20:14:23.000000000 +0000
+diff -urNd gweled-0.5/configure.in gweled-0.5/configure.in
+--- gweled-0.5/configure.in	2004-01-22 20:14:23.000000000 +0000
 +++ gweled-0.5/configure.in	2004-09-28 12:32:39.000000000 +0100
 @@ -10,7 +10,7 @@
  AM_PROG_CC_STDC
@@ -10,8 +10,8 @@ diff -urNd ../gweled-0.5-r0/gweled-0.5/configure.in gweled-0.5/configure.in
  PKG_CHECK_MODULES(PACKAGE, [$pkg_modules])
  AC_SUBST(PACKAGE_CFLAGS)
  AC_SUBST(PACKAGE_LIBS)
-diff -urNd ../gweled-0.5-r0/gweled-0.5/src/board_engine.c gweled-0.5/src/board_engine.c
---- ../gweled-0.5-r0/gweled-0.5/src/board_engine.c	2004-01-25 08:23:54.000000000 +0000
+diff -urNd gweled-0.5/src/board_engine.c gweled-0.5/src/board_engine.c
+--- gweled-0.5/src/board_engine.c	2004-01-25 08:23:54.000000000 +0000
 +++ gweled-0.5/src/board_engine.c	2004-09-28 15:56:32.000000000 +0100
 @@ -1,4 +1,4 @@
 -#include <gnome.h>
@@ -37,8 +37,8 @@ diff -urNd ../gweled-0.5-r0/gweled-0.5/src/board_engine.c gweled-0.5/src/board_e
  					g_do_not_score = FALSE;
  					gi_state = _IDLE;
  				}
-diff -urNd ../gweled-0.5-r0/gweled-0.5/src/callbacks.c gweled-0.5/src/callbacks.c
---- ../gweled-0.5-r0/gweled-0.5/src/callbacks.c	2004-01-21 17:25:34.000000000 +0000
+diff -urNd gweled-0.5/src/callbacks.c gweled-0.5/src/callbacks.c
+--- gweled-0.5/src/callbacks.c	2004-01-21 17:25:34.000000000 +0000
 +++ gweled-0.5/src/callbacks.c	2004-09-28 13:20:55.000000000 +0100
 @@ -2,8 +2,7 @@
  #  include <config.h>
@@ -152,8 +152,8 @@ diff -urNd ../gweled-0.5-r0/gweled-0.5/src/callbacks.c gweled-0.5/src/callbacks.
  			}
  		}
  		break;
-diff -urNd ../gweled-0.5-r0/gweled-0.5/src/callbacks.h gweled-0.5/src/callbacks.h
---- ../gweled-0.5-r0/gweled-0.5/src/callbacks.h	2003-11-05 21:01:08.000000000 +0000
+diff -urNd gweled-0.5/src/callbacks.h gweled-0.5/src/callbacks.h
+--- gweled-0.5/src/callbacks.h	2003-11-05 21:01:08.000000000 +0000
 +++ gweled-0.5/src/callbacks.h	2004-09-28 11:26:44.000000000 +0100
 @@ -1,8 +1,8 @@
 -#include <gnome.h>
@@ -175,8 +175,8 @@ diff -urNd ../gweled-0.5-r0/gweled-0.5/src/callbacks.h gweled-0.5/src/callbacks.
                                          GdkEventButton  *event,
                                          gpointer         user_data);
  
-diff -urNd ../gweled-0.5-r0/gweled-0.5/src/graphic_engine.c gweled-0.5/src/graphic_engine.c
---- ../gweled-0.5-r0/gweled-0.5/src/graphic_engine.c	2004-01-22 22:09:05.000000000 +0000
+diff -urNd gweled-0.5/src/graphic_engine.c gweled-0.5/src/graphic_engine.c
+--- gweled-0.5/src/graphic_engine.c	2004-01-22 22:09:05.000000000 +0000
 +++ gweled-0.5/src/graphic_engine.c	2004-09-28 15:56:00.000000000 +0100
 @@ -1,9 +1,13 @@
 -#include <gnome.h>
@@ -300,8 +300,8 @@ diff -urNd ../gweled-0.5-r0/gweled-0.5/src/graphic_engine.c gweled-0.5/src/graph
  }
  
  
-diff -urNd ../gweled-0.5-r0/gweled-0.5/src/main.c gweled-0.5/src/main.c
---- ../gweled-0.5-r0/gweled-0.5/src/main.c	2004-01-22 20:16:10.000000000 +0000
+diff -urNd gweled-0.5/src/main.c gweled-0.5/src/main.c
+--- gweled-0.5/src/main.c	2004-01-22 20:16:10.000000000 +0000
 +++ gweled-0.5/src/main.c	2004-10-13 10:17:43.000000000 +0100
 @@ -25,19 +25,22 @@
  #  include <config.h>
@@ -541,8 +541,8 @@ diff -urNd ../gweled-0.5-r0/gweled-0.5/src/main.c gweled-0.5/src/main.c
  
  	return 0;
  }
-diff -urNd ../gweled-0.5-r0/gweled-0.5/src/Makefile.am gweled-0.5/src/Makefile.am
---- ../gweled-0.5-r0/gweled-0.5/src/Makefile.am	2003-12-11 21:34:19.000000000 +0000
+diff -urNd gweled-0.5/src/Makefile.am gweled-0.5/src/Makefile.am
+--- gweled-0.5/src/Makefile.am	2003-12-11 21:34:19.000000000 +0000
 +++ gweled-0.5/src/Makefile.am	2004-09-28 12:30:51.000000000 +0100
 @@ -3,6 +3,7 @@
  INCLUDES = \
@@ -552,8 +552,8 @@ diff -urNd ../gweled-0.5-r0/gweled-0.5/src/Makefile.am gweled-0.5/src/Makefile.a
  	@PACKAGE_CFLAGS@
  
  bin_PROGRAMS = gweled
-diff -urNd ../gweled-0.5-r0/gweled-0.5/src/sge_core.c gweled-0.5/src/sge_core.c
---- ../gweled-0.5-r0/gweled-0.5/src/sge_core.c	2004-01-22 22:10:40.000000000 +0000
+diff -urNd gweled-0.5/src/sge_core.c gweled-0.5/src/sge_core.c
+--- gweled-0.5/src/sge_core.c	2004-01-22 22:10:40.000000000 +0000
 +++ gweled-0.5/src/sge_core.c	2004-10-13 10:20:45.000000000 +0100
 @@ -18,11 +18,11 @@
      Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -587,8 +587,8 @@ diff -urNd ../gweled-0.5-r0/gweled-0.5/src/sge_core.c gweled-0.5/src/sge_core.c
  	g_rand_free (g_rand_generator);
  	for (i = 0; i < gi_nb_pixbufs; i++)
  		gdk_pixbuf_unref (g_pixbufs[i]);
-diff -urNd ../gweled-0.5-r0/gweled-0.5/src/sge_utils.c gweled-0.5/src/sge_utils.c
---- ../gweled-0.5-r0/gweled-0.5/src/sge_utils.c	2003-12-07 19:28:57.000000000 +0000
+diff -urNd gweled-0.5/src/sge_utils.c gweled-0.5/src/sge_utils.c
+--- gweled-0.5/src/sge_utils.c	2003-12-07 19:28:57.000000000 +0000
 +++ gweled-0.5/src/sge_utils.c	2004-09-28 11:20:54.000000000 +0100
 @@ -1,47 +1,30 @@
 -#include <gnome.h>
@@ -648,8 +648,8 @@ diff -urNd ../gweled-0.5-r0/gweled-0.5/src/sge_utils.c gweled-0.5/src/sge_utils.
  
  	return pixbuf;
  }
-diff -urNd ../gweled-0.5-r0/gweled-0.5/src/sge_utils.h gweled-0.5/src/sge_utils.h
---- ../gweled-0.5-r0/gweled-0.5/src/sge_utils.h	2003-11-05 20:31:27.000000000 +0000
+diff -urNd gweled-0.5/src/sge_utils.h gweled-0.5/src/sge_utils.h
+--- gweled-0.5/src/sge_utils.h	2003-11-05 20:31:27.000000000 +0000
 +++ gweled-0.5/src/sge_utils.h	2004-09-28 11:14:27.000000000 +0100
 @@ -1,3 +1,3 @@
  

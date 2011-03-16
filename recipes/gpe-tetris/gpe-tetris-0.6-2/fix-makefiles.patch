@@ -1,5 +1,5 @@
-diff -urNd ../gpe-tetris-0.6-2-r0/gpe-tetris-0.6-2/build/Makefile.dpkg_ipkg gpe-tetris-0.6-2/build/Makefile.dpkg_ipkg
---- ../gpe-tetris-0.6-2-r0/gpe-tetris-0.6-2/build/Makefile.dpkg_ipkg	1970-01-01 01:00:00.000000000 +0100
+diff -urNd gpe-tetris-0.6-2/build/Makefile.dpkg_ipkg gpe-tetris-0.6-2/build/Makefile.dpkg_ipkg
+--- gpe-tetris-0.6-2/build/Makefile.dpkg_ipkg	1970-01-01 01:00:00.000000000 +0100
 +++ gpe-tetris-0.6-2/build/Makefile.dpkg_ipkg	2004-09-18 21:04:03.000000000 +0100
 @@ -0,0 +1,114 @@
 +## Please read the README in this directory to see how to use this
@@ -116,8 +116,8 @@ diff -urNd ../gpe-tetris-0.6-2-r0/gpe-tetris-0.6-2/build/Makefile.dpkg_ipkg gpe-
 +
 +.c.o:;
 +	$(CC) $(CFLAGS) $(CPPFLAGS) $(PACKAGE_CFLAGS) $(PACKAGE_CPPFLAGS) -c $< -o $@
-diff -urNd ../gpe-tetris-0.6-2-r0/gpe-tetris-0.6-2/build/Makefile.translation gpe-tetris-0.6-2/build/Makefile.translation
---- ../gpe-tetris-0.6-2-r0/gpe-tetris-0.6-2/build/Makefile.translation	1970-01-01 01:00:00.000000000 +0100
+diff -urNd gpe-tetris-0.6-2/build/Makefile.translation gpe-tetris-0.6-2/build/Makefile.translation
+--- gpe-tetris-0.6-2/build/Makefile.translation	1970-01-01 01:00:00.000000000 +0100
 +++ gpe-tetris-0.6-2/build/Makefile.translation	2004-09-18 21:04:03.000000000 +0100
 @@ -0,0 +1,103 @@
 +.SUFFIXES: .mo .po .pot .po8
@@ -223,8 +223,8 @@ diff -urNd ../gpe-tetris-0.6-2-r0/gpe-tetris-0.6-2/build/Makefile.translation gp
 +
 +translation-ipkg:
 +	make PREFIX=/usr real-translation-package
-diff -urNd ../gpe-tetris-0.6-2-r0/gpe-tetris-0.6-2/Makefile gpe-tetris-0.6-2/Makefile
---- ../gpe-tetris-0.6-2-r0/gpe-tetris-0.6-2/Makefile	2004-09-17 23:48:05.000000000 +0100
+diff -urNd gpe-tetris-0.6-2/Makefile gpe-tetris-0.6-2/Makefile
+--- gpe-tetris-0.6-2/Makefile	2004-09-17 23:48:05.000000000 +0100
 +++ gpe-tetris-0.6-2/Makefile	2004-09-18 21:09:31.000000000 +0100
 @@ -9,30 +9,29 @@
  CVSBUILD = no

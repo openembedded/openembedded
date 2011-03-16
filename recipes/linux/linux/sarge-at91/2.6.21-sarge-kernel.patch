@@ -1,6 +1,6 @@
-diff -Nurp ../linux-2.6.21.4/arch/arm/boot/compressed/head-at91rm9200.S ./arch/arm/boot/compressed/head-at91rm9200.S
---- ../linux-2.6.21.4/arch/arm/boot/compressed/head-at91rm9200.S	2007-06-12 22:29:12.000000000 +0200
-+++ ./arch/arm/boot/compressed/head-at91rm9200.S	2007-06-12 02:57:07.000000000 +0200
+diff -Nurp linux-2.6.21.4/arch/arm/boot/compressed/head-at91rm9200.S b/arch/arm/boot/compressed/head-at91rm9200.S
+--- linux-2.6.21.4/arch/arm/boot/compressed/head-at91rm9200.S	2007-06-12 22:29:12.000000000 +0200
++++ b/arch/arm/boot/compressed/head-at91rm9200.S	2007-06-12 02:57:07.000000000 +0200
 @@ -73,6 +73,12 @@
  		cmp	r7, r3
  		beq	99f
@@ -14,9 +14,9 @@ diff -Nurp ../linux-2.6.21.4/arch/arm/boot/compressed/head-at91rm9200.S ./arch/a
  		@ Unknown board, use the AT91RM9200DK board
  		@ mov	r7, #MACH_TYPE_AT91RM9200
  		mov	r7,	#(MACH_TYPE_AT91RM9200DK & 0xff)
-diff -Nurp ../linux-2.6.21.4/arch/arm/mach-at91/board-sarge.c ./arch/arm/mach-at91/board-sarge.c
---- ../linux-2.6.21.4/arch/arm/mach-at91/board-sarge.c	1970-01-01 01:00:00.000000000 +0100
-+++ ./arch/arm/mach-at91/board-sarge.c	2007-06-12 02:57:07.000000000 +0200
+diff -Nurp linux-2.6.21.4/arch/arm/mach-at91/board-sarge.c b/arch/arm/mach-at91/board-sarge.c
+--- linux-2.6.21.4/arch/arm/mach-at91/board-sarge.c	1970-01-01 01:00:00.000000000 +0100
++++ b/arch/arm/mach-at91/board-sarge.c	2007-06-12 02:57:07.000000000 +0200
 @@ -0,0 +1,190 @@
 +/*
 + * linux/arch/arm/mach-at91/board-sarge.c
@@ -208,9 +208,9 @@ diff -Nurp ../linux-2.6.21.4/arch/arm/mach-at91/board-sarge.c ./arch/arm/mach-at
 +	.init_irq	= sarge_init_irq,
 +	.init_machine	= sarge_board_init,
 +MACHINE_END
-diff -Nurp ../linux-2.6.21.4/arch/arm/mach-at91/Kconfig ./arch/arm/mach-at91/Kconfig
---- ../linux-2.6.21.4/arch/arm/mach-at91/Kconfig	2007-06-12 22:29:12.000000000 +0200
-+++ ./arch/arm/mach-at91/Kconfig	2007-06-12 03:00:28.000000000 +0200
+diff -Nurp linux-2.6.21.4/arch/arm/mach-at91/Kconfig b/arch/arm/mach-at91/Kconfig
+--- linux-2.6.21.4/arch/arm/mach-at91/Kconfig	2007-06-12 22:29:12.000000000 +0200
++++ b/arch/arm/mach-at91/Kconfig	2007-06-12 03:00:28.000000000 +0200
 @@ -90,6 +90,13 @@ config MACH_KAFA
  	help
  	  Select this if you are using Sperry-Sun's KAFA board.
@@ -225,9 +225,9 @@ diff -Nurp ../linux-2.6.21.4/arch/arm/mach-at91/Kconfig ./arch/arm/mach-at91/Kco
  config MACH_CHUB
  	bool "Promwad Chub board"
  	depends on ARCH_AT91RM9200
-diff -Nurp ../linux-2.6.21.4/arch/arm/mach-at91/Makefile ./arch/arm/mach-at91/Makefile
---- ../linux-2.6.21.4/arch/arm/mach-at91/Makefile	2007-06-12 22:29:12.000000000 +0200
-+++ ./arch/arm/mach-at91/Makefile	2007-06-12 03:00:47.000000000 +0200
+diff -Nurp linux-2.6.21.4/arch/arm/mach-at91/Makefile b/arch/arm/mach-at91/Makefile
+--- linux-2.6.21.4/arch/arm/mach-at91/Makefile	2007-06-12 22:29:12.000000000 +0200
++++ b/arch/arm/mach-at91/Makefile	2007-06-12 03:00:47.000000000 +0200
 @@ -29,6 +29,7 @@ obj-$(CONFIG_MACH_KB9200)	+= board-kb920
  obj-$(CONFIG_MACH_ATEB9200)	+= board-eb9200.o
  obj-$(CONFIG_MACH_KAFA)		+= board-kafa.o

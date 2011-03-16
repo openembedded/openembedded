@@ -1,6 +1,6 @@
-diff -Nurp ../linux-2.6.21.4/drivers/net/arm/at91_ether.c ./drivers/net/arm/at91_ether.c
---- ../linux-2.6.21.4/drivers/net/arm/at91_ether.c	2007-06-12 22:29:12.000000000 +0200
-+++ ./drivers/net/arm/at91_ether.c	2007-06-12 03:11:16.000000000 +0200
+diff -Nurp linux-2.6.21.4/drivers/net/arm/at91_ether.c b/drivers/net/arm/at91_ether.c
+--- linux-2.6.21.4/drivers/net/arm/at91_ether.c	2007-06-12 22:29:12.000000000 +0200
++++ b/drivers/net/arm/at91_ether.c	2007-06-12 03:11:16.000000000 +0200
 @@ -235,6 +235,11 @@ static irqreturn_t at91ether_phy_interru
  		if (!(phy & (1 << 7)))
  			goto done;
@@ -54,9 +54,9 @@ diff -Nurp ../linux-2.6.21.4/drivers/net/arm/at91_ether.c ./drivers/net/arm/at91
  				detected = at91ether_setup(phy_id, phy_address, pdev, ether_clk);
  				break;
  		}
-diff -Nurp ../linux-2.6.21.4/drivers/net/arm/at91_ether.h ./drivers/net/arm/at91_ether.h
---- ../linux-2.6.21.4/drivers/net/arm/at91_ether.h	2007-06-12 22:29:12.000000000 +0200
-+++ ./drivers/net/arm/at91_ether.h	2007-06-12 03:07:54.000000000 +0200
+diff -Nurp linux-2.6.21.4/drivers/net/arm/at91_ether.h b/drivers/net/arm/at91_ether.h
+--- linux-2.6.21.4/drivers/net/arm/at91_ether.h	2007-06-12 22:29:12.000000000 +0200
++++ b/drivers/net/arm/at91_ether.h	2007-06-12 03:07:54.000000000 +0200
 @@ -29,6 +29,15 @@
  #define MII_ISINTS_REG		19
  #define MII_LEDCTRL_REG		20
@@ -73,9 +73,9 @@ diff -Nurp ../linux-2.6.21.4/drivers/net/arm/at91_ether.h ./drivers/net/arm/at91
  /* Realtek RTL8201 PHY */
  #define MII_RTL8201_ID		0x00008200
  
-diff -Nurp ../linux-2.6.21.4/drivers/net/phy/Kconfig ./drivers/net/phy/Kconfig
---- ../linux-2.6.21.4/drivers/net/phy/Kconfig	2007-06-07 23:27:31.000000000 +0200
-+++ ./drivers/net/phy/Kconfig	2007-06-12 03:12:16.000000000 +0200
+diff -Nurp linux-2.6.21.4/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
+--- linux-2.6.21.4/drivers/net/phy/Kconfig	2007-06-07 23:27:31.000000000 +0200
++++ b/drivers/net/phy/Kconfig	2007-06-12 03:12:16.000000000 +0200
 @@ -62,6 +62,12 @@ config BROADCOM_PHY
  	---help---
  	  Currently supports the BCM5411, BCM5421 and BCM5461 PHYs.
@@ -89,17 +89,17 @@ diff -Nurp ../linux-2.6.21.4/drivers/net/phy/Kconfig ./drivers/net/phy/Kconfig
  config FIXED_PHY
  	tristate "Drivers for PHY emulation on fixed speed/link"
  	depends on PHYLIB
-diff -Nurp ../linux-2.6.21.4/drivers/net/phy/Makefile ./drivers/net/phy/Makefile
---- ../linux-2.6.21.4/drivers/net/phy/Makefile	2007-06-07 23:27:31.000000000 +0200
-+++ ./drivers/net/phy/Makefile	2007-06-12 03:12:29.000000000 +0200
+diff -Nurp linux-2.6.21.4/drivers/net/phy/Makefile b/drivers/net/phy/Makefile
+--- linux-2.6.21.4/drivers/net/phy/Makefile	2007-06-07 23:27:31.000000000 +0200
++++ b/drivers/net/phy/Makefile	2007-06-12 03:12:29.000000000 +0200
 @@ -12,3 +12,4 @@ obj-$(CONFIG_SMSC_PHY)		+= smsc.o
  obj-$(CONFIG_VITESSE_PHY)	+= vitesse.o
  obj-$(CONFIG_BROADCOM_PHY)	+= broadcom.o
  obj-$(CONFIG_FIXED_PHY)		+= fixed.o
 +obj-$(CONFIG_STE100P_PHY)       += ste100p.o
-diff -Nurp ../linux-2.6.21.4/drivers/net/phy/ste100p.c ./drivers/net/phy/ste100p.c
---- ../linux-2.6.21.4/drivers/net/phy/ste100p.c	1970-01-01 01:00:00.000000000 +0100
-+++ ./drivers/net/phy/ste100p.c	2007-06-12 02:52:31.000000000 +0200
+diff -Nurp linux-2.6.21.4/drivers/net/phy/ste100p.c b/drivers/net/phy/ste100p.c
+--- linux-2.6.21.4/drivers/net/phy/ste100p.c	1970-01-01 01:00:00.000000000 +0100
++++ b/drivers/net/phy/ste100p.c	2007-06-12 02:52:31.000000000 +0200
 @@ -0,0 +1,297 @@
 +/*
 + * drivers/net/phy/ste100p.c

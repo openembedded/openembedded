@@ -1,5 +1,5 @@
-diff -urNd ../dillo2-0.6.6-r0/dillo2-0.6.6/src/IO/about.c dillo2-0.6.6/src/IO/about.c
---- ../dillo2-0.6.6-r0/dillo2-0.6.6/src/IO/about.c	2003-04-21 19:36:31.000000000 +0100
+diff -urNd dillo2-0.6.6/src/IO/about.c dillo2-0.6.6/src/IO/about.c
+--- dillo2-0.6.6/src/IO/about.c	2003-04-21 19:36:31.000000000 +0100
 +++ dillo2-0.6.6/src/IO/about.c	2004-09-11 10:58:48.000000000 +0100
 @@ -28,88 +28,88 @@
   * HTML text for startup screen
