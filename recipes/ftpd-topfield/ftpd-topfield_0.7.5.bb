@@ -8,7 +8,7 @@ PR = "r3"
 SRC_URI = "cvs://anonymous@puppy.cvs.sourceforge.net/cvsroot/puppy;method=pserver;module=ftpd-topfield;tag=FTPD_TOPFIELD_0_7_5 \
 	   cvs://anonymous@puppy.cvs.sourceforge.net/cvsroot/puppy;method=pserver;module=libtopfield;tag=FTPD_TOPFIELD_0_7_5 \
 	   file://syslog.patch \
-	   file://usb-header-name-2-6-23.patch \
+	   file://usb-header-name-2-6-23.patch;striplevel=0 \
 	   file://init"
 
 # The source will end up in the subdirectory 'ftpd-topfield' - no release name
@@ -19,9 +19,12 @@ inherit update-rc.d
 INITSCRIPT_NAME = "ftpd-topfield"
 INITSCRIPT_PARAMS = "defaults"
 
-# Just the one package at present
+do_unpack2() {
+	cd ${WORKDIR}
+	mv libtopfield ${S}/
+}
 
-inherit autotools
+addtask unpack2 after do_unpack before do_patch
 
 do_compile() {
 	oe_runmake
