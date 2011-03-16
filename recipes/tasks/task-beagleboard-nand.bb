@@ -1,5 +1,7 @@
 DESCRIPTION = "Task for putting an X11 desktop in NAND"
 
+PR = "r1"
+
 inherit task 
 
 ECONFIG ?= "places e-wm-config-angstrom e-wm-config-angstrom-widescreen e-wm-config-default"
@@ -29,7 +31,11 @@ RDEPENDS_${PN} = "\
 	picodlp-control \
 	network-manager-applet \
 	gnome-bluetooth \
-"
+bc e2fsprogs-mke2fs util-linux-ng-fdisk \
+util-linux-ng-sfdisk dosfstools beagleboard-test-scripts sox \
+alsa-utils-aplay ti-dsplink-examples i2c-tools memtester cpuburn-neon \
+evtest devmem2 matrix-gui mtd-utils mplayer x11vnc \
+angstrom-x11vnc-xinit"
 
 # Install all kernel modules
 RRECOMMENDS_${PN} += " \
