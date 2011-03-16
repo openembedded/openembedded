@@ -1,6 +1,10 @@
 inherit task
 
-PR = "r2"
+PV = "1.1"
+PR = "r4"
+
+PACKAGE_ARCH = "all"
+ALLOW_EMPTY = "1"
 
 ECONFIG ?= "places e-wm-config-angstrom"
 EMENU ?= "e-wm-menu"
@@ -55,3 +59,4 @@ RDEPENDS_task-beagleboard-validation-gui-extras = "\
     matrix-gui \
     midori \
 "
+
