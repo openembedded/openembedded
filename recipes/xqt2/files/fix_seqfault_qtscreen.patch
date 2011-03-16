@@ -1,5 +1,5 @@
---- xc/../xqt2.vanilla/xfree86/xqt-driver/qtscreen.cc	2009-02-08 15:47:33.000000000 +0100
-+++ xc/../xqt2/xfree86/xqt-driver/qtscreen.cc	2009-02-08 15:52:09.000000000 +0100
+--- xqt2.vanilla/xfree86/xqt-driver/qtscreen.cc	2009-02-08 15:47:33.000000000 +0100
++++ xqt2/xfree86/xqt-driver/qtscreen.cc	2009-02-08 15:52:09.000000000 +0100
 @@ -406,7 +406,9 @@
  //
  void qtScreen::keyPressEvent(QKeyEvent *ev)

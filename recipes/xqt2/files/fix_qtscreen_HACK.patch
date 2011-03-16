@@ -1,6 +1,6 @@
-diff -Nur xc/../xqt2.vanilla/xfree86/xqt-driver/qtscreen.cc xc/../xqt2/xfree86/xqt-driver/qtscreen.cc
---- xc/../xqt2.vanilla/xfree86/xqt-driver/qtscreen.cc	2008-09-25 14:18:44.000000000 +0200
-+++ xc/../xqt2/xfree86/xqt-driver/qtscreen.cc	2008-09-25 14:28:30.000000000 +0200
+diff -Nur xqt2.vanilla/xfree86/xqt-driver/qtscreen.cc xqt2/xfree86/xqt-driver/qtscreen.cc
+--- xqt2.vanilla/xfree86/xqt-driver/qtscreen.cc	2008-09-25 14:18:44.000000000 +0200
++++ xqt2/xfree86/xqt-driver/qtscreen.cc	2008-09-25 14:28:30.000000000 +0200
 @@ -109,6 +109,7 @@
  	desktopSize = newSize;
  	fullScrSize = desktopSize;
