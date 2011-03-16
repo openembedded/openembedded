@@ -12,7 +12,8 @@
 # update_bb - update bitbake git tree
 # update_oe - update OE git tree
 # run_builds - run builds
-STAGES="update_bb update_oe !run_builds"
+# upload_logs - upload logs to some other place
+STAGES="update_bb update_oe !run_builds !upload_logs"
 
 ## ACCOUNTING: account some useful things
 # df - log free disk space
@@ -56,6 +57,14 @@ MW_USER=""
 # HOST_DISTRO="<distro name + version> /<userspace arch>"
 # Build host machine
 # HOST_MACHINE="<cpu model, cores @freq> /<RAM amount>"
+
+## UPLOAD
+# Upload command
+UPLOAD_CMD="rsync"
+# Upload options
+UPLOAD_OPTS="-av --delete"
+# Upload destination
+UPLOAD_DESTDIR="${TB_BUILDER}@server:/var/www/htdocs/testbuilder/logs"
 
 # Misc dirs
 TB_BASE=`pwd`

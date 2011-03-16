@@ -12,7 +12,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-VERSION="0.6"
+VERSION="0.6.1"
 PACKAGE="TestBuilder"
 
 TB_DIR=`dirname $0`
@@ -210,7 +210,7 @@ tb_build_images() {
 	touch "${_log}"
 
 	_stime=$(date +%s)
-	${BB_CMD} ${BB_OPTS} ${_images} 2>&1 | tee "${_log}"
+	eval ${BB_CMD} ${BB_OPTS} ${_images} 2>&1 | tee "${_log}"
 	_rc=$?
 	_btime=$( TZ=UTC0 date -d "now - $_stime seconds" '+%T' )
 
@@ -274,7 +274,7 @@ tb_build_machines() {
 ### Main code 
 
 # Parse stages
-unset DO_RUN_BUILDS DO_UPDATE_OE DO_UPDATE_BB
+unset DO_RUN_BUILDS DO_UPDATE_OE DO_UPDATE_BB DO_UPLOAD_LOGS
 for stage in $STAGES; do
 	[ "${stage}" != "${stage#!}" ] && continue
 	case ${stage} in
@@ -284,6 +284,8 @@ for stage in $STAGES; do
 		DO_UPDATE_OE=y;;
 	'update_bb')
 		DO_UPDATE_BB=y;;
+	'upload_logs')
+		DO_UPLOAD_LOGS=y;;
 	*)
 		tb_log "Unknown stage ${stage}.";;
 	esac
@@ -499,6 +501,12 @@ for buildconf in ${BUILDS}; do (
 		done #SETS
 	done #DISTROS
 ) done #BUILDS
+
+# Upload logs
+if [ -n "$DO_UPLOAD_LOGS" ]; then
+	tb_log "Uploading logs to ${UPLOAD_DESTDIR}"
+	eval ${UPLOAD_CMD} ${UPLOAD_OPTS} "${LOG_DIR}/*" "${UPLOAD_DESTDIR}"
+fi
 
 tb_log "All done."
 
