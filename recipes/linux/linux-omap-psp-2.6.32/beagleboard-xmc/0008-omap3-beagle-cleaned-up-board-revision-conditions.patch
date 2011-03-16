@@ -1,0 +1,153 @@
+From 8bd3ffb5755c49aaffecb20b9bd43f955ac26251 Mon Sep 17 00:00:00 2001
+From: Jason Kridner <jkridner@beagleboard.org>
+Date: Wed, 16 Mar 2011 09:21:06 -0500
+Subject: [PATCH 08/10] omap3: beagle: cleaned up board revision conditions
+
+---
+ arch/arm/mach-omap2/board-omap3beagle.c |   70 ++++++++++++++-----------------
+ 1 files changed, 32 insertions(+), 38 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index 4bde54b..664a9c6 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -191,7 +191,7 @@ enum {
+ 	OMAP3BEAGLE_BOARD_AXBX,
+ 	OMAP3BEAGLE_BOARD_C1_3,
+ 	OMAP3BEAGLE_BOARD_C4,
+-	OMAP3BEAGLE_BOARD_XM,
++	OMAP3BEAGLE_BOARD_XMAB,
+ 	OMAP3BEAGLE_BOARD_XMC,
+ };
+ 
+@@ -245,11 +245,11 @@ static void __init omap3_beagle_init_rev(void)
+ 		break;
+ 	case 0:
+ 		printk(KERN_INFO "OMAP3 Beagle Rev: xM A\n");
+-		omap3_beagle_version = OMAP3BEAGLE_BOARD_XM;
++		omap3_beagle_version = OMAP3BEAGLE_BOARD_XMAB;
+ 		break;
+ 	case 1:
+ 		printk(KERN_INFO "OMAP3 Beagle Rev: xM B\n");
+-		omap3_beagle_version = OMAP3BEAGLE_BOARD_XM;
++		omap3_beagle_version = OMAP3BEAGLE_BOARD_XMAB;
+ 		break;
+ 	case 2:
+ 		printk(KERN_INFO "OMAP3 Beagle Rev: xM C\n");
+@@ -458,13 +458,18 @@ static int beagle_twl_gpio_setup(struct device *dev,
+ {
+ 	int r;
+ 
+-	if (omap3_beagle_get_rev() == OMAP3BEAGLE_BOARD_XM) {
++	switch(omap3_beagle_get_rev())
++	{
++	case OMAP3BEAGLE_BOARD_XMAB:
++	case OMAP3BEAGLE_BOARD_XMC:
+ 		mmc[0].gpio_wp = -EINVAL;
+-	} else if ((omap3_beagle_get_rev() == OMAP3BEAGLE_BOARD_C1_3) ||
+-		(omap3_beagle_get_rev() == OMAP3BEAGLE_BOARD_C4)) {
++		break;
++	case OMAP3BEAGLE_BOARD_C1_3:
++	case OMAP3BEAGLE_BOARD_C4:
+ 		omap_mux_init_gpio(23, OMAP_PIN_INPUT);
+ 		mmc[0].gpio_wp = 23;
+-	} else {
++		break;
++	default:
+ 		omap_mux_init_gpio(29, OMAP_PIN_INPUT);
+ 	}
+ 	/* gpio + 0 is "mmc0_cd" (input/IRQ) */
+@@ -479,7 +484,8 @@ static int beagle_twl_gpio_setup(struct device *dev,
+ 	 * power switch and overcurrent detect
+ 	 */
+ 
+-	if (omap3_beagle_get_rev() != OMAP3BEAGLE_BOARD_XM) {
++	if ((omap3_beagle_get_rev() != OMAP3BEAGLE_BOARD_XMAB) &&
++		(omap3_beagle_get_rev() != OMAP3BEAGLE_BOARD_XMC)) {
+ 		r = gpio_request(gpio + 1, "EHCI_nOC");
+ 		if (!r) {
+ 			r = gpio_direction_input(gpio + 1);
+@@ -490,54 +496,41 @@ static int beagle_twl_gpio_setup(struct device *dev,
+ 			pr_err("%s: unable to configure EHCI_nOC\n", __func__);
+ 	}
+ 
+-	if (cpu_is_omap3630()) {
+-		/* Power on DVI, Serial and PWR led */
+- 		gpio_request(gpio + 1, "nDVI_PWR_EN");
+-		gpio_direction_output(gpio + 1, 0);
+-
+-		/* Power on camera interface */
+-		gpio_request(gpio + 2, "CAM_EN");
+-		gpio_direction_output(gpio + 2, 1);
+-
+-		/* TWL4030_GPIO_MAX + 0 == ledA, EHCI nEN_USB_PWR (out, active low) */
+-		gpio_request(gpio + TWL4030_GPIO_MAX, "nEN_USB_PWR");
+-		gpio_direction_output(gpio + TWL4030_GPIO_MAX, 1);
+-	}
+-	else {
+-		gpio_request(gpio + 1, "EHCI_nOC");
+-		gpio_direction_input(gpio + 1);
+-
+-		/* TWL4030_GPIO_MAX + 0 == ledA, EHCI nEN_USB_PWR (out, active low) */
+-		gpio_request(gpio + TWL4030_GPIO_MAX, "nEN_USB_PWR");
+-		gpio_direction_output(gpio + TWL4030_GPIO_MAX, 0);
+-	}
+-
+ 	/*
+-	 * TWL4030_GPIO_MAX + 0 == ledA, EHCI nEN_USB_PWR (out, XM active
++	 * TWL4030_GPIO_MAX + 0 == ledA, EHCI nEN_USB_PWR (out, xM Ax/Bx active
+ 	 * high / others active low)
+ 	 */
+ 	gpio_request(gpio + TWL4030_GPIO_MAX, "nEN_USB_PWR");
+-	if (omap3_beagle_get_rev() == OMAP3BEAGLE_BOARD_XM)
++	if (omap3_beagle_get_rev() == OMAP3BEAGLE_BOARD_XMAB)
+ 		gpio_direction_output(gpio + TWL4030_GPIO_MAX, 1);
+ 	else
+ 		gpio_direction_output(gpio + TWL4030_GPIO_MAX, 0);
+ 
+ 	/* DVI reset GPIO is different between beagle revisions */
+-	if (omap3_beagle_get_rev() == OMAP3BEAGLE_BOARD_XM)
+-		beagle_dvi_device.reset_gpio = 129;
+-	else
++	switch(omap3_beagle_get_rev())
++	{
++	case OMAP3BEAGLE_BOARD_AXBX:
++	case OMAP3BEAGLE_BOARD_C1_3:
++	case OMAP3BEAGLE_BOARD_C4:
+ 		beagle_dvi_device.reset_gpio = 170;
++		break;
++	case OMAP3BEAGLE_BOARD_XMAB:
++	case OMAP3BEAGLE_BOARD_XMC:
++	default:
++		beagle_dvi_device.reset_gpio = 129;
++	}
+ 
+ 	/* TWL4030_GPIO_MAX + 1 == ledB, PMU_STAT (out, active low LED) */
+ 	gpio_leds[2].gpio = gpio + TWL4030_GPIO_MAX + 1;
+ 
+ 	/*
+-	 * gpio + 1 on Xm controls the TFP410's enable line (active low)
++	 * gpio + 1 on xM controls the TFP410's enable line (active low)
+ 	 * gpio + 2 control varies depending on the board rev as follows:
+ 	 * P7/P8 revisions(prototype): Camera EN
+ 	 * A2+ revisions (production): LDO (supplies DVI, serial, led blocks)
+ 	 */
+-	if (omap3_beagle_get_rev() == OMAP3BEAGLE_BOARD_XM) {
++	if ((omap3_beagle_get_rev() == OMAP3BEAGLE_BOARD_XMAB) ||
++		(omap3_beagle_get_rev() == OMAP3BEAGLE_BOARD_XMC)) {
+ 		r = gpio_request(gpio + 1, "nDVI_PWR_EN");
+ 		if (!r) {
+ 			r = gpio_direction_output(gpio + 1, 0);
+@@ -1013,7 +1006,8 @@ static void __init omap3_beagle_init(void)
+ 	omap3_beagle_init_rev();
+ 	omap3_beagle_i2c_init();
+ 
+-	if (cpu_is_omap3630()) {
++	if ((omap3_beagle_get_rev() != OMAP3BEAGLE_BOARD_XMAB) &&
++		(omap3_beagle_get_rev() != OMAP3BEAGLE_BOARD_XMC)) {
+ 		gpio_buttons[0].gpio = 4;
+ 	}
+ 
+-- 
+1.6.6.1
+
