@@ -1,0 +1,13 @@
+Index: qemu-0.14.0/vl.c
+===================================================================
+--- qemu-0.14.0.orig/vl.c
++++ qemu-0.14.0/vl.c
+@@ -168,7 +168,7 @@ int main(int argc, char **argv)
+ //#define DEBUG_NET
+ //#define DEBUG_SLIRP
+ 
+-#define DEFAULT_RAM_SIZE 128
++#define DEFAULT_RAM_SIZE 384
+ 
+ #define MAX_VIRTIO_CONSOLES 1
+ 
