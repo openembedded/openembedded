@@ -1,10 +1,9 @@
-
 #
 # Patch managed by http://www.holgerschurig.de/patcher.html
 #
 
---- ../src/ExternalLexer.cpp~no-external-lexers
-+++ ../src/ExternalLexer.cpp
+--- src/ExternalLexer.cpp~no-external-lexers
++++ src/ExternalLexer.cpp
 @@ -110,7 +110,7 @@
  	// Initialise some members...
  	first = NULL;
