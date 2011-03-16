@@ -12,7 +12,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-VERSION="0.5"
+VERSION="0.6"
 PACKAGE="TestBuilder"
 
 TB_DIR=`dirname $0`
@@ -59,18 +59,24 @@ TB_LOG="${LOG_DIR}/tb.log"
 TB_MWR_FILE="${LOG_DIR}/MW.release.txt"
 TB_MWT_FILE="${LOG_DIR}/MW.testing.txt"
 
+MW_USER=${MW_USER:-${TB_BUILDER}}
+
 #export LD_LIBRARY_PATH LANG PATH
 export LD_LIBRARY_PATH LANG
 
-BB_ENV_EXTRAWHITE="MACHINE DISTRO TB_BUILDER OE_DIR TMP_DIR DL_DIR MAKE_NUMBER_THREADS BB_NUMBER_THREADS IMAGE_FSTYPES"
-export   BB_ENV_EXTRAWHITE BBPATH TB_BUILDER OE_DIR TMP_DIR DL_DIR MAKE_NUMBER_THREADS BB_NUMBER_THREADS
+BB_ENV_EXTRAWHITE="http_proxy HTTP_PROXY MACHINE DISTRO TB_BUILDER OE_DIR TMP_DIR DL_DIR MAKE_NUMBER_THREADS BB_NUMBER_THREADS IMAGE_FSTYPES_local DEPLOY_DIR_IMAGE_local ANGSTROMLIBC RM_WORK"
+export   BB_ENV_EXTRAWHITE BBPATH TB_BUILDER OE_DIR TMP_DIR DL_DIR MAKE_NUMBER_THREADS BB_NUMBER_THREADS RM_WORK
 
 BB_CMD=bitbake
 
+# Try to guess user's distro and machine
+HOST_DISTRO=${HOST_DISTRO:-"$([ -x "`which lsb_release`" ] && lsb_release -ds) /$(readelf -h `which readelf` | awk -F': *' '/^  Machine:/ {print $2;}')"}
+HOST_MACHINE=${HOST_MACHINE:-"$(cat /proc/cpuinfo | awk -F': ' '/^model name/ {model=$2;} /^cpu MHz/ {freq=$2;} /^cpu cores/ {cores=$2;} END {OFS=""; OFMT="%.2g"; print model, ", ", cores, " cores @", freq/1000, "GHz"}') /$(cat /proc/meminfo | awk '/^MemTotal:/{OFMT="%.1gGb"; print $2/1024/1024;}')"}
+
 mkdir -p ${LOG_DIR}
 
-tb_rotate_log "${TB_MWR_FILE}"
-tb_rotate_log "${TB_MWT_FILE}"
+#tb_rotate_log "${TB_MWR_FILE}"
+#tb_rotate_log "${TB_MWT_FILE}"
 tb_rotate_log "${TB_LOG}"
 
 ### Functions
@@ -184,10 +190,10 @@ tb_add_mw_row() {
 	[ "${_line}" != "${_line#ERROR}" ] && _bl=$_line
 
 	echo "|-" >>"${TB_MWT_FILE}"
-	echo "|${MACHINE} ||${DISTRO} ||${_images} ||${HOST_DISTRO} ||${BB_REV} ||${TB_BUILDER} ||${OE_REV} ||${_bs} ||${_bl}" >>"${TB_MWT_FILE}"
+	echo "|${MACHINE} ||${DISTRO} ||${_images} ||${HOST_DISTRO} ||${BB_REV} ||[[User:${MW_USER}|${MW_USER}]] ||${OE_REV} ||${_bs} ||${_bl}" >>"${TB_MWT_FILE}"
 
 	echo "|-" >>"${TB_MWR_FILE}"
-	echo "|${MACHINE} ||${DISTRO} ||${_images} ||${HOST_DISTRO} ||${BB_REV} ||${TB_BUILDER} ||${_bs} ||${_bl} ||${OE_REV} ||${HOST_MACHINE} ||${_time}" >>"${TB_MWR_FILE}"
+	echo "|${MACHINE} ||${DISTRO} ||${_images} ||${HOST_DISTRO} ||${BB_REV} ||[[User:${MW_USER}|${MW_USER}]] ||${_bs} ||${_bl} ||${OE_REV} ||${HOST_MACHINE} ||${_time}" >>"${TB_MWR_FILE}"
 }
 
 tb_build_images() {
@@ -240,7 +246,7 @@ tb_build_machines() {
 		if [ -n "${DO_RUN_SHELL}" ]; then
 			tb_interactive_shell
 		else
-			tb_log " ++ ${_machine} build started"
+			tb_log " + ${_machine} build started"
 
 			case "${SEPARATE_BUILD}" in
 			[Yy][Ee][Ss])
@@ -254,7 +260,7 @@ tb_build_machines() {
 				;;
 			*)
 				# Build all images with one bitbake invocation
-				_log="${LOG_DIR}/B.${build}.${DISTRO}.${_machine}.${btype}.log"
+				_log="${LOG_DIR}/B.${build}.${DISTRO}.${_machine}.${_btype}.log"
 				tb_build_images "${_btype}" "${_bbimages}" "${_log}"
 				;;
 			esac
@@ -351,18 +357,22 @@ else
 fi
 
 # Auto-building mode
+tb_log "${HOST_DISTRO}"
+tb_log "${HOST_MACHINE}"
 tb_log "${PACKAGE} v${VERSION}"
 
-for buildconf in ${BUILDS}; do
-	# Cleanup env
-	unset DISABLED SETS DISTROS DISTRO TASKS OE_BRANCH BB_BRANCH BUILD IMAGE_FSTYPES
-	for bset in $SETS; do
-		unset MACHINES_${bset}
-	done
+for buildconf in ${BUILDS}; do (
 
 	. ${buildconf}
 
 	[ "$DISABLED" == "yes" ] && continue
+
+	# Export local overrides
+	[ -n "$IMAGE_FSTYPES" ] && export IMAGE_FSTYPES_local="$IMAGE_FSTYPES"
+	[ -n "$DEPLOY_DIR_IMAGE" ] && export DEPLOY_DIR_IMAGE_local="$DEPLOY_DIR_IMAGE"
+
+	# Export angstrom libc (only way to build angstrom with different libc flavors)
+	[ -n "$ANGSTROMLIBC" ] && export ANGSTROMLIBC
 
 	b=$(basename ${buildconf})
 	build=${b%.conf}
@@ -383,6 +393,9 @@ for buildconf in ${BUILDS}; do
 
 	OE_REV=$(tb_git_rev "$OE_DIR")
 	BB_REV=$(tb_git_rev "$BB_DIR")
+
+	tb_log "=== OE rev: ${OE_REV}"
+	tb_log "=== BB rev: ${BB_REV}"
 
 	# parse tasks
 	unset DO_BUILD_CLEAN DO_BUILD_INCREMENTAL DO_CREATE_MW_TABLE
@@ -458,13 +471,13 @@ for buildconf in ${BUILDS}; do
 		
 				tb_log " + Cleaning ${TMP_DIR}"
 				#rm -rf ${TMP_DIR}/*
-				find ${TMP_DIR}/* -delete
+				find ${TMP_DIR}/* -delete 2>/dev/null
 				
 				tb_log " + Starting clean builds for machines {$MLIST}"
 				tb_build_machines c "$MLIST" $bbimages
 	
 				tb_log " + Cleaning ${TMP_DIR} again"
-				find ${TMP_DIR}/* -delete
+				find ${TMP_DIR}/* -delete 2>/dev/null
 				;;
 			'skip-once')
 				# Re-enable skipped clean build
@@ -483,9 +496,9 @@ for buildconf in ${BUILDS}; do
 				tb_build_machines i "$MLIST" $bbimages
 				;;
 			esac
-		done
-	done
-done
+		done #SETS
+	done #DISTROS
+) done #BUILDS
 
 tb_log "All done."
 

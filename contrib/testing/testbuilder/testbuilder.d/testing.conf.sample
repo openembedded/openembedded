@@ -8,16 +8,16 @@
 # with '!' do disable it.
 # 3. All lists items will be processed in order they appears in list
 
+## DISABLED: Is this build disabled?
+DISABLED=yes
 ## BUILD: Just some text comment to show in build log
 BUILD="Regular build of testing branch"
-## DISABLED: is this build disabled ('yes' to disable)?
-DISABLED=no
 ## OE_BRANCH: OE branch to use for this build
 OE_BRANCH="testing-next"
 ## BB_BRANCH: bitbake branch to use for this build
 BB_BRANCH="1.10"
 ## DISTROS: OE distros
-DISTROS="angstrom-2008.1 angstrom-2010.x"
+DISTROS="angstrom-2010.x minimal"
 ## IMAGES: OE images
 IMAGES="console-image x11-image opie-image"
 ## SETS: build all machines in set within same TMPDIR
@@ -29,10 +29,12 @@ MACHINES_mips64="qemumips64"
 MACHINES_ppc="qemuppc"
 MACHINES_sh4="qemush4"
 MACHINES_i686="qemux86"
-# IMAGE_FSTYPE: What image types to build
-IMAGE_FSTYPE="tar.gz"
+# IMAGE_FSTYPES: What image types to build
+IMAGE_FSTYPES="tar.gz"
+# DEPLOY_DIR_IMAGE: Where to place images
+DEPLOY_DIR_IMAGE="${BLD_DIR}/images/testing"
 ## TASKS: What to do exactly
 # build_clean - do clean builds
 # build_incremental - do incremental builds
-# create_mw_table - write build results in MediaWiki table format
+# create_mw_table - create mediawiki table for Testing page
 TASKS="build_clean build_incremental create_mw_table"

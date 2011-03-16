@@ -75,15 +75,12 @@ BBFILES ?= "${OE_DIR}/recipes/*/*.bb"
 # GLIBC_GENERATE_LOCALES = "en_US.UTF-8 en_GB.UTF-8 de_DE.UTF-8"
 # IMAGE_LINGUAS="en-us en-gb"
 
-# jffs2, tar(.gz|bz2), cpio(.gz), cramfs, ext2(.gz), ext3(.gz)
-# squashfs, squashfs-lzma
-IMAGE_FSTYPES ?= "tar.gz"
-
 # CCACHE = "${@bb.which(bb.data.getVar('PATH', d, 1), 'ccache') and 'ccache '}"
 PARALLEL_MAKE = "-j ${MAKE_NUMBER_THREADS}"
 BB_NUMBER_THREADS ?= "${@bb.fatal('Set BB_NUMBER_THREADS in your config')}"
 
-INHERIT += "rm_work"
+INHERIT += "${@['', 'rm_work'][bb.data.getVar('RM_WORK', d, 1) == 'yes']}"
+
 #INHERIT += "devshell"
 #TERMCMD = ${SCREEN_TERMCMD}
 

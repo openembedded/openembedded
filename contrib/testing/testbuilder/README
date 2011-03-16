@@ -28,14 +28,14 @@ You can run a single configured build (e.g. "testing").
     ./testbuilder -B ./testbuilder.d/testing.conf
 
 Or you can use TestBuilder to build a specific distro/machine/image just like
-bitbake (e.g. angstrom-2008.1/qemuarm/console-image).
+bitbake (e.g. minimal/qemuarm/console-image).
 
-    ./testbuilder -D angstrom-2008.1 -M qemuarm console-image
+    ./testbuilder -D minimal -M qemuarm console-image
 
 If you wish to only setup an environment and run BitBake by hand you can
 use the option `-S`.
 
-    ./testbuilder -D angstrom-2008.1 -M qemuarm -S
+    ./testbuilder -D minimal -M qemuarm -S
 
 Look ./testbuilder -h for full list of possible options.
 

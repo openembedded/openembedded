@@ -1,13 +1,34 @@
-# Other sample build profile
-DISABLED=yes # This build is disabled
+### NOTES
+# 1. All names in SETS variables should consists only of alphanumeric
+# characters and underscores, and beginning with an alphabetic character or an
+# underscore.
+# i.e. [a-zA-Z_][a-zA-Z0-9_]*
+# My recommendation is not to use underscore as well
+# 2. You can prefix any word in following 'list' variables
+# with '!' do disable it.
+# 3. All lists items will be processed in order they appears in list
+
+## DISABLED: Is this build disabled?
+DISABLED=yes
+## BUILD: Just some text comment to show in build log
 BUILD="Build from master branch"
+## OE_BRANCH: OE branch to use for this build
 OE_BRANCH="master"
+## BB_BRANCH: bitbake branch to use for this build
 BB_BRANCH="master"
+## DISTROS: OE distros
 # Note that angstrom-2010.x is disabled below ('!' before)
 DISTROS="!angstrom-2010.x minimal"
+## IMAGES: OE images
 IMAGES="console-image"
+## SETS: build all machines in set within same TMPDIR
 SETS="zauruses qemux86"
+## MACHINES: OE machines per build set
 MACHINES_zauruses="collie tosa akita"
 MACHINES_qemu="qemux86"
-TASKS="build_clean !build_incremental"
+## TASKS: What to do exactly
+# build_clean - do clean builds
+# build_incremental - do incremental builds
+# create_mw_table - create mediawiki table for Testing page
+TASKS="build_clean !build_incremental !create_mw_table"
 
