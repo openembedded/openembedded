@@ -1,4 +1,4 @@
---- ../../../kernel/linux-mips-cvs/arch/mips/config-shared.in	2005-01-31 12:59:28.000000000 +0100
+--- linux-mips-cvs/arch/mips/config-shared.in	2005-01-31 12:59:28.000000000 +0100
 +++ linux-2.4.29/arch/mips/config-shared.in	2005-03-12 19:51:22.474214917 +0100
 @@ -208,6 +208,14 @@
     fi

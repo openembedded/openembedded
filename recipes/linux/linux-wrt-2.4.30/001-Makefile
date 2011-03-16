@@ -1,4 +1,4 @@
---- ../../../kernel/linux-mips-cvs/Makefile	2005-01-20 03:19:21.000000000 +0100
+--- linux-mips-cvs/Makefile	2005-01-20 03:19:21.000000000 +0100
 +++ linux-2.4.29.new/Makefile	2005-03-15 01:15:27.441095231 +0100
 @@ -17,9 +17,9 @@
  FINDHPATH	= $(HPATH)/asm $(HPATH)/linux $(HPATH)/scsi $(HPATH)/net $(HPATH)/math-emu

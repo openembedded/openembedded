@@ -1,5 +1,5 @@
-diff -urNd ../detect-stylus-0.13-r1/detect-stylus-0.13/detect-stylus.c detect-stylus-0.13/detect-stylus.c
---- ../detect-stylus-0.13-r1/detect-stylus-0.13/detect-stylus.c	2004-09-08 16:56:58.000000000 +0100
+diff -urNd detect-stylus-0.13/detect-stylus.c detect-stylus-0.13/detect-stylus.c
+--- detect-stylus-0.13/detect-stylus.c	2004-09-08 16:56:58.000000000 +0100
 +++ detect-stylus-0.13/detect-stylus.c	2004-09-13 21:36:03.000000000 +0100
 @@ -132,9 +132,9 @@
  

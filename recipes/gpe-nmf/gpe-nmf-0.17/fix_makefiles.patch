@@ -1,5 +1,5 @@
-diff -urNd ../gpe-nmf-0.17-r0/gpe-nmf-0.17/backend/Makefile gpe-nmf-0.17/backend/Makefile
---- ../gpe-nmf-0.17-r0/gpe-nmf-0.17/backend/Makefile	2004-07-06 22:02:57.000000000 +0100
+diff -urNd gpe-nmf-0.17/backend/Makefile gpe-nmf-0.17/backend/Makefile
+--- gpe-nmf-0.17/backend/Makefile	2004-07-06 22:02:57.000000000 +0100
 +++ gpe-nmf-0.17/backend/Makefile	2004-08-03 12:42:34.000000000 +0100
 @@ -48,7 +48,7 @@
  clean:
@@ -10,8 +10,8 @@ diff -urNd ../gpe-nmf-0.17-r0/gpe-nmf-0.17/backend/Makefile gpe-nmf-0.17/backend
  	mkdir -p $(DESTDIR)$(PREFIX)/lib
  	install $(BACKEND) $(DESTDIR)$(PREFIX)/lib/$(BACKEND)
  	for i in $(CODECS); do install $$i $(DESTDIR)$(PREFIX)/lib/gpe-nmf/decoders/$$i; done
-diff -urNd ../gpe-nmf-0.17-r0/gpe-nmf-0.17/Makefile gpe-nmf-0.17/Makefile
---- ../gpe-nmf-0.17-r0/gpe-nmf-0.17/Makefile	2004-08-03 03:31:46.000000000 +0100
+diff -urNd gpe-nmf-0.17/Makefile gpe-nmf-0.17/Makefile
+--- gpe-nmf-0.17/Makefile	2004-08-03 03:31:46.000000000 +0100
 +++ gpe-nmf-0.17/Makefile	2004-08-03 12:37:33.000000000 +0100
 @@ -43,7 +43,7 @@
  	make -C backend PREFIX=$(PREFIX) GST=$(GST) GST_VERSION=$(GST_VERSION) CVSBUILD=$(CVSBUILD)

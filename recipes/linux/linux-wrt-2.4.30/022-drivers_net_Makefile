@@ -1,4 +1,4 @@
---- ../../../kernel/linux-mips-cvs/drivers/net/Makefile	2004-08-14 20:38:51.000000000 +0200
+--- linux-mips-cvs/drivers/net/Makefile	2004-08-14 20:38:51.000000000 +0200
 +++ linux/drivers/net/Makefile	2005-03-16 12:45:24.523263597 +0100
 @@ -21,6 +21,16 @@
  list-multi	:=	rcpci.o

@@ -1,5 +1,5 @@
-diff -urNd ../gsoko-0.4.2-gpe5-r0/gsoko-0.4.2-gpe5/Makefile gsoko-0.4.2-gpe5/Makefile
---- ../gsoko-0.4.2-gpe5-r0/gsoko-0.4.2-gpe5/Makefile	2004-09-18 00:03:00.000000000 +0100
+diff -urNd gsoko-0.4.2-gpe5/Makefile gsoko-0.4.2-gpe5/Makefile
+--- gsoko-0.4.2-gpe5/Makefile	2004-09-18 00:03:00.000000000 +0100
 +++ gsoko-0.4.2-gpe5/Makefile	2004-09-20 20:14:46.000000000 +0100
 @@ -1,16 +1,21 @@
  

@@ -1,5 +1,5 @@
-diff -urNd ../matchbox-panel-0.8.1-r4/matchbox-panel-0.8.1/applets/mb-applet-battery.c matchbox-panel-0.8.1/applets/mb-applet-battery.c
---- ../matchbox-panel-0.8.1-r4/matchbox-panel-0.8.1/applets/mb-applet-battery.c	2004-02-25 22:58:09.000000000 +0000
+diff -urNd matchbox-panel-0.8.1/applets/mb-applet-battery.c matchbox-panel-0.8.1/applets/mb-applet-battery.c
+--- matchbox-panel-0.8.1/applets/mb-applet-battery.c	2004-02-25 22:58:09.000000000 +0000
 +++ matchbox-panel-0.8.1/applets/mb-applet-battery.c	2004-09-16 12:17:58.000000000 +0100
 @@ -385,8 +385,7 @@
  	sprintf(tray_msg, _("AC Connected\nFully charged.\n"));

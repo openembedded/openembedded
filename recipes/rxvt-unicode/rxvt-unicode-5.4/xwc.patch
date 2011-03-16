@@ -1,5 +1,5 @@
-diff -urNd ../rxvt-unicode-5.3-r2/rxvt-unicode-5.3/src/screen.C rxvt-unicode-5.3/src/screen.C
---- ../rxvt-unicode-5.3-r2/rxvt-unicode-5.3/src/screen.C	2005-02-22 21:39:10 +00:00
+diff -urNd rxvt-unicode-5.3/src/screen.C rxvt-unicode-5.3/src/screen.C
+--- rxvt-unicode-5.3/src/screen.C	2005-02-22 21:39:10 +00:00
 +++ rxvt-unicode-5.3/src/screen.C	2005-04-05 22:12:45 +01:00
 @@ -3064,7 +3064,7 @@
    else

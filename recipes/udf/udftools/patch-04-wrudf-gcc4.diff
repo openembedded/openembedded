@@ -38,9 +38,9 @@ to 'libreadline5-dev'.
 Regards
 Andreas Jochens
 
-diff -urN ../tmp-orig/udftools-1.0.0b3/wrudf/wrudf.c ./wrudf/wrudf.c
---- ../tmp-orig/udftools-1.0.0b3/wrudf/wrudf.c	2002-11-26 08:18:51.000000000 +0100
-+++ ./wrudf/wrudf.c	2005-01-04 16:56:49.394078200 +0100
+diff -urN udftools-1.0.0b3/wrudf/wrudf.c b/wrudf/wrudf.c
+--- udftools-1.0.0b3/wrudf/wrudf.c	2002-11-26 08:18:51.000000000 +0100
++++ b/wrudf/wrudf.c	2005-01-04 16:56:49.394078200 +0100
 @@ -245,7 +245,7 @@
  	    } else if( strncmp( spm->partIdent.ident, UDF_ID_VIRTUAL, strlen(UDF_ID_VIRTUAL)) == 0 )
  		virtualPartitionNum = i;
@@ -50,4 +50,3 @@ diff -urN ../tmp-orig/udftools-1.0.0b3/wrudf/wrudf.c ./wrudf/wrudf.c
      }
  
      if( medium == CDR ) {
-diff -urN ../tmp-orig/udftools-1.0.0b3/debian/control ./debian/control
