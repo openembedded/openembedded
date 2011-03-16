@@ -3,8 +3,8 @@
 # Patch managed by http://www.holgerschurig.de/patcher.html
 #
 
---- ../generic/tk.h~disable-xim
-+++ ../generic/tk.h
+--- generic/tk.h~disable-xim
++++ generic/tk.h
 @@ -109,9 +109,9 @@
   * Decide whether or not to use input methods.
   */
