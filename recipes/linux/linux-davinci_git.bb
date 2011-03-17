@@ -3,7 +3,7 @@ require multi-kernel.inc
 DESCRIPTION = "Linux kernel for DaVinci processors"
 KERNEL_IMAGETYPE = "uImage"
 
-COMPATIBLE_MACHINE = "(dm355-evm|dm365-evm|dm6446-evm|dm6467-evm|dm6467t-evm|omapl137|omapl138|dm355-leopard|davinci-sffsdr|hawkboard)"
+COMPATIBLE_MACHINE = "(dm355-evm|dm365-evm|dm6446-evm|dm6467-evm|dm6467t-evm|omapl137|omapl138|dm355-leopard|davinci-sffsdr|hawkboard|dm368-evm)"
 
 DEFAULT_PREFERENCE = "1"
 DEFAULT_PREFERENCE_dm365 = "-1"

@@ -8,7 +8,7 @@ require multi-kernel.inc
 SRC_URI = "git://arago-project.org/git/projects/linux-davinci.git;protocol=git \
 	file://defconfig"
 
-COMPATIBLE_MACHINE = "(dm6446-evm|dm6467-evm|dm6467t-evm|dm355-evm|dm365-evm)"
+COMPATIBLE_MACHINE = "(dm6446-evm|dm6467-evm|dm6467t-evm|dm355-evm|dm365-evm|dm386-evm)"
 
 S = "${WORKDIR}/git"
 
