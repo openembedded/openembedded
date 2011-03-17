@@ -207,10 +207,12 @@ SRCREV_dm355-evm     = "ea7387c9511ac92a46d3d147adffe36f868820e4"
 PV_dm355-evm         = "2009.05+2009.06-rc0+${PR}+gitr${SRCREV}"
 PE_dm355-evm         = "1"
 
-SRC_URI_dm365-evm    = "git://arago-project.org/git/projects/u-boot-davinci.git;protocol=git;branch=u-boot-davinci-2009.06"
-SRCREV_dm365-evm     = "ea7387c9511ac92a46d3d147adffe36f868820e4"
-PV_dm365-evm         = "2009.05+2009.06-rc0+${PR}+gitr${SRCREV}"
-PE_dm365-evm         = "1"
+# Use this for both dm365-evm and dm368-evm devices by using the dm365
+# SOC_FAMILY
+SRC_URI_dm365    = "git://arago-project.org/git/projects/u-boot-davinci.git;protocol=git;branch=u-boot-davinci-2009.06"
+SRCREV_dm365     = "ea7387c9511ac92a46d3d147adffe36f868820e4"
+PV_dm365         = "2009.05+2009.06-rc0+${PR}+gitr${SRCREV}"
+PE_dm365         = "1"
 
 SRC_URI_dm6446-evm   = "git://arago-project.org/git/projects/u-boot-davinci.git;protocol=git;branch=u-boot-davinci-2009.06"
 SRCREV_dm6446-evm    = "ea7387c9511ac92a46d3d147adffe36f868820e4"
