@@ -1,0 +1,35 @@
+From 34d88746a9aa4aedb67e32579e559cbeb91de20f Mon Sep 17 00:00:00 2001
+From: Robert Nelson <robertcnelson@gmail.com>
+Date: Thu, 23 Sep 2010 18:22:48 -0700
+Subject: [PATCH 02/10] omap: Beagle: only Cx boards use pin 23 for write protect
+
+system_rev comes from u-boot and is a constant 0x20, so
+Bx boards also fall in this 'if' and will get setup with the
+wrong gpio_wp pin. Switch to using the Beagle revision routine
+to correcly set pin 23 only for C1/2/3 and C4 Boards. Bx boards
+will then use the correct default pin setting.
+
+Signed-off-by: Robert Nelson <robertcnelson@gmail.com>
+Acked-by: Jarkko Nikula <jhnikula@gmail.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
+ arch/arm/mach-omap2/board-omap3beagle.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index 7ca2b3b..beb877c 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -444,7 +444,8 @@ static struct gpio_led gpio_leds[];
+ static int beagle_twl_gpio_setup(struct device *dev,
+ 		unsigned gpio, unsigned ngpio)
+ {
+-	if (system_rev >= 0x20 && system_rev <= 0x34301000) {
++	if ((omap3_beagle_get_rev() == OMAP3BEAGLE_BOARD_C1_3) ||
++		(omap3_beagle_get_rev() == OMAP3BEAGLE_BOARD_C4)) {
+ 		omap_mux_init_gpio(23, OMAP_PIN_INPUT);
+ 		mmc[0].gpio_wp = 23;
+ 	} else {
+-- 
+1.6.6.1
+

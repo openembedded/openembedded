@@ -1,0 +1,61 @@
+From b241e679f550f38062923eb7800a5c57a41fe95d Mon Sep 17 00:00:00 2001
+From: Jason Kridner <jkridner@beagleboard.org>
+Date: Thu, 10 Mar 2011 13:15:38 +0100
+Subject: [PATCH 07/10] beagleboard: hack in support from xM rev C
+
+Based on patch by Koen Kooi <koen@dominion.thruhere.net>
+---
+ arch/arm/mach-omap2/board-omap3beagle.c |   20 ++++++++++++++++----
+ 1 files changed, 16 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index 9880c5c..4bde54b 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -182,7 +182,9 @@ static inline void __init omap3beagle_ks8851_init(void) { return; }
+  *	AXBX	= GPIO173, GPIO172, GPIO171: 1 1 1
+  *	C1_3	= GPIO173, GPIO172, GPIO171: 1 1 0
+  *	C4	= GPIO173, GPIO172, GPIO171: 1 0 1
+- *	XM	= GPIO173, GPIO172, GPIO171: 0 0 0
++ *	XMA	= GPIO173, GPIO172, GPIO171: 0 0 0
++ *	XMB	= GPIO173, GPIO172, GPIO171: 0 0 1
++ *	XMC	= GPIO173, GPIO172, GPIO171: 0 1 0
+  */
+ enum {
+ 	OMAP3BEAGLE_BOARD_UNKN = 0,
+@@ -190,6 +192,7 @@ enum {
+ 	OMAP3BEAGLE_BOARD_C1_3,
+ 	OMAP3BEAGLE_BOARD_C4,
+ 	OMAP3BEAGLE_BOARD_XM,
++	OMAP3BEAGLE_BOARD_XMC,
+ };
+ 
+ static u8 omap3_beagle_version;
+@@ -241,12 +244,21 @@ static void __init omap3_beagle_init_rev(void)
+ 		omap3_beagle_version = OMAP3BEAGLE_BOARD_C4;
+ 		break;
+ 	case 0:
+-		printk(KERN_INFO "OMAP3 Beagle Rev: xM\n");
++		printk(KERN_INFO "OMAP3 Beagle Rev: xM A\n");
+ 		omap3_beagle_version = OMAP3BEAGLE_BOARD_XM;
+ 		break;
++	case 1:
++		printk(KERN_INFO "OMAP3 Beagle Rev: xM B\n");
++		omap3_beagle_version = OMAP3BEAGLE_BOARD_XM;
++		break;
++	case 2:
++		printk(KERN_INFO "OMAP3 Beagle Rev: xM C\n");
++		omap3_beagle_version = OMAP3BEAGLE_BOARD_XMC;
++		break;
+ 	default:
+-		printk(KERN_INFO "OMAP3 Beagle Rev: unknown %hd\n", beagle_rev);
+-		omap3_beagle_version = OMAP3BEAGLE_BOARD_UNKN;
++		printk(KERN_INFO "OMAP3 Beagle Rev: unknown %hd, "
++			"assuming xM C or newer\n", beagle_rev);
++		omap3_beagle_version = OMAP3BEAGLE_BOARD_XMC;
+ 	}
+ 
+ 	return;
+-- 
+1.6.6.1
+

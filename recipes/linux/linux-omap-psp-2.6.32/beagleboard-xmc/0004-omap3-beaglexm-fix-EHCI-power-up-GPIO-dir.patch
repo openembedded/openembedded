@@ -1,0 +1,42 @@
+From 62db06de896c221cfa2231a53a933d6b3e81d66d Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@beagleboard.org>
+Date: Tue, 11 Jan 2011 17:13:35 +0000
+Subject: [PATCH 04/10] omap3: beaglexm: fix EHCI power up GPIO dir
+
+EHCI enable power pin is inverted (active high) in comparison
+to vanilla beagle which is active low. Handle this case conditionally.
+
+Without this fix, Beagle XM 4 port EHCI will not function and no
+networking will be available
+
+[nm@ti.com: split up, added descriptive changelogs]
+Signed-off-by: Nishanth Menon <nm@ti.com>
+Signed-off-by: Koen Kooi <koen@beagleboard.org>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
+ arch/arm/mach-omap2/board-omap3beagle.c |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index 247a426..7cfa2c8 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -487,6 +487,15 @@ static int beagle_twl_gpio_setup(struct device *dev,
+ 		gpio_direction_output(gpio + TWL4030_GPIO_MAX, 0);
+ 	}
+ 
++	/*
++	 * TWL4030_GPIO_MAX + 0 == ledA, EHCI nEN_USB_PWR (out, XM active
++	 * high / others active low)
++	 */
++	gpio_request(gpio + TWL4030_GPIO_MAX, "nEN_USB_PWR");
++	if (omap3_beagle_get_rev() == OMAP3BEAGLE_BOARD_XM)
++		gpio_direction_output(gpio + TWL4030_GPIO_MAX, 1);
++	else
++		gpio_direction_output(gpio + TWL4030_GPIO_MAX, 0);
+ 
+ 	/* TWL4030_GPIO_MAX + 1 == ledB, PMU_STAT (out, active low LED) */
+ 	gpio_leds[2].gpio = gpio + TWL4030_GPIO_MAX + 1;
+-- 
+1.6.6.1
+

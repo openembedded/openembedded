@@ -1,5 +1,5 @@
 require u-boot.inc
-PR = "r72"
+PR = "r73"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -26,61 +26,25 @@ SRC_URI_append_bug20 = "file://bug-uboot.patch"
 SRC_URI_append_bug20 += "file://bug-video-setting.patch"
 
 SRC_URI_beagleboard = "git://www.denx.de/git/u-boot.git;protocol=git \
-                       file://0001-Enable-I2C-bus-switching.patch \
-                       file://0002-OMAP3-add-board-revision-detection-for-Overo.patch \
-                       file://0003-OMAP3-update-Beagle-revision-detection-to-recognize-.patch \
-                       file://0004-OMAP3-Set-VAUX2-to-1.8V-for-EHCI-PHY-on-Beagle-Rev-C.patch \
-                       file://0005-OMAP3-add-entry-for-rev-3.1.2-check-and-display-max-.patch \
-                       file://0006-OMAP3-add-mpurate-boot-arg-for-overo-and-beagle.patch \
-                       file://0007-OMAP3-detect-expansion-board-type-version-using-eepr.patch \
-                       file://0008-OMAP3-Overo-enable-config-eeprom-to-set-u-boot-env-v.patch \
-                       file://0009-OMAP3-Overo-enable-input-on-MMC1_CLK-and-MMC3_CLK-pi.patch \
-                       file://0010-OMAP3-Overo-set-CONFIG_SYS_I2C_SPEED-to-400Khz.patch \
-                       file://0011-OMAP3-trim-excessively-long-delays-in-i2c-driver.patch \
-                       file://0012-OMAP3-Overo-allow-expansion-boards-with-any-vendor-I.patch \
-                       file://0013-OMAP3-Overo-change-address-of-expansion-eeprom-to-0x.patch \
-                       file://0014-OMAP3-board.c-don-t-attempt-to-set-up-second-RAM-ban.patch \
-                       file://0015-OMAP3-mem.c-enhance-the-RAM-test.patch \
-                       file://0016-env_nand.c-fail-gracefully-if-no-nand-is-present.patch \
-                       file://0017-OMAP3-add-definitions-to-support-sysinfo-cpu-and-cpu.patch \
-                       file://0018-OMAP3-sys_info-update-cpu-detection-for-36XX-37XX.patch \
-                       file://0019-OMAP3-clocks-update-clock-setup-for-36XX-37XX.patch \
-                       file://0020-OMAP3-beagle-add-support-for-Beagle-xM.patch \
-                       file://0021-OMAP3-Beagle-Overo-remove-omapfb.debug-y-from-defaul.patch \
-                       file://0022-OMAP3-beagle-implement-expansionboard-detection-base.patch \
-                       file://0023-beagleboard-display-message-about-I2C-errors-being-e.patch \
-                       file://0024-beagleboard-fix-TCT-expansionboard-IDs.patch \
-                       file://0025-Add-DSS-driver-for-OMAP3.patch \
-                       file://0026-Enable-DSS-driver-for-Beagle.patch \
-                       file://0027-beagleboardXM-don-t-set-mpurate-on-xM-in-bootargs.patch \
-                       file://0028-OMAP3-fix-and-clean-up-L2-cache-enable-disable-funct.patch \
-                       file://0029-OMAP3-convert-setup_auxcr-to-pure-asm.patch \
-                       file://0030-OMAP3-apply-Cortex-A8-errata-workarounds-only-on-aff.patch \
-                       file://0031-OMAP3-beagle-add-more-expansionboards-based-on-http-.patch \
-                       file://0032-OMAP3-beagle-set-mpurate-to-600-for-revB-and-revC1-3.patch \
-                       file://0033-OMAP3-beagle-prettify-expansionboard-message-a-bit.patch \
-                       file://0034-OMAP3-beagle-add-pinmux-for-Tincantools-Trainer-expa.patch \
-                       file://0035-OMAP3-Beagle-set-mpurate-to-1000-for-xM.patch \
-                       file://0036-OMAP3-Beagle-decrease-bootdelay-to-3-use-VGA-for-def.patch \
-                       file://0037-OMAP3-beagle-pass-expansionboard-name-in-bootargs.patch \
-                       file://0038-Added-configurations-for-xM-Rev-A-board.patch \
-                       file://0039-OMAP3-beagle-setenv-beaglerev-for-AxBx-Cx-xMA-for-be.patch \
-                       file://0040-OMAP-mmc-add-support-for-second-and-third-mmc-channe.patch \
-                       file://0041-OMAP3-Beagle-enable-support-for-second-and-third-mmc.patch \
-                       file://0042-BeagleBoard-Added-LED-driver.patch \
-                       file://0043-Add-led-command.patch \
-                       file://0044-BeagleBoard-Enabled-LEDs.patch \
-                       file://0045-BeagleBoard-Added-userbutton-command.patch \
-                       file://0046-BeagleBoard-Add-CONFIG_SYS_MEMTEST_SCRATCH.patch \
-                       file://0047-BeagleBoard-Adjust-boot-command-on-USER-button.patch \
-                       file://0048-BeagleBoard-Enable-pullups-on-i2c2.patch \
-                       file://0049-BeagleBoard-Add-camera-to-default-bootargs.patch \
-                       file://0050-BeagleBoard-move-ramdisk-parameters.patch \
-                       file://0051-add-support-for-beagleboardtoys-expansionboards.patch \
+                       file://0001-OMAP3-Beagle-Pin-Mux-initialization-glitch-fix.patch \
+                       file://0002-OMAP-Remove-omapfb.debug-y-from-Beagle-and-Overo-env.patch \
+                       file://0003-omap3_beagle-enable-the-use-of-a-plain-text-file-nam.patch \
+                       file://0004-OMAP3-BeagleBoard-Enable-pullups-on-i2c2.patch \
+                       file://0005-ARMV7-OMAP3-BeagleBoard-add-xM-rev-B-to-ID-table.patch \
+                       file://0006-OMAP3-BeagleBoard-add-more-expansionboard-IDs.patch \
+                       file://0007-OMAP3-Add-DSS-driver-for-OMAP3.patch \
+                       file://0008-BeagleBoard-Added-userbutton-command.patch \
+                       file://0009-OMAP3-beagle-pass-expansionboard-name-in-bootargs.patch \
+                       file://0010-Enable-DSS-driver-for-Beagle.patch \
+                       file://0011-Add-led-command.patch \
+                       file://0012-BeagleBoard-Added-LED-driver.patch \
+                       file://0013-OMAP3-BeagleBoard-updated-default-configuration.patch \
+                       file://0014-Corrected-LED-name-match-finding-avoiding-extraneous.patch \
+                       file://0016-BeagleBoard-Load-kernel-via-MMC-ext2-not-fat.patch \
                        file://fw_env.config \
 "
-SRCREV_beagleboard = "ca6e1c136ddb720c3bb2cc043b99f7f06bc46c55"
-PV_beagleboard = "2010.03+${PR}+gitr${SRCREV}"
+SRCREV_beagleboard = "c7977858dcf1f656cbe91ea0dc3cb9139c6a8cc8"
+PV_beagleboard = "2011.02+${PR}+gitr${SRCREV}"
 
 SRCREV_calamari = "b80d30546e88c70985094d81297d449b2bc59033"
 
@@ -243,10 +207,12 @@ SRCREV_dm355-evm     = "ea7387c9511ac92a46d3d147adffe36f868820e4"
 PV_dm355-evm         = "2009.05+2009.06-rc0+${PR}+gitr${SRCREV}"
 PE_dm355-evm         = "1"
 
-SRC_URI_dm365-evm    = "git://arago-project.org/git/projects/u-boot-davinci.git;protocol=git;branch=u-boot-davinci-2009.06"
-SRCREV_dm365-evm     = "ea7387c9511ac92a46d3d147adffe36f868820e4"
-PV_dm365-evm         = "2009.05+2009.06-rc0+${PR}+gitr${SRCREV}"
-PE_dm365-evm         = "1"
+# Use this for both dm365-evm and dm368-evm devices by using the dm365
+# SOC_FAMILY
+SRC_URI_dm365    = "git://arago-project.org/git/projects/u-boot-davinci.git;protocol=git;branch=u-boot-davinci-2009.06"
+SRCREV_dm365     = "ea7387c9511ac92a46d3d147adffe36f868820e4"
+PV_dm365         = "2009.05+2009.06-rc0+${PR}+gitr${SRCREV}"
+PE_dm365         = "1"
 
 SRC_URI_dm6446-evm   = "git://arago-project.org/git/projects/u-boot-davinci.git;protocol=git;branch=u-boot-davinci-2009.06"
 SRCREV_dm6446-evm    = "ea7387c9511ac92a46d3d147adffe36f868820e4"

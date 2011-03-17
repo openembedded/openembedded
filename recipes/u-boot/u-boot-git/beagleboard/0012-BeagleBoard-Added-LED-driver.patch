@@ -1,0 +1,160 @@
+From 35271d72072841c16687ffd51f08ec65cdac3b3e Mon Sep 17 00:00:00 2001
+From: Jason Kridner <jkridner@beagleboard.org>
+Date: Thu, 20 May 2010 06:14:01 -0500
+Subject: [PATCH 12/16] BeagleBoard: Added LED driver
+
+Added LED driver using status_led.  USR0 is set to monitor the boot
+status.  USR1 is set to be the green LED.
+
+Included adding configuration and command to the default configuration.
+
+v2 updates
+ * Fixed USR0/USR1 to be LED 0/1 respectively
+---
+ board/ti/beagle/Makefile |    4 ++-
+ board/ti/beagle/beagle.c |    7 ++++
+ board/ti/beagle/led.c    |   91 ++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 101 insertions(+), 1 deletions(-)
+ create mode 100644 board/ti/beagle/led.c
+
+diff --git a/board/ti/beagle/Makefile b/board/ti/beagle/Makefile
+index 3b4aaac..d9f445f 100644
+--- a/board/ti/beagle/Makefile
++++ b/board/ti/beagle/Makefile
+@@ -25,8 +25,10 @@ include $(TOPDIR)/config.mk
+ 
+ LIB	= $(obj)lib$(BOARD).o
+ 
+-COBJS	:= beagle.o
++COBJS-y	:= $(BOARD).o
++COBJS-$(CONFIG_STATUS_LED) += led.o
+ 
++COBJS	:= $(sort $(COBJS-y))
+ SRCS	:= $(COBJS:.o=.c)
+ OBJS	:= $(addprefix $(obj),$(COBJS))
+ 
+diff --git a/board/ti/beagle/beagle.c b/board/ti/beagle/beagle.c
+index 7c80a97..905b151 100644
+--- a/board/ti/beagle/beagle.c
++++ b/board/ti/beagle/beagle.c
+@@ -30,6 +30,9 @@
+  * MA 02111-1307 USA
+  */
+ #include <common.h>
++#ifdef CONFIG_STATUS_LED
++#include <status_led.h>
++#endif
+ #include <twl4030.h>
+ #include <asm/io.h>
+ #include <asm/arch/mmc_host_def.h>
+@@ -80,6 +83,10 @@ int board_init(void)
+ 	/* boot param addr */
+ 	gd->bd->bi_boot_params = (OMAP34XX_SDRC_CS0 + 0x100);
+ 
++#if defined(CONFIG_STATUS_LED) && defined(STATUS_LED_BOOT)
++	status_led_set (STATUS_LED_BOOT, STATUS_LED_ON);
++#endif
++
+ 	return 0;
+ }
+ 
+diff --git a/board/ti/beagle/led.c b/board/ti/beagle/led.c
+new file mode 100644
+index 0000000..fe80e19
+--- /dev/null
++++ b/board/ti/beagle/led.c
+@@ -0,0 +1,91 @@
++/*
++ * Copyright (c) 2010 Texas Instruments, Inc.
++ * Jason Kridner <jkridner@beagleboard.org>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++#include <common.h>
++#include <status_led.h>
++#include <asm/arch/cpu.h>
++#include <asm/io.h>
++#include <asm/arch/sys_proto.h>
++#include <asm/arch/gpio.h>
++
++static unsigned int saved_state[2] = {STATUS_LED_OFF, STATUS_LED_OFF};
++
++/* GPIO pins for the LEDs */
++#define BEAGLE_LED_USR0	150
++#define BEAGLE_LED_USR1	149
++
++#ifdef STATUS_LED_GREEN
++void green_LED_off (void)
++{
++	__led_set (STATUS_LED_GREEN, 0);
++}
++
++void green_LED_on (void)
++{
++	__led_set (STATUS_LED_GREEN, 1);
++}
++#endif
++
++void __led_init (led_id_t mask, int state)
++{
++	__led_set (mask, state);
++}
++
++void __led_toggle (led_id_t mask)
++{
++#ifdef STATUS_LED_BIT
++	if (STATUS_LED_BIT & mask) {
++		if (STATUS_LED_ON == saved_state[0])
++			__led_set(STATUS_LED_BIT, 0);
++		else
++			__led_set(STATUS_LED_BIT, 1);
++	}
++#endif
++#ifdef STATUS_LED_BIT1
++	if (STATUS_LED_BIT1 & mask) {
++		if (STATUS_LED_ON == saved_state[1])
++			__led_set(STATUS_LED_BIT1, 0);
++		else
++			__led_set(STATUS_LED_BIT1, 1);
++	}
++#endif
++}
++
++void __led_set (led_id_t mask, int state)
++{
++#ifdef STATUS_LED_BIT
++	if (STATUS_LED_BIT & mask) {
++		if (!omap_request_gpio(BEAGLE_LED_USR0)) {
++			omap_set_gpio_direction(BEAGLE_LED_USR0, 0);
++			omap_set_gpio_dataout(BEAGLE_LED_USR0, state);
++		}
++		saved_state[0] = state;
++	}
++#endif
++#ifdef STATUS_LED_BIT1
++	if (STATUS_LED_BIT1 & mask) {
++		if (!omap_request_gpio(BEAGLE_LED_USR1)) {
++			omap_set_gpio_direction(BEAGLE_LED_USR1, 0);
++			omap_set_gpio_dataout(BEAGLE_LED_USR1, state);
++		}
++		saved_state[1] = state;
++	}
++#endif
++}
++
+-- 
+1.6.6.1
+

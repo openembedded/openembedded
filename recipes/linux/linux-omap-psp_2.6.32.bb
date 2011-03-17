@@ -9,7 +9,7 @@ COMPATIBLE_MACHINE = "am3517-crane|beagleboard|omap3evm|am3517-evm|dm37x-evm|am3
 SRCREV = "5fc29e7b2a76a64a739f857858ef0b98294aa155"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
-MACHINE_KERNEL_PR_append = "+gitr${SRCREV}"
+MACHINE_KERNEL_PR_append = "a+gitr${SRCREV}"
 
 SRC_URI = "git://arago-project.org/git/projects/linux-omap3.git;protocol=http;branch=master \
            file://0001-Added-Crane-Board-support.patch \
@@ -141,6 +141,14 @@ SRC_URI = "git://arago-project.org/git/projects/linux-omap3.git;protocol=http;br
            file://defconfig"
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
+           file://beagleboard-xmc/0001-omap-Beagle-revision-detection.patch \
+           file://beagleboard-xmc/0002-omap-Beagle-only-Cx-boards-use-pin-23-for-write-prot.patch \
+           file://beagleboard-xmc/0003-omap-Beagle-no-gpio_wp-pin-connection-on-xM.patch \
+           file://beagleboard-xmc/0004-omap3-beaglexm-fix-EHCI-power-up-GPIO-dir.patch \
+           file://beagleboard-xmc/0005-omap3-beaglexm-fix-DVI-reset-GPIO.patch \
+           file://beagleboard-xmc/0006-omap3-beaglexm-fix-power-on-of-DVI.patch \
+           file://beagleboard-xmc/0007-beagleboard-hack-in-support-from-xM-rev-C.patch \
+           file://beagleboard-xmc/0008-omap3-beagle-cleaned-up-board-revision-conditions.patch \
 "
 
 SRC_URI_append_omap3-touchbook = " \

@@ -1,0 +1,56 @@
+From 0588da9057fddb5f6a6a04aedd7e0a79eb39e9e5 Mon Sep 17 00:00:00 2001
+From: Steve Sakoman <steve@sakoman.com>
+Date: Thu, 30 Dec 2010 07:19:44 +0000
+Subject: [PATCH 02/16] OMAP: Remove omapfb.debug=y from Beagle and Overo env settings
+
+The kernel DSS2 code is mature now, and keeping this setting hurts performance
+
+Signed-off-by: Steve Sakoman <steve@sakoman.com>
+---
+ include/configs/omap3_beagle.h |    2 --
+ include/configs/omap3_overo.h  |    2 --
+ 2 files changed, 0 insertions(+), 4 deletions(-)
+
+diff --git a/include/configs/omap3_beagle.h b/include/configs/omap3_beagle.h
+index 5cfa4cb..8b580ef 100644
+--- a/include/configs/omap3_beagle.h
++++ b/include/configs/omap3_beagle.h
+@@ -203,7 +203,6 @@
+ 		"mpurate=${mpurate} " \
+ 		"vram=${vram} " \
+ 		"omapfb.mode=dvi:${dvimode} " \
+-		"omapfb.debug=y " \
+ 		"omapdss.def_disp=${defaultdisplay} " \
+ 		"root=${mmcroot} " \
+ 		"rootfstype=${mmcrootfstype}\0" \
+@@ -211,7 +210,6 @@
+ 		"mpurate=${mpurate} " \
+ 		"vram=${vram} " \
+ 		"omapfb.mode=dvi:${dvimode} " \
+-		"omapfb.debug=y " \
+ 		"omapdss.def_disp=${defaultdisplay} " \
+ 		"root=${nandroot} " \
+ 		"rootfstype=${nandrootfstype}\0" \
+diff --git a/include/configs/omap3_overo.h b/include/configs/omap3_overo.h
+index 1b3d439..06a28f6 100644
+--- a/include/configs/omap3_overo.h
++++ b/include/configs/omap3_overo.h
+@@ -169,7 +169,6 @@
+ 		"mpurate=${mpurate} " \
+ 		"vram=${vram} " \
+ 		"omapfb.mode=dvi:${dvimode} " \
+-		"omapfb.debug=y " \
+ 		"omapdss.def_disp=${defaultdisplay} " \
+ 		"root=${mmcroot} " \
+ 		"rootfstype=${mmcrootfstype}\0" \
+@@ -177,7 +176,6 @@
+ 		"mpurate=${mpurate} " \
+ 		"vram=${vram} " \
+ 		"omapfb.mode=dvi:${dvimode} " \
+-		"omapfb.debug=y " \
+ 		"omapdss.def_disp=${defaultdisplay} " \
+ 		"root=${nandroot} " \
+ 		"rootfstype=${nandrootfstype}\0" \
+-- 
+1.6.6.1
+

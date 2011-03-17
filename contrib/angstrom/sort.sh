@@ -59,15 +59,15 @@ case "$arch" in
  at91sam9263ek at91sam9g10ek at91sam9g20ek at91sam9g45ek at91sam9g45ekes
  at91sam9rlek aximx50 aximx50v bd-neon c7x0 chumby chumby-falconwing cm-x270
  cm-x300 da830-omapl137-evm da850-omapl138-evm davinci-dvevm davinci-sffsdr
- devkitidp-pxa255 dm355-evm dm355-leopard dm357-evm dm365-evm dm6446-evm
- dm6467-evm dm6467t-evm dns323 dockstar e680 ea3250 em-x270 er0100 eseries
- ghi270 gumstix gumstix-connex gumstix-custom-connex gumstix-custom-verdex
- gumstix-verdex h1910 h2200 h3900 h4000 h5000 hawkboard hipox htcalpine
- htcapache htcblueangel htchimalaya htcsable htctornado htcuniversal hx2000
- hx4700 imote2 ixp4xxle kixrp435 kuropro logicpd-pxa270 looxc550 lspro
- magician mainstone mh355 mp900c mtx-3 mtx-3a mv2120 mx21ads mx27ads n2100
- navman-icn330 netbook-pro neuros-osd neuros-osd2 nhk15 nokia770 nslu2le
- omap1510inn omap1610h2 omap1710h3 omap5912osk openrd-base openrd-client
+ devkitidp-pxa255 dm355-evm dm355-leopard dm357-evm dm365-evm dm368-evm
+ dm6446-evm dm6467-evm dm6467t-evm dns323 dockstar e680 ea3250 em-x270 er0100
+ eseries ghi270 gumstix gumstix-connex gumstix-custom-connex
+ gumstix-custom-verdex gumstix-verdex h1910 h2200 h3900 h4000 h5000 hawkboard
+ hipox htcalpine htcapache htcblueangel htchimalaya htcsable htctornado
+ htcuniversal hx2000 hx4700 imote2 ixp4xxle kixrp435 kuropro logicpd-pxa270
+ looxc550 lspro magician mainstone mh355 mp900c mtx-3 mtx-3a mv2120 mx21ads
+ mx27ads n2100 navman-icn330 netbook-pro neuros-osd neuros-osd2 nhk15 nokia770
+ nslu2le omap1510inn omap1610h2 omap1710h3 omap5912osk openrd-base openrd-client
  palmld palmt650 palmt680 palmtc palmtt palmtt3 palmtt5 palmtx palmz31
  palmz71 palmz72 poodle qemuarm rokre2 rokr-e2 rokre6 ronetix-pm9261
  ronetix-pm9263 sgh-i900 sheevaplug spitz stamp9g20evb topas910 tosa

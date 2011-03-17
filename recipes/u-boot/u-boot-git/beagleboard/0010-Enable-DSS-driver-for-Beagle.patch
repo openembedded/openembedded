@@ -1,0 +1,107 @@
+From 2226921518eebb215ddadce09efb35b99a9db8ac Mon Sep 17 00:00:00 2001
+From: Syed Mohammed Khasim <khasim@ti.com>
+Date: Sun, 11 Apr 2010 17:44:39 +0200
+Subject: [PATCH 10/16] Enable DSS driver for Beagle
+
+Configures DSS to display color bar on Svideo
+Configures DSS to display background color on DVID
+
+Signed-off-by: Syed Mohammed Khasim <khasim@ti.com>
+---
+ board/ti/beagle/beagle.c |    1 +
+ board/ti/beagle/beagle.h |   60 ++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 61 insertions(+), 0 deletions(-)
+
+diff --git a/board/ti/beagle/beagle.c b/board/ti/beagle/beagle.c
+index 04e4259..7c80a97 100644
+--- a/board/ti/beagle/beagle.c
++++ b/board/ti/beagle/beagle.c
+@@ -318,6 +318,7 @@ int misc_init_r(void)
+ 		GPIO15 | GPIO14 | GPIO13 | GPIO12), &gpio5_base->oe);
+ 
+ 	dieid_num_r();
++	omap3_dss_enable();
+ 
+ 	return 0;
+ }
+diff --git a/board/ti/beagle/beagle.h b/board/ti/beagle/beagle.h
+index 48228dc..bdf2a6f 100644
+--- a/board/ti/beagle/beagle.h
++++ b/board/ti/beagle/beagle.h
+@@ -23,6 +23,8 @@
+ #ifndef _BEAGLE_H_
+ #define _BEAGLE_H_
+ 
++#include <asm/arch/dss.h>
++
+ const omap3_sysinfo sysinfo = {
+ 	DDR_STACKED,
+ 	"OMAP3 Beagle board",
+@@ -471,6 +473,64 @@ const omap3_sysinfo sysinfo = {
+ 	MUX_VAL(CP(MMC2_DAT7),      (IDIS | PTU | EN  | M4)) /*GPIO_139 WLAN_EN*/
+ 
+ /*
++ * Display Configuration
++ */
++
++#define DVI_BEAGLE_ORANGE_COL		0x00FF8000
++#define VENC_HEIGHT			0x00ef
++#define VENC_WIDTH			0x027f
++
++/*
++ * Configure VENC in DSS for Beagle to generate Color Bar
++ *
++ * Kindly refer to OMAP TRM for definition of these values.
++ */
++static const struct venc_regs venc_config_std_tv = {
++	.status					= 0x0000001B,
++	.f_control				= 0x00000040,
++	.vidout_ctrl				= 0x00000000,
++	.sync_ctrl				= 0x00008000,
++	.llen					= 0x00008359,
++	.flens					= 0x0000020C,
++	.hfltr_ctrl				= 0x00000000,
++	.cc_carr_wss_carr			= 0x043F2631,
++	.c_phase				= 0x00000024,
++	.gain_u					= 0x00000130,
++	.gain_v					= 0x00000198,
++	.gain_y					= 0x000001C0,
++	.black_level				= 0x0000006A,
++	.blank_level				= 0x0000005C,
++	.x_color				= 0x00000000,
++	.m_control				= 0x00000001,
++	.bstamp_wss_data			= 0x0000003F,
++	.s_carr					= 0x21F07C1F,
++	.line21					= 0x00000000,
++	.ln_sel					= 0x00000015,
++	.l21__wc_ctl				= 0x00001400,
++	.htrigger_vtrigger			= 0x00000000,
++	.savid__eavid				= 0x069300F4,
++	.flen__fal				= 0x0016020C,
++	.lal__phase_reset			= 0x00060107,
++	.hs_int_start_stop_x			= 0x008D034E,
++	.hs_ext_start_stop_x			= 0x000F0359,
++	.vs_int_start_x				= 0x01A00000,
++	.vs_int_stop_x__vs_int_start_y		= 0x020501A0,
++	.vs_int_stop_y__vs_ext_start_x		= 0x01AC0024,
++	.vs_ext_stop_x__vs_ext_start_y		= 0x020D01AC,
++	.vs_ext_stop_y				= 0x00000006,
++	.avid_start_stop_x			= 0x03480079,
++	.avid_start_stop_y			= 0x02040024,
++	.fid_int_start_x__fid_int_start_y	= 0x0001008A,
++	.fid_int_offset_y__fid_ext_start_x	= 0x01AC0106,
++	.fid_ext_start_y__fid_ext_offset_y	= 0x01060006,
++	.tvdetgp_int_start_stop_x		= 0x00140001,
++	.tvdetgp_int_start_stop_y		= 0x00010001,
++	.gen_ctrl				= 0x00FF0000,
++	.output_control				= 0x0000000D,
++	.dac_b__dac_c				= 0x00000000
++};
++
++/*
+  * Configure Timings for DVI D
+  */
+ static const struct panel_config dvid_cfg = {
+-- 
+1.6.6.1
+
