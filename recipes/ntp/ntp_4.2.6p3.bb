@@ -1,6 +1,6 @@
 require ntp.inc
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/${P}.tar.gz \
         file://tickadj.c.patch \
@@ -12,7 +12,9 @@ SRC_URI = "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/${P}.tar.gz \
 SRC_URI[md5sum] = "59876a9009b098ff59767ee45a88ebd2"
 SRC_URI[sha256sum] = "6e84d4ddfa14b911c3ed88463af10867e1fa9b287e7b34d8a02e78be85a7c40e"
 
-EXTRA_OECONF += " --with-net-snmp-config=no --without-ntpsnmpd" 
+EXTRA_OECONF += " --with-net-snmp-config=no --without-ntpsnmpd"
+
+CONFFILES_${PN} = "${sysconfdir}/ntp.conf"
 
 do_install_append() {
         install -d ${D}/${sysconfdir}/init.d
