@@ -140,7 +140,11 @@ def get_imagecmds(d):
         cmd  = "\t#Code for image type " + type + "\n"
         cmd += "\t${IMAGE_CMD_" + type + "}\n"
         cmd += "\tcd ${DEPLOY_DIR_IMAGE}/\n"
-        cmd += "\tln -fs ${IMAGE_NAME}.rootfs." + type + " ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}." + type + "\n\n"
+        cmd += "\tif [ -f ${IMAGE_NAME}.rootfs." + type + " ]; then\n"
+        cmd += "\tln -fs ${IMAGE_NAME}.rootfs." + type + " ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}." + type + "\n"
+        cmd += "\telif [ -f ${IMAGE_NAME}." + type + ".img ]; then\n"
+        cmd += "\tln -fs ${IMAGE_NAME}." + type + ".img ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}." + type + "\n"
+        cmd += "\tfi\n\n"
         cmds += bb.data.expand(cmd, localdata)
     return cmds
 
