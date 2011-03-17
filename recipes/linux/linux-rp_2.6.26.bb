@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r13"
+PR = "r14"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_qemuarm = "-1"
@@ -56,6 +56,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.26.tar.bz2;name=k
            file://connectplus-prevent-oops-HACK.patch;status=hack \
            file://htcuni.patch \
            file://versatile-armv6.patch \
+           file://new-make.patch \
            file://defconfig-c7x0 \
            file://defconfig-hx2000 \
            file://defconfig-akita \

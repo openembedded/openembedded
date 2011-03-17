@@ -1,7 +1,7 @@
 require linux-kexecboot.inc
 require ../linux/linux-rp.checksums.inc
 
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_qemuarm = "-1"
@@ -57,6 +57,7 @@ SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.26.tar.bz2;name=
            file://connectplus-remove-ide-HACK.patch;status=hack \
            file://connectplus-prevent-oops-HACK.patch;status=hack \
            file://htcuni.patch \
+           file://new-make.patch \
            file://versatile-armv6.patch \
            file://defconfig"
 
