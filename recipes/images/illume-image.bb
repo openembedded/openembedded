@@ -8,8 +8,10 @@ IMAGE_LINGUAS = "en-us de-de fr-fr pt-br ca-es zh-cn zh-tw bg-bg cs-cz da-dk nl-
 SPLASH = "exquisite exquisite-themes exquisite-theme-illume"
 
 # Default illume theme
-ILLUME_THEME ?= "e-wm-theme-illume"
-ILLUME_CONFIG ?= "e-wm-config-illume2"
+ETHEME ?= "e-wm-theme-illume"
+ECONFIG ?= "e-wm-config-illume2"
+ESYSACTIONS ?= "e-wm-sysactions"
+EMENU ?= "e-wm-menu"
 
 # getting the base system up
 BASE_INSTALL = "\
@@ -42,10 +44,10 @@ X_INSTALL = "\
   shared-mime-info \
   mime-support \
   e-wm \
-  e-wm-menu \
-  e-wm-sysactions \
-  ${ILLUME_CONFIG} \
-  ${ILLUME_THEME} \
+  ${EMENU} \
+  ${ESYSACTIONS} \
+  ${ECONFIG} \
+  ${ETHEME} \
   e-wm-config-standard \
   e-wm-config-netbook \
   e-wm-config-minimalist \

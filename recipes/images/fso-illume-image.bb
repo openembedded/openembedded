@@ -14,7 +14,7 @@ BASE_INSTALL = "\
   task-base \
 "
 
-ILLUME_THEME = "illume-theme-fso"
+ETHEME = "illume-theme-fso"
 
 X_INSTALL = "\
   task-x11-illume \

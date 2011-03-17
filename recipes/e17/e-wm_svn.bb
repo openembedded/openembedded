@@ -3,7 +3,7 @@ DEPENDS = "eet evas ecore edje efreet edbus eeze"
 LICENSE = "MIT BSD"
 SRCNAME = "e"
 PV = "0.16.999.060+svnr${SRCPV}"
-PR = "r18"
+PR = "r19"
 SRCREV = "${EFL_SRCREV}"
 
 inherit e update-alternatives
@@ -91,13 +91,15 @@ PACKAGES =+ "\
   illume-keyboard-default-terminal \
 "
 
+ESYSACTIONS ?= "${PN}-sysactions"
+
 RRECOMMENDS_${PN} = "\
   ${PN}-config-default \
   ${PN}-images \
   ${PN}-icons \
   ${PN}-other \
   ${PN}-input-methods \
-  ${PN}-sysactions \
+  ${ESYSACTIONS} \
 "
 
 PACKAGE_ARCH_${PN}-config-default = "all"

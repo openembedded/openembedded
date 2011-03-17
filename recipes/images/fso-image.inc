@@ -9,7 +9,7 @@ BASE_INSTALL = "\
   task-base \
 "
 
-ILLUME_THEME = "illume-theme-freesmartphone"
+ETHEME = "illume-theme-freesmartphone"
 
 X_INSTALL = "\
   task-x11-illume \

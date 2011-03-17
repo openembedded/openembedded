@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Lite Image Feed"
-PR = "r40"
+PR = "r41"
 PV = "2.0"
 LICENSE = "GPL"
 
@@ -107,7 +107,6 @@ RDEPENDS_${PN}-audio = "\
 RDEPENDS_${PN}-x = "\
   task-x11-illume \
   task-fonts-truetype-core \
-  e-wm-menu-shr \
   shr-wizard \
   shr-theme-gry \
   xcursor-transparent-theme \

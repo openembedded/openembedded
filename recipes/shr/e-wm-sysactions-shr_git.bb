@@ -3,12 +3,10 @@ SECTION = "e/utils"
 LICENSE = "MIT BSD"
 SRCREV = "bbcec18f0ebd47e4f6eea88b9b774edf7400e752"
 PV = "1.2+gitr${SRCPV}"
-PR = "r5"
+PR = "r6"
 PACKAGE_ARCH = "all"
 
-RPROVIDES_${PN} = "e-wm-sysactions"
 RCONFLICTS_${PN} = "e-wm-sysactions"
-#RREPLACES_${PN} = "e-wm-sysactions"
 
 SRC_URI = "git://git.shr-project.org/repo/shr-themes.git;protocol=http;branch=master"
 

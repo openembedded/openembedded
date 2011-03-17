@@ -5,7 +5,7 @@ LICENSE = "MIT BSD"
 RDEPENDS_${PN} = "shr-e-gadgets"
 SRCREV = "b166fa3c8f7160c0102877d32ee3ad09c8afaa7d"
 PV = "1.2+gitr${SRCPV}"
-PR = "r7"
+PR = "r8"
 
 inherit e
 
@@ -19,9 +19,12 @@ EXTRA_OECONF = "\
 
 FILES_${PN} = "${datadir}/enlightenment/data/config/illume2-shr"
 
+ESYSACTIONS ?= "e-wm-sysactions"
+EMENU ?= "e-wm-menu"
+
 RRECOMMENDS_${PN} = "\
-  e-wm-sysactions-shr \
-  e-wm-menu-shr \
+  ${ESYSACTIONS} \
+  ${EMENU} \
   illume-keyboard-default-alpha \
   illume-keyboard-numeric-alt \
   illume-keyboard-default-terminal \
