@@ -16,6 +16,7 @@ UBOOT_MACHINE ?= "${MACHINE}_config"
 UBOOT_BINARY ?= "u-boot.bin"
 UBOOT_IMAGE ?= "u-boot-${MACHINE}-${PV}-${PR}.bin"
 UBOOT_SYMLINK ?= "u-boot-${MACHINE}.bin"
+UBOOT_MAKE_TARGET ?= "all"
 
 do_configure () {
 	oe_runmake ${UBOOT_MACHINE}
@@ -25,7 +26,7 @@ do_compile () {
 	unset LDFLAGS
 	unset CFLAGS
 	unset CPPFLAGS
-	oe_runmake all
+	oe_runmake ${UBOOT_MAKE_TARGET}
 	oe_runmake tools env HOSTCC="${CC}"
 }
 
