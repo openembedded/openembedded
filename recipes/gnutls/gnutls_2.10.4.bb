@@ -1,6 +1,6 @@
 require gnutls.inc
 
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2
 
 EXTRA_OECONF += " --without-libgcrypt-prefix "
 
@@ -8,11 +8,6 @@ SRC_URI += "file://gettextize-with-gettext-0.18.patch \
             file://gnutls-openssl.patch \
             file://gnutls-replace-siginterrupt.patch \
            "
-
-# This is a workaround to get away with gcc ICE
-# as seen here https://bugs.launchpad.net/gcc-linaro/+bug/736439
-
-CFLAGS_arm_append = " -O2"
 
 do_configure_prepend() {
 
