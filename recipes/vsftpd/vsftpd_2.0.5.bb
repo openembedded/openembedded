@@ -1,7 +1,7 @@
 DESCRIPTION = "Secure ftp daemon"
 SECTION = "console/network"
 LICENSE = "GPL"
-PR = "r3"
+PR = "r4"
 
 DEPENDS = "libcap"
 
@@ -13,6 +13,8 @@ SRC_URI = "ftp://vsftpd.beasts.org/users/cevans/vsftpd-${PV}.tar.gz \
            file://vsftpd.conf"
 
 inherit update-rc.d
+
+CONFFILES_${PN} = "${sysconfdir}/vsftpd.conf"
 
 do_configure() {
         # Fix hardcoded /usr, /etc, /var mess.
