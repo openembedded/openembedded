@@ -11,7 +11,6 @@ SRCREV = "d378220c96c3c8b6f27dca33e7d8ba03318f9c2d"
 SRC_URI = "\
   git://git.kernel.org/pub/scm/libs/netlink/libnl.git;protocol=git \
   file://fix-pc-file.patch \
-  file://fix-pktloc-dep-race.patch \
 "
 
 PACKAGES =+ "${PN}-route ${PN}-nf ${PN}-genl ${PN}-cli"
