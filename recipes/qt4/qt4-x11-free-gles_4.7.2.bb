@@ -1,5 +1,7 @@
+DEFAULT_PREFERENCE = "-1"
+
 require qt4-x11-free.inc
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.7"
 
 QT_GLFLAGS = "-opengl es2 -depths 16,24,32 "
 
