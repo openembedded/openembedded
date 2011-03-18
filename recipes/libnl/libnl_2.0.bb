@@ -1,13 +1,8 @@
-DESCRIPTION = "libnl2 is a library for applications dealing with netlink sockets"
-SECTION = "libs/network"
-LICENSE = "LGPL"
-HOMEPAGE = "http://www.infradead.org/~tgr/libnl/"
+require libnl.inc
 PE = "1"
-PR = "r2"
+PR = "${INC_PR}.0"
 
 DEPENDS = "flex-native bison-native"
-
-inherit autotools pkgconfig
 
 SRC_URI = "\
   http://www.infradead.org/~tgr/libnl/files/libnl-${PV}.tar.gz \
