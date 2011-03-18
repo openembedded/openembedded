@@ -1,5 +1,5 @@
 DESCRIPTION = "xfce4-session is a session manager for Xfce 4 Desktop Environment"
-DEPENDS = "lbwnck ibxfcegui4 libxfce4util dbus iceauth xfce-utils"
+DEPENDS = "lbwnck libxfcegui4 libxfce4util dbus iceauth xfce-utils"
 SECTION = "x11"
 
 PR = "r4"
