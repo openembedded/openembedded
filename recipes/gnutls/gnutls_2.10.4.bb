@@ -1,6 +1,6 @@
 require gnutls.inc
 
-PR = "${INC_PR}.2
+PR = "${INC_PR}.2"
 
 EXTRA_OECONF += " --without-libgcrypt-prefix "
 
