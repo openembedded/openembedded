@@ -11,8 +11,6 @@ DEPENDS = "flex-native bison-native"
 
 inherit autotools
 
-includedir = ${prefix}/include/libnl2
-
 SRC_URI = "\
   git://git.kernel.org/pub/scm/libs/netlink/libnl.git;protocol=git \
   file://fix-pc-file.patch \
