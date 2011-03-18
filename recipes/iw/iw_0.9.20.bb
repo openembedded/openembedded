@@ -3,18 +3,15 @@ HOMEPAGE = "http://linuxwireless.org/en/users/Documentation/iw"
 SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "BSD"
-PR = "r2"
+PR = "r3"
 
-DEPENDS = "libnl2 pkgconfig"
+DEPENDS = "libnl pkgconfig"
 
 SRC_URI = " \
 	http://wireless.kernel.org/download/iw/${P}.tar.bz2 \
 	file://kill-git-version-check.patch \
 	"
-# We stage libnl2 header files not directly as they clash with libnl files. Once
-# we only use libnl2 and stage the headers at the normal place we can remove
-# this.
-CFLAGS += "-I${STAGING_INCDIR}/libnl2/ -DCONFIG_LIBNL20"
+CFLAGS += "-DCONFIG_LIBNL20"
 
 do_compile() {
 	oe_runmake
