@@ -20,7 +20,8 @@ inherit module
 MACHINE_KERNEL_PR_append = "i"
 
 SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/gfxsdk/${SGXPV}/exports/Graphics_SDK_setuplinux_${SGXPV}.bin \
-"
+           file://Compile-fixes-for-38-kernel.patch \
+          "
 SRC_URI[md5sum] = "ff8c1f2b8e4cb42f4ced6a613b081ada"
 SRC_URI[sha256sum] = "cdb0bd3964e107733d632aa8224e0537b05c1ffac34befc036423458c8d75255"
 
