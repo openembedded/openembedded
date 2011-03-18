@@ -1,12 +1,14 @@
 DESCRIPTION = "xfce4-session is a session manager for Xfce 4 Desktop Environment"
-DEPENDS = "lbwnck libxfcegui4 libxfce4util dbus iceauth xfce-utils"
+DEPENDS = "lbwnck libxfcegui4 libxfce4util dbus xfce-utils"
 SECTION = "x11"
 
-PR = "r4"
+PR = "r5"
 
 inherit xfce46
 
 RDEPENDS_${PN} = "iceauth xfce-utils xinit dbus-x11"
+
+EXTRA_OECONF += "ac_cv_path_ICEAUTH=${bindir}/iceauth"
 
 FILES_${PN} += "${libdir}/xfce4/splash/engines/*.so"
 FILES_${PN} += "${datadir}/xfce4/tips/*"
