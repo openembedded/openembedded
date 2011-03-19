@@ -5,7 +5,7 @@
 require fso-image.inc
 
 PV = "1.1"
-PR = "r1"
+PR = "r2"
 
 # no languages for now
 IMAGE_LINGUAS = ""
@@ -35,7 +35,6 @@ TOOLS_INSTALL = "\
 # audio
 AUDIO_INSTALL = "\
   alsa-oss \
-  alsa-state \
   alsa-utils-aplay \
   alsa-utils-amixer \
   gst-meta-audio \

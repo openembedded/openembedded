@@ -30,7 +30,6 @@ TOOLS_INSTALL = "\
 # audio
 AUDIO_INSTALL = "\
   alsa-oss \
-  alsa-state \
   alsa-utils-aplay \
   alsa-utils-amixer \
   gst-meta-audio \
