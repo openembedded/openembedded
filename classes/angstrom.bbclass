@@ -10,10 +10,11 @@ python () {
 
     blacklist = bb.data.getVar("ANGSTROM_BLACKLIST", d, 1)
     pkgnm = bb.data.getVar("PN", d, 1)
+    distro = bb.data.getVar("DISTRO", d, 1)
 
     if blacklist:
-	bb.note("Angstrom DOES NOT support %s because %s" % (pkgnm, blacklist))
-        raise bb.parse.SkipPackage("Angstrom DOES NOT support %s because %s" % (pkgnm, blacklist))
+	bb.note("%s DOES NOT support %s because %s" % (distro,pkgnm, blacklist))
+        raise bb.parse.SkipPackage("%s DOES NOT support %s because %s" % (distro,pkgnm, blacklist))
 
 }
 
