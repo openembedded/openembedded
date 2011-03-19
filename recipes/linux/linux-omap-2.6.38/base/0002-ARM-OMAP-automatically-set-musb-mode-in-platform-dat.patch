@@ -1,7 +1,7 @@
-From 702ecfac8549b2efebe98e2a195d85c31b1f5349 Mon Sep 17 00:00:00 2001
+From 3d209e539c4d61ac4fe23c1e0b65152329496fcf Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Wed, 24 Feb 2010 10:37:22 -0800
-Subject: [PATCH 2/2] ARM: OMAP: automatically set musb mode in platform data based on CONFIG options
+Subject: [PATCH 2/4] ARM: OMAP: automatically set musb mode in platform data based on CONFIG options
 
 ---
  arch/arm/mach-omap2/board-omap3beagle.c |    6 ++++++
@@ -9,10 +9,10 @@ Subject: [PATCH 2/2] ARM: OMAP: automatically set musb mode in platform data bas
  2 files changed, 12 insertions(+), 0 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index 29677cf..8d21e4a 100644
+index 085fa20..3d09429 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
-@@ -706,7 +706,13 @@ static struct omap_board_mux board_mux[] __initdata = {
+@@ -709,7 +709,13 @@ static struct omap_board_mux board_mux[] __initdata = {
  
  static struct omap_musb_board_data musb_board_data = {
  	.interface_type		= MUSB_INTERFACE_ULPI,

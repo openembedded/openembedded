@@ -1,0 +1,29 @@
+From bb6e5421b66257818e93f6d0957d6864e0bbf18a Mon Sep 17 00:00:00 2001
+From: Graeme Gregory <dp@xora.org.uk>
+Date: Tue, 15 Mar 2011 15:12:56 +0000
+Subject: [PATCH 3/4] mach-omap2/Makefile fix the security extensions
+
+Add the special code used for other files to sleep24xx.S as it has
+now started to use the SMC instruction.
+
+Signed-off-by: Graeme Gregory <dp@xora.org.uk>
+---
+ arch/arm/mach-omap2/Makefile |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/Makefile b/arch/arm/mach-omap2/Makefile
+index 82b2a67..dd083ae 100644
+--- a/arch/arm/mach-omap2/Makefile
++++ b/arch/arm/mach-omap2/Makefile
+@@ -68,7 +68,7 @@ obj-$(CONFIG_OMAP_SMARTREFLEX)          += sr_device.o smartreflex.o
+ obj-$(CONFIG_OMAP_SMARTREFLEX_CLASS3)	+= smartreflex-class3.o
+ 
+ AFLAGS_sleep24xx.o			:=-Wa,-march=armv6
+-AFLAGS_sleep34xx.o			:=-Wa,-march=armv7-a
++AFLAGS_sleep34xx.o			:=-Wa,-march=armv7-a$(plus_sec)
+ 
+ ifeq ($(CONFIG_PM_VERBOSE),y)
+ CFLAGS_pm_bus.o				+= -DDEBUG
+-- 
+1.7.4.1
+

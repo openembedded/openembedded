@@ -6,9 +6,9 @@ KERNEL_IMAGETYPE = "uImage"
 COMPATIBLE_MACHINE = "(omapzoom2|omapzoom36x|beagleboard)"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
-PV = "2.6.37+2.6.38-rc7"
+PV = "2.6.37+2.6.38-rc8"
 MACHINE_KERNEL_PR_append = "a+gitr${SRCREV}"
-SRCREV = "eeafae6dee6a408a6c5aaf9d3862a79eefbb71b0"
+SRCREV = "73ee404d7dedd23e35aae3ce516c504db783716f"
 
 FILESPATHPKG_prepend = "linux-omap-2.6.38:"
 
@@ -16,7 +16,10 @@ SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.g
 	   file://defconfig"
 
 SRC_URI_append = " file://base/0001-ARM-OMAP-beagleboard-Add-infrastructure-to-do-fixups.patch \
-                   file://base/0002-ARM-OMAP-automatically-set-musb-mode-in-platform-dat.patch"
+                   file://base/0002-ARM-OMAP-automatically-set-musb-mode-in-platform-dat.patch \
+                   file://base/0003-mach-omap2-Makefile-fix-the-security-extensions.patch \
+                   file://base/0004-beagleboard-hack-in-support-from-xM-rev-C.patch \
+                 "
 
 PARALLEL_MAKE = ""
 
