@@ -100,8 +100,16 @@ PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}g++:gcc-cross"
 # TOOLCHAIN_BRAND = "csl"
 # TOOLCHAIN_PATH = "/path/to/installed/copy/of/CodeSourcery/Sourcery_G++_Lite"
 
+# This example is for the Angstrom ARM toolchain, that uses cross prefix of
+# arm-angstrom-linux-gnueabi-$tool. This assumes that the tools are already
+# in the users PATH.
+# TOOLCHAIN_VENDOR = "-angstrom"
+# TOOLCHAIN_TYPE = "external"
+# TOOLCHAIN_BRAND = "angstrom"
+# TOOLCHAIN_PATH = "/usr/local/angstrom/arm"
+
 # Uncomment this if you want to use linux-headers from the linux-libc-headers
-# recipe as opposed to those bundled with the CSL toolchain
+# recipe as opposed to those bundled with the external (csl/angstrom) toolchain
 # PREFERRED_PROVIDER_linux-libc-headers = "linux-libc-headers"
 
 # So far, angstrom.conf sets ENABLE_BINARY_LOCALE_GENERATION
