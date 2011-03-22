@@ -1,0 +1,29 @@
+We need to override setting variables so we check if the vars are already
+set then we do not reset them here
+
+-Khem
+
+Index: mozilla-central/build/autoconf/pkg.m4
+===================================================================
+--- mozilla-central.orig/build/autoconf/pkg.m4
++++ mozilla-central/build/autoconf/pkg.m4
+@@ -23,12 +23,16 @@ AC_DEFUN([PKG_CHECK_MODULES],
+             succeeded=yes
+ 
+             AC_MSG_CHECKING($1_CFLAGS)
+-            $1_CFLAGS=`$PKG_CONFIG --cflags "$2"`
++            if test -z "$$1_CFLAGS"; then
++                $1_CFLAGS=`$PKG_CONFIG --cflags "$2"`
++            fi
+             AC_MSG_RESULT($$1_CFLAGS)
+ 
+             AC_MSG_CHECKING($1_LIBS)
+-            ## Remove evil flags like -Wl,--export-dynamic
+-            $1_LIBS="`$PKG_CONFIG --libs \"$2\" |sed s/-Wl,--export-dynamic//g`"
++            if test -z "$$1_LIBS"; then
++                ## Remove evil flags like -Wl,--export-dynamic
++                $1_LIBS="`$PKG_CONFIG --libs \"$2\" |sed s/-Wl,--export-dynamic//g`"
++            fi
+             AC_MSG_RESULT($$1_LIBS)
+         else
+             $1_CFLAGS=""

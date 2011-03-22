@@ -26,6 +26,14 @@ export HOST_CXXFLAGS = "${BUILD_CXXFLAGS}"
 export HOST_LDFLAGS = "${BUILD_LDFLAGS}"
 export HOST_RANLIB = "${BUILD_RANLIB}"
 export HOST_AR = "${BUILD_AR}"
+# Set the host libIDL stuff correctly.
+export HOST_LIBIDL_CONFIG="PKG_CONFIG_PATH=${STAGING_LIBDIR_NATIVE}/pkgconfig pkg-config libIDL-2.0"
+# Due to sysroot we need to sed out references to the target staging
+# when building the native version of xpidl Symptons of the failure
+# include "gthread.h:344: error: size of array 'type name' is negative"
+export HOST_LIBIDL_CFLAGS="`${HOST_LIBIDL_CONFIG} --cflags | sed -e s:${STAGING_DIR_TARGET}::g`"
+export HOST_LIBIDL_LIBS="`${HOST_LIBIDL_CONFIG} --libs`"
+
 
 mozilla_do_configure() {
 	(
@@ -43,14 +51,6 @@ mozilla_do_configure() {
 		echo mk_add_options MOZ_MAKE_FLAGS=\"${OLD_PARALLEL_MAKE}\" \
 			>> ${MOZCONFIG}
 	fi
-
-	# Set the host libIDL stuff correctly.
-	export HOST_LIBIDL_CONFIG="PKG_CONFIG_PATH=${STAGING_LIBDIR_NATIVE}/pkgconfig pkg-config libIDL-2.0"
-	# Due to sysroot we need to sed out references to the target staging
-	# when building the native version of xpidl Symptons of the failure
-	# include "gthread.h:344: error: size of array 'type name' is negative"
-	export HOST_LIBIDL_CFLAGS="`${HOST_LIBIDL_CONFIG} --cflags | sed -e s:${STAGING_DIR_TARGET}:${STAGING_DIR_NATIVE}:g`"
-	export HOST_LIBIDL_LIBS="`${HOST_LIBIDL_CONFIG} --libs`"
 
 	if [ -e ${MOZ_OBJDIR}/Makefile ] ; then
 		oe_runmake -f client.mk ${MOZ_OBJDIR}/Makefile \
