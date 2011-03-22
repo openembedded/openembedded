@@ -7,7 +7,7 @@ DEPENDS = "libipkg libpcre libgpewidget"
 
 PR = "r3"
 
-inherit gpe pkgconfig
+inherit gpe
 
 SRC_URI += " file://sbin-and-no-suid-install.patch \
                 file://gpe-package"
