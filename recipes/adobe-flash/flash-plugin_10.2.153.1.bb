@@ -14,7 +14,13 @@ LICENSE = "AdobeFlash"
 DEPENDS = "rpm2cpio-native"
 PR = "r1"
 
+# it lacks GNU_HASH but we can't fix it, so ignore it
+INSANE_SKIP_${PN} = "1"
+
 SRC_URI = "${ADOBE_MIRROR}/flash-plugin-${PV}-release.i386.rpm"
+
+SRC_URI[md5sum] = "4ef7c931c442aef19c920580de0e1c42"
+SRC_URI[sha256sum] = "9899252732cc94b3bc0ae7e145c6c5e94255e123bd8d5298f9ec40cb10f63568"
 
 do_configure() {
         rpm=${WORKDIR}/flash-plugin-${PV}-release.i386.rpm
