@@ -3,12 +3,12 @@
 . $(dirname $0)/wrapper.sh
 
 saved=""
-while getopts dbCcMpSsvB:f:g:m:o:D opt; do
+while getopts dbCcMpSsvB:f:g:m:o:t:D opt; do
     case "$opt" in
         s)
             # Ignore strip argument
             ;;
-        B|f|g|m|o)
+        B|f|g|m|o|t)
             save "-$opt"
             save "$OPTARG"
             ;;
