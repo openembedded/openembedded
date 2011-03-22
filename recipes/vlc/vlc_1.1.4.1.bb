@@ -5,14 +5,14 @@
 
 require vlc.inc
 
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 SRC_URI[md5sum] = "ce17c335b38b322949694313173fcd49"
 SRC_URI[sha256sum] = "61c9ea30a17ea40c6ccbfd507026e5c83ad9e0691f221d3667c8e49696d7c2aa"
 
 # ffmpeg from git (library version => 52) is required
 # libtool-native must be >= 2.2.4
-DEPENDS += "libdvdcss libdvdread lua5.1-native"
+DEPENDS += "libdvdcss libdvdread lua5.1-native lua5.1"
 RDEPENDS_${PN} += "lua5.1"
 
 EXTRA_OECONF += "\
