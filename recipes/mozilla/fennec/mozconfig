@@ -8,6 +8,12 @@ ac_add_options --enable-system-cairo
 ac_add_options --with-system-zlib
 ac_add_options --with-system-bz2
 ac_add_options --with-system-jpeg
+ac_add_options --disable-necko-wifi
+ac_add_options --disable-maintainer-mode
+ac_add_options --disable-dependency-tracking
+ac_add_options --disable-silent-rules
+ac_add_options --disable-elf-dynstr-gc
+ac_add_options --disable-elf-hack
 
 ac_add_app_options xulrunner --enable-application=xulrunner
 

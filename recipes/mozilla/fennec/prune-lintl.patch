@@ -1,0 +1,33 @@
+on uclibc we add -lintl and it will get into host libs too
+and on host machines based on glibc it will complain on linking
+host libraried. So we prune out -lintl
+
+-Khem
+
+Index: mozilla-central/build/autoconf/glib.m4
+===================================================================
+--- mozilla-central.orig/build/autoconf/glib.m4
++++ mozilla-central/build/autoconf/glib.m4
+@@ -53,7 +53,8 @@ AC_ARG_ENABLE(glibtest, [  --disable-gli
+     no_glib=yes
+   else
+     GLIB_CFLAGS=`$GLIB_CONFIG $glib_config_args --cflags`
+-    GLIB_LIBS=`$GLIB_CONFIG $glib_config_args --libs`
++    GLIB_LIBS=`$GLIB_CONFIG $glib_config_args --libs | \
++	   sed 's/\-lintl//g'`
+     glib_config_major_version=`$GLIB_CONFIG $glib_config_args --version | \
+            sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
+     glib_config_minor_version=`$GLIB_CONFIG $glib_config_args --version | \
+Index: mozilla-central/configure.in
+===================================================================
+--- mozilla-central.orig/configure.in
++++ mozilla-central/configure.in
+@@ -8495,7 +8495,7 @@ then
+         else
+             AC_MSG_ERROR([Cannot find $_LIBIDL_PREFIX_DIR/lib/libidl-0.6.lib or $_LIBIDL_PREFIX_DIR/lib/libidl-0.6_s.lib])
+         fi
+-        HOST_LIBIDL_LIBS="${HOST_LIBIDL_LIBS} ${GLIB_LIBS}"
++        HOST_LIBIDL_LIBS="`echo ${HOST_LIBIDL_LIBS} | sed -e s/\-lintl//g` ${GLIB_LIBS}"
+         _LIBIDL_FOUND=1
+         ;;
+     esac

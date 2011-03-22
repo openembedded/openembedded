@@ -1,12 +1,16 @@
 DESCRIPTION = "Mozilla Mobile browser"
 
 PV = "2.0+${MOZPV}"
-MOZPV = "4.0b3pre"
+MOZPV = "4.0b5"
 PR = "r0"
 PE = "1"
-
-SRC_URI = "hg://hg.mozilla.org;module=mozilla-central;rev=e2bc7992d304 \
-           hg://hg.mozilla.org;module=mobile-browser;rev=051c9709248b \
+SRCREV = "FENNEC_4_0b5_RELEASE"
+SRC_URI = "hg://hg.mozilla.org;module=mozilla-central;rev=${SRCREV} \
+           hg://hg.mozilla.org;module=mobile-browser;rev=${SRCREV} \
+           file://fennec-uclibc.patch \
+           file://libffi-arm-softfloat.patch \
+           file://uclibc-isfinite.patch \
+           file://cross-config.patch \
            file://jsautocfg.h \
            file://jsautocfg-dontoverwrite.patch \
 "
@@ -16,12 +20,26 @@ S = "${WORKDIR}/mozilla-central"
 inherit mozilla
 require firefox.inc
 
-DEPENDS += "libnotify autoconf213-native cairo alsa-lib sqlite3"
+DEPENDS += "yasm-native libnotify autoconf213-native cairo alsa-lib sqlite3 mesa gconf"
 
 FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2"
 
 export LIBXUL_DIST="${S}/objdir/xulrunner/dist/"
+
 CFLAGS_append = " -DMOZ_GFX_OPTIMIZE_MOBILE "
+
+# We need to append -L<sysroot>/usr/lib to LDFLAGS otherwise
+# it starts picking dependencies from /usr/lib if
+# EXTRA_DSO_LDOPTS contains libraries like -lgconf-2
+# then the make looks it up in VPATH and sysroot
+# does not appear in VPATH and it wont find it if
+# build host does not have a library in its /usr/lib
+# 
+
+LDFLAGS += "-L${STAGING_LIBDIR}"
+#EXTRA_OEMAKE += "EXTRA_DSO_LDOPTS=-L${STAGING_LIBDIR}"
+
+EXTRA_OECONF_append_arm = " --with-cpu-arch=${BASE_PACKAGE_ARCH} "
 
 do_configure_prepend() {
 	if [ -e ${WORKDIR}/mobile-browser ] ; then
@@ -66,10 +84,4 @@ do_install() {
         install -m 0644 ${WORKDIR}/mozilla-${PN}.png ${D}${datadir}/pixmaps/
 }
 
-do_stage() {
-	:
-}	
-
-
 FILES_${PN} += "${libdir}/fennec" 
-
