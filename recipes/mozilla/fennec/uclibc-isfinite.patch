@@ -1,0 +1,70 @@
+finite() is obsolete and we should use isfinite() anyway
+may be submit it upstream
+
+-Khem
+
+Index: mozilla-central/js/src/jsnum.h
+===================================================================
+--- mozilla-central.orig/js/src/jsnum.h
++++ mozilla-central/js/src/jsnum.h
+@@ -101,7 +101,7 @@ JSDOUBLE_IS_FINITE(jsdouble d)
+ #ifdef WIN32
+     return _finite(d);
+ #else
+-    return finite(d);
++    return isfinite(d);
+ #endif
+ }
+ 
+Index: mozilla-central/content/base/public/nsContentUtils.h
+===================================================================
+--- mozilla-central.orig/content/base/public/nsContentUtils.h
++++ mozilla-central/content/base/public/nsContentUtils.h
+@@ -1928,7 +1928,7 @@ inline NS_HIDDEN_(PRBool) NS_FloatIsFini
+ #ifdef WIN32
+   return _finite(f);
+ #else
+-  return finite(f);
++  return isfinite(f);
+ #endif
+ }
+ 
+Index: mozilla-central/content/canvas/src/nsCanvasRenderingContext2D.cpp
+===================================================================
+--- mozilla-central.orig/content/canvas/src/nsCanvasRenderingContext2D.cpp
++++ mozilla-central/content/canvas/src/nsCanvasRenderingContext2D.cpp
+@@ -159,7 +159,7 @@ DoubleIsFinite(double d)
+     // NOTE: '!!' casts an int to bool without spamming MSVC warning C4800.
+     return !!_finite(d);
+ #else
+-    return finite(d);
++    return isfinite(d);
+ #endif
+ }
+ 
+Index: mozilla-central/ipc/chromium/src/base/float_util.h
+===================================================================
+--- mozilla-central.orig/ipc/chromium/src/base/float_util.h
++++ mozilla-central/ipc/chromium/src/base/float_util.h
+@@ -14,7 +14,7 @@ namespace base {
+ 
+ inline bool IsFinite(const double& number) {
+ #if defined(OS_POSIX)
+-  return finite(number) != 0;
++  return isfinite(number) != 0;
+ #elif defined(OS_WIN)
+   return _finite(number) != 0;
+ #endif
+Index: mozilla-central/js/src/ctypes/CTypes.cpp
+===================================================================
+--- mozilla-central.orig/js/src/ctypes/CTypes.cpp
++++ mozilla-central/js/src/ctypes/CTypes.cpp
+@@ -464,7 +464,7 @@ static inline bool FloatIsFinite(jsdoubl
+ #ifdef WIN32
+   return _finite(f) != 0;
+ #else
+-  return finite(f);
++  return isfinite(f);
+ #endif
+ }
+ 
