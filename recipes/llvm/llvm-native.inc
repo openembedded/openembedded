@@ -19,8 +19,6 @@ EXTRA_OECMAKE = "\
 
 PACKAGES = ""
 
-PACKAGES_DYNAMIC = ""
-
 do_stage() {
   cd ${OECMAKE_BUILDPATH}
 
