@@ -2,6 +2,7 @@ require networkmanager-0.7.inc
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "1"
+DEFAULT_PREFERENCE_shr = "1"
 
 SRCREV = "9b61ec7c58e8106c28d01b33ad0b263aefb1f347"
 PV = "0.8.2+git"
@@ -18,6 +19,7 @@ SRC_URI += " \
     file://nm-system-settings.conf \
     file://NetworkManager \
     file://gtk-doc.make \
+    file://0001-respect-libnl-flags-also-in-backends-ip6-manager.patch \
 "
 
 EXTRA_OECONF += " --with-dhclient=${base_sbindir}/dhclient \
