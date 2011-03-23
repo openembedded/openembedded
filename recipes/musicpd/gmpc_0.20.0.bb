@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.musicpd.org/gmpc.shtml"
 SECTION = "x11/multimedia"
 LICENSE = "GPLv2"
 DEPENDS = "curl libsexy gob2-native gob2 libmpd gtk+ libglade gnome-vfs"
-PR = "r1"
+PR = "r2"
 
 inherit gnome autotools
 
