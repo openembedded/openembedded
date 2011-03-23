@@ -1,8 +1,8 @@
 DESCRIPTION = "xfce4-session is a session manager for Xfce 4 Desktop Environment"
-DEPENDS = "lbwnck libxfcegui4 libxfce4util dbus xfce-utils"
+DEPENDS = "libwnck libxfcegui4 libxfce4util dbus xfce-utils"
 SECTION = "x11"
 
-PR = "r5"
+PR = "r6"
 
 inherit xfce46
 
