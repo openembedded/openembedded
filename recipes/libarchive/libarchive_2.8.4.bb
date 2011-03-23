@@ -4,6 +4,8 @@ SECTION = "devel"
 LICENSE = "BSD"
 PR = "r0"
 
+DEPENDS = "libxml2"
+
 SRC_URI = "http://libarchive.googlecode.com/files/${PN}-${PV}.tar.gz \
            file://0001-Patch-from-upstream-revision-1990.patch \
            file://0002-Patch-from-upstream-revision-1991.patch \
