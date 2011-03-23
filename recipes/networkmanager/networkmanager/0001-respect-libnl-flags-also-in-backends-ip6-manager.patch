@@ -1,0 +1,51 @@
+From 9d6414375e2371086dcfadc1d117fbcfe43fb3fc Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Wed, 23 Mar 2011 17:27:54 +0100
+Subject: [PATCH] respect libnl flags also in backends/ip6-manager
+
+Signed-off-by: Martin Jansa <Martin.Jansa@gmail.com>
+---
+ src/backends/Makefile.am    |    2 ++
+ src/ip6-manager/Makefile.am |    2 ++
+ 2 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/src/backends/Makefile.am b/src/backends/Makefile.am
+index fbec9aa..c0780d0 100644
+--- a/src/backends/Makefile.am
++++ b/src/backends/Makefile.am
+@@ -63,10 +63,12 @@ endif
+ 
+ libnmbackend_la_LIBADD += \
+ 	$(top_builddir)/src/logging/libnm-logging.la \
++	$(LIBNL_LIBS) \
+ 	$(DBUS_LIBS) \
+ 	$(GLIB_LIBS)
+ 
+ libnmbackend_la_CPPFLAGS = \
++	$(LIBNL_CFLAGS) \
+ 	$(DBUS_CFLAGS) \
+ 	$(GLIB_CFLAGS) \
+ 	-DG_DISABLE_DEPRECATED \
+diff --git a/src/ip6-manager/Makefile.am b/src/ip6-manager/Makefile.am
+index b56b197..b98d6de 100644
+--- a/src/ip6-manager/Makefile.am
++++ b/src/ip6-manager/Makefile.am
+@@ -13,6 +13,7 @@ libip6_manager_la_SOURCES = \
+ 	nm-ip6-manager.h
+ 
+ libip6_manager_la_CPPFLAGS = \
++	$(LIBNL_CFLAGS) \
+ 	$(DBUS_CFLAGS) \
+ 	$(GLIB_CFLAGS) \
+ 	-DG_DISABLE_DEPRECATED
+@@ -20,6 +21,7 @@ libip6_manager_la_CPPFLAGS = \
+ libip6_manager_la_LIBADD = \
+ 	$(top_builddir)/marshallers/libmarshallers.la \
+ 	$(top_builddir)/src/logging/libnm-logging.la \
++	$(LIBNL_LIBS) \
+ 	$(DBUS_LIBS) \
+ 	$(GLIB_LIBS)
+ 
+-- 
+1.7.4.1
+
