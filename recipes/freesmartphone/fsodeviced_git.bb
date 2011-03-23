@@ -1,7 +1,7 @@
 require cornucopia.inc
 inherit fso-plugin
 
-DEPENDS += "alsa-lib libfsoresource android-rpc"
+DEPENDS += "alsa-lib libfsoresource android-rpc libfsosystem"
 RPROVIDES_${PN} = "openmoko-alsa-scenarios virtual/alsa-scenarios"
 SRCREV = "${FSO_CORNUCOPIA_SRCREV}"
 PV = "0.9.4+gitr${SRCPV}"
