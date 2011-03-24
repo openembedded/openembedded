@@ -1,7 +1,7 @@
 DESCRIPTION = "TI Inter Process Ccommunication (IPC) Mechanisms (for Uni- and Multi- Processor Configurations)"
 HOMEPAGE = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/ipc/index.html"
 SECTION = "devel"
-LICENSE = "TI" 
+LICENSE = "BSD" 
 
 require ti-paths.inc
 require ti-staging.inc
