@@ -13,6 +13,7 @@ S = "${WORKDIR}/ipc_${PV}"
 
 SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/ipc/${PV}/exports/ipc_setuplinux_${PV}.bin;name=ipcbin"
 
+DEPENDS = "ti-sysbios ti-cgt6x ti-xdctools"
 BINFILE="ipc_setuplinux_${PV}.bin"
 TI_BIN_UNPK_CMDS="Y: qY:workdir:Y"
 
