@@ -15,7 +15,7 @@ SRC_URI = "http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/ip
 
 DEPENDS = "ti-sysbios ti-cgt6x ti-xdctools"
 BINFILE="ipc_setuplinux_${PV}.bin"
-TI_BIN_UNPK_CMDS="Y: qY:workdir:Y"
+TI_BIN_UNPK_CMDS="Y: q:workdir:Y"
 
 do_install() {
     install -d ${D}${IPC_INSTALL_DIR_RECIPE}
