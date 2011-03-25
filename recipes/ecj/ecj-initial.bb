@@ -9,9 +9,9 @@ LICENSE = "EPL"
 
 DEPENDS = "libecj-bootstrap"
 
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "file://ecj.in"
+SRC_URI = "file://ecj-initial.in"
 
 NATIVE_INSTALL_WORKS = "1"
 
@@ -26,7 +26,7 @@ do_compile() {
   echo "#!/bin/sh" > ecj-initial
   echo "ECJ_JAR=${STAGING_DATADIR}/java/${JAR}" >> ecj-initial
   echo "RUNTIME=java-initial" >> ecj-initial
-  cat ecj.in >> ecj-initial
+  cat ecj-initial.in >> ecj-initial
 }
 
 do_install() {

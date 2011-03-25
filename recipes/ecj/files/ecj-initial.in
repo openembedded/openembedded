@@ -1,0 +1,1 @@
+${RUNTIME} -Xmx512m -cp ${ECJ_JAR} org.eclipse.jdt.internal.compiler.batch.Main ${1+"$@"}
