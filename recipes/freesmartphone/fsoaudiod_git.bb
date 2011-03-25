@@ -11,7 +11,7 @@ DEPENDS += "alsa-lib"
 SRCREV = "${FSO_CORNUCOPIA_SRCREV}"
 PV = "0.1.0+gitr${SRCPV}"
 PE = "2"
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 inherit update-rc.d
 
@@ -22,7 +22,9 @@ SRC_URI += "file://fsoaudiod"
 
 CONFFILES_${PN} = " \
   ${sysconfdir}/freesmartphone/conf/palm_pre/fsoaudiod.conf \
+  ${sysconfdir}/asound.conf \
 "
+RCONFLICTS_${PN} = "alsa-state"
 
 do_install_append() {
   install -d ${D}${sysconfdir}/init.d/
