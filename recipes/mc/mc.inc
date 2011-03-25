@@ -6,7 +6,7 @@ SECTION = "console/utils"
 PRIORITY = "optional"
 DEPENDS = "ncurses glib-2.0 glib-2.0-native"
 RDEPENDS_${PN} = "ncurses-terminfo"
-INC_PR = "r6"
+INC_PR = "r7"
 
 SRC_URI = "http://www.ibiblio.org/pub/Linux/utils/file/managers/mc/mc-${PV}.tar.gz"
 
@@ -20,12 +20,13 @@ ac_cv_path_UNZIP=${bindir}/unzip \
 "
 EXTRA_OEMAKE = 'GLIB_CFLAGS_FOR_BUILD="$GLIB_CFLAGS_FOR_BUILD" GLIB_LIBS_FOR_BUILD="$GLIB_LIBS_FOR_BUILD" CC_FOR_BUILD="$CC_FOR_BUILD"'
 
-PACKAGES += "${PN}-extfs ${PN}-hilite"
-FILES_${PN} = "${bindir}/ ${libexecdir}/mc ${datadir}/mc/*.charsets ${datadir}/mc/*.ext ${datadir}/mc/*.hint ${datadir}/mc/*.hlp ${datadir}/mc/*.lib ${datadir}/mc/*.menu ${datadir}/mc/*.rc ${datadir}/mc/bin /etc/profile.d"
+PACKAGES += "${PN}-extfs ${PN}-hilite ${PN}-skins"
+FILES_${PN} = "${bindir}/ ${libexecdir}/mc ${datadir}/mc/*.charsets ${datadir}/mc/*.ext ${datadir}/mc/hints/ ${datadir}/mc/*.hint ${datadir}/mc/help/ ${datadir}/mc/*.hlp ${datadir}/mc/*.lib ${datadir}/mc/*.menu ${datadir}/mc/*.rc ${datadir}/mc/bin /etc/profile.d ${sysconfdir}/mc/"
 FILES_${PN}-extfs = "${datadir}/mc/extfs/"
 FILES_${PN}-hilite = "${datadir}/mc/syntax/"
+FILES_${PN}-skins = "${datadir}/mc/skins/"
 FILES_${PN}-dbg += "${libexecdir}/mc/.debug"
-RRECOMMENDS_${PN} += "${PN}-extfs ${PN}-hilite"
+RRECOMMENDS_${PN} += "${PN}-extfs ${PN}-hilite ${PN}-skins"
 RDEPENDS_${PN}-extfs = "${PN}"
 RDEPENDS_${PN}-hilite = "${PN}"
 PACKAGE_ARCH_${PN}-extfs = "all"
