@@ -32,27 +32,48 @@ echo ,,,-
 
 sleep 1
 
-if [ -b ${DRIVE}1 ]; then
-	umount ${DRIVE}1
-	mkfs.vfat -F 32 -n "boot" ${DRIVE}1
-else
-	if [ -b ${DRIVE}p1 ]; then
-		umount ${DRIVE}p1
-		mkfs.vfat -F 32 -n "boot" ${DRIVE}p1
-	else
-		echo "Cant find boot partition in /dev"
-	fi
+
+if [ -x `which kpartx` ]; then
+	kpartx -a ${DRIVE}
 fi
 
-if [ -b ${DRIVE}2 ]; then
-	umount ${DRIVE}2
-	mke2fs -j -L "Angstrom" ${DRIVE}2
+# handle various device names.
+# note something like fdisk -l /dev/loop0 | egrep -E '^/dev' | cut -d' ' -f1 
+# won't work due to https://bugzilla.redhat.com/show_bug.cgi?id=649572
+
+PARTITION1=${DRIVE}1
+if [ ! -b ${PARTITION1} ]; then
+	PARTITION1=${DRIVE}p1
+fi
+
+DRIVE_NAME=`basename $DRIVE`
+DEV_DIR=`dirname $DRIVE`
+
+if [ ! -b ${PARTITION1} ]; then
+	PARTITION1=$DEV_DIR/mapper/${DRIVE_NAME}p1
+fi
+
+PARTITION2=${DRIVE}2
+if [ ! -b ${PARTITION2} ]; then
+	PARTITION2=${DRIVE}p2
+fi
+if [ ! -b ${PARTITION2} ]; then
+	PARTITION2=$DEV_DIR/mapper/${DRIVE_NAME}p2
+fi
+
+
+# now make partitions.
+if [ -b ${PARTITION1} ]; then
+	umount ${PARTITION1}
+	mkfs.vfat -F 32 -n "boot" ${PARTITION1}
 else
-	if [ -b ${DRIVE}p2 ]; then
-		umount ${DRIVE}p2
-		mke2fs -j -L "Angstrom" ${DRIVE}p2
-	else
-		echo "Cant find rootfs partition in /dev"
-	fi
+	echo "Cant find boot partition in /dev"
+fi
+
+if [ -b ${PARITION2} ]; then
+	umount ${PARTITION2}
+	mke2fs -j -L "Angstrom" ${PARTITION2} 
+else
+	echo "Cant find rootfs partition in /dev"
 fi
 
