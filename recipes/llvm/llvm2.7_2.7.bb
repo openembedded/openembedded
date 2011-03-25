@@ -1,14 +1,13 @@
 require llvm.inc
 
-PR = "r8"
+PR = "r9"
 
 DEPENDS = "llvm-common llvm2.7-native"
 
 # Force arm mode for armv4t until http://llvm.org/bugs/show_bug.cgi?id=6065 is resolved somehow
 ARM_INSTRUCTION_SET_armv4t = "ARM"
 
-SRC_URI = "\
-  http://llvm.org/releases/${PV}/llvm-${PV}.tgz \
+SRC_URI += "\
   file://arm_ppc.patch \
   file://r97745-llvmPR6480.patch \
   file://r104558-VFPmisc.patch \
