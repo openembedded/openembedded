@@ -1,0 +1,34 @@
+From e321ae7df57ada9ecc8c155fa4e5511c96ef5db3 Mon Sep 17 00:00:00 2001
+From: Rob Clark <rob@ti.com>
+Date: Fri, 18 Mar 2011 12:40:51 -0500
+Subject: [PATCH] dce: differntiate between fatal and non-fatal errors
+
+For streams with errors, the codec will throw back an error.. but not
+all errors are fatal.
+---
+ dce.c |   10 ++++++++--
+ 1 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/dce.c b/dce.c
+index ab7ad0a..88f175e 100644
+--- a/dce.c
++++ b/dce.c
+@@ -270,8 +270,14 @@ static int dce_decode(AVPacket *p)
+ 
+     err = VIDDEC3_process(codec, inbufs, outbufs, in_args, out_args);
+     if (err) {
+-        fprintf(stderr, "VIDDEC3_process() error %d\n", err);
+-        return -1;
++        fprintf(stderr, "VIDDEC3_process() error %d %08x\n", err,
++                    out_args->extendedError);
++        /* for non-fatal errors, keep going.. a non-fatal error could
++         * just indicate an error in the input stream which the codec
++         * was able to conceal
++         */
++        if (XDM_ISFATALERROR(out_args->extendedError))
++            return -1;
+     }
+ 
+     for (i = 0; i < out_args->outputID[i]; i++) {
+-- 
+1.7.1

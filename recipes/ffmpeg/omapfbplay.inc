@@ -2,13 +2,14 @@ DESCRIPTION = "Simple ffmpeg-based player that uses the omapfb overlays"
 DEPENDS = "bzip2 lame ffmpeg virtual/kernel"
 LICENSE = "MIT"
 
-PR = "r29"
+PR = "r30"
 
 PV = "0.0+${PR}+gitr${SRCREV}"
 
-SRCREV = "9ce728cf67dd1c0a7dbf4e54e899f28bd0c5fbe1"
+SRCREV = "34293052c5a2ae328eac6903512e6b4ce19b5639"
 SRC_URI = "git://git.mansr.com/omapfbplay;protocol=git \
-"
+           file://omapfbplay-errorhandling.patch \
+          "
 
 S = "${WORKDIR}/git"
 
