@@ -212,7 +212,7 @@ LICENSE_libgcc = "${ANG_LIC_RLE}"
 LICENSE_libgcc-dev = "${ANG_LIC_RLE}"
 LICENSE_libstdc++ = "${ANG_LIC_RLE}"
 LICENSE_libstdc++-dev = "${ANG_LIC_RLE}"
-LICENSE_gdbserver = "${ANG_LIC_GDBSERVER}"
+LICENSE_gdbserver = "${ANG_LIC_GDB}"
 
 PKGV = "${ANG_VER_MAIN}"
 PKGV_libgcc = "${ANG_VER_GCC}"
