@@ -1,5 +1,5 @@
 require u-boot.inc
-PR = "r73"
+PR = "r74"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -199,6 +199,14 @@ SRC_URI_overo = "git://www.sakoman.com/git/u-boot.git;branch=omap4-exp;protocol=
 "
 SRCREV_overo = "261733408a27d14590cf3ec6b596461808050e32"
 PV_overo = "2010.12+${PR}+gitr${SRCREV}"
+
+FILESDIR_omap4430-panda = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/u-boot-sakoman/"
+SRC_URI_omap4430-panda = "git://www.sakoman.com/git/u-boot.git;branch=omap4-exp;protocol=git \
+                          file://fix-break-caused-by-new-binutils.patch \
+                         "
+SRCREV_omap4430-panda  = "261733408a27d14590cf3ec6b596461808050e32"
+PV_omap4430-panda      = "2010.12+${PR}+git${SRCREV}"
+PE_omap4430-panda      = "1"
 
 # DaVinci dm355-evm/dm365-evm/dm6446-evm/dm6467-evm/dm6467t-evm - PSP 3.1.0/3.2.0 (build 35)
 
