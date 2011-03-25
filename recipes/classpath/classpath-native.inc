@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/classpath/"
 LICENSE = "Classpath"
 DEPENDS = "ecj-initial fastjar-native zip-native"
 
-inherit autotools gettext native
+inherit autotools native
 
 SRC_URI = "${GNU_MIRROR}/classpath/classpath-${PV}.tar.gz"
 
