@@ -200,7 +200,6 @@ SRC_URI_overo = "git://www.sakoman.com/git/u-boot.git;branch=omap4-exp;protocol=
 SRCREV_overo = "261733408a27d14590cf3ec6b596461808050e32"
 PV_overo = "2010.12+${PR}+gitr${SRCREV}"
 
-FILESDIR_omap4430-panda = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/u-boot-sakoman/"
 SRC_URI_omap4430-panda = "git://www.sakoman.com/git/u-boot.git;branch=omap4-exp;protocol=git \
                           file://fix-break-caused-by-new-binutils.patch \
                          "
