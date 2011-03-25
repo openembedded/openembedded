@@ -1,4 +1,4 @@
-PR = "r10"
+PR = "r11"
 
 INHIBIT_DEFAULT_DEPS = "1"
 
@@ -177,9 +177,32 @@ CSL_VER_GCC := "${@csl_get_gcc_version(d)}"
 CSL_VER_LIBC := "${@csl_get_libc_version(d)}"
 CSL_VER_KERNEL := "${@csl_get_kernel_version(d)}"
 CSL_VER_GDBSERVER := "${@csl_get_gdb_version(d)}"
+
+# Licenses set for main components of the toolchain:
+# (g)libc is always LGPL version 2 (or later)
+# gcc has switched from GPL version 2 (or later) to version 3 (or later) after 4.2.1,
+#    see this announcement - http://gcc.gnu.org/ml/gcc-announce/2007/msg00003.html
+# libgcc and libstdc++ always had exceptions to GPL called Runtime Library Exception, but
+#    it was based on GPL version 2 (or later), until new GPL version 3 (or later) exception
+#    was introduced on 27 Jan 2009 - http://gcc.gnu.org/ml/gcc-announce/2009/msg00000.html
+#    and http://www.gnu.org/licenses/gcc-exception.html, which was several days after
+#    gcc 4.3.3 was released - http://gcc.gnu.org/releases.html
+# gdb/gdbserver version 6.6 was the last one under GPL version 2 (or later), according
+#    to the release schedule - http://www.gnu.org/software/gdb/schedule/
 CSL_LIC_LIBC := "LGPLv2.1+"
-CSL_LIC_RLE := "${@["GPLv3 with GCC RLE", "GPLv2 with GCC RLE"][csl_get_main_version(d) <= "2007q3-51"]}"
-CSL_LIC_GDBSERVER := "${@["GPLv2+", "GPLv3+"][csl_get_gdb_version(d) >= "6.7.1"]}"
+CSL_LIC_GCC := "${@["GPLv3+", "GPLv2+"][csl_get_gcc_version(d) <= "4.2.1"]}"
+CSL_LIC_RLE := "${@["GPLv3+ with GCC RLE", "GPLv2+ with GCC RLE"][csl_get_gcc_version(d) <= "4.3.3"]}"
+CSL_LIC_GDB := "${@["GPLv3+", "GPLv2+"][csl_get_gdb_version(d) <= "6.6"]}"
+
+LICENSE = "${CSL_LIC_LIBC}"
+LICENSE_ldd = "${CSL_LIC_LIBC}"
+LICENSE_glibc = "${CSL_LIC_LIBC}"
+LICENSE_glibc-thread-db = "${CSL_LIC_LIBC}"
+LICENSE_libgcc = "${CSL_LIC_RLE}"
+LICENSE_libgcc-dev = "${CSL_LIC_RLE}"
+LICENSE_libstdc++ = "${CSL_LIC_RLE}"
+LICENSE_libstdc++-dev = "${CSL_LIC_RLE}"
+LICENSE_gdbserver = "${CSL_LIC_GDB}"
 
 PKGV = "${CSL_VER_MAIN}"
 PKGV_libgcc = "${CSL_VER_GCC}"
@@ -203,16 +226,6 @@ PKGV_localedef = "${CSL_VER_LIBC}"
 PKGV_libsegfault = "${CSL_VER_LIBC}"
 PKGV_linux-libc-headers = "${CSL_VER_KERNEL}"
 PKGV_gdbserver = "${CSL_VER_GDBSERVER}"
-
-LICENSE = "${CSL_LIC_LIBC}"
-LICENSE_ldd = "${CSL_LIC_LIBC}"
-LICENSE_glibc = "${CSL_LIC_LIBC}"
-LICENSE_glibc-thread-db = "${CSL_LIC_LIBC}"
-LICENSE_libgcc = "${CSL_LIC_RLE}"
-LICENSE_libgcc-dev = "${CSL_LIC_RLE}"
-LICENSE_libstdc++ = "${CSL_LIC_RLE}"
-LICENSE_libstdc++-dev = "${CSL_LIC_RLE}"
-LICENSE_gdbserver = "${CSL_LIC_GDBSERVER}"
 
 do_install() {
 	install -d ${D}${sysconfdir}
