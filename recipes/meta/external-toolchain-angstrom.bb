@@ -1,4 +1,4 @@
-PR = "r1"
+PR = "r2"
 
 INHIBIT_DEFAULT_DEPS = "1"
 
@@ -187,9 +187,32 @@ ANG_VER_GCC := "${@ang_get_gcc_version(d)}"
 ANG_VER_LIBC := "${@ang_get_libc_version(d)}"
 ANG_VER_KERNEL := "${@ang_get_kernel_version(d)}"
 ANG_VER_GDBSERVER := "${@ang_get_gdb_version(d)}"
+
+# Licenses set for main components of the toolchain:
+# (g)libc is always LGPL version 2 (or later)
+# gcc has switched from GPL version 2 (or later) to version 3 (or later) after 4.2.1,
+#    see this announcement - http://gcc.gnu.org/ml/gcc-announce/2007/msg00003.html
+# libgcc and libstdc++ always had exceptions to GPL called Runtime Library Exception, but
+#    it was based on GPL version 2 (or later), until new GPL version 3 (or later) exception
+#    was introduced on 27 Jan 2009 - http://gcc.gnu.org/ml/gcc-announce/2009/msg00000.html
+#    and http://www.gnu.org/licenses/gcc-exception.html, which was several days after
+#    gcc 4.3.3 was released - http://gcc.gnu.org/releases.html
+# gdb/gdbserver version 6.6 was the last one under GPL version 2 (or later), according
+#    to the release schedule - http://www.gnu.org/software/gdb/schedule/
 ANG_LIC_LIBC := "LGPLv2.1+"
-ANG_LIC_RLE := "${@["GPLv3+ with GCC RLE", "GPLv2+ with GCC RLE"][ang_get_gcc_version(d) <= "4.2.1"]}"
-ANG_LIC_GDBSERVER := "${@["GPLv3+", "GPLv2+"][ang_get_gdb_version(d) <= "6.6"]}"
+ANG_LIC_GCC := "${@["GPLv3+", "GPLv2+"][ang_get_gcc_version(d) <= "4.2.1"]}"
+ANG_LIC_RLE := "${@["GPLv3+ with GCC RLE", "GPLv2+ with GCC RLE"][ang_get_gcc_version(d) <= "4.3.3"]}"
+ANG_LIC_GDB := "${@["GPLv3+", "GPLv2+"][ang_get_gdb_version(d) <= "6.6"]}"
+
+LICENSE = "${ANG_LIC_LIBC}"
+LICENSE_ldd = "${ANG_LIC_LIBC}"
+LICENSE_glibc = "${ANG_LIC_LIBC}"
+LICENSE_glibc-thread-db = "${ANG_LIC_LIBC}"
+LICENSE_libgcc = "${ANG_LIC_RLE}"
+LICENSE_libgcc-dev = "${ANG_LIC_RLE}"
+LICENSE_libstdc++ = "${ANG_LIC_RLE}"
+LICENSE_libstdc++-dev = "${ANG_LIC_RLE}"
+LICENSE_gdbserver = "${ANG_LIC_GDBSERVER}"
 
 PKGV = "${ANG_VER_MAIN}"
 PKGV_libgcc = "${ANG_VER_GCC}"
@@ -213,16 +236,6 @@ PKGV_localedef = "${ANG_VER_LIBC}"
 PKGV_libsegfault = "${ANG_VER_LIBC}"
 PKGV_linux-libc-headers = "${ANG_VER_KERNEL}"
 PKGV_gdbserver = "${ANG_VER_GDBSERVER}"
-
-LICENSE = "${ANG_LIC_LIBC}"
-LICENSE_ldd = "${ANG_LIC_LIBC}"
-LICENSE_glibc = "${ANG_LIC_LIBC}"
-LICENSE_glibc-thread-db = "${ANG_LIC_LIBC}"
-LICENSE_libgcc = "${ANG_LIC_RLE}"
-LICENSE_libgcc-dev = "${ANG_LIC_RLE}"
-LICENSE_libstdc++ = "${ANG_LIC_RLE}"
-LICENSE_libstdc++-dev = "${ANG_LIC_RLE}"
-LICENSE_gdbserver = "${ANG_LIC_GDBSERVER}"
 
 do_install() {
 	install -d ${D}${sysconfdir}
