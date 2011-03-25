@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r98"
+PR = "r99"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -156,6 +156,8 @@ RDEPENDS_${PN} += "\
 #		evince \
 #		asterisk \
 		git \
+		subversion \
+		cvs \
 		ruby \
 		synergy \
 		irssi \
