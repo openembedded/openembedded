@@ -1,0 +1,13 @@
+Index: abuse-0.7.1/configure.ac
+===================================================================
+--- abuse-0.7.1.orig/configure.ac	2011-03-26 22:49:26.011146080 +0100
++++ abuse-0.7.1/configure.ac	2011-03-26 22:49:51.831146086 +0100
+@@ -37,7 +37,7 @@
+ AM_PATH_SDL($SDL_VERSION, :,
+     AC_MSG_ERROR([*** SDL version $SDL_VERSION or above not found!]))
+ CFLAGS="$CFLAGS $SDL_CFLAGS"
+-LIBS="$LIBS $SDL_LIBS $X_LIBS -L/usr/lib"
++LIBS="$LIBS $SDL_LIBS $X_LIBS"
+ 
+ # Optimizations
+ CPPFLAGS="${CPPFLAGS} -g -O2 -fno-strength-reduce -fomit-frame-pointer"
