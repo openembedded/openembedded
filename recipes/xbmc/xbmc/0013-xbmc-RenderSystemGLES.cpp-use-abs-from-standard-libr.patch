@@ -1,0 +1,58 @@
+From dce4c114149d61a9df63c803d3b366c4d5bb4efd Mon Sep 17 00:00:00 2001
+From: Paul Menzel <paulepanter@users.sourceforge.net>
+Date: Wed, 23 Mar 2011 00:48:46 +0100
+Subject: [PATCH] xbmc/RenderSystemGLES.cpp: use `abs` from standard library to fix build with newer GCC
+
+Using `angstrom-2010.x` (GCC 4.5.x) for `MACHINE = "beagleboard"` task compile fails with the following error. This error does not occur with `angstrom-2008.1` which uses GCC 4.3.3.
+
+	arm-angstrom-linux-gnueabi-g++ -march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp -mthumb-interwork -mno-thumb --sysroot=/oe/build-angstrom-next/angstrom-dev/sysroots/armv7a-angstrom-linux-gnueabi -MD -c -fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2 -ggdb2 -fpermissive -fvisibility-inlines-hidden -fPIC -DPIC -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -g -D_DEBUG -Wall -O2 -mfloat-abi=softfp -mno-apcs-stack-check -Wa,-march=armv7a -mcpu=cortex-a8 -mfpu=neon -mvectorize-with-neon-quad -fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2 -ggdb2 -fpermissive -fvisibility-inlines-hidden -fPIC -DPIC -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -g -D_DEBUG -Wall -O2 -mfloat-abi=softfp -mno-apcs-stack-check -Wa,-march=armv7a -mcpu=cortex-a8 -mfpu=neon -mvectorize-with-neon-quad -fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2 -ggdb2 -fpermissive -fvisibility-inlines-hidden -fPIC -DPIC -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -g -D_DEBUG -Wall -O2 -mfloat-abi=softfp -mno-apcs-stack-check -Wa,-march=armv7a -mcpu=cortex-a8 -mfpu=neon -mvectorize-with-neon-quad -D_LINUX -D_FILE_DEFINED -D__STDC_CONSTANT_MACROS -DBIN_INSTALL_PATH="\"/usr/lib/xbmc\"" -DINSTALL_PATH="\"/usr/share/xbmc\"" -DHAS_SDL_JOYSTICK -D'SVN_REV="Unknown"' -D_ARMEL -DHAVE_CONFIG_H  -I../ -I. -Ilinux -Icores -I../guilib -Iutils -IFileSystem -I/oe/build-angstrom-next/angstrom-dev/sysroots/armv7a-angstrom-linux-gnueabi/usr/include/freetype2 -Icores/dvdplayer -Ilib/libUPnP/Platinum/Source/Core -Ilib/libUPnP/Platinum/Source/Platinum -Ilib/libUPnP/Platinum/Source/Devices/MediaServer -Ilib/libUPnP/Platinum/Source/Devices/MediaConnect -Ilib/libUPnP/Platinum/Source/Devices/MediaRenderer -Ilib/libUPnP/Neptune/Source/System/Posix -Ilib/libUPnP/Neptune/Source/Core -Ilib/libcdio/libcdio/include -I../lib/jsoncpp/jsoncpp/include -Ilib/cpluff/libcpluff -D_GNU_SOURCE=1 -D_REENTRANT -I/oe/build-angstrom-next/angstrom-dev/sysroots/armv7a-angstrom-linux-gnueabi/usr/include/ -I/oe/build-angstrom-next/angstrom-dev/sysroots/armv7a-angstrom-linux-gnueabi/usr/include/SDL -I/oe/build-angstrom-next/angstrom-dev/sysroots/armv7a-angstrom-linux-gnueabi/usr/include/alsa -I/oe/build-angstrom-next/angstrom-dev/sysroots/armv7a-angstrom-linux-gnueabi/usr/include/dbus-1.0 -I/oe/build-angstrom-next/angstrom-dev/sysroots/armv7a-angstrom-linux-gnueabi/usr/include/freetype2 -I/oe/build-angstrom-next/angstrom-dev/sysroots/armv7a-angstrom-linux-gnueabi/usr/include/fribidi -I/oe/build-angstrom-next/angstrom-dev/sysroots/armv7a-angstrom-linux-gnueabi/usr/include/glib-2.0 -I/oe/build-angstrom-next/angstrom-dev/sysroots/armv7a-angstrom-linux-gnueabi/usr/include/libpng12 -I/oe/build-angstrom-next/angstrom-dev/sysroots/armv7a-angstrom-linux-gnueabi/usr/lib/dbus-1.0/include -I/oe/build-angstrom-next/angstrom-dev/sysroots/armv7a-angstrom-linux-gnueabi/usr/lib/glib-2.0/include -I/oe/build-angstrom-next/angstrom-dev/sysroots/i686-linux/usr/armv7a/include -I/oe/build-angstrom-next/angstrom-dev/work/armv7a-angstrom-linux-gnueabi/xbmc-10.05-r12+gitr0+e2ab481ebe964321c358ab9d6402088c714adcbe/git RenderSystemGLES.cpp -o RenderSystemGLES.o
+	[…]
+	In file included from ../guilib/GraphicContext.h:47:0,
+		               from RenderSystemGLES.cpp:27:
+	../guilib/StdString.h:1597:14: note: the mangling of 'va_list' has changed in GCC 4.4
+	RenderSystemGLES.cpp: In member function 'virtual bool CRenderSystemGLES::IsExtSupported(const char*)':
+	RenderSystemGLES.cpp:181:20: warning: comparison with string literal results in unspecified behaviour
+	RenderSystemGLES.cpp:186:25: warning: comparison with string literal results in unspecified behaviour
+	RenderSystemGLES.cpp: In member function 'virtual bool CRenderSystemGLES::PresentRender()':
+	RenderSystemGLES.cpp:253:31: error: call of overloaded 'abs(int64_t)' is ambiguous
+	/oe/build-angstrom-next/angstrom-dev/sysroots/armv7a-angstrom-linux-gnueabi/usr/include/stdlib.h:771:12: note: candidates are: int abs(int)
+	RenderSystemGLES.cpp:209:16: note:                 int64_t abs(int64_t)
+	/oe/build-angstrom-next/angstrom-dev/sysroots/i686-linux/usr/armv7a/lib/gcc/arm-angstrom-linux-gnueabi/4.5.3/../../../../arm-angstrom-linux-gnueabi/include/c++/4.5.3/cstdlib:170:3: note:                 long long int __gnu_cxx::abs(long long int)
+	/oe/build-angstrom-next/angstrom-dev/sysroots/i686-linux/usr/armv7a/lib/gcc/arm-angstrom-linux-gnueabi/4.5.3/../../../../arm-angstrom-linux-gnueabi/include/c++/4.5.3/cstdlib:139:3: note:                 long int std::abs(long int)
+	RenderSystemGLES.cpp:253:43: error: call of overloaded 'abs(int64_t&)' is ambiguous
+	/oe/build-angstrom-next/angstrom-dev/sysroots/armv7a-angstrom-linux-gnueabi/usr/include/stdlib.h:771:12: note: candidates are: int abs(int)
+	RenderSystemGLES.cpp:209:16: note:                 int64_t abs(int64_t)
+	/oe/build-angstrom-next/angstrom-dev/sysroots/i686-linux/usr/armv7a/lib/gcc/arm-angstrom-linux-gnueabi/4.5.3/../../../../arm-angstrom-linux-gnueabi/include/c++/4.5.3/cstdlib:170:3: note:                 long long int __gnu_cxx::abs(long long int)
+	/oe/build-angstrom-next/angstrom-dev/sysroots/i686-linux/usr/armv7a/lib/gcc/arm-angstrom-linux-gnueabi/4.5.3/../../../../arm-angstrom-linux-gnueabi/include/c++/4.5.3/cstdlib:139:3: note:                 long int std::abs(long int)
+	[…]
+	RenderSystemGLES.cpp: At global scope:
+	RenderSystemGLES.cpp:209:16: warning: 'int64_t abs(int64_t)' defined but not used
+	make[1]: *** [RenderSystemGLES.o] Error 1
+	make[1]: *** Waiting for unfinished jobs....
+
+This is reported in the XBMC forum [1]and I applied the suggested fix by topfs2 [2] which removed the error. I could not find the upstream commit fixing this error mentioned by bobo1on1 [2].
+
+[1] http://forum.xbmc.org/showthread.php?t=81682&page=1
+[2] http://forum.xbmc.org/showthread.php?t=81682&page=2
+
+Signed-off-by: Paul Menzel <paulepanter@users.sourceforge.net>
+---
+ xbmc/RenderSystemGLES.cpp |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/xbmc/RenderSystemGLES.cpp b/xbmc/RenderSystemGLES.cpp
+index 7a6e209..bebc98f 100644
+--- a/xbmc/RenderSystemGLES.cpp
++++ b/xbmc/RenderSystemGLES.cpp
+@@ -250,7 +250,7 @@ bool CRenderSystemGLES::PresentRender()
+     diff = curr - m_iSwapStamp;
+     m_iSwapStamp = curr;
+ 
+-    if (abs(diff - m_iSwapRate) < abs(diff))
++    if (std::abs(diff - m_iSwapRate) < std::abs(diff))
+       CLog::Log(LOGDEBUG, "%s - missed requested swap",__FUNCTION__);
+   }
+   
+-- 
+1.7.4.1
+

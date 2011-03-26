@@ -7,7 +7,7 @@ require recipes/egl/egl.inc
 SRCREV = "e2ab481ebe964321c358ab9d6402088c714adcbe"
 
 PV = "10.05"
-PR = "r12"
+PR = "r13"
 PR_append = "+gitr${SRCPV}"
 
 SRC_URI = "git://xbmc.git.sourceforge.net/gitroot/xbmc/xbmc;protocol=git;branch=master \
@@ -23,6 +23,7 @@ file://0009-Added-a-configure-option-disable-optical-drive.patch \
 file://0010-Fixed-so-compile-worked-when-disabling-optical.patch \
 file://0011-reverted-so-normal-bootstrap-doesn-t-exclude-gnu-con.patch \
 file://0012-fix-lzo-things.patch \
+file://0013-xbmc-RenderSystemGLES.cpp-use-abs-from-standard-libr.patch \
 "
 
 inherit autotools gettext
