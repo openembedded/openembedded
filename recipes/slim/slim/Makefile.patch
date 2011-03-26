@@ -1,0 +1,20 @@
+--- a/Makefile  2009-08-23 13:56:12.000000000 +0900
++++ b/Makefile	2009-08-23 13:56:51.000000000 +0900
+@@ -7,7 +7,7 @@
+ CC=/usr/bin/gcc
+ CFLAGS=-Wall -I. -I/usr/include/freetype2 -I/usr/include/freetype2/config -I/usr/include/libpng12 -I/usr/include
+ CXXFLAGS=$(CFLAGS)
+-LDFLAGS=-lXft -lX11 -lfreetype -lXrender -lfontconfig -lpng12 -lz -lm -lcrypt -lXmu -lpng -ljpeg
++LDFLAGS=-L/usr/X11R6/lib -lXft -lX11 -lpng12 -lm -lXmu -lpng -ljpeg
+ CUSTOM=-DHAVE_SHADOW
+ ifdef USE_PAM
+ LDFLAGS+= -lpam
+@@ -15,7 +15,7 @@
+ endif
+ PREFIX=/usr
+ CFGDIR=/etc
+-MANDIR=/usr/man
++MANDIR=/usr/share/man
+ DESTDIR=
+ #######################################################
+ 

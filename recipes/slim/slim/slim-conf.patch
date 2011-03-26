@@ -1,0 +1,56 @@
+--- a/slim.conf 2009-08-23 13:48:20.000000000 +0900
++++ b/slim.conf	2009-08-23 13:53:50.000000000 +0900
+@@ -1,17 +1,17 @@
+ # Path, X server and arguments (if needed)
+ # Note: -xauth $authfile is automatically appended
+-default_path        ./:/bin:/usr/bin:/usr/local/bin
+-default_xserver     /usr/bin/X
+-#xserver_arguments   -dpi 75
++default_path        /bin:/usr/bin:/usr/local/bin:/usr/bin/X11
++default_xserver     /usr/bin/X11/X
++xserver_arguments   -nolisten tcp
+ 
+ # Commands for halt, login, etc.
+ halt_cmd            /sbin/shutdown -h now
+ reboot_cmd          /sbin/shutdown -r now
+-console_cmd         /usr/bin/xterm -C -fg white -bg black +sb -T "Console login" -e /bin/sh -c "/bin/cat /etc/issue; exec /bin/login"
++console_cmd         /usr/bin/x-terminal-emulator -C -fg white -bg black +sb -T "Console login" -e /bin/sh -c "/bin/cat /etc/issue.net; exec /bin/login"
+ #suspend_cmd        /usr/sbin/suspend
+ 
+ # Full path to the xauth binary
+-xauth_path         /usr/bin/xauth 
++xauth_path         /usr/bin/X11/xauth
+ 
+ # Xauth file for server
+ authfile           /var/run/slim.auth
+@@ -33,7 +33,7 @@
+ # to adjust the command according to your preferred shell,
+ # i.e. for freebsd use:
+ # login_cmd           exec /bin/sh - ~/.xinitrc %session
+-login_cmd           exec /bin/bash -login ~/.xinitrc %session
++login_cmd           exec /bin/bash -login /etc/X11/Xsession %session
+ 
+ # Commands executed when starting and exiting a session.
+ # They can be used for registering a X11 session with
+@@ -51,10 +51,10 @@
+ # The current chosen session name is replaced in the login_cmd
+ # above, so your login command can handle different sessions.
+ # see the xinitrc.sample file shipped with slim sources
+-sessions            xfce4,icewm,wmaker,blackbox
++sessions            default,startxfce4,openbox,ion3,icewm,wmaker,blackbox,awesome
+ 
+ # Executed when pressing F11 (requires imagemagick)
+-screenshot_cmd      import -window root /slim.png
++screenshot_cmd      screenshot_cmd      scrot /tmp/slim.png
+ 
+ # welcome message. Available variables: %host, %domain
+ welcome_msg         Welcome to %host
+@@ -81,7 +81,7 @@
+ 
+ # current theme, use comma separated list to specify a set to 
+ # randomly choose from
+-current_theme       default
++current_theme       debian-moreblue-orbit
+ 
+ # Lock file
+ lockfile            /var/run/slim.lock

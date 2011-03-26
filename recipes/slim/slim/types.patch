@@ -1,0 +1,12 @@
+Index: slim-1.3.1/app.cpp
+===================================================================
+--- slim-1.3.1.orig/app.cpp	2011-03-21 18:33:43.630046799 +0100
++++ slim-1.3.1/app.cpp	2011-03-21 18:34:16.130046805 +0100
+@@ -16,6 +16,7 @@
+ #include <fcntl.h>
+ #include <cstring>
+ #include <cstdio>
++#include <stdint.h>
+ 
+ #include <iostream>
+ #include <fstream>

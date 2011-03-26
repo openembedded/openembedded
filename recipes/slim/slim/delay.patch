@@ -1,0 +1,12 @@
+--- slim-1.3.1-orig/app.cpp.orig        2007-07-15 22:09:28.000000000 +0800
++++ slim-1.3.1/app.cpp     2008-05-06 23:33:40.000000000 +0800
+@@ -884,9 +884,6 @@
+             ServerPID = -1;
+             break;
+         }
+-        alarm(15);
+-        pause();
+-        alarm(0);
+
+         // Wait for server to start up
+         if(WaitForServer() == 0) {

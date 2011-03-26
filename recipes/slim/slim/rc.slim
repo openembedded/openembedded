@@ -1,0 +1,27 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          slim
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: SLiM Display Manager (and wrapper script)
+# Description:       init script for the SLiM Display Manager
+### END INIT INFO
+
+case $1 in
+start)
+	/usr/bin/slim -d &
+	;;
+stop)
+	killall /usr/bin/slim
+	;;
+restart)
+	$0 stop
+	sleep 2
+	$0 start
+	;;
+*)
+	echo "usage: $0 [start|stop|restart]"
+	;;
+esac
+
+# End of file
