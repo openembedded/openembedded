@@ -7,7 +7,7 @@ DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "1"
 
 PV = "3.3.1+git"
-PR = "r6+gitr${SRCREV}"
+PR = "r7+gitr${SRCREV}"
 SRCREV = "7c669dd4ce69296f09004f8876366058c20a3352"
 
 inherit gnome
@@ -27,7 +27,8 @@ EXTRA_OECONF = " \
   --enable-gstreamer \
   --disable-gdu \
   --disable-scrollkeeper  \
-  --with-boost-signals=boost_signals-mt \
+  --with-boost=${STAGING_DIR} \
+  --with-boost-signals=boost_signals \
 "
 
 do_configure_prepend() {
