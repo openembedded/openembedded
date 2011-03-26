@@ -10,11 +10,13 @@
 
 /dev/mux	c	660	0	5	234	0	0	1	17
 /dev/ttyIPC0	c	660	0	5	251	0	-	-	-
+/dev/ttyS1	c	640	0	5	4	65	-	-	-
 /dev/input/uinput	c	660 	0	0	10	223	-	-	-
 /dev/video0	c	660	0	44	81	0	-	-	-
 /dev/fb		c	600	0	0	29	0	0	1	4
 # audio
 /dev/dsp		c	660	0	29	14	3	-	-	-
+/dev/snd		d	755	0	0	-	-	-	-	-
 /dev/snd/controlC0	c	660	0	29	116	0	-	-	-
 /dev/snd/pcmC0D0p	c	660	0	29	116	16	-	-	-
 /dev/snd/pcmC0D1c	c	660	0	29	116	25	-	-	-
