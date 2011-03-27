@@ -25,7 +25,6 @@ IMAGE_CMD_jffs2 = "mkfs.jffs2 --root=${IMAGE_ROOTFS} --faketime -m favourlzo \
 
 EXTRA_IMAGEDEPENDS += "zaurus-installer"
 
-
 #########
 # xserver (FIXME: xserver-xorg is in testing on spitz)
 #########
@@ -55,18 +54,7 @@ PREFERRED_PROVIDER_virtual/libgl_spitz = "mesa-dri"
 # kernel
 ########
 
-PREFERRED_PROVIDER_virtual/kernel = "linux-rp"
-
-# Starting with 2.6.32 linux-rp is deprecated for some models
-#PREFERRED_PROVIDER_virtual/kernel = "linux"
-PREFERRED_PROVIDER_virtual/kernel_collie = "linux"
-PREFERRED_PROVIDER_virtual/kernel_tosa = "linux"
-
-# udev-141 is the latest version that works with linux-2.6.26-RP
-PREFERRED_PROVIDER_udev-compat_akita = "udev-compat141"
-PREFERRED_PROVIDER_udev-compat_spitz = "udev-compat141"
-PREFERRED_PROVIDER_udev-compat_c7x0 = "udev-compat141"
-PREFERRED_PROVIDER_udev-compat_poodle = "udev-compat141"
+PREFERRED_PROVIDER_virtual/kernel = "linux"
 
 # Default bootloader expects "zImage", use "uImage" for u-boot
 # Note: kexecboot can boot both kind of images
@@ -99,25 +87,18 @@ CMDLINE_spitz = "console=ttyS0,115200n8 console=tty1 fbcon=rotate:1"
 CMDLINE_tosa = "console=ttyS0,115200n8 console=tty1"
 
 MACHINE_FEATURES = "kernel26 apm alsa pcmcia irda usbgadget keyboard touchscreen screen vfat ext2"
-MACHINE_FEATURES_append_akita = " usbhost "
-MACHINE_FEATURES_append_spitz = " usbhost "
+# iwmmxt under testing
+#MACHINE_FEATURES_append_akita = " usbhost iwmmxt "
+#MACHINE_FEATURES_append_spitz = " usbhost iwmmxt "
+MACHINE_FEATURES_append_akita = " usbhost"
+MACHINE_FEATURES_append_spitz = " usbhost"
 MACHINE_FEATURES_append_tosa  = " usbhost wifi "
 
 MACHINE_EXTRA_RDEPENDS = "zaurusd mtd-utils nandlogical"
 MACHINE_EXTRA_RDEPENDS_collie = "zaurusd"
 
-# Fixme ? pcmcia and pxa2xx-cs are now compiled in kernel
-# Fixme ? module-snd for collie
-MACHINE_EXTRA_RRECOMMENDS_collie = ""
-MACHINE_EXTRA_RRECOMMENDS_c7x0   = "kernel-module-snd-soc-corgi kernel-module-pxa2xx-cs kernel-module-pcmcia"
-MACHINE_EXTRA_RRECOMMENDS_akita  = "kernel-module-snd-soc-spitz kernel-module-pxa2xx-cs kernel-module-pcmcia"
-MACHINE_EXTRA_RRECOMMENDS_spitz  = "kernel-module-snd-soc-spitz kernel-module-pxa2xx-cs kernel-module-pcmcia"
-MACHINE_EXTRA_RRECOMMENDS_poodle = "kernel-module-snd-soc-poodle kernel-module-pxa2xx-cs kernel-module-pcmcia"
-# For tosa: OHCI suspend/resume fixup
-# wlan-ng is now in kernel (2.6.29)
-# Fixme ? module-snd for tosa
-MACHINE_EXTRA_RRECOMMENDS_tosa = "apm-tosa-suspendfix"
-
+# Still actual? OHCI suspend/resume fixup
+# MACHINE_EXTRA_RRECOMMENDS_tosa = "apm-tosa-suspendfix"
 
 ##################################
 # build kexecboot kernel while
@@ -125,3 +106,25 @@ MACHINE_EXTRA_RRECOMMENDS_tosa = "apm-tosa-suspendfix"
 ##################################
 
 require conf/machine/include/initramfs-kexecboot.inc
+
+# FIXME
+# blindly import from linux-rp.inc (2.6.2x)
+#
+module_autoload_pxaficp_ir = "pxaficp_ir"
+module_autoload_snd-pcm-oss = "snd-pcm-oss"
+module_autoload_pcmcia_core = "pcmcia_core"
+module_autoload_pxa2xx_cs = "pxa2xx_cs"
+module_autoload_ohci-hcd_tosa = "ohci-hcd"
+module_autoload_snd-soc-corgi_c7x0 = "snd-soc-corgi"
+module_autoload_snd-soc-spitz_akita = "snd-soc-spitz"
+module_autoload_snd-soc-spitz_spitz = "snd-soc-spitz"
+module_autoload_snd-soc-poodle_poodle = "snd-soc-poodle"
+module_autoload_locomo-spi_collie = "locomo-spi"
+module_autoload_mmc_block_collie = "mmc_block"
+module_autoload_mmc_spi = "mmc-spi"
+module_autoload_locomokbd_collie = "locomokbd"
+module_autoload_sa1100-cs_collie = "sa1100_cs"
+module_autoload_collie-ts_collie = "collie-ts"
+module_autoload_leds-locomo_collie = "leds-locomo"
+module_autoload_power_collie = "power"
+# Fixme ? module-snd for tosa
