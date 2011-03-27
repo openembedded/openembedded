@@ -44,22 +44,6 @@ EXTRA_OEMAKE = "-e \
 		'STRIP=echo'"
 
 RPROVIDES_udev_append = " udev-compat-wrapper"
-RDEPENDS_udev_spitz += "udev-compat"
-do_unpack_append_spitz() {
-	bb.build.exec_func('do_apply_compat_wrapper', d)
-}
-RDEPENDS_udev_akita += "udev-compat"
-do_unpack_append_akita() {
-	bb.build.exec_func('do_apply_compat_wrapper', d)
-}
-RDEPENDS_udev_c7x0 += "udev-compat"
-do_unpack_append_c7x0() {
-	bb.build.exec_func('do_apply_compat_wrapper', d)
-}
-RDEPENDS_udev_poodle += "udev-compat"
-do_unpack_append_poodle() {
-	bb.build.exec_func('do_apply_compat_wrapper', d)
-}
 
 # Modify init script on platforms that need to boot old kernels:
 do_apply_compat_wrapper() {
