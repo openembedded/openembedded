@@ -1,1 +1,13 @@
-${RUNTIME} -Xmx1024m -cp ${ECJ_JAR} org.eclipse.jdt.internal.compiler.batch.Main ${1+"$@"}
+ARGS=${1+"$@"}
+COUNT=5
+END=0
+
+while test "${COUNT}" -gt "${END}"
+do
+ ${RUNTIME} -Xmx1024m -cp ${ECJ_JAR} org.eclipse.jdt.internal.compiler.batch.Main ${ARGS}
+ if test "${?}" -eq "${END}"
+ then
+    break
+ fi
+ COUNT=$(($COUNT-1))
+done
