@@ -3,8 +3,8 @@ HOMEPAGE = "http://hostap.epitest.fi"
 SECTION = "kernel/userland"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "libnl2 openssl"
-PR = "r1"
+DEPENDS = "libnl openssl"
+PR = "r2"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -21,7 +21,6 @@ INITSCRIPT_NAME=hostapd
 
 do_configure() {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
-	echo 'CFLAGS += "-I${STAGING_INCDIR}/libnl2"' >> ${S}/.config
 }
 
 do_compile() {

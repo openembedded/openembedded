@@ -1,6 +1,6 @@
 require networkmanager-0.7.inc
 
-PR = "r2"
+PR = "r3"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -10,6 +10,7 @@ SRC_URI += " \
     file://nm-system-settings.conf \
     file://NetworkManager \
     file://gtk-doc.make \
+    file://0001-respect-libnl-flags-also-in-backends-ip6-manager.patch \
 "
 
 SRC_URI[md5sum] = "96e551149dda8f6e0a5621f77468ba79"
