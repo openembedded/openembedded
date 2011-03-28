@@ -22,8 +22,12 @@ IMAGE_CMD_jffs2 = "mkfs.jffs2 --root=${IMAGE_ROOTFS} --faketime -m favourlzo \
                    cat ${T}/${IMAGE_NAME}.rootfs.jffs2.summary > ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.summary.jffs2; \
                    rm ${T}/${IMAGE_NAME}.rootfs.jffs2.summary;"
 
-
 EXTRA_IMAGEDEPENDS += "zaurus-installer"
+
+IMAGE_DEVICE_TABLES = "files/device_table-minimal.txt \
+                       files/device_table-add-scsi.txt \
+                       files/device_table-add-loop.txt \
+                       "
 
 #########
 # xserver (FIXME: xserver-xorg is in testing on spitz)
