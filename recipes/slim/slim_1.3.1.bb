@@ -2,12 +2,12 @@ DESCRIPTION="Simple Login Manager"
 HOMEPAGE="http://slim.berlios.de"
 LICENSE = "GPLv2+"
 
-PR = "r0"
+PR = "r1"
 
 inherit update-rc.d
 
-DEPEND = "virtual/x11 libxmu libpng libjpeg libpam freetype sessreg"
-RDEPEND_${PN} = "perl libpam-meta xauth freetype sessreg"
+DEPENDS = "virtual/x11 libxmu libpng libjpeg libpam freetype sessreg"
+RDEPENDS_${PN} = "perl libpam-meta xauth freetype sessreg"
 
 SRC_URI = " \
   http://download.berlios.de/${PN}/${P}.tar.gz \
