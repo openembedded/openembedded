@@ -1,2 +1,6 @@
 /dev/sda	b	660	0	6	8	0	-	-	-
 /dev/sda	b	660	0	6	8	1	1	1	15
+/dev/sdb	b	660	0	6	8	16	-	-	-
+/dev/sdb	b	660	0	6	8	17	1	1	4
+/dev/sdc	b	660	0	6	8	32	-	-	-
+/dev/sdc	b	660	0	6	8	33	1	1	4
