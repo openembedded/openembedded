@@ -1,12 +1,15 @@
-PR = "r11"
+PR = "r2"
 
 INHIBIT_DEFAULT_DEPS = "1"
 
+PACKAGE_NO_GCONV = "1"
+PACKAGE_NO_LOCALE = "1"
+
 INSANE_SKIP_libgcc = "True"
 INSANE_SKIP_libstdc++ = "True"
-INSANE_SKIP_nscd = "True"
 INSANE_SKIP_glibc-utils = "True"
-INSANE_SKIP_gdbserver = "True"
+INSANE_SKIP_glibc-dev = "True"
+#INSANE_SKIP_gdbserver = "True"
 
 SRC_URI = "file://SUPPORTED"
 
@@ -22,11 +25,11 @@ PROVIDES = "\
 	virtual/libintl \
 	virtual/libiconv \
 	glibc-thread-db \
-	${@base_conditional('PREFERRED_PROVIDER_linux-libc-headers', 'external-toolchain-csl', 'linux-libc-headers', '', d)} \
-	${@base_conditional('PREFERRED_PROVIDER_gdbserver', 'external-toolchain-csl', 'gdbserver', '', d)} \
+	${@base_conditional('PREFERRED_PROVIDER_linux-libc-headers', 'external-toolchain-angstrom', 'linux-libc-headers', '', d)} \
+	${@base_conditional('PREFERRED_PROVIDER_gdbserver', 'external-toolchain-angstrom', 'gdbserver', '', d)} \
 "
 
-DEPENDS = "${@base_conditional('PREFERRED_PROVIDER_linux-libc-headers', 'external-toolchain-csl', '', 'linux-libc-headers', d)}"
+DEPENDS = "${@base_conditional('PREFERRED_PROVIDER_linux-libc-headers', 'external-toolchain-angstrom', '', 'linux-libc-headers', d)}"
 RPROVIDES_glibc-dev += "libc-dev libc6-dev virtual-libc-dev"
 PACKAGES_DYNAMIC += "glibc-gconv-*"
 PACKAGES_DYNAMIC += "glibc-locale-*"
@@ -38,8 +41,8 @@ PACKAGES = "\
 	libgcc-dev \
 	libstdc++ \
 	libstdc++-dev \
-	${@base_conditional('PREFERRED_PROVIDER_linux-libc-headers', 'external-toolchain-csl', 'linux-libc-headers', '', d)} \
-	${@base_conditional('PREFERRED_PROVIDER_gdbserver', 'external-toolchain-csl', 'gdbserver', '', d)} \
+	${@base_conditional('PREFERRED_PROVIDER_linux-libc-headers', 'external-toolchain-angstrom', 'linux-libc-headers', '', d)} \
+	${@base_conditional('PREFERRED_PROVIDER_gdbserver', 'external-toolchain-angstrom', 'gdbserver', '', d)} \
 	glibc-dbg \
 	glibc \
 	catchsegv \
@@ -133,28 +136,35 @@ DESCRIPTION_sln = "glibc: create symbolic links between files"
 DESCRIPTION_localedef = "glibc: compile locale definition files"
 DESCRIPTION_gdbserver = "gdb - GNU debugger"
 
-def csl_get_main_version(d):
-	import subprocess,os,bb
-	if os.path.exists(bb.data.getVar('TOOLCHAIN_PATH', d, 1)+'/bin/'+bb.data.getVar('TARGET_PREFIX', d, 1)+'gcc'):
-		return subprocess.Popen([bb.data.getVar('TOOLCHAIN_PATH', d, 1)+'/bin/'+bb.data.getVar('TARGET_PREFIX', d, 1)+'gcc', '-v'], stderr=subprocess.PIPE).communicate()[1].splitlines()[-1].split()[-1].rstrip(')')
+def ang_get_main_version(d):
+	import os,bb
+	if os.path.exists(bb.data.getVar('TOOLCHAIN_PATH', d, 1)+'/version'):
+		f = open(bb.data.getVar('TOOLCHAIN_PATH', d, 1)+'/version', 'r')
+		l = f.readlines();
+		f.close();
+		for s in l:
+			if s.find('Version') > 0:
+				ver = s.split()[2]
+				return ver
+		return None
 
-def csl_get_gcc_version(d):
+def ang_get_gcc_version(d):
 	import subprocess,os,bb
 	if os.path.exists(bb.data.getVar('TOOLCHAIN_PATH', d, 1)+'/bin/'+bb.data.getVar('TARGET_PREFIX', d, 1)+'gcc'):
 		return subprocess.Popen([bb.data.getVar('TOOLCHAIN_PATH', d, 1)+'/bin/'+bb.data.getVar('TARGET_PREFIX', d, 1)+'gcc', '-v'], stderr=subprocess.PIPE).communicate()[1].splitlines()[-1].split()[2]
 
-def csl_get_libc_version(d):
+def ang_get_libc_version(d):
 	import os,bb
-	if os.path.exists(bb.data.getVar('TOOLCHAIN_SYSPATH', d, 1)+'/libc/lib/'):
-		for file in os.listdir(bb.data.getVar('TOOLCHAIN_SYSPATH', d, 1)+'/libc/lib/'):
+	if os.path.exists(bb.data.getVar('TOOLCHAIN_SYSPATH', d, 1)+'/lib/'):
+		for file in os.listdir(bb.data.getVar('TOOLCHAIN_SYSPATH', d, 1)+'/lib/'):
 			if file.find('libc-') == 0:
 				return file[5:-3]
 		return None
 
-def csl_get_kernel_version(d):
+def ang_get_kernel_version(d):
 	import os,bb
-	if os.path.exists(bb.data.getVar('TOOLCHAIN_SYSPATH', d, 1)+'/libc/'):
-		f = open(bb.data.getVar('TOOLCHAIN_SYSPATH', d, 1)+'/libc/usr/include/linux/version.h', 'r')
+	if os.path.exists(bb.data.getVar('TOOLCHAIN_SYSPATH', d, 1)+'/usr/include/linux/'):
+		f = open(bb.data.getVar('TOOLCHAIN_SYSPATH', d, 1)+'/usr/include/linux/version.h', 'r')
 		l = f.readlines();
 		f.close();
 		for s in l:
@@ -167,16 +177,16 @@ def csl_get_kernel_version(d):
 				return str(maj)+'.'+str(min)+'.'+str(ver)
 		return None
 
-def csl_get_gdb_version(d):
+def ang_get_gdb_version(d):
 	import subprocess,os,bb
 	if os.path.exists(bb.data.getVar('TOOLCHAIN_PATH', d, 1)+'/bin/'+bb.data.getVar('TARGET_PREFIX', d, 1)+'gdb'):
 		return subprocess.Popen([bb.data.getVar('TOOLCHAIN_PATH', d, 1)+'/bin/'+bb.data.getVar('TARGET_PREFIX', d, 1)+'gdb', '-v'],stdout=subprocess.PIPE).communicate()[0].splitlines()[0].split()[-1]
 
-CSL_VER_MAIN := "${@csl_get_main_version(d)}"
-CSL_VER_GCC := "${@csl_get_gcc_version(d)}"
-CSL_VER_LIBC := "${@csl_get_libc_version(d)}"
-CSL_VER_KERNEL := "${@csl_get_kernel_version(d)}"
-CSL_VER_GDBSERVER := "${@csl_get_gdb_version(d)}"
+ANG_VER_MAIN := "${@ang_get_main_version(d)}"
+ANG_VER_GCC := "${@ang_get_gcc_version(d)}"
+ANG_VER_LIBC := "${@ang_get_libc_version(d)}"
+ANG_VER_KERNEL := "${@ang_get_kernel_version(d)}"
+ANG_VER_GDBSERVER := "${@ang_get_gdb_version(d)}"
 
 # Licenses set for main components of the toolchain:
 # (g)libc is always LGPL version 2 (or later)
@@ -189,43 +199,43 @@ CSL_VER_GDBSERVER := "${@csl_get_gdb_version(d)}"
 #    gcc 4.3.3 was released - http://gcc.gnu.org/releases.html
 # gdb/gdbserver version 6.6 was the last one under GPL version 2 (or later), according
 #    to the release schedule - http://www.gnu.org/software/gdb/schedule/
-CSL_LIC_LIBC := "LGPLv2.1+"
-CSL_LIC_GCC := "${@["GPLv3+", "GPLv2+"][csl_get_gcc_version(d) <= "4.2.1"]}"
-CSL_LIC_RLE := "${@["GPLv3+ with GCC RLE", "GPLv2+ with GCC RLE"][csl_get_gcc_version(d) <= "4.3.3"]}"
-CSL_LIC_GDB := "${@["GPLv3+", "GPLv2+"][csl_get_gdb_version(d) <= "6.6"]}"
+ANG_LIC_LIBC := "LGPLv2.1+"
+ANG_LIC_GCC := "${@["GPLv3+", "GPLv2+"][ang_get_gcc_version(d) <= "4.2.1"]}"
+ANG_LIC_RLE := "${@["GPLv3+ with GCC RLE", "GPLv2+ with GCC RLE"][ang_get_gcc_version(d) <= "4.3.3"]}"
+ANG_LIC_GDB := "${@["GPLv3+", "GPLv2+"][ang_get_gdb_version(d) <= "6.6"]}"
 
-LICENSE = "${CSL_LIC_LIBC}"
-LICENSE_ldd = "${CSL_LIC_LIBC}"
-LICENSE_glibc = "${CSL_LIC_LIBC}"
-LICENSE_glibc-thread-db = "${CSL_LIC_LIBC}"
-LICENSE_libgcc = "${CSL_LIC_RLE}"
-LICENSE_libgcc-dev = "${CSL_LIC_RLE}"
-LICENSE_libstdc++ = "${CSL_LIC_RLE}"
-LICENSE_libstdc++-dev = "${CSL_LIC_RLE}"
-LICENSE_gdbserver = "${CSL_LIC_GDB}"
+LICENSE = "${ANG_LIC_LIBC}"
+LICENSE_ldd = "${ANG_LIC_LIBC}"
+LICENSE_glibc = "${ANG_LIC_LIBC}"
+LICENSE_glibc-thread-db = "${ANG_LIC_LIBC}"
+LICENSE_libgcc = "${ANG_LIC_RLE}"
+LICENSE_libgcc-dev = "${ANG_LIC_RLE}"
+LICENSE_libstdc++ = "${ANG_LIC_RLE}"
+LICENSE_libstdc++-dev = "${ANG_LIC_RLE}"
+LICENSE_gdbserver = "${ANG_LIC_GDB}"
 
-PKGV = "${CSL_VER_MAIN}"
-PKGV_libgcc = "${CSL_VER_GCC}"
-PKGV_libgcc-dev = "${CSL_VER_GCC}"
-PKGV_libstdc++ = "${CSL_VER_GCC}"
-PKGV_libstdc++-dev = "${CSL_VER_GCC}"
-PKGV_libc = "${CSL_VER_LIBC}"
-PKGV_glibc = "${CSL_VER_LIBC}"
-PKGV_glibc-dev = "${CSL_VER_LIBC}"
-PKGV_glibc-dbg = "${CSL_VER_LIBC}"
-PKGV_glibc-utils = "${CSL_VER_LIBC}"
-PKGV_glibc-gconv = "${CSL_VER_LIBC}"
-PKGV_glibc-extra-nss = "${CSL_VER_LIBC}"
-PKGV_glibc-thread-db = "${CSL_VER_LIBC}"
-PKGV_glibc-pcprofile = "${CSL_VER_LIBC}"
-PKGV_catchsegv = "${CSL_VER_LIBC}"
-PKGV_sln = "${CSL_VER_LIBC}"
-PKGV_nscd = "${CSL_VER_LIBC}"
-PKGV_ldd = "${CSL_VER_LIBC}"
-PKGV_localedef = "${CSL_VER_LIBC}"
-PKGV_libsegfault = "${CSL_VER_LIBC}"
-PKGV_linux-libc-headers = "${CSL_VER_KERNEL}"
-PKGV_gdbserver = "${CSL_VER_GDBSERVER}"
+PKGV = "${ANG_VER_MAIN}"
+PKGV_libgcc = "${ANG_VER_GCC}"
+PKGV_libgcc-dev = "${ANG_VER_GCC}"
+PKGV_libstdc++ = "${ANG_VER_GCC}"
+PKGV_libstdc++-dev = "${ANG_VER_GCC}"
+PKGV_libc = "${ANG_VER_LIBC}"
+PKGV_glibc = "${ANG_VER_LIBC}"
+PKGV_glibc-dev = "${ANG_VER_LIBC}"
+PKGV_glibc-dbg = "${ANG_VER_LIBC}"
+PKGV_glibc-utils = "${ANG_VER_LIBC}"
+PKGV_glibc-gconv = "${ANG_VER_LIBC}"
+PKGV_glibc-extra-nss = "${ANG_VER_LIBC}"
+PKGV_glibc-thread-db = "${ANG_VER_LIBC}"
+PKGV_glibc-pcprofile = "${ANG_VER_LIBC}"
+PKGV_catchsegv = "${ANG_VER_LIBC}"
+PKGV_sln = "${ANG_VER_LIBC}"
+PKGV_nscd = "${ANG_VER_LIBC}"
+PKGV_ldd = "${ANG_VER_LIBC}"
+PKGV_localedef = "${ANG_VER_LIBC}"
+PKGV_libsegfault = "${ANG_VER_LIBC}"
+PKGV_linux-libc-headers = "${ANG_VER_KERNEL}"
+PKGV_gdbserver = "${ANG_VER_GDBSERVER}"
 
 do_install() {
 	install -d ${D}${sysconfdir}
@@ -236,18 +246,19 @@ do_install() {
 	install -d ${D}${base_libdir}
 	install -d ${D}${base_sbindir}
 	install -d ${D}${datadir}
+	install -d ${D}${includedir}
 
-	cp -a ${TOOLCHAIN_PATH}/${TARGET_SYS}/libc/lib/* ${D}${base_libdir}
-	cp -a ${TOOLCHAIN_PATH}/${TARGET_SYS}/libc/etc/* ${D}${sysconfdir}
-	cp -a ${TOOLCHAIN_PATH}/${TARGET_SYS}/libc/sbin/* ${D}${base_sbindir} \
-		|| true
-	cp -a ${TOOLCHAIN_PATH}/${TARGET_SYS}/libc/usr/* ${D}/usr
-	${@base_conditional('PREFERRED_PROVIDER_linux-libc-headers', 'external-toolchain-csl', '', 'rm -rf ${D}/usr/include/linux', d)}
-	cp -a ${TOOLCHAIN_PATH}/${TARGET_SYS}/include/* ${D}/usr/include
-	${@base_conditional('PREFERRED_PROVIDER_gdbserver', 'external-toolchain-csl', '', 'rm -rf ${D}/usr/bin/gdbserver', d)}
+	cp -a ${TOOLCHAIN_PATH}/${TARGET_SYS}${base_libdir}/{lib*,ld*} ${D}${base_libdir}
+	cp -a ${TOOLCHAIN_PATH}/${TARGET_SYS}${base_sbindir}/ldconfig ${D}${base_sbindir}
+	cp -a ${TOOLCHAIN_PATH}/${TARGET_SYS}${bindir}/{gencat,getconf,getent,iconv,locale,mtrace,pcprofiledump,rpcgen,sprof,tzselect,xtrace} ${D}${bindir}
+	cp -a ${TOOLCHAIN_PATH}/${TARGET_SYS}${sbindir}/{iconvconfig,rpcinfo,zdump,zic} ${D}${sbindir}
+	cp -a ${TOOLCHAIN_PATH}/${TARGET_SYS}${includedir}/{arpa,asm*,bits,drm,gnu,linux,mtd,net*,nfs,protocols,rdma,rpc*,scsi,sound,sys*,video,*.h} ${D}${includedir}
+	cp -a ${TOOLCHAIN_PATH}/${TARGET_SYS}${libdir}/{?crt1.o,crt?.o,libBrokenLocale*,libanl*,libc.*,libc_*,libcrypt.*,libcidn.*,libdl.*,libg.*,libieee.*,libm.*,libmcheck.*,libnsl*,libnss*,libpthread*,libresolv*,librt*,libstdc*,libthread*,libutil*} ${D}${libdir}
 
-	rm -rf ${D}${sysconfdir}/rpc
-	rm -rf ${D}${datadir}/zoneinfo
+	${@base_conditional('PREFERRED_PROVIDER_linux-libc-headers', 'external-toolchain-angstrom', '', 'rm -rf ${D}/usr/include/linux', d)}
+
+	cp -a ${TOOLCHAIN_PATH}/${TARGET_SYS}/include/* ${D}${includedir}
+	${@base_conditional('PREFERRED_PROVIDER_gdbserver', 'external-toolchain-angstrom', '', 'rm -rf ${D}/usr/bin/gdbserver', d)}
 
 	sed -e "s# /lib# ../../lib#g" -e "s# /usr/lib# .#g" ${D}${libdir}/libc.so > ${D}${libdir}/temp
 	mv ${D}${libdir}/temp ${D}${libdir}/libc.so
@@ -307,9 +318,9 @@ python package_do_split_gconvs () {
 		bb.error("datadir not defined")
 		return
 
-	libcver = bb.data.getVar('CSL_VER_LIBC', d, 1)
+	libcver = bb.data.getVar('ANG_VER_LIBC', d, 1)
 	if not libcver:
-		bb.error("CSL_VER_LIBC not defined")
+		bb.error("ANG_VER_LIBC not defined")
 		return
 
 	gconv_libdir = os.path.join(libdir, "gconv")
@@ -459,7 +470,7 @@ python package_do_split_locales() {
 		bb.data.setVar('RDEPENDS_' + pkg, 'glibc virtual-locale-%s' % ln, d)
 		bb.data.setVar('RPROVIDES_' + pkg, 'glibc-locale %s-translation' % ln, d)
 		bb.data.setVar('DESCRIPTION_' + pkg, '%s translation for glibc' % l, d)
-		bb.data.setVar('PKGV_' + pkg, bb.data.getVar('CSL_VER_LIBC', d, 1), d)
+		bb.data.setVar('PKGV_' + pkg, bb.data.getVar('ANG_VER_LIBC', d, 1), d)
 
 	bb.data.setVar('PACKAGES', ' '.join(packages), d)
 }
