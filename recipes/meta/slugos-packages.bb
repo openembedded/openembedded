@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r76"
+PR = "r77"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2|ixp4xx"
@@ -83,7 +83,6 @@ SLUGOS_PACKAGES = "\
 	flac \
 	flex \
 	flite \
-	ftpd-topfield \
 	fuse \
 	gawk \
 	gcc \
@@ -212,6 +211,7 @@ SLUGOS_PACKAGES = "\
 	util-linux-ng \
 	vim \
 	vlan \
+	vsftpd \
 	w3cam \
 	wakelan \
 	watchdog \
@@ -257,7 +257,7 @@ SLUGOS_X11_PACKAGES = "\
 # 
 SLUGOS_BROKEN_BUT_NEED_FIXING_PACKAGES = "\
 	madwifi-ng \
-	vsftpd \
+	ftpd-topfield \
 	"
 
 # Packages currently broken on all platforms
