@@ -2,11 +2,6 @@ require poppler.inc
 
 DEPENDS += "lcms"
 
-DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_angstrom = "1"
-DEFAULT_PREFERENCE_minimal = "1"
-DEFAULT_PREFERENCE_minimal-uclibc = "1"
-
 EXTRA_OECONF_append = " --disable-abiword-output "
 
 RDEPENDS_${PN} = "poppler-data"
