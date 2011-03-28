@@ -1,5 +1,5 @@
-DESCRIPTION = "Simple ffmpeg-based player that uses the omapfb overlays"
-DEPENDS = "bzip2 lame ffmpeg virtual/kernel"
+DESCRIPTION = "Simple libav-based player that uses the omapfb overlays"
+DEPENDS = "bzip2 lame libav virtual/kernel"
 LICENSE = "MIT"
 
 PR = "r30"
