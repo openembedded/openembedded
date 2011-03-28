@@ -91,9 +91,6 @@ CMDLINE_spitz = "console=ttyS0,115200n8 console=tty1 fbcon=rotate:1"
 CMDLINE_tosa = "console=ttyS0,115200n8 console=tty1"
 
 MACHINE_FEATURES = "kernel26 apm alsa pcmcia irda usbgadget keyboard touchscreen screen vfat ext2"
-# iwmmxt under testing
-#MACHINE_FEATURES_append_akita = " usbhost iwmmxt "
-#MACHINE_FEATURES_append_spitz = " usbhost iwmmxt "
 MACHINE_FEATURES_append_akita = " usbhost"
 MACHINE_FEATURES_append_spitz = " usbhost"
 MACHINE_FEATURES_append_tosa  = " usbhost wifi "
