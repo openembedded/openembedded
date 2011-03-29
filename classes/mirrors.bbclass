@@ -52,6 +52,7 @@ ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/  ftp://gd.tuwien.ac.at/utils/adm
 ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/  ftp://sunsite.ualberta.ca/pub/Mirror/lsof/
 ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/  ftp://the.wiretapped.net/pub/security/host-security/lsof/
 http://www.apache.org/dist  http://archive.apache.org/dist
+http://download.osgeo.org/ http://download2.osgeo.org/
 ftp://.*/.*     http://mirrors.openembedded.org/
 https?$://.*/.* http://mirrors.openembedded.org/
 ftp://.*/.*     http://sources.openembedded.org/
