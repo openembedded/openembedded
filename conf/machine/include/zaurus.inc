@@ -25,8 +25,8 @@ IMAGE_CMD_jffs2 = "mkfs.jffs2 --root=${IMAGE_ROOTFS} --faketime -m favourlzo \
 EXTRA_IMAGEDEPENDS += "zaurus-installer"
 
 IMAGE_DEVICE_TABLES = "files/device_table-minimal.txt \
-                       files/device_table-add-scsi.txt \
-                       files/device_table-add-loop.txt \
+                       files/device_table_add-scsi.txt \
+                       files/device_table_add-loop.txt \
                        "
 
 #########
