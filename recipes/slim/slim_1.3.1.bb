@@ -6,7 +6,7 @@ PR = "r1"
 
 inherit update-rc.d
 
-DEPENDS = "virtual/libx11 libxmu libpng libjpeg libpam freetype sessreg"
+DEPENDS = "virtual/libx11 libxmu libpng jpeg libpam freetype sessreg"
 RDEPENDS_${PN} = "perl libpam-meta xauth freetype sessreg"
 
 SRC_URI = " \
