@@ -36,10 +36,18 @@ ln -s /sys/class/gpio/gpio75 /dev/cmt/cmt_rst
 ln -s /sys/class/gpio/gpio157 /dev/cmt/cmt_bsi
 }
 
+start_phonet()
+{
+phonet -a 0x6C -i phonet0
+pnroute add 0x00 phonet0
+ip link set dev phonet0 up
+}
+
 case "$1" in
   start)
         echo "Setting up GPIO lines for N900 modem"
         setup_gpio
+	start_phonet
         ;;
   stop)
         echo "Nothing to do..."

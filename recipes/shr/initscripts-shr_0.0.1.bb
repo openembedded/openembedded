@@ -2,10 +2,13 @@ DESCRIPTION = "SHR init scripts"
 SECTION = "base"
 PRIORITY = "required"
 DEPENDS = ""
-RDEPENDS_${PN} = "procps"
-LICENSE = "GPL"
+EXTRA_DEPS = ""
+EXTRA_DEPS_nokia900 = "phonet-utils"
+RDEPENDS_${PN} = "procps ${EXTRA_DEPS}"
+LICENSE = "MIT"
+LIC_FILES_CHKSUM = "file://${TOPDIR}/meta-shr/COPYING.MIT;md5=3da9cfbcb788c80a0384361b4de20420"
 PV = "0.0.1"
-PR = "r27"
+PR = "r29"
 
 RCONFLICTS_${PN} = "initscripts"
 
@@ -32,10 +35,10 @@ SRC_URI = "file://alignment.sh \
 	   "
 
 SRC_URI_append_om-gta02 = " file://g_ether.sh"
-PACKAGE_ARCH_om-gta02 = "om-gta02"
+PACKAGE_ARCH_om-gta02 = "${MACHINE_ARCH}"
 
 SRC_URI_append_nokia900 = " file://nokia-n900-cmt-gpio.sh"
-PACKAGE_ARCH_nokia900 = "nokia900"
+PACKAGE_ARCH_nokia900 = "${MACHINE_ARCH}"
 
 inherit base
 
