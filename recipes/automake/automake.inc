@@ -29,7 +29,7 @@ RDEPENDS_automake += "\
     perl-module-text-parsewords \
     perl-module-vars "
 SRC_URI = "${GNU_MIRROR}/automake/automake-${PV}.tar.bz2;name=automake"
-INC_PR = "r4"
+INC_PR = "r5"
 AUTOMAKE_API = "${@".".join(bb.data.getVar("PV",d,1).split(".")[0:2])}"
 
 inherit autotools
@@ -46,6 +46,10 @@ do_install_append () {
 	ln -sf aclocal-${AUTOMAKE_API} ${D}${bindir}/aclocal
 	ln -sf automake-${AUTOMAKE_API} ${D}${bindir}/automake
 	install -d ${D}${datadir}/aclocal
+}
+
+do_install_append_pn-automake(){
+	sed -i -e s:${STAGING_BINDIR_NATIVE}:${bindir}:g ${D}${bindir}/*
 }
 
 BBCLASSEXTEND = "native"
