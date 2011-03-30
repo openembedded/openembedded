@@ -5,7 +5,7 @@ RDEPENDS_${PN} = "python-elementary python-dbus python-codecs python-shell pytho
 SECTION = "x11/application"
 SRCREV = "328f87b80e8bf09693017790daf31104f36bdacf"
 PV = "0.0.3+gitr${SRCPV}"
-PR = "r1"
+PR = "r2"
 PE = "1"
 
 inherit setuptools
@@ -19,7 +19,7 @@ PACKAGES =+ "\
 RDEPENDS_${PN} = "\
   ${PN}-data \
   shr-settings \
-  pyphonelog \
+  ffphonelog \
   shr-theme \
 "
 
