@@ -8,7 +8,7 @@ RDEPENDS_${PN} = "m4 perl gnu-config"
 DEPENDS_virtclass-native = "m4-native gnu-config-native perl-native"
 RDEPENDS_${PN}_virtclass-native = "m4-native gnu-config-native perl-native"
 
-INC_PR = "r13"
+INC_PR = "r14"
 
 SRC_URI = "${GNU_MIRROR}/autoconf/autoconf-${PV}.tar.bz2;name=autoconf \
 	   file://program_prefix.patch"
@@ -37,6 +37,10 @@ do_configure_append() {
 	then
 		sed -i -e "1s:#!.*:#! /usr/bin/env perl:" ${S}/bin/*.in
 	fi
+}
+
+do_install_append_pn-autoconf(){
+	sed -i -e s:${STAGING_BINDIR_NATIVE}:${bindir}:g ${D}${bindir}/*
 }
 
 PARALLEL_MAKE = ""
