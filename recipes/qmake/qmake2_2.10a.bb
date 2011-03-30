@@ -1,5 +1,6 @@
 QTVERSION="4.4.3"
 FILESDIR += "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/qmake2"
+PR = "${INC_PR}.1"
 
 BBCLASSEXTEND = "native sdk"
 
@@ -22,6 +23,7 @@ do_install() {
     echo 'export OE_QMAKE_CC=gcc' >> $script
     echo 'export OE_QMAKE_CXX=g++' >> $script
     echo 'export OE_QMAKE_LINK=g++' >> $script
+    echo 'export OE_QMAKE_STRIP=strip' >> $script
     echo 'export OE_QMAKE_LIBDIR_QT=${libdir}' >> $script
     echo 'export OE_QMAKE_INCDIR_QT=${includedir}/qtopia' >> $script
     echo 'export OE_QMAKE_MOC=${bindir}/moc' >> $script
@@ -39,6 +41,7 @@ do_install() {
     echo 'export OE_QMAKE_CC=gcc' >> $script
     echo 'export OE_QMAKE_CXX=g++' >> $script
     echo 'export OE_QMAKE_LINK=g++' >> $script
+    echo 'export OE_QMAKE_STRIP=strip' >> $script
     echo 'export OE_QMAKE_LIBDIR_QT=${libdir}' >> $script
     echo 'export OE_QMAKE_INCDIR_QT=${includedir}/qt4' >> $script
     echo 'export OE_QMAKE_MOC=${bindir}/moc' >> $script
