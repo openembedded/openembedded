@@ -5,8 +5,9 @@ FILESPATHPKG =. "qt-${PV}:"
 
 SRC_URI = "\
 	ftp://ftp.trolltech.com/qt/source/qt-everywhere-opensource-src-${PV}.tar.gz \
+	file://blacklist-fraudulent-comodo-certificates-patch.diff \
 	file://0004-no-qmake.patch \
-    file://hack-out-pg2-4.7.0.patch \
+	file://hack-out-pg2-4.7.0.patch \
 	file://0006-freetype-host-includes.patch \
 	file://0001-Added-Openembedded-crossarch-option.patch \
 	file://0010-phonon-gstreamer-rgb-endianess.patch \
