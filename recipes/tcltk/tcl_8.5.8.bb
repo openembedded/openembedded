@@ -13,7 +13,7 @@ SRC_URI = "\
   file://tcllibrary.diff;striplevel=2 \
   file://tclpackagepath.diff;striplevel=2 \
   file://tclprivate.diff;striplevel=2 \
-  file://mips-tclstrtod.patch;apply=false \
+  file://mips-tclstrtod.patch;patchdir=..;striplevel=0 \
 "
 SRC_URI[md5sum] = "7f123e53b3daaaba2478d3af5a0752e3"
 SRC_URI[sha256sum] = "6b090c1024038d0381e1ccfbd6d5c0f0e6ef205269ceb9d28bd7bd7ac5bbf4a7"
@@ -27,7 +27,6 @@ EXTRA_OECONF = "--enable-threads"
 
 do_configure_append() {
         echo > ../compat/fixstrtod.c
-        (cd .. ; patch -p0 -i ${WORKDIR}/mips-tclstrtod.patch)
 }
 
 do_compile_prepend_pn-tcl () {
