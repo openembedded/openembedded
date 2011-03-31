@@ -8,7 +8,7 @@ inherit bug-java-library
 JARFILENAME = "${BPN}.jar"
 ALTJARFILENAMES = ""
 
-INC_PR = "r0"
+INC_PR = "r1"
 
 SRCREV = "12839"
 
@@ -27,6 +27,8 @@ datadir_java = ${datadir}/java/bundle/
 EXTRA_OEMAKE+="CLASSPATH_INCDIR=${STAGING_INCDIR}/classpath"
 
 JAVAC_OPTIONS="-source 1.6"
+
+CXXFLAGS += "-fPIC"
 
 do_compile() {
   mkdir -p build
