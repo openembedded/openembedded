@@ -1,5 +1,7 @@
 require poppler.inc
 
+DEFAULT_PREFERENCE_angstrom = "1"
+
 DEPENDS += "lcms"
 
 EXTRA_OECONF_append = " --disable-abiword-output "
