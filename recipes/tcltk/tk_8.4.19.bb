@@ -7,7 +7,7 @@ PR = "r1"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/tcl/tk${PV}-src.tar.gz \
-  file://disable-xim.patch;apply=false \
+  file://disable-xim.patch;patchdir=..;striplevel=0 \
   file://tk-add-soname.patch;striplevel=2 \
 #  file://fix-configure.patch;striplevel=2 \
 "
@@ -23,7 +23,6 @@ EXTRA_OECONF = "\
 "
 
 do_configure() {
-	(cd .. ; patch -p0 -i ${WORKDIR}/disable-xim.patch)
 	gnu-configize
 	oe_runconf
 }
