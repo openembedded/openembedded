@@ -4,7 +4,7 @@ LICENSE = "GPL"
 PR = "r1"
 
 SRC_URI = "http://www.mneuroth.de/privat/zaurus/qscintilla-${PV}_zaurus.tar.gz \
-           file://no-external-lexers.patch;apply=false"
+           file://no-external-lexers.patch;patchdir=..;striplevel=0"
 
 S = "${WORKDIR}/qscintilla-${PV}/qt"
 
@@ -21,10 +21,6 @@ EXTRA_QMAKEVARS_POST += "INCLUDEPATH+=${S}/patches \
 			 HEADERS+=patches/qsettings.h"
 
 PARALLEL_MAKE = ""
-
-do_configure_prepend() {
-	(cd .. ; patch -p0 -i ${WORKDIR}/no-external-lexers.patch)
-}
 
 do_install() {
 	install -d ${D}${libdir} ${D}${includedir}
