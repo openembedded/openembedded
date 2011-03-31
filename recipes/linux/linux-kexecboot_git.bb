@@ -1,13 +1,12 @@
 require linux-kexecboot.inc
 
-KERNEL_RELEASE = "2.6.38-rc8"
-OLD_KERNEL_RELEASE = "2.6.37"
+KERNEL_RELEASE = "2.6.39-rc1"
+OLD_KERNEL_RELEASE = "2.6.38"
 PV = "${OLD_KERNEL_RELEASE}+${KERNEL_RELEASE}+gitr${SRCPV}"
 
-SRCREV = "a5abba989deceb731047425812d268daf7536575"
+SRCREV = "0ce790e7d736cedc563e1fb4e998babf5a4dbc3d"
 
 SRC_URI += "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;branch=master \
-            file://0001-arm-include-asm-tlb.h-fix-CONFIG_SWAP-n-build-for-AR.patch \
             file://defconfig"
 
 S = "${WORKDIR}/git"
