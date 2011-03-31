@@ -20,25 +20,14 @@ SRC_URI = "cvs://anonymous@cvs.sourceforge.jp/cvsroot/xqt;module=xqt2;method=pse
         file://fephack.patch \
         file://xchar2b.patch \
         file://xqt-make.patch \ 
-        file://KeyMap.patch;apply=false \
-        file://moc_call.patch;apply=false \
-        file://fix_qtscreen_HACK.patch;apply=false \
-	file://fix_seqfault_qtscreen.patch;apply=false"
+        file://KeyMap.patch;patchdir=../xqt2 \
+        file://moc_call.patch;patchdir=../xqt2 \
+        file://fix_qtscreen_HACK.patch;patchdir=../xqt2 \
+	file://fix_seqfault_qtscreen.patch;patchdir=../xqt2"
 S = "${WORKDIR}/xc"
 
 QT_LIBRARY = '${@base_conditional("PALMTOP_USE_MULTITHREADED_QT", "yes", "qte-mt", "qte",d)}'
 QT_LIBRARY_append_c7x0 = " -laticore"
-
-do_patch_xqt2() {
-	# Apply xqt2 patches.
-	cd ${WORKDIR}/xqt2
-	patch -p1 -i ${WORKDIR}/KeyMap.patch
-	patch -p1 -i ${WORKDIR}/moc_call.patch
-	patch -p1 -i ${WORKDIR}/fix_qtscreen_HACK.patch
-	patch -p1 -i ${WORKDIR}/fix_seqfault_qtscreen.patch
-}
-
-addtask patch_xqt2 after do_unpack before do_configure
 
 do_configure() {
 
