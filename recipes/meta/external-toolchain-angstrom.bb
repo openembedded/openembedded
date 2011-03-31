@@ -1,4 +1,4 @@
-PR = "r2"
+PR = "r3"
 
 INHIBIT_DEFAULT_DEPS = "1"
 
@@ -254,6 +254,8 @@ do_install() {
 	cp -a ${TOOLCHAIN_PATH}/${TARGET_SYS}${sbindir}/{iconvconfig,rpcinfo,zdump,zic} ${D}${sbindir}
 	cp -a ${TOOLCHAIN_PATH}/${TARGET_SYS}${includedir}/{arpa,asm*,bits,drm,gnu,linux,mtd,net*,nfs,protocols,rdma,rpc*,scsi,sound,sys*,video,*.h} ${D}${includedir}
 	cp -a ${TOOLCHAIN_PATH}/${TARGET_SYS}${libdir}/{?crt1.o,crt?.o,libBrokenLocale*,libanl*,libc.*,libc_*,libcrypt.*,libcidn.*,libdl.*,libg.*,libieee.*,libm.*,libmcheck.*,libnsl*,libnss*,libpthread*,libresolv*,librt*,libstdc*,libthread*,libutil*} ${D}${libdir}
+	rm -rf ${D}${base_libdir}/*.la
+	rm -rf ${D}${libdir}/*.la
 
 	${@base_conditional('PREFERRED_PROVIDER_linux-libc-headers', 'external-toolchain-angstrom', '', 'rm -rf ${D}/usr/include/linux', d)}
 
