@@ -73,7 +73,7 @@ require conf/distro/include/toolchain-${TOOLCHAIN_TYPE}.inc
 # Add BASE_PACKAGE_ARCH to the overrides list so that we can override the
 # ARM_INSTRUCTION_SET like below
 
-OVERRIDES =. "${BASE_PACKAGE_ARCH}:"
+MACHINE_OVERRIDES += "${FEED_ARCH}"
 
 # ARM920T and up can use thumb mode to decrease binary size at the expense of speed
 # (the complete story is a bit more nuanced due to cache starvation)
@@ -114,6 +114,7 @@ TARGET_FPU_ppc405 ?= "soft"
 TARGET_FPU_armv6 ?= "hard"
 TARGET_FPU_armv6-novfp ?= "soft"
 TARGET_FPU_armv7a ?= "hard"
+TARGET_FPU_armv7a-hardfp ?= "hard"
 TARGET_FPU_ppc603e ?= "hard"
 
 # webkit-gtk and cairo have alignment issues with double instructions on armv5 so

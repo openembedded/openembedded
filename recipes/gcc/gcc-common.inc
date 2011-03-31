@@ -15,8 +15,16 @@ COMPATIBLE_TARGET_SYS ?= "(?!nios2)"
 # for building for the new host part.  So only obey TARGET_FPU for the
 # real target.
 def get_gcc_fpu_setting(bb, d):
-    if bb.data.getVar('TARGET_FPU', d, 1) in [ 'soft' ] and bb.data.getVar('TARGET_OS', d, 1).find('linux') >= 0 :
-        return "--with-float=soft"
+    if bb.data.getVar('TARGET_FPU', d, True) in [ 'soft', 'hard'] and bb.data.getVar('TARGET_OS', d, True).find('linux') >= 0 :
+        # ARM_FP_ABI could be either 'hardfp' or 'softfp'
+        arm_fpabi = bb.data.getVar('ARM_FP_ABI', d, True) or ""
+        if arm_fpabi != "":
+	    if arm_fpabi  == "hardfp":
+	        # reset it to whatever gcc --with-float configure expects which is either 'softfp' or 'hard'
+	        arm_fpabi = "hard"
+            return "--with-float=" + arm_fpabi
+	else:
+	    return "--with-float=" + bb.data.getVar('TARGET_FPU', d, True)
     return ""
 
 def get_gcc_mips_plt_setting(bb, d):
