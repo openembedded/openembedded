@@ -10,7 +10,7 @@ S = "${WORKDIR}/samba-${PV}/source3"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI += "file://config-h.patch \
-            file://tdbheaderfix.patch;apply=no"
+            file://tdbheaderfix.patch;patchdir=.."
 
 PR = "r0"
 
@@ -27,11 +27,6 @@ EXTRA_OECONF += "\
 	"
 
 do_configure() {
-	# Patches we must apply by hand due to layout.
-	cd ..
-	patch -p1 -i ${WORKDIR}/tdbheaderfix.patch
-	cd source3
-
 	oe_runconf
 }
 
