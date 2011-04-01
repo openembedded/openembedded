@@ -5,6 +5,8 @@ DEPENDS = "xinput gnome-panel tcp-wrappers libcanberra libxklavier grep consolek
 
 inherit gnome update-rc.d
 
+PR = "r1"
+
 RDEPENDS_${PN} += "grep dbus-x11 shadow libpam-base-files"
 
 SRC_URI += " \
@@ -13,6 +15,7 @@ SRC_URI += " \
             file://gdm \
             file://gdm.conf \
             file://gdm-pam \
+            file://Default \
            "
 
 SRC_URI[archive.md5sum] = "0da84637abbcbf1666529d6192a81e6b"
@@ -37,6 +40,9 @@ do_install_append() {
 
 	install -d ${D}/${sysconfdir}/pam.d
 	install -m 0755 ${WORKDIR}/gdm-pam       ${D}/${sysconfdir}/pam.d/gdm
+
+	install -d ${D}/${sysconfdir}/gdm/Init
+	install -m 0755 ${WORKDIR}/Default ${D}/${sysconfdir}/gdm/Init
 }
 
 FILES_${PN} += "${datadir}/icon* \
