@@ -1,5 +1,5 @@
 require u-boot.inc
-PR = "r74"
+PR = "r75"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -41,6 +41,7 @@ SRC_URI_beagleboard = "git://www.denx.de/git/u-boot.git;protocol=git \
                        file://0013-OMAP3-BeagleBoard-updated-default-configuration.patch \
                        file://0014-Corrected-LED-name-match-finding-avoiding-extraneous.patch \
                        file://0016-BeagleBoard-Load-kernel-via-MMC-ext2-not-fat.patch \
+		       file://0017-BeagleBoard-add-xM-rev-C-to-ID-table.patch \
                        file://fw_env.config \
 "
 SRCREV_beagleboard = "c7977858dcf1f656cbe91ea0dc3cb9139c6a8cc8"
