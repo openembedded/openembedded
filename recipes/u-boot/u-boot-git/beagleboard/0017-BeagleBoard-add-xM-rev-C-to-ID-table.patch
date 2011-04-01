@@ -1,0 +1,68 @@
+From fd6e8e5ca04fea310ff4f03faa7747d061217cba Mon Sep 17 00:00:00 2001
+From: Jason Kridner <jkridner@beagleboard.org>
+Date: Wed, 30 Mar 2011 10:44:17 -0500
+Subject: [PATCH] BeagleBoard: add xM rev C to ID table
+Cc: Sandeep Paulraj <s-paulraj@ti.com>
+
+A simple addition to the revision IDs.
+
+This patch depends upon http://patchwork.ozlabs.org/patch/85303/.
+
+Signed-off-by: Jason Kridner <jkridner@beagleboard.org>
+---
+ board/ti/beagle/beagle.c |   12 ++++++++++++
+ board/ti/beagle/beagle.h |    1 +
+ 2 files changed, 13 insertions(+), 0 deletions(-)
+
+diff --git a/board/ti/beagle/beagle.c b/board/ti/beagle/beagle.c
+index 905b151..0596443 100644
+--- a/board/ti/beagle/beagle.c
++++ b/board/ti/beagle/beagle.c
+@@ -168,6 +168,7 @@ void display_init(void)
+ 		break;
+ 	case REVISION_XM_A:
+ 	case REVISION_XM_B:
++	case REVISION_XM_C:
+ 	default:
+ 		omap3_dss_panel_config(&dvid_cfg_xm);
+ 		break;
+@@ -227,6 +228,16 @@ int misc_init_r(void)
+ 					TWL4030_PM_RECEIVER_VAUX2_DEV_GRP,
+ 					TWL4030_PM_RECEIVER_DEV_GRP_P1);
+ 		break;
++	case REVISION_XM_C:
++		printf("Beagle xM Rev C\n");
++		setenv("beaglerev", "xMC");
++		MUX_BEAGLE_XM();
++		/* Set VAUX2 to 1.8V for EHCI PHY */
++		twl4030_pmrecv_vsel_cfg(TWL4030_PM_RECEIVER_VAUX2_DEDICATED,
++					TWL4030_PM_RECEIVER_VAUX2_VSEL_18,
++					TWL4030_PM_RECEIVER_VAUX2_DEV_GRP,
++					TWL4030_PM_RECEIVER_DEV_GRP_P1);
++		break;
+ 	default:
+ 		printf("Beagle unknown 0x%02x\n", get_board_revision());
+ 		MUX_BEAGLE_XM();
+@@ -372,6 +383,7 @@ int do_userbutton (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
+ 		break;
+ 	case REVISION_XM_A:
+ 	case REVISION_XM_B:
++	case REVISION_XM_C:
+ 	default:
+ 		gpio = 4;
+ 		break;
+diff --git a/board/ti/beagle/beagle.h b/board/ti/beagle/beagle.h
+index bdf2a6f..f31ce31 100644
+--- a/board/ti/beagle/beagle.h
++++ b/board/ti/beagle/beagle.h
+@@ -41,6 +41,7 @@ const omap3_sysinfo sysinfo = {
+ #define REVISION_C4	0x5
+ #define REVISION_XM_A	0x0
+ #define REVISION_XM_B	0x1
++#define REVISION_XM_C	0x2
+ 
+ /*
+  * IEN  - Input Enable
+-- 
+1.5.6.4
+
