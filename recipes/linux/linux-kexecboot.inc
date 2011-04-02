@@ -190,3 +190,9 @@ do_uboot_mkimage_mipsel() {
         install -d ${DEPLOY_DIR_IMAGE}
         install -m 0644 uImage-kexecboot-${PV}-${PR}-${MACHINE}.bin ${DEPLOY_DIR_IMAGE}
 }
+
+do_savedefconfig() {
+	oe_runmake savedefconfig
+}
+
+addtask savedefconfig after do_configure
