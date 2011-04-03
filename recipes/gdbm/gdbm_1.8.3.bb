@@ -7,7 +7,7 @@ LICENSE = "GPL"
 PR = "r5"
 
 SRC_URI = "${GNU_MIRROR}/gdbm/gdbm-${PV}.tar.gz \
-	   file://makefile.patch \
+           file://makefile.patch \
            file://libtool-mode.patch \
            file://chmod.patch"
 
