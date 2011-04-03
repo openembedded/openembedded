@@ -3,12 +3,13 @@ DESCRIPTION = "Tools for performance analysis."
 LICENSE = "GPL"
 RDEPENDS_${PN} = "debianutils"
 
-PR = "r2"
+PR = "r3"
 
 inherit autotools
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lmbench/lmbench-${PV}.tgz \
-	   file://lmbench-run"
+	   file://lmbench-run \
+          file://rename-line-binary.patch"
 SRC_URI[md5sum] = "b3351a3294db66a72e2864a199d37cbf"
 SRC_URI[sha256sum] = "cbd5777d15f44eab7666dcac418054c3c09df99826961a397d9acf43d8a2a551"
 
@@ -56,6 +57,7 @@ do_install () {
 	install -m 0755 ${S}/scripts/lmbench ${D}${bindir}
 	install -d ${D}${datadir}/lmbench/scripts
 	install -m 0755 ${S}/scripts/* ${D}${datadir}/lmbench/scripts
+	mv ${D}${bindir}/line ${D}${bindir}/lm_line
 }
 
 FILES_${PN} += "${datadir}/lmbench"
