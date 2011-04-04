@@ -2,9 +2,11 @@ DESCRIPTION = "Precision Time Protocol (PTP) as defined by the IEEE 1588 standar
 HOMEPAGE = "http://sourceforge.net/projects/ptpd"
 LICENSE = "BSD"
 SECTION = "network"
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "http://downloads.sourceforge.net/project/ptpd/ptpd/${PV}/ptpd-${PV}.tar.gz" 
+SRC_URI = "http://downloads.sourceforge.net/project/ptpd/ptpd/${PV}/ptpd-${PV}.tar.gz \
+           file://add-limit-h.patch;striplevel=2"
+
 S = "${WORKDIR}/ptpd-${PV}/src"
 
 do_install() {
