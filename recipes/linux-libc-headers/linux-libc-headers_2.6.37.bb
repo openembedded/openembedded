@@ -2,6 +2,8 @@ require linux-libc-headers.inc
 
 # untested for non nios2 systems
 DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_angstrom = "1"
+
 INHIBIT_DEFAULT_DEPS = "1"
 DEPENDS += "unifdef-native"
 PR = "r0"
