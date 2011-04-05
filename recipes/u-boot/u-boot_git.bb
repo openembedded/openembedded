@@ -208,6 +208,13 @@ SRCREV_omap4430-panda  = "261733408a27d14590cf3ec6b596461808050e32"
 PV_omap4430-panda      = "2010.12+${PR}+git${SRCREV}"
 PE_omap4430-panda      = "1"
 
+SRC_URI_am45x-evm = "git://www.sakoman.com/git/u-boot.git;branch=omap4-exp;protocol=git \
+                          file://fix-break-caused-by-new-binutils.patch \
+                         "
+SRCREV_am45x-evm  = "261733408a27d14590cf3ec6b596461808050e32"
+PV_am45x-evm      = "2010.12+${PR}+git${SRCREV}"
+PE_am45x-evm      = "1"
+
 # DaVinci dm355-evm/dm365-evm/dm6446-evm/dm6467-evm/dm6467t-evm - PSP 3.1.0/3.2.0 (build 35)
 
 SRC_URI_dm355-evm    = "git://arago-project.org/git/projects/u-boot-davinci.git;protocol=git;branch=u-boot-davinci-2009.06"
