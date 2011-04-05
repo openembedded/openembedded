@@ -7,7 +7,7 @@ DEPENDS = "libvpx live555 libdvdread libtheora virtual/libsdl ffmpeg xsp zlib li
 
 RDEPENDS_${PN} = "mplayer-common"
 LICENSE = "GPL"
-SRC_URI = "git://repo.or.cz/mplayer/glamo.git;protocol=git;branch=master \
+SRC_URI = "git://repo.or.cz/mplayer/glamo.git;protocol=git;branch=mplayer2 \
    "
 
 SRC_URI_append_armv7a = " \
@@ -20,7 +20,7 @@ SRC_URI_append_armv7a = " \
 # ie. for all armv4 machines.
 SRC_URI_append_collie = "file://disable-executable-stack-test.patch"
 
-SRCREV = "17c4546a5123774a8832c083b9227a5abb3b2716"
+SRCREV = "5a2f2b69c67011e7c5c0e0e76f9135f33303ac58"
 
 PACKAGE_ARCH_collie = "collie"
 PACKAGE_ARCH_c7x0 = "c7x0"
@@ -31,8 +31,7 @@ ARM_INSTRUCTION_SET = "ARM"
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
-PV = "0.0+1.0rc4+gitr${SRCPV}"
-PR = "r6"
+PV = "2.0+gitr${SRCPV}"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_shr = "2"
 
@@ -56,7 +55,6 @@ EXTRA_OECONF = " \
 	--mandir=${mandir} \
 	--target=${SIMPLE_TARGET_SYS} \
 	\
-	--disable-gui \
 	--enable-largefiles \
 	--disable-lirc \
 	--disable-lircc \
@@ -74,7 +72,7 @@ EXTRA_OECONF = " \
 	--disable-dvdnav \
 	--enable-dvdread \
 	--disable-dvdread-internal \
-	--enable-libdvdcss-internal \
+	--disable-libdvdcss-internal \
 	--disable-cdparanoia \
 	--enable-freetype \
 	--enable-menu \
@@ -88,13 +86,10 @@ EXTRA_OECONF = " \
 	--enable-png \
 	--enable-jpeg \
 	--disable-libcdio \
-	--disable-liblzo \
 	--disable-qtx \
 	--disable-xanim \
 	--disable-real \
 	--disable-xvid \
-	\
-	--enable-tremor-low \
 	\
 	--disable-speex \
 	--enable-theora \
@@ -102,8 +97,6 @@ EXTRA_OECONF = " \
 	--disable-libdv \
 	--enable-mad \
 	--disable-xmms \
-	--disable-mp3lib \
-	--enable-libmpeg2 \
 	--disable-musepack \
 	\
 	--disable-gl \
@@ -115,7 +108,6 @@ EXTRA_OECONF = " \
 	--disable-ggi \
 	--disable-ggiwmh \
 	--disable-directx \
-	--disable-dxr2 \
 	--disable-dxr3 \
 	--disable-dvb \
 	--disable-mga \
@@ -130,7 +122,6 @@ EXTRA_OECONF = " \
 	--disable-tdfxfb \
 	--disable-s3fb \
 	--disable-directfb \
-	--disable-zr \
 	--disable-bl \
 	--disable-tdfxvid \
 	--disable-tga \
