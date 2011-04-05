@@ -1,0 +1,63 @@
+From 9ebde285fa990bfa1524f166fbfb1368c346b14a Mon Sep 17 00:00:00 2001
+From: Andrea Canciani <ranma42@gmail.com>
+Date: Thu, 24 Feb 2011 12:53:39 +0100
+Subject: [PATCH 06/40] test: Silence MSVC warnings
+
+MSVC does not notice non-returning functions (abort() / assert(0))
+and warns about paths which end with them in non-void functions:
+
+c:\cygwin\home\ranma42\code\fdo\pixman\test\fetch-test.c(114) :
+warning C4715: 'reader' : not all control paths return a value
+c:\cygwin\home\ranma42\code\fdo\pixman\test\stress-test.c(133) :
+warning C4715: 'real_reader' : not all control paths return a value
+c:\cygwin\home\ranma42\code\fdo\pixman\test\composite.c(431) :
+warning C4715: 'calc_op' : not all control paths return a value
+
+These warnings can be silenced by adding a return after the
+termination call.
+---
+ test/composite.c   |    1 +
+ test/fetch-test.c  |    1 +
+ test/stress-test.c |    2 +-
+ 3 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/test/composite.c b/test/composite.c
+index 08c6689..a86e5ed 100644
+--- a/test/composite.c
++++ b/test/composite.c
+@@ -426,6 +426,7 @@ calc_op (pixman_op_t op, double src, double dst, double srca, double dsta)
+     case PIXMAN_OP_HSL_LUMINOSITY:
+     default:
+ 	abort();
++	return 0; /* silence MSVC */
+     }
+ #undef mult_chan
+ }
+diff --git a/test/fetch-test.c b/test/fetch-test.c
+index 314a072..60bc765 100644
+--- a/test/fetch-test.c
++++ b/test/fetch-test.c
+@@ -110,6 +110,7 @@ reader (const void *src, int size)
+ 	return *(uint32_t *)src;
+     default:
+ 	assert(0);
++	return 0; /* silence MSVC */
+     }
+ }
+ 
+diff --git a/test/stress-test.c b/test/stress-test.c
+index bcbc1f8..166dc6d 100644
+--- a/test/stress-test.c
++++ b/test/stress-test.c
+@@ -128,7 +128,7 @@ real_reader (const void *src, int size)
+ 	return *(uint32_t *)src;
+     default:
+ 	assert (0);
+-	break;
++	return 0; /* silence MSVC */
+     }
+ }
+ 
+-- 
+1.6.6.1
+

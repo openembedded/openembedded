@@ -1,0 +1,42 @@
+From 20ed723a5a42fb8636bc9a5f32974dec1b66a785 Mon Sep 17 00:00:00 2001
+From: Andrea Canciani <ranma42@gmail.com>
+Date: Thu, 24 Feb 2011 10:44:04 +0100
+Subject: [PATCH 02/40] Fix compilation on Win32
+
+Makefile.win32 contained a typo and was missing the dependency from
+the built sources.
+---
+ pixman/Makefile.win32 |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/pixman/Makefile.win32 b/pixman/Makefile.win32
+index 775fb5e..b5f9397 100644
+--- a/pixman/Makefile.win32
++++ b/pixman/Makefile.win32
+@@ -56,6 +56,8 @@ SOURCES =				\
+ 	pixman-general.c		\
+ 	$(NULL)
+ 
++BUILT_SOURCES = pixman-combine32.h pixman-combine32.c pixman-combine64.h pixman-combine64.c
++
+ # MMX compilation flags
+ ifeq ($(MMX_VAR),on)
+ CFLAGS += $(MMX_CFLAGS)
+@@ -122,7 +124,7 @@ endif
+ endif
+ 
+ # pixman compilation and linking
+-$(CFG_VAR)/%.obj: %.c
++$(CFG_VAR)/%.obj: %.c $(BUILT_SOURCES)
+ 	@mkdir -p $(CFG_VAR)
+ 	@$(CC) -c $(CFLAGS) -Fo"$@" $<
+ 
+@@ -141,4 +143,4 @@ pixman-combine64.h: pixman-combine.h.template make-combine.pl
+ 
+ clean_r:
+ 	@rm -f $(CFG_VAR)/*.obj $(CFG_VAR)/*.lib $(CFG_VAR)/*.pdb $(CFG)/*.ilk || exit 0
+-	@rm -f $(CFG)/*.obj $(CFG)/*.lib $(CFG)/*.pdb $(CFG)/*.ilk pixman-combine32.c pixman-combine64.c pixman-combine64.c pixman-combine64.h || exit 0
++	@rm -f $(CFG)/*.obj $(CFG)/*.lib $(CFG)/*.pdb $(CFG)/*.ilk $(BUILT_SOURCES) || exit 0
+-- 
+1.6.6.1
+

@@ -1,0 +1,70 @@
+From 6d296598575b8307262fac2cf438d7cc832d09d3 Mon Sep 17 00:00:00 2001
+From: Siarhei Siamashka <siarhei.siamashka@nokia.com>
+Date: Wed, 16 Mar 2011 16:33:41 +0200
+Subject: [PATCH 32/40] ARM: support for software pipelining in bilinear macros
+
+Now it's possible to override the main loop of bilinear scaling code
+with optimized pipelined implementation.
+---
+ pixman/pixman-arm-neon-asm.S |   31 ++++++++++++++++++++++++++++---
+ 1 files changed, 28 insertions(+), 3 deletions(-)
+
+diff --git a/pixman/pixman-arm-neon-asm.S b/pixman/pixman-arm-neon-asm.S
+index a4d6a9a..d84f2cc 100644
+--- a/pixman/pixman-arm-neon-asm.S
++++ b/pixman/pixman-arm-neon-asm.S
+@@ -2618,12 +2618,32 @@ fname:
+     bilinear_store_&dst_fmt 4, q2, q3
+ .endm
+ 
++.macro bilinear_interpolate_four_pixels_head src_fmt, dst_fmt
++.ifdef have_bilinear_interpolate_four_pixels_&src_fmt&_&dst_fmt
++    bilinear_interpolate_four_pixels_&src_fmt&_&dst_fmt&_head
++.else
++    bilinear_interpolate_four_pixels src_fmt, dst_fmt
++.endif
++.endm
++
++.macro bilinear_interpolate_four_pixels_tail src_fmt, dst_fmt
++.ifdef have_bilinear_interpolate_four_pixels_&src_fmt&_&dst_fmt
++    bilinear_interpolate_four_pixels_&src_fmt&_&dst_fmt&_tail
++.endif
++.endm
++
++.macro bilinear_interpolate_four_pixels_tail_head src_fmt, dst_fmt
++.ifdef have_bilinear_interpolate_four_pixels_&src_fmt&_&dst_fmt
++    bilinear_interpolate_four_pixels_&src_fmt&_&dst_fmt&_tail_head
++.else
++    bilinear_interpolate_four_pixels src_fmt, dst_fmt
++.endif
++.endm
++
+ /*
+  * Main template macro for generating NEON optimized bilinear scanline
+  * functions.
+  *
+- * TODO: use software pipelining in order to improve performance
+- *
+  * Bilinear scanline scaler macro template uses the following arguments:
+  *  fname             - name of the function to generate
+  *  src_fmt           - source color format (8888 or 0565)
+@@ -2693,10 +2713,15 @@ pixman_asm_function fname
+     subs      WIDTH, WIDTH, #4
+     blt       1f
+     mov       PF_OFFS, PF_OFFS, asr #(16 - src_bpp_shift)
++    bilinear_interpolate_four_pixels_head src_fmt, dst_fmt
++    subs      WIDTH, WIDTH, #4
++    blt       5f
+ 0:
+-    bilinear_interpolate_four_pixels src_fmt, dst_fmt
++    bilinear_interpolate_four_pixels_tail_head src_fmt, dst_fmt
+     subs      WIDTH, WIDTH, #4
+     bge       0b
++5:
++    bilinear_interpolate_four_pixels_tail src_fmt, dst_fmt
+ 1:
+ 
+     /* handle the remaining trailing pixels */
+-- 
+1.6.6.1
+

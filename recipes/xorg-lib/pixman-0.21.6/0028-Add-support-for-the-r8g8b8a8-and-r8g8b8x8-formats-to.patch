@@ -1,0 +1,110 @@
+From b514e63cfc58af21f7097db5a1b04292a758782a Mon Sep 17 00:00:00 2001
+From: Alexandros Frantzis <alexandros.frantzis@linaro.org>
+Date: Fri, 18 Mar 2011 14:37:27 +0200
+Subject: [PATCH 28/40] Add support for the r8g8b8a8 and r8g8b8x8 formats to the tests.
+
+---
+ test/blitters-test.c |    9 +++++++--
+ test/composite.c     |    9 +++++++++
+ test/fetch-test.c    |   10 ++++++++++
+ test/stress-test.c   |    2 ++
+ 4 files changed, 28 insertions(+), 2 deletions(-)
+
+diff --git a/test/blitters-test.c b/test/blitters-test.c
+index 63e7cb3..3ecfb09 100644
+--- a/test/blitters-test.c
++++ b/test/blitters-test.c
+@@ -88,8 +88,11 @@ free_random_image (uint32_t initcrc,
+ 	    uint32_t *data = pixman_image_get_data (img);
+ 	    uint32_t mask = (1 << PIXMAN_FORMAT_DEPTH (fmt)) - 1;
+ 
+-	    if (PIXMAN_FORMAT_TYPE (fmt) == PIXMAN_TYPE_BGRA)
++	    if (PIXMAN_FORMAT_TYPE (fmt) == PIXMAN_TYPE_BGRA ||
++		PIXMAN_FORMAT_TYPE (fmt) == PIXMAN_TYPE_RGBA)
++	    {
+ 		mask <<= (PIXMAN_FORMAT_BPP (fmt) - PIXMAN_FORMAT_DEPTH (fmt));
++	    }
+ 
+ 	    for (i = 0; i < 32; i++)
+ 		mask |= mask << (i * PIXMAN_FORMAT_BPP (fmt));
+@@ -182,6 +185,8 @@ static pixman_format_code_t img_fmt_list[] = {
+     PIXMAN_x8b8g8r8,
+     PIXMAN_b8g8r8a8,
+     PIXMAN_b8g8r8x8,
++    PIXMAN_r8g8b8a8,
++    PIXMAN_r8g8b8x8,
+     PIXMAN_x14r6g6b6,
+     PIXMAN_r8g8b8,
+     PIXMAN_b8g8r8,
+@@ -412,6 +417,6 @@ main (int argc, const char *argv[])
+     }
+ 
+     return fuzzer_test_main("blitters", 2000000,
+-			    0x1DB8BDF8,
++			    0x265CDFEB,
+ 			    test_composite, argc, argv);
+ }
+diff --git a/test/composite.c b/test/composite.c
+index e6d52b9..b0e0ba4 100644
+--- a/test/composite.c
++++ b/test/composite.c
+@@ -102,6 +102,8 @@ static const format_t formats[] =
+     P(x8b8g8r8),
+     P(b8g8r8a8),
+     P(b8g8r8x8),
++    P(r8g8b8a8),
++    P(r8g8b8x8),
+     P(x2r10g10b10),
+     P(x2b10g10r10),
+     P(a2r10g10b10),
+@@ -556,6 +558,13 @@ get_pixel (pixman_image_t *image,
+         bs = g + gs;
+ 	break;
+ 
++    case PIXMAN_TYPE_RGBA:
++	as = 0;
++	bs = PIXMAN_FORMAT_BPP (format) - (b + g + r);
++	gs = b + bs;
++	rs = g + gs;
++	break;
++
+     case PIXMAN_TYPE_A:
+         as = 0;
+         rs = 0;
+diff --git a/test/fetch-test.c b/test/fetch-test.c
+index 60bc765..feb98d9 100644
+--- a/test/fetch-test.c
++++ b/test/fetch-test.c
+@@ -34,6 +34,16 @@ static testcase_t testcases[] =
+ 	NULL,
+     },
+     {
++	PIXMAN_r8g8b8a8,
++	2, 2,
++	8,
++	{ 0x11223300, 0x55667744,
++	  0x99aabb88, 0xddeeffcc },
++	{ 0x00112233, 0x44556677,
++	  0x8899aabb, 0xccddeeff },
++	NULL,
++    },
++    {
+ 	PIXMAN_g1,
+ 	8, 2,
+ 	4,
+diff --git a/test/stress-test.c b/test/stress-test.c
+index d496f93..571420a 100644
+--- a/test/stress-test.c
++++ b/test/stress-test.c
+@@ -19,6 +19,8 @@ static const pixman_format_code_t image_formats[] =
+     PIXMAN_x8b8g8r8,
+     PIXMAN_b8g8r8a8,
+     PIXMAN_b8g8r8x8,
++    PIXMAN_r8g8b8a8,
++    PIXMAN_r8g8b8x8,
+     PIXMAN_x14r6g6b6,
+     PIXMAN_r8g8b8,
+     PIXMAN_b8g8r8,
+-- 
+1.6.6.1
+

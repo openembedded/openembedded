@@ -1,0 +1,206 @@
+From f05a90e5f8d1d0af60e2c684cbe9f1327c33135a Mon Sep 17 00:00:00 2001
+From: Alexandros Frantzis <alexandros.frantzis@linaro.org>
+Date: Fri, 18 Mar 2011 14:36:15 +0200
+Subject: [PATCH 27/40] Add simple support for the r8g8b8a8 and r8g8b8x8 formats.
+
+This format is particularly useful on big-endian architectures, where RGBA in
+memory/file order corresponds to r8g8b8a8 as an uint32_t. This is important
+because RGBA is in some cases the only available choice (for example as a pixel
+format in OpenGL ES 2.0).
+---
+ pixman/pixman-access.c |   97 ++++++++++++++++++++++++++++++++++++++++++++++++
+ pixman/pixman.c        |    6 +++
+ pixman/pixman.h        |    6 ++-
+ 3 files changed, 108 insertions(+), 1 deletions(-)
+
+diff --git a/pixman/pixman-access.c b/pixman/pixman-access.c
+index f1ce0ba..32c4d8b 100644
+--- a/pixman/pixman-access.c
++++ b/pixman/pixman-access.c
+@@ -211,6 +211,46 @@ fetch_scanline_b8g8r8x8 (pixman_image_t *image,
+ }
+ 
+ static void
++fetch_scanline_r8g8b8a8 (pixman_image_t *image,
++                         int             x,
++                         int             y,
++                         int             width,
++                         uint32_t *      buffer,
++                         const uint32_t *mask)
++{
++    const uint32_t *bits = image->bits.bits + y * image->bits.rowstride;
++    const uint32_t *pixel = (uint32_t *)bits + x;
++    const uint32_t *end = pixel + width;
++
++    while (pixel < end)
++    {
++	uint32_t p = READ (image, pixel++);
++
++	*buffer++ = (((p & 0x000000ff) << 24) | (p >> 8));
++    }
++}
++
++static void
++fetch_scanline_r8g8b8x8 (pixman_image_t *image,
++                         int             x,
++                         int             y,
++                         int             width,
++                         uint32_t *      buffer,
++                         const uint32_t *mask)
++{
++    const uint32_t *bits = image->bits.bits + y * image->bits.rowstride;
++    const uint32_t *pixel = (uint32_t *)bits + x;
++    const uint32_t *end = pixel + width;
++    
++    while (pixel < end)
++    {
++	uint32_t p = READ (image, pixel++);
++	
++	*buffer++ = (0xff000000 | (p >> 8));
++    }
++}
++
++static void
+ fetch_scanline_x14r6g6b6 (pixman_image_t *image,
+                           int             x,
+                           int             y,
+@@ -1292,6 +1332,28 @@ fetch_pixel_b8g8r8x8 (bits_image_t *image,
+ }
+ 
+ static uint32_t
++fetch_pixel_r8g8b8a8 (bits_image_t *image,
++		      int           offset,
++		      int           line)
++{
++    uint32_t *bits = image->bits + line * image->rowstride;
++    uint32_t pixel = READ (image, (uint32_t *)bits + offset);
++    
++    return (((pixel & 0x000000ff) << 24) | (pixel >> 8));
++}
++
++static uint32_t
++fetch_pixel_r8g8b8x8 (bits_image_t *image,
++		      int           offset,
++		      int           line)
++{
++    uint32_t *bits = image->bits + line * image->rowstride;
++    uint32_t pixel = READ (image, (uint32_t *)bits + offset);
++    
++    return (0xff000000 | (pixel >> 8));
++}
++
++static uint32_t
+ fetch_pixel_x14r6g6b6 (bits_image_t *image,
+                        int           offset,
+                        int           line)
+@@ -2028,6 +2090,39 @@ store_scanline_b8g8r8x8 (bits_image_t *  image,
+ }
+ 
+ static void
++store_scanline_r8g8b8a8 (bits_image_t *  image,
++                         int             x,
++                         int             y,
++                         int             width,
++                         const uint32_t *values)
++{
++    uint32_t *bits = image->bits + image->rowstride * y;
++    uint32_t *pixel = (uint32_t *)bits + x;
++    int i;
++    
++    for (i = 0; i < width; ++i)
++    {
++	WRITE (image, pixel++,
++	       ((values[i] >> 24) & 0x000000ff) | (values[i] << 8));
++    }
++}
++
++static void
++store_scanline_r8g8b8x8 (bits_image_t *  image,
++                         int             x,
++                         int             y,
++                         int             width,
++                         const uint32_t *values)
++{
++    uint32_t *bits = image->bits + image->rowstride * y;
++    uint32_t *pixel = (uint32_t *)bits + x;
++    int i;
++    
++    for (i = 0; i < width; ++i)
++	WRITE (image, pixel++, (values[i] << 8));
++}
++
++static void
+ store_scanline_x14r6g6b6 (bits_image_t *  image,
+                           int             x,
+                           int             y,
+@@ -2845,6 +2940,8 @@ static const format_info_t accessors[] =
+     FORMAT_INFO (x8b8g8r8),
+     FORMAT_INFO (b8g8r8a8),
+     FORMAT_INFO (b8g8r8x8),
++    FORMAT_INFO (r8g8b8a8),
++    FORMAT_INFO (r8g8b8x8),
+     FORMAT_INFO (x14r6g6b6),
+ 
+ /* 24bpp formats */
+diff --git a/pixman/pixman.c b/pixman/pixman.c
+index ec565f9..f21af2f 100644
+--- a/pixman/pixman.c
++++ b/pixman/pixman.c
+@@ -873,6 +873,8 @@ color_to_pixel (pixman_color_t *     color,
+           format == PIXMAN_x8b8g8r8     ||
+           format == PIXMAN_b8g8r8a8     ||
+           format == PIXMAN_b8g8r8x8     ||
++          format == PIXMAN_r8g8b8a8     ||
++          format == PIXMAN_r8g8b8x8     ||
+           format == PIXMAN_r5g6b5       ||
+           format == PIXMAN_b5g6r5       ||
+           format == PIXMAN_a8           ||
+@@ -895,6 +897,8 @@ color_to_pixel (pixman_color_t *     color,
+ 	    ((c & 0x0000ff00) <<  8) |
+ 	    ((c & 0x000000ff) << 24);
+     }
++    if (PIXMAN_FORMAT_TYPE (format) == PIXMAN_TYPE_RGBA)
++	c = ((c & 0xff000000) >> 24) | (c << 8);
+ 
+     if (format == PIXMAN_a1)
+ 	c = c >> 31;
+@@ -1105,6 +1109,8 @@ pixman_format_supported_source (pixman_format_code_t format)
+     case PIXMAN_x8b8g8r8:
+     case PIXMAN_b8g8r8a8:
+     case PIXMAN_b8g8r8x8:
++    case PIXMAN_r8g8b8a8:
++    case PIXMAN_r8g8b8x8:
+     case PIXMAN_r8g8b8:
+     case PIXMAN_b8g8r8:
+     case PIXMAN_r5g6b5:
+diff --git a/pixman/pixman.h b/pixman/pixman.h
+index 1305bc1..59d0760 100644
+--- a/pixman/pixman.h
++++ b/pixman/pixman.h
+@@ -650,11 +650,13 @@ struct pixman_indexed
+ #define PIXMAN_TYPE_YUY2	6
+ #define PIXMAN_TYPE_YV12	7
+ #define PIXMAN_TYPE_BGRA	8
++#define PIXMAN_TYPE_RGBA	9
+ 
+ #define PIXMAN_FORMAT_COLOR(f)				\
+ 	(PIXMAN_FORMAT_TYPE(f) == PIXMAN_TYPE_ARGB ||	\
+ 	 PIXMAN_FORMAT_TYPE(f) == PIXMAN_TYPE_ABGR ||	\
+-	 PIXMAN_FORMAT_TYPE(f) == PIXMAN_TYPE_BGRA)
++	 PIXMAN_FORMAT_TYPE(f) == PIXMAN_TYPE_BGRA ||	\
++	 PIXMAN_FORMAT_TYPE(f) == PIXMAN_TYPE_RGBA)
+ 
+ /* 32bpp formats */
+ typedef enum {
+@@ -664,6 +666,8 @@ typedef enum {
+     PIXMAN_x8b8g8r8 =	 PIXMAN_FORMAT(32,PIXMAN_TYPE_ABGR,0,8,8,8),
+     PIXMAN_b8g8r8a8 =	 PIXMAN_FORMAT(32,PIXMAN_TYPE_BGRA,8,8,8,8),
+     PIXMAN_b8g8r8x8 =	 PIXMAN_FORMAT(32,PIXMAN_TYPE_BGRA,0,8,8,8),
++    PIXMAN_r8g8b8a8 =	 PIXMAN_FORMAT(32,PIXMAN_TYPE_RGBA,8,8,8,8),
++    PIXMAN_r8g8b8x8 =	 PIXMAN_FORMAT(32,PIXMAN_TYPE_RGBA,0,8,8,8),
+     PIXMAN_x14r6g6b6 =	 PIXMAN_FORMAT(32,PIXMAN_TYPE_ARGB,0,6,6,6),
+     PIXMAN_x2r10g10b10 = PIXMAN_FORMAT(32,PIXMAN_TYPE_ARGB,0,10,10,10),
+     PIXMAN_a2r10g10b10 = PIXMAN_FORMAT(32,PIXMAN_TYPE_ARGB,2,10,10,10),
+-- 
+1.6.6.1
+

@@ -1,0 +1,77 @@
+From bb3d1b67fd0f42ae00af811c624ea1c44541034d Mon Sep 17 00:00:00 2001
+From: Siarhei Siamashka <siarhei.siamashka@nokia.com>
+Date: Sun, 6 Mar 2011 16:17:12 +0200
+Subject: [PATCH 13/40] ARM: use prefetch in nearest scaled 'src_0565_0565'
+
+Benchmark on ARM Cortex-A8 r1p3 @500MHz, 32-bit LPDDR @166MHz:
+ Microbenchmark (scaling 2000x2000 image with scale factor close to 1x):
+  before: op=1, src=10020565, dst=10020565, speed=75.02 MPix/s
+  after:  op=1, src=10020565, dst=10020565, speed=73.63 MPix/s
+
+Benchmark on ARM Cortex-A8 r2p2 @1GHz, 32-bit LPDDR @200MHz:
+ Microbenchmark (scaling 2000x2000 image with scale factor close to 1x):
+  before: op=1, src=10020565, dst=10020565, speed=176.12 MPix/s
+  after:  op=1, src=10020565, dst=10020565, speed=267.50 MPix/s
+---
+ pixman/pixman-arm-simd-asm.S |   27 +++++++++++++++++++++++++--
+ 1 files changed, 25 insertions(+), 2 deletions(-)
+
+diff --git a/pixman/pixman-arm-simd-asm.S b/pixman/pixman-arm-simd-asm.S
+index 7567700..dd1366d 100644
+--- a/pixman/pixman-arm-simd-asm.S
++++ b/pixman/pixman-arm-simd-asm.S
+@@ -348,6 +348,7 @@ pixman_asm_function pixman_scaled_nearest_scanline_0565_0565_SRC_asm_armv6
+ 	TMP1	.req	r4
+ 	TMP2	.req	r5
+ 	VXMASK	.req	r6
++	PF_OFFS	.req	r7
+ 
+ 	ldr	UNIT_X, [sp]
+ 	push	{r4, r5, r6, r7}
+@@ -366,12 +367,33 @@ pixman_asm_function pixman_scaled_nearest_scanline_0565_0565_SRC_asm_armv6
+ 		strh	TMP2, [DST], #2
+ 	.endm
+ 
++	/*
++	 * stop prefetch before reaching the end of scanline (a good behaving
++	 * value selected based on some benchmarks with short scanlines)
++	 */
++	#define PREFETCH_BRAKING_DISTANCE 32
++
+ 	/* now do the scaling */
+ 	and	TMP1, VXMASK, VX, lsr #15
+ 	add	VX, VX, UNIT_X
+-	subs	W, #4
++	subs	W, #(8 + PREFETCH_BRAKING_DISTANCE)
++	blt	2f
++	/* set prefetch distance to 80 pixels ahead */
++	add	PF_OFFS, VX, UNIT_X, lsl #6
++	add	PF_OFFS, PF_OFFS, UNIT_X, lsl #4
++1:	/* main loop, process 8 pixels per iteration with prefetch */
++	subs	W, W, #8
++	add	PF_OFFS, UNIT_X, lsl #3
++	scale_2_pixels
++	scale_2_pixels
++	scale_2_pixels
++	scale_2_pixels
++	pld	[SRC, PF_OFFS, lsr #15]
++	bge	1b
++2:
++	subs	W, #(4 - 8 - PREFETCH_BRAKING_DISTANCE)
+ 	blt	2f
+-1: /* main loop, process 4 pixels per iteration */
++1:	/* process the remaining pixels */
+ 	scale_2_pixels
+ 	scale_2_pixels
+ 	subs	W, W, #4
+@@ -394,6 +416,7 @@ pixman_asm_function pixman_scaled_nearest_scanline_0565_0565_SRC_asm_armv6
+ 	.unreq	TMP1
+ 	.unreq	TMP2
+ 	.unreq	VXMASK
++	.unreq	PF_OFFS
+ 	/* return */
+ 	pop	{r4, r5, r6, r7}
+ 	bx	lr
+-- 
+1.6.6.1
+

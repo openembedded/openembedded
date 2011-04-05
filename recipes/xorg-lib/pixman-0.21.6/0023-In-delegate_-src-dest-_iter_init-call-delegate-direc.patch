@@ -1,0 +1,54 @@
+From be4eaa0e4f79af38b7b89c5b09ca88d3a88d9396 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?S=C3=B8ren=20Sandmann=20Pedersen?= <ssp@redhat.com>
+Date: Sat, 12 Mar 2011 19:06:02 -0500
+Subject: [PATCH 23/40] In delegate_{src,dest}_iter_init() call delegate directly.
+
+There is no reason to go through
+_pixman_implementation_{src,dest}_iter_init(), especially since
+_pixman_implementation_src_iter_init() is doing various other checks
+that only need to be done once.
+
+Also call delegate->src_iter_init() directly in pixman-sse2.c
+---
+ pixman/pixman-implementation.c |    4 ++--
+ pixman/pixman-sse2.c           |    2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/pixman/pixman-implementation.c b/pixman/pixman-implementation.c
+index adaf9c6..892767e 100644
+--- a/pixman/pixman-implementation.c
++++ b/pixman/pixman-implementation.c
+@@ -122,7 +122,7 @@ delegate_src_iter_init (pixman_implementation_t *imp,
+ 			uint8_t *		 buffer,
+ 			iter_flags_t             flags)
+ {
+-    _pixman_implementation_src_iter_init (
++    imp->delegate->src_iter_init (
+ 	imp->delegate, iter, image, x, y, width, height, buffer, flags);
+ }
+ 
+@@ -137,7 +137,7 @@ delegate_dest_iter_init (pixman_implementation_t *imp,
+ 			 uint8_t *		  buffer,
+ 			 iter_flags_t             flags)
+ {
+-    _pixman_implementation_dest_iter_init (
++    imp->delegate->dest_iter_init (
+ 	imp->delegate, iter, image, x, y, width, height, buffer, flags);
+ }
+ 
+diff --git a/pixman/pixman-sse2.c b/pixman/pixman-sse2.c
+index 696005f..d4a34e9 100644
+--- a/pixman/pixman-sse2.c
++++ b/pixman/pixman-sse2.c
+@@ -6013,7 +6013,7 @@ sse2_src_iter_init (pixman_implementation_t *imp,
+ 	}
+     }
+ 
+-    _pixman_implementation_src_iter_init (
++    imp->delegate->src_iter_init (
+ 	imp->delegate, iter, image, x, y, width, height, buffer, flags);
+ }
+ 
+-- 
+1.6.6.1
+

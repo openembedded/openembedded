@@ -1,0 +1,442 @@
+From 6b27768d81c254a4f1d05473157328d5a5d99b9c Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?S=C3=B8ren=20Sandmann=20Pedersen?= <ssp@redhat.com>
+Date: Sat, 12 Mar 2011 19:42:58 -0500
+Subject: [PATCH 25/40] Simplify the prototype for iterator initializers.
+
+All of the information previously passed to the iterator initializers
+is now available in the iterator itself, so there is no need to pass
+it as arguments anymore.
+---
+ pixman/pixman-bits-image.c       |   20 +++++---------
+ pixman/pixman-conical-gradient.c |    7 +---
+ pixman/pixman-general.c          |   52 ++++++++------------------------------
+ pixman/pixman-implementation.c   |   30 ++++-----------------
+ pixman/pixman-linear-gradient.c  |   16 +++--------
+ pixman/pixman-private.h          |   40 ++++++-----------------------
+ pixman/pixman-radial-gradient.c  |    7 +---
+ pixman/pixman-solid-fill.c       |   17 +++++-------
+ pixman/pixman-sse2.c             |   25 +++++++++--------
+ 9 files changed, 61 insertions(+), 153 deletions(-)
+
+diff --git a/pixman/pixman-bits-image.c b/pixman/pixman-bits-image.c
+index a865d71..835ecfb 100644
+--- a/pixman/pixman-bits-image.c
++++ b/pixman/pixman-bits-image.c
+@@ -1362,12 +1362,9 @@ src_get_scanline_wide (pixman_iter_t *iter, const uint32_t *mask)
+ }
+ 
+ void
+-_pixman_bits_image_src_iter_init (pixman_image_t *image,
+-				  pixman_iter_t *iter,
+-				  int x, int y, int width, int height,
+-				  uint8_t *buffer, iter_flags_t flags)
++_pixman_bits_image_src_iter_init (pixman_image_t *image, pixman_iter_t *iter)
+ {
+-    if (flags & ITER_NARROW)
++    if (iter->flags & ITER_NARROW)
+ 	iter->get_scanline = src_get_scanline_narrow;
+     else
+ 	iter->get_scanline = src_get_scanline_wide;
+@@ -1472,28 +1469,25 @@ dest_write_back_direct (pixman_iter_t *iter)
+ }
+ 
+ void
+-_pixman_bits_image_dest_iter_init (pixman_image_t *image,
+-				   pixman_iter_t *iter,
+-				   int x, int y, int width, int height,
+-				   uint8_t *buffer, iter_flags_t flags)
++_pixman_bits_image_dest_iter_init (pixman_image_t *image, pixman_iter_t *iter)
+ {
+-    if (flags & ITER_NARROW)
++    if (iter->flags & ITER_NARROW)
+     {
+ 	if (((image->common.flags &
+ 	      (FAST_PATH_NO_ALPHA_MAP | FAST_PATH_NO_ACCESSORS)) ==
+ 	     (FAST_PATH_NO_ALPHA_MAP | FAST_PATH_NO_ACCESSORS)) &&
+ 	    (image->bits.format == PIXMAN_a8r8g8b8	||
+ 	     (image->bits.format == PIXMAN_x8r8g8b8	&&
+-	      (flags & ITER_LOCALIZED_ALPHA))))
++	      (iter->flags & ITER_LOCALIZED_ALPHA))))
+ 	{
+-	    iter->buffer = image->bits.bits + y * image->bits.rowstride + x;
++	    iter->buffer = image->bits.bits + iter->y * image->bits.rowstride + iter->x;
+ 
+ 	    iter->get_scanline = _pixman_iter_get_scanline_noop;
+ 	    iter->write_back = dest_write_back_direct;
+ 	}
+ 	else
+ 	{
+-	    if ((flags & (ITER_IGNORE_RGB | ITER_IGNORE_ALPHA)) ==
++	    if ((iter->flags & (ITER_IGNORE_RGB | ITER_IGNORE_ALPHA)) ==
+ 		(ITER_IGNORE_RGB | ITER_IGNORE_ALPHA))
+ 	    {
+ 		iter->get_scanline = _pixman_iter_get_scanline_noop;
+diff --git a/pixman/pixman-conical-gradient.c b/pixman/pixman-conical-gradient.c
+index 9d7d2e8..791d4f3 100644
+--- a/pixman/pixman-conical-gradient.c
++++ b/pixman/pixman-conical-gradient.c
+@@ -171,12 +171,9 @@ conical_get_scanline_wide (pixman_iter_t *iter, const uint32_t *mask)
+ }
+ 
+ void
+-_pixman_conical_gradient_iter_init (pixman_image_t *image,
+-				    pixman_iter_t *iter,
+-				    int x, int y, int width, int height,
+-				    uint8_t *buffer, iter_flags_t flags)
++_pixman_conical_gradient_iter_init (pixman_image_t *image, pixman_iter_t *iter)
+ {
+-    if (flags & ITER_NARROW)
++    if (iter->flags & ITER_NARROW)
+ 	iter->get_scanline = conical_get_scanline_narrow;
+     else
+ 	iter->get_scanline = conical_get_scanline_wide;
+diff --git a/pixman/pixman-general.c b/pixman/pixman-general.c
+index 1a0fa7c..727affc 100644
+--- a/pixman/pixman-general.c
++++ b/pixman/pixman-general.c
+@@ -38,60 +38,30 @@
+ #include "pixman-private.h"
+ 
+ static void
+-general_src_iter_init (pixman_implementation_t *imp,
+-		       pixman_iter_t *iter,
+-		       pixman_image_t *image,
+-		       int x, int y, int width, int height,
+-		       uint8_t *buffer, iter_flags_t flags)
++general_src_iter_init (pixman_implementation_t *imp, pixman_iter_t *iter)
+ {
++    pixman_image_t *image = iter->image;
++
+     if (image->type == SOLID)
+-    {
+-	_pixman_solid_fill_iter_init (
+-	    image, iter, x, y, width, height, buffer, flags);
+-    }
++	_pixman_solid_fill_iter_init (image, iter);
+     else if (image->type == LINEAR)
+-    {
+-	_pixman_linear_gradient_iter_init (
+-	    image, iter, x, y, width, height, buffer, flags);
+-    }
++	_pixman_linear_gradient_iter_init (image, iter);
+     else if (image->type == RADIAL)
+-    {
+-	_pixman_radial_gradient_iter_init (
+-	    image, iter, x, y, width, height, buffer, flags);
+-    }
++	_pixman_radial_gradient_iter_init (image, iter);
+     else if (image->type == CONICAL)
+-    {
+-	_pixman_conical_gradient_iter_init (
+-	    image, iter, x, y, width, height, buffer, flags);
+-    }
++	_pixman_conical_gradient_iter_init (image, iter);
+     else if (image->type == BITS)
+-    {
+-	_pixman_bits_image_src_iter_init (
+-	    image, iter, x, y, width, height, buffer, flags);
+-    }
++	_pixman_bits_image_src_iter_init (image, iter);
+     else
+-    {
+ 	_pixman_log_error (FUNC, "Pixman bug: unknown image type\n");
+-    }
+ }
+ 
+ static void
+-general_dest_iter_init (pixman_implementation_t *imp,
+-			pixman_iter_t *iter,
+-			pixman_image_t *image,
+-			int x, int y, int width, int height,
+-			uint8_t *buffer, iter_flags_t flags)
++general_dest_iter_init (pixman_implementation_t *imp, pixman_iter_t *iter)
+ {
+-    iter->image = image;
+-    iter->x = x;
+-    iter->y = y;
+-    iter->width = width;
+-    iter->buffer = (uint32_t *)buffer;
+-
+-    if (image->type == BITS)
++    if (iter->image->type == BITS)
+     {
+-	_pixman_bits_image_dest_iter_init (
+-	    image, iter, x, y, width, height, buffer, flags);
++	_pixman_bits_image_dest_iter_init (iter->image, iter);
+     }
+     else
+     {
+diff --git a/pixman/pixman-implementation.c b/pixman/pixman-implementation.c
+index bdd4543..f1d3f99 100644
+--- a/pixman/pixman-implementation.c
++++ b/pixman/pixman-implementation.c
+@@ -113,32 +113,16 @@ delegate_fill (pixman_implementation_t *imp,
+ 
+ static void
+ delegate_src_iter_init (pixman_implementation_t *imp,
+-			pixman_iter_t *	         iter,
+-			pixman_image_t *         image,
+-			int                      x,
+-			int                      y,
+-			int                      width,
+-			int                      height,
+-			uint8_t *		 buffer,
+-			iter_flags_t             flags)
++			pixman_iter_t *	         iter)
+ {
+-    imp->delegate->src_iter_init (
+-	imp->delegate, iter, image, x, y, width, height, buffer, flags);
++    imp->delegate->src_iter_init (imp->delegate, iter);
+ }
+ 
+ static void
+ delegate_dest_iter_init (pixman_implementation_t *imp,
+-			 pixman_iter_t *	  iter,
+-			 pixman_image_t *         image,
+-			 int                      x,
+-			 int                      y,
+-			 int                      width,
+-			 int                      height,
+-			 uint8_t *		  buffer,
+-			 iter_flags_t             flags)
++			 pixman_iter_t *	  iter)
+ {
+-    imp->delegate->dest_iter_init (
+-	imp->delegate, iter, image, x, y, width, height, buffer, flags);
++    imp->delegate->dest_iter_init (imp->delegate, iter);
+ }
+ 
+ pixman_implementation_t *
+@@ -293,8 +277,7 @@ _pixman_implementation_src_iter_init (pixman_implementation_t	*imp,
+     }
+     else
+     {
+-	(*imp->src_iter_init) (
+-	    imp, iter, image, x, y, width, height, buffer, flags);
++	(*imp->src_iter_init) (imp, iter);
+     }
+ }
+ 
+@@ -317,6 +300,5 @@ _pixman_implementation_dest_iter_init (pixman_implementation_t	*imp,
+     iter->height = height;
+     iter->flags = flags;
+ 
+-    (*imp->dest_iter_init) (
+-	imp, iter, image, x, y, width, height, buffer, flags);
++    (*imp->dest_iter_init) (imp, iter);
+ }
+diff --git a/pixman/pixman-linear-gradient.c b/pixman/pixman-linear-gradient.c
+index 07303fc..6e1ea24 100644
+--- a/pixman/pixman-linear-gradient.c
++++ b/pixman/pixman-linear-gradient.c
+@@ -233,18 +233,12 @@ linear_get_scanline_wide (pixman_iter_t *iter, const uint32_t *mask)
+ }
+ 
+ void
+-_pixman_linear_gradient_iter_init (pixman_image_t *image,
+-				   pixman_iter_t  *iter,
+-				   int             x,
+-				   int             y,
+-				   int             width,
+-				   int             height,
+-				   uint8_t        *buffer,
+-				   iter_flags_t    flags)
++_pixman_linear_gradient_iter_init (pixman_image_t *image, pixman_iter_t  *iter)
+ {
+-    if (linear_gradient_is_horizontal (image, x, y, width, height))
++    if (linear_gradient_is_horizontal (
++	    iter->image, iter->x, iter->y, iter->width, iter->height))
+     {
+-	if (flags & ITER_NARROW)
++	if (iter->flags & ITER_NARROW)
+ 	    linear_get_scanline_narrow (iter, NULL);
+ 	else
+ 	    linear_get_scanline_wide (iter, NULL);
+@@ -253,7 +247,7 @@ _pixman_linear_gradient_iter_init (pixman_image_t *image,
+     }
+     else
+     {
+-	if (flags & ITER_NARROW)
++	if (iter->flags & ITER_NARROW)
+ 	    iter->get_scanline = linear_get_scanline_narrow;
+ 	else
+ 	    iter->get_scanline = linear_get_scanline_wide;
+diff --git a/pixman/pixman-private.h b/pixman/pixman-private.h
+index ea9545f..60060a9 100644
+--- a/pixman/pixman-private.h
++++ b/pixman/pixman-private.h
+@@ -233,39 +233,22 @@ void
+ _pixman_bits_image_setup_accessors (bits_image_t *image);
+ 
+ void
+-_pixman_bits_image_src_iter_init (pixman_image_t *image,
+-				  pixman_iter_t *iter,
+-				  int x, int y, int width, int height,
+-				  uint8_t *buffer, iter_flags_t flags);
++_pixman_bits_image_src_iter_init (pixman_image_t *image, pixman_iter_t *iter);
++
+ void
+-_pixman_bits_image_dest_iter_init (pixman_image_t *image,
+-				   pixman_iter_t *iter,
+-				   int x, int y, int width, int height,
+-				   uint8_t *buffer, iter_flags_t flags);
++_pixman_bits_image_dest_iter_init (pixman_image_t *image, pixman_iter_t *iter);
+ 
+ void
+-_pixman_solid_fill_iter_init (pixman_image_t *image,
+-			      pixman_iter_t  *iter,
+-			      int x, int y, int width, int height,
+-			      uint8_t *buffer, iter_flags_t flags);
++_pixman_solid_fill_iter_init (pixman_image_t *image, pixman_iter_t  *iter);
+ 
+ void
+-_pixman_linear_gradient_iter_init (pixman_image_t *image,
+-				   pixman_iter_t  *iter,
+-				   int x, int y, int width, int height,
+-				   uint8_t *buffer, iter_flags_t flags);
++_pixman_linear_gradient_iter_init (pixman_image_t *image, pixman_iter_t  *iter);
+ 
+ void
+-_pixman_radial_gradient_iter_init (pixman_image_t *image,
+-				   pixman_iter_t *iter,
+-				   int x, int y, int width, int height,
+-				   uint8_t *buffer, iter_flags_t flags);
++_pixman_radial_gradient_iter_init (pixman_image_t *image, pixman_iter_t *iter);
+ 
+ void
+-_pixman_conical_gradient_iter_init (pixman_image_t *image,
+-				    pixman_iter_t *iter,
+-				    int x, int y, int width, int height,
+-				    uint8_t *buffer, iter_flags_t flags);
++_pixman_conical_gradient_iter_init (pixman_image_t *image, pixman_iter_t *iter);
+ 
+ pixman_image_t *
+ _pixman_image_allocate (void);
+@@ -413,14 +396,7 @@ typedef pixman_bool_t (*pixman_fill_func_t) (pixman_implementation_t *imp,
+ 					     int                      height,
+ 					     uint32_t                 xor);
+ typedef void (*pixman_iter_init_func_t) (pixman_implementation_t *imp,
+-                                         pixman_iter_t           *iter,
+-                                         pixman_image_t          *image,
+-                                         int                      x,
+-                                         int                      y,
+-                                         int                      width,
+-                                         int                      height,
+-                                         uint8_t                 *buffer,
+-                                         iter_flags_t             flags);
++                                         pixman_iter_t           *iter);
+ 
+ void _pixman_setup_combiner_functions_32 (pixman_implementation_t *imp);
+ void _pixman_setup_combiner_functions_64 (pixman_implementation_t *imp);
+diff --git a/pixman/pixman-radial-gradient.c b/pixman/pixman-radial-gradient.c
+index 6523b82..5e9fd73 100644
+--- a/pixman/pixman-radial-gradient.c
++++ b/pixman/pixman-radial-gradient.c
+@@ -400,12 +400,9 @@ radial_get_scanline_wide (pixman_iter_t *iter, const uint32_t *mask)
+ }
+ 
+ void
+-_pixman_radial_gradient_iter_init (pixman_image_t *image,
+-				   pixman_iter_t *iter,
+-				   int x, int y, int width, int height,
+-				   uint8_t *buffer, iter_flags_t flags)
++_pixman_radial_gradient_iter_init (pixman_image_t *image, pixman_iter_t *iter)
+ {
+-    if (flags & ITER_NARROW)
++    if (iter->flags & ITER_NARROW)
+ 	iter->get_scanline = radial_get_scanline_narrow;
+     else
+ 	iter->get_scanline = radial_get_scanline_wide;
+diff --git a/pixman/pixman-solid-fill.c b/pixman/pixman-solid-fill.c
+index 67681f2..852e135 100644
+--- a/pixman/pixman-solid-fill.c
++++ b/pixman/pixman-solid-fill.c
+@@ -27,24 +27,21 @@
+ #include "pixman-private.h"
+ 
+ void
+-_pixman_solid_fill_iter_init (pixman_image_t *image,
+-			      pixman_iter_t  *iter,
+-			      int x, int y, int width, int height,
+-			      uint8_t *buffer, iter_flags_t flags)
++_pixman_solid_fill_iter_init (pixman_image_t *image, pixman_iter_t  *iter)
+ {
+-    if (flags & ITER_NARROW)
++    if (iter->flags & ITER_NARROW)
+     {
+-	uint32_t *b = (uint32_t *)buffer;
+-	uint32_t *e = b + width;
+-	uint32_t color = image->solid.color_32;
++	uint32_t *b = (uint32_t *)iter->buffer;
++	uint32_t *e = b + iter->width;
++	uint32_t color = iter->image->solid.color_32;
+ 
+ 	while (b < e)
+ 	    *(b++) = color;
+     }
+     else
+     {
+-	uint64_t *b = (uint64_t *)buffer;
+-	uint64_t *e = b + width;
++	uint64_t *b = (uint64_t *)iter->buffer;
++	uint64_t *e = b + iter->width;
+ 	uint64_t color = image->solid.color_64;
+ 
+ 	while (b < e)
+diff --git a/pixman/pixman-sse2.c b/pixman/pixman-sse2.c
+index 43a6bf2..533b858 100644
+--- a/pixman/pixman-sse2.c
++++ b/pixman/pixman-sse2.c
+@@ -5978,19 +5978,21 @@ static const fetcher_info_t fetchers[] =
+ };
+ 
+ static void
+-sse2_src_iter_init (pixman_implementation_t *imp,
+-		    pixman_iter_t *iter,
+-		    pixman_image_t *image,
+-		    int x, int y, int width, int height,
+-		    uint8_t *buffer, iter_flags_t flags)
++sse2_src_iter_init (pixman_implementation_t *imp, pixman_iter_t *iter)
+ {
++    pixman_image_t *image = iter->image;
++    int x = iter->x;
++    int y = iter->y;
++    int width = iter->width;
++    int height = iter->height;
++
+ #define FLAGS								\
+     (FAST_PATH_STANDARD_FLAGS | FAST_PATH_ID_TRANSFORM)
+ 
+-    if ((flags & ITER_NARROW)				&&
+-	(image->common.flags & FLAGS) == FLAGS		&&
+-	x >= 0 && y >= 0				&&
+-	x + width <= image->bits.width			&&
++    if ((iter->flags & ITER_NARROW)				&&
++	(image->common.flags & FLAGS) == FLAGS			&&
++	x >= 0 && y >= 0					&&
++	x + width <= image->bits.width				&&
+ 	y + height <= image->bits.height)
+     {
+ 	const fetcher_info_t *f;
+@@ -6002,7 +6004,7 @@ sse2_src_iter_init (pixman_implementation_t *imp,
+ 		uint8_t *b = (uint8_t *)image->bits.bits;
+ 		int s = image->bits.rowstride * 4;
+ 
+-		iter->bits = b + s * y + x * PIXMAN_FORMAT_BPP (f->format) / 8;
++		iter->bits = b + s * iter->y + x * PIXMAN_FORMAT_BPP (f->format) / 8;
+ 		iter->stride = s;
+ 
+ 		iter->get_scanline = f->get_scanline;
+@@ -6011,8 +6013,7 @@ sse2_src_iter_init (pixman_implementation_t *imp,
+ 	}
+     }
+ 
+-    imp->delegate->src_iter_init (
+-	imp->delegate, iter, image, x, y, width, height, buffer, flags);
++    imp->delegate->src_iter_init (imp->delegate, iter);
+ }
+ 
+ #if defined(__GNUC__) && !defined(__x86_64__) && !defined(__amd64__)
+-- 
+1.6.6.1
+
