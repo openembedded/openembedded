@@ -1,0 +1,40 @@
+From 8868778ea1fdc8e70da76b3b00ea78106c5840d8 Mon Sep 17 00:00:00 2001
+From: Andrea Canciani <ranma42@gmail.com>
+Date: Tue, 22 Feb 2011 22:43:48 +0100
+Subject: [PATCH 05/40] Do not include unused headers
+
+pixman-combine32.h is included without being used both in
+pixman-image.c and in pixman-general.c.
+---
+ pixman/pixman-general.c |    2 --
+ pixman/pixman-image.c   |    1 -
+ 2 files changed, 0 insertions(+), 3 deletions(-)
+
+diff --git a/pixman/pixman-general.c b/pixman/pixman-general.c
+index 16ea3a4..872fb7e 100644
+--- a/pixman/pixman-general.c
++++ b/pixman/pixman-general.c
+@@ -36,8 +36,6 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include "pixman-private.h"
+-#include "pixman-combine32.h"
+-#include "pixman-private.h"
+ 
+ static void
+ general_src_iter_init (pixman_implementation_t *imp,
+diff --git a/pixman/pixman-image.c b/pixman/pixman-image.c
+index 9103ca6..84bacf8 100644
+--- a/pixman/pixman-image.c
++++ b/pixman/pixman-image.c
+@@ -30,7 +30,6 @@
+ #include <assert.h>
+ 
+ #include "pixman-private.h"
+-#include "pixman-combine32.h"
+ 
+ pixman_bool_t
+ _pixman_init_gradient (gradient_t *                  gradient,
+-- 
+1.6.6.1
+

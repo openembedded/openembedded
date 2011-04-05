@@ -1,0 +1,156 @@
+From 84f3c5a71a2de1a96dcf0c7f9ab0a8ee1b1b158f Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?S=C3=B8ren=20Sandmann=20Pedersen?= <ssp@redhat.com>
+Date: Mon, 7 Mar 2011 13:45:54 -0500
+Subject: [PATCH 11/40] test: In image_endian_swap() use pixman_image_get_format() to get the bpp.
+
+There is no reason to pass in the bpp as an argument; it can be gotten
+directly from the image.
+---
+ test/affine-test.c          |    6 +++---
+ test/blitters-test.c        |    4 ++--
+ test/composite-traps-test.c |    2 +-
+ test/scaling-test.c         |    6 +++---
+ test/utils.c                |    9 +++++++--
+ test/utils.h                |    2 +-
+ 6 files changed, 17 insertions(+), 12 deletions(-)
+
+diff --git a/test/affine-test.c b/test/affine-test.c
+index b7a1fa6..ed8000c 100644
+--- a/test/affine-test.c
++++ b/test/affine-test.c
+@@ -95,8 +95,8 @@ test_composite (int      testnum,
+     dst_img = pixman_image_create_bits (
+         dst_fmt, dst_width, dst_height, dstbuf, dst_stride);
+ 
+-    image_endian_swap (src_img, src_bpp * 8);
+-    image_endian_swap (dst_img, dst_bpp * 8);
++    image_endian_swap (src_img);
++    image_endian_swap (dst_img);
+ 
+     pixman_transform_init_identity (&transform);
+     
+@@ -251,7 +251,7 @@ test_composite (int      testnum,
+ 	    dstbuf[i] &= 0xFFFFFF;
+     }
+ 
+-    image_endian_swap (dst_img, dst_bpp * 8);
++    image_endian_swap (dst_img);
+ 
+     if (verbose)
+     {
+diff --git a/test/blitters-test.c b/test/blitters-test.c
+index 42181ef..63e7cb3 100644
+--- a/test/blitters-test.c
++++ b/test/blitters-test.c
+@@ -61,7 +61,7 @@ create_random_image (pixman_format_code_t *allowed_formats,
+ 	pixman_image_set_indexed (img, &(y_palette[PIXMAN_FORMAT_BPP (fmt)]));
+     }
+ 
+-    image_endian_swap (img, PIXMAN_FORMAT_BPP (fmt));
++    image_endian_swap (img);
+ 
+     if (used_fmt) *used_fmt = fmt;
+     return img;
+@@ -101,7 +101,7 @@ free_random_image (uint32_t initcrc,
+ 	/* swap endiannes in order to provide identical results on both big
+ 	 * and litte endian systems
+ 	 */
+-	image_endian_swap (img, PIXMAN_FORMAT_BPP (fmt));
++	image_endian_swap (img);
+ 	crc32 = compute_crc32 (initcrc, data, stride * height);
+     }
+ 
+diff --git a/test/composite-traps-test.c b/test/composite-traps-test.c
+index 8f32778..298537d 100644
+--- a/test/composite-traps-test.c
++++ b/test/composite-traps-test.c
+@@ -218,7 +218,7 @@ test_composite (int      testnum,
+ 	    dst_bits[i] &= 0xFFFFFF;
+     }
+ 
+-    image_endian_swap (dst_img, dst_bpp * 8);
++    image_endian_swap (dst_img);
+ 
+     if (verbose)
+     {
+diff --git a/test/scaling-test.c b/test/scaling-test.c
+index dbb9d39..82370f7 100644
+--- a/test/scaling-test.c
++++ b/test/scaling-test.c
+@@ -140,8 +140,8 @@ test_composite (int      testnum,
+     dst_img = pixman_image_create_bits (
+         dst_fmt, dst_width, dst_height, dstbuf, dst_stride);
+ 
+-    image_endian_swap (src_img, src_bpp * 8);
+-    image_endian_swap (dst_img, dst_bpp * 8);
++    image_endian_swap (src_img);
++    image_endian_swap (dst_img);
+ 
+     if (lcg_rand_n (4) > 0)
+     {
+@@ -330,7 +330,7 @@ test_composite (int      testnum,
+ 	    dstbuf[i] &= 0xFFFFFF;
+     }
+ 
+-    image_endian_swap (dst_img, dst_bpp * 8);
++    image_endian_swap (dst_img);
+ 
+     if (verbose)
+     {
+diff --git a/test/utils.c b/test/utils.c
+index 2f21398..4bf02e1 100644
+--- a/test/utils.c
++++ b/test/utils.c
+@@ -133,11 +133,12 @@ compute_crc32 (uint32_t    in_crc32,
+ /* perform endian conversion of pixel data
+  */
+ void
+-image_endian_swap (pixman_image_t *img, int bpp)
++image_endian_swap (pixman_image_t *img)
+ {
+     int stride = pixman_image_get_stride (img);
+     uint32_t *data = pixman_image_get_data (img);
+     int height = pixman_image_get_height (img);
++    int bpp = PIXMAN_FORMAT_BPP (pixman_image_get_format (img));
+     int i, j;
+ 
+     /* swap bytes only on big endian systems */
+@@ -145,10 +146,13 @@ image_endian_swap (pixman_image_t *img, int bpp)
+     if (*(volatile uint8_t *)&endian_check_var != 0x12)
+ 	return;
+ 
++    if (bpp == 8)
++	return;
++
+     for (i = 0; i < height; i++)
+     {
+ 	uint8_t *line_data = (uint8_t *)data + stride * i;
+-	/* swap bytes only for 16, 24 and 32 bpp for now */
++	
+ 	switch (bpp)
+ 	{
+ 	case 1:
+@@ -208,6 +212,7 @@ image_endian_swap (pixman_image_t *img, int bpp)
+ 	    }
+ 	    break;
+ 	default:
++	    assert (FALSE);
+ 	    break;
+ 	}
+     }
+diff --git a/test/utils.h b/test/utils.h
+index 9c7bdb1..a5183f7 100644
+--- a/test/utils.h
++++ b/test/utils.h
+@@ -60,7 +60,7 @@ compute_crc32 (uint32_t    in_crc32,
+ /* perform endian conversion of pixel data
+  */
+ void
+-image_endian_swap (pixman_image_t *img, int bpp);
++image_endian_swap (pixman_image_t *img);
+ 
+ /* Allocate memory that is bounded by protected pages,
+  * so that out-of-bounds access will cause segfaults
+-- 
+1.6.6.1
+

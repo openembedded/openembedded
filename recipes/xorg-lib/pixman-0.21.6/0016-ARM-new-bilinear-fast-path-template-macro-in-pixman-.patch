@@ -1,0 +1,130 @@
+From 66f4ee1b3bccf4516433d61dbf2035551a712fa2 Mon Sep 17 00:00:00 2001
+From: Siarhei Siamashka <siarhei.siamashka@nokia.com>
+Date: Wed, 9 Mar 2011 10:59:46 +0200
+Subject: [PATCH 16/40] ARM: new bilinear fast path template macro in 'pixman-arm-common.h'
+
+It can be reused in different ARM NEON bilinear scaling fast path functions.
+---
+ pixman/pixman-arm-common.h |   45 ++++++++++++++++++++++++++++++++++++++++++++
+ pixman/pixman-arm-neon.c   |   44 ++----------------------------------------
+ 2 files changed, 48 insertions(+), 41 deletions(-)
+
+diff --git a/pixman/pixman-arm-common.h b/pixman/pixman-arm-common.h
+index 9b1322b..c3bf986 100644
+--- a/pixman/pixman-arm-common.h
++++ b/pixman/pixman-arm-common.h
+@@ -361,4 +361,49 @@ FAST_NEAREST_MAINLOOP_COMMON (cputype##_##name##_pad_##op,                    \
+     SIMPLE_NEAREST_A8_MASK_FAST_PATH_NONE (op,s,d,func),                      \
+     SIMPLE_NEAREST_A8_MASK_FAST_PATH_PAD (op,s,d,func)
+ 
++/*****************************************************************************/
++
++#define PIXMAN_ARM_BIND_SCALED_BILINEAR_SRC_DST(flags, cputype, name, op,     \
++                                                src_type, dst_type)           \
++void                                                                          \
++pixman_scaled_bilinear_scanline_##name##_##op##_asm_##cputype (               \
++                                                dst_type *       dst,         \
++                                                const src_type * top,         \
++                                                const src_type * bottom,      \
++                                                int              wt,          \
++                                                int              wb,          \
++                                                pixman_fixed_t   x,           \
++                                                pixman_fixed_t   ux,          \
++                                                int              width);      \
++                                                                              \
++static force_inline void                                                      \
++scaled_bilinear_scanline_##cputype##_##name##_##op (                          \
++                                                dst_type *       dst,         \
++                                                const uint32_t * mask,        \
++                                                const src_type * src_top,     \
++                                                const src_type * src_bottom,  \
++                                                int32_t          w,           \
++                                                int              wt,          \
++                                                int              wb,          \
++                                                pixman_fixed_t   vx,          \
++                                                pixman_fixed_t   unit_x,      \
++                                                pixman_fixed_t   max_vx,      \
++                                                pixman_bool_t    zero_src)    \
++{                                                                             \
++    if ((flags & SKIP_ZERO_SRC) && zero_src)                                  \
++	return;                                                               \
++    pixman_scaled_bilinear_scanline_##name##_##op##_asm_##cputype (           \
++                            dst, src_top, src_bottom, wt, wb, vx, unit_x, w); \
++}                                                                             \
++                                                                              \
++FAST_BILINEAR_MAINLOOP_COMMON (cputype##_##name##_cover_##op,                 \
++                       scaled_bilinear_scanline_##cputype##_##name##_##op,    \
++                       src_type, uint32_t, dst_type, COVER, FALSE, FALSE)     \
++FAST_BILINEAR_MAINLOOP_COMMON (cputype##_##name##_none_##op,                  \
++                       scaled_bilinear_scanline_##cputype##_##name##_##op,    \
++                       src_type, uint32_t, dst_type, NONE, FALSE, FALSE)      \
++FAST_BILINEAR_MAINLOOP_COMMON (cputype##_##name##_pad_##op,                   \
++                       scaled_bilinear_scanline_##cputype##_##name##_##op,    \
++                       src_type, uint32_t, dst_type, PAD, FALSE, FALSE)
++
+ #endif
+diff --git a/pixman/pixman-arm-neon.c b/pixman/pixman-arm-neon.c
+index c7c0254..98ad5f2 100644
+--- a/pixman/pixman-arm-neon.c
++++ b/pixman/pixman-arm-neon.c
+@@ -127,6 +127,9 @@ PIXMAN_ARM_BIND_SCALED_NEAREST_SRC_A8_DST (SKIP_ZERO_SRC, neon, 8888_8_0565,
+ PIXMAN_ARM_BIND_SCALED_NEAREST_SRC_A8_DST (SKIP_ZERO_SRC, neon, 0565_8_0565,
+                                            OVER, uint16_t, uint16_t)
+ 
++PIXMAN_ARM_BIND_SCALED_BILINEAR_SRC_DST (0, neon, 8888_8888, SRC,
++                                         uint32_t, uint32_t)
++
+ void
+ pixman_composite_src_n_8_asm_neon (int32_t   w,
+                                    int32_t   h,
+@@ -232,47 +235,6 @@ pixman_blt_neon (uint32_t *src_bits,
+     }
+ }
+ 
+-void
+-pixman_scaled_bilinear_scanline_8888_8888_SRC_asm_neon (uint32_t *       out,
+-                                                        const uint32_t * top,
+-                                                        const uint32_t * bottom,
+-                                                        int              wt,
+-                                                        int              wb,
+-                                                        pixman_fixed_t   x,
+-                                                        pixman_fixed_t   ux,
+-                                                        int              width);
+-
+-static force_inline void
+-scaled_bilinear_scanline_neon_8888_8888_SRC (uint32_t *       dst,
+-					     const uint32_t * mask,
+-					     const uint32_t * src_top,
+-					     const uint32_t * src_bottom,
+-					     int32_t          w,
+-					     int              wt,
+-					     int              wb,
+-					     pixman_fixed_t   vx,
+-					     pixman_fixed_t   unit_x,
+-					     pixman_fixed_t   max_vx,
+-					     pixman_bool_t    zero_src)
+-{
+-    pixman_scaled_bilinear_scanline_8888_8888_SRC_asm_neon (dst, src_top,
+-                                                            src_bottom, wt, wb,
+-                                                            vx, unit_x, w);
+-}
+-
+-FAST_BILINEAR_MAINLOOP_COMMON (neon_8888_8888_cover_SRC,
+-			       scaled_bilinear_scanline_neon_8888_8888_SRC,
+-			       uint32_t, uint32_t, uint32_t,
+-			       COVER, FALSE, FALSE)
+-FAST_BILINEAR_MAINLOOP_COMMON (neon_8888_8888_pad_SRC,
+-			       scaled_bilinear_scanline_neon_8888_8888_SRC,
+-			       uint32_t, uint32_t, uint32_t,
+-			       PAD, FALSE, FALSE)
+-FAST_BILINEAR_MAINLOOP_COMMON (neon_8888_8888_none_SRC,
+-			       scaled_bilinear_scanline_neon_8888_8888_SRC,
+-			       uint32_t, uint32_t, uint32_t,
+-			       NONE, FALSE, FALSE)
+-
+ static const pixman_fast_path_t arm_neon_fast_paths[] =
+ {
+     PIXMAN_STD_FAST_PATH (SRC,  r5g6b5,   null,     r5g6b5,   neon_composite_src_0565_0565),
+-- 
+1.6.6.1
+

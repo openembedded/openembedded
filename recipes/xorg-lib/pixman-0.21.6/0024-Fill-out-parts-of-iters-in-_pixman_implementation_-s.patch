@@ -1,0 +1,111 @@
+From 74d0f44b6d6d613d24541b849835da0464cc6fd0 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?S=C3=B8ren=20Sandmann=20Pedersen?= <ssp@redhat.com>
+Date: Sat, 12 Mar 2011 19:12:35 -0500
+Subject: [PATCH 24/40] Fill out parts of iters in _pixman_implementation_{src,dest}_iter_init()
+
+This makes _pixman_implementation_{src,dest}_iter_init() responsible
+for filling parts of the information in the iterators. Specifically,
+the information passed as arguments is stored in the iterator.
+
+Also add a height field to pixman_iter_t().
+---
+ pixman/pixman-general.c        |    6 ------
+ pixman/pixman-implementation.c |   16 ++++++++++++++++
+ pixman/pixman-private.h        |   11 ++++++++---
+ pixman/pixman-sse2.c           |    2 --
+ 4 files changed, 24 insertions(+), 11 deletions(-)
+
+diff --git a/pixman/pixman-general.c b/pixman/pixman-general.c
+index 872fb7e..1a0fa7c 100644
+--- a/pixman/pixman-general.c
++++ b/pixman/pixman-general.c
+@@ -44,12 +44,6 @@ general_src_iter_init (pixman_implementation_t *imp,
+ 		       int x, int y, int width, int height,
+ 		       uint8_t *buffer, iter_flags_t flags)
+ {
+-    iter->image = image;
+-    iter->x = x;
+-    iter->y = y;
+-    iter->width = width;
+-    iter->buffer = (uint32_t *)buffer;
+-
+     if (image->type == SOLID)
+     {
+ 	_pixman_solid_fill_iter_init (
+diff --git a/pixman/pixman-implementation.c b/pixman/pixman-implementation.c
+index 892767e..bdd4543 100644
+--- a/pixman/pixman-implementation.c
++++ b/pixman/pixman-implementation.c
+@@ -274,6 +274,14 @@ _pixman_implementation_src_iter_init (pixman_implementation_t	*imp,
+ 				      uint8_t			*buffer,
+ 				      iter_flags_t		 flags)
+ {
++    iter->image = image;
++    iter->buffer = (uint32_t *)buffer;
++    iter->x = x;
++    iter->y = y;
++    iter->width = width;
++    iter->height = height;
++    iter->flags = flags;
++
+     if (!image)
+     {
+ 	iter->get_scanline = get_scanline_null;
+@@ -301,6 +309,14 @@ _pixman_implementation_dest_iter_init (pixman_implementation_t	*imp,
+ 				       uint8_t			*buffer,
+ 				       iter_flags_t		 flags)
+ {
++    iter->image = image;
++    iter->buffer = (uint32_t *)buffer;
++    iter->x = x;
++    iter->y = y;
++    iter->width = width;
++    iter->height = height;
++    iter->flags = flags;
++
+     (*imp->dest_iter_init) (
+ 	imp, iter, image, x, y, width, height, buffer, flags);
+ }
+diff --git a/pixman/pixman-private.h b/pixman/pixman-private.h
+index 1473dc4..ea9545f 100644
+--- a/pixman/pixman-private.h
++++ b/pixman/pixman-private.h
+@@ -212,14 +212,19 @@ typedef enum
+ 
+ struct pixman_iter_t
+ {
+-    pixman_iter_get_scanline_t	get_scanline;
+-    pixman_iter_write_back_t	write_back;
+-
++    /* These are initialized by _pixman_implementation_{src,dest}_init */
+     pixman_image_t *		image;
+     uint32_t *			buffer;
+     int				x, y;
+     int				width;
++    int				height;
++    iter_flags_t		flags;
++
++    /* These function pointers are initialized by the implementation */
++    pixman_iter_get_scanline_t	get_scanline;
++    pixman_iter_write_back_t	write_back;
+ 
++    /* These fields are scratch data that implementations can use */
+     uint8_t *			bits;
+     int				stride;
+ };
+diff --git a/pixman/pixman-sse2.c b/pixman/pixman-sse2.c
+index d4a34e9..43a6bf2 100644
+--- a/pixman/pixman-sse2.c
++++ b/pixman/pixman-sse2.c
+@@ -6004,8 +6004,6 @@ sse2_src_iter_init (pixman_implementation_t *imp,
+ 
+ 		iter->bits = b + s * y + x * PIXMAN_FORMAT_BPP (f->format) / 8;
+ 		iter->stride = s;
+-		iter->width = width;
+-		iter->buffer = (uint32_t *)buffer;
+ 
+ 		iter->get_scanline = f->get_scanline;
+ 		return;
+-- 
+1.6.6.1
+
