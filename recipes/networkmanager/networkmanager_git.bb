@@ -4,9 +4,9 @@ DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "1"
 DEFAULT_PREFERENCE_shr = "1"
 
-SRCREV = "9b61ec7c58e8106c28d01b33ad0b263aefb1f347"
-PV = "0.8.2+git"
-PR_append = ".gitr${SRCREV}"
+SRCREV = "0.8.3.999"
+PV = "0.8.3.999"
+#PR_append = ".gitr${SRCREV}"
 
 inherit gnome
 
