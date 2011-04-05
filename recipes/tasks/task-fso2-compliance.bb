@@ -3,7 +3,7 @@ Install this task to make your distribution FSO 2.0-compliant."
 SECTION = "fso/base"
 LICENSE = "MIT"
 PV = "1.9.0"
-PR = "r9"
+PR = "r10"
 
 inherit task
 
@@ -22,19 +22,13 @@ RDEPENDS_${PN} = "\
   fsoaudiod \
   \
   fso-apm \
-#  connman \
-#  connman-scripts \
-#  connman-plugin-bluetooth \
-#  connman-plugin-dhclient \
-#  connman-plugin-dnsproxy \
-#  connman-plugin-ethernet \
-#  connman-plugin-fake \
-#  connman-plugin-loopback \
-#  connman-plugin-pppd \
-#  connman-plugin-resolvconf \
-#  connman-plugin-udhcp \
-#  connman-plugin-wifi \
-#  connman-test-utils \
+  connman \
+  connman-scripts \
+  connman-plugin-bluetooth \
+  connman-plugin-ethernet \
+  connman-plugin-fake \
+  connman-plugin-loopback \
+  connman-plugin-wifi \
 "
 
 RRECOMMENDS_${PN} = "\
