@@ -1,4 +1,4 @@
-COMPATIBLE_MACHINE = "omap4430-panda"
+COMPATIBLE_MACHINE = "omap4430-panda|am45x-evm"
 
 require multi-kernel.inc
 
