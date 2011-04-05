@@ -1,0 +1,37 @@
+From ad3cbfb073fc325e1b3152898ca71b8255675957 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?S=C3=B8ren=20Sandmann=20Pedersen?= <ssp@redhat.com>
+Date: Tue, 22 Mar 2011 13:42:05 -0400
+Subject: [PATCH 29/40] test: Fix infinite loop in composite
+
+When run in PIXMAN_RANDOMIZE_TESTS mode, this test would go into an
+infinite loop because the loop started at 'seed' but the stop
+condition was still N_TESTS.
+---
+ test/composite.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/test/composite.c b/test/composite.c
+index b0e0ba4..9a001e5 100644
+--- a/test/composite.c
++++ b/test/composite.c
+@@ -909,13 +909,13 @@ main (int argc, char **argv)
+ #ifdef USE_OPENMP
+ #   pragma omp parallel for default(none) shared(result, argv, seed)
+ #endif
+-    for (i = seed; i <= N_TESTS; ++i)
++    for (i = 0; i <= N_TESTS; ++i)
+     {
+-	if (!result && !run_test (i))
++	if (!result && !run_test (i + seed))
+ 	{
+-	    printf ("Test 0x%08X failed.\n", i);
++	    printf ("Test 0x%08X failed.\n", seed + i);
+ 	    
+-	    result = i;
++	    result = seed + i;
+ 	}
+     }
+     
+-- 
+1.6.6.1
+

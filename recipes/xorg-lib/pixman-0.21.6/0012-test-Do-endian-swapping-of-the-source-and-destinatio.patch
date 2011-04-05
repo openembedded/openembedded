@@ -1,0 +1,36 @@
+From 84e361c8e357e26f299213fbeefe64c73447b116 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?S=C3=B8ren=20Sandmann=20Pedersen?= <ssp@redhat.com>
+Date: Fri, 4 Mar 2011 15:51:18 -0500
+Subject: [PATCH 12/40] test: Do endian swapping of the source and destination images.
+
+Otherwise the test fails on big endian. Fix for bug 34767, reported by
+Siarhei Siamashka.
+---
+ test/composite-traps-test.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/test/composite-traps-test.c b/test/composite-traps-test.c
+index 298537d..cf30281 100644
+--- a/test/composite-traps-test.c
++++ b/test/composite-traps-test.c
+@@ -139,6 +139,8 @@ test_composite (int      testnum,
+ 	    pixman_image_set_source_clipping (src_img, 1);
+ 	    pixman_region_fini (&clip);
+ 	}
++
++	image_endian_swap (src_img);
+     }
+ 
+     /* Create destination image */
+@@ -157,6 +159,8 @@ test_composite (int      testnum,
+ 	
+ 	dst_img = pixman_image_create_bits (
+ 	    dst_format, dst_width, dst_height, dst_bits, dst_stride);
++
++	image_endian_swap (dst_img);
+     }
+ 
+     /* Create traps */
+-- 
+1.6.6.1
+

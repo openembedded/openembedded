@@ -1,0 +1,124 @@
+From f36c189475951276766b2653ae9628c4d02dc0c9 Mon Sep 17 00:00:00 2001
+From: Siarhei Siamashka <siarhei.siamashka@nokia.com>
+Date: Thu, 10 Mar 2011 16:12:23 +0200
+Subject: [PATCH 31/40] ARM: use aligned memory writes in NEON bilinear scaling code
+
+---
+ pixman/pixman-arm-neon-asm.S |   49 ++++++++++++++++++++++++++++++------------
+ 1 files changed, 35 insertions(+), 14 deletions(-)
+
+diff --git a/pixman/pixman-arm-neon-asm.S b/pixman/pixman-arm-neon-asm.S
+index 8788e95..a4d6a9a 100644
+--- a/pixman/pixman-arm-neon-asm.S
++++ b/pixman/pixman-arm-neon-asm.S
+@@ -2527,9 +2527,9 @@ fname:
+ 
+ .macro bilinear_store_8888 numpix, tmp1, tmp2
+ .if numpix == 4
+-    vst1.32   {d0, d1}, [OUT]!
++    vst1.32   {d0, d1}, [OUT, :128]!
+ .elseif numpix == 2
+-    vst1.32   {d0}, [OUT]!
++    vst1.32   {d0}, [OUT, :64]!
+ .elseif numpix == 1
+     vst1.32   {d0[0]}, [OUT, :32]!
+ .else
+@@ -2544,11 +2544,11 @@ fname:
+     vuzp.u8 d0, d2
+     convert_8888_to_0565 d2, d1, d0, q1, tmp1, tmp2
+ .if numpix == 4
+-    vst1.16   {d2}, [OUT]!
++    vst1.16   {d2}, [OUT, :64]!
+ .elseif numpix == 2
+-    vst1.32   {d2[0]}, [OUT]!
++    vst1.32   {d2[0]}, [OUT, :32]!
+ .elseif numpix == 1
+-    vst1.16   {d2[0]}, [OUT]!
++    vst1.16   {d2[0]}, [OUT, :16]!
+ .else
+     .error bilinear_store_0565 numpix is unsupported
+ .endif
+@@ -2622,8 +2622,7 @@ fname:
+  * Main template macro for generating NEON optimized bilinear scanline
+  * functions.
+  *
+- * TODO: use software pipelining and aligned writes to the destination buffer
+- *       in order to improve performance
++ * TODO: use software pipelining in order to improve performance
+  *
+  * Bilinear scanline scaler macro template uses the following arguments:
+  *  fname             - name of the function to generate
+@@ -2635,7 +2634,8 @@ fname:
+  */
+ 
+ .macro generate_bilinear_scanline_func fname, src_fmt, dst_fmt, \
+-                                       bpp_shift, prefetch_distance
++                                       src_bpp_shift, dst_bpp_shift, \
++                                       prefetch_distance
+ 
+ pixman_asm_function fname
+     OUT       .req      r0
+@@ -2666,19 +2666,40 @@ pixman_asm_function fname
+     vdup.u8   d28, WT
+     vdup.u8   d29, WB
+     vadd.u16  d25, d25, d26
+-    vadd.u16  q13, q13, q13
+ 
++    /* ensure good destination alignment  */
++    cmp       WIDTH, #1
++    blt       0f
++    tst       OUT, #(1 << dst_bpp_shift)
++    beq       0f
++    vshr.u16  q15, q12, #8
++    vadd.u16  q12, q12, q13
++    bilinear_interpolate_last_pixel src_fmt, dst_fmt
++    sub       WIDTH, WIDTH, #1
++0:
++    vadd.u16  q13, q13, q13
+     vshr.u16  q15, q12, #8
+     vadd.u16  q12, q12, q13
+ 
++    cmp       WIDTH, #2
++    blt       0f
++    tst       OUT, #(1 << (dst_bpp_shift + 1))
++    beq       0f
++    bilinear_interpolate_two_pixels src_fmt, dst_fmt
++    sub       WIDTH, WIDTH, #2
++0:
++
++    /* start the main loop */
+     subs      WIDTH, WIDTH, #4
+     blt       1f
+-    mov       PF_OFFS, PF_OFFS, asr #(16 - bpp_shift)
++    mov       PF_OFFS, PF_OFFS, asr #(16 - src_bpp_shift)
+ 0:
+     bilinear_interpolate_four_pixels src_fmt, dst_fmt
+     subs      WIDTH, WIDTH, #4
+     bge       0b
+ 1:
++
++    /* handle the remaining trailing pixels */
+     tst       WIDTH, #2
+     beq       2f
+     bilinear_interpolate_two_pixels src_fmt, dst_fmt
+@@ -2708,13 +2729,13 @@ pixman_asm_function fname
+ .endm
+ 
+ generate_bilinear_scanline_func \
+-    pixman_scaled_bilinear_scanline_8888_8888_SRC_asm_neon, 8888, 8888, 2, 28
++    pixman_scaled_bilinear_scanline_8888_8888_SRC_asm_neon, 8888, 8888, 2, 2, 28
+ 
+ generate_bilinear_scanline_func \
+-    pixman_scaled_bilinear_scanline_8888_0565_SRC_asm_neon, 8888, 0565, 2, 28
++    pixman_scaled_bilinear_scanline_8888_0565_SRC_asm_neon, 8888, 0565, 2, 1, 28
+ 
+ generate_bilinear_scanline_func \
+-    pixman_scaled_bilinear_scanline_0565_x888_SRC_asm_neon, 0565, 8888, 1, 28
++    pixman_scaled_bilinear_scanline_0565_x888_SRC_asm_neon, 0565, 8888, 1, 2, 28
+ 
+ generate_bilinear_scanline_func \
+-    pixman_scaled_bilinear_scanline_0565_0565_SRC_asm_neon, 0565, 0565, 1, 28
++    pixman_scaled_bilinear_scanline_0565_0565_SRC_asm_neon, 0565, 0565, 1, 1, 28
+-- 
+1.6.6.1
+

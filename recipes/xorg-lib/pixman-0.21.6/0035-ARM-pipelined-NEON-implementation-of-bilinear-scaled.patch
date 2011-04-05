@@ -1,0 +1,166 @@
+From d3b1ca20fe8af20ca097dcc8799ef25cee03dd6b Mon Sep 17 00:00:00 2001
+From: Siarhei Siamashka <siarhei.siamashka@nokia.com>
+Date: Wed, 16 Mar 2011 17:24:49 +0200
+Subject: [PATCH 35/40] ARM: pipelined NEON implementation of bilinear scaled 'src_8888_8888'
+
+Performance of the inner loop when working with the data in L1 cache:
+    ARM Cortex-A8: 41 cycles per 4 pixels (no stalls and partial dual issue)
+    ARM Cortex-A9: 48 cycles per 4 pixels (no stalls)
+
+It might be still possible to improve performance even more on ARM Cortex-A8
+with a better use of dual issue.
+
+Benchmark on ARM Cortex-A8 r1p3 @600MHz, 32-bit LPDDR @166MHz:
+ Microbenchmark (scaling 2000x2000 image with scale factor close to 1x):
+  before: op=1, src=20028888, dst=20028888, speed=40.38 MPix/s
+  after:  op=1, src=20028888, dst=20028888, speed=48.47 MPix/s
+
+Benchmark on ARM Cortex-A8 r2p2 @1GHz, 32-bit LPDDR @200MHz:
+ Microbenchmark (scaling 2000x2000 image with scale factor close to 1x):
+  before: op=1, src=20028888, dst=20028888, speed=79.68 MPix/s
+  after:  op=1, src=20028888, dst=20028888, speed=93.11 MPix/s
+---
+ pixman/pixman-arm-neon-asm.S |  127 ++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 127 insertions(+), 0 deletions(-)
+
+diff --git a/pixman/pixman-arm-neon-asm.S b/pixman/pixman-arm-neon-asm.S
+index 6141770..326e085 100644
+--- a/pixman/pixman-arm-neon-asm.S
++++ b/pixman/pixman-arm-neon-asm.S
+@@ -2814,6 +2814,133 @@ pixman_asm_function fname
+ 
+ .endm
+ 
++/*****************************************************************************/
++
++.set have_bilinear_interpolate_four_pixels_8888_8888, 1
++
++.macro bilinear_interpolate_four_pixels_8888_8888_head
++    mov       TMP1, X, asr #16
++    add       X, X, UX
++    add       TMP1, TOP, TMP1, asl #2
++    mov       TMP2, X, asr #16
++    add       X, X, UX
++    add       TMP2, TOP, TMP2, asl #2
++
++    vld1.32   {d22}, [TMP1], STRIDE
++    vld1.32   {d23}, [TMP1]
++    mov       TMP3, X, asr #16
++    add       X, X, UX
++    add       TMP3, TOP, TMP3, asl #2
++    vmull.u8  q8, d22, d28
++    vmlal.u8  q8, d23, d29
++
++    vld1.32   {d22}, [TMP2], STRIDE
++    vld1.32   {d23}, [TMP2]
++    mov       TMP4, X, asr #16
++    add       X, X, UX
++    add       TMP4, TOP, TMP4, asl #2
++    vmull.u8  q9, d22, d28
++    vmlal.u8  q9, d23, d29
++
++    vld1.32   {d22}, [TMP3], STRIDE
++    vld1.32   {d23}, [TMP3]
++    vmull.u8  q10, d22, d28
++    vmlal.u8  q10, d23, d29
++
++    vshll.u16 q0, d16, #8
++    vmlsl.u16 q0, d16, d30
++    vmlal.u16 q0, d17, d30
++
++    pld       [TMP4, PF_OFFS]
++    vld1.32   {d16}, [TMP4], STRIDE
++    vld1.32   {d17}, [TMP4]
++    pld       [TMP4, PF_OFFS]
++    vmull.u8  q11, d16, d28
++    vmlal.u8  q11, d17, d29
++
++    vshll.u16 q1, d18, #8
++    vmlsl.u16 q1, d18, d31
++.endm
++
++.macro bilinear_interpolate_four_pixels_8888_8888_tail
++    vmlal.u16 q1, d19, d31
++    vshr.u16  q15, q12, #8
++    vshll.u16 q2, d20, #8
++    vmlsl.u16 q2, d20, d30
++    vmlal.u16 q2, d21, d30
++    vshll.u16 q3, d22, #8
++    vmlsl.u16 q3, d22, d31
++    vmlal.u16 q3, d23, d31
++    vadd.u16  q12, q12, q13
++    vshrn.u32 d0, q0, #16
++    vshrn.u32 d1, q1, #16
++    vshrn.u32 d4, q2, #16
++    vshr.u16  q15, q12, #8
++    vshrn.u32 d5, q3, #16
++    vmovn.u16 d6, q0
++    vmovn.u16 d7, q2
++    vadd.u16  q12, q12, q13
++    vst1.32   {d6, d7}, [OUT, :128]!
++.endm
++
++.macro bilinear_interpolate_four_pixels_8888_8888_tail_head
++    mov       TMP1, X, asr #16
++    add       X, X, UX
++    add       TMP1, TOP, TMP1, asl #2
++    mov       TMP2, X, asr #16
++    add       X, X, UX
++    add       TMP2, TOP, TMP2, asl #2
++        vmlal.u16 q1, d19, d31
++        vshr.u16  q15, q12, #8
++        vshll.u16 q2, d20, #8
++        vmlsl.u16 q2, d20, d30
++        vmlal.u16 q2, d21, d30
++        vshll.u16 q3, d22, #8
++    vld1.32   {d20}, [TMP1], STRIDE
++        vmlsl.u16 q3, d22, d31
++        vmlal.u16 q3, d23, d31
++    vld1.32   {d21}, [TMP1]
++    vmull.u8  q8, d20, d28
++    vmlal.u8  q8, d21, d29
++        vshrn.u32 d0, q0, #16
++        vshrn.u32 d1, q1, #16
++        vshrn.u32 d4, q2, #16
++    vld1.32   {d22}, [TMP2], STRIDE
++        vshrn.u32 d5, q3, #16
++        vadd.u16  q12, q12, q13
++    vld1.32   {d23}, [TMP2]
++    vmull.u8  q9, d22, d28
++    mov       TMP3, X, asr #16
++    add       X, X, UX
++    add       TMP3, TOP, TMP3, asl #2
++    mov       TMP4, X, asr #16
++    add       X, X, UX
++    add       TMP4, TOP, TMP4, asl #2
++    vmlal.u8  q9, d23, d29
++    vld1.32   {d22}, [TMP3], STRIDE
++        vshr.u16  q15, q12, #8
++    vld1.32   {d23}, [TMP3]
++    vmull.u8  q10, d22, d28
++    vmlal.u8  q10, d23, d29
++        vmovn.u16 d6, q0
++    vshll.u16 q0, d16, #8
++        vmovn.u16 d7, q2
++    vmlsl.u16 q0, d16, d30
++    vmlal.u16 q0, d17, d30
++    pld       [TMP4, PF_OFFS]
++    vld1.32   {d16}, [TMP4], STRIDE
++        vadd.u16  q12, q12, q13
++    vld1.32   {d17}, [TMP4]
++    pld       [TMP4, PF_OFFS]
++    vmull.u8  q11, d16, d28
++    vmlal.u8  q11, d17, d29
++        vst1.32   {d6, d7}, [OUT, :128]!
++    vshll.u16 q1, d18, #8
++    vmlsl.u16 q1, d18, d31
++.endm
++
++/*****************************************************************************/
++
+ generate_bilinear_scanline_func \
+     pixman_scaled_bilinear_scanline_8888_8888_SRC_asm_neon, 8888, 8888, \
+     2, 2, 28, BILINEAR_FLAG_UNROLL_4
+-- 
+1.6.6.1
+
