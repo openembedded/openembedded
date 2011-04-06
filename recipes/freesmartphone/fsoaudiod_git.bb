@@ -1,6 +1,9 @@
 require cornucopia.inc
 inherit fso-plugin
 
+LICENSE = "LGPLv2.1"
+LIC_FILES_CHKSUM = "file://COPYING;md5=78aab3f7875ffe21aebed9932fa3f993"
+
 DEPENDS += "alsa-lib"
 
 # We need to uncomment the line below after the migration of all scenario files from
