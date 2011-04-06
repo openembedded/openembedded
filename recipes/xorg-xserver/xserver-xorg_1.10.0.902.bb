@@ -3,26 +3,19 @@ DISTRO_XORG_CONFIG_MANAGER_angstrom = "udev"
 
 require xorg-xserver-common.inc
 
-LICENSE = "MIT-X"
-LIC_FILES_CHKSUM = "file://COPYING;md5=74df27b6254cc88d2799b5f4f5949c00"
-
 DESCRIPTION = "the X.Org X server"
 DEPENDS += "pixman libpciaccess openssl dri2proto glproto xorg-minimal-fonts font-util-native"
-PV = "1.10.0.902"
-PR = "${INC_PR}.0"
-PR_append = "+gitr${SRCPV}"
 PE = "2"
+PR = "${INC_PR}.0"
 
 DEFAULT_PREFERENCE = "-1"
 
-SRCREV = "ec6e1e45627de2bb851f135df0507a360d0d99e6"
-SRC_URI = " \
-  git://anongit.freedesktop.org/xorg/xserver;protocol=git;branch=server-1.10-branch \
-  file://hack-fbdev-ignore-return-mode.patch \
-  file://hack-assume-pixman-supports-overlapped-blt.patch \
-"
-
-S = "${WORKDIR}/git"
+SRC_URI += " \
+            file://hack-fbdev-ignore-return-mode.patch \
+            file://hack-assume-pixman-supports-overlapped-blt.patch \
+           "
+SRC_URI[archive.md5sum] = "65e5db9e614cd75e97840247c3754521"
+SRC_URI[archive.sha256sum] = "994ab87bb0cc9b56203e01e3294fddd502a96d074139496ea4ffc03c95b41b42"
 
 do_install_prepend() {
         mkdir -p ${D}/${libdir}/X11/fonts
