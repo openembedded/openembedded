@@ -1,4 +1,4 @@
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 require klibc.inc
 require klibc-checksums_${PV}.inc
@@ -15,8 +15,8 @@ export KLCC_INST=${STAGING_DIR_TARGET}/lib/klibc
 inherit cross
 
 do_install() {
-         install -d ${D}${TOOLCHAIN_PATH}/bin/
-         install -m 0755 klcc/klcc ${D}${TOOLCHAIN_PATH}/bin/${TARGET_PREFIX}klcc
+         install -d ${D}${bindir}
+         install -m 0755 klcc/klcc ${D}${bindir}/${TARGET_PREFIX}klcc
 }
 
 PACKAGES = "${PN}"
