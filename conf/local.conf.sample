@@ -94,7 +94,8 @@ PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}g++:gcc-cross"
 # binary toolchain, in this case one built by CodeSourcery.  The following
 # example is for ARM and we set TOOLCHAIN_VENDOR to "-none" as the CodeSourcery
 # ARM tools are arm-none-linux-gnueabi-$tool.  Other arches need different
-# values here.  This assumes that the tools are already in the users PATH.
+# values here.  Some arches may need to override TARGET_PREFIX (ia32).
+# This assumes that the tools are already in the users PATH.
 # TOOLCHAIN_VENDOR = "-none"
 # TOOLCHAIN_TYPE = "external"
 # TOOLCHAIN_BRAND = "csl"
