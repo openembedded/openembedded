@@ -2,7 +2,7 @@ HOMEPAGE = "http://www.x.org"
 SECTION = "x11/base"
 LICENSE = "MIT-X"
 
-INC_PR = "r18"
+INC_PR = "r19"
 
 PROVIDES = "virtual/xserver"
 
@@ -22,7 +22,7 @@ xf86dgaproto videoproto compositeproto trapproto recordproto dmxproto \
 resourceproto xineramaproto xtrans evieext libxkbfile libxfont libxau \
 libfontenc libxdmcp libxxf86vm libxaw libxmu libxt libxpm libxext libx11 \
 libxkbui libxxf86misc libxi libdmx libxtst libxres virtual/libgl libxcalibrate \
-libxv ${DISTRO_XORG_CONFIG_MANAGER}"
+libxv libgcrypt ${DISTRO_XORG_CONFIG_MANAGER}"
 
 RRECOMMENDS_${PN} = "libpciaccess"
 
