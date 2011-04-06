@@ -1,5 +1,7 @@
 require cornucopia.inc
 inherit fso-plugin
+LICENSE = "GPLv2"
+LIC_FILES_CHKSUM = "file://COPYING;md5=751419260aa954499f7abaabaa882bbe"
 SRCREV = "${FSO_CORNUCOPIA_SRCREV}"
 PR = "${INC_PR}.1"
 PV = "0.5.0+gitr${SRCPV}"

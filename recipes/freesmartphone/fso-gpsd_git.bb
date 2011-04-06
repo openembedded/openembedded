@@ -1,5 +1,6 @@
 DESCRIPTION = "freesmartphone.org gpsd compatibility daemon"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
+LIC_FILES_CHKSUM = "file://COPYING;md5=59530bdf33659b29e73d4adb9f9f6552"
 SECTION = "network"
 DEPENDS = "dbus-glib"
 SRCREV = "39e810899110a9bb302cf2064e1c0f73541fb4e6"
