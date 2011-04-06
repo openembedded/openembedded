@@ -6,8 +6,7 @@ HOMEPAGE = "http://elmdentica.googlecode.com"
 AUTHOR = "seabra"
 
 inherit e gettext
-SRC_URI = "${E_SVN}/trunk;module=${SRCNAME};proto=http;scmdata=keep \
-           file://0001-elmdentica-adapt-to-azy-changes-r58286.patch;minrev=58286;maxrev=58339"
+SRC_URI = "${E_SVN}/trunk;module=${SRCNAME};proto=http;scmdata=keep"
 
 S = "${WORKDIR}/${SRCNAME}"
 
