@@ -1,7 +1,7 @@
 DESCRIPTION = "Random number generator daemon"
 LICENSE = "GPL"
 DEPENDS_append_libc-uclibc = " argp-standalone"
-PR = "3"
+PR = "r4"
 
 SRC_URI = "http://heanet.dl.sourceforge.net/sourceforge/gkernel/${P}.tar.gz \
            file://init \
@@ -14,8 +14,9 @@ INITSCRIPT_PARAMS = "defaults"
 
 do_install_append() {
         install -d "${D}${sysconfdir}/init.d"
-        sed -e's,/etc/,${sysconfdir}/,; s,/usr/sbin/,${sbindir},' \
-            ${WORKDIR}/init > ${D}${sysconfdir}/init.d/rng-tools
+        install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/rng-tools
+        sed -i -e 's,/etc/,${sysconfdir}/,' -e 's,/usr/sbin/,${sbindir},' \
+            ${D}${sysconfdir}/init.d/rng-tools
 
         install -d "${D}${sysconfdir}/default"
         install -m 0644 ${WORKDIR}/default ${D}${sysconfdir}/default
