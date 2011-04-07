@@ -1,0 +1,496 @@
+Index: gcc-4.1.2/gcc/config/nios2/nios2.c
+===================================================================
+--- gcc-4.1.2.orig/gcc/config/nios2/nios2.c	2011-03-01 13:57:17.000000000 +0100
++++ gcc-4.1.2/gcc/config/nios2/nios2.c	2011-03-01 14:05:15.172590239 +0100
+@@ -68,8 +68,8 @@
+ static int nios2_issue_rate (void);
+ static struct machine_function *nios2_init_machine_status (void);
+ static bool nios2_in_small_data_p (tree);
+-static void save_reg (int, unsigned);
+-static void restore_reg (int, unsigned);
++static void save_reg (int, HOST_WIDE_INT);
++static void restore_reg (int, HOST_WIDE_INT);
+ static unsigned int nios2_section_type_flags (tree, const char *, int);
+ 
+ /* 0 --> no #pragma seen
+@@ -269,7 +269,7 @@
+ #define TEMP_REG_NUM 8
+ 
+ 
+-/* Returns the task_id for the current function, or 
++/* Returns the task_id for the current function, or
+    -1 if the task_id can not be determined.  */
+ static int
+ nios2_current_task_id (void)
+@@ -348,7 +348,7 @@
+ 
+   if (a == NULL_TREE)
+     type |= NIOS2_FT_NORMAL;
+-  else 
++  else
+     type |= NIOS2_FT_TASK;
+ 
+   return type;
+@@ -365,7 +365,7 @@
+ }
+ 
+ int
+-nios2_naked_function_p(void) 
++nios2_naked_function_p(void)
+ {
+   return IS_NAKED (nios2_current_func_type ());
+ }
+@@ -394,7 +394,7 @@
+   if (IS_NAKED (func_type))
+     asm_fprintf (file, "\t%s Naked Function: prologue and epilogue provided by programmer.\n", ASM_COMMENT_START);
+ 
+-  if (IS_TASK (func_type)) 
++  if (IS_TASK (func_type))
+     {
+       int task_id = nios2_current_task_id();
+       asm_fprintf (file, "\t%s Task Function [task_id:%d]: task entry point terminated with exit instruction.\n", ASM_COMMENT_START, task_id);
+@@ -409,7 +409,7 @@
+ }
+ 
+ static void
+-save_reg (int regno, unsigned offset)
++save_reg (int regno, HOST_WIDE_INT offset)
+ {
+   rtx reg = gen_rtx_REG (SImode, regno);
+   rtx addr = gen_rtx_PLUS (Pmode, stack_pointer_rtx, GEN_INT (offset));
+@@ -420,7 +420,7 @@
+ }
+ 
+ static void
+-restore_reg (int regno, unsigned offset)
++restore_reg (int regno, HOST_WIDE_INT offset)
+ {
+   rtx reg = gen_rtx_REG (SImode, regno);
+   rtx addr = gen_rtx_PLUS (Pmode, stack_pointer_rtx, GEN_INT (offset));
+@@ -435,17 +435,17 @@
+ {
+   int ix;
+   HOST_WIDE_INT total_frame_size;
+-  unsigned sp_offset; /* offset from base_reg to final stack value */
+-  unsigned fp_offset;    /* offset from base_reg to final fp value */
++  HOST_WIDE_INT sp_offset; /* offset from base_reg to final stack value */
++  HOST_WIDE_INT fp_offset;    /* offset from base_reg to final fp value */
+   unsigned long func_type;
+-  unsigned save_offset;
++  HOST_WIDE_INT save_offset;
+   rtx insn;
+   unsigned HOST_WIDE_INT save_mask;
+-  
++
+   total_frame_size = compute_frame_size ();
+ 
+   func_type = nios2_current_func_type();
+-  
++
+   /* Naked functions don't have prologues.  */
+   if (IS_NAKED (func_type))
+     return;
+@@ -499,7 +499,7 @@
+ 
+   save_offset = fp_offset + cfun->machine->frame.save_reg_size;
+   save_mask = cfun->machine->frame.save_mask;
+-  
++
+   for (ix = 32; ix--;)
+     if (save_mask & ((unsigned HOST_WIDE_INT)1 << ix))
+       {
+@@ -562,9 +562,9 @@
+   HOST_WIDE_INT total_frame_size = compute_frame_size ();
+   unsigned HOST_WIDE_INT save_mask;
+   unsigned long func_type;
+-  int sp_adjust;
+-  int save_offset;
+- 
++  HOST_WIDE_INT sp_adjust;
++  HOST_WIDE_INT save_offset;
++
+   if (!sibcall_p && nios2_can_use_return_insn ())
+     {
+       insn = emit_jump_insn (gen_return ());
+@@ -606,10 +606,10 @@
+       save_offset = cfun->machine->frame.save_regs_offset;
+       sp_adjust = total_frame_size;
+     }
+-  
++
+   save_mask = cfun->machine->frame.save_mask;
+   save_offset += cfun->machine->frame.save_reg_size;
+-  
++
+   for (ix = 32; ix--;)
+     if (save_mask & ((unsigned HOST_WIDE_INT)1 << ix))
+       {
+@@ -646,9 +646,9 @@
+ 
+     }
+ 
+-  if (IS_TASK (func_type))    
++  if (IS_TASK (func_type))
+         insn = emit_jump_insn
+-          (gen_return_from_task_epilogue ());  
++          (gen_return_from_task_epilogue ());
+   else if (!sibcall_p)
+         insn = emit_jump_insn
+           (gen_return_from_epilogue (gen_rtx_REG (Pmode, RA_REGNO)));
+@@ -675,9 +675,9 @@
+   compute_frame_size ();
+   if ((cfun->machine->frame.save_mask >> RA_REGNO) & 1)
+     {
+-      unsigned offset = cfun->machine->frame.save_reg_size - 4;
++      HOST_WIDE_INT offset = cfun->machine->frame.save_reg_size - 4;
+       rtx base;
+-      
++
+       if (frame_pointer_needed)
+ 	base = hard_frame_pointer_rtx;
+       else
+@@ -775,7 +775,7 @@
+ save_reg_p (unsigned regno)
+ {
+   gcc_assert (GP_REGNO_P (regno));
+-  
++
+   if (IS_TASK (nios2_current_func_type()))
+     return false;
+ 
+@@ -810,7 +810,7 @@
+ 
+   if (cfun->machine->frame.initialized)
+     return cfun->machine->frame.total_size;
+-  
++
+   save_reg_size = 0;
+   var_size = STACK_ALIGN (get_frame_size ());
+   out_args_size = STACK_ALIGN (current_function_outgoing_args_size);
+@@ -830,7 +830,7 @@
+     {
+       unsigned i;
+       unsigned r;
+-      
++
+       for (i = 0; (r = EH_RETURN_DATA_REGNO (i)) != INVALID_REGNUM; i++)
+ 	if (!(save_mask & (1 << r)))
+ 	  {
+@@ -1384,7 +1384,7 @@
+     = g_switch_set ? g_switch_value : NIOS2_DEFAULT_GVALUE;
+ 
+ 
+-  /* #if !defined(TARGET_LINUX)  
++  /* #if !defined(TARGET_LINUX)
+      if (nios2_sys_nosys_string && *nios2_sys_nosys_string)
+      {
+      error ("invalid option '-msys=nosys%s'", nios2_sys_nosys_string);
+@@ -1433,7 +1433,7 @@
+     builtin_custom_seen[i] = 0;
+ 
+   /* Set up default handling for floating point custom instructions.
+-    
++
+      Putting things in this order means that the -mcustom-fpu-cfg=
+      switch will always be overridden by individual -mcustom-fadds=
+      switches, regardless of the order in which they were specified
+@@ -1684,7 +1684,7 @@
+   rtx arg = gen_rtx_REG (Pmode, FIRST_ARG_REGNO);
+   rtx ret = gen_rtx_REG (Pmode, FIRST_RETVAL_REGNO);
+   rtx fn, insn;
+-  
++
+   if (!nios2_tls_symbol)
+     nios2_tls_symbol = init_one_libfunc ("__tls_get_addr");
+ 
+@@ -2014,7 +2014,7 @@
+ {
+   if (cmp_t == CMP_SF)
+     {
+-      switch (cond_t) 
++      switch (cond_t)
+ 	{
+         case EQ:
+           return (nios2_fpu_insns[nios2_fpu_nios2_seqsf].N >= 0);
+@@ -2034,7 +2034,7 @@
+     }
+   else if (cmp_t == CMP_DF)
+     {
+-      switch (cond_t) 
++      switch (cond_t)
+ 	{
+ 	case EQ:
+ 	  return (nios2_fpu_insns[nios2_fpu_nios2_seqdf].N >= 0);
+@@ -2092,7 +2092,7 @@
+                     rtx result,      /* Result to store comp. or 0 if branch.  */
+                     rtx cmp0,        /* First operand to compare.  */
+                     rtx cmp1,        /* Second operand to compare.  */
+-                    rtx destination) /* Destination of the branch, 
++                    rtx destination) /* Destination of the branch,
+ 				        or 0 if compare.  */
+ {
+   struct cmp_info
+@@ -2166,7 +2166,7 @@
+   /* Handle floating point comparison directly. */
+   if (branch_type == CMP_SF || branch_type == CMP_DF)
+     {
+-  
++
+       bool reverse_operands = false;
+ 
+       enum machine_mode float_mode = (branch_type == CMP_SF) ? SFmode : DFmode;
+@@ -2373,7 +2373,7 @@
+     case SYMBOL_REF:
+       if (SYMBOL_REF_TLS_MODEL (operand))
+ 	break;
+-      
++
+       if (SYMBOL_REF_IN_NIOS2_SMALL_DATA_P (operand))
+         {
+           ret_val = 1;
+@@ -2491,7 +2491,7 @@
+ 
+   flags = SYMBOL_REF_FLAGS (symbol);
+ 
+-  /* We don't want weak variables to be addressed with gp in case they end up 
++  /* We don't want weak variables to be addressed with gp in case they end up
+      with value 0 which is not within 2^15 of $gp.  */
+   if (DECL_P (decl) && DECL_WEAK (decl))
+     flags |= SYMBOL_FLAG_WEAK_DECL;
+@@ -2740,7 +2740,7 @@
+ nios2_load_pic_register (void)
+ {
+   rtx tmp = gen_rtx_REG (Pmode, TEMP_REG_NUM);
+-  
++
+   emit_insn (gen_load_got_register (pic_offset_table_rtx, tmp));
+   emit_insn (gen_add3_insn (pic_offset_table_rtx, pic_offset_table_rtx, tmp));
+ }
+@@ -2886,7 +2886,7 @@
+      L: for %lo
+      T: for %hi20adj
+      B: for %lo12
+-     
++
+      U: for upper half of 32 bit value
+      D: for the upper 32-bits of a 64-bit double value
+  */
+@@ -3483,7 +3483,7 @@
+ 
+   if (!have_nios2_fpu_cmp_insn(cond, CMP_SF))
+     abort ();
+-  
++
+   switch (cond)
+     {
+     case EQ:
+@@ -3549,7 +3549,7 @@
+   int operandR = 3;
+ 
+   if ( !have_nios2_fpu_cmp_insn(cond, CMP_DF) &&
+-       have_nios2_fpu_cmp_insn(get_reverse_cond(cond), CMP_DF) ) 
++       have_nios2_fpu_cmp_insn(get_reverse_cond(cond), CMP_DF) )
+     {
+ 
+       int temp = operandL;
+@@ -3594,7 +3594,7 @@
+ 
+   if (N < 0 || nios2_fpu_insns[nios2_fpu_nios2_fwrx].N < 0)
+     fatal_insn ("attempt to use disabled fpu instruction", insn);
+-  
++
+   rv = snprintf (buf, sizeof (buf),
+                 ".set\tnoat\n\t"
+                 "custom\t%d, zero, %%%d, %%D%d # fwrx %%%d\n\t"
+@@ -3719,7 +3719,7 @@
+     return 0;
+ }
+ 
+-static bool 
++static bool
+ nios2_pass_by_reference (CUMULATIVE_ARGS *cum ATTRIBUTE_UNUSED,
+ 			 enum machine_mode mode ATTRIBUTE_UNUSED,
+ 			 tree type ATTRIBUTE_UNUSED,
+@@ -4021,33 +4021,33 @@
+ static tree custom_sdz;
+ 
+ static const struct builtin_description bdesc[] = {
+-    {CODE_FOR_ldbio, "__builtin_ldbio", NIOS2_BUILTIN_LDBIO, 
++    {CODE_FOR_ldbio, "__builtin_ldbio", NIOS2_BUILTIN_LDBIO,
+      &int_ftype_volatile_const_void_p, nios2_expand_LDXIO},
+-    {CODE_FOR_ldbuio, "__builtin_ldbuio", NIOS2_BUILTIN_LDBUIO, 
++    {CODE_FOR_ldbuio, "__builtin_ldbuio", NIOS2_BUILTIN_LDBUIO,
+      &int_ftype_volatile_const_void_p, nios2_expand_LDXIO},
+-    {CODE_FOR_ldhio, "__builtin_ldhio", NIOS2_BUILTIN_LDHIO, 
++    {CODE_FOR_ldhio, "__builtin_ldhio", NIOS2_BUILTIN_LDHIO,
+      &int_ftype_volatile_const_void_p, nios2_expand_LDXIO},
+-    {CODE_FOR_ldhuio, "__builtin_ldhuio", NIOS2_BUILTIN_LDHUIO, 
++    {CODE_FOR_ldhuio, "__builtin_ldhuio", NIOS2_BUILTIN_LDHUIO,
+      &int_ftype_volatile_const_void_p, nios2_expand_LDXIO},
+-    {CODE_FOR_ldwio, "__builtin_ldwio", NIOS2_BUILTIN_LDWIO, 
++    {CODE_FOR_ldwio, "__builtin_ldwio", NIOS2_BUILTIN_LDWIO,
+      &int_ftype_volatile_const_void_p, nios2_expand_LDXIO},
+ 
+-    {CODE_FOR_stbio, "__builtin_stbio", NIOS2_BUILTIN_STBIO, 
++    {CODE_FOR_stbio, "__builtin_stbio", NIOS2_BUILTIN_STBIO,
+      &void_ftype_volatile_void_p_int, nios2_expand_STXIO},
+-    {CODE_FOR_sthio, "__builtin_sthio", NIOS2_BUILTIN_STHIO, 
++    {CODE_FOR_sthio, "__builtin_sthio", NIOS2_BUILTIN_STHIO,
+      &void_ftype_volatile_void_p_int, nios2_expand_STXIO},
+-    {CODE_FOR_stwio, "__builtin_stwio", NIOS2_BUILTIN_STWIO, 
++    {CODE_FOR_stwio, "__builtin_stwio", NIOS2_BUILTIN_STWIO,
+      &void_ftype_volatile_void_p_int, nios2_expand_STXIO},
+ 
+-    {CODE_FOR_sync, "__builtin_sync", NIOS2_BUILTIN_SYNC, 
++    {CODE_FOR_sync, "__builtin_sync", NIOS2_BUILTIN_SYNC,
+      &void_ftype_void, nios2_expand_sync},
+-    {CODE_FOR_rdctl, "__builtin_rdctl", NIOS2_BUILTIN_RDCTL, 
++    {CODE_FOR_rdctl, "__builtin_rdctl", NIOS2_BUILTIN_RDCTL,
+      &int_ftype_int, nios2_expand_rdctl},
+-    {CODE_FOR_wrctl, "__builtin_wrctl", NIOS2_BUILTIN_WRCTL, 
++    {CODE_FOR_wrctl, "__builtin_wrctl", NIOS2_BUILTIN_WRCTL,
+      &void_ftype_int_int, nios2_expand_wrctl},
+ 
+ #if defined(TARGET_ARCH_NIOS2DPX) && (TARGET_ARCH_NIOS2DPX == 1)
+-    {CODE_FOR_snd, "__builtin_snd", NIOS2_BUILTIN_SND, 
++    {CODE_FOR_snd, "__builtin_snd", NIOS2_BUILTIN_SND,
+      &int_ftype_int_int, nios2_expand_snd},
+ #endif
+ 
+@@ -4084,8 +4084,8 @@
+    */
+   int_ftype_volatile_const_void_p = build_function_type (
+     integer_type_node,
+-    tree_cons (NULL_TREE, 
+-	       build_qualified_type (ptr_type_node, 
++    tree_cons (NULL_TREE,
++	       build_qualified_type (ptr_type_node,
+ 				     TYPE_QUAL_CONST | TYPE_QUAL_VOLATILE),
+                endlink));
+ 
+@@ -4093,7 +4093,7 @@
+    */
+   void_ftype_volatile_void_p_int = build_function_type (
+     void_type_node,
+-    tree_cons (NULL_TREE, 
++    tree_cons (NULL_TREE,
+ 	       build_qualified_type (ptr_type_node, TYPE_QUAL_VOLATILE),
+                tree_cons (NULL_TREE, integer_type_node, endlink)));
+ 
+@@ -4547,7 +4547,7 @@
+       {
+         if (d->code > NIOS2_FIRST_FPU_INSN && d->code < NIOS2_LAST_FPU_INSN)
+           {
+-            nios2_fpu_info *inf = &nios2_fpu_insns[d->code - 
++            nios2_fpu_info *inf = &nios2_fpu_insns[d->code -
+ 					           (NIOS2_FIRST_FPU_INSN + 1)];
+             const struct insn_data *idata = &insn_data[d->icode];
+             if (inf->N < 0)
+@@ -4586,7 +4586,7 @@
+ 
+ 
+ static rtx nios2_extract_opcode (const struct builtin_description *, int, tree);
+-static rtx nios2_extract_operand (const struct builtin_description *, int, int, 
++static rtx nios2_extract_operand (const struct builtin_description *, int, int,
+ 				  tree);
+ static rtx
+ nios2_extract_integer (const struct insn_data *idata, tree arglist, int index);
+@@ -4608,7 +4608,7 @@
+ }
+ 
+ static rtx
+-nios2_extract_operand (const struct builtin_description *d, int op, int argnum, 
++nios2_extract_operand (const struct builtin_description *d, int op, int argnum,
+ 		       tree arglist)
+ {
+   enum machine_mode mode = insn_data[d->icode].operand[op].mode;
+@@ -4628,9 +4628,9 @@
+ 
+ static rtx
+ nios2_expand_custom_n (const struct builtin_description *d, tree exp,
+-                       rtx target ATTRIBUTE_UNUSED, 
++                       rtx target ATTRIBUTE_UNUSED,
+ 		       rtx subtarget ATTRIBUTE_UNUSED,
+-                       enum machine_mode mode ATTRIBUTE_UNUSED, 
++                       enum machine_mode mode ATTRIBUTE_UNUSED,
+ 		       int ignore ATTRIBUTE_UNUSED)
+ {
+   tree arglist = TREE_OPERAND (exp, 1);
+@@ -4674,9 +4674,9 @@
+ 
+ static rtx
+ nios2_expand_custom_nX (const struct builtin_description *d, tree exp,
+-                        rtx target ATTRIBUTE_UNUSED, 
++                        rtx target ATTRIBUTE_UNUSED,
+ 		        rtx subtarget ATTRIBUTE_UNUSED,
+-                        enum machine_mode mode ATTRIBUTE_UNUSED, 
++                        enum machine_mode mode ATTRIBUTE_UNUSED,
+ 			int ignore ATTRIBUTE_UNUSED)
+ {
+   tree arglist = TREE_OPERAND (exp, 1);
+@@ -4704,8 +4704,8 @@
+ }
+ 
+ static rtx
+-nios2_expand_custom_XnX (const struct builtin_description *d, tree exp, 
+-			 rtx target, rtx subtarget ATTRIBUTE_UNUSED, 
++nios2_expand_custom_XnX (const struct builtin_description *d, tree exp,
++			 rtx target, rtx subtarget ATTRIBUTE_UNUSED,
+ 			 enum machine_mode mode ATTRIBUTE_UNUSED,
+                          int ignore ATTRIBUTE_UNUSED)
+ {
+@@ -4736,9 +4736,9 @@
+ }
+ 
+ static rtx
+-nios2_expand_custom_nXX (const struct builtin_description *d, tree exp, 
+-			 rtx target ATTRIBUTE_UNUSED, 
+-			 rtx subtarget ATTRIBUTE_UNUSED, 
++nios2_expand_custom_nXX (const struct builtin_description *d, tree exp,
++			 rtx target ATTRIBUTE_UNUSED,
++			 rtx subtarget ATTRIBUTE_UNUSED,
+ 			 enum machine_mode mode ATTRIBUTE_UNUSED,
+                          int ignore ATTRIBUTE_UNUSED)
+ {
+@@ -4767,8 +4767,8 @@
+ }
+ 
+ static rtx
+-nios2_expand_custom_XnXX (const struct builtin_description *d, tree exp, 
+-			  rtx target, rtx subtarget ATTRIBUTE_UNUSED, 
++nios2_expand_custom_XnXX (const struct builtin_description *d, tree exp,
++			  rtx target, rtx subtarget ATTRIBUTE_UNUSED,
+ 			  enum machine_mode mode ATTRIBUTE_UNUSED,
+                           int ignore ATTRIBUTE_UNUSED)
+ {
+@@ -4801,9 +4801,9 @@
+ 
+ 
+ static rtx
+-nios2_expand_STXIO (const struct builtin_description *d, tree exp, 
+-		    rtx target ATTRIBUTE_UNUSED, 
+-		    rtx subtarget ATTRIBUTE_UNUSED, 
++nios2_expand_STXIO (const struct builtin_description *d, tree exp,
++		    rtx target ATTRIBUTE_UNUSED,
++		    rtx subtarget ATTRIBUTE_UNUSED,
+ 		    enum machine_mode mode ATTRIBUTE_UNUSED,
+                     int ignore ATTRIBUTE_UNUSED)
+ {
+@@ -4853,7 +4853,7 @@
+ 
+ static rtx
+ nios2_expand_LDXIO (const struct builtin_description * d, tree exp, rtx target,
+-                    rtx subtarget ATTRIBUTE_UNUSED, 
++                    rtx subtarget ATTRIBUTE_UNUSED,
+ 		    enum machine_mode mode ATTRIBUTE_UNUSED,
+                     int ignore ATTRIBUTE_UNUSED)
+ {
+@@ -4992,7 +4992,7 @@
+                                                       arglist, 0),
+                                 nios2_extract_integer (&insn_data[d->icode],
+                                                       arglist, 1));
+-  if (pat) 
++  if (pat)
+       emit_insn (pat);
+ 
+   return target;

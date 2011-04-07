@@ -1,0 +1,54 @@
+While trying to compile gcc on a 64 bit machine, gcc failed building
+in the intermediate stage.
+Reason is that some functions were not defined in nios2-protos.h.
+The patch below fixes this (and a whitespace issue);
+actually the root cause is probably nios2_legitimize_address,
+This one returns an rtx which is a pointer. On a 64 bit machine a
+pointer is 64 bit. If the function is not declared C states it
+defaults to int and hence becomes a 32 bit value.
+This results in a bad address being given to the caller.
+Some other functions also had missing prototypes. I've added them too.
+
+Have fun, Frans.
+
+Index: gcc-4.1.2/gcc/config/nios2/nios2-protos.h
+===================================================================
+--- gcc-4.1.2.orig/gcc/config/nios2/nios2-protos.h	2011-03-01 11:22:46.872378077 +0100
++++ gcc-4.1.2/gcc/config/nios2/nios2-protos.h	2011-03-01 11:22:52.682377525 +0100
+@@ -1,6 +1,6 @@
+ /* NOT ASSIGNED TO FSF.  COPYRIGHT ALTERA.  */
+ /* Subroutines for assembler code output for Altera NIOS 2G NIOS2 version.
+-   Copyright (C) 2003 Altera 
++   Copyright (C) 2003 Altera
+    Contributed by Jonah Graham (jgraham@altera.com).
+ 
+ This file is part of GNU CC.
+@@ -39,6 +39,8 @@
+ extern int nios2_legitimate_constant (rtx);
+ extern void nios2_print_operand (FILE *, rtx, int);
+ extern void nios2_print_operand_address (FILE *, rtx);
++extern rtx nios2_legitimize_address (rtx, rtx, enum machine_mode);
++extern bool nios2_legitimate_pic_operand_p (rtx);
+ 
+ extern int nios2_emit_move_sequence (rtx *, enum machine_mode);
+ extern int nios2_emit_expensive_div (rtx *, enum machine_mode);
+@@ -68,14 +70,16 @@
+ #  if defined TREE_CODE
+ extern rtx function_arg (const CUMULATIVE_ARGS *, enum machine_mode, tree, int);
+ extern bool nios2_must_pass_in_stack (enum machine_mode, tree);
+-extern int function_arg_partial_nregs (const CUMULATIVE_ARGS *, 
++extern int function_arg_partial_nregs (const CUMULATIVE_ARGS *,
+ 				       enum machine_mode, tree, int);
+-extern void function_arg_advance (CUMULATIVE_ARGS *, enum machine_mode, tree, 
++extern void function_arg_advance (CUMULATIVE_ARGS *, enum machine_mode, tree,
+ 				  int);
+ extern int nios2_function_arg_padding (enum machine_mode, tree);
++extern int nios2_function_arg_padding_upward (enum machine_mode, tree);
+ extern int nios2_block_reg_padding (enum machine_mode, tree, int);
++extern int nios2_block_reg_padding_upward (enum machine_mode, tree, int);
+ extern void init_cumulative_args (CUMULATIVE_ARGS *, tree, rtx, tree, int);
+-extern void nios2_setup_incoming_varargs (CUMULATIVE_ARGS *, enum machine_mode, 
++extern void nios2_setup_incoming_varargs (CUMULATIVE_ARGS *, enum machine_mode,
+ 					  tree, int *, int);
+ 
+ #  endif /* TREE_CODE */
