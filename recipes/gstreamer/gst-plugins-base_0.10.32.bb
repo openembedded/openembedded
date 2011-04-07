@@ -29,3 +29,36 @@ do_configure_prepend() {
 	sed -i -e s:QtGui:NoQtGui:g ${S}/configure.ac
 }
 
+PACKAGES_DYNAMIC = "\
+gst-plugin-adder* \
+gst-plugin-alsa* \
+gst-plugin-app* \
+gst-plugin-audioconvert* \
+gst-plugin-audiorate* \
+gst-plugin-audioresample* \
+gst-plugin-audiotestsrc* \
+gst-plugin-cdparanoia* \
+gst-plugin-decodebin2* \
+gst-plugin-decodebin* \
+gst-plugin-encodebin* \
+gst-plugin-ffmpegcolorspace* \
+gst-plugin-gdp* \
+gst-plugin-gio* \
+gst-plugin-ivorbisdec* \
+gst-plugin-libvisual* \
+gst-plugin-ogg* \
+gst-plugin-pango* \
+gst-plugin-playbin* \
+gst-plugin-subparse* \
+gst-plugin-tcp* \
+gst-plugin-theora* \
+gst-plugin-typefindfunctions* \
+gst-plugin-video4linux* \
+gst-plugin-videorate* \
+gst-plugin-videoscale* \
+gst-plugin-videotestsrc* \
+gst-plugin-volume* \
+gst-plugin-vorbis* \
+gst-plugin-ximagesink* \
+gst-plugin-xvimagesink* \
+"
