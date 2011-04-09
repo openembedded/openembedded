@@ -31,10 +31,10 @@ PVRBUILD = "release"
 PACKAGE_STRIP = "no"
 
 TI_PLATFORM_omap3 = "omap3630"
-TI_PLATFORM_ti816x = "ti8168"
+TI_PLATFORM_ti816x = "ti81xx"
 
 MODULESLOCATION_omap3 = "dc_omap3430_linux"
-MODULESLOCATION_ti816x = "dc_ti8168_linux"
+MODULESLOCATION_ti816x = "dc_ti81xx_linux"
 
 MAKE_TARGETS = " BUILD=${PVRBUILD} TI_PLATFORM=${TI_PLATFORM}"
 
