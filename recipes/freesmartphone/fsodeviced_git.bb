@@ -6,7 +6,7 @@ RPROVIDES_${PN} = "openmoko-alsa-scenarios virtual/alsa-scenarios"
 SRCREV = "${FSO_CORNUCOPIA_SRCREV}"
 PV = "0.9.4+gitr${SRCPV}"
 PE = "2"
-PR = "${INC_PR}.21"
+PR = "${INC_PR}.22"
 
 EXTRA_OECONF = "\
   --enable-kernel26-rfkill \
@@ -26,7 +26,7 @@ do_install_append() {
 	install -m 0755 ${WORKDIR}/fsodeviced ${D}${sysconfdir}/init.d/
 }
 
-pkg_preinst_${PN} () {
+pkg_preinst_${PN}-config () {
 	# work-arround for opkg complaining that it cannot replace alsa-default dir (leftover from older fsodeviced) with new alsa-default symlink
         rm -rf ${sysconfdir}/freesmartphone/conf/openmoko_gta/alsa-default/
 }
