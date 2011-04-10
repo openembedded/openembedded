@@ -8,7 +8,6 @@ DEPENDS_append_c7x0 = " libw100 "
 DEPENDS_append_hx4700 = " libw100 "
 
 DEFAULT_PREFERENCE_avr32 = "1"
-DEFAULT_PREFERENCE_palmpre = "5"
 
 RDEPENDS_${PN} = "mplayer-common"
 LICENSE = "GPL"
