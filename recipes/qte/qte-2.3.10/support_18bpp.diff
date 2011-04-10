@@ -1,0 +1,275 @@
+diff -urN qt-2.3.10/configure qt-2.3.10_mod/configure
+--- qt-2.3.10/configure	2005-01-23 08:00:36.000000000 -0600
++++ qt-2.3.10_mod/configure	2006-10-21 23:13:29.000000000 -0500
+@@ -805,7 +805,8 @@
+     echo "   4. 4bpp grayscale - also enables 8bpp"
+     echo "   8. 8bpp"
+     echo "  16. 16bpp"
+-    echo "  24. 24bpp - also enables 32bpp"
++    echo "  18. 18bpp - packed into 24bpp, cannot be enabled with 24bpp"
++    echo "  24. 24bpp - also enables 32bpp, cannot be enabled with 18bpp"
+     echo "  32. 32bpp"
+     echo
+     echo "Each depth adds around 100Kb on 80386."
+@@ -830,7 +831,7 @@
+ 
+ if [ -n "$DEPTHS" ]
+ then
+-    DV=;D4=;D8=;D16=;D24=;D32=
++    DV=;D4=;D8=;D16=;D18=;D24=;D32=
+     for D in `echo "$DEPTHS" | sed -e 's/,/ /g'`
+     do
+ 	case "$D" in
+@@ -838,10 +839,20 @@
+ 	;;  4) D4=y; D8=y
+ 	;;  8) D8=y
+ 	;; 16) D16=y
++            ;; 18) D18=y
+ 	;; 24) D24=y; D32=y
+ 	;; 32) D32=y
+ 	esac
+     done
++
++    if [ ! -z "$D18" -a ! -z "$D24" ]
++    then
++        echo
++        echo "WARNING: You have configured with depth 18 and 24."
++        echo "         These depths are not compatible. Depth 24"
++        echo "         will be disabled."
++    fi
++
+     if [ -z "$DV" ]
+     then
+ 	QT_CXX="$QT_CXX -DQT_NO_QWS_VGA_16"
+@@ -858,9 +869,19 @@
+     then
+ 	QT_CXX="$QT_CXX -DQT_NO_QWS_DEPTH_16"
+     fi
++    if [ -z "$D18" ]
++    then
++        QT_CXX="$QT_CXX -DQT_NO_QWS_DEPTH_18"
++    fi
+     if [ -z "$D24" ]
+     then
+ 	QT_CXX="$QT_CXX -DQT_NO_QWS_DEPTH_24"
++    else
++        # Disable depth 24 if depth 18 enabled
++        if [ ! -z "$D18" ]
++        then
++            QT_CXX="$QT_CXX -DQT_NO_QWS_DEPTH_24"
++        fi
+     fi
+     if [ -z "$D32" ]
+     then
+@@ -1326,7 +1347,7 @@
+ 			 default ($QCONFIG).
+ 
+     -depths list ....... Comma-separated list of supported bit-per-pixel
+-			 depths, from:  v, 4, 8, 16, 24, and 32.  'v' is VGA16.
++			 depths, from:  v, 4, 8, 16, 18, 24, and 32.  'v' is VGA16.
+ 
+     -accel-snap ........ Enable SciTech SNAP Graphics acceleration.
+     -accel-voodoo3 ..... Enable Voodoo3 acceleration.
+diff -urN qt-2.3.10/src/kernel/qgfxlinuxfb_qws.cpp qt-2.3.10_mod/src/kernel/qgfxlinuxfb_qws.cpp
+--- qt-2.3.10/src/kernel/qgfxlinuxfb_qws.cpp	2011-04-09 18:48:17.000000000 +0100
++++ qt-2.3.10_mod/src/kernel/qgfxlinuxfb_qws.cpp	2011-04-09 18:54:45.000000000 +0100
+@@ -134,6 +134,10 @@
+     }
+ 
+     d=vinfo.bits_per_pixel;
++    // 18-bpp-support
++    if ((d == 18) || (d == 19))
++       d = 24;
++    // End of 18-bpp-support
+     lstep=finfo.line_length;
+     int xoff = vinfo.xoffset;
+     int yoff = vinfo.yoffset;
+@@ -427,6 +431,15 @@
+ 		gbits=6;
+ 		bbits=5;
+ 		break;
++	  // 18-bpp-support
++	  case 18: case 19:
++		rbits=6;
++		gbits=6;
++		bbits=6;
++		vinfo.bits_per_pixel=24;
++		startupd=24;
++		break;
++	  // End of 18-bpp-support
+ 	  case 24: case 32:
+ 		rbits=gbits=bbits=8;
+ 		break;
+@@ -819,6 +832,10 @@
+     w=vinfo.xres;
+     h=vinfo.yres;
+     d=vinfo.bits_per_pixel;
++    // 18-bpp-support
++    if ((d == 18) || (d == 19))
++       d = 24;
++    // End of 18-bpp-support
+     lstep=finfo.line_length;
+     size=h*lstep;
+ }
+diff -urN qt-2.3.10/src/kernel/qgfxraster_qws.cpp qt-2.3.10_mod/src/kernel/qgfxraster_qws.cpp
+--- qt-2.3.10/src/kernel/qgfxraster_qws.cpp	2005-01-23 08:00:47.000000000 -0600
++++ qt-2.3.10_mod/src/kernel/qgfxraster_qws.cpp	2006-10-22 08:38:38.000000000 -0500
+@@ -161,25 +161,51 @@
+ #endif
+ 
+ #define MASK4BPP(x) (0xf0 >> (x))
+-
++// 18-bpp-support
+ inline void gfxSetRgb24( unsigned char *d, unsigned int p )
+ {
+-    *d = p & 0x0000ff;
++#ifdef QT_NO_QWS_DEPTH_18 
++    *d = p & 0x000ff;
+     *(d+1) = (p & 0x00ff00 ) >> 8;
+     *(d+2) = (p & 0xff0000 ) >> 16;
++#else
++    uint b = (p & 0x0000ff) >>  0;
++    uint g = (p & 0x00ff00) >>  8;
++    uint r = (p & 0xff0000) >> 16;
++    uint data = (b>>2) | ((g>>2) << 6) | ((r>>2) << 12);
++    *d = data & 0xff;
++    *(d+1) = (data >> 8) & 0xff;
++    *(d+2) = (data >> 16) & 0xff;
++#endif
+ }
+ 
+ inline void gfxSetRgb24( unsigned char *d, int r, int g, int b )
+ {
++#ifdef QT_NO_QWS_DEPTH_18 
+     *d = b;
+     *(d+1) = g;
+     *(d+2) = r;
++#else
++    uint data = (b>>2) | ((g>>2) << 6) | ((r>>2) << 12);
++    *d = data & 0xff;
++    *(d+1) = (data >> 8) & 0xff;
++    *(d+2) = (data >> 16) & 0xff;
++#endif
+ }
+ 
+ inline unsigned int gfxGetRgb24( unsigned char *d )
+ {
++#ifdef QT_NO_QWS_DEPTH_18 
+     return *d | (*(d+1)<<8) | (*(d+2)<<16);
++#else
++    uint data = *d | (*(d+1)<<8) | (*(d+2)<<16);
++    uint r = ((data >> 10) & 0xfc);
++    uint g = ((data >>  4) & 0xfc);
++    uint b = ((data <<  2) & 0xfc);
++    return b | (g << 8) | (r << 16);
++#endif
+ }
++// End of 18-bpp-support
+ 
+ static bool simple_8bpp_alloc=FALSE;
+ 
+@@ -1767,11 +1793,12 @@
+ 	} else {
+ 	    (*srcdata)+=4;
+ 	}
+-#if !defined( QT_NO_QWS_DEPTH_24 )
++// 18-bpp hack (mlk)
++//#if !defined( QT_NO_QWS_DEPTH_24 )
+     } else if(sdepth==24) {
+ 	ret = gfxGetRgb24( *srcdata );
+ 	(*srcdata) += 3;
+-#endif
++//#endif
+ #if !defined( QT_NO_IMAGE_16_BIT ) || !defined( QT_NO_QWS_DEPTH_16 )
+     } else if(sdepth==16) {
+ 	unsigned short int hold=*((unsigned short int *)(*srcdata));
+@@ -3963,9 +3990,22 @@
+ 	unsigned char *alphaptr = (unsigned char *)alphabuf;
+ 	unsigned char *avp = alphas;
+ 	int loopc;
+-
++// 18-bpp-support 
++#ifdef QT_NO_QWS_DEPTH_18
+ 	memcpy( alphabuf, myptr+x1*3, w*3 );
+-
++#else
++	{ uchar *srcptr24 = myptr+x1*3;
++	uchar *dstptr24 = (uchar*)alphabuf;
++	for ( int i = 0; i < w; i++ ) {
++	    uint pix = gfxGetRgb24(srcptr24);
++	    dstptr24[2] = (pix >> 16) & 0xff;
++	    dstptr24[1] = (pix >>  8) & 0xff;
++	    dstptr24[0] = (pix >>  0) & 0xff;
++	    srcptr24 += 3;
++	    dstptr24 += 3;
++	} }
++#endif
++// End of 18-bpp-support
+ 	// Now blend with source data
+ 	unsigned char * srcptr=srcdata;
+ 	unsigned int srcval;
+@@ -5808,10 +5848,10 @@
+     } else if(d==8) {
+ 	ret = new QGfxRaster<8,0>(bytes,w,h);
+ #endif
+-#ifndef QT_NO_QWS_DEPTH_24
++//#ifndef QT_NO_QWS_DEPTH_24
+     } else if(d==24) {
+ 	ret = new QGfxRaster<24,0>(bytes,w,h);
+-#endif
++//#endif
+ #ifndef QT_NO_QWS_DEPTH_32
+     } else if(d==32) {
+ 	ret = new QGfxRaster<32,0>(bytes,w,h);
+diff -urN qt-2.3.10/src/kernel/qgfxtransformed_qws.cpp qt-2.3.10_mod/src/kernel/qgfxtransformed_qws.cpp
+--- qt-2.3.10/src/kernel/qgfxtransformed_qws.cpp	2005-01-23 08:00:46.000000000 -0600
++++ qt-2.3.10_mod/src/kernel/qgfxtransformed_qws.cpp	2006-10-22 00:57:27.000000000 -0500
+@@ -1020,10 +1020,10 @@
+     } else if (d==8) {
+ 	ret = new QGfxTransformedRaster<8,0>(bytes,w,h);
+ #endif
+-#ifndef QT_NO_QWS_DEPTH_24
++//#ifndef QT_NO_QWS_DEPTH_24
+     } else if (d==24) {
+ 	ret = new QGfxTransformedRaster<24,0>(bytes,w,h);
+-#endif
++//#endif
+ #ifndef QT_NO_QWS_DEPTH_32
+     } else if (d==32) {
+ 	ret = new QGfxTransformedRaster<32,0>(bytes,w,h);
+diff -urN qt-2.3.10/src/kernel/qgfxvfb_qws.cpp qt-2.3.10_mod/src/kernel/qgfxvfb_qws.cpp
+--- qt-2.3.10/src/kernel/qgfxvfb_qws.cpp	2005-01-23 08:00:47.000000000 -0600
++++ qt-2.3.10_mod/src/kernel/qgfxvfb_qws.cpp	2006-10-22 00:19:30.000000000 -0500
+@@ -288,10 +288,14 @@
+     d = hdr->depth;
+     lstep = hdr->linestep;
+ 
+-#ifdef DEBUG
++//#ifdef DEBUG
+     qDebug( "Connected to VFB server: %d x %d x %d", w, h, d );
+-#endif
++//#endif
+ 
++// 18-bpp-support
++    if ( (d == 18) || (d == 19) )
++	d = 24;
++// End of 18-bpp-support
+     size = lstep * h;
+     mapsize = size;
+     screencols = hdr->numcols;
+@@ -434,6 +438,15 @@
+ 	else
+ 	    ret = new QGfxRaster<32,0>(bytes,w,h);
+ #endif
++// 18-bpp-support
++//#ifndef QT_NO_QWS_DEPTH_24
++    } else if (d==24) {
++	if ( bytes == qt_screen->base() )
++	    ret = new QGfxVFb<24,0>(bytes,w,h);
++	else
++	    ret = new QGfxRaster<24,0>(bytes,w,h);
++//#endif
++// 18-bpp-support
+     } else {
+ 	qFatal("Can't drive depth %d",d);
+     }
