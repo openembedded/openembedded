@@ -16,8 +16,8 @@ SRC_URI = "ftp://elsie.nci.nih.gov/pub/tzdata${PV}.tar.gz;subdir=${BPN}-${PV}"
 
 TZONES= "africa antarctica asia australasia europe northamerica southamerica  \
          factory solar87 solar88 solar89 etcetera backward systemv \
-#        pacificnew \
         "
+#        pacificnew \
 
 CONFFILES_${PN} = "${sysconfdir}/timezone ${sysconfdir}/localtime"
 

@@ -1,5 +1,8 @@
 require tzcode-native.inc
 
+LICENSE = "PD"
+LIC_FILES_CHKSUM = "file://README;md5=3ae8198f82258417ce29066d3b034035"
+
 # Note that elsie.nci.nih.gov removes old versions when new is coming out
 # So if this doesn't build for you because of missing source file, just
 # bump it to the latest available version, removing old one
