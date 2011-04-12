@@ -1,7 +1,7 @@
 DESCRIPTION = "LoWPAN utilities (IEEE802.15.4)"
 LICENSE = "GPLv2"
-DEPENDS = "libnl bison-native flex-native python-native"
-INC_PR = "r11"
+DEPENDS = "libnl1 bison-native flex-native python-native"
+INC_PR = "r12"
 
 SRC_URI = "http://prdownloads.sourceforge.net/linux-zigbee/linux-zigbee-sources/${PV}/lowpan-tools-${PV}.tar.gz"
 
