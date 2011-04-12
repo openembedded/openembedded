@@ -15,6 +15,7 @@ SRC_URI = "\
   file://netlink-local-fix.patch \
   file://dont-link-libnl-from-sysroot.patch \
   file://build.only.static.lib.patch \
+  file://fix-ucred-declaration.patch \
 "
 S = "${WORKDIR}/libnl-${PV}"
 
