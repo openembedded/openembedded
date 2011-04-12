@@ -1,6 +1,7 @@
 DESCRIPTION = "This small package provides a few command line tools for Linux Phonet"
 HOMEPAGE = ""
-LICENSE = "GPL2"
+LICENSE = "GPLv2"
+LIC_FILES_CHKSUM = "file://COPYING;md5=751419260aa954499f7abaabaa882bbe"
 SRC_URI = "git://gitorious.org/meego-cellular/phonet-utils.git;branch=master;protocol=git"
 PR = "r0"
 S = "${WORKDIR}/git"
