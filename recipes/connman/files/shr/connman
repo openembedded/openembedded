@@ -1,6 +1,6 @@
 #!/bin/sh
 
-DAEMON="/usr/sbin/connmand -I usb0"
+DAEMON="/usr/sbin/connmand -I usb0 -r"
 PIDFILE=/var/run/connmand.pid
 DESC="Connection Manager"
 
