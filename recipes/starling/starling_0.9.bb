@@ -3,7 +3,7 @@ SECTION = "gpe/multimedia"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "gtk+ gstreamer gst-plugins-good gst-plugins-bad ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'gst-plugins-ugly', d)} esound sqlite libsoup libhandoff"
-PR = "r2"
+PR = "r3"
 
 inherit gpe autotools
 
@@ -20,7 +20,7 @@ RDEPENDS_${PN} = "\
 RRECOMMENDS_${PN} = "\
   gst-plugin-mad \
   gst-plugin-modplug \
-  gst-plugin-ivorbis \
+  gst-plugin-ivorbisdec \
   gst-plugin-tcp \
 "
 
