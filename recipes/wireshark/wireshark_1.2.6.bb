@@ -10,7 +10,8 @@ PR = "r5"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/wireshark/wireshark-${PV}.tar.bz2;name=src \
            file://ieee80215.4.patch \
-           file://fix-configure.patch "
+           file://fix-configure.patch \
+           file://libtool-macroses-include.patch "
 SRC_URI[src.md5sum] = "f3e0917ed393366bbf96c53b58cb0931"
 SRC_URI[src.sha256sum]= "72c8178dd0614d963173d667d5ecb39bc7102453ea09da7ef3302daee7733f3c"
 

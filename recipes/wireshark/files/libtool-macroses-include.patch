@@ -1,0 +1,23 @@
+diff -pruN wireshark-1.2.6.orig/aclocal-flags wireshark-1.2.6/aclocal-flags
+--- wireshark-1.2.6.orig/aclocal-flags	2010-01-27 19:12:50.000000000 +0300
++++ wireshark-1.2.6/aclocal-flags	2011-04-13 16:13:47.979262764 +0400
+@@ -44,6 +44,7 @@ fi
+ 
+ ac_missing_dir=`dirname $0`
+ echo "-I $ac_missing_dir/aclocal-fallback" | tr -d '\012' | tr -d '\015'
++echo " -I $ac_missing_dir/m4" | tr -d '\012' | tr -d '\015'
+ 
+ #
+ # If there's no "aclocal", the former will be empty; if there's no
+diff -pruN wireshark-1.2.6.orig/configure.in wireshark-1.2.6/configure.in
+--- wireshark-1.2.6.orig/configure.in	2011-04-13 16:29:25.646012953 +0400
++++ wireshark-1.2.6/configure.in	2011-04-13 15:54:27.030264922 +0400
+@@ -15,6 +15,8 @@ dnl AC_CANONICAL_TARGET
+ AC_INIT(wireshark, 1.2.6)
+ AM_INIT_AUTOMAKE([1.9 tar-ustar])
+ 
++AC_CONFIG_MACRO_DIR([m4])
++
+ AM_DISABLE_STATIC
+ 
+ dnl Checks for programs.
