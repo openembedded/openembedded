@@ -1,8 +1,8 @@
 DESCRIPTION = "Common X11 Keyboard layouts"
 LICENSE = "MIT"
-DEPENDS = "intltool-native xkbcomp-native"
+DEPENDS = "intltool-native xkbcomp-native glib-2.0-native"
 RDEPENDS_${PN} = "xkbcomp"
-INC_PR = "r7"
+INC_PR = "r8"
 
 SRC_URI = "http://xlibs.freedesktop.org/xkbdesc/xkeyboard-config-${PV}.tar.bz2"
 
