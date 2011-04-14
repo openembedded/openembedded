@@ -1,4 +1,4 @@
 require matrix-gui.inc
 
-SRCREV = "243"
-PR = "${INC_PR}.3"
+SRCREV = "245"
+PR = "${INC_PR}.4"
