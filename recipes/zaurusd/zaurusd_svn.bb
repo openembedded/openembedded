@@ -5,7 +5,7 @@ DEPENDS = "tslib"
 RDEPENDS_${PN} = "procps"
 SRCDATE = "20090501"
 PV = "0.0+svn${SRCDATE}"
-PR = "r23"
+PR = "r24"
 
 SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=zaurusd;proto=http \
            file://zaurus-hinge.in \
@@ -14,6 +14,7 @@ SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=zaurusd;proto=http \
 	   file://alsa-6000x-default.state.patch \
 	   file://disable-alsa-handling.patch \
 	   file://avoid-rotated-server.patch \
+	   file://new-make.patch \
 	   file://zaurus-hinge.matchbox-portrait \
 	   file://zaurus-hinge.matchbox-landscape \
 	   file://zaurus-hinge.bl-on \
