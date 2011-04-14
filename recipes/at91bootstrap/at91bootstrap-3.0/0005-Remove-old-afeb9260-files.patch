@@ -1,7 +1,7 @@
 From 0a71b107335e139f648a6d86ce4891e62f026228 Mon Sep 17 00:00:00 2001
 From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
 Date: Sun, 23 Jan 2011 19:36:57 +0100
-Subject: [PATCH v3 05/08] Remove old afeb9260 files
+Subject: [PATCH 05/16] Remove old afeb9260 files
 
 ---
  board/afeb9260/old/afeb9260.c             |  248 -----------------------------

@@ -1,7 +1,7 @@
 From 6c5e9dd8b079ce8bf07240a81cd991d9bba7c4cd Mon Sep 17 00:00:00 2001
 From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
 Date: Sun, 23 Jan 2011 20:23:29 +0100
-Subject: [PATCH v3 13/08] Fix Cut-n-Paste error in Makefile
+Subject: [PATCH 13/16] Fix Cut-n-Paste error in Makefile
 
 ---
  Makefile |    2 +-

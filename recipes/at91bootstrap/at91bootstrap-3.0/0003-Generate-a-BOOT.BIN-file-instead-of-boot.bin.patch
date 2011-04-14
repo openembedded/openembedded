@@ -1,7 +1,7 @@
 From 7213e685dcaac83610352316bd94938b31f9e3a5 Mon Sep 17 00:00:00 2001
 From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
 Date: Sun, 23 Jan 2011 19:32:31 +0100
-Subject: [PATCH v3 03/08] Generate a "BOOT.BIN" file, instead of "boot.bin"
+Subject: [PATCH 03/16] Generate a "BOOT.BIN" file, instead of "boot.bin"
 
 ---
  Makefile |    5 +++++

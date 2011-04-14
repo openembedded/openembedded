@@ -1,7 +1,7 @@
 From 0db54ff2e7a532bcb04db3f6130fbcdd1f2ff853 Mon Sep 17 00:00:00 2001
 From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
 Date: Sun, 23 Jan 2011 20:07:06 +0100
-Subject: [PATCH v3 10/08] Update build scripts
+Subject: [PATCH 10/16] Update build scripts
 
 ---
  ALLCONFIGS |   17 +++++++++++++

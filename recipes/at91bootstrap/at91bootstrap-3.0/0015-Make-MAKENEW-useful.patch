@@ -1,7 +1,7 @@
 From 044592d20881ee9f61c29db3bc7b00424145e136 Mon Sep 17 00:00:00 2001
 From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
 Date: Mon, 24 Jan 2011 19:37:56 +0100
-Subject: [PATCH v3 15/08] Make MAKENEW useful
+Subject: [PATCH 15/16] Make MAKENEW useful
 
 ---
  MAKENEW |   12 ++++++++----
