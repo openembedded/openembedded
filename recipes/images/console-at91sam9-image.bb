@@ -3,17 +3,16 @@
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
 
 ANGSTROM_EXTRA_INSTALL += " \
-	alsa-utils-amixer \
-	alsa-utils-aplay \
-	dosfstools \
-	iperf \
-	madplay \
+	usbview \
 	mplayer \
+	thttpd \
+	madplay \
+	alsa-utils-aplay \
+	alsa-utils-amixer \
+	iperf \
+	dosfstools \
 	mtd-utils \
 #	nbench-byte \
-	owl-wifi \
-	thttpd \
-	usbview \
 	"
 
 DEPENDS = "task-base-extended \
