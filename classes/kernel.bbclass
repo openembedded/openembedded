@@ -44,19 +44,39 @@ KERNEL_PRIORITY = "${@bb.data.getVar('PV',d,1).split('-')[0].split('.')[-1]}"
 
 KERNEL_RELEASE ?= "${KERNEL_VERSION}"
 
+KERNEL_ARSUFFIX ?= ""
 KERNEL_CCSUFFIX ?= ""
 KERNEL_LDSUFFIX ?= ""
+KERNEL_NMSUFFIX ?= ""
+KERNEL_OBJCOPYSUFFIX ?= ""
 
 # Set TARGET_??_KERNEL_ARCH in the machine .conf to set architecture
 # specific options necessary for building the kernel and modules.
 #FIXME: should be this: TARGET_CC_KERNEL_ARCH ?= "${TARGET_CC_ARCH}"
+TARGET_AR_KERNEL_ARCH ?= ""
+HOST_AR_KERNEL_ARCH ?= "${TARGET_AR_KERNEL_ARCH}"
 TARGET_CC_KERNEL_ARCH ?= ""
 HOST_CC_KERNEL_ARCH ?= "${TARGET_CC_KERNEL_ARCH}"
 TARGET_LD_KERNEL_ARCH ?= ""
 HOST_LD_KERNEL_ARCH ?= "${TARGET_LD_KERNEL_ARCH}"
+TARGET_NM_KERNEL_ARCH ?= ""
+HOST_NM_KERNEL_ARCH ?= "${TARGET_NM_KERNEL_ARCH}"
+TARGET_OBJCOPY_KERNEL_ARCH ?= ""
+HOST_OBJCOPY_KERNEL_ARCH ?= "${TARGET_OBJCOPY_KERNEL_ARCH}"
 
+KERNEL_AR = "${AR}${KERNEL_ARSUFFIX} ${HOST_AR_KERNEL_ARCH}"
 KERNEL_CC = "${CCACHE}${HOST_PREFIX}gcc${KERNEL_CCSUFFIX} ${HOST_CC_KERNEL_ARCH}"
 KERNEL_LD = "${LD}${KERNEL_LDSUFFIX} ${HOST_LD_KERNEL_ARCH}"
+KERNEL_NM = "${NM}${KERNEL_NMSUFFIX} ${HOST_NM_KERNEL_ARCH}"
+KERNEL_OBJCOPY = "${OBJCOPY}${KERNEL_OBJCOPYSUFFIX} ${HOST_OBJCOPY_KERNEL_ARCH}"
+
+KERNEL_EXTRA_OEMAKE = " \
+	AR='${KERNEL_AR}' \
+	CC='${KERNEL_CC}' \
+	LD='${KERNEL_LD}' \
+	NM='${KERNEL_NM}' \
+	OBJCOPY='${KERNEL_OBJCOPY}' \
+"
 
 # Where built kernel lies in the kernel tree
 KERNEL_OUTPUT ?= "arch/${ARCH}/boot/${KERNEL_IMAGETYPE}"
@@ -85,17 +105,17 @@ EXTRA_OEMAKE = ""
 
 kernel_do_compile() {
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS MACHINE
-	oe_runmake include/linux/version.h CC="${KERNEL_CC}" LD="${KERNEL_LD}"
+	oe_runmake include/linux/version.h ${KERNEL_EXTRA_OEMAKE}
 	if [ "${KERNEL_MAJOR_VERSION}" != "2.6" ]; then
-		oe_runmake dep CC="${KERNEL_CC}" LD="${KERNEL_LD}"
+		oe_runmake dep ${KERNEL_EXTRA_OEMAKE}
 	fi
-	oe_runmake ${KERNEL_IMAGETYPE} CC="${KERNEL_CC}" LD="${KERNEL_LD}"
+	oe_runmake ${KERNEL_IMAGETYPE} ${KERNEL_EXTRA_OEMAKE}
 }
 
 do_compile_kernelmodules() {
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS MACHINE
 	if (grep -q -i -e '^CONFIG_MODULES=y$' .config); then
-		oe_runmake modules  CC="${KERNEL_CC}" LD="${KERNEL_LD}"
+		oe_runmake modules ${KERNEL_EXTRA_OEMAKE}
 	else
 		oenote "no modules to compile"
 	fi
