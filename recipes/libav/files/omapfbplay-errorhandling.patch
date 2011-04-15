@@ -1,9 +1,9 @@
 From e321ae7df57ada9ecc8c155fa4e5511c96ef5db3 Mon Sep 17 00:00:00 2001
 From: Rob Clark <rob@ti.com>
 Date: Fri, 18 Mar 2011 12:40:51 -0500
-Subject: [PATCH] dce: differntiate between fatal and non-fatal errors
+Subject: [PATCH] dce: differentiate between fatal and non-fatal errors
 
-For streams with errors, the codec will throw back an error.. but not
+For streams with errors, the codec will throw back an error. But not
 all errors are fatal.
 ---
  dce.c |   10 ++++++++--
