@@ -1,11 +1,12 @@
 DEPENDS = "gtk+ startup-notification dbus dbus-glib"
 SRCREV = "2087"
 PV = "0.1.0+svnr${SRCPV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=matchbox-window-manager-2;proto=http \
 	   file://fix-timeout-handler-free.patch \
 	   file://makefile-vars.patch;striplevel=0 \
+	   file://new-make.patch \
 "
 S = "${WORKDIR}/matchbox-window-manager-2"
 
