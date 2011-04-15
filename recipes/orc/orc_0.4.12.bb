@@ -1,0 +1,4 @@
+require orc.inc
+
+SRC_URI[orc.md5sum] = "3130b63e6a1284b3e0796fab2450753a"
+SRC_URI[orc.sha256sum] = "61a676f7530277cced1ce327fcb812067595408b60bb347999240e393fb27fc5"
