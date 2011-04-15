@@ -2,7 +2,7 @@ DESCRIPTION = "Utility to dump IrDA traffic."
 SECTION = "base"
 LICENSE = "GPL"
 DEPENDS = "glib-2.0 pkgconfig"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/irda/irda-utils-${PV}.tar.gz \
 	   file://glib2.patch"
@@ -16,11 +16,6 @@ inherit autotools
 
 do_compile() {
     oe_runmake CFLAGS="${CFLAGS} ${EXTRA_CFLAGS}" LDFLAGS="${LDFLAGS} ${EXTRA_LDFLAGS}"
-}
-
-do_install () {
-	install -d ${D}${bindir}
-	install -m 0755 ${S}/shell/.libs/irdadump ${D}${bindir}
 }
 
 SRC_URI[md5sum] = "2ff18f0571b5a331be7cd22fc3decd41"
