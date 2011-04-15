@@ -3,7 +3,7 @@ HOMEPAGE = "http://mercurial.selenic.com/"
 SECTION = "console/utils"
 LICENSE = "GPLv2"
 DEPENDS = "python-native"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://mercurial.selenic.com/release/mercurial-${PV}.tar.gz;name=src"
 SRC_URI[src.md5sum] = "fcd61edc488d1b9aa831dde6f14d9a13"
@@ -19,3 +19,5 @@ EXTRA_OEMAKE = "STAGING_LIBDIR=${STAGING_LIBDIR} STAGING_INCDIR=${STAGING_INCDIR
 do_install () {
         oe_runmake -e install DESTDIR=${D} PREFIX=${prefix}
 }
+
+NATIVE_INSTALL_WORKS = "1"
