@@ -4,14 +4,13 @@ SECTION = "x11/applications"
 DEPENDS = "gpsd gtk+"
 LICENSE = "GPLv2"
 PRIORITY = "optional"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/viking/viking-${PV}.tar.gz \
 	file://viking-openaerialmap.patch \
 	file://viking-parallel-build.patch"
 
-# libgps is linked with c++
-#export CC='${CC} -lstdc++'
-LDFLAGS += "-lstdc++"
+EXTRA_OECONF = "--disable-realtime-gps-tracking"
 
 inherit autotools
 
