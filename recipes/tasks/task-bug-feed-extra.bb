@@ -18,6 +18,7 @@ DEPENDS = "\
 	cacao \
 	usb-modeswitch \
 #	com.buglabs.bug.jni.bluecove \
+    gdbserver \
 	"
 
-PR = "r11"
+PR = "r12"
