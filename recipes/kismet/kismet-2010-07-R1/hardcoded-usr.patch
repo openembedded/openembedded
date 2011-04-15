@@ -1,0 +1,11 @@
+--- kismet-2010-07-R1/configure.in
++++ kismet-2010-07-R1/configure.in
+@@ -407,7 +407,7 @@
+ AC_SUBST(wantclient)
+ 
+ # Add additional cflags since some distros bury panel.h
+-CPPFLAGS="$CPPFLAGS -I/usr/include/ncurses"
++CPPFLAGS="$CPPFLAGS `ncurses-config --cflags`"
+ 
+ termcontrol="none";
+ 
