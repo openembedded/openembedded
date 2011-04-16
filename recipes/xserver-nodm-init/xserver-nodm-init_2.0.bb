@@ -3,7 +3,6 @@ LICENSE = "GPL"
 SECTION = "x11"
 PRIORITY = "optional"
 RDEPENDS_${PN} = "xserver-common (>= 1.30) xinit"
-DEFAULT_PREFERENCE = "-1"
 PR = "r4"
 
 SRC_URI = "file://xserver-nodm"
