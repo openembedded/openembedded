@@ -23,7 +23,7 @@ S = "${WORKDIR}/git"
 # (flash_unlock /dev/mtdX && flash_eraseall /dev/mtdX && flashcp /boot/zImage /dev/mtdX)
 
 COMPATIBLE_HOST = "arm.*-linux"
-COMPATIBLE_MACHINE = '(a780|e680|a910|a1200|rorkre2|rokre6)'
+COMPATIBLE_MACHINE = '(a780|e680|a910|a1200|rokre2|rokre6)'
 
 # Provide a fallback kernel command line, even if parameters should be given
 # via boot_usb or gen-blob
