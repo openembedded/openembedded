@@ -1,0 +1,24 @@
+From 6b4a1ffc0485c6efb0742d2965fed126b9fd3fc4 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Sat, 16 Apr 2011 18:01:34 +0200
+Subject: [PATCH] owl-wifi: include sched.h
+
+---
+ owl_sync.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/owl_sync.c b/owl_sync.c
+index 317010d..3be3efe 100644
+--- a/owl_sync.c
++++ b/owl_sync.c
+@@ -16,6 +16,7 @@
+  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
++#include <linux/sched.h>
+ #include "owl_sync.h"
+ #include "owl_wext_event.h"
+ 
+-- 
+1.6.3.3
+

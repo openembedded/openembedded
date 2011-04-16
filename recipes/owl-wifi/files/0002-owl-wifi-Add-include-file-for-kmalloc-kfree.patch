@@ -1,0 +1,25 @@
+From 3ac35324bc7e6cb0afda82d84f7b63d673a71199 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Sat, 16 Apr 2011 17:44:19 +0200
+Subject: [PATCH] owl-wifi: Add include file for kmalloc/kfree
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+---
+ owl_os.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/owl_os.c b/owl_os.c
+index 270e541..4d7d116 100644
+--- a/owl_os.c
++++ b/owl_os.c
+@@ -20,6 +20,7 @@
+ #include <linux/kernel.h>
+ #include <linux/string.h>
+ #include <linux/hardirq.h>
++#include <linux/slab.h>
+ #include <stdarg.h>
+ 
+ /*
+-- 
+1.6.3.3
+
