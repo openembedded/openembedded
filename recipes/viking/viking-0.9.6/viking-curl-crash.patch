@@ -1,0 +1,20 @@
+commit 8cd9c9918dad02c1682887e0cbe0269a6717b47d
+Author: Rob Norris <rw_norris@hotmail.com>
+Date:   Wed Apr 6 00:24:44 2011 +0100
+
+    Fix crashing due to incorrect usage of libcurl - SF#3206628.
+    
+    Tell curl we are a multi-threaded program - i.e. it can not use signals.
+
+Index: viking-0.9.6/src/curl_download.c
+===================================================================
+--- viking-0.9.6.orig/src/curl_download.c
++++ viking-0.9.6/src/curl_download.c
+@@ -120,6 +120,7 @@ int curl_download_uri ( const char *uri,
+     {
+       if (vik_verbose)
+         curl_easy_setopt ( curl, CURLOPT_VERBOSE, 1 );
++      curl_easy_setopt ( curl, CURLOPT_NOSIGNAL, 1 ); // Yep, we're a multi-threaded program so don't let signals mess it up!
+       curl_easy_setopt ( curl, CURLOPT_URL, uri );
+       curl_easy_setopt ( curl, CURLOPT_FILE, f );
+       curl_easy_setopt ( curl, CURLOPT_WRITEFUNCTION, curl_write_func);

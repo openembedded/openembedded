@@ -4,11 +4,12 @@ SECTION = "x11/applications"
 DEPENDS = "curl gpsd gtk+ intltool-native"
 LICENSE = "GPLv2"
 PRIORITY = "optional"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/viking/viking-${PV}.tar.gz \
 	file://viking-openaerialmap.patch \
-	file://viking-parallel-build.patch"
+	file://viking-parallel-build.patch \
+	file://viking-curl-crash.patch"
 
 EXTRA_OECONF = "--disable-realtime-gps-tracking"
 
