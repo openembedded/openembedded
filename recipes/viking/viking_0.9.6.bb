@@ -1,7 +1,7 @@
 DESCRIPTION = "program to manage GPS data"
 HOMEPAGE = "http://viking.sourceforge.net/"
 SECTION = "x11/applications"
-DEPENDS = "gpsd gtk+ intltool-native"
+DEPENDS = "curl gpsd gtk+ intltool-native"
 LICENSE = "GPLv2"
 PRIORITY = "optional"
 PR = "r1"
