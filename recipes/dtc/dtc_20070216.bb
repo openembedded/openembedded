@@ -1,6 +1,6 @@
 require dtc.inc
 
-PR = "r1"
+PR = "${INC_PR}.0"
 
 SRC_URI = "http://www.jdl.com/pub/software/dtc-${PV}.tgz"
 
