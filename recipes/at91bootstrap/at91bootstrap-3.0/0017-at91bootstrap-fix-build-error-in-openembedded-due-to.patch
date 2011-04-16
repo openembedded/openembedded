@@ -1,0 +1,49 @@
+From 7487f5e8836f27806ca734e856cdced8a9edc2c3 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Sat, 16 Apr 2011 12:57:26 +0200
+Subject: [PATCH 1/2] at91bootstrap: fix build error in openembedded due to compiler error
+
+undefined reference to `__gnu_thumb1_case_uqi'
+when using unsigned char in a switch statement
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+---
+ driver/dma.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/driver/dma.c b/driver/dma.c
+index 1373525..33e8466 100644
+--- a/driver/dma.c
++++ b/driver/dma.c
+@@ -257,11 +257,11 @@ void DMA_SetSourceBufferMode(unsigned char channel,
+                              unsigned char addressingType)
+ {
+     unsigned int value;
+-
++    unsigned int mode = transferMode;
+     value = (*(volatile unsigned int *)
+              (AT91C_BASE_HDMA_CH_0 + channel * 40 + HDMA_CTRLB));
+     value &= ~(AT91C_SRC_DSCR | AT91C_SRC_INCR | 1 << 31);
+-    switch (transferMode) {
++    switch (mode) {
+     case DMA_TRANSFER_SINGLE:
+         value |= AT91C_SRC_DSCR | addressingType << 24;
+         break;
+@@ -308,12 +308,12 @@ void DMA_SetDestBufferMode(unsigned char channel,
+                            unsigned char addressingType)
+ {
+     unsigned int value;
+-
++    unsigned int mode = transferMode;
+     value = (*(volatile unsigned int *)
+              (AT91C_BASE_HDMA_CH_0 + channel * 40 + HDMA_CTRLB));
+     value &= ~(unsigned int)(AT91C_DST_DSCR | AT91C_DST_INCR);
+ 
+-    switch (transferMode) {
++    switch (mode) {
+     case DMA_TRANSFER_SINGLE:
+     case DMA_TRANSFER_RELOAD:
+     case DMA_TRANSFER_CONTIGUOUS:
+-- 
+1.6.3.3
+

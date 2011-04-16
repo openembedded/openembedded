@@ -1,0 +1,70 @@
+From 6c1b7e91de44526d97ee99fa98ca8514aaf84be7 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Sat, 16 Apr 2011 13:31:00 +0200
+Subject: [PATCH 2/2] Change switch statements to if statements to avoid build bug
+
+OE generates
+undefined reference to `__gnu_thumb1_case_uqi'
+when compiling.
+This is a routine which optimizes switch statements in thumb mode
+when only a few casew statements are present.
+---
+ driver/dma.c |   24 ++++++------------------
+ 1 files changed, 6 insertions(+), 18 deletions(-)
+
+diff --git a/driver/dma.c b/driver/dma.c
+index 33e8466..036f39d 100644
+--- a/driver/dma.c
++++ b/driver/dma.c
+@@ -257,21 +257,15 @@ void DMA_SetSourceBufferMode(unsigned char channel,
+                              unsigned char addressingType)
+ {
+     unsigned int value;
+-    unsigned int mode = transferMode;
+     value = (*(volatile unsigned int *)
+              (AT91C_BASE_HDMA_CH_0 + channel * 40 + HDMA_CTRLB));
+     value &= ~(AT91C_SRC_DSCR | AT91C_SRC_INCR | 1 << 31);
+-    switch (mode) {
+-    case DMA_TRANSFER_SINGLE:
++    if (transferMode == DMA_TRANSFER_SINGLE) {
+         value |= AT91C_SRC_DSCR | addressingType << 24;
+-        break;
+-    case DMA_TRANSFER_LLI:
++    } else if(transferMode == DMA_TRANSFER_LLI)  {
+         value |= addressingType << 24;
+-        break;
+-    case DMA_TRANSFER_RELOAD:
+-    case DMA_TRANSFER_CONTIGUOUS:
++    } else if((transferMode == DMA_TRANSFER_RELOAD) || (transferMode == DMA_TRANSFER_CONTIGUOUS)) {
+         value |= AT91C_SRC_DSCR | addressingType << 24 | 1 << 31;
+-        break;
+     }
+     (*(volatile unsigned int *)
+      (AT91C_BASE_HDMA_CH_0 + channel * 40 + HDMA_CTRLB)) = value;
+@@ -308,20 +302,14 @@ void DMA_SetDestBufferMode(unsigned char channel,
+                            unsigned char addressingType)
+ {
+     unsigned int value;
+-    unsigned int mode = transferMode;
+     value = (*(volatile unsigned int *)
+              (AT91C_BASE_HDMA_CH_0 + channel * 40 + HDMA_CTRLB));
+     value &= ~(unsigned int)(AT91C_DST_DSCR | AT91C_DST_INCR);
+ 
+-    switch (mode) {
+-    case DMA_TRANSFER_SINGLE:
+-    case DMA_TRANSFER_RELOAD:
+-    case DMA_TRANSFER_CONTIGUOUS:
+-        value |= AT91C_DST_DSCR | addressingType << 28;
+-        break;
+-    case DMA_TRANSFER_LLI:
++    if(transferMode == DMA_TRANSFER_LLI) {
+         value |= addressingType << 28;
+-        break;
++    } else {	/* DMA_TRANSFER_SINGLE,DMA_TRANSFER_RELOAD,DMA_TRANSFER_CONTIGUOUS */
++        value |= AT91C_DST_DSCR | addressingType << 28;
+     }
+     (*(volatile unsigned int *)
+      (AT91C_BASE_HDMA_CH_0 + channel * 40 + HDMA_CTRLB)) = value;
+-- 
+1.6.3.3
+
