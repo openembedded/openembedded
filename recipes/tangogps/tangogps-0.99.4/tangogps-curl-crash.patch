@@ -1,0 +1,64 @@
+Patch based on the similar fix of viking by Rob Norris <rw_norris@hotmail.com>:
+    Fix crashing due to incorrect usage of libcurl - SF#3206628.
+    Tell curl we are a multi-threaded program - i.e. it can not use signals.
+
+Index: tangogps-0.99.4/src/friends.c
+===================================================================
+--- tangogps-0.99.4.orig/src/friends.c
++++ tangogps-0.99.4/src/friends.c
+@@ -265,6 +265,7 @@ gdk_threads_leave();
+ 	       
+ 	curl_handle = curl_easy_init();
+ 	
++	curl_easy_setopt(curl_handle, CURLOPT_NOSIGNAL, 1);
+ 	curl_easy_setopt(curl_handle, CURLOPT_URL, "http://www.tangogps.org/friends/update_pos.php");
+ 	curl_easy_setopt(curl_handle, CURLOPT_HTTPPOST, formdata);
+ 	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, cb_write_to_mem);
+@@ -451,6 +452,7 @@ update_position0()
+ 	
+ 	if(curl)
+ 	{
++		curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
+ 		curl_easy_setopt(curl, CURLOPT_URL, 
+ 				"127.0.0.1/friends/update_position.php?lat=1&lon=1");
+ 		res = curl_easy_perform(curl);
+@@ -540,6 +542,7 @@ register_nick_thread(void *ptr)
+ 	       
+ 	curl_handle = curl_easy_init();
+ 	
++	curl_easy_setopt(curl_handle, CURLOPT_NOSIGNAL, 1);
+ 	curl_easy_setopt(curl_handle, CURLOPT_URL, "http://www.tangogps.org/friends/register_nick.php");
+ 	curl_easy_setopt(curl_handle, CURLOPT_HTTPPOST, formdata);
+ 	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, cb_write_to_mem);
+Index: tangogps-0.99.4/src/tile_management.c
+===================================================================
+--- tangogps-0.99.4.orig/src/tile_management.c
++++ tangogps-0.99.4/src/tile_management.c
+@@ -236,6 +236,7 @@ dl_thread(void *ptr)
+ 	if(curl && outfile) 
+ 	{
+ 		
++		curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
+ 		curl_easy_setopt(curl, CURLOPT_URL, arr1[0]);
+ 		curl_easy_setopt(curl, CURLOPT_USERAGENT, 
+ 			"libcurl-agent/1.0 | tangogps " VERSION " | " __VERSION__);
+Index: tangogps-0.99.4/src/util.c
+===================================================================
+--- tangogps-0.99.4.orig/src/util.c
++++ tangogps-0.99.4/src/util.c
+@@ -104,6 +104,7 @@ mycurl__do_http_post (char *url, GSList
+ 	
+ 	curl_handle = curl_easy_init();
+ 	
++	curl_easy_setopt(curl_handle, CURLOPT_NOSIGNAL, 1);
+ 	curl_easy_setopt(curl_handle, CURLOPT_URL, url);
+ 	curl_easy_setopt(curl_handle, CURLOPT_HTTPPOST, formdata);
+ 	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, mycurl_write_to_mem_cb);
+@@ -159,6 +160,7 @@ mycurl__do_http_get (char *url, char *us
+ 	curl_global_init(CURL_GLOBAL_ALL);
+ 	curl_handle = curl_easy_init();
+  
++	curl_easy_setopt(curl_handle, CURLOPT_NOSIGNAL, 1);
+ 	curl_easy_setopt(curl_handle, CURLOPT_URL, url);
+ 	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, mycurl_write_to_mem_cb);
+ 	curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
