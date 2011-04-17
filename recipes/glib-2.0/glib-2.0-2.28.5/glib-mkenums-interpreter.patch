@@ -1,0 +1,10 @@
+Index: glib-2.28.0/gobject/glib-mkenums.in
+===================================================================
+--- glib-2.28.0.orig/gobject/glib-mkenums.in
++++ glib-2.28.0/gobject/glib-mkenums.in
+@@ -1,4 +1,4 @@
+-#! @PERL_PATH@
++#! /usr/bin/env perl
+ 
+ use warnings;
+ use File::Basename;
