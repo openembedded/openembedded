@@ -90,11 +90,15 @@ case $CPUTYPE in
 	devmem2 0x48180900 w 0x2
 	devmem2 0x48180920 w 0x2
 
-	sleep 2
-
 	ES_REVISION="$(devmem2 0x56000014 | sed -e s:0x00010205:5: -e s:0x00010201:3: -e s:0x00010003:2: | tail -n1 | awk -F': ' '{print $2}')"
 
-	echo "${ES_REVISION}" > /etc/powervr-esrev
+	if [ "${ES_REVISION}" != "${SAVED_ESREVISION}" ] ; then
+		echo -n "Starting SGX fixup for"
+		echo " ES${ES_REVISION}.x"
+		cp -a /usr/lib/ES${ES_REVISION}.0/* /usr/lib
+		cp -a /usr/bin/ES${ES_REVISION}.0/* /usr/bin	
+		echo "${ES_REVISION}" > /etc/powervr-esrev
+	fi
 	/usr/bin/pvrsrvinit
 
 	;;
