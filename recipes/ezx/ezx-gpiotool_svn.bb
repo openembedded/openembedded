@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.openezx.org"
 AUTHOR = "Harald Welte"
 SRCREV = "1877"
 PV = "${SRCPV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "svn://svn.openezx.org/trunk/src/userspace;module=gpiotool;proto=http"
 S = "${WORKDIR}/gpiotool"
@@ -15,11 +15,7 @@ do_compile() {
 	do
 		${CC} ${CFLAGS} -c $i
 	done
-	${CC} ${CFLAGS} -o ezx-gpiotool mmio.o gpiotool.o gpio.o
-}
-
-do_stage() {
-	:
+	${CC} ${CFLAGS} ${LDFLAGS} -o ezx-gpiotool mmio.o gpiotool.o gpio.o
 }
 
 do_install() {
