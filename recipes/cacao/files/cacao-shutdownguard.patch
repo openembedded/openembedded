@@ -1,0 +1,180 @@
+diff -r c7bf150bfa46 src/threads/posix/mutex-posix.hpp
+--- a/src/threads/posix/mutex-posix.hpp	Fri Mar 11 23:35:56 2011 +0100
++++ b/src/threads/posix/mutex-posix.hpp	Fri Apr 01 16:16:07 2011 +0200
+@@ -53,6 +53,9 @@
+ 
+ 	inline void lock();
+ 	inline void unlock();
++
++private:
++	void abort(int, const char*);
+ };
+ 
+ #else
+@@ -66,7 +69,6 @@
+ // Includes.
+ #include "vm/os.hpp"
+ 
+-
+ #ifdef __cplusplus
+ 
+ /**
+@@ -77,19 +79,19 @@
+ 	int result = pthread_mutexattr_init(&_attr);
+ 
+ 	if (result != 0) {
+-		os::abort_errnum(result, "Mutex::Mutex(): pthread_mutexattr_init failed");
++		abort(result, "Mutex::Mutex(): pthread_mutexattr_init failed");
+ 	}
+ 
+ 	result = pthread_mutexattr_settype(&_attr, PTHREAD_MUTEX_RECURSIVE);
+ 
+ 	if (result != 0) {
+-		os::abort_errnum(result, "Mutex::Mutex(): pthread_mutexattr_settype failed");
++		abort(result, "Mutex::Mutex(): pthread_mutexattr_settype failed");
+ 	}
+ 
+ 	result = pthread_mutex_init(&_mutex, &_attr);
+ 
+ 	if (result != 0) {
+-		os::abort_errnum(result, "Mutex::Mutex(): pthread_mutex_init failed");
++		abort(result, "Mutex::Mutex(): pthread_mutex_init failed");
+ 	}
+ }
+ 
+@@ -102,13 +104,13 @@
+ 	int result = pthread_mutexattr_destroy(&_attr);
+ 
+ 	if (result != 0) {
+-		os::abort_errnum(result, "Mutex::~Mutex(): pthread_mutexattr_destroy failed");
++		abort(result, "Mutex::~Mutex(): pthread_mutexattr_destroy failed");
+ 	}
+ 
+ 	result = pthread_mutex_destroy(&_mutex);
+ 
+ 	if (result != 0) {
+-		os::abort_errnum(result, "Mutex::~Mutex(): pthread_mutex_destroy failed");
++		abort(result, "Mutex::~Mutex(): pthread_mutex_destroy failed");
+ 	}
+ }
+ 
+@@ -127,7 +129,7 @@
+ 	int result = pthread_mutex_lock(&_mutex);
+ 
+ 	if (result != 0) {
+-		os::abort_errnum(result, "Mutex::lock(): pthread_mutex_lock failed");
++		abort(result, "Mutex::lock(): pthread_mutex_lock failed");
+ 	}
+ }
+ 
+@@ -141,10 +143,11 @@
+ 	int result = pthread_mutex_unlock(&_mutex);
+ 
+ 	if (result != 0) {
+-		os::abort_errnum(result, "Mutex::unlock: pthread_mutex_unlock failed");
++		abort(result, "Mutex::unlock: pthread_mutex_unlock failed");
+ 	}
+ }
+ 
++
+ #else
+ 
+ // This structure must have the same layout as the class above.
+diff -r c7bf150bfa46 src/threads/posix/thread-posix.cpp
+--- a/src/threads/posix/thread-posix.cpp	Fri Mar 11 23:35:56 2011 +0100
++++ b/src/threads/posix/thread-posix.cpp	Fri Apr 01 16:16:07 2011 +0200
+@@ -74,6 +74,23 @@
+ #include "vm/string.hpp"
+ #include "vm/vm.hpp"
+ 
++/**
++ * Handle the case that a mutex related pthread function failed.
++ *
++ * During normal execution of the VM it will make it abort. However if the
++ * VM is in its last stages of shutting down (where nothing pthread related works
++ * anymore), it will silently end the calling thread.
++ */ 
++void Mutex::abort(int errnum, const char* text)
++{
++	if (VM::get_current()->is_shutdown())
++	{
++		pthread_exit(NULL);
++	}
++
++	os::abort_errnum(errnum, text);
++}
++
+ #if defined(ENABLE_STATISTICS)
+ # include "vm/statistics.h"
+ #endif
+diff -r c7bf150bfa46 src/vm/vm.cpp
+--- a/src/vm/vm.cpp	Fri Mar 11 23:35:56 2011 +0100
++++ b/src/vm/vm.cpp	Fri Apr 01 16:16:07 2011 +0200
+@@ -52,6 +52,7 @@
+ 
+ #include "native/vm/nativevm.hpp"
+ 
++#include "threads/atomic.hpp"
+ #include "threads/lock.hpp"
+ #include "threads/thread.hpp"
+ 
+@@ -1585,6 +1586,22 @@
+ 	return true;
+ }
+ 
++/**
++ * Checks whether a shutdown process has to be guarded.
++ *
++ * Returning true means the caller must not continue
++ * doing any shutdown operations.
++ */
++bool VM::shutdown_guard()
++{
++	return Atomic::generic_compare_and_swap(&_shuttingdown, 0, 1) == 1;
++}
++
++bool VM::is_shutdown()
++{
++	Atomic::generic_memory_barrier();
++	return _shuttingdown == 1;
++}
+ 
+ /* vm_run **********************************************************************
+ 
+@@ -1865,6 +1882,15 @@
+ 
+ void vm_shutdown(s4 status)
+ {
++	log_println("vm_shutdown");
++
++	if (VM::get_current()->shutdown_guard())
++	{
++		/* Shutdown in progress by another thread already.
++		 Silently not do it another time. */
++		return;
++	}
++
+ 	if (opt_verbose 
+ #if defined(ENABLE_STATISTICS)
+ 		|| opt_getcompilingtime || opt_stat
+diff -r c7bf150bfa46 src/vm/vm.hpp
+--- a/src/vm/vm.hpp	Fri Mar 11 23:35:56 2011 +0100
++++ b/src/vm/vm.hpp	Fri Apr 01 16:16:07 2011 +0200
+@@ -64,6 +64,7 @@
+ 	bool    _initializing;
+ 	bool    _created;
+ 	bool    _exiting;
++	uint32_t _shuttingdown;
+ 	int64_t _starttime;
+ 	int64_t _inittime;
+ 
+@@ -104,6 +105,9 @@
+ 	int64_t get_starttime()   { return _starttime; }
+ 	int64_t get_inittime()    { return _inittime; }
+ 
++	bool	shutdown_guard();
++	bool	is_shutdown();
++
+ 	Properties&      get_properties     () { return _properties; }
+ 	Recompiler&      get_recompiler     () { return _recompiler; } // REMOVEME
+ #if defined(WITH_JAVA_RUNTIME_LIBRARY_OPENJDK)
