@@ -4,6 +4,6 @@ HOMEPAGE = "http://www.xmission.com/~ebiederm/files/kexec/"
 SECTION = "kernel/userland"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel zlib"
-PR = "r4"
+INC_PR = "r4"
 
 inherit autotools
