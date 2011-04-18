@@ -8,5 +8,5 @@ DEPENDS += "elementary"
 
 # Elfe is part of the enlightenment svn repository since this SRC_REV. As EFL_SRCREV is
 # currently much older we need to sync it when EFL_SRCREV will change.
-SRCREV = "58042"
+SRCREV = "58599"
 
