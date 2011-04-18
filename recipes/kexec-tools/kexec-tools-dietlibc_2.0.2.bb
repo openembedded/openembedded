@@ -1,7 +1,7 @@
 # the binaries are statically linked against dietlibc
 require kexec-tools_${PV}.inc
 
-PR = "r0"
+PR = "${INC_PR}.0"
 inherit dietlibc
 
 FILESPATHPKG =. "kexec-tools-${PV}:"

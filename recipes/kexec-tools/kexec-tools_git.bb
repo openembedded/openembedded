@@ -1,4 +1,4 @@
-require kexec-tools_${PV}.inc
+require kexec-tools_git.inc
 
 PR = "${INC_PR}.0"
 

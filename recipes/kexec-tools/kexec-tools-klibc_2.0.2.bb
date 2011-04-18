@@ -1,7 +1,7 @@
 # the binaries are statically linked against klibc
 require kexec-tools_${PV}.inc
 
-PR = "r3"
+PR = "${INC_PR}.0"
 inherit klibc
 
 FILESPATHPKG =. "kexec-tools-${PV}:"
