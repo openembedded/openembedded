@@ -21,14 +21,11 @@ python populate_packages_prepend () {
 			metapkg_rdepends.append(pkg)
 	bb.data.setVar('RDEPENDS_' + metapkg, ' '.join(metapkg_rdepends), d)
 	bb.data.setVar('DESCRIPTION_' + metapkg, pn + ' meta package', d)
-	packages.append(metapkg)
-	bb.data.setVar('PACKAGES', ' '.join(packages), d)
-
 }
 
 ALLOW_EMPTY = "1"
 
-PACKAGES += "${PN}-apps"
+PACKAGES += "${PN}-apps ${PN}-meta"
 FILES_${PN}-apps = "${bindir}"
 
 FILES_${PN} = "${datadir}/gstreamer-0.10"
