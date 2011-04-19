@@ -1,0 +1,17 @@
+---
+ Makefile |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+Index: mdadm-3.1.2/Makefile
+===================================================================
+--- mdadm-3.1.2.orig/Makefile
++++ mdadm-3.1.2/Makefile
+@@ -42,7 +42,7 @@ KLIBC_GCC = gcc -nostdinc -iwithprefix i
+ 
+ CC = $(CROSS_COMPILE)gcc
+ CXFLAGS = -ggdb
+-CWFLAGS = -Wall -Werror -Wstrict-prototypes
++CWFLAGS = -Wall -Wstrict-prototypes
+ ifdef WARN_UNUSED
+ CWFLAGS += -Wp,-D_FORTIFY_SOURCE=2 -O
+ endif

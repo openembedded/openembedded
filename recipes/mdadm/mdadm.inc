@@ -13,9 +13,8 @@ inherit autotools
 
 INHIBIT_AUTO_STAGE = "1"
 
-do_compile() {
+do_compile_prepend() {
 	export CROSS_COMPILE="${TARGET_PREFIX}"
-	oe_runmake
 }
 
 do_install() {
