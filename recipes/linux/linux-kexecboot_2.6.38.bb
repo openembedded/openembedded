@@ -1,6 +1,6 @@
 require linux-kexecboot.inc
 
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 
 S = "${WORKDIR}/linux-${PV}"
 
@@ -15,10 +15,10 @@ DEFAULT_PREFERENCE_spitz = "1"
 DEFAULT_PREFERENCE_tosa = "1"
 
 SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.2.bz2;apply=yes;name=stablepatch \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.3.bz2;apply=yes;name=stablepatch \
             file://defconfig"
 
 SRC_URI[kernel.md5sum] = "7d471477bfa67546f902da62227fa976"
 SRC_URI[kernel.sha256sum] = "72f0cfaefb8dc86b219d5a742dd0375332627641ecbdf5badd3158e2127b9304"
-SRC_URI[stablepatch.md5sum] = "599badab31c4920d4122133208c810d7"
-SRC_URI[stablepatch.sha256sum] = "8279d5b883cb44f4d3cf28b4db9b3c37c9c6dba45bb5884e8601950ee59892c4"
+SRC_URI[stablepatch.md5sum] = "b3677121c4b5efcb8128c2000788d0aa"
+SRC_URI[stablepatch.sha256sum] = "cc7fe37725d940987800c73c38484e7c8388936b332fca9918aae4dca15be10b"
