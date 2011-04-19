@@ -4,7 +4,7 @@ AUTHOR = "Don Capps <don.capps2@verizon.net>, William D. Norcott <wnorcott@us.or
 SECTION = "console/tests"
 LICENSE = "${PN}"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.iozone.org/src/current/iozone3_263.tar \
 	   file://copyright.txt \
@@ -12,7 +12,10 @@ SRC_URI = "http://www.iozone.org/src/current/iozone3_263.tar \
 
 S = "${WORKDIR}/${PN}_${PV}/src/current/"
 
-EXTRA_OEMAKE = "linux-arm CC='${CC}'"
+EXTRA_OEMAKE_powerpc = "linux-powerpc CC='${CC}'"
+EXTRA_OEMAKE_powerpc64 = "linux-powerpc64 CC='${CC}'"
+EXTRA_OEMAKE_arm = "linux-arm CC='${CC}'"
+EXTRA_OEMAKE = "linux CC='${CC}'"
 
 TARGET_CC_ARCH += "${LDFLAGS}"
 
