@@ -2,7 +2,8 @@ DESCRIPTION = "Low level protocol implementation for binary protocol spoken by s
 HOMEPAGE = "http://www.freesmartphone.org"
 AUTHOR = "Simon Busch <morphis@gravedo.de>"
 SECTION = "console/network"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
+LIC_FILES_CHKSUM = "file://COPYING;md5=59530bdf33659b29e73d4adb9f9f6552"
 INC_PR = "r4"
 PV = "Please override!"
 
