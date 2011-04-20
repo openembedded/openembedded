@@ -2,6 +2,8 @@ DESCRIPTION = "orc - The Oil Runtime Compiler"
 HOMEPAGE = "http://code.entropywave.com/projects/orc/"
 LICENSE = "orc"
 
+INC_PR = "r1"
+
 SRC_URI = "http://code.entropywave.com/download/orc/orc-${PV}.tar.gz;name=orc"
 
 inherit autotools pkgconfig
