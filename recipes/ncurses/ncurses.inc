@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/ncurses/ncurses.html"
 LICENSE = "MIT"
 SECTION = "libs"
 DEPENDS = "ncurses-native"
-INC_PR = "r21"
+INC_PR = "r22"
 
 inherit autotools
 
