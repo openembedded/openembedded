@@ -4,10 +4,9 @@ LICENSE = "LGPLv2.1"
 LIC_FILES_CHKSUM = "file://COPYING;md5=fad9b3332be894bab9bc501572864b29"
 SECTION = "devel"
 DEPENDS = "vala-dbus-binding-tool-native glib-2.0 fso-specs"
-SRCREV = "8ec8f10c9530920c879c7573ab3f1cb469fe9bf7"
-PV = "2011.03.15.1+gitr${SRCPV}"
+SRCREV = "592ddbc1c05decb5dc69cde7063fb3e3056e7ee6"
+PV = "2011.04.15.1+gitr${SRCPV}"
 PE = "1"
-PR = "r1"
 
 inherit autotools vala
 
