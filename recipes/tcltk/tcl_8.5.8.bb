@@ -2,7 +2,7 @@ DESCRIPTION = "Tool Command Language"
 HOMEPAGE = "http://tcl.sourceforge.net"
 SECTION = "devel/tcltk"
 LICENSE = "tcl"
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/tcl/tcl${PV}-src.tar.gz \
@@ -33,8 +33,7 @@ do_compile_prepend_pn-tcl () {
         sed -i -e 's:./tclsh :tclsh :g' Makefile
 }
 
-do_install() {
-        autotools_do_install
+do_install_append() {
         # Stage a few extra headers to make tk happy
         install -d ${D}${includedir}/tcl-${PV}/generic
         install -m 0644 ../generic/*.h ${D}${includedir}/tcl-${PV}/generic
@@ -43,6 +42,9 @@ do_install() {
         install -m 0644 *Unix*.h ${D}${includedir}/tcl-${PV}/unix/
         rm -f ${D}${includedir}/regex.h
         ln -sf tclsh8.5 ${D}${bindir}/tclsh
+	# trick: We set it to incorrect value but binconfig will fix it
+	# correctly for both target and staging package.
+	sed -i 's:${includedir}/tcl-private:${STAGING_INCDIR}/tcl-${PV}:' ${D}${libdir}/tclConfig.sh
 }
 
 PACKAGES =+ "${PN}-lib"
@@ -53,8 +55,3 @@ FILES_${PN}-dev += "${libdir}/tclConfig.sh"
 
 BINCONFIG_GLOB = "*Config.sh"
 BBCLASSEXTEND = "native"
-
-tcl_sysroot() {
-        sed -i 's:${includedir}/tcl-private:${STAGING_INCDIR}/tcl-${PV}:' tclConfig.sh
-}
-
