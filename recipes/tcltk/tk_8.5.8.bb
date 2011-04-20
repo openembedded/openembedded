@@ -3,7 +3,7 @@ HOMEPAGE = "http://tcl.sourceforge.net"
 SECTION = "devel/tcltk"
 LICENSE = "tcl"
 DEPENDS = "tcl virtual/libx11 libxt"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/tcl/tk${PV}-src.tar.gz \
@@ -29,8 +29,7 @@ EXTRA_OECONF = "\
   --x-libraries=${STAGING_LIBDIR} \
 "
 
-do_install() {
-        autotools_do_install
+do_install_append() {
         mv libtk8.5.so libtk8.5.so.0
         oe_libinstall -so libtk8.5 ${D}${libdir}
         ln -sf wish8.5 ${D}${bindir}/wish
@@ -43,4 +42,3 @@ FILES_${PN} += "${libdir}/tk*"
 
 BINCONFIG_GLOB = "*Config.sh"
 BBCLASSEXTEND = "native"
-
