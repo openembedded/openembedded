@@ -19,7 +19,6 @@ SRC_URI[md5sum] = "7f123e53b3daaaba2478d3af5a0752e3"
 SRC_URI[sha256sum] = "6b090c1024038d0381e1ccfbd6d5c0f0e6ef205269ceb9d28bd7bd7ac5bbf4a7"
 
 S = "${WORKDIR}/tcl${PV}/unix"
-SYSROOT_PREPROCESS_FUNCS =+ "tcl_sysroot"
 
 inherit autotools binconfig
 
