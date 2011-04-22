@@ -8,7 +8,6 @@ S = "${WORKDIR}/linux-2.6.29"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_boc01 = "1"
 DEFAULT_PREFERENCE_canyonlands = "1"
-DEFAULT_PREFERENCE_tosa = "1"
 DEFAULT_PREFERENCE_vortex86sx = "1"
 DEFAULT_PREFERENCE_atngw100 = "1"
 DEFAULT_PREFERENCE_micro2440 = "1"
@@ -50,11 +49,6 @@ SRC_URI_append_micro2440 = " \
 	file://0010-MINI2440-creates-a-mini2440_defconfig-file.patch \
 	file://0011-MINI2440-Add-touchscreen-support.patch \
 	"
-
-SRC_URI_append_tosa = " \
-        file://0001-pxa-make-second-argument-of-clk_add_alias-a-name-in.patch \
-        file://0002-spi-pxa2xx-spi-set-default-cs_control-to-null_cs_co.patch \
-        "
 
 SRC_URI_append_ep93xx = " \
         file://add-edb9301.patch \

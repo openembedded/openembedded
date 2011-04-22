@@ -9,14 +9,6 @@ S = "${WORKDIR}/linux-${OLD_KERNEL_RELEASE}"
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
-
-# Zaurus
-DEFAULT_PREFERENCE_akita = "-1"
-DEFAULT_PREFERENCE_c7x0 = "-1"
-DEFAULT_PREFERENCE_collie = "-1"
-DEFAULT_PREFERENCE_poodle = "-1"
-DEFAULT_PREFERENCE_spitz = "-1"
-DEFAULT_PREFERENCE_tosa = "-1"
 DEFAULT_PREFERENCE_tx25 = "1"
 
 
