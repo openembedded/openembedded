@@ -22,7 +22,16 @@ Index: e/src/bin/e_startup.c
  	e_user_dir_concat_static(buf, "applications/restart/.order");
  	if (!ecore_file_exists(buf))
  	  e_prefix_data_concat_static(buf, "data/applications/restart/.order");
-@@ -49,6 +52,7 @@
+@@ -37,6 +40,8 @@
+       ecore_event_handler_add(EFREET_EVENT_DESKTOP_CACHE_UPDATE,
+                               _e_startup_event_cb,
+                               strdup(buf));
++   if (!desktop_cache_update_handler)
++      printf("e_startup(): ecore_event_handler_add failed\n");
+    e_init_undone();
+ }
+ 
+@@ -49,6 +54,7 @@
  
     if (!startup_apps)
       {
@@ -30,7 +39,7 @@ Index: e/src/bin/e_startup.c
  	e_init_done();
  	return;
       }
-@@ -56,12 +60,14 @@
+@@ -56,12 +62,14 @@
     start_app_pos++;
     if (!desktop)
       {
@@ -45,3 +54,20 @@ Index: e/src/bin/e_startup.c
     e_exec(NULL, desktop, NULL, NULL, NULL);
     snprintf(buf, sizeof(buf), "%s %s", _("Starting"), desktop->name);
     e_init_status_set(buf);   
+@@ -71,6 +79,7 @@
+ static void
+ _e_startup_next_cb(void *data __UNUSED__)
+ {
++   printf("e_startup(): _e_startup_next_cb called\n");
+    _e_startup();
+ }
+ 
+@@ -78,7 +87,7 @@
+ _e_startup_event_cb(void *data, int ev_type __UNUSED__, void *ev __UNUSED__)
+ {
+    char *buf;
+-
++   printf("e_startup(): _e_startup_event_cb called\n");
+    ecore_event_handler_del(desktop_cache_update_handler);
+    buf = data;
+    startup_apps = e_order_new(buf);
