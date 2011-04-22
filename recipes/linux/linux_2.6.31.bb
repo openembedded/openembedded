@@ -7,7 +7,6 @@ S = "${WORKDIR}/linux-${PV}"
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_boc01 = "1"
-DEFAULT_PREFERENCE_collie = "1"
 DEFAULT_PREFERENCE_db1200 = "1"
 DEFAULT_PREFERENCE_qemumips = "1"
 DEFAULT_PREFERENCE_qemux86 = "1"
@@ -46,25 +45,6 @@ SRC_URI_append_boc01 = "\
            file://013-091015-lcd.patch \
            file://014-091030-buttons.patch \
            "
-
-SRC_URI_append_collie = "\
-           file://0001-add-locomo_spi-driver.patch \
-           file://0002-collie-fix-scoop-convesion-to-new-api.patch \
-           file://0003-collie-prepare-for-gpiolib-use.patch \
-           file://0004-move-drivers-mfd-.h-to-include-linux-mfd.patch \
-           file://0005-collie-locomo-led-change-default-trigger.patch \
-           file://0006-SA1100-make-gpio_to_irq-and-reverse-a-macro.patch \
-           file://0007-add-gpiolib-support-to-ucb1x00.patch \
-           file://0008-collie-convert-to-gpiolib-for-ucb1x00.patch \
-           file://0009-collie-add-battery-driver.patch \
-           file://0010-collie-support-pda_power-driver.patch \
-           file://0011-fix-collie-keyboard-bug.patch \
-           file://0012-add-collie-touchscreen-driver.patch \
-           file://0013-add-sa1100-udc-hack-extra-hacked-for-collie.patch \
-           file://0014-gadget-add-file.patch \
-           file://0004-fix-dma-for-SA1100.patch \
-           "
-
 
 SRC_URI_append_ep93xx = " \
            file://edb9301-fix-machine-id.patch \
