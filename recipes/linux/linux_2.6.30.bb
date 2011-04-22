@@ -20,7 +20,6 @@ DEFAULT_PREFERENCE_ronetix-pm9g45	= "2"
 
 # machine boots with it, works but was not tested too much
 DEFAULT_PREFERENCE_at91sam9263ek = "-1"
-DEFAULT_PREFERENCE_tosa = "-1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.10.bz2;apply=yes;name=stablepatch \
