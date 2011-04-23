@@ -3,7 +3,7 @@ LICENSE = "LGPL"
 DESCRIPTION = "WvStreams is a network programming library in C++"
 DEPENDS = "zlib openssl (>= 0.9.8)"
 
-PR = "r1"
+PR = "r0"
 
 SRC_URI = "http://wvstreams.googlecode.com/files/${PN}-${PV}.tar.gz \
 	file://0001-Fixed-missing-header-includes.patch \
@@ -40,5 +40,5 @@ do_configure() {
         oe_runconf
 }
 
-SRC_URI[md5sum] = "4ee8ccfe6dfc29bf952d58fa23626c97"
-SRC_URI[sha256sum] = "171df8e545b53edb3efbd65b9bc2b35549d05249bd0c92776701f9d8da77ed6f"
+SRC_URI[md5sum] = "2760dac31a43d452a19a3147bfde571c"
+SRC_URI[sha256sum] = "8403f5fbf83aa9ac0c6ce15d97fd85607488152aa84e007b7d0621b8ebc07633"
