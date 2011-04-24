@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux/arm 2.6.38 Kernel Configuration
-# Thu Mar 17 01:07:02 2011
+# Linux/arm 2.6.38.4 Kernel Configuration
+# Mon Apr 25 00:29:37 2011
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -1591,7 +1591,7 @@ CONFIG_FONT_8x8=y
 # CONFIG_FONT_7x14 is not set
 # CONFIG_FONT_PEARL_8x8 is not set
 # CONFIG_FONT_ACORN_8x8 is not set
-# CONFIG_FONT_MINI is not set
+# CONFIG_FONT_MINI_4x6 is not set
 # CONFIG_FONT_SUN8x16 is not set
 # CONFIG_FONT_SUN12x22 is not set
 # CONFIG_FONT_10x18 is not set
@@ -2067,6 +2067,7 @@ CONFIG_TRACING_SUPPORT=y
 # CONFIG_ATOMIC64_SELFTEST is not set
 # CONFIG_SAMPLES is not set
 CONFIG_HAVE_ARCH_KGDB=y
+# CONFIG_TEST_KSTRTOX is not set
 # CONFIG_STRICT_DEVMEM is not set
 CONFIG_ARM_UNWIND=y
 # CONFIG_DEBUG_USER is not set
