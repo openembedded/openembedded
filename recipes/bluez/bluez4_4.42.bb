@@ -1,5 +1,7 @@
 require bluez4.inc
 
+SRC_URI += "file://sbc-thumb.patch"
+
 DEPENDS += "libsndfile1"
 PR = "${INC_PR}.1"
 

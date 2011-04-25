@@ -1,5 +1,7 @@
 require bluez4.inc
 
+SRC_URI += "file://sbc-thumb.patch"
+
 SRC_URI[md5sum] = "67fd9ad2852ce01f01b16ddd2336d1ea"
 SRC_URI[sha256sum] = "922e1a9c894c8667fc92f536c26553e8f094a676e96fb409bc384dd70f5ddde7"
 
