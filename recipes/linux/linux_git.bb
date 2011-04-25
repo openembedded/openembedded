@@ -4,7 +4,7 @@ KERNEL_RELEASE = "2.6.39-rc4"
 OLD_KERNEL_RELEASE = "2.6.38"
 PV = "${OLD_KERNEL_RELEASE}+${KERNEL_RELEASE}+gitr${SRCPV}"
 
-SRCREV = "8fd62c82872a5a721c9fb0071ca0f7a49c1732e4"
+SRCREV = "f0e615c3cb72b42191b558c130409335812621d8"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;branch=master \
            file://defconfig"
