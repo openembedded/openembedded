@@ -1,7 +1,7 @@
 DESCRIPTION = "cmtspeechdata library test"
 SECTION = "devel"
 LICENSE = "GPL"
-SRCREV = "509d02ca46087c23c18de81078b6ffcbd91a52d4"
+SRCREV = "c7839fb454307bcd9228afc5596c7cdba78b3288"
 DEPENDS = "libcmtspeechdata"
 PV = "0.0+gitr${SRCPV}"
 PR = "r0"
