@@ -2,6 +2,7 @@ DESCRIPTION = "A Software Construction Tool"
 SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "MIT"
+DEPENDS_virtclass-native = "python-native"
 SRCNAME = "scons"
 PR = "r1"
 
