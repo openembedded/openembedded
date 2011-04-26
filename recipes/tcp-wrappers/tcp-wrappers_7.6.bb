@@ -1,5 +1,6 @@
 DESCRIPTION = "Tools for monitoring and filtering incoming requests for tcp \
 	      services."
+HOMEPAGE = "ftp://ftp.porcupine.org/pub/security/index.html"
 LICENSE = "tcp-wrappers"
 PRIORITY = "optional"
 SECTION = "console/network"
