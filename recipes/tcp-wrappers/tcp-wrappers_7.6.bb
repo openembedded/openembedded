@@ -1,18 +1,10 @@
-DESCRIPTION = "Tools for monitoring and filtering incoming requests for tcp \
+DESCRIPTION = "Tools for monitoring and filtering incoming requests for TCP \
 	      services."
 HOMEPAGE = "ftp://ftp.porcupine.org/pub/security/index.html"
 LICENSE = "tcp-wrappers"
-PRIORITY = "optional"
 SECTION = "console/network"
+PRIORITY = "optional"
 PR ="r6"
-
-
-PACKAGES = "${PN}-dbg libwrap libwrap-doc libwrap-dev tcp-wrappers tcp-wrappers-doc"
-FILES_libwrap = "${libdir}/lib*.so.*"
-FILES_libwrap-doc = "${mandir}/man3 ${mandir}/man5"
-FILES_libwrap-dev = "${libdir}/lib*.so ${includedir}"
-FILES_tcp-wrappers = "${bindir}"
-FILES_tcp-wrappers-doc = "${mandir}/man8"
 
 SRC_URI = "ftp://ftp.porcupine.org/pub/security/tcp_wrappers_${PV}.tar.gz \
            file://00_man_quoting.diff \
@@ -40,6 +32,9 @@ SRC_URI = "ftp://ftp.porcupine.org/pub/security/tcp_wrappers_${PV}.tar.gz \
            \
            file://try-from.8 \
            file://safe_finger.8"
+
+SRC_URI[md5sum] = "e6fa25f71226d090f34de3f6b122fb5a"
+SRC_URI[sha256sum] = "9543d7adedf78a6de0b221ccbbd1952e08b5138717f4ade814039bb489a4315d"
 
 S = "${WORKDIR}/tcp_wrappers_${PV}"
 
@@ -107,6 +102,9 @@ do_install () {
 	install -m 0644 tcpd.h ${D}${includedir}/
 }
 
-
-SRC_URI[md5sum] = "e6fa25f71226d090f34de3f6b122fb5a"
-SRC_URI[sha256sum] = "9543d7adedf78a6de0b221ccbbd1952e08b5138717f4ade814039bb489a4315d"
+PACKAGES = "${PN}-dbg libwrap libwrap-doc libwrap-dev tcp-wrappers tcp-wrappers-doc"
+FILES_libwrap = "${libdir}/lib*.so.*"
+FILES_libwrap-doc = "${mandir}/man3 ${mandir}/man5"
+FILES_libwrap-dev = "${libdir}/lib*.so ${includedir}"
+FILES_tcp-wrappers = "${bindir}"
+FILES_tcp-wrappers-doc = "${mandir}/man8"
