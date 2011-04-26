@@ -2,13 +2,15 @@ DESCRIPTION = "Universal Hardware Driver Firmware"
 HOMEPAGE = "http://www.ettus.com"
 LICENSE = "GPLv3"
 
-INC_PR = "r0"
+INC_PR = "r1"
 
 PACKAGE_ARCH = "all"
 
-SRC_URI = "http://www.ettus.com/downloads/uhd_images/UHD-images-${PV}/UHD-images-${PV}-Linux.tar.gz"
+#PV_U = `echo ${PV} | sed 's/\./_/g'`
 
-S = ${WORKDIR}/UHD-images-${PV}-Linux
+SRC_URI = "http://www.ettus.com/downloads/uhd_releases/${@'${PV}'.replace('.', '_')}/images-only/UHD-images-${PV}.tar.gz"
+
+S = ${WORKDIR}/UHD-images-${PV}
 
 do_install() {
 	install -d ${D}${datadir}/uhd/images
