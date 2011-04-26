@@ -18,7 +18,7 @@
 HOMEPAGE = "http://netcat.sourceforge.net"
 LICENSE = "GPLv2"
 MAINTAINER = "Your name &lt;yname@example.com&gt;"
-SECTION = "console/networking"
+SECTION = "console/network"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/netcat/netcat-${PV}.tar.bz2"
