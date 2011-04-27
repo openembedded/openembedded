@@ -1,0 +1,35 @@
+From 75336372c6e197b3a4316d977f4db4f0ef345c3c Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Wed, 27 Apr 2011 15:31:02 +0200
+Subject: [PATCH 2/2] plugins: fix DESTDIR and install params
+
+Signed-off-by: Koen Kooi <koen@dominion.thruhere.net>
+---
+ plugins/Makefile |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/plugins/Makefile b/plugins/Makefile
+index 059cba1..7561d06 100644
+--- a/plugins/Makefile
++++ b/plugins/Makefile
+@@ -3,7 +3,7 @@ COPTS	= -O2 -g
+ CFLAGS	= $(COPTS) -I.. -I../../include -fPIC
+ LDFLAGS	= -shared
+ LDADD   = -lutil
+-INSTALL	= install -o root
++INSTALL	= install
+ prefix  = /usr/local
+ 
+ PLUGINS = pptpd-logwtmp.so
+@@ -18,7 +18,7 @@ all:	$(PLUGINS)
+ %.so: %.c
+ 	$(CC) -o $@ $(LDFLAGS) $(CFLAGS) $^ $(LDADD)
+ 
+-LIBDIR	?= $(DESTDIR)$(prefix)/lib/pptpd
++LIBDIR	= $(DESTDIR)$(prefix)/lib/pptpd
+ 
+ install: $(PLUGINS)
+ 	$(INSTALL) -d $(LIBDIR)
+-- 
+1.6.6.1
+

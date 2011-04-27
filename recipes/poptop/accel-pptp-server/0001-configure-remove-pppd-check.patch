@@ -1,0 +1,50 @@
+From 57d120e1c098b9637e69755e1204c11c3e01872a Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Wed, 27 Apr 2011 15:25:08 +0200
+Subject: [PATCH 1/2] configure: remove pppd check
+
+Signed-off-by: Koen Kooi <koen@dominion.thruhere.net>
+---
+ configure.in |   21 +++------------------
+ 1 files changed, 3 insertions(+), 18 deletions(-)
+
+diff --git a/configure.in b/configure.in
+index 8c4e640..f29aa5f 100644
+--- a/configure.in
++++ b/configure.in
+@@ -202,23 +202,8 @@ AC_MSG_RESULT(found ($KERNELVERSION at ${header/include}))
+ CFLAGS="${CFLAGS} -I. -I${header}"
+ AC_SUBST(kernel_headers,${header})
+ 
+-AC_MSG_CHECKING(for pppd)
+-pppd=`which pppd 2>&1`
+-if test $? -eq 1; then
+-	pppd=""
+-	for path in /usr/sbin /usr/local/sbin /usr/bin /usr/local/bin /sbin; do
+-		if test -x ${path}/pppd; then
+-			pppd=${path}/pppd
+-			break;
+-		fi
+-	done
+-fi
+-
+-if test -z "${pppd}"; then
+-    AC_MSG_RESULT(not found)
+-    AC_MSG_ERROR(Could not find pppd)
+-fi    
+-pppd_ver=`${pppd} --version 2>&1 | grep version | sed 's/pppd version //'`
++pppd="/usr/sbin/pppd"
++pppd_ver="2.4.3"
+ AC_MSG_RESULT($pppd ($pppd_ver))
+ AC_DEFINE_UNQUOTED(PPPD_VERSION,"${pppd_ver}")
+ 
+@@ -247,4 +232,4 @@ echo    '   linux kernel:       '$KERNELVERSION at ${header/include}
+ 
+ AC_CACHE_SAVE
+ AC_OUTPUT(Makefile)
+- 
+\ No newline at end of file
++ 
+-- 
+1.6.6.1
+
