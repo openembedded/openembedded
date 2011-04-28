@@ -3,6 +3,8 @@
 #
 #  --enable-static-linking compile kexecboot as static executable [default=no]
 #  --enable-fbui           support framebuffer menu [default=yes]
+#  --enable-fbui-width     limit FB UI width to specified value [default=no]
+#  --enable-fbui-height    limit FB UI height to specified value [default=no]
 #  --enable-textui         support console text user interface [default=no]
 #  --enable-cfgfiles       support config files [default=yes]
 #  --enable-icons          support custom icons (depends on fbui) [default=yes]
@@ -32,9 +34,12 @@ LICENSE = "GPL"
 
 inherit autotools
 
-EXTRA_OECONF_akita = "--enable-zaurus --enable-delay=2 --enable-evdev-rate=1000,250"
-EXTRA_OECONF_c7x0 = "--enable-zaurus --enable-delay=2 --enable-evdev-rate=1000,250"
-EXTRA_OECONF_spitz = "--enable-zaurus --enable-delay=3 --enable-evdev-rate=1000,250"
+#
+# Zaurus clamshells looks better at 480x480
+
+EXTRA_OECONF_akita = "--enable-zaurus --enable-delay=2 --enable-evdev-rate=1000,250 --enable-fbui-width=480"
+EXTRA_OECONF_c7x0 = "--enable-zaurus --enable-delay=2 --enable-evdev-rate=1000,250 --enable-fbui-width=480"
+EXTRA_OECONF_spitz = "--enable-zaurus --enable-delay=3 --enable-evdev-rate=1000,250 --enable-fbui-width=480"
 EXTRA_OECONF_poodle = "--enable-zaurus --enable-delay=2 --enable-evdev-rate=1000,250"
 EXTRA_OECONF_tosa = "--enable-zaurus --enable-delay=2 --enable-evdev-rate=1000,250"
 EXTRA_OECONF_collie = "--enable-delay=2 --enable-evdev-rate=1000,250"
