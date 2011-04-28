@@ -16,7 +16,7 @@ PARALLEL_MAKE = ""
 
 SRCREV = "4462"
 PV = "2.2.0+svnr${SRCPV}"
-PR = "r2"
+PR = "r3"
 
 S = "${WORKDIR}/opencv"
 
@@ -42,7 +42,6 @@ python populate_packages_prepend () {
 	pn = bb.data.getVar('PN', d, 1)
 	metapkg =  pn + '-dev'
 	bb.data.setVar('ALLOW_EMPTY_' + metapkg, "1", d)
-	bb.data.setVar('FILES_' + metapkg, "", d)
 	blacklist = [ metapkg ]
 	metapkg_rdepends = [ ] 
 	packages = bb.data.getVar('PACKAGES', d, 1).split()
