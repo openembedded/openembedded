@@ -1,5 +1,5 @@
 # We set INC_PR here, since a change in the kexecboot recipe will need to get picked up by *all* the kernels:
-INC_PR = "r36"
+INC_PR = "r37"
 
 inherit kernel siteinfo
 
