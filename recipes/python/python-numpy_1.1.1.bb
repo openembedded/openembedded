@@ -4,6 +4,8 @@ PRIORITY = "optional"
 LICENSE = "PSF"
 PR = "ml0"
 
+RDEPENDS_${PN} = "python-compiler python-mmap python-pkgutil python-pydoc python-unittest"
+
 SRC_URI = "${SOURCEFORGE_MIRROR}/numpy/numpy-${PV}.tar.gz \
            file://unbreak-assumptions.diff \
 	   file://trycompile.diff \
