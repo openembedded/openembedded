@@ -34,7 +34,6 @@ MACHINE_FEATURES = "kernel26 screen apm usbgadget usbhost vfat alsa phone blueto
 MACHINE_EXTRA_RDEPENDS = " \
  tsmd \
  read-tokens \
- tellbootie \
  lvm2 \
  palmpre-audio-scripts \
  compat-wireless-2.6-old \
