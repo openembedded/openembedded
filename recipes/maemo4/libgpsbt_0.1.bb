@@ -2,7 +2,7 @@ LICENSE = "nokia"
 
 PR = "r2"
 
-DEPENDS = "libgpsmgr dbus"
+DEPENDS = "libgpsmgr dbus dbus-glib"
 
 # This is proprietary software in Chinook, so we have to stay with the last released
 # free version.
