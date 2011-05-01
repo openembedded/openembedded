@@ -4,7 +4,7 @@ SECTION = "games"
 LICENSE = "GPL"
 
 DEPENDS = "freetype libsdl-image libsdl-mixer libsdl-net libsdl-ttf zlib boost imagemagick-native pango libpng lua5.1"
-INC_PR = "r1"
+INC_PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/wesnoth/wesnoth-${PV}.tar.bz2"
 S = "${WORKDIR}/wesnoth-${PV}"
@@ -57,7 +57,7 @@ do_install_append() {
 	fi
 }
 
-RDEPENDS_${PN} = "${PN}-data libpng"
+RDEPENDS_${PN} = "${PN}-data libpng tremor"
 
 RDEPENDS_${PN}-editor = "${PN}-data"
 
