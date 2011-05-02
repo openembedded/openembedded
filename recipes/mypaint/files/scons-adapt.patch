@@ -1,0 +1,50 @@
+Author: Christian Charreyre <christian.charreyre@cioinfoindus.fr>
+
+Adapt scons to OE
+Index: mypaint-0.9.1/lib/SConscript
+===================================================================
+--- mypaint-0.9.1.orig/lib/SConscript	2011-04-21 11:31:29.000000000 +0200
++++ mypaint-0.9.1/lib/SConscript	2011-04-21 11:35:30.000000000 +0200
+@@ -1,5 +1,11 @@
+ Import('env')
+-import sys
++import sys, os
++env.Replace(SHCXX = os.environ['CXX'])
++env.Replace(SHLINK = os.environ['CXX'])
++env.Replace(LDMODULEFLAGS = os.environ['TARGET_LDFLAGS'])
++env.Append(LDMODULEFLAGS = ['-Wl,--hash-style=gnu'])
++env.Append(LDMODULEFLAGS = ['-shared'])
++env.Replace(PATH = os.environ['PATH'])
+ 
+ # For the record: I know that scons supports swig. But it doesn't scan for #include in the generated code.
+ # 
+Index: mypaint-0.9.1/SConstruct
+===================================================================
+--- mypaint-0.9.1.orig/SConstruct	2011-03-04 15:44:59.000000000 +0100
++++ mypaint-0.9.1/SConstruct	2011-05-02 17:21:17.000000000 +0200
+@@ -11,13 +11,6 @@
+ if sys.platform == "win32":
+     python = 'python' # usually no versioned binaries on Windows
+ 
+-try: 
+-    import numpy
+-except ImportError:
+-    print 'You need to have numpy installed.'
+-    print
+-    raise
+-
+ SConsignFile() # no .scsonsign into $PREFIX please
+ 
+ if sys.platform == "darwin":
+@@ -40,8 +33,9 @@
+ 
+ env.Append(CXXFLAGS=' -Wall -Wno-sign-compare -Wno-write-strings')
+ 
+-# Get the numpy include path (for numpy/arrayobject.h).
+-numpy_path = numpy.get_include()
++# Defines the numpy include path (for numpy/arrayobject.h).
++# This is specefic to OE, to avoid to build python-numpy-native
++numpy_path = os.environ['STAGING_DIR_TARGET']+os.environ['PYTHON_SITEPACKAGES_DIR']+'/numpy/core/include'
+ env.Append(CPPPATH=numpy_path)
+ 
+ 
