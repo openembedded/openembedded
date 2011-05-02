@@ -1,4 +1,4 @@
-ANGSTROM_MESA_VERSION = "7.9.1"
+ANGSTROM_MESA_VERSION = "7.10"
 ANGSTROM_QT_VERSION ?= "4.7.3"
 ANGSTROM_LIBTOOL_VERSION = "2.4"
 # Use new sysroot feature
@@ -65,8 +65,6 @@ PREFERRED_VERSION_samba		= "3.3.9"
 PREFERRED_VERSION_tiff 		= "3.9.4+4.0.0beta6"
 
 PREFERRED_VERSION_udev 		= "168"
-PREFERRED_VERSION_udev_libc-uclibc = "141"
-UDEV_GE_141 = "1"
 
 PREFERRED_VERSION_usbutils = "0.86"
 PREFERRED_VERSION_wpa-supplicant = "0.7.3"

@@ -1,6 +1,7 @@
 IMAGE_LINGUAS = ""
 
 DEPENDS = "task-base task-opie"
+IMAGE_DEV_MANAGER = "busybox-mdev"
 
 ANGSTROM_EXTRA_INSTALL ?= ""
 IMAGE_INSTALL = "task-base-extended task-opie-base task-opie-base-applets \

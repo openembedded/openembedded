@@ -1,4 +1,5 @@
-DEPENDS += "cairo sqlite3 libnotify"
+DEPENDS += "cairo sqlite3 libnotify virtual/libintl-native"
+
 PR = "r3"
 
 # The .pc files below have "3.6" hardcoded, fix that before using them in a newer FF version!

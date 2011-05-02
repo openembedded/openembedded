@@ -148,8 +148,12 @@ do_stage() {
 do_install() {
 	oe_libinstall -so -C lib lib${PN} ${D}${libdir}
 
+	cp -pPR lib/fonts ${D}${libdir}
+
 	install -d ${D}/${includedir}/qte
 	install -m 0644 include/*.h ${D}/${includedir}/qte/
+	install -m 0644 include/*.h ${D}/${includedir}/qte/
+
 }
 
 FILES_${PN} = "${libdir}/lib${PN}.so.*"
