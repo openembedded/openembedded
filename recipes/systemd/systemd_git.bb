@@ -1,62 +1,81 @@
 DESCRIPTION = "Systemd a init replacement"
 HOMEPAGE = "http://www.freedesktop.org/wiki/Software/systemd"
-LICENSE = "GPL"
+LICENSE = "GPLv2+"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=751419260aa954499f7abaabaa882bbe"
+
 DEPENDS = "readline udev dbus libcap2 libcgroup gtk+"
 PRIORITY = "optional"
 SECTION = "base/shell"
 
-PV = "0.0"
+PV = "v26"
+PR = "r6"
 PR_append = "+${SRCPV}"
 
-inherit autotools vala
+inherit autotools vala update-alternatives
 
-TAG = "1ebdf2d8793181f31b766b8342391aa1978f9917"
+TAG = "7a6000a68241d23c9f6f6bde47b2cfa9c18189da"
 
 SRC_URI = "git://anongit.freedesktop.org/systemd;protocol=git;tag=${TAG} \
            file://execute.patch \
-           file://systemadm.patch \
-           file://disable_xml_generation.patch \
+           file://0001-systemd-disable-xml-file-stuff-and-introspection.patch \
+           file://0003-Angstrom-support.patch \
            file://replace_accpet4.patch \
-           file://getty-serial@.service \
+           file://serial-getty@.service \
           "
 
 S = "${WORKDIR}/git"
 
-EXTRA_OECONF = " --with-distro=debian \
+SYSTEMDDISTRO ?= "debian"
+SYSTEMDDISTRO_angstrom = "angstrom"
+
+# The gtk+ tools should get built as a seperate recipe e.g. systemd-tools
+EXTRA_OECONF = " --with-distro=${SYSTEMDDISTRO} \
                  --with-rootdir=${base_prefix} \
+                 --disable-gtk \
                "
 
-PACKAGES = "${PN} ${PN}-gui ${PN}-dbg ${PN}-doc"
+def get_baudrate(bb, d):
+    return bb.data.getVar('SERIAL_CONSOLE', d, 1).split()[0]
+
+def get_console(bb, d):
+    return bb.data.getVar('SERIAL_CONSOLE', d, 1).split()[1]
+
+do_install_append() {
+        if [ ! ${@get_baudrate(bb, d)} = "" ]; then
+          sed -i -e s/\@BAUDRATE\@/${@get_baudrate(bb, d)}/g ${WORKDIR}/serial-getty@.service
+          install ${WORKDIR}/serial-getty@.service ${D}${base_libdir}/systemd/system/
+          ln -sf ${base_libdir}/systemd/system/serial-getty@.service \
+              ${D}${sysconfdir}/systemd/system/getty.target.wants/getty@${@get_console(bb, d)}.service
+        fi
+}
+
+ALTERNATIVE_NAME = "init"
+ALTERNATIVE_LINK = "${base_sbindir}/init"
+ALTERNATIVE_PATH = "${base_bindir}/systemd"
+ALTERNATIVE_PRIORITY = "80"
+
+PACKAGES =+ "${PN}-gui"
 
 FILES_${PN}-gui = "${bindir}/systemadm"
 
 FILES_${PN} = " ${base_bindir}/* \
                 ${datadir}/dbus-1/services \
                 ${datadir}/dbus-1/system-services \
+                ${datadir}/polkit-1 \
                 ${datadir}/${PN} \
                 ${sysconfdir} \
                 ${base_libdir}/systemd/* \
                 ${base_libdir}/systemd/system/* \
                 ${base_libdir}/udev/rules.d \
+                ${base_libdir}/security/*.so \
                 /cgroup \
-                ${bindir}/systemd-install \
+                ${bindir}/systemd* \
+                ${libdir}/tmpfiles.d/*.conf \
+                ${libdir}/systemd \
                "
 
-FILES_${PN}-dbg += " /lib/systemd/.debug "
+FILES_${PN}-dbg += "${base_libdir}/systemd/.debug ${base_libdir}/systemd/*/.debug"
 
-def get_baudrate(bb, d):
-    return bb.data.getVar('SERIAL_CONSOLE', d, 1).split()[0]
-    
+# util-linux -> hwclock, kbd -> loadkeys,setfont
+RRECOMMENDS_${PN} += "util-linux kbd kbd-consolefonts"
 
-def get_console(bb, d):
-    return bb.data.getVar('SERIAL_CONSOLE', d, 1).split()[1]
-
-
-do_install_append(){
-        if [ ! ${@get_baudrate(bb, d)} = "" ]; then
-          sed -i -e s/\@BAUDRATE\@/${@get_baudrate(bb, d)}/g ${WORKDIR}/getty-serial@.service
-          install ${WORKDIR}/getty-serial@.service ${D}${base_libdir}/systemd/system/
-          ln -sf ${base_libdir}/systemd/system/getty-serial@.service \
-              ${D}${sysconfdir}/systemd/system/getty.target.wants/getty@${@get_console(bb, d)}.service
-        fi
-}
