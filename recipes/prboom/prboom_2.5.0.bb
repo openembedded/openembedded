@@ -4,7 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "virtual/libsdl libsdl-mixer libsdl-net"
 LICENSE = "GPL"
 
-PR = "r3"
+PR = "r4"
 RRECOMMENDS_${PN} = "freedoom"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/prboom/prboom-${PV}.tar.gz \
@@ -13,7 +13,8 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/prboom/prboom-${PV}.tar.gz \
 
 inherit autotools
 
-EXTRA_OECONF = " --disable-gl --disable-cpu-opt --without-x --disable-sdltest"
+EXTRA_OECONF = " --disable-gl --disable-cpu-opt --without-x --disable-sdltest \
+                 SDL_CONFIG=${STAGING_BINDIR_CROSS}/sdl-config"
 
 do_install() {
         install -d ${D}${bindir} \
