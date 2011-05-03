@@ -4,12 +4,11 @@ HOMEPAGE = "http://www.riverbankcomputing.co.uk/sip"
 SECTION = "devel"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "ml1"
+PR = "r0"
 
 SRC_URI = "http://www.riverbankcomputing.co.uk/static/Downloads/sip4/sip-${PV}.tar.gz"
-SRC_URI[md5sum] = "597d7ff7edb42a18421c806ffd18a136"
-SRC_URI[sha256sum] = "7faaccb6f17296399051bd076a7f41e0f6d95a28eda3e30468f1bd7cf45898e1"
-
+SRC_URI[md5sum] = "0f8e8305b14c1812191de2e0ee22fea9"
+SRC_URI[sha256sum] = "e9d66e8830c2a58e6c17b9952710f67d495ddb84ce6f3d89400c8b52913381b5"
 S = "${WORKDIR}/sip-${PV}/sipgen"
 
 inherit qt4x11 native python-dir
@@ -32,5 +31,4 @@ do_install() {
         install -m 0755 sip*.py ${D}${PYTHON_SITEPACKAGES_DIR}
 }
 
-DEFAULT_PREFERENCE = "-1"
 NATIVE_INSTALL_WORKS = "1"
