@@ -24,13 +24,15 @@ EXTRA_QMAKEVARS_POST += " TEMPLATE=lib \
 
 
 do_configure_prepend() {
-	cat siplib.sbf | sed s,target,TARGET, | sed s,sources,SOURCES, | sed s,headers,HEADERS, > siplib.pro
+	cat siplib.sbf.in | sed s,target,TARGET, | sed s,sources,SOURCES, | sed s,headers,HEADERS, | sed s,@CFG_MODULE_BASENAME@,sip, > siplib.pro
+	cat siplib.c.in | sed s,@CFG_MODULE_BASENAME@,sip, > siplib.c
+	cat sip.h.in | sed -e s,@CFG_MODULE_NAME@,sip,g > sip.h
 }
 
 do_stage() {
 	install -d ${STAGING_LIBDIR_NATIVE}/${PYTHON_DIR}/site-packages/
 	# sipconfig.py sipdistutils.py
-	install -m 0644 sip.h ${STAGING_INCDIR}/sip.h
+	install -m 0644 ../siplib/sip.h ${STAGING_INCDIR}/sip.h
 }
 
 do_install() {
