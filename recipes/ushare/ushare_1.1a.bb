@@ -2,7 +2,7 @@ DESCRIPTION = "ushare is a UPnP media server"
 LICENSE = "GPL"
 HOMEPAGE = "http://ushare.geexbox.org/"
 DEPENDS = "libupnp virtual/libiconv virtual/libintl"
-RDEPENDS = "lsb-base"
+RDEPENDS_${PN} = "lsb-base"
 PR = "r1"
 
 SRC_URI = "http://ushare.geexbox.org/releases/ushare-${PV}.tar.bz2"
