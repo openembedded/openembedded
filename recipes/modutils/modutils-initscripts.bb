@@ -2,10 +2,10 @@ SECTION = "base"
 DESCRIPTION = "modutils configuration files"
 LICENSE = "PD"
 SRC_URI = "file://modutils.sh"
-PR = "r3"
+PR = "r4"
 
 INITSCRIPT_NAME = "modutils.sh"
-INITSCRIPT_PARAMS = "start 20 S ."
+INITSCRIPT_PARAMS = "start 2 S ."
 
 inherit update-rc.d
 
