@@ -69,7 +69,7 @@ EXTRA_OECONF += " --with-udev-prefix= \
 "
 
 INITSCRIPT_NAME = "udev"
-INITSCRIPT_PARAMS = "start 03 S ."
+INITSCRIPT_PARAMS = "start 04 S ."
 
 PACKAGES =+ "libudev libgudev udev-utils"
 
@@ -156,5 +156,5 @@ pkg_postinst_udev_append() {
 	else
 		OPT="-s"
 	fi
-	update-rc.d $OPT udev-cache start 12 S .
+	update-rc.d $OPT udev-cache start 36 S .
 }
