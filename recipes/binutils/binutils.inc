@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/binutils/"
 SECTION = "devel"
 LICENSE = "GPL"
 
-INC_PR = "r13"
+INC_PR = "r14"
 
 COMPATIBLE_TARGET_SYS ?= "(?!nios2)"
 
@@ -106,8 +106,8 @@ do_install () {
 	cd ${D}${bindir}
 
 	# Symlinks for ease of running these on the native target
-	for p in ${TARGET_SYS}-* ; do
-		ln -sf $p `echo $p | sed -e s,${TARGET_SYS}-,,`
+	for p in ${TARGET_PREFIX}* ; do
+		ln -sf $p `echo $p | sed -e s,${TARGET_PREFIX},,`
 	done
 
 	rm ${D}${bindir}/ar ${D}${bindir}/strings
@@ -115,13 +115,13 @@ do_install () {
 
 
 pkg_postinst_${PN}-symlinks () {
-	update-alternatives --install ${bindir}/ar ar ${TARGET_SYS}-ar 100
-	update-alternatives --install ${bindir}/strings strings ${TARGET_SYS}-strings 100
+	update-alternatives --install ${bindir}/ar ar ${TARGET_PREFIX}ar 100
+	update-alternatives --install ${bindir}/strings strings ${TARGET_PREFIX}strings 100
 }
 
 
 pkg_prerm_${PN}-symlinks () {
-	update-alternatives --remove ar ${TARGET_SYS}-ar
-	update-alternatives --remove strings ${TARGET_SYS}-strings
+	update-alternatives --remove ar ${TARGET_PREFIX}ar
+	update-alternatives --remove strings ${TARGET_PREFIX}strings
 }
 
