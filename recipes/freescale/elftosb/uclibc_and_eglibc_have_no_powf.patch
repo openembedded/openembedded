@@ -1,0 +1,12 @@
+--- a/elftosb2/ElftosbAST.cpp.old	2010-09-20 15:28:03.000000000 +0200
++++ b/elftosb2/ElftosbAST.cpp	2011-04-18 22:25:54.000000000 +0200
+@@ -755,7 +755,8 @@
+ 			#ifdef WIN32
+ 				result = 0;
+ 			#else
+-				result = lroundf(powf(float(leftValue), float(rightValue)));
++				//result = lroundf(powf(float(leftValue), float(rightValue)));
++				result = 0;
+ 			#endif
+ 				break;
+ 			case kBitwiseAnd:
