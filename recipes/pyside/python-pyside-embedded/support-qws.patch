@@ -1,0 +1,38 @@
+diff -Naur pyside-qt4.7+1.0.2-orig/CMakeLists.txt pyside-qt4.7+1.0.2/CMakeLists.txt
+--- pyside-qt4.7+1.0.2-orig/CMakeLists.txt	2011-04-28 22:43:01.000000000 +0200
++++ pyside-qt4.7+1.0.2/CMakeLists.txt	2011-05-01 19:01:11.824051001 +0200
+@@ -105,6 +105,8 @@
+ elseif(Q_WS_SIMULATOR)
+     set(ENABLE_SIMULATOR "1")
+     set(AUTO_OS "simulator")
++elseif(Q_WS_QWS)
++    set(AUTO_OS "qws")
+ else()
+     message(FATAL_ERROR "OS not supported")
+ endif()
+diff -Naur pyside-qt4.7+1.0.2-orig/PySide/QtGui/typesystem_gui_qws.xml pyside-qt4.7+1.0.2/PySide/QtGui/typesystem_gui_qws.xml
+--- pyside-qt4.7+1.0.2-orig/PySide/QtGui/typesystem_gui_qws.xml	1970-01-01 01:00:00.000000000 +0100
++++ pyside-qt4.7+1.0.2/PySide/QtGui/typesystem_gui_qws.xml	2011-05-01 19:01:27.544051001 +0200
+@@ -0,0 +1,22 @@
++<?xml version="1.0"?>
++<!--
++    This file is part of PySide project.
++    Copyright (C) 2009-2010 Nokia Corporation and/or its subsidiary(-ies).
++    Contact: PySide team <contact@pyside.org>
++
++    This library is free software; you can redistribute it and/or
++    modify it under the terms of the GNU Lesser General Public
++    License as published by the Free Software Foundation; either
++    version 2.1 of the License, or (at your option) any later version.
++
++    This library is distributed in the hope that it will be useful,
++    but WITHOUT ANY WARRANTY; without even the implied warranty of
++    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++    Lesser General Public License for more details.
++
++    You should have received a copy of the GNU Lesser General Public
++    License along with this library; if not, write to the Free Software
++    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
++-->
++<typesystem package="PySide.QtGui">
++</typesystem>

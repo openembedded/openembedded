@@ -1,0 +1,12 @@
+diff -Naur pyside-qt4.7+1.0.2-orig/CMakeLists.txt pyside-qt4.7+1.0.2/CMakeLists.txt
+--- pyside-qt4.7+1.0.2-orig/CMakeLists.txt	2011-04-28 22:43:01.000000000 +0200
++++ pyside-qt4.7+1.0.2/CMakeLists.txt	2011-05-02 06:12:39.834156001 +0200
+@@ -5,6 +5,8 @@
+ cmake_minimum_required(VERSION 2.6)
+ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Macros/
+                       ${CMAKE_MODULE_PATH})
++set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules/
++                      ${CMAKE_MODULE_PATH})
+ find_package(GeneratorRunner 0.6.9 REQUIRED)
+ find_package(Shiboken 1.0.2 REQUIRED)
+ find_package(Qt4 4.5.0 REQUIRED)
