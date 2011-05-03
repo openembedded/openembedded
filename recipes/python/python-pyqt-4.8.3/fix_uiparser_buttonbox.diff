@@ -1,0 +1,20 @@
+Index: python-qt4-4.8.3/pyuic/uic/uiparser.py
+===================================================================
+--- python-qt4-4.8.3.orig/pyuic/uic/uiparser.py	2011-01-23 10:08:28.000000000 +0000
++++ python-qt4-4.8.3/pyuic/uic/uiparser.py	2011-02-07 15:13:39.038141245 +0000
+@@ -228,7 +228,14 @@
+         elif isinstance(widget, QtGui.QAbstractButton):
+             bg_i18n = self.wprops.getAttribute(elem, "buttonGroup")
+             if bg_i18n is not None:
+-                bg_name = bg_i18n.string
++                # This should be handled properly in case the problem arises
++                # elsewhere as well.
++                try:
++                    # We are compiling the .ui file.
++                    bg_name = bg_i18n.string
++                except AttributeError:
++                    # We are loading the .ui file.
++                    bg_name = bg_i18n
+ 
+                 for bg in self.button_groups:
+                     if bg.objectName() == bg_name:

@@ -1,0 +1,52 @@
+Index: python-qt4-4.8.3/configure.py
+===================================================================
+--- python-qt4-4.8.3.org/configure.py	2011-01-25 22:28:37.000000000 +0100
++++ python-qt4-4.8.3/configure.py	2011-01-26 00:04:40.174212637 +0100
+@@ -843,31 +843,6 @@
+             makefile.generate()
+             tool.append("dbus")
+ 
+-        # Only include ElementTree for older versions of Python.
+-        if sipcfg.py_version < 0x020500:
+-            sipconfig.inform("Creating elementtree Makefile...")
+-
+-            makefile = sipconfig.PythonModuleMakefile(
+-                configuration=sipcfg,
+-                dstdir=os.path.join(pyqt_modroot, "elementtree"),
+-                dir="elementtree"
+-            )
+-
+-            makefile.generate()
+-            tool.append("elementtree")
+-
+-        # Create the pyuic4 wrapper.  Use the GUI version on MacOS (so that
+-        # previews work properly and normal console use will work anyway), but
+-        # not on Windows (so that normal console use will work).
+-        sipconfig.inform("Creating pyuic4 wrapper...")
+-
+-        if sys.platform == 'darwin':
+-            gui = True
+-            use_arch = opts.use_arch
+-        else:
+-            gui = False
+-            use_arch = ''
+-
+         # The pyuic directory may not exist if we are building away from the
+         # source directory.
+         try:
+@@ -876,7 +851,6 @@
+             pass
+ 
+         uicdir=os.path.join(pyqt_modroot, "uic")
+-        wrapper = sipconfig.create_wrapper(os.path.join(uicdir, "pyuic.py"), os.path.join("pyuic", "pyuic4"), gui, use_arch)
+ 
+         sipconfig.inform("Creating pyuic4 Makefile...")
+ 
+@@ -885,7 +859,6 @@
+             dstdir=uicdir,
+             srcdir=os.path.join(src_dir, "pyuic", "uic"),
+             dir="pyuic",
+-            installs=[[os.path.basename(wrapper), opts.pyqtbindir]]
+         )
+ 
+         makefile.generate()
