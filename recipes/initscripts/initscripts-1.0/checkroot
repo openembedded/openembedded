@@ -186,7 +186,7 @@ ROOTFSDEV="/dev/root"
 if ! grep -q "^$ROOTFSDEV\>" /proc/mounts; then
   ROOTFSDEV="rootfs"
 fi
-if [ x$(grep "^$ROOTFSDEV\>" /proc/mounts | awk '{print $4}') = "x$rootmode" ]; then
+if [ x$(grep "^$ROOTFSDEV\>" /proc/mounts | awk '{print $4}' | awk -F, '{print $1}') = "x$rootmode" ]; then
 	echo "Root filesystem already $rootmode, not remounting"
 	exit 0
 fi
