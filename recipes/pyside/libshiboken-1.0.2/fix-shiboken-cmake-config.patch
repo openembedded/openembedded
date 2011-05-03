@@ -1,0 +1,49 @@
+diff -Naur shiboken-1.0.2-orig/data/ShibokenConfig-spec.cmake.in shiboken-1.0.2/data/ShibokenConfig-spec.cmake.in
+--- shiboken-1.0.2-orig/data/ShibokenConfig-spec.cmake.in	2011-04-27 22:14:55.000000000 +0200
++++ shiboken-1.0.2/data/ShibokenConfig-spec.cmake.in	2011-05-02 19:36:15.632489999 +0200
+@@ -5,20 +5,36 @@
+ #  SHIBOKEN_PYTHON_INTERPRETER - Python interpreter (regular or debug) to be used with the bindings.
+ #  SHIBOKEN_PYTHON_LIBRARIES   - Python libraries (regular or debug) Shiboken is linked against.
+ 
+-SET(SHIBOKEN_INCLUDE_DIR "@CMAKE_INSTALL_PREFIX@/include/shiboken@shiboken_SUFFIX@")
++# To get this file working on the final target, the target system inside the
++# toolchain and the native system inside the toolchain  when crosscompiling and
++# also working if not crosscompiling we need some magic.
++if(CMAKE_CROSSCOMPILING)
++    # WARNING There is currently no way here to find out if this file
++    # is inside the native staging directory tree. Thus we currently
++    # hope we get never included from the target build while staying in the
++    # native staging directory tree.
++    set(_ROOT_PREFIX "${CMAKE_STAGING_DIR_TARGET}/")
++    set(_ROOT_PREFIX_NATIVE "${CMAKE_STAGING_DIR_NATIVE}/")
++else()
++    # For non-croscompiling builds there is no need to re-root anything.
++    set(_ROOT_PREFIX "")
++    set(_ROOT_PREFIX_NATIVE "")
++endif()
++
++SET(SHIBOKEN_INCLUDE_DIR "${_ROOT_PREFIX}@CMAKE_INSTALL_PREFIX@/include/shiboken@shiboken_SUFFIX@")
+ if(MSVC)
+-   SET(SHIBOKEN_LIBRARY "@LIB_INSTALL_DIR@/@CMAKE_SHARED_LIBRARY_PREFIX@shiboken@shiboken_SUFFIX@-@PYTHON_BASENAME@@LIBRARY_OUTPUT_SUFFIX@.lib")
++   SET(SHIBOKEN_LIBRARY "${_ROOT_PREFIX}@LIB_INSTALL_DIR@/@CMAKE_SHARED_LIBRARY_PREFIX@shiboken@shiboken_SUFFIX@-@PYTHON_BASENAME@@LIBRARY_OUTPUT_SUFFIX@.lib")
+ elseif(WIN32)
+-    SET(SHIBOKEN_LIBRARY "@CMAKE_INSTALL_PREFIX@/bin/@CMAKE_SHARED_LIBRARY_PREFIX@shiboken@shiboken_SUFFIX@-@PYTHON_BASENAME@@LIBRARY_OUTPUT_SUFFIX@@CMAKE_SHARED_LIBRARY_SUFFIX@")
++    SET(SHIBOKEN_LIBRARY "${_ROOT_PREFIX}@CMAKE_INSTALL_PREFIX@/bin/@CMAKE_SHARED_LIBRARY_PREFIX@shiboken@shiboken_SUFFIX@-@PYTHON_BASENAME@@LIBRARY_OUTPUT_SUFFIX@@CMAKE_SHARED_LIBRARY_SUFFIX@")
+ else()
+-    SET(SHIBOKEN_LIBRARY "@LIB_INSTALL_DIR@/@CMAKE_SHARED_LIBRARY_PREFIX@shiboken@shiboken_SUFFIX@-@PYTHON_BASENAME@@LIBRARY_OUTPUT_SUFFIX@@CMAKE_SHARED_LIBRARY_SUFFIX@")
++    SET(SHIBOKEN_LIBRARY "${_ROOT_PREFIX}@LIB_INSTALL_DIR@/@CMAKE_SHARED_LIBRARY_PREFIX@shiboken@shiboken_SUFFIX@-@PYTHON_BASENAME@@LIBRARY_OUTPUT_SUFFIX@@CMAKE_SHARED_LIBRARY_SUFFIX@")
+ endif()
+-SET(SHIBOKEN_PYTHON_INCLUDE_DIR "@SBK_PYTHON_INCLUDE_DIR@")
+-SET(SHIBOKEN_PYTHON_INCLUDE_DIR "@SBK_PYTHON_INCLUDE_DIR@")
+-SET(SHIBOKEN_PYTHON_INTERPRETER "@PYTHON_EXECUTABLE@")
+-SET(SHIBOKEN_PYTHON_LIBRARIES "@SBK_PYTHON_LIBRARIES@")
++SET(SHIBOKEN_PYTHON_INCLUDE_DIR "${_ROOT_PREFIX}@SBK_PYTHON_INCLUDE_DIR@")
++SET(SHIBOKEN_PYTHON_INCLUDE_DIR "${_ROOT_PREFIX}@SBK_PYTHON_INCLUDE_DIR@")
++SET(SHIBOKEN_PYTHON_INTERPRETER "${_ROOT_PREFIX_NATIVE}@PYTHON_EXECUTABLE@")
++SET(SHIBOKEN_PYTHON_LIBRARIES "${_ROOT_PREFIX}@SBK_PYTHON_LIBRARIES@")
+ SET(SHIBOKEN_PYTHON_BASENAME "@PYTHON_BASENAME@")
+ message(STATUS "libshiboken built for @SHIBOKEN_BUILD_TYPE@")
+ @SBK_ADD_PY_DEBUG_DEFINITION@
+ 
+-set(SHIBOKEN_BINARY "@CMAKE_INSTALL_PREFIX@/bin/@SHIBOKEN_GENERATOR@")
++set(SHIBOKEN_BINARY "${_ROOT_PREFIX_NATIVE}@CMAKE_INSTALL_PREFIX@/bin/@SHIBOKEN_GENERATOR@")

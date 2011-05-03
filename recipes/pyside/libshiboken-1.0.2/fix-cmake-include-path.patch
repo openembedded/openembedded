@@ -1,0 +1,9 @@
+diff -Naur shiboken-1.0.2-orig/data/ShibokenConfig.cmake.in shiboken-1.0.2/data/ShibokenConfig.cmake.in
+--- shiboken-1.0.2-orig/data/ShibokenConfig.cmake.in	2011-04-27 22:14:55.000000000 +0200
++++ shiboken-1.0.2/data/ShibokenConfig.cmake.in	2011-05-02 10:20:53.887112001 +0200
+@@ -2,4 +2,4 @@
+     message(STATUS "Using default python: @PYTHON_BASENAME@")
+     SET(PYTHON_BASENAME @PYTHON_BASENAME@)
+ endif()
+-include(@LIB_INSTALL_DIR@/cmake/Shiboken-@shiboken_VERSION@/ShibokenConfig-${PYTHON_BASENAME}.cmake)
++include(ShibokenConfig-${PYTHON_BASENAME})
