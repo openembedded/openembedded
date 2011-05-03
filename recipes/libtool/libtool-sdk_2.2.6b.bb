@@ -1,9 +1,13 @@
 require libtool_${PV}.bb
 
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.4"
 SRC_URI_append = " file://cross_compile.patch"
 
 inherit sdk
+
+do_compile_append () {
+	sed -i 's:${STAGING_BINDIR_NATIVE}/::g' libtoolize
+}
 
 do_install () {
 	install -d ${D}${bindir}/
@@ -18,8 +22,13 @@ do_install () {
 	install -m 0644 libltdl/ltdl.h ${D}${includedir}
 
 	install -d ${D}${datadir}/libtool/config/
-	install -c ${S}/libltdl/config/config.guess ${D}${datadir}/libtool/
-	install -c ${S}/libltdl/config/config.sub ${D}${datadir}/libtool/
+	install -c ${S}/libltdl/config/config.guess ${D}${datadir}/libtool/config/
+	install -c ${S}/libltdl/config/config.sub ${D}${datadir}/libtool/config/
+	install -c ${S}/libltdl/config/install-sh ${D}${datadir}/libtool/config/
+	install -c ${S}/libltdl/config/compile ${D}${datadir}/libtool/config/
+	install -c ${S}/libltdl/config/depcomp ${D}${datadir}/libtool/config/
+	install -c ${S}/libltdl/config/missing ${D}${datadir}/libtool/config/
+	install -c ${S}/libltdl/config/mkstamp ${D}${datadir}/libtool/config/
 	install -c -m 0644 ${S}/libltdl/config/ltmain.sh ${D}${datadir}/libtool/config/
 
 	install -d ${D}${datadir}/aclocal/
