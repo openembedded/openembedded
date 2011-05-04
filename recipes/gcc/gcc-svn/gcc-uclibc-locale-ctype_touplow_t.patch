@@ -1,64 +1,37 @@
-From 66c29e5dc346d0ea5f426705f46d36f36e057a68 Mon Sep 17 00:00:00 2001
-From: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
-Date: Tue, 4 Jan 2011 10:29:53 +0100
-Subject: [PATCH 19/20] libstdc++-v3: handle uClibc locale
-
-libstdc++-v3/ChangeLog:
-
-2010-01-03  Bernhard Reutner-Fischer  <aldot@gcc.gnu.org>
-
-	* config/locale/generic/c_locale.h: Handle uClibc locale.
-	* config/os/gnu-linux/ctype_base.h: Likewise.
-	* include/c/clocale: Include ctype.h for uClibc.
-	* include/c_global/clocale: Likewise.
-	* include/c_std/clocale: Likewise.
-
-Signed-off-by: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
----
- libstdc++-v3/config/locale/generic/c_locale.h |    5 ++++-
- libstdc++-v3/config/os/gnu-linux/ctype_base.h |    4 ++++
- libstdc++-v3/include/c/clocale                |    3 +++
- libstdc++-v3/include/c_global/clocale         |    3 +++
- libstdc++-v3/include/c_std/clocale            |    4 ++++
- 5 files changed, 18 insertions(+), 1 deletions(-)
-
-diff --git a/libstdc++-v3/config/locale/generic/c_locale.h b/libstdc++-v3/config/locale/generic/c_locale.h
-index 7d685b8..4f69857 100644
---- a/libstdc++-v3/config/locale/generic/c_locale.h
-+++ b/libstdc++-v3/config/locale/generic/c_locale.h
-@@ -44,8 +44,11 @@
- #define _GLIBCXX_NUM_CATEGORIES 0
- 
- _GLIBCXX_BEGIN_NAMESPACE(std)
+diff -rdup trunk.oorig/libstdc++-v3/config/locale/generic/c_locale.h trunk/libstdc++-v3/config/locale/generic/c_locale.h
+--- trunk.oorig/libstdc++-v3/config/locale/generic/c_locale.h	2011-01-31 11:39:33.000000000 +0100
++++ trunk/libstdc++-v3/config/locale/generic/c_locale.h	2011-01-31 17:40:14.449833043 +0100
+@@ -46,8 +46,11 @@
+ namespace std _GLIBCXX_VISIBILITY(default)
+ {
+ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 -
 +#ifdef __UCLIBC__
-+  typedef __ctype_touplow_t* __c_locale;
++  typedef __ctype_touplow_t*	__c_locale;
 +#else
    typedef int*			__c_locale;
 +#endif
  
    // Convert numeric value of type double and long double to string and
    // return length of string.  If vsnprintf is available use it, otherwise
-diff --git a/libstdc++-v3/config/os/gnu-linux/ctype_base.h b/libstdc++-v3/config/os/gnu-linux/ctype_base.h
-index ff1f157..e88f569 100644
---- a/libstdc++-v3/config/os/gnu-linux/ctype_base.h
-+++ b/libstdc++-v3/config/os/gnu-linux/ctype_base.h
-@@ -40,7 +40,11 @@ _GLIBCXX_BEGIN_NAMESPACE(std)
+diff -rdup trunk.oorig/libstdc++-v3/config/os/gnu-linux/ctype_base.h trunk/libstdc++-v3/config/os/gnu-linux/ctype_base.h
+--- trunk.oorig/libstdc++-v3/config/os/gnu-linux/ctype_base.h	2011-01-31 11:39:33.000000000 +0100
++++ trunk/libstdc++-v3/config/os/gnu-linux/ctype_base.h	2011-01-31 17:25:54.959690407 +0100
+@@ -42,7 +42,11 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
    struct ctype_base
    {
      // Non-standard typedefs.
 +#ifdef __UCLIBC__
-+    typedef const __ctype_touplow_t* __to_type;
++    typedef const __ctype_touplow_t*	__to_type;
 +#else
      typedef const int* 		__to_type;
 +#endif
  
      // NB: Offsets into ctype<char>::_M_table force a particular size
      // on the mask type. Because of this, we don't use an enum.
-diff --git a/libstdc++-v3/include/c/clocale b/libstdc++-v3/include/c/clocale
-index 7ea60f0..619f128 100644
---- a/libstdc++-v3/include/c/clocale
-+++ b/libstdc++-v3/include/c/clocale
+diff -rdup trunk.oorig/libstdc++-v3/include/c/clocale trunk/libstdc++-v3/include/c/clocale
+--- trunk.oorig/libstdc++-v3/include/c/clocale	2011-01-04 13:09:36.000000000 +0100
++++ trunk/libstdc++-v3/include/c/clocale	2011-01-31 17:25:54.959690407 +0100
 @@ -32,5 +32,8 @@
  #pragma GCC system_header
  
@@ -68,10 +41,9 @@ index 7ea60f0..619f128 100644
 +#endif
  
  #endif
-diff --git a/libstdc++-v3/include/c_global/clocale b/libstdc++-v3/include/c_global/clocale
-index 7cf42e2..cd9b37a 100644
---- a/libstdc++-v3/include/c_global/clocale
-+++ b/libstdc++-v3/include/c_global/clocale
+diff -rdup trunk.oorig/libstdc++-v3/include/c_global/clocale trunk/libstdc++-v3/include/c_global/clocale
+--- trunk.oorig/libstdc++-v3/include/c_global/clocale	2011-01-31 11:39:26.000000000 +0100
++++ trunk/libstdc++-v3/include/c_global/clocale	2011-01-31 17:25:54.959690407 +0100
 @@ -42,6 +42,9 @@
  
  #include <bits/c++config.h>
@@ -82,10 +54,9 @@ index 7cf42e2..cd9b37a 100644
  
  #ifndef _GLIBCXX_CLOCALE
  #define _GLIBCXX_CLOCALE 1
-diff --git a/libstdc++-v3/include/c_std/clocale b/libstdc++-v3/include/c_std/clocale
-index 36d8bd7..7905d5d 100644
---- a/libstdc++-v3/include/c_std/clocale
-+++ b/libstdc++-v3/include/c_std/clocale
+diff -rdup trunk.oorig/libstdc++-v3/include/c_std/clocale trunk/libstdc++-v3/include/c_std/clocale
+--- trunk.oorig/libstdc++-v3/include/c_std/clocale	2011-01-31 11:39:24.000000000 +0100
++++ trunk/libstdc++-v3/include/c_std/clocale	2011-01-31 17:25:54.959690407 +0100
 @@ -45,6 +45,10 @@
  #include <bits/c++config.h>
  #include <locale.h>
@@ -97,6 +68,3 @@ index 36d8bd7..7905d5d 100644
  // Get rid of those macros defined in <locale.h> in lieu of real functions.
  #undef setlocale
  #undef localeconv
--- 
-1.7.2.3
-
