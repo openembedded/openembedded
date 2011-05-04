@@ -7,7 +7,8 @@ SRC_URI = "ftp://ftp.nl.uu.net/pub/unix/ftp/proftpd/ftp/distrib/source/${PN}-${P
 	file://make.patch \
 	file://proftpd-install-nostrip.patch \
 	"
-
+SRC_URI[md5sum] = "4f2c554d6273b8145095837913ba9e5d"
+SRC_URI[sha256sum] = "44be095ed063df93278928cf665ad7b9b38e2c8d0cca97fb51307ec3a390a591"
 
 EXTRA_OECONF = "ac_cv_func_setpgrp_void=yes ac_cv_func_setgrent_void=yes --disable-cap"
 LDFLAGS += "-Llib"
