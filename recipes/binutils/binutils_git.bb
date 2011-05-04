@@ -1,5 +1,5 @@
 FILESPATHPKG =. "binutils-git:"
-SRCREV = "4685dd35801488a1da0293061d9f953ffe4e7ae7"
+SRCREV = "f9afaf2ddd9f6b752b95456b11cb1d9607449f51"
 require binutils.inc
 PR = "${INC_PR}.3"
 PR_append = "+gitr${SRCPV}"
