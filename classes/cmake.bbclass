@@ -24,6 +24,13 @@ OECMAKE_CXX_FLAGS ?= "${HOST_CC_ARCH} ${TOOLCHAIN_OPTIONS} ${TARGET_CPPFLAGS} -f
 OECMAKE_C_FLAGS_RELEASE ?= "${SELECTED_OPTIMIZATION} -DNDEBUG"
 OECMAKE_CXX_FLAGS_RELEASE ?= "${SELECTED_OPTIMIZATION} -DNDEBUG"
 
+OECMAKE_RPATH ?= ""
+python __anonymous() {
+    # Only set OECMAKE_RPATH if we build a native recipe
+    if bb.data.inherits_class('native', d) and not bb.data.inherits_class('cross', d):
+        bb.data.setVar('OECMAKE_RPATH', '${libdir}', d)
+}
+
 cmake_do_generate_toolchain_file() {
 # CMake system name must be something like "Linux".
 # This is important for cross-compiling.
@@ -44,6 +51,10 @@ cmake_do_generate_toolchain_file() {
   echo "set( CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY )" >> ${WORKDIR}/toolchain.cmake
 # Use qt.conf settings
   echo "set( ENV{QT_CONF_PATH} ${WORKDIR}/qt.conf )" >> ${WORKDIR}/toolchain.cmake
+
+# We need to set the rpath to the correct directory as cmake does not provide any
+# directory as rpath by default
+  echo "set( CMAKE_INSTALL_RPATH ${OECMAKE_RPATH} )" >> ${WORKDIR}/toolchain.cmake
 }
 
 addtask generate_toolchain_file after do_patch before do_configure
