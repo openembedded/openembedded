@@ -1,0 +1,32 @@
+From f7ff232d2c335eec5192b23861d8bfa2fd098425 Mon Sep 17 00:00:00 2001
+From: Philip Balister <philip@opensdr.com>
+Date: Wed, 4 May 2011 18:24:49 -0400
+Subject: [PATCH 2/2] respect-libnl-flags-also-in-dns-manager
+
+Signed-off-by: Philip Balister <philip@balister.org>
+---
+ src/dns-manager/Makefile.am |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/src/dns-manager/Makefile.am b/src/dns-manager/Makefile.am
+index 7b5fc4f..b51f667 100644
+--- a/src/dns-manager/Makefile.am
++++ b/src/dns-manager/Makefile.am
+@@ -19,12 +19,14 @@ libdns_manager_la_SOURCES = \
+ 	nm-dns-utils.c
+ 
+ libdns_manager_la_CPPFLAGS = \
++	$(LIBNL_CFLAGS) \
+ 	$(DBUS_CFLAGS) \
+ 	$(GLIB_CFLAGS) \
+ 	-DLOCALSTATEDIR=\"$(localstatedir)\"
+ 
+ libdns_manager_la_LIBADD = \
+ 	$(top_builddir)/src/logging/libnm-logging.la \
++	$(LIBNL_LIBS) \
+ 	$(DBUS_LIBS) \
+ 	$(GLIB_LIBS)
+ 
+-- 
+1.7.3.4
+
