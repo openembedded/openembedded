@@ -2,13 +2,11 @@ DESCRIPTION = "The sysstat utilities are a collection of performance monitoring 
 HOMEPAGE = "http://pagesperso-orange.fr/sebastien.godard/"
 LICENSE = "GPL"
 SECTION = "console/utils"
-INC_PR = "r2"
-
-DEPENDS = "virtual/libintl"
+INC_PR = "r3"
 
 SRC_URI = "http://pagesperso-orange.fr/sebastien.godard/sysstat-${PV}.tar.gz"
 
-inherit autotools
+inherit autotools gettext
 
 do_configure_prepend() {
 	sed -i s,'-g $(MAN_GROUP)','', Makefile.in
