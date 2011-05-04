@@ -7,7 +7,7 @@
 # on whether the base patches apply to the selected (SRCDATE) svn release.
 #
 UCLIBC_BASE ?= "0.9.32"
-SRCREV="251f2266bf24b1b396f59eef60d0acf41fdd02e4"
+SRCREV="233c504cd940d9802226b6a3a092368b86978f5e"
 PR_append = "+gitr${SRCPV}"
 DEFAULT_PREFERENCE = "-1"
 #DEFAULT_PREFERENCE is 0 (empty), releases have a preference of 1 so take
