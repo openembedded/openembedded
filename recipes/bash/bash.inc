@@ -1,6 +1,6 @@
 DESCRIPTION = "An sh-compatible command language interpreter."
 HOMEPAGE = "http://cnswww.cns.cwru.edu/~chet/bash/bashtop.html"
-DEPENDS = "ncurses"
+DEPENDS = "ncurses bison-native"
 SECTION = "base/shell"
 LICENSE = "GPL"
 
