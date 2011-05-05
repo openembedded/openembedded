@@ -1,0 +1,63 @@
+diff -Nurd linux-2.6.24.orig/drivers/mtd/maps/physmap.c linux-2.6.24/drivers/mtd/maps/physmap.c
+--- linux-2.6.24.orig/drivers/mtd/maps/physmap.c	2011-05-03 15:40:51.000000000 +0200
++++ linux-2.6.24/drivers/mtd/maps/physmap.c	2011-05-05 10:08:00.000000000 +0200
+@@ -156,7 +156,9 @@
+ 
+ #if defined (CONFIG_ARCH_HIPOX)
+ 	/* init timing for static memory controller */
++	mutex_lock(&hipox_flash_mutex);
+ 	writel(STATIC_BUS_FLASH_CONFIG, STATIC_CONTROL_BANK0);
++	mutex_unlock(&hipox_flash_mutex);
+ #endif /* CONFIG_ARCH_HIPOX */
+ 
+        	printk(KERN_NOTICE "physmap platform flash device: %.8llx at %.8llx\n",
+diff -Nurd linux-2.6.24.orig/drivers/mtd/nand/hipox_nand.c linux-2.6.24/drivers/mtd/nand/hipox_nand.c
+--- linux-2.6.24.orig/drivers/mtd/nand/hipox_nand.c	2011-05-03 15:40:51.000000000 +0200
++++ linux-2.6.24/drivers/mtd/nand/hipox_nand.c	2011-05-05 10:07:52.000000000 +0200
+@@ -30,9 +30,10 @@
+ 
+ // the testboards ran down to a value of 4
+ //#define STATIC_BUS_FLASH_CONFIG 0x4f1f3f3f  /* slow settings, 345 ns */
+-//#define STATIC_BUS_FLASH_CONFIG 0x4f1f3f0d  /* fast settings, 70 ns */
++#define STATIC_BUS_FLASH_CONFIG 0x4f1f3f0d  /* fast settings, 70 ns; use this as default, because it works for hipox board NOR flash also */
+ //#define STATIC_BUS_FLASH_CONFIG 0x4f1f3f09  /* ultra fast settings, 50 ns */
+-#define STATIC_BUS_FLASH_CONFIG 0x4f1f3f04  /* warp settings, 27 ns */
++//#define STATIC_BUS_FLASH_CONFIG 0x4f1f3f04  /* warp settings, 27 ns */
++#define STATIC_BUS_FLASH_CONFIG_RW 0x41030304  /* read and write warp settings */
+ 
+ /*
+  * MTD structure for HydraIP board
+@@ -65,6 +66,7 @@
+  */
+ static void hipox_nand_hwcontrol(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+ {
++	static unsigned int bank0 = STATIC_BUS_FLASH_CONFIG;
+ 	struct nand_chip *this = mtd->priv;
+ 
+ 	if (ctrl & NAND_CTRL_CHANGE) {
+@@ -77,12 +79,15 @@
+ 				// printk("%s:%d would wait for hipox_flash_mutex\n", __func__, __LINE__);
+ 				mutex_lock(&hipox_flash_mutex);
+ 				writel(0x20000000, GPIO_A_OUTPUT_CLEAR); /* assert CS-NAND */
++				bank0 = readl(STATIC_CONTROL_BANK0);
++				writel(STATIC_BUS_FLASH_CONFIG_RW, STATIC_CONTROL_BANK0);
+ 			}
+ 		}
+ 		else
+ 		{
+ 			if (!(0x20000000 & readl(GPIO_A_OUTPUT_VALUE)))
+ 			{
++				writel(bank0, STATIC_CONTROL_BANK0);
+ 				writel(0x20000000, GPIO_A_OUTPUT_SET); /* deassert CS-NAND */
+ 				mutex_unlock(&hipox_flash_mutex);
+ 				// printk("%s:%d hipox_flash_mutex unlocked\n", __func__, __LINE__);
+@@ -234,7 +239,9 @@
+ 		return -ENOMEM;
+ 	}
+ 
++	mutex_lock(&hipox_flash_mutex);
+ 	writel(STATIC_BUS_FLASH_CONFIG, STATIC_CONTROL_BANK0);
++	mutex_unlock(&hipox_flash_mutex);
+ 
+ 	/* Initialize structures */
+ 	memset(hipox_nand_mtd, 0, sizeof(struct mtd_info));
