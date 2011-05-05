@@ -1,0 +1,34 @@
+diff -rdup nfs-utils-1.2.3.oorig/tools/mountstats/Makefile.am nfs-utils-1.2.3/tools/mountstats/Makefile.am
+--- nfs-utils-1.2.3.oorig/tools/mountstats/Makefile.am	2010-09-28 14:24:16.000000000 +0200
++++ nfs-utils-1.2.3/tools/mountstats/Makefile.am	2011-05-05 20:15:42.359099997 +0200
+@@ -8,6 +8,6 @@ EXTRA_DIST	= $(man8_MANS) $(PYTHON_FILES
+ all-local: $(PYTHON_FILES)
+ 
+ install-data-hook:
+-	$(INSTALL) --mode 755 mountstats.py $(DESTDIR)$(sbindir)/mountstats
++	$(INSTALL) -m 755 mountstats.py $(DESTDIR)$(sbindir)/mountstats
+ 
+ MAINTAINERCLEANFILES=Makefile.in
+diff -rdup nfs-utils-1.2.3.oorig/tools/mountstats/Makefile.in nfs-utils-1.2.3/tools/mountstats/Makefile.in
+--- nfs-utils-1.2.3.oorig/tools/mountstats/Makefile.in	2010-09-28 14:32:33.000000000 +0200
++++ nfs-utils-1.2.3/tools/mountstats/Makefile.in	2011-05-05 20:15:24.307099774 +0200
+@@ -496,7 +496,7 @@ uninstall-man: uninstall-man8
+ all-local: $(PYTHON_FILES)
+ 
+ install-data-hook:
+-	$(INSTALL) --mode 755 mountstats.py $(DESTDIR)$(sbindir)/mountstats
++	$(INSTALL) -m 755 mountstats.py $(DESTDIR)$(sbindir)/mountstats
+ 
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
+diff -rdup nfs-utils-1.2.3.oorig/tools/nfs-iostat/Makefile.am nfs-utils-1.2.3/tools/nfs-iostat/Makefile.am
+--- nfs-utils-1.2.3.oorig/tools/nfs-iostat/Makefile.am	2010-09-28 14:24:16.000000000 +0200
++++ nfs-utils-1.2.3/tools/nfs-iostat/Makefile.am	2011-05-05 20:22:05.767100057 +0200
+@@ -8,6 +8,6 @@ EXTRA_DIST	= $(man8_MANS) $(PYTHON_FILES
+ all-local: $(PYTHON_FILES)
+ 
+ install-data-hook:
+-	$(INSTALL) --mode 755 nfs-iostat.py $(DESTDIR)$(sbindir)/nfsiostat
++	$(INSTALL) -m 755 nfs-iostat.py $(DESTDIR)$(sbindir)/nfsiostat
+ 
+ MAINTAINERCLEANFILES=Makefile.in

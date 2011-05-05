@@ -1,0 +1,90 @@
+diff -rdup nfs-utils-1.2.3.oorig/configure.ac nfs-utils-1.2.3/configure.ac
+--- nfs-utils-1.2.3.oorig/configure.ac	2010-09-28 14:24:16.000000000 +0200
++++ nfs-utils-1.2.3/configure.ac	2011-05-05 19:59:24.639099548 +0200
+@@ -360,6 +360,27 @@ AC_CHECK_SIZEOF(size_t)
+ AC_CHECK_SIZEOF(socklen_t)
+ 
+ 
++dnl ### A macro to determine whether statfs64 is defined.
++AC_DEFUN([AC_STATFS64],
++[AC_MSG_CHECKING(for statfs64 in sys/(statfs|vfs).h)
++AC_CACHE_VAL(ac_cv_type_statfs64,
++[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#ifdef __linux__
++#include <linux/types.h>
++#include <sys/statfs.h>
++#else
++#include <sys/vfs.h>
++#endif]], [[struct statfs64 st;]])],[ac_cv_type_statfs64=yes],[ac_cv_type_statfs64=no])])
++AC_MSG_RESULT($ac_cv_type_statfs64)
++if test "$ac_cv_type_statfs64" = yes
++then
++	AC_DEFINE([HAVE_STATFS64], 1, [Define if statfs64 is available in sys/statfs.h or sys/vfs.h.])
++else
++	AC_DEFINE_UNQUOTED(statfs64, statfs, [Define to statfs64 replacement. Attention: Just use small exports!])
++fi
++])
++AC_STATFS64
++
++
+ dnl *************************************************************
+ dnl Export some path names to config.h
+ dnl *************************************************************
+diff -rdup nfs-utils-1.2.3.oorig/support/include/sockaddr.h nfs-utils-1.2.3/support/include/sockaddr.h
+--- nfs-utils-1.2.3.oorig/support/include/sockaddr.h	2010-09-28 14:24:16.000000000 +0200
++++ nfs-utils-1.2.3/support/include/sockaddr.h	2011-05-05 19:41:55.007099092 +0200
+@@ -20,7 +20,10 @@
+ #ifndef NFS_UTILS_SOCKADDR_H
+ #define NFS_UTILS_SOCKADDR_H
+ 
++#include <features.h>
++#ifndef __UCLIBC__
+ #include <libio.h>
++#endif
+ #include <stdbool.h>
+ #include <sys/socket.h>
+ #include <netinet/in.h>
+diff -rdup nfs-utils-1.2.3.oorig/support/nfs/svc_socket.c nfs-utils-1.2.3/support/nfs/svc_socket.c
+--- nfs-utils-1.2.3.oorig/support/nfs/svc_socket.c	2010-09-28 14:24:16.000000000 +0200
++++ nfs-utils-1.2.3/support/nfs/svc_socket.c	2011-05-04 19:37:53.575074050 +0200
+@@ -67,8 +67,13 @@ svc_socket (u_long number, int type, int
+   memset (&addr, 0, sizeof (addr));
+   addr.sin_family = AF_INET;
+ 
++#if defined __UCLIBC__ && !defined __UCLIBC_HAS_REENTRANT_RPC__
++  rpcp = getrpcbynumber (number);
++  ret = 0;
++#else
+   ret = getrpcbynumber_r (number, &rpcbuf, rpcdata, sizeof rpcdata,
+ 			  &rpcp);
++#endif
+   if (ret == 0 && rpcp != NULL)
+     {
+       /* First try name.  */
+diff -rdup nfs-utils-1.2.3.oorig/utils/exportfs/exportfs.c nfs-utils-1.2.3/utils/exportfs/exportfs.c
+--- nfs-utils-1.2.3.oorig/utils/exportfs/exportfs.c	2010-09-28 14:24:16.000000000 +0200
++++ nfs-utils-1.2.3/utils/exportfs/exportfs.c	2011-05-05 19:46:26.511099210 +0200
+@@ -32,6 +32,10 @@
+ #include "exportfs.h"
+ #include "xlog.h"
+ 
++/* #if defined __UCLIBC__ && !defined __UCLIBC_HAS_LFS__
++# define statfs64 statfs
++#endif */
++
+ static void	export_all(int verbose);
+ static void	exportfs(char *arg, char *options, int verbose);
+ static void	unexportfs(char *arg, int verbose);
+diff -rdup nfs-utils-1.2.3.oorig/utils/mountd/cache.c nfs-utils-1.2.3/utils/mountd/cache.c
+--- nfs-utils-1.2.3.oorig/utils/mountd/cache.c	2010-09-28 14:24:16.000000000 +0200
++++ nfs-utils-1.2.3/utils/mountd/cache.c	2011-05-05 19:49:18.123099455 +0200
+@@ -37,6 +37,10 @@
+ #include "blkid/blkid.h"
+ #endif
+ 
++
++#if defined __UCLIBC__ && !defined __UCLIBC_HAS_LFS__
++# define statfs64 statfs
++#endif
+ /*
+  * Invoked by RPC service loop
+  */
