@@ -634,7 +634,7 @@ OPLINUX_UCLIBC_BROKEN_PACKAGES_append_dht-walnut = "\
 
 # Packages which build only with glibc (some of these use internal
 # glibc functions and so will probably never run on uclibc).
-OPLINUX_BROKEN_PACKAGES_append_uclibc-linux = "\
+OPLINUX_BROKEN_PACKAGES_append_libc-uclibc = "\
 	${OPLINUX_UCLIBC_UNSUPPORTABLE_PACKAGES} \
 	${OPLINUX_UCLIBC_BROKEN_PACKAGES} \
 
