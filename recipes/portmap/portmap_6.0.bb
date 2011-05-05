@@ -1,6 +1,6 @@
 require portmap.inc
 
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "http://www.sourcefiles.org/Networking/Tools/Miscellanenous/portmap-6.0.tgz \
            file://destdir-no-strip.patch \
@@ -14,6 +14,7 @@ CPPFLAGS += "-DFACILITY=LOG_DAEMON -DENABLE_DNS"
 CFLAGS += "-Wall -Wstrict-prototypes -fPIC"
 
 fakeroot do_install() {
+    sed -i -e "s|/usr/share/man|${mandir}|" ${B}/Makefile
     install -d ${D}${mandir}/man8/ ${D}${base_sbindir} ${D}${sysconfdir}/init.d
     install -m 0755 ${WORKDIR}/portmap.init ${D}${sysconfdir}/init.d/portmap
     oe_runmake install DESTDIR=${D}
