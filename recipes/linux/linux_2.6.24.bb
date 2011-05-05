@@ -107,6 +107,7 @@ SRC_URI_append_hipox = " \
 	file://siocoutqsnd.patch \
 	file://hipox-phy.patch \
 	file://ox810-pci-read-config-fix.patch \
+	file://hipox-nand-timing.patch \
 	"
 
 EXTRA_OEMAKE_smartq5 = " OBJCOPY=${OBJCOPY}"
