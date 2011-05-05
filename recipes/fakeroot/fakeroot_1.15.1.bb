@@ -6,5 +6,5 @@ SRC_URI =+ "\
   file://quiet-getopt-check.patch \
 "
 
-SRC_URI[md5sum] = "659a1f3a36554abfc2a3eaad2fdc0604"
-SRC_URI[sha256] = "b035c834944bf9482027f48c388de8492e96609825265ac03f05408d0b3aae68"
+SRC_URI[md5sum] = "248c408b1e06e776c5739871b49bd968"
+SRC_URI[sha256sum] = "45fbb9ad611f33224cc09954963dde563cc80fe58c76feb25b6e98550b81729a"
