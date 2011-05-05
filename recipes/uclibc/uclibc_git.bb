@@ -39,6 +39,5 @@ SRC_URI = "git://uclibc.org/uClibc.git;branch=master;protocol=git \
 	file://detect-bx-availibility.patch \
 	file://remove-eabi-oabi-selection.patch \
 	file://powerpc_copysignl.patch \
-	file://fts-support.patch \
 	"
 S = "${WORKDIR}/git"
