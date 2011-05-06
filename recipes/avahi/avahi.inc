@@ -19,9 +19,9 @@ inherit autotools pkgconfig update-rc.d python-dir
 # anything but avahi-daemon and avahi-autoipd
 
 # TODO: build and enable all the extra stuff avahi offers
-EXTRA_OECONF = "--with-distro=debian  --disable-stack-protector --disable-nls --disable-gdbm ${AVAHI_GTK} --disable-mono --disable-monodoc --disable-qt3 --disable-qt4 ${AVAHI_PYTHON}"
+EXTRA_OECONF = "--disable-introspection --with-distro=debian  --disable-stack-protector --disable-nls --disable-gdbm ${AVAHI_GTK} --disable-mono --disable-monodoc --disable-qt3 --disable-qt4 ${AVAHI_PYTHON}"
 AVAHI_PYTHON ?= "--enable-python"
-AVAHI_GTK ?= "-disable-gtk"
+AVAHI_GTK ?= "--disable-gtk --disable-gtk3"
 
 LDFLAGS_append_libc-uclibc = " -lintl"
 LDFLAGS_append_uclinux-uclibc = " -lintl"
@@ -43,7 +43,8 @@ FILES_avahi-daemon = "${sbindir}/avahi-daemon \
                       ${sysconfdir}/init.d/avahi-daemon \
                       ${datadir}/avahi/introspection/*.introspect \
                       ${datadir}/avahi/avahi-service.dtd \
-                      ${datadir}/avahi/service-types"
+                      ${datadir}/avahi/service-types \
+                      ${base_libdir}/systemd"
 FILES_libavahi-client = "${libdir}/libavahi-client.so.*"
 FILES_libavahi-ui = "${libdir}/libavahi-ui.so.*"
 FILES_avahi-dnsconfd = "${sbindir}/avahi-dnsconfd \
