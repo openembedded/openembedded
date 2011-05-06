@@ -1,5 +1,5 @@
 require u-boot.inc
-PR = "r75"
+PR = "r76"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -138,6 +138,7 @@ SRC_URI_am3517-crane = "git://arago-project.org/git/projects/u-boot-omap3.git;pr
                         file://0001-OMAP2-3-I2C-Add-support-for-second-and-third-bus.patch \
                         file://0002-ARMV7-Restructure-OMAP-i2c-driver-to-allow-code-shar.patch \
                         file://0003-craneboard-add-expansionboard-support.patch \
+			file://0004-Ethernet-MACID-display-fix-for-am3517-craneboard.patch \
 "
 
 SRCREV_am3517-crane = "c0a8fb217fdca7888d89f9a3dee74a4cec865620"

@@ -1,0 +1,108 @@
+From 2e0ac19c4b32700ec07c04465b45a55b0dfa8962 Mon Sep 17 00:00:00 2001
+From: Anil Kumar M <anilm@mistralsolutions.com>
+Date: Thu, 5 May 2011 16:53:59 +0530
+Subject: [PATCH] Ethernet MACID display fix for am3517-craneboard
+
+Signed-off-by: Anil Kumar M <anilm@mistralsolutions.com>
+---
+ board/ti/am3517crane/am3517crane.c |   41 ++++++++++++++++++++---------------
+ board/ti/am3517crane/am3517crane.h |    9 ++++---
+ 2 files changed, 28 insertions(+), 22 deletions(-)
+
+diff --git a/board/ti/am3517crane/am3517crane.c b/board/ti/am3517crane/am3517crane.c
+index 40e8b91..019758e 100644
+--- a/board/ti/am3517crane/am3517crane.c
++++ b/board/ti/am3517crane/am3517crane.c
+@@ -38,7 +38,7 @@
+ #if defined(CONFIG_DRIVER_TI_EMAC)
+ #define AM3517_IP_SW_RESET	0x48002598
+ #define CPGMACSS_SW_RST		(1 << 1)
+-#define ETHERNET_NRST		34
++#define ETHERNET_NRST		65
+ #define EMACID_ADDR_LSB 	0x48002380
+ #define EMACID_ADDR_MSB 	0x48002384
+ #endif
+@@ -204,30 +204,35 @@ int misc_init_r(void)
+ int cpu_eth_init(bd_t *bis)
+ {
+ #if defined(CONFIG_DRIVER_TI_EMAC)
+-	char mac_buf_lsb[8];
+-	char mac_buf_msb[16];
+-	char mac_id[24];
+-	const unsigned char separator = ':';
++	/* Check for efficient way of code*/
++	u8 mac_id[32];
++
++	u16 aa, bb, cc, dd, ee, ff;
++	u32 emac_lsb, emac_msb;
++
++	memset(mac_id, '\0', sizeof(mac_id));
+ 
+ 	printf("davinci_emac_initialize\n");
+ 	davinci_emac_initialize();
+ 
+-	memset(mac_buf_lsb, '\0', sizeof(mac_buf_lsb));
+-	memset(mac_buf_msb, '\0', sizeof(mac_buf_msb));
+-	memset(mac_id, '\0', sizeof(mac_id));
++	emac_lsb = readl(EMACID_ADDR_LSB);
++	emac_msb = readl(EMACID_ADDR_MSB);
+ 
+-	sprintf(mac_buf_msb, "%x", readl(EMACID_ADDR_MSB));
+-	sprintf(mac_buf_lsb, "%x", readl(EMACID_ADDR_LSB));
+-	strcat(mac_buf_msb, mac_buf_lsb);
+-	sprintf(mac_id, "%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",
+-			mac_buf_msb[0], mac_buf_msb[1], separator,
+-			mac_buf_msb[2], mac_buf_msb[3], separator,
+-			mac_buf_msb[4], mac_buf_msb[5], separator,
+-			mac_buf_msb[6], mac_buf_msb[7], separator,
+-			mac_buf_msb[8], mac_buf_msb[9], separator,
+-			mac_buf_msb[10], mac_buf_msb[11]);
++	cc  = (emac_msb & 0x000000FF) >> 0;
++	bb  = (emac_msb & 0x0000FF00) >> 8;
++	aa  = (emac_msb  & 0x00FF0000) >> 16;
+ 
++	ff  = (emac_lsb & 0x000000FF);
++	ee  = (emac_lsb & 0x0000FF00) >> 8;
++	dd  = (emac_lsb & 0x00FF0000) >> 16;
++
++	sprintf(mac_id, "%02x:%02x:%02x:%02x:%02x:%02x",
++				 aa, bb, cc, dd, ee, ff);
++
++	printf("-----------------------------\n");
+ 	printf("EMAC ID %s\n", mac_id);
++	printf("-----------------------------\n");
++
+ 	setenv("ethaddr", mac_id);
+ #endif
+ 	return 0;
+diff --git a/board/ti/am3517crane/am3517crane.h b/board/ti/am3517crane/am3517crane.h
+index 83fe858..cdb0542 100644
+--- a/board/ti/am3517crane/am3517crane.h
++++ b/board/ti/am3517crane/am3517crane.h
+@@ -88,10 +88,10 @@ const omap3_sysinfo sysinfo = {
+ 	MUX_VAL(CP(STRBEN_DLY0),	(IEN  | PTD | EN  | M0)) \
+ 	MUX_VAL(CP(STRBEN_DLY1),	(IEN  | PTD | EN  | M0)) \
+ /* GPMC */\
+-	/* GPIO_34 ETHERNET_nRST */ \
+-	MUX_VAL(CP(GPMC_A1),		(IDIS | PTU | EN  | M4)) \
++	/* GPIO_34 NC */ \
++	MUX_VAL(CP(GPMC_A1),		(M7)) \
+ 	/* GPIO_35 USB1_HOST_EN */ \
+-	MUX_VAL(CP(GPMC_A2),		(IDIS | PTU | EN  | M4)) \
++	MUX_VAL(CP(GPMC_A2),		(IDIS | PTU | DIS | M4)) \
+ 	/* GPIO_36 USB0_OVER_CURRENT*/ \
+ 	MUX_VAL(CP(GPMC_A3),		(IDIS | PTU | EN  | M4)) \
+ 	/* GPIO_37 USB1_OVER_CURRENT */ \
+@@ -140,7 +140,8 @@ const omap3_sysinfo sysinfo = {
+ 	MUX_VAL(CP(GPMC_WAIT0),		(IEN  | PTD | DIS | M0)) \
+ 	MUX_VAL(CP(GPMC_WAIT1),		(M7)) \
+ 	MUX_VAL(CP(GPMC_WAIT2),		(M7)) \
+-	MUX_VAL(CP(GPMC_WAIT3),		(M7)) \
++	/* GPIO_65 ETHERNET_nRST */ \
++	MUX_VAL(CP(GPMC_WAIT3),		(IDIS | PTU | EN  | M4)) \
+ /* DSS */\
+ 	MUX_VAL(CP(DSS_PCLK),		(IDIS | PTD | DIS | M0)) \
+ 	MUX_VAL(CP(DSS_HSYNC),		(IDIS | PTD | DIS | M0)) \
+-- 
+1.7.2.3
+
