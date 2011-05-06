@@ -4,7 +4,7 @@ LICENSE = "MIT"
 SECTION = "libs"
 PATCHDATE = "20110115"
 PV = "5.7+${PATCHDATE}"
-PR = "r18"
+PR = "r19"
 
 DEPENDS = "ncurses-native unifdef-native"
 DEPENDS_virtclass-native = "unifdef-native"
@@ -14,7 +14,7 @@ inherit autotools binconfig test
 SRC_URI = "${GNU_MIRROR}/ncurses/ncurses-5.7.tar.gz;name=tarball \
         file://ncurses-5.7-20110108-patch.sh.bz2;apply=yes;name=p20110108sh \
 \
-        ftp://invisible-island.net/ncurses/5.7/ncurses-5.7-${PATCHDATE}.patch.gz;name=p${PATCHDATE} \
+        file://ncurses-5.7-20110115.patch.gz;name=p20110115 \
         file://tic-hang.patch \
         file://config.cache \
 "
