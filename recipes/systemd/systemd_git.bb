@@ -28,7 +28,7 @@ S = "${WORKDIR}/git"
 SYSTEMDDISTRO ?= "debian"
 SYSTEMDDISTRO_angstrom = "angstrom"
 
-# The gtk+ tools should get built as a seperate recipe e.g. systemd-tools
+# The gtk+ tools should get built as a separate recipe e.g. systemd-tools
 EXTRA_OECONF = " --with-distro=${SYSTEMDDISTRO} \
                  --with-rootdir=${base_prefix} \
                  --disable-gtk \
