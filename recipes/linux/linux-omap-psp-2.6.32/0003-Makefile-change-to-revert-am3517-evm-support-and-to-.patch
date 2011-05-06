@@ -1,0 +1,36 @@
+From bf6347d8f42e053b187a499e5ed1fdf4f0992969 Mon Sep 17 00:00:00 2001
+From: Anil Kumar <anilm@mistralsolutions.com>
+Date: Thu, 5 May 2011 15:21:34 +0530
+Subject: [PATCH]  Makefile change to revert am3517-evm support and to add am3517-crane board support
+
+Signed-off-by: Anil Kumar <anilm@mistralsolutions.com>
+---
+ drivers/usb/musb/Makefile |   11 +++++++----
+ 1 files changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/usb/musb/Makefile b/drivers/usb/musb/Makefile
+index daf3415..8941549 100644
+--- a/drivers/usb/musb/Makefile
++++ b/drivers/usb/musb/Makefile
+@@ -19,11 +19,14 @@ ifeq ($(CONFIG_ARCH_OMAP2430),y)
+ endif
+ 
+ ifeq ($(CONFIG_ARCH_OMAP3430),y)
+-
+-   ifeq ($(CONFIG_MACH_CRANEBOARD),y)
+-	musb_hdrc-objs  += am3517.o
++   ifeq ($(CONFIG_MACH_OMAP3517EVM),y)
++        musb_hdrc-objs  += am3517.o
+    else
+-	musb_hdrc-objs	+= omap2430.o
++        ifeq ($(CONFIG_MACH_CRANEBOARD),y)
++	     musb_hdrc-objs  += am3517.o
++        else
++	     musb_hdrc-objs  += omap2430.o
++       endif
+    endif
+ endif
+ 
+-- 
+1.7.0.4
+
