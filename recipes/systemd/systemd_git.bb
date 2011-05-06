@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.freedesktop.org/wiki/Software/systemd"
 LICENSE = "GPLv2+"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=751419260aa954499f7abaabaa882bbe"
 
-DEPENDS = "readline udev dbus libcap2 libcgroup gtk+"
+DEPENDS = "readline udev dbus libcap2 libcgroup"
 PRIORITY = "optional"
 SECTION = "base/shell"
 
