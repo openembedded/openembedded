@@ -4,7 +4,7 @@ SECTION = "base"
 LICENSE = "GPLv2+ AFLv2.1"
 DEPENDS = "expat glib-2.0 virtual/libintl libsm libice virtual/libx11"
 
-INC_PR = "r20"
+INC_PR = "r21"
 
 SRC_URI = "\
   http://dbus.freedesktop.org/releases/dbus/dbus-${PV}.tar.gz;name=dbus \
@@ -74,6 +74,7 @@ ${bindir}/dbus-cleanup-sockets \
 ${bindir}/dbus-send \
 ${bindir}/dbus-monitor \
 ${libexecdir}/dbus* \
+${base_libdir}/systemd \
 ${sysconfdir} \
 ${datadir}/dbus-1/services \
 ${datadir}/dbus-1/system-services \
