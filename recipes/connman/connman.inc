@@ -60,6 +60,9 @@ FILES_${PN} = "${bindir}/* ${sbindir}/* ${libexecdir}/* ${libdir}/lib*.so.* \
             ${libdir}/bonobo/servers \
             ${datadir}/dbus-1/system-services/*"
 
+# Package up systemd files
+FILES_${PN} += "${base_libdir}/systemd"
+
 FILES_${PN}-test-utils += "${libdir}/connman/test/*"
 
 FILES_${PN}-scripts += "${libdir}/connman/scripts"
