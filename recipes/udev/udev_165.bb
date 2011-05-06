@@ -3,7 +3,7 @@ DESCRIPTION = "udev is a daemon which dynamically creates and removes device nod
 the hotplug package and requires a kernel not older than 2.6.12."
 LICENSE = "GPLv2+"
 
-PR = "r4"
+PR = "r5"
 
 # Untested
 DEFAULT_PREFERENCE = "-1"
@@ -86,6 +86,9 @@ FILES_${PN}-dbg += "${usrbindir}/.debug ${usrsbindir}/.debug"
 # is ${prefix}/lib64
 FILES_${PN} += "/lib/udev* ${libdir}/ConsoleKit"
 FILES_${PN}-dbg += "/lib/udev/.debug"
+
+# Package up systemd files
+FILES_${PN} += "${base_libdir}/systemd"
 
 RPROVIDES_udev_append = " udev-compat-wrapper"
 
