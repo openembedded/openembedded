@@ -61,5 +61,6 @@ pkg_postrm_${PN} () {
 }
 
 CONFFILES_${PN} = "${sysconfdir}/rsyslog.conf"
+FILES_${PN} += "${base_libdir}/systemd"
 
 INITSCRIPT_NAME = "syslog"
