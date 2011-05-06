@@ -34,7 +34,7 @@ index 5c3b068..62770c9 100644
 -		"bootm ${loadaddr}\0" \
 -	"noloboot=echo Booting NOLO supplied kernel ...; " \
 +	"meegoargs=root=/dev/mmcblk0p2 rootwait console=tty0 omapfb.vram=0:2M,1:2M,2:2M mtdoops.mtddev=2 nosplash\0" \
-+	"shrargs=snd-soc-rx51.hp_lim=42 snd-soc-tlv320aic3x.hp_dac_lim=6 console=tty1 root=/dev/mmcblk1p1 rootwait panic=20 debug\0" \
++	"shrargs=snd-soc-rx51.hp_lim=42 snd-soc-tlv320aic3x.hp_dac_lim=6 console=tty1 root=/dev/mmcblk0p1 rootwait panic=20 debug\0" \
 +	"boot1stcmd=mmc init; ext2load mmc 0:1 0x82000000 /boot/uImage; bootm 0x82000000\0" \
 +	"boot3rdcmd=mmc init; fatload mmc 0:3 0x82000000 uImage; bootm 0x82000000\0" \
 +	"shr=echo Booting SHR from uSD 1st part (/boot/uImage) ...; " \
