@@ -11,7 +11,7 @@ SRC_URI = "\
 "
 S = "${WORKDIR}/git"
 
-#CMDLINE_nokia900 = "snd-soc-rx51.hp_lim=42 snd-soc-tlv320aic3x.hp_dac_lim=6 console=tty1 root=/dev/mmcblk0p1 rootdelay=10 panic=20"
+CMDLINE_nokia900 = "root=/dev/mmcblk0p1 rootwait rw console=ttyO2,115200n8 console=tty0 omapfb.vram=0:2M,1:2M,2:2M mtdoops.mtddev=2"
 
 # Mark archs/machines that this kernel supports
 COMPATIBLE_MACHINE = "nokia900"
