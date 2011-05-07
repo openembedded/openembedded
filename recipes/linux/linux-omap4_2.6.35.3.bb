@@ -2,6 +2,9 @@ COMPATIBLE_MACHINE = "omap4430-panda|am45x-evm"
 
 require multi-kernel.inc
 
+# The main PR is now using MACHINE_KERNEL_PR, for omap4 see conf/machine/include/omap4.inc
+MACHINE_KERNEL_PR_append = "b"
+
 CORTEXA8FIXUP = "no"
 
 SRCREV = "ti-ubuntu-2.6.35-980.1release13"
