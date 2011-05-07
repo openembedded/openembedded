@@ -8,7 +8,7 @@ PRIORITY = "optional"
 SECTION = "base/shell"
 
 PV = "v26"
-PR = "r6"
+PR = "r7"
 PR_append = "+${SRCPV}"
 
 inherit autotools vala update-alternatives
@@ -54,9 +54,13 @@ ALTERNATIVE_LINK = "${base_sbindir}/init"
 ALTERNATIVE_PATH = "${base_bindir}/systemd"
 ALTERNATIVE_PRIORITY = "80"
 
-PACKAGES =+ "${PN}-gui"
+PACKAGES =+ "${PN}-gui ${PN}-serialgetty"
 
 FILES_${PN}-gui = "${bindir}/systemadm"
+
+# This is a machine specific file
+FILES_${PN}-serialgetty = "${base_libdir}/systemd/system/serial-getty@.service ${sysconfdir}/systemd/system/getty.target.wants/getty@${@get_console(bb, d)}.service"
+PACKAGE_ARCH_${PN}-serialgetty = "${MACHINE_ARCH}"
 
 FILES_${PN} = " ${base_bindir}/* \
                 ${datadir}/dbus-1/services \
@@ -77,5 +81,5 @@ FILES_${PN} = " ${base_bindir}/* \
 FILES_${PN}-dbg += "${base_libdir}/systemd/.debug ${base_libdir}/systemd/*/.debug"
 
 # util-linux -> hwclock, kbd -> loadkeys,setfont
-RRECOMMENDS_${PN} += "util-linux kbd kbd-consolefonts"
+RRECOMMENDS_${PN} += "util-linux kbd kbd-consolefonts ${PN}-serialgetty"
 
