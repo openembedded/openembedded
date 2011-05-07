@@ -62,6 +62,8 @@ FILES_${PN} = "${bindir}/* ${sbindir}/* ${libexecdir}/* ${libdir}/lib*.so.* \
 
 # Package up systemd files
 FILES_${PN} += "${base_libdir}/systemd"
+# Needed when using DNS proxy feature
+RRECOMMENDS_${PN} += "dnsmasq-dbus"
 
 FILES_${PN}-test-utils += "${libdir}/connman/test/*"
 
