@@ -52,7 +52,6 @@ RDEPENDS_${PN} += "\
 		pyphonelog \
 		ffphonelog \
 #		shr-config \
-		shr-today \
 		shr-theme-neo \
 		shr-theme-o2 \
 		shr-theme-niebiee \
