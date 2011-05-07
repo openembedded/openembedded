@@ -6,7 +6,7 @@ EXTRA_DEPS = ""
 EXTRA_DEPS_nokia900 = "phonet-utils"
 RDEPENDS_${PN} = "procps ${EXTRA_DEPS}"
 LICENSE = "MIT"
-LIC_FILES_CHKSUM = "file://${TOPDIR}/meta-shr/COPYING.MIT;md5=3da9cfbcb788c80a0384361b4de20420"
+LIC_FILES_CHKSUM = "file://${COREBASE}/meta/COPYING.MIT;md5=3da9cfbcb788c80a0384361b4de20420"
 PV = "0.0.1"
 PR = "r29"
 

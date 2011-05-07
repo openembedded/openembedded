@@ -1,6 +1,7 @@
 DESCRIPTION = "An e17 module and a python app for the SHR first run wizard"
 HOMEPAGE = "http://shr-project.org"
-LICENSE = "GPL"
+LICENSE = "GPLv3"
+LIC_FILES_CHKSUM = "file://COPYING;md5=d32239bcb673463ab874e80d47fae504"
 DEPENDS = "e-wm"
 RDEPENDS_${PN} = "python-elementary shr-settings python-phoneutils e-wm python-dbus python-edbus"
 SECTION = "x11/application"

@@ -1,7 +1,8 @@
 DESCRIPTION = "An e17 module for a lot of needed shr-gadgets"
 HOMEPAGE = "http://shr-project.org"
-LICENSE = "BSD"
-DEPENDS = "e-wm"
+LICENSE = "GPLv3"
+LIC_FILES_CHKSUM = "file://COPYING;md5=d32239bcb673463ab874e80d47fae504"
+DEPENDS = "e-wm elementary"
 RDEPENDS_${PN} = "e-wm"
 SECTION = "x11/application"
 

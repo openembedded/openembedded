@@ -1,17 +1,18 @@
 DESCRIPTION = "SHR splash screen"
 SECTION = "x11/data"
 LICENSE = "MIT BSD"
-SRCREV = "0375bf2b66a053dd490774004c56b5d949f02ac8"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=f523ab5986cc79b52a90d2ac3d5454a2"
+SRCREV = "290dbca51030ff585bb1631be11799e88944e7f9"
 PV = "1.2+gitr${SRCPV}"
 PR = "r7"
 SHR_SPLASH_THEME ?= "shr-splash-theme-logo"
 DEPENDS = "${SHR_SPLASH_THEME}"
 RRECOMMENDS_${PN} = "${SHR_SPLASH_THEME}"
 
-inherit update-rc.d
+inherit update-rc.d gettext
 
-SRC_URI = "git://git.shr-project.org/repo/shr.git;protocol=http;branch=master"
-
+SRC_URI = "git://git.shr-project.org/repo/shr.git;protocol=http;branch=master \
+"
 S = "${WORKDIR}/git/${PN}"
 
 FILES_${PN} = "${datadir}/shr-splash \

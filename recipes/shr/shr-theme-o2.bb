@@ -3,7 +3,9 @@ SECTION = "x11/data"
 HOMEPAGE = "http://jmccloud.jm.funpic.de"
 AUTHOR = "Jesus McCloud <bernd.pruenster@gmail.com"
 RDEPENDS_${PN} = "phoneui-shr-theme-o2 elementary-theme-o2"
-LICENSE = "unknown"
+LICENSE = "MIT"
+LIC_FILES_CHKSUM = "file://${COREBASE}/meta/COPYING.MIT;md5=3da9cfbcb788c80a0384361b4de20420"
+
 PR = "r2"
 PACKAGE_ARCH = "all"
 

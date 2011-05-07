@@ -1,6 +1,7 @@
 DESCRIPTION = "The PhoneUI app starters"
 HOMEPAGE = "http://shr-project.org/"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
+LIC_FILES_CHKSUM = "file://COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 SECTION = "x11/applications"
 DEPENDS += "dbus-glib"
 SRCREV = "7d72f9065bcdf6950b04c60ad9183aef20dc2242"

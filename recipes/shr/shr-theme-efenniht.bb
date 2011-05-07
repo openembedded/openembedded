@@ -3,6 +3,8 @@ SECTION = "x11/data"
 HOMEPAGE = "http://trac.enlightenment.org/e/wiki/Themes#Efenniht"
 AUTHOR = ""
 RDEPENDS_${PN} = "elementary-theme-efenniht e-wm-theme-illume-efenniht"
+LICENSE = "MIT"
+LIC_FILES_CHKSUM = "file://${COREBASE}/meta/COPYING.MIT;md5=3da9cfbcb788c80a0384361b4de20420"
 
 PV = "0.0"
 PACKAGE_ARCH = "all"
