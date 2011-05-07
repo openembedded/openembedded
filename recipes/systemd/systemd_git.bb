@@ -4,11 +4,13 @@ LICENSE = "GPLv2+"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=751419260aa954499f7abaabaa882bbe"
 
 DEPENDS = "readline udev dbus libcap2 libcgroup"
+DEPENDS += "${@base_contains('DISTRO_FEATURES', 'pam', 'libpam', '', d)}"
+
 PRIORITY = "optional"
 SECTION = "base/shell"
 
 PV = "v26"
-PR = "r7"
+PR = "r8"
 PR_append = "+${SRCPV}"
 
 inherit autotools vala update-alternatives
@@ -31,6 +33,7 @@ SYSTEMDDISTRO_angstrom = "angstrom"
 # The gtk+ tools should get built as a separate recipe e.g. systemd-tools
 EXTRA_OECONF = " --with-distro=${SYSTEMDDISTRO} \
                  --with-rootdir=${base_prefix} \
+                 ${@base_contains('DISTRO_FEATURES', 'pam', '--enable-pam', '--disable-pam', d)} \
                  --disable-gtk \
                "
 
