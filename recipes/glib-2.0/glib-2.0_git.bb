@@ -34,6 +34,7 @@ do_install_append() {
 }
 
 PE = "1"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_shr = "1"
@@ -41,6 +42,8 @@ DEFAULT_PREFERENCE_shr = "1"
 DEPENDS = "glib-2.0-native gtk-doc zlib"
 # needed for gdbus-codegen
 RDEPENDS_${PN} = "python-argparse"
+RREPLACES_${PN} = "gdbus-binding-tool"
+RCONFLICTS_${PN} = "gdbus-binding-tool"
 DEPENDS_virtclass-native = "gettext-native gtk-doc-native \
                             pkgconfig-native python-argparse-native"
 
