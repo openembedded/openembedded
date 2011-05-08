@@ -1,11 +1,12 @@
-DESCRIPTION = "Native tools for Qt/[X11|Mac|Embedded] version 4.x"
+DESCRIPTION = "Native version Qt/[X11|Mac|Embedded]"
 DEPENDS = "zlib-native dbus-native"
 SECTION = "libs"
 HOMEPAGE = "http://www.trolltech.com"
 PRIORITY = "optional"
 LICENSE = "GPL"
+PROVIDES = "qt4-tools-native"
 
-INC_PR = "r10"
+INC_PR = "r0"
 
 inherit native
 
@@ -22,11 +23,11 @@ EXTRA_OECONF = "-prefix ${prefix} \
                 -no-libjpeg -no-libpng -no-libmng -no-libtiff \
                 -no-accessibility \
                 -no-cups \
-                -no-exceptions  \
                 -no-nas-sound \
                 -no-nis -no-openssl \
-                -verbose -release -static \
+                -verbose -release \
                 -embedded -no-freetype -no-glib -no-iconv \
+                -exceptions -xmlpatterns \
                 -qt3support"
 
 # yank default -e, otherwise we get the following error:
@@ -41,17 +42,15 @@ TOBUILD = "\
   src/tools/moc \
   src/corelib \
   src/sql \
-  src/dbus \
-  src/qt3support \
   src/xml \
+  src/network \
   src/tools/uic \
   src/tools/rcc \
-  src/network \
+  src/xmlpatterns \
+  src/dbus \
   src/gui \
-  src/tools/uic3 \
-  tools/linguist/lrelease \
-  tools/linguist/lupdate \
-  tools/qdbus \
+  src/testlib \
+  src/qt3support \
 "
 
 do_compile() {
@@ -63,16 +62,7 @@ do_compile() {
 NATIVE_INSTALL_WORKS = "1"
 
 do_install() {
-    install -d ${D}${bindir}/
-    install -m 0755 bin/qmake ${D}${bindir}/qmake2
-    for i in moc uic uic3 rcc lrelease lupdate qdbuscpp2xml qdbusxml2cpp; do
-        install -m 0755 bin/${i} ${D}${bindir}/${i}4
+    for i in ${TOBUILD}; do
+        cd ${S}/$i && oe_runmake install INSTALL_ROOT=${D}
     done
-    
-    install -d ${D}${datadir}/qt4/
-    cp -PfR mkspecs ${D}${datadir}/qt4/
-    ln -sf linux-g++ ${D}${datadir}/qt4/mkspecs/${BUILD_OS}-oe-g++
-    cp -f ${WORKDIR}/g++.conf ${WORKDIR}/linux.conf ${D}${datadir}/qt4/mkspecs/common/
-
-    install -m 0644 tools/porting/src/q3porting.xml ${D}${datadir}/qt4/
 }

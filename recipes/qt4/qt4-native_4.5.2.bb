@@ -1,4 +1,4 @@
-require qt4-tools-native.inc
+require qt4-native.inc
 
 # Older releases have different source archive name, than .inc
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-linux-opensource-src-${PV}.tar.bz2 \
