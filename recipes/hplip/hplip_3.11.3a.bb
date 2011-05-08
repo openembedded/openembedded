@@ -22,6 +22,10 @@ EXTRA_OECONF = ' \
 # needed by python checks in configure
 EXTRA_OEMAKE = 'BUILD_SYS="" HOST_SYS=""'
 
+do_configure_append() {
+	sed -i -e 's:PYTHONINCLUDEDIR = ${STAGING_INCDIR_NATIVE}/python2.6:PYTHONINCLUDEDIR = ${STAGING_INCDIR}/python2.6:g' Makefile
+}
+
 do_install_prepend() {
 	sed -i -e s:SYSFS:ATTRS:g data/rules/55-hpmud.rules
 	sed -i -e s:SYSFS:ATTRS:g data/rules/56-hpmud_support.rules
