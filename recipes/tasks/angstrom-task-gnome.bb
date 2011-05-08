@@ -12,7 +12,7 @@ XSERVER ?= "xserver-xorg \
            xf86-input-keyboard \
 "
 
-PR = "r16"
+PR = "r17"
 
 PACKAGES += "task-gnome-apps task-gnome-sdk task-gnome-fonts task-gnome task-gnome-gstreamer task-gnome-perl task-gnome-cups task-gnome-pulseaudio task-gnome-themes task-gnome-totem task-gnome-xserver-base task-gnome-xserver"
 
@@ -155,7 +155,7 @@ RDEPENDS_task-gnome-cups = " \
   gnome-cups-manager \
   gtk-printbackend-cups \
   hal-cups-utils \
-#  hplip hplip-ppd hplip-cups hplip-backend hplip-filter\
+  hplip hplip-ppd hplip-cups hplip-backend hplip-filter\
  "
 
 RDEPENDS_task-gnome-pulseaudio = " \
