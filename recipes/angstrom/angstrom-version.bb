@@ -1,8 +1,9 @@
 LICENSE = "MIT"
+LIC_FILES_CHKSUM = "file://${COREBASE}/LICENSE;md5=3f40d7994397109285ec7b81fdeb3b58"
 
 PV = "${DISTRO_VERSION}"
-PR = "r7"
-PE = "1"
+PR = "r9"
+PE = "2"
 
 SRC_URI = "file://lsb_release"
 
