@@ -4,7 +4,7 @@ DEPENDS += " libphone-ui evas ecore edje edje-native elementary"
 SRCREV = "e50e9927fac05664bf1d6b1e0d3a953484038495"
 PE = "1"
 PV = "0.0.1+gitr${SRCPV}"
-PR = "r3"
+PR = "r4"
 LICENSE = "LGPLv2.1"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=4fbd65380cdd255951079008b364516c"
 
