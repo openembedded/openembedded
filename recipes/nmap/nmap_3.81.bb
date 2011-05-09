@@ -1,9 +1,9 @@
 DESCRIPTION = "Nmap is a command line portscanner."
 HOMEPAGE = "http://www.insecure.org/nmap/"
 SECTION = "console/network"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 DEPENDS = "libpcap libpcre"
-PR = "r2"
+PR = "r3"
 
 inherit autotools
 
