@@ -1,5 +1,5 @@
 DESCRIPTION = "SHR Feed"
-PR = "r99"
+PR = "r100"
 PV = "1.0"
 LICENSE = "GPL"
 
@@ -100,7 +100,7 @@ RDEPENDS_${PN} += "\
 		intone \
 		vim \
 		vpnc \
-		emacs-x11 \
+#broken 2011-05-09	emacs-x11 \
 		mg \
 		mcabber \
 		gdb \
@@ -146,7 +146,7 @@ RDEPENDS_${PN} += "\
 		wxwidgets \
 		x11vnc \
 #		libswt3.4-gtk-java \
-		cacao \
+#broken 2011-05-09	cacao \
 		openjdk-6-jre \
 #		jamvm \
 		dbus-x11 \
@@ -249,7 +249,7 @@ RDEPENDS_${PN} += "\
 		aceofpenguins-launcher \
 		om-neon \
 		ipython \
- 		phoneme-advanced-foundation \
+#broken 2011-05-09	phoneme-advanced-foundation \
 		eve \
 		python-pybluez \
 		x11perf \
