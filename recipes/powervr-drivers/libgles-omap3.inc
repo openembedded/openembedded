@@ -1,7 +1,7 @@
 DESCRIPTION = "libGLES for the omap3"
 LICENSE = "proprietary-binary"
 
-PR = "r13"
+PR = "r14"
 
 COMPATIBLE_MACHINE = "(omap3|ti816x)"
 
