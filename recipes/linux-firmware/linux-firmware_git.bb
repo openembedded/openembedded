@@ -1,8 +1,8 @@
 DESCRIPTION = "Firmware files for use with Linux kernel"
 
-PR = "r1"
+PR = "r2"
 PR_append = "+gitr${SRCREV}"
-SRCREV = "c2e530abf58116fbc4eb3baedeb5b3ed092b2c8a"
+SRCREV = "dbb6a54ba8c8d6e6673a3b86ea4c4aac78c808f0"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/dwmw2/linux-firmware.git;protocol=git"
 
@@ -17,11 +17,12 @@ do_install() {
 	cp -RpP * ${D}/lib/firmware/
 
 	# fixup wl12xx location
-	mv ${D}/lib/firmware/ti-connectivity/* ${D}/lib/firmware 
+	( cd ${D}/lib/firmware
+	ln -sf ti-connectivity/* . )
 }
 
 PACKAGES =+ "${PN}-wl12xx"
-FILES_${PN}-wl12xx = "/lib/firmware/wl12*"
+FILES_${PN}-wl12xx = "/lib/firmware/wl12* /lib/firmware/TI* /lib/firmware/ti-connectivity"
 
 FILES_${PN} += "/lib/firmware/*"
 PACKAGE_ARCH = "all"
