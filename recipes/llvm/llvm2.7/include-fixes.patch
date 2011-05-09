@@ -1,0 +1,55 @@
+Fixes stricter includes which result in failures like this:
+error: 'ptrdiff_t' does not name a type
+
+Upstream-Status: Unknown, not submitted as 2.7 is very old
+
+Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
+
+Index: llvm-2.7/include/llvm/ADT/SmallVector.h
+===================================================================
+--- llvm-2.7.orig/include/llvm/ADT/SmallVector.h	2011-05-08 17:07:09.000000000 +0200
++++ llvm-2.7/include/llvm/ADT/SmallVector.h	2011-05-08 17:07:25.000000000 +0200
+@@ -19,6 +19,7 @@
+ #include <cassert>
+ #include <cstring>
+ #include <memory>
++#include <stddef.h>
+ 
+ #ifdef _MSC_VER
+ namespace std {
+Index: llvm-2.7/include/llvm/ADT/ilist.h
+===================================================================
+--- llvm-2.7.orig/include/llvm/ADT/ilist.h	2011-05-08 20:24:57.000000000 +0200
++++ llvm-2.7/include/llvm/ADT/ilist.h	2011-05-08 20:25:12.000000000 +0200
+@@ -40,6 +40,7 @@
+ 
+ #include <cassert>
+ #include <iterator>
++#include <stddef.h>
+ 
+ namespace llvm {
+ 
+Index: llvm-2.7/include/llvm/Use.h
+===================================================================
+--- llvm-2.7.orig/include/llvm/Use.h	2011-05-08 20:28:21.000000000 +0200
++++ llvm-2.7/include/llvm/Use.h	2011-05-08 20:28:37.000000000 +0200
+@@ -28,6 +28,7 @@
+ #include "llvm/Support/Casting.h"
+ #include "llvm/ADT/PointerIntPair.h"
+ #include <iterator>
++#include <stddef.h>
+ 
+ namespace llvm {
+ 
+Index: llvm-2.7/include/llvm/ADT/DenseMap.h
+===================================================================
+--- llvm-2.7.orig/include/llvm/ADT/DenseMap.h	2011-05-08 20:32:11.000000000 +0200
++++ llvm-2.7/include/llvm/ADT/DenseMap.h	2011-05-08 20:32:21.000000000 +0200
+@@ -23,6 +23,7 @@
+ #include <utility>
+ #include <cassert>
+ #include <cstring>
++#include <stddef.h>
+ 
+ namespace llvm {
+ 
