@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.linphone.org/?lang=us"
 SECTION = "x11/utils"
 LICENSE = "GPLv2"
 
-PR = "r3"
+PR = "r4"
 
 DEPENDS = "intltool libosip2 speex libogg alsa-lib readline libexosip2 gtk+ libglade"
 DEPENDS_${PN} = "liblinphone libglade gtk+"
@@ -23,6 +23,7 @@ PROVIDES += "linphone linphonec liblinphone"
 SRC_URI = "http://download.savannah.nongnu.org/releases/linphone/3.1.x/sources/linphone-${PV}.tar.gz \
 	file://b64_assert.patch \
 	file://preferences-segv.patch \
+	file://fix.unused.variable.patch \
 	"
 
 S = "${WORKDIR}/linphone-${PV}"
