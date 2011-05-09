@@ -30,7 +30,7 @@ fi
 # Try to enable triple buffering when there's enough VRAM
 fbset -vyres $(expr $YRES \* 3) 
 
-function sgxprepare {
+sgxprepare () {
 	echo Starting PVR
 	insmod $(busybox find /lib/modules/$(uname -r) -name "pvrsrvkm.ko")
 	modprobe omaplfb
@@ -51,7 +51,7 @@ function sgxprepare {
 	SAVED_ESREVISION="$(cat /etc/powervr-esrev)"
 }
 
-function sgxfinish {
+sgxfinish () {
 	if [ "${ES_REVISION}" != "${SAVED_ESREVISION}" ] ; then
 		echo -n "Starting SGX fixup for"
 		echo " ES${ES_REVISION}.x"
