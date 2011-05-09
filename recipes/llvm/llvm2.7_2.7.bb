@@ -1,6 +1,6 @@
 require llvm.inc
 
-PR = "r9"
+PR = "r10"
 
 DEPENDS = "llvm-common llvm2.7-native"
 
@@ -15,6 +15,7 @@ SRC_URI += "\
   file://r104652-VFPLoadStoreMultiple.patch \
   file://r104653-BFC-BFI.patch \
   file://rawMOVLRPC.patch \
+  file://include-fixes.patch \
   "
 
 LLVM_RELEASE = "2.7"
