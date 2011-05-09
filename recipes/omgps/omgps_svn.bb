@@ -6,10 +6,12 @@ DEPENDS = "gtk+ python-pygobject dbus-glib"
 #PACKAGES = "${PN}-dbg ${PN}"
 SRCREV = "109"
 PV = "0.1+svnr${SRCPV}"
-PR = "r1"
+PR = "r2"
 S = "${WORKDIR}/${PN}"
 SRC_URI = "svn://omgps.googlecode.com/svn/trunk;module=omgps;proto=http \
            file://gcc-4.4.patch \
-	   file://sysfs.node.2.6.32.patch"
+	   file://sysfs.node.2.6.32.patch \
+	   file://fix.capability.patch \
+"
 
 inherit autotools
