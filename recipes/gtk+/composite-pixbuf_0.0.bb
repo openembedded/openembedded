@@ -1,6 +1,7 @@
 DESCRIPTION = "Pixbuf performance test"
-LICENSE = "Public domain"
+LICENSE = "PD"
 DEPENDS = "gtk+" 
+PR = "r1"
 
 SRC_URI = "http://amelang.net/composite_pixbuf.c"
 

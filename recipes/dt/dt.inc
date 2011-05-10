@@ -3,8 +3,8 @@ operation of peripherals, file systems, device drivers, or any data stream suppo
 operating system."
 SECTION = "console/tests"
 HOMEPAGE = "http://home.comcast.net/~SCSIguy/SCSI_FAQ/RMiller_Tools/dt.html"
-LICENSE = "Public domain"
-INC_PR = "r0"
+LICENSE = "PD"
+INC_PR = "r1"
 
 SRC_URI = "http://home.comcast.net/~SCSIguy/SCSI_FAQ/RMiller_Tools/ftp/dt/dt-source.tar.gz"
 S = "${WORKDIR}/dt.d"

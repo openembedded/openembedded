@@ -2,11 +2,11 @@ DESCRIPTION = "mesa demo applications"
 HOMEPAGE = "http://mesa3d.org"
 SECTION = "x11"
 
-LICENSE = "MIT & PD"
+LICENSE = "MIT PD"
 
 DEPENDS = "virtual/libx11 virtual/libgl libglew"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.freedesktop.org/pub/mesa/demos/${PV}/${PN}-${PV}.tar.bz2"
 

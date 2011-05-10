@@ -1,6 +1,8 @@
 DESCRIPTION = "Java XML parser and transformer APIs (DOM, SAX, JAXP, TrAX)"
-LICENSES = "AL2.0 W3C Public Domain"
+LICENSES = "AL2.0 W3C PD"
 AUTHOR = "Apache Software Foundation"
+
+PR = "r1"
 
 SRC_URI = "http://archive.apache.org/dist/xml/commons/source/xml-commons-external-${PV}-src.tar.gz;subdir=${BPN}-${PV}"
 

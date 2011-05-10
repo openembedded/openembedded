@@ -1,7 +1,9 @@
 DESCRIPTION = "Framework for constructing recognizers, interpreters, compilers, and translators"
 # see http://www.antlr2.org/license.html
-LICENSE = "Public Domain"
+LICENSE = "PD"
 HOMEPAGE = "http://www.antlr2.org"
+
+PR = "r1"
 
 SRC_URI = "http://www.antlr2.org/download/${BP}.tar.gz"
 

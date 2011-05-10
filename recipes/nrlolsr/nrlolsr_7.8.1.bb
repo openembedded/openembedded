@@ -1,6 +1,8 @@
 DESCRIPTION = "NRL OLSR - added to OE to support the Maniac Challenge (http://www.maniacchallenge.org/)"
 SECTION = "applications"
-LICENSE = "Public Domain"
+LICENSE = "PD"
+
+PR = "r1"
 
 S="${WORKDIR}/nrlolsr/"
 
