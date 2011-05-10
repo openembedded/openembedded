@@ -1,6 +1,7 @@
-diff -r c7bf150bfa46 src/threads/posix/mutex-posix.hpp
---- a/src/threads/posix/mutex-posix.hpp	Fri Mar 11 23:35:56 2011 +0100
-+++ b/src/threads/posix/mutex-posix.hpp	Fri Apr 01 16:16:07 2011 +0200
+Index: cacao/src/threads/posix/mutex-posix.hpp
+===================================================================
+--- cacao.orig/src/threads/posix/mutex-posix.hpp	2011-03-08 13:13:00.000000000 +0100
++++ cacao/src/threads/posix/mutex-posix.hpp	2011-05-10 11:51:48.534869875 +0200
 @@ -53,6 +53,9 @@
  
  	inline void lock();
@@ -80,9 +81,10 @@ diff -r c7bf150bfa46 src/threads/posix/mutex-posix.hpp
  #else
  
  // This structure must have the same layout as the class above.
-diff -r c7bf150bfa46 src/threads/posix/thread-posix.cpp
---- a/src/threads/posix/thread-posix.cpp	Fri Mar 11 23:35:56 2011 +0100
-+++ b/src/threads/posix/thread-posix.cpp	Fri Apr 01 16:16:07 2011 +0200
+Index: cacao/src/threads/posix/thread-posix.cpp
+===================================================================
+--- cacao.orig/src/threads/posix/thread-posix.cpp	2011-03-17 10:41:29.000000000 +0100
++++ cacao/src/threads/posix/thread-posix.cpp	2011-05-10 11:51:48.534869875 +0200
 @@ -74,6 +74,23 @@
  #include "vm/string.hpp"
  #include "vm/vm.hpp"
@@ -107,9 +109,10 @@ diff -r c7bf150bfa46 src/threads/posix/thread-posix.cpp
  #if defined(ENABLE_STATISTICS)
  # include "vm/statistics.h"
  #endif
-diff -r c7bf150bfa46 src/vm/vm.cpp
---- a/src/vm/vm.cpp	Fri Mar 11 23:35:56 2011 +0100
-+++ b/src/vm/vm.cpp	Fri Apr 01 16:16:07 2011 +0200
+Index: cacao/src/vm/vm.cpp
+===================================================================
+--- cacao.orig/src/vm/vm.cpp	2011-03-17 10:41:29.000000000 +0100
++++ cacao/src/vm/vm.cpp	2011-05-10 11:56:36.564882762 +0200
 @@ -52,6 +52,7 @@
  
  #include "native/vm/nativevm.hpp"
@@ -141,12 +144,10 @@ diff -r c7bf150bfa46 src/vm/vm.cpp
  
  /* vm_run **********************************************************************
  
-@@ -1865,6 +1882,15 @@
+@@ -1865,6 +1882,13 @@
  
  void vm_shutdown(s4 status)
  {
-+	log_println("vm_shutdown");
-+
 +	if (VM::get_current()->shutdown_guard())
 +	{
 +		/* Shutdown in progress by another thread already.
@@ -157,9 +158,10 @@ diff -r c7bf150bfa46 src/vm/vm.cpp
  	if (opt_verbose 
  #if defined(ENABLE_STATISTICS)
  		|| opt_getcompilingtime || opt_stat
-diff -r c7bf150bfa46 src/vm/vm.hpp
---- a/src/vm/vm.hpp	Fri Mar 11 23:35:56 2011 +0100
-+++ b/src/vm/vm.hpp	Fri Apr 01 16:16:07 2011 +0200
+Index: cacao/src/vm/vm.hpp
+===================================================================
+--- cacao.orig/src/vm/vm.hpp	2011-03-08 13:13:00.000000000 +0100
++++ cacao/src/vm/vm.hpp	2011-05-10 11:51:48.554844342 +0200
 @@ -64,6 +64,7 @@
  	bool    _initializing;
  	bool    _created;
