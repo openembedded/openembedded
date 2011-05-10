@@ -2,6 +2,7 @@ PR = "r0"
 require u-boot.inc
 
 DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_overo = "1"
 
 SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2 "
 SRC_URI[md5sum] = "91d02124c94368557d0e9ac05fb8c33f"
