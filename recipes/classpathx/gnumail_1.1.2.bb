@@ -1,5 +1,5 @@
 DESCRIPTION = "GNU's free implementation of the JavaMail API specification"
-LICENSE = "GPL + library exception"
+LICENSE = "GPL+libraryexception"
 AUTHOR = "GNU ClasspathX"
 
 SRC_URI = "\
@@ -14,7 +14,7 @@ S = "${WORKDIR}/mail-${PV}"
 DEPENDS = "fastjar-native gnujaf inetlib"
 DEPENDS_virtclass-native = "fastjar-native gnujaf-native inetlib-native"
 
-PR = "r1"
+PR = "r2"
 
 export JAVAC = "${STAGING_BINDIR_NATIVE}/javac"
 export JAVA = "${STAGING_BINDIR_NATIVE}/java"

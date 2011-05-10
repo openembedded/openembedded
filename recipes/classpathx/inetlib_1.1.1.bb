@@ -1,5 +1,5 @@
 DESCRIPTION = "A Java library of clients for common internet protocols"
-LICENSE = "GPL + library exception"
+LICENSE = "GPL+libraryexception"
 AUTHOR = "GNU Classpath"
 HOMEPAGE = "http://gnu.org/software/classpath/inetlib.html"
 
@@ -12,7 +12,7 @@ inherit java-library autotools
 
 DEPENDS = "fastjar-native"
 
-PR = "r1"
+PR = "r2"
 
 JPN = "libgnuinet-java"
 

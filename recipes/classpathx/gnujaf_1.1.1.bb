@@ -1,5 +1,5 @@
 DESCRIPTION = "Provides a mean to type data and locate components suitable for performing various kinds of action on it."
-LICENSE = "GPL + library exception"
+LICENSE = "GPL+libraryexception"
 AUTHOR = "GNU ClasspathX"
 
 SRC_URI = "\
@@ -12,7 +12,7 @@ inherit autotools java-library
 
 S = "${WORKDIR}/activation-${PV}"
 
-PR = "r1"
+PR = "r2"
 
 export JAVAC = "javac"
 

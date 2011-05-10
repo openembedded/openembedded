@@ -1,5 +1,5 @@
 DESCRIPTION = "A commercial quality OCR engine "
-LICENSE = "APL + others"
+LICENSE = "APL others"
 
 DEPENDS = "tiff"
 

@@ -1,5 +1,5 @@
 DESCRIPTION = "This package contains various hardware identification and configuration data, such as the pci.ids database, or the XFree86/xorg Cards database. It's needed for the kudzu hardware detection."
-LICENSE = "GPL + X11"
+LICENSE = "GPL X11"
 
 PR = "r1"
 

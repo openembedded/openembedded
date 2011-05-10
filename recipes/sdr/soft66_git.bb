@@ -1,5 +1,5 @@
 DESCRIPTION = "Library and tools for Soft66ADD and related SDR radio receivers"
-LICENSE = "GPLv3 + LGPLv3"
+LICENSE = "GPLv3 LGPLv3"
 
 DEPENDS = "libftdi"
 

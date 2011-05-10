@@ -1,5 +1,5 @@
 DESCRIPTION =	"GTK+ enlightenment theme adjusted for GPE"
-LICENSE = 	"MIT + GPL"
+LICENSE = 	"MIT GPL"
 PR =		"r1"
 
 #it doesn't really depends on it, but it's nice to make OE build it
