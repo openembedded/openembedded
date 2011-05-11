@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.foxtrotgps.org/"
 SECTION = "x11/applications"
 LICENSE = "GPLv2"
 PRIORITY = "optional"
-DEPENDS = "curl gtk+ gconf sqlite3 libexif"
+DEPENDS = "curl gtk+ gconf libglade sqlite3 libexif"
 
 SRC_URI = "http://www.foxtrotgps.org/releases/${P}.tar.gz"
 
