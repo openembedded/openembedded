@@ -3,13 +3,14 @@ DESCRIPTION = "Tools for performance analysis."
 LICENSE = "GPL"
 RDEPENDS_${PN} = "debianutils"
 
-PR = "r3"
+PR = "r4"
 
 inherit autotools
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lmbench/lmbench-${PV}.tgz \
 	   file://lmbench-run \
-          file://rename-line-binary.patch"
+	   file://rename-line-binary.patch \
+	   file://update-results-script.patch"
 SRC_URI[md5sum] = "b3351a3294db66a72e2864a199d37cbf"
 SRC_URI[sha256sum] = "cbd5777d15f44eab7666dcac418054c3c09df99826961a397d9acf43d8a2a551"
 
@@ -40,24 +41,23 @@ do_compile () {
 	fi
 	install -d ${S}/bin/${TARGET_SYS}
 	oe_runmake -C src
-	sed -i -e 's,^SHAREDIR=.*$,SHAREDIR=${datadir}/${PN},;' \
-	       -e 's,^BINDIR=.*$,BINDIR=${libdir}/${PN},;' ${WORKDIR}/lmbench-run
 }
 
 do_install () {
-        mkdir -p ${D}${libdir}/lmbench
+	install -d ${D}${localstatedir}/run/lmbench \
+		   ${D}${bindir} ${D}${mandir} ${D}${libdir}/lmbench \
+		   ${D}${datadir}/lmbench/scripts
 	oe_runmake 'BASE=${D}${prefix}' \
 		    -C src install
-	install -d ${D}${localstatedir}/lib/lmbench/config \
-		   ${D}${localstatedir}/run/lmbench \
-		   ${D}${bindir}
-	install -m 0755 ${WORKDIR}/lmbench-run ${D}${bindir}/
-	mkdir -p ${D}${mandir}
-	mv ${D}${prefix}/man/* ${D}${mandir}/
-	install -m 0755 ${S}/scripts/lmbench ${D}${bindir}
-	install -d ${D}${datadir}/lmbench/scripts
-	install -m 0755 ${S}/scripts/* ${D}${datadir}/lmbench/scripts
 	mv ${D}${bindir}/line ${D}${bindir}/lm_line
+	mv ${D}${prefix}/man/* ${D}${mandir}/
+	install -m 0755 ${WORKDIR}/lmbench-run ${D}${bindir}/
+	sed -i -e 's,^SHAREDIR=.*$,SHAREDIR=${datadir}/${PN},;' \
+	       -e 's,^BINDIR=.*$,BINDIR=${libdir}/${PN},;' \
+	       -e 's,^CONFIG=.*$,CONFIG=$SHAREDIR/`$SCRIPTSDIR/config`,;' \
+	       ${D}${bindir}/lmbench-run
+	install -m 0755 ${S}/scripts/lmbench ${D}${bindir}
+	install -m 0755 ${S}/scripts/* ${D}${datadir}/lmbench/scripts
 }
 
 FILES_${PN} += "${datadir}/lmbench"
