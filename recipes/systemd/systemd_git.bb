@@ -10,7 +10,7 @@ PRIORITY = "optional"
 SECTION = "base/shell"
 
 PV = "v26"
-PR = "r8"
+PR = "r9"
 PR_append = "+${SRCPV}"
 
 inherit autotools vala update-alternatives
@@ -20,8 +20,8 @@ TAG = "7a6000a68241d23c9f6f6bde47b2cfa9c18189da"
 SRC_URI = "git://anongit.freedesktop.org/systemd;protocol=git;tag=${TAG} \
            file://execute.patch \
            file://0001-systemd-disable-xml-file-stuff-and-introspection.patch \
+           file://0002-systemd-analyze-print-hostname-kernelversion-and-arc.patch \
            file://0003-Angstrom-support.patch \
-           file://replace_accpet4.patch \
            file://serial-getty@.service \
           "
 
