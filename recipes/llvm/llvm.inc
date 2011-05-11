@@ -20,12 +20,16 @@
 DESCRIPTION = "The Low Level Virtual Machine"
 HOMEPAGE = "http://llvm.org"
 
+BBCLASSEXTEND = "native"
+
 DEPENDS = "llvm-common llvm${LLVM_RELEASE}-native"
+DEPENDS_virtclass-native = "llvm-common-native cmake-native perl-native"
+
 
 # 3-clause BSD-like
 LICENSE = "University of Illinois/NCSA Open Source License"
 
-SRC_URI = "http://llvm.org/releases/${PV}/llvm-${PV}.tar.gz"
+SRC_URI = "http://llvm.org/releases/${PV}/llvm-${PV}.tgz"
 
 S = "${WORKDIR}/llvm-${PV}"
 
@@ -63,12 +67,30 @@ EXTRA_OECMAKE = "\
 # We need to reset this to avoid breakage as we build out of tree
 TOOLCHAIN_OPTIONS = ""
 
-PACKAGES = "${PN} ${PN}-dev ${PN}-dbg ${PN}-doc"
+PACKAGES = "${PN}-dbg ${PN}-doc ${PN}-dev ${PN}"
 
 PACKAGES_DYNAMIC = "llvm-*"
 
+
+# the difference to the non-native build is that we do not need
+# to declare the location of the tblgen executable.
+EXTRA_OECMAKE_virtclass-native = "\
+  -DLLVM_TARGETS_TO_BUILD=${LLVM_ARCH} \
+  -DCMAKE_LINKER:FILEPATH=${LD} \
+  -DCMAKE_AR:FILEPATH=${AR} \
+  -DCMAKE_OBJCOPY:FILEPATH=${OBJCOPY} \
+  -DCMAKE_OBJDUMP:FILEPATH=${OBJDUMP} \
+  -DCMAKE_RANLIB:FILEPATH=${RANLIB} \
+  -DCMAKE_STRIP:FILEPATH=${STRIP} \
+  -DNM_PATH:FILEPATH=${NM} \
+"
+
+PACKAGES_virtclass-native = ""
+
+PACKAGES_DYNAMIC_virtclass-native = ""
+
 python populate_packages_prepend () {
-        libllvm_libdir = bb.data.expand('${libdir}/', d)
+        libllvm_libdir = bb.data.expand('${libdir}/llvm${LLVM_RELEASE}', d)
 
         do_split_packages(d, libllvm_libdir, '^lib(.*)\.so$', 'libllvm-%s', 'Split package for %s', allow_dirs=True)
 }
@@ -76,32 +98,37 @@ python populate_packages_prepend () {
 FILES_${PN} = ""
 ALLOW_EMPTY_${PN} = "1"
 
-FILES_${PN}-dev = "${includedir} ${bindir}/* ${libdir}/LLVMHello.so"
+FILES_${PN}-dbg += "${libdir}/llvm${LLVM_RELEASE}/.debug ${bindir}/llvm${LLVM_RELEASE}/.debug"
 
-llvm_stage() {
+FILES_${PN}-dev = "${includedir} ${bindir}/* ${libdir}/llvm${LLVM_RELEASE}/LLVMHello.so"
+
+do_install() {
 	# Install into a private directory to be able to reorganize the files.
-	oe_runmake DESTDIR=${WORKDIR}/llvm-install install
+
+        cd ${OECMAKE_BUILDPATH}
+
+        oe_runmake DESTDIR=${WORKDIR}/llvm-install install
 
 	# Create our custom target directories
-	install -d ${STAGING_BINDIR}/llvm${LLVM_RELEASE}
-	install -d ${STAGING_INCDIR}/llvm${LLVM_RELEASE}
-	install -d ${STAGING_LIBDIR}/llvm${LLVM_RELEASE}
+	install -d ${D}${bindir}/llvm${LLVM_RELEASE}
+	install -d ${D}${includedir}/llvm${LLVM_RELEASE}
+	install -d ${D}${libdir}/llvm${LLVM_RELEASE}
 
 	#	Move headers into their own directory
 	cp -R ${WORKDIR}/llvm-install/${prefix}/include/llvm \
-	${STAGING_INCDIR}/llvm${LLVM_RELEASE}/
+	${D}${includedir}/llvm${LLVM_RELEASE}/
 	cp -R ${WORKDIR}/llvm-install/${prefix}/include/llvm-c \
-	${STAGING_INCDIR}/llvm${LLVM_RELEASE}/
+	${D}${includedir}/llvm${LLVM_RELEASE}/
 
 	find ${WORKDIR}/llvm-install/${prefix}/lib -name "*" -maxdepth 1 -exec \
-	install {} ${STAGING_LIBDIR}/llvm${LLVM_RELEASE} \;
+	install {} ${D}${libdir}/llvm${LLVM_RELEASE} \;
 
 	#	I dont know another way out. Binaries are installed into a special subdir
 	find ${WORKDIR}/llvm-install/${prefix}/bin -name "*" -maxdepth 1 -exec \
-	install {} ${STAGING_BINDIR}/llvm${LLVM_RELEASE} \;
+	install {} ${D}${bindir}/llvm${LLVM_RELEASE} \;
 
 	# LLVM does not install this by default.
-	install bin/tblgen ${STAGING_BINDIR}/llvm${LLVM_RELEASE}
+	install bin/tblgen ${D}${bindir}/llvm${LLVM_RELEASE}
 
 	# Fix the paths in the config script to make it find the binaries and
 	# library files. Doing so allows 3rd party configure scripts working
@@ -112,14 +139,15 @@ llvm_stage() {
 		-e's!my.*BINDIR.*!my $BINDIR = "${STAGING_BINDIR}/llvm${LLVM_RELEASE}";!' \
 		bin/llvm-config > bin/llvm-config${LLVM_RELEASE}
 }
+ 
+do_install_append_virtclass-native() {
+        install -d ${D}${bindir}
+        install -m 0755 bin/llvm-config${LLVM_RELEASE} ${D}${bindir}
+}
 
-do_stage() {
-  cd ${OECMAKE_BUILDPATH}
-
-  llvm_stage
-
-  install -d ${STAGING_BINDIR_CROSS}
-  install -m 0755 bin/llvm-config${LLVM_RELEASE} ${STAGING_BINDIR_CROSS}
+do_install_append() {
+        install -d ${SYSROOT_DESTDIR}${STAGING_BINDIR_CROSS}/
+        install -m 0755 bin/llvm-config${LLVM_RELEASE} ${SYSROOT_DESTDIR}${STAGING_BINDIR_CROSS}
 }
 
 # Retrieve the target in a way that is compatible to the arch
