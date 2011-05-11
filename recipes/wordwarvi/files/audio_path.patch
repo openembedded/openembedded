@@ -1,0 +1,13 @@
+Index: wordwarvi-0.26/wwviaudio.c
+===================================================================
+--- wordwarvi-0.26.orig/wwviaudio.c	2011-05-11 12:06:23.340290268 +0200
++++ wordwarvi-0.26/wwviaudio.c	2011-05-11 12:08:42.310290291 +0200
+@@ -124,7 +124,7 @@
+ 	strncpy(filebuf, filename, PATH_MAX);
+ 	rc = stat(filebuf, &statbuf);
+ 	if (rc != 0) {
+-		snprintf(filebuf, PATH_MAX, "%s", filename);
++		snprintf(filebuf, PATH_MAX, "%s/%s", DATADIR ,filename);
+ 		rc = stat(filebuf, &statbuf);
+ 		if (rc != 0) {
+ 			fprintf(stderr, "stat('%s') failed.\n", filebuf);

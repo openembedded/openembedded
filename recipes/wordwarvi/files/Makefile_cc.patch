@@ -1,0 +1,54 @@
+Index: wordwarvi-0.26/Makefile
+===================================================================
+--- wordwarvi-0.26.orig/Makefile	2011-05-10 23:19:17.639705496 +0200
++++ wordwarvi-0.26/Makefile	2011-05-10 23:26:55.199705605 +0200
+@@ -21,6 +21,9 @@
+ OGGOBJ=
+ endif
+ 
++CC ?= gcc
++BUILD_CC ?= gcc
++
+ # DEBUG=-g
+ # DEBUG=
+ # PROFILE_FLAG=-pg
+@@ -50,32 +53,32 @@
+ endif
+ 
+ joystick.o:	joystick.c joystick.h Makefile
+-	gcc ${DEBUG} ${PROFILE_FLAG} ${OPTIMIZE_FLAG} -pthread -Wall -c joystick.c
++	$(CC) ${DEBUG} ${PROFILE_FLAG} ${OPTIMIZE_FLAG} -pthread -Wall -c joystick.c
+ 
+ ogg_to_pcm.o:	ogg_to_pcm.c ogg_to_pcm.h Makefile
+-	gcc ${DEBUG} ${PROFILE_FLAG} ${OPTIMIZE_FLAG} `pkg-config --cflags vorbisfile` \
++	$(CC) ${DEBUG} ${PROFILE_FLAG} ${OPTIMIZE_FLAG} `pkg-config --cflags vorbisfile` \
+ 		-pthread -Wall -c ogg_to_pcm.c
+ 
+ wwviaudio.o:	wwviaudio.c wwviaudio.h ogg_to_pcm.h my_point.h Makefile
+-	gcc -Wall ${DEBUG} ${PROFILE_FLAG} ${OPTIMIZE_FLAG} \
++	$(CC) -Wall ${DEBUG} ${PROFILE_FLAG} ${OPTIMIZE_FLAG} \
+ 		${DEFINES} \
+ 		-pthread `pkg-config --cflags vorbisfile` \
+ 		-c wwviaudio.c
+ 
+ rumble.o:	rumble.c rumble.h Makefile
+-	gcc ${DEBUG} ${PROFILE_FLAG} ${OPTIMIZE_FLAG} `pkg-config --cflags vorbisfile` \
++	$(CC) ${DEBUG} ${PROFILE_FLAG} ${OPTIMIZE_FLAG} `pkg-config --cflags vorbisfile` \
+ 		-pthread -Wall -c rumble.c
+ 
+ wwvi_font.o:	wwvi_font.c wwvi_font.h my_point.h Makefile
+-	gcc ${DEBUG} ${PROFILE_FLAG} ${OPTIMIZE_FLAG} -pthread -Wall -c wwvi_font.c
++	$(CC) ${DEBUG} ${PROFILE_FLAG} ${OPTIMIZE_FLAG} -pthread -Wall -c wwvi_font.c
+ 
+ stamp:	stamp.c
+-	gcc -o stamp stamp.c	
++	$(BUILD_CC) -o stamp stamp.c
+ 
+ wordwarvi:	wordwarvi.c joystick.o rumble.o ${OGGOBJ} wwviaudio.o wwvi_font.o \
+ 		Makefile version.h stamp levels.h rumble.h
+ 	./stamp > stamp.h
+-	gcc ${DEBUG} ${PROFILE_FLAG} ${OPTIMIZE_FLAG} ${SCREENSAVERFLAG} -pthread -Wall  ${DEFINES} \
++	$(CC) ${DEBUG} ${PROFILE_FLAG} ${OPTIMIZE_FLAG} ${SCREENSAVERFLAG} -pthread -Wall  ${DEFINES} \
+ 		joystick.o \
+ 		rumble.o \
+ 		wwvi_font.o \
