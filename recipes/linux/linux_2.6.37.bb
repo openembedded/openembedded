@@ -22,7 +22,7 @@ DEFAULT_PREFERENCE_ben-nanonote = "1"
 # DEFAULT_PREFERENCE_om-gta01 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.3.bz2;apply=yes;name=stablepatch \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.6.bz2;apply=yes;name=stablepatch \
            file://defconfig "
 
 SRC_URI_append_ben-nanonote = " \
@@ -42,5 +42,5 @@ SRC_URI_append_om-gta01 = " \
 
 SRC_URI[kernel.md5sum] = "c8ee37b4fdccdb651e0603d35350b434"
 SRC_URI[kernel.sha256sum] = "edbf091805414739cf57a3bbfeba9e87f5e74f97e38f04d12060e9e0c71e383a"
-SRC_URI[stablepatch.md5sum] = "c0a38dd3b5bad43d5f5d07ed0fcf3692"
-SRC_URI[stablepatch.sha256sum] = "af6ccb6c85db09e78a85657b1013b2aa1399ef252ce552aafcf25684e6e5ad98"
+SRC_URI[stablepatch.md5sum] = "7bfe7642816c4e506eeb62b73f66c6f0"
+SRC_URI[stablepatch.sha256sum] = "33ca5cd06c715672969c459c21f441d7d6c74cba3304f981a40216e8094337bb"

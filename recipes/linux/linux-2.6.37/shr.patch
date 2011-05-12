@@ -1,25 +1,30 @@
 All patches from shr kernel repository
 rebased on top of openmoko kernel repository
 
-http://gitorious.org/~jama/htc-msm-2-6-32/openmoko-kernel/commits/shr-2.6.37
+https://gitorious.org/shr/linux/commits/shr-2.6.37-nodrm
 
-ccd549e Use 100 as HZ value on S3C24XX
-7afc3f0 wm8753: use snd_soc_jack on neo1973
-4941630 Force GPS power up on resume if it were powered up on suspend
-ef4b55b s3c2410_ts: jitter less touchscreen for glamo, version 4
-dc7bd23 Openmoko resume reason sysfs node ported from 2.6.29
-40e1523 Rename /dev/s3c2410_serialXXX to /dev/ttySACXXX
-41fb019 glamo-display: fix WSOD for 242 timming
-2d81aa9 Enable powering off after 8s POWER press
-743f76b Fix high power consumption in suspend
-3adb6be tslib relies on ts pressures events so this hack is needed to get tslib stuff working
-dcd1e55 ar6000_delay.patch
-f00d735 usbhost.patch
-4633ec7 touchscreen: ignore unexpected interrupts
-1b95598 wm8753: fix build with gcc-4.4.2, which works ok with 4.1.2
+f12719d nand: Fix S3C NAND clok stop
+acf3f89 input: lis302dl: fix the resume path
+4682e58 (AG: there's some more rationale for changing this here
+0737f9a Temporarily rename pcf50633-gpio -> pcf50633-gpio.0
+3d04b2b lis302dl accelerometer driver
+58aa277 Use 100 as HZ value on S3C24XX
+42920dc wm8753: use snd_soc_jack on neo1973
+8d2fadf Force GPS power up on resume if it were powered up on suspend
+3f2ddad s3c2410_ts: jitter less touchscreen for glamo, version 4
+6f5f745 Openmoko resume reason sysfs node ported from 2.6.29
+9b2268e Rename /dev/s3c2410_serialXXX to /dev/ttySACXXX
+8a3a0a2 glamo-display: fix WSOD for 242 timming
+0b6c220 Enable powering off after 8s POWER press
+d96f9c7 Fix high power consumption in suspend
+2475b0a tslib relies on ts pressures events so this hack is needed to get tslib stuff working
+f4fdac1 ar6000_delay.patch
+85ee74f usbhost.patch
+1cbab82 touchscreen: ignore unexpected interrupts
+516ebb8 wm8753: fix build with gcc-4.4.2, which works ok with 4.1.2
 
 diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index d56d21c..fea7f49 100644
+index d56d21c0..fea7f49 100644
 --- a/arch/arm/Kconfig
 +++ b/arch/arm/Kconfig
 @@ -1302,7 +1302,7 @@ source kernel/Kconfig.preempt
@@ -282,10 +287,18 @@ index 0000000..233340a
 +MODULE_AUTHOR("Harald Welte <laforge@openmoko.org>");
 +MODULE_DESCRIPTION("Openmoko Freerunner USBHOST Power Management");
 diff --git a/arch/arm/mach-s3c2440/mach-gta02.c b/arch/arm/mach-s3c2440/mach-gta02.c
-index 450f1f2..b4b60aa 100644
+index 450f1f2..6c2279e 100644
 --- a/arch/arm/mach-s3c2440/mach-gta02.c
 +++ b/arch/arm/mach-s3c2440/mach-gta02.c
-@@ -109,6 +109,7 @@
+@@ -62,6 +62,7 @@
+ 
+ #include <linux/input.h>
+ #include <linux/gpio_keys.h>
++#include <linux/lis302dl.h>
+ 
+ #include <linux/leds.h>
+ #include <linux/leds_pwm.h>
+@@ -109,6 +110,7 @@
  #include <linux/jbt6k74.h>
  #include <linux/glamofb.h>
  #include <linux/mfd/glamo.h>
@@ -293,7 +306,7 @@ index 450f1f2..b4b60aa 100644
  
  static struct pcf50633 *gta02_pcf;
  
-@@ -127,6 +128,10 @@ static long gta02_panic_blink(int state)
+@@ -127,6 +129,10 @@ static long gta02_panic_blink(int state)
  	return delay;
  }
  
@@ -304,7 +317,7 @@ index 450f1f2..b4b60aa 100644
  
  static struct map_desc gta02_iodesc[] __initdata = {
  	{
-@@ -177,6 +182,10 @@ static struct platform_device gta02_pm_gsm_dev = {
+@@ -177,6 +183,10 @@ static struct platform_device gta02_pm_gsm_dev = {
  	.name = "gta02-pm-gsm",
  };
  
@@ -315,7 +328,7 @@ index 450f1f2..b4b60aa 100644
  static struct platform_device gta02_pm_wlan_dev = {
  	.name = "gta02-pm-wlan",
  };
-@@ -186,6 +195,11 @@ static struct regulator_consumer_supply gsm_supply_consumer = {
+@@ -186,6 +196,11 @@ static struct regulator_consumer_supply gsm_supply_consumer = {
  	.supply = "GSM",
  };
  
@@ -327,7 +340,7 @@ index 450f1f2..b4b60aa 100644
  static struct regulator_init_data gsm_supply_init_data = {
  	.constraints = {
  		.min_uV = 3700000,
-@@ -197,6 +211,17 @@ static struct regulator_init_data gsm_supply_init_data = {
+@@ -197,6 +212,17 @@ static struct regulator_init_data gsm_supply_init_data = {
  	.consumer_supplies = &gsm_supply_consumer,
  };
  
@@ -345,7 +358,7 @@ index 450f1f2..b4b60aa 100644
  static struct fixed_voltage_config gsm_supply_config = {
  	.supply_name = "GSM",
  	.microvolts = 3700000,
-@@ -205,6 +230,14 @@ static struct fixed_voltage_config gsm_supply_config = {
+@@ -205,6 +231,14 @@ static struct fixed_voltage_config gsm_supply_config = {
  	.init_data = &gsm_supply_init_data,
  };
  
@@ -360,7 +373,7 @@ index 450f1f2..b4b60aa 100644
  static struct platform_device gta02_gsm_supply_device = {
  	.name = "reg-fixed-voltage",
  	.id = 1,
-@@ -213,6 +246,14 @@ static struct platform_device gta02_gsm_supply_device = {
+@@ -213,6 +247,14 @@ static struct platform_device gta02_gsm_supply_device = {
  	},
  };
  
@@ -375,7 +388,210 @@ index 450f1f2..b4b60aa 100644
  /*
   * we crank down SD Card clock dynamically when GPS is powered
   */
-@@ -498,6 +539,11 @@ static struct regulator_consumer_supply hcldo_consumers[] = {
+@@ -304,6 +346,202 @@ static struct glamo_platform_data gta02_glamo_pdata = {
+ 	.glamo_external_reset = gta02_glamo_external_reset,
+ };
+ 
++/* SPI: Accelerometers attached to SPI of s3c244x */
++
++/*
++ * Situation is that Linux SPI can't work in an interrupt context, so we
++ * implement our own bitbang here.  Arbitration is needed because not only
++ * can this interrupt happen at any time even if foreground wants to use
++ * the bitbang API from Linux, but multiple motion sensors can be on the
++ * same SPI bus, and multiple interrupts can happen.
++ *
++ * Foreground / interrupt arbitration is okay because the interrupts are
++ * disabled around all the foreground SPI code.
++ *
++ * Interrupt / Interrupt arbitration is evidently needed, otherwise we
++ * lose edge-triggered service after a while due to the two sensors sharing
++ * the SPI bus having irqs at the same time eventually.
++ *
++ * Servicing is typ 75 - 100us at 400MHz.
++ */
++
++/* #define DEBUG_SPEW_MS */
++#define MG_PER_SAMPLE 18
++
++struct lis302dl_platform_data lis302_pdata_top;
++struct lis302dl_platform_data lis302_pdata_bottom;
++
++/*
++ * generic SPI RX and TX bitbang
++ * only call with interrupts off!
++ */
++
++static void __gta02_lis302dl_bitbang(struct lis302dl_info *lis, u8 *tx,
++					     int tx_bytes, u8 *rx, int rx_bytes)
++{
++	struct lis302dl_platform_data *pdata = lis->pdata;
++	int n;
++	u8 shifter = 0;
++	unsigned long other_cs;
++
++	/*
++	 * Huh... "quirk"... CS on this device is not really "CS" like you can
++	 * expect.
++	 *
++	 * When it is 0 it selects SPI interface mode.
++	 * When it is 1 it selects I2C interface mode.
++	 *
++	 * Because we have 2 devices on one interface we have to make sure
++	 * that the "disabled" device (actually in I2C mode) don't think we're
++	 * talking to it.
++	 *
++	 * When we talk to the "enabled" device, the "disabled" device sees
++	 * the clocks as I2C clocks, creating havoc.
++	 *
++	 * I2C sees MOSI going LOW while CLK HIGH as a START action, thus we
++	 * must ensure this is never issued.
++	 */
++
++	if (&lis302_pdata_top == pdata)
++		other_cs = lis302_pdata_bottom.pin_chip_select;
++	else
++		other_cs = lis302_pdata_top.pin_chip_select;
++
++	s3c2410_gpio_setpin(other_cs, 1);
++	s3c2410_gpio_setpin(pdata->pin_chip_select, 1);
++	s3c2410_gpio_setpin(pdata->pin_clk, 1);
++	s3c2410_gpio_setpin(pdata->pin_chip_select, 0);
++
++	/* send the register index, r/w and autoinc bits */
++	for (n = 0; n < (tx_bytes << 3); n++) {
++		if (!(n & 7))
++			shifter = ~tx[n >> 3];
++		s3c2410_gpio_setpin(pdata->pin_clk, 0);
++		s3c2410_gpio_setpin(pdata->pin_mosi, !(shifter & 0x80));
++		s3c2410_gpio_setpin(pdata->pin_clk, 1);
++		shifter <<= 1;
++	}
++
++	for (n = 0; n < (rx_bytes << 3); n++) { /* 8 bits each */
++		s3c2410_gpio_setpin(pdata->pin_clk, 0);
++		shifter <<= 1;
++		if (s3c2410_gpio_getpin(pdata->pin_miso))
++			shifter |= 1;
++		if ((n & 7) == 7)
++			rx[n >> 3] = shifter;
++		s3c2410_gpio_setpin(pdata->pin_clk, 1);
++	}
++	s3c2410_gpio_setpin(pdata->pin_chip_select, 1);
++	s3c2410_gpio_setpin(other_cs, 1);
++}
++
++
++static int gta02_lis302dl_bitbang_read_reg(struct lis302dl_info *lis, u8 reg)
++{
++	u8 data = 0xc0 | reg; /* read, autoincrement */
++	unsigned long flags;
++
++	local_irq_save(flags);
++
++	__gta02_lis302dl_bitbang(lis, &data, 1, &data, 1);
++
++	local_irq_restore(flags);
++
++	return data;
++}
++
++static void gta02_lis302dl_bitbang_write_reg(struct lis302dl_info *lis, u8 reg,
++									 u8 val)
++{
++	u8 data[2] = { 0x00 | reg, val }; /* write, no autoincrement */
++	unsigned long flags;
++
++	local_irq_save(flags);
++
++	__gta02_lis302dl_bitbang(lis, &data[0], 2, NULL, 0);
++
++	local_irq_restore(flags);
++
++}
++
++
++void gta02_lis302dl_suspend_io(struct lis302dl_info *lis, int resume)
++{
++	struct lis302dl_platform_data *pdata = lis->pdata;
++
++	if (!resume) {
++		 /*
++		 * we don't want to power them with a high level
++		 * because GSENSOR_3V3 is not up during suspend
++		 */
++		s3c2410_gpio_setpin(pdata->pin_chip_select, 0);
++		s3c2410_gpio_setpin(pdata->pin_clk, 0);
++		s3c2410_gpio_setpin(pdata->pin_mosi, 0);
++		/* misnomer: it is a pullDOWN in 2442 */
++		s3c2410_gpio_pullup(pdata->pin_miso, 1);
++		return;
++	}
++
++	/* back to normal */
++	s3c2410_gpio_setpin(pdata->pin_chip_select, 1);
++	s3c2410_gpio_setpin(pdata->pin_clk, 1);
++	/* misnomer: it is a pullDOWN in 2442 */
++	s3c2410_gpio_pullup(pdata->pin_miso, 0);
++
++	s3c2410_gpio_cfgpin(pdata->pin_chip_select, S3C2410_GPIO_OUTPUT);
++	s3c2410_gpio_cfgpin(pdata->pin_clk, S3C2410_GPIO_OUTPUT);
++	s3c2410_gpio_cfgpin(pdata->pin_mosi, S3C2410_GPIO_OUTPUT);
++	s3c2410_gpio_cfgpin(pdata->pin_miso, S3C2410_GPIO_INPUT);
++
++}
++
++
++
++struct lis302dl_platform_data lis302_pdata_top = {
++		.name		= "lis302-1 (top)",
++		.pin_chip_select= S3C2410_GPD(12),
++		.pin_clk	= S3C2410_GPG(7),
++		.pin_mosi	= S3C2410_GPG(6),
++		.pin_miso	= S3C2410_GPG(5),
++		.interrupt	= GTA02_IRQ_GSENSOR_1,
++		.open_drain	= 1, /* altered at runtime by PCB rev */
++		.lis302dl_bitbang = __gta02_lis302dl_bitbang,
++		.lis302dl_bitbang_reg_read = gta02_lis302dl_bitbang_read_reg,
++		.lis302dl_bitbang_reg_write = gta02_lis302dl_bitbang_write_reg,
++		.lis302dl_suspend_io = gta02_lis302dl_suspend_io,
++};
++
++struct lis302dl_platform_data lis302_pdata_bottom = {
++		.name		= "lis302-2 (bottom)",
++		.pin_chip_select= S3C2410_GPD(13),
++		.pin_clk	= S3C2410_GPG(7),
++		.pin_mosi	= S3C2410_GPG(6),
++		.pin_miso	= S3C2410_GPG(5),
++		.interrupt	= GTA02_IRQ_GSENSOR_2,
++		.open_drain	= 1, /* altered at runtime by PCB rev */
++		.lis302dl_bitbang = __gta02_lis302dl_bitbang,
++		.lis302dl_bitbang_reg_read = gta02_lis302dl_bitbang_read_reg,
++		.lis302dl_bitbang_reg_write = gta02_lis302dl_bitbang_write_reg,
++		.lis302dl_suspend_io = gta02_lis302dl_suspend_io,
++};
++
++
++static struct platform_device s3c_device_spi_acc1 = {
++	.name		  = "lis302dl",
++	.id		  = 1,
++	.dev = {
++		.platform_data = &lis302_pdata_top,
++	},
++};
++
++static struct platform_device s3c_device_spi_acc2 = {
++	.name		  = "lis302dl",
++	.id		  = 2,
++	.dev = {
++		.platform_data = &lis302_pdata_bottom,
++	},
++};
++
+ /* JBT6k74 display controller */
+ static void gta02_jbt6k74_probe_completed(struct device *dev)
+  {
+@@ -498,6 +736,11 @@ static struct regulator_consumer_supply hcldo_consumers[] = {
  	},
  };
  
@@ -387,7 +603,7 @@ index 450f1f2..b4b60aa 100644
  struct pcf50633_platform_data gta02_pcf_pdata = {
  	.resumers = {
  		[0] =	PCF50633_INT1_USBINS |
-@@ -534,7 +580,7 @@ struct pcf50633_platform_data gta02_pcf_pdata = {
+@@ -534,7 +777,7 @@ struct pcf50633_platform_data gta02_pcf_pdata = {
  				.min_uV = 1300000,
  				.max_uV = 1600000,
  				.valid_modes_mask = REGULATOR_MODE_NORMAL,
@@ -396,7 +612,7 @@ index 450f1f2..b4b60aa 100644
  				.apply_uV = 1,
  			},
  		},
-@@ -626,6 +672,7 @@ struct pcf50633_platform_data gta02_pcf_pdata = {
+@@ -626,6 +869,7 @@ struct pcf50633_platform_data gta02_pcf_pdata = {
  	},
  	.probe_done = gta02_pmu_attach_child_devices,
  	.mbc_event_callback = gta02_pmu_event_callback,
@@ -404,7 +620,7 @@ index 450f1f2..b4b60aa 100644
  };
  
  
-@@ -728,11 +775,31 @@ static struct s3c2410_hcd_info gta02_usb_info __initdata = {
+@@ -728,11 +972,31 @@ static struct s3c2410_hcd_info gta02_usb_info __initdata = {
  	},
  };
  
@@ -438,15 +654,17 @@ index 450f1f2..b4b60aa 100644
  };
  
  /* Buttons */
-@@ -1073,6 +1140,7 @@ static struct platform_device *gta02_devices[] __initdata = {
+@@ -1073,6 +1337,9 @@ static struct platform_device *gta02_devices[] __initdata = {
  static struct platform_device *gta02_devices_pmu_children[] = {
      &gta02_hdq_device,
  	&gta02_platform_bat,
 +	&gta02_resume_reason_device,
++	&s3c_device_spi_acc1,
++	&s3c_device_spi_acc2,
  };
  
  
-@@ -1102,11 +1170,6 @@ static void gta02_pmu_attach_child_devices(struct pcf50633 *pcf)
+@@ -1102,11 +1369,6 @@ static void gta02_pmu_attach_child_devices(struct pcf50633 *pcf)
  	regulator_has_full_constraints();
  }
  
@@ -458,7 +676,7 @@ index 450f1f2..b4b60aa 100644
  struct gta02_device_children {
  	const char *dev_name;
  	size_t num_children;
-@@ -1116,12 +1179,17 @@ struct gta02_device_children {
+@@ -1116,12 +1378,17 @@ struct gta02_device_children {
  
  static struct platform_device* gta02_pcf50633_gpio_children[] = {
  	&gta02_gsm_supply_device,
@@ -476,7 +694,7 @@ index 450f1f2..b4b60aa 100644
  static struct platform_device* gta02_hdq_children[] = {
  	&bq27000_battery_device,
  };
-@@ -1130,7 +1198,7 @@ static struct platform_device* gta02_hdq_children[] = {
+@@ -1130,7 +1397,7 @@ static struct platform_device* gta02_hdq_children[] = {
  static struct gta02_device_children gta02_device_children[] = {
  	{
  		.dev_name = "pcf50633-gpio.0",
@@ -485,7 +703,7 @@ index 450f1f2..b4b60aa 100644
  		.children = gta02_pcf50633_gpio_children,
  	},
  	{
-@@ -1139,6 +1207,11 @@ static struct gta02_device_children gta02_device_children[] = {
+@@ -1139,6 +1406,11 @@ static struct gta02_device_children gta02_device_children[] = {
  		.children = gta02_gsm_supply_children,
  	},
  	{
@@ -497,6 +715,17 @@ index 450f1f2..b4b60aa 100644
  		.dev_name = "spi2.0",
  		.probed_callback = gta02_jbt6k74_probe_completed,
  	},
+@@ -1228,6 +1500,10 @@ static void __init gta02_machine_init(void)
+ 
+ 	s3c_pm_init();
+ 
++	/* we need push-pull interrupt from motion sensors */
++	lis302_pdata_top.open_drain = 0;
++	lis302_pdata_bottom.open_drain = 0;
++
+ #ifdef CONFIG_CHARGER_PCF50633
+ 	INIT_DELAYED_WORK(&gta02_charger_work, gta02_charger_worker);
+ #endif
 diff --git a/arch/arm/plat-samsung/include/plat/ts.h b/arch/arm/plat-samsung/include/plat/ts.h
 index 26fdb22..f475349 100644
 --- a/arch/arm/plat-samsung/include/plat/ts.h
@@ -543,6 +772,951 @@ index 386d96e..90178d0 100644
  	ret = htcCallbacks.deviceInsertedHandler(hif);
  	if (ret == A_OK)
  		return 0;
+diff --git a/drivers/gpio/pcf50633-gpio.c b/drivers/gpio/pcf50633-gpio.c
+index eb044e8..9dd3735 100644
+--- a/drivers/gpio/pcf50633-gpio.c
++++ b/drivers/gpio/pcf50633-gpio.c
+@@ -206,7 +206,7 @@ static struct platform_driver pcf50633_gpio_driver = {
+ 	.probe = pcf50633_gpio_probe,
+ 	.remove = __devexit_p(pcf50633_gpio_remove),
+ 	.driver = {
+-		.name = "pcf50633-gpio",
++		.name = "pcf50633-gpio.0",
+ 		.owner = THIS_MODULE,
+ 	},
+ };
+diff --git a/drivers/input/misc/Kconfig b/drivers/input/misc/Kconfig
+index e8c0b55..cd31e49 100644
+--- a/drivers/input/misc/Kconfig
++++ b/drivers/input/misc/Kconfig
+@@ -455,4 +455,13 @@ config INPUT_ADXL34X_SPI
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called adxl34x-spi.
+ 
++config INPUT_LIS302DL
++	tristate "STmicro LIS302DL 3-axis accelerometer"
++	depends on SPI_MASTER
++	help
++	  SPI driver for the STmicro LIS302DL 3-axis accelerometer.
++
++	  The userspece interface is a 3-axis (X/Y/Z) relative movement
++	  Linux input device, reporting REL_[XYZ] events.
++
+ endif
+diff --git a/drivers/input/misc/Makefile b/drivers/input/misc/Makefile
+index 4d5cea7..63b49bc 100644
+--- a/drivers/input/misc/Makefile
++++ b/drivers/input/misc/Makefile
+@@ -43,4 +43,5 @@ obj-$(CONFIG_INPUT_WINBOND_CIR)		+= winbond-cir.o
+ obj-$(CONFIG_INPUT_WISTRON_BTNS)	+= wistron_btns.o
+ obj-$(CONFIG_INPUT_WM831X_ON)		+= wm831x-on.o
+ obj-$(CONFIG_INPUT_YEALINK)		+= yealink.o
++obj-$(CONFIG_INPUT_LIS302DL)		+= lis302dl.o
+ 
+diff --git a/drivers/input/misc/lis302dl.c b/drivers/input/misc/lis302dl.c
+new file mode 100644
+index 0000000..1ba7a8f
+--- /dev/null
++++ b/drivers/input/misc/lis302dl.c
+@@ -0,0 +1,898 @@
++/* Linux kernel driver for the ST LIS302D 3-axis accelerometer
++ *
++ * Copyright (C) 2007-2008 by Openmoko, Inc.
++ * Author: Harald Welte <laforge@openmoko.org>
++ *         converted to private bitbang by:
++ *         Andy Green <andy@openmoko.com>
++ *         ability to set acceleration threshold added by:
++ *         Simon Kagstrom <simon.kagstrom@gmail.com>
++ * All rights reserved.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ *
++ * TODO
++ * 	* statistics for overflow events
++ * 	* configuration interface (sysfs) for
++ * 		* enable/disable x/y/z axis data ready
++ * 		* enable/disable resume from freee fall / click
++ * 		* free fall / click parameters
++ * 		* high pass filter parameters
++ */
++#include <linux/kernel.h>
++#include <linux/types.h>
++#include <linux/module.h>
++#include <linux/device.h>
++#include <linux/platform_device.h>
++#include <linux/delay.h>
++#include <linux/irq.h>
++#include <linux/interrupt.h>
++#include <linux/sysfs.h>
++
++#include <linux/lis302dl.h>
++
++/* Utility functions */
++static u8 __reg_read(struct lis302dl_info *lis, u8 reg)
++{
++	return (lis->pdata->lis302dl_bitbang_reg_read)(lis, reg);
++}
++
++static void __reg_write(struct lis302dl_info *lis, u8 reg, u8 val)
++{
++	(lis->pdata->lis302dl_bitbang_reg_write)(lis, reg, val);
++}
++
++static void __reg_set_bit_mask(struct lis302dl_info *lis, u8 reg, u8 mask,
++		u8 val)
++{
++	u_int8_t tmp;
++
++	val &= mask;
++
++	tmp = __reg_read(lis, reg);
++	tmp &= ~mask;
++	tmp |= val;
++	__reg_write(lis, reg, tmp);
++}
++
++static int __ms_to_duration(struct lis302dl_info *lis, int ms)
++{
++	/* If we have 400 ms sampling rate, the stepping is 2.5 ms,
++	 * on 100 ms the stepping is 10ms */
++	if (lis->flags & LIS302DL_F_DR)
++		return min((ms * 10) / 25, 637);
++
++	return min(ms / 10, 2550);
++}
++
++static int __duration_to_ms(struct lis302dl_info *lis, int duration)
++{
++	if (lis->flags & LIS302DL_F_DR)
++		return (duration * 25) / 10;
++
++	return duration * 10;
++}
++
++static u8 __mg_to_threshold(struct lis302dl_info *lis, int mg)
++{
++	/* If FS is set each bit is 71mg, otherwise 18mg. The THS register
++	 * has 7 bits for the threshold value */
++	if (lis->flags & LIS302DL_F_FS)
++		return min(mg / 71, 127);
++
++	return min(mg / 18, 127);
++}
++
++static int __threshold_to_mg(struct lis302dl_info *lis, u8 threshold)
++{
++	if (lis->flags & LIS302DL_F_FS)
++		return threshold * 71;
++
++	return threshold * 18;
++}
++
++/* interrupt handling related */
++
++enum lis302dl_intmode {
++	LIS302DL_INTMODE_GND		= 0x00,
++	LIS302DL_INTMODE_FF_WU_1	= 0x01,
++	LIS302DL_INTMODE_FF_WU_2	= 0x02,
++	LIS302DL_INTMODE_FF_WU_12	= 0x03,
++	LIS302DL_INTMODE_DATA_READY	= 0x04,
++	LIS302DL_INTMODE_CLICK		= 0x07,
++};
++
++static void __lis302dl_int_mode(struct device *dev, int int_pin,
++			      enum lis302dl_intmode mode)
++{
++	struct lis302dl_info *lis = dev_get_drvdata(dev);
++
++	switch (int_pin) {
++	case 1:
++		__reg_set_bit_mask(lis, LIS302DL_REG_CTRL3, 0x07, mode);
++		break;
++	case 2:
++		__reg_set_bit_mask(lis, LIS302DL_REG_CTRL3, 0x38, mode << 3);
++		break;
++	default:
++		BUG();
++	}
++}
++
++static void __enable_wakeup(struct lis302dl_info *lis)
++{
++	__reg_write(lis, LIS302DL_REG_CTRL1, 0);
++
++	/* First zero to get to a known state */
++	__reg_write(lis, LIS302DL_REG_FF_WU_CFG_1, LIS302DL_FFWUCFG_XHIE |
++			LIS302DL_FFWUCFG_YHIE | LIS302DL_FFWUCFG_ZHIE |
++			LIS302DL_FFWUCFG_LIR);
++	__reg_write(lis, LIS302DL_REG_FF_WU_THS_1,
++			__mg_to_threshold(lis, lis->wakeup.threshold));
++	__reg_write(lis, LIS302DL_REG_FF_WU_DURATION_1,
++			__ms_to_duration(lis, lis->wakeup.duration));
++
++	/* Route the interrupt for wakeup */
++	__lis302dl_int_mode(lis->dev, 1,
++			LIS302DL_INTMODE_FF_WU_1);
++
++	__reg_read(lis, LIS302DL_REG_HP_FILTER_RESET);
++	__reg_read(lis, LIS302DL_REG_OUT_X);
++	__reg_read(lis, LIS302DL_REG_OUT_Y);
++	__reg_read(lis, LIS302DL_REG_OUT_Z);
++	__reg_read(lis, LIS302DL_REG_STATUS);
++	__reg_read(lis, LIS302DL_REG_FF_WU_SRC_1);
++	__reg_read(lis, LIS302DL_REG_FF_WU_SRC_2);
++	__reg_write(lis, LIS302DL_REG_CTRL1, LIS302DL_CTRL1_PD | 7);
++}
++
++static void __enable_data_collection(struct lis302dl_info *lis)
++{
++	u_int8_t ctrl1 = LIS302DL_CTRL1_PD | LIS302DL_CTRL1_Xen |
++			 LIS302DL_CTRL1_Yen | LIS302DL_CTRL1_Zen;
++
++	/* make sure we're powered up and generate data ready */
++	__reg_set_bit_mask(lis, LIS302DL_REG_CTRL1, ctrl1, ctrl1);
++
++	/* If the threshold is zero, let the device generated an interrupt
++	 * on each datum */
++	if (lis->threshold == 0) {
++		__reg_write(lis, LIS302DL_REG_CTRL2, 0);
++		__lis302dl_int_mode(lis->dev, 1, LIS302DL_INTMODE_DATA_READY);
++		__lis302dl_int_mode(lis->dev, 2, LIS302DL_INTMODE_DATA_READY);
++	} else {
++		__reg_write(lis, LIS302DL_REG_CTRL2,
++				LIS302DL_CTRL2_HPFF1);
++		__reg_write(lis, LIS302DL_REG_FF_WU_THS_1,
++				__mg_to_threshold(lis, lis->threshold));
++		__reg_write(lis, LIS302DL_REG_FF_WU_DURATION_1,
++				__ms_to_duration(lis, lis->duration));
++
++		/* Clear the HP filter "starting point" */
++		__reg_read(lis, LIS302DL_REG_HP_FILTER_RESET);
++		__reg_write(lis, LIS302DL_REG_FF_WU_CFG_1,
++				LIS302DL_FFWUCFG_XHIE | LIS302DL_FFWUCFG_YHIE |
++				LIS302DL_FFWUCFG_ZHIE | LIS302DL_FFWUCFG_LIR);
++		__lis302dl_int_mode(lis->dev, 1, LIS302DL_INTMODE_FF_WU_12);
++		__lis302dl_int_mode(lis->dev, 2, LIS302DL_INTMODE_FF_WU_12);
++	}
++}
++
++#if 0
++static void _report_btn_single(struct input_dev *inp, int btn)
++{
++	input_report_key(inp, btn, 1);
++	input_sync(inp);
++	input_report_key(inp, btn, 0);
++}
++
++static void _report_btn_double(struct input_dev *inp, int btn)
++{
++	input_report_key(inp, btn, 1);
++	input_sync(inp);
++	input_report_key(inp, btn, 0);
++	input_sync(inp);
++	input_report_key(inp, btn, 1);
++	input_sync(inp);
++	input_report_key(inp, btn, 0);
++}
++#endif
++
++
++static void lis302dl_bitbang_read_sample(struct lis302dl_info *lis)
++{
++	u8 data = 0xc0 | LIS302DL_REG_STATUS; /* read, autoincrement */
++	u8 read[(LIS302DL_REG_OUT_Z - LIS302DL_REG_STATUS) + 1];
++	unsigned long flags;
++	int mg_per_sample = __threshold_to_mg(lis, 1);
++
++	/* grab the set of register containing status and XYZ data */
++
++	local_irq_save(flags);
++	(lis->pdata->lis302dl_bitbang)(lis, &data, 1, &read[0], sizeof(read));
++	local_irq_restore(flags);
++
++	/*
++	 * at the minute the test below fails 50% of the time due to
++	 * a problem with level interrupts causing ISRs to get called twice.
++	 * This is a workaround for that, but actually this test is still
++	 * valid and the information can be used for overrrun stats.
++	 */
++
++	/* has any kind of overrun been observed by the lis302dl? */
++	if (read[0] & (LIS302DL_STATUS_XOR |
++		       LIS302DL_STATUS_YOR |
++		       LIS302DL_STATUS_ZOR))
++		lis->overruns++;
++
++	/* we have a valid sample set? */
++	if (read[0] & LIS302DL_STATUS_XYZDA) {
++		input_report_abs(lis->input_dev, ABS_X, mg_per_sample *
++			    (s8)read[LIS302DL_REG_OUT_X - LIS302DL_REG_STATUS]);
++		input_report_abs(lis->input_dev, ABS_Y, mg_per_sample *
++			    (s8)read[LIS302DL_REG_OUT_Y - LIS302DL_REG_STATUS]);
++		input_report_abs(lis->input_dev, ABS_Z, mg_per_sample *
++			    (s8)read[LIS302DL_REG_OUT_Z - LIS302DL_REG_STATUS]);
++
++		input_sync(lis->input_dev);
++	}
++
++	if (lis->threshold)
++		/* acknowledge the wakeup source */
++		__reg_read(lis,	LIS302DL_REG_FF_WU_SRC_1);
++}
++
++static irqreturn_t lis302dl_interrupt(int irq, void *_lis)
++{
++	struct lis302dl_info *lis = _lis;
++
++	lis302dl_bitbang_read_sample(lis);
++	return IRQ_HANDLED;
++}
++
++/* sysfs */
++
++static ssize_t show_overruns(struct device *dev, struct device_attribute *attr,
++			 char *buf)
++{
++	struct lis302dl_info *lis = dev_get_drvdata(dev);
++
++	return sprintf(buf, "%u\n", lis->overruns);
++}
++
++static DEVICE_ATTR(overruns, S_IRUGO, show_overruns, NULL);
++
++static ssize_t show_rate(struct device *dev, struct device_attribute *attr,
++			 char *buf)
++{
++	struct lis302dl_info *lis = dev_get_drvdata(dev);
++	u8 ctrl1;
++	unsigned long flags;
++
++	local_irq_save(flags);
++	ctrl1 = __reg_read(lis, LIS302DL_REG_CTRL1);
++	local_irq_restore(flags);
++
++	return sprintf(buf, "%d\n", ctrl1 & LIS302DL_CTRL1_DR ? 400 : 100);
++}
++
++static ssize_t set_rate(struct device *dev, struct device_attribute *attr,
++			const char *buf, size_t count)
++{
++	struct lis302dl_info *lis = dev_get_drvdata(dev);
++	unsigned long flags;
++
++	local_irq_save(flags);
++
++	if (!strcmp(buf, "400\n")) {
++		__reg_set_bit_mask(lis, LIS302DL_REG_CTRL1, LIS302DL_CTRL1_DR,
++				 LIS302DL_CTRL1_DR);
++		lis->flags |= LIS302DL_F_DR;
++	} else {
++		__reg_set_bit_mask(lis, LIS302DL_REG_CTRL1, LIS302DL_CTRL1_DR,
++				0);
++		lis->flags &= ~LIS302DL_F_DR;
++	}
++	local_irq_restore(flags);
++
++	return count;
++}
++
++static DEVICE_ATTR(sample_rate, S_IRUGO | S_IWUSR, show_rate, set_rate);
++
++static ssize_t show_scale(struct device *dev, struct device_attribute *attr,
++			  char *buf)
++{
++	struct lis302dl_info *lis = dev_get_drvdata(dev);
++	u_int8_t ctrl1;
++	unsigned long flags;
++
++	local_irq_save(flags);
++	ctrl1 = __reg_read(lis, LIS302DL_REG_CTRL1);
++	local_irq_restore(flags);
++
++	return sprintf(buf, "%s\n", ctrl1 & LIS302DL_CTRL1_FS ? "9.2" : "2.3");
++}
++
++static ssize_t set_scale(struct device *dev, struct device_attribute *attr,
++			 const char *buf, size_t count)
++{
++	struct lis302dl_info *lis = dev_get_drvdata(dev);
++	unsigned long flags;
++
++	local_irq_save(flags);
++
++	if (!strcmp(buf, "9.2\n")) {
++		__reg_set_bit_mask(lis, LIS302DL_REG_CTRL1, LIS302DL_CTRL1_FS,
++				 LIS302DL_CTRL1_FS);
++		lis->flags |= LIS302DL_F_FS;
++	} else {
++		__reg_set_bit_mask(lis, LIS302DL_REG_CTRL1, LIS302DL_CTRL1_FS,
++				0);
++		lis->flags &= ~LIS302DL_F_FS;
++	}
++
++	if (lis->flags & LIS302DL_F_INPUT_OPEN)
++		__enable_data_collection(lis);
++
++	local_irq_restore(flags);
++
++	return count;
++}
++
++static DEVICE_ATTR(full_scale, S_IRUGO | S_IWUSR, show_scale, set_scale);
++
++static ssize_t show_threshold(struct device *dev, struct device_attribute *attr,
++		 char *buf)
++{
++	struct lis302dl_info *lis = dev_get_drvdata(dev);
++
++	/* Display the device view of the threshold setting */
++	return sprintf(buf, "%d\n", __threshold_to_mg(lis,
++			__mg_to_threshold(lis, lis->threshold)));
++}
++
++static ssize_t set_threshold(struct device *dev, struct device_attribute *attr,
++		 const char *buf, size_t count)
++{
++	struct lis302dl_info *lis = dev_get_drvdata(dev);
++	unsigned int val;
++
++	if (sscanf(buf, "%u\n", &val) != 1)
++		return -EINVAL;
++	/* 8g is the maximum if FS is 1 */
++	if (val > 8000)
++		return -ERANGE;
++
++	/* Set the threshold and write it out if the device is used */
++	lis->threshold = val;
++
++	if (lis->flags & LIS302DL_F_INPUT_OPEN) {
++		unsigned long flags;
++
++		local_irq_save(flags);
++		__enable_data_collection(lis);
++		local_irq_restore(flags);
++	}
++
++	return count;
++}
++
++static DEVICE_ATTR(threshold, S_IRUGO | S_IWUSR, show_threshold, set_threshold);
++
++static ssize_t show_duration(struct device *dev, struct device_attribute *attr,
++		 char *buf)
++{
++	struct lis302dl_info *lis = dev_get_drvdata(dev);
++
++	return sprintf(buf, "%d\n", __duration_to_ms(lis,
++			__ms_to_duration(lis, lis->duration)));
++}
++
++static ssize_t set_duration(struct device *dev, struct device_attribute *attr,
++		 const char *buf, size_t count)
++{
++	struct lis302dl_info *lis = dev_get_drvdata(dev);
++	unsigned int val;
++
++	if (sscanf(buf, "%u\n", &val) != 1)
++		return -EINVAL;
++	if (val > 2550)
++		return -ERANGE;
++
++	lis->duration = val;
++	if (lis->flags & LIS302DL_F_INPUT_OPEN)
++		__reg_write(lis, LIS302DL_REG_FF_WU_DURATION_1,
++				__ms_to_duration(lis, lis->duration));
++
++	return count;
++}
++
++static DEVICE_ATTR(duration, S_IRUGO | S_IWUSR, show_duration, set_duration);
++
++static ssize_t lis302dl_dump(struct device *dev, struct device_attribute *attr,
++								      char *buf)
++{
++	struct lis302dl_info *lis = dev_get_drvdata(dev);
++	int n = 0;
++	u8 reg[0x40];
++	char *end = buf;
++	unsigned long flags;
++
++	local_irq_save(flags);
++
++	for (n = 0; n < sizeof(reg); n++)
++		reg[n] = __reg_read(lis, n);
++
++	local_irq_restore(flags);
++
++	for (n = 0; n < sizeof(reg); n += 16) {
++		hex_dump_to_buffer(reg + n, 16, 16, 1, end, 128, 0);
++		end += strlen(end);
++		*end++ = '\n';
++		*end++ = '\0';
++	}
++
++	return end - buf;
++}
++static DEVICE_ATTR(dump, S_IRUGO, lis302dl_dump, NULL);
++
++/* Configure freefall/wakeup interrupts */
++static ssize_t set_wakeup_threshold(struct device *dev,
++		struct device_attribute *attr, const char *buf, size_t count)
++{
++	struct lis302dl_info *lis = dev_get_drvdata(dev);
++	unsigned int threshold;
++
++	if (sscanf(buf, "%u\n", &threshold) != 1)
++		return -EINVAL;
++
++	if (threshold > 8000)
++		return -ERANGE;
++
++	/* Zero turns the feature off */
++	if (threshold == 0) {
++		if (lis->flags & LIS302DL_F_IRQ_WAKE) {
++			disable_irq_wake(lis->pdata->interrupt);
++			lis->flags &= ~LIS302DL_F_IRQ_WAKE;
++		}
++
++		return count;
++	}
++
++	lis->wakeup.threshold = threshold;
++
++	if (!(lis->flags & LIS302DL_F_IRQ_WAKE)) {
++		enable_irq_wake(lis->pdata->interrupt);
++		lis->flags |= LIS302DL_F_IRQ_WAKE;
++	}
++
++	return count;
++}
++
++static ssize_t show_wakeup_threshold(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	struct lis302dl_info *lis = dev_get_drvdata(dev);
++
++	/* All events off? */
++	if (lis->wakeup.threshold == 0)
++		return sprintf(buf, "off\n");
++
++	return sprintf(buf, "%u\n", lis->wakeup.threshold);
++}
++
++static DEVICE_ATTR(wakeup_threshold, S_IRUGO | S_IWUSR, show_wakeup_threshold,
++		set_wakeup_threshold);
++
++static ssize_t set_wakeup_duration(struct device *dev,
++		struct device_attribute *attr, const char *buf, size_t count)
++{
++	struct lis302dl_info *lis = dev_get_drvdata(dev);
++	unsigned int duration;
++
++	if (sscanf(buf, "%u\n", &duration) != 1)
++		return -EINVAL;
++
++	if (duration > 2550)
++		return -ERANGE;
++
++	lis->wakeup.duration = duration;
++
++	return count;
++}
++
++static ssize_t show_wakeup_duration(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	struct lis302dl_info *lis = dev_get_drvdata(dev);
++
++	return sprintf(buf, "%u\n", lis->wakeup.duration);
++}
++
++static DEVICE_ATTR(wakeup_duration, S_IRUGO | S_IWUSR, show_wakeup_duration,
++		set_wakeup_duration);
++
++static struct attribute *lis302dl_sysfs_entries[] = {
++	&dev_attr_sample_rate.attr,
++	&dev_attr_full_scale.attr,
++	&dev_attr_threshold.attr,
++	&dev_attr_duration.attr,
++	&dev_attr_dump.attr,
++	&dev_attr_wakeup_threshold.attr,
++	&dev_attr_wakeup_duration.attr,
++	&dev_attr_overruns.attr,
++	NULL
++};
++
++static struct attribute_group lis302dl_attr_group = {
++	.name	= NULL,
++	.attrs	= lis302dl_sysfs_entries,
++};
++
++/* input device handling and driver core interaction */
++
++static int lis302dl_input_open(struct input_dev *inp)
++{
++	struct lis302dl_info *lis = input_get_drvdata(inp);
++	unsigned long flags;
++
++	local_irq_save(flags);
++
++	__enable_data_collection(lis);
++	lis->flags |= LIS302DL_F_INPUT_OPEN;
++
++	local_irq_restore(flags);
++
++	return 0;
++}
++
++static void lis302dl_input_close(struct input_dev *inp)
++{
++	struct lis302dl_info *lis = input_get_drvdata(inp);
++	u_int8_t ctrl1 = LIS302DL_CTRL1_Xen | LIS302DL_CTRL1_Yen |
++			 LIS302DL_CTRL1_Zen;
++	unsigned long flags;
++
++	local_irq_save(flags);
++
++	/* since the input core already serializes access and makes sure we
++	 * only see close() for the close of the last user, we can safely
++	 * disable the data ready events */
++	__reg_set_bit_mask(lis, LIS302DL_REG_CTRL1, ctrl1, 0x00);
++	lis->flags &= ~LIS302DL_F_INPUT_OPEN;
++
++	/* however, don't power down the whole device if still needed */
++	if (!(lis->flags & LIS302DL_F_WUP_FF ||
++	      lis->flags & LIS302DL_F_WUP_CLICK)) {
++		__reg_set_bit_mask(lis, LIS302DL_REG_CTRL1, LIS302DL_CTRL1_PD,
++				 0x00);
++	}
++	local_irq_restore(flags);
++}
++
++/* get the device to reload its coefficients from EEPROM and wait for it
++ * to complete
++ */
++
++static int __lis302dl_reset_device(struct lis302dl_info *lis)
++{
++	int timeout = 10;
++
++	__reg_write(lis, LIS302DL_REG_CTRL2,
++			LIS302DL_CTRL2_BOOT | LIS302DL_CTRL2_FDS);
++
++	while ((__reg_read(lis, LIS302DL_REG_CTRL2)
++			& LIS302DL_CTRL2_BOOT) && (timeout--))
++		mdelay(1);
++
++	return !!(timeout < 0);
++}
++
++static int __devinit lis302dl_probe(struct platform_device *pdev)
++{
++	int rc;
++	struct lis302dl_info *lis;
++	u_int8_t wai;
++	unsigned long flags;
++	struct lis302dl_platform_data *pdata = pdev->dev.platform_data;
++
++	lis = kzalloc(sizeof(*lis), GFP_KERNEL);
++	if (!lis)
++		return -ENOMEM;
++
++	lis->dev = &pdev->dev;
++
++	dev_set_drvdata(lis->dev, lis);
++
++	lis->pdata = pdata;
++
++	rc = sysfs_create_group(&lis->dev->kobj, &lis302dl_attr_group);
++	if (rc) {
++		dev_err(lis->dev, "error creating sysfs group\n");
++		goto bail_free_lis;
++	}
++
++	/* initialize input layer details */
++	lis->input_dev = input_allocate_device();
++	if (!lis->input_dev) {
++		dev_err(lis->dev, "Unable to allocate input device\n");
++		goto bail_sysfs;
++	}
++
++	input_set_drvdata(lis->input_dev, lis);
++	lis->input_dev->name = pdata->name;
++	 /* SPI Bus not defined as a valid bus for input subsystem*/
++	lis->input_dev->id.bustype = BUS_I2C; /* lie about it */
++	lis->input_dev->open = lis302dl_input_open;
++	lis->input_dev->close = lis302dl_input_close;
++
++	rc = input_register_device(lis->input_dev);
++	if (rc) {
++		dev_err(lis->dev, "error %d registering input device\n", rc);
++		goto bail_inp_dev;
++	}
++
++	local_irq_save(flags);
++	/* Configure our IO */
++	(lis->pdata->lis302dl_suspend_io)(lis, 1);
++
++	wai = __reg_read(lis, LIS302DL_REG_WHO_AM_I);
++	if (wai != LIS302DL_WHO_AM_I_MAGIC) {
++		dev_err(lis->dev, "unknown who_am_i signature 0x%02x\n", wai);
++		dev_set_drvdata(lis->dev, NULL);
++		rc = -ENODEV;
++		local_irq_restore(flags);
++		goto bail_inp_reg;
++	}
++
++	set_bit(EV_ABS, lis->input_dev->evbit);
++	input_set_abs_params(lis->input_dev, ABS_X, 0, 0, 0, 0);
++	input_set_abs_params(lis->input_dev, ABS_Y, 0, 0, 0, 0);
++	input_set_abs_params(lis->input_dev, ABS_Z, 0, 0, 0, 0);
++	
++
++	lis->threshold = 0;
++	lis->duration = 0;
++	memset(&lis->wakeup, 0, sizeof(lis->wakeup));
++
++	if (__lis302dl_reset_device(lis))
++		dev_err(lis->dev, "device BOOT reload failed\n");
++
++	/* force us powered */
++	__reg_write(lis, LIS302DL_REG_CTRL1, LIS302DL_CTRL1_PD |
++			LIS302DL_CTRL1_Xen |
++			LIS302DL_CTRL1_Yen |
++			LIS302DL_CTRL1_Zen);
++	mdelay(1);
++
++	__reg_write(lis, LIS302DL_REG_CTRL2, 0);
++	__reg_write(lis, LIS302DL_REG_CTRL3,
++			LIS302DL_CTRL3_PP_OD | LIS302DL_CTRL3_IHL);
++	__reg_write(lis, LIS302DL_REG_FF_WU_THS_1, 0x0);
++	__reg_write(lis, LIS302DL_REG_FF_WU_DURATION_1, 0x00);
++	__reg_write(lis, LIS302DL_REG_FF_WU_CFG_1, 0x0);
++
++	/* start off in powered down mode; we power up when someone opens us */
++	__reg_write(lis, LIS302DL_REG_CTRL1, LIS302DL_CTRL1_Xen |
++			LIS302DL_CTRL1_Yen | LIS302DL_CTRL1_Zen);
++
++	if (pdata->open_drain)
++		/* switch interrupt to open collector, active-low */
++		__reg_write(lis, LIS302DL_REG_CTRL3,
++				LIS302DL_CTRL3_PP_OD | LIS302DL_CTRL3_IHL);
++	else
++		/* push-pull, active-low */
++		__reg_write(lis, LIS302DL_REG_CTRL3, LIS302DL_CTRL3_IHL);
++
++	__lis302dl_int_mode(lis->dev, 1, LIS302DL_INTMODE_GND);
++	__lis302dl_int_mode(lis->dev, 2, LIS302DL_INTMODE_GND);
++
++	__reg_read(lis, LIS302DL_REG_STATUS);
++	__reg_read(lis, LIS302DL_REG_FF_WU_SRC_1);
++	__reg_read(lis, LIS302DL_REG_FF_WU_SRC_2);
++	__reg_read(lis, LIS302DL_REG_CLICK_SRC);
++	local_irq_restore(flags);
++
++	dev_info(lis->dev, "Found %s\n", pdata->name);
++
++	lis->pdata = pdata;
++
++	set_irq_handler(lis->pdata->interrupt, handle_level_irq);
++
++	rc = request_irq(lis->pdata->interrupt, lis302dl_interrupt,
++			 IRQF_TRIGGER_LOW, "lis302dl", lis);
++	
++	if (rc < 0) {
++		dev_err(lis->dev, "error requesting IRQ %d\n",
++			lis->pdata->interrupt);
++		goto bail_inp_reg;
++	}
++	return 0;
++
++bail_inp_reg:
++	input_unregister_device(lis->input_dev);
++bail_inp_dev:
++	input_free_device(lis->input_dev);
++bail_sysfs:
++	sysfs_remove_group(&lis->dev->kobj, &lis302dl_attr_group);
++bail_free_lis:
++	kfree(lis);
++	return rc;
++}
++
++static int __devexit lis302dl_remove(struct platform_device *pdev)
++{
++	struct lis302dl_info *lis = dev_get_drvdata(&pdev->dev);
++	unsigned long flags;
++
++	/* Disable interrupts */
++	if (lis->flags & LIS302DL_F_IRQ_WAKE)
++		disable_irq_wake(lis->pdata->interrupt);
++	free_irq(lis->pdata->interrupt, lis);
++
++	/* Reset and power down the device */
++	local_irq_save(flags);
++	__reg_write(lis, LIS302DL_REG_CTRL3, 0x00);
++	__reg_write(lis, LIS302DL_REG_CTRL2, 0x00);
++	__reg_write(lis, LIS302DL_REG_CTRL1, 0x00);
++	local_irq_restore(flags);
++
++	/* Cleanup resources */
++	sysfs_remove_group(&pdev->dev.kobj, &lis302dl_attr_group);
++	input_unregister_device(lis->input_dev);
++	if (lis->input_dev)
++		input_free_device(lis->input_dev);
++	dev_set_drvdata(lis->dev, NULL);
++	kfree(lis);
++
++	return 0;
++}
++
++#ifdef CONFIG_PM
++
++static u8 regs_to_save[] = {
++	LIS302DL_REG_CTRL2,
++	LIS302DL_REG_CTRL3,
++	LIS302DL_REG_FF_WU_CFG_1,
++	LIS302DL_REG_FF_WU_THS_1,
++	LIS302DL_REG_FF_WU_DURATION_1,
++	LIS302DL_REG_FF_WU_CFG_2,
++	LIS302DL_REG_FF_WU_THS_2,
++	LIS302DL_REG_FF_WU_DURATION_2,
++	LIS302DL_REG_CLICK_CFG,
++	LIS302DL_REG_CLICK_THSY_X,
++	LIS302DL_REG_CLICK_THSZ,
++	LIS302DL_REG_CLICK_TIME_LIMIT,
++	LIS302DL_REG_CLICK_LATENCY,
++	LIS302DL_REG_CLICK_WINDOW,
++	LIS302DL_REG_CTRL1,
++};
++
++static int lis302dl_suspend(struct platform_device *pdev, pm_message_t state)
++{
++	struct lis302dl_info *lis = dev_get_drvdata(&pdev->dev);
++	unsigned long flags;
++	u_int8_t tmp;
++	int n;
++
++	/* determine if we want to wake up from the accel. */
++	if (lis->flags & LIS302DL_F_WUP_CLICK)
++		return 0;
++
++	disable_irq(lis->pdata->interrupt);
++	local_irq_save(flags);
++
++	/*
++	 * When we share SPI over multiple sensors, there is a race here
++	 * that one or more sensors will lose.  In that case, the shared
++	 * SPI bus GPIO will be in sleep mode and partially pulled down.  So
++	 * we explicitly put our IO into "wake" mode here before the final
++	 * traffic to the sensor.
++	 */
++	(lis->pdata->lis302dl_suspend_io)(lis, 1);
++
++	/* save registers */
++	for (n = 0; n < ARRAY_SIZE(regs_to_save); n++)
++		lis->regs[regs_to_save[n]] =
++			__reg_read(lis, regs_to_save[n]);
++
++	/* power down or enable wakeup */
++
++	if (lis->wakeup.threshold == 0) {
++		tmp = __reg_read(lis, LIS302DL_REG_CTRL1);
++		tmp &= ~LIS302DL_CTRL1_PD;
++		__reg_write(lis, LIS302DL_REG_CTRL1, tmp);
++	} else
++		__enable_wakeup(lis);
++
++	/* place our IO to the device in sleep-compatible states */
++	(lis->pdata->lis302dl_suspend_io)(lis, 0);
++
++	local_irq_restore(flags);
++
++	return 0;
++}
++
++static int lis302dl_resume(struct platform_device *pdev)
++{
++	struct lis302dl_info *lis = dev_get_drvdata(&pdev->dev);
++	unsigned long flags;
++	int n;
++
++	if (lis->flags & LIS302DL_F_WUP_CLICK)
++		return 0;
++
++	local_irq_save(flags);
++
++	/* get our IO to the device back in operational states */
++	(lis->pdata->lis302dl_suspend_io)(lis, 1);
++
++	/* resume from powerdown first! */
++	__reg_write(lis, LIS302DL_REG_CTRL1,
++			LIS302DL_CTRL1_PD |
++			LIS302DL_CTRL1_Xen |
++			LIS302DL_CTRL1_Yen |
++			LIS302DL_CTRL1_Zen);
++	mdelay(1);
++
++	if (__lis302dl_reset_device(lis))
++		dev_err(&pdev->dev, "device BOOT reload failed\n");
++
++	/* restore registers after resume */
++	for (n = 0; n < ARRAY_SIZE(regs_to_save); n++)
++		__reg_write(lis, regs_to_save[n], lis->regs[regs_to_save[n]]);
++
++	/* if someone had us open, reset the non-wake threshold stuff */
++	if (lis->flags & LIS302DL_F_INPUT_OPEN)
++		__enable_data_collection(lis);
++
++	local_irq_restore(flags);
++	enable_irq(lis->pdata->interrupt);
++
++	return 0;
++}
++#else
++#define lis302dl_suspend	NULL
++#define lis302dl_resume		NULL
++#endif
++
++static struct platform_driver lis302dl_driver = {
++	.driver = {
++		.name	= "lis302dl",
++		.owner	= THIS_MODULE,
++	},
++
++	.probe	 = lis302dl_probe,
++	.remove	 = __devexit_p(lis302dl_remove),
++	.suspend = lis302dl_suspend,
++	.resume	 = lis302dl_resume,
++};
++
++static int __devinit lis302dl_init(void)
++{
++	return platform_driver_register(&lis302dl_driver);
++}
++
++static void __exit lis302dl_exit(void)
++{
++	platform_driver_unregister(&lis302dl_driver);
++}
++
++MODULE_AUTHOR("Harald Welte <laforge@openmoko.org>");
++MODULE_LICENSE("GPL");
++
++module_init(lis302dl_init);
++module_exit(lis302dl_exit);
 diff --git a/drivers/input/touchscreen/s3c2410_ts.c b/drivers/input/touchscreen/s3c2410_ts.c
 index 8feb7f3..21c113b 100644
 --- a/drivers/input/touchscreen/s3c2410_ts.c
@@ -803,6 +1977,19 @@ index 8880263..a0556b8 100644
  	if (!glamo->base) {
  		dev_err(&pdev->dev, "Failed to ioremap() memory region\n");
  		goto err_release_mem_region;
+diff --git a/drivers/mfd/pcf50633-core.c b/drivers/mfd/pcf50633-core.c
+index f9ad427..56dd025 100644
+--- a/drivers/mfd/pcf50633-core.c
++++ b/drivers/mfd/pcf50633-core.c
+@@ -376,7 +376,7 @@ static struct mfd_cell pcf50633_cells[] = {
+ 	PCF50633_CELL_RESOURCES("pcf50633-mbc", pcf50633_mbc_resources),
+ 	PCF50633_CELL_RESOURCES("pcf50633-adc", pcf50633_adc_resources),
+ 	PCF50633_CELL("pcf50633-backlight"),
+-	PCF50633_CELL("pcf50633-gpio"),
++	PCF50633_CELL("pcf50633-gpio.0"),
+ 	PCF50633_CELL_ID("pcf50633-regltr", 0),
+ 	PCF50633_CELL_ID("pcf50633-regltr", 1),
+ 	PCF50633_CELL_ID("pcf50633-regltr", 2),
 diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
 index 4d073f1..35c3563 100644
 --- a/drivers/misc/Kconfig
@@ -978,6 +2165,165 @@ index 0000000..5bcc818
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Andy Green <andy@openmoko.com>");
 +MODULE_DESCRIPTION("Neo1973 resume_reason");
+diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+index cb5d2c0..4666b5e 100644
+--- a/drivers/mtd/nand/s3c2410.c
++++ b/drivers/mtd/nand/s3c2410.c
+@@ -55,7 +55,7 @@ static int hardware_ecc = 0;
+ #endif
+ 
+ #ifdef CONFIG_MTD_NAND_S3C2410_CLKSTOP
+-static int clock_stop = 1;
++static const int clock_stop = 1;
+ #else
+ static const int clock_stop = 0;
+ #endif
+@@ -96,6 +96,12 @@ enum s3c_cpu_type {
+ 	TYPE_S3C2440,
+ };
+ 
++enum s3c_nand_clk_state {
++	CLOCK_DISABLE	= 0,
++	CLOCK_ENABLE,
++	CLOCK_SUSPEND,
++};
++
+ /* overview of the s3c2410 nand state */
+ 
+ /**
+@@ -111,6 +117,7 @@ enum s3c_cpu_type {
+  * @mtd_count: The number of MTDs created from this controller.
+  * @save_sel: The contents of @sel_reg to be saved over suspend.
+  * @clk_rate: The clock rate from @clk.
++ * @clk_state: The current clock state.
+  * @cpu_type: The exact type of this controller.
+  */
+ struct s3c2410_nand_info {
+@@ -129,6 +136,7 @@ struct s3c2410_nand_info {
+ 	int				mtd_count;
+ 	unsigned long			save_sel;
+ 	unsigned long			clk_rate;
++	enum s3c_nand_clk_state		clk_state;
+ 
+ 	enum s3c_cpu_type		cpu_type;
+ 
+@@ -159,11 +167,33 @@ static struct s3c2410_platform_nand *to_nand_plat(struct platform_device *dev)
+ 	return dev->dev.platform_data;
+ }
+ 
+-static inline int allow_clk_stop(struct s3c2410_nand_info *info)
++static inline int allow_clk_suspend(struct s3c2410_nand_info *info)
+ {
+ 	return clock_stop;
+ }
+ 
++/**
++ * s3c2410_nand_clk_set_state - Enable, disable or suspend NAND clock.
++ * @info: The controller instance.
++ * @new_state: State to which clock should be set.
++ */
++static void s3c2410_nand_clk_set_state(struct s3c2410_nand_info *info,
++		enum s3c_nand_clk_state new_state)
++{
++	if (!allow_clk_suspend(info) && new_state == CLOCK_SUSPEND)
++		return;
++
++	if (info->clk_state == CLOCK_ENABLE) {
++		if (new_state != CLOCK_ENABLE)
++			clk_disable(info->clk);
++	} else {
++		if (new_state == CLOCK_ENABLE)
++			clk_enable(info->clk);
++	}
++
++	info->clk_state = new_state;
++}
++
+ /* timing calculations */
+ 
+ #define NS_IN_KHZ 1000000
+@@ -333,8 +363,8 @@ static void s3c2410_nand_select_chip(struct mtd_info *mtd, int chip)
+ 	nmtd = this->priv;
+ 	info = nmtd->info;
+ 
+-	if (chip != -1 && allow_clk_stop(info))
+-		clk_enable(info->clk);
++	if (chip != -1)
++		s3c2410_nand_clk_set_state(info, CLOCK_ENABLE);
+ 
+ 	cur = readl(info->sel_reg);
+ 
+@@ -356,8 +386,8 @@ static void s3c2410_nand_select_chip(struct mtd_info *mtd, int chip)
+ 
+ 	writel(cur, info->sel_reg);
+ 
+-	if (chip == -1 && allow_clk_stop(info))
+-		clk_disable(info->clk);
++	if (chip == -1)
++		s3c2410_nand_clk_set_state(info, CLOCK_SUSPEND);
+ }
+ 
+ /* s3c2410_nand_hwcontrol
+@@ -694,8 +724,7 @@ static int s3c24xx_nand_remove(struct platform_device *pdev)
+ 	/* free the common resources */
+ 
+ 	if (info->clk != NULL && !IS_ERR(info->clk)) {
+-		if (!allow_clk_stop(info))
+-			clk_disable(info->clk);
++		s3c2410_nand_clk_set_state(info, CLOCK_DISABLE);
+ 		clk_put(info->clk);
+ 	}
+ 
+@@ -947,7 +976,7 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
+ 		goto exit_error;
+ 	}
+ 
+-	clk_enable(info->clk);
++	s3c2410_nand_clk_set_state(info, CLOCK_ENABLE);
+ 
+ 	/* allocate and map the resource */
+ 
+@@ -1026,9 +1055,9 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
+ 		goto exit_error;
+ 	}
+ 
+-	if (allow_clk_stop(info)) {
++	if (allow_clk_suspend(info)) {
+ 		dev_info(&pdev->dev, "clock idle support enabled\n");
+-		clk_disable(info->clk);
++		s3c2410_nand_clk_set_state(info, CLOCK_SUSPEND);
+ 	}
+ 
+ 	pr_debug("initialised ok\n");
+@@ -1059,8 +1088,7 @@ static int s3c24xx_nand_suspend(struct platform_device *dev, pm_message_t pm)
+ 
+ 		writel(info->save_sel | info->sel_bit, info->sel_reg);
+ 
+-		if (!allow_clk_stop(info))
+-			clk_disable(info->clk);
++		s3c2410_nand_clk_set_state(info, CLOCK_DISABLE);
+ 	}
+ 
+ 	return 0;
+@@ -1072,7 +1100,7 @@ static int s3c24xx_nand_resume(struct platform_device *dev)
+ 	unsigned long sel;
+ 
+ 	if (info) {
+-		clk_enable(info->clk);
++		s3c2410_nand_clk_set_state(info, CLOCK_ENABLE);
+ 		s3c2410_nand_inithw(info);
+ 
+ 		/* Restore the state of the nFCE line. */
+@@ -1082,8 +1110,7 @@ static int s3c24xx_nand_resume(struct platform_device *dev)
+ 		sel |= info->save_sel & info->sel_bit;
+ 		writel(sel, info->sel_reg);
+ 
+-		if (allow_clk_stop(info))
+-			clk_disable(info->clk);
++		s3c2410_nand_clk_set_state(info, CLOCK_SUSPEND);
+ 	}
+ 
+ 	return 0;
 diff --git a/drivers/serial/samsung.c b/drivers/serial/samsung.c
 index ac1f0b0..3a1fdb7 100644
 --- a/drivers/serial/samsung.c
@@ -1086,6 +2432,167 @@ index 3f8ec8d..a428047 100644
  		glamofb_reg_write(gfb, GLAMO_REG_LCD_COMMAND1,
  			  GLAMO_LCD_CMD_TYPE_DISP |
  			  GLAMO_LCD_CMD_DATA_DISP_FIRE);
+diff --git a/include/linux/lis302dl.h b/include/linux/lis302dl.h
+new file mode 100644
+index 0000000..01c4ac9
+--- /dev/null
++++ b/include/linux/lis302dl.h
+@@ -0,0 +1,155 @@
++#ifndef _LINUX_LIS302DL_H
++#define _LINUX_LIS302DL_H
++
++#include <linux/types.h>
++#include <linux/spi/spi.h>
++#include <linux/input.h>
++
++
++struct lis302dl_info;
++
++struct lis302dl_platform_data {
++	char *name;
++	unsigned long pin_chip_select;
++	unsigned long pin_clk;
++	unsigned long pin_mosi;
++	unsigned long pin_miso;
++	int open_drain;
++	int interrupt;
++	void (*lis302dl_bitbang)(struct lis302dl_info *lis, u8 *tx,
++			int tx_bytes, u8 *rx, int rx_bytes);
++	void (*lis302dl_suspend_io)(struct lis302dl_info *, int resuming);
++	int (*lis302dl_bitbang_reg_read)(struct lis302dl_info *, u8 reg);
++	void (*lis302dl_bitbang_reg_write)(struct lis302dl_info *, u8 reg,
++									u8 val);
++};
++
++struct lis302dl_info {
++	struct lis302dl_platform_data *pdata;
++	struct device *dev;
++	struct input_dev *input_dev;
++	unsigned int flags;
++	unsigned int threshold;
++	unsigned int duration;
++	u32 overruns;
++	struct {
++		unsigned int threshold; /* mg */
++		unsigned int duration;  /* ms */
++	} wakeup;
++	u_int8_t regs[0x40];
++};
++
++enum lis302dl_reg {
++	LIS302DL_REG_WHO_AM_I		= 0x0f,
++	LIS302DL_REG_CTRL1		= 0x20,
++	LIS302DL_REG_CTRL2		= 0x21,
++	LIS302DL_REG_CTRL3		= 0x22,
++	LIS302DL_REG_HP_FILTER_RESET	= 0x23,
++	LIS302DL_REG_STATUS		= 0x27,
++	LIS302DL_REG_OUT_X		= 0x29,
++	LIS302DL_REG_OUT_Y		= 0x2b,
++	LIS302DL_REG_OUT_Z		= 0x2d,
++	LIS302DL_REG_FF_WU_CFG_1	= 0x30,
++	LIS302DL_REG_FF_WU_SRC_1	= 0x31,
++	LIS302DL_REG_FF_WU_THS_1	= 0x32,
++	LIS302DL_REG_FF_WU_DURATION_1	= 0x33,
++	LIS302DL_REG_FF_WU_CFG_2	= 0x34,
++	LIS302DL_REG_FF_WU_SRC_2	= 0x35,
++	LIS302DL_REG_FF_WU_THS_2	= 0x36,
++	LIS302DL_REG_FF_WU_DURATION_2	= 0x37,
++	LIS302DL_REG_CLICK_CFG		= 0x38,
++	LIS302DL_REG_CLICK_SRC		= 0x39,
++	LIS302DL_REG_CLICK_THSY_X	= 0x3b,
++	LIS302DL_REG_CLICK_THSZ		= 0x3c,
++	LIS302DL_REG_CLICK_TIME_LIMIT	= 0x3d,
++	LIS302DL_REG_CLICK_LATENCY	= 0x3e,
++	LIS302DL_REG_CLICK_WINDOW	= 0x3f,
++};
++
++enum lis302dl_reg_ctrl1 {
++	LIS302DL_CTRL1_Xen		= 0x01,
++	LIS302DL_CTRL1_Yen		= 0x02,
++	LIS302DL_CTRL1_Zen		= 0x04,
++	LIS302DL_CTRL1_STM		= 0x08,
++	LIS302DL_CTRL1_STP		= 0x10,
++	LIS302DL_CTRL1_FS		= 0x20,
++	LIS302DL_CTRL1_PD		= 0x40,
++	LIS302DL_CTRL1_DR		= 0x80,
++};
++
++enum lis302dl_reg_ctrl2 {
++	LIS302DL_CTRL2_HPC1		= 0x01,
++	LIS302DL_CTRL2_HPC2		= 0x02,
++	LIS302DL_CTRL2_HPFF1		= 0x04,
++	LIS302DL_CTRL2_HPFF2		= 0x08,
++	LIS302DL_CTRL2_FDS		= 0x10,
++	LIS302DL_CTRL2_BOOT		= 0x40,
++	LIS302DL_CTRL2_SIM		= 0x80,
++};
++enum lis302dl_reg_ctrl3 {
++	LIS302DL_CTRL3_PP_OD		= 0x40,
++	LIS302DL_CTRL3_IHL		= 0x80,
++};
++
++enum lis302dl_reg_status {
++	LIS302DL_STATUS_XDA		= 0x01,
++	LIS302DL_STATUS_YDA		= 0x02,
++	LIS302DL_STATUS_ZDA		= 0x04,
++	LIS302DL_STATUS_XYZDA		= 0x08,
++	LIS302DL_STATUS_XOR		= 0x10,
++	LIS302DL_STATUS_YOR		= 0x20,
++	LIS302DL_STATUS_ZOR		= 0x40,
++	LIS302DL_STATUS_XYZOR		= 0x80,
++};
++
++/* Wakeup/freefall interrupt defs */
++enum lis302dl_reg_ffwucfg {
++	LIS302DL_FFWUCFG_XLIE		= 0x01,
++	LIS302DL_FFWUCFG_XHIE		= 0x02,
++	LIS302DL_FFWUCFG_YLIE		= 0x04,
++	LIS302DL_FFWUCFG_YHIE		= 0x08,
++	LIS302DL_FFWUCFG_ZLIE		= 0x10,
++	LIS302DL_FFWUCFG_ZHIE		= 0x20,
++	LIS302DL_FFWUCFG_LIR		= 0x40,
++	LIS302DL_FFWUCFG_AOI		= 0x80,
++};
++
++enum lis302dl_reg_ffwuths {
++	LIS302DL_FFWUTHS_DCRM		= 0x80,
++};
++
++enum lis302dl_reg_ffwusrc {
++	LIS302DL_FFWUSRC_XL		= 0x01,
++	LIS302DL_FFWUSRC_XH		= 0x02,
++	LIS302DL_FFWUSRC_YL		= 0x04,
++	LIS302DL_FFWUSRC_YH		= 0x08,
++	LIS302DL_FFWUSRC_ZL		= 0x10,
++	LIS302DL_FFWUSRC_ZH		= 0x20,
++	LIS302DL_FFWUSRC_IA		= 0x40,
++};
++
++enum lis302dl_reg_cloik_src {
++	LIS302DL_CLICKSRC_SINGLE_X	= 0x01,
++	LIS302DL_CLICKSRC_DOUBLE_X	= 0x02,
++	LIS302DL_CLICKSRC_SINGLE_Y	= 0x04,
++	LIS302DL_CLICKSRC_DOUBLE_Y	= 0x08,
++	LIS302DL_CLICKSRC_SINGLE_Z	= 0x10,
++	LIS302DL_CLICKSRC_DOUBLE_Z	= 0x20,
++	LIS302DL_CLICKSRC_IA		= 0x40,
++};
++
++#define LIS302DL_WHO_AM_I_MAGIC		0x3b
++
++#define LIS302DL_F_WUP_FF_1		0x0001	/* wake up from free fall */
++#define LIS302DL_F_WUP_FF_2		0x0002
++#define LIS302DL_F_WUP_FF		0x0003
++#define LIS302DL_F_WUP_CLICK	0x0004
++#define LIS302DL_F_POWER		0x0010
++#define LIS302DL_F_FS			0x0020 	/* ADC full scale */
++#define LIS302DL_F_INPUT_OPEN 	0x0040  /* Set if input device is opened */
++#define LIS302DL_F_IRQ_WAKE 	0x0080  /* IRQ is setup in wake mode */
++#define LIS302DL_F_DR			0x0100 	/* Data rate, 400Hz/100Hz */
++
++
++#endif /* _LINUX_LIS302DL_H */
++
 diff --git a/include/linux/mfd/glamo-core.h b/include/linux/mfd/glamo-core.h
 index 8275a2f..8e3e56e 100644
 --- a/include/linux/mfd/glamo-core.h
@@ -1121,7 +2628,7 @@ index 28ee2e6..d5b4a40 100644
  	K = Kpart & 0xFFFFFFFF;
  
 diff --git a/sound/soc/s3c24xx/neo1973_wm8753.c b/sound/soc/s3c24xx/neo1973_wm8753.c
-index dc5893d..37835ca 100644
+index dc5893d4..37835ca 100644
 --- a/sound/soc/s3c24xx/neo1973_wm8753.c
 +++ b/sound/soc/s3c24xx/neo1973_wm8753.c
 @@ -23,6 +23,7 @@

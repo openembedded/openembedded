@@ -25531,7 +25531,7 @@ index 0000000..46b613c
 +#endif /* _IEEE80211_NODE_H_ */
 diff --git a/drivers/ar6000/include/ini_dset.h b/drivers/ar6000/include/ini_dset.h
 new file mode 100644
-index 0000000..410f2b5
+index 0000000..410f2b52
 --- /dev/null
 +++ b/drivers/ar6000/include/ini_dset.h
 @@ -0,0 +1,40 @@
@@ -51089,7 +51089,7 @@ index e97bdf1..0000000
 -MODULE_DESCRIPTION("ALSA SoC WM8753 Neo1973 GTA02");
 -MODULE_LICENSE("GPL");
 diff --git a/sound/soc/s3c24xx/neo1973_wm8753.c b/sound/soc/s3c24xx/neo1973_wm8753.c
-index f4f2ee7..dc5893d 100644
+index f4f2ee7..dc5893d4 100644
 --- a/sound/soc/s3c24xx/neo1973_wm8753.c
 +++ b/sound/soc/s3c24xx/neo1973_wm8753.c
 @@ -1,15 +1,16 @@
