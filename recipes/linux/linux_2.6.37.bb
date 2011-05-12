@@ -16,10 +16,8 @@ DEFAULT_PREFERENCE_qemumipsel = "1"
 DEFAULT_PREFERENCE_qemumips64 = "1"
 DEFAULT_PREFERENCE_visstrim_m10 = "1"
 DEFAULT_PREFERENCE_ben-nanonote = "1"
-
-# needs more testing before making it new default
-# DEFAULT_PREFERENCE_om-gta02 = "1"
-# DEFAULT_PREFERENCE_om-gta01 = "1"
+DEFAULT_PREFERENCE_om-gta02 = "1"
+DEFAULT_PREFERENCE_om-gta01 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.6.bz2;apply=yes;name=stablepatch \
