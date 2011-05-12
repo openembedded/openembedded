@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.24.7
-# Thu Feb  3 15:28:12 2011
+# Wed May 11 14:11:43 2011
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -644,7 +644,7 @@ CONFIG_ATA=m
 # CONFIG_SATA_VITESSE is not set
 # CONFIG_SATA_INIC162X is not set
 CONFIG_SATA_OX810=m
-# CONFIG_SATA_HIPOX_SINGLE_SATA is not set
+CONFIG_SATA_HIPOX_SINGLE_SATA=y
 # CONFIG_SATA_HIPOX_DISK_LIGHT is not set
 # CONFIG_PATA_ALI is not set
 # CONFIG_PATA_AMD is not set
