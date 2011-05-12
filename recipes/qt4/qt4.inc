@@ -17,8 +17,9 @@ EXTRA_OEMAKE = "-e"
 EXTRA_ENV = 'QMAKE="${STAGING_BINDIR_NATIVE}/qmake2 -after \
              INCPATH+=${STAGING_INCDIR}/freetype2 LIBS+=-L${STAGING_LIBDIR}" \
              QMAKESPEC="${QMAKESPEC}" LINK="${CXX} -Wl,-rpath-link,${STAGING_LIBDIR}" \
-             AR="${TARGET_PREFIX}ar cqs" \
-             MOC="${STAGING_BINDIR_NATIVE}/moc4" UIC="${STAGING_BINDIR_NATIVE}/uic4" MAKE="make -e"'
+             AR="${TARGET_PREFIX}ar cqs" QMAKE_LRELEASE="${STAGING_BINDIR_NATIVE}/lrelease4" \
+             QMAKE_RCC="${STAGING_BINDIR_NATIVE}/rcc4" QMAKE_MOC="${STAGING_BINDIR_NATIVE}/moc4" \
+             QMAKE_UIC="${STAGING_BINDIR_NATIVE}/uic4" MAKE="make -e"'
 
 export QT_CONF_PATH="${WORKDIR}/qt.conf"
 
