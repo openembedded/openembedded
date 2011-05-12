@@ -39,13 +39,13 @@ PR = "r1"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_shr = "1"
 
-DEPENDS = "glib-2.0-native gtk-doc zlib"
+DEPENDS = "glib-2.0-native gtk-doc zlib libffi"
 # needed for gdbus-codegen
 RDEPENDS_${PN} = "python-argparse"
 RREPLACES_${PN} = "gdbus-binding-tool"
 RCONFLICTS_${PN} = "gdbus-binding-tool"
 DEPENDS_virtclass-native = "gettext-native gtk-doc-native \
-                            pkgconfig-native python-argparse-native"
+                            pkgconfig-native python-argparse-native libffi-native"
 
 SRC_URI = "git://git.gnome.org/glib;protocol=git;branch=master \
            file://configure-libtool.patch \
