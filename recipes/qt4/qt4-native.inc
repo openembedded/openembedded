@@ -6,7 +6,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 PROVIDES = "qt4-tools-native"
 
-INC_PR = "r0"
+INC_PR = "r1"
 
 inherit native
 
@@ -51,6 +51,7 @@ TOBUILD = "\
   src/gui \
   src/testlib \
   src/qt3support \
+  tools/linguist/lrelease \
 "
 
 do_compile() {
