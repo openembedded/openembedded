@@ -10,9 +10,11 @@ SRC_URI = "\
 	file://0006-freetype-host-includes.patch \
 	file://0001-Added-Openembedded-crossarch-option.patch \
 	file://0010-phonon-gstreamer-rgb-endianess.patch \
+	file://fix-translations.patch \
 	file://g++.conf \
 	file://linux.conf \
-           "
+	"
+
 # Set necessary variables in the profile
 SRC_URI += "file://qte.sh"
 
@@ -22,7 +24,7 @@ FILES_${QT_BASE_NAME}-tools                += "${bindir}/qml"
 
 do_configure_prepend() {
     for pro in $(find ${S} -name "*.pro") ; do
-        sed -i 's:$$QT_BUILD_TREE/bin/lrelease:${OE_QMAKE_LRELEASE}:g' $pro
+        sed -i 's:$$LRELEASE:${STAGING_BINDIR_NATIVE}/lrelease4:g' $pro
     done
 
     sed -i s:SEDME:${S}: ${WORKDIR}/linux.conf
@@ -32,10 +34,6 @@ do_configure_prepend() {
     -e /QMAKE_UIC3\ /d \
     -e /QMAKE_RCC\ /d \
     ${S}/configure
-}
-
-do_configure_append() {
-    sed -e '/QMAKE_TARGET /d' -e '/TARGET /d' -i ${S}/translations/Makefile
 }
 
 QT_GLFLAGS ?= ""
@@ -48,10 +46,6 @@ do_compile() {
     fi
 
     unset CFLAGS CXXFLAGS
-    install -m 0755 ${STAGING_BINDIR_NATIVE}/rcc4 ${S}/bin/rcc
-    install -m 0755 ${STAGING_BINDIR_NATIVE}/moc4 ${S}/bin/moc
-    install -m 0755 ${STAGING_BINDIR_NATIVE}/uic4 ${S}/bin/uic
-    install -m 0755 ${STAGING_BINDIR_NATIVE}/lrelease4 ${S}/bin/lrelease
 
     oe_runmake ${EXTRA_ENV}
 }
