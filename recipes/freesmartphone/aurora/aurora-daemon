@@ -1,0 +1,3 @@
+#!/bin/sh
+export QWS_MOUSE_PROTO="LinuxInput:/dev/input/event6"
+aurora -qws > /tmp/aurora.log 2>&1 &
