@@ -12,12 +12,13 @@ KERNEL=="ttySC1", SUBSYSTEMS=="platform", SYMLINK+="ttyBMI3"
 ACTION=="add" KERNEL=="mmcblk1*", RUN+="/sbin/modprobe g_file_storage file=/dev/%k removable=1"
 ACTION=="remove" KERNEL=="mmcblk1*", RUN+="/sbin/modprobe -r g_file_storage"
 # For Novatel USB 3G (CDMA) Dongle
-ATTRS{idVendor}=="1410", ATTRS{idProduct}=="5030", RUN+="/usr/bin/eject %k"
-ATTRS{idVendor}=="1410", ATTRS{idProduct}=="6000", RUN+="/sbin/modprobe usbserial vendor=0x1410 product=0x6000"
+SUBSYSTEMS=="scsi",DRIVERS=="sr",ATTRS{vendor}=="Novatel ",ACTION=="add",RUN+="/usr/bin/eject %k"
 # For Sprint U301 3g/4g
 ATTRS{idVendor}=="1a40", ATTRS{idProduct}=="0101", RUN+="/usr/bin/eject %k" 
 ATTRS{idVendor}=="16d8", ATTRS{idProduct}=="6008" RUN+="/sbin/modprobe usbserial vendor=0x16d8 product=0x6008"
 # For libertas_sdio named eth1
 SUBSYSTEMS=="sdio", DRIVERS=="libertas_sdio", NAME="wlan0"
 KERNEL=="event*",ATTRS{name}=="twl4030_pwrbutton",SYMLINK+="input/power_button"
-KERNEL=="event*",ATTRS{name}=="omap_twl4030keypad",SYMLINK+="input/user_button"
+KERNEL=="event*",ATTRS{name}=="TWL4030 Keypad",SYMLINK+="input/user_button"
+# Set eth1assoc as the default trigger for the wifi-green LED
+SUBSYSTEMS=="sdio", DRIVERS=="libertas_sdio", NAME="wlan0", RUN+="/etc/udev/scripts/wlan-trigger.sh"
