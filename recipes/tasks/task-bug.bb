@@ -1,6 +1,6 @@
 # Copyright (C) 2011 Bug Labs, Inc
 
-PR = "r88"
+PR = "r89"
 
 ALLOW_EMPTY = "1"
 
@@ -25,7 +25,7 @@ RDEPENDS_${PN} = "${MACHINE_EXTRA_RRECOMMENDS} \
 RDEPENDS_${PN}_append_bug20 = "bug2v4l2"
 
 RDEPENDS_${PN}-network = "\
-                  dnsmasq \
+                  dnsmasq-dbus \
                   hostap-daemon \
                   iptables \
                   eject \
