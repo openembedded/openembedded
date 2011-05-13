@@ -4,7 +4,7 @@ LICENSE = "MIT BSD"
 LIC_FILES_CHKSUM = "file://COPYING;md5=f523ab5986cc79b52a90d2ac3d5454a2"
 SRCNAME = "e"
 PV = "0.16.999.060+svnr${SRCPV}"
-PR = "r19"
+PR = "r20"
 SRCREV = "${EFL_SRCREV}"
 
 inherit e update-alternatives gettext
