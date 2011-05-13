@@ -3,7 +3,7 @@ DEPENDS = "eet evas ecore edje efreet edbus eeze"
 LICENSE = "MIT BSD"
 SRCNAME = "e"
 PV = "0.16.999.060+svnr${SRCPV}"
-PR = "r20"
+PR = "r22"
 SRCREV = "${EFL_SRCREV}"
 
 inherit e update-alternatives
@@ -13,7 +13,6 @@ SRC_URI = "\
   ${E_SVN}/trunk;module=${SRCNAME};proto=http \
   file://enlightenment_start.oe \
   file://applications.menu \
-  file://startup-debug.patch \
 "
 
 SRC_URI_append_shr = " \
