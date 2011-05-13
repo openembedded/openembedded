@@ -1,9 +1,9 @@
-DESCRIPTION = "World war VI is a retro styled side scrolling shoot'em up arcade game"
+DESCRIPTION = "Word war vi is a retro styled side scrolling shoot'em up arcade game"
 HOMEPAGE = "http://wordwarvi.sourceforge.net/"
 LICENSE = "GPLv2"
 SECTION = "x/games"
 PRIORITY = "optional"
-PR = "r0"
+PR = "r1"
 
 DEPENDS = "portaudio-v19 libvorbis gtk+ glib-2.0"
 
