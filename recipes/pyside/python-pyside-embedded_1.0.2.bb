@@ -1,6 +1,6 @@
 require python-pyside.inc
 
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 SRC_URI += " \
  file://no-accessibility-support.patch \
  file://support-qws.patch \
