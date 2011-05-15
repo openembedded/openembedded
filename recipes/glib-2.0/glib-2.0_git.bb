@@ -51,7 +51,7 @@ SRC_URI = "git://git.gnome.org/glib;protocol=git;branch=master \
            file://configure-libtool.patch \
            file://60_wait-longer-for-threads-to-die.patch \
            file://g_once_init_enter.patch \
-	   file://remove.test.for.qsort_r.patch \
+           file://remove.test.for.qsort_r.patch \
           "
 SRCREV = "d97cbc6731deab137770bc0fe9c69b06f689f5b4"
 PV = "2.29.3"
