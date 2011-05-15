@@ -2,7 +2,9 @@ DESCRIPTION = "Shiboken is a plugin (front-end) for Generator Runner and a runti
 bindings for C++ libraries using CPython source code."
 HOMEPAGE = "http://www.pyside.org"
 LICENSE = "LGPL"
-INC_PR = "r0"
+INC_PR = "r1"
+
+DEPENDS = "generatorrunner-native"
 
 SRC_URI = "http://www.pyside.org/files/shiboken-${PV}.tar.bz2"
 S = "${WORKDIR}/shiboken-${PV}"
