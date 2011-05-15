@@ -1,9 +1,9 @@
 QTV = "4.7"
 DESCRIPTION = "Python Bindings for Qt ${QTV}"
-DEPENDS = "apiextractor-native generatorrunner-native libshiboken"
+DEPENDS = "apiextractor-native generatorrunner-native shiboken-native libshiboken"
 RDEPENDS_${pn} = "python-core"
 PROVIDES = "python-pyside"
-INC_PR = "r0"
+INC_PR = "r1"
 
 SRC_URI = " \
  http://www.pyside.org/files/pyside-qt${QTV}+${PV}.tar.bz2;name=code \
