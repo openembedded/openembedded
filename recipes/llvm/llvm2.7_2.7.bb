@@ -1,6 +1,6 @@
 require llvm.inc
 
-PR = "r10"
+PR = "r11"
 
 DEPENDS = "llvm-common llvm2.7-native"
 
