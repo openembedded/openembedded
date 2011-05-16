@@ -7,8 +7,8 @@ LICENSE = "GPL"
 PR = "r0"
 
 SRC_URI = "http://www.riverbankcomputing.co.uk/static/Downloads/sip4/sip-${PV}.tar.gz"
-SRC_URI[md5sum] = "0f8e8305b14c1812191de2e0ee22fea9"
-SRC_URI[sha256sum] = "e9d66e8830c2a58e6c17b9952710f67d495ddb84ce6f3d89400c8b52913381b5"
+SRC_URI[md5sum] = "9df80f88e0e4022cdd8a8891c6c38048"
+SRC_URI[sha256sum] = "3e42bea028a1713558b5b8a317af4195d3b0feaa6c179d99401a7048f1a3cec4"
 S = "${WORKDIR}/sip-${PV}/sipgen"
 
 inherit qt4x11 native python-dir
