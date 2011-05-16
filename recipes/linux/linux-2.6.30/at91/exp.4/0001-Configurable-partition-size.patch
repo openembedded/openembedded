@@ -1,0 +1,403 @@
+From ed00f95d313707ff049d8a2edd283d5496a85cbf Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Wed, 26 Jan 2011 09:21:10 +0100
+Subject: [PATCH 1/2] Configurable partition size
+
+---
+ arch/arm/mach-at91/Kconfig                     |   31 ++++++++++++++++++++++++
+ arch/arm/mach-at91/board-at572d940hf_ek.c      |   16 ++++++++++--
+ arch/arm/mach-at91/board-cap9adk.c             |   14 +++++++++-
+ arch/arm/mach-at91/board-dk.c                  |   14 +++++++++-
+ arch/arm/mach-at91/board-sam9260ek.c           |   13 +++++++---
+ arch/arm/mach-at91/board-sam9261ek.c           |   13 +++++++---
+ arch/arm/mach-at91/board-sam9263ek.c           |   13 +++++++---
+ arch/arm/mach-at91/board-sam9g20ek-2slot-mmc.c |    6 ++--
+ arch/arm/mach-at91/board-sam9g20ek.c           |    6 ++--
+ arch/arm/mach-at91/board-sam9m10g45ek.c        |   13 +++++++---
+ arch/arm/mach-at91/board-sam9rlek.c            |   13 +++++++---
+ 11 files changed, 119 insertions(+), 33 deletions(-)
+
+diff --git a/arch/arm/mach-at91/Kconfig b/arch/arm/mach-at91/Kconfig
+index 17e09cb..46d1926 100644
+--- a/arch/arm/mach-at91/Kconfig
++++ b/arch/arm/mach-at91/Kconfig
+@@ -96,6 +96,7 @@ config MACH_ONEARM
+ config ARCH_AT91RM9200DK
+ 	bool "Atmel AT91RM9200-DK Development board"
+ 	depends on ARCH_AT91RM9200
++	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
+ 	help
+ 	  Select this if you are using Atmel's AT91RM9200-DK Development board.
+ 	  (Discontinued)
+@@ -213,6 +214,7 @@ comment "AT91SAM9260 / AT91SAM9XE Board Type"
+ config MACH_AT91SAM9260EK
+ 	bool "Atmel AT91SAM9260-EK / AT91SAM9XE Evaluation Kit"
+ 	depends on ARCH_AT91SAM9260
++	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
+ 	help
+ 	  Select this if you are using Atmel's AT91SAM9260-EK or AT91SAM9XE Evaluation Kit
+ 	  <http://www.atmel.com/dyn/products/tools_card.asp?tool_id=3933>
+@@ -278,6 +280,7 @@ comment "AT91SAM9261 Board Type"
+ config MACH_AT91SAM9261EK
+ 	bool "Atmel AT91SAM9261-EK Evaluation Kit"
+ 	depends on ARCH_AT91SAM9261
++	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
+ 	help
+ 	  Select this if you are using Atmel's AT91SAM9261-EK Evaluation Kit.
+ 	  <http://www.atmel.com/dyn/products/tools_card.asp?tool_id=3820>
+@@ -293,6 +296,7 @@ comment "AT91SAM9G10 Board Type"
+ config MACH_AT91SAM9G10EK
+ 	bool "Atmel AT91SAM9G10-EK Evaluation Kit"
+ 	depends on ARCH_AT91SAM9G10
++	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
+ 	help
+ 	  Select this if you are using Atmel's AT91SAM9G10-EK Evaluation Kit.
+ 	  <http://www.atmel.com/dyn/products/tools_card.asp?tool_id=4588>
+@@ -308,6 +312,7 @@ comment "AT91SAM9263 Board Type"
+ config MACH_AT91SAM9263EK
+ 	bool "Atmel AT91SAM9263-EK Evaluation Kit"
+ 	depends on ARCH_AT91SAM9263
++	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
+ 	help
+ 	  Select this if you are using Atmel's AT91SAM9263-EK Evaluation Kit.
+ 	  <http://www.atmel.com/dyn/products/tools_card.asp?tool_id=4057>
+@@ -350,6 +355,7 @@ comment "AT91SAM9RL Board Type"
+ config MACH_AT91SAM9RLEK
+ 	bool "Atmel AT91SAM9RL-EK Evaluation Kit"
+ 	depends on ARCH_AT91SAM9RL
++	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
+ 	help
+ 	  Select this if you are using Atmel's AT91SAM9RL-EK Evaluation Kit.
+ 
+@@ -364,6 +370,7 @@ comment "AT91SAM9G20 Board Type"
+ config MACH_AT91SAM9G20EK
+ 	bool "Atmel AT91SAM9G20-EK Evaluation Kit"
+ 	depends on ARCH_AT91SAM9G20
++	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
+ 	help
+ 	  Select this if you are using Atmel's AT91SAM9G20-EK Evaluation Kit
+ 	  that embeds only one SD/MMC slot.
+@@ -371,6 +378,7 @@ config MACH_AT91SAM9G20EK
+ config MACH_AT91SAM9G20EK_2MMC
+ 	bool "Atmel AT91SAM9G20-EK Evaluation Kit with 2 SD/MMC Slots"
+ 	depends on ARCH_AT91SAM9G20
++	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
+ 	help
+ 	  Select this if you are using an Atmel AT91SAM9G20-EK Evaluation Kit
+ 	  with 2 SD/MMC Slots. This is the case for AT91SAM9G20-EK rev. C and
+@@ -408,6 +416,7 @@ comment "AT91SAM9G45 Board Type"
+ config MACH_AT91SAM9G45EKES
+ 	bool "Atmel AT91SAM9G45-EKES Evaluation Kit"
+ 	depends on ARCH_AT91SAM9G45
++	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
+ 	help
+ 	  Select this if you are using Atmel's AT91SAM9G45-EKES Evaluation Kit.
+ 	  "ES" at the end of the name means that this board is an
+@@ -426,6 +435,7 @@ choice
+ 
+ config MACH_AT91SAM9M10EKES
+         bool "Atmel AT91SAM9M10-EKES Evaluation Kit"
++	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
+         help
+           Select this if you are using Atmel's AT91SAM9M10-EKES Evaluation Kit.
+           "ES" at the end of the name means that this board is an
+@@ -433,6 +443,7 @@ config MACH_AT91SAM9M10EKES
+ 
+ config MACH_AT91SAM9M10G45EK
+         bool "Atmel AT91SAM9M10G45-EK Evaluation Kit"
++	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
+         help
+           Select this if you are using Atmel's AT91SAM9M10G45-EK Evaluation Kit.
+ 	  <http://atmel.com/dyn/products/tools_card_v2.asp?tool_id=4735>
+@@ -450,6 +461,7 @@ comment "AT91CAP9 Board Type"
+ config MACH_AT91CAP9ADK
+ 	bool "Atmel AT91CAP9A-DK Evaluation Kit"
+ 	depends on ARCH_AT91CAP9
++	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
+ 	help
+ 	  Select this if you are using Atmel's AT91CAP9A-DK Evaluation Kit.
+ 	  <http://www.atmel.com/dyn/products/tools_card.asp?tool_id=4138>
+@@ -465,6 +477,7 @@ comment "AT572D940HF Board Type"
+ config MACH_AT572D940HFEB
+ 	bool "AT572D940HF-EK"
+ 	depends on ARCH_AT572D940HF
++	select MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
+ 	help
+ 	  Select this if you are using Atmel's AT572D940HF-EK evaluation kit.
+ 	  <http://www.atmel.com/products/diopsis/default.asp>
+@@ -504,6 +517,24 @@ config MTD_NAND_ATMEL_BUSWIDTH_16
+ 	  On AT91SAM926x boards both types of NAND flash can be present
+ 	  (8 and 16 bit data bus width).
+ 
++config MTD_NAND_ATMEL_ROOTFS_SIZE
++	int "Size NAND rootfs in MB"
++	range 8 250
++	depends on MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
++	default "124"
++	help
++	  Many Atmel development boards has a NAND Flash, 
++	  divided into three partitions.
++          1) Boot partition (4 MB)
++	  2) Root FS
++	  3) Data partition
++	  This allows you to configure the size of the root fs
++	  with the remainder ending up in the data partition.
++	  The legal values are between 8 and 250
++
++config MTD_NAND_ALLOW_CONFIGURABLE_ROOTFS_SIZE
++	bool
++
+ # ----------------------------------------------------------
+ 
+ comment "AT91 Feature Selections"
+diff --git a/arch/arm/mach-at91/board-at572d940hf_ek.c b/arch/arm/mach-at91/board-at572d940hf_ek.c
+index f5bd486..171d675 100644
+--- a/arch/arm/mach-at91/board-at572d940hf_ek.c
++++ b/arch/arm/mach-at91/board-at572d940hf_ek.c
+@@ -114,10 +114,20 @@ static struct at91_eth_data __initdata eb_eth_data = {
+  */
+ static struct mtd_partition __initdata eb_nand_partition[] = {
+ 	{
+-		.name	= "Partition 1",
+-		.offset	= 0,
++		.name   = "Bootstrap",
++		.offset = 0,
++		.size   = 4 * SZ_1M,
++	},
++	{
++		.name	= "Root File System",
++		.offset	= MTDPART_OFS_NXTBLK,
++		.size	= CONFIG_MTD_NAND_ATMEL_ROOTFS_SIZE * SZ_1M,
++	},
++	{
++		.name	= "Data",
++		.offset	= MTDPART_OFS_NXTBLK,
+ 		.size	= MTDPART_SIZ_FULL,
+-	}
++	},
+ };
+ 
+ static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
+diff --git a/arch/arm/mach-at91/board-cap9adk.c b/arch/arm/mach-at91/board-cap9adk.c
+index 52f75c6..de9f921 100644
+--- a/arch/arm/mach-at91/board-cap9adk.c
++++ b/arch/arm/mach-at91/board-cap9adk.c
+@@ -167,8 +167,18 @@ static struct at91_eth_data __initdata cap9adk_macb_data = {
+  */
+ static struct mtd_partition __initdata cap9adk_nand_partitions[] = {
+ 	{
+-		.name	= "NAND partition",
+-		.offset	= 0,
++		.name   = "Bootstrap",
++		.offset = 0,
++		.size   = 4 * SZ_1M,
++	},
++	{
++		.name	= "Root File System",
++		.offset	= MTDPART_OFS_NXTBLK,
++		.size	= CONFIG_MTD_NAND_ATMEL_ROOTFS_SIZE * SZ_1M,
++	},
++	{
++		.name	= "Data",
++		.offset	= MTDPART_OFS_NXTBLK,
+ 		.size	= MTDPART_SIZ_FULL,
+ 	},
+ };
+diff --git a/arch/arm/mach-at91/board-dk.c b/arch/arm/mach-at91/board-dk.c
+index 3efca21..b521503 100644
+--- a/arch/arm/mach-at91/board-dk.c
++++ b/arch/arm/mach-at91/board-dk.c
+@@ -314,8 +314,18 @@ static struct i2c_board_info __initdata dk_i2c_devices[] = {
+ 
+ static struct mtd_partition __initdata dk_nand_partition[] = {
+ 	{
+-		.name	= "NAND Partition 1",
+-		.offset	= 0,
++		.name   = "Bootstrap",
++		.offset = 0,
++		.size   = 4 * SZ_1M,
++	},
++	{
++		.name	= "Root File System",
++		.offset	= MTDPART_OFS_NXTBLK,
++		.size	= CONFIG_MTD_NAND_ATMEL_ROOTFS_SIZE * SZ_1M,
++	},
++	{
++		.name	= "Data",
++		.offset	= MTDPART_OFS_NXTBLK,
+ 		.size	= MTDPART_SIZ_FULL,
+ 	},
+ };
+diff --git a/arch/arm/mach-at91/board-sam9260ek.c b/arch/arm/mach-at91/board-sam9260ek.c
+index e6cab50..c098216 100644
+--- a/arch/arm/mach-at91/board-sam9260ek.c
++++ b/arch/arm/mach-at91/board-sam9260ek.c
+@@ -177,12 +177,17 @@ static struct at91_eth_data __initdata ek_macb_data = {
+  */
+ static struct mtd_partition __initdata ek_nand_partition[] = {
+ 	{
+-		.name	= "Partition 1",
+-		.offset	= 0,
+-		.size	= SZ_256K,
++		.name   = "Bootstrap",
++		.offset = 0,
++		.size   = 4 * SZ_1M,
+ 	},
+ 	{
+-		.name	= "Partition 2",
++		.name	= "Root File System",
++		.offset	= MTDPART_OFS_NXTBLK,
++		.size	= CONFIG_MTD_NAND_ATMEL_ROOTFS_SIZE * SZ_1M,
++	},
++	{
++		.name	= "Data",
+ 		.offset	= MTDPART_OFS_NXTBLK,
+ 		.size	= MTDPART_SIZ_FULL,
+ 	},
+diff --git a/arch/arm/mach-at91/board-sam9261ek.c b/arch/arm/mach-at91/board-sam9261ek.c
+index 8bcd631..66cd246 100644
+--- a/arch/arm/mach-at91/board-sam9261ek.c
++++ b/arch/arm/mach-at91/board-sam9261ek.c
+@@ -184,12 +184,17 @@ static struct at91_mmc_data __initdata ek_mmc_data = {
+  */
+ static struct mtd_partition __initdata ek_nand_partition[] = {
+ 	{
+-		.name	= "Partition 1",
+-		.offset	= 0,
+-		.size	= SZ_256K,
++		.name   = "Bootstrap",
++		.offset = 0,
++		.size   = 4 * SZ_1M,
+ 	},
+ 	{
+-		.name	= "Partition 2",
++		.name	= "Root File System",
++		.offset	= MTDPART_OFS_NXTBLK,
++		.size	= CONFIG_MTD_NAND_ATMEL_ROOTFS_SIZE * SZ_1M,
++	},
++	{
++		.name	= "Data",
+ 		.offset	= MTDPART_OFS_NXTBLK,
+ 		.size	= MTDPART_SIZ_FULL,
+ 	},
+diff --git a/arch/arm/mach-at91/board-sam9263ek.c b/arch/arm/mach-at91/board-sam9263ek.c
+index 7cbec96..f3ad0f4 100644
+--- a/arch/arm/mach-at91/board-sam9263ek.c
++++ b/arch/arm/mach-at91/board-sam9263ek.c
+@@ -174,12 +174,17 @@ static struct at91_eth_data __initdata ek_macb_data = {
+  */
+ static struct mtd_partition __initdata ek_nand_partition[] = {
+ 	{
+-		.name	= "Partition 1",
+-		.offset	= 0,
+-		.size	= SZ_64M,
++		.name   = "Bootstrap",
++		.offset = 0,
++		.size   = 4 * SZ_1M,
+ 	},
+ 	{
+-		.name	= "Partition 2",
++		.name	= "Root File System",
++		.offset	= MTDPART_OFS_NXTBLK,
++		.size	= CONFIG_MTD_NAND_ATMEL_ROOTFS_SIZE * SZ_1M,
++	},
++	{
++		.name	= "Data",
+ 		.offset	= MTDPART_OFS_NXTBLK,
+ 		.size	= MTDPART_SIZ_FULL,
+ 	},
+diff --git a/arch/arm/mach-at91/board-sam9g20ek-2slot-mmc.c b/arch/arm/mach-at91/board-sam9g20ek-2slot-mmc.c
+index 4061d82..51b3008 100644
+--- a/arch/arm/mach-at91/board-sam9g20ek-2slot-mmc.c
++++ b/arch/arm/mach-at91/board-sam9g20ek-2slot-mmc.c
+@@ -130,12 +130,12 @@ static struct mtd_partition __initdata ek_nand_partition[] = {
+ 		.size   = 4 * SZ_1M,
+ 	},
+ 	{
+-		.name	= "Partition 1",
++		.name	= "Root File System",
+ 		.offset	= MTDPART_OFS_NXTBLK,
+-		.size	= 60 * SZ_1M,
++		.size	= CONFIG_MTD_NAND_ATMEL_ROOTFS_SIZE * SZ_1M,
+ 	},
+ 	{
+-		.name	= "Partition 2",
++		.name	= "Data",
+ 		.offset	= MTDPART_OFS_NXTBLK,
+ 		.size	= MTDPART_SIZ_FULL,
+ 	},
+diff --git a/arch/arm/mach-at91/board-sam9g20ek.c b/arch/arm/mach-at91/board-sam9g20ek.c
+index b2117b9..811dd09 100644
+--- a/arch/arm/mach-at91/board-sam9g20ek.c
++++ b/arch/arm/mach-at91/board-sam9g20ek.c
+@@ -129,12 +129,12 @@ static struct mtd_partition __initdata ek_nand_partition[] = {
+ 		.size   = 4 * SZ_1M,
+ 	},
+ 	{
+-		.name	= "Partition 1",
++		.name	= "Root File System",
+ 		.offset	= MTDPART_OFS_NXTBLK,
+-		.size	= 60 * SZ_1M,
++		.size	= CONFIG_MTD_NAND_ATMEL_ROOTFS_SIZE * SZ_1M,
+ 	},
+ 	{
+-		.name	= "Partition 2",
++		.name	= "Data",
+ 		.offset	= MTDPART_OFS_NXTBLK,
+ 		.size	= MTDPART_SIZ_FULL,
+ 	},
+diff --git a/arch/arm/mach-at91/board-sam9m10g45ek.c b/arch/arm/mach-at91/board-sam9m10g45ek.c
+index 0277e6b..6f5d02a 100644
+--- a/arch/arm/mach-at91/board-sam9m10g45ek.c
++++ b/arch/arm/mach-at91/board-sam9m10g45ek.c
+@@ -134,12 +134,17 @@ static struct at91_eth_data __initdata ek_macb_data = {
+  */
+ static struct mtd_partition __initdata ek_nand_partition[] = {
+ 	{
+-		.name	= "Partition 1",
+-		.offset	= 0,
+-		.size	= SZ_64M,
++		.name   = "Bootstrap",
++		.offset = 0,
++		.size   = 4 * SZ_1M,
+ 	},
+ 	{
+-		.name	= "Partition 2",
++		.name	= "Root File System",
++		.offset	= MTDPART_OFS_NXTBLK,
++		.size	= CONFIG_MTD_NAND_ATMEL_ROOTFS_SIZE * SZ_1M,
++	},
++	{
++		.name	= "Data",
+ 		.offset	= MTDPART_OFS_NXTBLK,
+ 		.size	= MTDPART_SIZ_FULL,
+ 	},
+diff --git a/arch/arm/mach-at91/board-sam9rlek.c b/arch/arm/mach-at91/board-sam9rlek.c
+index 23e6546..07f0c03 100644
+--- a/arch/arm/mach-at91/board-sam9rlek.c
++++ b/arch/arm/mach-at91/board-sam9rlek.c
+@@ -83,12 +83,17 @@ static struct at91_mmc_data __initdata ek_mmc_data = {
+  */
+ static struct mtd_partition __initdata ek_nand_partition[] = {
+ 	{
+-		.name	= "Partition 1",
+-		.offset	= 0,
+-		.size	= SZ_256K,
++		.name   = "Bootstrap",
++		.offset = 0,
++		.size   = 4 * SZ_1M,
+ 	},
+ 	{
+-		.name	= "Partition 2",
++		.name	= "Root File System",
++		.offset	= MTDPART_OFS_NXTBLK,
++		.size	= CONFIG_MTD_NAND_ATMEL_ROOTFS_SIZE * SZ_1M,
++	},
++	{
++		.name	= "Data",
+ 		.offset	= MTDPART_OFS_NXTBLK,
+ 		.size	= MTDPART_SIZ_FULL,
+ 	},
+-- 
+1.7.1
+
