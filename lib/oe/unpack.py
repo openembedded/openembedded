@@ -96,6 +96,8 @@ def unpack_file(file, destdir, parameters, env=None):
             if dos:
                 cmd = '%s -a' % cmd
             cmd = "%s '%s'" % (cmd, file)
+        elif file.endswith('.rar'):
+            cmd = 'unrar x %s' % file
 
     if not unpack or not cmd:
         if os.path.isdir(file):
