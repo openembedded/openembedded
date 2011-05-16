@@ -2,7 +2,7 @@ DESCRIPTION = "Perl is a popular scripting language."
 HOMEPAGE = "http://www.perl.org/"
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
-PR = "r10"
+PR = "r11"
 NATIVE_INSTALL_WORKS = "1"
 INHIBIT_DEFAULT_DEPS = "1"
 PATCHTOOL = "patch"
@@ -105,6 +105,7 @@ do_install() {
 	done
 
 	create_wrapper ${D}${bindir}/perl PERL5LIB='$PERL5LIB:${STAGING_LIBDIR}/perl/${PV}:${STAGING_LIBDIR}/perl/'
+	create_wrapper ${D}${bindir}/perl${PV} PERL5LIB='$PERL5LIB:${STAGING_LIBDIR}/perl/${PV}:${STAGING_LIBDIR}/perl/'
 }
 
 do_install_append_nylon() {
