@@ -9,19 +9,19 @@ DEPENDS += "${@base_contains('DISTRO_FEATURES', 'pam', 'libpam', '', d)}"
 PRIORITY = "optional"
 SECTION = "base/shell"
 
+inherit gitpkgv
+PKGV = "v${GITPKGVTAG}"
+
 PV = "v26"
-PR = "r9"
-PR_append = "+${SRCPV}"
+PR = "r10"
 
 inherit autotools vala update-alternatives
 
-TAG = "7a6000a68241d23c9f6f6bde47b2cfa9c18189da"
+TAG = "cb80401132edc9c0a717abb55b54d3a8016cd5ce"
 
 SRC_URI = "git://anongit.freedesktop.org/systemd;protocol=git;tag=${TAG} \
            file://execute.patch \
            file://0001-systemd-disable-xml-file-stuff-and-introspection.patch \
-           file://0002-systemd-analyze-print-hostname-kernelversion-and-arc.patch \
-           file://0003-Angstrom-support.patch \
            file://serial-getty@.service \
           "
 
