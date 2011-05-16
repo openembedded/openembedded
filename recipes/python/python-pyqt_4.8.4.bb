@@ -7,7 +7,7 @@ LICENSE = "GPL"
 DEPENDS = "sip-native python-sip"
 RDEPENDS_${PN} = "python-core"
 SRCNAME = "pyqt"
-PR = "r2"
+PR = "r0"
 
 PYQT_OE_VERSION = "Qt_4_7_1"
 
@@ -16,11 +16,10 @@ SRC_URI = "\
   \
   file://fix_qthelp_ftbfs.diff;apply=yes \
   file://fix_the_QAssitant_ftbfs.diff;apply=yes \
-  file://fix_uiparser_buttonbox.diff;apply=yes \
   file://assistantclient-fix.patch;apply=yes \
 "
-SRC_URI[md5sum] = "d54fd1c37a74864faf42709c8102f254"
-SRC_URI[sha256sum] = "8a59fe9dbb4d7f441dfa2e9405ebbf016aa3da838aa7ccfd429a429457c3d664"
+SRC_URI[md5sum] = "97c5dc1042feb5b3fe20baabad055af1"
+SRC_URI[sha256sum] = "fcfa3ecc0b4fad6d93227751b36a6f81ea104ee19dd26905f52de59f060b3e98"
 S = "${WORKDIR}/PyQt-x11-gpl-${PV}"
 
 # arm and mips machines need some extra patches
