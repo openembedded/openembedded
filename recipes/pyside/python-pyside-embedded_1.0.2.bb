@@ -1,6 +1,7 @@
+inherit qt4e
 require python-pyside.inc
 
-PR = "${INC_PR}.1"
+PR = "${INC_PR}.2"
 SRC_URI += " \
  file://no-accessibility-support.patch \
  file://support-qws.patch \
