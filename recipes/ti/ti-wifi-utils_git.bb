@@ -3,11 +3,11 @@ LICENCE = "TI-BSD"
 
 DEPENDS = "libnl"
 
-PR ="r1"
+PR ="r2"
 PV ="0.0"
 PR_append = "+gitr${SRCPV}"
 
-SRCREV = "7f63af54eb66e5b2515f92c59fcc19a8065ce481"
+SRCREV = "268dbf03091b632c2697eb8028e90fe40513a9d8"
 SRC_URI = "git://github.com/gxk/ti-utils.git;protocol=git"
 
 S = "${WORKDIR}/git"
