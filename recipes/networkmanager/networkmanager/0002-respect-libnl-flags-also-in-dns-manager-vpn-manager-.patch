@@ -1,0 +1,72 @@
+From 80a0d581393d52d1c4047acefb8b855852b2e9d3 Mon Sep 17 00:00:00 2001
+From: Philip Balister <philip@opensdr.com>
+Date: Wed, 4 May 2011 18:24:49 -0400
+Subject: [PATCH 2/2] respect libnl flags also in dns manager, vpn manager, and modem manager
+
+Signed-off-by: Philip Balister <philip@balister.org>
+---
+ src/dns-manager/Makefile.am   |    2 ++
+ src/modem-manager/Makefile.am |    2 ++
+ src/vpn-manager/Makefile.am   |    2 ++
+ 3 files changed, 6 insertions(+), 0 deletions(-)
+
+diff --git a/src/dns-manager/Makefile.am b/src/dns-manager/Makefile.am
+index 7b5fc4f..b51f667 100644
+--- a/src/dns-manager/Makefile.am
++++ b/src/dns-manager/Makefile.am
+@@ -19,12 +19,14 @@ libdns_manager_la_SOURCES = \
+ 	nm-dns-utils.c
+ 
+ libdns_manager_la_CPPFLAGS = \
++	$(LIBNL_CFLAGS) \
+ 	$(DBUS_CFLAGS) \
+ 	$(GLIB_CFLAGS) \
+ 	-DLOCALSTATEDIR=\"$(localstatedir)\"
+ 
+ libdns_manager_la_LIBADD = \
+ 	$(top_builddir)/src/logging/libnm-logging.la \
++	$(LIBNL_LIBS) \
+ 	$(DBUS_LIBS) \
+ 	$(GLIB_LIBS)
+ 
+diff --git a/src/modem-manager/Makefile.am b/src/modem-manager/Makefile.am
+index 22ed809..8fb25b6 100644
+--- a/src/modem-manager/Makefile.am
++++ b/src/modem-manager/Makefile.am
+@@ -19,11 +19,13 @@ libmodem_manager_la_SOURCES = \
+ 	nm-modem-types.h
+ 
+ libmodem_manager_la_CPPFLAGS = \
++	$(LIBNL_CFLAGS) \
+ 	$(DBUS_CFLAGS)
+ 
+ libmodem_manager_la_LIBADD = \
+ 	$(top_builddir)/marshallers/libmarshallers.la \
+ 	$(top_builddir)/src/logging/libnm-logging.la \
++	$(LIBNL_LIBS) \
+ 	$(DBUS_LIBS)
+ 
+ nm-serial-device-glue.h: $(top_srcdir)/introspection/nm-device-serial.xml
+diff --git a/src/vpn-manager/Makefile.am b/src/vpn-manager/Makefile.am
+index 3b20661..ce99728 100644
+--- a/src/vpn-manager/Makefile.am
++++ b/src/vpn-manager/Makefile.am
+@@ -22,6 +22,7 @@ libvpn_manager_la_SOURCES = \
+ 	nm-vpn-connection.h
+ 
+ libvpn_manager_la_CPPFLAGS =	\
++	$(LIBNL_CFLAGS)		\
+ 	$(DBUS_CFLAGS)		\
+ 	$(GLIB_CFLAGS)		\
+ 	-DG_DISABLE_DEPRECATED
+@@ -30,6 +31,7 @@ libvpn_manager_la_LIBADD = \
+ 	$(top_builddir)/marshallers/libmarshallers.la \
+ 	$(top_builddir)/src/logging/libnm-logging.la \
+ 	$(top_builddir)/libnm-util/libnm-util.la \
++	$(LIBNL_LIBS) \
+ 	$(DBUS_LIBS) \
+ 	$(GLIB_LIBS)
+ 
+-- 
+1.7.3.4
+
