@@ -8,19 +8,13 @@ IMAGE_DEBUG_APPEND = '${@base_conditional("DISTRO_TYPE", "debug", "gdb strace md
 
 IMAGE_INSTALL = " \
     task-base \
-    glibc-utils \
-    glibc-charmap-utf-8 \
-    initscripts \
-    netbase \
-    sysfsutils \
-    modutils-initscripts \
-    module-init-tools-depmod \
-    ttf-ubuntu-sans \
+    task-cli-tools \
+    task-cli-tools-python \
     task-fso2-compliance \
-    iptables \
-    alsa-utils-aplay \
-    alsa-utils-alsamixer \
+    \
+    ttf-ubuntu-sans \
     aurora \
+    \
     ${IMAGE_DEBUG_APPEND} \
 "
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
