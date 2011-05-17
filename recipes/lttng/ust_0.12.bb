@@ -1,0 +1,4 @@
+require ${PN}.inc
+
+SRC_URI[md5sum] = "fae6e324a56016658c5b83ec14ba0043"
+SRC_URI[sha256sum] = "215b05f47d0c9e3a2934926a7d14fa9c67025db917c3a1f641df40b08314ab0c"
