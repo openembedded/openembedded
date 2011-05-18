@@ -1,11 +1,11 @@
 DESCRIPTION = "SDR-Shell is Qt GUI for the sdr-core (DttSP) Software Defined Radio"
 LICENSE = "GPLv2"
 
-DEPENDS = "dttsp"
+DEPENDS = "hamlib dttsp libusb1 ncurses"
 
 inherit qt4x11
 
-SRCREV = "129"
+SRCREV = "154"
 PV = "${SRCREV}"
 
 SRC_URI = "svn://sdr-shell.googlecode.com/svn/branches;module=sdr-shell-v4;proto=http \
@@ -26,5 +26,4 @@ do_install() {
 	install -d ${D}${bindir}
 	install -m 0755 ${S}/sdr-shell ${D}${bindir}
 }
-
 
