@@ -1,3 +1,40 @@
-#!/bin/sh
-export QWS_MOUSE_PROTO="LinuxInput:/dev/input/event6"
-aurora -qws > /tmp/aurora.log 2>&1 &
+#! /bin/sh
+#
+# aurora-daemon -- This shell script starts and stops the FSO feature phone client
+#
+# chkconfig: 345 90 10
+# description: aurora is the feature phone client for the FSO framework
+# processname: aurora
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+NAME=aurora
+
+[ -f /etc/default/rcS ] && . /etc/default/rcS
+
+case "$1" in
+    start)
+        echo -n "Starting aurora-daemon: "
+        start-stop-daemon --start --pidfile /var/run/${NAME}.pid --make-pidfile --background -x /usr/bin/${NAME} -- -qws
+        if [ $? = 0 ]; then
+            echo "(ok)"
+        else
+            echo "(failed)"
+        fi
+        ;;
+    stop)
+        echo -n "Stopping aurora-daemon: "
+        start-stop-daemon --stop --pidfile /var/run/${NAME}.pid --oknodo
+        rm -f /var/run/${NAME}.pid
+        echo "(done)"
+        ;;
+    restart|force-reload)
+        $0 stop
+        $0 start
+        ;;
+    *)
+        echo "Usage: /etc/init.d/aurora-daemon {start|stop|restart|force-reload}"
+        exit 1
+        ;;
+esac
+
+exit 0
