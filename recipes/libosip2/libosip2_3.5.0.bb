@@ -7,5 +7,5 @@ SRC_URI = "${GNU_MIRROR}/osip/libosip2-${PV}.tar.gz"
 
 inherit autotools pkgconfig
 
-SRC_URI[md5sum] = "7eb305608256ac2a7a27b66ce52627c8"
-SRC_URI[sha256sum] = "245911a9a48bbe868c4518faf86191f6568fb99d9967d368164a17a83671e8fb"
+SRC_URI[md5sum] = "7691546f6b3349d10007fc1aaff0f4e0"
+SRC_URI[sha256sum] = "dd955daa24d9ce2de6709b8c13e7c04ebc3afa8ac094d6a15a02a075be719a91"
