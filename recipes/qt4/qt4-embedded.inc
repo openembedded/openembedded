@@ -4,7 +4,7 @@ LICENSE = "GPL QPL"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 DEPENDS += "directfb tslib"
-INC_PR = "r29"
+INC_PR = "r30"
 
 QT_BASE_NAME ?= "qt4-embedded"
 QT_BASE_LIB  ?= "libqt-embedded"
@@ -27,6 +27,9 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-linux-opensource-src-${
 
 # Set necessary variables in the profile
 SRC_URI += "file://qte.sh"
+
+# For the palmpre we ship a modified qte.sh
+PACKAGE_ARCH_palmpre = "${MACHINE_ARCH}"
 
 S = "${WORKDIR}/qt-embedded-linux-opensource-src-${PV}"
 
