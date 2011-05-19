@@ -92,8 +92,7 @@ OTHER_PACKAGES = "\
              ${QT_BASE_NAME}-qmlviewer \
              ${QT_BASE_NAME}-xmlpatterns \
              ${QT_BASE_NAME}-qt3to4 \
-             ${QT_BASE_NAME}-qml-plugins \
-             ${QT_BASE_NAME}-qml-plugins-dbg"
+             ${QT_BASE_NAME}-qml-plugins"
 
 PACKAGES += "${LIB_PACKAGES} ${DEV_PACKAGES} ${DBG_PACKAGES} ${OTHER_PACKAGES}"
 PACKAGES_DYNAMIC = "${QT_BASE_NAME}-plugin-* ${QT_BASE_NAME}-translation-* ${QT_BASE_NAME}-fonts-*"
