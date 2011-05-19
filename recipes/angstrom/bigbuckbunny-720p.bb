@@ -1,7 +1,7 @@
 DESCRIPTION = "Big Buck Bunny movie"
 LICENSE = "CC-BY"
 
-SRC_URI = "http://mirror.bigbuckbunny.de/peach/bigbuckbunny_movies/big_buck_bunny_720p_surround.avi"
+SRC_URI = "http://mirrorblender.top-ix.org/peach/bigbuckbunny_movies/big_buck_bunny_720p_surround.avi"
 
 do_install() {
 	install -d ${D}${datadir}/movies
