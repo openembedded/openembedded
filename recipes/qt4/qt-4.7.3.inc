@@ -11,7 +11,8 @@ SRC_URI = "\
 	file://0001-Added-Openembedded-crossarch-option.patch \
 	file://0010-phonon-gstreamer-rgb-endianess.patch \
 	file://fix-translations.patch \
-	file://g++.conf \
+	file://0001-wsegl2-support.patch \
+	ile://g++.conf \
 	file://linux.conf \
 	"
 
