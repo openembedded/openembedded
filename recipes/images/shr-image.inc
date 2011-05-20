@@ -10,6 +10,7 @@ IMAGE_LOGIN_MANAGER = "shadow"
 IMAGE_DEV_MANAGER_om-gta01 = ""
 IMAGE_DEV_MANAGER_om-gta02 = ""
 IMAGE_DEV_MANAGER_htcdream = ""
+IMAGE_DEV_MANAGER_nokia900 = ""
 
 RDEPENDS_${PN} += "\
   task-shr-minimal-base \
