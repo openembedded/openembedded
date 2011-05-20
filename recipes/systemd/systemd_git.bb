@@ -12,14 +12,15 @@ SECTION = "base/shell"
 inherit gitpkgv
 PKGV = "v${GITPKGVTAG}"
 
-PV = "v26"
+# This gets reset to the proper version with PKGV above
+PV = "git"
 PR = "r10"
 
 inherit autotools vala update-alternatives
 
-TAG = "cb80401132edc9c0a717abb55b54d3a8016cd5ce"
+SRCREV = "784a51d5efed9fd4b4421ec8ccf3f0918b36b4b3"
 
-SRC_URI = "git://anongit.freedesktop.org/systemd;protocol=git;tag=${TAG} \
+SRC_URI = "git://anongit.freedesktop.org/systemd;protocol=git \
            file://execute.patch \
            file://0001-systemd-disable-xml-file-stuff-and-introspection.patch \
            file://serial-getty@.service \
