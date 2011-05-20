@@ -13,9 +13,9 @@ DEFAULT_PREFERENCE = "-1"
 # Needed for udev-extras
 DEPENDS = "gperf-native usbutils acl glib-2.0"
 
-SRCREV = "f0fa13d7f7fdb8fb064c55a23c5c461b12f009b2"
-PV = "168"
-PR = "r2"
+SRCREV = "e5fd444fee244a3a15fc4ab59f662a341e985565"
+PV = "170"
+PR = "r0"
 PR_append = "+gitr${SRCPV}"
 
 # version specific SRC_URI
@@ -109,7 +109,7 @@ do_install () {
 	install -m 0755 ${WORKDIR}/network.sh ${D}${sysconfdir}/udev/scripts
 
 	# disable udev-cache sysv script on systemd installs
-	ln -sf /dev/null $${D}/{base_libdir}/systemd/udev-cache.service
+	ln -sf /dev/null ${D}/${base_libdir}/systemd/udev-cache.service
 }
 
 # Create the cache after checkroot has run
