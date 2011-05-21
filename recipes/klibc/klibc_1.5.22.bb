@@ -4,12 +4,17 @@ export INST=${D}
 
 do_install() {
 
-# klcc for target host needs to be fixed
-# removed also from FILES_${PN}-dev
-
-        rm klcc/klcc
-
         oe_runmake install
+
+# the crosscompiler is packaged by klcc-cross
+# remove klcc 
+# remove also from FILES_${PN}-dev
+        rm ${D}${base_bindir}/klcc
+
+        # remove Linux headers .install and ..install.cmd files
+        find ${D}${base_libdir}/klibc/include -name '.install' -delete
+        find ${D}${base_libdir}/klibc/include -name '..install.cmd' -delete
+
         install -d ${D}${base_bindir}
         install -m 755 usr/dash/sh.${KLIBC_UTILS_VARIANT} ${D}${base_bindir}/sh
         install -m 755 usr/kinit/kinit.${KLIBC_UTILS_VARIANT} ${D}${base_bindir}/kinit
@@ -17,6 +22,7 @@ do_install() {
         install -d ${D}${base_libdir}
         install -m 755 usr/klibc/klibc-*.so ${D}${base_libdir}
         (cd  ${D}${base_libdir}; ln -s klibc-*.so klibc.so)
+
 }
 
 PACKAGES = "${PN} ${PN}-dev"
@@ -24,6 +30,8 @@ FILES_${PN} = "${base_libdir}/klibc-*.so"
 FILES_${PN}-dev = "${base_libdir}/klibc.so \
                    ${base_libdir}/klibc/lib/* \
                    ${base_libdir}/klibc/include/* \
+# see above
+# do not package it
 #                   ${base_bindir}/klcc \
                   "
 
