@@ -11,6 +11,10 @@ NAME=aurora
 
 [ -f /etc/default/rcS ] && . /etc/default/rcS
 
+# to get the correct configuration of the touchscreen as /etc/profile is maybe not
+# evaluated at this time.
+[ -f /etc/profile.d/qte.sh ] && . /etc/profile.d/qte.sh
+
 case "$1" in
     start)
         echo -n "Starting aurora-daemon: "

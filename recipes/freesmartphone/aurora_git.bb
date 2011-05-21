@@ -6,7 +6,7 @@ SECTION = "fso"
 LICENSE = "GPLv2"
 SRCREV = "6db9e04728bd0434e6b79939ee18be43017afeef"
 PV = "0.1.0+gitr${SRCPV}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "\
   ${FREESMARTPHONE_GIT}/aurora.git;protocol=git;branch=master \
