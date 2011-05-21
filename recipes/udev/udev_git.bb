@@ -13,9 +13,9 @@ DEFAULT_PREFERENCE = "-1"
 # Needed for udev-extras
 DEPENDS = "gperf-native usbutils acl glib-2.0"
 
-SRCREV = "e5fd444fee244a3a15fc4ab59f662a341e985565"
+SRCREV = "c205bac060536c12b5d0a768714ffacb035bef32"
 PV = "170"
-PR = "r0"
+PR = "r1"
 PR_append = "+gitr${SRCPV}"
 
 # version specific SRC_URI
