@@ -1,0 +1,13 @@
+Index: pulseaudio-0.9.22/configure.ac
+===================================================================
+--- pulseaudio-0.9.22.orig/configure.ac	2011-05-22 22:45:03.102936387 +0200
++++ pulseaudio-0.9.22/configure.ac	2011-05-22 22:46:29.886301698 +0200
+@@ -409,7 +409,7 @@
+ 
+ # BSD
+ AC_SEARCH_LIBS([connect], [socket])
+-AC_SEARCH_LIBS([backtrace], [execinfo])
++AC_SEARCH_LIBS([backtrace], [execinfo ubacktrace])
+ 
+ # Non-standard
+ 
