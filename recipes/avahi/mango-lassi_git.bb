@@ -1,16 +1,20 @@
 DESCRIPTION = "Input sharing, the avahi way"
-DEPENDS = "avahi-ui libglade libnotify"
+DEPENDS = "avahi-ui libnotify gnome-doc-utils-native"
+LICENSE = "GPLv2+"
 
-SRCREV = "73638817126a68d62f1233f6e6859ce75a259e93"
-PV = "0.0+${PR}+gitr${SRCREV}"
-PR = "r2"
+SRCREV = "d50141ce4eb96e7326ba"
+PV = "001+${PR}+gitr${SRCREV}"
+PR = "r0"
 
-SRC_URI = "git://git.0pointer.de/repos/mango-lassi.git/;protocol=http"
+SRC_URI = "git://github.com/herzi/mango-lassi.git;protocol=git"
 
 S = "${WORKDIR}/git"
 
 inherit autotools
 
 do_configure_prepend() {
-    touch config.rpath
+	touch config.rpath
+	gnome-doc-prepare --automake
 }
+
+FILES_${PN} += "${datadir}/icons"
