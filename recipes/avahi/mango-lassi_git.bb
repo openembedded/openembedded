@@ -1,5 +1,5 @@
 DESCRIPTION = "Input sharing, the avahi way"
-DEPENDS = "avahi-ui libnotify gnome-doc-utils-native"
+DEPENDS = "libxtst avahi-ui libnotify gnome-doc-utils-native"
 LICENSE = "GPLv2+"
 
 SRCREV = "d50141ce4eb96e7326ba"
