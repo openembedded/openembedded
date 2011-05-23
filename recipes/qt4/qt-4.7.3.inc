@@ -12,7 +12,7 @@ SRC_URI = "\
 	file://0010-phonon-gstreamer-rgb-endianess.patch \
 	file://fix-translations.patch \
 	file://0001-wsegl2-support.patch \
-	ile://g++.conf \
+	file://g++.conf \
 	file://linux.conf \
 	"
 
