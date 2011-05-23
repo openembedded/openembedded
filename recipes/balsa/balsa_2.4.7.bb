@@ -4,9 +4,9 @@ SECTION = "x11/network"
 LICENSE = "GPL"
 SRC_URI = "http://pawsa.fedorapeople.org/balsa/${P}.tar.bz2 \
            file://obsolete-icon.patch"
-PR = "r0"
+PR = "r1"
 
-DEPENDS = "glib-2.0 gmime gnome-icon-theme gtk+ intltool-native libesmtp libxml-parser-perl-native"
+DEPENDS = "glib-2.0 gmime gnome-doc-utils-native gnome-icon-theme gtk+ intltool-native libesmtp libxml-parser-perl-native libxslt-native"
 RDEPENDS_${PN} = "gnome-icon-theme"
 # FIXME: It is possible to build several variants of balsa: lite (SSL, gqlite/GPE, maybe HTML),
 # standard (GNOME, spell checking, HTML), full (Kerberos, LDAP, PGP, Rubrica, X-Face)
@@ -88,6 +88,8 @@ EXTRA_OECONF="--with-ssl \
 #	      --with-canberra \
 
 do_configure_prepend() {
+	# doc is not yet buildable with OE
+	sed -i -e 's: doc : :g' ${S}/Makefile.am
 	# aclocal seems to insist on looking in here.  Make sure it exists.
 	mkdir -p ${S}/m4
 }
