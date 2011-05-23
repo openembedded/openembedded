@@ -12,6 +12,7 @@ SRC_URI = "http://wireless.kernel.org/download/crda/${P}.tar.bz2;name=crda \
 	http://wireless.kernel.org/download/wireless-regdb/regulatory.bins/2009.11.25-regulatory.bin;name=reg \
 	"
 
+EXTRA_OEMAKE = "MAKEFLAGS="
 do_compile() {
 	oe_runmake all_noverify
 }
