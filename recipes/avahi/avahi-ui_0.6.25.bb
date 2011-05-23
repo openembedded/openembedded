@@ -1,7 +1,7 @@
 require avahi.inc
 PR = "${INC_PR}.0"
 
-DEPENDS += "avahi gtk+"
+DEPENDS += "avahi gtk+ libglade"
 
 AVAHI_GTK = "--enable-gtk"
 
