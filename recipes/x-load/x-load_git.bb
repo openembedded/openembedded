@@ -5,10 +5,10 @@ DEFAULT_PREFERENCE_omap3-pandora = "-1"
 FILESPATHPKG_prepend = "x-load-git:x-load-git/${MACHINE}"
 
 PV = "1.5.0+${PR}+gitr${SRCREV}"
-PR ="r22"
+PR ="r23"
 PE = "1"
 
-SRCREV = "b6bbfe7848de547b64edf1c363c86cec4921b517"
+SRCREV = "04b1732220078d47c18a84cbafc52e45db71f13d"
 SRC_URI = "git://gitorious.org/x-loader/x-loader.git;branch=master;protocol=git \
           "
 
