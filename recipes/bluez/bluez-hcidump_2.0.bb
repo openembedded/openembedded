@@ -3,11 +3,10 @@ SECTION = "console"
 PRIORITY = "optional"
 DEPENDS = "bluez-libs"
 LICENSE = "GPLv2"
-PR = "r0"
+PR = "r1"
 
-DEFAULT_PREFERENCE = "-1"
-
-SRC_URI = "http://www.kernel.org/pub/linux/bluetooth/bluez-hcidump-${PV}.tar.gz"
+SRC_URI = "http://www.kernel.org/pub/linux/bluetooth/bluez-hcidump-${PV}.tar.gz\
+	   file://fix-declaration-clash.patch"
 S = "${WORKDIR}/bluez-hcidump-${PV}"
 
 EXTRA_OECONF = "--with-bluez-libs=${STAGING_LIBDIR} --with-bluez-includes=${STAGING_INCDIR}"
