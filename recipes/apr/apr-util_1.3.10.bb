@@ -3,7 +3,7 @@ SECTION = "libs"
 DEPENDS = "apr expat gdbm"
 LICENSE = "Apache License, Version 2.0"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${APACHE_MIRROR}/apr/${P}.tar.gz \
            file://configfix.patch \
@@ -15,6 +15,7 @@ EXTRA_OECONF = "--with-apr=${STAGING_BINDIR_CROSS}/apr-1-config \
 		--without-sqlite2 \
 		--without-sqlite3 \
 		--without-pgsql \
+		--without-odbc \
 		--with-expat=${STAGING_DIR_HOST}${layout_prefix}"
 
 SRC_URI[md5sum] = "82acd25cf3df8c72eba44eaee8b80c19"
