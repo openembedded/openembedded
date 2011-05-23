@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.mumpot.org/"
 AUTHOR = "Andreas Kemnade"
 SECTION = "x11/applications"
 LICENSE = "GPLv3"
-DEPENDS = "gtk+ bluez-libs bzip2 libxml2 libpng jpeg"
+DEPENDS = "curl gtk+ bluez-libs bzip2 libxml2 libpng jpeg"
 
 SRC_URI = "http://www.mumpot.org/download/mumpot-${PV}.tar.gz \
 	file://mumpot-tah.desktop \
@@ -19,5 +19,5 @@ do_install_append() {
 	install -m 0644 ${WORKDIR}/mumpot-cyclemap.desktop ${D}${datadir}/applications/mumpot-cyclemap.desktop
 }
 
-SRC_URI[md5sum] = "52d1e64c63d70604f13985f1f326a802"
-SRC_URI[sha256sum] = "302bea9f0903fecf13ee0e9c24ed090203f2c77f7164a2a0f68c35fc8e1b9f10"
+SRC_URI[md5sum] = "9a0409c39e49c45cea3160c7ec7fe976"
+SRC_URI[sha256sum] = "aa921664bcb15115796607cc34f83caaaf2280685be512bd8a9250a44ae83bd4"
