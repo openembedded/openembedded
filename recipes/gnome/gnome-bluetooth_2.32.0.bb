@@ -3,6 +3,8 @@ LICENSE = "GPL"
 SECTION = "x11/gnome"
 DEPENDS = "gnome-doc-utils-native obexd obex-data-server gconf gtk+ dbus-glib libunique libnotify hal bluez4 gnome-keyring libx11 libxi"
 
+PR = "r1"
+
 inherit gnome
 
 SRC_URI[archive.md5sum] = "f129686fe46c4c98eb70a0cc85d59cae"
@@ -23,4 +25,5 @@ do_configure_append() {
 RRECOMMENDS_${PN} += "obexd obex-data-server"
 RCONFLICTS_${PN} = "bluez-gnome"
 
+FILES_${PN} += "${datadir}/GConf/ ${datadir}/glib-2.0/"
 FILES_${PN}-dbg += "${libdir}/gnome-bluetooth/plugins/.debug/"
