@@ -5,7 +5,7 @@ LICENSE = "CC-BY-SA"
 LIC_FILES_CHKSUM = "file://COPYING;md5=ebef999b5d8aea38d9eb30772557f175"
 DEPENDS = "libxslt-native"
 SECTION = "devel/specifications"
-SRCREV = "b65c7700758a35225168116a50d6ebe9221f7c3a"
+SRCREV = "feedad3d03bba6cab6ddc0441a359a27eacf9817"
 PV = "2011.05.18.1+gitr${SRCPV}"
 PE = "1"
 
