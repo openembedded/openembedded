@@ -18,7 +18,7 @@ PR = "r10"
 
 inherit autotools vala update-alternatives
 
-SRCREV = "784a51d5efed9fd4b4421ec8ccf3f0918b36b4b3"
+SRCREV = "da2617378523e007ec0c6efe99d0cebb2be994e1"
 
 SRC_URI = "git://anongit.freedesktop.org/systemd;protocol=git \
            file://execute.patch \
@@ -84,6 +84,6 @@ FILES_${PN} = " ${base_bindir}/* \
 
 FILES_${PN}-dbg += "${base_libdir}/systemd/.debug ${base_libdir}/systemd/*/.debug"
 
-# util-linux -> hwclock, kbd -> loadkeys,setfont
-RRECOMMENDS_${PN} += "util-linux kbd kbd-consolefonts ${PN}-serialgetty"
+# kbd -> loadkeys,setfont
+RRECOMMENDS_${PN} += "kbd kbd-consolefonts ${PN}-serialgetty"
 
