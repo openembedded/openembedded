@@ -1,7 +1,7 @@
-From 49958f1925489048aa5a6834f61d61c8551f8ec3 Mon Sep 17 00:00:00 2001
+From 6c106e173b2b0be58ba68e800d0e1bdd731174c4 Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@ti.com>
 Date: Thu, 7 Apr 2011 15:28:47 +0300
-Subject: [PATCH 01/28] OMAP: DSS2: DSI: fix use_sys_clk & highfreq
+Subject: [PATCH 01/30] OMAP: DSS2: DSI: fix use_sys_clk & highfreq
 
 use_sys_clk and highfreq fields in dsi.current_cinfo were never set.
 Luckily they weren't used anywhere so it didn't cause any problems.
