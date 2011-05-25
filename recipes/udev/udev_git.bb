@@ -2,7 +2,7 @@ DESCRIPTION = "udev is a daemon which dynamically creates and removes device nod
 /dev/, handles hotplug events and loads drivers at boot time. It replaces \
 the hotplug package and requires a kernel not older than 2.6.27."
 
-# udev 169 will bump kernel requirements up to 2.6.36 for ARM: 
+# udev 169 and up require kernel 2.6.36 for ARM: 
 # http://git.kernel.org/?p=linux/hotplug/udev.git;a=commit;h=67a77c8bf299f6264f001677becd056316ebce2f
 
 LICENSE = "GPLv2+"
@@ -13,9 +13,9 @@ DEFAULT_PREFERENCE = "-1"
 # Needed for udev-extras
 DEPENDS = "gperf-native usbutils acl glib-2.0"
 
-SRCREV = "c205bac060536c12b5d0a768714ffacb035bef32"
+SRCREV = "19e47d97256390e4f42c5a4c96e26536d4d33e3e"
 PV = "170"
-PR = "r1"
+PR = "r2"
 PR_append = "+gitr${SRCPV}"
 
 # version specific SRC_URI
