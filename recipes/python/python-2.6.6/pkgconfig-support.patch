@@ -1,0 +1,94 @@
+diff -Naur Python-2.6.6-orig/Makefile.pre.in Python-2.6.6/Makefile.pre.in
+--- Python-2.6.6-orig/Makefile.pre.in	2010-08-02 00:05:31.000000000 +0200
++++ Python-2.6.6/Makefile.pre.in	2011-05-24 21:16:19.943550002 +0200
+@@ -763,6 +763,9 @@
+ 	(cd $(DESTDIR)$(BINDIR); $(LN) python$(VERSION)$(EXE) $(PYTHON))
+ 	-rm -f $(DESTDIR)$(BINDIR)/python-config
+ 	(cd $(DESTDIR)$(BINDIR); $(LN) -s python$(VERSION)-config python-config)
++	-test -d $(DESTDIR)$(LIBPC) || $(INSTALL) -d -m $(DIRMODE) $(DESTDIR)$(LIBPC)
++	-rm -f $(DESTDIR)$(LIBPC)/python.pc
++	(cd $(DESTDIR)$(LIBPC); $(LN) -s python-$(VERSION).pc python.pc)
+ 
+ # Install the interpreter with $(VERSION) affixed
+ # This goes into $(exec_prefix)
+@@ -936,8 +939,12 @@
+ # Install the library and miscellaneous stuff needed for extending/embedding
+ # This goes into $(exec_prefix)
+ LIBPL=		$(LIBP)/config
++
++# pkgconfig directory
++LIBPC=		$(LIBDIR)/pkgconfig
++
+ libainstall:	all
+-	@for i in $(LIBDIR) $(LIBP) $(LIBPL); \
++	@for i in $(LIBDIR) $(LIBP) $(LIBPL) $(LIBPC); \
+ 	do \
+ 		if test ! -d $(DESTDIR)$$i; then \
+ 			echo "Creating directory $$i"; \
+@@ -964,6 +971,7 @@
+ 	$(INSTALL_DATA) Modules/Setup $(DESTDIR)$(LIBPL)/Setup
+ 	$(INSTALL_DATA) Modules/Setup.local $(DESTDIR)$(LIBPL)/Setup.local
+ 	$(INSTALL_DATA) Modules/Setup.config $(DESTDIR)$(LIBPL)/Setup.config
++	$(INSTALL_DATA) Misc/python.pc $(DESTDIR)$(LIBPC)/python-$(VERSION).pc
+ 	$(INSTALL_SCRIPT) $(srcdir)/Modules/makesetup $(DESTDIR)$(LIBPL)/makesetup
+ 	$(INSTALL_SCRIPT) $(srcdir)/install-sh $(DESTDIR)$(LIBPL)/install-sh
+ 	# Substitution happens here, as the completely-expanded BINDIR
+@@ -1159,7 +1167,8 @@
+ # Keep configure and Python-ast.[ch], it's possible they can't be generated
+ distclean: clobber
+ 	-rm -f core Makefile Makefile.pre config.status \
+-		Modules/Setup Modules/Setup.local Modules/Setup.config
++		Modules/Setup Modules/Setup.local Modules/Setup.config \
++		Misc/python.pc
+ 	find $(srcdir) '(' -name '*.fdc' -o -name '*~' \
+ 			   -o -name '[@,#]*' -o -name '*.old' \
+ 			   -o -name '*.orig' -o -name '*.rej' \
+diff -Naur Python-2.6.6-orig/Misc/python.pc.in Python-2.6.6/Misc/python.pc.in
+--- Python-2.6.6-orig/Misc/python.pc.in	1970-01-01 01:00:00.000000000 +0100
++++ Python-2.6.6/Misc/python.pc.in	2011-05-24 21:09:22.733550002 +0200
+@@ -0,0 +1,13 @@
++prefix=@prefix@
++exec_prefix=@exec_prefix@
++libdir=@libdir@
++includedir=@includedir@
++
++Name: Python
++Description: Python library
++Requires: 
++Version: @VERSION@
++Libs.private: @LIBS@
++Libs: -L${libdir} -lpython@VERSION@
++Cflags: -I${includedir}/python@VERSION@ 
++
+diff -Naur Python-2.6.6-orig/configure Python-2.6.6/configure
+--- Python-2.6.6-orig/configure	2010-05-25 04:27:03.000000000 +0200
++++ Python-2.6.6/configure	2011-05-24 21:14:55.553550001 +0200
+@@ -12863,7 +12863,7 @@
+ $as_echo "done" >&6; }
+ 
+ # generate output files
+-ac_config_files="$ac_config_files Makefile.pre Modules/Setup.config"
++ac_config_files="$ac_config_files Makefile.pre Modules/Setup.config Misc/python.pc"
+ 
+ cat >confcache <<\_ACEOF
+ # This file is a shell script that caches the results of configure
+@@ -13557,6 +13557,7 @@
+     "Mac/Resources/app/Info.plist") CONFIG_FILES="$CONFIG_FILES Mac/Resources/app/Info.plist" ;;
+     "Makefile.pre") CONFIG_FILES="$CONFIG_FILES Makefile.pre" ;;
+     "Modules/Setup.config") CONFIG_FILES="$CONFIG_FILES Modules/Setup.config" ;;
++    "Misc/python.pc") CONFIG_FILES="$CONFIG_FILES Misc/python.pc" ;;
+ 
+   *) as_fn_error "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
+   esac
+diff -Naur Python-2.6.6-orig/configure.in Python-2.6.6/configure.in
+--- Python-2.6.6-orig/configure.in	2010-05-25 04:27:03.000000000 +0200
++++ Python-2.6.6/configure.in	2011-05-24 21:09:53.733550001 +0200
+@@ -3935,7 +3935,7 @@
+ AC_MSG_RESULT(done)
+ 
+ # generate output files
+-AC_CONFIG_FILES(Makefile.pre Modules/Setup.config)
++AC_CONFIG_FILES(Makefile.pre Modules/Setup.config Misc/python.pc)
+ AC_OUTPUT
+ 
+ echo "creating Modules/Setup"
