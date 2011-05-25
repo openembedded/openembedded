@@ -109,7 +109,9 @@ do_install () {
 	install -m 0755 ${WORKDIR}/network.sh ${D}${sysconfdir}/udev/scripts
 
 	# disable udev-cache sysv script on systemd installs
-	ln -sf /dev/null ${D}/${base_libdir}/systemd/udev-cache.service
+	if [ -d {D}/${base_libdir}/systemd/ ] ; then
+		ln -sf /dev/null ${D}/${base_libdir}/systemd/udev-cache.service
+	fi
 }
 
 # Create the cache after checkroot has run
