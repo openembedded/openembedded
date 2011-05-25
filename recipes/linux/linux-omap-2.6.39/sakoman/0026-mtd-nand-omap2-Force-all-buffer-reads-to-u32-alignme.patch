@@ -1,7 +1,7 @@
-From 2611e93b57147877fabb181bd86c78fd425a5467 Mon Sep 17 00:00:00 2001
+From 3592c2e24b0af79aa2fb181a9825d5b72e2f68dd Mon Sep 17 00:00:00 2001
 From: Charles Manning <manningc2@actrix.gen.nz>
 Date: Thu, 16 Dec 2010 20:35:56 -0800
-Subject: [PATCH 25/28] mtd: nand: omap2: Force all buffer reads to u32 alignment
+Subject: [PATCH 26/30] mtd: nand: omap2: Force all buffer reads to u32 alignment
 
 ---
  drivers/mtd/nand/omap2.c |   12 ++++++++++++

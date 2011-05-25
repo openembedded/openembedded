@@ -1,15 +1,15 @@
-From 70b4b60b198137ca8aebd577142ea3bb6c273a55 Mon Sep 17 00:00:00 2001
+From 258a21a495a9ba2238081cd473b4796cd61a60e7 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Fri, 20 May 2011 13:06:24 +0200
-Subject: [PATCH 2/2] OMAP3: beagle: add support for expansionboards
+Subject: [PATCH 2/5] OMAP3: beagle: add support for expansionboards
 
 Signed-off-by: Koen Kooi <koen@dominion.thruhere.net>
 ---
- arch/arm/mach-omap2/board-omap3beagle.c |  267 ++++++++++++++++++++++++++++++-
- 1 files changed, 264 insertions(+), 3 deletions(-)
+ arch/arm/mach-omap2/board-omap3beagle.c |  272 ++++++++++++++++++++++++++++++-
+ 1 files changed, 269 insertions(+), 3 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index 1eb1e8e..40e54f2 100644
+index 77bafa8..db285e1 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -21,6 +21,7 @@
@@ -20,7 +20,7 @@ index 1eb1e8e..40e54f2 100644
  #include <linux/input.h>
  #include <linux/gpio_keys.h>
  #include <linux/opp.h>
-@@ -153,6 +154,162 @@ fail0:
+@@ -154,6 +155,167 @@ fail0:
  	return;
  }
  
@@ -59,19 +59,24 @@ index 1eb1e8e..40e54f2 100644
 +		.caps		= MMC_CAP_4_BIT_DATA | MMC_CAP_POWER_OFF_CARD,
 +		.gpio_wp	= -EINVAL,
 +		.gpio_cd	= -EINVAL,
++		.ocr_mask	= MMC_VDD_165_195,
 +		.nonremovable	= true,
 +	},
 + 	{}	/* Terminator */
 + };
 +
-+static struct regulator_consumer_supply beagle_vmmc2_supply = {
-+	.supply         = "vmmc",
-+	.dev_name       = "mmci-omap-hs.1",
-+};
++static struct regulator_consumer_supply beagle_vmmc2_supply = 
++	REGULATOR_SUPPLY("vmmc", "omap_hsmmc.1");
 +
 +static struct regulator_init_data beagle_vmmc2 = {
 +	.constraints = {
-+		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
++		.min_uV			= 1850000,
++		.max_uV			= 1850000,
++		.apply_uV		= true,
++		.valid_modes_mask	= REGULATOR_MODE_NORMAL
++					| REGULATOR_MODE_STANDBY,
++		.valid_ops_mask		= REGULATOR_CHANGE_MODE
++					| REGULATOR_CHANGE_STATUS,
 +	},
 +	.num_consumer_supplies = 1,
 +	.consumer_supplies = &beagle_vmmc2_supply,
@@ -183,7 +188,7 @@ index 1eb1e8e..40e54f2 100644
  static struct mtd_partition omap3beagle_nand_partitions[] = {
  	/* All the partition sizes are listed in terms of NAND block size */
  	{
-@@ -271,6 +428,12 @@ static struct omap2_hsmmc_info mmc[] = {
+@@ -272,6 +434,12 @@ static struct omap2_hsmmc_info mmc[] = {
  		.caps		= MMC_CAP_4_BIT_DATA | MMC_CAP_8_BIT_DATA,
  		.gpio_wp	= 29,
  	},
@@ -196,7 +201,7 @@ index 1eb1e8e..40e54f2 100644
  	{}	/* Terminator */
  };
  
-@@ -300,11 +463,25 @@ static int beagle_twl_gpio_setup(struct device *dev,
+@@ -301,11 +469,25 @@ static int beagle_twl_gpio_setup(struct device *dev,
  	}
  	/* gpio + 0 is "mmc0_cd" (input/IRQ) */
  	mmc[0].gpio_cd = gpio + 0;
@@ -222,7 +227,7 @@ index 1eb1e8e..40e54f2 100644
  
  	/* REVISIT: need ehci-omap hooks for external VBUS
  	 * power switch and overcurrent detect
-@@ -464,7 +641,7 @@ static struct twl4030_platform_data beagle_twldata = {
+@@ -466,7 +648,7 @@ static struct twl4030_platform_data beagle_twldata = {
  	.vpll2		= &beagle_vpll2,
  };
  
@@ -231,7 +236,7 @@ index 1eb1e8e..40e54f2 100644
  	{
  		I2C_BOARD_INFO("twl4030", 0x48),
  		.flags = I2C_CLIENT_WAKE,
-@@ -479,10 +656,24 @@ static struct i2c_board_info __initdata beagle_i2c_eeprom[] = {
+@@ -481,10 +663,24 @@ static struct i2c_board_info __initdata beagle_i2c_eeprom[] = {
         },
  };
  
@@ -258,7 +263,7 @@ index 1eb1e8e..40e54f2 100644
  	/* Bus 3 is attached to the DVI port where devices like the pico DLP
  	 * projector don't work reliably with 400kHz */
  	omap_register_i2c_bus(3, 100, beagle_i2c_eeprom, ARRAY_SIZE(beagle_i2c_eeprom));
-@@ -625,6 +816,15 @@ static struct omap_musb_board_data musb_board_data = {
+@@ -627,6 +823,15 @@ static struct omap_musb_board_data musb_board_data = {
  	.power			= 100,
  };
  
@@ -274,7 +279,7 @@ index 1eb1e8e..40e54f2 100644
  static void __init beagle_opp_init(void)
  {
  	int r = 0;
-@@ -691,6 +891,65 @@ static void __init omap3_beagle_init(void)
+@@ -693,6 +898,65 @@ static void __init omap3_beagle_init(void)
  	/* REVISIT leave DVI powered down until it's needed ... */
  	gpio_direction_output(170, true);
  
@@ -340,7 +345,7 @@ index 1eb1e8e..40e54f2 100644
  	usb_musb_init(&musb_board_data);
  	usbhs_init(&usbhs_bdata);
  	omap3beagle_flash_init();
-@@ -703,6 +962,8 @@ static void __init omap3_beagle_init(void)
+@@ -705,6 +969,8 @@ static void __init omap3_beagle_init(void)
  	beagle_opp_init();
  }
  
