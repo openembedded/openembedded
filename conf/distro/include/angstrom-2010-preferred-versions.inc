@@ -63,6 +63,7 @@ PREFERRED_VERSION_qt4-x11-free-gles = "${ANGSTROM_QT_VERSION}"
 
 PREFERRED_VERSION_samba		= "3.3.9"
 PREFERRED_VERSION_tiff 		= "3.9.4+4.0.0beta6"
+PREFERRED_VERSION_tslib		= "1.0+gitr%"
 
 PREFERRED_VERSION_udev 		= "168"
 
