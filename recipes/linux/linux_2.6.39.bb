@@ -10,6 +10,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=ke
 
 SRC_URI_append_om-gta02 = " \
            file://openmoko.patch \
+           file://shr.patch \
            "
 
 SRC_URI_append_spitz = " file://${LOGO_SIZE}/logo_linux_clut224.ppm.bz2 "
