@@ -1,7 +1,7 @@
-From 94b2b9670eb5e0af73bd98a991bee9856fe0e654 Mon Sep 17 00:00:00 2001
+From b4a56c6ec6df1af55b75608ff7c7cbf91660eb91 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Fri, 19 Nov 2010 15:11:19 -0800
-Subject: [PATCH 11/30] Revert "omap_hsmmc: improve interrupt synchronisation"
+Subject: [PATCH 11/31] Revert "omap_hsmmc: improve interrupt synchronisation"
 
 This reverts commit b417577d3b9bbb06a4ddc9aa955af9bd503f7242.
 

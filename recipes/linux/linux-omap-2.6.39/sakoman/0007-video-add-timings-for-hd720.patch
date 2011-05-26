@@ -1,7 +1,7 @@
-From bb5ff1aa2cf586b544d17b9afa00a347eeeb7012 Mon Sep 17 00:00:00 2001
+From bbfdb465c2970b1cd18fd0ae5adf99e61cfd530e Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Sat, 19 Dec 2009 06:52:43 -0800
-Subject: [PATCH 07/30] video: add timings for hd720
+Subject: [PATCH 07/31] video: add timings for hd720
 
 ---
  drivers/video/modedb.c |    4 ++++

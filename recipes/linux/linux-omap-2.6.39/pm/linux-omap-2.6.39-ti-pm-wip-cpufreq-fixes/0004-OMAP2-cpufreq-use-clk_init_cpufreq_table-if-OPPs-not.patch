@@ -1,4 +1,4 @@
-From d972d3f4eb53c261f8496176b429287b97e297d0 Mon Sep 17 00:00:00 2001
+From 4910bff43db304f58fef625d54e573d554066a78 Mon Sep 17 00:00:00 2001
 From: Nishanth Menon <nm@ti.com>
 Date: Fri, 13 May 2011 05:34:35 -0700
 Subject: [PATCH 4/6] OMAP2: cpufreq: use clk_init_cpufreq_table if OPPs not available

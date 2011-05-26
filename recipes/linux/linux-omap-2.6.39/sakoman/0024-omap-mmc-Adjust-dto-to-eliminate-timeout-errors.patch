@@ -1,7 +1,7 @@
-From 3b7393eb41684f3f44e8c15bbba4ab0e830f8810 Mon Sep 17 00:00:00 2001
+From 26a79f408bd41ad7b4a47f2683909d3fc1575eab Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Wed, 12 Jan 2011 05:54:55 -0800
-Subject: [PATCH 24/30] omap: mmc: Adjust dto to eliminate timeout errors
+Subject: [PATCH 24/31] omap: mmc: Adjust dto to eliminate timeout errors
 
 A number of SD card types were experiencing timeout errors.  This
 could also lead to data corruption in some cases.

@@ -1,4 +1,4 @@
-From 26d1f5966161349845884ae3c8f558d2580f1eb9 Mon Sep 17 00:00:00 2001
+From f505147f6352faaf3d70b00a757279d56e2ef78b Mon Sep 17 00:00:00 2001
 From: Nishanth Menon <nm@ti.com>
 Date: Sat, 12 Feb 2011 17:27:14 +0530
 Subject: [PATCH 01/12] OMAP3+: voltage: remove spurious pr_notice for debugfs

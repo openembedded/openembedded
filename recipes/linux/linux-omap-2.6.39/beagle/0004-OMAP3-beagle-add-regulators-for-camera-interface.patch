@@ -1,15 +1,15 @@
-From 0ba8b335b9dd023784ef493b524d6335bfcd453a Mon Sep 17 00:00:00 2001
+From 482c65c01edad75e2b8a3fa07f0fc914e3c9b9d9 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Wed, 25 May 2011 08:56:06 +0200
 Subject: [PATCH 4/5] OMAP3: beagle: add regulators for camera interface
 
 Signed-off-by: Koen Kooi <koen@dominion.thruhere.net>
 ---
- arch/arm/mach-omap2/board-omap3beagle.c |   40 +++++++++++++++++++++++++++++++
- 1 files changed, 40 insertions(+), 0 deletions(-)
+ arch/arm/mach-omap2/board-omap3beagle.c |   50 +++++++++++++++++++++++++++++++
+ 1 files changed, 50 insertions(+), 0 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index da4ba50..52ea11a 100644
+index da4ba50..211cbdf 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -453,6 +453,44 @@ static struct regulator_consumer_supply beagle_vsim_supply = {
@@ -57,7 +57,24 @@ index da4ba50..52ea11a 100644
  static int beagle_twl_gpio_setup(struct device *dev,
  		unsigned gpio, unsigned ngpio)
  {
-@@ -651,6 +689,8 @@ static struct twl4030_platform_data beagle_twldata = {
+@@ -504,6 +542,16 @@ static int beagle_twl_gpio_setup(struct device *dev,
+ 			pr_err("%s: unable to configure EHCI_nOC\n", __func__);
+ 	}
+ 
++	if (omap3_beagle_get_rev() == OMAP3BEAGLE_BOARD_XM) {
++		/*
++		 * Power on camera interface - only on pre-production, not
++		 * needed on production boards
++		 */
++		gpio_request(gpio + 2, "CAM_EN");
++		gpio_direction_output(gpio + 2, 1);
++	}
++
++
+ 	/*
+ 	 * TWL4030_GPIO_MAX + 0 == ledA, EHCI nEN_USB_PWR (out, XM active
+ 	 * high / others active low)
+@@ -651,6 +699,8 @@ static struct twl4030_platform_data beagle_twldata = {
  	.vsim		= &beagle_vsim,
  	.vdac		= &beagle_vdac,
  	.vpll2		= &beagle_vpll2,

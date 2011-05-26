@@ -1,7 +1,7 @@
-From e0dc7f9a7d63c8cd5e4183cf5626ec11e272e3e0 Mon Sep 17 00:00:00 2001
+From b94621613e7ece11e6408efe33ceb724892645d1 Mon Sep 17 00:00:00 2001
 From: Ilkka Koskinen <ilkka.koskinen@nokia.com>
 Date: Wed, 16 Mar 2011 16:07:14 +0000
-Subject: [PATCH 22/30] rtc-twl: Switch to using threaded irq
+Subject: [PATCH 22/31] rtc-twl: Switch to using threaded irq
 
 ---
  drivers/rtc/rtc-twl.c |    2 +-

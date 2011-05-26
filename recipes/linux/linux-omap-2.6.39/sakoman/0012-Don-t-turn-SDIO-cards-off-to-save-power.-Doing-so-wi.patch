@@ -1,7 +1,7 @@
-From 0efaa4ad5c5040db8cfa729145ed64c5ff878e9e Mon Sep 17 00:00:00 2001
+From 796b0fc090132a5ea3849bd3177cb88c64ad2160 Mon Sep 17 00:00:00 2001
 From: David Vrabel <david.vrabel@csr.com>
 Date: Fri, 2 Apr 2010 08:41:47 -0700
-Subject: [PATCH 12/30] Don't turn SDIO cards off to save power. Doing so will lose all internal state in the card.
+Subject: [PATCH 12/31] Don't turn SDIO cards off to save power. Doing so will lose all internal state in the card.
 
 Signed-off-by: David Vrabel <david.vrabel@csr.com>
 ---

@@ -1,4 +1,4 @@
-From d93e9bf14c8b5194c0db64ae7daae80c228bfc04 Mon Sep 17 00:00:00 2001
+From 2a3ca1bc3f842bab22873e2d9d002e0a736d0f19 Mon Sep 17 00:00:00 2001
 From: Santosh Shilimkar <santosh.shilimkar@ti.com>
 Date: Mon, 14 Mar 2011 17:08:48 +0530
 Subject: [PATCH 6/8] OMAP: cpufreq: Split OMAP1 and OMAP2PLUS CPUfreq drivers.

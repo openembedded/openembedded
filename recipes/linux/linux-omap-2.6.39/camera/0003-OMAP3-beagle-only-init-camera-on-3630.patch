@@ -1,0 +1,34 @@
+From 014b3e447a0a9bbed5e238873fefb1a6c660c6a0 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Wed, 25 May 2011 10:28:29 +0200
+Subject: [PATCH 3/4] OMAP3: beagle: only init camera on 3630
+
+Signed-off-by: Koen Kooi <koen@dominion.thruhere.net>
+---
+ arch/arm/mach-omap2/board-omap3beagle.c |   10 ++++++----
+ 1 files changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index 9af1cf8..80f8ece 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -1091,10 +1091,12 @@ static void __init omap3_beagle_init(void)
+ 	beagle_display_init();
+ 	beagle_opp_init();
+ 
+-	/* Enable camera */
+-	gpio_request(MT9P031_RESET_GPIO, "cam_rst");
+-	gpio_direction_output(MT9P031_RESET_GPIO, 0);
+-	omap3_init_camera(&beagle_isp_platform_data);
++	if (cpu_is_omap3630()) {
++		/* Enable camera */
++		gpio_request(MT9P031_RESET_GPIO, "cam_rst");
++		gpio_direction_output(MT9P031_RESET_GPIO, 0);
++		omap3_init_camera(&beagle_isp_platform_data);
++	}
+ }
+ 
+ early_param("buddy", expansionboard_setup);
+-- 
+1.6.6.1
+

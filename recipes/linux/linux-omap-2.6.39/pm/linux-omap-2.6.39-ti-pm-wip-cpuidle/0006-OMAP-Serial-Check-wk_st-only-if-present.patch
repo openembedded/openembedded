@@ -1,4 +1,4 @@
-From 06ef3c33307622a7c4ab0f7cbfaf0163a1be5a81 Mon Sep 17 00:00:00 2001
+From 0af36cc0dcf5a6654e25eb33509fe0bc44a1dd81 Mon Sep 17 00:00:00 2001
 From: Rajendra Nayak <rnayak@ti.com>
 Date: Tue, 2 Mar 2010 17:25:30 +0530
 Subject: [PATCH 6/6] OMAP: Serial: Check wk_st only if present

@@ -1,4 +1,4 @@
-From c57f8521c772b2a934dc090d68d7ca3b33c99a46 Mon Sep 17 00:00:00 2001
+From b0ed051910c29c99e604ad4eb06d480199fcbd34 Mon Sep 17 00:00:00 2001
 From: Aaro Koskinen <aaro.koskinen@nokia.com>
 Date: Thu, 24 Mar 2011 18:35:31 +0200
 Subject: [PATCH 03/12] OMAP3+: smartreflex: fix sr_late_init() error path in probe
