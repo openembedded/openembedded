@@ -1,7 +1,7 @@
-From bf7e98aa062cf6a78e7f68089609f5693d5ca72b Mon Sep 17 00:00:00 2001
+From 756700075d8ebd5979f3ea2d20f44356c417dfe4 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Tue, 19 Jan 2010 21:19:15 -0800
-Subject: [PATCH 06/30] OMAP: DSS2: add bootarg for selecting svideo or composite for tv output
+Subject: [PATCH 06/31] OMAP: DSS2: add bootarg for selecting svideo or composite for tv output
 
 also add pal-16 and ntsc-16 omapfb.mode settings for 16bpp
 ---

@@ -1,7 +1,7 @@
-From 41b834aed6b2902683102eacff56428158792187 Mon Sep 17 00:00:00 2001
+From 80c2126f5bf63ea2d033310e030cac5229865a9a Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Bernhard=20W=C3=B6rndl-Aichriedler?= <bwa@xdevelop.at>
 Date: Sat, 15 May 2010 16:34:05 +0200
-Subject: [PATCH 18/30] Add power-off support for the TWL4030 companion
+Subject: [PATCH 18/31] Add power-off support for the TWL4030 companion
 
 This patch adds support for the power-off on shutdown feature of the TWL4030
 ---

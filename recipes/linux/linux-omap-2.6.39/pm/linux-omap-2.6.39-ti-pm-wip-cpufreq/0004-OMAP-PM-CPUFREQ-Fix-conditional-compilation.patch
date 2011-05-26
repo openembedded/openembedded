@@ -1,4 +1,4 @@
-From 71849b3531c66af5f925deb1deb60a3722d62463 Mon Sep 17 00:00:00 2001
+From 1f013ab3b839edb583a276b5591a744dc4308bf8 Mon Sep 17 00:00:00 2001
 From: Silesh C V <silesh@ti.com>
 Date: Wed, 29 Sep 2010 14:52:54 +0530
 Subject: [PATCH 4/8] OMAP: PM: CPUFREQ: Fix conditional compilation

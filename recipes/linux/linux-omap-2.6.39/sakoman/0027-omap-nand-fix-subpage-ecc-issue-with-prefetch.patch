@@ -1,7 +1,7 @@
-From 22a6c2c3d2dafd4084945472fbeed2a94893ddb4 Mon Sep 17 00:00:00 2001
+From 263890438c545107c50be16e628926531949c1fa Mon Sep 17 00:00:00 2001
 From: kishore kadiyala <kishore.kadiyala@ti.com>
 Date: Mon, 2 May 2011 11:10:38 +0000
-Subject: [PATCH 27/30] omap : nand : fix subpage ecc issue with prefetch
+Subject: [PATCH 27/31] omap : nand : fix subpage ecc issue with prefetch
 
 For prefetch engine, read and write  got broken in commit '2c01946c'.
 We never hit a scenario of not getting 'gpmc_prefetch_enable'

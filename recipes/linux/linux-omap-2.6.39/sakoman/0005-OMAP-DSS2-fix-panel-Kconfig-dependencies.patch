@@ -1,7 +1,7 @@
-From e9b70efca1b15f5e743cccacb925156ca99878a7 Mon Sep 17 00:00:00 2001
+From c84fbf480062086f93f99c27817e4d2d91593511 Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@ti.com>
 Date: Fri, 8 Apr 2011 09:30:27 +0300
-Subject: [PATCH 05/30] OMAP: DSS2: fix panel Kconfig dependencies
+Subject: [PATCH 05/31] OMAP: DSS2: fix panel Kconfig dependencies
 
 All DPI panels were missing dependency to OMAP2_DSS_DPI. Add the
 dependency.

@@ -1,4 +1,4 @@
-From e09d0dd5be3f582aaf4626b3be0eeba42ca598bd Mon Sep 17 00:00:00 2001
+From d494d209b9b3c1cb13981a9756818f2822379a13 Mon Sep 17 00:00:00 2001
 From: Aaro Koskinen <aaro.koskinen@nokia.com>
 Date: Thu, 24 Mar 2011 18:35:32 +0200
 Subject: [PATCH 04/12] OMAP3+: smartreflex: request the memory region

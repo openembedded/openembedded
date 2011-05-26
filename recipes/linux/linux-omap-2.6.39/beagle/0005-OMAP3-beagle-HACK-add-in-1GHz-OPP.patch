@@ -1,4 +1,4 @@
-From 5b0f364b7e017d422b01c0e3297d0b68119f95f0 Mon Sep 17 00:00:00 2001
+From 6654672586808d22510d06d54464f4fe32ae6e80 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Wed, 25 May 2011 08:57:40 +0200
 Subject: [PATCH 5/5] OMAP3: beagle: HACK! add in 1GHz OPP
@@ -9,10 +9,10 @@ Signed-off-by: Koen Kooi <koen@dominion.thruhere.net>
  1 files changed, 2 insertions(+), 0 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index 52ea11a..cf95173 100644
+index 211cbdf..221bfda 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
-@@ -901,11 +901,13 @@ static void __init beagle_opp_init(void)
+@@ -911,11 +911,13 @@ static void __init beagle_opp_init(void)
  		/* Enable MPU 1GHz and lower opps */
  		dev = &mh->od->pdev.dev;
  		r = opp_enable(dev, 800000000);

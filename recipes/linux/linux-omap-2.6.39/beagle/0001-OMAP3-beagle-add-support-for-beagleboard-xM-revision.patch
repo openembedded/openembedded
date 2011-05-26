@@ -1,4 +1,4 @@
-From 2dd4bf287ad066e3d9e82c239782fb649c6f7fe7 Mon Sep 17 00:00:00 2001
+From 812ef26f4be80d12facd62adce971ec9fe64a144 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Fri, 20 May 2011 12:48:37 +0200
 Subject: [PATCH 1/5] OMAP3: beagle: add support for beagleboard xM revision C

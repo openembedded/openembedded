@@ -1,4 +1,4 @@
-From dec271e2e15103120df35be942884f577d6a768c Mon Sep 17 00:00:00 2001
+From e8d1f8ed3f2ed7c2e9ee51adfd322868d4195ecf Mon Sep 17 00:00:00 2001
 From: Nishanth Menon <nm@ti.com>
 Date: Fri, 13 May 2011 05:43:49 -0700
 Subject: [PATCH 5/6] OMAP2+: cpufreq: use cpufreq_frequency_table_target

@@ -1,4 +1,4 @@
-From 258a21a495a9ba2238081cd473b4796cd61a60e7 Mon Sep 17 00:00:00 2001
+From e87dd8c997e212b8c14468c869c83d6953da3c34 Mon Sep 17 00:00:00 2001
 From: Koen Kooi <koen@dominion.thruhere.net>
 Date: Fri, 20 May 2011 13:06:24 +0200
 Subject: [PATCH 2/5] OMAP3: beagle: add support for expansionboards

@@ -1,7 +1,7 @@
-From 98ee7c7f078aa79db223967040598a49c46931fe Mon Sep 17 00:00:00 2001
+From d4f736154c4a873a12408d0d094e2152a4c4dc96 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Thu, 17 Dec 2009 14:27:15 -0800
-Subject: [PATCH 19/30] ARM: OMAP: Add twl4030 madc support to Overo
+Subject: [PATCH 19/31] ARM: OMAP: Add twl4030 madc support to Overo
 
 Signed-off-by: Steve Sakoman <steve@sakoman.com>
 ---

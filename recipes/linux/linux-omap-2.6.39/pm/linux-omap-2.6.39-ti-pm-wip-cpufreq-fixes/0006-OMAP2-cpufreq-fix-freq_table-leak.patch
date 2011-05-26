@@ -1,4 +1,4 @@
-From d7559c9bd5225ad2e57e8c798dc1301396e05ce1 Mon Sep 17 00:00:00 2001
+From 9303bae0e4acf8a8b3b0c682d6655a656fc776bf Mon Sep 17 00:00:00 2001
 From: Nishanth Menon <nm@ti.com>
 Date: Wed, 18 May 2011 01:48:23 -0500
 Subject: [PATCH 6/6] OMAP2+: cpufreq: fix freq_table leak

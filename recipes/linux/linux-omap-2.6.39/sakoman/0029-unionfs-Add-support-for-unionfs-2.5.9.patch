@@ -1,7 +1,7 @@
-From e6b1af4def888530e5dfeaaf4338f248e9d0f677 Mon Sep 17 00:00:00 2001
+From 083250cd6541b75535707c1d416cfa3a45ad19a9 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Mon, 2 May 2011 16:14:34 -0700
-Subject: [PATCH 29/30] unionfs: Add support for unionfs 2.5.9
+Subject: [PATCH 29/31] unionfs: Add support for unionfs 2.5.9
 
 ---
  Documentation/filesystems/00-INDEX             |    2 +

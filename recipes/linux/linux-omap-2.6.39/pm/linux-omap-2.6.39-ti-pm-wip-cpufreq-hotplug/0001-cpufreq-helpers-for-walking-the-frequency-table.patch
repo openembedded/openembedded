@@ -1,4 +1,4 @@
-From b581872eacd6342a890b1c6d2596c16fac5875b5 Mon Sep 17 00:00:00 2001
+From 078a7006a32248c98d40ef79bbeb85a0879de734 Mon Sep 17 00:00:00 2001
 From: Mike Turquette <mturquette@ti.com>
 Date: Tue, 17 May 2011 09:35:54 -0500
 Subject: [PATCH 1/2] cpufreq: helpers for walking the frequency table

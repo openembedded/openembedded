@@ -1,4 +1,4 @@
-From dc352655af9c356f5c2db95c88718ed3a996569b Mon Sep 17 00:00:00 2001
+From 6dc3e54ade4c042c6e798fb6f17ff65b9357bc89 Mon Sep 17 00:00:00 2001
 From: Rajendra Nayak <rnayak@ti.com>
 Date: Tue, 5 Apr 2011 15:22:41 +0530
 Subject: [PATCH 3/6] OMAP2+: PM: Initialise sleep_switch to a non-valid value
