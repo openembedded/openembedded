@@ -1,6 +1,7 @@
 DESCRIPTION = "Lightweight and High Performance WebServer"
 SECTION = "console/network"
 LICENSE = "GPL"
+DEPENDS = "bison-native"
 RDEPENDS_${PN} = "mime-support"
 RPROVIDES_${PN} = "httpd"
 PR = "r4"
