@@ -16,6 +16,7 @@ SRC_URI[archive.sha256sum] = "0c1cfdf5f0550c0ccacbbc4f00ed059ab9ea483d48138132db
 
 SRC_URI += " \
             file://system-tools-backends \
+	    file://dont-automake.patch \
            "
 
 SRC_URI_append_angstrom = " \

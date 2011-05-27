@@ -37,7 +37,9 @@ EXTRA_OECONF += " --enable-official-branding --disable-crashreporter"
 FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2"
 
 do_compile_prepend() {
-	cp ${WORKDIR}/jsautocfg.h ${S}/js/src/
-	sed -i "s|CPU_ARCH =|CPU_ARCH = ${TARGET_ARCH}|" security/coreconf/Linux.mk
+    cp ${WORKDIR}/jsautocfg.h ${S}/js/src/
+    sed -i "s|CPU_ARCH =|CPU_ARCH = ${TARGET_ARCH}|" security/coreconf/Linux.mk
+    sed -i "s|HOST_LIBIDL_CFLAGS = \@HOST_LIBIDL_CFLAGS\@|HOST_LIBIDL_CFLAGS = $(pkg-config --cflags libIDL-2.0)|" config/autoconf.mk.in
+    sed -i "s|HOST_LIBIDL_LIBS   = @HOST_LIBIDL_LIBS@|HOST_LIBIDL_LIBS = $(pkg-config --libs libIDL-2.0)|" config/autoconf.mk.in
 }
 
