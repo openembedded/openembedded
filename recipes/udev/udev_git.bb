@@ -13,9 +13,9 @@ DEFAULT_PREFERENCE = "-1"
 # Needed for udev-extras
 DEPENDS = "gperf-native usbutils acl glib-2.0"
 
-SRCREV = "19e47d97256390e4f42c5a4c96e26536d4d33e3e"
-PV = "170"
-PR = "r2"
+SRCREV = "3e227830ad6494700e18ae03297e8fb833ff26bf"
+PV = "171"
+PR = "r0"
 PR_append = "+gitr${SRCPV}"
 
 # version specific SRC_URI
@@ -51,6 +51,7 @@ EXTRA_OECONF += " \
                   --libexecdir=${base_libdir}/udev \
                   --with-rootlibdir=${base_libdir} \
                   --disable-gtk-doc-html \
+                  --with-systemdsystemunitdir=${base_libdir}/systemd/system/ \
 "
 
 do_configure_prepend() {
