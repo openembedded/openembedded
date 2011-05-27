@@ -65,7 +65,7 @@ PREFERRED_VERSION_samba		= "3.3.9"
 PREFERRED_VERSION_tiff 		= "3.9.4+4.0.0beta6"
 PREFERRED_VERSION_tslib		= "1.0+gitr%"
 
-PREFERRED_VERSION_udev 		= "168"
+PREFERRED_VERSION_udev 		= "171"
 
 PREFERRED_VERSION_usbutils = "0.86"
 PREFERRED_VERSION_wpa-supplicant = "0.7.3"
