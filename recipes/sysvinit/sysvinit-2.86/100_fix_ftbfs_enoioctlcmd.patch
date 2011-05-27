@@ -1,0 +1,16 @@
+## Description: fixes FTBFS on natty
+## Origin/Author: http://bazaar.launchpad.net/~vcs-imports/sysvinit/trunk/revision/40
+Index: sysvinit-2.86/src/bootlogd.c
+===================================================================
+--- sysvinit-2.86.orig/src/bootlogd.c
++++ sysvinit-2.86/src/bootlogd.c
+@@ -228,6 +228,9 @@ int consolename(char *res, int rlen)
+ 	}
+ 
+ #ifdef TIOCGDEV
++# ifndef  ENOIOCTLCMD
++#  define ENOIOCTLCMD	515
++# endif
+ 	if (ioctl(0, TIOCGDEV, &kdev) == 0)
+ 		return findtty(res, rlen, (dev_t)kdev);
+ 	if (errno != ENOIOCTLCMD) return -1;
