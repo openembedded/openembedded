@@ -3,6 +3,7 @@ rebased on top of openmoko kernel repository
 
 https://gitorious.org/shr/linux/commits/shr-2.6.39-nodrm
 
+efd94d3 nand/s3c2410: add mising badblocksbits value
 56885e2 glamo-mci: revert changes for Per's patchset
 6ab40bf Revert "mmc: add none blocking mmc request function"
 7937634 Revert "mmc: mmc_test: add debugfs file to list all tests"
@@ -1920,6 +1921,18 @@ index 02c4b69..f298658 100644
  	mmc_host_enable(mmc);
  	mmc_remove_host(mmc);
  	mmc_host_disable(mmc);
+diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+index cb5d2c0..66b75c6 100644
+--- a/drivers/mtd/nand/s3c2410.c
++++ b/drivers/mtd/nand/s3c2410.c
+@@ -773,6 +773,7 @@ static void s3c2410_nand_init_chip(struct s3c2410_nand_info *info,
+ 	chip->priv	   = nmtd;
+ 	chip->options	   = set->options;
+ 	chip->controller   = &info->controller;
++	chip->badblockbits = 8;
+ 
+ 	switch (info->cpu_type) {
+ 	case TYPE_S3C2410:
 diff --git a/include/linux/mmc/core.h b/include/linux/mmc/core.h
 index 5bbfb71..07f27af 100644
 --- a/include/linux/mmc/core.h
