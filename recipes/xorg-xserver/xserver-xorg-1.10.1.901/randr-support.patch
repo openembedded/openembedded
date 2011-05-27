@@ -39,22 +39,22 @@ diff -ur xorg-server-1.10.1.901//hw/xfree86/common/xf86Xinput.c git/xorg-server-
 +    case RR_Rotate_0:
 +        swap_axes = 1;
 +        invert[0] = 0;
-+ 	 invert[1] = 0;
++        invert[1] = 0;
 +        break;
 +    case RR_Rotate_90:
 +        swap_axes = 0;
 +        invert[0] = 0;
-+ 	 invert[1] = 1;
++        invert[1] = 1;
 +        break;
 +    case RR_Rotate_180:
 +        swap_axes = 1;
-+        invert[0] = 0;
-+        invert[1] = 0;
++        invert[0] = 1;
++        invert[1] = 1;
 +        break;
 +    case RR_Rotate_270:
 +        swap_axes = 0;
-+        invert[0] = 0;
-+ 	 invert[1] = 1;
++        invert[0] = 1;
++        invert[1] = 0;
 +        break;
 +    }
 +
