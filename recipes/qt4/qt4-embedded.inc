@@ -28,9 +28,6 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-linux-opensource-src-${
 # Set necessary variables in the profile
 SRC_URI += "file://qte.sh"
 
-# For the palmpre we ship a modified qte.sh
-PACKAGE_ARCH_palmpre = "${MACHINE_ARCH}"
-
 S = "${WORKDIR}/qt-embedded-linux-opensource-src-${PV}"
 
 QT_CONFIG_FLAGS += " \
