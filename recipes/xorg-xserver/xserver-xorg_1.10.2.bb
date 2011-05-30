@@ -12,12 +12,13 @@ DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_shr = "1"
 
 SRC_URI += " \
+            file://50b9d3142ff90af2f7fa35b7b1bf9e5a07723dbd.patch \
             file://randr-support.patch \
             file://hack-fbdev-ignore-return-mode.patch \
             file://hack-assume-pixman-supports-overlapped-blt.patch \
            "
-SRC_URI[archive.md5sum] = "996d9e183ad1940f1cd802db2698b6e1"
-SRC_URI[archive.sha256sum] = "06d9d25cde3c943709adb24dc44426df58f4a8774a048e422ce9543c34e37dbc"
+SRC_URI[archive.md5sum] = "c9ba50bd44ea70da51f13100336a5484"
+SRC_URI[archive.sha256sum] = "65264f6640568b9db8d738aec1ddd036c3ae21b7ba05b98d006759d11a72792c"
 
 do_install_prepend() {
         mkdir -p ${D}/${libdir}/X11/fonts
