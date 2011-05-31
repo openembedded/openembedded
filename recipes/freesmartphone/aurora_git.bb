@@ -4,9 +4,9 @@ AUTHOR = "Simon Busch <morphis@gravedo.de>"
 HOMEPAGE = "http://www.freesmartphone.org"
 SECTION = "fso"
 LICENSE = "GPLv2"
-SRCREV = "fcd4e097beca8fcedeb4acbf68fd2078b7901f77"
+SRCREV = "1043282ce2c9e7c8378c3ab6477e146cfe507577"
 PV = "0.1.0+gitr${SRCPV}"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "\
   ${FREESMARTPHONE_GIT}/aurora.git;protocol=git;branch=master \
@@ -27,7 +27,8 @@ RDEPENDS_${PN} = "\
 
 inherit autotools python-dir update-rc.d
 
-EXTRA_OECONF_append = "--enable-qws-support"
+QT_DIR_NAME = "qtopia"
+EXTRA_OECONF_append = "--enable-qws-support --with-qt-basedir=${QT_DIR_NAME}"
 
 INITSCRIPT_NAME = "aurora-daemon"
 INITSCRIPT_PARAMS = "defaults 90"
@@ -38,8 +39,8 @@ do_install_append() {
 }
 
 PACKAGES = "${PN}-dbg ${PN}"
-FILES_${PN}-dbg += "${libdir}/qt4/imports/Aurora/*/.debug"
+FILES_${PN}-dbg += "${libdir}/${QT_DIR_NAME}/imports/Aurora/*/.debug"
 FILES_${PN} += " \
   ${PYTHON_SITEPACKAGES_DIR}/aurora \
-  ${libdir}/qt4/imports/Aurora \
+  ${libdir}/${QT_DIR_NAME}/imports/Aurora \
 "
