@@ -10,19 +10,14 @@ SRC_URI = "http://dl.cihar.com/gammu/releases/gammu-${PV}.tar.bz2"
 
 inherit distutils-common-base cmake
 
+# FIXME: Ugly!
+PYTHON_VERSION = "2.6"
 do_configure() {
     cd ${S}
-    sed -i 's@^cmake [^$]*\$@cmake -DCMAKE_FIND_ROOT_PATH=${STAGING_DIR_TARGET} $@' configure
+    sed -i 's@^cmake [^$]*\$@cmake -DCMAKE_FIND_ROOT_PATH=${STAGING_DIR_TARGET} -DPYTHON_INCLUDE_DIR=${STAGING_INCDIR}/python${PYTHON_VERSION} $@' configure
     sed -i 's@\${PYTHON_SITEDIR}@${PYTHON_SITEPACKAGES_DIR}@g' python/gammu/CMakeLists.txt
     ./configure --prefix=${prefix} --enable-shared --enable-backup
 }
-
-# gammu has a non-standard uninstalled .pc file, which confuses pkgconfig.bbclass.
-# Replace it by custom do_stage_append():
-#do_stage_append () {
-#	install -d ${PKG_CONFIG_DIR}
-#	cat build-configure/cfg/gammu.pc > ${PKG_CONFIG_DIR}/gammu.pc
-#}
 
 PACKAGES =+ "${PN}-smsd libgammu libgsmsd python-${PN}"
 
@@ -34,5 +29,5 @@ FILES_libgammu = "${libdir}/libGammu.so.*"
 FILES_libgsmsd = "${libdir}/libgsmsd.so.*"
 FILES_python-${PN} = "${PYTHON_SITEPACKAGES_DIR}/gammu/*.??"
 
-SRC_URI[md5sum] = "ba8caab6b21a2ce0fa668f9403b8319a"
-SRC_URI[sha256sum] = "668eb037af6aa81cc104067dcb8e1cf44000b82a58638cfd485297eec76fda8d"
+SRC_URI[md5sum] = "5a860f37519fab3d2e7a42349b413738"
+SRC_URI[sha256sum] = "0f7c3122e5f5e246b3ce7fb128b42c1d679ebb3f11f805ea17f1ba86400e1bbf"
