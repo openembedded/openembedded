@@ -1,7 +1,7 @@
-From 9b0b5f99896549524c8f88a70f6cf0c0271d730e Mon Sep 17 00:00:00 2001
+From 78fdfee2f749cdcdfa69a008b70c4e5629b9c9df Mon Sep 17 00:00:00 2001
 From: Detlev Casanova <detlev.casanova@gmail.com>
 Date: Sun, 28 Nov 2010 19:07:20 +0100
-Subject: [PATCH 4/4] v4l: Add mt9v032 sensor driver
+Subject: [PATCH 2/3] v4l: Add mt9v032 sensor driver
 
 The MT9V032 is a parallel wide VGA sensor from Aptina (formerly Micron)
 controlled through I2C.

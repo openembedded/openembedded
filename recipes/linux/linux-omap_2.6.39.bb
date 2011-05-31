@@ -7,7 +7,7 @@ COMPATIBLE_MACHINE = "(beagleboard)"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
 SRCREV_pn-${PN} = "v2.6.39"
-MACHINE_KERNEL_PR_append = "e"
+MACHINE_KERNEL_PR_append = "g"
 
 FILESPATHPKG_prepend = "linux-omap-2.6.39:"
 
@@ -53,10 +53,9 @@ SRC_URI_append = " \
            file://beagle/0004-OMAP3-beagle-add-regulators-for-camera-interface.patch \
            file://beagle/0005-OMAP3-beagle-HACK-add-in-1GHz-OPP.patch \
            \
-           file://camera/0001-Add-mt9p031-sensor-driver.patch \
-           file://camera/0002-OMAP3BEAGLE-Add-support-for-mt9p031-sensor-driver.patch \
-           file://camera/0003-OMAP3-beagle-only-init-camera-on-3630.patch \
-           file://camera/0004-v4l-Add-mt9v032-sensor-driver.patch \
+           file://camera/0001-Add-support-for-mt9p031-Aptina-Micron-sensor.patch \
+           file://camera/0002-v4l-Add-mt9v032-sensor-driver.patch \
+           file://camera/0003-Add-support-for-mt9p031-LI-5M03-module-in-Beagleboar.patch \
            \
            file://pm/linux-omap-2.6.39-ti-pm/0001-OMAP3-voltage-remove-spurious-pr_notice-for-debugfs.patch \
            file://pm/linux-omap-2.6.39-ti-pm/0002-OMAP4-PM-remove-redundant-ifdef-CONFIG_PM.patch \
