@@ -4,9 +4,9 @@ AUTHOR = "Simon Busch <morphis@gravedo.de>"
 HOMEPAGE = "http://www.freesmartphone.org"
 SECTION = "fso"
 LICENSE = "GPLv2"
-SRCREV = "26811e215c322d1aeb2cf04d083960a2abe774cb"
+SRCREV = "fcd4e097beca8fcedeb4acbf68fd2078b7901f77"
 PV = "0.1.0+gitr${SRCPV}"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "\
   ${FREESMARTPHONE_GIT}/aurora.git;protocol=git;branch=master \
@@ -38,5 +38,8 @@ do_install_append() {
 }
 
 PACKAGES = "${PN}-dbg ${PN}"
-FILES_${PN}-dbg += "${PYTHON_SITEPACKAGES_DIR}/aurora/.debug"
-FILES_${PN} += "${PYTHON_SITEPACKAGES_DIR}/aurora"
+FILES_${PN}-dbg += "${libdir}/qt4/imports/Aurora/*/.debug"
+FILES_${PN} += " \
+  ${PYTHON_SITEPACKAGES_DIR}/aurora \
+  ${libdir}/qt4/imports/Aurora \
+"
