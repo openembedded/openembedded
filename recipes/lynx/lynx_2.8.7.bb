@@ -1,7 +1,7 @@
 DESCRIPTION = "text web browser"
 SECTION = "console/network"
 DEPENDS = "ncurses openssl"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 HOMEPAGE = "http://lynx.isc.org/"
 PR = "r0"
 S = "${WORKDIR}/${PN}${@bb.data.getVar('PV',d,1).replace('.', '-')}"
