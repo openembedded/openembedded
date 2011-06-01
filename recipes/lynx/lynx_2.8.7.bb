@@ -6,7 +6,9 @@ HOMEPAGE = "http://lynx.isc.org/"
 PR = "r0"
 S = "${WORKDIR}/${PN}${@bb.data.getVar('PV',d,1).replace('.', '-')}"
 
-SRC_URI = "http://lynx.isc.org/${PN}${PV}/${PN}${PV}.tar.bz2 \
+# This URL should point to the latest tarball, but apparently does not:
+# http://lynx.isc.org/${PN}${PV}/${PN}${PV}.tar.bz2
+SRC_URI = "http://lynx.isc.org/current/${PN}${PV}rel.2.tar.bz2 \
 	   file://locale-charset.patch"
 
 inherit autotools
