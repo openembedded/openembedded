@@ -7,6 +7,7 @@ PRIORITY = "optional"
 SECTION = "console/telephony"
 DEPENDS = "speex readline zlib openssl curl popt gnutls sqlite libogg libvorbis"
 #RRECOMMENDS_${PN} = "logrotate"
+PR = "r1"
 
 SRC_URI="http://downloads.asterisk.org/pub/telephony/asterisk/old-releases/asterisk-${PV}.tar.gz \
 #	file://sounds.xml.patch \
