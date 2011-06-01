@@ -17,8 +17,9 @@
 #  --enable-debug          enable debug output [default=no]
 #  --enable-host-debug     allow for non-destructive executing of kexecboot on
 #                            host system [default=no]
+#  --enable-numkeys        enable menu item selection by keys [0-9] [default=yes]
 #  --enable-bg-buffer      enable buffer for pre-drawed FB GUI background
-#                            [default=no]
+#
 #  --enable-timeout        allow to boot 1st kernel after timeout in seconds
 #                            [default=no]
 #  --enable-delay          specify delay before device scanning, allowing
