@@ -6,6 +6,7 @@
 #
 asterisk=/usr/sbin/asterisk
 pidfile=/var/run/asterisk/asterisk.pid
+logdir=/var/log/asterisk
 asterisk_args="-npqT -U asterisk -G asterisk"
 
 test -x "$asterisk" || exit 0
@@ -13,6 +14,8 @@ test -x "$asterisk" || exit 0
 case "$1" in
   start)
     echo -n "Starting Asterisk"
+    mkdir -p $logdir
+    chown asterisk:asterisk $logdir
     start-stop-daemon --start --quiet --exec $asterisk -- $asterisk_args
     echo "."
     ;;
