@@ -2,23 +2,26 @@ DESCRIPTION = "Hardware health monitoring applications"
 HOMEPAGE = "http://www.lm-sensors.org/"
 DEPENDS = "sysfsutils virtual/libiconv"
 LICENSE = "GPL"
+PR = "r1"
+DEPENDS = "bison-native flex-native"
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
-SRC_URI = "http://dl.lm-sensors.org/lm-sensors/releases/lm_sensors-${PV}.tar.bz2 \
-"
+SRC_URI = "http://dl.lm-sensors.org/lm-sensors/releases/lm_sensors-${PV}.tar.bz2"
 
 SRC_URI[md5sum] = "829d88fb09d67723fbf42853eb84d1fd"
 SRC_URI[sha256sum] = "bde7e1d8b473bca6528694b696668c4cd0a28515aef36b961e4f7d8a6b47e581"
 
 S = "${WORKDIR}/lm_sensors-${PV}"
 
-export PREFIX="${prefix}"
+EXTRA_OEMAKE = 'LINUX=${STAGING_KERNEL_DIR} EXLDFLAGS="${LDFLAGS}" \
+		MACHINE=${TARGET_ARCH} PREFIX=${prefix} CC="${CC}" AR="${AR}"'
 
 do_compile() {
-	oe_runmake user LINUX=${STAGING_KERNEL_DIR} EXLDFLAGS="${LDFLAGS}" PROG_EXTRA=sensors MACHINE=${TARGET_ARCH}
+	oe_runmake user PROG_EXTRA=sensors
 }
 
 do_install() {
-	oe_runmake user_install EXLDFLAGS="${LDFLAGS}" DESTDIR=${D}
+	oe_runmake user_install DESTDIR=${D}
 
 	# move manuals into proper place
 	install -d ${D}${mandir}
@@ -40,4 +43,3 @@ FILES_libsensors = "${libdir}/libsensors.so.*"
 FILES_libsensors-dbg += "${libdir}/.debug"
 FILES_libsensors-dev = "${libdir}/libsensors.so ${libdir}/libsensors.a ${includedir}"
 FILES_libsensors-doc = "${mandir}/man3"
-
