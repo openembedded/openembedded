@@ -11,9 +11,9 @@ S = "${WORKDIR}/${PN}${@bb.data.getVar('PV',d,1).replace('.', '-')}"
 SRC_URI = "http://lynx.isc.org/current/${PN}${PV}rel.2.tar.bz2 \
 	   file://locale-charset.patch"
 
-inherit autotools
+inherit autotools gettext
 
-EXTRA_OECONF = "--with-ssl=${STAGING_DIR_HOST}${layout_exec_prefix} --with-curses-dir=${STAGING_DIR_HOST}${layout_exec_prefix} --enable-nls --with-screen=ncursesw --enable-locale-charset --enable-ipv6 --enable-persistent-cookies"
+EXTRA_OECONF += "--with-ssl=${STAGING_DIR_HOST}${layout_exec_prefix} --with-curses-dir=${STAGING_DIR_HOST}${layout_exec_prefix} --enable-nls --with-screen=ncursesw --enable-locale-charset --enable-ipv6 --enable-persistent-cookies"
 
 do_configure() {
 	# prevent import of ncursesw6-config from host system
