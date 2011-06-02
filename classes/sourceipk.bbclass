@@ -50,6 +50,9 @@ SRCIPK_INSTALL_DIR ?= "/usr/src/${PN}-src"
 # Default PACKAGE_ARCH for sources is "all"
 SRCIPK_PACKAGE_ARCH ?= "all"
 
+# Default section matches the recipe section
+SRCIPK_SECTION ?= "${SECTION}"
+
 # Default SRCIPK_INCLUDE_EXTRAFILES is to include the extra files
 SRCIPK_INCLUDE_EXTRAFILES ?= "1"
 
@@ -86,7 +89,7 @@ sourceipk_do_create_srcipk() {
         echo "Package: ${PN}-src" > $control_file
         echo "Version: ${PV}-${PR}" >> $control_file
         echo "Description: Patched sources for ${PN}" >> $control_file
-        echo "Section: ${SECTION}" >> $control_file
+        echo "Section: ${SRCIPK_SECTION}" >> $control_file
         echo "Priority: Optional" >> $control_file
         echo "Maintainer: ${MAINTAINER}" >> $control_file
         echo "License: ${LICENSE}" >> $control_file
