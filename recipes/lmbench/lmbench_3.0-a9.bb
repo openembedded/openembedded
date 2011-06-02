@@ -3,7 +3,7 @@ DESCRIPTION = "Tools for performance analysis."
 LICENSE = "GPL"
 RDEPENDS_${PN} = "debianutils"
 
-PR = "r5"
+PR = "r6"
 
 inherit autotools
 
@@ -17,7 +17,7 @@ SRC_URI[sha256sum] = "cbd5777d15f44eab7666dcac418054c3c09df99826961a397d9acf43d8
 
 S = "${WORKDIR}/lmbench-${PV}"
 
-EXTRA_OEMAKE = 'CC="${CC}" AR="${AR}" RANLIB="${RANLIB} CFLAGS="${CFLAGS}" \
+EXTRA_OEMAKE = 'CC="${CC}" AR="${AR}" RANLIB="${RANLIB}" CFLAGS="${CFLAGS}" \
 		LDFLAGS="${LDFLAGS}" LD="${LD}" OS="${TARGET_SYS}" \
 		TARGET="${TARGET_OS}" BASE="${prefix}"'
 
