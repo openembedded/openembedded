@@ -1,6 +1,6 @@
 DESCRIPTION = "GNU All Mobile Managment Utilities"
 SECTION = "console/network"
-DEPENDS = "bluez-libs cmake-native python mysql"
+DEPENDS = "bluez-libs cmake-native curl python mysql"
 RDEPENDS_python-${PN} = "python-core"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.gammu.org/"
