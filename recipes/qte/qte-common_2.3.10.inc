@@ -48,6 +48,7 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;m
 	   file://remove-unused-kbdhandler.patch \
 	   file://disable-dup-rotation.patch \
 	   file://fix-qte-asm-include.patch \
+	   file://support_18bpp.patch \
 	   file://sharp_char.h \
 	   file://switches.h "
 
@@ -83,7 +84,7 @@ EXTRA_OECONF_CONFIG = "-qconfig qpe"
 EXTRA_OECONF_CONFIG_native = "-qconfig qpe -qvfb"
 
 EXTRA_OECONF = "-system-jpeg -system-libpng -system-zlib -no-qvfb -no-xft -no-vnc -gif \
-		-xplatform ${TARGET_OS}-${QTE_ARCH}-g++ ${EXTRA_OECONF_CONFIG} -depths 8,16,32"
+		-xplatform ${TARGET_OS}-${QTE_ARCH}-g++ ${EXTRA_OECONF_CONFIG} -depths 8,16,18,32"
 EXTRA_OEMAKE = "-e"
 
 #

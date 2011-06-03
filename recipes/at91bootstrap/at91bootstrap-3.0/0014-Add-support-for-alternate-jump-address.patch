@@ -1,7 +1,7 @@
 From e480f602a4b5e6481f4c0590fca16a9cd7ee3570 Mon Sep 17 00:00:00 2001
 From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
 Date: Mon, 24 Jan 2011 19:37:15 +0100
-Subject: [PATCH v3 14/08] Add support for alternate jump address
+Subject: [PATCH 14/16] Add support for alternate jump address
 
 ---
  Config.in          |   11 +++++++++

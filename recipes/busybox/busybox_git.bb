@@ -3,9 +3,9 @@ PR = "${INC_PR}.0"
 
 FILESPATHPKG =. "busybox-git:"
 
-SRCREV = "6596380f52cd48b8b44443bb5677ec8caf538761"
+SRCREV = "10c0131a8a1b3db7fd6b23b72ebd7b33afc7b018"
 
-PV = "1.18.2+gitr${SRCREV}"
+PV = "1.18.4+gitr${SRCREV}"
 
 S = "${WORKDIR}/git"
 
@@ -20,8 +20,11 @@ SRC_URI = "\
   file://busybox-httpd \
   file://busybox-udhcpd \
   file://default.script file://simple.script \
+  file://group \
   file://hwclock.sh \
   file://hwclock-default \
+  file://inetd \
+  file://inetd.conf \
   file://mount.busybox \
   file://mountall \
   file://passwd \

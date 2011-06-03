@@ -20,7 +20,7 @@ SRC_URI += " \
     file://NetworkManager \
     file://gtk-doc.make \
     file://0001-respect-libnl-flags-also-in-backends-ip6-manager.patch \
-    file://0002-respect-libnl-flags-also-in-dns-manager.patch \
+    file://0002-respect-libnl-flags-also-in-dns-manager-vpn-manager-.patch \
 "
 
 EXTRA_OECONF += " --with-dhclient=${base_sbindir}/dhclient \

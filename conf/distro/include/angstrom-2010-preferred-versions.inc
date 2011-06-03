@@ -1,5 +1,5 @@
-ANGSTROM_MESA_VERSION = "7.9.1"
-ANGSTROM_QT_VERSION ?= "4.7.2"
+ANGSTROM_MESA_VERSION = "7.10"
+ANGSTROM_QT_VERSION ?= "4.7.3"
 ANGSTROM_LIBTOOL_VERSION = "2.4"
 # Use new sysroot feature
 LIBTOOL_HAS_SYSROOT = "yes"
@@ -52,7 +52,7 @@ PREFERRED_VERSION_perl-native = "5.10.1"
 #PREFERRED_VERSION_pixman	= "0.13.2"
 PREFERRED_VERSION_pkgconfig	= "0.23"
 PREFERRED_VERSION_pkgconfig-native = "0.23"
-PREFERRED_VERSION_pulseaudio 	= "0.9.21"
+PREFERRED_VERSION_pulseaudio 	= "0.9.22"
 PREFERRED_VERSION_python-pycairo = "1.8.0"
 PREFERRED_VERSION_qt4-tools-native = "${ANGSTROM_QT_VERSION}"
 PREFERRED_VERSION_qt4-tools-sdk = "${ANGSTROM_QT_VERSION}"
@@ -63,15 +63,13 @@ PREFERRED_VERSION_qt4-x11-free-gles = "${ANGSTROM_QT_VERSION}"
 
 PREFERRED_VERSION_samba		= "3.3.9"
 PREFERRED_VERSION_tiff 		= "3.9.4+4.0.0beta6"
+PREFERRED_VERSION_tslib		= "1.0+gitr%"
 
-PREFERRED_VERSION_udev 		= "165"
-PREFERRED_VERSION_udev_libc-uclibc = "141"
-UDEV_GE_141 = "1"
+PREFERRED_VERSION_udev 		= "171"
 
 PREFERRED_VERSION_usbutils = "0.86"
 PREFERRED_VERSION_wpa-supplicant = "0.7.3"
 PREFERRED_VERSION_wget = "1.11.4"
-PREFERRED_VERSION_xserver-common = "1.33"
 PREFERRED_VERSION_xserver-kdrive = "1.4.0.90"
 
 #

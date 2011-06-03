@@ -15,7 +15,7 @@ do_compile () {
 	for board in ${AT91BOOTSTRAP_BOARD} ; do
 		oe_runmake mrproper
 		filename=`find board -name ${board}_defconfig`
-		if ! [ "x$filename" == "x" ] ; then 
+		if ! [ "x$filename" == "x" ] ; then
 			cp $filename .config
 			oe_runmake AT91_CUSTOM_FLAGS="${AT91BOOTSTRAP_FLAGS}"
 			oe_runmake AT91_CUSTOM_FLAGS="${AT91BOOTSTRAP_FLAGS}" boot

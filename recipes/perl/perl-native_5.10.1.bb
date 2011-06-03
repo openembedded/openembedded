@@ -2,7 +2,7 @@ DESCRIPTION = "Perl is a popular scripting language."
 HOMEPAGE = "http://www.perl.org/"
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
-PR = "r10"
+PR = "r12"
 NATIVE_INSTALL_WORKS = "1"
 INHIBIT_DEFAULT_DEPS = "1"
 PATCHTOOL = "patch"
@@ -20,6 +20,7 @@ SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz;name=perl-${PV} \
            file://native-nopacklist.patch \
            file://native-perlinc.patch \
 	   file://perl-fix-cross-library-check.patch \
+           file://ubuntu-11.04-multiarch.patch \
 	   "
 
 SRC_URI[perl-5.10.1.md5sum] = "b9b2fdb957f50ada62d73f43ee75d044"
@@ -28,6 +29,8 @@ SRC_URI[perl-5.10.1.sha256sum] = "cb7f26ea4b2b28d6644354d87a269d01cac1b635287dae
 S = "${WORKDIR}/perl-${PV}"
 
 inherit native
+
+export LD="${CC}"
 
 do_configure () {
     ./Configure \
@@ -105,6 +108,7 @@ do_install() {
 	done
 
 	create_wrapper ${D}${bindir}/perl PERL5LIB='$PERL5LIB:${STAGING_LIBDIR}/perl/${PV}:${STAGING_LIBDIR}/perl/'
+	create_wrapper ${D}${bindir}/perl${PV} PERL5LIB='$PERL5LIB:${STAGING_LIBDIR}/perl/${PV}:${STAGING_LIBDIR}/perl/'
 }
 
 do_install_append_nylon() {

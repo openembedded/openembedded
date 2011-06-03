@@ -9,19 +9,20 @@ DEPENDS += "${@base_contains('DISTRO_FEATURES', 'pam', 'libpam', '', d)}"
 PRIORITY = "optional"
 SECTION = "base/shell"
 
-PV = "v26"
-PR = "r9"
-PR_append = "+${SRCPV}"
+inherit gitpkgv
+PKGV = "v${GITPKGVTAG}"
+
+# This gets reset to the proper version with PKGV above
+PV = "git"
+PR = "r10"
 
 inherit autotools vala update-alternatives
 
-TAG = "7a6000a68241d23c9f6f6bde47b2cfa9c18189da"
+SRCREV = "da2617378523e007ec0c6efe99d0cebb2be994e1"
 
-SRC_URI = "git://anongit.freedesktop.org/systemd;protocol=git;tag=${TAG} \
+SRC_URI = "git://anongit.freedesktop.org/systemd;protocol=git \
            file://execute.patch \
            file://0001-systemd-disable-xml-file-stuff-and-introspection.patch \
-           file://0002-systemd-analyze-print-hostname-kernelversion-and-arc.patch \
-           file://0003-Angstrom-support.patch \
            file://serial-getty@.service \
           "
 
@@ -83,6 +84,6 @@ FILES_${PN} = " ${base_bindir}/* \
 
 FILES_${PN}-dbg += "${base_libdir}/systemd/.debug ${base_libdir}/systemd/*/.debug"
 
-# util-linux -> hwclock, kbd -> loadkeys,setfont
-RRECOMMENDS_${PN} += "util-linux kbd kbd-consolefonts ${PN}-serialgetty"
+# kbd -> loadkeys,setfont
+RRECOMMENDS_${PN} += "kbd kbd-consolefonts ${PN}-serialgetty"
 

@@ -25,6 +25,8 @@ SRC_URI_append = " \
 	file://0014-Add-support-for-alternate-jump-address.patch;apply=yes \
 	file://0015-Make-MAKENEW-useful.patch;apply=yes \
 	file://0016-Update-configs.patch;apply=yes \
+	file://0017-at91bootstrap-fix-build-error-in-openembedded-due-to.patch;apply=yes \
+	file://0018-Change-switch-statements-to-if-statements-to-avoid-b.patch;apply=yes \
 	"
 
 # S = "${WORKDIR}/${PN}-${PV}"

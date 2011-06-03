@@ -11,6 +11,9 @@ S = "${WORKDIR}"
 
 datadir_java="/usr/share/java/apps"
 
+JAVAC_COMMAND ?= "javac"
+JAVAC_OPTIONS ?= "-source 1.6"
+
 do_compile() {
   mkdir -p build
   oe_makeclasspath cp -s ${DEPENDS} ${EXTRA_CP}
@@ -20,7 +23,7 @@ do_compile() {
   echo $cp | awk 'BEGIN {FS=":"} {split($0,a,":"); for (i=1; i<=NF; i++) print a[i]; }'
   echo "-------------------------"
 
-  javac -sourcepath . -cp $cp -d build `find . -name \*.java`
+  ${JAVAC_COMMAND} ${JAVAC_OPTIONS} -sourcepath . -cp $cp -d build `find . -name \*.java`
   pwd
   ls -haltr ${WORKDIR}/`basename ${SRC_LINK}`
   

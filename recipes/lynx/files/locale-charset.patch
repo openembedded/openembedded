@@ -1,0 +1,13 @@
+Index: lynx2-8-7/lynx.cfg
+===================================================================
+--- lynx2-8-7.orig/lynx.cfg
++++ lynx2-8-7/lynx.cfg
+@@ -453,7 +453,7 @@ DEFAULT_INDEX_FILE:http://lynx.isc.org/
+ # happens to give useful values, but other implementations are not guaranteed
+ # to do this.
+ #LOCALE_CHARSET:FALSE
+-
++LOCALE_CHARSET:TRUE
+ 
+ .h2 ASSUME_CHARSET
+ # ASSUME_CHARSET changes the handling of documents which do not

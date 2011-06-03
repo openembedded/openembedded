@@ -1,0 +1,25 @@
+From 2f334b4563af8a8fc508b8d7245b901f0c5deab3 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Sat, 16 Apr 2011 17:22:00 +0200
+Subject: [PATCH] owl-wifi: include linux/semaphore.h
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+---
+ owl_net.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/owl_net.h b/owl_net.h
+index c019ef4..6a88100 100644
+--- a/owl_net.h
++++ b/owl_net.h
+@@ -24,6 +24,7 @@
+ #include <linux/etherdevice.h>
+ #include <linux/wireless.h>
+ #include <linux/timer.h>
++#include <linux/semaphore.h>
+ 
+ #include "wl_api.h"
+ 
+-- 
+1.6.3.3
+

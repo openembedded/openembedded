@@ -1,7 +1,7 @@
 From a8685e5dd8f32b77d83e3a5dfb39146a913e4ca0 Mon Sep 17 00:00:00 2001
 From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
 Date: Sun, 23 Jan 2011 20:13:58 +0100
-Subject: [PATCH v3 11/08] Fix Cut-n-Paste error
+Subject: [PATCH 11/16] Fix Cut-n-Paste error
 
 ---
  board/at91sam9m10ekes/at91sam9m10ekes.c |    8 +-------

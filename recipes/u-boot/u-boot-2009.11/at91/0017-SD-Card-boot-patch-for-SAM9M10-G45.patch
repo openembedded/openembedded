@@ -1,0 +1,151 @@
+From d3fa929dc47c3c4273eefd381f619d9892ff8685 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Fri, 4 Feb 2011 07:30:16 +0100
+Subject: [PATCH] SD-Card boot patch for SAM9M10/G45
+
+---
+ Makefile                           |    7 ++++++-
+ include/configs/at91sam9m10g45ek.h |   34 ++++++++++++++++++++--------------
+ 2 files changed, 26 insertions(+), 15 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 0857fa4..2db49be 100644
+--- a/Makefile
++++ b/Makefile
+@@ -2862,13 +2862,15 @@ pm9261_config	:	unconfig
+ at91sam9m10g45ek_nandflash_config \
+ at91sam9m10g45ek_dataflash_config \
+ at91sam9m10g45ek_dataflash_cs0_config \
++at91sam9m10g45ek_sd_config \
+ at91sam9m10g45ek_config \
+ at91sam9g45ekes_nandflash_config \
+ at91sam9g45ekes_dataflash_config \
+ at91sam9g45ekes_dataflash_cs0_config \
++at91sam9g45ekes_sd_config \
+ at91sam9g45ekes_config	:	unconfig
+ 	@mkdir -p $(obj)include
+-		@if [ "$(findstring 9m10,$@)" ] ; then \
++	@if [ "$(findstring 9m10,$@)" ] ; then \
+ 		echo "#define CONFIG_AT91SAM9M10G45EK 1"	>>$(obj)include/config.h ; \
+ 		$(XECHO) "... 9M10G45 Variant" ; \
+ 	else \
+@@ -2878,6 +2880,9 @@ at91sam9g45ekes_config	:	unconfig
+ 	@if [ "$(findstring _nandflash,$@)" ] ; then \
+ 		echo "#define CONFIG_SYS_USE_NANDFLASH 1"	>>$(obj)include/config.h ; \
+ 		$(XECHO) "... with environment variable in NAND FLASH" ; \
++	elif [ "$(findstring _sd,$@)" ] ; then \
++		echo "#define CONFIG_SYS_USE_SDCARD 1"	>>$(obj)include/config.h ; \
++		$(XECHO) "... with environment variables on an SD-Card" ; \
+ 	else \
+ 		echo "#define CONFIG_SYS_USE_DATAFLASH 1"	>>$(obj)include/config.h ; \
+ 		$(XECHO) "... with environment variable in SPI DATAFLASH CS0" ; \
+diff --git a/include/configs/at91sam9m10g45ek.h b/include/configs/at91sam9m10g45ek.h
+index 1d29067..261d698 100644
+--- a/include/configs/at91sam9m10g45ek.h
++++ b/include/configs/at91sam9m10g45ek.h
+@@ -26,9 +26,7 @@
+ 
+ #ifndef __CONFIG_H
+ #define __CONFIG_H
+-#define	CONFIG_CMD_DEBUG	1
+-#define	CONFIG_SYS_ROOTFS_SD	1
+-#define	CONFIG_CMD_FACTORY	1
++
+ /* ARM asynchronous clock */
+ #define AT91_MAIN_CLOCK		12000000	/* from 12 MHz crystal */
+ #define CONFIG_SYS_HZ		1000
+@@ -113,6 +111,9 @@
+ #define CONFIG_CMD_NAND		1
+ #define CONFIG_CMD_USB		1
+ 
++#define	CONFIG_CMD_DEBUG	1
++#define	CONFIG_CMD_FACTORY	1
++
+ /* MCI */
+ #define MMCI_BASE			AT91SAM9G45_BASE_MCI0
+ #define CONFIG_MMC			1
+@@ -206,7 +207,7 @@
+ #define CONFIG_SYS_MEMTEST_END			PHYS_SDRAM + PHYS_SDRAM_SIZE
+ 
+ #ifdef CONFIG_SYS_USE_DATAFLASH
+-
++#define	CONFIG_SYS_ROOTFS_NAND		1
+ /* bootstrap + u-boot + env + linux in dataflash on CS0 */
+ #define	CONFIG_ENV_IS_IN_DATAFLASH	1
+ /* #define CONFIG_ENV_IS_IN_SPI_FLASH	1 */
+@@ -219,9 +220,21 @@
+ #else
+ #define CONFIG_ENV_SIZE		0x420
+ #define CONFIG_ENV_SECT_SIZE	0x420
++
++#ifdef	CONFIG_SYS_ROOTFS_NAND
++#define CONFIG_BOOTCOMMAND	"cp.b 0xC0042000 0x72000000 0x290000; bootm 0x72000000"
++#define CONFIG_BOOTARGS		"console=ttyS0,115200 " \
++				"root=/dev/mtdblock1 " \
++				"mtdparts=atmel_nand:4M(unused)ro,-(root) "\
++				"rw rootfstype=jffs2"
++#endif
++
+ #endif
+ 
+-#ifdef	CONFIG_SYS_ROOTFS_SD
++#endif	/* CONFIG_SYS_USE_DATAFLASH */
++
++#ifdef	CONFIG_SYS_USE_SDCARD
++#define	CONFIG_SYS_ROOTFS_SD	1
+ #define CONFIG_EXTRA_ENV_SETTINGS	\
+ 	"load_env=fatload mmc 0:1 0x70000000 u-boot.env ; source 0x70000000 \0"	\
+ 	"load_kernel=fatload mmc 0:1 0x72000000 uimage\0"	\
+@@ -239,16 +252,9 @@
+ 				"rootfstype=rootfs rw"
+ #endif
+ 
+-#ifdef	CONFIG_SYS_ROOTFS_NAND
+-#define CONFIG_BOOTCOMMAND	"cp.b 0xC0042000 0x72000000 0x290000; bootm 0x72000000"
+-#define CONFIG_BOOTARGS		"console=ttyS0,115200 " \
+-				"root=/dev/mtdblock1 " \
+-				"mtdparts=atmel_nand:4M(unused)ro,-(root) "\
+-				"rw rootfstype=jffs2"
+-#endif
+ 
+ 
+-#else /* CONFIG_SYS_USE_NANDFLASH */
++#ifdef CONFIG_SYS_USE_NANDFLASH
+ 
+ /* bootstrap + u-boot + env + linux in nandflash */
+ #define CONFIG_ENV_IS_IN_NAND	1
+@@ -263,7 +269,7 @@
+ 				2M(linux),-(root) " \
+ 				"rw rootfstype=jffs2"
+ 
+-#endif
++#endif	/* CONFIG_SYS_USE_NANDFLASH */
+ 
+ #define CONFIG_BAUDRATE		115200
+ #define CONFIG_SYS_BAUDRATE_TABLE	{115200 , 19200, 38400, 57600, 9600 }
+From 2fde0fc4d5e6e92d123286bb410f7a5e00edba91 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Fri, 4 Feb 2011 08:21:43 +0100
+Subject: [PATCH 1/2] Add environment size
+
+---
+ include/configs/at91sam9m10g45ek.h |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/include/configs/at91sam9m10g45ek.h b/include/configs/at91sam9m10g45ek.h
+index 261d698..a3d854b 100644
+--- a/include/configs/at91sam9m10g45ek.h
++++ b/include/configs/at91sam9m10g45ek.h
+@@ -234,6 +234,9 @@
+ #endif	/* CONFIG_SYS_USE_DATAFLASH */
+ 
+ #ifdef	CONFIG_SYS_USE_SDCARD
++#define	CONFIG_ENV_IS_NOWHERE
++#define CONFIG_ENV_SIZE		0x4200
++#define CONFIG_ENV_SECT_SIZE	0x420
+ #define	CONFIG_SYS_ROOTFS_SD	1
+ #define CONFIG_EXTRA_ENV_SETTINGS	\
+ 	"load_env=fatload mmc 0:1 0x70000000 u-boot.env ; source 0x70000000 \0"	\
+-- 
+1.6.3.3
+

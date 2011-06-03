@@ -1,6 +1,7 @@
 DESCRIPTION = "Bug Labs OSGi bundle: ${PN}"
 LICENSE = "BSD"
 DEPENDS = "felix felix-log service-tracker com.buglabs.osgi felix-configadmin"
+
 PE = "1"
 
 inherit bug-java-library
@@ -24,9 +25,10 @@ S = "${WORKDIR}/${PN}"
 
 datadir_java = ${datadir}/java/bundle/
 
-EXTRA_OEMAKE+="CLASSPATH_INCDIR=${STAGING_INCDIR}/classpath"
+EXTRA_OEMAKE += "CLASSPATH_INCDIR=${STAGING_INCDIR}/classpath"
 
-JAVAC_OPTIONS="-source 1.6"
+JAVAC_COMMAND ?= "javac"
+JAVAC_OPTIONS ?= "-source 1.6"
 
 CXXFLAGS += "-fPIC"
 
@@ -34,12 +36,14 @@ do_compile() {
   mkdir -p build
   oe_makeclasspath cp -s ${DEPENDS} ${EXTRA_CP}
   cp=$cp:${STAGING_DIR_JAVA}/felix.jar
-
-  echo "--- JAVAC CLASSPATH ---------------"
+  
+  echo "javac version: `${JAVAC_COMMAND} -version`"
+  echo "javac params:  ${JAVAC_COMMAND} ${JAVAC_OPTIONS} -sourcepath . -cp $cp -d build"
+  echo "javac classpath:"
   echo $cp | awk 'BEGIN {FS=":"} {split($0,a,":"); for (i=1; i<=NF; i++) print a[i]; }'
   echo "-------------------------"
 
-  javac ${JAVAC_OPTIONS} -sourcepath . -cp $cp -d build `find . -name \*.java`
+  ${JAVAC_COMMAND} ${JAVAC_OPTIONS} -sourcepath . -cp $cp -d build `find . -name \*.java`
 }
 
 addtask jar_package after do_compile before do_install

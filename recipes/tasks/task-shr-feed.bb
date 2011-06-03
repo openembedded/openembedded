@@ -271,7 +271,6 @@ RDEPENDS_${PN} += "\
 		fltkhackdiet \
 		fltkwwpointcal \
 		transmission \
-		xf86-input-tslib \
 		xf86-video-fbdev \
 		fltkcocktailbar \
 		fltkcurrency \

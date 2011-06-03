@@ -1,0 +1,45 @@
+From 6d57c07c8335af032b70396aa10f817bdaedf8ce Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Fri, 4 Feb 2011 08:22:21 +0100
+Subject: [PATCH 2/2] ADD AT91 Build script
+
+---
+ AT91BUILD |   26 ++++++++++++++++++++++++++
+ 1 files changed, 26 insertions(+), 0 deletions(-)
+ create mode 100755 AT91BUILD
+
+diff --git a/AT91BUILD b/AT91BUILD
+new file mode 100755
+index 0000000..c138bd1
+--- /dev/null
++++ b/AT91BUILD
+@@ -0,0 +1,26 @@
++#!/bin/sh
++
++GCCROOT=~/projects/OE_atmel/build/tmp/sysroots/i686-linux/usr/armv5te/bin
++PATH=${GCCROOT}:${PATH}
++CROSS_COMPILE=${GCCROOT}/arm-angstrom-linux-gnueabi-
++mkdir 	-p	binaries
++
++build	( )
++{
++	FLAGS="-j 2 CROSS_COMPILE=${CROSS_COMPILE} O=binaries/$1"
++	mkdir	-p	binaries/$1
++	make ${FLAGS} distclean
++	make ${FLAGS} $1_config
++	make ${FLAGS} all
++}
++
++build   	at91sam9m10g45ek_nandflash
++build   	at91sam9m10g45ek_dataflash
++build   	at91sam9m10g45ek_dataflash_cs0
++build   	at91sam9m10g45ek_sd
++build   	at91sam9m10g45ek
++build   	at91sam9g45ekes_nandflash
++build   	at91sam9g45ekes_dataflash
++build   	at91sam9g45ekes_dataflash_cs0
++build   	at91sam9g45ekes_sd
++build   	at91sam9g45ekes
+-- 
+1.6.3.3
+

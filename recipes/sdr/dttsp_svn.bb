@@ -1,6 +1,6 @@
 DESCRIPTION = "Software Radio Core"
 LICENSE = "GPLv3"
-DEPENDS = "fftwf jack"
+DEPENDS = "gsl fftwf jack"
 
 PV = "${SRCREV}"
 SRCREV = "241"

@@ -139,6 +139,7 @@ SRC_URI = "git://arago-project.org/git/projects/linux-omap3.git;protocol=http;br
            file://porches.patch \
            file://0001-OMAP3-craneboard-print-expansionboard-name-detected-.patch \
            file://0002-OMAP3-craneboard-add-support-for-TinCanTools-Trainer.patch \
+           file://0003-Makefile-change-to-revert-am3517-evm-support-and-to-.patch \
            file://0001-ARM-6329-1-wire-up-sys_accept4-on-ARM.patch \
            file://defconfig"
 

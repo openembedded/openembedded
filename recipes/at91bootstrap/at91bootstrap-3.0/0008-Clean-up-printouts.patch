@@ -1,7 +1,7 @@
 From 8512356f4eb3b6e796fef0fc1d8d4cfca7f66934 Mon Sep 17 00:00:00 2001
 From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
 Date: Sun, 23 Jan 2011 20:03:30 +0100
-Subject: [PATCH v3 08/08] Clean up printouts
+Subject: [PATCH 08/16] Clean up printouts
 
 ---
  driver/MEDSdcard.c |    4 ++--

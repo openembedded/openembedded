@@ -14,7 +14,7 @@ DEPENDS += "alsa-lib"
 SRCREV = "${FSO_CORNUCOPIA_SRCREV}"
 PV = "0.1.0+gitr${SRCPV}"
 PE = "2"
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.3"
 
 inherit update-rc.d
 
@@ -33,3 +33,8 @@ do_install_append() {
   install -d ${D}${sysconfdir}/init.d/
   install -m 0755 ${WORKDIR}/fsoaudiod ${D}${sysconfdir}/init.d/
 }
+
+PACKAGES =+ "${PN}-alsa-plugins ${PN}-alsa-plugins-dbg ${PN}-alsa-plugins-dev"
+FILES_${PN}-alsa-plugins = "${libdir}/alsa-lib/fsoaudio_session.so"
+FILES_${PN}-alsa-plugins-dev = "${libdir}/alsa-lib/fsoaudio_session.la"
+FILES_${PN}-alsa-plugins-dbg = "${libdir}/alsa-lib/.debug/fsoaudio_session.so"

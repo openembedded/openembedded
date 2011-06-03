@@ -1,7 +1,7 @@
 From 4e319cdec2e32cc29f545830a4c1534c056e3abc Mon Sep 17 00:00:00 2001
 From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
 Date: Sun, 23 Jan 2011 20:02:23 +0100
-Subject: [PATCH v3 07/08] Add board support for alternate boot
+Subject: [PATCH 07/16] Add board support for alternate boot
 
 ---
  board/at91sam9g45ek/at91sam9g45ek.c     |   29 +++++++++++++++++++++++++

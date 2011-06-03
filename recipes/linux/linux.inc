@@ -254,6 +254,12 @@ do_devicetree_image() {
 
 addtask devicetree_image after do_install before do_package do_deploy
 
+do_savedefconfig() {
+       oe_runmake savedefconfig
+}
+
+addtask savedefconfig after do_configure
+
 pkg_postinst_kernel-devicetree () {
 	cd /${KERNEL_IMAGEDEST}; update-alternatives --install /${KERNEL_IMAGEDEST}/devicetree devicetree devicetree-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
 }

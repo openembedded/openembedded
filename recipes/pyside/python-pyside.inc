@@ -1,9 +1,9 @@
 QTV = "4.7"
 DESCRIPTION = "Python Bindings for Qt ${QTV}"
-DEPENDS = "apiextractor-native generatorrunner-native libshiboken"
+DEPENDS = "apiextractor-native generatorrunner-native shiboken-native libshiboken"
 RDEPENDS_${pn} = "python-core"
 PROVIDES = "python-pyside"
-INC_PR = "r0"
+INC_PR = "r2"
 
 SRC_URI = " \
  http://www.pyside.org/files/pyside-qt${QTV}+${PV}.tar.bz2;name=code \
@@ -20,7 +20,7 @@ export HOST_SYS
 export BUILD_SYS
 
 # NOTE this should be reworked when a x11 version of qt4 is needed
-inherit qt4e cmake pkgconfig python-dir
+inherit cmake pkgconfig python-dir
 
 EXTRA_OECMAKE = " \
 	-DQT_LIBRARY_DIR=${STAGING_TARGET_LIBDIR} \

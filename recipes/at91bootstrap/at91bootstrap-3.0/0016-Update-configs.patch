@@ -1,7 +1,7 @@
 From 03db7b119864eb99b6d6abd6d0e44f3d369f6212 Mon Sep 17 00:00:00 2001
 From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
 Date: Mon, 24 Jan 2011 19:41:35 +0100
-Subject: [PATCH v3 16/08] Update configs
+Subject: [PATCH 16/16] Update configs
 
 ---
  board/afeb9260/afeb9260_defconfig                  |    3 ++-

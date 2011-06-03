@@ -1,0 +1,26 @@
+From 2fde0fc4d5e6e92d123286bb410f7a5e00edba91 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Fri, 4 Feb 2011 08:21:43 +0100
+Subject: [PATCH 1/2] Add environment size
+
+---
+ include/configs/at91sam9m10g45ek.h |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/include/configs/at91sam9m10g45ek.h b/include/configs/at91sam9m10g45ek.h
+index 261d698..a3d854b 100644
+--- a/include/configs/at91sam9m10g45ek.h
++++ b/include/configs/at91sam9m10g45ek.h
+@@ -234,6 +234,9 @@
+ #endif	/* CONFIG_SYS_USE_DATAFLASH */
+ 
+ #ifdef	CONFIG_SYS_USE_SDCARD
++#define	CONFIG_ENV_IS_NOWHERE
++#define CONFIG_ENV_SIZE		0x4200
++#define CONFIG_ENV_SECT_SIZE	0x420
+ #define	CONFIG_SYS_ROOTFS_SD	1
+ #define CONFIG_EXTRA_ENV_SETTINGS	\
+ 	"load_env=fatload mmc 0:1 0x70000000 u-boot.env ; source 0x70000000 \0"	\
+-- 
+1.6.3.3
+

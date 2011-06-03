@@ -1,18 +1,27 @@
 diff -Naur pyside-qt4.7+1.0.2-orig/CMakeLists.txt pyside-qt4.7+1.0.2/CMakeLists.txt
 --- pyside-qt4.7+1.0.2-orig/CMakeLists.txt	2011-04-28 22:43:01.000000000 +0200
-+++ pyside-qt4.7+1.0.2/CMakeLists.txt	2011-05-01 19:01:11.824051001 +0200
-@@ -105,6 +105,8 @@
++++ pyside-qt4.7+1.0.2/CMakeLists.txt	2011-05-21 22:49:28.043397002 +0200
+@@ -89,6 +89,7 @@
+ set(ENABLE_MAC "0")
+ set(ENABLE_WIN "0")
+ set(ENABLE_SIMULATOR "0")
++set(ENABLE_QWS "0")
+ if(Q_WS_X11)
+     set(ENABLE_X11 "1")
+     if(Q_WS_MAEMO_5)
+@@ -105,6 +106,9 @@
  elseif(Q_WS_SIMULATOR)
      set(ENABLE_SIMULATOR "1")
      set(AUTO_OS "simulator")
 +elseif(Q_WS_QWS)
++    set(ENABLE_QWS "1")
 +    set(AUTO_OS "qws")
  else()
      message(FATAL_ERROR "OS not supported")
  endif()
 diff -Naur pyside-qt4.7+1.0.2-orig/PySide/QtGui/typesystem_gui_qws.xml pyside-qt4.7+1.0.2/PySide/QtGui/typesystem_gui_qws.xml
 --- pyside-qt4.7+1.0.2-orig/PySide/QtGui/typesystem_gui_qws.xml	1970-01-01 01:00:00.000000000 +0100
-+++ pyside-qt4.7+1.0.2/PySide/QtGui/typesystem_gui_qws.xml	2011-05-01 19:01:27.544051001 +0200
++++ pyside-qt4.7+1.0.2/PySide/QtGui/typesystem_gui_qws.xml	2011-05-25 23:02:02.830307000 +0200
 @@ -0,0 +1,22 @@
 +<?xml version="1.0"?>
 +<!--

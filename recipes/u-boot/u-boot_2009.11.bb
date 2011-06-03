@@ -1,5 +1,5 @@
-PR = "r1"
-require u-boot.inc
+PR = "r2"
+require u-boot_r2.inc
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_at91sam9g10ek = "2"
@@ -28,6 +28,9 @@ SRC_URI_append_at91 = "\
 	file://at91/0013-atmel_dataflash.c-Status-printout-depend-on-DEBUG.patch \
 	file://at91/0014-AT91-MCI-Add-support-for-SD-Card.patch \
 	file://at91/0015-sam9m10g45ek-Add-configuration-file.patch \
+	file://at91/0016-SupportEnv-load-from-SD-Card.patch \
+	file://0017-SD-Card-boot-patch-for-SAM9M10-G45.patch \
+	file://0018-ADD-AT91-Build-script.patch \
 	"
 
 SRC_URI_append_adb4000 = "\
@@ -39,8 +42,19 @@ TARGET_LDFLAGS = ""
 inherit base
 
 do_compile () {
-       oe_runmake ${UBOOT_MACHINE}
-       oe_runmake all
+	if ! [ "x${UBOOT_MACHINES}" == "x" ] ; then
+		for board in ${UBOOT_MACHINES} ; do
+			if ! [ `grep ${board}_config Makefile | wc -c` == 0 ] ; then
+				mkdir -p binaries/${board}
+				oe_runmake O=binaries/${board} distclean
+				oe_runmake O=binaries/${board} ${board}_config
+				oe_runmake O=binaries/${board} all
+			fi
+		done
+	else
+	       oe_runmake ${UBOOT_MACHINE}
+	       oe_runmake all
+	fi
 }
 
 SRC_URI[md5sum] = "d94700614225f53c853dfe714eb5fa47"

@@ -1,0 +1,88 @@
+From 482c65c01edad75e2b8a3fa07f0fc914e3c9b9d9 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Wed, 25 May 2011 08:56:06 +0200
+Subject: [PATCH 4/5] OMAP3: beagle: add regulators for camera interface
+
+Signed-off-by: Koen Kooi <koen@dominion.thruhere.net>
+---
+ arch/arm/mach-omap2/board-omap3beagle.c |   50 +++++++++++++++++++++++++++++++
+ 1 files changed, 50 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index da4ba50..211cbdf 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -453,6 +453,44 @@ static struct regulator_consumer_supply beagle_vsim_supply = {
+ 
+ static struct gpio_led gpio_leds[];
+ 
++static struct regulator_consumer_supply beagle_vaux3_supply = {
++	.supply		= "cam_1v8",
++};
++
++static struct regulator_consumer_supply beagle_vaux4_supply = {
++	.supply		= "cam_2v8",
++};
++
++/* VAUX3 for CAM_1V8 */
++static struct regulator_init_data beagle_vaux3 = {
++	.constraints = {
++		.min_uV			= 1800000,
++		.max_uV			= 1800000,
++		.apply_uV		= true,
++		.valid_modes_mask	= REGULATOR_MODE_NORMAL
++					| REGULATOR_MODE_STANDBY,
++		.valid_ops_mask		= REGULATOR_CHANGE_MODE
++					| REGULATOR_CHANGE_STATUS,
++	},
++	.num_consumer_supplies	= 1,
++	.consumer_supplies	= &beagle_vaux3_supply,
++};
++
++/* VAUX4 for CAM_2V8 */
++static struct regulator_init_data beagle_vaux4 = {
++	.constraints = {
++		.min_uV			= 1800000,
++		.max_uV			= 1800000,
++		.apply_uV		= true,
++		.valid_modes_mask	= REGULATOR_MODE_NORMAL
++					| REGULATOR_MODE_STANDBY,
++		.valid_ops_mask		= REGULATOR_CHANGE_MODE
++					| REGULATOR_CHANGE_STATUS,
++	},
++	.num_consumer_supplies	= 1,
++	.consumer_supplies	= &beagle_vaux4_supply,
++};
++
+ static int beagle_twl_gpio_setup(struct device *dev,
+ 		unsigned gpio, unsigned ngpio)
+ {
+@@ -504,6 +542,16 @@ static int beagle_twl_gpio_setup(struct device *dev,
+ 			pr_err("%s: unable to configure EHCI_nOC\n", __func__);
+ 	}
+ 
++	if (omap3_beagle_get_rev() == OMAP3BEAGLE_BOARD_XM) {
++		/*
++		 * Power on camera interface - only on pre-production, not
++		 * needed on production boards
++		 */
++		gpio_request(gpio + 2, "CAM_EN");
++		gpio_direction_output(gpio + 2, 1);
++	}
++
++
+ 	/*
+ 	 * TWL4030_GPIO_MAX + 0 == ledA, EHCI nEN_USB_PWR (out, XM active
+ 	 * high / others active low)
+@@ -651,6 +699,8 @@ static struct twl4030_platform_data beagle_twldata = {
+ 	.vsim		= &beagle_vsim,
+ 	.vdac		= &beagle_vdac,
+ 	.vpll2		= &beagle_vpll2,
++	.vaux3		= &beagle_vaux3,
++	.vaux4		= &beagle_vaux4,
+ };
+ 
+ static struct i2c_board_info __initdata beagle_i2c1_boardinfo[] = {
+-- 
+1.6.6.1
+

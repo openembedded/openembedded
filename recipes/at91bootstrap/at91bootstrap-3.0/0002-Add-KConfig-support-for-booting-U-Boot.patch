@@ -1,7 +1,7 @@
 From 07cb6b03e0bd1d8f643f497128f05776f943fe69 Mon Sep 17 00:00:00 2001
 From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
 Date: Sun, 23 Jan 2011 19:16:46 +0100
-Subject: [PATCH v3 02/08] Add KConfig support for booting U-Boot
+Subject: [PATCH 02/16] Add KConfig support for booting U-Boot
 
 ---
  Config.in |   13 +++++++++++++

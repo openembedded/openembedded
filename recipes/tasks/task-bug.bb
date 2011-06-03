@@ -1,6 +1,6 @@
 # Copyright (C) 2011 Bug Labs, Inc
 
-PR = "r88"
+PR = "r91"
 
 ALLOW_EMPTY = "1"
 
@@ -25,7 +25,7 @@ RDEPENDS_${PN} = "${MACHINE_EXTRA_RRECOMMENDS} \
 RDEPENDS_${PN}_append_bug20 = "bug2v4l2"
 
 RDEPENDS_${PN}-network = "\
-                  dnsmasq \
+                  dnsmasq-dbus \
                   hostap-daemon \
                   iptables \
                   eject \
@@ -34,7 +34,7 @@ RDEPENDS_${PN}-network = "\
 		  connman \
 		  connman-plugin-wifi \
 #		  connman-plugin-ofono \
-#		  connman-plugin-ethernet \
+		  connman-plugin-ethernet \
 "
 
 RDEPENDS_${PN}-x11-debug = "\
@@ -95,11 +95,13 @@ RDEPENDS_${PN}-java-osgi =  " \
                   com.buglabs.bug.jni.rxtx \
                   com.buglabs.bug.jni.vonhippel \
                   com.buglabs.bug.jni.camera \
+				  com.buglabs.bug.jni.motion \
                   com.buglabs.bug.module.camera \
                   com.buglabs.bug.module.vonhippel \
                   com.buglabs.bug.module.gps \
                   com.buglabs.bug.module.lcd \
 		  com.buglabs.bug.module.video \
+		  com.buglabs.bug.module.motion \
                   com.buglabs.bug.module \
                   com.buglabs.bug.program \
                   com.buglabs.bug.service \

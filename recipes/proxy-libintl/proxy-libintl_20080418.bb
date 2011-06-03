@@ -6,8 +6,11 @@ LICENSE = "LGPL"
 PR = "r7"
 PROVIDES = "virtual/libintl"
 
+BBCLASSEXTEND = "native"
+NATIVE_INSTALL_WORKS = "1"
+
 SRC_URI = " \
-    http://ftp.gnome.org/pub/GNOME/binaries/win32/dependencies/${PN}-${PV}.zip \
+    http://ftp.gnome.org/pub/GNOME/binaries/win32/dependencies/proxy-libintl-${PV}.zip \
     file://stub-only.patch \
     file://create-as-shared-lib.patch \
     file://soname.patch \

@@ -2019,7 +2019,7 @@ diff -ruN acpid-1.0.10/libnetlink.c acpid-1.0.10-netlink2/libnetlink.c
 +
 +int addraw_l(struct nlmsghdr *n, int maxlen, const void *data, int len)
 +{
-+	if ((int)NLMSG_ALIGN(n->nlmsg_len) + NLMSG_ALIGN(len) > maxlen) {
++	if ((int)NLMSG_ALIGN(n->nlmsg_len) + (int)NLMSG_ALIGN(len) > maxlen) {
 +		fprintf(stderr, "addraw_l ERROR: message exceeded bound of %d\n",maxlen);
 +		return -1;
 +	}

@@ -1,0 +1,5 @@
+require ortp.inc
+PR = "${INC_PR}.0"
+
+SRC_URI[md5sum] = "94546901d14b85f97342f4ecf39489b1"
+SRC_URI[sha256sum] = "3b655a79f9122afd298e9cd702e542908bbd6ea1337c02553110c57e0b3c5835"

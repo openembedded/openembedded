@@ -3,9 +3,10 @@ SECTION = "x11/gnome"
 LICENSE = "GPL"
 DEPENDS = "gnome-common libgnomeui"
 
-PR = "r1"
+PR = "r2"
 
-EXTRA_OECONF = "--disable-scrollkeeper"
+# FIXME: OE does not contain all recipes to enable doc: failed to load external entity "/usr/share/xml/gnome/xslt/docbook/omf/db2omf.xsl"
+EXTRA_OECONF = "--disable-scrollkeeper --disable-gtk-doc"
 
 do_configure_prepend () {
 	cp ${STAGING_DATADIR}/gnome-common/data/omf.make ${S}

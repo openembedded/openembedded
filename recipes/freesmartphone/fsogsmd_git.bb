@@ -55,12 +55,6 @@ FILES_${PN}-module-modem-qualcomm-htc-dev = "${CORNUCOPIA_MODULE_DIR}/modem_qual
 FILES_${PN}-module-modem-qualcomm-htc-dbg = "${CORNUCOPIA_MODULE_DIR}/.debug/modem_qualcomm_htc*"
 RDEPENDS_${PN}-config_htcdream += "${PN}-module-modem-qualcomm-htc"
 
-PACKAGES =+ "${PN}-module-lowlevel-nokia900 ${PN}-module-lowlevel-nokia900-dev ${PN}-module-lowlevel-nokia900-dbg"
-FILES_${PN}-module-lowlevel-nokia900 = "${CORNUCOPIA_MODULE_DIR}/lowlevel_nokia900.so"
-FILES_${PN}-module-lowlevel-nokia900-dev = "${CORNUCOPIA_MODULE_DIR}/lowlevel_nokia900.la"
-FILES_${PN}-module-lowlevel-nokia900-dbg = "${CORNUCOPIA_MODULE_DIR}/.debug/lowlevel_nokia900*"
-RDEPENDS_${PN}-config_nokia900 += "${PN}-module-lowlevel-nokia900"
-
 PACKAGES =+ "${PN}-module-modem-nokia-isi ${PN}-module-modem-nokia-isi-dev ${PN}-module-modem-nokia-isi-dbg"
 FILES_${PN}-module-modem-nokia-isi = "${CORNUCOPIA_MODULE_DIR}/modem_nokia_isi.so"
 FILES_${PN}-module-modem-nokia-isi-dev = "${CORNUCOPIA_MODULE_DIR}/modem_nokia_isi.la"

@@ -2,7 +2,7 @@ DESCRIPTION = "System-V like init."
 SECTION = "base"
 LICENSE = "GPLv2+"
 HOMEPAGE = "http://freshmeat.net/projects/sysvinit/"
-PR = "r64"
+PR = "r65"
 
 # USE_VT and SERIAL_CONSOLE are generally defined by the MACHINE .conf.
 # Set PACKAGE_ARCH appropriately.
@@ -20,6 +20,7 @@ SYSVINIT_ENABLED_GETTYS ?= "1"
 
 SRC_URI = "ftp://ftp.cistron.nl/pub/people/miquels/sysvinit/sysvinit-${PV}.tar.gz \
            file://install.patch \
+           file://100_fix_ftbfs_enoioctlcmd.patch \
            file://need \
            file://provide \
            file://inittab \

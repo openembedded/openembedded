@@ -3,6 +3,7 @@ DEPENDS = "ti-codec-engine ti-dsplib"
 
 PV = "0+svnr${SRCPV}"
 SRCREV = "128"
+PR = "r2"
 
 SRC_URI = "svn://opencv-dsp-acceleration.googlecode.com/svn/;proto=http;module=trunk \
            http://focus.ti.com/lit/sw/sprc264/sprc264.zip;name=imglib \

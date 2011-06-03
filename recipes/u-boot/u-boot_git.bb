@@ -1,5 +1,5 @@
 require u-boot.inc
-PR = "r75"
+PR = "r76"
 
 FILESPATHPKG =. "u-boot-git:"
 
@@ -138,6 +138,7 @@ SRC_URI_am3517-crane = "git://arago-project.org/git/projects/u-boot-omap3.git;pr
                         file://0001-OMAP2-3-I2C-Add-support-for-second-and-third-bus.patch \
                         file://0002-ARMV7-Restructure-OMAP-i2c-driver-to-allow-code-shar.patch \
                         file://0003-craneboard-add-expansionboard-support.patch \
+			file://0004-Ethernet-MACID-display-fix-for-am3517-craneboard.patch \
 "
 
 SRCREV_am3517-crane = "c0a8fb217fdca7888d89f9a3dee74a4cec865620"
@@ -290,6 +291,30 @@ SRC_URI_append_c7x0 = "file://pdaXrom-u-boot.patch \
                        "
 SRC_URI_sheevaplug = "git://git.denx.de/u-boot-marvell.git;protocol=git;branch=master"
 SRCREV_sheevaplug = "749c971873dbba301bd138c95d31223a25b32150"
+
+SRC_URI_mx28 = "git://opensource.freescale.com/pub/scm/imx/uboot-imx.git;protocol=http;branch=imx_v2009.08_10.12.01 \
+                http://foss.doredevelopment.dk/mirrors/imx/imx-bootlets-src-${PV_imx_bootlets}.tar.gz;name=imx-bootlets"
+SRCREV_mx28 = "e4437f1c192a1a68028e6fcff3f50ff50352041d"
+SRC_URI[imx-bootlets.md5sum] = "cf0ab3822dca694b930a051501c1d0e4"
+SRC_URI[imx-bootlets.sha256sum] = "63f6068ae36884adef4259bbb1fe2591755718f22c46d0a59d854883dfab1ffc"
+PV_mx28 = "2009.08-imx+${PR}+gitr${SRCREV}"
+PV_imx_bootlets = "10.12.01"
+DEPENDS_append_mx28 = " elftosb-native"
+
+do_compile_prepend_mx28() {
+	# We just build the bootlets here
+	oe_runmake -C ${WORKDIR}/imx-bootlets-src-${PV_imx_bootlets} -e MAKEFLAGS= linux_prep boot_prep power_prep CC="${CC}" CFLAGS="${CFLAGS}" AR="${AR}" BOARD=iMX28_EVK
+}
+
+do_deploy_append_mx28 () {
+	cd ${WORKDIR}/imx-bootlets-src-${PV_imx_bootlets}
+	sed -i 's,[^ *]u_boot.*;,\tu_boot="'${S}/u-boot'";,' uboot_ivt.bd
+	sed -i 's,[^ *]u_boot.*;,\tu_boot="'${S}/u-boot'";,' uboot.bd
+	elftosb -z -c uboot.bd -o imx28_uboot.sb
+	elftosb -z -f imx28 -c uboot_ivt.bd -o imx28_ivt_uboot.sb
+	install -d ${DEPLOY_DIR_IMAGE}
+	install -m 0644 ${WORKDIR}/imx-bootlets-src-${PV_imx_bootlets}/imx28*uboot.sb ${DEPLOY_DIR_IMAGE}/
+}
 
 SRC_URI_xilinx-ml507 = "git://git.xilinx.com/u-boot-xlnx.git;protocol=git"
 SRCREV_xilinx-ml507 = "26e999650cf77c16f33c580abaadab2532f5e8b2"

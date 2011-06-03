@@ -1,5 +1,5 @@
 require qte-common_${PV}.inc
-PR = "r54"
+PR = "r55"
 
 
 SRC_URI[md5sum] = "1f7ad30113afc500cab7f5b2f4dec0d7"

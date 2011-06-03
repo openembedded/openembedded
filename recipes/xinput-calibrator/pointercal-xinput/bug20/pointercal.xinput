@@ -1,0 +1,1 @@
+xinput set-int-prop "TSC2004 Touchscreen" "Evdev Axis Calibration" 32 239 10 232 6;

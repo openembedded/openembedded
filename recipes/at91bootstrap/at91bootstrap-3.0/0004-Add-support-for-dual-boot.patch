@@ -1,7 +1,7 @@
 From 102651cd96baa14c35febb1ea1ee66a2ff7e5f0d Mon Sep 17 00:00:00 2001
 From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
 Date: Sun, 23 Jan 2011 19:34:13 +0100
-Subject: [PATCH v3 04/08] Add support for dual boot
+Subject: [PATCH 04/16] Add support for dual boot
 
 ---
  Config.in          |   32 +++++++++++++++++++++++++++++++-

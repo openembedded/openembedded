@@ -7,14 +7,14 @@
 # on whether the base patches apply to the selected (SRCDATE) svn release.
 #
 UCLIBC_BASE ?= "0.9.32"
-SRCREV="251f2266bf24b1b396f59eef60d0acf41fdd02e4"
+SRCREV="71d63ed75648da9b0b71afabb9c60aaad792c55c"
 PR_append = "+gitr${SRCPV}"
 DEFAULT_PREFERENCE = "-1"
 #DEFAULT_PREFERENCE is 0 (empty), releases have a preference of 1 so take
 # precedence.
 
 require uclibc.inc
-PR = "${INC_PR}.9"
+PR = "${INC_PR}.10"
 PROVIDES += "virtual/${TARGET_PREFIX}libc-for-gcc"
 
 #recent versions uclibc require real kernel headers
@@ -39,6 +39,13 @@ SRC_URI = "git://uclibc.org/uClibc.git;branch=master;protocol=git \
 	file://detect-bx-availibility.patch \
 	file://remove-eabi-oabi-selection.patch \
 	file://powerpc_copysignl.patch \
-	file://fts-support.patch \
+	file://orign_path.patch \
+	file://rtld_no.patch \
 	"
 S = "${WORKDIR}/git"
+
+PACKAGES =+ "libubacktrace"
+
+FILES_libubacktrace = "\
+		${base_libdir}/libubacktrace*.so.* ${base_libdir}/libubacktrace-*.so \
+	"

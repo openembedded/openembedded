@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r94"
+PR = "r97"
 
 inherit task
 
@@ -62,6 +62,9 @@ DISTRO_SSH_DAEMON ?= "dropbear"
 
 # Distro can override apm provider
 DISTRO_APM ?= "apm"
+
+# Distro can override alsa-state provider
+DISTRO_ALSA_STATE ?= "alsa-state"
 
 #
 # bluetooth manager
@@ -219,7 +222,7 @@ RDEPENDS_task-base-alsa = "\
 # alsa-states are machine related so can be missing in feed, OSS support is optional
 #
 RRECOMMENDS_task-base-alsa = "\
-    alsa-state \
+    ${DISTRO_ALSA_STATE} \
     kernel-module-snd-mixer-oss \
     kernel-module-snd-pcm-oss"
 

@@ -18,7 +18,6 @@ PREFERRED_VERSION_linux-libc-headers-native = "${LINUX_LIBC_HEADERS_VERSION}"
 PREFERRED_VERSION_openssh = "5.2p1"
 
 # upgrades used in Angstrom
-PREFERRED_VERSION_xserver-common = "1.33"
 PREFERRED_VERSION_xserver-nodm-init = "2.0"
 PREFERRED_VERSION_hal           = "0.5.13"
 PREFERRED_VERSION_wpa-supplicant = "0.6.9"
@@ -28,7 +27,7 @@ PREFERRED_VERSION_perl = "5.10.1"
 PREFERRED_VERSION_perl-native = "5.10.1"
 UDEV_GE_141 = "1"
 
-ANGSTROM_QT_VERSION ?= "4.7.2"
+ANGSTROM_QT_VERSION ?= "4.7.3"
 PREFERRED_VERSION_qt4-tools-native = "${ANGSTROM_QT_VERSION}"
 PREFERRED_VERSION_qt4-tools-sdk = "${ANGSTROM_QT_VERSION}"
 PREFERRED_VERSION_qt4-embedded = "${ANGSTROM_QT_VERSION}"

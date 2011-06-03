@@ -1,7 +1,10 @@
 require shiboken.inc
 
+DEPENDS = "python"
 RDEPENDS_${PN} = "python-core"
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
+
+inherit cmake pkgconfig python-dir
 
 SRC_URI += " \
  file://FindQt4.cmake \
@@ -18,7 +21,12 @@ do_configure_prepend() {
 	cp ${WORKDIR}/FindQt4.cmake ${S}/cmake/Modules/FindQt4.cmake
 }
 
-do_install_prepend() {
+STAGING_LIBDIR_NATIVE = ${STAGING_DIR}/${BUILD_SYS}${prefix}/lib
+STAGING_INCDIR_NATIVE = ${STAGING_DIR}/${BUILD_SYS}${prefix}/include
+
+# NOTE: This needs to be appended to do_configure as pkgconfig.bbclass uses
+# do_install_prepend for it's fixups and we need to run before it!
+do_configure_append() {
 	# Fixup generated *.cmake and *.pc files for wrong paths
 	for i in `find ${S}/data -name "*.cmake" -type f` ; do \
 		sed -i -e 's:${STAGING_BINDIR_NATIVE}:${bindir}:g' \
@@ -26,16 +34,18 @@ do_install_prepend() {
 			-e 's:${STAGING_LIBDIR}:${libdir}:g' \
 			$i
 	done
+
 	# We need do this here a second time (pkgconfig.bbclass already replaces the -L.. and
 	# -I .. ones) as there are additional variables for python in the pkgconfig file
 	for i in `find ${S}/data -name "*.pc" -type f` ; do \
 		sed -i -e 's:${STAGING_BINDIR_NATIVE}:${bindir}:g' \
 			-e 's:${STAGING_INCDIR}:${includedir}:g' \
 			-e 's:${STAGING_LIBDIR}:${libdir}:g' \
+			-e 's:${STAGING_INCDIR_NATIVE}:${includedir}:g' \
+			-e 's:${STAGING_LIBDIR_NATIVE}:${libdir}:g' \
+			-e 's:-lshiboken:-lshiboken-${PYTHON_DIR}:g' \
 			$i
 	done
 }
 
-inherit cmake pkgconfig
-
-FILES_${PN}-dev += "${libdir}/cmake/"
+FILES_${PN}-dev += "${libdir}/cmake/ ${libdir}/pkgconfig"

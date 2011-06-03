@@ -1,7 +1,7 @@
 From 91717f6a6591a6fae538447261ddbe58f6df3d38 Mon Sep 17 00:00:00 2001
 From: Ulf Samuelsson <ulf.samuelsson@atmel.com>
 Date: Tue, 25 Jan 2011 22:20:29 +0100
-Subject: [PATCH v3] Update .gitignore
+Subject: [PATCH 01/16] Update .gitignore
 
 ---
  .gitignore |   13 ++++++++-----

@@ -81,8 +81,8 @@ elif test "empty$has_mtdblock" != "empty" -o "empty$has_ubi" != "empty"; then
 			exit 1
 		fi
 
-		${bindir}/flash_eraseall $MTD_KERNEL_PARTITION
-		${bindir}/nandwrite -p $MTD_KERNEL_PARTITION /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-${KERNEL_VERSION}
+		${sbindir}/flash_eraseall $MTD_KERNEL_PARTITION
+		${sbindir}/nandwrite -p $MTD_KERNEL_PARTITION /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-${KERNEL_VERSION}
 	else
 		touch ${sysconfdir}/default/flashkernel
 	fi
