@@ -3,7 +3,7 @@ COMPATIBLE_MACHINE = "omap4430-panda|am45x-evm"
 require multi-kernel.inc
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap4 see conf/machine/include/omap4.inc
-MACHINE_KERNEL_PR_append = "b"
+MACHINE_KERNEL_PR_append = "c"
 
 CORTEXA8FIXUP = "no"
 
@@ -18,8 +18,10 @@ SRC_URI = "git://dev.omapzoom.org/pub/scm/integration/kernel-ubuntu.git;protocol
            file://0006-ARM-Add-option-to-allow-userspace-access-to-performa.patch \
            file://0007-OMAP4-do-not-force-select-options-which-are-not-requ.patch \
            file://0008-omap4-pandaboard-add-support-for-DVI-output.patch \
-	   file://0001-UBUNTU-Config-Fix-FTBS-caused-by-new-binutils.patch \
-	   file://0002-Add-AFLAGS-for-sleep44xx-to-fix-FTBS.patch \
+           file://0001-UBUNTU-Config-Fix-FTBS-caused-by-new-binutils.patch \
+           file://0002-Add-AFLAGS-for-sleep44xx-to-fix-FTBS.patch \
+           file://0001-ARM-6329-1-wire-up-sys_accept4-on-ARM.patch \
+           file://0002-cgroupfs-create-sys-fs-cgroup-to-mount-cgroupfs-on.patch \
            file://defconfig"
 
 S = "${WORKDIR}/git"
