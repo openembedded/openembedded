@@ -5,7 +5,8 @@ SRC_URI = "http://sources.openembedded.org/opie-1.2.5-split_noncore_tools_opie-s
            http://sources.openembedded.org/opie-1.2.5-split_help.tar.bz2;name=split_help \
            http://sources.openembedded.org/opie-1.2.5-split_share.tar.bz2;name=split_share \
            http://sources.openembedded.org/opie-1.2.5-split_apps.tar.bz2;name=split_apps \
-           http://sources.openembedded.org/opie-1.2.5-split_bin.tar.bz2;name=split_bin"
+           http://sources.openembedded.org/opie-1.2.5-split_bin.tar.bz2;name=split_bin \
+           file://opie-sh-path.patch"
 SRC_URI[split_noncore_tools_opie-sh.md5sum] = "93f44cbe6ccfd11ac68a934f623604ae"
 SRC_URI[split_noncore_tools_opie-sh.sha256sum] = "fc1d5ad1de203dbf6c81c7d863f524c8abe81f5a6d5c736f97ea8cc99bb208a5"
 SRC_URI[split_pics.md5sum] = "e9b68749d67295f7080a23e39b17335e"

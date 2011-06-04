@@ -7,4 +7,5 @@ SRC_URI = "${OPIE_GIT};protocol=git;subpath=noncore/tools/opie-sh \
            ${OPIE_GIT};protocol=git;subpath=help \
            ${OPIE_GIT};protocol=git;subpath=share \
            ${OPIE_GIT};protocol=git;subpath=apps \
-           ${OPIE_GIT};protocol=git;subpath=bin"
+           ${OPIE_GIT};protocol=git;subpath=bin \
+           file://opie-sh-path.patch"
