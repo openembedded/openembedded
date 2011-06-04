@@ -50,6 +50,18 @@ shr_rootfs_gta01_postprocess() {
     cd $curdir
 }
 
+shr_rootfs_nokia900_postprocess() {
+    curdir=$PWD
+    cd ${IMAGE_ROOTFS}/boot
+    echo "# Default kernel
+KERNEL=/boot/uImage
+LABEL=SHR kernel
+APPEND=root=/dev/mmcblk0p1 rootwait rw console=ttyO2,115200n8 console=tty0 omapfb.vram=0:2M,1:2M,2:2M mtdoops.mtddev=2 quiet
+ICON=/boot/default.xpm
+PRIORITY=100" > boot.cfg
+    cd $curdir
+}
+
 # We don't want /boot directory in jffs2/ubi/ubifs images on gta01
 IMAGE_CMD_jffs2_om-gta01 = "rm -rf ${IMAGE_ROOTFS}-boot; mv ${IMAGE_ROOTFS}/boot ${IMAGE_ROOTFS}-boot && mkfs.jffs2 -x lzo --root=${IMAGE_ROOTFS} --faketime --output=${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 ${EXTRA_IMAGECMD}; mv ${IMAGE_ROOTFS}-boot ${IMAGE_ROOTFS}/boot"
 IMAGE_CMD_ubi_om-gta01 = "rm -rf ${IMAGE_ROOTFS}-boot; mv ${IMAGE_ROOTFS}/boot ${IMAGE_ROOTFS}-boot && echo \[ubifs\] > ubinize.cfg ; echo mode=ubi >> ubinize.cfg ; echo image=${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.ubifs >> ubinize.cfg ; echo vol_id=0 >> ubinize.cfg ; echo vol_type=dynamic >> ubinize.cfg ; echo vol_name=${UBI_VOLNAME} >> ubinize.cfg ; echo vol_flags=autoresize >> ubinize.cfg;mkfs.ubifs -r ${IMAGE_ROOTFS} -o ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.ubifs ${MKUBIFS_ARGS} && ubinize -o ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.ubi ${UBINIZE_ARGS} ubinize.cfg; mv ${IMAGE_ROOTFS}-boot ${IMAGE_ROOTFS}/boot"
@@ -60,3 +72,4 @@ ROOTFS_POSTPROCESS_COMMAND += " install_linguas;"
 
 ROOTFS_POSTPROCESS_COMMAND_append_om-gta02 = " shr_rootfs_gta02_postprocess;"
 ROOTFS_POSTPROCESS_COMMAND_append_om-gta01 = " shr_rootfs_gta01_postprocess;"
+ROOTFS_POSTPROCESS_COMMAND_append_nokia900 = " shr_rootfs_nokia900_postprocess;"
