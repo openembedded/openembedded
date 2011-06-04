@@ -3,10 +3,10 @@ require linux.inc
 KERNEL_RELEASE = "2.6.37"
 PV = "${KERNEL_RELEASE}+gitr${SRCPV}"
 
-SRCREV = "570058abb97844fd30c396772b1a078bf572dd0c"
+SRCREV = "7b81b4d55839514f2d801cd06855c8d422cfc3ac"
 
 SRC_URI = "\
-  git://git.freesmartphone.org/linux-2.6.git;protocol=git;branch=nokia900/kernel-adaptation-n900-2.6.37-38.1 \
+  git://git.freesmartphone.org/linux-2.6.git;protocol=git;branch=nokia900/kernel-adaptation-n900-2.6.37-57.1 \
   file://defconfig \
 "
 S = "${WORKDIR}/git"
