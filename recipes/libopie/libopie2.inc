@@ -21,14 +21,14 @@ EXTRA_QMAKEVARS_POST += 'DEFINES+=OPIE_NEW_MALLOC \
 
 ENABLE_SQL_PIM_BACKEND = "y"
 # NOTE: Machines with too little amount of flash may want to disable SQL backend support
-# (known not to fit in 16MB). Also, XML backend is still used by default, as SQL doesn't
-# support sync yet.
+# (known not to fit in 16MB).
 #ENABLE_SQL_PIM_BACKEND_smallmachine = "n"
 EXTRA_QMAKEVARS_PRE += 'ENABLE_SQL_PIM_BACKEND=${ENABLE_SQL_PIM_BACKEND}'
 
 MODULES = "opiecore opiedb opiemm opienet opiepim opiesecurity opieui opiebluez"
 LIBS    = "core2    db2    mm2    net2    pim2    security2    ui2 bluez2"
-PRIVATE = "opimcontactsortvector.h opimoccurrence_p.h opimsortvector.h opimtodosortvector.h vobject_p.h opimeventsortvector.h"
+PRIVATE = "opimcontactsortvector.h opimoccurrence_p.h opimsortvector.h \
+           opimtodosortvector.h vobject_p.h opimeventsortvector.h opimmemosortvector.h"
 
 # uclibc doesn't have backtrace()
 python __anonymous () {
@@ -68,6 +68,7 @@ do_stage() {
 	install -m 0644 opiepim/ui/opimrecurrencebase.h ${STAGING_INCDIR}/opie2/
 	install -m 0644 opieui/otimepickerbase.h ${STAGING_INCDIR}/opie2/
 	install -m 0644 opiepim/core/opimtemplatebase.h ${STAGING_INCDIR}/opie2/
+	install -m 0644 opiepim/ui/opimalarmdlgbase.h ${STAGING_INCDIR}/opie2/
 }
 
 do_install() {
