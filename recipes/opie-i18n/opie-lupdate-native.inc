@@ -12,6 +12,7 @@ export OE_QMAKE_LINK="${CXX}"
 EXTRA_QMAKEVARS_POST_append = "LIBS+=-ldl "
 EXTRA_QMAKEVARS_POST_append = "CONFIG-=thread "
 
-do_stage() {
-	install -m 0755 opie-lupdate ${STAGING_BINDIR}/
+do_install() {
+    install -d ${D}${bindir}/
+    install -m 0755 opie-lupdate ${D}${bindir}/
 }
