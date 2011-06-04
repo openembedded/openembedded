@@ -2,8 +2,6 @@ require ${PN}.inc
 
 PR = "${INC_PR}.0"
 
-DEPENDS += " sysfsutils"
-
 SRC_URI = "http://sources.openembedded.org/opie-1.2.5-split_library.tar.bz2;name=split_library \
            file://fix-titleheight.patch \
            file://unbreak-logging-2.patch \

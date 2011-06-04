@@ -9,8 +9,6 @@ OPIE_GIT_PV ?= "1.2.2+cvs${SRCDATE}"
 PV = "${OPIE_GIT_PV}"
 PR = "${INC_PR}.0"
 
-DEPENDS += " sysfsutils"
-
 SRC_URI = "${OPIE_GIT};protocol=git;subpath=library \
            file://fix-titleheight.patch \
            file://unbreak-logging-2.patch \

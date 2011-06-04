@@ -4,9 +4,9 @@ AUTHOR = "The Trolls"
 SECTION = "opie/libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "uicmoc-native virtual/libqte2"
+DEPENDS = "uicmoc-native virtual/libqte2 sysfsutils"
 PROVIDES = "virtual/libqpe1"
-INC_PR = "r8"
+INC_PR = "r9"
 S = "${WORKDIR}/library"
 
 inherit palmtop
