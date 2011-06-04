@@ -1,6 +1,6 @@
 require ${PN}.inc
 PV = "${OPIE_GIT_PV}"
-PR = "r21"
+PR = "r22"
 
 SRC_URI = "${OPIE_GIT};protocol=git;subpath=core/apps/calibrate \
            ${OPIE_GIT};protocol=git;subpath=noncore/settings/mediummount \
@@ -16,12 +16,5 @@ SRC_URI = "${OPIE_GIT};protocol=git;subpath=core/apps/calibrate \
            file://server-pro-cvs.patch \
            file://firstuse-path.patch \
            file://force-firstuse-calibrate.patch \
-           file://03opiesignal \
           "
-
-do_install_append() {
-	install -d ${D}${bindir} ${D}${sysconfdir}/apm/event.d/
-	install -m 0755 ${WORKDIR}/03opiesignal ${D}${sysconfdir}/apm/event.d/
-	install -m 0644 ${WORKDIR}/etc/opie_sysevents.conf ${D}${sysconfdir}/
-}
 

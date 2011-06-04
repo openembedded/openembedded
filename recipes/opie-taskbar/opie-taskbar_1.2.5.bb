@@ -1,5 +1,5 @@
 require ${PN}.inc
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://sources.openembedded.org/opie-1.2.5-split_core_apps_calibrate.tar.bz2;name=split_core_apps_calibrate \
            http://sources.openembedded.org/opie-1.2.5-split_noncore_settings_mediummount.tar.bz2;name=split_noncore_settings_mediummount \
@@ -15,7 +15,6 @@ SRC_URI = "http://sources.openembedded.org/opie-1.2.5-split_core_apps_calibrate.
            file://server-pro-cvs.patch \
            file://firstuse-path.patch \
            file://force-firstuse-calibrate.patch \
-           file://03opiesignal \
           "
 SRC_URI[split_core_apps_calibrate.md5sum] = "ee5e06b781e92f01271d883f91f101b0"
 SRC_URI[split_core_apps_calibrate.sha256sum] = "5e0164a195a166fd15451164edf8a44d8f3a9f81dcf3edc3a8975f24bd4b45b6"
@@ -31,10 +30,4 @@ SRC_URI[split_root.md5sum] = "47b2ea2c59ac34b3df21d43c53baaccd"
 SRC_URI[split_root.sha256sum] = "0fb78622bb7ab459860aaa65fbea6145c45141195c1981164b40807b884628eb"
 SRC_URI[split_etc.md5sum] = "74ef523ef12e242155bbb745072434d9"
 SRC_URI[split_etc.sha256sum] = "eef55ea2248b4f45f3a07beb6012e431dd71d4eefa134d39cc50b4d194c53087"
-
-do_install_append() {
-	install -d ${D}${bindir} ${D}${sysconfdir}/apm/event.d/
-	install -m 0755 ${WORKDIR}/03opiesignal ${D}${sysconfdir}/apm/event.d/
-	install -m 0644 ${WORKDIR}/etc/opie_sysevents.conf ${D}${sysconfdir}/
-}
 
