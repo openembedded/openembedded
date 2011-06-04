@@ -34,3 +34,7 @@ done
 
 cp opie-icon-reload/opie-icon-reload_1.2.5.bb opie-icon-reload/opie-icon-reload_$NEW_VER.bb
 git add opie-icon-reload/opie-icon-reload_$NEW_VER.bb
+
+cp opie-init/opie-init_1.2.5.bb opie-init/opie-init_$NEW_VER.bb
+git add opie-init/opie-init_$NEW_VER.bb
+
