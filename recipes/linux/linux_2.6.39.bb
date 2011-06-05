@@ -10,6 +10,7 @@ DEFAULT_PREFERENCE_spitz = "1"
 DEFAULT_PREFERENCE_tosa = "1"
 #DEFAULT_PREFERENCE_om-gta01 = "1"
 #DEFAULT_PREFERENCE_om-gta02 = "1"
+DEFAULT_PREFERENCE_h1940 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
            file://defconfig "
