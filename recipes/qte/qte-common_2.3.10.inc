@@ -136,20 +136,11 @@ do_compile() {
 	oe_runmake src-mt sub-src
 }
 
-do_stage() {
-	rm -rf ${STAGING_DIR_HOST}/qt2
-	install -d ${STAGING_DIR_HOST}/qt2/lib
-	oe_libinstall -so -C lib lib${PN} ${STAGING_DIR_HOST}/qt2/lib
-	rm -f include/qxt.h
-	install -d ${STAGING_DIR_HOST}/qt2/include
-	cp -pfLR include/* ${STAGING_DIR_HOST}/qt2/include
-	cp -pPR lib/fonts ${STAGING_DIR_HOST}/qt2/lib/
-}
-
 do_install() {
 	oe_libinstall -so -C lib lib${PN} ${D}${libdir}
 
 	install -d ${D}/${includedir}/qte
+	rm -f include/qxt.h
 	install -m 0644 include/*.h ${D}/${includedir}/qte/
 }
 
