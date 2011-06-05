@@ -17,7 +17,8 @@ PARALLEL_MAKE = ""
 EXTRA_QMAKEVARS_POST += 'DEFINES+=OPIE_NEW_MALLOC \
                         DEFINES+="OPIE_SOUND_FRAGMENT_SHIFT=16" \
 			DEFINES+=OPIE_NO_ERASE_RECT_HACKFIX \
-			LIBS+=-L${S} LIBS+="-Wl,-rpath-link,${S}"'
+			LIBS+=-L${S} LIBS+="-Wl,-rpath-link,${S}" \
+			INCLUDEPATH+=${S}/include'
 
 ENABLE_SQL_PIM_BACKEND = "y"
 # NOTE: Machines with too little amount of flash may want to disable SQL backend support
@@ -38,37 +39,25 @@ python __anonymous () {
 }
 
 do_compile() {
-	install -d ${STAGING_INCDIR}/opie2
-	install -d ${STAGING_INCDIR}/opie2/private
-        for module in ${MODULES}
-        do
-            cd $module
-	    for i in `find . -name "*.h"`
-	    do
-		install -m 0644 $i ${STAGING_INCDIR}/opie2/`basename $i`
-	    done
-            cd ..
-        done
+	install -d ${S}/include/opie2
+	for module in ${MODULES}
+	do
+		cd $module
+		for i in `find . -name "*.h"`
+		do
+			filenm=`echo $i | sed 's!^\./!!'`
+			ln -sf ../../$module/$filenm ${S}/include/opie2/
+		done
+		cd ..
+	done
 
+	install -d ${S}/include/opie2/private
 	for header in ${PRIVATE}
 	do
-		install -m 0644 opiepim/private/$header ${STAGING_INCDIR}/opie2/private/
+		ln -sf ../../../opiepim/private/$header ${S}/include/opie2/private
 	done
 
 	oe_runmake MOC=${STAGING_BINDIR_NATIVE}/moc UIC=${STAGING_BINDIR_NATIVE}/uic DESTDIR=${S}
-}
-
-do_stage() {
-        for f in ${LIBS}
-	do
-		oe_libinstall -so libopie$f ${STAGING_LIBDIR}/
-	done
-	install -m 0644 ${WORKDIR}/include.pro ${OPIEDIR}/include.pro
-	# special case for uic-created header files
-	install -m 0644 opiepim/ui/opimrecurrencebase.h ${STAGING_INCDIR}/opie2/
-	install -m 0644 opieui/otimepickerbase.h ${STAGING_INCDIR}/opie2/
-	install -m 0644 opiepim/core/opimtemplatebase.h ${STAGING_INCDIR}/opie2/
-	install -m 0644 opiepim/ui/opimalarmdlgbase.h ${STAGING_INCDIR}/opie2/
 }
 
 do_install() {
@@ -77,6 +66,29 @@ do_install() {
 	do
 		oe_libinstall -so libopie$f ${D}${libdir}
 	done
+
+	install -m 0644 ${WORKDIR}/include.pro ${OPIEDIR}/include.pro
+
+	install -d ${D}${includedir}/opie2/
+	for module in ${MODULES}
+	do
+		cd $module
+		for i in `find . -name "*.h"`
+		do
+			if [[ $i != ./private/* ]] ; then
+				install -m 0644 $i ${D}${includedir}/opie2/`basename $i`
+			fi
+		done
+		cd ..
+	done
+	# Remove some headers we don't want packaged
+	rm ${D}${includedir}/opie2/stable_pch.h
+	rm ${D}${includedir}/opie2/ofileselector_p.h
+	rm ${D}${includedir}/opie2/okeyconfigwidget_p.h
+	rm ${D}${includedir}/opie2/okeyconfigmanager_p.h
+	rm ${D}${includedir}/opie2/ima_rw.h
+	rm ${D}${includedir}/opie2/udp_ports.h
+	rm ${D}${includedir}/opie2/odevice_*.h
 }
 
 PACKAGES_prepend = " libopiecore2 libopiedb2 libopiesecurity2 libopiemm2 libopienet2 libopiepim2 libopieui2 libopiebluez2 "
