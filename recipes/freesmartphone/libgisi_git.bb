@@ -14,3 +14,5 @@ inherit vala autotools
 
 PACKAGES =+ "${PN}-tools"
 FILES_${PN}-tools = "${sbindir}/sendisi"
+
+LEAD_SONAME = "libgisi.so"

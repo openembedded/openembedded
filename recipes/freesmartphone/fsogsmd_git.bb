@@ -3,7 +3,7 @@ inherit fso-plugin
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=751419260aa954499f7abaabaa882bbe"
 SRCREV = "${FSO_CORNUCOPIA_SRCREV}"
-PR = "${INC_PR}.2"
+PR = "${INC_PR}.3"
 PV = "0.5.0+gitr${SRCPV}"
 PE = "1"
 
