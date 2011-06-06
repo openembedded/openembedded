@@ -3,7 +3,7 @@ HOMEPAGE = "http://wireless.kernel.org/en/developers/Regulatory/CRDA"
 SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "ISC"
-PR = "r2"
+PR = "r3"
 
 DEPENDS = "libgcrypt libnl python-native python-m2crypto-native"
 RDEPENDS_${PN} = "udev"
@@ -11,6 +11,8 @@ RDEPENDS_${PN} = "udev"
 SRC_URI = "http://wireless.kernel.org/download/crda/${P}.tar.bz2;name=crda \
 	http://wireless.kernel.org/download/wireless-regdb/regulatory.bins/2011.04.28-regulatory.bin;name=reg \
 	"
+
+CFLAGS += " -DCONFIG_LIBNL20"
 
 EXTRA_OEMAKE = "MAKEFLAGS="
 do_compile() {
