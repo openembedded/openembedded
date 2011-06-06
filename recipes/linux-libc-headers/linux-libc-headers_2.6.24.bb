@@ -10,6 +10,10 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            file://make-3.82.patch \
            file://unifdef.patch"
 
+SRC_URI_append_hipox = " \
+	file://siocoutqsnd.patch \
+	"
+
 S = "${WORKDIR}/linux-${PV}"
 
 do_configure() {

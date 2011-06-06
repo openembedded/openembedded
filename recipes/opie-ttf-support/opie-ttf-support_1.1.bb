@@ -1,5 +1,6 @@
 DESCRIPTION = "Meta-package for Opie TTF support"
 SECTION = "opie/fonts"
+LICENSE = "GPLv2"
 DEPENDS = "freetype"
 PR = "r5"
 

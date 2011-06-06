@@ -1,8 +1,8 @@
 HOMEPAGE = "http://guichaz.free.fr/iotop/"
 LICENSE = "GPL"
-PR = "r3"
+PR = "r4"
 
-RDEPENDS_${PN} = "python-distutils python-curses python-setuptools python-textutils"
+RDEPENDS_${PN} = "python-distutils python-curses python-setuptools python-textutils python-codecs"
 
 SRC_URI = "http://guichaz.free.fr/iotop/files/${PN}-${PV}.tar.bz2"
 

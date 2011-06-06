@@ -1,0 +1,17 @@
+--- /linux-2.6.24-orig/arch/arm/mach-hipox/pci.c	2011-03-31 16:56:17.968638003 +0200
++++ /linux-2.6.24/arch/arm/mach-hipox/pci.c	2011-03-31 17:06:21.198638000 +0200
+@@ -311,12 +311,12 @@
+ 	switch (size) {
+ 	case 1:
+ 		// printk(KERN_DEBUG "PCI: readb( 0x%lx )\n", PCI_CONFIG_IO_READ_DATA );
+-		*value>>=(where&3);
++		*value >>= ( (where & 3) * 8);
+ 		*value&=0x000000ff;
+ 		break;
+ 	case 2:
+ 		// printk(KERN_DEBUG "PCI: readw( 0x%lx )\n", PCI_CONFIG_IO_READ_DATA );
+-		*value>>=(where&2);
++		*value >>= ( (where & 2) * 8);
+ 		*value&=0x0000ffff;
+ 		break;
+ 	case 4:
