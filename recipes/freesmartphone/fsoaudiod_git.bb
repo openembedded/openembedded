@@ -4,7 +4,7 @@ inherit fso-plugin
 LICENSE = "LGPLv2.1"
 LIC_FILES_CHKSUM = "file://COPYING;md5=78aab3f7875ffe21aebed9932fa3f993"
 
-DEPENDS += "alsa-lib"
+DEPENDS += "alsa-lib libcmtspeechdata"
 
 # We need to uncomment the line below after the migration of all scenario files from
 # fsodeviced to fsoaudiod is done. Otherwise we will get build errors as both fsodeviced
@@ -14,7 +14,11 @@ DEPENDS += "alsa-lib"
 SRCREV = "${FSO_CORNUCOPIA_SRCREV}"
 PV = "0.1.0+gitr${SRCPV}"
 PE = "2"
-PR = "${INC_PR}.3"
+PR = "${INC_PR}.4"
+
+EXTRA_OECONF = "\
+  --enable-cmtspeechdata \
+"
 
 inherit update-rc.d
 
