@@ -5,11 +5,12 @@ DEFAULT_PREFERENCE_omap3-pandora = "-1"
 FILESPATHPKG_prepend = "x-load-git:x-load-git/${MACHINE}"
 
 PV = "1.5.0+${PR}+gitr${SRCREV}"
-PR ="r23"
+PR ="r24"
 PE = "1"
 
 SRCREV = "04b1732220078d47c18a84cbafc52e45db71f13d"
 SRC_URI = "git://gitorious.org/x-loader/x-loader.git;branch=master;protocol=git \
+           file://0001-Beagle-Rev-C5-support.patch \
           "
 
 XLOAD_MACHINE_beagleboard = "omap3530beagle_config"
