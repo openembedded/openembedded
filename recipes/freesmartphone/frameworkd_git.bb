@@ -5,9 +5,9 @@ SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=751419260aa954499f7abaabaa882bbe"
-SRCREV = "89ee765b998b18a692d514b982a2250f5a73958d"
+SRCREV = "c835f64c8e2b994d658a765243c60fb682fb587c"
 PV = "0.9.5.9+gitr${SRCPV}"
-PR = "r13"
+PR = "r14"
 PE = "1"
 
 inherit distutils update-rc.d python-dir
