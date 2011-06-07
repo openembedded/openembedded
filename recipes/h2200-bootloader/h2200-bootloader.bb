@@ -1,4 +1,5 @@
 DESCRIPTION = "Bootloader firmware extractor for the h2200 iPAQ"
+LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 PR = "r4"
 

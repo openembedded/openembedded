@@ -1,0 +1,22 @@
+diff -Nurd linux-2.6.24.orig/drivers/usb/serial/ftdi_sio.c linux-2.6.24/drivers/usb/serial/ftdi_sio.c
+--- linux-2.6.24.orig/drivers/usb/serial/ftdi_sio.c	2011-06-07 12:15:01.418982729 +0200
++++ linux-2.6.24/drivers/usb/serial/ftdi_sio.c	2011-06-07 12:16:20.107926616 +0200
+@@ -523,6 +523,7 @@
+ 	{ USB_DEVICE(FTDI_VID, EVER_ECO_PRO_CDS) },
+ 	{ USB_DEVICE(FTDI_VID, FTDI_4N_GALAXY_DE_1_PID) },
+ 	{ USB_DEVICE(FTDI_VID, FTDI_4N_GALAXY_DE_2_PID) },
++	{ USB_DEVICE(FTDI_VID, FTDI_4N_GALAXY_DE_3_PID) },
+ 	{ USB_DEVICE(FTDI_VID, XSENS_CONVERTER_0_PID) },
+ 	{ USB_DEVICE(FTDI_VID, XSENS_CONVERTER_1_PID) },
+ 	{ USB_DEVICE(FTDI_VID, XSENS_CONVERTER_2_PID) },
+diff -Nurd linux-2.6.24.orig/drivers/usb/serial/ftdi_sio.h linux-2.6.24/drivers/usb/serial/ftdi_sio.h
+--- linux-2.6.24.orig/drivers/usb/serial/ftdi_sio.h	2011-06-07 12:15:01.413983114 +0200
++++ linux-2.6.24/drivers/usb/serial/ftdi_sio.h	2011-06-07 12:16:11.652577907 +0200
+@@ -387,6 +387,7 @@
+  */
+ #define FTDI_4N_GALAXY_DE_1_PID	0xF3C0
+ #define FTDI_4N_GALAXY_DE_2_PID	0xF3C1
++#define FTDI_4N_GALAXY_DE_3_PID	0xF3C2
+ 
+ /*
+  * Mobility Electronics products.
