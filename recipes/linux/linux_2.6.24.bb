@@ -11,7 +11,7 @@ DEFAULT_PREFERENCE_hipox = "1"
 DEFAULT_PREFERENCE_cs-e9302 = "1"
 DEFAULT_PREFERENCE_smartq5 = "1"
 
-PR = "r42"
+PR = "r44"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2;name=kernel \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.7.bz2;apply=yes;name=stablepatch \
@@ -20,6 +20,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2;name=k
            file://ubifs-v2.6.24-silent-get-sb.patch \
            file://cfi-amic.patch \
            file://make-3.82.patch \
+           file://ftdi-4n-galaxy.patch \
            file://defconfig"
 
 # Moved away temporarely until committed properly (work in progress).
