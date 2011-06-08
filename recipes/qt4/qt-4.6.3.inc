@@ -15,6 +15,7 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-everywhere-opensource-src-${PV}.
            file://0010-no-simpledecoration-example.patch \
            file://fix-config-tests.patch \
            file://qt-config.patch \
+           file://0001-wsegl2-support.patch \
            file://g++.conf \
            file://linux.conf \
            "
