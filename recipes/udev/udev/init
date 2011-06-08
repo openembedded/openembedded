@@ -37,15 +37,15 @@ LANG=C awk "\$2 == \"/dev\" && \$3 == \"tmpfs\" { exit 1 }" /proc/mounts && {
 
 if [ "$DEVCACHE" != "" ]; then
 	# Invalidate udev cache if the kernel or its bootargs/cmdline have changed
-	[ -x /bin/uname ] && /bin/uname -mrspv > /tmp/uname || touch /tmp/uname
-	[ -r /proc/cmdline ] && cat /proc/cmdline > /tmp/cmdline || touch /tmp/cmdline
-	[ -r /proc/devices ] && cat /proc/devices > /tmp/devices || touch /tmp/devices
-	[ -r /proc/atags ] && cat /proc/atags > /tmp/atags || touch /tmp/atags
+	[ -x /bin/uname ] && /bin/uname -mrspv > /dev/shm/uname || touch /dev/shm/uname
+	[ -r /proc/cmdline ] && cat /proc/cmdline > /dev/shm/cmdline || touch /dev/shm/cmdline
+	[ -r /proc/devices ] && cat /proc/devices > /dev/shm/devices || touch /dev/shm/devices
+	[ -r /proc/atags ] && cat /proc/atags > /dev/shm/atags || touch /dev/shm/atags
 	if [ -e $DEVCACHE ] && \
-	   cmp -s /tmp/uname /etc/udev/saved.uname && \
-	   cmp -s /tmp/cmdline /etc/udev/saved.cmdline && \
-	   cmp -s /tmp/devices /etc/udev/saved.devices && \
-	   cmp -s /tmp/atags /etc/udev/saved.atags; then
+	   cmp -s /dev/shm/uname /etc/udev/saved.uname && \
+	   cmp -s /dev/shm/cmdline /etc/udev/saved.cmdline && \
+	   cmp -s /dev/shm/devices /etc/udev/saved.devices && \
+	   cmp -s /dev/shm/atags /etc/udev/saved.atags; then
 		(cd /; tar xf $DEVCACHE > /dev/null 2>&1)
 		not_first_boot=1
 	fi
