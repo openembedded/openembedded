@@ -4,7 +4,7 @@ PACKAGE_STRIP = "no"
 
 SHLIBSDIR = "${STAGING_DIR_TARGET}/shlibs"
 
-PACKAGES = "libgcc libssp libstdc++ libg2c libgfortran"
+PACKAGES = "libgcc libssp libstdc++ libg2c libgfortran libstdc++-dev libgcc-dev"
 
 # Called from within gcc-cross, so libdir is set wrong
 FILES_libg2c = "${target_libdir}/libg2c.so.*"
@@ -18,6 +18,7 @@ FILES_libgcc-dev = "${target_libdir}/libgcc_s.so"
 
 FILES_libstdc++ = "${target_libdir}/libstdc++.so.*"
 
+FILES_libstdc++-dev = "${target_datadir}/gdb/auto-load/${libdir}/libstdc++.so.*-gdb.py*"
 do_install () {
 	oe_runmake 'DESTDIR=${D}' install
 	install -d ${D}${target_base_libdir}
@@ -68,5 +69,10 @@ GROUP ( libgcc_s.so.1 libgcc.a )" > ${D}${target_libdir}/libgcc_s.so
 	# We use libiberty from binutils or binutils-cross
 	rm -f ${D}${libdir}/libiberty.a
 	rm -f ${D}${target_libdir}/libiberty.a
+	if [ -f ${D}${target_libdir}/libstdc++.so.*-gdb.py ]; then
+		# move the gdb python helpers to gdb auto-load directory
+		install -d ${D}${target_datadir}/gdb/auto-load${target_libdir}
+		mv -f ${D}${target_libdir}/libstdc++.so.*-gdb.py* ${D}${target_datadir}/gdb/auto-load${target_libdir}
+	fi
 }
 
