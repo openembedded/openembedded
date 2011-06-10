@@ -1,0 +1,40 @@
+#! /bin/sh
+#
+# aurora-systemmanager -- This shell script starts and stops the Aurora system manager
+#
+# chkconfig: 345 90 10
+# description: This is the system manager for the aurora feature phone client.
+# processname: aurora-systemmanager
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+NAME=aurora
+
+[ -f /etc/default/rcS ] && . /etc/default/rcS
+
+case "$1" in
+    start)
+        echo -n "Starting aurora-systemmanager: "
+        start-stop-daemon --start --pidfile /var/run/${NAME}.pid --make-pidfile --background -x /usr/bin/${NAME}
+        if [ $? = 0 ]; then
+            echo "(ok)"
+        else
+            echo "(failed)"
+        fi
+        ;;
+    stop)
+        echo -n "Stopping aurora-systemmanager: "
+        start-stop-daemon --stop --pidfile /var/run/${NAME}.pid --oknodo
+        rm -f /var/run/${NAME}.pid
+        echo "(done)"
+        ;;
+    restart|force-reload)
+        $0 stop
+        $0 start
+        ;;
+    *)
+        echo "Usage: /etc/init.d/aurora-systemmanager {start|stop|restart|force-reload}"
+        exit 1
+        ;;
+esac
+
+exit 0

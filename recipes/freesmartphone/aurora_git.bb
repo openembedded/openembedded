@@ -4,17 +4,22 @@ AUTHOR = "Simon Busch <morphis@gravedo.de>"
 HOMEPAGE = "http://www.freesmartphone.org"
 SECTION = "fso"
 LICENSE = "GPLv2"
-SRCREV = "1043282ce2c9e7c8378c3ab6477e146cfe507577"
+SRCREV = "a659aabe331ec2cf94753da9789b7a5b933bcafa"
 PV = "0.1.0+gitr${SRCPV}"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "\
   ${FREESMARTPHONE_GIT}/aurora.git;protocol=git;branch=master \
   file://aurora-daemon \
+  file://aurora-systemmanager \
 "
 S = "${WORKDIR}/git/aurora"
 
-DEPENDS = "shiboken-native libshiboken python"
+DEPENDS = " \
+  python \
+  libfsobasics \
+  libfso-glib \
+"
 
 RDEPENDS_${PN} = "\
   python-logging \
@@ -25,21 +30,29 @@ RDEPENDS_${PN} = "\
   python-phoneutils \
 "
 
-inherit autotools python-dir update-rc.d
+inherit autotools python-dir update-rc.d vala
 
 QT_DIR_NAME = "qtopia"
 EXTRA_OECONF_append = "--enable-qws-support --with-qt-basedir=${QT_DIR_NAME}"
 
-INITSCRIPT_NAME = "aurora-daemon"
-INITSCRIPT_PARAMS = "defaults 90"
+INITSCRIPT_PACKAGES = "${PN} ${PN}-systemmanager"
+
+INITSCRIPT_NAME_${PN} = "aurora-daemon"
+INITSCRIPT_PARAMS_${PN} = "defaults 90"
+
+INITSCRIPT_NAME_${PN}-systemmanager = "aurora-systemmanager"
+INITSCRIPT_PARAMS_${PN}-systemmanager = "defaults 85"
 
 do_install_append() {
   install -d ${D}${sysconfdir}/init.d/
-  install -m 0755 ${WORKDIR}/${INITSCRIPT_NAME} ${D}${sysconfdir}/init.d/
+  install -m 0755 ${WORKDIR}/${INITSCRIPT_NAME_${PN}} ${D}${sysconfdir}/init.d/
+  install -m 0755 ${WORKDIR}/${INITSCRIPT_NAME_${PN}-systemmanager} ${D}${sysconfdir}/init.d/
 }
 
 PACKAGES = "${PN}-dbg ${PN}"
+
 FILES_${PN}-dbg += "${libdir}/${QT_DIR_NAME}/imports/Aurora/*/.debug"
+
 FILES_${PN} += " \
   ${PYTHON_SITEPACKAGES_DIR}/aurora \
   ${libdir}/${QT_DIR_NAME}/imports/Aurora \
