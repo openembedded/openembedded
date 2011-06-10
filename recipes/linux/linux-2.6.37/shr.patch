@@ -3,6 +3,8 @@ rebased on top of openmoko kernel repository
 
 https://gitorious.org/shr/linux/commits/shr-2.6.37-nodrm
 
+f576ab9fd power_supply: Ignore -ENODATA errors when generating uevents
+3a4d877 wm8753: allow setting DAI mode even while pcm is active
 bd961d3 nand/s3c2410: add mising badblocksbits value
 f12719d nand: Fix S3C NAND clok stop
 acf3f89 input: lis302dl: fix the resume path
@@ -2333,6 +2335,19 @@ index cb5d2c0..9ca6a0e 100644
  	}
  
  	return 0;
+diff --git a/drivers/power/power_supply_sysfs.c b/drivers/power/power_supply_sysfs.c
+index cd1f907..605514a 100644
+--- a/drivers/power/power_supply_sysfs.c
++++ b/drivers/power/power_supply_sysfs.c
+@@ -270,7 +270,7 @@ int power_supply_uevent(struct device *dev, struct kobj_uevent_env *env)
+ 		attr = &power_supply_attrs[psy->properties[j]];
+ 
+ 		ret = power_supply_show_property(dev, attr, prop_buf);
+-		if (ret == -ENODEV) {
++		if (ret == -ENODEV || ret == -ENODATA) {
+ 			/* When a battery is absent, we expect -ENODEV. Don't abort;
+ 			   send the uevent with at least the the PRESENT=0 property */
+ 			ret = 0;
 diff --git a/drivers/serial/samsung.c b/drivers/serial/samsung.c
 index ac1f0b0..3a1fdb7 100644
 --- a/drivers/serial/samsung.c
@@ -2622,10 +2637,20 @@ index 8275a2f..8e3e56e 100644
 +void glamo_pixclock_fast (struct glamo_core *glamo);
  #endif /* __GLAMO_CORE_H */
 diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
-index 28ee2e6..d5b4a40 100644
+index 28ee2e6..85b8a45 100644
 --- a/sound/soc/codecs/wm8753.c
 +++ b/sound/soc/codecs/wm8753.c
-@@ -680,7 +680,9 @@ static void pll_factors(struct _pll_div *pll_div, unsigned int target,
+@@ -190,6 +190,9 @@ static int wm8753_set_dai(struct snd_kcontrol *kcontrol,
+ 	struct wm8753_priv *wm8753 = snd_soc_codec_get_drvdata(codec);
+ 	u16 ioctl;
+ 
++	if (wm8753->dai_func == ucontrol->value.integer.value[0])
++		return 1;
++
+ 	if (codec->active)
+ 		return -EBUSY;
+ 
+@@ -680,7 +683,9 @@ static void pll_factors(struct _pll_div *pll_div, unsigned int target,
  	Nmod = target % source;
  	Kpart = FIXED_PLL_SIZE * (long long)Nmod;
  

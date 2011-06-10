@@ -32,7 +32,6 @@ SRC_URI_append_ben-nanonote = " \
 SRC_URI_append_om-gta02 = " \
            file://openmoko.patch \
            file://shr.patch \
-           file://gta02-dont-block-dai-switch.patch \
            "
 SRC_URI_append_om-gta01 = " \
            file://openmoko.patch \
