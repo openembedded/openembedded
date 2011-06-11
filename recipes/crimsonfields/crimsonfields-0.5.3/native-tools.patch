@@ -1,0 +1,11 @@
+Index: crimson-0.5.3/Makefile.am
+===================================================================
+--- crimson-0.5.3.orig/Makefile.am	2011-06-11 00:23:44.491550062 +0200
++++ crimson-0.5.3/Makefile.am	2011-06-11 00:23:55.691550064 +0200
+@@ -1,5 +1,5 @@
+ EXTRA_DIST = crimson.desktop crimson.spec.in README.bi2cf README.CoMET VisualC++.zip
+-SUBDIRS = doc src tools gfx levels locale music sfx
++SUBDIRS = doc src gfx levels locale music sfx
+ DISTCHECK_CONFIGURE_FLAGS = --enable-bi2cf --enable-cf2bmp --enable-cfed --enable-comet
+ 
+ desktopdir = $(datadir)/applications
