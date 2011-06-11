@@ -1,9 +1,9 @@
 RDEPENDS_${PN} = "kexec"
 PV = "0.5.9"
-PR = "r5+gitr${SRCREV}"
+PR = "r6+gitr${SRCREV}"
 
 SRC_URI = "git://git.linuxtogo.org/home/groups/kexecboot/kexecboot.git;protocol=git "
-SRCREV = "f38f07d6bf7d3feea33bb7c1bbe4378eb0cb5bfd"
+SRCREV = "14e6d1a3641a749e4408fda1eadffe4f396b0279"
 S = "${WORKDIR}/git"
 
 require kexecboot.inc
