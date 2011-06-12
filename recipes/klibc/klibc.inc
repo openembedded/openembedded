@@ -6,7 +6,7 @@ minimal entaglement, and portability, not speed."
 LICENSE = "BSD-ADV"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-INC_PR = "r1"
+INC_PR = "r2"
 
 KLIBC_ARCH = '${TARGET_ARCH}'
 KLIBC_ARCH_armeb = 'arm'
@@ -16,10 +16,6 @@ KLIBC_ARCH_i486 = 'i386'
 KLIBC_ARCH_i586 = 'i386'
 KLIBC_ARCH_i686 = 'i386'
 KLIBC_ARCH_pentium = 'i386'
-
-# the klibc code contains ARM instructions (for ARM), this
-# could be fixed, but for the moment:
-ARM_INSTRUCTION_SET = "arm"
 
 KLIBC_FETCHDIR = "1.5"
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/klibc/${KLIBC_FETCHDIR}/klibc-${PV}.tar.bz2"
