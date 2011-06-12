@@ -1,3 +1,18 @@
+Patch was imported from the OpenEmbedded git server
+(git://git.openembedded.org/openembedded)
+as of commit id 6f36bd6e28bce49b72e5a3cff77e0c74b8f65e41
+
+klibc-1.5.15: fix build against 2.6.31 linux headers
+* apply patches from Ubuntu to build against 2.6.31 linux headers
+
+Signed-off-by: Jeremy Lain? <jeremy.laine@m4x.org>
+
+Modified as of commit id 9ea5e56d701a4841150b5c17cc229b5a714a8f47
+Signed-off-by: Khem Raj <raj.khem.@gmail.com>
+
+Minor edits following upstream changes
+Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
+
 Index: klibc-1.5.15/usr/include/arch/arm/klibc/archsignal.h
 ===================================================================
 --- klibc-1.5.15.orig/usr/include/arch/arm/klibc/archsignal.h	2010-03-20 01:06:35.000000000 +0100

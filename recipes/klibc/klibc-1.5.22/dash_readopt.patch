@@ -1,6 +1,13 @@
-diff -uNr klibc-1.5.18.orig//usr/dash/miscbltin.c klibc-1.5.18/usr/dash/miscbltin.c
---- klibc-1.5.18.orig//usr/dash/miscbltin.c	2010-04-22 02:08:49.000000000 +0200
-+++ klibc-1.5.18/usr/dash/miscbltin.c	2010-05-03 13:55:32.000000000 +0200
+Patch was imported from the OpenEmbedded git server
+(git://git.openembedded.org/openembedded)
+as of commit id ad67a97e8fbfb03a68088a6ca6ad87b086c88094
+Signed-off-by: Thomas Kunze <thommycheck@gmx.de>
+Minor adjustments tracking upstream changes
+Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
+
+diff -uNr klibc-1.5.22.orig//usr/dash/miscbltin.c klibc-1.5.22/usr/dash/miscbltin.c
+--- klibc-1.5.22.orig//usr/dash/miscbltin.c	2011-06-11 02:08:49.000000000 +0200
++++ klibc-1.5.22/usr/dash/miscbltin.c	2011-06-11 13:55:32.000000000 +0200
 @@ -46,6 +46,7 @@
  #include <ctype.h>
  #include <stdint.h>

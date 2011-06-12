@@ -1,3 +1,11 @@
+Patch was imported from the OpenEmbedded git server
+(git://git.openembedded.org/openembedded)
+as of commit id eefb99a313bbcc8f34c8b32bf0c5aa2dd2580735
+Signed-off-by: Thomas Kunze <thommycheck@gmx.de>
+
+Minor edits following upstream changes
+Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
+
 Index: klibc-1.5/Makefile
 ===================================================================
 --- klibc-1.5.orig/Makefile	2007-03-04 02:52:10.000000000 +0100

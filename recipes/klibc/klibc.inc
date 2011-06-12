@@ -6,7 +6,7 @@ minimal entaglement, and portability, not speed."
 LICENSE = "BSD-ADV"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-INC_PR = "r0"
+INC_PR = "r1"
 
 KLIBC_ARCH = '${TARGET_ARCH}'
 KLIBC_ARCH_armeb = 'arm'
@@ -27,16 +27,21 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/klibc/${KLIBC_FETCHDIR}/klibc-${PV
 SRC_URI_append_linux-gnueabi = " file://klibc-config-eabi.patch"
 SRC_URI_append_linux-uclibceabi = " file://klibc-config-eabi.patch"
 
-SRC_URI += "file://fstype-sane-vfat-and-jffs2-for-1.5.patch \
+SRC_URI += "\
+# extensions
+            file://fstype-sane-vfat-and-jffs2-for-1.5.patch \
             file://modprobe.patch \
             file://dash_readopt.patch \
             file://wc.patch \
+# cross-compilation patches
             file://staging.patch \
-            file://klibc_kexecsyscall.patch \
-            file://mntproc-definitions.patch \
-            file://arm-signal-cleanup.patch \
-            file://socket.h.patch \
             file://isystem.patch \
+# kexec patch for kexec-tools-klibc
+            file://klibc_kexecsyscall.patch \
+# compatibility patches for >= 2.6.33 kernels
+            file://socket.h.patch \
+# compatibility patches for <= 2.6.32 kernels
+            file://arm-signal-cleanup.patch \
             file://getrusage.patch \
             "
 

@@ -1,4 +1,11 @@
-Index: klibc-1.5.21/usr/kinit/fstype/fstype.c
+Patch was imported from the OpenEmbedded git server
+(git://git.openembedded.org/openembedded)
+as of commit id 2a98e2a2c1b55a0eb0ac09f2f9b55db2e4c23553
+Signed-off-by: Thomas Kunze <thommycheck@gmx.de>
+Refresh and fixes as of commit id 5dbd8d611f3cb7eb8baddb17211d6077e2060fdb
+Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
+
+Index: klibc-1.5.22/usr/kinit/fstype/fstype.c
 ===================================================================
 --- a/usr/kinit/fstype/fstype.c
 +++ b/usr/kinit/fstype/fstype.c
@@ -64,6 +71,4 @@ Index: klibc-1.5.21/usr/kinit/fstype/fstype.c
  	{1, "nilfs2", nilfs2_image},
  	{2, "ocfs2", ocfs2_image},
  	{8, "reiserfs", reiserfs_image},
--- 
-1.7.3.4
 

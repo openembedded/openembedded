@@ -15,12 +15,14 @@ thus define the stuff that used to be there in klibc socket.h
 Signed-off-by: maximilian attems <max@stro.at>
 
 Modified for compatibility with pre 2.6.33 kernels in OpenEmbedded
----
+
+Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
+
 Index: klibc-1.5.16/usr/include/sys/socket.h
 ===================================================================
 --- a/usr/include/sys/socket.h	2010-03-13 22:33:51.000000000 +0100
 +++ b/usr/include/sys/socket.h	2010-05-31 00:44:16.000000000 +0200
-@@ -9,6 +9,14 @@
+@@ -9,6 +9,12 @@
  #include <klibc/compiler.h>
  #include <klibc/sysconfig.h>
  #include <linux/socket.h>
@@ -28,8 +30,6 @@ Index: klibc-1.5.16/usr/include/sys/socket.h
 +#include <linux/version.h>
 +#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
 +#include <linux/sockios.h>		/* the SIOCxxx I/O controls     */
-+#include <linux/uio.h>			/* iovec support                */
-+#include <asm/socket.h>			/* arch-dependent defines       */
 +#endif
 +
  #include <linux/uio.h>
@@ -66,23 +66,6 @@ Index: klibc-1.5.16/usr/include/sys/socket.h
  /* Ancillary data structures and cmsg macros are also hidden under __KERNEL__ */
  #ifndef CMSG_FIRSTHDR
  /*
-Index: klibc-1.5.16/usr/kinit/nfsmount/nfsmount.h
-===================================================================
---- a/usr/kinit/nfsmount/nfsmount.h	2009-01-04 20:28:03.000000000 +0100
-+++ b/usr/kinit/nfsmount/nfsmount.h	2010-05-30 23:00:36.000000000 +0200
-@@ -3,6 +3,12 @@
- 
- #include <linux/nfs_mount.h>
- 
-+#include <linux/version.h>
-+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
-+#define MNTPROC_MNT            1
-+#define MNTPROC_UMNT           3
-+#endif
-+
- extern int nfs_port;
- 
- extern int nfsmount_main(int argc, char *argv[]);
 Index: klibc-1.5.16/usr/kinit/nfsmount/dummypmap.c
 ===================================================================
 --- a/usr/kinit/nfsmount/dummypmap.c	2009-01-04 20:28:03.000000000 +0100

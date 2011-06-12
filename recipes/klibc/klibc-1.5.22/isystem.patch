@@ -1,3 +1,8 @@
+Patch was imported from the OpenEmbedded git server
+(git://git.openembedded.org/openembedded)
+as of commit id 8f491bf275cf8a64d05e99f2e5b0c6c5143202b4
+Signed-off-by: Henning Heinold <heinold@inf.fu-berlin.de>
+
 Index: klibc-1.5.15/klcc/klcc.in
 ===================================================================
 --- klibc-1.5.15.orig/klcc/klcc.in	2009-12-14 00:32:41.373661102 +0100

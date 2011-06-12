@@ -1,3 +1,8 @@
+Patch was imported from the OpenEmbedded git server
+(git://git.openembedded.org/openembedded)
+as of commit id b6764cf32ec93547531130dca364fb95e1c495f4
+Signed-off-by: Thomas Kunze <thommycheck@gmx.de>
+
 diff -Nur klibc-1.5/defconfig klibc-1.5p/defconfig
 --- klibc-1.5/defconfig	2007-03-04 02:52:10.000000000 +0100
 +++ klibc-1.5p/defconfig	2008-02-08 19:24:22.337127756 +0100

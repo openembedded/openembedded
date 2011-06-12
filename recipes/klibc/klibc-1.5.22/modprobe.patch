@@ -1,13 +1,11 @@
----
- usr/utils/Kbuild     |    4 +-
- usr/utils/list.h     |  238 +++++++
- usr/utils/modprobe.c | 1710 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 1951 insertions(+), 1 deletions(-)
- create mode 100644 usr/utils/list.h
- create mode 100644 usr/utils/modprobe.c
+Patch was imported from the OpenEmbedded git server
+(git://git.openembedded.org/openembedded)
+as of commit id 70ae69edb02e0174db0841ae501299159c888514
+Signed-off-by: Thomas Kunze <thommycheck@gmx.de>
+Minor adjustments tracking upstream changes
+Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
 
 diff --git a/usr/utils/Kbuild b/usr/utils/Kbuild
-index 57e2d08..a52ea61 100644
 --- a/usr/utils/Kbuild
 +++ b/usr/utils/Kbuild
 @@ -4,7 +4,7 @@
@@ -29,8 +27,6 @@ index 57e2d08..a52ea61 100644
  # Additionally linked targets
  always := static/reboot static/poweroff shared/reboot shared/poweroff
 diff --git a/usr/utils/list.h b/usr/utils/list.h
-new file mode 100644
-index 0000000..511303d
 --- /dev/null
 +++ b/usr/utils/list.h
 @@ -0,0 +1,238 @@
@@ -273,8 +269,6 @@ index 0000000..511303d
 +
 +#endif
 diff --git a/usr/utils/modprobe.c b/usr/utils/modprobe.c
-new file mode 100644
-index 0000000..8e8a437
 --- /dev/null
 +++ b/usr/utils/modprobe.c
 @@ -0,0 +1,1710 @@
@@ -1988,6 +1982,3 @@ index 0000000..8e8a437
 +
 +	return 0;
 +}
--- 
-1.6.3.3
-

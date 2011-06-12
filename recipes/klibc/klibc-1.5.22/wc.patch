@@ -1,8 +1,11 @@
----
- usr/utils/Kbuild |    4 +-
- usr/utils/wc.c   |  208 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 211 insertions(+), 1 deletions(-)
- create mode 100644 usr/utils/wc.c
+Patch was imported from the OpenEmbedded git server
+(git://git.openembedded.org/openembedded)
+as of commit id acb6fa33fccf7196c86a3a28f927d4fa441d05eb
+
+klibc: add wc to tools
+ * for use with uniboot
+
+Signed-off-by: Thomas Kunze <thommycheck@gmx.de>
 
 diff --git a/usr/utils/Kbuild b/usr/utils/Kbuild
 index a52ea61..7c8ccfb 100644
@@ -240,6 +243,3 @@ index 0000000..f5059fc
 +	fflush(stdout);
 +	exit(status);
 +}
--- 
-1.6.3.3
-

@@ -1,3 +1,12 @@
+Patch was imported from the OpenEmbedded git server
+(git://git.openembedded.org/openembedded)
+as of commit id a502812fd2f097fe0cf69ddc514685e601f0fd9b
+Signed-off-by: Thomas Kunze <thommycheck@gmx.de>
+
+Fix mipsel build - disable inclusion of <asm/kexec.h>
+as of commit id f355bb4254838fcc875b6dfefbdd1c565570ee07
+Signed-off-by: Yuri Bushmelev <jay4mail@gmail.com>
+
 --- klibc-1.5/usr/klibc/SYSCALLS.def	2007-03-04 02:52:10.000000000 +0100
 +++ klibc.clean/usr/klibc/SYSCALLS.def	2008-02-22 17:12:23.663612084 +0100
 @@ -13,6 +13,8 @@
