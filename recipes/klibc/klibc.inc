@@ -5,8 +5,12 @@ use with initramfs.  It is deliberately written for small size, \
 minimal entaglement, and portability, not speed."
 LICENSE = "BSD-ADV"
 
-PACKAGE_ARCH = "${MACHINE_ARCH}"
-INC_PR = "r2"
+# We need to point to the kernel headers for ARCH but we don't want to become
+# machine specific so we use the headers staged for the current machine.
+# (was PACKAGE_ARCH = "${MACHINE_ARCH}")
+MACH_STAGING_KERNEL_DIR = "${STAGING_DIR}/${MACHINE_ARCH}${TARGET_VENDOR}-${TARGET_OS}/kernel"
+
+INC_PR = "r3"
 
 KLIBC_ARCH = '${TARGET_ARCH}'
 KLIBC_ARCH_armeb = 'arm'
@@ -43,11 +47,12 @@ SRC_URI += "\
 
 S = "${WORKDIR}/klibc-${PV}"
 
+
 EXTRA_OEMAKE = "'KLIBCARCH=${KLIBC_ARCH}' \
                 'CROSS_COMPILE=${TARGET_PREFIX}' \
-                'KLIBCKERNELSRC=${STAGING_KERNEL_DIR}' \
+                'KLIBCKERNELSRC=${MACH_STAGING_KERNEL_DIR}' \
                 "
 
 do_configure () {
-        ln -sf ${STAGING_KERNEL_DIR} linux
+        ln -sf ${MACH_STAGING_KERNEL_DIR} linux
 }
