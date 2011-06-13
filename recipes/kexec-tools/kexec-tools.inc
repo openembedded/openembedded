@@ -3,7 +3,7 @@ AUTHOR = "Eric Biederman"
 HOMEPAGE = "http://www.xmission.com/~ebiederm/files/kexec/"
 SECTION = "kernel/userland"
 LICENSE = "GPL"
-DEPENDS = "virtual/kernel zlib"
-INC_PR = "r4"
+DEPENDS = "zlib"
+INC_PR = "r5"
 
 inherit autotools
