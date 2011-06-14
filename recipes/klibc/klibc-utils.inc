@@ -29,6 +29,7 @@ do_install_append() {
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/mknod ${D}${base_bindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/modprobe ${D}${base_sbindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/mount ${D}${base_bindir}
+        install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/mv ${D}${base_bindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/nuke ${D}${base_bindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/pivot_root ${D}${base_bindir}
         install -m 755 usr/utils/${KLIBC_UTILS_VARIANT}/poweroff ${D}${base_bindir}
@@ -69,6 +70,7 @@ PACKAGES += "${KLIBC_UTILS_PKGNAME}-sh \
              ${KLIBC_UTILS_PKGNAME}-mknod \
              ${KLIBC_UTILS_PKGNAME}-modprobe \
              ${KLIBC_UTILS_PKGNAME}-mount \
+             ${KLIBC_UTILS_PKGNAME}-mv \
              ${KLIBC_UTILS_PKGNAME}-nuke \
              ${KLIBC_UTILS_PKGNAME}-pivot-root \
              ${KLIBC_UTILS_PKGNAME}-poweroff \
@@ -106,6 +108,7 @@ FILES_${KLIBC_UTILS_PKGNAME}-mkfifo = "${base_bindir}/mkfifo"
 FILES_${KLIBC_UTILS_PKGNAME}-mknod = "${base_bindir}/mknod"
 FILES_${KLIBC_UTILS_PKGNAME}-modprobe = "${base_sbindir}/modprobe"
 FILES_${KLIBC_UTILS_PKGNAME}-mount = "${base_bindir}/mount"
+FILES_${KLIBC_UTILS_PKGNAME}-mv = "${base_bindir}/mount"
 FILES_${KLIBC_UTILS_PKGNAME}-nuke = "${base_bindir}/nuke"
 FILES_${KLIBC_UTILS_PKGNAME}-pivot-root = "${base_bindir}/pivot_root"
 FILES_${KLIBC_UTILS_PKGNAME}-poweroff = "${base_bindir}/poweroff"

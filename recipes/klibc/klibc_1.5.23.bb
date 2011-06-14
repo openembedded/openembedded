@@ -7,7 +7,7 @@ do_install() {
         oe_runmake install
 
 # the crosscompiler is packaged by klcc-cross
-# remove klcc 
+# remove klcc
 # remove also from FILES_${PN}-dev
         rm ${D}${base_bindir}/klcc
 
@@ -61,6 +61,7 @@ RDEPENDS_${KLIBC_UTILS_PKGNAME}-mkfifo = "${PN} (= ${PV}-${PR})"
 RDEPENDS_${KLIBC_UTILS_PKGNAME}-mknod = "${PN} (= ${PV}-${PR})"
 RDEPENDS_${KLIBC_UTILS_PKGNAME}-modprobe = "${PN} (= ${PV}-${PR})"
 RDEPENDS_${KLIBC_UTILS_PKGNAME}-mount = "${PN} (= ${PV}-${PR})"
+RDEPENDS_${KLIBC_UTILS_PKGNAME}-mv = "${PN} (= ${PV}-${PR})"
 RDEPENDS_${KLIBC_UTILS_PKGNAME}-nuke = "${PN} (= ${PV}-${PR})"
 RDEPENDS_${KLIBC_UTILS_PKGNAME}-pivot-root = "${PN} (= ${PV}-${PR})"
 RDEPENDS_${KLIBC_UTILS_PKGNAME}-poweroff = "${PN} (= ${PV}-${PR})"

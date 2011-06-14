@@ -10,13 +10,13 @@ diff -uNr klibc-1.5.22.orig//usr/dash/miscbltin.c klibc-1.5.22/usr/dash/miscblti
 +++ klibc-1.5.22/usr/dash/miscbltin.c	2011-06-11 13:55:32.000000000 +0200
 @@ -46,6 +46,7 @@
  #include <ctype.h>
- #include <stdint.h>
+ #include <inttypes.h>
  #include <time.h>		/* strtotimeval() */
 +#include <termios.h>
  
  #include "shell.h"
  #include "options.h"
-@@ -140,6 +141,11 @@
+@@ -149,6 +150,11 @@
  	int timeout;
  	int i;
  	fd_set set;
@@ -28,7 +28,7 @@ diff -uNr klibc-1.5.22.orig//usr/dash/miscbltin.c klibc-1.5.22/usr/dash/miscblti
  	struct timeval ts, t0, t1, to;
  
  	ts.tv_sec = ts.tv_usec = 0;
-@@ -147,11 +153,18 @@
+@@ -156,11 +162,18 @@
  	rflag = 0;
  	timeout = 0;
  	prompt = NULL;
@@ -48,7 +48,7 @@ diff -uNr klibc-1.5.22.orig//usr/dash/miscbltin.c klibc-1.5.22/usr/dash/miscblti
  		case 't':
  			p = strtotimeval(optionarg, &ts);
  			if (*p || (!ts.tv_sec && !ts.tv_usec))
-@@ -173,6 +186,24 @@
+@@ -182,6 +197,24 @@
  	}
  	if (*(ap = argptr) == NULL)
  		sh_error("arg count");
@@ -70,13 +70,12 @@ diff -uNr klibc-1.5.22.orig//usr/dash/miscbltin.c klibc-1.5.22/usr/dash/miscblti
 +		}
 +	}
 +
+ 
  	status = 0;
- 	backslash = 0;
  	if (timeout) {
-@@ -187,13 +218,15 @@
- 		ts.tv_sec += t0.tv_sec;
- 	}
- 	STARTSTACKSTR(p);
+@@ -200,12 +231,14 @@
+	goto start;
+ 
 -	for (;;) {
 +	do {
  		if (timeout) {
@@ -90,7 +89,7 @@ diff -uNr klibc-1.5.22.orig//usr/dash/miscbltin.c klibc-1.5.22/usr/dash/miscblti
  				break;	/* Timeout! */
  			}
  
-@@ -210,6 +243,8 @@
+@@ -222,6 +255,8 @@
  			FD_SET(0, &set);
  			if (select(1, &set, NULL, NULL, &to) != 1) {
  				status = 1;
@@ -99,15 +98,14 @@ diff -uNr klibc-1.5.22.orig//usr/dash/miscbltin.c klibc-1.5.22/usr/dash/miscblti
  				break; /* Timeout! */
  			}
  		}
-@@ -235,7 +270,10 @@
- 		STPUTC(c, p);
- resetbs:
- 		backslash = 0;
+@@ -263,6 +298,9 @@
+ 			newloc = startloc - 1;
+ 		}
 -	}
 +	} while (!n_flag || --nchars);
 +	if (n_flag || silent)
 +		tcsetattr(0, TCSANOW, &old_tty);
 +
+ out:
+ 	recordregion(startloc, p - (char *)stackblock(), 0);
  	STACKSTRNUL(p);
- 	readcmd_handle_line(stackblock(), ap, p + 1 - (char *)stackblock());
- 	return status;

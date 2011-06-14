@@ -15,12 +15,12 @@ index a52ea61..7c8ccfb 100644
  #
  
  progs := chroot dd mkdir mkfifo mknod mount pivot_root umount
--progs += true false sleep ln nuke minips cat ls losetup
-+progs += true false sleep ln nuke minips cat ls losetup wc
+-progs += true false sleep ln mv nuke minips cat ls losetup
++progs += true false sleep ln mv nuke minips cat ls losetup wc
  progs += uname halt kill readlink cpio sync dmesg modprobe
  
  static-y := $(addprefix static/, $(progs))
-@@ -60,6 +60,8 @@ static/losetup-y    := losetup.o
+@@ -62,6 +62,8 @@ static/losetup-y    := losetup.o
  shared/losetup-y    := losetup.o
  static/modprobe-y   := modprobe.o
  shared/modprobe-y   := modprobe.o
