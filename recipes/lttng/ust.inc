@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPLv2 and LGPLv2.1"
 DEPENDS = "liburcu"
 
-PR = "r4"
+PR = "r5"
 
 inherit update-rc.d
 
@@ -15,8 +15,6 @@ UST_BASEDIR = "/tmp/ust"
 
 SRC_URI = "http://lttng.org/files/ust/releases/ust-${PV}.tar.gz \
 	file://ustd.init"
-
-S = "${WORKDIR}/ust-${PV}"
 
 inherit autotools
 
