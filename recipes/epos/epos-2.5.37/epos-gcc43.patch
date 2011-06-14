@@ -1,0 +1,37 @@
+--- src/nnet/neural.cc
++++ src/nnet/neural.cc
+@@ -38,7 +38,7 @@
+ #include <string.h>
+ #include <ctype.h>
+ #include <stdlib.h>
+-#include <iostream.h>
++#include <iostream>
+ #include <time.h>
+ 
+ /*
+--- src/options.lst
++++ src/options.lst
+@@ -310,6 +310,7 @@
+ 
+ #undef STATIC_OPTION
+ #define STATIC_OPTION(name,type,default) name=default;
++#undef  OPTION
+ #define OPTION(name,type,default)
+ 
+ #define VOICE_OPTION(name,type,default)
+@@ -336,6 +337,7 @@
+ 
+ #undef STATIC_OPTION
+ #define STATIC_OPTION(name,type,default) type name;
++#undef  OPTION
+ #define OPTION(name, type, default)
+ 
+ #define VOICE_OPTION(name,type,default)
+@@ -362,6 +364,7 @@
+ 
+ #undef STATIC_OPTION
+ #define STATIC_OPTION(name,type,default) {"S:" stringify(name) + 2, type, OS_STATIC, A_PUBLIC, A_PUBLIC, true, false, (long int)&((static_configuration *)NULL)->name},
++#undef  OPTION
+ #define OPTION(name,type,default) 
+ 
+ #define VOICE_OPTION(name,type,default)
