@@ -6,7 +6,7 @@ LICENSE = "GPLv2"
 DEPENDS = "glib-2.0 libeflvala"
 RDEPENDS_${PN} = "bluez4 obexd"
 
-SRCREV = "132"
+SRCREV = "143"
 PV = "0.1+svnr${SRCPV}"
 PR = "r0"
 
