@@ -25,9 +25,9 @@ do_install() {
 
 }
 
-PACKAGES = "${PN} ${PN}-dev"
-FILES_${PN} = "${base_libdir}/klibc-*.so"
-FILES_${PN}-dev = "${base_libdir}/klibc.so \
+PACKAGES = "libklibc libklibc-dev"
+FILES_libklibc = "${base_libdir}/klibc-*.so"
+FILES_libklibc-dev = "${base_libdir}/klibc.so \
                    ${base_libdir}/klibc/lib/* \
                    ${base_libdir}/klibc/include/* \
 # see above
@@ -36,43 +36,7 @@ FILES_${PN}-dev = "${base_libdir}/klibc.so \
                   "
 
 # Yes we want exactly the klibc that was compiled with the utils
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-sh = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-kinit = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-fstype = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-ipconfig = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-nfsmount = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-resume = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-run-init = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-cat = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-chroot = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-cpio = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-dd = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-dmesg = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-false = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-halt = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-insmod = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-kill = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-ln = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-losetup = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-ls = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-minips = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-mkdir = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-mkfifo = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-mknod = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-modprobe = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-mount = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-mv = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-nuke = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-pivot-root = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-poweroff = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-readlink = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-reboot = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-sleep = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-sync = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-true = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-umount = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-uname = "${PN} (= ${PV}-${PR})"
-RDEPENDS_${KLIBC_UTILS_PKGNAME}-wc = "${PN} (= ${PV}-${PR})"
+THIS_KLIBC = "libklibc (= ${PV}-${PR})"
 
 require klibc-utils.inc
 require klibc.inc
