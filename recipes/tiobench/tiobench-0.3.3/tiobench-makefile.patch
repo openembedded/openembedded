@@ -32,7 +32,7 @@ Index: Makefile
 +PREFIX?=/usr/local
  BINDIR=$(PREFIX)/bin
 -DOCDIR=/usr/local/doc/$(DISTNAME)
-+DOCDIR=$(PREFIX)/doc/$(DISTNAME)
++DOCDIR=$(PREFIX)/share/doc/$(DISTNAME)
  
  all: $(EXE)
  

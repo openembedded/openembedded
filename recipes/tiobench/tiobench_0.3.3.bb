@@ -8,7 +8,7 @@ RDEPENDS = "\
     perl-module-overload \
     perl-module-strict \
     "
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "\
     http://sourceforge.net/projects/tiobench/files/tiobench/${PV}/${P}.tar.gz \
@@ -17,7 +17,7 @@ SRC_URI = "\
 SRC_URI[md5sum] = "bf485bf820e693c79e6bd2a38702a128"
 SRC_URI[sha256sum] = "8ad011059a35ac70cdb5e3d3999ceee44a8e8e9078926844b0685b7ea9db2bcc"
 
-EXTRA_OEMAKE = "PREFIX=${D}"
+EXTRA_OEMAKE = "PREFIX=${D}/usr"
 
 do_install() {
     oe_runmake install
