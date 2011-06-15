@@ -5,6 +5,8 @@ LICENSE = "GPL"
 # we need to define the depends here, the dynamic stuff is too late
 DEPENDS  = "libnl wpa-supplicant dbus glib-2.0 ppp busybox dhclient resolvconf bluez4"
 
+INC_PR = "r7"
+
 EXTRA_OECONF += "\
     ac_cv_path_WPASUPPLICANT=/usr/sbin/wpa_supplicant \
     ac_cv_path_DHCLIENT=/sbin/dhclient \

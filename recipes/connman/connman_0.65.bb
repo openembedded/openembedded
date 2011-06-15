@@ -1,7 +1,7 @@
 require connman.inc
 # connman requires libXtables now
 DEPENDS += "iptables"
-PR = "r1"
+PR = "${INC_PR}.0"
 
 EXTRA_OECONF += "\
   --disable-gtk-doc \
