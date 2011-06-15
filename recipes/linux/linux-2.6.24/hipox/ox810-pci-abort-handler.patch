@@ -1,5 +1,6 @@
---- old/arch/arm/mach-hipox/pci.c	2011-05-16 11:00:10.665564998 +0200
-+++ new/arch/arm/mach-hipox/pci.c	2011-05-17 17:13:33.845565008 +0200
+diff -Nurd linux-2.6.24.orig//arch/arm/mach-hipox/pci.c linux-2.6.24/arch/arm/mach-hipox/pci.c
+--- linux-2.6.24.orig//arch/arm/mach-hipox/pci.c	2011-06-15 08:54:13.869073667 +0200
++++ linux-2.6.24/arch/arm/mach-hipox/pci.c	2011-06-15 08:56:11.275235253 +0200
 @@ -667,6 +667,44 @@
  	.postinit		= hipox_pci_postinit,
  };
@@ -53,9 +54,10 @@
      pci_common_init(&hipox_pci);
  	return 0;
  }
---- old/arch/arm/mach-hipox/smc.c	2011-05-16 11:00:09.165565000 +0200
-+++ new/arch/arm/mach-hipox/smc.c	2011-05-19 16:17:55.335565001 +0200
-@@ -20,17 +20,17 @@
+diff -Nurd linux-2.6.24.orig//arch/arm/mach-hipox/smc.c linux-2.6.24/arch/arm/mach-hipox/smc.c
+--- linux-2.6.24.orig//arch/arm/mach-hipox/smc.c	2011-06-15 08:54:13.869073667 +0200
++++ linux-2.6.24/arch/arm/mach-hipox/smc.c	2011-06-15 08:58:49.038353811 +0200
+@@ -20,6 +20,7 @@
  
  #include <asm/io.h>
  #include <asm/hardware.h>
@@ -63,11 +65,7 @@
  #include <asm/arch/smc.h>
  #include <linux/delay.h>
  #include <linux/jiffies.h>
- #include <linux/module.h>
--#include <linux/hrtimer.h>
- 
--static ktime_t request_pci_timestamp = {0};
-+static unsigned int request_pci_timestamp = 0;
+@@ -30,7 +31,7 @@
  /*
   * Request PCI_ARB to grant access to the STATIC core.
   */
@@ -76,12 +74,10 @@
  {
  	unsigned maxtries = 10; /* wait for maxtries jiffies at maximum */
  
-@@ -50,25 +50,185 @@
- 	if (!(readl(SYS_CTRL_PCI_STAT) & (1UL << SYSCTL_PCI_STAT_SYSPCI_STATIC_GNT)))
+@@ -51,12 +52,14 @@
  		printk(KERN_WARNING "%s: timeout requesting access to PCI bus for static memory interface\n",  __func__);
  
--	request_pci_timestamp = ktime_get();
-+	request_pci_timestamp = jiffies_to_msecs(get_jiffies_64());
+ 	request_pci_timestamp = ktime_get();
 +
 +    return ( 0 != ( readl(SYS_CTRL_PCI_STAT) & (1UL << SYSCTL_PCI_STAT_SYSPCI_STATIC_GNT) ) ? 0 : 1 );
  }
@@ -92,18 +88,9 @@
 -void hipox_smc_release_pci_ad_31_0(void)
 +static void _hipox_smc_release_pci_ad_31_0(void)
  {
--	const s64 timeout = 400; /* us */  
--	s64 delta = ktime_us_delta(ktime_get(), request_pci_timestamp);
-+	const unsigned int timeout = 100; /* ms */  
-+	unsigned int delta = jiffies_to_msecs(get_jiffies_64()) - request_pci_timestamp;
- 
- 	/* set PCI_ARB request bit in Sysctrl_PCI_Ctrl1 */
- 	writel(readl(SYS_CTRL_PCI_CTRL1) & ~(1UL << SYSCTL_PCI_CTRL1_SYSPCI_STATIC_REQ), SYS_CTRL_PCI_CTRL1);
- 
- 	if (delta > timeout)
- 	{
--		printk(KERN_WARNING "%s: static memory interface blocked PCI bus for %llu us\n",  __func__, delta);
-+		printk(KERN_WARNING "%s: static memory interface blocked PCI bus for %u ms\n",  __func__, delta);
+ 	const s64 timeout = 400; /* us */  
+ 	s64 delta = ktime_us_delta(ktime_get(), request_pci_timestamp);
+@@ -70,5 +73,163 @@
  	}
  }
  
@@ -269,8 +256,189 @@
 +
 +EXPORT_SYMBOL(ox810_pci_register_semaphore_callbacks);
 +EXPORT_SYMBOL(ox810_pci_reset_semaphore_callbacks);
---- old/include/asm-arm/arch-hipox/smc.h	2011-05-16 11:00:09.165565000 +0200
-+++ new/include/asm-arm/arch-hipox/smc.h	2011-05-19 14:28:04.805564999 +0200
+diff -Nurd linux-2.6.24.orig//drivers/mtd/maps/physmap.c linux-2.6.24/drivers/mtd/maps/physmap.c
+--- linux-2.6.24.orig//drivers/mtd/maps/physmap.c	2011-06-15 08:54:14.204048457 +0200
++++ linux-2.6.24/drivers/mtd/maps/physmap.c	2011-06-15 09:12:40.775896237 +0200
+@@ -22,6 +22,7 @@
+ #include <linux/mtd/partitions.h>
+ #include <linux/mtd/physmap.h>
+ #include <asm/io.h>
++#include <asm/bug.h>
+ 
+ #if defined (CONFIG_ARCH_HIPOX)
+ #include <asm/arch/smc.h>
+@@ -87,11 +88,12 @@
+ 
+ 	// printk("%s:%d would wait for hipox_flash_mutex\n", __func__, __LINE__);
+ 	mutex_lock(&hipox_flash_mutex);
+-	hipox_smc_request_pci_ad_31_0();
++	if ( 0 != ox810_flash_acquire_bus() )
++		BUG();
+ 
+ 	ret = inline_map_read(map, ofs);
+ 
+-	hipox_smc_release_pci_ad_31_0();
++	ox810_flash_release_bus();
+ 	mutex_unlock(&hipox_flash_mutex);
+ 	// printk("%s:%d hipox_flash_mutex unlocked\n", __func__, __LINE__);
+ 
+@@ -102,11 +104,12 @@
+ {
+ 	// printk("%s:%d would wait for hipox_flash_mutex\n", __func__, __LINE__);
+ 	mutex_lock(&hipox_flash_mutex);
+-	hipox_smc_request_pci_ad_31_0();
++	if ( 0 != ox810_flash_acquire_bus() )
++		BUG();
+ 
+ 	inline_map_write(map, datum, ofs);
+ 
+-	hipox_smc_release_pci_ad_31_0();
++	ox810_flash_release_bus();
+ 	mutex_unlock(&hipox_flash_mutex);
+ 	// printk("%s:%d hipox_flash_mutex unlocked\n", __func__, __LINE__);
+ }
+@@ -115,11 +118,12 @@
+ {
+ 	// printk("%s:%d would wait for hipox_flash_mutex\n", __func__, __LINE__);
+ 	mutex_lock(&hipox_flash_mutex);
+-	hipox_smc_request_pci_ad_31_0();
++	if ( 0 != ox810_flash_acquire_bus() )
++		BUG();
+ 
+ 	inline_map_copy_from(map, to, from, len);
+ 
+-	hipox_smc_release_pci_ad_31_0();
++	ox810_flash_release_bus();
+ 	mutex_unlock(&hipox_flash_mutex);
+ 	// printk("%s:%d hipox_flash_mutex unlocked\n", __func__, __LINE__);
+ }
+@@ -128,11 +132,12 @@
+ {
+ 	// printk("%s:%d would wait for hipox_flash_mutex\n", __func__, __LINE__);
+ 	mutex_lock(&hipox_flash_mutex);
+-	hipox_smc_request_pci_ad_31_0();
++	if ( 0 != ox810_flash_acquire_bus() )
++		BUG();
+ 
+ 	inline_map_copy_to(map, to, from, len);
+ 
+-	hipox_smc_release_pci_ad_31_0();
++	ox810_flash_release_bus();
+ 	mutex_unlock(&hipox_flash_mutex);
+ 	// printk("%s:%d hipox_flash_mutex unlocked\n", __func__, __LINE__);
+ }
+diff -Nurd linux-2.6.24.orig//drivers/mtd/nand/hipox_nand.c linux-2.6.24/drivers/mtd/nand/hipox_nand.c
+--- linux-2.6.24.orig//drivers/mtd/nand/hipox_nand.c	2011-06-15 08:54:14.197048982 +0200
++++ linux-2.6.24/drivers/mtd/nand/hipox_nand.c	2011-06-15 09:07:11.675625433 +0200
+@@ -23,6 +23,7 @@
+ #include <linux/delay.h>
+ #include <linux/mutex.h>
+ #include <asm/io.h>
++#include <asm/bug.h>
+ #include <asm/arch/hardware.h>
+ #include <asm/arch/smc.h>
+ #include <asm/sizes.h>
+@@ -104,9 +105,10 @@
+ 
+ 	if (cmd != NAND_CMD_NONE)
+ 	{
+-		hipox_smc_request_pci_ad_31_0();
++		if ( ox810_flash_acquire_bus() )
++			BUG();
+ 		writeb(cmd, this->IO_ADDR_W);
+-		hipox_smc_release_pci_ad_31_0();
++		ox810_flash_release_bus();
+ 	}
+ }
+ 
+@@ -120,9 +122,13 @@
+ {
+ 	struct nand_chip *chip = mtd->priv;
+ 	uint8_t res;
+-	hipox_smc_request_pci_ad_31_0();
++
++	if ( ox810_flash_acquire_bus() )
++		BUG();
++
+ 	res = readb(chip->IO_ADDR_R);
+-	hipox_smc_release_pci_ad_31_0();
++
++	ox810_flash_release_bus();
+ 	return res;
+ }
+ 
+@@ -137,9 +143,13 @@
+ {
+ 	struct nand_chip *chip = mtd->priv;
+ 	u16 res;
+-	hipox_smc_request_pci_ad_31_0();
++
++	if ( ox810_flash_acquire_bus() )
++		BUG();
++
+ 	res = readw(chip->IO_ADDR_R);
+-	hipox_smc_release_pci_ad_31_0();
++
++	ox810_flash_release_bus();
+ 	return res;
+ }
+ 
+@@ -156,10 +166,13 @@
+ 	int i;
+ 	struct nand_chip *chip = mtd->priv;
+ 
+-	hipox_smc_request_pci_ad_31_0();
++	if ( ox810_flash_acquire_bus() )
++		BUG();
++
+ 	for (i = 0; i < len; i++)
+ 		buf[i] = readb(chip->IO_ADDR_R);
+-	hipox_smc_release_pci_ad_31_0();
++
++	ox810_flash_release_bus();
+ }
+ 
+ /**
+@@ -175,10 +188,13 @@
+ 	int i;
+ 	struct nand_chip *chip = mtd->priv;
+ 
+-	hipox_smc_request_pci_ad_31_0();
++	if ( ox810_flash_acquire_bus() )
++		BUG();
++
+ 	for (i = 0; i < len; i++)
+ 		writeb(buf[i], chip->IO_ADDR_W);
+-	hipox_smc_release_pci_ad_31_0();
++
++	ox810_flash_release_bus();
+ }
+ 
+ /**
+@@ -195,7 +211,9 @@
+ 	int ret = 0;
+ 	struct nand_chip *chip = mtd->priv;
+ 
+-	hipox_smc_request_pci_ad_31_0();
++	if ( ox810_flash_acquire_bus() )
++		BUG();
++
+ 	for (i = 0; i < len; i++)
+ 	{
+ 		if (buf[i] != readb(chip->IO_ADDR_R))
+@@ -204,7 +222,8 @@
+ 			break;
+ 		}
+ 	}
+-	hipox_smc_release_pci_ad_31_0();
++
++	ox810_flash_release_bus();
+ 
+ 	return ret;
+ }
+diff -Nurd linux-2.6.24.orig//include/asm-arm/arch-hipox/smc.h linux-2.6.24/include/asm-arm/arch-hipox/smc.h
+--- linux-2.6.24.orig//include/asm-arm/arch-hipox/smc.h	2011-06-15 08:54:17.548796712 +0200
++++ linux-2.6.24/include/asm-arm/arch-hipox/smc.h	2011-06-15 09:01:21.333880081 +0200
 @@ -15,14 +15,43 @@
   */
  extern struct mutex hipox_flash_mutex;
@@ -319,691 +487,3 @@
 +void hipox_smc_request_pci_ad_31_0( void );
  
  #endif // __ASM_ARCH_SMC_H
---- old/drivers/mtd/nand/hipox_nand.c	2011-05-16 11:00:10.895565009 +0200
-+++ new/drivers/mtd/nand/hipox_nand.c	2011-05-19 15:44:46.705564993 +0200
-@@ -23,6 +23,7 @@
- #include <linux/delay.h>
- #include <linux/mutex.h>
- #include <asm/io.h>
-+#include <asm/bug.h>
- #include <asm/arch/hardware.h>
- #include <asm/arch/smc.h>
- #include <asm/sizes.h>
-@@ -30,10 +31,9 @@
- 
- // the testboards ran down to a value of 4
- //#define STATIC_BUS_FLASH_CONFIG 0x4f1f3f3f  /* slow settings, 345 ns */
--#define STATIC_BUS_FLASH_CONFIG 0x4f1f3f0d  /* fast settings, 70 ns; use this as default, because it works for hipox board NOR flash also */
-+//#define STATIC_BUS_FLASH_CONFIG 0x4f1f3f0d  /* fast settings, 70 ns */
- //#define STATIC_BUS_FLASH_CONFIG 0x4f1f3f09  /* ultra fast settings, 50 ns */
--//#define STATIC_BUS_FLASH_CONFIG 0x4f1f3f04  /* warp settings, 27 ns */
--#define STATIC_BUS_FLASH_CONFIG_RW 0x41030303  /* read and write warp settings */
-+#define STATIC_BUS_FLASH_CONFIG 0x4f1f3f04  /* warp settings, 27 ns */
- 
- /*
-  * MTD structure for HydraIP board
-@@ -66,7 +66,6 @@
-  */
- static void hipox_nand_hwcontrol(struct mtd_info *mtd, int cmd, unsigned int ctrl)
- {
--	static unsigned int bank0 = STATIC_BUS_FLASH_CONFIG;
- 	struct nand_chip *this = mtd->priv;
- 
- 	if (ctrl & NAND_CTRL_CHANGE) {
-@@ -79,15 +78,12 @@
- 				// printk("%s:%d would wait for hipox_flash_mutex\n", __func__, __LINE__);
- 				mutex_lock(&hipox_flash_mutex);
- 				writel(0x20000000, GPIO_A_OUTPUT_CLEAR); /* assert CS-NAND */
--				bank0 = readl(STATIC_CONTROL_BANK0);
--				writel(STATIC_BUS_FLASH_CONFIG_RW, STATIC_CONTROL_BANK0);
- 			}
- 		}
- 		else
- 		{
- 			if (!(0x20000000 & readl(GPIO_A_OUTPUT_VALUE)))
- 			{
--				writel(bank0, STATIC_CONTROL_BANK0);
- 				writel(0x20000000, GPIO_A_OUTPUT_SET); /* deassert CS-NAND */
- 				mutex_unlock(&hipox_flash_mutex);
- 				// printk("%s:%d hipox_flash_mutex unlocked\n", __func__, __LINE__);
-@@ -104,9 +100,10 @@
- 
- 	if (cmd != NAND_CMD_NONE)
- 	{
--		hipox_smc_request_pci_ad_31_0();
-+		if ( ox810_flash_acquire_bus() )
-+			BUG();
- 		writeb(cmd, this->IO_ADDR_W);
--		hipox_smc_release_pci_ad_31_0();
-+		ox810_flash_release_bus();
- 	}
- }
- 
-@@ -120,9 +117,13 @@
- {
- 	struct nand_chip *chip = mtd->priv;
- 	uint8_t res;
--	hipox_smc_request_pci_ad_31_0();
-+
-+	if ( ox810_flash_acquire_bus() )
-+		BUG();
-+
- 	res = readb(chip->IO_ADDR_R);
--	hipox_smc_release_pci_ad_31_0();
-+
-+	ox810_flash_release_bus();
- 	return res;
- }
- 
-@@ -137,9 +138,13 @@
- {
- 	struct nand_chip *chip = mtd->priv;
- 	u16 res;
--	hipox_smc_request_pci_ad_31_0();
-+
-+	if ( ox810_flash_acquire_bus() )
-+		BUG();
-+
- 	res = readw(chip->IO_ADDR_R);
--	hipox_smc_release_pci_ad_31_0();
-+
-+	ox810_flash_release_bus();
- 	return res;
- }
- 
-@@ -156,10 +161,13 @@
- 	int i;
- 	struct nand_chip *chip = mtd->priv;
- 
--	hipox_smc_request_pci_ad_31_0();
-+	if ( ox810_flash_acquire_bus() )
-+		BUG();
-+
- 	for (i = 0; i < len; i++)
- 		buf[i] = readb(chip->IO_ADDR_R);
--	hipox_smc_release_pci_ad_31_0();
-+
-+	ox810_flash_release_bus();
- }
- 
- /**
-@@ -175,10 +183,13 @@
- 	int i;
- 	struct nand_chip *chip = mtd->priv;
- 
--	hipox_smc_request_pci_ad_31_0();
-+	if ( ox810_flash_acquire_bus() )
-+		BUG();
-+
- 	for (i = 0; i < len; i++)
- 		writeb(buf[i], chip->IO_ADDR_W);
--	hipox_smc_release_pci_ad_31_0();
-+
-+	ox810_flash_release_bus();
- }
- 
- /**
-@@ -195,7 +206,9 @@
- 	int ret = 0;
- 	struct nand_chip *chip = mtd->priv;
- 
--	hipox_smc_request_pci_ad_31_0();
-+	if ( ox810_flash_acquire_bus() )
-+		BUG();
-+
- 	for (i = 0; i < len; i++)
- 	{
- 		if (buf[i] != readb(chip->IO_ADDR_R))
-@@ -204,7 +217,8 @@
- 			break;
- 		}
- 	}
--	hipox_smc_release_pci_ad_31_0();
-+
-+	ox810_flash_release_bus();
- 
- 	return ret;
- }
-@@ -239,9 +253,7 @@
- 		return -ENOMEM;
- 	}
- 
--	mutex_lock(&hipox_flash_mutex);
- 	writel(STATIC_BUS_FLASH_CONFIG, STATIC_CONTROL_BANK0);
--	mutex_unlock(&hipox_flash_mutex);
- 
- 	/* Initialize structures */
- 	memset(hipox_nand_mtd, 0, sizeof(struct mtd_info));
-@@ -252,12 +264,12 @@
- 	writel(0x20000000, GPIO_A_OUTPUT_ENABLE_SET);
- 
- 	// deselect alternate function
--   writel(readl(SYS_CTRL_GPIO_PRIMSEL_CTRL_0) & ~0x20000000,
--		SYS_CTRL_GPIO_PRIMSEL_CTRL_0);
--   writel(readl(SYS_CTRL_GPIO_SECSEL_CTRL_0) & ~0x20000000,
--		SYS_CTRL_GPIO_SECSEL_CTRL_0);
--   writel(readl(SYS_CTRL_GPIO_TERTSEL_CTRL_0) & ~0x20000000,
--		SYS_CTRL_GPIO_TERTSEL_CTRL_0);
-+	writel(readl(SYS_CTRL_GPIO_PRIMSEL_CTRL_0) & ~0x20000000,
-+			SYS_CTRL_GPIO_PRIMSEL_CTRL_0);
-+	writel(readl(SYS_CTRL_GPIO_SECSEL_CTRL_0) & ~0x20000000,
-+			SYS_CTRL_GPIO_SECSEL_CTRL_0);
-+	writel(readl(SYS_CTRL_GPIO_TERTSEL_CTRL_0) & ~0x20000000,
-+			SYS_CTRL_GPIO_TERTSEL_CTRL_0);
- 
- 	// assert CS-NAND
- 	writel(0x20000000, GPIO_A_OUTPUT_CLEAR);
---- old/drivers/mtd/maps/physmap.c	2011-05-16 11:00:10.895565009 +0200
-+++ new/drivers/mtd/maps/physmap.c	2011-05-19 15:45:07.765565002 +0200
-@@ -22,6 +22,7 @@
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/physmap.h>
- #include <asm/io.h>
-+#include <asm/bug.h>
- 
- #if defined (CONFIG_ARCH_HIPOX)
- #include <asm/arch/smc.h>
-@@ -31,110 +32,115 @@
- #endif /* CONFIG_ARCH_HIPOX */
- 
- struct physmap_flash_info {
--	struct mtd_info		*mtd;
--	struct map_info		map;
--	struct resource		*res;
-+    struct mtd_info		*mtd;
-+    struct map_info		map;
-+    struct resource		*res;
- #ifdef CONFIG_MTD_PARTITIONS
--	int			nr_parts;
--	struct mtd_partition	*parts;
-+    int			nr_parts;
-+    struct mtd_partition	*parts;
- #endif
- };
- 
- 
- static int physmap_flash_remove(struct platform_device *dev)
- {
--	struct physmap_flash_info *info;
--	struct physmap_flash_data *physmap_data;
-+    struct physmap_flash_info *info;
-+    struct physmap_flash_data *physmap_data;
- 
--	info = platform_get_drvdata(dev);
--	if (info == NULL)
--		return 0;
--	platform_set_drvdata(dev, NULL);
-+    info = platform_get_drvdata(dev);
-+    if (info == NULL)
-+        return 0;
-+    platform_set_drvdata(dev, NULL);
- 
--	physmap_data = dev->dev.platform_data;
-+    physmap_data = dev->dev.platform_data;
- 
--	if (info->mtd != NULL) {
-+    if (info->mtd != NULL) {
- #ifdef CONFIG_MTD_PARTITIONS
--		if (info->nr_parts) {
--			del_mtd_partitions(info->mtd);
--			kfree(info->parts);
--		} else if (physmap_data->nr_parts) {
--			del_mtd_partitions(info->mtd);
--		} else {
--			del_mtd_device(info->mtd);
--		}
-+        if (info->nr_parts) {
-+            del_mtd_partitions(info->mtd);
-+            kfree(info->parts);
-+        } else if (physmap_data->nr_parts) {
-+            del_mtd_partitions(info->mtd);
-+        } else {
-+            del_mtd_device(info->mtd);
-+        }
- #else
--		del_mtd_device(info->mtd);
-+        del_mtd_device(info->mtd);
- #endif
--		map_destroy(info->mtd);
--	}
-+        map_destroy(info->mtd);
-+    }
- 
--	if (info->map.virt != NULL)
--		iounmap(info->map.virt);
-+    if (info->map.virt != NULL)
-+        iounmap(info->map.virt);
- 
--	if (info->res != NULL) {
--		release_resource(info->res);
--		kfree(info->res);
--	}
-+    if (info->res != NULL) {
-+        release_resource(info->res);
-+        kfree(info->res);
-+    }
- 
--	return 0;
-+    return 0;
- }
- 
- #if defined (CONFIG_ARCH_HIPOX)
- static map_word __xipram physmap_hipox_read(struct map_info *map, unsigned long ofs)
- {
--	map_word ret;
-+    map_word ret;
- 
--	// printk("%s:%d would wait for hipox_flash_mutex\n", __func__, __LINE__);
--	mutex_lock(&hipox_flash_mutex);
--	hipox_smc_request_pci_ad_31_0();
-+    // printk("%s:%d would wait for hipox_flash_mutex\n", __func__, __LINE__);
-+    mutex_lock(&hipox_flash_mutex);
- 
--	ret = inline_map_read(map, ofs);
-+    if ( 0 != ox810_flash_acquire_bus() )
-+        BUG();
- 
--	hipox_smc_release_pci_ad_31_0();
--	mutex_unlock(&hipox_flash_mutex);
--	// printk("%s:%d hipox_flash_mutex unlocked\n", __func__, __LINE__);
-+    ret = inline_map_read(map, ofs);
- 
--	return ret;
-+    ox810_flash_release_bus();
-+    mutex_unlock(&hipox_flash_mutex);
-+    // printk("%s:%d hipox_flash_mutex unlocked\n", __func__, __LINE__);
-+
-+    return ret;
- }
- 
- static void __xipram physmap_hipox_write(struct map_info *map, const map_word datum, unsigned long ofs)
- {
--	// printk("%s:%d would wait for hipox_flash_mutex\n", __func__, __LINE__);
--	mutex_lock(&hipox_flash_mutex);
--	hipox_smc_request_pci_ad_31_0();
--
--	inline_map_write(map, datum, ofs);
--
--	hipox_smc_release_pci_ad_31_0();
--	mutex_unlock(&hipox_flash_mutex);
--	// printk("%s:%d hipox_flash_mutex unlocked\n", __func__, __LINE__);
-+    // printk("%s:%d would wait for hipox_flash_mutex\n", __func__, __LINE__);
-+    mutex_lock(&hipox_flash_mutex);
-+    if ( 0 != ox810_flash_acquire_bus() )
-+        BUG();
-+
-+    inline_map_write(map, datum, ofs);
-+
-+    ox810_flash_release_bus();
-+    mutex_unlock(&hipox_flash_mutex);
-+    // printk("%s:%d hipox_flash_mutex unlocked\n", __func__, __LINE__);
- }
- 
- static void __xipram physmap_hipox_copy_from(struct map_info *map, void *to, unsigned long from, ssize_t len)
- {
--	// printk("%s:%d would wait for hipox_flash_mutex\n", __func__, __LINE__);
--	mutex_lock(&hipox_flash_mutex);
--	hipox_smc_request_pci_ad_31_0();
--
--	inline_map_copy_from(map, to, from, len);
--
--	hipox_smc_release_pci_ad_31_0();
--	mutex_unlock(&hipox_flash_mutex);
--	// printk("%s:%d hipox_flash_mutex unlocked\n", __func__, __LINE__);
-+    // printk("%s:%d would wait for hipox_flash_mutex\n", __func__, __LINE__);
-+    mutex_lock(&hipox_flash_mutex);
-+    if ( 0 != ox810_flash_acquire_bus() )
-+        BUG();
-+
-+    inline_map_copy_from(map, to, from, len);
-+
-+    ox810_flash_release_bus();
-+    mutex_unlock(&hipox_flash_mutex);
-+    // printk("%s:%d hipox_flash_mutex unlocked\n", __func__, __LINE__);
- }
- 
- static void __xipram physmap_hipox_copy_to(struct map_info *map, unsigned long to, const void *from, ssize_t len)
- {
--	// printk("%s:%d would wait for hipox_flash_mutex\n", __func__, __LINE__);
--	mutex_lock(&hipox_flash_mutex);
--	hipox_smc_request_pci_ad_31_0();
--
--	inline_map_copy_to(map, to, from, len);
--
--	hipox_smc_release_pci_ad_31_0();
--	mutex_unlock(&hipox_flash_mutex);
--	// printk("%s:%d hipox_flash_mutex unlocked\n", __func__, __LINE__);
-+    // printk("%s:%d would wait for hipox_flash_mutex\n", __func__, __LINE__);
-+    mutex_lock(&hipox_flash_mutex);
-+    if ( 0 != ox810_flash_acquire_bus() )
-+        BUG();
-+
-+    inline_map_copy_to(map, to, from, len);
-+
-+    ox810_flash_release_bus();
-+    mutex_unlock(&hipox_flash_mutex);
-+    // printk("%s:%d hipox_flash_mutex unlocked\n", __func__, __LINE__);
- }
- #endif /* CONFIG_ARCH_HIPOX */
- 
-@@ -145,136 +151,134 @@
- 
- static int physmap_flash_probe(struct platform_device *dev)
- {
--	struct physmap_flash_data *physmap_data;
--	struct physmap_flash_info *info;
--	const char **probe_type;
--	int err;
--
--	physmap_data = dev->dev.platform_data;
--	if (physmap_data == NULL)
--		return -ENODEV;
-+    struct physmap_flash_data *physmap_data;
-+    struct physmap_flash_info *info;
-+    const char **probe_type;
-+    int err;
-+
-+    physmap_data = dev->dev.platform_data;
-+    if (physmap_data == NULL)
-+        return -ENODEV;
- 
- #if defined (CONFIG_ARCH_HIPOX)
--	/* init timing for static memory controller */
--	mutex_lock(&hipox_flash_mutex);
--	writel(STATIC_BUS_FLASH_CONFIG, STATIC_CONTROL_BANK0);
--	mutex_unlock(&hipox_flash_mutex);
-+    /* init timing for static memory controller */
-+    writel(STATIC_BUS_FLASH_CONFIG, STATIC_CONTROL_BANK0);
- #endif /* CONFIG_ARCH_HIPOX */
- 
--       	printk(KERN_NOTICE "physmap platform flash device: %.8llx at %.8llx\n",
--	    (unsigned long long)(dev->resource->end - dev->resource->start + 1),
--	    (unsigned long long)dev->resource->start);
--
--	info = kzalloc(sizeof(struct physmap_flash_info), GFP_KERNEL);
--	if (info == NULL) {
--		err = -ENOMEM;
--		goto err_out;
--	}
--
--	platform_set_drvdata(dev, info);
--
--	info->res = request_mem_region(dev->resource->start,
--			dev->resource->end - dev->resource->start + 1,
--			dev->dev.bus_id);
--	if (info->res == NULL) {
--		dev_err(&dev->dev, "Could not reserve memory region\n");
--		err = -ENOMEM;
--		goto err_out;
--	}
--
--	info->map.name = dev->dev.bus_id;
--	info->map.phys = dev->resource->start;
--	info->map.size = dev->resource->end - dev->resource->start + 1;
--	info->map.bankwidth = physmap_data->width;
--	info->map.set_vpp = physmap_data->set_vpp;
--
--	info->map.virt = ioremap(info->map.phys, info->map.size);
--	if (info->map.virt == NULL) {
--		dev_err(&dev->dev, "Failed to ioremap flash region\n");
--		err = EIO;
--		goto err_out;
--	}
-+    printk(KERN_NOTICE "physmap platform flash device: %.8llx at %.8llx\n",
-+            (unsigned long long)(dev->resource->end - dev->resource->start + 1),
-+            (unsigned long long)dev->resource->start);
-+
-+    info = kzalloc(sizeof(struct physmap_flash_info), GFP_KERNEL);
-+    if (info == NULL) {
-+        err = -ENOMEM;
-+        goto err_out;
-+    }
-+
-+    platform_set_drvdata(dev, info);
-+
-+    info->res = request_mem_region(dev->resource->start,
-+            dev->resource->end - dev->resource->start + 1,
-+            dev->dev.bus_id);
-+    if (info->res == NULL) {
-+        dev_err(&dev->dev, "Could not reserve memory region\n");
-+        err = -ENOMEM;
-+        goto err_out;
-+    }
-+
-+    info->map.name = dev->dev.bus_id;
-+    info->map.phys = dev->resource->start;
-+    info->map.size = dev->resource->end - dev->resource->start + 1;
-+    info->map.bankwidth = physmap_data->width;
-+    info->map.set_vpp = physmap_data->set_vpp;
-+
-+    info->map.virt = ioremap(info->map.phys, info->map.size);
-+    if (info->map.virt == NULL) {
-+        dev_err(&dev->dev, "Failed to ioremap flash region\n");
-+        err = EIO;
-+        goto err_out;
-+    }
- 
--	simple_map_init(&info->map);
-+    simple_map_init(&info->map);
- #if defined (CONFIG_ARCH_HIPOX)
--	info->map.read      = physmap_hipox_read;
--	info->map.write     = physmap_hipox_write;
--	info->map.copy_from = physmap_hipox_copy_from;
--	info->map.copy_to   = physmap_hipox_copy_to;
-+    info->map.read      = physmap_hipox_read;
-+    info->map.write     = physmap_hipox_write;
-+    info->map.copy_from = physmap_hipox_copy_from;
-+    info->map.copy_to   = physmap_hipox_copy_to;
- #endif /* CONFIG_ARCH_HIPOX */
- 
--	probe_type = rom_probe_types;
--	for (; info->mtd == NULL && *probe_type != NULL; probe_type++)
--		info->mtd = do_map_probe(*probe_type, &info->map);
--	if (info->mtd == NULL) {
--		dev_err(&dev->dev, "map_probe failed\n");
--		err = -ENXIO;
--		goto err_out;
--	}
--	info->mtd->owner = THIS_MODULE;
-+    probe_type = rom_probe_types;
-+    for (; info->mtd == NULL && *probe_type != NULL; probe_type++)
-+        info->mtd = do_map_probe(*probe_type, &info->map);
-+    if (info->mtd == NULL) {
-+        dev_err(&dev->dev, "map_probe failed\n");
-+        err = -ENXIO;
-+        goto err_out;
-+    }
-+    info->mtd->owner = THIS_MODULE;
- 
- #ifdef CONFIG_MTD_PARTITIONS
--	err = parse_mtd_partitions(info->mtd, part_probe_types, &info->parts, 0);
--	if (err > 0) {
--		add_mtd_partitions(info->mtd, info->parts, err);
--		return 0;
--	}
--
--	if (physmap_data->nr_parts) {
--		printk(KERN_NOTICE "Using physmap partition information\n");
--		add_mtd_partitions(info->mtd, physmap_data->parts,
--						physmap_data->nr_parts);
--		return 0;
--	}
-+    err = parse_mtd_partitions(info->mtd, part_probe_types, &info->parts, 0);
-+    if (err > 0) {
-+        add_mtd_partitions(info->mtd, info->parts, err);
-+        return 0;
-+    }
-+
-+    if (physmap_data->nr_parts) {
-+        printk(KERN_NOTICE "Using physmap partition information\n");
-+        add_mtd_partitions(info->mtd, physmap_data->parts,
-+                physmap_data->nr_parts);
-+        return 0;
-+    }
- #endif
- 
--	add_mtd_device(info->mtd);
--	return 0;
-+    add_mtd_device(info->mtd);
-+    return 0;
- 
- err_out:
--	physmap_flash_remove(dev);
--	return err;
-+    physmap_flash_remove(dev);
-+    return err;
- }
- 
- #ifdef CONFIG_PM
- static int physmap_flash_suspend(struct platform_device *dev, pm_message_t state)
- {
--	struct physmap_flash_info *info = platform_get_drvdata(dev);
--	int ret = 0;
-+    struct physmap_flash_info *info = platform_get_drvdata(dev);
-+    int ret = 0;
- 
--	if (info)
--		ret = info->mtd->suspend(info->mtd);
-+    if (info)
-+        ret = info->mtd->suspend(info->mtd);
- 
--	return ret;
-+    return ret;
- }
- 
- static int physmap_flash_resume(struct platform_device *dev)
- {
--	struct physmap_flash_info *info = platform_get_drvdata(dev);
--	if (info)
--		info->mtd->resume(info->mtd);
--	return 0;
-+    struct physmap_flash_info *info = platform_get_drvdata(dev);
-+    if (info)
-+        info->mtd->resume(info->mtd);
-+    return 0;
- }
- 
- static void physmap_flash_shutdown(struct platform_device *dev)
- {
--	struct physmap_flash_info *info = platform_get_drvdata(dev);
--	if (info && info->mtd->suspend(info->mtd) == 0)
--		info->mtd->resume(info->mtd);
-+    struct physmap_flash_info *info = platform_get_drvdata(dev);
-+    if (info && info->mtd->suspend(info->mtd) == 0)
-+        info->mtd->resume(info->mtd);
- }
- #endif
- 
- static struct platform_driver physmap_flash_driver = {
--	.probe		= physmap_flash_probe,
--	.remove		= physmap_flash_remove,
-+    .probe		= physmap_flash_probe,
-+    .remove		= physmap_flash_remove,
- #ifdef CONFIG_PM
--	.suspend	= physmap_flash_suspend,
--	.resume		= physmap_flash_resume,
--	.shutdown	= physmap_flash_shutdown,
--#endif
--	.driver		= {
--		.name	= "physmap-flash",
--	},
-+    .suspend	= physmap_flash_suspend,
-+    .resume		= physmap_flash_resume,
-+    .shutdown	= physmap_flash_shutdown,
-+#endif
-+    .driver		= {
-+        .name	= "physmap-flash",
-+    },
- };
- 
- 
-@@ -291,63 +295,63 @@
- }
- 
- static struct physmap_flash_data physmap_flash_data = {
--	.width		= CONFIG_MTD_PHYSMAP_BANKWIDTH,
-+    .width		= CONFIG_MTD_PHYSMAP_BANKWIDTH,
- };
- 
- static struct resource physmap_flash_resource = {
--	.start		= CONFIG_MTD_PHYSMAP_START,
--	.end		= CONFIG_MTD_PHYSMAP_START + CONFIG_MTD_PHYSMAP_LEN - 1,
--	.flags		= IORESOURCE_MEM,
-+    .start		= CONFIG_MTD_PHYSMAP_START,
-+    .end		= CONFIG_MTD_PHYSMAP_START + CONFIG_MTD_PHYSMAP_LEN - 1,
-+    .flags		= IORESOURCE_MEM,
- };
- 
- static struct platform_device physmap_flash = {
--	.name		= "physmap-flash",
--	.id		= 0,
--	.dev		= {
--		.platform_data	= &physmap_flash_data,
--		.release	= physmap_flash_release, /* needed for module build */
--	},
--	.num_resources	= 1,
--	.resource	= &physmap_flash_resource,
-+    .name		= "physmap-flash",
-+    .id		= 0,
-+    .dev		= {
-+        .platform_data	= &physmap_flash_data,
-+        .release	= physmap_flash_release, /* needed for module build */
-+    },
-+    .num_resources	= 1,
-+    .resource	= &physmap_flash_resource,
- };
- 
- void physmap_configure(unsigned long addr, unsigned long size,
--		int bankwidth, void (*set_vpp)(struct map_info *, int))
-+        int bankwidth, void (*set_vpp)(struct map_info *, int))
- {
--	physmap_flash_resource.start = addr;
--	physmap_flash_resource.end = addr + size - 1;
--	physmap_flash_data.width = bankwidth;
--	physmap_flash_data.set_vpp = set_vpp;
-+    physmap_flash_resource.start = addr;
-+    physmap_flash_resource.end = addr + size - 1;
-+    physmap_flash_data.width = bankwidth;
-+    physmap_flash_data.set_vpp = set_vpp;
- }
- 
- #ifdef CONFIG_MTD_PARTITIONS
- void physmap_set_partitions(struct mtd_partition *parts, int num_parts)
- {
--	physmap_flash_data.nr_parts = num_parts;
--	physmap_flash_data.parts = parts;
-+    physmap_flash_data.nr_parts = num_parts;
-+    physmap_flash_data.parts = parts;
- }
- #endif
- #endif
- 
- static int __init physmap_init(void)
- {
--	int err;
-+    int err;
- 
--	err = platform_driver_register(&physmap_flash_driver);
-+    err = platform_driver_register(&physmap_flash_driver);
- #ifdef PHYSMAP_COMPAT
--	if (err == 0)
--		platform_device_register(&physmap_flash);
-+    if (err == 0)
-+        platform_device_register(&physmap_flash);
- #endif
- 
--	return err;
-+    return err;
- }
- 
- static void __exit physmap_exit(void)
- {
- #ifdef PHYSMAP_COMPAT
--	platform_device_unregister(&physmap_flash);
-+    platform_device_unregister(&physmap_flash);
- #endif
--	platform_driver_unregister(&physmap_flash_driver);
-+    platform_driver_unregister(&physmap_flash_driver);
- }
- 
- module_init(physmap_init);
