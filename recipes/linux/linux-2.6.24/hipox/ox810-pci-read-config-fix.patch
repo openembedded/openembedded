@@ -1,5 +1,5 @@
---- /linux-2.6.24-orig/arch/arm/mach-hipox/pci.c	2011-03-31 16:56:17.968638003 +0200
-+++ /linux-2.6.24/arch/arm/mach-hipox/pci.c	2011-03-31 17:06:21.198638000 +0200
+--- linux-2.6.24-orig/arch/arm/mach-hipox/pci.c	2011-03-31 16:56:17.968638003 +0200
++++ linux-2.6.24/arch/arm/mach-hipox/pci.c	2011-03-31 17:06:21.198638000 +0200
 @@ -311,12 +311,12 @@
  	switch (size) {
  	case 1:
