@@ -1,0 +1,390 @@
+This comes from http://bugs.kde.org/show_bug.cgi?id=259977 and is merged
+upstream.
+
+diff -paur valgrind/coregrind/m_machine.c vg-ppc-feature-fix/coregrind/m_machine.c
+--- valgrind/coregrind/m_machine.c	2010-12-10 08:47:00.000000000 -0600
++++ vg-ppc-feature-fix/coregrind/m_machine.c	2010-12-10 11:35:57.410487338 -0600
+@@ -387,20 +387,102 @@ Int VG_(machine_arm_archlevel) = 4;
+ /* For hwcaps detection on ppc32/64 and arm we'll need to do SIGILL
+    testing, so we need a jmp_buf. */
+ #if defined(VGA_ppc32) || defined(VGA_ppc64) || defined(VGA_arm)
+-#include <setjmp.h> // For jmp_buf
+-static jmp_buf env_unsup_insn;
+-static void handler_unsup_insn ( Int x ) { __builtin_longjmp(env_unsup_insn,1); }
++#include <elf.h>
++#include <link.h>
++#include <unistd.h>
++#include "pub_tool_libcproc.h"
++
++#ifndef AT_BASE_PLATFORM
++#define AT_BASE_PLATFORM 24             /* String identifying real platforms.*/
++#endif
++
++  #define PPC_FEATURE_32                  0x80000000 /* 32-bit mode.  */
++  #define PPC_FEATURE_64                  0x40000000 /* 64-bit mode.  */
++  #define PPC_FEATURE_601_INSTR           0x20000000 /* 601 chip, Old POWER ISA.  */
++  #define PPC_FEATURE_HAS_ALTIVEC         0x10000000 /* SIMD/Vector Unit.  */
++  #define PPC_FEATURE_HAS_FPU             0x08000000 /* Floating Point Unit.  */
++  #define PPC_FEATURE_HAS_MMU             0x04000000 /* Memory Management Unit.  */
++  #define PPC_FEATURE_HAS_4xxMAC          0x02000000 /* 4xx Multiply Accumulator.  */
++  #define PPC_FEATURE_UNIFIED_CACHE       0x01000000 /* Unified I/D cache.  */
++  #define PPC_FEATURE_HAS_SPE             0x00800000 /* Signal Processing ext.  */
++  #define PPC_FEATURE_HAS_EFP_SINGLE      0x00400000 /* SPE Float.  */
++  #define PPC_FEATURE_HAS_EFP_DOUBLE      0x00200000 /* SPE Double.  */
++  #define PPC_FEATURE_NO_TB               0x00100000 /* 601/403gx have no timebase.  */
++  #define PPC_FEATURE_POWER4              0x00080000 /* POWER4 ISA 2.01.  */
++  #define PPC_FEATURE_POWER5              0x00040000 /* POWER5 ISA 2.02.  */
++  #define PPC_FEATURE_POWER5_PLUS         0x00020000 /* POWER5+ ISA 2.03.  */
++  #define PPC_FEATURE_CELL_BE             0x00010000 /* CELL Broadband Engine */
++  #define PPC_FEATURE_BOOKE               0x00008000 /* ISA Embedded Category.  */
++  #define PPC_FEATURE_SMT                 0x00004000 /* Simultaneous Multi-Threading.  */
++  #define PPC_FEATURE_ICACHE_SNOOP        0x00002000
++  #define PPC_FEATURE_ARCH_2_05           0x00001000 /* ISA 2.05.  */
++  #define PPC_FEATURE_PA6T                0x00000800 /* PA Semi 6T Core.  */
++  #define PPC_FEATURE_HAS_DFP             0x00000400 /* Decimal FP Unit.  */
++  #define PPC_FEATURE_POWER6_EXT          0x00000200 /* P6 + mffgpr/mftgpr.  */
++  #define PPC_FEATURE_ARCH_2_06           0x00000100 /* ISA 2.06.  */
++  #define PPC_FEATURE_HAS_VSX             0x00000080 /* P7 Vector Scalar Extension.  */
++
++/* Scan the env to find the aux vector. */
++static inline Char** __auxv_find(void)
++{
++  Char **result = VG_(client_envp);
++  /* Scan over the env vector looking for the ending NULL */
++  for (; *result != NULL; ++result)
++    {
++    }
++  /* Bump the pointer one more step, which should be the auxv. */
++  return ++result;
++}
++
++static unsigned long fetch_at_hwcap(void)
++{
++       static unsigned long auxv_hwcap = 0;
++       Int i;
++       ElfW(auxv_t) *auxv_buf = NULL;
++
++       if (auxv_hwcap)
++          return auxv_hwcap;
++
++       auxv_buf = (ElfW(auxv_t)*) __auxv_find();
++       /* If someone has done a setenv() the __environ pointer may
++          have been moved and the assumption that the auxv follows is
++          not true. So look at the first entry and verify that it is
++          an auxv entry. */
++       if (!auxv_buf || auxv_buf->a_type == AT_NULL)
++          return 0;
++
++       for (i = 0; auxv_buf[i].a_type != AT_NULL; i++)
++          if (auxv_buf[i].a_type == AT_HWCAP)
++          {
++             auxv_hwcap = auxv_buf[i].a_un.a_val;
++             break;
++          }
++
++       return auxv_hwcap;
++}
++
++static Bool has_powerpc_feature(unsigned long feature)
++{
++       unsigned long hwcap = fetch_at_hwcap();
++
++       return (hwcap & feature) ? True : False;
++}
++
+ #endif
+ 
+ 
+-/* Helper function for VG_(machine_get_hwcaps), assumes the SIGILL/etc
+- * handlers are installed.  Determines the the sizes affected by dcbz
+- * and dcbzl instructions and updates the given VexArchInfo structure
+- * accordingly.
++/* Helper function for VG_(machine_get_hwcaps) to determine the
++ * the sizes affected by dcbz and dcbzl instructions and updates the
++ * given VexArchInfo structure accordingly.
++ *
++ * According to former PowerPC kernel maintainer, Paul Mackerras:
++ * "The dcbzl instruction is dcbz with bit 10 set to 1.  It's an Apple-specific
++ * hack in the PPC970 family. There is a bit in a HID register to make the normal
++ * dcbz instruction clear only 32 bytes, and then the dcbz with bit 10 set to 1
++ * would clear a whole cache line (128 bytes). Since bit 10 is in a reserved field
++ * in the dcbz instruction, other processors should ignore it."
+  *
+- * Not very defensive: assumes that as long as the dcbz/dcbzl
+- * instructions don't raise a SIGILL, that they will zero an aligned,
+- * contiguous block of memory of a sensible size. */
++ */
+ #if defined(VGA_ppc32) || defined(VGA_ppc64)
+ static void find_ppc_dcbz_sz(VexArchInfo *arch_info)
+ {
+@@ -428,24 +510,22 @@ static void find_ppc_dcbz_sz(VexArchInfo
+    }
+    vg_assert(dcbz_szB == 32 || dcbz_szB == 64 || dcbz_szB == 128);
+ 
+-   /* dcbzl clears 128B on G5/PPC970, and usually 32B on other platforms */
+-   if (__builtin_setjmp(env_unsup_insn)) {
+-      dcbzl_szB = 0; /* indicates unsupported */
+-   }
+-   else {
+-      VG_(memset)(test_block, 0xff, sizeof(test_block));
+-      /* some older assemblers won't understand the dcbzl instruction
+-       * variant, so we directly emit the instruction ourselves */
+-      __asm__ __volatile__("mr 9, %0 ; .long 0x7C204FEC" /*dcbzl 0,9*/
+-                           : /*out*/
+-                           : "r" (aligned) /*in*/
+-                           : "memory", "r9" /*clobber*/);
+-      for (dcbzl_szB = 0, i = 0; i < sizeof(test_block); ++i) {
+-         if (!test_block[i])
+-            ++dcbzl_szB;
+-      }
+-      vg_assert(dcbzl_szB == 32 || dcbzl_szB == 64 || dcbzl_szB == 128);
++   VG_(memset)(test_block, 0xff, sizeof(test_block));
++   /* some older assemblers won't understand the dcbzl instruction
++    * variant, so we directly emit the instruction ourselves.
++    * This is done on the assumption that ALL processors other than
++    * ppc970-based Apples should ignore bit 10 being set for the 
++    * dcbz instruction.
++    * */
++   __asm__ __volatile__("mr 9, %0 ; .long 0x7C204FEC" /*dcbzl 0,9*/
++                        : /*out*/
++                        : "r" (aligned) /*in*/
++                        : "memory", "r9" /*clobber*/);
++   for (dcbzl_szB = 0, i = 0; i < sizeof(test_block); ++i) {
++      if (!test_block[i])
++         ++dcbzl_szB;
+    }
++   vg_assert(dcbzl_szB == 32 || dcbzl_szB == 64 || dcbzl_szB == 128);
+ 
+    arch_info->ppc_dcbz_szB  = dcbz_szB;
+    arch_info->ppc_dcbzl_szB = dcbzl_szB;
+@@ -605,106 +685,28 @@ Bool VG_(machine_get_hwcaps)( void )
+ 
+ #elif defined(VGA_ppc32)
+    {
+-     /* Find out which subset of the ppc32 instruction set is supported by
+-        verifying whether various ppc32 instructions generate a SIGILL
+-        or a SIGFPE. An alternative approach is to check the AT_HWCAP and
+-        AT_PLATFORM entries in the ELF auxiliary table -- see also
+-        the_iifii.client_auxv in m_main.c.
+-      */
+-     vki_sigset_t          saved_set, tmp_set;
+-     vki_sigaction_fromK_t saved_sigill_act, saved_sigfpe_act;
+-     vki_sigaction_toK_t     tmp_sigill_act,   tmp_sigfpe_act;
+-
+-     volatile Bool have_F, have_V, have_FX, have_GX;
+-     Int r;
+-
+-     /* This is a kludge.  Really we ought to back-convert saved_act
+-        into a toK_t using VG_(convert_sigaction_fromK_to_toK), but
+-        since that's a no-op on all ppc32 platforms so far supported,
+-        it's not worth the typing effort.  At least include most basic
+-        sanity check: */
+-     vg_assert(sizeof(vki_sigaction_fromK_t) == sizeof(vki_sigaction_toK_t));
+-
+-     VG_(sigemptyset)(&tmp_set);
+-     VG_(sigaddset)(&tmp_set, VKI_SIGILL);
+-     VG_(sigaddset)(&tmp_set, VKI_SIGFPE);
+ 
+-     r = VG_(sigprocmask)(VKI_SIG_UNBLOCK, &tmp_set, &saved_set);
+-     vg_assert(r == 0);
+-
+-     r = VG_(sigaction)(VKI_SIGILL, NULL, &saved_sigill_act);
+-     vg_assert(r == 0);
+-     tmp_sigill_act = saved_sigill_act;
+-
+-     r = VG_(sigaction)(VKI_SIGFPE, NULL, &saved_sigfpe_act);
+-     vg_assert(r == 0);
+-     tmp_sigfpe_act = saved_sigfpe_act;
+-
+-     /* NODEFER: signal handler does not return (from the kernel's point of
+-        view), hence if it is to successfully catch a signal more than once,
+-        we need the NODEFER flag. */
+-     tmp_sigill_act.sa_flags &= ~VKI_SA_RESETHAND;
+-     tmp_sigill_act.sa_flags &= ~VKI_SA_SIGINFO;
+-     tmp_sigill_act.sa_flags |=  VKI_SA_NODEFER;
+-     tmp_sigill_act.ksa_handler = handler_unsup_insn;
+-     r = VG_(sigaction)(VKI_SIGILL, &tmp_sigill_act, NULL);
+-     vg_assert(r == 0);
+-
+-     tmp_sigfpe_act.sa_flags &= ~VKI_SA_RESETHAND;
+-     tmp_sigfpe_act.sa_flags &= ~VKI_SA_SIGINFO;
+-     tmp_sigfpe_act.sa_flags |=  VKI_SA_NODEFER;
+-     tmp_sigfpe_act.ksa_handler = handler_unsup_insn;
+-     r = VG_(sigaction)(VKI_SIGFPE, &tmp_sigfpe_act, NULL);
+-     vg_assert(r == 0);
+-
+-     /* standard FP insns */
+-     have_F = True;
+-     if (__builtin_setjmp(env_unsup_insn)) {
+-        have_F = False;
+-     } else {
+-        __asm__ __volatile__(".long 0xFC000090"); /*fmr 0,0 */
+-     }
+-
+-     /* Altivec insns */
+-     have_V = True;
+-     if (__builtin_setjmp(env_unsup_insn)) {
+-        have_V = False;
+-     } else {
+-        /* Unfortunately some older assemblers don't speak Altivec (or
+-           choose not to), so to be safe we directly emit the 32-bit
+-           word corresponding to "vor 0,0,0".  This fixes a build
+-           problem that happens on Debian 3.1 (ppc32), and probably
+-           various other places. */
+-        __asm__ __volatile__(".long 0x10000484"); /*vor 0,0,0*/
+-     }
+-
+-     /* General-Purpose optional (fsqrt, fsqrts) */
+-     have_FX = True;
+-     if (__builtin_setjmp(env_unsup_insn)) {
+-        have_FX = False;
+-     } else {
+-        __asm__ __volatile__(".long 0xFC00002C"); /*fsqrt 0,0 */
+-     }
++     Bool have_F, have_V, have_FX, have_GX;
+ 
+-     /* Graphics optional (stfiwx, fres, frsqrte, fsel) */
+-     have_GX = True;
+-     if (__builtin_setjmp(env_unsup_insn)) {
+-        have_GX = False;
+-     } else {
+-        __asm__ __volatile__(".long 0xFC000034"); /* frsqrte 0,0 */
+-     }
++     if (has_powerpc_feature(PPC_FEATURE_ARCH_2_06)) {
++        VG_(printf)("********** WARNING **********\n");
++        VG_(printf)("You are running valgrind on a POWER7 system.  Be aware\n");
++        VG_(printf)("that POWER7 instructions are NOT yet supported by valgrind.\n");
++        VG_(printf)("*****************************\n");
++}
+ 
+-     /* determine dcbz/dcbzl sizes while we still have the signal
+-      * handlers registered */
+      find_ppc_dcbz_sz(&vai);
+ 
+-     r = VG_(sigaction)(VKI_SIGILL, &saved_sigill_act, NULL);
+-     vg_assert(r == 0);
+-     r = VG_(sigaction)(VKI_SIGFPE, &saved_sigfpe_act, NULL);
+-     vg_assert(r == 0);
+-     r = VG_(sigprocmask)(VKI_SIG_SETMASK, &saved_set, NULL);
+-     vg_assert(r == 0);
+-     VG_(debugLog)(1, "machine", "F %d V %d FX %d GX %d\n", 
++     have_F = has_powerpc_feature(PPC_FEATURE_HAS_FPU);
++     have_V = has_powerpc_feature(PPC_FEATURE_HAS_ALTIVEC);
++     have_FX =
++    		 has_powerpc_feature(PPC_FEATURE_POWER4 | PPC_FEATURE_POWER5 |
++    				 PPC_FEATURE_POWER5_PLUS | PPC_FEATURE_ARCH_2_05
++    				 | PPC_FEATURE_ARCH_2_06 | PPC_FEATURE_POWER6_EXT);
++     have_GX = has_powerpc_feature(PPC_FEATURE_ARCH_2_05 | PPC_FEATURE_ARCH_2_06
++    		 | PPC_FEATURE_POWER6_EXT);
++
++     VG_(debugLog)(1, "machine", "F %d V %d FX %d GX %d\n",
+                     (Int)have_F, (Int)have_V, (Int)have_FX, (Int)have_GX);
+      /* Make FP a prerequisite for VMX (bogusly so), and for FX and GX. */
+      if (have_V && !have_F)
+@@ -732,90 +734,27 @@ Bool VG_(machine_get_hwcaps)( void )
+ 
+ #elif defined(VGA_ppc64)
+    {
+-     /* Same instruction set detection algorithm as for ppc32. */
+-     vki_sigset_t          saved_set, tmp_set;
+-     vki_sigaction_fromK_t saved_sigill_act, saved_sigfpe_act;
+-     vki_sigaction_toK_t     tmp_sigill_act,   tmp_sigfpe_act;
+-
+-     volatile Bool have_F, have_V, have_FX, have_GX;
+-     Int r;
+-
+-     /* This is a kludge.  Really we ought to back-convert saved_act
+-        into a toK_t using VG_(convert_sigaction_fromK_to_toK), but
+-        since that's a no-op on all ppc64 platforms so far supported,
+-        it's not worth the typing effort.  At least include most basic
+-        sanity check: */
+-     vg_assert(sizeof(vki_sigaction_fromK_t) == sizeof(vki_sigaction_toK_t));
+-
+-     VG_(sigemptyset)(&tmp_set);
+-     VG_(sigaddset)(&tmp_set, VKI_SIGILL);
+-     VG_(sigaddset)(&tmp_set, VKI_SIGFPE);
+-
+-     r = VG_(sigprocmask)(VKI_SIG_UNBLOCK, &tmp_set, &saved_set);
+-     vg_assert(r == 0);
+-
+-     r = VG_(sigaction)(VKI_SIGILL, NULL, &saved_sigill_act);
+-     vg_assert(r == 0);
+-     tmp_sigill_act = saved_sigill_act;
+-
+-     VG_(sigaction)(VKI_SIGFPE, NULL, &saved_sigfpe_act);
+-     tmp_sigfpe_act = saved_sigfpe_act;
+-
+-     /* NODEFER: signal handler does not return (from the kernel's point of
+-        view), hence if it is to successfully catch a signal more than once,
+-        we need the NODEFER flag. */
+-     tmp_sigill_act.sa_flags &= ~VKI_SA_RESETHAND;
+-     tmp_sigill_act.sa_flags &= ~VKI_SA_SIGINFO;
+-     tmp_sigill_act.sa_flags |=  VKI_SA_NODEFER;
+-     tmp_sigill_act.ksa_handler = handler_unsup_insn;
+-     VG_(sigaction)(VKI_SIGILL, &tmp_sigill_act, NULL);
+-
+-     tmp_sigfpe_act.sa_flags &= ~VKI_SA_RESETHAND;
+-     tmp_sigfpe_act.sa_flags &= ~VKI_SA_SIGINFO;
+-     tmp_sigfpe_act.sa_flags |=  VKI_SA_NODEFER;
+-     tmp_sigfpe_act.ksa_handler = handler_unsup_insn;
+-     VG_(sigaction)(VKI_SIGFPE, &tmp_sigfpe_act, NULL);
+-
+-     /* standard FP insns */
+-     have_F = True;
+-     if (__builtin_setjmp(env_unsup_insn)) {
+-        have_F = False;
+-     } else {
+-        __asm__ __volatile__("fmr 0,0");
+-     }
+-
+-     /* Altivec insns */
+-     have_V = True;
+-     if (__builtin_setjmp(env_unsup_insn)) {
+-        have_V = False;
+-     } else {
+-        __asm__ __volatile__(".long 0x10000484"); /*vor 0,0,0*/
+-     }
+-
+-     /* General-Purpose optional (fsqrt, fsqrts) */
+-     have_FX = True;
+-     if (__builtin_setjmp(env_unsup_insn)) {
+-        have_FX = False;
+-     } else {
+-        __asm__ __volatile__(".long 0xFC00002C"); /*fsqrt 0,0*/
+-     }
++     Bool have_F, have_V, have_FX, have_GX;
+ 
+-     /* Graphics optional (stfiwx, fres, frsqrte, fsel) */
+-     have_GX = True;
+-     if (__builtin_setjmp(env_unsup_insn)) {
+-        have_GX = False;
+-     } else {
+-        __asm__ __volatile__(".long 0xFC000034"); /*frsqrte 0,0*/
++     if (has_powerpc_feature(PPC_FEATURE_ARCH_2_06)) {
++    	 VG_(printf)("********** WARNING **********\n");
++    	 VG_(printf)("You are running valgrind on a POWER7 system.  Be aware\n");
++    	 VG_(printf)("that POWER7 instructions are NOT yet supported by valgrind.\n");
++    	 VG_(printf)("*****************************\n");
+      }
+ 
+-     /* determine dcbz/dcbzl sizes while we still have the signal
+-      * handlers registered */
+      find_ppc_dcbz_sz(&vai);
+ 
+-     VG_(sigaction)(VKI_SIGILL, &saved_sigill_act, NULL);
+-     VG_(sigaction)(VKI_SIGFPE, &saved_sigfpe_act, NULL);
+-     VG_(sigprocmask)(VKI_SIG_SETMASK, &saved_set, NULL);
+-     VG_(debugLog)(1, "machine", "F %d V %d FX %d GX %d\n", 
++     have_F = has_powerpc_feature(PPC_FEATURE_HAS_FPU);
++     have_V = has_powerpc_feature(PPC_FEATURE_HAS_ALTIVEC);
++     have_FX =
++    		 has_powerpc_feature(PPC_FEATURE_POWER4 | PPC_FEATURE_POWER5 |
++    				 PPC_FEATURE_POWER5_PLUS | PPC_FEATURE_ARCH_2_05
++    				 | PPC_FEATURE_ARCH_2_06 | PPC_FEATURE_POWER6_EXT);
++     have_GX = has_powerpc_feature(PPC_FEATURE_ARCH_2_05 | PPC_FEATURE_ARCH_2_06
++    		 | PPC_FEATURE_POWER6_EXT);
++
++     VG_(debugLog)(1, "machine", "F %d V %d FX %d GX %d\n",
+                     (Int)have_F, (Int)have_V, (Int)have_FX, (Int)have_GX);
+      /* on ppc64, if we don't even have FP, just give up. */
+      if (!have_F)
