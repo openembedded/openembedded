@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.24.7
-# Tue May 31 16:06:17 2011
+# Thu Jun 16 14:04:00 2011
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -50,8 +50,6 @@ CONFIG_TASK_IO_ACCOUNTING=y
 CONFIG_LOG_BUF_SHIFT=14
 # CONFIG_CGROUPS is not set
 # CONFIG_FAIR_GROUP_SCHED is not set
-# CONFIG_FAIR_USER_SCHED is not set
-# CONFIG_FAIR_CGROUP_SCHED is not set
 # CONFIG_SYSFS_DEPRECATED is not set
 # CONFIG_RELAY is not set
 CONFIG_BLK_DEV_INITRD=y
@@ -721,7 +719,7 @@ CONFIG_NETDEVICES=y
 # CONFIG_BONDING is not set
 # CONFIG_MACVLAN is not set
 # CONFIG_EQUALIZER is not set
-# CONFIG_TUN is not set
+CONFIG_TUN=y
 # CONFIG_VETH is not set
 # CONFIG_ARCNET is not set
 # CONFIG_NET_ETHERNET is not set
