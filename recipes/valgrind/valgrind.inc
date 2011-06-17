@@ -2,7 +2,6 @@ DESCRIPTION = "Valgrind memory debugger"
 HOMEPAGE = "http://www.valgrind.org/"
 SECTION = "devel"
 LICENSE = "GPLv2"
-DEPENDS = "virtual/libx11"
 PR = "r0"
 
 SRC_URI = "http://www.valgrind.org/downloads/valgrind-${PV}.tar.bz2"
