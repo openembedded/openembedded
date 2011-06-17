@@ -4,7 +4,7 @@ LICENSE = "BSD"
 SECTION = "multimedia"
 PRIORITY = "optional"
 
-INC_PR = "r23"
+INC_PR = "r24"
 
 COMPATIBLE_MACHINE = "(dm365|omapl138|omap3|ti816x|ti814x)"
 
@@ -14,7 +14,7 @@ PLATFORM_omapl138 = "omapl138"
 PLATFORM_omap3evm = "omap3530"
 PLATFORM_dm37x-evm = "dm3730"
 PLATFORM_am37x-evm = "am3715"
-PLATFORM_beagleboard = "am3715"
+PLATFORM_beagleboard = "beagleboard"
 PLATFORM_ti816x = "ti816x"
 PLATFORM_ti814x = "ti814x"
 PLATFORM_am180x-evm = "am180x"
