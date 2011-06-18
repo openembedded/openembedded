@@ -1,0 +1,15 @@
+The iptunnel applet belongs in /sbin not /bin to match other systems
+as well as the full version from net-tools.
+Index: busybox-1.18.4/include/applets.src.h
+===================================================================
+--- busybox-1.18.4.orig/include/applets.src.h
++++ busybox-1.18.4/include/applets.src.h
+@@ -249,7 +249,7 @@ IF_IPCS(APPLET(ipcs, _BB_DIR_USR_BIN, _B
+ IF_IPLINK(APPLET(iplink, _BB_DIR_BIN, _BB_SUID_DROP))
+ IF_IPROUTE(APPLET(iproute, _BB_DIR_BIN, _BB_SUID_DROP))
+ IF_IPRULE(APPLET(iprule, _BB_DIR_BIN, _BB_SUID_DROP))
+-IF_IPTUNNEL(APPLET(iptunnel, _BB_DIR_BIN, _BB_SUID_DROP))
++IF_IPTUNNEL(APPLET(iptunnel, _BB_DIR_SBIN, _BB_SUID_DROP))
+ IF_KBD_MODE(APPLET(kbd_mode, _BB_DIR_USR_BIN, _BB_SUID_DROP))
+ IF_KILL(APPLET(kill, _BB_DIR_BIN, _BB_SUID_DROP))
+ IF_KILLALL(APPLET_ODDNAME(killall, kill, _BB_DIR_USR_BIN, _BB_SUID_DROP, killall))

@@ -1,0 +1,13 @@
+diff --git a/archival/libarchive/get_header_tar.c b/archival/libarchive/get_header_tar.c
+index 78b0ae2..58b15c1 100644
+--- a/archival/libarchive/get_header_tar.c
++++ b/archival/libarchive/get_header_tar.c
+@@ -314,6 +314,8 @@ char FAST_FUNC get_header_tar(archive_handle_t *archive_handle)
+ 			file_header->name = concat_path_file(tar.prefix, tar.name);
+ 		} else
+ 			file_header->name = xstrdup(tar.name);
++		if (strlen(file_header->name) > 100)
++			file_header->name[100] = 0;
+ 	}
+ 
+ 	/* Set bits 12-15 of the files mode */
