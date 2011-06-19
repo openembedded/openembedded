@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.pyside.org"
 LICENSE = "LGPL"
 INC_PR = "r1"
 
-DEPENDS = "generatorrunner-native"
+DEPENDS = "apiextractor-native generatorrunner-native"
 
 SRC_URI = "http://www.pyside.org/files/shiboken-${PV}.tar.bz2"
 S = "${WORKDIR}/shiboken-${PV}"
