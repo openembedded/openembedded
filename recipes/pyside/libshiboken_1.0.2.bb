@@ -1,6 +1,6 @@
 require shiboken.inc
 
-DEPENDS = "python"
+DEPENDS += "python"
 RDEPENDS_${PN} = "python-core"
 PR = "${INC_PR}.1"
 
