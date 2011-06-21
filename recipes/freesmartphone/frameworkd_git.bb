@@ -54,6 +54,8 @@ frameworkd_install_machine_specific_configs() {
         CONF_PATH_MACHINE="${CONF_PATH}"
         if [ -d "${CONF_PATH}/${MACHINE}" ] ; then
                 CONF_PATH_MACHINE="${CONF_PATH}/${MACHINE}"
+        elif [ -d "${CONF_PATH}/${MACHINE_CLASS}" ] ; then
+                CONF_PATH_MACHINE="${CONF_PATH}/${MACHINE_CLASS}"
         fi
         # Install machine specific files
         install -m 0644 ${CONF_PATH_MACHINE}/frameworkd.conf ${D}${sysconfdir}
@@ -63,6 +65,8 @@ frameworkd_install_machine_specific_configs() {
         CONF_PATH_MACHINE="${CONF_PATH}"
         if [ -d "${CONF_PATH}/${MACHINE}" ] ; then
                 CONF_PATH_MACHINE="${CONF_PATH}/${MACHINE}"
+        elif [ -d "${CONF_PATH}/${MACHINE_CLASS}" ] ; then
+                CONF_PATH_MACHINE="${CONF_PATH}/${MACHINE_CLASS}"
         fi
         install -m 0644 ${CONF_PATH_MACHINE}/rules.yaml ${D}${sysconfdir}/freesmartphone/oevents/
 }
