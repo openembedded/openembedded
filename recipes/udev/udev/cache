@@ -9,16 +9,11 @@ echo "Caching udev devnodes"
 if [ "$DEVCACHE" != "" ]; then
 	echo -n "Populating dev cache"
 	(cd /; tar cf $DEVCACHE dev)
-	mv /dev/shm/uname /etc/udev/saved.uname
-	mv /dev/shm/cmdline /etc/udev/saved.cmdline
-	mv /dev/shm/devices /etc/udev/saved.devices
-	mv /dev/shm/atags /etc/udev/saved.atags
+	[ -x /bin/uname ] && /bin/uname -mrspv > /etc/udev/saved.uname || touch /etc/udev/saved.uname
+	[ -r /proc/cmdline ] && cat /proc/cmdline > /etc/udev/saved.cmdline || touch /etc/udev/saved.cmdline
+	[ -r /proc/devices ] && cat /proc/devices > /etc/udev/saved.devices || touch /etc/udev/saved.devices
+	[ -r /proc/atags ] && cat /proc/atags > /etc/udev/saved.atags || touch /etc/udev/saved.atags
 	echo
-else
-	rm -f /dev/shm/uname
-	rm -f /dev/shm/cmdline
-	rm -f /dev/shm/devices
-	rm -f /dev/shm/atags
 fi
 
 exit 0

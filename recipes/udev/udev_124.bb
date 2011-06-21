@@ -57,6 +57,7 @@ do_install () {
 
 	touch ${D}${sysconfdir}/udev/saved.uname
 	touch ${D}${sysconfdir}/udev/saved.cmdline
+	touch ${D}${sysconfdir}/udev/saved.devices
 	touch ${D}${sysconfdir}/udev/saved.atags
 
 	install -d ${D}${sysconfdir}/udev/scripts/
