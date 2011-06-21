@@ -1,6 +1,7 @@
 require valgrind.inc
+export PERL="/usr/bin/env perl"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI += "file://vg-ppc-feature.patch"
 
