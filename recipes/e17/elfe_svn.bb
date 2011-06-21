@@ -6,7 +6,7 @@ require e-module.inc
 
 DEPENDS += "elementary"
 
-# Elfe is part of the enlightenment svn repository since this SRC_REV. As EFL_SRCREV is
-# currently much older we need to sync it when EFL_SRCREV will change.
-SRCREV = "58599"
+# We currently use another SRCREV for elfe as EFL_SRCREV as we have to change it more
+# often than we want to change EFL_SRCREV.
+SRCREV = "60365"
 
