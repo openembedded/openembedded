@@ -115,7 +115,7 @@ python __anonymous () {
 
     if "native" in (bb.data.getVar('BBCLASSEXTEND', d, True) or ""):
         pn = bb.data.getVar("PN", d, True)
-        depends = bb.data.getVar("DEPENDS_virtclass-native", d, True)
+        depends = bb.data.getVar("DEPENDS_virtclass-native", d, True) or ""
         deps = bb.utils.explode_deps(depends)
         newdeps = []
         for dep in deps:

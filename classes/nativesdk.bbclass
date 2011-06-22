@@ -58,7 +58,7 @@ OVERRIDES =. "virtclass-nativesdk:"
 
 python __anonymous () {
     pn = bb.data.getVar("PN", d, True)
-    depends = bb.data.getVar("DEPENDS_virtclass-nativesdk", d, True)
+    depends = bb.data.getVar("DEPENDS_virtclass-nativesdk", d, True) or ""
     deps = bb.utils.explode_deps(depends)
     newdeps = []
     for dep in deps:
