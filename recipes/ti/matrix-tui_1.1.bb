@@ -1,4 +1,4 @@
 require matrix-tui.inc
 
-SRCREV = "37"
-PR = "${INC_PR}.4"
+SRCREV = "42"
+PR = "${INC_PR}.5"
