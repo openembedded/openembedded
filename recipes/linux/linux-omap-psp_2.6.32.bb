@@ -58,6 +58,7 @@ SRC_URI = "git://arago-project.org/git/projects/linux-omap3.git;protocol=http;br
            file://0043-MTD-silence-ecc-errors-on-mtdblock0.patch \
            file://0044-ARM-OMAP-beagle-every-known-beagle-except-revB-uses-.patch \
            file://0045-ARM-OMAP-beagle-add-support-for-beagleFPGA-expansion.patch \
+           file://0046-ARM-OMAP-beagle-disable-uart-timeout.patch \
            file://cam/0001-mt9t111-first-stab-at-merging-sensor-driver-based-on.patch \
            file://cam/0002-mt9t111-Fix-all-checkpatch-errors.patch \
            file://cam/0003-mt9t111-Pass-v4l2_int_device-data.patch \
