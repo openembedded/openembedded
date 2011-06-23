@@ -90,6 +90,12 @@ do_configure_prepend() {
 }
 
 do_compile() {
+	# Ugly hack approaching:
+	# due to libtool sysroot support and this recipe being machine specific libtool won't find libs from the regular sysroots
+
+	install -d ${STAGING_LIBDIR}
+	ln -sf ${STAGING_DIR}/${BASE_PACKAGE_ARCH}${HOST_VENDOR}-${HOST_OS}/${libdir}/lib* ${STAGING_LIBDIR} || true
+
 	# Recent kernel headers warn against inclusion from userspace
 	for makefile in $(find ${S} -name "Makefile") ; do
 		sed -i -e s:-Werror::g $makefile
