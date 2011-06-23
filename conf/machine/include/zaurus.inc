@@ -65,9 +65,8 @@ PREFERRED_PROVIDER_virtual/kernel = "linux"
 ZAURUS_KERNEL_IMAGETYPE ?= "zImage"
 KERNEL_IMAGETYPE = "${ZAURUS_KERNEL_IMAGETYPE}"
 
-# sane defaults for devices with only 32Mb RAM
-XZ_COMPRESSION_LEVEL = "-7"
-LZMA_COMPRESSION_LEVEL = "-8"
+# sane defaults for devices with only 32Mb RAM (see man xz)
+XZ_COMPRESSION_LEVEL = "-e -7"
 
 # kernel bootlogo
 LOGO_SIZE = '${@base_conditional("GUI_MACHINE_CLASS", "bigscreen", "vga", "qvga", d)}'
