@@ -4,5 +4,5 @@ require matrix-gui-common.inc
 # prebuilt version in the repository.
 RRECOMMENDS_${PN} = "am-sysinfo"
 
-SRCREV = "265"
-PR = "${INC_PR}.12"
+SRCREV = "275"
+PR = "${INC_PR}.13"
