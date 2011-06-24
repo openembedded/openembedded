@@ -4,6 +4,7 @@ HOMEPAGE = "http://librdf.org/raptor/"
 LICENSE = "LGPL 2.1/GPL 2/Apache 2.0"
 PR = "r0"
 SRC_URI = "http://download.librdf.org/source/raptor-${PV}.tar.gz"
+DEPENDS = "libxml2"
 
 inherit autotools pkgconfig
 
