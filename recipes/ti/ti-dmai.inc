@@ -27,6 +27,10 @@ SRC_URI = "svn://gforge.ti.com/svn/dmai/;module=${DMAIBRANCH};proto=https;user=a
 		file://loadmodules-ti-dmai-ol138_al.sh \
 	    file://doxygen_templates.tar.gz \
         file://arago-tdox \
+                file://beagle/0001-DMAI-video_display-Set-the-default-Display-Output-to.patch \
+                file://beagle/0002-DMAI-Auto-detect-V4L2-display-device-node-to-open.patch \
+                file://beagle/0003-DMAI-Disable-display-rotation-to-avoid-problems-due-.patch \
+                file://beagle/0004-DMAI-Use-the-correct-capture-device-node.patch \
 	"
 
 DEPENDS = "virtual/kernel alsa-lib ti-framework-components ti-codec-engine ti-xdctools"

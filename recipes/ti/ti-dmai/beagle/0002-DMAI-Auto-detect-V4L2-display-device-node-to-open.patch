@@ -1,0 +1,109 @@
+From 39d909ea1040b86968adf0d62475955bd07f96a8 Mon Sep 17 00:00:00 2001
+From: Joel A Fernandes <agnel.joel@gmail.com>
+Date: Tue, 21 Jun 2011 15:33:14 -0500
+Subject: [PATCH 2/4] DMAI: Auto-detect V4L2 display device node to open.
+
+Changes in display device node names in the kernel break DMAI.
+This autodetects the device node name to avoid such breakages in the future.
+
+Signed-off-by: Joel A Fernandes <agnel.joel@gmail.com>
+---
+ linux/Display.c               |    2 +-
+ linux/omap3530/Display_v4l2.c |   40 ++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 41 insertions(+), 1 deletions(-)
+
+diff --git a/packages/ti/sdo/dmai/linux/Display.c b/packages/ti/sdo/dmai/linux/Display.c
+index bf0db2e..578ab8a 100644
+--- a/packages/ti/sdo/dmai/linux/Display.c
++++ b/packages/ti/sdo/dmai/linux/Display.c
+@@ -197,7 +197,7 @@ const Display_Attrs Display_Attrs_O3530_VID_DEFAULT = {
+     Display_Std_V4L2,
+     VideoStd_VGA,
+     Display_Output_LCD,
+-    "/dev/video1",
++    "",			// V4L2 device nodes are auto detected
+     0,
+     ColorSpace_UYVY,
+     -1,
+diff --git a/packages/ti/sdo/dmai/linux/omap3530/Display_v4l2.c b/packages/ti/sdo/dmai/linux/omap3530/Display_v4l2.c
+index 8cd891c..61f15bb 100644
+--- a/packages/ti/sdo/dmai/linux/omap3530/Display_v4l2.c
++++ b/packages/ti/sdo/dmai/linux/omap3530/Display_v4l2.c
+@@ -35,6 +35,7 @@
+ #include <string.h>
+ #include <unistd.h>
+ #include <fcntl.h>
++#include <dirent.h>
+ #include <sys/ioctl.h>
+ #include <sys/mman.h>
+ #include <errno.h>
+@@ -55,6 +56,7 @@
+ #include "priv/_SysFs.h"
+ 
+ #define MODULE_NAME     "Display"
++#define V4LVOUT_DIR "/sys/devices/platform/omap_vout/video4linux"
+ 
+ /******************************************************************************
+  * cleanup
+@@ -134,6 +136,7 @@ Display_Handle Display_v4l2_create(BufTab_Handle hBufTab, Display_Attrs *attrs)
+ #if defined(V4L2_CID_ROTATE)
+     struct v4l2_control        control;
+ #endif
++    char                       displayDevName[20];
+     assert(attrs);
+ 
+     /* Allocate space for state object */
+@@ -152,6 +155,13 @@ Display_Handle Display_v4l2_create(BufTab_Handle hBufTab, Display_Attrs *attrs)
+     }
+     hDisplay->userAlloc = TRUE;
+ 
++    /* Get video capture device */
++    if(Display_v4l2_getdevice(displayDevName) < 0) {
++        Dmai_err0("Failed to get V4L2 display device node.\n");
++        return NULL;
++    }
++    attrs->displayDevice = displayDevName;
++
+     /* Open video capture device */
+     hDisplay->fd = open(attrs->displayDevice, O_RDWR, 0);
+ 
+@@ -319,6 +329,36 @@ Int Display_v4l2_delete(Display_Handle hDisplay)
+ }
+ 
+ /******************************************************************************
++ * Display_v4l2_getdevice
++ ******************************************************************************/
++Int Display_v4l2_getdevice(char displayDevice[20])
++{
++    DIR *dp;
++    struct dirent *ep;
++    dp = opendir (V4LVOUT_DIR);
++    displayDevice[0] = '\0';
++    strcat(displayDevice, "/dev/");
++    if (dp != NULL) {
++        while(ep = readdir (dp)) {
++            if(ep->d_name[0] == '.') continue;
++            Dmai_dbg1("V4L Video node found: '%s'\n", ep->d_name);
++            if(strlen(ep->d_name) > 19 -  strlen(displayDevice)) {
++                ep = NULL;
++                break;
++            }
++            strcat(displayDevice, ep->d_name);
++            closedir (dp);
++            break;
++        }
++    }
++    if(!dp || !ep) {
++        Dmai_err0("Could not open the directory\n");
++        return -1;
++    }
++    return 0;
++}
++
++/******************************************************************************
+  * Display_v4l2_get
+  ******************************************************************************/
+ Int Display_v4l2_get(Display_Handle hDisplay, Buffer_Handle *hBufPtr)
+-- 
+1.7.0.4
+

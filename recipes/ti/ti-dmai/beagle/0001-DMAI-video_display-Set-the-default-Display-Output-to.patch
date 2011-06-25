@@ -1,0 +1,26 @@
+From c584fc4593fc95c24facc8521a8a1180a0bc7b13 Mon Sep 17 00:00:00 2001
+From: Joel <joel@chase-ubuntu.(none)>
+Date: Mon, 20 Jun 2011 16:59:54 -0500
+Subject: [PATCH 1/4] DMAI video_display: Set the default Display Output to DVI.
+
+Signed-off-by: Joel A Fernandes <agnel.joel@gmail.com>
+---
+ apps/video_display/linux/main.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+packages/ti/sdo/dmai
+diff --git a/packages/ti/sdo/dmai/apps/video_display/linux/main.c b/packages/ti/sdo/dmai/apps/video_display/linux/main.c
+index 15182b7..496d19c 100644
+--- a/packages/ti/sdo/dmai/apps/video_display/linux/main.c
++++ b/packages/ti/sdo/dmai/apps/video_display/linux/main.c
+@@ -45,7 +45,7 @@
+ #include "../appMain.h"
+ 
+ /* Default arguments for app */
+-#define DEFAULT_ARGS { 1000, FALSE, FALSE, VideoStd_D1_NTSC, Display_Output_COMPOSITE }
++#define DEFAULT_ARGS { 1000, FALSE, FALSE, VideoStd_D1_NTSC, Display_Output_DVI }
+ 
+ /*
+  * Argument IDs for long options. They must not conflict with ASCII values,
+-- 
+1.7.0.4
+

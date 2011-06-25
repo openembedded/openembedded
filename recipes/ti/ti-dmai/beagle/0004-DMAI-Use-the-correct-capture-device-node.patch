@@ -1,0 +1,26 @@
+From 5e59be7d0d5d3d90e9bbc5d1bb5829ad8482fbf0 Mon Sep 17 00:00:00 2001
+From: Joel A Fernandes <agnel.joel@gmail.com>
+Date: Fri, 24 Jun 2011 17:04:10 -0500
+Subject: [PATCH 4/4] DMAI: Use the correct capture device node.
+
+Signed-off-by: Joel A Fernandes <agnel.joel@gmail.com>
+---
+ linux/Capture.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/packages/ti/sdo/dmai/linux/Capture.c b/packages/ti/sdo/dmai/linux/Capture.c
+index e7a081e..a2614e7 100644
+--- a/packages/ti/sdo/dmai/linux/Capture.c
++++ b/packages/ti/sdo/dmai/linux/Capture.c
+@@ -120,7 +120,7 @@ const Capture_Attrs Capture_Attrs_OMAP3530_DEFAULT = {
+     -1,
+     -1,
+     -1,
+-    "/dev/video0",
++    "/dev/video2",
+     FALSE,
+     VideoStd_AUTO,
+     -1,
+-- 
+1.7.0.4
+
