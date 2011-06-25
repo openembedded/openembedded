@@ -19,6 +19,7 @@ DEPENDS = " \
   python \
   libfsobasics \
   libfso-glib \
+  qt4-embedded \
 "
 
 RDEPENDS_${PN} = "\
