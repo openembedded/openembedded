@@ -12,7 +12,7 @@ FILESPATHPKG =. "pulseaudio-0.9.21:"
 
 inherit gettext
 
-SRC_URI = "git://git.0pointer.de/pulseaudio.git;protocol=git \
+SRC_URI = "git://anongit.freedesktop.org/git/pulseaudio/pulseaudio.git;protocol=git \
            file://gcc4-compile-fix.patch \
            file://volatiles.04_pulse \
            file://autoconf_version.patch \
