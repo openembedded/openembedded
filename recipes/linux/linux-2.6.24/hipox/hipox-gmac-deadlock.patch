@@ -1,0 +1,36 @@
+diff -Nurd linux-2.6.24.orig//arch/arm/mach-hipox/gmac-napi.c linux-2.6.24/arch/arm/mach-hipox/gmac-napi.c
+--- linux-2.6.24.orig//arch/arm/mach-hipox/gmac-napi.c	2011-06-27 11:17:48.000000000 +0200
++++ linux-2.6.24/arch/arm/mach-hipox/gmac-napi.c	2011-06-27 11:06:20.000000000 +0200
+@@ -551,6 +551,7 @@
+ 			skb = dev_alloc_skb(priv->rx_buffer_size_ + NET_IP_ALIGN);
+ 			if (!skb) {
+ 				// Can't refill any more RX descriptor ring entries
++            			printk("%s: refill_rx_ring() dev_alloc_skb failed\n", dev->name);
+ 				break;
+ 			} else {
+ 				// Despite what the comments in the original code from Synopsys
+@@ -1476,14 +1477,18 @@
+     }
+ 
+     if (!continue_polling) {
+-        // No more received packets to process so return to interrupt mode
+-        netif_rx_complete(dev, napi);
++        if(priv->rx_gmac_desc_list_info.full_count) {
++            // No more received packets to process so return to interrupt mode
++            netif_rx_complete(dev, napi);
+ 
+-        // Enable interrupts caused by received packets that may have been
++            // Enable interrupts caused by received packets that may have been
+ 		// disabled in the ISR before entering polled mode
+-        gmac_int_en_set(priv, (1UL << DMA_INT_ENABLE_RI_BIT) |
+-                              (1UL << DMA_INT_ENABLE_RU_BIT) |
+-							   (1UL << DMA_INT_ENABLE_OV_BIT));
++            gmac_int_en_set(priv, (1UL << DMA_INT_ENABLE_RI_BIT) |
++                                  (1UL << DMA_INT_ENABLE_RU_BIT) |
++				   (1UL << DMA_INT_ENABLE_OV_BIT));
++        } else {
++            printk("%s: no input buffer, remain within poll mode\n", dev->name);
++        }
+     }
+ 
+     return work_done;
