@@ -20,6 +20,7 @@ cpan_do_configure () {
 			-e "s:\(LDDLFLAGS.*\)${STAGING_LIBDIR_NATIVE}:\1${STAGING_LIBDIR}:" \
 			Makefile
 	fi
+	find . -name Makefile | xargs sed -i -e "s:bin/perl.real:bin/perl:g"
 }
 
 cpan_do_compile () {
