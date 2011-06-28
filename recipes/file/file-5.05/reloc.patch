@@ -1,9 +1,13 @@
+Make use of BinReloc (http://autopackage.org/docs/binreloc/) for both
+finding libmagic as well as the 'magic' file that's used to determie
+what a file really is.
+
 ---
- src/Makefile.am |    2 
+ src/Makefile.am |    3
  src/binreloc.c  |  791 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  src/binreloc.h  |   81 +++++
- src/magic.c     |   27 +
- 4 files changed, 891 insertions(+), 10 deletions(-)
+ src/magic.c     |   26 +
+ 4 files changed, 893 insertions(+), 8 deletions(-)
 
 Index: file-5.05/src/binreloc.c
 ===================================================================
@@ -924,9 +928,9 @@ Index: file-5.05/src/magic.c
 +	}
 +
 +	if (br_init_lib(&error) == 1) {
-+		char *etcdir = br_find_etc_dir(NULL);
-+		(void)snprintf(default_magic, sizeof(default_magic), "%s/magic", etcdir);
-+		free(etcdir);
++		char *datadir = br_find_data_dir(NULL);
++		(void)snprintf(default_magic, sizeof(default_magic), "%s/misc/magic", datadir);
++		free(datadir);
 +		return default_magic;
 +	}
 +	return MAGIC;
