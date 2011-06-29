@@ -9,6 +9,8 @@ test -x /sbin/cardctl && exit 0
 # We get two "add" events for hostap cards due to wifi0
 echo "$INTERFACE" | grep -q wifi && exit 0
 
+# Avoid udev stopping persistent ppp connections
+echo "$INTERFACE" | grep -q ppp && exit 0
 
 # Check if /etc/init.d/network has been run yet to see if we are 
 # called by starting /etc/rcS.d/S03udev and not by hotplugging a device
