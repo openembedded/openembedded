@@ -14,6 +14,8 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/htop/htop-${PV}.tar.gz \
 
 inherit autotools
 
+LDFLAGS_append_libc-uclibc = " -lubacktrace"
+
 SRC_URI[md5sum] = "7c5507f35f363f3f40183a2ba3c561f8"
 SRC_URI[sha256sum] = "4de65c38e1886bccd30ed692b30eb9bf195240680781bfe1eaf5faf84ee6fbfd"
 
