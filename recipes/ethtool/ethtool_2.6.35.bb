@@ -1,4 +1,7 @@
 require ethtool.inc
+
+SRC_URI += "file://fifo.patch"
+
 PR = "r1"
 
 SRC_URI[md5sum] = "e0f617779a58b77af061a9e5178d0b25"
