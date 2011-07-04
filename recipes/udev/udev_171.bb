@@ -14,7 +14,7 @@ DEFAULT_PREFERENCE = "-1"
 DEPENDS = "gperf-native usbutils acl glib-2.0"
 
 SRCREV = "${PV}"
-PR = "r0"
+PR = "r1"
 
 # version specific SRC_URI
 SRC_URI = "git://git.kernel.org/pub/scm/linux/hotplug/udev.git;protocol=git \
@@ -36,6 +36,8 @@ SRC_URI += " \
 "
 
 # Machine specific udev rules should be in their own recipe that ${PN} can add to RRECOMMENDS
+RRECOMMENDS_${PN}_bug += "bug-udev"
+RRECOMMENDS_${PN}_bug20 += "bug-udev"
 
 
 S = "${WORKDIR}/git"
@@ -83,6 +85,11 @@ FILES_${PN}-dbg += "/lib/udev/.debug"
 FILES_${PN} += "${base_libdir}/systemd"
 
 RPROVIDES_${PN}_append = " udev-compat-wrapper"
+
+RDEPENDS_udev_bug += "udev-compat"
+do_unpack_append_bug() {
+	bb.build.exec_func('do_apply_compat_wrapper', d)
+}
 
 do_install () {
 	install -d ${D}${usrsbindir} \
