@@ -4,8 +4,6 @@ HOMEPAGE = "http://samba.org/ppp/"
 DEPENDS = "libpcap"
 LICENSE = "BSD GPLv2"
 PR = "r2"
-# Not well tested
-DEFAULT_PREFERENCE = "-1"
 
 PARALLEL_MAKE = ""
 
