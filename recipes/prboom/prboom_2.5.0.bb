@@ -4,8 +4,8 @@ PRIORITY = "optional"
 DEPENDS = "virtual/libsdl libsdl-mixer libsdl-net"
 LICENSE = "GPL"
 
-PR = "r4"
-RRECOMMENDS_${PN} = "freedoom"
+PR = "r5"
+RRECOMMENDS_${PN} = "freedoom prboom-devconfig"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/prboom/prboom-${PV}.tar.gz \
 	   file://gnu_source_for_sched_h.patch \
