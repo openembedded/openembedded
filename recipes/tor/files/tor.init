@@ -11,20 +11,20 @@ test -f /etc/tor/tor-tsocks.conf || exit 0
 case "$1" in
   start)
     echo -n "Starting tor daemon"
-    start-stop-daemon --start --quiet --exec /usr/bin/tor &
+    start-stop-daemon --start --quiet --exec /usr/bin/tor > /dev/null &
     echo "."
     ;;
   stop)
     echo -n "Stopping tor daemon"
-    start-stop-daemon --stop --quiet --exec /usr/bin/tor &
+    start-stop-daemon --stop --quiet --exec /usr/bin/tor > /dev/null &
     echo "."
     ;;
   restart)
     echo -n "Stopping tor daemon"
-    start-stop-daemon --stop --quiet --exec /usr/bin/tor &
+    start-stop-daemon --stop --quiet --exec /usr/bin/tor > /dev/null &
     sleep 1
     echo -n "Starting tor daemon"
-    start-stop-daemon --start --quiet --exec /usr/bin/tor &
+    start-stop-daemon --start --quiet --exec /usr/bin/tor > /dev/null &
     echo "."
     ;;
   start_socats)

@@ -6,6 +6,8 @@ PRIORITY = "optional"
 LICENSE = "BSD"
 DEPENDS = "libevent openssl zlib"
 
+PR = "r1"
+
 SRC_URI = "http://tor.eff.org/dist/${P}.tar.gz \
           file://configure.patch \
           file://make.patch \
