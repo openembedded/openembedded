@@ -15,7 +15,7 @@ DEPENDS = "gperf-native usbutils acl glib-2.0"
 
 SRCREV = "3e227830ad6494700e18ae03297e8fb833ff26bf"
 PV = "171"
-PR = "r0"
+PR = "r1"
 PR_append = "+gitr${SRCPV}"
 
 # version specific SRC_URI
