@@ -1,0 +1,2 @@
+xinput set-int-prop "ts4" "Evdev Axis Calibration" 32 3570 4074 272 3892
+xinput set-int-prop "ts5" "Evdev Axis Calibration" 32 3570 4074 272 3892
