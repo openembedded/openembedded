@@ -10,7 +10,7 @@ LICENSE = "GPLv2+"
 # Untested
 DEFAULT_PREFERENCE = "-1"
 
-PR = "r1"
+PR = "r2"
 
 # Needed for udev-extras
 DEPENDS = "gperf-native usbutils acl glib-2.0"
@@ -89,6 +89,11 @@ FILES_${PN}-dbg += "/lib/udev/.debug"
 FILES_${PN} += "${base_libdir}/systemd"
 
 RPROVIDES_${PN}_append = " udev-compat-wrapper"
+
+RDEPENDS_udev_bug += "udev-compat"
+do_unpack_append_bug() {
+       bb.build.exec_func('do_apply_compat_wrapper', d)
+}
 
 # Modify init script on platforms that need to boot old kernels:
 do_apply_compat_wrapper() {
