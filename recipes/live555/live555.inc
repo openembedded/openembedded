@@ -7,7 +7,7 @@ HOMEPAGE = "http://live.com/"
 LICENSE = "LGPL"
 SECTION = "devel"
 
-INC_PR = "r1"
+INC_PR = "r2"
 
 URLV = "${@bb.data.getVar('PV',d,1)[0:4]}.${@bb.data.getVar('PV',d,1)[4:6]}.${@bb.data.getVar('PV',d,1)[6:8]}"
 SRC_URI = "http://www.live555.com/liveMedia/public/live.${URLV}.tar.gz \
@@ -18,6 +18,7 @@ TARGET_CC_ARCH += "${LDFLAGS}"
 
 do_configure() {
 	cp ${WORKDIR}/config.linux-cross .
+	echo "COMPILE_OPTS+=" -fPIC "" >> config.linux-cross
 	./genMakefiles linux-cross
 }
 
