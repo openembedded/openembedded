@@ -92,7 +92,7 @@ RPROVIDES_${PN}_append = " udev-compat-wrapper"
 
 RDEPENDS_udev_bug += "udev-compat"
 do_unpack_append_bug() {
-       bb.build.exec_func('do_apply_compat_wrapper', d)
+	bb.build.exec_func('do_apply_compat_wrapper', d)
 }
 
 # Modify init script on platforms that need to boot old kernels:
