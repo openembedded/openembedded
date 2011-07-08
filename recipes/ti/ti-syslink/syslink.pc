@@ -1,0 +1,10 @@
+prefix=/../..//syslink_@VERSION@
+libdir=${prefix}/ti/syslink/lib
+includedir=${prefix}/ti/syslink
+
+Name: TI Syslink
+Description: Syslink ARM-DSP IPC (Inter Processor Communication) 
+Version: @VERSION@
+Requires: ipc
+Libs: ${libdir}/syslink.a_release
+Cflags: -I${includedir} -I${includedir}/inc -I${includedir}/utils

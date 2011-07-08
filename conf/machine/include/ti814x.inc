@@ -3,7 +3,7 @@ SOC_FAMILY = "ti814x"
 
 require conf/machine/include/tune-cortexa8.inc
 
-PREFERRED_PROVIDER_virtual/kernel = "linux-omap3"
+PREFERRED_PROVIDER_virtual/kernel = "linux-ti81xx-psp"
 PREFERRED_PROVIDER_virtual/bootloader = "u-boot"
 
 # Increase this everytime you change something in the kernel
