@@ -1,6 +1,6 @@
 require msmcomm.inc
 
-PR = "${INC_PR}.3"
+PR = "${INC_PR}.5"
 PV = "0.6.0+gitr${SRCPV}"
 
 DEPENDS = " \
@@ -10,11 +10,11 @@ DEPENDS = " \
  libfsotransport \
  libgee \
  libmsmcomm \
+ libmsmhll \
  msmcomm-specs \
 "
 
 SRC_URI += "file://msmcommd"
-
 S = "${WORKDIR}/git/msmcommd"
 
 inherit autotools vala update-rc.d
