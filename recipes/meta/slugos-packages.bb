@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r77"
+PR = "r78"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2|ixp4xx"
@@ -219,9 +219,6 @@ SLUGOS_PACKAGES = "\
 	wget \
 	wireless-tools \
 	wpa-supplicant \
-        wview-sim \
-	wview-vpro \
-	wview-wxt510 \
 	xinetd \
 	yp-tools ypbind ypserv \
 	zd1211-firmware \
@@ -253,11 +250,14 @@ SLUGOS_X11_PACKAGES = "\
 # Packages that are broken but need to be fixed!
 #
 # - madwifi-ng: needs newer version for updated IXP4XX kernel
-# - vsftpd: broken in general, needs libcap added to recipe
+# - wview-*: references host libs
 # 
 SLUGOS_BROKEN_BUT_NEED_FIXING_PACKAGES = "\
 	madwifi-ng \
 	ftpd-topfield \
+        wview-sim \
+	wview-vpro \
+	wview-wxt510 \
 	"
 
 # Packages currently broken on all platforms
