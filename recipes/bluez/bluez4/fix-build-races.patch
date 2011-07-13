@@ -1,0 +1,29 @@
+Add 'local_headers' to BUILT_SOURCES so that they're treated correctly
+and we don't have a race on generating these versus using them.
+---
+ Makefile.am |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+Index: bluez-4.91/Makefile.am
+===================================================================
+--- bluez-4.91.orig/Makefile.am
++++ bluez-4.91/Makefile.am
+@@ -47,6 +47,8 @@ lib_headers = lib/bluetooth.h lib/hci.h 
+ 		lib/rfcomm.h lib/bnep.h lib/cmtp.h lib/hidp.h
+ local_headers = $(foreach file,$(lib_headers), lib/bluetooth/$(notdir $(file)))
+ 
++BUILT_SOURCES = $(local_headers)
++
+ include_HEADERS += $(lib_headers)
+ 
+ lib_LTLIBRARIES += lib/libbluetooth.la
+@@ -56,9 +58,6 @@ lib_libbluetooth_la_SOURCES = $(lib_head
+ lib_libbluetooth_la_LDFLAGS = -version-info 14:0:11
+ lib_libbluetooth_la_DEPENDENCIES = $(local_headers)
+ 
+-CLEANFILES += $(local_headers)
+-
+-
+ if SBC
+ noinst_LTLIBRARIES += sbc/libsbc.la
+ 
