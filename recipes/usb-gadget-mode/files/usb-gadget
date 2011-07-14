@@ -31,6 +31,7 @@ go() {
 	composite)	setup_usb g_cdc ;;
 	serial)		setup_usb g_serial ;;
 	storage)	setup_usb g_file_storage ;;
+	multi)		setup_usb g_multi ;;
 	hostmode)	unload_usb_gadgets
 			setup_usb ohci_hcd ;;
 	none)		unload_usb_gadgets ;;
