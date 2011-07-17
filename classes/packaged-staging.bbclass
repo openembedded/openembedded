@@ -200,10 +200,13 @@ def staging_fetch(stagepkg, d):
         try:
             bb.fetch.init([srcuri], pd)
             bb.fetch.go(pd, [srcuri])
+            stagepkg = bb.fetch.localpath(srcuri, pd)
         except Exception, ex:
 	    bb.debug(1, "Failed to fetch staging package %s: %s" % (bn, ex))
         else:
 	    bb.debug(1, "Fetched staging package %s" % bn)
+
+        return stagepkg
 
 PSTAGE_TASKS_COVERED = "fetch unpack munge patch configure qa_configure rig_locales compile sizecheck install deploy package populate_sysroot package_write_deb package_write_ipk package_write package_stage qa_staging"
 
@@ -222,7 +225,7 @@ python packagestage_scenefunc () {
 
     stagepkg = bb.data.expand("${PSTAGE_PKG}", d)
     if not os.path.exists(stagepkg):
-        staging_fetch(stagepkg, d)
+        stagepkg = staging_fetch(stagepkg, d)
 
     if os.path.exists(stagepkg):
         pstage_set_pkgmanager(d)
