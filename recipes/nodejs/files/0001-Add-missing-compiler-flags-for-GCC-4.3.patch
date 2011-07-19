@@ -1,0 +1,34 @@
+From 7cb51ed25b688be08825950ce3f5ce2ad38e3f95 Mon Sep 17 00:00:00 2001
+From: Chase Maupin <Chase.Maupin@ti.com>
+Date: Tue, 12 Jul 2011 11:00:48 -0500
+Subject: [PATCH] Add missing compiler flags for GCC 4.3
+
+* When compiling nodejs for GCC 4.3.3 you need to also add the
+  flag -fno-tree-sink.
+* This patch was taken from the thread at:
+    * https://github.com/joyent/node/issues/883
+* Believe that no action is taken on this change upstream because
+  it is GCC 4.3.3 specific and is not required for GCC 4.5
+
+Upstream-Status: Denied
+
+Signed-off-by: Chase Maupin <Chase.Maupin@ti.com>
+---
+ deps/v8/SConstruct |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/deps/v8/SConstruct b/deps/v8/SConstruct
+index b2542fd..31c4c7b 100644
+--- a/deps/v8/SConstruct
++++ b/deps/v8/SConstruct
+@@ -210,6 +210,7 @@ LIBRARY_FLAGS = {
+     },
+     'arch:arm': {
+       'CPPDEFINES':   ['V8_TARGET_ARCH_ARM'],
++      'CCFLAGS': ['-fno-tree-sink'],
+       'unalignedaccesses:on' : {
+         'CPPDEFINES' : ['CAN_USE_UNALIGNED_ACCESSES=1']
+       },
+-- 
+1.7.0.4
+
