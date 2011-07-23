@@ -2,7 +2,7 @@ require pulseaudio.inc
 
 SRCREV = "f834150aceccd753e3ac5bab9f7d64bed9993624"
 PV = "0.9.22+git"
-PR = "${INC_PR}.0-r${SRCPV}"
+PR = "${INC_PR}.2-r${SRCPV}"
 
 DEPENDS += "orc gdbm speex"
 
