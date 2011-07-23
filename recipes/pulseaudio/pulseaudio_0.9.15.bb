@@ -1,7 +1,7 @@
 require pulseaudio.inc
 
 DEPENDS += "gdbm speex"
-PR = "${INC_PR}.6"
+PR = "${INC_PR}.7"
 
 inherit gettext
 
