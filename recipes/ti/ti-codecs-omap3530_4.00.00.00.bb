@@ -6,8 +6,9 @@ require ti-paths.inc
 require ti-staging.inc
 
 PR="${MACHINE_KERNEL_PR}"
-PR_append = "a"
+PR_append = "b"
 
+PE = "1"
 PV="4_00_00_00"
 
 CODEC_SUITE_NAME="${WORKDIR}/${PN}_${PV}"
@@ -27,7 +28,6 @@ SRC_URI="http://software-dl.ti.com/dsps/dsps_public_sw/codecs/OMAP35xx//OMAP35xx
     http://software-dl.ti.com/dsps/dsps_public_sw/codecs/C64XPlus_Speech//C64XPlus_Speech_latest/c64xplus_g711_1_12_00_000_production.bin;name=g711 \
     http://software-dl.ti.com/dsps/dsps_public_sw/sdo_tii/OMAP35xx_DM37xx_C64xPLUS_Algorithms/01_00_00_07//exports/c64xplus_deinterlacer_01_00_00_07_production.bin;name=i2p \
     git://arago-project.org/git/projects/codec-servers.git;protocol=git \
-
 "
 
 SRC_URI[h264enc.md5sum] = "4a7a4698b1db360fe103aae76127a4ec"
