@@ -1,0 +1,34 @@
+From 5fc2aa6adcf6e969eebb27d5e94841eba9b65f51 Mon Sep 17 00:00:00 2001
+From: Paul Parsons <lost.distance@yahoo.com>
+Date: Sun, 24 Jul 2011 11:12:18 +0200
+Subject: [PATCH 5/7] Suspend unbalanced irqs
+
+Resuming a suspended hx4700 results in Unbalanced IRQ warnings:
+
+WARNING: at kernel/irq/manage.c:507 irq_set_irq_wake+0xe0/0xec()
+Unbalanced IRQ 246 wake disable
+...
+
+Likewise for IRQ 241 and IRQ 243. The 3 ASIC3 GPIO buttons - RECORD/CALENDAR/HOME - each fail in a call to enable_irq_wake() in gpio_keys_suspend() because of an absent irq_set_wake() handler in the asic3_gpio_irq_chip structure. Matching calls to disable_irq_wake() in gpio_keys_resume() then print the warnings. Since we should never need to resume via the 3 ASIC3 GPIO buttons, nor 2 of the 3 builtin GPIO buttons - MAIL/CONTACTS, the simplest remedy for the warnings is to enable irq wakeup on the POWER button only.
+
+Signed-off-by: Paul Parsons <lost.distance@yahoo.com>
+---
+ arch/arm/mach-pxa/hx4700.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/mach-pxa/hx4700.c b/arch/arm/mach-pxa/hx4700.c
+index 9cd438f..bdef728 100644
+--- a/arch/arm/mach-pxa/hx4700.c
++++ b/arch/arm/mach-pxa/hx4700.c
+@@ -191,7 +191,7 @@ static struct pxaficp_platform_data ficp_info = {
+ 		.active_low = _active_low,		\
+ 		.desc       = _desc,			\
+ 		.type       = EV_KEY,			\
+-		.wakeup     = 1,			\
++		.wakeup     = KEY_##_code == KEY_POWER,	\
+ 	}
+ 
+ static struct gpio_keys_button gpio_keys_buttons[] = {
+-- 
+1.7.4.4
+

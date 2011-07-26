@@ -1,0 +1,31 @@
+From c0cb3e77aadddc46e6e41b3dd1e10c56bc699df2 Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@dominion.thruhere.net>
+Date: Tue, 26 Jul 2011 11:44:47 +0200
+Subject: [PATCH 7/7] hx4700: change led trigger assignments
+
+Signed-off-by: Koen Kooi <koen@dominion.thruhere.net>
+---
+ arch/arm/mach-pxa/hx4700.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/mach-pxa/hx4700.c b/arch/arm/mach-pxa/hx4700.c
+index cae9dbb..e7bda03 100644
+--- a/arch/arm/mach-pxa/hx4700.c
++++ b/arch/arm/mach-pxa/hx4700.c
+@@ -296,11 +296,11 @@ static struct asic3_led asic3_leds[ASIC3_NUM_LEDS] = {
+ 	},
+ 	[1] = {
+ 		.name = "hx4700:green",
+-		.default_trigger = "unused",
++		.default_trigger = "heartbeat",
+ 	},
+ 	[2] = {
+ 		.name = "hx4700:blue",
+-		.default_trigger = "hx4700-radio",
++		.default_trigger = "mmc0",
+ 	},
+ };
+ 
+-- 
+1.7.4.4
+

@@ -1,0 +1,254 @@
+From 563ba89e078ab324303f89da122d7f4ebcbc6956 Mon Sep 17 00:00:00 2001
+From: Paul Parsons <lost.distance@yahoo.com>
+Date: Sun, 24 Jul 2011 11:12:12 +0200
+Subject: [PATCH 4/7] Add PCMCIA/CF support for the HTC ASIC3. Underlying
+ support is provided by the mfd/asic3 and
+ pcmcia/pxa2xx-pcmcia drivers. An example configuration
+ is provided by the pxa/hx4700 platform.
+
+Signed-off-by: Paul Parsons <lost.distance@yahoo.com>
+---
+ arch/arm/mach-pxa/hx4700.c    |    9 +++-
+ drivers/mfd/asic3.c           |    3 +-
+ drivers/pcmcia/Kconfig        |    2 +-
+ drivers/pcmcia/Makefile       |    1 +
+ drivers/pcmcia/pxa2xx_asic3.c |  121 +++++++++++++++++++++++++++++++++++++++++
+ include/linux/mfd/asic3.h     |    6 ++
+ 6 files changed, 138 insertions(+), 4 deletions(-)
+ create mode 100644 drivers/pcmcia/pxa2xx_asic3.c
+
+diff --git a/arch/arm/mach-pxa/hx4700.c b/arch/arm/mach-pxa/hx4700.c
+index abf342f..9cd438f 100644
+--- a/arch/arm/mach-pxa/hx4700.c
++++ b/arch/arm/mach-pxa/hx4700.c
+@@ -261,7 +261,6 @@ static u16 asic3_gpio_config[] = {
+ 	ASIC3_GPIOC0_LED0,		/* red */
+ 	ASIC3_GPIOC1_LED1,		/* green */
+ 	ASIC3_GPIOC2_LED2,		/* blue */
+-	ASIC3_GPIOC4_CF_nCD,
+ 	ASIC3_GPIOC5_nCIOW,
+ 	ASIC3_GPIOC6_nCIOR,
+ 	ASIC3_GPIOC7_nPCE_1,
+@@ -275,6 +274,7 @@ static u16 asic3_gpio_config[] = {
+ 	ASIC3_GPIOC15_nPIOR,
+ 
+ 	/* GPIOD: input GPIOs, CF */
++	ASIC3_GPIOD4_CF_nCD,
+ 	ASIC3_GPIOD11_nCIOIS16,
+ 	ASIC3_GPIOD12_nCWAIT,
+ 	ASIC3_GPIOD15_nPIOW,
+@@ -820,10 +820,15 @@ static struct i2c_board_info __initdata pi2c_board_info[] = {
+  * PCMCIA
+  */
+ 
++struct pcmcia_low_level;
++extern struct pcmcia_low_level asic3_pcmcia_low_level;
++
+ static struct platform_device pcmcia = {
+-	.name = "hx4700-pcmcia",
++	.name = "pxa2xx-pcmcia",
++	.id   = -1,
+ 	.dev  = {
+ 		.parent = &asic3.dev,
++		.platform_data = &asic3_pcmcia_low_level,
+ 	},
+ };
+ 
+diff --git a/drivers/mfd/asic3.c b/drivers/mfd/asic3.c
+index c71ae09..b77eaa4 100644
+--- a/drivers/mfd/asic3.c
++++ b/drivers/mfd/asic3.c
+@@ -102,7 +102,7 @@ u32 asic3_read_register(struct asic3 *asic, unsigned int reg)
+ }
+ EXPORT_SYMBOL_GPL(asic3_read_register);
+ 
+-static void asic3_set_register(struct asic3 *asic, u32 reg, u32 bits, bool set)
++void asic3_set_register(struct asic3 *asic, u32 reg, u32 bits, bool set)
+ {
+ 	unsigned long flags;
+ 	u32 val;
+@@ -116,6 +116,7 @@ static void asic3_set_register(struct asic3 *asic, u32 reg, u32 bits, bool set)
+ 	asic3_write_register(asic, reg, val);
+ 	spin_unlock_irqrestore(&asic->lock, flags);
+ }
++EXPORT_SYMBOL_GPL(asic3_set_register);
+ 
+ /* IRQs */
+ #define MAX_ASIC_ISR_LOOPS    20
+diff --git a/drivers/pcmcia/Kconfig b/drivers/pcmcia/Kconfig
+index 6e318ce..4538a99 100644
+--- a/drivers/pcmcia/Kconfig
++++ b/drivers/pcmcia/Kconfig
+@@ -216,7 +216,7 @@ config PCMCIA_PXA2XX
+ 		    || MACH_ARMCORE || ARCH_PXA_PALM || TRIZEPS_PCMCIA \
+ 		    || ARCOM_PCMCIA || ARCH_PXA_ESERIES || MACH_STARGATE2 \
+ 		    || MACH_VPAC270 || MACH_BALLOON3 || MACH_COLIBRI \
+-		    || MACH_COLIBRI320)
++		    || MACH_COLIBRI320 || MFD_ASIC3)
+ 	select PCMCIA_SOC_COMMON
+ 	help
+ 	  Say Y here to include support for the PXA2xx PCMCIA controller
+diff --git a/drivers/pcmcia/Makefile b/drivers/pcmcia/Makefile
+index 29935ea..f9775ce 100644
+--- a/drivers/pcmcia/Makefile
++++ b/drivers/pcmcia/Makefile
+@@ -73,6 +73,7 @@ pxa2xx-obj-$(CONFIG_MACH_VPAC270)		+= pxa2xx_vpac270.o
+ pxa2xx-obj-$(CONFIG_MACH_BALLOON3)		+= pxa2xx_balloon3.o
+ pxa2xx-obj-$(CONFIG_MACH_COLIBRI)		+= pxa2xx_colibri.o
+ pxa2xx-obj-$(CONFIG_MACH_COLIBRI320)		+= pxa2xx_colibri.o
++pxa2xx-obj-$(CONFIG_MFD_ASIC3)			+= pxa2xx_asic3.o
+ 
+ obj-$(CONFIG_PCMCIA_PXA2XX)			+= pxa2xx_base.o $(pxa2xx-obj-y)
+ 
+diff --git a/drivers/pcmcia/pxa2xx_asic3.c b/drivers/pcmcia/pxa2xx_asic3.c
+new file mode 100644
+index 0000000..03e5f59
+--- /dev/null
++++ b/drivers/pcmcia/pxa2xx_asic3.c
+@@ -0,0 +1,121 @@
++/*
++ *  Copyright (C) 2011 Paul Parsons <lost.distance@yahoo.com>
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License version 2 as
++ *  published by the Free Software Foundation.
++ */
++
++#include <linux/platform_device.h>
++#include <linux/gpio.h>
++#include <linux/irq.h>
++
++#include <linux/mfd/asic3.h>
++#include <mach/hx4700.h>
++
++#include "soc_common.h"
++
++static struct gpio gpios[] = {
++	{ GPIO60_HX4700_CF_RNB,       GPIOF_DIR_IN,         "CF ready"        },
++	{ GPIO114_HX4700_CF_RESET,    GPIOF_OUT_INIT_LOW,   "CF reset"        },
++	{ GPIOD4_CF_nCD,              GPIOF_DIR_IN,         "CF card detect"  },
++	{ EGPIO4_CF_3V3_ON,           GPIOF_OUT_INIT_LOW,   "CF 3.3V enable"  },
++};
++
++static struct pcmcia_irqs irqs[] = {
++	{ 0,  IRQ_GPIO(GPIOD4_CF_nCD),              "CF card detect"  },
++};
++
++static int hw_init(struct soc_pcmcia_socket *skt)
++{
++	struct platform_device *pdev =
++		to_platform_device(skt->socket.dev.parent->parent);
++	struct asic3 *asic = platform_get_drvdata(pdev);
++	int ret;
++
++	ret = gpio_request_array(gpios, ARRAY_SIZE(gpios));
++	if (ret)
++		goto out;
++
++	irq_set_irq_type(IRQ_GPIO(GPIOD4_CF_nCD), IRQ_TYPE_EDGE_BOTH);
++
++	ret = soc_pcmcia_request_irqs(skt, irqs, ARRAY_SIZE(irqs));
++	if (ret) {
++		gpio_free_array(gpios, ARRAY_SIZE(gpios));
++		goto out;
++	}
++
++	skt->socket.pci_irq = IRQ_GPIO(GPIO60_HX4700_CF_RNB);
++
++	asic3_set_register(asic, ASIC3_OFFSET(EXTCF, SELECT),
++		(ASIC3_EXTCF_CF0_BUF_EN|ASIC3_EXTCF_CF0_PWAIT_EN), 1);
++
++out:
++	return ret;
++}
++
++static void hw_shutdown(struct soc_pcmcia_socket *skt)
++{
++	struct platform_device *pdev =
++		to_platform_device(skt->socket.dev.parent->parent);
++	struct asic3 *asic = platform_get_drvdata(pdev);
++
++	asic3_set_register(asic, ASIC3_OFFSET(EXTCF, SELECT),
++		(ASIC3_EXTCF_CF0_BUF_EN|ASIC3_EXTCF_CF0_PWAIT_EN), 0);
++
++	soc_pcmcia_free_irqs(skt, irqs, ARRAY_SIZE(irqs));
++
++	gpio_free_array(gpios, ARRAY_SIZE(gpios));
++}
++
++static void socket_state(struct soc_pcmcia_socket *skt,
++	struct pcmcia_state *state)
++{
++	state->detect = (gpio_get_value(GPIOD4_CF_nCD) == 0);
++	state->ready = (gpio_get_value(GPIO60_HX4700_CF_RNB) != 0);
++	state->bvd1 = 1;
++	state->bvd2 = 1;
++	state->wrprot = 0;
++	state->vs_3v = 1;
++	state->vs_Xv = 0;
++}
++
++static int configure_socket(struct soc_pcmcia_socket *skt,
++	const socket_state_t *state)
++{
++	switch (state->Vcc)
++	{
++	case 0:
++		gpio_set_value(EGPIO4_CF_3V3_ON, 0);
++		break;
++	case 33:
++		gpio_set_value(EGPIO4_CF_3V3_ON, 1);
++		break;
++	default:
++		printk(KERN_ERR "pcmcia: Unsupported Vcc: %d\n", state->Vcc);
++		return -EINVAL;
++	}
++
++	gpio_set_value(GPIO114_HX4700_CF_RESET, (state->flags & SS_RESET) != 0);
++
++	return (0);
++}
++
++static void socket_init(struct soc_pcmcia_socket *skt)
++{
++}
++
++static void socket_suspend(struct soc_pcmcia_socket *skt)
++{
++}
++
++struct pcmcia_low_level asic3_pcmcia_low_level = {
++	.owner		= THIS_MODULE,
++	.nr		= 1,
++	.hw_init	= hw_init,
++	.hw_shutdown	= hw_shutdown,
++	.socket_state	= socket_state,
++	.configure_socket=configure_socket,
++	.socket_init	= socket_init,
++	.socket_suspend	= socket_suspend,
++};
+diff --git a/include/linux/mfd/asic3.h b/include/linux/mfd/asic3.h
+index ed793b7..332d3b1 100644
+--- a/include/linux/mfd/asic3.h
++++ b/include/linux/mfd/asic3.h
+@@ -138,6 +138,7 @@ struct asic3_platform_data {
+ #define ASIC3_GPIOC13_nPWAIT		ASIC3_CONFIG_GPIO(45, 1, 1, 0)
+ #define ASIC3_GPIOC14_nPIOIS16		ASIC3_CONFIG_GPIO(46, 1, 1, 0)
+ #define ASIC3_GPIOC15_nPIOR		ASIC3_CONFIG_GPIO(47, 1, 0, 0)
++#define ASIC3_GPIOD4_CF_nCD		ASIC3_CONFIG_GPIO(52, 1, 0, 0)
+ #define ASIC3_GPIOD11_nCIOIS16		ASIC3_CONFIG_GPIO(59, 1, 0, 0)
+ #define ASIC3_GPIOD12_nCWAIT		ASIC3_CONFIG_GPIO(60, 1, 0, 0)
+ #define ASIC3_GPIOD15_nPIOW		ASIC3_CONFIG_GPIO(63, 1, 0, 0)
+@@ -310,4 +311,9 @@ struct asic3;
+ extern void asic3_write_register(struct asic3 *asic, unsigned int reg, u32 val);
+ extern u32 asic3_read_register(struct asic3 *asic, unsigned int reg);
+ 
++/* Functions needed by pxa2xx-pcmcia */
++
++struct asic3;
++extern void asic3_set_register(struct asic3 *asic, u32 reg, u32 bits, bool set);
++
+ #endif /* __ASIC3_H__ */
+-- 
+1.7.4.4
+

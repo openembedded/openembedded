@@ -1,0 +1,50 @@
+From 7afab9e4aaf9f311c9fb7a4347710a84de91fa9e Mon Sep 17 00:00:00 2001
+From: Paul Parsons <lost.distance@yahoo.com>
+Date: Sun, 24 Jul 2011 11:12:11 +0200
+Subject: [PATCH 1/7] Add LED support for the HTC ASIC3. Underlying support is
+ provided by the mfd/asic3 and leds/leds-asic3 drivers.
+ An example configuration is provided by the pxa/hx4700
+ platform.
+
+Signed-off-by: Paul Parsons <lost.distance@yahoo.com>
+---
+ arch/arm/mach-pxa/hx4700.c |   16 ++++++++++++++++
+ 1 files changed, 16 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-pxa/hx4700.c b/arch/arm/mach-pxa/hx4700.c
+index f941a49..abf342f 100644
+--- a/arch/arm/mach-pxa/hx4700.c
++++ b/arch/arm/mach-pxa/hx4700.c
+@@ -280,6 +280,21 @@ static u16 asic3_gpio_config[] = {
+ 	ASIC3_GPIOD15_nPIOW,
+ };
+ 
++static struct asic3_led asic3_leds[ASIC3_NUM_LEDS] = {
++	[0] = {
++		.name = "hx4700:amber",
++		.default_trigger = "ds2760-battery.0-charging-blink-full-solid",
++	},
++	[1] = {
++		.name = "hx4700:green",
++		.default_trigger = "unused",
++	},
++	[2] = {
++		.name = "hx4700:blue",
++		.default_trigger = "hx4700-radio",
++	},
++};
++
+ static struct resource asic3_resources[] = {
+ 	/* GPIO part */
+ 	[0] = {
+@@ -310,6 +325,7 @@ static struct asic3_platform_data asic3_platform_data = {
+ 	.gpio_config_num = ARRAY_SIZE(asic3_gpio_config),
+ 	.irq_base        = IRQ_BOARD_START,
+ 	.gpio_base       = HX4700_ASIC3_GPIO_BASE,
++	.leds            = asic3_leds,
+ };
+ 
+ static struct platform_device asic3 = {
+-- 
+1.7.4.4
+
