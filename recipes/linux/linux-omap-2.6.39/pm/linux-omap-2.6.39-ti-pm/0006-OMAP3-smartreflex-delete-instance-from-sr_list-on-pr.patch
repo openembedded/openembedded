@@ -1,4 +1,4 @@
-From cdb1237e4829a7912fe4e78e73f20bda9ea22d6d Mon Sep 17 00:00:00 2001
+From 92e63a2f098ce344cfc51ec9a7420e1a5cf85c3e Mon Sep 17 00:00:00 2001
 From: Aaro Koskinen <aaro.koskinen@nokia.com>
 Date: Thu, 24 Mar 2011 18:35:34 +0200
 Subject: [PATCH 06/12] OMAP3+: smartreflex: delete instance from sr_list on probe error

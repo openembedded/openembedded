@@ -1,4 +1,4 @@
-From 61c5ce4da03eda42e69cf225fddac9c910506db5 Mon Sep 17 00:00:00 2001
+From aef7e862873e6125159a18d22a2e37b1fbab2153 Mon Sep 17 00:00:00 2001
 From: Nishanth Menon <nm@ti.com>
 Date: Thu, 12 May 2011 16:27:45 -0700
 Subject: [PATCH 3/6] OMAP2+: cpufreq: minor comment cleanup

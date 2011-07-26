@@ -1,4 +1,4 @@
-From 7553d0119d9f62a809d21993deaac2a745251c3b Mon Sep 17 00:00:00 2001
+From b3ca51ac09da7c260c28df396d4c830814697ff0 Mon Sep 17 00:00:00 2001
 From: Aaro Koskinen <aaro.koskinen@nokia.com>
 Date: Thu, 24 Mar 2011 18:35:33 +0200
 Subject: [PATCH 05/12] OMAP3+: smartreflex: fix ioremap leak on probe error

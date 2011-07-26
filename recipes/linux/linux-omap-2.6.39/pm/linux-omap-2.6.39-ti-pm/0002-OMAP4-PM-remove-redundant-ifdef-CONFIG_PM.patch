@@ -1,4 +1,4 @@
-From 79f5f1bb1c1a0f004e41660742a0bf736744ad0e Mon Sep 17 00:00:00 2001
+From 37fb1c8eeecd39542716d3d0c7c5e3ca0eb198f8 Mon Sep 17 00:00:00 2001
 From: Nishanth Menon <nm@ti.com>
 Date: Sun, 13 Mar 2011 09:07:23 +0530
 Subject: [PATCH 02/12] OMAP4: PM: remove redundant #ifdef CONFIG_PM

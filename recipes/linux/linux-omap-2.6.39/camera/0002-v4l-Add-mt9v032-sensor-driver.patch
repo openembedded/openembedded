@@ -1,4 +1,4 @@
-From 55d8ca4b03eb04432adefa6fbf6e5f0197c7fb32 Mon Sep 17 00:00:00 2001
+From ba65e798c98e9c4d331deb2b51337964336d3f78 Mon Sep 17 00:00:00 2001
 From: Detlev Casanova <detlev.casanova@gmail.com>
 Date: Sun, 28 Nov 2010 19:07:20 +0100
 Subject: [PATCH 2/3] v4l: Add mt9v032 sensor driver

@@ -1,7 +1,7 @@
-From d83a600cbe0cfca8c8fd9f5566dd45166cc9e142 Mon Sep 17 00:00:00 2001
+From ee2dcb39e9255fc0aa6b4e267e9553bdbd11e82b Mon Sep 17 00:00:00 2001
 From: Scott Ellis <scottellis.developer@gmail.com>
 Date: Sun, 23 Jan 2011 20:39:35 -0800
-Subject: [PATCH 28/31] OMAP: Overo: Add support for spidev
+Subject: [PATCH 28/32] OMAP: Overo: Add support for spidev
 
 ---
  arch/arm/mach-omap2/board-overo.c |   16 ++++++++++++++++

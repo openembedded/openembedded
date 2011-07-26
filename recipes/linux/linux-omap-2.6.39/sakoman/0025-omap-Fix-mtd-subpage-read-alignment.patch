@@ -1,7 +1,7 @@
-From a13b58ba9d6e0aa0fe0d2dc5b51de545cea2ee9e Mon Sep 17 00:00:00 2001
+From acf75c8b4d0f6775527636bf9d41bb1f74fc2f97 Mon Sep 17 00:00:00 2001
 From: Charles Manning <cdhmanning@gmail.com>
 Date: Tue, 18 Jan 2011 11:25:25 +1300
-Subject: [PATCH 25/31] omap: Fix mtd subpage read alignment
+Subject: [PATCH 25/32] omap: Fix mtd subpage read alignment
 
 This allows the omap2 prefetch engine to work properly for subpage
 reads. Without this ECC errors will stop UBIFS from working.

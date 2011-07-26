@@ -1,4 +1,4 @@
-From abfa4bd473f227d2d0b42367c5aeaf6e16214a95 Mon Sep 17 00:00:00 2001
+From c194377152df812bcb29fff8f217ffbde59089be Mon Sep 17 00:00:00 2001
 From: Aaro Koskinen <aaro.koskinen@nokia.com>
 Date: Thu, 24 Mar 2011 18:35:35 +0200
 Subject: [PATCH 07/12] OMAP3+: smartreflex: delete debugfs entries on probe error

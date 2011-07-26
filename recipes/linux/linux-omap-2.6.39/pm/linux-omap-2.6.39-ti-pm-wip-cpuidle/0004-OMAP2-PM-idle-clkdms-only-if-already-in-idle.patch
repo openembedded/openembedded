@@ -1,4 +1,4 @@
-From 828597d32fc3926e2c9e6c57adcc50c7eac824de Mon Sep 17 00:00:00 2001
+From cec133850aa42c03d912c764aaa441677e782eca Mon Sep 17 00:00:00 2001
 From: Rajendra Nayak <rnayak@ti.com>
 Date: Tue, 5 Apr 2011 15:22:48 +0530
 Subject: [PATCH 4/6] OMAP2+: PM: idle clkdms only if already in idle

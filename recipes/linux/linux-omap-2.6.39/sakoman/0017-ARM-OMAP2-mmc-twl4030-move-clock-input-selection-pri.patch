@@ -1,7 +1,7 @@
-From e4e17b2fa3aa84e14303d2270a49f1ac9bf25b5c Mon Sep 17 00:00:00 2001
+From 56dc96df8ff5e3db6afde96d64d74200f85e59c2 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Sun, 24 Jan 2010 09:33:56 -0800
-Subject: [PATCH 17/31] ARM: OMAP2: mmc-twl4030: move clock input selection prior to vcc test
+Subject: [PATCH 17/32] ARM: OMAP2: mmc-twl4030: move clock input selection prior to vcc test
 
 otherwise it is not executed on systems that use non-twl regulators
 ---

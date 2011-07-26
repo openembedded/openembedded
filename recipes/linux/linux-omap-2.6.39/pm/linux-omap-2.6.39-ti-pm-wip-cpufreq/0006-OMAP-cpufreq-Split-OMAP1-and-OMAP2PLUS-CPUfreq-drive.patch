@@ -1,4 +1,4 @@
-From 2a3ca1bc3f842bab22873e2d9d002e0a736d0f19 Mon Sep 17 00:00:00 2001
+From e16548716c5cbc3c9885d05f1654d83d5411a3a7 Mon Sep 17 00:00:00 2001
 From: Santosh Shilimkar <santosh.shilimkar@ti.com>
 Date: Mon, 14 Mar 2011 17:08:48 +0530
 Subject: [PATCH 6/8] OMAP: cpufreq: Split OMAP1 and OMAP2PLUS CPUfreq drivers.
@@ -222,7 +222,7 @@ index 0000000..682cdc8
 +module_init(omap_cpufreq_init);
 +module_exit(omap_cpufreq_exit);
 diff --git a/arch/arm/mach-omap2/Makefile b/arch/arm/mach-omap2/Makefile
-index 512b152..42924f3 100644
+index 05cd983..e9c2445 100644
 --- a/arch/arm/mach-omap2/Makefile
 +++ b/arch/arm/mach-omap2/Makefile
 @@ -56,6 +56,9 @@ obj-$(CONFIG_ARCH_OMAP3)		+= opp3xxx_data.o

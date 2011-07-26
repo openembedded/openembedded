@@ -1,0 +1,121 @@
+From 2adb339e4988632379971febe5696f21d05c71f2 Mon Sep 17 00:00:00 2001
+From: Anand Gadiyar <gadiyar@ti.com>
+Date: Tue, 19 Jul 2011 01:52:14 -0700
+Subject: [PATCH] usb: musb: Enable DMA mode1 RX for USB-Mass-Storage
+
+This patch enables the DMA mode1 RX support.
+This feature is enabled based on the short_not_ok flag passed from
+gadget drivers.
+
+This will result in a thruput performance gain of around
+40% for USB mass-storage/mtp use cases.
+
+Signed-off-by: Anand Gadiyar <gadiyar@ti.com>
+Signed-off-by: Moiz Sonasath <m-sonasath@ti.com>
+Tested-by: Vikram Pandita <vikram.pandita@ti.com>
+Signed-off-by: Koen Kooi <koen@dominion.thruhere.net>
+---
+ drivers/usb/musb/musb_gadget.c |   68 ++++++++++++++++++++++++---------------
+ 1 files changed, 42 insertions(+), 26 deletions(-)
+
+diff --git a/drivers/usb/musb/musb_gadget.c b/drivers/usb/musb/musb_gadget.c
+index f47c201..ca32c63 100644
+--- a/drivers/usb/musb/musb_gadget.c
++++ b/drivers/usb/musb/musb_gadget.c
+@@ -630,6 +630,7 @@ static void rxstate(struct musb *musb, struct musb_request *req)
+ 	u16			len;
+ 	u16			csr = musb_readw(epio, MUSB_RXCSR);
+ 	struct musb_hw_ep	*hw_ep = &musb->endpoints[epnum];
++	u8			use_mode_1;
+ 
+ 	if (hw_ep->is_shared_fifo)
+ 		musb_ep = &hw_ep->ep_in;
+@@ -679,6 +680,18 @@ static void rxstate(struct musb *musb, struct musb_request *req)
+ 
+ 	if (csr & MUSB_RXCSR_RXPKTRDY) {
+ 		len = musb_readw(epio, MUSB_RXCOUNT);
++
++		/*
++		 * Enable Mode 1 for RX transfers only for mass-storage
++		 * use-case, based on short_not_ok flag which is set only
++		 * from file_storage and f_mass_storage drivers
++		 */
++
++		if (request->short_not_ok && len == musb_ep->packet_sz)
++			use_mode_1 = 1;
++		else
++			use_mode_1 = 0;
++
+ 		if (request->actual < request->length) {
+ #ifdef CONFIG_USB_INVENTRA_DMA
+ 			if (is_buffer_mapped(req)) {
+@@ -710,37 +723,40 @@ static void rxstate(struct musb *musb, struct musb_request *req)
+ 	 * then becomes usable as a runtime "use mode 1" hint...
+ 	 */
+ 
+-				csr |= MUSB_RXCSR_DMAENAB;
+-#ifdef USE_MODE1
+-				csr |= MUSB_RXCSR_AUTOCLEAR;
+-				/* csr |= MUSB_RXCSR_DMAMODE; */
+-
+-				/* this special sequence (enabling and then
+-				 * disabling MUSB_RXCSR_DMAMODE) is required
+-				 * to get DMAReq to activate
+-				 */
+-				musb_writew(epio, MUSB_RXCSR,
+-					csr | MUSB_RXCSR_DMAMODE);
+-#else
+-				if (!musb_ep->hb_mult &&
+-					musb_ep->hw_ep->rx_double_buffered)
++				/* Experimental: Mode1 works with mass storage use cases */
++				if (use_mode_1) {
+ 					csr |= MUSB_RXCSR_AUTOCLEAR;
+-#endif
+-				musb_writew(epio, MUSB_RXCSR, csr);
++					musb_writew(epio, MUSB_RXCSR, csr);
++					csr |= MUSB_RXCSR_DMAENAB;
++					musb_writew(epio, MUSB_RXCSR, csr);
++
++					/* this special sequence (enabling and then
++					* disabling MUSB_RXCSR_DMAMODE) is required
++					* to get DMAReq to activate
++					*/
++					musb_writew(epio, MUSB_RXCSR,
++						csr | MUSB_RXCSR_DMAMODE);
++					musb_writew(epio, MUSB_RXCSR, csr);
++
++				} else {
++					if (!musb_ep->hb_mult &&
++						musb_ep->hw_ep->rx_double_buffered)
++						csr |= MUSB_RXCSR_AUTOCLEAR;
++					csr |= MUSB_RXCSR_DMAENAB;
++					musb_writew(epio, MUSB_RXCSR, csr);
++				}
+ 
+ 				if (request->actual < request->length) {
+ 					int transfer_size = 0;
+-#ifdef USE_MODE1
+-					transfer_size = min(request->length - request->actual,
+-							channel->max_len);
+-#else
+-					transfer_size = min(request->length - request->actual,
+-							(unsigned)len);
+-#endif
+-					if (transfer_size <= musb_ep->packet_sz)
+-						musb_ep->dma->desired_mode = 0;
+-					else
++					if (use_mode_1) {
++						transfer_size = min(request->length - request->actual,
++								channel->max_len);
+ 						musb_ep->dma->desired_mode = 1;
++					} else {
++						transfer_size = min(request->length - request->actual,
++								(unsigned)len);
++						musb_ep->dma->desired_mode = 0;
++					}
+ 
+ 					use_dma = c->channel_program(
+ 							channel,
+-- 
+1.6.6.1
+

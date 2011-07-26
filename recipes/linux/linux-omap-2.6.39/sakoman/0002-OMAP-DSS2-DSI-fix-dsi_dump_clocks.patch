@@ -1,7 +1,7 @@
-From 2bc828d1b81d857238dc8b1f29e38e466469e352 Mon Sep 17 00:00:00 2001
+From 5275654d2e873ca5bdbbd8be61dbb2d63c0e04cb Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@ti.com>
 Date: Mon, 4 Apr 2011 10:02:53 +0300
-Subject: [PATCH 02/31] OMAP: DSS2: DSI: fix dsi_dump_clocks()
+Subject: [PATCH 02/32] OMAP: DSS2: DSI: fix dsi_dump_clocks()
 
 On OMAP4, reading DSI_PLL_CONFIGURATION2 register requires the L3 clock
 (CIO_CLK_ICG) to PLL. Currently dsi_dump_clocks() tries to read that

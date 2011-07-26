@@ -1,4 +1,4 @@
-From 6ecf0ebe9d520748b217a016ef8a0b239805a42c Mon Sep 17 00:00:00 2001
+From 8fb6b7c488b31fbff5b81bdeea5dbb236342458b Mon Sep 17 00:00:00 2001
 From: Rajendra Nayak <rnayak@ti.com>
 Date: Tue, 29 Mar 2011 22:37:43 +0530
 Subject: [PATCH 5/6] OMAP2+: hwmod: Follow the recomended PRCM sequence

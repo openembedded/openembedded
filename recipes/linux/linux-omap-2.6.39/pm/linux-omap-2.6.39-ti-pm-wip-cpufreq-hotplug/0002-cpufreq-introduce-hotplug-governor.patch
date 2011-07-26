@@ -1,4 +1,4 @@
-From f31dabf5b6158584da56e7186ada6d2a80d5654e Mon Sep 17 00:00:00 2001
+From e4c777d8314d7925e4895f00b3a7ebd64a4d830b Mon Sep 17 00:00:00 2001
 From: Mike Turquette <mturquette@ti.com>
 Date: Tue, 17 May 2011 09:43:09 -0500
 Subject: [PATCH 2/2] cpufreq: introduce hotplug governor

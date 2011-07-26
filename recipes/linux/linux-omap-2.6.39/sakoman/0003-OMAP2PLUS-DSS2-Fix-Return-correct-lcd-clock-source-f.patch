@@ -1,7 +1,7 @@
-From 29d6de29d3d0d2ac9fe0572cd4e0485757eca550 Mon Sep 17 00:00:00 2001
+From 9ddb3aafff5f7f6b7eaad32f9b1eea249c0dce8b Mon Sep 17 00:00:00 2001
 From: Archit Taneja <archit@ti.com>
 Date: Thu, 31 Mar 2011 13:23:35 +0530
-Subject: [PATCH 03/31] OMAP2PLUS: DSS2: Fix: Return correct lcd clock source for OMAP2/3
+Subject: [PATCH 03/32] OMAP2PLUS: DSS2: Fix: Return correct lcd clock source for OMAP2/3
 
 dss.lcd_clk_source is set to the default value DSS_CLK_SRC_FCK at dss_init.
 For OMAP2 and OMAP3, the dss.lcd_clk_source should always be the same as

@@ -1,7 +1,7 @@
-From fda068cf87fc12f12aeaea2e428d78afac43c19b Mon Sep 17 00:00:00 2001
+From 078005a9c8b5913ed5eb7a7a9508e4b0a5b18c30 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <sakoman@gmail.com>
 Date: Tue, 15 Dec 2009 15:24:10 -0800
-Subject: [PATCH 09/31] drivers: input: touchscreen: ads7846: return ENODEV if device is not found
+Subject: [PATCH 09/32] drivers: input: touchscreen: ads7846: return ENODEV if device is not found
 
 Signed-off-by: Steve Sakoman <sakoman@gmail.com>
 ---

@@ -1,4 +1,4 @@
-From ec7b7d1f27887ec5d76a2d4175e54cedcfa379da Mon Sep 17 00:00:00 2001
+From e89b1544450fb8410a44004e48d6b330bc39f0ce Mon Sep 17 00:00:00 2001
 From: Kevin Hilman <khilman@deeprootsystems.com>
 Date: Wed, 11 Aug 2010 17:05:38 -0700
 Subject: [PATCH 2/8] OMAP: CPUfreq: ensure policy is fully initialized

@@ -1,7 +1,7 @@
-From 44940d48b3d535072e6a4d225173c3115bacc75b Mon Sep 17 00:00:00 2001
+From ae16b19238b8d0609612d0e1f1a419d293f17c80 Mon Sep 17 00:00:00 2001
 From: Steve Sakoman <steve@sakoman.com>
 Date: Thu, 3 Mar 2011 13:29:30 -0800
-Subject: [PATCH 10/31] Revert "omap2_mcspi: Flush posted writes"
+Subject: [PATCH 10/32] Revert "omap2_mcspi: Flush posted writes"
 
 This reverts commit a330ce2001b290c59fe98c37e981683ef0a75fdf.
 ---

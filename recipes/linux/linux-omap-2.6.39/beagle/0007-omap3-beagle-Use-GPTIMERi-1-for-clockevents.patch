@@ -1,0 +1,42 @@
+From 101b0aedf8152711847e2f9f347d267a3ac7f287 Mon Sep 17 00:00:00 2001
+From: Sanjeev Premi <premi@ti.com>
+Date: Fri, 24 Jun 2011 16:23:45 +0000
+Subject: [PATCH 7/7] omap3: beagle: Use GPTIMERi 1 for clockevents
+
+The current selection of the GPTIMER on was result of
+a hardware issue in early versions of the Beagleboards
+(Ax and B1 thru B4). [1] [2]
+
+Its been long since the hardware issue has been fixed.
+This patch uses GPTIMER 1 for all newer board revisions
+incl. Beagleboard XM.
+
+ [1] http://thread.gmane.org/gmane.comp.hardware.beagleboard.general/91
+ [2] Errata #7 at http://elinux.org/BeagleBoard#Errata
+
+Signed-off-by: Sanjeev Premi <premi@ti.com>
+Cc: Paul Walmsley <paul@pwsan.com>
+Reviewed-by: Paul Walmsley <paul@pwsan.com>
+---
+ arch/arm/mach-omap2/board-omap3beagle.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index 61564a4..20d5912 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -806,7 +806,10 @@ static void __init omap3_beagle_init_irq(void)
+ {
+ 	omap_init_irq();
+ #ifdef CONFIG_OMAP_32K_TIMER
+-	omap2_gp_clockevent_set_gptimer(12);
++	if (omap3_beagle_version == OMAP3BEAGLE_BOARD_AXBX)
++		omap2_gp_clockevent_set_gptimer(12);
++	else
++		omap2_gp_clockevent_set_gptimer(1);
+ #endif
+ }
+ 
+-- 
+1.6.6.1
+

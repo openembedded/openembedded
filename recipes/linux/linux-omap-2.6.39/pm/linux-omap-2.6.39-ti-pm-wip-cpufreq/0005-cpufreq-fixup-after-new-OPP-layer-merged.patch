@@ -1,4 +1,4 @@
-From 43e22afa61f3624628c8344bcae9e95f0cc8525a Mon Sep 17 00:00:00 2001
+From 4764137dd613362656726a15cb8184724aeb99bb Mon Sep 17 00:00:00 2001
 From: Kevin Hilman <khilman@deeprootsystems.com>
 Date: Tue, 16 Nov 2010 11:48:41 -0800
 Subject: [PATCH 5/8] cpufreq: fixup after new OPP layer merged

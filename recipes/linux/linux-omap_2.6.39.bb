@@ -7,7 +7,7 @@ COMPATIBLE_MACHINE = "(beagleboard)"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
 SRCREV_pn-${PN} = "v2.6.39"
-MACHINE_KERNEL_PR_append = "h"
+MACHINE_KERNEL_PR_append = "o"
 
 FILESPATHPKG_prepend = "linux-omap-2.6.39:"
 
@@ -46,12 +46,15 @@ SRC_URI_append = " \
            file://sakoman/0029-unionfs-Add-support-for-unionfs-2.5.9.patch \
            file://sakoman/0030-omap-Change-omap_device-activate-latency-messages-fr.patch \
            file://sakoman/0031-omap-overo-Add-opp-init.patch \
+           file://sakoman/0032-omap3-Add-basic-support-for-720MHz-part.patch \
            \
            file://beagle/0001-OMAP3-beagle-add-support-for-beagleboard-xM-revision.patch \
            file://beagle/0002-OMAP3-beagle-add-support-for-expansionboards.patch \
            file://beagle/0003-OMAP3-beagle-add-MADC-support.patch \
            file://beagle/0004-OMAP3-beagle-add-regulators-for-camera-interface.patch \
            file://beagle/0005-OMAP3-beagle-HACK-add-in-1GHz-OPP.patch \
+           file://beagle/0006-OMAP3-BEAGLE-fix-RTC.patch \
+           file://beagle/0007-omap-mmc-Adjust-dto-to-eliminate-timeout-errors.patch \
            \
            file://camera/0001-Add-driver-for-Aptina-Micron-mt9p031-sensor.patch \
            file://camera/0002-v4l-Add-mt9v032-sensor-driver.patch \
@@ -95,6 +98,24 @@ SRC_URI_append = " \
            file://pm/linux-omap-2.6.39-ti-pm-wip-cpuidle/0004-OMAP2-PM-idle-clkdms-only-if-already-in-idle.patch \
            file://pm/linux-omap-2.6.39-ti-pm-wip-cpuidle/0005-OMAP2-hwmod-Follow-the-recomended-PRCM-sequence.patch \
            file://pm/linux-omap-2.6.39-ti-pm-wip-cpuidle/0006-OMAP-Serial-Check-wk_st-only-if-present.patch \
+           \
+           file://mfd/0001-mfd-Fix-omap-usbhs-crash-when-rmmoding-ehci-or-ohci.patch \
+           file://mfd/0002-mfd-Fix-omap_usbhs_alloc_children-error-handling.patch \
+           file://mfd/0003-mfd-Add-omap-usbhs-runtime-PM-support.patch \
+           file://mfd/0004-arm-omap-usb-ehci-and-ohci-hwmod-structures-for-omap.patch \
+           file://mfd/0005-arm-omap-usb-register-hwmods-of-usbhs.patch \
+           file://mfd/0006-arm-omap-usb-device-name-change-for-the-clk-names-of.patch \
+           file://mfd/0007-mfd-global-Suspend-and-resume-support-of-ehci-and-oh.patch \
+           file://mfd/0008-MFD-TWL4030-Correct-the-warning-print-during-script-.patch \
+           file://mfd/0009-MFD-TWL4030-Modifying-the-macro-name-Main_Ref-to-all.patch \
+           file://mfd/0010-MFD-TWL4030-power-scripts-for-OMAP3-boards.patch \
+           file://mfd/0011-MFD-TWL4030-TWL-version-checking.patch \
+           file://mfd/0012-MFD-TWL4030-workaround-changes-for-Erratum-27.patch \
+           file://mfd/0013-MFD-TWL4030-optimizing-resource-configuration.patch \
+           \
+           file://musb/0001-usb-musb-Enable-DMA-mode1-RX-for-USB-Mass-Storage.patch \
+           \
+           file://net/0001-NFS-Revert-NFSROOT-default-mount-options.patch \
            "
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \

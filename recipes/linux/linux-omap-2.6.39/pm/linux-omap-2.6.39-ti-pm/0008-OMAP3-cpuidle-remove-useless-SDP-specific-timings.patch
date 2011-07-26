@@ -1,4 +1,4 @@
-From f8a6387ba73da6c8fe4281449b85f1825f2403bb Mon Sep 17 00:00:00 2001
+From 2b9e07516cc3853340b5e06e9ae7244ca5681466 Mon Sep 17 00:00:00 2001
 From: Jean Pihet <j-pihet@ti.com>
 Date: Fri, 29 Apr 2011 11:26:22 +0200
 Subject: [PATCH 08/12] OMAP3 cpuidle: remove useless SDP specific timings

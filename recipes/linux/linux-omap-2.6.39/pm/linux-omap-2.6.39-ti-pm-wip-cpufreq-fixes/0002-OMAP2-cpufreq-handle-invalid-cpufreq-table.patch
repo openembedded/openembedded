@@ -1,4 +1,4 @@
-From 1dce7658788943a8085323ef87111cdcdb335d1d Mon Sep 17 00:00:00 2001
+From 5febdc0482e545c2a598f035c5e03931e0c3c808 Mon Sep 17 00:00:00 2001
 From: Nishanth Menon <nm@ti.com>
 Date: Thu, 12 May 2011 08:14:41 -0500
 Subject: [PATCH 2/6] OMAP2+: cpufreq: handle invalid cpufreq table

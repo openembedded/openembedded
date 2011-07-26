@@ -1,4 +1,4 @@
-From 7e421930c287f42bed624ad65250c16deaeae50f Mon Sep 17 00:00:00 2001
+From f375d3c39d2835929d34c2a046b8c43cea6d1467 Mon Sep 17 00:00:00 2001
 From: Santosh Shilimkar <santosh.shilimkar@ti.com>
 Date: Mon, 14 Mar 2011 17:08:49 +0530
 Subject: [PATCH 7/8] OMAP2PLUS: cpufreq: Add SMP support to cater OMAP4430

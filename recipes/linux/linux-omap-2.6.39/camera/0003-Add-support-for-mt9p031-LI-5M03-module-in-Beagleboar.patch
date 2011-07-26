@@ -1,4 +1,4 @@
-From c53e55e3d361eb79bc8fc27971428fc37d804ea9 Mon Sep 17 00:00:00 2001
+From f662a8a2b9794121568903f5cc969e50eb151892 Mon Sep 17 00:00:00 2001
 From: Javier Martin <javier.martin@vista-silicon.com>
 Date: Mon, 30 May 2011 10:37:17 +0200
 Subject: [PATCH 3/3] Add support for mt9p031 (LI-5M03 module) in Beagleboard xM.
