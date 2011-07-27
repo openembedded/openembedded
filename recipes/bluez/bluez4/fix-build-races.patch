@@ -1,5 +1,8 @@
 Add 'local_headers' to BUILT_SOURCES so that they're treated correctly
 and we don't have a race on generating these versus using them.
+
+Upstream-Status: Accepted
+
 ---
  Makefile.am |    5 ++---
  1 file changed, 2 insertions(+), 3 deletions(-)
