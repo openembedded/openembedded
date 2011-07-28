@@ -171,5 +171,5 @@ GROUP ( libgcc_s.so.1 libgcc.a )" > ${D}${libdir}/libgcc_s.so
 	rm -rf ${D}${includedir}/c++/${BINV}/${TARGET_SYS}/bits/*.gch
 	# move the gdb python helpers to gdb auto-load directory
 	install -d ${D}${datadir}/gdb/auto-load/${libdir}
-	mv ${D}${libdir}/libstdc++.so.*-gdb.py* ${D}${datadir}/gdb/auto-load${libdir}
+	mv ${D}${libdir}/libstdc++.so.*-gdb.py* ${D}${datadir}/gdb/auto-load${libdir} || true
 }
