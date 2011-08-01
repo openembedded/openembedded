@@ -2,10 +2,10 @@ DESCRIPTION = "Universal Hardware Driver for Ettus Research products."
 HOMEPAGE = "http://www.ettus.com"
 LICENSE = "GPLV3+"
 
-DEPENDS = "git-native python-cheetah-native boost libusb1 uhd-firmware"
+DEPENDS = "git-native python-cheetah-native boost libusb1 uhd-firmware orc-native"
 RDEPENDS_${PN} += "uhd-firmware"
 
-INC_PR = "r5"
+INC_PR = "r6"
 
 inherit cmake
 
@@ -24,6 +24,6 @@ FILES_${PN}-examples = "${datadir}/uhd/examples/*"
 OECMAKE_BUILDPATH = "${S}/build"
 OECMAKE_SOURCEPATH = "${S}"
 
-EXTRA_OECMAKE = "-DENABLE_USRP_E100=TRUE -DENABLE_USRP_E_UTILS=TRUE"
+EXTRA_OECMAKE = "-DENABLE_E100=TRUE -DENABLE_USRP_E_UTILS=TRUE"
 
 EXTRA_OEMAKE = "-C ${OECMAKE_BUILDPATH}"
