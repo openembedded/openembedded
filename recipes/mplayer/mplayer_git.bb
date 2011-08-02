@@ -8,7 +8,8 @@ DEPENDS = "libvpx live555 libdvdread libtheora virtual/libsdl ffmpeg xsp zlib li
 RDEPENDS_${PN} = "mplayer-common"
 LICENSE = "GPL"
 SRC_URI = "git://repo.or.cz/mplayer/glamo.git;protocol=git;branch=mplayer2 \
-   "
+           file://fix-emu_qtx_api.diff \
+          "
 
 SRC_URI_append_armv7a = " \
 	   file://0001-video-out-for-omapfb-support.patch \
@@ -32,6 +33,8 @@ RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
 PV = "2.0+gitr${SRCPV}"
+PR = "r1"
+
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_shr = "2"
 
