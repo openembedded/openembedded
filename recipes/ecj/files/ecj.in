@@ -1,13 +1,16 @@
-ARGS=${1+"$@"}
 COUNT=5
 END=0
+RETURNCODE=0
 
 while test "${COUNT}" -gt "${END}"
 do
- ${RUNTIME} -Xmx1024m -cp ${ECJ_JAR} org.eclipse.jdt.internal.compiler.batch.Main ${ARGS}
+ ${RUNTIME} -Xmx1024m -cp ${ECJ_JAR} org.eclipse.jdt.internal.compiler.batch.Main ${1+"$@"}
+ RETURNCODE=${?}
  if test "${?}" -eq "${END}"
  then
     break
  fi
  COUNT=$(($COUNT-1))
 done
+
+exit ${RETURNCODE}
