@@ -4,7 +4,7 @@ SECTION =  "apps"
 PRIORITY = "optional"
 LICENSE = "GPLv3"
 DEPENDS = "uhd gsl guile-native fftwf python alsa-lib boost cppunit swig-native python-numpy"
-INC_PR = "r8"
+INC_PR = "r9"
 
 inherit distutils-base autotools pkgconfig
 
@@ -39,6 +39,7 @@ FILES_${PN}-examples = "${datadir}/gnuradio/examples"
 FILES_${PN}-grc = "${datadir}/gnuradio/grc"
 FILES_${PN}-conf = "${sysconfdir}/gnuradio"
 
+FILES_${PN} += "${datadir}/gnuradio"
 FILES_${PN} += "${PYTHON_SITEPACKAGES_DIR}/gnuradio/*"
 FILES_${PN}-dbg += "${PYTHON_SITEPACKAGES_DIR}/gnuradio/.debug \
                     ${PYTHON_SITEPACKAGES_DIR}/gnuradio/*/.debug \
