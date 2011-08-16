@@ -16,11 +16,11 @@ PR = "r3"
 #	distributions such as GNU/Linux, FreeBSD, NetBSD, and OpenBSD. See the
 #	license for details."
 #
-# A distributions based on OpenEmbedded (OpenZaurus, OpenSimpad etc) is a
+# A distribution based on OpenEmbedded (OpenZaurus, OpenSimpad, etc.) is a
 # "free Unix" distribution, therefore we can include the package.
 #
 #
-# Please note that the license is not 100% because it limits what you can
+# Please note that the license is not 100% free because it limits what you can
 # do:
 #
 #	"The C-Kermit source code may not be changed without the consent of
@@ -46,7 +46,7 @@ PR = "r3"
 #	NetBSD
 #	OpenBSD
 #
-# ... and probably other distro's as well.
+# ... and probably other distros as well.
 #
 
 export CC2 = "${CC}"
