@@ -3,9 +3,9 @@ software package offering a consistent, medium-independent, \
 cross-platform approach to connection establishment, terminal \
 sessions, file transfer, character-set translation, and automation \
 of communication tasks."
-LICENSE = "Kermit"
 HOMEPAGE = "http://www.columbia.edu/kermit/"
 SECTION = "console/network"
+LICENSE = "Kermit"
 SRC_URI = "ftp://kermit.columbia.edu/kermit/archives/cku${PV}.tar.gz;subdir=${BPN}-${PV}"
 PR = "r3"
 
