@@ -1,6 +1,6 @@
 DESCRIPTION = "phone-utils library"
 SECTION = "libs"
-SRCREV = "d3f510d75f76d6d03c53b3376ce1aba1c88062e7"
+SRCREV = "781d866bc12eec293007851fe3c300d0f5a301d3"
 PV = "0.0.2+gitr${SRCPV}"
 PR = "r2"
 LICENSE = "LGPLv3"
