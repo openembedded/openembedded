@@ -1,0 +1,40 @@
+From b971bbc5b992cd7dba166c37c77b3d66b3868c74 Mon Sep 17 00:00:00 2001
+From: Gustavo Sverzut Barbieri <barbieri@profusion.mobi>
+Date: Thu, 18 Aug 2011 16:18:25 -0300
+Subject: [PATCH] use AM_ICONV to allow external libiconv to be used.
+
+Upstream-Status: Submitted
+
+Patch from upstream author but not committed to repository yet.
+
+---
+ configure.ac        |    1 +
+ src/lib/Makefile.am |    2 +-
+ 2 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index f917394..370a81f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -34,6 +34,7 @@ AS_AC_EXPAND(PLUGINSDIR, $pluginsdir)
+ AC_DEFINE_UNQUOTED(PLUGINSDIR, ["$PLUGINSDIR"], [Where plugins are installed.])
+ 
+ AC_CHECK_FUNCS(realpath)
++AM_ICONV
+ 
+ # required modules
+ PKG_CHECK_MODULES(SQLITE3, [sqlite3 >= 3.3])
+diff --git a/src/lib/Makefile.am b/src/lib/Makefile.am
+index d262062..edcbe2e 100644
+--- a/src/lib/Makefile.am
++++ b/src/lib/Makefile.am
+@@ -24,5 +24,5 @@ liblightmediascanner_la_SOURCES = \
+ 	lightmediascanner_db_video.c \
+ 	lightmediascanner_db_playlist.c
+ 
+-liblightmediascanner_la_LIBADD = -ldl @SQLITE3_LIBS@
++liblightmediascanner_la_LIBADD = -ldl @SQLITE3_LIBS@ @LTLIBICONV@
+ liblightmediascanner_la_LDFLAGS = -version-info @version_info@
+-- 
+1.7.6
+
