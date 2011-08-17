@@ -1,10 +1,12 @@
 DESCRIPTION = "Lightweight media scanner meant to be used in not-so-powerful devices"
-SECTION = "libs/multimedia"
 AUTHOR = "Profusion"
+SECTION = "libs/multimedia"
 LICENSE = "LGPLv2.1+"
 DEPENDS = "sqlite3 flac"
-SRC_URI = "https://garage.maemo.org/frs/download.php/8852/lightmediascanner-${PV}.tar.bz2"
+
 PE = "1"
+
+SRC_URI = "https://garage.maemo.org/frs/download.php/8852/lightmediascanner-${PV}.tar.bz2"
 
 inherit autotools pkgconfig
 
