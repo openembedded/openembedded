@@ -1,10 +1,11 @@
 DESCRIPTION = "Lightweight media scanner meant to be used in not-so-powerful devices"
 AUTHOR = "Profusion"
 SECTION = "libs/multimedia"
-LICENSE = "LGPL"
+LICENSE = "LGPLv2.1+"
 DEPENDS = "sqlite3"
 
 PE = "1"
+PR = "r1"
 
 SRC_URI = "https://garage.maemo.org/frs/download.php/4626/lightmediascanner-${PV}.tar.bz2"
 
