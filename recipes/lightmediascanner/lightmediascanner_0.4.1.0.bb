@@ -3,14 +3,20 @@ AUTHOR = "ProFUSION"
 HOMEPAGE = "http://lms.garage.maemo.org/"
 SECTION = "libs/multimedia"
 LICENSE = "LGPLv2.1+"
-DEPENDS = "sqlite3 flac"
+DEPENDS = "sqlite3 flac virtual/libiconv"
 
 PE = "1"
-PR = "r2"
+PR = "r3"
 
-SRC_URI = "https://garage.maemo.org/frs/download.php/8852/lightmediascanner-${PV}.tar.bz2"
+SRC_URI = "https://garage.maemo.org/frs/download.php/8852/lightmediascanner-${PV}.tar.bz2 \
+    file://0001-use-AM_ICONV-to-allow-external-libiconv-to-be-used.patch \
+"
 
 inherit autotools pkgconfig
+
+do_configure_prepend() {
+    touch config.rpath
+}
 
 do_install_append() {
     install -d ${D}/${bindir}/
