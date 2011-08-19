@@ -20,7 +20,7 @@ do_configure_prepend() {
 
 do_install_append() {
     install -d ${D}/${bindir}/
-    install -m 755 ${WORKDIR}/${PN}-${PV}/src/bin/.libs/test  ${D}/${bindir}/test-lms
+    install -m 755 ${S}/src/bin/.libs/test  ${D}/${bindir}/test-lms
 }
 
 PACKAGES =+ "${PN}-test"
