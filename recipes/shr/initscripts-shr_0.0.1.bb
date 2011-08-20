@@ -97,7 +97,7 @@ do_install () {
 	ln -sf		../init.d/mountkernfs.sh	${D}${sysconfdir}/rcS.d/S01mountkernfs.sh
 	ln -sf		../init.d/hostname.sh		${D}${sysconfdir}/rcS.d/S02hostname.sh
 	ln -sf		../init.d/checkroot.sh		${D}${sysconfdir}/rcS.d/S02checkroot.sh
-	ln -sf		../init.d/mountdevsubfs.sh	${D}${sysconfdir}/rcS.d/S04mountdevsubfs.sh
+	ln -sf		../init.d/mountdevsubfs.sh	${D}${sysconfdir}/rcS.d/S05mountdevsubfs.sh
 	ln -sf		../init.d/alignment.sh		${D}${sysconfdir}/rcS.d/S06alignment.sh
 	ln -sf		../init.d/mountall.sh		${D}${sysconfdir}/rcS.d/S35mountall.sh
 	ln -sf		../init.d/populate-volatile.sh	${D}${sysconfdir}/rcS.d/S37populate-volatile.sh
