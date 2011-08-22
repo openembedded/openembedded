@@ -1,5 +1,5 @@
-SECTION = "console/utils"
 DESCRIPTION = "Tools for performance analysis."
+SECTION = "console/utils"
 LICENSE = "GPL"
 RDEPENDS_${PN} = "debianutils"
 
