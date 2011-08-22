@@ -13,7 +13,6 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/lmbench/lmbench-${PV}.tgz \
 	   file://exe.patch \
 	   file://gnu-os-rundir.patch \
 	   file://lmbench-run"
-S = "${WORKDIR}/lmbench-${PV}"
 
 EXTRA_OEMAKE = '"CC=${CC}" "AR=${AR}" "CFLAGS=$CFLAGS" \
 		"LDFLAGS=${LDFLAGS}" "LD=${LD}" "OS=${TARGET_SYS}" \
