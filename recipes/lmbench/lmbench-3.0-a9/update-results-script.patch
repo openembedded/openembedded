@@ -1,5 +1,5 @@
 Now that we have our binaries in /usr/bin rather than the normal
-lmbench hierarchy we need to update the scripts as well to bave well here.
+lmbench hierarchy we need to update the scripts as well to behave well here.
 Index: lmbench-3.0-a9/scripts/results
 ===================================================================
 --- lmbench-3.0-a9.orig/scripts/results
