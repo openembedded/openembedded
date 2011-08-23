@@ -6,7 +6,7 @@ UNIX-like platforms, Windows, OS/2 and BeOS."
 LICENSE = "LGPLv2+"
 SECTION = "libs"
 PRIORITY = "optional"
-PR = "r1"
+PR = "r2"
 DEPENDS = "glib-2.0-native gtk-doc zlib"
 DEPENDS_virtclass-native = "gettext-native gtk-doc-native \
                             pkgconfig-native"
@@ -44,7 +44,7 @@ do_install_append() {
 	sed -i -e s:${STAGING_BINDIR_NATIVE}:${bindir}:g ${D}${bindir}/glib-mkenums || true
 }
 
-EXTRA_OECONF_virtclass-native = ""
+EXTRA_OECONF_virtclass-native = "--disable-dtrace --disable-systemtap"
 
 do_configure_prepend_virtclass-native() {
     if [ -e ${S}/${TARGET_SYS}-libtool ] ; then
