@@ -5,11 +5,12 @@ DESCRIPTION = "OpenJade is a suite of tools for validating, \
 processing, and applying DSSSL (Document Style Semantics and \
 Specification Language) stylesheets to SGML and XML documents."
 LICENSE = "BSD"
-PR = "r5"
+PR = "r6"
 SRC_URI = "${SOURCEFORGE_MIRROR}/openjade/openjade-${PV}.tar.gz \
 	   file://configure.patch \
 	   file://autoconf.patch \
 	   file://makefile.patch \
+	   file://user-declared-default-constructor.patch \
           "
 SRC_URI_append_virtclass-native = " file://oj-native-libosp-fix.patch"
 
