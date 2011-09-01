@@ -27,7 +27,6 @@ SRC_URI_append = " \
            file://sakoman/0010-Revert-omap2_mcspi-Flush-posted-writes.patch \
            file://sakoman/0011-Revert-omap_hsmmc-improve-interrupt-synchronisation.patch \
            file://sakoman/0012-Don-t-turn-SDIO-cards-off-to-save-power.-Doing-so-wi.patch \
-           file://sakoman/0013-Enable-the-use-of-SDIO-card-interrupts.patch \
            file://sakoman/0014-soc-codecs-Enable-audio-capture-by-default-for-twl40.patch \
            file://sakoman/0015-soc-codecs-twl4030-Turn-on-mic-bias-by-default.patch \
            file://sakoman/0016-RTC-add-support-for-backup-battery-recharge.patch \
