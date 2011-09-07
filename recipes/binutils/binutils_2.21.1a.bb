@@ -13,8 +13,11 @@ SRC_URI = "${GNU_MIRROR}/binutils/binutils-${PV}.tar.bz2 \
      ${@['','file://libtool-2.4-update.patch'][bb.data.getVar('LIBTOOL_HAS_SYSROOT', d, 1) == 'yes']} \
      file://binutils-2.19.1-ld-sysroot.patch \
      "
-SRC_URI[md5sum] = "c84c5acc9d266f1a7044b51c85a823f5"
-SRC_URI[sha256sum] = "60abec5bf448eb930a5a15acb8712612377dc8bcfb13dfd5131228f70561d0c7"
+SRC_URI[md5sum] = "bde820eac53fa3a8d8696667418557ad"
+SRC_URI[sha256sum] = "cdecfa69f02aa7b05fbcdf678e33137151f361313b2f3e48aba925f64eabf654"
+
+# 2.21.1a has a mismatched dir name within the tarball
+S = "${WORKDIR}/binutils-2.21.1"
 
 FILES_${PN}-symlinks += "${bindir}/elfedit"
 # When we enable gold this might need to be make conditional

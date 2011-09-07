@@ -6,7 +6,7 @@
 
 # Base line versions, good for most things
 PREFERRED_GCC_VERSION                ?= "4.5"
-PREFERRED_BINUTILS_VERSION           ?= "2.21"
+PREFERRED_BINUTILS_VERSION           ?= "2.21.1a"
 PREFERRED_UCLIBC_VERSION             ?= "git"
 PREFERRED_EGLIBC_VERSION             ?= "2.12"
 PREFERRED_GLIBC_VERSION              ?= "2.10.1"
