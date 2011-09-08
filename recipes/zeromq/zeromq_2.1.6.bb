@@ -7,8 +7,6 @@ PR = "r0"
 
 DEPENDS += "util-linux-ng"
 
-S = "${WORKDIR}/zeromq-${PV}"
-
 SRC_URI = "http://download.zeromq.org/zeromq-${PV}.tar.gz"
 
 inherit autotools
