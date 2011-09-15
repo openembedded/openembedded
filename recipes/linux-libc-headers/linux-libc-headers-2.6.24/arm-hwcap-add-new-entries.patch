@@ -1,0 +1,31 @@
+linux-libc-headers 2.6.24: backport arm/asm/hwcap.h from linux 2.6.26
+
+Enables building of OpenJDK which uses HWCAP_THUMBEE that is not present
+in 2.6.24 headers and was introduced with
+
+  commit d7f864be8323e5394040e2877594645b0e7da85d
+  Author: Catalin Marinas <catalin.marinas@arm.com>
+  Date:   Fri Apr 18 22:43:06 2008 +0100
+  
+      ARMv7: Add support for the ThumbEE state saving/restoring
+      
+      This patch adds the detection and handling of the ThumbEE extension on
+      ARMv7 CPUs.
+            
+      Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+
+Upstream-Status: Backport [2.6.26]
+
+Signed-off-by: Steffen Sledz <sledz@dresearch-fe.de>
+
+diff -Nurd linux-2.6.24.orig//include/asm-arm/hwcap.h linux-2.6.24/include/asm-arm/hwcap.h
+--- linux-2.6.24.orig//include/asm-arm/hwcap.h	2011-09-15 08:42:58.467307245 +0200
++++ linux-2.6.24/include/asm-arm/hwcap.h	2011-09-15 08:43:46.004693497 +0200
+@@ -15,6 +15,7 @@
+ #define HWCAP_JAVA	256
+ #define HWCAP_IWMMXT	512
+ #define HWCAP_CRUNCH	1024
++#define HWCAP_THUMBEE	2048
+ 
+ #if defined(__KERNEL__) && !defined(__ASSEMBLY__)
+ /*
