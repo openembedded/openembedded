@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r15"
+PR = "r16"
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
@@ -18,6 +18,7 @@ DEFAULT_PREFERENCE_mini6410 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.28.tar.bz2;name=kernel \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.10.bz2;apply=yes;name=stablepatch \
+           file://make-3.82.patch \
            file://defconfig"
 
 SRC_URI_append_at91sam9263ek = " \

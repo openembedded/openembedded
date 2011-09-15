@@ -1,0 +1,40 @@
+linux-2.6.28: allow building with GNU make >= 3.82
+    
+GNU make >= 3.82 does not allow mixed implicit and normal rules
+
+Because linux-2.6.28 is superseded by newer versions it makes no sense
+to submit this patch upstream.
+
+Upstream-Status: Inappropriate [other]
+
+Signed-off-by: Steffen Sledz <sledz@dresearch-fe.de>
+
+diff -Nurd linux-2.6.28.orig//Makefile linux-2.6.28/Makefile
+--- linux-2.6.28.orig//Makefile	2011-09-14 16:15:53.782945380 +0200
++++ linux-2.6.28/Makefile	2011-09-14 16:16:50.887123688 +0200
+@@ -439,7 +439,11 @@
+ include $(srctree)/arch/$(SRCARCH)/Makefile
+ export KBUILD_DEFCONFIG KBUILD_KCONFIG
+ 
+-config %config: scripts_basic outputmakefile FORCE
++config: scripts_basic outputmakefile FORCE
++	$(Q)mkdir -p include/linux include/config
++	$(Q)$(MAKE) $(build)=scripts/kconfig $@
++
++%config: scripts_basic outputmakefile FORCE
+ 	$(Q)mkdir -p include/linux include/config
+ 	$(Q)$(MAKE) $(build)=scripts/kconfig $@
+ 
+@@ -1607,7 +1611,11 @@
+ 	$(Q)$(MAKE) $(build)=$(build-dir) $(target-dir)$(notdir $@)
+ 
+ # Modules
+-/ %/: prepare scripts FORCE
++/: prepare scripts FORCE
++	$(cmd_crmodverdir)
++	$(Q)$(MAKE) KBUILD_MODULES=$(if $(CONFIG_MODULES),1) \
++	$(build)=$(build-dir)
++%/: prepare scripts FORCE
+ 	$(cmd_crmodverdir)
+ 	$(Q)$(MAKE) KBUILD_MODULES=$(if $(CONFIG_MODULES),1) \
+ 	$(build)=$(build-dir)
