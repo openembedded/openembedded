@@ -36,7 +36,7 @@ python populate_packages_append () {
 
 		bb.note("adding hicolor-icon-theme dependency to %s" % pkg)	
 		rdepends = bb.data.getVar('RDEPENDS', d, 1)
-		rdepends += "hicolor-icon-theme"
+		rdepends += " hicolor-icon-theme"
 		bb.data.setVar('RDEPENDS', rdepends, d)
 	
 		bb.note("adding gtk-icon-cache postinst and postrm scripts to %s" % pkg)
