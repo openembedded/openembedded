@@ -2,7 +2,7 @@ DESCRIPTION = "Rsyslog is an enhanced multi-threaded syslogd"
 DEPENDS = "zlib"
 HOMEPAGE = "http://www.rsyslog.com/"
 LICENSE = "GPLv3"
-INC_PR = "r2"
+INC_PR = "r3"
 
 SRC_URI = "http://www.rsyslog.com/files/download/rsyslog/${PN}-${PV}.tar.gz \
           file://rsyslog.conf \
@@ -12,7 +12,7 @@ SRC_URI = "http://www.rsyslog.com/files/download/rsyslog/${PN}-${PV}.tar.gz \
 inherit autotools
 
 do_install_append() {
-        install -d ${D}/${sysconfdir}/${PN}
+        install -d ${D}/${sysconfdir}/rsyslog.d
         install ${WORKDIR}/rsyslog.conf ${D}${sysconfdir}/rsyslog.conf
         install -d ${D}/${sysconfdir}/init.d
         install -m 755 ${WORKDIR}/initscript ${D}/${sysconfdir}/init.d/syslog.${PN}
