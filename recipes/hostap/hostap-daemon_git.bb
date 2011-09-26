@@ -2,8 +2,8 @@ DESCRIPTION = "User space daemon for extended IEEE 802.11 management"
 
 require hostap-daemon-0.7.inc
 
-PR = "r0"
-SRCREV = "b8fb017272ed4794339978c9fbc0e74571a44728"
+PR = "r1"
+SRCREV = "83fa07226debc2f7082b6ccd62dbb1cd47c30472"
 PV = "0.7.3+0.8.0-rc"
 PR_append = "gitr${SRCPV}"
 FILESPATHPKG =. "hostap-daemon-git:"
@@ -23,4 +23,3 @@ do_configure() {
 	echo "CFLAGS += -I${STAGING_INCDIR}" >> .config
 	echo "LIBS += -L${STAGING_LIBDIR}" >> .config
 }
-
