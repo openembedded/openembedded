@@ -1,7 +1,7 @@
 require wpa-supplicant-0.7.inc
 
-SRCREV = "b8fb017272ed4794339978c9fbc0e74571a44728"
-PR = "r0"
+SRCREV = "83fa07226debc2f7082b6ccd62dbb1cd47c30472"
+PR = "r1"
 PV = "0.7.3+0.8.0-rc"
 PR_append = "+gitr${SRCPV}"
 FILESPATHPKG =. "wpa-supplicant-git:"
@@ -28,5 +28,3 @@ do_configure () {
 		echo "CFLAGS += -I${STAGING_INCDIR}/madwifi-ng" >> .config
 	fi
 }
-
-
