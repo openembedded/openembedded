@@ -1,8 +1,8 @@
-DESCRIPTION = "ImageMagick is an image convertion tools"
+DESCRIPTION = "ImageMagick contains image manipulation and conversion tools"
 SECTION = "console/utils"
 LICENSE = "GPL"
 DEPENDS = "tiff jpeg libpng librsvg tiff zlib"
-PR = "r9"
+PR = "r10"
 
 SRC_URI = "ftp://ftp.nluug.nl/pub/ImageMagick/ImageMagick-${PV}.tar.bz2 \
            file://PerlMagic_MakePatch;apply=yes \
