@@ -15,7 +15,7 @@ IMVER = "6.4.4"
 
 S = "${WORKDIR}/ImageMagick-${IMVER}"
 
-inherit autotools binconfig pkgconfig
+inherit autotools binconfig
 
 EXTRA_OECONF = "--program-prefix= --without-x --without-freetype --without-perl --disable-openmp"
 
