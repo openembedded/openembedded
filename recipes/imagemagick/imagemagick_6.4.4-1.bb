@@ -1,10 +1,11 @@
-DESCRIPTION = "ImageMagick is an image convertion tools"
+DESCRIPTION = "ImageMagick contains image manipulation and conversion tools"
+HOMEPAGE = "http://www.imagemagick.org/"
 SECTION = "console/utils"
-LICENSE = "GPL"
+LICENSE = "Apache-2.0"
 # FIXME: There is much more checked libraries. All should be added or explicitly disabled to get consistent results.
 DEPENDS = "lcms bzip2 jpeg libpng librsvg tiff zlib"
 
-PR = "r7"
+PR = "r10"
 
 SRC_URI = "ftp://ftp.nluug.nl/pub/ImageMagick/ImageMagick-${PV}.tar.bz2 \
            file://PerlMagic_MakePatch;apply=yes \
