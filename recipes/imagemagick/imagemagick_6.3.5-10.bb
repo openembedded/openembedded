@@ -1,8 +1,9 @@
 DESCRIPTION = "ImageMagick contains image manipulation and conversion tools"
+HOMEPAGE = "http://www.imagemagick.org/"
 SECTION = "console/utils"
 LICENSE = "Apache-2.0"
 DEPENDS = "tiff jpeg libpng librsvg tiff zlib"
-PR = "r11"
+PR = "r12"
 
 SRC_URI = "ftp://ftp.nluug.nl/pub/ImageMagick/ImageMagick-${PV}.tar.bz2 \
            file://PerlMagic_MakePatch;apply=yes \
