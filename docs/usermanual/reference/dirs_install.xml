@@ -13,7 +13,7 @@ CONFFILES_${PN} = "${sysconfdir}/default/quagga"
 CONFFILES_${PN}-watchquagga = "${sysconfdir}/default/watchquagga"</screen></para>
 
   <para>When using these variables to actually install the components of a
-  package from within a bitbake recipe they should used relative to the
+  package from within a bitbake recipe they should be used relative to the
   destination directory, <emphasis role="bold">D</emphasis>. The following
   example from the quagga recipe shows some addition files being manually
   installed from within the recipe itself:<screen>do_install () {
