@@ -3,7 +3,7 @@ PR = "${INC_PR}.2"
 LICENSE = "GPLv3"
 
 SRC_URI = "\
-     ${GNU_MIRROR}/binutils/binutils-${PV}.tar.bz2 \
+     ${GNU_MIRROR}/binutils/binutils-${PV}a.tar.bz2 \
      file://binutils-2.16.91.0.6-objcopy-rename-errorcode.patch \
      file://binutils-configure-texinfo-version.patch \
      file://binutils-uclibc-100-uclibc-conf.patch \
