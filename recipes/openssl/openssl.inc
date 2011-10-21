@@ -1,14 +1,17 @@
 DESCRIPTION = "Secure Socket Layer (SSL) binary and related cryptographic tools."
 HOMEPAGE = "http://www.openssl.org/"
-LICENSE = "openssl"
 SECTION = "libs/network"
+
+# "openssl | SSLeay" dual license
+LICENSE = "openssl"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=83d26c69f6f0172ee7f795790424b453"
 
 SRC_URI = "http://www.openssl.org/source/openssl-${PV}.tar.gz;name=src"
 S = "${WORKDIR}/openssl-${PV}"
 
 inherit siteinfo
 
-INC_PR = "r14"
+INC_PR = "r15"
 
 AR_append = " r"
 CFLAG = "${@base_conditional('SITEINFO_ENDIANNESS', 'le', '-DL_ENDIAN', '-DB_ENDIAN', d)} \
@@ -97,7 +100,7 @@ do_configure () {
 	# inject machine-specific flags
 	sed -i -e "s|^\(\"$target\",\s*\"[^:]\+\):\([^:]\+\)|\1:${CFLAG}|g" Configure
         useprefix=${prefix}
-        if [ "x$useprefix" = "x" ]; then
+        if [ "x$useprefix" == "x" ]; then
                 useprefix=/
         fi        
 	perl ./Configure ${EXTRA_OECONF} shared --prefix=$useprefix --openssldir=${libdir}/ssl $target
