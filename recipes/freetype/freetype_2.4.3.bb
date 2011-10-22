@@ -1,7 +1,7 @@
 DESCRIPTION = "Freetype font rendering library"
 SECTION = "libs"
 LICENSE = "freetype GPLv2"
-PR = "r1"
+PR = "r2"
 DEPENDS = "zlib"
 
 SRC_URI = "\
@@ -23,9 +23,9 @@ LDFLAGS_append = " -Wl,-rpath-link -Wl,${STAGING_DIR_TARGET}${libdir}"
 
 do_configure() {
 	cd builds/unix
-	gnu-configize --force
-	aclocal -I .
 	libtoolize --force --copy
+	aclocal -I .
+	gnu-configize --force
 	autoconf
 	cd ${S}
 	oe_runconf
