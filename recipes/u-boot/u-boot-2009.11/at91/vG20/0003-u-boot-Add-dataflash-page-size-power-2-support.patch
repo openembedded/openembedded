@@ -1,0 +1,65 @@
+From d2562a1fa3b745e1e088ae908f4493f8f9304bad Mon Sep 17 00:00:00 2001
+From: mlafauci <mlafauci@metodo2.it>
+Date: Mon, 3 Oct 2011 22:49:31 +0200
+Subject: [PATCH 3/3] u-boot: Add dataflash page size power 2 support
+
+---
+ drivers/mtd/dataflash.c |   15 +++++++++++++--
+ include/dataflash.h     |    1 +
+ 2 files changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/dataflash.c b/drivers/mtd/dataflash.c
+index 96cd395..ab35e97 100644
+--- a/drivers/mtd/dataflash.c
++++ b/drivers/mtd/dataflash.c
+@@ -42,6 +42,7 @@ int AT91F_DataflashInit (void)
+	int last_part;
+	int found[CONFIG_SYS_MAX_DATAFLASH_BANKS];
+	unsigned char protected;
++	unsigned char powerOf2 = 0;
+
+	AT91F_SpiInit ();
+
+@@ -52,6 +53,7 @@ int AT91F_DataflashInit (void)
+		dataflash_info[i].Device.pages_number = 0;
+		dfcode = AT91F_DataflashProbe (cs[i].cs,
+				&dataflash_info[i].Desc);
++		powerOf2 =  dataflash_info[i].Desc.command[1] & PAGE_SIZE_POWER2;
+
+		switch (dfcode) {
+		case AT45DB021:
+@@ -104,8 +106,17 @@ int AT91F_DataflashInit (void)
+
+		case AT45DB642:
+			dataflash_info[i].Device.pages_number = 8192;
+-			dataflash_info[i].Device.pages_size = 1056;
+-			dataflash_info[i].Device.page_offset = 11;
++			if (powerOf2)
++			{
++				//Binary page address
++				dataflash_info[i].Device.pages_size = 1024;
++				dataflash_info[i].Device.page_offset = 10;
++			}
++			else
++			{
++				dataflash_info[i].Device.pages_size = 1056;
++				dataflash_info[i].Device.page_offset = 11;
++			}
+			dataflash_info[i].Device.byte_mask = 0x700;
+			dataflash_info[i].Device.cs = cs[i].cs;
+			dataflash_info[i].Desc.DataFlash_state = IDLE;
+diff --git a/include/dataflash.h b/include/dataflash.h
+index 63b3bf9..2295d15 100644
+--- a/include/dataflash.h
++++ b/include/dataflash.h
+@@ -142,6 +142,7 @@ struct dataflash_addr {
+ #define AT45DB642	0x3c
+ #define AT45DB128	0x10
+ #define	PAGES_PER_BLOCK	8
++#define PAGE_SIZE_POWER2	0x01
+
+ #define AT91C_DATAFLASH_TIMEOUT		10000	/* For AT91F_DataFlashWaitReady */
+
+--
+1.7.0.4
+
