@@ -1,0 +1,24 @@
+From a976e38839db6a1f9d3c3e4e0ff6b597684bc0c8 Mon Sep 17 00:00:00 2001
+From: mlafauci <mlafauci@metodo2.it>
+Date: Mon, 3 Oct 2011 23:20:32 +0200
+Subject: [PATCH 2/4] linux: Add VulcanoG20 in mach-at91/Makefile
+
+---
+ arch/arm/mach-at91/Makefile |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-at91/Makefile b/arch/arm/mach-at91/Makefile
+index c69ff23..98f696d 100644
+--- a/arch/arm/mach-at91/Makefile
++++ b/arch/arm/mach-at91/Makefile
+@@ -54,6 +54,7 @@ obj-$(CONFIG_MACH_AT91SAM9RLEK)	+= board-sam9rlek.o
+
+ # AT91SAM9G20 board-specific support
+ obj-$(CONFIG_MACH_AT91SAM9G20EK) += board-sam9g20ek.o
++obj-$(CONFIG_MACH_M2_VULCANO_G20)+= board-m2-vulcanog20.o
+
+ # AT91CAP9 board-specific support
+ obj-$(CONFIG_MACH_AT91CAP9ADK)	+= board-cap9adk.o
+--
+1.7.0.4
+

@@ -17,6 +17,7 @@ DEFAULT_PREFERENCE_at91sam9m10g45ek	= "2"
 DEFAULT_PREFERENCE_at91sam9g10ek	= "2"
 DEFAULT_PREFERENCE_at91sam9g20ek	= "2"
 DEFAULT_PREFERENCE_ronetix-pm9g45	= "2"
+DEFAULT_PREFERENCE_vulcano-g20		= "2"
 
 # machine boots with it, works but was not tested too much
 DEFAULT_PREFERENCE_at91sam9263ek = "-1"
@@ -98,7 +99,16 @@ SRC_URI_ronetix-pm9g45 = " \
 	   file://defconfig"
 
 #	   http://download.ronetix.info/boards/linux/kernel/2.6.30/
-	
+
+SRC_URI_vulcano-g20 = " \
+	   ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2;name=kernel \
+	   ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.10.bz2;apply=yes;name=stablepatch \
+	    file://0001-linux-Add-VulcanoG20-in-mach-at91-Kconfig.patch \
+	    file://0002-linux-Add-VulcanoG20-in-mach-at91-Makefile.patch \
+	    file://0003-linux-Add-AT45DB0642-in-bin-page-mode-mtd_dataflash.patch \
+	    file://0004-linux-Add-VulcanoG20-support.patch \
+	    file://defconfig"
+
 
 SRC_URI_append_mpc8315e-rdb = " file://mpc8315erdb-add-msi-to-dts.patch"
 
