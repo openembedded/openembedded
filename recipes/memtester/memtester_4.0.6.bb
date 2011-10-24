@@ -7,8 +7,6 @@ PR = "r1"
 SRC_URI = "http://pyropus.ca/software/memtester/old-versions/memtester-${PV}.tar.gz"
 SRC_URI += "file://Makefile.patch"
 
-S = "${WORKDIR}/memtester-${PV}"
-
 do_compile () {
 	echo '${CC} ${CFLAGS} -DPOSIX -c' > conf-cc
 	echo '${CC} ${LDFLAGS}' > conf-ld
