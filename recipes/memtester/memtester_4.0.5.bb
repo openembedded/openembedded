@@ -1,7 +1,8 @@
 SECTION = "console/utils"
 DESCRIPTION = "Utility to test for faulty memory subsystem"
+HOMEPAGE = "http://pyropus.ca/software/memtester/"
 LICENSE = "GPLv2"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://pyropus.ca/software/memtester/old-versions/memtester-${PV}.tar.gz"
 SRC_URI += "file://Makefile.patch"
