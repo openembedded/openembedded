@@ -1,0 +1,38 @@
+From f90e128cb57bde7bd648cd14680c34c3c19dc8ba Mon Sep 17 00:00:00 2001
+From: mlafauci <mlafauci@metodo2.it>
+Date: Mon, 3 Oct 2011 23:22:10 +0200
+Subject: [PATCH 3/4] linux: Add AT45DB0642 in bin page mode mtd_dataflash
+
+---
+ drivers/mtd/devices/mtd_dataflash.c |    8 ++++++--
+ 1 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
+index 43976aa..e57c3bb 100644
+--- a/drivers/mtd/devices/mtd_dataflash.c
++++ b/drivers/mtd/devices/mtd_dataflash.c
+@@ -844,7 +844,8 @@ static struct flash_info *__devinit jedec_probe(struct spi_device *spi)
+  *   AT45DB081B  8Mbit   (1M)    xx1001xx (0x24)   4096    264      9
+  *   AT45DB0161B 16Mbit  (2M)    xx1011xx (0x2c)   4096    528     10
+  *   AT45DB0321B 32Mbit  (4M)    xx1101xx (0x34)   8192    528     10
+- *   AT45DB0642  64Mbit  (8M)    xx111xxx (0x3c)   8192   1056     11
++ *   AT45DB0642  64Mbit  (8M)    xx111xx0 (0x3c)   8192   1056     11
++ *   AT45DB0642  64Mbit  (8M)    xx111xx1 (0x3d)   8192   1024     10
+  *   AT45DB1282  128Mbit (16M)   xx0100xx (0x10)  16384   1056     11
+  */
+ static int __devinit dataflash_probe(struct spi_device *spi)
+@@ -903,7 +904,10 @@ static int __devinit dataflash_probe(struct spi_device *spi)
+	case 0x34:	/* 1 1 0 1 x x */
+		status = add_dataflash(spi, "AT45DB321x", 8192, 528, 10);
+		break;
+-	case 0x38:	/* 1 1 1 x x x */
++	case 0x3d:	/* 1 1 1 x x 1 */
++		status = add_dataflash(spi, "AT45DB642x", 8192, 1024, 10);
++		break;
++	case 0x38:	/* 1 1 1 x x 0 */
+	case 0x3c:
+		status = add_dataflash(spi, "AT45DB642x", 8192, 1056, 11);
+		break;
+--
+1.7.0.4
+

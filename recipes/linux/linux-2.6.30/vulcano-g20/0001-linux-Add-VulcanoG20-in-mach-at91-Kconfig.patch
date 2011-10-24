@@ -1,0 +1,46 @@
+From 86ee554e442b9883f0309d79ff76d6df2d417808 Mon Sep 17 00:00:00 2001
+From: mlafauci <mlafauci@metodo2.it>
+Date: Mon, 3 Oct 2011 23:19:56 +0200
+Subject: [PATCH 1/4] linux: Add VulcanoG20 in mach-at91/Kconfig
+
+---
+ arch/arm/mach-at91/Kconfig |   11 +++++++++--
+ 1 files changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/mach-at91/Kconfig b/arch/arm/mach-at91/Kconfig
+index 323b47f..c9d9afd 100644
+--- a/arch/arm/mach-at91/Kconfig
++++ b/arch/arm/mach-at91/Kconfig
+@@ -276,6 +276,13 @@ config MACH_AT91SAM9G20EK
+	help
+	  Select this if you are using Atmel's AT91SAM9G20-EK Evaluation Kit.
+
++config MACH_M2_VULCANO_G20
++        bool "METODO2 VULCANO_G20"
++        depends on ARCH_AT91SAM9G20
++        help
++          Select this if you are using a Metodo2 Systems VULCANO-G20.
++          <http://vulcano-g20.metodo2.it>
++
+ endif
+
+ # ----------------------------------------------------------
+@@ -315,13 +322,13 @@ comment "AT91 Board Options"
+
+ config MTD_AT91_DATAFLASH_CARD
+	bool "Enable DataFlash Card support"
+-	depends on (ARCH_AT91RM9200DK || MACH_AT91RM9200EK || MACH_AT91SAM9260EK || MACH_AT91SAM9261EK || MACH_AT91SAM9263EK || MACH_AT91SAM9G20EK || MACH_ECBAT91 || MACH_SAM9_L9260 || MACH_AT91CAP9ADK || MACH_NEOCORE926)
++	depends on (ARCH_AT91RM9200DK || MACH_AT91RM9200EK || MACH_AT91SAM9260EK || MACH_AT91SAM9261EK || MACH_AT91SAM9263EK || MACH_AT91SAM9G20EK || MACH_ECBAT91 || MACH_SAM9_L9260 || MACH_AT91CAP9ADK || MACH_NEOCORE926 || MACH_M2_VULCANO_G20)
+	help
+	  Enable support for the DataFlash card.
+
+ config MTD_NAND_ATMEL_BUSWIDTH_16
+	bool "Enable 16-bit data bus interface to NAND flash"
+-	depends on (MACH_AT91SAM9260EK || MACH_AT91SAM9261EK || MACH_AT91SAM9263EK || MACH_AT91SAM9G20EK || MACH_AT91CAP9ADK)
++	depends on (MACH_AT91SAM9260EK || MACH_AT91SAM9261EK || MACH_AT91SAM9263EK || MACH_AT91SAM9G20EK || MACH_AT91CAP9ADK || MACH_M2_VULCANO_G20)
+	help
+	  On AT91SAM926x boards both types of NAND flash can be present
+	  (8 and 16 bit data bus width).
+--
+1.7.0.4
+
