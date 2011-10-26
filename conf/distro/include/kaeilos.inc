@@ -129,6 +129,7 @@ TARGET_FPU_ppc405 ?= "soft"
 TARGET_FPU_armv6 ?= "hard"
 TARGET_FPU_armv6-novfp ?= "soft"
 TARGET_FPU_armv7a ?= "hard"
+TARGET_FPU_armv7a-vfp ?= "hard"
 TARGET_FPU_ppc603e ?= "hard"
 
 # webkit-gtk and cairo have alignment issues with double instructions on armv5 so
@@ -143,15 +144,6 @@ FEED_ARCH ?= "${BASE_PACKAGE_ARCH}"
 
 #blackfin machines
 FEED_ARCH_bfin          = "blackfin"
-
-#Tweak packaging for strongarm machines since they can't use EABI
-
-PACKAGE_EXTRA_ARCHS_collie = "arm-oabi"
-PACKAGE_EXTRA_ARCHS_h3600  = "arm-oabi"
-PACKAGE_EXTRA_ARCHS_h3800  = "arm-oabi"
-PACKAGE_EXTRA_ARCHS_simpad = "arm-oabi"
-PACKAGE_EXTRA_ARCHS_htcwallaby = "arm-oabi"
-
 
 #Name the generated images in a sane way
 IMAGE_NAME = "${DISTRO_NAME}-${IMAGE_BASENAME}-${LIBC}-${ANGSTROM_PKG_FORMAT}-${DISTRO_VERSION}-${MACHINE}"
@@ -180,8 +172,6 @@ SEPPUKU_PRODUCT      = "Openembedded"
 SEPPUKU_COMPONENT    = "org.openembedded.dev"
 
 OESTATS_SERVER      ?= "tinderbox.openembedded.org"
-
-
 
 # We want images supporting the following features (for task-base)
 DISTRO_FEATURES = "xattr largefile ipv4 ipv6 nfs smbfs wifi ppp alsa bluetooth ext2 vfat irda pcmcia usbgadget usbhost pci pam"
