@@ -2,8 +2,8 @@ DESCRIPTION = "Library for interacting with ID3 tags."
 SECTION = "libs/multimedia"
 PRIORITY = "optional"
 DEPENDS = "zlib"
-LICENSE = "GPL"
-PR = "r2"
+LICENSE = "LGPLv2+"
+PR = "r3"
 
 inherit autotools
 
