@@ -1,9 +1,10 @@
 DESCRIPTION = "Library for interacting with ID3 tags."
+HOMEPAGE = "http://id3lib.sourceforge.net/"
 SECTION = "libs/multimedia"
 PRIORITY = "optional"
 LICENSE = "LGPLv2+"
 DEPENDS = "zlib"
-PR = "r3"
+PR = "r4"
 
 inherit autotools
 
