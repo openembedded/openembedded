@@ -1,0 +1,40 @@
+From 04316ec0cfa5003b4777299200465fc47680e6e3 Mon Sep 17 00:00:00 2001
+From: Philip Balister <philip@opensdr.com>
+Date: Tue, 1 Nov 2011 07:31:46 -0400
+Subject: [PATCH] Diable checks for PyQT and PyQWT.
+
+They are need at runtime not build time. This should let us build gnuradio
+qt support, without needing to cross build PyQt and PyQwt.
+
+Signed-off-by: Philip Balister <philip@opensdr.com>
+---
+ config/grc_gr_qtgui.m4 |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/config/grc_gr_qtgui.m4 b/config/grc_gr_qtgui.m4
+index d9e0fcb..0efd7c8 100644
+--- a/config/grc_gr_qtgui.m4
++++ b/config/grc_gr_qtgui.m4
+@@ -28,13 +28,13 @@ AC_DEFUN([GRC_GR_QTGUI],[
+     dnl   yes  : if the --enable code passed muster and all dependencies are met
+     dnl   no   : otherwise
+ 
+-    PYTHON_CHECK_MODULE([PyQt4.QtCore], [PyQt4 for Qt4], \
+-        [], [passed=no], \
+-        [PyQt4.QtCore.PYQT_VERSION >= 260000])
++dnl    PYTHON_CHECK_MODULE([PyQt4.QtCore], [PyQt4 for Qt4], \
++dnl        [], [passed=no], \
++dnl        [PyQt4.QtCore.PYQT_VERSION >= 260000])
+ 
+-    PYTHON_CHECK_MODULE([PyQt4.Qwt5], [PyQwt5 for Qt4], \
+-       [], [passed=no], \
+-       [PyQt4.Qwt5.QWT_VERSION >= 327000])
++dnl    PYTHON_CHECK_MODULE([PyQt4.Qwt5], [PyQwt5 for Qt4], \
++dnl       [], [passed=no], \
++dnl       [PyQt4.Qwt5.QWT_VERSION >= 327000])
+ 
+ # Check for: 
+ #	QtOpenGL
+-- 
+1.7.6.4
+

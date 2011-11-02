@@ -3,7 +3,8 @@ URL = "http://gnuradio.org"
 SECTION =  "apps"
 PRIORITY = "optional"
 LICENSE = "GPLv3"
-DEPENDS = "uhd gsl guile-native fftwf python alsa-lib boost cppunit swig-native python-numpy"
+DEPENDS = "uhd gsl guile-native fftwf python alsa-lib boost cppunit \
+           swig-native python-numpy qt4-x11-free qwt"
 INC_PR = "r9"
 
 inherit distutils-base autotools pkgconfig
@@ -20,6 +21,9 @@ EXTRA_OECONF = " \
   --with-boost=${STAGING_DIR_TARGET}/usr \
   --disable-usrp1 \
   --disable-usrp2 \
+  --disable-gr-vocoder \
+  --disable-gr-video-sdl \
+  --with-qwt-incdir=${STAGING_INCDIR} \
   --with-pythondir=${PYTHON_SITEPACKAGES_DIR} \
   PYTHON_CPPFLAGS=-I${STAGING_INCDIR}/${PYTHON_DIR} \
 "
@@ -36,7 +40,9 @@ PACKAGES =+ "\
 "
 
 FILES_${PN}-examples = "${datadir}/gnuradio/examples"
-FILES_${PN}-grc = "${datadir}/gnuradio/grc"
+FILES_${PN}-grc = "${datadir}/gnuradio/grc \
+                   ${libexecdir}/gnuradio \
+                  "
 FILES_${PN}-conf = "${sysconfdir}/gnuradio"
 
 FILES_${PN} += "${datadir}/gnuradio"

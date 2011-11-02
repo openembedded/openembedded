@@ -1,0 +1,50 @@
+From a772f928693476297fe907d5de414516c58f2a51 Mon Sep 17 00:00:00 2001
+From: Philip Balister <philip@opensdr.com>
+Date: Tue, 1 Nov 2011 07:46:30 -0400
+Subject: [PATCH] Remove all traces of volk from configure again.
+
+Signed-off-by: Philip Balister <philip@opensdr.com>
+---
+ Makefile.common |    6 +-----
+ configure.ac    |    1 -
+ 2 files changed, 1 insertions(+), 6 deletions(-)
+
+diff --git a/Makefile.common b/Makefile.common
+index a4d5817..2cea092 100644
+--- a/Makefile.common
++++ b/Makefile.common
+@@ -59,7 +59,7 @@ grpyexecdir = $(pyexecdir)/gnuradio
+ # This used to be set in configure.ac but is now defined here for all 
+ # Makefiles when this fragment is included.
+ STD_DEFINES_AND_INCLUDES = $(DEFINES) $(GNURADIO_INCLUDES) \
+-	$(GRUEL_INCLUDES) $(VOLK_INCLUDES) $(BOOST_CPPFLAGS)
++	$(GRUEL_INCLUDES) $(BOOST_CPPFLAGS)
+ 
+ # when including for compilation from pre-installed libraries and such,
+ # need to make sure those are put last on the compile command
+@@ -77,10 +77,6 @@ GNURADIO_CORE_LA = @gnuradio_core_LA@
+ GRUEL_INCLUDES = @gruel_INCLUDES@
+ GRUEL_LA = @gruel_LA@
+ 
+-# How to link in the VOLK library from inside the tree
+-VOLK_INCLUDES = @volk_INCLUDES@
+-VOLK_LA = @volk_LA@
+-
+ # GR-DIGITAL includes and libraries
+ GR_DIGITAL_INCLUDES = @gr_digital_INCLUDES@
+ GR_DIGITAL_LA = @gr_digital_LA@
+diff --git a/configure.ac b/configure.ac
+index 432c398..f27de88 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -349,7 +349,6 @@ AC_ARG_ENABLE(
+ 
+ build_dirs="config"
+ GRC_GRUEL                       dnl must come first
+-GRC_VOLK
+ GRC_GNURADIO_CORE
+ GRC_GR_DIGITAL
+ GRC_GR_AUDIO
+-- 
+1.7.6.4
+

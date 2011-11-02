@@ -1,0 +1,28 @@
+From 031799e43c853d7723230be57ddacbf10d975cde Mon Sep 17 00:00:00 2001
+From: Philip Balister <philip@opensdr.com>
+Date: Tue, 1 Nov 2011 09:06:16 -0400
+Subject: [PATCH] Brute force selection of moc and uic.
+
+Signed-off-by: Philip Balister <philip@opensdr.com>
+---
+ config/grc_gr_qtgui.m4 |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/config/grc_gr_qtgui.m4 b/config/grc_gr_qtgui.m4
+index 0efd7c8..bc50cac 100644
+--- a/config/grc_gr_qtgui.m4
++++ b/config/grc_gr_qtgui.m4
+@@ -67,8 +67,8 @@ dnl       [PyQt4.Qwt5.QWT_VERSION >= 327000])
+             QMAKE_INCLUDES="$QMAKE_INCLUDES ${i##-I}"
+         done
+ 
+-	QT_MOC_EXEC=`pkg-config --variable=moc_location QtCore`
+-	QT_UIC_EXEC=`pkg-config --variable=uic_location QtCore`
++	QT_MOC_EXEC=moc
++	QT_UIC_EXEC=uic
+ 
+         gr_qtgui_INCLUDES="\
+ -I\${abs_top_srcdir}/gr-qtgui/include \
+-- 
+1.7.6.4
+
