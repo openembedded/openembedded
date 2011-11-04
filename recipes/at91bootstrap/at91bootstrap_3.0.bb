@@ -32,6 +32,5 @@ SRC_URI_append = " \
 # S = "${WORKDIR}/${PN}-${PV}"
 S = "${WORKDIR}/bootstrap30"
 
-SRC_URI[md5sum] = "a70f09198555d343de376014f9681f32"
-SRC_URI[sha256sum] = "90eccf7d639f4cf11ec8a3e0654aeb7e43382fd3bcbe9f234f9e9faeb1ed0ccd"
-
+SRC_URI[md5sum] = "9426fc7962b68de70ec3941c3a6fd351"
+SRC_URI[sha256sum] = "7449ea32ede2462fd81674770f1af19eddbf30f1d86bf0e2936ed59207c7db1d"
