@@ -1,0 +1,1213 @@
+From 70addf1fe62452b529175329b574002ac142f5bb Mon Sep 17 00:00:00 2001
+From: mlafauci <mlafauci@metodo2.it>
+Date: Sun, 6 Nov 2011 19:33:28 +0100
+Subject: [PATCH 1/2] at91bootstrap: Add VulcanoG20 support on common files
+
+---
+ Config.in          |   28 ++-
+ board/Config.in    |   34 ++-
+ board/boards       |    1 +
+ driver/dataflash.c |  720 ++++++++++++++++++++++++++--------------------------
+ include/nand_ids.h |   23 +-
+ include/part.h     |   14 +-
+ 6 files changed, 430 insertions(+), 390 deletions(-)
+
+diff --git a/Config.in b/Config.in
+index 0ef8da1..139fb1d 100644
+--- a/Config.in
++++ b/Config.in
+@@ -120,11 +120,12 @@ config CONFIG_OS_MEM_BANK
+ 	default "0x70000000" if CONFIG_AT91SAM9G45EKES
+ 	default "0x70000000" if CONFIG_AT91SAM9M10EK
+ 	default "0x70000000" if CONFIG_AT91SAM9M10EKES
+-	
++	default "0x20000000" if CONFIG_VULCANOG20
++
+ config CONFIG_OS_MEM_SIZE
+ 	string "OS Memory Bank Size"
+ 	default "0x4000000"
+-	
++
+ config CONFIG_LINUX_KERNEL_ARG_STRING
+ 	string "Linux kernel parameters"
+ 	default "mem=64M console=ttyS0,115200 mtdparts=atmel_nand:4M(bootstrap),60M(rootfs),-(spare) root=/dev/mtdblock1 rw rootfstype=jffs2" if CONFIG_AT91SAM9260EK && !CONFIG_SDCARD
+@@ -138,6 +139,7 @@ config CONFIG_LINUX_KERNEL_ARG_STRING
+ 	default "mem=128M console=ttyS0,115200 mtdparts=atmel_nand:4M(bootstrap),60M(rootfs),-(spare) root=/dev/mtdblock1 rw rootfstype=jffs2" if CONFIG_AT91SAM9G45EKES && !CONFIG_SDCARD
+ 	default "mem=64M console=ttyS0,115200 mtdparts=atmel_nand:4M(bootstrap),60M(rootfs),-(spare) root=/dev/mtdblock1 rw rootfstype=jffs2" if CONFIG_AT91SAM9M10EK && !CONFIG_SDCARD
+ 	default "mem=64M console=ttyS0,115200 mtdparts=atmel_nand:4M(bootstrap),60M(rootfs),-(spare) root=/dev/mtdblock1 rw rootfstype=jffs2" if CONFIG_AT91SAM9M10EKES && !CONFIG_SDCARD
++	default "mem=64M console=ttyS0,115200 mtdparts=atmel_nand:4M(bootstrap),60M(rootfs),-(spare) root=/dev/mtdblock1 rw rootfstype=jffs2" if CONFIG_VULCANOG20 && !CONFIG_SDCARD
+ 	default "mem=64M console=ttyS0,115200 root=/dev/mmcblk0p2 rootdelay=2" if CONFIG_AT91SAM9RLEK && CONFIG_SDCARD
+ 	default "mem=64M console=ttyS0,115200 root=/dev/mmcblk0p2 rootdelay=2" if CONFIG_AT91SAM9G10EK && CONFIG_SDCARD
+ 	default "mem=64M console=ttyS0,115200 root=/dev/mmcblk0p2 rootdelay=2" if CONFIG_AT91SAM9G20EK && CONFIG_SDCARD
+@@ -146,6 +148,7 @@ config CONFIG_LINUX_KERNEL_ARG_STRING
+ 	default "mem=128M console=ttyS0,115200 root=/dev/mmcblk0p2 rootdelay=2" if CONFIG_AT91SAM9G45EKES && CONFIG_SDCARD
+ 	default "mem=64M console=ttyS0,115200 root=/dev/mmcblk0p2 rootdelay=2" if CONFIG_AT91SAM9M10EK && CONFIG_SDCARD
+ 	default "mem=64M console=ttyS0,115200 root=/dev/mmcblk0p2 rootdelay=2" if CONFIG_AT91SAM9M10EKES && CONFIG_SDCARD
++	default "mem=64M console=ttyS0,115200 root=/dev/mmcblk0p2 rootdelay=2" if CONFIG_VULCANOG20 && CONFIG_SDCARD
+ 
+ config CONFIG_OS_IMAGE_NAME
+ 	depends on CONFIG_SDCARD && CONFIG_AT91SAM9G10EK
+@@ -183,7 +186,8 @@ config CONFIG_OS_MEM_BANK
+ 	default "0x70000000" if CONFIG_AT91SAM9G45EKES
+ 	default "0x70000000" if CONFIG_AT91SAM9M10EK
+ 	default "0x70000000" if CONFIG_AT91SAM9M10EKES
+-	
++	default "0x20000000" if CONFIG_VULCANOG20
++
+ config CONFIG_OS_MEM_SIZE
+ 	string "OS Memory Bank Size"
+ 	default "0x4000000"
+@@ -200,6 +204,7 @@ config CONFIG_CE_LOAD_ADDR
+ 	default "1879490560" if CONFIG_AT91SAM9G45EKES
+ 	default "1879490560" if CONFIG_AT91SAM9M10EK
+ 	default "1879490560" if CONFIG_AT91SAM9M10EKES
++	default "537292800" if CONFIG_VULCANOG20
+ 
+ config CONFIG_OS_IMAGE_NAME
+ 	depends on CONFIG_SDCARD
+@@ -263,9 +268,9 @@ config CONFIG_SETTING_ADDRESS
+ 
+ config CONFIG_SETTING_SIZE
+ 	string
+-	default "0x00001000" 
+-	help	
+-	
++	default "0x00001000"
++	help
++
+ config CONFIG_IMG_SIZE
+ 	string
+ 	default	"0x00040000"	if CONFIG_LOAD_UBOOT || CONFIG_LOAD_EBOOT
+@@ -305,10 +310,11 @@ config CONFIG_JUMP_ADDR
+ 	default "0x20067000" if CONFIG_AT91SAM9260EK
+ 	default "0x2006c000" if CONFIG_AT91SAM9RLEK
+ 	default "0x20069000" if CONFIG_AT91SAM9G10EK
++	default "0x20067000" if CONFIG_VULCANOG20
+ 	default "0x23F00000"
+ 	help
+ 	  The entry point to which the bootstrap will pass control.
+-	
++
+ config CONFIG_JUMP_ADDR
+ 	string
+ 	depends on CONFIG_LOAD_LINUX
+@@ -324,6 +330,7 @@ config CONFIG_JUMP_ADDR
+ 	default "0x22000000" if CONFIG_AT91SAM9260EK
+ 	default "0x22000000" if CONFIG_AT91SAM9RLEK
+ 	default "0x22000000" if CONFIG_AT91SAM9G10EK
++	default "0x22000000" if CONFIG_VULCANOG20
+ 	default "0x22000000"
+ 	help
+ 	  The entry point to which the bootstrap will pass control.
+@@ -365,6 +372,7 @@ config CONFIG_GLBDRV_ADDR
+ 	default "0x20058000" if CONFIG_AT91SAM9260EK
+ 	default "0x2006b000" if CONFIG_AT91SAM9RLEK
+ 	default "0x20068000" if CONFIG_AT91SAM9G10EK
++	default "0x20058000" if CONFIG_VULCANOG20
+ 	default "0x23F00000"
+ 	help
+ 
+@@ -372,7 +380,7 @@ config CONFIG_LONG_TEST
+ 	bool "Perform a memory test at startup"
+ 	default n
+ 	help
+-	  
++
+ config CONFIG_DEBUG
+ 	bool "Debug Support"
+ 	default n
+@@ -408,10 +416,10 @@ config CONFIG_THUMB
+ 	help
+ 	  Build code in thumb mode
+ 
+-config CONFIG_SCLK	  
++config CONFIG_SCLK
+ 	depends on CONFIG_AT91SAM9RLEK || CONFIG_AT91SAM9G45EK || CONFIG_AT91SAM9G45EKES || CONFIG_AT91SAM9M10EK || CONFIG_AT91SAM9M10EKES
+ 	bool "Use external 32KHZ oscillator as source of slow clock"
+ 	help
+ 	  Use external 32KHZ oscillator as source of slow clock
+-	  
++
+ source "host-utilities/Config.in"
+diff --git a/board/Config.in b/board/Config.in
+index 78ac102..71633ba 100644
+--- a/board/Config.in
++++ b/board/Config.in
+@@ -46,7 +46,7 @@ config	CONFIG_AT91SAM9263EK
+ 	select CONFIG_SDRAM
+ 	select ALLOW_DATAFLASH
+ 	select ALLOW_NANDFLASH
+-	select ALLOW_SDCARD	
++	select ALLOW_SDCARD
+ 	select ALLOW_PSRAM
+ 	select ALLOW_SDRAM_16BIT
+ 	select DATAFLASHCARD_ON_CS0
+@@ -222,6 +222,21 @@ config	CONFIG_AFEB9260
+ 	help
+ 	  Use the AFEB9260 Development board
+ 
++config	CONFIG_VULCANOG20
++	bool "vulcano-g20"
++	select CONFIG_SDRAM
++	select ALLOW_DATAFLASH
++	select ALLOW_NANDFLASH
++	select ALLOW_SDCARD
++	select DATAFLASHCARD_ON_CS0
++	select ALLOW_CPU_CLK_400MHZ
++	select ALLOW_CRYSTAL_18_432MHZ
++	select ALLOW_BOOT_FROM_DATAFLASH_CS0
++	select ALLOW_BOOT_FROM_DATAFLASH_CS1
++	select ALLOW_DATAFLASH_RECOVERY
++	help
++	  Use the VULCANO-G20 board
++
+ endchoice
+ 
+ config CONFIG_CHIP
+@@ -240,6 +255,7 @@ config CONFIG_CHIP
+ 	default "AT91CAP9"	if CONFIG_AT91CAP9ADK
+ 	default "AT91CAP9"	if CONFIG_AT91CAP9STK
+ 	default "AT91SAM9260"	if CONFIG_AFEB9260
++	default "AT91SAM9G20"	if CONFIG_VULCANOG20
+ 	help
+ 	  Name of the board, A Board Support package
+ 	  (BSP) must be available.
+@@ -260,6 +276,7 @@ config CONFIG_BOARD
+ 	default "at91cap9adk"	if CONFIG_AT91CAP9ADK
+ 	default "at91cap9stk"	if CONFIG_AT91CAP9STK
+ 	default "afeb9260"	if CONFIG_AFEB9260
++	default "vulcano-g20"	if CONFIG_VULCANOG20
+ 	help
+ 	  Name of the board, A Board Support package
+ 	  (BSP) must be available.
+@@ -268,12 +285,12 @@ config CONFIG_MACH_TYPE
+ 	string
+ 	default "0x44B"	if CONFIG_AT91SAM9260EK
+ 	default "0x350"	if CONFIG_AT91SAM9261EK
+-	default "0x4B2"	if CONFIG_AT91SAM9263EK	
++	default "0x4B2"	if CONFIG_AT91SAM9263EK
+ 	default "1326"	if CONFIG_AT91SAM9RLEK
+ 	default "0x44B"	if CONFIG_AT91SAM9XEEK
+-	default "0x86F"	if CONFIG_AT91SAM9G10EK		
++	default "0x86F"	if CONFIG_AT91SAM9G10EK
+ 	default "0x658"	if CONFIG_AT91SAM9G20EK
+-	default "1830"	if CONFIG_AT91SAM9G45EK		# 1830	
++	default "1830"	if CONFIG_AT91SAM9G45EK		# 1830
+ 	default "2212"	if CONFIG_AT91SAM9G45EKES	# 2212
+ 	default "1830"	if CONFIG_AT91SAM9M10EK		# 1830
+ 	default "2509"	if CONFIG_AT91SAM9M10EKES	# 2509
+@@ -281,6 +298,8 @@ config CONFIG_MACH_TYPE
+ 	default "0x85E"	if CONFIG_AT91CAP9STK		# 2142
+ 	default "0x676"	if CONFIG_AT572D940DOM		# 1654
+ 	default "1859"	if CONFIG_AFEB9260
++	default "0x658"	if CONFIG_VULCANOG20
++
+ 	help
+ 
+ config CONFIG_LINK_ADDR
+@@ -295,7 +314,7 @@ config CONFIG_DATA_SECTION_ADDR
+ 
+ #	default "0x200000"	if CONFIG_AT91SAM9260EK
+ #	default "0x300000"	if CONFIG_AT91SAM9261EK
+-#	default "0x300000"	if CONFIG_AT91SAM9263EK	
++#	default "0x300000"	if CONFIG_AT91SAM9263EK
+ #	default "0x300000"	if CONFIG_AT91SAM9RLEK
+ #	default "0x200000"	if CONFIG_AT91SAM9XEEK
+ #	default "0x200000"	if CONFIG_AT91SAM9G20EK
+@@ -305,10 +324,10 @@ config CONFIG_DATA_SECTION_ADDR
+ #	default "0x200000"	if CONFIG_AFEB9260
+ 
+ config CONFIG_TOP_OF_MEMORY
+-       string
++	   string
+ 	default "0x301000"	if CONFIG_AT91SAM9260EK
+ 	default "0x328000"	if CONFIG_AT91SAM9261EK
+-	default "0x314000"	if CONFIG_AT91SAM9263EK	
++	default "0x314000"	if CONFIG_AT91SAM9263EK
+ 	default "0x310000"	if CONFIG_AT91SAM9RLEK
+ 	default "0x306000"	if CONFIG_AT91SAM9XEEK
+ 	default "0x304000"	if CONFIG_AT91SAM9G10EK
+@@ -320,6 +339,7 @@ config CONFIG_TOP_OF_MEMORY
+ 	default "0x108000"	if CONFIG_AT91CAP9ADK
+ 	default "0x108000"	if CONFIG_AT91CAP9STK
+ 	default "0x301000"	if CONFIG_AFEB9260
++	default "0x304000"	if CONFIG_VULCANOG20
+ 	help
+ 
+ choice
+diff --git a/board/boards b/board/boards
+index 9da6dd4..b58fc04 100644
+--- a/board/boards
++++ b/board/boards
+@@ -39,3 +39,4 @@ at91sam9xeek/at91sam9xedfc_defconfig
+ at91sam9xeek/at91sam9xedf_defconfig
+ at91sam9xeek/at91sam9xeek_defconfig
+ at91sam9xeek/at91sam9xenf_defconfig
++vulcano-g20/vulcano-g20_defconfig
+diff --git a/driver/dataflash.c b/driver/dataflash.c
+index 3c5e1fd..daa5372 100644
+--- a/driver/dataflash.c
++++ b/driver/dataflash.c
+@@ -1,5 +1,5 @@
+ /* ----------------------------------------------------------------------------
+- *         ATMEL Microcontroller Software Support  -  ROUSSET  -
++ *		 ATMEL Microcontroller Software Support  -  ROUSSET  -
+  * ----------------------------------------------------------------------------
+  * Copyright (c) 2008, Atmel Corporation
+ 
+@@ -25,9 +25,9 @@
+  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  * ----------------------------------------------------------------------------
+- * File Name           : dataflash.c
+- * Object              : ATMEL DataFlash High level functions
+- * Creation            : NLe Jul 12th 2006
++ * File Name		   : dataflash.c
++ * Object			  : ATMEL DataFlash High level functions
++ * Creation			: NLe Jul 12th 2006
+  *---------------------------------------------------------------------------
+ */
+ 
+@@ -45,426 +45,432 @@ extern div_t udiv(unsigned int dividend, unsigned int divisor);
+ /* Write SPI register */
+ static inline void write_spi(unsigned int offset, const unsigned int value)
+ {
+-    writel(value, offset + AT91C_BASE_SPI);
++	writel(value, offset + AT91C_BASE_SPI);
+ }
+ 
+ /* Read SPI registers */
+ static inline unsigned int read_spi(unsigned int offset)
+ {
+-    return readl(offset + AT91C_BASE_SPI);
++	return readl(offset + AT91C_BASE_SPI);
+ }
+ 
+ static void msg_df_detect(int i)
+ {
+ #if	defined(CONFIG_VERBOSE)
+-    char *pn;
+-    switch (i) {
+-    case AT45DB011D:
+-        pn = "011D";
+-        break;
+-    case AT45DB021D:
+-        pn = "021D";
+-        break;
+-    case AT45DB041D:
+-        pn = "041D";
+-        break;
+-    case AT45DB081D:
+-        pn = "081D";
+-        break;
+-    case AT45DB161D:
+-        pn = "161D";
+-        break;
+-    case AT45DB321D:
+-        pn = "321D";
+-        break;
+-    case AT45DB642D:
+-        pn = "642D";
+-        break;
+-    default:
+-        pn = "????";
+-        break;
+-    }
+-    dbgu_print(pn);
+-    dbgu_print("detected\r\n");
++	char *pn;
++	switch (i) {
++	case AT45DB011D:
++		pn = "011D";
++		break;
++	case AT45DB021D:
++		pn = "021D";
++		break;
++	case AT45DB041D:
++		pn = "041D";
++		break;
++	case AT45DB081D:
++		pn = "081D";
++		break;
++	case AT45DB161D:
++		pn = "161D";
++		break;
++	case AT45DB321D:
++		pn = "321D";
++		break;
++	case AT45DB642D:
++		pn = "642D";
++		break;
++	default:
++		pn = "????";
++		break;
++	}
++	dbgu_print(pn);
++	dbgu_print("detected\r\n");
+ #endif
+ }
+ 
+ /*------------------------------------------------------------------------------*/
+-/* \fn    df_spi_init								*/
++/* \fn	df_spi_init								*/
+ /* \brief Configure SPI								*/
+ /*------------------------------------------------------------------------------*/
+ static int df_spi_init(unsigned int pcs, unsigned int spi_csr)
+ {
+-    unsigned int ncs = 0;
+-
+-    /*
+-     * Open PIO for SPI0 
+-     */
+-    df_hw_init();
+-
+-    /*
+-     * Enables the SPI0 Clock 
+-     */
+-    writel((1 << AT91C_ID_SPI), PMC_PCER + AT91C_BASE_PMC);
+-
+-    /*
+-     * Reset SPI0 
+-     */
+-    write_spi(SPI_CR, AT91C_SPI_SWRST);
+-    /*
+-     * SPI may need two software reset 
+-     */
+-    write_spi(SPI_CR, AT91C_SPI_SWRST);
+-
+-    /*
+-     * Configure SPI0 in Master Mode with No CS selected 
+-     */
+-    write_spi(SPI_MR, AT91C_SPI_MSTR | AT91C_SPI_MODFDIS | AT91C_SPI_PCS);
+-
+-    switch (pcs) {
+-    case AT91C_SPI_PCS0_DATAFLASH:
+-        ncs = 0;
+-        break;
+-    case AT91C_SPI_PCS1_DATAFLASH:
+-        ncs = 1;
+-        break;
+-    case AT91C_SPI_PCS2_DATAFLASH:
+-        ncs = 2;
+-        break;
+-    case AT91C_SPI_PCS3_DATAFLASH:
+-        ncs = 3;
+-        break;
+-    }
+-    /*
+-     * Configure CSx 
+-     */
+-    write_spi(SPI_CSR + 4 * ncs, spi_csr);
+-
+-    /*
+-     * Choose CSx 
+-     */
+-    write_spi(SPI_MR, read_spi(SPI_MR) & 0xFFF0FFFF);
+-    write_spi(SPI_MR, read_spi(SPI_MR) | ((pcs << 16) & AT91C_SPI_PCS));
+-
+-    /*
+-     * SPI_Enable 
+-     */
+-    write_spi(SPI_CR, AT91C_SPI_SPIEN);
+-
+-    return SUCCESS;
++	unsigned int ncs = 0;
++
++	/*
++	 * Open PIO for SPI0
++	 */
++	df_hw_init();
++
++	/*
++	 * Enables the SPI0 Clock
++	 */
++	writel((1 << AT91C_ID_SPI), PMC_PCER + AT91C_BASE_PMC);
++
++	/*
++	 * Reset SPI0
++	 */
++	write_spi(SPI_CR, AT91C_SPI_SWRST);
++	/*
++	 * SPI may need two software reset
++	 */
++	write_spi(SPI_CR, AT91C_SPI_SWRST);
++
++	/*
++	 * Configure SPI0 in Master Mode with No CS selected
++	 */
++	write_spi(SPI_MR, AT91C_SPI_MSTR | AT91C_SPI_MODFDIS | AT91C_SPI_PCS);
++
++	switch (pcs) {
++	case AT91C_SPI_PCS0_DATAFLASH:
++		ncs = 0;
++		break;
++	case AT91C_SPI_PCS1_DATAFLASH:
++		ncs = 1;
++		break;
++	case AT91C_SPI_PCS2_DATAFLASH:
++		ncs = 2;
++		break;
++	case AT91C_SPI_PCS3_DATAFLASH:
++		ncs = 3;
++		break;
++	}
++	/*
++	 * Configure CSx
++	 */
++	write_spi(SPI_CSR + 4 * ncs, spi_csr);
++
++	/*
++	 * Choose CSx
++	 */
++	write_spi(SPI_MR, read_spi(SPI_MR) & 0xFFF0FFFF);
++	write_spi(SPI_MR, read_spi(SPI_MR) | ((pcs << 16) & AT91C_SPI_PCS));
++
++	/*
++	 * SPI_Enable
++	 */
++	write_spi(SPI_CR, AT91C_SPI_SPIEN);
++
++	return SUCCESS;
+ }
+ 
+ /*------------------------------------------------------------------------------*/
+-/* \fn    df_is_busy								*/
++/* \fn	df_is_busy								*/
+ /* \brief Test if SPI has received a buffer or not				*/
+ /*------------------------------------------------------------------------------*/
+ static AT91S_DF_SEM df_is_busy(AT91PS_DF pDataFlash)
+ {
+-    unsigned int dStatus = read_spi(SPI_SR);
+-
+-    /*
+-     * If End of Receive Transfer interrupt occurred 
+-     */
+-    if ((dStatus & AT91C_SPI_RXBUFF)) {
+-        write_spi(SPI_PTCR, AT91C_PDC_TXTDIS);  /* PDC Disable Tx */
+-        write_spi(SPI_PTCR, AT91C_PDC_RXTDIS);  /* PDC Disable Rx */
+-
+-        /*
+-         * Release the semaphore 
+-         */
+-        pDataFlash->bSemaphore = UNLOCKED;
+-        return UNLOCKED;
+-    }
+-    return pDataFlash->bSemaphore;
++	unsigned int dStatus = read_spi(SPI_SR);
++
++	/*
++	 * If End of Receive Transfer interrupt occurred
++	 */
++	if ((dStatus & AT91C_SPI_RXBUFF)) {
++		write_spi(SPI_PTCR, AT91C_PDC_TXTDIS);  /* PDC Disable Tx */
++		write_spi(SPI_PTCR, AT91C_PDC_RXTDIS);  /* PDC Disable Rx */
++
++		/*
++		 * Release the semaphore
++		 */
++		pDataFlash->bSemaphore = UNLOCKED;
++		return UNLOCKED;
++	}
++	return pDataFlash->bSemaphore;
+ }
+ 
+ /*------------------------------------------------------------------------------*/
+-/* \fn    df_send_command							*/
++/* \fn	df_send_command							*/
+ /* \brief Generic function to send a command to the dataflash			*/
+ /*------------------------------------------------------------------------------*/
+ char df_send_command(AT91PS_DF pDataFlash, unsigned char bCmd,  /* Command value */
+-                     unsigned char bCmdSize,    /* Command Size */
+-                     char *pData,       /* Data to be sent */
+-                     unsigned int dDataSize,    /* Data Size */
+-                     unsigned int dAddress)
+-{                               /* Dataflash Address */
+-    unsigned int dInternalAdr;
+-
+-    div_t result = udiv(dAddress, AT91C_PAGE_SIZE(pDataFlash));
+-
+-    /*
+-     * Try to get the dataflash semaphore 
+-     */
+-    if ((pDataFlash->bSemaphore) != UNLOCKED)
+-        return (char)FAILURE;
+-    pDataFlash->bSemaphore = LOCKED;
+-
+-    /*
+-     * Compute command pattern 
+-     */
+-    if (pDataFlash->dfDescription.binaryPageMode == 0) {
+-        dInternalAdr =
+-            (result.quot << AT91C_PAGE_OFFSET(pDataFlash)) + result.rem;
+-    } else {
+-        dInternalAdr = dAddress;
+-    }
+-
+-    if (AT91C_DF_NB_PAGE(pDataFlash) >= 16384) {
+-        pDataFlash->command[0] = (bCmd & 0x000000FF) |
+-            ((dInternalAdr & 0x0F000000) >> 16) |
+-            ((dInternalAdr & 0x00FF0000) >> 0) |
+-            ((dInternalAdr & 0x0000FF00) << 16);
+-        pDataFlash->command[1] = (dInternalAdr & 0x000000FF);
+-
+-        if ((bCmd != DB_CONTINUOUS_ARRAY_READ) && (bCmd != DB_PAGE_READ))
+-            bCmdSize++;
+-    } else {
+-        pDataFlash->command[0] = (bCmd & 0x000000FF) |
+-            ((dInternalAdr & 0x00FF0000) >> 8) |
+-            ((dInternalAdr & 0x0000FF00) << 8) |
+-            ((dInternalAdr & 0x000000FF) << 24);
+-        pDataFlash->command[1] = 0;
+-    }
+-
+-    /*
+-     * Send Command and data through the SPI 
+-     */
+-    write_spi(SPI_PTCR, AT91C_PDC_RXTDIS);      /* PDC Disable Rx */
+-    write_spi(SPI_RPR, (unsigned int)&(pDataFlash->command));   /* PDC Set Rx */
+-    write_spi(SPI_RCR, bCmdSize);
+-    write_spi(SPI_RNPR, (unsigned int)pData);   /* PDC Set Next Rx */
+-    write_spi(SPI_RNCR, dDataSize);
+-
+-    write_spi(SPI_PTCR, AT91C_PDC_TXTDIS);      /* PDC Disable Tx */
+-    write_spi(SPI_TPR, (unsigned int)&(pDataFlash->command));   /* PDC Set Tx */
+-    write_spi(SPI_TCR, bCmdSize);
+-    write_spi(SPI_TNPR, (unsigned int)pData);   /* PDC Set Next Tx */
+-    write_spi(SPI_TNCR, dDataSize);
+-
+-    write_spi(SPI_PTCR, AT91C_PDC_RXTEN);       /* PDC Enable Rx */
+-    write_spi(SPI_PTCR, AT91C_PDC_TXTEN);       /* PDC Enable Tx */
+-
+-    while (df_is_busy(pDataFlash) == LOCKED) ;
+-
+-    return SUCCESS;
++					 unsigned char bCmdSize,	/* Command Size */
++					 char *pData,	   /* Data to be sent */
++					 unsigned int dDataSize,	/* Data Size */
++					 unsigned int dAddress)
++{							   /* Dataflash Address */
++	unsigned int dInternalAdr;
++
++	div_t result = udiv(dAddress, AT91C_PAGE_SIZE(pDataFlash));
++
++	/*
++	 * Try to get the dataflash semaphore
++	 */
++	if ((pDataFlash->bSemaphore) != UNLOCKED)
++		return (char)FAILURE;
++	pDataFlash->bSemaphore = LOCKED;
++
++	/*
++	 * Compute command pattern
++	 */
++	if (pDataFlash->dfDescription.binaryPageMode == 0) {
++		dInternalAdr =
++			(result.quot << AT91C_PAGE_OFFSET(pDataFlash)) + result.rem;
++	} else {
++		dInternalAdr = dAddress;
++	}
++
++	if (AT91C_DF_NB_PAGE(pDataFlash) >= 16384) {
++		pDataFlash->command[0] = (bCmd & 0x000000FF) |
++			((dInternalAdr & 0x0F000000) >> 16) |
++			((dInternalAdr & 0x00FF0000) >> 0) |
++			((dInternalAdr & 0x0000FF00) << 16);
++		pDataFlash->command[1] = (dInternalAdr & 0x000000FF);
++
++		if ((bCmd != DB_CONTINUOUS_ARRAY_READ) && (bCmd != DB_PAGE_READ))
++			bCmdSize++;
++	} else {
++		pDataFlash->command[0] = (bCmd & 0x000000FF) |
++			((dInternalAdr & 0x00FF0000) >> 8) |
++			((dInternalAdr & 0x0000FF00) << 8) |
++			((dInternalAdr & 0x000000FF) << 24);
++		pDataFlash->command[1] = 0;
++	}
++
++	/*
++	 * Send Command and data through the SPI
++	 */
++	write_spi(SPI_PTCR, AT91C_PDC_RXTDIS);	  /* PDC Disable Rx */
++	write_spi(SPI_RPR, (unsigned int)&(pDataFlash->command));   /* PDC Set Rx */
++	write_spi(SPI_RCR, bCmdSize);
++	write_spi(SPI_RNPR, (unsigned int)pData);   /* PDC Set Next Rx */
++	write_spi(SPI_RNCR, dDataSize);
++
++	write_spi(SPI_PTCR, AT91C_PDC_TXTDIS);	  /* PDC Disable Tx */
++	write_spi(SPI_TPR, (unsigned int)&(pDataFlash->command));   /* PDC Set Tx */
++	write_spi(SPI_TCR, bCmdSize);
++	write_spi(SPI_TNPR, (unsigned int)pData);   /* PDC Set Next Tx */
++	write_spi(SPI_TNCR, dDataSize);
++
++	write_spi(SPI_PTCR, AT91C_PDC_RXTEN);	   /* PDC Enable Rx */
++	write_spi(SPI_PTCR, AT91C_PDC_TXTEN);	   /* PDC Enable Tx */
++
++	while (df_is_busy(pDataFlash) == LOCKED) ;
++
++	return SUCCESS;
+ }
+ 
+ /*------------------------------------------------------------------------------*/
+-/* \fn    df_wait_ready								*/
++/* \fn	df_wait_ready								*/
+ /* \brief wait for DataFlash to be ready					*/
+ /*------------------------------------------------------------------------------*/
+ static char df_wait_ready(AT91PS_DF pDataFlash)
+ {
+-    unsigned int timeout = 0;
++	unsigned int timeout = 0;
+ 
+-    while (timeout++ < AT91C_DF_TIMEOUT) {
+-        if (df_get_status(pDataFlash)) {
+-            if (df_is_ready(pDataFlash))
+-                return SUCCESS;
+-        }
+-    }
++	while (timeout++ < AT91C_DF_TIMEOUT) {
++		if (df_get_status(pDataFlash)) {
++			if (df_is_ready(pDataFlash))
++				return SUCCESS;
++		}
++	}
+ 
+-    return FAILURE;
++	return FAILURE;
+ }
+ 
+ void df_write(AT91PS_DF pDf, unsigned int addr, int size, unsigned long offset)
+ {
+-    char rxBuffer[268];
+-
+-    int i, j;
+-
+-    i = offset;
+-    if (offset == 0)
+-        *((unsigned long *)(addr + 0x14)) = size;
+-    while (size > 0) {
+-        for (j = 0; j < ((size > 268) ? 268 : size); j++)
+-            rxBuffer[j] = *((unsigned char *)(addr + i + j));
+-        df_page_write(pDf, rxBuffer,
+-                      ((size <=
+-                        AT91C_PAGE_SIZE(pDf)) ? size : AT91C_PAGE_SIZE(pDf)),
+-                      i);
+-        df_wait_ready(pDf);
+-        i += AT91C_PAGE_SIZE(pDf);
+-        size -= AT91C_PAGE_SIZE(pDf);
+-    }
++	char rxBuffer[268];
++
++	int i, j;
++
++	i = offset;
++	if (offset == 0)
++		*((unsigned long *)(addr + 0x14)) = size;
++	while (size > 0) {
++		for (j = 0; j < ((size > 268) ? 268 : size); j++)
++			rxBuffer[j] = *((unsigned char *)(addr + i + j));
++		df_page_write(pDf, rxBuffer,
++					  ((size <=
++						AT91C_PAGE_SIZE(pDf)) ? size : AT91C_PAGE_SIZE(pDf)),
++					  i);
++		df_wait_ready(pDf);
++		i += AT91C_PAGE_SIZE(pDf);
++		size -= AT91C_PAGE_SIZE(pDf);
++	}
+ 
+ #define LONG_VAL(addr) *((unsigned long *)(addr))
+ 
+-    for (j = 0; j < 0x1000; j += 32) {
+-        df_continuous_read(pDf, (char *)rxBuffer, 32, j);
+-        for (i = 0; i < 32; i += 4) {
++	for (j = 0; j < 0x1000; j += 32) {
++		df_continuous_read(pDf, (char *)rxBuffer, 32, j);
++		for (i = 0; i < 32; i += 4) {
+ #if 0
+-            if (!(i & 4))
+-                dbgu_print_hex(i + j);
++			if (!(i & 4))
++				dbgu_print_hex(i + j);
+ #endif
+ #if 0
+-            if (LONG_VAL(0x200000 + i + j) == LONG_VAL(&rxBuffer[i]))
+-                msg_print(MSG_SPACE);
+-            else
+-                msg_print(MSG_EXCLAMATION);
+-            dbgu_print_hex(LONG_VAL(&rxBuffer[i]));
+-            if (i & 4)
+-                msg_print(MSG_NEWLINE);
++			if (LONG_VAL(0x200000 + i + j) == LONG_VAL(&rxBuffer[i]))
++				msg_print(MSG_SPACE);
++			else
++				msg_print(MSG_EXCLAMATION);
++			dbgu_print_hex(LONG_VAL(&rxBuffer[i]));
++			if (i & 4)
++				msg_print(MSG_NEWLINE);
+ #endif
+-        }
+-    }
++		}
++	}
+ }
+ 
+ /*------------------------------------------------------------------------------*/
+-/* \fn    df_read								*/
++/* \fn	df_read								*/
+ /* \brief Read a block in dataflash						*/
+ /*------------------------------------------------------------------------------*/
+ static int df_read(AT91PS_DF pDf,
+-                   unsigned int addr, unsigned char *buffer, unsigned int size)
++				   unsigned int addr, unsigned char *buffer, unsigned int size)
+ {
+-    unsigned int SizeToRead;
++	unsigned int SizeToRead;
+ 
+-    int page_counter;
++	int page_counter;
+ 
+-    page_counter = 32;
+-    while (size) {
++	page_counter = 32;
++	while (size) {
+ 		dbg_log(1, "+");
+ /*		SizeToRead = (size < AT91C_MAX_PDC_SIZE)? size : AT91C_MAX_PDC_SIZE; */
+-        SizeToRead = (size < 0x8400) ? size : 0x8400;
+-        /*
+-         * wait the dataflash ready status 
+-         */
+-        if (df_wait_ready(pDf) != 0) {
+-
+-            df_continuous_read(pDf, (char *)buffer, SizeToRead, addr);
+-            if (--page_counter <= 0) {
+-                page_counter = 32;
+-            }
+-            size -= SizeToRead;
+-            addr += SizeToRead;
+-            buffer += SizeToRead;
+-        } else {
+-            /*
+-             * We got a timeout 
+-             */
++		SizeToRead = (size < 0x8400) ? size : 0x8400;
++		/*
++		 * wait the dataflash ready status
++		 */
++		if (df_wait_ready(pDf) != 0) {
++
++			df_continuous_read(pDf, (char *)buffer, SizeToRead, addr);
++			if (--page_counter <= 0) {
++				page_counter = 32;
++			}
++			size -= SizeToRead;
++			addr += SizeToRead;
++			buffer += SizeToRead;
++		} else {
++			/*
++			 * We got a timeout
++			 */
+ #if 0
+ #if	defined(CONFIG_VERBOSE)
+-            msg_print(MSG_DATAFLASH);
+-            msg_print(MSG_SPACE);
++			msg_print(MSG_DATAFLASH);
++			msg_print(MSG_SPACE);
+ #endif
+-            msg_print(MSG_TIMEOUT);
+-            msg_print(MSG_NEWLINE);
++			msg_print(MSG_TIMEOUT);
++			msg_print(MSG_NEWLINE);
+ #endif
+-            return FAILURE;
+-        }
+-    }
++			return FAILURE;
++		}
++	}
+ 
+ 	dbg_log(1, "\r\n");
+-    return SUCCESS;
++	return SUCCESS;
+ }
+ 
+ /*----------------------------------------------------------------------*/
+-/* \fn    df_download							*/
++/* \fn	df_download							*/
+ /* \brief load the content of the dataflash				*/
+ /*----------------------------------------------------------------------*/
+ static int df_download(AT91PS_DF pDf, unsigned int img_addr,
+-                       unsigned int img_size, unsigned int img_dest)
++					   unsigned int img_size, unsigned int img_dest)
+ {
+-    /*
+-     * read bytes in the dataflash 
+-     */
+-    if (df_read(pDf, img_addr, (unsigned char *)img_dest, img_size) == FAILURE) {
+-        dbg_log(1, "df_read, failed!\r\n");
+-        return FAILURE;
+-    }
+-
+-    /*
+-     * wait the dataflash ready status 
+-     */
+-    return df_wait_ready(pDf);
++	/*
++	 * read bytes in the dataflash
++	 */
++	if (df_read(pDf, img_addr, (unsigned char *)img_dest, img_size) == FAILURE) {
++		dbg_log(1, "df_read, failed!\r\n");
++		return FAILURE;
++	}
++
++	/*
++	 * wait the dataflash ready status
++	 */
++	return df_wait_ready(pDf);
+ }
+ 
+ /*----------------------------------------------------------------------*/
+-/* \fn    df_probe							*/
++/* \fn	df_probe							*/
+ /* \brief Returns DataFlash ID						*/
+ /*----------------------------------------------------------------------*/
+ static int df_probe(AT91PS_DF pDf)
+ {
+-    char *pResult = (char *)(pDf->command);
++	char *pResult = (char *)(pDf->command);
+ 
+-    df_get_status(pDf);
++	df_get_status(pDf);
+ 
+-    // Check if DataFlash has been configured in binary page mode
+-    if ((pResult[1] & 0x1) == 0x1) {
+-        pDf->dfDescription.binaryPageMode = 1;
++	// Check if DataFlash has been configured in binary page mode
++	if ((pResult[1] & 0x1) == 0x1) {
++		pDf->dfDescription.binaryPageMode = 1;
+ #ifdef CONFIG_VERBOSE
+-        dbgu_print("> DataFlash in binary mode\n\r");
+-#endif                          /* CONFIG_DEBUG */
+-    } else {
+-        pDf->dfDescription.binaryPageMode = 0;
+-    }
++		dbgu_print("> DataFlash in binary mode\n\r");
++#endif						  /* CONFIG_DEBUG */
++	} else {
++		pDf->dfDescription.binaryPageMode = 0;
++	}
+ 
+-    return (pResult[1] & 0x3C);
++	return (pResult[1] & 0x3C);
+ }
+ 
+ /*----------------------------------------------------------------------*/
+-/* \fn    df_init							*/
++/* \fn	df_init							*/
+ /* \brief This function tries to identify the DataFlash connected	*/
+ /*----------------------------------------------------------------------*/
+ static int df_init(AT91PS_DF pDf)
+ {
+-    int dfcode = 0;
++	int dfcode = 0;
+ 
+-    int status = SUCCESS;
++	int status = SUCCESS;
+ 
+-    /*
+-     * Default: AT45DB321B 
+-     */
+-    pDf->dfDescription.pages_number = 8192;
+-    pDf->dfDescription.pages_size = 528;
+-    pDf->dfDescription.page_offset = 10;
++	/*
++	 * Default: AT45DB321B
++	 */
++	pDf->dfDescription.pages_number = 8192;
++	pDf->dfDescription.pages_size = 528;
++	pDf->dfDescription.page_offset = 10;
+ 
+-    dfcode = df_probe(pDf);
++	dfcode = df_probe(pDf);
+ 
+-    msg_df_detect(dfcode);
++	msg_df_detect(dfcode);
+ 
+-    switch (dfcode) {
++	switch (dfcode) {
+ #if	defined(CONFIG_SMALL_DATAFLASH)
+-    case AT45DB011D:
+-        pDf->dfDescription.pages_number = 512;
+-        pDf->dfDescription.pages_size = 264;
+-        pDf->dfDescription.page_offset = 9;
+-        break;
+-
+-    case AT45DB021D:
+-        pDf->dfDescription.pages_number = 1024;
+-        pDf->dfDescription.pages_size = 264;
+-        pDf->dfDescription.page_offset = 9;
+-        break;
+-
+-    case AT45DB041D:
+-        pDf->dfDescription.pages_number = 2048;
+-        pDf->dfDescription.pages_size = 264;
+-        pDf->dfDescription.page_offset = 9;
+-        break;
+-
+-    case AT45DB081D:
+-        pDf->dfDescription.pages_number = 4096;
+-        pDf->dfDescription.pages_size = 264;
+-        pDf->dfDescription.page_offset = 9;
+-        break;
+-    case AT45DB161D:
+-        pDf->dfDescription.pages_number = 4096;
+-        pDf->dfDescription.pages_size = 528;
+-        pDf->dfDescription.page_offset = 10;
+-        break;
++	case AT45DB011D:
++		pDf->dfDescription.pages_number = 512;
++		pDf->dfDescription.pages_size = 264;
++		pDf->dfDescription.page_offset = 9;
++		break;
++
++	case AT45DB021D:
++		pDf->dfDescription.pages_number = 1024;
++		pDf->dfDescription.pages_size = 264;
++		pDf->dfDescription.page_offset = 9;
++		break;
++
++	case AT45DB041D:
++		pDf->dfDescription.pages_number = 2048;
++		pDf->dfDescription.pages_size = 264;
++		pDf->dfDescription.page_offset = 9;
++		break;
++
++	case AT45DB081D:
++		pDf->dfDescription.pages_number = 4096;
++		pDf->dfDescription.pages_size = 264;
++		pDf->dfDescription.page_offset = 9;
++		break;
++	case AT45DB161D:
++		pDf->dfDescription.pages_number = 4096;
++		pDf->dfDescription.pages_size = 528;
++		pDf->dfDescription.page_offset = 10;
++		break;
+ #endif
+-    case AT45DB321D:
+-        pDf->dfDescription.pages_number = 8192;
+-        pDf->dfDescription.pages_size = 528;
+-        pDf->dfDescription.page_offset = 10;
+-        break;
+-
+-    case AT45DB642D:
+-        pDf->dfDescription.pages_number = 8192;
+-        pDf->dfDescription.pages_size = 1056;
+-        pDf->dfDescription.page_offset = 11;
+-        break;
++	case AT45DB321D:
++		pDf->dfDescription.pages_number = 8192;
++		pDf->dfDescription.pages_size = 528;
++		pDf->dfDescription.page_offset = 10;
++		break;
++
++	case AT45DB642D:
++		pDf->dfDescription.pages_number = 8192;
++		if (pDf->dfDescription.binaryPageMode)
++		{
++			pDf->dfDescription.pages_size = 1024;
++			pDf->dfDescription.page_offset = 10;
++		}else{
++			pDf->dfDescription.pages_size = 1056;
++			pDf->dfDescription.page_offset = 11;
++		}
++		break;
+ /*
+ 		case AT45DB1282D:
+ 			pDf->dfDescription.pages_number = 16384;
+@@ -484,64 +490,64 @@ static int df_init(AT91PS_DF pDf)
+ 			pDf->dfDescription.page_offset = 12;
+ 			break;
+ */
+-    default:
+-        status = FAILURE;
+-        break;
+-    }
++	default:
++		status = FAILURE;
++		break;
++	}
+ 
+-    return status;
++	return status;
+ }
+ 
+ int burn_df(unsigned int pcs, unsigned int addr, unsigned int size,
+-            unsigned int offset)
++			unsigned int offset)
+ {
+-    AT91S_DF sDF;
++	AT91S_DF sDF;
+ 
+-    AT91PS_DF pDf = (AT91PS_DF) & sDF;
++	AT91PS_DF pDf = (AT91PS_DF) & sDF;
+ 
+-    pDf->bSemaphore = UNLOCKED;
++	pDf->bSemaphore = UNLOCKED;
+ 
+-    df_spi_init(pcs, DF_CS_SETTINGS);
++	df_spi_init(pcs, DF_CS_SETTINGS);
+ 
+-    if (df_init(pDf) == FAILURE)
+-        return FAILURE;
+-    df_write(pDf, addr, size, offset);
++	if (df_init(pDf) == FAILURE)
++		return FAILURE;
++	df_write(pDf, addr, size, offset);
+ 
+-    return SUCCESS;
++	return SUCCESS;
+ }
+ 
+ /*------------------------------------------------------------------------------*/
+-/* \fn    load_df								*/
++/* \fn	load_df								*/
+ /* \brief This function loads dataflash content to specified address		*/
+ /*------------------------------------------------------------------------------*/
+ int load_df(unsigned int pcs, unsigned int img_addr, unsigned int img_size,
+-            unsigned int img_dest)
++			unsigned int img_dest)
+ {
+-    AT91S_DF sDF;
++	AT91S_DF sDF;
+ 
+-    AT91PS_DF pDf = (AT91PS_DF) & sDF;
++	AT91PS_DF pDf = (AT91PS_DF) & sDF;
+ 
+-    unsigned int status;
++	unsigned int status;
+ 
+-    pDf->bSemaphore = UNLOCKED;
++	pDf->bSemaphore = UNLOCKED;
+ 
+-    df_spi_init(pcs, DF_CS_SETTINGS);
++	df_spi_init(pcs, DF_CS_SETTINGS);
+ 
+-    if (df_init(pDf) == FAILURE)
+-        return FAILURE;
++	if (df_init(pDf) == FAILURE)
++		return FAILURE;
+ 
+ #if defined(CONFIG_DATAFLASH_RECOVERY)
+-    /*
+-     * Test if a button has been pressed or not 
+-     */
+-    /*
+-     * Erase Page 0 to avoid infinite loop 
+-     */
+-    df_recovery(pDf);
++	/*
++	 * Test if a button has been pressed or not
++	 */
++	/*
++	 * Erase Page 0 to avoid infinite loop
++	 */
++	df_recovery(pDf);
+ #endif
+ 
+-    status = df_download(pDf, img_addr, img_size, img_dest);
+-    return status;
++	status = df_download(pDf, img_addr, img_size, img_dest);
++	return status;
+ }
+ 
+-#endif                          /* CONFIG_DATAFLASH */
++#endif						  /* CONFIG_DATAFLASH */
+diff --git a/include/nand_ids.h b/include/nand_ids.h
+index 7bfcb08..6202faf 100644
+--- a/include/nand_ids.h
++++ b/include/nand_ids.h
+@@ -1,5 +1,5 @@
+ /* ----------------------------------------------------------------------------
+- *         ATMEL Microcontroller Software Support  -  ROUSSET  -
++ *		 ATMEL Microcontroller Software Support  -  ROUSSET  -
+  * ----------------------------------------------------------------------------
+  * Copyright (c) 2006, Atmel Corporation
+ 
+@@ -25,9 +25,9 @@
+  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  * ----------------------------------------------------------------------------
+- * File Name           : nand_ids.h
+- * Object              :
+- * Creation            : NLe Sep 28th 2006
++ * File Name		   : nand_ids.h
++ * Object			  :
++ * Creation			: NLe Sep 28th 2006
+  *-----------------------------------------------------------------------------
+  */
+ #ifndef _NAND_IDS_H
+@@ -37,13 +37,14 @@
+ 
+ /* Supported NandFlash devices */
+ const static struct SNandInitInfo NandFlash_InitInfo[] = {
+-    {0x2cca, 0x800, 0x20000, 0x800, 0x40, 0x1, "Micron MT29F2G16AAB 256MB\0"},
+-    {0x2cda, 0x800, 0x20000, 0x800, 0x40, 0x0, "Micron MT29F2G08AAC 256MB\0"},
+-    {0x2caa, 0x800, 0x20000, 0x800, 0x40, 0x0, "Micron MT29F2G08ABD 256MB\0"},
+-    {0xecda, 0x800, 0x20000, 0x800, 0x40, 0x0, "Samsung K9F2G08U0M 256MB\0"},
+-    {0xecaa, 0x800, 0x20000, 0x800, 0x40, 0x0, "Samsung K9F2G08U0A 256MB\0"},
+-    {0x20aa, 0x800, 0x20000, 0x800, 0x40, 0x0, "ST Micro NAND02GR3B 256MB\0"},
+-    {0,}
++	{0x2cca, 0x800, 0x20000, 0x800, 0x40, 0x1, "Micron MT29F2G16AAB 256MB\0"},
++	{0x2cda, 0x800, 0x20000, 0x800, 0x40, 0x0, "Micron MT29F2G08AAC 256MB\0"},
++	{0x2caa, 0x800, 0x20000, 0x800, 0x40, 0x0, "Micron MT29F2G08ABD 256MB\0"},
++	{0xecda, 0x800, 0x20000, 0x800, 0x40, 0x0, "Samsung K9F2G08U0M 256MB\0"},
++	{0xecaa, 0x800, 0x20000, 0x800, 0x40, 0x0, "Samsung K9F2G08U0A 256MB\0"},
++	{0x20aa, 0x800, 0x20000, 0x800, 0x40, 0x0, "ST Micro NAND02GR3B 256MB\0"},
++	{0x2076, 0x1000, 0x04000, 0x200, 0x10, 0x0, "Numonyx NAND512W3A2D 64MB\0"},
++	{0,}
+ };
+ 
+ #endif
+diff --git a/include/part.h b/include/part.h
+index cff8fa1..22b8b21 100644
+--- a/include/part.h
++++ b/include/part.h
+@@ -1,5 +1,5 @@
+ /* ----------------------------------------------------------------------------
+- *         ATMEL Microcontroller Software Support  -  ROUSSET  -
++ *		 ATMEL Microcontroller Software Support  -  ROUSSET  -
+  * ----------------------------------------------------------------------------
+  * Copyright (c) 2006, Atmel Corporation
+ 
+@@ -26,9 +26,9 @@
+  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  * ----------------------------------------------------------------------------
+- * File Name           : part.h
+- * Object              :
+- * Creation            : NLe Sep 28th 2006
++ * File Name		   : part.h
++ * Object			  :
++ * Creation			: NLe Sep 28th 2006
+  *-----------------------------------------------------------------------------
+  */
+ #ifndef _PART_H
+@@ -60,8 +60,12 @@
+ 
+ #ifdef AT91SAM9G20
+ #include "AT91SAM9260_inc.h"
++#ifdef	CONFIG_VULCANOG20
++#include "vulcano-g20.h"
++#else
+ #include "at91sam9g20ek.h"
+ #endif
++#endif
+ 
+ #ifdef AT91SAM9G45
+ #include "AT91SAM9G45_inc.h"
+@@ -107,4 +111,4 @@
+ #include "at91sam9rlek.h"
+ #endif
+ 
+-#endif                          /* _PART_H */
++#endif						  /* _PART_H */
+-- 
+1.7.0.4
+

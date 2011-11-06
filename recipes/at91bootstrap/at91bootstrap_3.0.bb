@@ -28,6 +28,11 @@ SRC_URI_append = " \
 	file://0017-at91bootstrap-fix-build-error-in-openembedded-due-to.patch;apply=yes \
 	file://0018-Change-switch-statements-to-if-statements-to-avoid-b.patch;apply=yes \
 	"
+	
+SRC_URI_append_vulcano-g20 = " \
+	file://vG20/0001-at91bootstrap-Add-VulcanoG20-support-on-common-files.patch;apply=yes;striplevel=1 \
+	file://vG20/0002-at91bootstrap-Add-VulcanoG20-board.patch;apply=yes;striplevel=1 \
+	"
 
 # S = "${WORKDIR}/${PN}-${PV}"
 S = "${WORKDIR}/bootstrap30"
