@@ -5,14 +5,14 @@ PR = "r16"
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
 
-DEFAULT_PREFERENCE_at91sam9263ek = "28"
-DEFAULT_PREFERENCE_ronetix-pm9263 = "29"
+DEFAULT_PREFERENCE_at91sam9263ek = "29"
+DEFAULT_PREFERENCE_ronetix-pm9263 = "30"
 DEFAULT_PREFERENCE_stb225 = "28"
 DEFAULT_PREFERENCE_gamecube = "1"
 DEFAULT_PREFERENCE_wrap = "1"
 DEFAULT_PREFERENCE_tx27 = "1"
 DEFAULT_PREFERENCE_nokia900 = "1"
-DEFAULT_PREFERENCE_mh355 = "2"
+DEFAULT_PREFERENCE_mh355 = "3"
 DEFAULT_PREFERENCE_smartqv7 = "1"
 DEFAULT_PREFERENCE_mini6410 = "1"
 
@@ -23,17 +23,20 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.28.tar.bz2;name=k
 
 SRC_URI_append_at91sam9263ek = " \
            file://linux-2.6.28-at91.patch.bz2 \
-	   file://linux-2.6.28-exp.patch.bz2 "
+	   file://linux-2.6.28-exp.patch.bz2 \
+           ftp://ftp.koansoftware.com/public/oe/patch/linux-2.6.28/linux-2.6.28_fbioblank_error_solved.patch;name=koanfbioblankpatch "
 
 SRC_URI_append_ronetix-pm9263 = " \
            file://linux-2.6.28-at91.patch.bz2 \
            file://linux-2.6.28-exp.patch.bz2 \
-           http://download.ronetix.info/boards/linux/kernel/2.6.28/003_linux-2.6.28-at91-ronetix-20112009.patch;name=ronetixpatch"
+           http://download.ronetix.info/boards/linux/kernel/2.6.28/003_linux-2.6.28-at91-ronetix-20112009.patch;name=ronetixpatch \
+           ftp://ftp.koansoftware.com/public/oe/patch/linux-2.6.28/linux-2.6.28_fbioblank_error_solved.patch;name=koanfbioblankpatch "
 
 SRC_URI_append_mh355 = " \
            file://linux-2.6.28-at91.patch.bz2 \
            file://linux-2.6.28-exp.patch.bz2 \
-           file://linux-2.6.28.10-at91-mh.patch "
+           file://linux-2.6.28.10-at91-mh.patch \
+           ftp://ftp.koansoftware.com/public/oe/patch/linux-2.6.28/linux-2.6.28_fbioblank_error_solved.patch;name=koanfbioblankpatch "
 
 SRC_URI_append_stb225 = " \
            file://uImage.patch \
@@ -91,3 +94,6 @@ SRC_URI[nokiapatch.md5sum] = "aa4b5227e54bcaf1488d83c0b6d19c92"
 SRC_URI[nokiapatch.sha256sum] = "90a3f8b533fc91057dcdbd23b384d30fb6fc205e8d20406412cbbc1af1105150"
 SRC_URI[libtnftl.md5sum] = "a79bf0f977712a215f6710a713168684"
 SRC_URI[libtnftl.sha256sum] = "a9c09bb3bd0d5d988e23568f10364dbd8025a0c14b181db065630c9a98a05fe7"
+SRC_URI[koanfbioblankpatch.md5sum] = "b16bae18f081666349a69880ef828af9"
+SRC_URI[koanfbioblankpatch.sha256sum] = "25a04fe5d2413cb009fa2b46cc6b91870bdd3b4bc24f7f36f8e723e0e0201254"
+
