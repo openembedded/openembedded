@@ -5,7 +5,7 @@ SECTION = "libs"
 DEPENDS = "glib-2.0"
 BBCLASSEXTEND = "native"
 LICENSE = "LGPL"
-INC_PR = "r5"
+INC_PR = "r7"
 PE = "1"
 
 inherit autotools vala
@@ -15,4 +15,3 @@ do_configure_prepend() {
          rm -f m4/$i
       done
 }
-
