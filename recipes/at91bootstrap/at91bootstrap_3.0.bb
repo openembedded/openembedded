@@ -5,6 +5,7 @@ DEFAULT_PREFERENCE_at91sam9g45ek = "3"
 DEFAULT_PREFERENCE_at91sam9g45ekes = "3"
 DEFAULT_PREFERENCE_at91sam9m10ek = "3"
 DEFAULT_PREFERENCE_at91sam9m10ekes = "3"
+DEFAULT_PREFERENCE_vulcano-g20 = "3"
 
 SRC_URI = "ftp://ftp.linux4sam.org/pub/Android4SAM/9m10g45/v1.1/patches/bootstrap30.tar.gz \
            "
