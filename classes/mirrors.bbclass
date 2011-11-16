@@ -28,6 +28,13 @@ ${KERNELORG_MIRROR}	ftp://ftp.uk.kernel.org/pub
 ${KERNELORG_MIRROR}	ftp://ftp.hk.kernel.org/pub
 ${KERNELORG_MIRROR}	ftp://ftp.au.kernel.org/pub
 ${KERNELORG_MIRROR}	ftp://ftp.jp.kernel.org/pub
+${KERNELSRC_MIRROR}	http://www.kernel.org/pub/linux/kernel
+${KERNELSRC_MIRROR}	ftp://ftp.sunet.se/pub/Linux/kernels
+${KERNELSRC_MIRROR}	ftp://ftp.us.kernel.org/pub/linux/kernel
+${KERNELSRC_MIRROR}	ftp://ftp.uk.kernel.org/pub/linux/kernel
+${KERNELSRC_MIRROR}	ftp://ftp.hk.kernel.org/pub/linux/kernel
+${KERNELSRC_MIRROR}	ftp://ftp.au.kernel.org/pub/linux/kernel
+${KERNELSRC_MIRROR}	ftp://ftp.jp.kernel.org/pub/linux/kernel
 ftp://ftp.gnupg.org/gcrypt/     ftp://ftp.franken.de/pub/crypt/mirror/ftp.gnupg.org/gcrypt/
 ftp://ftp.gnupg.org/gcrypt/     ftp://ftp.surfnet.nl/pub/security/gnupg/
 ftp://ftp.gnupg.org/gcrypt/     http://gulus.USherbrooke.ca/pub/appl/GnuPG/
