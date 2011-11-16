@@ -12,7 +12,8 @@ DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "1"
 DEFAULT_PREFERENCE_shr = "1"
 
-SRC_URI = "git://git.libav.org/libav.git;protocol=git"
+SRC_URI = "git://git.libav.org/libav.git;protocol=git \
+	   file://0001-texi2html-init_file.patch"
 
 S = "${WORKDIR}/git"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"

@@ -1,0 +1,11 @@
+--- a/Makefile
++++ b/Makefile
+@@ -123,7 +123,7 @@
+ doc/%.html: TAG = HTML
+ doc/%.html: doc/%.texi $(SRC_PATH_BARE)/doc/t2h.init
+ 	$(Q)$(TEXIDEP)
+-	$(M)cd doc && texi2html -monolithic --init-file $(SRC_PATH_BARE)/doc/t2h.init $(<:doc/%=%)
++	$(M)cd doc && texi2html -monolithic --init_file $(SRC_PATH_BARE)/doc/t2h.init $(<:doc/%=%)
+ 
+ doc/%.pod: TAG = POD
+ doc/%.pod: doc/%.texi
