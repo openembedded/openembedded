@@ -66,10 +66,13 @@ PREFERRED_VERSION_tiff 		= "3.9.4+4.0.0beta6"
 PREFERRED_VERSION_tslib		= "1.0+gitr%"
 
 PREFERRED_VERSION_udev 		= "171"
+PREFERRED_VERSION_udev_libc-uclibc = "141"
+UDEV_GE_141 = "1"
 
 PREFERRED_VERSION_usbutils = "0.86"
 PREFERRED_VERSION_wpa-supplicant = "0.7.3"
 PREFERRED_VERSION_wget = "1.11.4"
+PREFERRED_VERSION_xserver-common = "1.34"
 PREFERRED_VERSION_xserver-kdrive = "1.4.0.90"
 
 #
