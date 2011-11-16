@@ -1,0 +1,22 @@
+From f9c82a5d1b8f3f15c8a929fb631af11e2bb20947 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Wed, 19 Oct 2011 23:03:22 +0200
+Subject: [PATCH 2/2] Do not track install'ed files
+
+---
+ .gitignore |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/.gitignore b/.gitignore
+index d78652e..bdfcad1 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -21,3 +21,5 @@ binaries
+ *.o
+ tags
+ *.swp
++install/*
++
+-- 
+1.7.5.4
+

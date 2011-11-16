@@ -1,0 +1,284 @@
+From 21ec7a32ce3816d5affb59771402cba90d8228a4 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Mon, 24 Oct 2011 01:15:28 +0200
+Subject: [PATCH 21/39] Remove warnings from build.
+
+The build generates several warnings due to unused subroutines
+and variables.
+toplevel_cpp.mk adds a config -DREMOVE_WARNINGS
+which is used to remove the cause of warnings in
+multiple files.
+
+is used on multiple files.
+
+is used once.
+
+Otherwise dbg_log is called to use return values.
+This will add some small amount of code, but not
+significantly so
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@telia.com>
+---
+ board/at91sam9263ek/at91sam9263ek.c |    7 ++++---
+ driver/MEDSdcard.c                  |   16 ++++++++++++++--
+ driver/debug.c                      |    1 +
+ driver/ff.c                         |    2 +-
+ driver/gpio.c                       |    2 +-
+ driver/nandflash.c                  |    8 +++++++-
+ driver/pio.c                        |    3 +++
+ driver/pmc.c                        |    1 +
+ driver/sdmmc_mci.c                  |   13 +++++++++----
+ driver/sdramc.c                     |    1 +
+ toplevel_cpp.mk                     |    2 ++
+ 11 files changed, 44 insertions(+), 12 deletions(-)
+
+diff --git a/board/at91sam9263ek/at91sam9263ek.c b/board/at91sam9263ek/at91sam9263ek.c
+index 485880d..1eb237e 100644
+--- a/board/at91sam9263ek/at91sam9263ek.c
++++ b/board/at91sam9263ek/at91sam9263ek.c
+@@ -340,7 +340,6 @@ void sdramc_hw_init(void)
+ #ifdef CONFIG_PSRAM
+ void psram_hw_init(void)
+ {
+-    volatile unsigned short tmp;
+ 
+     unsigned short *addressMax = (unsigned short *)MICRON_8MB_ADDRESS_MAX;
+ 
+@@ -373,8 +372,10 @@ void psram_hw_init(void)
+     pio_set_value(AT91C_PIN_PE(16), 0); // Data access.
+ 
+     //Enable page mode
+-    tmp = readl(addressMax);
+-    tmp = readl(addressMax);
++    // "readl" is a function, but we do not need the result
++    // The read will update the internal status of the memory.
++    readl(addressMax);
++    readl(addressMax);
+     writel(MICRON_RCR, addressMax);
+     writel(MICRON_PAGE_MODE_ENABLE, addressMax);
+ }
+diff --git a/driver/MEDSdcard.c b/driver/MEDSdcard.c
+index 4158e9d..8c6a36a 100644
+--- a/driver/MEDSdcard.c
++++ b/driver/MEDSdcard.c
+@@ -225,7 +225,7 @@ static unsigned char MEDSdcard_Read(Media * media,
+                                     unsigned int length,
+                                     MediaCallback callback, void *argument)
+ {
+-    unsigned char error;
++    unsigned char error=0;
+ 
+     unsigned int loop;
+ 
+@@ -251,6 +251,11 @@ static unsigned char MEDSdcard_Read(Media * media,
+         error =
+             SD_ReadBlock((SdCard *) media->interface, address,
+                          FIRSTBOOT_BLOCK_LENGTH, data);
++#if	defined(REMOVE_WARNINGS)
++	if(error) {
++		dbg_log(1, "SD_ReadBlock failed in MEDSdcard_Read\r\n");
++	}
++#endif
+         address += FIRSTBOOT_BLOCK_LENGTH;
+ 
+         length -= FIRSTBOOT_BLOCK_LENGTH;
+@@ -265,6 +270,11 @@ static unsigned char MEDSdcard_Read(Media * media,
+     if (length > 0) {
+         error =
+             SD_ReadBlock((SdCard *) media->interface, address, length, data);
++#if	defined(REMOVE_WARNINGS)
++	if(error) {
++		dbg_log(1, "SD_ReadBlock failed in MEDSdcard_Read\r\n");
++	}
++#endif
+     }
+     // Leave the Busy state
+     media->state = MED_STATE_READY;
+@@ -684,7 +694,9 @@ unsigned int load_SDCard(void *dst)
+     unsigned char ret;
+ 
+     ret = MEDSdcard_Initialize(&medias[0], BOARD_SD_MCI_ID_USE);
+-
++    if(ret) {
++	dbg_log(1, "Error while initializing SD-Card\r\n");
++    }
+     memset(&fs, 0, sizeof (FATFS));     // Clear file system object
+ 
+     res = f_mount(0, &fs);
+diff --git a/driver/debug.c b/driver/debug.c
+index d72de27..40f11c0 100644
+--- a/driver/debug.c
++++ b/driver/debug.c
+@@ -30,6 +30,7 @@
+  * Creation            : ODi Apr 19th 2006
+  *-----------------------------------------------------------------------------
+  */
++#pragma GCC diagnostic ignored "-Wunused-function"
+ #include "common.h"
+ 
+ #ifdef	CONFIG_DEBUG
+diff --git a/driver/ff.c b/driver/ff.c
+index 8200b14..82b49cd 100644
+--- a/driver/ff.c
++++ b/driver/ff.c
+@@ -69,7 +69,7 @@
+ /                   Added f_chdir() and f_chdrive().
+ /                   Added proper case conversion to extended char.
+ /---------------------------------------------------------------------------*/
+-
++#pragma GCC diagnostic ignored "-Wunused-function"
+ #include "common.h"
+ #include "ff.h"                 /* FatFs configurations and declarations */
+ #include "diskio.h"             /* Declarations of low level disk I/O functions */
+diff --git a/driver/gpio.c b/driver/gpio.c
+index 5b98870..1347f77 100644
+--- a/driver/gpio.c
++++ b/driver/gpio.c
+@@ -30,7 +30,7 @@
+  * Creation            : ODi Apr 19th 2006
+  *-----------------------------------------------------------------------------
+  */
+-
++#pragma GCC diagnostic ignored "-Wunused-function"
+ #include "common.h"
+ #include "gpio.h"
+ 
+diff --git a/driver/nandflash.c b/driver/nandflash.c
+index ea7068e..a7f7783 100644
+--- a/driver/nandflash.c
++++ b/driver/nandflash.c
+@@ -677,9 +677,12 @@ int read_nandflash(unsigned char *dst, unsigned long offset, int len)
+ 
+     unsigned char *pOutBuffer = dst;
+ 
+-    unsigned int blockIdx, badBlock, length, sizeToRead, nbSector, sectorIdx,
++    unsigned int blockIdx, length, sizeToRead, nbSector, sectorIdx,
+         dataLeft;
+ 
++#if	!defined(REMOVE_WARNINGS)
++    unsigned int	badBlock;
++#endif
+     nandflash_hw_init();
+     reset_nandflash();
+ 
+@@ -737,10 +740,13 @@ int read_nandflash(unsigned char *dst, unsigned long offset, int len)
+      * Initialize the block offset
+      */
+     blockIdx = offset / sNandInfo.uBlockNbData;
++
++#if	!defined(REMOVE_WARNINGS)
+     /*
+      * Initialize the number of bad blocks
+      */
+     badBlock = 0;
++#endif
+ 
+     length = len;
+ 
+diff --git a/driver/pio.c b/driver/pio.c
+index 6cbbce3..3df8668 100644
+--- a/driver/pio.c
++++ b/driver/pio.c
+@@ -30,6 +30,7 @@
+ //------------------------------------------------------------------------------
+ //         Headers
+ //------------------------------------------------------------------------------
++#pragma GCC diagnostic ignored "-Wunused-function"
+ #include "common.h"
+ #include "pio.h"
+ 
+@@ -460,3 +461,5 @@ unsigned char PIO_GetOutputDataStatus(const Pin * pin)
+     }
+ }
+ #endif
++
++
+diff --git a/driver/pmc.c b/driver/pmc.c
+index edf1314..6a15a8b 100644
+--- a/driver/pmc.c
++++ b/driver/pmc.c
+@@ -30,6 +30,7 @@
+  * Creation            : ODi Apr 24th 2006
+  *-----------------------------------------------------------------------------
+  */
++#pragma GCC diagnostic ignored "-Wunused-function"
+ #include "common.h"
+ #include "pmc.h"
+ 
+diff --git a/driver/sdmmc_mci.c b/driver/sdmmc_mci.c
+index 7451ab1..9112579 100644
+--- a/driver/sdmmc_mci.c
++++ b/driver/sdmmc_mci.c
+@@ -26,9 +26,8 @@
+  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  * ----------------------------------------------------------------------------
+  */
+-
++#pragma GCC diagnostic ignored "-Wunused-function"
+ #if defined(CONFIG_SDCARD)
+-
+ //------------------------------------------------------------------------------
+ //         Headers
+ //------------------------------------------------------------------------------
+@@ -2197,14 +2196,15 @@ static unsigned short SdMmcInit(SdCard * pSd, SdDriver * pSdDriver)
+ 
+     unsigned char cmd8Retries = 1;
+ 
+-    unsigned int cmd1Retries = 10000;   //120;
+ 
+     unsigned char isHdSupport = 0;
++#if !(defined(CONFIG_AT91SAM9G10EK))
++    unsigned int cmd1Retries = 10000;   //120;
+ 
+     unsigned char isHsSupport = 0;
+ 
+     unsigned char updateInformation = 0;
+-
++#endif
+     // The command GO_IDLE_STATE (CMD0) is the software reset command and sets
+     // card into Idle State regardless of the current card state.
+     MCI_EnableHsMode((Mci *) pSdDriver, 0);
+@@ -2339,6 +2339,10 @@ static unsigned short SdMmcInit(SdCard * pSd, SdDriver * pSdDriver)
+ 
+         dbg_log(1, "Is card MMC one?\n\r");
+ 
++// busWidth gives warnings
++#pragma GCC diagnostic push
++#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
++
+         if (SD_CSD_STRUCTURE(pSd) >= 2) {
+ 
+             MmcCmd6Arg cmd6Arg;
+@@ -2399,6 +2403,7 @@ static unsigned short SdMmcInit(SdCard * pSd, SdDriver * pSdDriver)
+             }
+ #endif                          // end of OP_BOOTSTRAP_MCI_on
+         }
++#pragma GCC diagnostic pop
+     } else if (pSd->cardType >= CARD_SD) {
+ 
+         // Switch to 4-bits bus width
+diff --git a/driver/sdramc.c b/driver/sdramc.c
+index 0b0a00e..e0c6d98 100644
+--- a/driver/sdramc.c
++++ b/driver/sdramc.c
+@@ -30,6 +30,7 @@
+  * Creation            : NLe Jul 11th 2006
+  *-----------------------------------------------------------------------------
+  */
++#pragma GCC diagnostic ignored "-Wunused-function"
+ #include "common.h"
+ #include "sdramc.h"
+ 
+diff --git a/toplevel_cpp.mk b/toplevel_cpp.mk
+index 569f297..8d00fac 100644
+--- a/toplevel_cpp.mk
++++ b/toplevel_cpp.mk
+@@ -46,3 +46,5 @@ ifeq ($(CONFIG_DUAL_BOOT),y)
+ CPPFLAGS += -DCONFIG_DUAL_BOOT
+ endif
+ 
++
++CPPFLAGS += -DREMOVE_WARNINGS
+-- 
+1.7.5.4
+

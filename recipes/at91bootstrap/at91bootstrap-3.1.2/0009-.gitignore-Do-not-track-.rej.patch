@@ -1,0 +1,23 @@
+From b83985548c5c7a8e7fa8c4f71aff8e466dfde572 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Sun, 23 Oct 2011 14:19:43 +0200
+Subject: [PATCH 09/39] .gitignore: Do not track *.rej
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@telia.com>
+---
+ .gitignore |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/.gitignore b/.gitignore
+index bdfcad1..5cea63c 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -22,4 +22,5 @@ binaries
+ tags
+ *.swp
+ install/*
++*.rej
+ 
+-- 
+1.7.5.4
+

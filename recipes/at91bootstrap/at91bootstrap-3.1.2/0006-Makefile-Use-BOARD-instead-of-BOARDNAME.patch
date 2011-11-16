@@ -1,0 +1,33 @@
+From c8d1c27e61ac4707b6c5ab74bc16ec4b3c96dafe Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Sun, 23 Oct 2011 12:54:15 +0200
+Subject: [PATCH 06/39] Makefile:	Use ${BOARD} instead of ${BOARDNAME}
+
+Makefile will try to build ${BOARDNAME}.o
+If the user changes ${BOARDNAME} the file will not
+be found. The correct file to build is ${BOARD}.o
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@telia.com>
+---
+ Makefile |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index f4f09ae..55af2d9 100644
+--- a/Makefile
++++ b/Makefile
+@@ -211,9 +211,9 @@ SX_AT91=$(BINDIR)/sx-at91
+ EXTRA_INSTALL+=$(BINDIR)/sx-at91
+ endif
+ 
+-COBJS-y:= $(TOPDIR)/main.o $(TOPDIR)/board/$(BOARDNAME)/$(BOARD).o
++COBJS-y:= $(TOPDIR)/main.o $(TOPDIR)/board/$(BOARD)/$(BOARD).o
+ SOBJS-y:= $(TOPDIR)/crt0_gnu.o
+-DIRS:=$(TOPDIR) $(TOPDIR)/board/$(BOARDNAME) $(TOPDIR)/lib $(TOPDIR)/driver
++DIRS:=$(TOPDIR) $(TOPDIR)/board/$(BOARD) $(TOPDIR)/lib $(TOPDIR)/driver
+ 
+ 
+ include 	lib/libc.mk
+-- 
+1.7.5.4
+

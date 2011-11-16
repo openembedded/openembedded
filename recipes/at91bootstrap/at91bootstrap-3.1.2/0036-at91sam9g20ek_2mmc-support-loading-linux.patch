@@ -1,0 +1,100 @@
+From b2e2f8b50bb2c8de26828cb192a500038a5d1882 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Fri, 28 Oct 2011 12:45:04 +0200
+Subject: [PATCH 36/39] at91sam9g20ek_2mmc: support loading linux
+
+---
+ driver/linux_loader.c |   21 +++++++++++++++++++++
+ 1 files changed, 21 insertions(+), 0 deletions(-)
+
+diff --git a/driver/linux_loader.c b/driver/linux_loader.c
+index f7711ca..bb78829 100644
+--- a/driver/linux_loader.c
++++ b/driver/linux_loader.c
+@@ -22,6 +22,7 @@
+ #define LINUX_KERNEL_ARG_STRING "mem=64M console=ttyS0,115200 root=/dev/mmcblk0p2 rootdelay=2"
+ #endif
+ #endif
++
+ #ifdef CONFIG_AT91SAM9261EK
+ #ifdef CONFIG_DATAFLASH
+ #define LINUX_KERNEL_ARG_STRING "mem=64M console=ttyS0,115200 root=/dev/mtdblock1 rw rootfstype=jffs2"
+@@ -33,6 +34,7 @@
+ #define LINUX_KERNEL_ARG_STRING "mem=64M console=ttyS0,115200 root=/dev/mmcblk0p2 rootdelay=2"
+ #endif
+ #endif
++
+ #ifdef CONFIG_AT91SAM9263EK
+ #ifdef CONFIG_DATAFLASH
+ #define LINUX_KERNEL_ARG_STRING "mem=64M console=ttyS0,115200 root=/dev/mtdblock1 rw rootfstype=jffs2"
+@@ -44,6 +46,7 @@
+ #define LINUX_KERNEL_ARG_STRING "mem=64M console=ttyS0,115200 root=/dev/mmcblk0p2 rootdelay=2"
+ #endif
+ #endif
++
+ #ifdef CONFIG_AT91SAM9RLEK
+ #ifdef CONFIG_DATAFLASH
+ #define LINUX_KERNEL_ARG_STRING "mem=64M console=ttyS0,115200 root=/dev/mtdblock1 rw rootfstype=jffs2"
+@@ -55,6 +58,7 @@
+ #define LINUX_KERNEL_ARG_STRING "mem=64M console=ttyS0,115200 root=/dev/mmcblk0p2 rootdelay=2"
+ #endif
+ #endif
++
+ #ifdef CONFIG_AT91SAM9G10EK
+ #ifdef CONFIG_DATAFLASH
+ #define LINUX_KERNEL_ARG_STRING "mem=64M console=ttyS0,115200 root=/dev/mtdblock1 rw rootfstype=jffs2"
+@@ -66,6 +70,7 @@
+ #define LINUX_KERNEL_ARG_STRING "mem=64M console=ttyS0,115200 root=/dev/mmcblk0p2 rootdelay=2"
+ #endif
+ #endif
++
+ #ifdef CONFIG_AT91SAM9G20EK
+ #ifdef CONFIG_DATAFLASH
+ #define LINUX_KERNEL_ARG_STRING "mem=64M console=ttyS0,115200 root=/dev/mtdblock1 rw rootfstype=jffs2"
+@@ -77,6 +82,19 @@
+ #define LINUX_KERNEL_ARG_STRING "mem=64M console=ttyS0,115200 root=/dev/mmcblk0p2 rootdelay=2"
+ #endif
+ #endif
++
++#ifdef CONFIG_AT91SAM9G20EK_2MMC
++#ifdef CONFIG_DATAFLASH
++#define LINUX_KERNEL_ARG_STRING "mem=64M console=ttyS0,115200 root=/dev/mtdblock1 rw rootfstype=jffs2"
++#endif
++#ifdef CONFIG_NANDFLASH
++#define LINUX_KERNEL_ARG_STRING "mem=64M console=ttyS0,115200 root=/dev/mtdblock1 rw rootfstype=jffs2"
++#endif
++#ifdef CONFIG_SDCARD
++#define LINUX_KERNEL_ARG_STRING "mem=64M console=ttyS0,115200 root=/dev/mmcblk0p2 rootdelay=2"
++#endif
++#endif
++
+ #ifdef CONFIG_AT91SAM9G45EK
+ #ifdef CONFIG_DATAFLASH
+ #define LINUX_KERNEL_ARG_STRING "mem=128M console=ttyS0,115200 mtdparts=atmel_nand:4M(bootstrap),60M(rootfs),-(spare) root=/dev/mtdblock1 rw rootfstype=jffs2"
+@@ -88,6 +106,7 @@
+ #define LINUX_KERNEL_ARG_STRING "mem=128M console=ttyS0,115200 root=/dev/mmcblk0p2 rootdelay=2"
+ #endif
+ #endif
++
+ #ifdef CONFIG_AT91SAM9M10EK
+ #ifdef CONFIG_DATAFLASH
+ #define LINUX_KERNEL_ARG_STRING "mem=64M console=ttyS0,115200 mtdparts=atmel_nand:4M(bootstrap),60M(rootfs),-(spare) root=/dev/mtdblock1 rw rootfstype=jffs2"
+@@ -99,6 +118,7 @@
+ #define LINUX_KERNEL_ARG_STRING "mem=64M console=ttyS0,115200 root=/dev/mmcblk0p2 rootdelay=2"
+ #endif
+ #endif
++
+ #ifdef CONFIG_AT91SAM9G45EKES
+ #ifdef CONFIG_DATAFLASH
+ #define LINUX_KERNEL_ARG_STRING "mem=128M console=ttyS0,115200 mtdparts=atmel_nand:4M(bootstrap),60M(rootfs),-(spare) root=/dev/mtdblock1 rw rootfstype=jffs2"
+@@ -110,6 +130,7 @@
+ #define LINUX_KERNEL_ARG_STRING "mem=128M console=ttyS0,115200 root=/dev/mmcblk0p2 rootdelay=2"
+ #endif
+ #endif
++
+ #ifdef CONFIG_AT91SAM9M10EKES
+ #ifdef CONFIG_DATAFLASH
+ #define LINUX_KERNEL_ARG_STRING "mem=64M console=ttyS0,115200 mtdparts=atmel_nand:4M(bootstrap),60M(rootfs),-(spare) root=/dev/mtdblock1 rw rootfstype=jffs2"
+-- 
+1.7.5.4
+

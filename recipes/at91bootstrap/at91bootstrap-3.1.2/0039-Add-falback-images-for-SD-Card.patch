@@ -1,0 +1,66 @@
+From dccafc454105dba916c0b3e56dfaa95393242cee Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Fri, 28 Oct 2011 12:47:58 +0200
+Subject: [PATCH 39/39] Add falback images for SD-Card
+
+---
+ driver/MEDSdcard.c |   21 +++++++++++++++++++--
+ 1 files changed, 19 insertions(+), 2 deletions(-)
+
+diff --git a/driver/MEDSdcard.c b/driver/MEDSdcard.c
+index 8c6a36a..1545634 100644
+--- a/driver/MEDSdcard.c
++++ b/driver/MEDSdcard.c
+@@ -52,6 +52,9 @@ extern	unsigned int altboot;
+ #define	IMAGE_NAME	OS_IMAGE_NAME
+ #endif
+ 
++#define	IMAGE_FALLBACK1	CONFIG_BOARD "\\U-BOOT.BIN"
++#define	IMAGE_FALLBACK2	"U-BOOT.BIN"
++
+ //------------------------------------------------------------------------------
+ //         Constants
+ //------------------------------------------------------------------------------
+@@ -497,7 +500,6 @@ unsigned char MEDSdcard_Initialize(Media * media, unsigned char mciID)
+     // Initialize the SD card driver
+     if (SD_Init(sdDrv, (SdDriver *) mciDrv)) {
+         dbg_log(1, "*** SD_Init: failed\n\r");
+-        while (1) ;
+         return 0;
+     } else {
+         //SD_DisplayRegisterCSD(&sdDrv);
+@@ -694,8 +696,9 @@ unsigned int load_SDCard(void *dst)
+     unsigned char ret;
+ 
+     ret = MEDSdcard_Initialize(&medias[0], BOARD_SD_MCI_ID_USE);
+-    if(ret) {
++    if(ret == 0) {
+ 	dbg_log(1, "Error while initializing SD-Card\r\n");
++        while (1) ;
+     }
+     memset(&fs, 0, sizeof (FATFS));     // Clear file system object
+ 
+@@ -709,6 +712,20 @@ unsigned int load_SDCard(void *dst)
+ 
+     if (res != FR_OK) {
+ 	dbg_log(1, "*** f_open, File name: [%s]: error!\n\r", IMAGE_NAME);
++#if	defined(CONFIG_FALLBACKS)
++	dbg_log(1, "*** trying:            [%s]\n\r", IMAGE_FALLBACK1);
++        res = f_open(&fileObject, IMAGE_FALLBACK1, FA_OPEN_EXISTING | FA_READ);
++    }
++
++    if (res != FR_OK) {
++	dbg_log(1, "*** f_open, File name: [%s]: error!\n\r", IMAGE_FALLBACK1);
++	dbg_log(1, "*** trying:            [%s]\n\r", IMAGE_FALLBACK2);
++        res = f_open(&fileObject, IMAGE_FALLBACK2, FA_OPEN_EXISTING | FA_READ);
++    }
++
++    if (res != FR_OK) {
++	dbg_log(1, "*** f_open, File name: [%s]: error!\n\r", IMAGE_FALLBACK2);
++#endif
+         while (1) ;
+     }
+ 
+-- 
+1.7.5.4
+

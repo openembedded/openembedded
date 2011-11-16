@@ -1,0 +1,44 @@
+From c52c6ac4c46b74a88184f806dfc80bd8928ff376 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Mon, 24 Oct 2011 01:12:48 +0200
+Subject: [PATCH 20/39] config/conf.c: Remove cause of warnings.
+
+conf.c are calling subroutines without using the result,
+causing a warning.
+Make sure the return value is used to avoid the warning.
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@telia.com>
+---
+ config/conf.c |    9 +++++++--
+ 1 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/config/conf.c b/config/conf.c
+index c829d4d..07ada3a 100644
+--- a/config/conf.c
++++ b/config/conf.c
+@@ -110,7 +110,10 @@ static int conf_askvalue(struct symbol *sym, const char *def)
+         check_stdin();
+     case ask_all:
+         fflush(stdout);
+-        fgets(line, 128, stdin);
++        if(fgets(line, 128, stdin) == NULL) {
++	    /* No warning */
++	    return 1;
++	}
+         return 1;
+     default:
+         break;
+@@ -320,7 +323,9 @@ static int conf_choice(struct menu *menu)
+             check_stdin();
+         case ask_all:
+             fflush(stdout);
+-            fgets(line, 128, stdin);
++            if(fgets(line, 128, stdin) == NULL) {
++		continue;
++	    }
+             strip(line);
+             if (line[0] == '?') {
+                 print_help(menu);
+-- 
+1.7.5.4
+

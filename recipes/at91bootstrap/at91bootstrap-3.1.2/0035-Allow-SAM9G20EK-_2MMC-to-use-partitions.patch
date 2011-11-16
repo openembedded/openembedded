@@ -1,0 +1,25 @@
+From 42d7f66d4e614e161a3a5cd05ab19b2379e1692b Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Fri, 28 Oct 2011 12:43:58 +0200
+Subject: [PATCH 35/39] Allow SAM9G20EK(_2MMC) to use partitions
+
+---
+ include/AT91SAM9260_inc.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/include/AT91SAM9260_inc.h b/include/AT91SAM9260_inc.h
+index 6c5d82e..949653b 100644
+--- a/include/AT91SAM9260_inc.h
++++ b/include/AT91SAM9260_inc.h
+@@ -3049,7 +3049,7 @@
+ 
+ #define CHIP_SRAM0_BASEADDR		0x200000
+ 
+-#if	!defined(CONFIG_AT91SAM9G20EK)
++#if	defined(CONFIG_AT91SAM9260EK)
+ #define NO_PATITION
+ #endif
+ 
+-- 
+1.7.5.4
+

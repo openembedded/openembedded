@@ -1,0 +1,26 @@
+From 47a30a31312141e9818161248234409a0f45ee4e Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Sun, 23 Oct 2011 15:48:57 +0200
+Subject: [PATCH 13/39] Update version to 3.1.1
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@telia.com>
+---
+ Makefile |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 2518d12..0b137e0 100644
+--- a/Makefile
++++ b/Makefile
+@@ -19,7 +19,7 @@ BINDIR:=$(TOPDIR)/binaries
+ 
+ DATE:=$(shell date +%Y%m%d)
+ 
+-VERSION:=3.1
++VERSION:=3.1.1
+ 
+  
+ noconfig_targets:= menuconfig defconfig $(CONFIG) oldconfig
+-- 
+1.7.5.4
+

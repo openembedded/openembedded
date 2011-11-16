@@ -1,0 +1,168 @@
+From 8773542cb012747ea842cd10b8f41ca6af7f6b76 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Fri, 28 Oct 2011 12:45:57 +0200
+Subject: [PATCH 37/39] Use up-to-date debug logging
+
+---
+ driver/ff.c |   52 +++++++++++++++++++++++-----------------------------
+ 1 files changed, 23 insertions(+), 29 deletions(-)
+
+diff --git a/driver/ff.c b/driver/ff.c
+index dd5330e..abb3d18 100644
+--- a/driver/ff.c
++++ b/driver/ff.c
+@@ -842,19 +842,16 @@ FRESULT dir_find(DIR * dj       /* Pointer to the directory object linked to the
+                         break;
+                 } else {        /* Match SFN if LFN is in 8.3 format */
+ #if	defined(CONFIG_DEBUG_VERY_LOUD)
+-		    dbgu_print("\nComparing ");
+-		    dbgu_print(dir);
+-		    dbgu_print(" with ");
+-		    dbgu_print(dj->fn);
++		    dbg_log(1, "Comparing %s with %s: ",dir,dj->fn);
+ #endif
+                     if (!memcmp(dir, dj->fn, 11)) {
+ #if	defined(CONFIG_DEBUG_VERY_LOUD)
+-			dbgu_print(" OK\r\n");
++			dbg_log(1, "OK\r\n");
+ #endif
+                         break;
+ 		    }
+ #if	defined(CONFIG_DEBUG_VERY_LOUD)
+-		    dbgu_print(" Fail\r\n");
++		    dbg_log(1, "Fail\r\n");
+ #endif
+                 }
+                 ord = 0xFF;
+@@ -862,19 +859,16 @@ FRESULT dir_find(DIR * dj       /* Pointer to the directory object linked to the
+         }
+ #else                           /* Non LFN configuration */
+ #if	defined(CONFIG_DEBUG_VERY_LOUD)
+-	dbgu_print("\nComparing ");
+-	dbgu_print((char *) dir);
+-	dbgu_print(" with ");
+-	dbgu_print((char *) dj->fn);
++	dbg_log(1, "Comparing %s with %s: ",(char *) dir,(char *) dj->fn);
+ #endif
+         if (!(dir[DIR_Attr] & AM_VOL) && !memcmp(dir, dj->fn, 11)) {    /* Is it a valid entry? */
+ #if	defined(CONFIG_DEBUG_VERY_LOUD)
+-	    dbgu_print(" OK\r\n");
++	    dbg_log(1, "OK\r\n");
+ #endif
+             break;
+ 	}
+ #if	defined(CONFIG_DEBUG_VERY_LOUD)
+-	dbgu_print(" Fail\r\n");
++	dbg_log(1, "Fail\r\n");
+ #endif
+ #endif
+         res = dir_next(dj, FALSE);      /* Next entry */
+@@ -1580,7 +1574,10 @@ FRESULT auto_mount(             /* FR_OK(0): successful, !=0: any error occured
+     DWORD bsect, fsize, tsect, mclst;
+ 
+     const XCHAR *p = *path;
+-    const XCHAR vol_name[2];
++
++#if	defined(CONFIG_DEBUG_VERY_LOUD)
++    XCHAR vol_name[2];
++#endif
+ 
+     FATFS *fs;
+ 
+@@ -1588,9 +1585,8 @@ FRESULT auto_mount(             /* FR_OK(0): successful, !=0: any error occured
+      * Get logical drive number from the path name
+      */
+ #if	defined(CONFIG_DEBUG_VERY_LOUD)
+-	dbgu_print("Automount: ");
+-	dbgu_print((const char *) path);
+-	dbgu_print("\r\n");
++
++	dbg_log(1, "Automount: %s\r\n", (const char *) path);
+ #endif
+     vol = p[0] - '0';           /* Is there a drive number? */
+     if (vol <= 9 && p[1] == ':') {      /* Found a drive number, get and strip it */
+@@ -1603,24 +1599,22 @@ FRESULT auto_mount(             /* FR_OK(0): successful, !=0: any error occured
+         vol = 0;                /* Use drive 0 */
+ #endif
+     }
++#if	defined(CONFIG_DEBUG_VERY_LOUD)
+     vol_name[0] = vol + '0';
+-    vol_name[0] = '\0;
+-
++    vol_name[0] = '\0';
++#endif
+     /*
+      * Check if the logical drive is valid or not
+      */
+     if (vol >= _DRIVES) {        /* Is the drive number valid? */
+ #if	defined(CONFIG_DEBUG_VERY_LOUD)
+-		dbgu_print("Invalid Drive:  [");
+-		dbgu_print(volname);
+-		dbgu_print("]\r\n");
+-		
++		dbg_log(1, "Invalid Drive:  [%s]\r\n", vol_name);
+ #endif
+         return FR_INVALID_DRIVE;
+     }
+     *rfs = fs = FatFs[vol];     /* Returen pointer to the corresponding file system object */
+     if (!fs) {
+-	dbgu_print("File system not registered!\r\n");
++	dbg_log(1, "File system not registered!\r\n");
+         return FR_NOT_ENABLED;  /* Is the file system object registered? */
+     }
+     ENTER_FF(fs);               /* Lock file system */
+@@ -1645,7 +1639,7 @@ FRESULT auto_mount(             /* FR_OK(0): successful, !=0: any error occured
+     stat = disk_initialize(fs->drive);  /* Initialize low level disk I/O layer */
+     if (stat & STA_NOINIT) {     /* Check if the drive is ready */
+ #if	defined(CONFIG_DEBUG_VERY_LOUD)
+-		dbgu_print("Invalid Drive\r\n");
++		dbg_log(1, "Invalid Drive [%d]\r\n", fs->drive);
+ #endif
+         return FR_NOT_READY;
+     }
+@@ -1679,13 +1673,13 @@ FRESULT auto_mount(             /* FR_OK(0): successful, !=0: any error occured
+ 
+     if (fmt == 3) {
+ #if	defined(CONFIG_DEBUG_VERY_LOUD)
+-		dbgu_print("fmt == 3 - Not Valid!\r\n");
++		dbg_log(1, "fmt == 3 - Not Valid!\r\n");
+ #endif
+         return FR_DISK_ERR;
+     }
+     if (fmt || LD_WORD(fs->win + BPB_BytsPerSec) != SS(fs)) {    /* No valid FAT patition is found */
+ #if	defined(CONFIG_DEBUG_VERY_LOUD)
+-		dbgu_print("No valid FAT Partition\r\n");
++		dbg_log(1, "No valid FAT Partition\r\n");
+ #endif
+         return FR_NO_FILESYSTEM;
+     }
+@@ -1693,7 +1687,7 @@ FRESULT auto_mount(             /* FR_OK(0): successful, !=0: any error occured
+      * Initialize the file system object
+      */
+ #if	defined(CONFIG_DEBUG_VERY_LOUD)
+-		dbgu_print("INFO: INit file system object\r\n");
++		dbg_log(1, "INFO: Init file system object\r\n");
+ #endif
+     fsize = LD_WORD(fs->win + BPB_FATSz16);     /* Number of sectors per FAT */
+     if (!fsize)
+@@ -2867,7 +2861,7 @@ FRESULT f_rename(const XCHAR * path_old,        /* Pointer to the old name */
+     res = auto_mount(&path_old, &dj_old.fs, 1);
+     if (res == FR_OK) {
+ #if	defined(CONFIG_DEBUG_VERY_LOUD)
+-		dbgu_print("Automount succeded\r\n");
++		dbg_log(1, "Automount succeded\r\n");
+ #endif
+         dj_new.fs = dj_old.fs;
+         res = follow_path(&dj_old, path_old);   /* Check old object */
+@@ -2876,7 +2870,7 @@ FRESULT f_rename(const XCHAR * path_old,        /* Pointer to the old name */
+     }
+     if (res != FR_OK) {
+ #if	defined(CONFIG_DEBUG_VERY_LOUD)
+-		dbgu_print("Automount failed\r\n");
++		dbg_log(1, "Automount failed\r\n");
+ #endif
+         LEAVE_FF(dj_old.fs, res);       /* The old object is not found */
+     }
+-- 
+1.7.5.4
+

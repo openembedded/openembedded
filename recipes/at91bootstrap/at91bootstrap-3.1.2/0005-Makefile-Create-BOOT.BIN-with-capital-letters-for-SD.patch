@@ -1,0 +1,43 @@
+From 6aff12d973fea5918e20a70e2cf5e4b63641ecff Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Sun, 23 Oct 2011 12:24:34 +0200
+Subject: [PATCH 05/39] Makefile: Create BOOT.BIN (with capital letters) for
+ SD-Boot
+
+According to the documentation, the AT91 BootROM will
+try to read "boot.bin" from a FAT formatted SD-Card.
+
+In reality, it will try to read "BOOT.BIN".
+When you write "boot.bin" from Windows, "BOOT.BIN" is created.
+When you write "boot.bin" from Linux, "boot.bin" is created
+and will not be found by the BootROM.
+---
+ Makefile |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 033c288..f4f09ae 100644
+--- a/Makefile
++++ b/Makefile
+@@ -176,6 +176,9 @@ obj=build/$(BOARDNAME)/
+ BOOT_NAME=$(BOARDNAME)-$(PROJECT)$(CARD_SUFFIX)boot-$(VERSION)$(REV)
+ 
+ AT91BOOTSTRAP:=$(BINDIR)/$(BOOT_NAME).bin
++AT91BOOTSTRAP_BOOTABLE:=$(BINDIR)/$(BOOT_NAME).bin.fixboot
++BOOT_BIN_DIR:=$(BINDIR)/$(BOOT_NAME)
++AT91SD_BOOTSTRAP:=$(BOOT_BIN_DIR)/BOOT.BIN
+ 
+ ifeq ($(DESTDIR),)
+ DESTDIR=install
+@@ -302,6 +305,8 @@ $(AT91BOOTSTRAP).fixboot:	$(AT91BOOTSTRAP)
+ 	./scripts/fixboot.py $(AT91BOOTSTRAP)
+ 
+ boot:	$(AT91BOOTSTRAP).fixboot
++	mkdir -p $(BOOT_BIN_DIR)
++	cp $(AT91BOOTSTRAP_BOOTABLE) $(AT91SD_BOOTSTRAP)
+ 
+ install:	bootstrap	utilities
+ 
+-- 
+1.7.5.4
+

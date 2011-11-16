@@ -1,0 +1,72 @@
+From 2d911f1f6163c2ec1ef840a52b79c7af86cfb056 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Mon, 24 Oct 2011 01:08:58 +0200
+Subject: [PATCH 19/39] Improve printout of MAKEALL
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@telia.com>
+---
+ MAKEALL |   34 +++++++++++++++++++++++++++++-----
+ 1 files changed, 29 insertions(+), 5 deletions(-)
+
+diff --git a/MAKEALL b/MAKEALL
+index fb4bbb3..c1fdb3e 100755
+--- a/MAKEALL
++++ b/MAKEALL
+@@ -22,10 +22,26 @@ init_make ()
+ 
+ build ()
+ {
+-	make distclean
+-	make -j 4 $1_defconfig
+-	make -j 4 > log/$1.log 2>&1 || mv log/$1.log result/FAIL/$1.log.FAIL
+-	mv log/$1.log result/OK/$1.log.OK	|| echo
++	printf	"%-30s"	"$1"
++	make -s distclean > /dev/null
++	make -j 8 -s $1_defconfig > /dev/null
++	sts=0
++	make -j 8 > log/$1.log 2>&1 3>log/$1.info	|| sts=1
++	if [ $sts == 0 ] ; then
++		mv log/$1.log result/OK/$1.log.OK
++		working=`expr $working + 1`
++		printf	"[OK]"
++		# "arning" supports English and Swedish !
++		warning_lines=`cat result/OK/$1.log.OK | grep arning | wc -l`
++		if ! [ $warning_lines == 0 ] ; then
++			printf "[Warnings]"
++		fi
++		echo
++	else
++		mv log/$1.log result/FAIL/$1.log.FAIL
++		failing=`expr $failing + 1`
++		echo	"[FAIL]"
++	fi
+ 	mv binaries/*.elf	result/elf
+ 	mv binaries/*.map	result/map
+ 	mv binaries/*.bin	result/binaries
+@@ -33,14 +49,22 @@ build ()
+ 
+ build_all ()
+ {
++	failing=0;
++	working=0;
+ 	for f in `cat $CONFIG_LIST` ; do
+ 		build	$f
+ 	done
++	printf	"%s\n"	"------------------------------------"
++	total=`expr	$working + $failing`
++	printf	"%-30s[%d]\n"	"Number of Boards:"	$total
++	printf	"\n"
++	printf	"%-30s[%d]\n"	"Working Boards:"	$working
++	printf	"%-30s[%d]\n"	"Failing Boards:"	$failing
+ }
+ 
+ init_make
+ 
+-build_all
++time	build_all
+ 
+ echo
+ echo
+-- 
+1.7.5.4
+

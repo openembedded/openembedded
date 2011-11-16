@@ -1,0 +1,52 @@
+From 1dd3f6df834be92f91bdf5976bfac88578ba69b1 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Fri, 28 Oct 2011 12:40:33 +0200
+Subject: [PATCH 31/39] Config.in: configurable application
+
+---
+ Config.in |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
+
+diff --git a/Config.in b/Config.in
+index 709d155..8383ef4 100644
+--- a/Config.in
++++ b/Config.in
+@@ -116,6 +116,7 @@ config CONFIG_OS_MEM_BANK
+ 	default "0x20000000" if CONFIG_AT91SAM9XEEK
+ 	default "0x20000000" if CONFIG_AT91SAM9G10EK
+ 	default "0x20000000" if CONFIG_AT91SAM9G20EK
++	default "0x20000000" if CONFIG_AT91SAM9G20EK_2MMC
+ 	default "0x70000000" if CONFIG_AT91SAM9G45EK
+ 	default "0x70000000" if CONFIG_AT91SAM9G45EKES
+ 	default "0x70000000" if CONFIG_AT91SAM9M10EK
+@@ -135,6 +136,7 @@ config CONFIG_LINUX_KERNEL_ARG_STRING
+ 	default "mem=64M console=ttyS0,115200 mtdparts=atmel_nand:4M(bootstrap),60M(rootfs),-(spare) root=/dev/mtdblock1 rw rootfstype=jffs2" if CONFIG_AT91SAM9XEEK && !CONFIG_SDCARD
+ 	default "mem=64M console=ttyS0,115200 mtdparts=atmel_nand:4M(bootstrap),60M(rootfs),-(spare) root=/dev/mtdblock1 rw rootfstype=jffs2" if CONFIG_AT91SAM9G10EK && !CONFIG_SDCARD
+ 	default "mem=64M console=ttyS0,115200 mtdparts=atmel_nand:4M(bootstrap),60M(rootfs),-(spare) root=/dev/mtdblock1 rw rootfstype=jffs2" if CONFIG_AT91SAM9G20EK && !CONFIG_SDCARD
++	default "mem=64M console=ttyS0,115200 mtdparts=atmel_nand:4M(bootstrap),60M(rootfs),-(spare) root=/dev/mtdblock1 rw rootfstype=jffs2" if CONFIG_AT91SAM9G20EK_2MMC && !CONFIG_SDCARD
+ 	default "mem=128M console=ttyS0,115200 mtdparts=atmel_nand:4M(bootstrap),60M(rootfs),-(spare) root=/dev/mtdblock1 rw rootfstype=jffs2" if CONFIG_AT91SAM9G45EK && !CONFIG_SDCARD
+ 	default "mem=128M console=ttyS0,115200 mtdparts=atmel_nand:4M(bootstrap),60M(rootfs),-(spare) root=/dev/mtdblock1 rw rootfstype=jffs2" if CONFIG_AT91SAM9G45EKES && !CONFIG_SDCARD
+ 	default "mem=128M console=ttyS0,115200 mtdparts=atmel_nand:4M(bootstrap),60M(rootfs),-(spare) root=/dev/mtdblock1 rw rootfstype=jffs2" if CONFIG_AT91SAM9X5EK && !CONFIG_SDCARD
+@@ -143,6 +145,7 @@ config CONFIG_LINUX_KERNEL_ARG_STRING
+ 	default "mem=64M console=ttyS0,115200 root=/dev/mmcblk0p2 rootdelay=2" if CONFIG_AT91SAM9RLEK && CONFIG_SDCARD
+ 	default "mem=64M console=ttyS0,115200 root=/dev/mmcblk0p2 rootdelay=2" if CONFIG_AT91SAM9G10EK && CONFIG_SDCARD
+ 	default "mem=64M console=ttyS0,115200 root=/dev/mmcblk0p2 rootdelay=2" if CONFIG_AT91SAM9G20EK && CONFIG_SDCARD
++	default "mem=64M console=ttyS0,115200 root=/dev/mmcblk0p2 rootdelay=2" if CONFIG_AT91SAM9G20EK_2MMC && CONFIG_SDCARD
+ 	default "mem=64M console=ttyS0,115200 root=/dev/mmcblk0p2 rootdelay=2" if CONFIG_AT91SAM9XEEK && CONFIG_SDCARD
+ 	default "mem=128M console=ttyS0,115200 root=/dev/mmcblk0p2 rootdelay=2" if CONFIG_AT91SAM9G45EK && CONFIG_SDCARD
+ 	default "mem=128M console=ttyS0,115200 root=/dev/mmcblk0p2 rootdelay=2" if CONFIG_AT91SAM9G45EKES && CONFIG_SDCARD
+@@ -171,7 +174,11 @@ endmenu
+ 
+ config CONFIG_OS_IMAGE_NAME
+ 	depends on CONFIG_SDCARD && CONFIG_LOAD_UBOOT
++	string	"Secondary Bootloader"
+ 	default "u-boot.bin"
++	help
++	  The name of the bootloader you want to use
++	  Typically "u-boot.bin" without the hyphens
+ 
+ #
+ # WinCE Image Storage Setup
+-- 
+1.7.5.4
+

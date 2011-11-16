@@ -1,0 +1,52 @@
+From 2074da963ba84fa74f0dec3268d6174857ebfc93 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Fri, 28 Oct 2011 14:38:36 +0200
+Subject: [PATCH] Fix autoconf.h
+
+---
+ Makefile           |    8 ++++----
+ include/autoconf.h |    1 -
+ 2 files changed, 4 insertions(+), 5 deletions(-)
+ delete mode 120000 include/autoconf.h
+
+diff --git a/Makefile b/Makefile
+index a9d1560..6dcd9c1 100644
+--- a/Makefile
++++ b/Makefile
+@@ -237,21 +237,21 @@ SRCS	:= $(COBJS-y:.o=.c)
+ OBJS	:= $(SOBJS-y) $(COBJS-y)
+ 
+ INCL=board/$(BOARD)
+-
++AUTOINCL+=config/at91bootstrap-config
+ #AT91_CUSTOM_FLAGS:=-mcpu=arm9
+ #AT91_CUSTOM_FLAGS:=-mcpu=arm926ej-s
+ GC_SECTIONS=--gc-sections
+ 
+-CPPFLAGS=-ffunction-sections -g -Os -Wall 	-I$(INCL) -Iinclude	\
++CPPFLAGS=-ffunction-sections -g -Os -Wall 	-I$(INCL) -I$(AUTOINCL) -Iinclude	\
+ 	-DAT91BOOTSTRAP_VERSION=\"$(VERSION)\"	\
+ 	$(NO_DWARF_CFI_ASM) \
+ 	$(AT91_CUSTOM_FLAGS)
+ 
+-CPPFLAGS_UTIL=-g -Os -Wall 	-I$(INCL) -Iinclude	\
++CPPFLAGS_UTIL=-g -Os -Wall 	-I$(INCL) -I$(AUTOINCL) -Iinclude	\
+ 	-DAT91BOOTSTRAP_VERSION=\"$(VERSION)\"
+ 
+ 
+-ASFLAGS=-g -Os -Wall -I$(INCL) -Iinclude  		\
++ASFLAGS=-g -Os -Wall -I$(INCL) -I$(AUTOINCL) -Iinclude  		\
+ 	$(AT91_CUSTOM_FLAGS)
+ 
+ include		toplevel_cpp.mk
+diff --git a/include/autoconf.h b/include/autoconf.h
+deleted file mode 120000
+index 925f804..0000000
+--- a/include/autoconf.h
++++ /dev/null
+@@ -1 +0,0 @@
+-../config/at91bootstrap-config/autoconf.h
+\ No newline at end of file
+-- 
+1.7.5.4
+

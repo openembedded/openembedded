@@ -1,0 +1,621 @@
+From be02aa37e71e5209df33e879746f89692649f696 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Sun, 23 Oct 2011 15:42:12 +0200
+Subject: [PATCH 10/39] alternate-boot: Support booting from two sources
+
+This function allows the user to select between two different boot sources.
+Typically the second boot source is a USB Mass Storage Adapter
+application making the development kit look like an SD-Card Reader
+
+Several new configuration items are added
+CONFIG_DUAL_BOOT	Enable/Disable
+ALLOW_DUAL_BOOT		gate for the following functions.
+			Needs to be enabled for each supported CPU.
+CONFIG_ALT_IMG_ADDRESS	Address where image is located (not used for SD-Card)
+CONFIG_ALT_IMG_SIZE	Size of image (not used for SD-Card)
+CONFIG_ALT_IMG_NAME	default "program.bin"
+CONFIG_ALT_JUMP_ADDR	Alternate jump address, when the secondary boot is selected.
+
+Currently supported for:
+*	AT91SAM9G45EK
+*	AT91SAM9G45EKES
+*	AT91SAM9M10EK
+*	AT91SAM9M10EKES
+
+This is really only useful for CPUs with SD-Card boot.
+
+The board support involves creating the function:
+
+int alternate_boot_button(void);
+
+Typically this tests a button (In this patch LEFT_BUTTON)
+and if this is pressed at reset, then the alternate boot
+is selected.
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@telia.com>
+---
+ Config.in                               |   43 ++++++++++++++++++++++++++-
+ Makefile                                |    8 +++++
+ board/Config.in                         |    4 ++
+ board/at91sam9g45ek/at91sam9g45ek.c     |   29 ++++++++++++++++++
+ board/at91sam9g45ek/at91sam9g45ek.h     |   10 ++++++
+ board/at91sam9g45ekes/at91sam9g45ekes.c |   30 +++++++++++++++++++
+ board/at91sam9g45ekes/at91sam9g45ekes.h |    9 ++++++
+ board/at91sam9m10ek/at91sam9m10ek.c     |   29 ++++++++++++++++++
+ board/at91sam9m10ek/at91sam9m10ek.h     |   10 ++++++
+ board/at91sam9m10ekes/at91sam9m10ekes.c |   29 ++++++++++++++++++
+ board/at91sam9m10ekes/at91sam9m10ekes.h |   10 ++++++
+ driver/MEDSdcard.c                      |   12 ++++++-
+ include/gpio.h                          |    4 ++
+ main.c                                  |   49 +++++++++++++++++++-----------
+ toplevel_cpp.mk                         |   10 ++++++-
+ 15 files changed, 264 insertions(+), 22 deletions(-)
+
+diff --git a/Config.in b/Config.in
+index 3cd9852..709d155 100644
+--- a/Config.in
++++ b/Config.in
+@@ -75,6 +75,33 @@ config CONFIG_LOAD_4MB
+ 
+ endchoice
+ 
++config CONFIG_DUAL_BOOT
++	bool "Support dual application boot"
++	depends on ALLOW_DUAL_BOOT
++	default	n
++	help
++	  Allow booting a secondary application if a button is pressed
++
++config CONFIG_ALT_IMG_ADDRESS
++	string
++	default "0x00040000" if CONFIG_FLASH
++	default "0x00063000" if CONFIG_DATAFLASH
++	default "0x00040000" if CONFIG_NANDFLASH
++	default	"0x00000000" if CONFIG_SDCARD
++	help
++	  Where the secondary application is stored.
++
++config CONFIG_ALT_IMG_SIZE
++	string
++	default	"0x00010000"
++	help
++	  at91bootstrap will copy this amount of data
++
++config CONFIG_ALT_IMAGE_NAME
++	depends on CONFIG_SDCARD && CONFIG_DUAL_BOOT
++	string "Binary Name on SD Card"
++	default "program.bin"
++
+ #
+ # Linux Image Storage Setup
+ #
+@@ -314,6 +341,17 @@ config CONFIG_JUMP_ADDR
+ 	help
+ 	  The entry point to which the bootstrap will pass control.
+ 
++config CONFIG_ALT_JUMP_ADDR
++	string
++	default "0x70000000" if CONFIG_AT91CAP9ADK
++	default "0x70000000" if CONFIG_AT91SAM9G45EK
++	default "0x70000000" if CONFIG_AT91SAM9M10EK
++	default "0x70000000" if CONFIG_AT91SAM9M10EKES
++	default "0x70000000" if CONFIG_AT91SAM9G45EKES
++	default "0x20000000"
++	help
++	  The entry point to which the bootstrap will pass control.
++
+ config CONFIG_GLBDRV_ADDR
+ 	string
+ 	default "0x70000000" if CONFIG_AT91CAP9ADK
+@@ -331,7 +369,7 @@ config CONFIG_GLBDRV_ADDR
+ 	default "0x20068000" if CONFIG_AT91SAM9X5EK
+ 	default "0x23F00000"
+ 	help
+-	
++
+ config CONFIG_LONG_TEST
+ 	bool "Perform a memory test at startup"
+ 	default n
+@@ -353,6 +391,9 @@ config CONFIG_DEBUG_VERY_LOUD
+ 	bool "Even louder debug output"
+ endchoice
+ 
++config ALLOW_DUAL_BOOT
++	bool
++
+ config CONFIG_HW_INIT
+ 	bool "Call Hardware Initialization"
+ 	default y
+diff --git a/Makefile b/Makefile
+index 4676379..2518d12 100644
+--- a/Makefile
++++ b/Makefile
+@@ -117,8 +117,16 @@ IMG_ADDRESS := $(strip $(subst ",,$(CONFIG_IMG_ADDRESS)))
+ 
+ IMG_SIZE := $(strip $(subst ",,$(CONFIG_IMG_SIZE)))
+ 
++ALT_IMG_ADDRESS :=$(strip $(subst ",,$(CONFIG_ALT_IMG_ADDRESS)))
++
++ALT_IMG_SIZE :=$(strip $(subst ",,$(CONFIG_ALT_IMG_SIZE)))
++
++ALT_IMAGE_NAME :=$(strip $(subst ",,$(CONFIG_ALT_IMAGE_NAME)))
++
+ JUMP_ADDR := $(strip $(subst ",,$(CONFIG_JUMP_ADDR)))
+ 
++ALT_JUMP_ADDR := $(strip $(subst ",,$(CONFIG_ALT_JUMP_ADDR)))
++
+ BOOTSTRAP_MAXSIZE := $(strip $(subst ",,$(CONFIG_BOOTSTRAP_MAXSIZE)))
+ 
+ MEMORY := $(strip $(subst ",,$(CONFIG_MEMORY)))
+diff --git a/board/Config.in b/board/Config.in
+index 4b04bc4..7ec9a49 100644
+--- a/board/Config.in
++++ b/board/Config.in
+@@ -126,6 +126,7 @@ config	CONFIG_AT91SAM9G45EK
+ 	select ALLOW_CRYSTAL_18_432MHZ
+ 	select ALLOW_BOOT_FROM_DATAFLASH_CS0
+ 	select ALLOW_DATAFLASH_RECOVERY
++	select ALLOW_DUAL_BOOT
+ 	help
+ 	  Use the AT91SAM9G45EK Development board
+ 	  Can also be used for AT91SAM9M10/M11
+@@ -142,6 +143,7 @@ config	CONFIG_AT91SAM9G45EKES
+ 	select ALLOW_CRYSTAL_18_432MHZ
+ 	select ALLOW_BOOT_FROM_DATAFLASH_CS0
+ 	select ALLOW_DATAFLASH_RECOVERY
++	select ALLOW_DUAL_BOOT
+ 	help
+ 	  Use the AT91SAM9G45EK-ES Development board
+ 	  Can also be used for AT91SAM9M10/M11-ES
+@@ -158,6 +160,7 @@ config	CONFIG_AT91SAM9M10EK
+ 	select ALLOW_CRYSTAL_18_432MHZ
+ 	select ALLOW_BOOT_FROM_DATAFLASH_CS0
+ 	select ALLOW_DATAFLASH_RECOVERY
++	select ALLOW_DUAL_BOOT
+ 	help
+ 	  Use the AT91SAM9M10EK Development board
+ 	  Can also be used for AT91SAM9G45
+@@ -174,6 +177,7 @@ config	CONFIG_AT91SAM9M10EKES
+ 	select ALLOW_CRYSTAL_18_432MHZ
+ 	select ALLOW_BOOT_FROM_DATAFLASH_CS0
+ 	select ALLOW_DATAFLASH_RECOVERY
++	select ALLOW_DUAL_BOOT
+ 	help
+ 	  Use the AT91SAM9M10EKES Development board
+ 	  Can also be used for AT91SAM9G45
+diff --git a/board/at91sam9g45ek/at91sam9g45ek.c b/board/at91sam9g45ek/at91sam9g45ek.c
+index 627e037..5a5ec9e 100644
+--- a/board/at91sam9g45ek/at91sam9g45ek.c
++++ b/board/at91sam9g45ek/at91sam9g45ek.c
+@@ -42,6 +42,7 @@
+ #include "debug.h"
+ #include "main.h"
+ #include "ddramc.h"
++#include "gpio.h"
+ #ifdef CONFIG_NANDFLASH
+ #include "nandflash.h"
+ #endif
+@@ -74,6 +75,34 @@ void sclk_enable(void)
+ }
+ #endif
+ 
++/*------------------------------------------------------------------------------*/
++/* \fn    alternate_boot							*/
++/* \brief This function returns 1 if LEFT BUTTON is pressed			*/
++/*        during boot sequence							*/
++/*------------------------------------------------------------------------------*/
++int alternate_boot_button(void)
++{
++	/* Configure PIOs */
++	const struct pio_desc button_pio[] = {
++		{"LEFT", LEFT_BUTTON, 0, PIO_PULLUP, PIO_INPUT},
++		{(char *) 0, 0, 0, PIO_DEFAULT, PIO_PERIPH_A},
++	};
++
++	/* Configure PIO B controller */
++	writel((1 << AT91C_ID_PIOB), PMC_PCER + AT91C_BASE_PMC);
++	pio_setup(button_pio);
++
++	/* Return "1" if LEFT BUTTON is pressed during Boot sequence */
++	dbgu_print("Checking for Alternate boot: ...\n\r");
++	if ( !pio_get_value(LEFT_BUTTON) ) {
++		dbgu_print("[Alternate]\n\r");
++		return 1;
++	} else {
++		dbgu_print("[Normal]\n\r");
++		return 0;
++	}
++}
++
+ #ifdef CONFIG_HW_INIT
+ /*----------------------------------------------------------------------------*/
+ /* \fn    hw_init							      */
+diff --git a/board/at91sam9g45ek/at91sam9g45ek.h b/board/at91sam9g45ek/at91sam9g45ek.h
+index d443433..06a8069 100644
+--- a/board/at91sam9g45ek/at91sam9g45ek.h
++++ b/board/at91sam9g45ek/at91sam9g45ek.h
+@@ -122,4 +122,14 @@
+ #define BOARD_SD_PINS \
+     {(0x3E <<  0), AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_PULLUP}, \
+     {(0x1 <<  0), AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_DEFAULT}
++
++#define	LEFT_BUTTON		AT91C_PIN_PB(6)
++#define	RIGHT_BUTTON		AT91C_PIN_PB(7)
++
++#define	JOY_LEFT		AT91C_PIN_PB(14)
++#define	JOY_RIGHT		AT91C_PIN_PB(15)
++#define	JOY_UP			AT91C_PIN_PB(16)
++#define	JOY_DOWN		AT91C_PIN_PB(17)
++#define	JOY_PUSH		AT91C_PIN_PB(18)
++
+ #endif                          /* _AT91SAM9G45EK_H */
+diff --git a/board/at91sam9g45ekes/at91sam9g45ekes.c b/board/at91sam9g45ekes/at91sam9g45ekes.c
+index 0a5094a..e29e7ff 100644
+--- a/board/at91sam9g45ekes/at91sam9g45ekes.c
++++ b/board/at91sam9g45ekes/at91sam9g45ekes.c
+@@ -42,6 +42,7 @@
+ #include "debug.h"
+ #include "main.h"
+ #include "ddramc.h"
++#include "gpio.h"
+ #ifdef CONFIG_NANDFLASH
+ #include "nandflash.h"
+ #endif
+@@ -57,6 +58,35 @@ int get_cpsr(void);
+ 
+ void set_cpsr(unsigned int value);
+ 
++
++/*------------------------------------------------------------------------------*/
++/* \fn    alternate_boot							*/
++/* \brief This function returns 1 if LEFT BUTTON is pressed			*/
++/*        during boot sequence							*/
++/*------------------------------------------------------------------------------*/
++int alternate_boot_button(void)
++{
++	/* Configure PIOs */
++	const struct pio_desc button_pio[] = {
++		{"LEFT", LEFT_BUTTON, 0, PIO_PULLUP, PIO_INPUT},
++		{(char *) 0, 0, 0, PIO_DEFAULT, PIO_PERIPH_A},
++	};
++
++	/* Configure PIO B controller */
++	writel((1 << AT91C_ID_PIOB), PMC_PCER + AT91C_BASE_PMC);
++	pio_setup(button_pio);
++
++	/* Return "1" if LEFT BUTTON is pressed during Boot sequence */
++	dbgu_print("Checking for Alternate boot: ...\n\r");
++	if ( !pio_get_value(LEFT_BUTTON) ) {
++		dbgu_print("[Alternate]\n\r");
++		return 1;
++	} else {
++		dbgu_print("[Normal]\n\r");
++		return 0;
++	}
++}
++
+ #ifdef CONFIG_SCLK
+ void sclk_enable(void)
+ {
+diff --git a/board/at91sam9g45ekes/at91sam9g45ekes.h b/board/at91sam9g45ekes/at91sam9g45ekes.h
+index d58a735..d09eebc 100644
+--- a/board/at91sam9g45ekes/at91sam9g45ekes.h
++++ b/board/at91sam9g45ekes/at91sam9g45ekes.h
+@@ -123,4 +123,13 @@
+     {(0x3E <<  0), AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_PULLUP}, \
+     {(0x1 <<  0), AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_DEFAULT}
+ 
++#define	LEFT_BUTTON		AT91C_PIN_PB(6)
++#define	RIGHT_BUTTON		AT91C_PIN_PB(7)
++
++#define	JOY_LEFT		AT91C_PIN_PB(14)
++#define	JOY_RIGHT		AT91C_PIN_PB(15)
++#define	JOY_UP			AT91C_PIN_PB(16)
++#define	JOY_DOWN		AT91C_PIN_PB(17)
++#define	JOY_PUSH		AT91C_PIN_PB(18)
++
+ #endif                          /* _AT91SAM9G45EKES_H */
+diff --git a/board/at91sam9m10ek/at91sam9m10ek.c b/board/at91sam9m10ek/at91sam9m10ek.c
+index 9f90e76..efef653 100644
+--- a/board/at91sam9m10ek/at91sam9m10ek.c
++++ b/board/at91sam9m10ek/at91sam9m10ek.c
+@@ -42,6 +42,7 @@
+ #include "debug.h"
+ #include "main.h"
+ #include "ddramc.h"
++#include "gpio.h"
+ #ifdef CONFIG_NANDFLASH
+ #include "nandflash.h"
+ #endif
+@@ -74,6 +75,34 @@ void sclk_enable(void)
+ }
+ #endif
+ 
++/*------------------------------------------------------------------------------*/
++/* \fn    alternate_boot							*/
++/* \brief This function returns 1 if LEFT BUTTON is pressed			*/
++/*        during boot sequence							*/
++/*------------------------------------------------------------------------------*/
++int alternate_boot_button(void)
++{
++	/* Configure PIOs */
++	const struct pio_desc button_pio[] = {
++		{"LEFT", LEFT_BUTTON, 0, PIO_PULLUP, PIO_INPUT},
++		{(char *) 0, 0, 0, PIO_DEFAULT, PIO_PERIPH_A},
++	};
++
++	/* Configure PIO B controller */
++	writel((1 << AT91C_ID_PIOB), PMC_PCER + AT91C_BASE_PMC);
++	pio_setup(button_pio);
++
++	/* Return "1" if LEFT BUTTON is pressed during Boot sequence */
++	dbgu_print("Checking for Alternate boot: ...\n\r");
++	if ( !pio_get_value(LEFT_BUTTON) ) {
++		dbgu_print("[Alternate]\n\r");
++		return 1;
++	} else {
++		dbgu_print("[Normal]\n\r");
++		return 0;
++	}
++}
++
+ #ifdef CONFIG_HW_INIT
+ /*----------------------------------------------------------------------------*/
+ /* \fn    hw_init							      */
+diff --git a/board/at91sam9m10ek/at91sam9m10ek.h b/board/at91sam9m10ek/at91sam9m10ek.h
+index 222c953..e6abfa7 100644
+--- a/board/at91sam9m10ek/at91sam9m10ek.h
++++ b/board/at91sam9m10ek/at91sam9m10ek.h
+@@ -122,4 +122,14 @@
+ #define BOARD_SD_PINS \
+     {(0x3E <<  0), AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_PULLUP}, \
+     {(0x1 <<  0), AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_DEFAULT}
++
++#define	LEFT_BUTTON		AT91C_PIN_PB(6)
++#define	RIGHT_BUTTON		AT91C_PIN_PB(7)
++
++#define	JOY_LEFT		AT91C_PIN_PB(14)
++#define	JOY_RIGHT		AT91C_PIN_PB(15)
++#define	JOY_UP			AT91C_PIN_PB(16)
++#define	JOY_DOWN		AT91C_PIN_PB(17)
++#define	JOY_PUSH		AT91C_PIN_PB(18)
++
+ #endif                          /* _AT91SAM9M10EK_H */
+diff --git a/board/at91sam9m10ekes/at91sam9m10ekes.c b/board/at91sam9m10ekes/at91sam9m10ekes.c
+index 71e43bc..71da109 100644
+--- a/board/at91sam9m10ekes/at91sam9m10ekes.c
++++ b/board/at91sam9m10ekes/at91sam9m10ekes.c
+@@ -42,6 +42,7 @@
+ #include "debug.h"
+ #include "main.h"
+ #include "ddramc.h"
++#include "gpio.h"
+ #ifdef CONFIG_NANDFLASH
+ #include "nandflash.h"
+ #endif
+@@ -74,6 +75,34 @@ void sclk_enable(void)
+ }
+ #endif
+ 
++/*------------------------------------------------------------------------------*/
++/* \fn    alternate_boot							*/
++/* \brief This function returns 1 if LEFT BUTTON is pressed			*/
++/*        during boot sequence							*/
++/*------------------------------------------------------------------------------*/
++int alternate_boot_button(void)
++{
++	/* Configure PIOs */
++	const struct pio_desc button_pio[] = {
++		{"LEFT", LEFT_BUTTON, 0, PIO_PULLUP, PIO_INPUT},
++		{(char *) 0, 0, 0, PIO_DEFAULT, PIO_PERIPH_A},
++	};
++
++	/* Configure PIO B controller */
++	writel((1 << AT91C_ID_PIOB), PMC_PCER + AT91C_BASE_PMC);
++	pio_setup(button_pio);
++
++	/* Return "1" if LEFT BUTTON is pressed during Boot sequence */
++	dbgu_print("Checking for Alternate boot: ...\n\r");
++	if ( !pio_get_value(LEFT_BUTTON) ) {
++		dbgu_print("[Alternate]\n\r");
++		return 1;
++	} else {
++		dbgu_print("[Normal]\n\r");
++		return 0;
++	}
++}
++
+ #ifdef CONFIG_HW_INIT
+ /*----------------------------------------------------------------------------*/
+ /* \fn    hw_init							      */
+diff --git a/board/at91sam9m10ekes/at91sam9m10ekes.h b/board/at91sam9m10ekes/at91sam9m10ekes.h
+index 222c953..e6abfa7 100644
+--- a/board/at91sam9m10ekes/at91sam9m10ekes.h
++++ b/board/at91sam9m10ekes/at91sam9m10ekes.h
+@@ -122,4 +122,14 @@
+ #define BOARD_SD_PINS \
+     {(0x3E <<  0), AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_PULLUP}, \
+     {(0x1 <<  0), AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_DEFAULT}
++
++#define	LEFT_BUTTON		AT91C_PIN_PB(6)
++#define	RIGHT_BUTTON		AT91C_PIN_PB(7)
++
++#define	JOY_LEFT		AT91C_PIN_PB(14)
++#define	JOY_RIGHT		AT91C_PIN_PB(15)
++#define	JOY_UP			AT91C_PIN_PB(16)
++#define	JOY_DOWN		AT91C_PIN_PB(17)
++#define	JOY_PUSH		AT91C_PIN_PB(18)
++
+ #endif                          /* _AT91SAM9M10EK_H */
+diff --git a/driver/MEDSdcard.c b/driver/MEDSdcard.c
+index a2e287b..472797f 100644
+--- a/driver/MEDSdcard.c
++++ b/driver/MEDSdcard.c
+@@ -48,6 +48,14 @@
+ 
+ #include <string.h>
+ 
++extern	unsigned int altboot;
++
++#if defined(CONFIG_DUAL_BOOT)
++#define	IMAGE_NAME	altboot?ALT_IMAGE_NAME:OS_IMAGE_NAME
++#else
++#define	IMAGE_NAME	OS_IMAGE_NAME
++#endif
++
+ //------------------------------------------------------------------------------
+ //         Constants
+ //------------------------------------------------------------------------------
+@@ -689,10 +697,10 @@ unsigned int load_SDCard(void *dst)
+         while (1) ;
+     }
+ 
+-    res = f_open(&fileObject, OS_IMAGE_NAME, FA_OPEN_EXISTING | FA_READ);
++    res = f_open(&fileObject, IMAGE_NAME, FA_OPEN_EXISTING | FA_READ);
+ 
+     if (res != FR_OK) {
+-        dbg_log(1, "*** f_open, File name: [%s]: error!\n\r", OS_IMAGE_NAME);
++	dbg_log(1, "*** f_open, File name: [%s]: error!\n\r", IMAGE_NAME);
+         while (1) ;
+     }
+ 
+diff --git a/include/gpio.h b/include/gpio.h
+index 045d71c..d7164e6 100644
+--- a/include/gpio.h
++++ b/include/gpio.h
+@@ -76,4 +76,8 @@ extern int pio_set_gpio_output(unsigned pin, int value);
+ #define	AT91C_PIN_PD(io)	(3 * PIO_NB_IO + io)
+ #define	AT91C_PIN_PE(io)	(4 * PIO_NB_IO + io)
+ 
++#if defined(CONFIG_DUAL_BOOT)
++extern	int	alternate_boot_button(void);
++#endif
++
+ #endif                          /* GPIO_H_ */
+diff --git a/main.c b/main.c
+index a45362c..cd1d540 100644
+--- a/main.c
++++ b/main.c
+@@ -35,6 +35,7 @@
+ #include "dbgu.h"
+ #include "debug.h"
+ #include "dataflash.h"
++#include "gpio.h"
+ #include "nandflash.h"
+ #include "flash.h"
+ 
+@@ -51,6 +52,11 @@ void LoadLinux();
+ 
+ void LoadWince();
+ 
++unsigned int	img_address	= IMG_ADDRESS;
++unsigned int	img_size	= IMG_SIZE;
++unsigned int	jump_addr	= JUMP_ADDR;
++unsigned int	altboot		= 0;
++
+ /*------------------------------------------------------------------------------*/
+ /* Function Name       : Wait							*/
+ /* Object              : software loop waiting function				*/
+@@ -95,40 +101,47 @@ int main(void)
+     load_1wire_info();
+ #endif
+ 
++/* Check if we want to boot the alternate image */
++#if defined(CONFIG_DUAL_BOOT)
++    if(alternate_boot_button()) {
++	dbg_log(1, "Downloading Alternate image...\r\n");
++	img_address	= ALT_IMG_ADDRESS;
++	img_size	= ALT_IMG_SIZE;
++	jump_addr	= ALT_JUMP_ADDR;
++	altboot=1;
++    } else {
++	dbg_log(1, "Downloading image...\n\r");
++    }
++#else
+     dbg_log(1, "Downloading image...\n\r");
++#endif
+ 
+ #if defined(CONFIG_LOAD_LINUX)
+     LoadLinux();
+ #elif defined(CONFIG_LOAD_NK) || defined(CONFIG_LOAD_EBOOT)
+     LoadWince();
+-#else
+ /* Booting stand-alone application, e.g. U-Boot */
+-#if defined (CONFIG_DATAFLASH)
+-    load_df(AT91C_SPI_PCS_DATAFLASH, IMG_ADDRESS, IMG_SIZE, JUMP_ADDR);
++#elif defined (CONFIG_DATAFLASH)
++    load_df(AT91C_SPI_PCS_DATAFLASH, img_address, img_size, jump_addr);
+ #elif defined(CONFIG_NANDFLASH)
+-    read_nandflash((unsigned char *)JUMP_ADDR, (unsigned long)IMG_ADDRESS,
+-        (int)IMG_SIZE);
++    read_nandflash((unsigned char *)jump_addr, (unsigned long)img_address, (int)img_size);
+ #elif defined(CONFIG_SDCARD)
+-    load_SDCard((void *)JUMP_ADDR);
++    load_SDCard((void *)jump_addr);
++#elif CONFIG_FLASH
++    load_norflash(img_address, img_size, jump_addr);
+ #else
+ #error "No booting media specified!"
+ #endif
+ 
+-#endif
+-
+     dbg_log(1, "Done!\n\r");
+ 
+-#ifdef WINCE
+-#ifdef CONFIG_LOAD_NK
+-    Jump(JUMP_ADDR + 0x1000);
+-#else
+-    Jump(JUMP_ADDR);
++#ifdef	CONFIG_LOAD_NK
++    jump_addr += 0x1000;
+ #endif
++
++#ifdef WINCE
++    Jump(jump_addr);
+ #else                           /* !WINCE */
+-#ifdef CONFIG_LOAD_NK
+-    return (JUMP_ADDR + 0x1000);
+-#else
+-    return JUMP_ADDR;
+-#endif
++    return jump_addr;
+ #endif
+ }
+diff --git a/toplevel_cpp.mk b/toplevel_cpp.mk
+index af3e9fb..569f297 100644
+--- a/toplevel_cpp.mk
++++ b/toplevel_cpp.mk
+@@ -2,16 +2,20 @@ CPPFLAGS += \
+ 	-DIMG_ADDRESS=$(IMG_ADDRESS)		\
+ 	-DIMG_SIZE=$(IMG_SIZE)			\
+ 	-DJUMP_ADDR=$(JUMP_ADDR)		\
++	-DALT_JUMP_ADDR=$(ALT_JUMP_ADDR)		\
+ 	-DOS_MEM_BANK=$(OS_MEM_BANK) \
+ 	-DOS_MEM_SIZE=$(OS_MEM_SIZE) \
+ 	-DOS_IMG_SIZE=$(OS_IMG_SIZE) \
+ 	-DOS_IMAGE_NAME="\"$(OS_IMAGE_NAME)\"" \
++	-DALT_IMG_ADDRESS=$(ALT_IMG_ADDRESS)	\
++	-DALT_IMG_SIZE=$(ALT_IMG_SIZE)		\
++	-DALT_IMAGE_NAME="\"$(ALT_IMAGE_NAME)\"" \
+ 	-DLINUX_IMG_NAND_OFFSET=$(LINUX_IMG_NAND_OFFSET) \
+ 	-DLINUX_KERNEL_ARG_STRING="\"$(LINUX_KERNEL_ARG_STRING)\"" \
+ 	-DGLBDRV_ADDR=$(GLBDRV_ADDR)		\
+ 	-DSETTING_ADDRESS=$(SETTING_ADDRESS)		\
+ 	-DSETTING_SIZE=$(SETTING_SIZE)		\
+-    -DTOP_OF_MEMORY=$(TOP_OF_MEMORY)	\
++	-DTOP_OF_MEMORY=$(TOP_OF_MEMORY)	\
+ 	-DMACH_TYPE=$(MACH_TYPE)		\
+ 
+ ASFLAGS += -DJUMP_ADDR=$(JUMP_ADDR)		\
+@@ -38,3 +42,7 @@ ifeq ($(CONFIG_USER_HW_INIT),y)
+ CPPFLAGS += -DCONFIG_USER_HW_INIT
+ endif
+ 
++ifeq ($(CONFIG_DUAL_BOOT),y)
++CPPFLAGS += -DCONFIG_DUAL_BOOT
++endif
++
+-- 
+1.7.5.4
+

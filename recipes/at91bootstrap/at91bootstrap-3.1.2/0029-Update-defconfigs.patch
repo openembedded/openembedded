@@ -1,0 +1,1451 @@
+From bb619567d769f58e57de34c972ab23f6cb1a3577 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Fri, 28 Oct 2011 12:36:15 +0200
+Subject: [PATCH 29/39] Update defconfigs
+
+---
+ board/afeb9260/afeb9260_defconfig                  |    3 +-
+ board/at91cap9adk/at91cap9adk_defconfig            |    3 +-
+ board/at91cap9adk/at91cap9df_defconfig             |    3 +-
+ board/at91cap9adk/at91cap9f_defconfig              |    3 +-
+ board/at91cap9stk/at91cap9stk_defconfig            |    3 +-
+ board/at91cap9stk/at91cap9stkdf_defconfig          |    3 +-
+ board/at91cap9stk/at91cap9stkf_defconfig           |    3 +-
+ board/at91sam9260ek/at91sam9260df_defconfig        |    3 +-
+ board/at91sam9260ek/at91sam9260dfc_defconfig       |    3 +-
+ board/at91sam9260ek/at91sam9260ek_defconfig        |    3 +-
+ board/at91sam9260ek/at91sam9260nf_defconfig        |    3 +-
+ board/at91sam9261ek/at91sam9261df_defconfig        |    3 +-
+ board/at91sam9261ek/at91sam9261dfc_defconfig       |    3 +-
+ board/at91sam9261ek/at91sam9261ek_defconfig        |    3 +-
+ board/at91sam9261ek/at91sam9261nf_defconfig        |    3 +-
+ board/at91sam9263ek/at91sam9263df_defconfig        |    3 +-
+ board/at91sam9263ek/at91sam9263dfc_defconfig       |    3 +-
+ board/at91sam9263ek/at91sam9263ek_defconfig        |    3 +-
+ board/at91sam9263ek/at91sam9263nf_defconfig        |    3 +-
+ board/at91sam9g10ek/at91sam9g10df_defconfig        |    3 +-
+ board/at91sam9g10ek/at91sam9g10ek_defconfig        |    3 +-
+ board/at91sam9g10ek/at91sam9g10nf_defconfig        |    3 +-
+ board/at91sam9g10ek/at91sam9g10sd_defconfig        |    7 +-
+ board/at91sam9g20ek/at91sam9g20df_defconfig        |    3 +-
+ board/at91sam9g20ek/at91sam9g20dfc_defconfig       |    3 +-
+ board/at91sam9g20ek/at91sam9g20ek_defconfig        |    3 +-
+ board/at91sam9g20ek/at91sam9g20nf_defconfig        |    3 +-
+ board/at91sam9g20ek/at91sam9g20sd_defconfig        |    3 +-
+ board/at91sam9g45ek/at91sam9g45df_defconfig        |    3 +-
+ board/at91sam9g45ek/at91sam9g45ek_defconfig        |    3 +-
+ board/at91sam9g45ek/at91sam9g45nf_defconfig        |    3 +-
+ board/at91sam9g45ek/at91sam9g45sd_defconfig        |    3 +-
+ board/at91sam9g45ekes/at91sam9g45dfes_defconfig    |    3 +-
+ board/at91sam9g45ekes/at91sam9g45ekes_defconfig    |    3 +-
+ board/at91sam9g45ekes/at91sam9g45nfes_defconfig    |    3 +-
+ .../at91sam9g45sdes_android_defconfig              |    3 +-
+ board/at91sam9g45ekes/at91sam9g45sdes_defconfig    |    3 +-
+ board/at91sam9m10ek/at91sam9m10df_defconfig        |    3 +-
+ board/at91sam9m10ek/at91sam9m10ek_defconfig        |    3 +-
+ board/at91sam9m10ek/at91sam9m10nf_defconfig        |    3 +-
+ .../at91sam9m10ek/at91sam9m10sd_android_defconfig  |    3 +-
+ board/at91sam9m10ek/at91sam9m10sd_defconfig        |    3 +-
+ board/at91sam9m10ek/at91sam9m10sdu_defconfig       |    3 +-
+ board/at91sam9m10ekes/at91sam9m10dfes_defconfig    |    3 +-
+ board/at91sam9m10ekes/at91sam9m10ekes_defconfig    |    3 +-
+ board/at91sam9m10ekes/at91sam9m10nfes_defconfig    |    3 +-
+ board/at91sam9m10ekes/at91sam9m10sdes_defconfig    |    3 +-
+ board/at91sam9rlek/at91sam9rldf_defconfig          |    3 +-
+ board/at91sam9rlek/at91sam9rlek_defconfig          |    3 +-
+ board/at91sam9rlek/at91sam9rlnf_defconfig          |    3 +-
+ board/at91sam9rlek/at91sam9rlsd_defconfig          |    3 +-
+ board/at91sam9x5ek/at91sam9x5df_defconfig          |   10 ++-
+ board/at91sam9x5ek/at91sam9x5ek_defconfig          |    3 +-
+ board/at91sam9x5ek/at91sam9x5nf_defconfig          |   10 ++-
+ board/at91sam9x5ek/at91sam9x5sd_defconfig          |    8 +-
+ board/at91sam9x5ek/at91sam9x5sd_uboot_defconfig    |  105 ++++++++++++++++++++
+ board/at91sam9xeek/at91sam9xedf_defconfig          |    3 +-
+ board/at91sam9xeek/at91sam9xedfc_defconfig         |    3 +-
+ board/at91sam9xeek/at91sam9xeek_defconfig          |    3 +-
+ board/at91sam9xeek/at91sam9xenf_defconfig          |    3 +-
+ 60 files changed, 239 insertions(+), 66 deletions(-)
+ create mode 100644 board/at91sam9x5ek/at91sam9x5sd_uboot_defconfig
+
+diff --git a/board/afeb9260/afeb9260_defconfig b/board/afeb9260/afeb9260_defconfig
+index bd02fd3..7aa62fd 100644
+--- a/board/afeb9260/afeb9260_defconfig
++++ b/board/afeb9260/afeb9260_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:23 2011
++# Thu Oct 27 21:23:43 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="afeb9260"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="afeb9260"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91cap9adk/at91cap9adk_defconfig b/board/at91cap9adk/at91cap9adk_defconfig
+index 9d2791a..058c24f 100644
+--- a/board/at91cap9adk/at91cap9adk_defconfig
++++ b/board/at91cap9adk/at91cap9adk_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:23 2011
++# Thu Oct 27 21:23:44 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91cap9adk"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91cap9adk"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91cap9adk/at91cap9df_defconfig b/board/at91cap9adk/at91cap9df_defconfig
+index 7d1ae7d..05df4cc 100644
+--- a/board/at91cap9adk/at91cap9df_defconfig
++++ b/board/at91cap9adk/at91cap9df_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:23 2011
++# Thu Oct 27 21:23:44 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91cap9df"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91cap9df"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91cap9adk/at91cap9f_defconfig b/board/at91cap9adk/at91cap9f_defconfig
+index 87ec9cb..ec9f584 100644
+--- a/board/at91cap9adk/at91cap9f_defconfig
++++ b/board/at91cap9adk/at91cap9f_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:24 2011
++# Thu Oct 27 21:23:44 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91cap9f"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91cap9f"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91cap9stk/at91cap9stk_defconfig b/board/at91cap9stk/at91cap9stk_defconfig
+index 7d0f0e7..5ff3bbf 100644
+--- a/board/at91cap9stk/at91cap9stk_defconfig
++++ b/board/at91cap9stk/at91cap9stk_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:24 2011
++# Thu Oct 27 21:23:45 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91cap9stk"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91cap9stk"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91cap9stk/at91cap9stkdf_defconfig b/board/at91cap9stk/at91cap9stkdf_defconfig
+index 42e5e21..4e4fb90 100644
+--- a/board/at91cap9stk/at91cap9stkdf_defconfig
++++ b/board/at91cap9stk/at91cap9stkdf_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:24 2011
++# Thu Oct 27 21:23:45 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91cap9stkdf"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91cap9stkdf"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91cap9stk/at91cap9stkf_defconfig b/board/at91cap9stk/at91cap9stkf_defconfig
+index 3020b26..9874537 100644
+--- a/board/at91cap9stk/at91cap9stkf_defconfig
++++ b/board/at91cap9stk/at91cap9stkf_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:25 2011
++# Thu Oct 27 21:23:45 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91cap9stkf"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91cap9stkf"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9260ek/at91sam9260df_defconfig b/board/at91sam9260ek/at91sam9260df_defconfig
+index 1dc17c2..31e9d9c 100644
+--- a/board/at91sam9260ek/at91sam9260df_defconfig
++++ b/board/at91sam9260ek/at91sam9260df_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:25 2011
++# Thu Oct 27 21:23:46 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9260df"
+@@ -11,6 +11,7 @@ CONFIG_AT91SAM9260EK=y
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9260ek/at91sam9260dfc_defconfig b/board/at91sam9260ek/at91sam9260dfc_defconfig
+index c8f1b60..6fd7043 100644
+--- a/board/at91sam9260ek/at91sam9260dfc_defconfig
++++ b/board/at91sam9260ek/at91sam9260dfc_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:25 2011
++# Thu Oct 27 21:23:45 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9260dfc"
+@@ -11,6 +11,7 @@ CONFIG_AT91SAM9260EK=y
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9260ek/at91sam9260ek_defconfig b/board/at91sam9260ek/at91sam9260ek_defconfig
+index a678a3c..2836d4a 100644
+--- a/board/at91sam9260ek/at91sam9260ek_defconfig
++++ b/board/at91sam9260ek/at91sam9260ek_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:26 2011
++# Thu Oct 27 21:23:46 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9260ek"
+@@ -11,6 +11,7 @@ CONFIG_AT91SAM9260EK=y
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9260ek/at91sam9260nf_defconfig b/board/at91sam9260ek/at91sam9260nf_defconfig
+index 5f2f9a9..89990e9 100644
+--- a/board/at91sam9260ek/at91sam9260nf_defconfig
++++ b/board/at91sam9260ek/at91sam9260nf_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:26 2011
++# Thu Oct 27 21:23:46 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9260nf"
+@@ -11,6 +11,7 @@ CONFIG_AT91SAM9260EK=y
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9261ek/at91sam9261df_defconfig b/board/at91sam9261ek/at91sam9261df_defconfig
+index 624b1d7..9938542 100644
+--- a/board/at91sam9261ek/at91sam9261df_defconfig
++++ b/board/at91sam9261ek/at91sam9261df_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:27 2011
++# Thu Oct 27 21:23:47 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9261df"
+@@ -11,6 +11,7 @@ CONFIG_AT91SAM9261EK=y
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9261ek/at91sam9261dfc_defconfig b/board/at91sam9261ek/at91sam9261dfc_defconfig
+index 15ee5b0..7a0f892 100644
+--- a/board/at91sam9261ek/at91sam9261dfc_defconfig
++++ b/board/at91sam9261ek/at91sam9261dfc_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:26 2011
++# Thu Oct 27 21:23:47 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9261dfc"
+@@ -11,6 +11,7 @@ CONFIG_AT91SAM9261EK=y
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9261ek/at91sam9261ek_defconfig b/board/at91sam9261ek/at91sam9261ek_defconfig
+index 8841ec5..d1e7c89 100644
+--- a/board/at91sam9261ek/at91sam9261ek_defconfig
++++ b/board/at91sam9261ek/at91sam9261ek_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:27 2011
++# Thu Oct 27 21:23:47 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9261ek"
+@@ -11,6 +11,7 @@ CONFIG_AT91SAM9261EK=y
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9261ek/at91sam9261nf_defconfig b/board/at91sam9261ek/at91sam9261nf_defconfig
+index 2707d46..19b7c81 100644
+--- a/board/at91sam9261ek/at91sam9261nf_defconfig
++++ b/board/at91sam9261ek/at91sam9261nf_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:27 2011
++# Thu Oct 27 21:23:48 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9261nf"
+@@ -11,6 +11,7 @@ CONFIG_AT91SAM9261EK=y
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9263ek/at91sam9263df_defconfig b/board/at91sam9263ek/at91sam9263df_defconfig
+index 2ede52a..5782df4 100644
+--- a/board/at91sam9263ek/at91sam9263df_defconfig
++++ b/board/at91sam9263ek/at91sam9263df_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:28 2011
++# Thu Oct 27 21:23:48 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9263df"
+@@ -11,6 +11,7 @@ CONFIG_AT91SAM9263EK=y
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9263ek/at91sam9263dfc_defconfig b/board/at91sam9263ek/at91sam9263dfc_defconfig
+index 01fba1d..6d9a8cb 100644
+--- a/board/at91sam9263ek/at91sam9263dfc_defconfig
++++ b/board/at91sam9263ek/at91sam9263dfc_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:27 2011
++# Thu Oct 27 21:23:48 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9263dfc"
+@@ -11,6 +11,7 @@ CONFIG_AT91SAM9263EK=y
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9263ek/at91sam9263ek_defconfig b/board/at91sam9263ek/at91sam9263ek_defconfig
+index c8065f1..e670581 100644
+--- a/board/at91sam9263ek/at91sam9263ek_defconfig
++++ b/board/at91sam9263ek/at91sam9263ek_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:28 2011
++# Thu Oct 27 21:23:48 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9263ek"
+@@ -11,6 +11,7 @@ CONFIG_AT91SAM9263EK=y
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9263ek/at91sam9263nf_defconfig b/board/at91sam9263ek/at91sam9263nf_defconfig
+index 5b3ec35..b1b28f1 100644
+--- a/board/at91sam9263ek/at91sam9263nf_defconfig
++++ b/board/at91sam9263ek/at91sam9263nf_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:28 2011
++# Thu Oct 27 21:23:49 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9263nf"
+@@ -11,6 +11,7 @@ CONFIG_AT91SAM9263EK=y
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9g10ek/at91sam9g10df_defconfig b/board/at91sam9g10ek/at91sam9g10df_defconfig
+index e5f0a40..7b58595 100644
+--- a/board/at91sam9g10ek/at91sam9g10df_defconfig
++++ b/board/at91sam9g10ek/at91sam9g10df_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:29 2011
++# Thu Oct 27 21:23:49 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g10df"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9g10df"
+ # CONFIG_AT91SAM9XEEK is not set
+ CONFIG_AT91SAM9G10EK=y
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9g10ek/at91sam9g10ek_defconfig b/board/at91sam9g10ek/at91sam9g10ek_defconfig
+index 252749b..8f16f70 100644
+--- a/board/at91sam9g10ek/at91sam9g10ek_defconfig
++++ b/board/at91sam9g10ek/at91sam9g10ek_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:29 2011
++# Thu Oct 27 21:23:49 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g10ek"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9g10ek"
+ # CONFIG_AT91SAM9XEEK is not set
+ CONFIG_AT91SAM9G10EK=y
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9g10ek/at91sam9g10nf_defconfig b/board/at91sam9g10ek/at91sam9g10nf_defconfig
+index 0fc7e8e..79beb22 100644
+--- a/board/at91sam9g10ek/at91sam9g10nf_defconfig
++++ b/board/at91sam9g10ek/at91sam9g10nf_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:29 2011
++# Thu Oct 27 21:23:50 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g10nf"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9g10nf"
+ # CONFIG_AT91SAM9XEEK is not set
+ CONFIG_AT91SAM9G10EK=y
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9g10ek/at91sam9g10sd_defconfig b/board/at91sam9g10ek/at91sam9g10sd_defconfig
+index ac043c5..969061c 100644
+--- a/board/at91sam9g10ek/at91sam9g10sd_defconfig
++++ b/board/at91sam9g10ek/at91sam9g10sd_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:29 2011
++# Thu Oct 27 22:26:24 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g10sd"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9g10sd"
+ # CONFIG_AT91SAM9XEEK is not set
+ CONFIG_AT91SAM9G10EK=y
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+@@ -99,8 +100,8 @@ CONFIG_JUMP_ADDR="0x22000000"
+ CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x20068000"
+ # CONFIG_LONG_TEST is not set
+-CONFIG_DEBUG=y
+-CONFIG_DEBUG_INFO=y
++# CONFIG_DEBUG is not set
++# CONFIG_DEBUG_INFO is not set
+ # CONFIG_DEBUG_LOUD is not set
+ # CONFIG_DEBUG_VERY_LOUD is not set
+ CONFIG_HW_INIT=y
+diff --git a/board/at91sam9g20ek/at91sam9g20df_defconfig b/board/at91sam9g20ek/at91sam9g20df_defconfig
+index 90ab898..e3e2462 100644
+--- a/board/at91sam9g20ek/at91sam9g20df_defconfig
++++ b/board/at91sam9g20ek/at91sam9g20df_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:30 2011
++# Thu Oct 27 21:23:52 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g20df"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9g20df"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ CONFIG_AT91SAM9G20EK=y
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9g20ek/at91sam9g20dfc_defconfig b/board/at91sam9g20ek/at91sam9g20dfc_defconfig
+index dfd6409..1973b14 100644
+--- a/board/at91sam9g20ek/at91sam9g20dfc_defconfig
++++ b/board/at91sam9g20ek/at91sam9g20dfc_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:30 2011
++# Thu Oct 27 21:23:52 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g20dfc"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9g20dfc"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ CONFIG_AT91SAM9G20EK=y
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9g20ek/at91sam9g20ek_defconfig b/board/at91sam9g20ek/at91sam9g20ek_defconfig
+index d52a6fb..e189d7f 100644
+--- a/board/at91sam9g20ek/at91sam9g20ek_defconfig
++++ b/board/at91sam9g20ek/at91sam9g20ek_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:30 2011
++# Thu Oct 27 21:23:52 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g20ek"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9g20ek"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ CONFIG_AT91SAM9G20EK=y
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9g20ek/at91sam9g20nf_defconfig b/board/at91sam9g20ek/at91sam9g20nf_defconfig
+index 29dba65..60ce285 100644
+--- a/board/at91sam9g20ek/at91sam9g20nf_defconfig
++++ b/board/at91sam9g20ek/at91sam9g20nf_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:31 2011
++# Thu Oct 27 21:23:53 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g20nf"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9g20nf"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ CONFIG_AT91SAM9G20EK=y
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9g20ek/at91sam9g20sd_defconfig b/board/at91sam9g20ek/at91sam9g20sd_defconfig
+index e8278c7..1291ce9 100644
+--- a/board/at91sam9g20ek/at91sam9g20sd_defconfig
++++ b/board/at91sam9g20ek/at91sam9g20sd_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:31 2011
++# Thu Oct 27 21:23:53 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g20sd"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9g20sd"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ CONFIG_AT91SAM9G20EK=y
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9g45ek/at91sam9g45df_defconfig b/board/at91sam9g45ek/at91sam9g45df_defconfig
+index 1c95a02..c2efc69 100644
+--- a/board/at91sam9g45ek/at91sam9g45df_defconfig
++++ b/board/at91sam9g45ek/at91sam9g45df_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:31 2011
++# Thu Oct 27 21:23:53 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g45df"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9g45df"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ CONFIG_AT91SAM9G45EK=y
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9g45ek/at91sam9g45ek_defconfig b/board/at91sam9g45ek/at91sam9g45ek_defconfig
+index c2dda79..48d8936 100644
+--- a/board/at91sam9g45ek/at91sam9g45ek_defconfig
++++ b/board/at91sam9g45ek/at91sam9g45ek_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:32 2011
++# Thu Oct 27 21:23:54 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g45ek"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9g45ek"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ CONFIG_AT91SAM9G45EK=y
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9g45ek/at91sam9g45nf_defconfig b/board/at91sam9g45ek/at91sam9g45nf_defconfig
+index 39ceded..c1060c0 100644
+--- a/board/at91sam9g45ek/at91sam9g45nf_defconfig
++++ b/board/at91sam9g45ek/at91sam9g45nf_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:32 2011
++# Thu Oct 27 21:23:54 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g45nf"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9g45nf"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ CONFIG_AT91SAM9G45EK=y
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9g45ek/at91sam9g45sd_defconfig b/board/at91sam9g45ek/at91sam9g45sd_defconfig
+index a174578..9628e18 100644
+--- a/board/at91sam9g45ek/at91sam9g45sd_defconfig
++++ b/board/at91sam9g45ek/at91sam9g45sd_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:32 2011
++# Thu Oct 27 21:23:54 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g45sd"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9g45sd"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ CONFIG_AT91SAM9G45EK=y
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9g45ekes/at91sam9g45dfes_defconfig b/board/at91sam9g45ekes/at91sam9g45dfes_defconfig
+index ce1ce65..447f187 100644
+--- a/board/at91sam9g45ekes/at91sam9g45dfes_defconfig
++++ b/board/at91sam9g45ekes/at91sam9g45dfes_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:32 2011
++# Thu Oct 27 21:23:54 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g45dfes"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9g45dfes"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ CONFIG_AT91SAM9G45EKES=y
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9g45ekes/at91sam9g45ekes_defconfig b/board/at91sam9g45ekes/at91sam9g45ekes_defconfig
+index 43ce666..03bc055 100644
+--- a/board/at91sam9g45ekes/at91sam9g45ekes_defconfig
++++ b/board/at91sam9g45ekes/at91sam9g45ekes_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:33 2011
++# Thu Oct 27 21:23:55 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g45ekes"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9g45ekes"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ CONFIG_AT91SAM9G45EKES=y
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9g45ekes/at91sam9g45nfes_defconfig b/board/at91sam9g45ekes/at91sam9g45nfes_defconfig
+index f846fd3..0c69828 100644
+--- a/board/at91sam9g45ekes/at91sam9g45nfes_defconfig
++++ b/board/at91sam9g45ekes/at91sam9g45nfes_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:33 2011
++# Thu Oct 27 21:23:55 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g45nfes"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9g45nfes"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ CONFIG_AT91SAM9G45EKES=y
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9g45ekes/at91sam9g45sdes_android_defconfig b/board/at91sam9g45ekes/at91sam9g45sdes_android_defconfig
+index f066acb..0fc126b 100644
+--- a/board/at91sam9g45ekes/at91sam9g45sdes_android_defconfig
++++ b/board/at91sam9g45ekes/at91sam9g45sdes_android_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:33 2011
++# Thu Oct 27 21:23:55 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g45sdes_android"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9g45sdes_android"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ CONFIG_AT91SAM9G45EKES=y
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9g45ekes/at91sam9g45sdes_defconfig b/board/at91sam9g45ekes/at91sam9g45sdes_defconfig
+index 5cf1228..e8bf0d6 100644
+--- a/board/at91sam9g45ekes/at91sam9g45sdes_defconfig
++++ b/board/at91sam9g45ekes/at91sam9g45sdes_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:34 2011
++# Thu Oct 27 21:23:56 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9g45sdes"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9g45sdes"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ CONFIG_AT91SAM9G45EKES=y
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9m10ek/at91sam9m10df_defconfig b/board/at91sam9m10ek/at91sam9m10df_defconfig
+index 8d24afa..cbd3a00 100644
+--- a/board/at91sam9m10ek/at91sam9m10df_defconfig
++++ b/board/at91sam9m10ek/at91sam9m10df_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:34 2011
++# Thu Oct 27 21:23:56 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9m10df"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9m10df"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ CONFIG_AT91SAM9M10EK=y
+diff --git a/board/at91sam9m10ek/at91sam9m10ek_defconfig b/board/at91sam9m10ek/at91sam9m10ek_defconfig
+index 57ddfe4..02bec3e 100644
+--- a/board/at91sam9m10ek/at91sam9m10ek_defconfig
++++ b/board/at91sam9m10ek/at91sam9m10ek_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:34 2011
++# Thu Oct 27 21:23:56 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9m10ek"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9m10ek"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ CONFIG_AT91SAM9M10EK=y
+diff --git a/board/at91sam9m10ek/at91sam9m10nf_defconfig b/board/at91sam9m10ek/at91sam9m10nf_defconfig
+index e54b535..b834d31 100644
+--- a/board/at91sam9m10ek/at91sam9m10nf_defconfig
++++ b/board/at91sam9m10ek/at91sam9m10nf_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:35 2011
++# Thu Oct 27 21:23:57 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9m10nf"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9m10nf"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ CONFIG_AT91SAM9M10EK=y
+diff --git a/board/at91sam9m10ek/at91sam9m10sd_android_defconfig b/board/at91sam9m10ek/at91sam9m10sd_android_defconfig
+index 1dc422c..3e9d9f1 100644
+--- a/board/at91sam9m10ek/at91sam9m10sd_android_defconfig
++++ b/board/at91sam9m10ek/at91sam9m10sd_android_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:35 2011
++# Thu Oct 27 21:23:57 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9m10sd_android"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9m10sd_android"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ CONFIG_AT91SAM9M10EK=y
+diff --git a/board/at91sam9m10ek/at91sam9m10sd_defconfig b/board/at91sam9m10ek/at91sam9m10sd_defconfig
+index 73a3842..361f581 100644
+--- a/board/at91sam9m10ek/at91sam9m10sd_defconfig
++++ b/board/at91sam9m10ek/at91sam9m10sd_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:35 2011
++# Thu Oct 27 21:23:57 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9m10sd"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9m10sd"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ CONFIG_AT91SAM9M10EK=y
+diff --git a/board/at91sam9m10ek/at91sam9m10sdu_defconfig b/board/at91sam9m10ek/at91sam9m10sdu_defconfig
+index ecc56ee..d8fcac9 100644
+--- a/board/at91sam9m10ek/at91sam9m10sdu_defconfig
++++ b/board/at91sam9m10ek/at91sam9m10sdu_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:36 2011
++# Thu Oct 27 21:23:57 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9m10sdu"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9m10sdu"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ CONFIG_AT91SAM9M10EK=y
+diff --git a/board/at91sam9m10ekes/at91sam9m10dfes_defconfig b/board/at91sam9m10ekes/at91sam9m10dfes_defconfig
+index 5845620..29d55b2 100644
+--- a/board/at91sam9m10ekes/at91sam9m10dfes_defconfig
++++ b/board/at91sam9m10ekes/at91sam9m10dfes_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:36 2011
++# Thu Oct 27 21:23:58 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9m10dfes"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9m10dfes"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9m10ekes/at91sam9m10ekes_defconfig b/board/at91sam9m10ekes/at91sam9m10ekes_defconfig
+index c3034e2..d0ad0b9 100644
+--- a/board/at91sam9m10ekes/at91sam9m10ekes_defconfig
++++ b/board/at91sam9m10ekes/at91sam9m10ekes_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:36 2011
++# Thu Oct 27 21:23:58 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9m10ekes"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9m10ekes"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9m10ekes/at91sam9m10nfes_defconfig b/board/at91sam9m10ekes/at91sam9m10nfes_defconfig
+index 955838a..ce3adfe 100644
+--- a/board/at91sam9m10ekes/at91sam9m10nfes_defconfig
++++ b/board/at91sam9m10ekes/at91sam9m10nfes_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:36 2011
++# Thu Oct 27 21:23:58 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9m10nfes"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9m10nfes"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9m10ekes/at91sam9m10sdes_defconfig b/board/at91sam9m10ekes/at91sam9m10sdes_defconfig
+index 770f930..6020847 100644
+--- a/board/at91sam9m10ekes/at91sam9m10sdes_defconfig
++++ b/board/at91sam9m10ekes/at91sam9m10sdes_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:37 2011
++# Thu Oct 27 21:23:59 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9m10sdes"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9m10sdes"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9rlek/at91sam9rldf_defconfig b/board/at91sam9rlek/at91sam9rldf_defconfig
+index 4a18d7e..f09f09b 100644
+--- a/board/at91sam9rlek/at91sam9rldf_defconfig
++++ b/board/at91sam9rlek/at91sam9rldf_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:37 2011
++# Thu Oct 27 21:23:59 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9rldf"
+@@ -11,6 +11,7 @@ CONFIG_AT91SAM9RLEK=y
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9rlek/at91sam9rlek_defconfig b/board/at91sam9rlek/at91sam9rlek_defconfig
+index 4a2b0a4..60eec55 100644
+--- a/board/at91sam9rlek/at91sam9rlek_defconfig
++++ b/board/at91sam9rlek/at91sam9rlek_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:37 2011
++# Thu Oct 27 21:23:59 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9rlek"
+@@ -11,6 +11,7 @@ CONFIG_AT91SAM9RLEK=y
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9rlek/at91sam9rlnf_defconfig b/board/at91sam9rlek/at91sam9rlnf_defconfig
+index 1a6a313..dd0df20 100644
+--- a/board/at91sam9rlek/at91sam9rlnf_defconfig
++++ b/board/at91sam9rlek/at91sam9rlnf_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:38 2011
++# Thu Oct 27 21:24:00 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9rlnf"
+@@ -11,6 +11,7 @@ CONFIG_AT91SAM9RLEK=y
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9rlek/at91sam9rlsd_defconfig b/board/at91sam9rlek/at91sam9rlsd_defconfig
+index dd5ee12..3e61328 100644
+--- a/board/at91sam9rlek/at91sam9rlsd_defconfig
++++ b/board/at91sam9rlek/at91sam9rlsd_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:38 2011
++# Thu Oct 27 21:24:00 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9rlsd"
+@@ -11,6 +11,7 @@ CONFIG_AT91SAM9RLEK=y
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9x5ek/at91sam9x5df_defconfig b/board/at91sam9x5ek/at91sam9x5df_defconfig
+index f780e2c..f3f74b4 100644
+--- a/board/at91sam9x5ek/at91sam9x5df_defconfig
++++ b/board/at91sam9x5ek/at91sam9x5df_defconfig
+@@ -1,9 +1,9 @@
+ #
+ # Automatically generated make config: don't edit
+-# Wed Feb 16 13:44:09 2011
++# Thu Oct 27 21:36:31 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9x5ek"
++CONFIG_BOARDNAME="at91sam9x5df"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9x5ek"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+@@ -68,7 +69,7 @@ CONFIG_DATAFLASH=y
+ # CONFIG_NANDFLASH is not set
+ # CONFIG_SDCARD is not set
+ CONFIG_MEMORY="dataflash"
+-# CONFIG_SDCARD_HS is not set
++CONFIG_SDCARD_HS=y
+ 
+ #
+ # SPI configuration
+@@ -106,11 +107,14 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
+ CONFIG_IMG_ADDRESS="0x00008400"
+ CONFIG_SETTING_ADDRESS="0x00408400"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00050000"
+ CONFIG_JUMP_ADDR="0x26F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x20068000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9x5ek/at91sam9x5ek_defconfig b/board/at91sam9x5ek/at91sam9x5ek_defconfig
+index 1fbbe29..01f2bbb 100644
+--- a/board/at91sam9x5ek/at91sam9x5ek_defconfig
++++ b/board/at91sam9x5ek/at91sam9x5ek_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:39 2011
++# Thu Oct 27 21:36:33 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9x5ek"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9x5ek"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9x5ek/at91sam9x5nf_defconfig b/board/at91sam9x5ek/at91sam9x5nf_defconfig
+index af1a322..cf8e449 100644
+--- a/board/at91sam9x5ek/at91sam9x5nf_defconfig
++++ b/board/at91sam9x5ek/at91sam9x5nf_defconfig
+@@ -1,9 +1,9 @@
+ #
+ # Automatically generated make config: don't edit
+-# Wed Aug  4 09:38:08 2010
++# Thu Oct 27 21:36:35 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9x5ek"
++CONFIG_BOARDNAME="at91sam9x5nf"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9x5ek"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+@@ -69,7 +70,7 @@ CONFIG_NANDFLASH=y
+ # CONFIG_SDCARD is not set
+ # CONFIG_ENABLE_SW_ECC is not set
+ CONFIG_MEMORY="nandflash"
+-# CONFIG_SDCARD_HS is not set
++CONFIG_SDCARD_HS=y
+ ALLOW_DATAFLASH_RECOVERY=y
+ ALLOW_BOOT_FROM_DATAFLASH_CS0=y
+ DATAFLASHCARD_ON_CS0=y
+@@ -87,11 +88,14 @@ CONFIG_LOAD_UBOOT=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00040000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
+ CONFIG_IMG_ADDRESS="0x00040000"
+ CONFIG_SETTING_ADDRESS="0x01FE0000"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00050000"
+ CONFIG_JUMP_ADDR="0x26F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x20068000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9x5ek/at91sam9x5sd_defconfig b/board/at91sam9x5ek/at91sam9x5sd_defconfig
+index ab49fbe..d07406b 100644
+--- a/board/at91sam9x5ek/at91sam9x5sd_defconfig
++++ b/board/at91sam9x5ek/at91sam9x5sd_defconfig
+@@ -1,9 +1,9 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Sep 26 16:21:09 2010
++# Thu Oct 27 21:36:37 2011
+ #
+ HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9x5ek"
++CONFIG_BOARDNAME="at91sam9x5sd"
+ # CONFIG_AT91SAM9260EK is not set
+ # CONFIG_AT91SAM9261EK is not set
+ # CONFIG_AT91SAM9263EK is not set
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9x5ek"
+ # CONFIG_AT91SAM9XEEK is not set
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+@@ -81,6 +82,8 @@ CONFIG_LOAD_LINUX=y
+ # CONFIG_LOAD_64KB is not set
+ # CONFIG_LOAD_1MB is not set
+ # CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00000000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
+ 
+ #
+ # Linux Image Storage Setup
+@@ -95,6 +98,7 @@ CONFIG_SETTING_ADDRESS="0x00000000"
+ CONFIG_SETTING_SIZE="0x00001000"
+ CONFIG_IMG_SIZE="0x00280000"
+ CONFIG_JUMP_ADDR="0x22000000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
+ CONFIG_GLBDRV_ADDR="0x20068000"
+ # CONFIG_LONG_TEST is not set
+ CONFIG_DEBUG=y
+diff --git a/board/at91sam9x5ek/at91sam9x5sd_uboot_defconfig b/board/at91sam9x5ek/at91sam9x5sd_uboot_defconfig
+new file mode 100644
+index 0000000..3016cda
+--- /dev/null
++++ b/board/at91sam9x5ek/at91sam9x5sd_uboot_defconfig
+@@ -0,0 +1,105 @@
++#
++# Automatically generated make config: don't edit
++# Thu Oct 27 21:36:39 2011
++#
++HAVE_DOT_CONFIG=y
++CONFIG_BOARDNAME="at91sam9x5sd_uboot"
++# CONFIG_AT91SAM9260EK is not set
++# CONFIG_AT91SAM9261EK is not set
++# CONFIG_AT91SAM9263EK is not set
++# CONFIG_AT91SAM9RLEK is not set
++# CONFIG_AT91SAM9XEEK is not set
++# CONFIG_AT91SAM9G10EK is not set
++# CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
++# CONFIG_AT91SAM9G45EK is not set
++# CONFIG_AT91SAM9G45EKES is not set
++# CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
++# CONFIG_AT91CAP9ADK is not set
++# CONFIG_AT91CAP9STK is not set
++# CONFIG_AFEB9260 is not set
++CONFIG_AT91SAM9X5EK=y
++CONFIG_CHIP="AT91SAM9X5"
++CONFIG_BOARD="at91sam9x5ek"
++CONFIG_MACH_TYPE="3373"
++CONFIG_LINK_ADDR="0x000000"
++CONFIG_TOP_OF_MEMORY="0x308000"
++CONFIG_CRYSTAL_12_000MHZ=y
++# CONFIG_CRYSTAL_16_000MHZ is not set
++# CONFIG_CRYSTAL_16_36766MHZ is not set
++# CONFIG_CRYSTAL_18_432MHZ is not set
++ALLOW_CRYSTAL_12_000MHZ=y
++CONFIG_CRYSTAL="CRYSTAL_18_432MHZ"
++# CONFIG_CPU_CLK_166MHZ is not set
++# CONFIG_CPU_CLK_180MHZ is not set
++# CONFIG_CPU_CLK_200MHZ is not set
++# CONFIG_CPU_CLK_240MHZ is not set
++# CONFIG_CPU_CLK_266MHZ is not set
++CONFIG_CPU_CLK_400MHZ=y
++ALLOW_CPU_CLK_400MHZ=y
++# DISABLE_CPU_CLK_240MHZ is not set
++# CONFIG_BUS_SPEED_83MHZ is not set
++# CONFIG_BUS_SPEED_90MHZ is not set
++# CONFIG_BUS_SPEED_100MHZ is not set
++CONFIG_BUS_SPEED_133MHZ=y
++ALLOW_PIO3=y
++CONFIG_HAS_PIO3=y
++CPU_HAS_PMECC=y
++
++#
++# Memory selection
++#
++# CONFIG_SDRAM is not set
++# CONFIG_SDDRC is not set
++CONFIG_DDR2=y
++ALLOW_DATAFLASH=y
++# ALLOW_FLASH is not set
++ALLOW_NANDFLASH=y
++ALLOW_SDCARD=y
++ALLOW_HSMCI=y
++# ALLOW_PSRAM is not set
++# ALLOW_SDRAM_16BIT is not set
++# CONFIG_RAM_32MB is not set
++# CONFIG_RAM_64MB is not set
++CONFIG_RAM_128MB=y
++# CONFIG_RAM_256MB is not set
++# CONFIG_DATAFLASH is not set
++# CONFIG_FLASH is not set
++# CONFIG_NANDFLASH is not set
++CONFIG_SDCARD=y
++CONFIG_MEMORY="sdcard"
++CONFIG_SDCARD_HS=y
++ALLOW_DATAFLASH_RECOVERY=y
++ALLOW_BOOT_FROM_DATAFLASH_CS0=y
++DATAFLASHCARD_ON_CS0=y
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
++CONFIG_PROJECT="sdcard"
++CONFIG_LOAD_UBOOT=y
++# CONFIG_LOAD_EBOOT is not set
++# CONFIG_LOAD_LINUX is not set
++# CONFIG_LOAD_NK is not set
++# CONFIG_LOAD_64KB is not set
++# CONFIG_LOAD_1MB is not set
++# CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00000000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMAGE_NAME="u-boot.bin"
++CONFIG_IMG_ADDRESS="0x00000000"
++CONFIG_SETTING_ADDRESS="0x00000000"
++CONFIG_SETTING_SIZE="0x00001000"
++CONFIG_IMG_SIZE="0x00050000"
++CONFIG_JUMP_ADDR="0x26F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
++CONFIG_GLBDRV_ADDR="0x20068000"
++# CONFIG_LONG_TEST is not set
++CONFIG_DEBUG=y
++CONFIG_DEBUG_INFO=y
++# CONFIG_DEBUG_LOUD is not set
++# CONFIG_DEBUG_VERY_LOUD is not set
++CONFIG_HW_INIT=y
++# CONFIG_USER_HW_INIT is not set
++CONFIG_THUMB=y
++CONFIG_SCLK=y
++# CONFIG_SX_AT91 is not set
++# CONFIG_RAW_AT91 is not set
+diff --git a/board/at91sam9xeek/at91sam9xedf_defconfig b/board/at91sam9xeek/at91sam9xedf_defconfig
+index f877300..d3d0907 100644
+--- a/board/at91sam9xeek/at91sam9xedf_defconfig
++++ b/board/at91sam9xeek/at91sam9xedf_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:40 2011
++# Thu Oct 27 21:26:10 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9xedf"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9xedf"
+ CONFIG_AT91SAM9XEEK=y
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9xeek/at91sam9xedfc_defconfig b/board/at91sam9xeek/at91sam9xedfc_defconfig
+index be8d40c..b02384c 100644
+--- a/board/at91sam9xeek/at91sam9xedfc_defconfig
++++ b/board/at91sam9xeek/at91sam9xedfc_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:40 2011
++# Thu Oct 27 21:26:10 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9xedfc"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9xedfc"
+ CONFIG_AT91SAM9XEEK=y
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9xeek/at91sam9xeek_defconfig b/board/at91sam9xeek/at91sam9xeek_defconfig
+index 1532060..b9c83a3 100644
+--- a/board/at91sam9xeek/at91sam9xeek_defconfig
++++ b/board/at91sam9xeek/at91sam9xeek_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:40 2011
++# Thu Oct 27 21:26:11 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9xeek"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9xeek"
+ CONFIG_AT91SAM9XEEK=y
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+diff --git a/board/at91sam9xeek/at91sam9xenf_defconfig b/board/at91sam9xeek/at91sam9xenf_defconfig
+index 7117912..8d3d78e 100644
+--- a/board/at91sam9xeek/at91sam9xenf_defconfig
++++ b/board/at91sam9xeek/at91sam9xenf_defconfig
+@@ -1,6 +1,6 @@
+ #
+ # Automatically generated make config: don't edit
+-# Sun Oct 23 15:17:41 2011
++# Thu Oct 27 21:26:11 2011
+ #
+ HAVE_DOT_CONFIG=y
+ CONFIG_BOARDNAME="at91sam9xenf"
+@@ -11,6 +11,7 @@ CONFIG_BOARDNAME="at91sam9xenf"
+ CONFIG_AT91SAM9XEEK=y
+ # CONFIG_AT91SAM9G10EK is not set
+ # CONFIG_AT91SAM9G20EK is not set
++# CONFIG_AT91SAM9G20EK_2MMC is not set
+ # CONFIG_AT91SAM9G45EK is not set
+ # CONFIG_AT91SAM9G45EKES is not set
+ # CONFIG_AT91SAM9M10EK is not set
+-- 
+1.7.5.4
+

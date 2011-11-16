@@ -1,0 +1,23 @@
+From a7422f74ce92a1f5f258a744a89e27ca35ed2f42 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Sun, 23 Oct 2011 15:56:23 +0200
+Subject: [PATCH 14/39] Do not track patches
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@telia.com>
+---
+ .gitignore |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/.gitignore b/.gitignore
+index 5cea63c..18bf9dc 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -23,4 +23,5 @@ tags
+ *.swp
+ install/*
+ *.rej
++*.patch
+ 
+-- 
+1.7.5.4
+

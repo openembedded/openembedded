@@ -1,0 +1,100 @@
+From f023ef117dcf4eeda98043607ff9b62267e31bff Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Sun, 23 Oct 2011 22:20:29 +0200
+Subject: [PATCH 18/39] Makefile: Revert change which broke MAKEALL
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@telia.com>
+---
+ ALLCONFIGS |    2 +-
+ MAKEALL    |   38 +++++++++++++++++++++-----------------
+ Makefile   |    1 -
+ 3 files changed, 22 insertions(+), 19 deletions(-)
+
+diff --git a/ALLCONFIGS b/ALLCONFIGS
+index fc242c5..e34caab 100755
+--- a/ALLCONFIGS
++++ b/ALLCONFIGS
+@@ -1,6 +1,6 @@
+ #!/bin/sh
+ # Support Ubuntu ARM C compiler
+-export	CROSS_COMPILE?=/usr/bin/arm-linux-gnueabi-
++export	CROSS_COMPILE=/usr/bin/arm-linux-gnueabi-
+ 
+ source	./mk-config-list.sh
+ 
+diff --git a/MAKEALL b/MAKEALL
+index fdb72da..fb4bbb3 100755
+--- a/MAKEALL
++++ b/MAKEALL
+@@ -1,28 +1,30 @@
+ #!/bin/sh
+ 
+ # Support Ubuntu ARM C compiler
+-export	CROSS_COMPILE?=/usr/bin/arm-linux-gnueabi-
++export	CROSS_COMPILE=/usr/bin/arm-linux-gnueabi-
+ 
+-
+-rm	-f	binaries/*
+-rm	-rf	log
+-rm	-fr	result
+-
+-mkdir	-p	log
+-mkdir	-p	result/FAIL
+-mkdir	-p	result/OK
+-mkdir	-p	result/binaries
+-mkdir	-p	result
+-mkdir	-p	result/map
+-mkdir	-p	result/elf
+-
+-source	./mk-config-list.sh
++init_make ()
++{
++	rm	-f	binaries/*
++	rm	-rf	log
++	rm	-fr	result
++
++	mkdir	-p	log
++	mkdir	-p	result/FAIL
++	mkdir	-p	result/OK
++	mkdir	-p	result/binaries
++	mkdir	-p	result
++	mkdir	-p	result/map
++	mkdir	-p	result/elf
++
++	source	./mk-config-list.sh
++}
+ 
+ build ()
+ {
+ 	make distclean
+-	make $1_defconfig
+-	make > log/$1.log 2>&1 || mv log/$1.log result/FAIL/$1.log.FAIL
++	make -j 4 $1_defconfig
++	make -j 4 > log/$1.log 2>&1 || mv log/$1.log result/FAIL/$1.log.FAIL
+ 	mv log/$1.log result/OK/$1.log.OK	|| echo
+ 	mv binaries/*.elf	result/elf
+ 	mv binaries/*.map	result/map
+@@ -36,6 +38,8 @@ build_all ()
+ 	done
+ }
+ 
++init_make
++
+ build_all
+ 
+ echo
+diff --git a/Makefile b/Makefile
+index c57e42b..a8e3c42 100644
+--- a/Makefile
++++ b/Makefile
+@@ -430,7 +430,6 @@ distclean: clean config-clean
+ 	rm -f .installed
+ 	rm -f ..*.tmp
+ 	rm -f .configured
+-	rm -fr result
+ 	rm -fr *.patch
+ 	rm -fr patches
+ 
+-- 
+1.7.5.4
+

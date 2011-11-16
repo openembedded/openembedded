@@ -1,0 +1,26 @@
+From e35f3d7b3f98fb099cbab0f0d7dabfb0cab570bb Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Mon, 24 Oct 2011 01:22:29 +0200
+Subject: [PATCH 22/39] Bump version to 3.1.2
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@telia.com>
+---
+ Makefile |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index a8e3c42..a9d1560 100644
+--- a/Makefile
++++ b/Makefile
+@@ -19,7 +19,7 @@ BINDIR:=$(TOPDIR)/binaries
+ 
+ DATE:=$(shell date +%Y%m%d)
+ 
+-VERSION:=3.1.1
++VERSION:=3.1.2
+ 
+  
+ noconfig_targets:= menuconfig defconfig $(CONFIG) oldconfig
+-- 
+1.7.5.4
+

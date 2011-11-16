@@ -1,0 +1,233 @@
+From d5e5115f2c47786dddd7da408ba1a08fae55197a Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Fri, 28 Oct 2011 12:36:59 +0200
+Subject: [PATCH 30/39] Remove some faulty defconfigs (wrong location)
+
+---
+ board/at91sam9g20ek/at91sam9g20_2mmcsd_defconfig |  105 ----------------------
+ board/at91sam9x5ek/at91sam9x5sduboot_defconfig   |  101 ---------------------
+ 2 files changed, 0 insertions(+), 206 deletions(-)
+ delete mode 100644 board/at91sam9g20ek/at91sam9g20_2mmcsd_defconfig
+ delete mode 100644 board/at91sam9x5ek/at91sam9x5sduboot_defconfig
+
+diff --git a/board/at91sam9g20ek/at91sam9g20_2mmcsd_defconfig b/board/at91sam9g20ek/at91sam9g20_2mmcsd_defconfig
+deleted file mode 100644
+index 1c76a8c..0000000
+--- a/board/at91sam9g20ek/at91sam9g20_2mmcsd_defconfig
++++ /dev/null
+@@ -1,105 +0,0 @@
+-#
+-# Automatically generated make config: don't edit
+-# Thu Oct 27 19:33:24 2011
+-#
+-HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9g20_2mmcsd"
+-# CONFIG_AT91SAM9260EK is not set
+-# CONFIG_AT91SAM9261EK is not set
+-# CONFIG_AT91SAM9263EK is not set
+-# CONFIG_AT91SAM9RLEK is not set
+-# CONFIG_AT91SAM9XEEK is not set
+-# CONFIG_AT91SAM9G10EK is not set
+-CONFIG_AT91SAM9G20EK=y
+-# CONFIG_AT91SAM9G45EK is not set
+-# CONFIG_AT91SAM9G45EKES is not set
+-# CONFIG_AT91SAM9M10EK is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+-# CONFIG_AT91CAP9ADK is not set
+-# CONFIG_AT91CAP9STK is not set
+-# CONFIG_AFEB9260 is not set
+-CONFIG_CHIP="AT91SAM9G20"
+-CONFIG_BOARD="at91sam9g20ek"
+-CONFIG_MACH_TYPE="0x658"
+-CONFIG_LINK_ADDR="0x000000"
+-CONFIG_TOP_OF_MEMORY="0x304000"
+-# CONFIG_CRYSTAL_12_000MHZ is not set
+-# CONFIG_CRYSTAL_16_000MHZ is not set
+-# CONFIG_CRYSTAL_16_36766MHZ is not set
+-CONFIG_CRYSTAL_18_432MHZ=y
+-ALLOW_CRYSTAL_18_432MHZ=y
+-CONFIG_CRYSTAL="CRYSTAL_18_432MHZ"
+-# CONFIG_CPU_CLK_166MHZ is not set
+-# CONFIG_CPU_CLK_180MHZ is not set
+-# CONFIG_CPU_CLK_200MHZ is not set
+-# CONFIG_CPU_CLK_240MHZ is not set
+-# CONFIG_CPU_CLK_266MHZ is not set
+-CONFIG_CPU_CLK_400MHZ=y
+-ALLOW_CPU_CLK_400MHZ=y
+-# DISABLE_CPU_CLK_240MHZ is not set
+-# CONFIG_BUS_SPEED_83MHZ is not set
+-# CONFIG_BUS_SPEED_90MHZ is not set
+-# CONFIG_BUS_SPEED_100MHZ is not set
+-CONFIG_BUS_SPEED_133MHZ=y
+-
+-#
+-# Memory selection
+-#
+-CONFIG_SDRAM=y
+-# CONFIG_SDDRC is not set
+-# CONFIG_DDR2 is not set
+-ALLOW_DATAFLASH=y
+-# ALLOW_FLASH is not set
+-ALLOW_NANDFLASH=y
+-ALLOW_SDCARD=y
+-# ALLOW_HSMCI is not set
+-# ALLOW_PSRAM is not set
+-# ALLOW_SDRAM_16BIT is not set
+-# CONFIG_RAM_32MB is not set
+-CONFIG_RAM_64MB=y
+-# CONFIG_RAM_128MB is not set
+-# CONFIG_RAM_256MB is not set
+-# CONFIG_DATAFLASH is not set
+-# CONFIG_FLASH is not set
+-# CONFIG_NANDFLASH is not set
+-CONFIG_SDCARD=y
+-CONFIG_MEMORY="sdcard"
+-# CONFIG_SDCARD_HS is not set
+-ALLOW_DATAFLASH_RECOVERY=y
+-ALLOW_BOOT_FROM_DATAFLASH_CS0=y
+-ALLOW_BOOT_FROM_DATAFLASH_CS1=y
+-DATAFLASHCARD_ON_CS0=y
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+-CONFIG_PROJECT="sdcard"
+-CONFIG_LOAD_UBOOT=y
+-# CONFIG_LOAD_EBOOT is not set
+-# CONFIG_LOAD_LINUX is not set
+-# CONFIG_LOAD_NK is not set
+-# CONFIG_LOAD_64KB is not set
+-# CONFIG_LOAD_1MB is not set
+-# CONFIG_LOAD_4MB is not set
+-CONFIG_ALT_IMG_ADDRESS="0x00000000"
+-CONFIG_ALT_IMG_SIZE="0x00010000"
+-CONFIG_OS_IMAGE_NAME="at91sam9g20ek_2mmc\\u-boot.bin"
+-CONFIG_OS_IMG_SIZE="0x30000"
+-
+-#
+-# U-Boot Image Storage Setup
+-#
+-CONFIG_IMG_ADDRESS="0x00000000"
+-CONFIG_SETTING_ADDRESS="0x00000000"
+-CONFIG_SETTING_SIZE="0x00001000"
+-CONFIG_IMG_SIZE="0x00040000"
+-CONFIG_JUMP_ADDR="0x23F00000"
+-CONFIG_ALT_JUMP_ADDR="0x20000000"
+-CONFIG_GLBDRV_ADDR="0x20058000"
+-# CONFIG_LONG_TEST is not set
+-CONFIG_DEBUG=y
+-# CONFIG_DEBUG_INFO is not set
+-# CONFIG_DEBUG_LOUD is not set
+-CONFIG_DEBUG_VERY_LOUD=y
+-CONFIG_HW_INIT=y
+-# CONFIG_USER_HW_INIT is not set
+-CONFIG_THUMB=y
+-# CONFIG_SX_AT91 is not set
+-# CONFIG_RAW_AT91 is not set
+diff --git a/board/at91sam9x5ek/at91sam9x5sduboot_defconfig b/board/at91sam9x5ek/at91sam9x5sduboot_defconfig
+deleted file mode 100644
+index 27aeb85..0000000
+--- a/board/at91sam9x5ek/at91sam9x5sduboot_defconfig
++++ /dev/null
+@@ -1,101 +0,0 @@
+-#
+-# Automatically generated make config: don't edit
+-# Mon May 30 13:54:05 2011
+-#
+-HAVE_DOT_CONFIG=y
+-CONFIG_BOARDNAME="at91sam9x5ek"
+-# CONFIG_AT91SAM9260EK is not set
+-# CONFIG_AT91SAM9261EK is not set
+-# CONFIG_AT91SAM9263EK is not set
+-# CONFIG_AT91SAM9RLEK is not set
+-# CONFIG_AT91SAM9XEEK is not set
+-# CONFIG_AT91SAM9G10EK is not set
+-# CONFIG_AT91SAM9G20EK is not set
+-# CONFIG_AT91SAM9G45EK is not set
+-# CONFIG_AT91SAM9G45EKES is not set
+-# CONFIG_AT91SAM9M10EK is not set
+-# CONFIG_AT91SAM9M10EKES is not set
+-# CONFIG_AT91CAP9ADK is not set
+-# CONFIG_AT91CAP9STK is not set
+-# CONFIG_AFEB9260 is not set
+-CONFIG_AT91SAM9X5EK=y
+-CONFIG_CHIP="AT91SAM9X5"
+-CONFIG_BOARD="at91sam9x5ek"
+-CONFIG_MACH_TYPE="3373"
+-CONFIG_LINK_ADDR="0x000000"
+-CONFIG_TOP_OF_MEMORY="0x308000"
+-CONFIG_CRYSTAL_12_000MHZ=y
+-# CONFIG_CRYSTAL_16_000MHZ is not set
+-# CONFIG_CRYSTAL_16_36766MHZ is not set
+-# CONFIG_CRYSTAL_18_432MHZ is not set
+-ALLOW_CRYSTAL_12_000MHZ=y
+-CONFIG_CRYSTAL="CRYSTAL_18_432MHZ"
+-# CONFIG_CPU_CLK_166MHZ is not set
+-# CONFIG_CPU_CLK_180MHZ is not set
+-# CONFIG_CPU_CLK_200MHZ is not set
+-# CONFIG_CPU_CLK_240MHZ is not set
+-# CONFIG_CPU_CLK_266MHZ is not set
+-CONFIG_CPU_CLK_400MHZ=y
+-ALLOW_CPU_CLK_400MHZ=y
+-# DISABLE_CPU_CLK_240MHZ is not set
+-# CONFIG_BUS_SPEED_83MHZ is not set
+-# CONFIG_BUS_SPEED_90MHZ is not set
+-# CONFIG_BUS_SPEED_100MHZ is not set
+-CONFIG_BUS_SPEED_133MHZ=y
+-ALLOW_PIO3=y
+-CONFIG_HAS_PIO3=y
+-CPU_HAS_PMECC=y
+-
+-#
+-# Memory selection
+-#
+-# CONFIG_SDRAM is not set
+-# CONFIG_SDDRC is not set
+-CONFIG_DDR2=y
+-ALLOW_DATAFLASH=y
+-# ALLOW_FLASH is not set
+-ALLOW_NANDFLASH=y
+-ALLOW_SDCARD=y
+-ALLOW_HSMCI=y
+-# ALLOW_PSRAM is not set
+-# ALLOW_SDRAM_16BIT is not set
+-# CONFIG_RAM_32MB is not set
+-# CONFIG_RAM_64MB is not set
+-CONFIG_RAM_128MB=y
+-# CONFIG_RAM_256MB is not set
+-# CONFIG_DATAFLASH is not set
+-# CONFIG_FLASH is not set
+-# CONFIG_NANDFLASH is not set
+-CONFIG_SDCARD=y
+-CONFIG_MEMORY="sdcard"
+-CONFIG_SDCARD_HS=y
+-ALLOW_DATAFLASH_RECOVERY=y
+-ALLOW_BOOT_FROM_DATAFLASH_CS0=y
+-DATAFLASHCARD_ON_CS0=y
+-CONFIG_BOOTSTRAP_MAXSIZE="23000"
+-CONFIG_PROJECT="sdcard"
+-CONFIG_LOAD_UBOOT=y
+-# CONFIG_LOAD_EBOOT is not set
+-# CONFIG_LOAD_LINUX is not set
+-# CONFIG_LOAD_NK is not set
+-# CONFIG_LOAD_64KB is not set
+-# CONFIG_LOAD_1MB is not set
+-# CONFIG_LOAD_4MB is not set
+-CONFIG_OS_IMAGE_NAME="u-boot.bin"
+-CONFIG_IMG_ADDRESS="0x00000000"
+-CONFIG_SETTING_ADDRESS="0x00000000"
+-CONFIG_SETTING_SIZE="0x00001000"
+-CONFIG_IMG_SIZE="0x00050000"
+-CONFIG_JUMP_ADDR="0x26F00000"
+-CONFIG_GLBDRV_ADDR="0x20068000"
+-# CONFIG_LONG_TEST is not set
+-CONFIG_DEBUG=y
+-CONFIG_DEBUG_INFO=y
+-# CONFIG_DEBUG_LOUD is not set
+-# CONFIG_DEBUG_VERY_LOUD is not set
+-CONFIG_HW_INIT=y
+-# CONFIG_USER_HW_INIT is not set
+-CONFIG_THUMB=y
+-CONFIG_SCLK=y
+-# CONFIG_SX_AT91 is not set
+-# CONFIG_RAW_AT91 is not set
+-- 
+1.7.5.4
+

@@ -1,0 +1,184 @@
+From 1b611da3b8dc47a8df66e14520fbf4ffde108c87 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Thu, 27 Oct 2011 19:53:09 +0200
+Subject: [PATCH 24/39] More verbose error messages for FAT access
+
+---
+ driver/ff.c |   87 ++++++++++++++++++++++++++++++++++++++++++++++++++--------
+ 1 files changed, 75 insertions(+), 12 deletions(-)
+
+diff --git a/driver/ff.c b/driver/ff.c
+index 82b49cd..dd5330e 100644
+--- a/driver/ff.c
++++ b/driver/ff.c
+@@ -841,15 +841,41 @@ FRESULT dir_find(DIR * dj       /* Pointer to the directory object linked to the
+                     if (ord == 0)
+                         break;
+                 } else {        /* Match SFN if LFN is in 8.3 format */
+-                    if (!memcmp(dir, dj->fn, 11))
++#if	defined(CONFIG_DEBUG_VERY_LOUD)
++		    dbgu_print("\nComparing ");
++		    dbgu_print(dir);
++		    dbgu_print(" with ");
++		    dbgu_print(dj->fn);
++#endif
++                    if (!memcmp(dir, dj->fn, 11)) {
++#if	defined(CONFIG_DEBUG_VERY_LOUD)
++			dbgu_print(" OK\r\n");
++#endif
+                         break;
++		    }
++#if	defined(CONFIG_DEBUG_VERY_LOUD)
++		    dbgu_print(" Fail\r\n");
++#endif
+                 }
+                 ord = 0xFF;
+             }
+         }
+ #else                           /* Non LFN configuration */
+-        if (!(dir[DIR_Attr] & AM_VOL) && !memcmp(dir, dj->fn, 11))      /* Is it a valid entry? */
++#if	defined(CONFIG_DEBUG_VERY_LOUD)
++	dbgu_print("\nComparing ");
++	dbgu_print((char *) dir);
++	dbgu_print(" with ");
++	dbgu_print((char *) dj->fn);
++#endif
++        if (!(dir[DIR_Attr] & AM_VOL) && !memcmp(dir, dj->fn, 11)) {    /* Is it a valid entry? */
++#if	defined(CONFIG_DEBUG_VERY_LOUD)
++	    dbgu_print(" OK\r\n");
++#endif
+             break;
++	}
++#if	defined(CONFIG_DEBUG_VERY_LOUD)
++	dbgu_print(" Fail\r\n");
++#endif
+ #endif
+         res = dir_next(dj, FALSE);      /* Next entry */
+ 
+@@ -1554,12 +1580,18 @@ FRESULT auto_mount(             /* FR_OK(0): successful, !=0: any error occured
+     DWORD bsect, fsize, tsect, mclst;
+ 
+     const XCHAR *p = *path;
++    const XCHAR vol_name[2];
+ 
+     FATFS *fs;
+ 
+     /*
+      * Get logical drive number from the path name
+      */
++#if	defined(CONFIG_DEBUG_VERY_LOUD)
++	dbgu_print("Automount: ");
++	dbgu_print((const char *) path);
++	dbgu_print("\r\n");
++#endif
+     vol = p[0] - '0';           /* Is there a drive number? */
+     if (vol <= 9 && p[1] == ':') {      /* Found a drive number, get and strip it */
+         p += 2;
+@@ -1571,16 +1603,26 @@ FRESULT auto_mount(             /* FR_OK(0): successful, !=0: any error occured
+         vol = 0;                /* Use drive 0 */
+ #endif
+     }
++    vol_name[0] = vol + '0';
++    vol_name[0] = '\0;
+ 
+     /*
+      * Check if the logical drive is valid or not
+      */
+-    if (vol >= _DRIVES)         /* Is the drive number valid? */
++    if (vol >= _DRIVES) {        /* Is the drive number valid? */
++#if	defined(CONFIG_DEBUG_VERY_LOUD)
++		dbgu_print("Invalid Drive:  [");
++		dbgu_print(volname);
++		dbgu_print("]\r\n");
++
++#endif
+         return FR_INVALID_DRIVE;
++    }
+     *rfs = fs = FatFs[vol];     /* Returen pointer to the corresponding file system object */
+-    if (!fs)
++    if (!fs) {
++	dbgu_print("File system not registered!\r\n");
+         return FR_NOT_ENABLED;  /* Is the file system object registered? */
+-
++    }
+     ENTER_FF(fs);               /* Lock file system */
+ 
+     if (fs->fs_type) {          /* If the logical drive has been mounted */
+@@ -1601,8 +1643,12 @@ FRESULT auto_mount(             /* FR_OK(0): successful, !=0: any error occured
+     fs->fs_type = 0;            /* Clear the file system object */
+     fs->drive = (BYTE) LD2PD(vol);      /* Bind the logical drive and a physical drive */
+     stat = disk_initialize(fs->drive);  /* Initialize low level disk I/O layer */
+-    if (stat & STA_NOINIT)      /* Check if the drive is ready */
++    if (stat & STA_NOINIT) {     /* Check if the drive is ready */
++#if	defined(CONFIG_DEBUG_VERY_LOUD)
++		dbgu_print("Invalid Drive\r\n");
++#endif
+         return FR_NOT_READY;
++    }
+ #if _MAX_SS != 512              /* Get disk sector size if needed */
+     if (disk_ioctl(fs->drive, GET_SECTOR_SIZE, &SS(fs)) != RES_OK
+         || SS(fs) > _MAX_SS)
+@@ -1631,14 +1677,24 @@ FRESULT auto_mount(             /* FR_OK(0): successful, !=0: any error occured
+     }
+ #endif
+ 
+-    if (fmt == 3)
++    if (fmt == 3) {
++#if	defined(CONFIG_DEBUG_VERY_LOUD)
++		dbgu_print("fmt == 3 - Not Valid!\r\n");
++#endif
+         return FR_DISK_ERR;
+-    if (fmt || LD_WORD(fs->win + BPB_BytsPerSec) != SS(fs))     /* No valid FAT patition is found */
++    }
++    if (fmt || LD_WORD(fs->win + BPB_BytsPerSec) != SS(fs)) {    /* No valid FAT patition is found */
++#if	defined(CONFIG_DEBUG_VERY_LOUD)
++		dbgu_print("No valid FAT Partition\r\n");
++#endif
+         return FR_NO_FILESYSTEM;
+-
++    }
+     /*
+      * Initialize the file system object
+      */
++#if	defined(CONFIG_DEBUG_VERY_LOUD)
++		dbgu_print("INFO: INit file system object\r\n");
++#endif
+     fsize = LD_WORD(fs->win + BPB_FATSz16);     /* Number of sectors per FAT */
+     if (!fsize)
+         fsize = LD_DWORD(fs->win + BPB_FATSz32);
+@@ -1774,7 +1830,8 @@ FRESULT f_open(FIL * fp,        /* Pointer to the blank file object */
+     )
+ {
+     FRESULT res;
+-
++#if	defined(CONFIG_DEBUG_VERY_LOUD)
++#endif
+     DIR dj;
+ 
+     NAMEBUF(sfn, lfn);
+@@ -2809,14 +2866,20 @@ FRESULT f_rename(const XCHAR * path_old,        /* Pointer to the old name */
+     INITBUF(dj_old, sfn, lfn);
+     res = auto_mount(&path_old, &dj_old.fs, 1);
+     if (res == FR_OK) {
++#if	defined(CONFIG_DEBUG_VERY_LOUD)
++		dbgu_print("Automount succeded\r\n");
++#endif
+         dj_new.fs = dj_old.fs;
+         res = follow_path(&dj_old, path_old);   /* Check old object */
+         if (_FS_RPATH && res == FR_OK && (dj_old.fn[11] & NS_DOT))
+             res = FR_INVALID_NAME;
+     }
+-    if (res != FR_OK)
++    if (res != FR_OK) {
++#if	defined(CONFIG_DEBUG_VERY_LOUD)
++		dbgu_print("Automount failed\r\n");
++#endif
+         LEAVE_FF(dj_old.fs, res);       /* The old object is not found */
+-
++    }
+     if (!dj_old.dir)
+         LEAVE_FF(dj_old.fs, FR_NO_FILE);        /* Is root dir? */
+     memcpy(buf, dj_old.dir + DIR_Attr, 21);     /* Save the object information */
+-- 
+1.7.5.4
+

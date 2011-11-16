@@ -1,0 +1,28 @@
+From 0aa97399b95e114ff9044e7decffd9b59717defc Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Sun, 23 Oct 2011 12:48:20 +0200
+Subject: [PATCH 04/39] .gitignore:	Do not track files in the install
+ directory.
+
+If DESTDIR is not specified during "make install" the
+files end up in the "install" subdirectory.
+The files should be ignored.
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@telia.com>
+---
+ .gitignore |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/.gitignore b/.gitignore
+index d78652e..bdfcad1 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -21,3 +21,5 @@ binaries
+ *.o
+ tags
+ *.swp
++install/*
++
+-- 
+1.7.5.4
+

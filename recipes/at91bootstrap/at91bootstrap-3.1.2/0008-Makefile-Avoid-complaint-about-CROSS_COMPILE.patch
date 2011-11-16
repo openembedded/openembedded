@@ -1,0 +1,37 @@
+From 22826bb3fe0fc5ddf4e025c76847af36694b23db Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Sun, 23 Oct 2011 13:43:03 +0200
+Subject: [PATCH 08/39] Makefile:  Avoid complaint about CROSS_COMPILE
+
+When we are running targets, not requiring cross compilation,
+CROSS_COMPILE does not need to be defined.
+
+Check MAKECMDGOALS for any target needing cross compilation,
+and only issue complaint, if such a target is found,
+and CROSS_COMPILE is not set.
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@telia.com>
+---
+ Makefile |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 55af2d9..4676379 100644
+--- a/Makefile
++++ b/Makefile
+@@ -88,9 +88,12 @@ else
+ ##  Have DOT Config
+ #
+ 
++nocompile_targets:= distrib config-clean clean distclean mrproper
++ifeq ($(filter $(nocompile_targets),$(MAKECMDGOALS)),)
+ ifeq ($(CROSS_COMPILE),)
+ $(error Environment variable "CROSS_COMPILE" must be defined!)
+ endif
++endif
+ 
+ AS=$(CROSS_COMPILE)gcc
+ CC=$(CROSS_COMPILE)gcc
+-- 
+1.7.5.4
+

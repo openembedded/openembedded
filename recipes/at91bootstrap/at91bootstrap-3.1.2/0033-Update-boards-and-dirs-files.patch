@@ -1,0 +1,132 @@
+From 3b44740b1917ff1812193ebaafda01f33064130f Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Fri, 28 Oct 2011 12:42:17 +0200
+Subject: [PATCH 33/39] Update 'boards' and 'dirs' files
+
+---
+ board/boards |   92 ++++++++++++++++++++++++++++++++++++---------------------
+ board/dirs   |    3 +-
+ 2 files changed, 60 insertions(+), 35 deletions(-)
+
+diff --git a/board/boards b/board/boards
+index 9da6dd4..29c30bc 100644
+--- a/board/boards
++++ b/board/boards
+@@ -1,41 +1,65 @@
++at91sam9x5ek/at91sam9x5sd_defconfig
++at91sam9x5ek/at91sam9x5nf_defconfig
++at91sam9x5ek/at91sam9x5df_defconfig
++at91sam9x5ek/at91sam9x5sduboot_defconfig
++at91sam9x5ek/at91sam9x5ek_defconfig
++at91sam9g45ekes/at91sam9g45sdes_android_defconfig
++at91sam9g45ekes/at91sam9g45nfes_defconfig
++at91sam9g45ekes/at91sam9g45sdes_defconfig
++at91sam9g45ekes/at91sam9g45ekes_defconfig
++at91sam9g45ekes/at91sam9g45dfes_defconfig
++at91sam9g20ek_2mmc/at91sam9g20ek_2mmcdf_defconfig
++at91sam9g20ek_2mmc/at91sam9g20ek_2mmc_defconfig
++at91sam9g20ek_2mmc/at91sam9g20ek_2mmcsd_defconfig
++at91sam9g20ek_2mmc/at91sam9g20ek_2mmcnf_defconfig
++at91sam9g20ek_2mmc/at91sam9g20ek_2mmcdfc_defconfig
++at91sam9rlek/at91sam9rlsd_defconfig
++at91sam9rlek/at91sam9rlnf_defconfig
++at91sam9rlek/at91sam9rlek_defconfig
++at91sam9rlek/at91sam9rldf_defconfig
++at91sam9m10ek/at91sam9m10nf_defconfig
++at91sam9m10ek/at91sam9m10ek_defconfig
++at91sam9m10ek/at91sam9m10df_defconfig
++at91sam9m10ek/at91sam9m10sdu_defconfig
++at91sam9m10ek/at91sam9m10sd_defconfig
++at91sam9m10ek/at91sam9m10sd_android_defconfig
++at91sam9263ek/at91sam9263nf_defconfig
++at91sam9263ek/at91sam9263df_defconfig
++at91sam9263ek/at91sam9263dfc_defconfig
++at91sam9263ek/at91sam9263ek_defconfig
+ afeb9260/afeb9260_defconfig
+-at91cap9adk/at91cap9adk_defconfig
+-at91cap9adk/at91cap9df_defconfig
+-at91cap9adk/at91cap9f_defconfig
+-at91cap9stk/at91cap9stk_defconfig
+-at91cap9stk/at91cap9stkdf_defconfig
+-at91cap9stk/at91cap9stkf_defconfig
+-at91sam9260ek/at91sam9260dfc_defconfig
++at91sam9xeek/at91sam9xeek_defconfig
++at91sam9xeek/at91sam9xedfc_defconfig
++at91sam9xeek/at91sam9xedf_defconfig
++at91sam9xeek/at91sam9xenf_defconfig
++at91sam9g20ek/at91sam9g20ek_defconfig
++at91sam9g20ek/at91sam9g20df_defconfig
++at91sam9g20ek/at91sam9g20sd_defconfig
++at91sam9g20ek/at91sam9g20nf_defconfig
++at91sam9g20ek/at91sam9g20dfc_defconfig
+ at91sam9260ek/at91sam9260df_defconfig
+-at91sam9260ek/at91sam9260ek_defconfig
+ at91sam9260ek/at91sam9260nf_defconfig
+-at91sam9261ek/at91sam9261dfc_defconfig
+-at91sam9261ek/at91sam9261df_defconfig
++at91sam9260ek/at91sam9260ek_defconfig
++at91sam9260ek/at91sam9260dfc_defconfig
+ at91sam9261ek/at91sam9261ek_defconfig
+ at91sam9261ek/at91sam9261nf_defconfig
+-at91sam9263ek/at91sam9263dfc_defconfig
+-at91sam9263ek/at91sam9263ek_defconfig
+-at91sam9263ek/at91sam9263nf_defconfig
+-at91sam9g10ek/at91sam9g10df_defconfig
+-at91sam9g10ek/at91sam9g10ek_defconfig
+-at91sam9g10ek/at91sam9g10nf_defconfig
+-at91sam9g20ek/at91sam9g20dfc_defconfig
+-at91sam9g20ek/at91sam9g20df_defconfig
+-at91sam9g20ek/at91sam9g20ek_defconfig
+-at91sam9g20ek/at91sam9g20nf_defconfig
++at91sam9261ek/at91sam9261dfc_defconfig
++at91sam9261ek/at91sam9261df_defconfig
++at91cap9adk/at91cap9adk_defconfig
++at91cap9adk/at91cap9df_defconfig
++at91cap9adk/at91cap9f_defconfig
++at91sam9g45ek/at91sam9g45nf_defconfig
+ at91sam9g45ek/at91sam9g45df_defconfig
+ at91sam9g45ek/at91sam9g45ek_defconfig
+-at91sam9g45ek/at91sam9g45nf_defconfig
+-at91sam9g45ekes/at91sam9g45dfes_defconfig
+-at91sam9g45ekes/at91sam9g45ekes_defconfig
+-at91sam9g45ekes/at91sam9g45nfes_defconfig
+-at91sam9m10ek/at91sam9m10df_defconfig
+-at91sam9m10ek/at91sam9m10ek_defconfig
+-at91sam9m10ek/at91sam9m10nf_defconfig
+-at91sam9rlek/at91sam9rldf_defconfig
+-at91sam9rlek/at91sam9rlek_defconfig
+-at91sam9rlek/at91sam9rlnf_defconfig
+-at91sam9xeek/at91sam9xedfc_defconfig
+-at91sam9xeek/at91sam9xedf_defconfig
+-at91sam9xeek/at91sam9xeek_defconfig
+-at91sam9xeek/at91sam9xenf_defconfig
++at91sam9g45ek/at91sam9g45sd_defconfig
++at91sam9g10ek/at91sam9g10sd_defconfig
++at91sam9g10ek/at91sam9g10ek_defconfig
++at91sam9g10ek/at91sam9g10df_defconfig
++at91sam9g10ek/at91sam9g10nf_defconfig
++at91cap9stk/at91cap9stkf_defconfig
++at91cap9stk/at91cap9stkdf_defconfig
++at91cap9stk/at91cap9stk_defconfig
++at91sam9m10ekes/at91sam9m10nfes_defconfig
++at91sam9m10ekes/at91sam9m10ekes_defconfig
++at91sam9m10ekes/at91sam9m10sdes_defconfig
++at91sam9m10ekes/at91sam9m10dfes_defconfig
+diff --git a/board/dirs b/board/dirs
+index d0afe7e..1d6a8d9 100644
+--- a/board/dirs
++++ b/board/dirs
+@@ -5,7 +5,8 @@ DIRS=\
+     at91sam9rlek \
+     at91sam9g10ek \
+     at91sam9g20ek \
++    at91sam9g20ek_2mmc \
+     at91sam9g45ek \
+     at91sam9m10ek \
+     at91sam9g45ekes \
+-    at91sam9m10ekes \
+\ No newline at end of file
++    at91sam9m10ekes \
+-- 
+1.7.5.4
+

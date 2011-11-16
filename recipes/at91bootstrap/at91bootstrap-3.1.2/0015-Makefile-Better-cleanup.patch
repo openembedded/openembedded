@@ -1,0 +1,36 @@
+From 18425a2344e0a6aa18033e5f388cdaf2e46881b8 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Sun, 23 Oct 2011 15:57:12 +0200
+Subject: [PATCH 15/39] Makefile: Better cleanup
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@telia.com>
+---
+ Makefile |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 0b137e0..cdc8d21 100644
+--- a/Makefile
++++ b/Makefile
+@@ -19,7 +19,7 @@ BINDIR:=$(TOPDIR)/binaries
+ 
+ DATE:=$(shell date +%Y%m%d)
+ 
+-VERSION:=3.1.1
++VERSION:=3.1
+ 
+ 
+ noconfig_targets:= menuconfig defconfig $(CONFIG) oldconfig
+@@ -430,6 +430,9 @@ distclean: clean config-clean
+ 	rm -f .installed
+ 	rm -f ..*.tmp
+ 	rm -f .configured
++	rm -fr result
++	rm -fr *.patch
++	rm -fr patches
+ 
+ mrproper: distclean
+ 	rm -fr $(BINDIR)
+-- 
+1.7.5.4
+

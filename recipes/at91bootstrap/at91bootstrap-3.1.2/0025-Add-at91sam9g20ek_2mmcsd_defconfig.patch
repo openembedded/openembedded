@@ -1,0 +1,124 @@
+From d2315af8b9e399b0cd879ccdb7e7ae0254ddc67f Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Thu, 27 Oct 2011 19:55:00 +0200
+Subject: [PATCH 25/39] Add at91sam9g20ek_2mmcsd_defconfig
+
+---
+ board/at91sam9g20ek/at91sam9g20_2mmcsd_defconfig |  105 ++++++++++++++++++++++
+ 1 files changed, 105 insertions(+), 0 deletions(-)
+ create mode 100644 board/at91sam9g20ek/at91sam9g20_2mmcsd_defconfig
+
+diff --git a/board/at91sam9g20ek/at91sam9g20_2mmcsd_defconfig b/board/at91sam9g20ek/at91sam9g20_2mmcsd_defconfig
+new file mode 100644
+index 0000000..1c76a8c
+--- /dev/null
++++ b/board/at91sam9g20ek/at91sam9g20_2mmcsd_defconfig
+@@ -0,0 +1,105 @@
++#
++# Automatically generated make config: don't edit
++# Thu Oct 27 19:33:24 2011
++#
++HAVE_DOT_CONFIG=y
++CONFIG_BOARDNAME="at91sam9g20_2mmcsd"
++# CONFIG_AT91SAM9260EK is not set
++# CONFIG_AT91SAM9261EK is not set
++# CONFIG_AT91SAM9263EK is not set
++# CONFIG_AT91SAM9RLEK is not set
++# CONFIG_AT91SAM9XEEK is not set
++# CONFIG_AT91SAM9G10EK is not set
++CONFIG_AT91SAM9G20EK=y
++# CONFIG_AT91SAM9G45EK is not set
++# CONFIG_AT91SAM9G45EKES is not set
++# CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
++# CONFIG_AT91CAP9ADK is not set
++# CONFIG_AT91CAP9STK is not set
++# CONFIG_AFEB9260 is not set
++CONFIG_CHIP="AT91SAM9G20"
++CONFIG_BOARD="at91sam9g20ek"
++CONFIG_MACH_TYPE="0x658"
++CONFIG_LINK_ADDR="0x000000"
++CONFIG_TOP_OF_MEMORY="0x304000"
++# CONFIG_CRYSTAL_12_000MHZ is not set
++# CONFIG_CRYSTAL_16_000MHZ is not set
++# CONFIG_CRYSTAL_16_36766MHZ is not set
++CONFIG_CRYSTAL_18_432MHZ=y
++ALLOW_CRYSTAL_18_432MHZ=y
++CONFIG_CRYSTAL="CRYSTAL_18_432MHZ"
++# CONFIG_CPU_CLK_166MHZ is not set
++# CONFIG_CPU_CLK_180MHZ is not set
++# CONFIG_CPU_CLK_200MHZ is not set
++# CONFIG_CPU_CLK_240MHZ is not set
++# CONFIG_CPU_CLK_266MHZ is not set
++CONFIG_CPU_CLK_400MHZ=y
++ALLOW_CPU_CLK_400MHZ=y
++# DISABLE_CPU_CLK_240MHZ is not set
++# CONFIG_BUS_SPEED_83MHZ is not set
++# CONFIG_BUS_SPEED_90MHZ is not set
++# CONFIG_BUS_SPEED_100MHZ is not set
++CONFIG_BUS_SPEED_133MHZ=y
++
++#
++# Memory selection
++#
++CONFIG_SDRAM=y
++# CONFIG_SDDRC is not set
++# CONFIG_DDR2 is not set
++ALLOW_DATAFLASH=y
++# ALLOW_FLASH is not set
++ALLOW_NANDFLASH=y
++ALLOW_SDCARD=y
++# ALLOW_HSMCI is not set
++# ALLOW_PSRAM is not set
++# ALLOW_SDRAM_16BIT is not set
++# CONFIG_RAM_32MB is not set
++CONFIG_RAM_64MB=y
++# CONFIG_RAM_128MB is not set
++# CONFIG_RAM_256MB is not set
++# CONFIG_DATAFLASH is not set
++# CONFIG_FLASH is not set
++# CONFIG_NANDFLASH is not set
++CONFIG_SDCARD=y
++CONFIG_MEMORY="sdcard"
++# CONFIG_SDCARD_HS is not set
++ALLOW_DATAFLASH_RECOVERY=y
++ALLOW_BOOT_FROM_DATAFLASH_CS0=y
++ALLOW_BOOT_FROM_DATAFLASH_CS1=y
++DATAFLASHCARD_ON_CS0=y
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
++CONFIG_PROJECT="sdcard"
++CONFIG_LOAD_UBOOT=y
++# CONFIG_LOAD_EBOOT is not set
++# CONFIG_LOAD_LINUX is not set
++# CONFIG_LOAD_NK is not set
++# CONFIG_LOAD_64KB is not set
++# CONFIG_LOAD_1MB is not set
++# CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00000000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMAGE_NAME="at91sam9g20ek_2mmc\\u-boot.bin"
++CONFIG_OS_IMG_SIZE="0x30000"
++
++#
++# U-Boot Image Storage Setup
++#
++CONFIG_IMG_ADDRESS="0x00000000"
++CONFIG_SETTING_ADDRESS="0x00000000"
++CONFIG_SETTING_SIZE="0x00001000"
++CONFIG_IMG_SIZE="0x00040000"
++CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
++CONFIG_GLBDRV_ADDR="0x20058000"
++# CONFIG_LONG_TEST is not set
++CONFIG_DEBUG=y
++# CONFIG_DEBUG_INFO is not set
++# CONFIG_DEBUG_LOUD is not set
++CONFIG_DEBUG_VERY_LOUD=y
++CONFIG_HW_INIT=y
++# CONFIG_USER_HW_INIT is not set
++CONFIG_THUMB=y
++# CONFIG_SX_AT91 is not set
++# CONFIG_RAW_AT91 is not set
+-- 
+1.7.5.4
+

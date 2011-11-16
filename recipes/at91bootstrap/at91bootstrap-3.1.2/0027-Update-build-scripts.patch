@@ -1,0 +1,422 @@
+From 62d154acd9d6d9d5f908f62535dd1a0e7c6e4a2f Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Fri, 28 Oct 2011 12:33:57 +0200
+Subject: [PATCH 27/39] Update build scripts
+
+---
+ ALLCONFIGS                |    2 +-
+ MAKEALL                   |    7 ++-
+ MAKENEW                   |  124 ++++++++++++++++++++++++++++++++-------------
+ allboards.cfg             |   60 ----------------------
+ board/allboards.cfg       |   65 +++++++++++++++++++++++
+ mk-config-list.sh         |   18 -------
+ scripts/mk-config-list.sh |   18 +++++++
+ scripts/mkboards.sh       |    3 +
+ toolset.sh                |   16 ++++++
+ 9 files changed, 195 insertions(+), 118 deletions(-)
+ delete mode 100644 allboards.cfg
+ create mode 100644 board/allboards.cfg
+ delete mode 100755 mk-config-list.sh
+ create mode 100755 scripts/mk-config-list.sh
+ create mode 100755 scripts/mkboards.sh
+ create mode 100755 toolset.sh
+
+diff --git a/ALLCONFIGS b/ALLCONFIGS
+index e34caab..c64ef2f 100755
+--- a/ALLCONFIGS
++++ b/ALLCONFIGS
+@@ -2,7 +2,7 @@
+ # Support Ubuntu ARM C compiler
+ export	CROSS_COMPILE=/usr/bin/arm-linux-gnueabi-
+ 
+-source	./mk-config-list.sh
++source	./scripts/mk-config-list.sh
+ 
+ reconfig ()
+ {
+diff --git a/MAKEALL b/MAKEALL
+index c1fdb3e..3b84f11 100755
+--- a/MAKEALL
++++ b/MAKEALL
+@@ -1,11 +1,12 @@
+ #!/bin/sh
+ 
+ # Support Ubuntu ARM C compiler
+-export	CROSS_COMPILE=/usr/bin/arm-linux-gnueabi-
++
++source	./toolset.sh
+ 
+ init_make ()
+ {
+-	rm	-f	binaries/*
++	rm	-rf	binaries/*
+ 	rm	-rf	log
+ 	rm	-fr	result
+ 
+@@ -17,7 +18,7 @@ init_make ()
+ 	mkdir	-p	result/map
+ 	mkdir	-p	result/elf
+ 
+-	source	./mk-config-list.sh
++	source	./scripts/mk-config-list.sh
+ }
+ 
+ build ()
+diff --git a/MAKENEW b/MAKENEW
+index efb388a..640338b 100755
+--- a/MAKENEW
++++ b/MAKENEW
+@@ -1,46 +1,98 @@
+ #!/bin/sh
+-rm -rf log
+-mkdir -p log/FAIL
+-skip=0
+-rm -f .config
+-
+-if [ -f ../gcc.sh ] ; then
+-source ../gcc.sh
+-else
+-	echo "You need to supply a good Makefile environment similar to:"
+-	cat gcc.sh
+-	exit 0
+-fi
+-
+-MAKEFLAGS="CROSS_COMPILE=${CROSS_COMPILE} CONFIG_NO_DWARF_CFI_ASM=y"
+-
+-function build()
++
++# Support Ubuntu ARM C compiler
++export	CROSS_COMPILE=/usr/bin/arm-linux-gnueabi-
++
++CONFIG_LIST="\
++	at91sam9x5df		\
++	at91sam9x5ek		\
++	at91sam9x5nf		\
++	at91sam9x5sd		\
++	at91sam9x5sd_uboot	\
++	at91sam9g20ek_2mmcsd	\
++"
++SD_BOARDS="\
++	at91sam9g10sd		\
++	at91sam9g20ek_2mmcsd	\
++	at91sam9g20sd		\
++	at91sam9g45sd		\
++	at91sam9g45sdes_android	\
++	at91sam9g45sdes		\
++	at91sam9m10sd_android	\
++	at91sam9m10sd		\
++	at91sam9m10sdu		\
++	at91sam9m10sdes		\
++	at91sam9rlsd		\
++	at91sam9x5sd		\
++	at91sam9x5sd_uboot	\
++	"
++
++init_make ()
+ {
+-	if [ ${skip} == "0" ] ; then
+-		rm .config
+-		make $1_defconfig
+-		make menuconfig
+-		make BOARD=$2 update
+-#		make ${MAKEFLAGS}	> log/$1.log 2>&1 || mv log/$1.log log/FAIL/$1.log.FAIL
+-	fi
+-}
++	rm	-f	binaries/*
++	rm	-rf	log
++	rm	-fr	result
++
++	mkdir	-p	log
++	mkdir	-p	result/FAIL
++	mkdir	-p	result/OK
++	mkdir	-p	result/binaries
++	mkdir	-p	result
++	mkdir	-p	result/map
++	mkdir	-p	result/elf
+ 
+ 
+-if [ "$1" == "" ] ; then
+-build	at91sam9g45ek	at91sam9g45ek
+-build	at91sam9g45df	at91sam9g45ek
+-build	at91sam9g45nf	at91sam9g45ek
++}
+ 
+-build	at91sam9g45dfes	at91sam9g45ekes
+-build	at91sam9g45nfes	at91sam9g45ekes
++build ()
++{
++	printf	"%-30s"	"$1"
++	make -s distclean > /dev/null
++	make -j 8 -s $1_defconfig	> /dev/null
++#	make	menuconfig
++#	make	update			> /dev/null
++	sts=0
++	make -j 8 > log/$1.log 2>&1 3>log/$1.info	|| sts=1
++	if [ $sts == 0 ] ; then
++		mv log/$1.log result/OK/$1.log.OK
++		working=`expr $working + 1`
++		printf	"[OK]"
++		# "arning" supports English and Swedish !
++		warning_lines=`cat result/OK/$1.log.OK | grep arning | wc -l`
++		if ! [ $warning_lines == 0 ] ; then
++			printf "[Warnings]"
++		fi
++		echo
++	else
++		mv log/$1.log result/FAIL/$1.log.FAIL
++		failing=`expr $failing + 1`
++		echo	"[FAIL]"
++	fi
++	mv binaries/*.elf	result/elf
++	mv binaries/*.map	result/map
++	mv binaries/*.bin	result/binaries
++}
+ 
+-build	at91sam9m10ek	at91sam9m10ek
+-build	at91sam9m10df	at91sam9m10ek
+-build	at91sam9m10nf	at91sam9m10ek
++build_all ()
++{
++	failing=0;
++	working=0;
++	for f in $CONFIG_LIST ; do
++		build	$f
++	done
++	printf	"%s\n"	"------------------------------------"
++	total=`expr	$working + $failing`
++	printf	"%-30s[%d]\n"	"Number of Boards:"	$total
++	printf	"\n"
++	printf	"%-30s[%d]\n"	"Working Boards:"	$working
++	printf	"%-30s[%d]\n"	"Failing Boards:"	$failing
++}
+ 
++init_make
+ 
+-else
++time	build_all
+ 
+-build	$1
++echo
++echo
++echo "### Done!"
+ 
+-fi
+diff --git a/allboards.cfg b/allboards.cfg
+deleted file mode 100644
+index 01355c9..0000000
+--- a/allboards.cfg
++++ /dev/null
+@@ -1,60 +0,0 @@
+-afeb9260
+-at91cap9adk
+-at91cap9df
+-at91cap9f
+-at91cap9stk
+-at91cap9stkdf
+-at91cap9stkf
+-at91sam9260dfc
+-at91sam9260df
+-at91sam9260ek
+-at91sam9260nf
+-at91sam9261dfc
+-at91sam9261df
+-at91sam9261ek
+-at91sam9261nf
+-at91sam9263dfc
+-at91sam9263df
+-at91sam9263ek
+-at91sam9263nf
+-at91sam9g10df
+-at91sam9g10ek
+-at91sam9g10nf
+-at91sam9g10sd
+-at91sam9g20dfc
+-at91sam9g20df
+-at91sam9g20ek
+-at91sam9g20nf
+-at91sam9g20sd
+-at91sam9g45df
+-at91sam9g45ek
+-at91sam9g45nf
+-at91sam9g45sd
+-at91sam9g45dfes
+-at91sam9g45ekes
+-at91sam9g45nfes
+-at91sam9g45sdes_android
+-at91sam9g45sdes
+-at91sam9m10df
+-at91sam9m10ek
+-at91sam9m10nf
+-at91sam9m10sd_android
+-at91sam9m10sd
+-at91sam9m10sdu
+-at91sam9m10dfes
+-at91sam9m10ekes
+-at91sam9m10nfes
+-at91sam9m10sdes
+-at91sam9rldf
+-at91sam9rlek
+-at91sam9rlnf
+-at91sam9rlsd
+-at91sam9x5df
+-at91sam9x5ek
+-at91sam9x5nf
+-at91sam9x5sd
+-at91sam9x5sduboot
+-at91sam9xedfc
+-at91sam9xedf
+-at91sam9xeek
+-at91sam9xenf
+diff --git a/board/allboards.cfg b/board/allboards.cfg
+new file mode 100644
+index 0000000..d09874d
+--- /dev/null
++++ b/board/allboards.cfg
+@@ -0,0 +1,65 @@
++afeb9260
++at91cap9adk
++at91cap9df
++at91cap9f
++at91cap9stk
++at91cap9stkdf
++at91cap9stkf
++at91sam9260dfc
++at91sam9260df
++at91sam9260ek
++at91sam9260nf
++at91sam9261dfc
++at91sam9261df
++at91sam9261ek
++at91sam9261nf
++at91sam9263dfc
++at91sam9263df
++at91sam9263ek
++at91sam9263nf
++at91sam9g10df
++at91sam9g10ek
++at91sam9g10nf
++at91sam9g10sd
++at91sam9g20ek_2mmc
++at91sam9g20ek_2mmcdfc
++at91sam9g20ek_2mmcdf
++at91sam9g20ek_2mmcnf
++at91sam9g20ek_2mmcsd
++at91sam9g20dfc
++at91sam9g20df
++at91sam9g20ek
++at91sam9g20nf
++at91sam9g20sd
++at91sam9g45df
++at91sam9g45ek
++at91sam9g45nf
++at91sam9g45sd
++at91sam9g45dfes
++at91sam9g45ekes
++at91sam9g45nfes
++at91sam9g45sdes_android
++at91sam9g45sdes
++at91sam9m10df
++at91sam9m10ek
++at91sam9m10nf
++at91sam9m10sd_android
++at91sam9m10sd
++at91sam9m10sdu
++at91sam9m10dfes
++at91sam9m10ekes
++at91sam9m10nfes
++at91sam9m10sdes
++at91sam9rldf
++at91sam9rlek
++at91sam9rlnf
++at91sam9rlsd
++at91sam9x5df
++at91sam9x5ek
++at91sam9x5nf
++at91sam9x5sd
++at91sam9x5sd_uboot
++at91sam9xedfc
++at91sam9xedf
++at91sam9xeek
++at91sam9xenf
+diff --git a/mk-config-list.sh b/mk-config-list.sh
+deleted file mode 100755
+index a51e4a6..0000000
+--- a/mk-config-list.sh
++++ /dev/null
+@@ -1,18 +0,0 @@
+-#!/bin/sh
+-export	CONFIG_LIST=allboards.cfg
+-
+-mk_config ()
+-{
+-	rm	-f	$CONFIG_LIST
+-	for path in `ls	board/*/*_defconfig` ; do
+-#		echo	$path
+-#		echo	`basename $path`
+-		filename=`basename $path | sed s/_defconfig//g`
+-		echo	"$filename" >> $CONFIG_LIST
+-	done
+-}
+-
+-mk_config
+-
+-# cat	$CONFIG_LIST
+-
+diff --git a/scripts/mk-config-list.sh b/scripts/mk-config-list.sh
+new file mode 100755
+index 0000000..da5cc24
+--- /dev/null
++++ b/scripts/mk-config-list.sh
+@@ -0,0 +1,18 @@
++#!/bin/sh
++export	CONFIG_LIST=board/allboards.cfg
++
++mk_config ()
++{
++	rm	-f	$CONFIG_LIST
++	for path in `ls	board/*/*_defconfig` ; do
++#		echo	$path
++#		echo	`basename $path`
++		filename=`basename $path | sed s/_defconfig//g`
++		echo	"$filename" >> $CONFIG_LIST
++	done
++}
++
++mk_config
++
++# cat	$CONFIG_LIST
++
+diff --git a/scripts/mkboards.sh b/scripts/mkboards.sh
+new file mode 100755
+index 0000000..8588165
+--- /dev/null
++++ b/scripts/mkboards.sh
+@@ -0,0 +1,3 @@
++#!/bin/sh
++find board -depth -print | grep  defconfig | sed -e "s/board\///g"	> board/boards
++
+diff --git a/toolset.sh b/toolset.sh
+new file mode 100755
+index 0000000..a73f4ae
+--- /dev/null
++++ b/toolset.sh
+@@ -0,0 +1,16 @@
++#!/bin/sh
++
++if	[ "x$CROSS_COMPILE" == "x" ] ; then
++
++	if	[ -f /usr/local/armv5te/bin/arm-angstrom-linux-gnueabi-gcc ] ; then
++		export	CROSS_COMPILE=/usr/local/armv5te/bin/arm-angstrom-linux-gnueabi-
++	elif	[ -f /usr/local/armv5te/bin/arm-angstrom-linux-gnueabi-gcc ] ; then
++		export	CROSS_COMPILE=/usr/local/armv5te/bin/arm-angstrom-linux-gnueabi-
++	else
++		echo	"You need to set CROSS_COMPILE"
++		exit	1
++	fi
++fi
++echo	"Using CROSS_COMPILE=$CROSS_COMPILE"
++
++
+-- 
+1.7.5.4
+

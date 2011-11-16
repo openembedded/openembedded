@@ -1,0 +1,260 @@
+From eb818912c94568ead8780aa69f1a74091fdf66e8 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Sun, 23 Oct 2011 15:45:57 +0200
+Subject: [PATCH 11/39] build scripts:	Update buildscripts
+
+Default cross_compiler = Ubuntus ARM compiler
+
+mk-config-list.sh:
+	Sourced to create "allboards.cfg"
+
+allboards.cfg:
+	This is a list of all boards with 'defconfig's.
+
+ALLCONFIGS:
+	Will "make oldconfig" on all boards, allowing
+	the user to manually select options, undefined in the
+	current defconfig, and will save the result.
+
+MAKEALL:
+	Will build all the the configurations,
+	with build status in the "result" folder.
+
+	"result" contains the following folders
+	* OK		- log files of all successful builds
+	* FAIL		- log files of all failed builds
+	* binaries	- bin files
+	* elf		- elf files
+	* map		- map files
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@telia.com>
+---
+ ALLCONFIGS        |   25 +++++++++++++++++
+ MAKEALL           |   79 ++++++++++++++++++++---------------------------------
+ allboards.cfg     |   60 ++++++++++++++++++++++++++++++++++++++++
+ mk-config-list.sh |   18 ++++++++++++
+ 4 files changed, 133 insertions(+), 49 deletions(-)
+ create mode 100755 ALLCONFIGS
+ create mode 100644 allboards.cfg
+ create mode 100755 mk-config-list.sh
+
+diff --git a/ALLCONFIGS b/ALLCONFIGS
+new file mode 100755
+index 0000000..fc242c5
+--- /dev/null
++++ b/ALLCONFIGS
+@@ -0,0 +1,25 @@
++#!/bin/sh
++# Support Ubuntu ARM C compiler
++export	CROSS_COMPILE?=/usr/bin/arm-linux-gnueabi-
++
++source	./mk-config-list.sh
++
++reconfig ()
++{
++	make	$1_defconfig
++	make	oldconfig
++	make	CROSS_COMPILE=arm-linux- update
++}
++
++reconfig_all ()
++{
++	for f in `cat $CONFIG_LIST` ; do
++		reconfig	$f
++	done
++}
++
++reconfig_all
++
++echo
++echo
++echo "### Done!"
+diff --git a/MAKEALL b/MAKEALL
+index 94eedae..fdb72da 100755
+--- a/MAKEALL
++++ b/MAKEALL
+@@ -1,61 +1,42 @@
+ #!/bin/sh
+-rm -f binaries/*
+-rm -rf log
+-mkdir -p log/FAIL
+-skip=0
+ 
+-function build()
+-{
+-	make distclean
+-	make $1_defconfig
+-	make > log/$1.log 2>&1 || mv log/$1.log log/FAIL/$1.log.FAIL
+-}
+-
+-#build	at91cap9adk
+-#build	at91cap9df
+-#build	at91cap9f
+-
+-#build	at91cap9stk
+-#build	at91cap9stkdf
+-#build	at91cap9stkf
+-
+-build	at91sam9g20df
+-build	at91sam9g20sd
+-build	at91sam9g20nf
+-
+-build	at91sam9g10df
+-build	at91sam9g10sd
+-build	at91sam9g10nf
++# Support Ubuntu ARM C compiler
++export	CROSS_COMPILE?=/usr/bin/arm-linux-gnueabi-
+ 
+-build	at91sam9g45dfes
+-build	at91sam9g45sdes
+-build	at91sam9g45nfes
+ 
+-build	at91sam9g45df
+-build	at91sam9g45sd
+-build	at91sam9g45nf
++rm	-f	binaries/*
++rm	-rf	log
++rm	-fr	result
+ 
+-build	at91sam9m10df
+-build	at91sam9m10sd
+-build	at91sam9m10nf
++mkdir	-p	log
++mkdir	-p	result/FAIL
++mkdir	-p	result/OK
++mkdir	-p	result/binaries
++mkdir	-p	result
++mkdir	-p	result/map
++mkdir	-p	result/elf
+ 
+-build	at91sam9rldf
+-build	at91sam9rlsd
+-build	at91sam9rlnf
++source	./mk-config-list.sh
+ 
+-#build	at91sam9xedfc
+-#build	at91sam9xedf
+-#build	at91sam9xeek
+-#build	at91sam9xenf
+-
+-build	at91sam9260df
+-build	at91sam9260nf
++build ()
++{
++	make distclean
++	make $1_defconfig
++	make > log/$1.log 2>&1 || mv log/$1.log result/FAIL/$1.log.FAIL
++	mv log/$1.log result/OK/$1.log.OK	|| echo
++	mv binaries/*.elf	result/elf
++	mv binaries/*.map	result/map
++	mv binaries/*.bin	result/binaries
++}
+ 
+-build	at91sam9261df
+-build	at91sam9261nf
++build_all ()
++{
++	for f in `cat $CONFIG_LIST` ; do
++		build	$f
++	done
++}
+ 
+-build	at91sam9263df
+-build	at91sam9263nf
++build_all
+ 
+ echo
+ echo
+diff --git a/allboards.cfg b/allboards.cfg
+new file mode 100644
+index 0000000..01355c9
+--- /dev/null
++++ b/allboards.cfg
+@@ -0,0 +1,60 @@
++afeb9260
++at91cap9adk
++at91cap9df
++at91cap9f
++at91cap9stk
++at91cap9stkdf
++at91cap9stkf
++at91sam9260dfc
++at91sam9260df
++at91sam9260ek
++at91sam9260nf
++at91sam9261dfc
++at91sam9261df
++at91sam9261ek
++at91sam9261nf
++at91sam9263dfc
++at91sam9263df
++at91sam9263ek
++at91sam9263nf
++at91sam9g10df
++at91sam9g10ek
++at91sam9g10nf
++at91sam9g10sd
++at91sam9g20dfc
++at91sam9g20df
++at91sam9g20ek
++at91sam9g20nf
++at91sam9g20sd
++at91sam9g45df
++at91sam9g45ek
++at91sam9g45nf
++at91sam9g45sd
++at91sam9g45dfes
++at91sam9g45ekes
++at91sam9g45nfes
++at91sam9g45sdes_android
++at91sam9g45sdes
++at91sam9m10df
++at91sam9m10ek
++at91sam9m10nf
++at91sam9m10sd_android
++at91sam9m10sd
++at91sam9m10sdu
++at91sam9m10dfes
++at91sam9m10ekes
++at91sam9m10nfes
++at91sam9m10sdes
++at91sam9rldf
++at91sam9rlek
++at91sam9rlnf
++at91sam9rlsd
++at91sam9x5df
++at91sam9x5ek
++at91sam9x5nf
++at91sam9x5sd
++at91sam9x5sduboot
++at91sam9xedfc
++at91sam9xedf
++at91sam9xeek
++at91sam9xenf
+diff --git a/mk-config-list.sh b/mk-config-list.sh
+new file mode 100755
+index 0000000..a51e4a6
+--- /dev/null
++++ b/mk-config-list.sh
+@@ -0,0 +1,18 @@
++#!/bin/sh
++export	CONFIG_LIST=allboards.cfg
++
++mk_config ()
++{
++	rm	-f	$CONFIG_LIST
++	for path in `ls	board/*/*_defconfig` ; do
++#		echo	$path
++#		echo	`basename $path`
++		filename=`basename $path | sed s/_defconfig//g`
++		echo	"$filename" >> $CONFIG_LIST
++	done
++}
++
++mk_config
++
++# cat	$CONFIG_LIST
++
+-- 
+1.7.5.4
+

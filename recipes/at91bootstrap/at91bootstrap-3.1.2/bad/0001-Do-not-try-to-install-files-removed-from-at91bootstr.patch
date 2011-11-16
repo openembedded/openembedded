@@ -1,0 +1,29 @@
+From 0c90baa60cb7946dcd953760d9a498161faf1514 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Wed, 19 Oct 2011 23:02:39 +0200
+Subject: [PATCH 1/2] Do not try to install files removed from at91bootstrap
+
+---
+ Makefile |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 033c288..2b4ea0c 100644
+--- a/Makefile
++++ b/Makefile
+@@ -195,9 +195,9 @@ EXTRA_INSTALL+=files/AT91SAM9G45_RomCode_Replacement_13.bin.zip
+ EXTRA_INSTALL+=files/README.TXT
+ endif
+ EXTRA_INSTALL+=scripts/fixboot.py
+-EXTRA_INSTALL+=files/Makefile.jffs2
+-EXTRA_INSTALL+=files/NAND-empty-1MB.jffs2.bz2
+-EXTRA_INSTALL+=files/SD-card-tools.tar.bz2
++#EXTRA_INSTALL+=files/Makefile.jffs2
++#EXTRA_INSTALL+=files/NAND-empty-1MB.jffs2.bz2
++#EXTRA_INSTALL+=files/SD-card-tools.tar.bz2
+ 
+ ifeq ($(CONFIG_RAW_AT91),y)
+ RAW_AT91=$(BINDIR)raw-at91
+-- 
+1.7.5.4
+

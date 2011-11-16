@@ -1,0 +1,1365 @@
+From 24a61bebcaa0087684e355b2d6f1340a1985e09e Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Fri, 28 Oct 2011 12:35:40 +0200
+Subject: [PATCH 28/39] at91sam9g20ek_2mmc: add BSP
+
+---
+ board/Config.in                                    |   19 +
+ board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmc.c      |  357 ++++++++++++++++++++
+ board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmc.h      |  116 +++++++
+ .../at91sam9g20ek_2mmc_defconfig                   |  127 +++++++
+ .../at91sam9g20ek_2mmcdf_defconfig                 |  127 +++++++
+ .../at91sam9g20ek_2mmcdfc_defconfig                |  127 +++++++
+ .../at91sam9g20ek_2mmcnf_defconfig                 |  109 ++++++
+ .../at91sam9g20ek_2mmcsd_defconfig                 |  104 ++++++
+ board/at91sam9g20ek_2mmc/board.mk                  |    5 +
+ board/at91sam9g20ek_2mmc/makefile                  |   16 +
+ board/at91sam9g20ek_2mmc/sources                   |  127 +++++++
+ 11 files changed, 1234 insertions(+), 0 deletions(-)
+ create mode 100644 board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmc.c
+ create mode 100644 board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmc.h
+ create mode 100644 board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmc_defconfig
+ create mode 100644 board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmcdf_defconfig
+ create mode 100644 board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmcdfc_defconfig
+ create mode 100644 board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmcnf_defconfig
+ create mode 100644 board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmcsd_defconfig
+ create mode 100644 board/at91sam9g20ek_2mmc/board.mk
+ create mode 100644 board/at91sam9g20ek_2mmc/makefile
+ create mode 100644 board/at91sam9g20ek_2mmc/sources
+
+diff --git a/board/Config.in b/board/Config.in
+index 7ec9a49..7b2cc8f 100644
+--- a/board/Config.in
++++ b/board/Config.in
+@@ -114,6 +114,21 @@ config	CONFIG_AT91SAM9G20EK
+ 	help
+ 	  Use the AT91SAM9G20EK Development board
+ 
++config	CONFIG_AT91SAM9G20EK_2MMC
++	bool "at91sam9g20ek_2mmc"
++	select CONFIG_SDRAM
++	select ALLOW_DATAFLASH
++	select ALLOW_NANDFLASH
++	select ALLOW_SDCARD
++	select DATAFLASHCARD_ON_CS0
++	select ALLOW_CPU_CLK_400MHZ
++	select ALLOW_CRYSTAL_18_432MHZ
++	select ALLOW_BOOT_FROM_DATAFLASH_CS0
++	select ALLOW_BOOT_FROM_DATAFLASH_CS1
++	select ALLOW_DATAFLASH_RECOVERY
++	help
++	  Use the AT91SAM9G20EK Development board with two MMC slots
++
+ config	CONFIG_AT91SAM9G45EK
+ 	bool "at91sam9g45ek"
+ 	select CONFIG_DDR2
+@@ -250,6 +265,7 @@ config CONFIG_CHIP
+ 	default "AT91SAM9XE"	if CONFIG_AT91SAM9XEEK
+ 	default "AT91SAM9G10"	if CONFIG_AT91SAM9G10EK
+ 	default "AT91SAM9G20"	if CONFIG_AT91SAM9G20EK
++	default "AT91SAM9G20"	if CONFIG_AT91SAM9G20EK_2MMC
+ 	default "AT91SAM9G45"	if CONFIG_AT91SAM9G45EK
+ 	default "AT91SAM9G45"	if CONFIG_AT91SAM9G45EKES
+ 	default "AT91SAM9M10"	if CONFIG_AT91SAM9M10EK
+@@ -271,6 +287,7 @@ config CONFIG_BOARD
+ 	default "at91sam9xeek"	if CONFIG_AT91SAM9XEEK
+ 	default "at91sam9g10ek"	if CONFIG_AT91SAM9G10EK
+ 	default "at91sam9g20ek"	if CONFIG_AT91SAM9G20EK
++	default "at91sam9g20ek_2mmc"	if CONFIG_AT91SAM9G20EK_2MMC
+ 	default "at91sam9g45ek"	if CONFIG_AT91SAM9G45EK
+ 	default "at91sam9x5ek"	if CONFIG_AT91SAM9X5EK
+ 	default "at91sam9g45ekes" if CONFIG_AT91SAM9G45EKES
+@@ -292,6 +309,7 @@ config CONFIG_MACH_TYPE
+ 	default "0x44B"	if CONFIG_AT91SAM9XEEK
+ 	default "0x86F"	if CONFIG_AT91SAM9G10EK
+ 	default "0x658"	if CONFIG_AT91SAM9G20EK
++	default "0x8F0"	if CONFIG_AT91SAM9G20EK_2MMC
+ 	default "1830"	if CONFIG_AT91SAM9G45EK		# 1830
+ 	default "2212"	if CONFIG_AT91SAM9G45EKES	# 2212
+ 	default "1830"	if CONFIG_AT91SAM9M10EK		# 1830
+@@ -333,6 +351,7 @@ config CONFIG_TOP_OF_MEMORY
+ 	default "0x306000"	if CONFIG_AT91SAM9XEEK
+ 	default "0x304000"	if CONFIG_AT91SAM9G10EK
+ 	default "0x304000"	if CONFIG_AT91SAM9G20EK
++	default "0x304000"	if CONFIG_AT91SAM9G20EK_2MMC
+ 	default "0x30A000"	if CONFIG_AT91SAM9G45EK
+ 	default "0x30A000"	if CONFIG_AT91SAM9G45EKES
+ 	default "0x30A000"	if CONFIG_AT91SAM9M10EK
+diff --git a/board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmc.c b/board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmc.c
+new file mode 100644
+index 0000000..3a84c83
+--- /dev/null
++++ b/board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmc.c
+@@ -0,0 +1,357 @@
++/* ----------------------------------------------------------------------------
++ *         ATMEL Microcontroller Software Support  -  ROUSSET  -
++ * ----------------------------------------------------------------------------
++ * Copyright (c) 2008, Atmel Corporation
++
++ * All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions are met:
++ *
++ * - Redistributions of source code must retain the above copyright notice,
++ * this list of conditions and the disclaimer below.
++ *
++ * Atmel's name may not be used to endorse or promote products derived from
++ * this software without specific prior written permission.
++ *
++ * DISCLAIMER: THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR
++ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
++ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
++ * DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR ANY DIRECT, INDIRECT,
++ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
++ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
++ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
++ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
++ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ * ----------------------------------------------------------------------------
++ * File Name           : at91sam9g20ek.c
++ * Object              :
++ * Creation            : NFe Jan 2008
++ *-----------------------------------------------------------------------------
++ */
++#if defined(WINCE) && !defined(CONFIG_AT91SAM9G20EK_2MMC)
++
++#else
++
++#include "board-support.h"
++
++int get_cp15(void);
++
++void set_cp15(unsigned int value);
++
++int get_cpsr(void);
++
++void set_cpsr(unsigned int value);
++
++#ifdef CONFIG_HW_INIT
++/*----------------------------------------------------------------------------*/
++/* \fn    hw_init							      */
++/* \brief This function performs very low level HW initialization	      */
++/* This function is invoked as soon as possible during the c_startup	      */
++/* The bss segment must be initialized					      */
++/*----------------------------------------------------------------------------*/
++void hw_init(void)
++{
++    unsigned int cp15;
++
++    /*
++     * Configure PIOs
++     */
++    const struct pio_desc hw_pio[] = {
++#ifdef CONFIG_DEBUG
++        {"RXD", AT91C_PIN_PB(14), 0, PIO_DEFAULT, PIO_PERIPH_A},
++        {"TXD", AT91C_PIN_PB(15), 0, PIO_DEFAULT, PIO_PERIPH_A},
++#endif
++        {(char *)0, 0, 0, PIO_DEFAULT, PIO_PERIPH_A},
++    };
++
++    /*
++     * Disable watchdog
++     */
++    writel(AT91C_WDTC_WDDIS, AT91C_BASE_WDTC + WDTC_WDMR);
++
++    /*
++     * At this stage the main oscillator is supposed to be enabled
++     * * PCK = MCK = MOSC
++     */
++    writel(0x00, AT91C_BASE_PMC + PMC_PLLICPR);
++
++    /*
++     * Configure PLLA = MOSC * (PLL_MULA + 1) / PLL_DIVA
++     */
++    pmc_cfg_plla(PLLA_SETTINGS, PLL_LOCK_TIMEOUT);
++
++    /*
++     * PCK = PLLA/2 = 3 * MCK
++     */
++    pmc_cfg_mck(MCKR_SETTINGS, PLL_LOCK_TIMEOUT);
++    /*
++     * Switch MCK on PLLA output
++     */
++    pmc_cfg_mck(MCKR_CSS_SETTINGS, PLL_LOCK_TIMEOUT);
++
++    /*
++     * Configure PLLB
++     */
++    pmc_cfg_pllb(PLLB_SETTINGS, PLL_LOCK_TIMEOUT);
++
++    /*
++     * Enable External Reset
++     */
++    writel(AT91C_RSTC_KEY_UNLOCK
++           || AT91C_RSTC_URSTEN, AT91C_BASE_RSTC + RSTC_RMR);
++
++    /*
++     * Configure CP15
++     */
++    cp15 = get_cp15();
++    //cp15 |= I_CACHE;
++    set_cp15(cp15);
++
++    /*
++     * Enable External Reset
++     */
++    writel(AT91C_RSTC_KEY_UNLOCK
++           || AT91C_RSTC_URSTEN, AT91C_BASE_RSTC + RSTC_RMR);
++    /*
++     * Configure the PIO controller
++     */
++    pio_setup(hw_pio);
++
++    /*
++     * Configure the EBI Slave Slot Cycle to 64
++     */
++    writel((readl((AT91C_BASE_MATRIX + MATRIX_SCFG3)) & ~0xFF) | 0x40,
++           (AT91C_BASE_MATRIX + MATRIX_SCFG3));
++
++#ifdef CONFIG_DEBUG
++    /*
++     * Enable Debug messages on the DBGU
++     */
++    dbgu_init(BAUDRATE(MASTER_CLOCK, 115200));
++    dbgu_print("Start AT91Bootstrap...\n\r");
++#endif                          /* CONFIG_DEBUG */
++
++#ifdef CONFIG_SDRAM
++    /*
++     * Initialize the matrix (memory voltage = 3.3)
++     */
++    writel((readl(AT91C_BASE_CCFG + CCFG_EBICSA)) | AT91C_EBI_CS1A_SDRAMC |
++           (1 << 16), AT91C_BASE_CCFG + CCFG_EBICSA);
++
++    /*
++     * Configure SDRAM Controller
++     */
++    sdram_init(AT91C_SDRAMC_NC_9 | AT91C_SDRAMC_NR_13 | AT91C_SDRAMC_CAS_3 | AT91C_SDRAMC_NB_4_BANKS | AT91C_SDRAMC_DBW_32_BITS | AT91C_SDRAMC_TWR_3 | AT91C_SDRAMC_TRC_9 | AT91C_SDRAMC_TRP_3 | AT91C_SDRAMC_TRCD_3 | AT91C_SDRAMC_TRAS_6 | AT91C_SDRAMC_TXSR_10,      /* Control Register */
++               (MASTER_CLOCK * 7) / 1000000,    /* Refresh Timer Register */
++               AT91C_SDRAMC_MD_SDRAM);  /* SDRAM (no low power)   */
++
++#endif                          /* CONFIG_SDRAM */
++}
++#endif                          /* CONFIG_HW_INIT */
++
++#ifdef CONFIG_SDRAM
++/*------------------------------------------------------------------------------*/
++/* \fn    sdramc_hw_init							*/
++/* \brief This function performs SDRAMC HW initialization			*/
++/*------------------------------------------------------------------------------*/
++void sdramc_hw_init(void)
++{
++    /*
++     * Configure PIOs
++     */
++/*	const struct pio_desc sdramc_pio[] = {
++		{"D16", AT91C_PIN_PC(16), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D17", AT91C_PIN_PC(17), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D18", AT91C_PIN_PC(18), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D19", AT91C_PIN_PC(19), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D20", AT91C_PIN_PC(20), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D21", AT91C_PIN_PC(21), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D22", AT91C_PIN_PC(22), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D23", AT91C_PIN_PC(23), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D24", AT91C_PIN_PC(24), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D25", AT91C_PIN_PC(25), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D26", AT91C_PIN_PC(26), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D27", AT91C_PIN_PC(27), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D28", AT91C_PIN_PC(28), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D29", AT91C_PIN_PC(29), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D30", AT91C_PIN_PC(30), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{"D31", AT91C_PIN_PC(31), 0, PIO_DEFAULT, PIO_PERIPH_A},
++		{(char *) 0, 0, 0, PIO_DEFAULT, PIO_PERIPH_A},
++	};
++*/
++    /*
++     * Configure the SDRAMC PIO controller to output PCK0
++     */
++/*	pio_setup(sdramc_pio); */
++
++    writel(0xFFFF0000, AT91C_BASE_PIOC + PIO_ASR(0));
++    writel(0xFFFF0000, AT91C_BASE_PIOC + PIO_PDR(0));
++
++}
++#endif                          /* CONFIG_SDRAM */
++
++#ifdef CONFIG_DATAFLASH
++#if	defined(CONFIG_DATAFLASH_RECOVERY)
++/*------------------------------------------------------------------------------*/
++/* \fn    df_recovery								*/
++/* \brief This function erases DataFlash Page 0 if BP4 is pressed 		*/
++/*        during boot sequence							*/
++/*------------------------------------------------------------------------------*/
++void df_recovery(AT91PS_DF pDf)
++{
++#if (AT91C_SPI_PCS_DATAFLASH == AT91C_SPI_PCS1_DATAFLASH)
++    /*
++     * Configure PIOs
++     */
++    const struct pio_desc bp4_pio[] = {
++        {"BP4", AT91C_PIN_PA(31), 0, PIO_PULLUP, PIO_INPUT},
++        {(char *)0, 0, 0, PIO_DEFAULT, PIO_PERIPH_A},
++    };
++
++    /*
++     * Configure the PIO controller
++     */
++    writel((1 << AT91C_ID_PIOA), PMC_PCER + AT91C_BASE_PMC);
++    pio_setup(bp4_pio);
++
++    /*
++     * If BP4 is pressed during Boot sequence
++     */
++    /*
++     * Erase NandFlash block 0
++     */
++    if (!pio_get_value(AT91C_PIN_PA(31)))
++        df_page_erase(pDf, 0);
++#endif
++}
++#endif
++
++/*------------------------------------------------------------------------------*/
++/* \fn    df_hw_init								*/
++/* \brief This function performs DataFlash HW initialization			*/
++/*------------------------------------------------------------------------------*/
++void df_hw_init(void)
++{
++    /*
++     * Configure PIOs
++     */
++    const struct pio_desc df_pio[] = {
++        {"MISO", AT91C_PIN_PA(0), 0, PIO_DEFAULT, PIO_PERIPH_A},
++        {"MOSI", AT91C_PIN_PA(1), 0, PIO_DEFAULT, PIO_PERIPH_A},
++        {"SPCK", AT91C_PIN_PA(2), 0, PIO_DEFAULT, PIO_PERIPH_A},
++#if (AT91C_SPI_PCS_DATAFLASH == AT91C_SPI_PCS0_DATAFLASH)
++        {"NPCS0", AT91C_PIN_PA(3), 0, PIO_DEFAULT, PIO_PERIPH_A},
++#endif
++#if (AT91C_SPI_PCS_DATAFLASH == AT91C_SPI_PCS1_DATAFLASH)
++        {"NPCS1", AT91C_PIN_PC(11), 0, PIO_DEFAULT, PIO_PERIPH_B},
++#endif
++        {(char *)0, 0, 0, PIO_DEFAULT, PIO_PERIPH_A},
++    };
++
++    /*
++     * Configure the PIO controller
++     */
++    pio_setup(df_pio);
++}
++#endif                          /* CONFIG_DATAFLASH */
++
++#ifdef CONFIG_NANDFLASH
++/*------------------------------------------------------------------------------*/
++/* \fn    nand_recovery						*/
++/* \brief This function erases NandFlash Block 0 if BP4 is pressed 		*/
++/*        during boot sequence							*/
++/*------------------------------------------------------------------------------*/
++static void nand_recovery(void)
++{
++    /*
++     * Configure PIOs
++     */
++    const struct pio_desc bp4_pio[] = {
++        {"BP4", AT91C_PIN_PA(31), 0, PIO_PULLUP, PIO_INPUT},
++        {(char *)0, 0, 0, PIO_DEFAULT, PIO_PERIPH_A},
++    };
++
++    /*
++     * Configure the PIO controller
++     */
++    writel((1 << AT91C_ID_PIOA), PMC_PCER + AT91C_BASE_PMC);
++    pio_setup(bp4_pio);
++
++    /*
++     * If BP4 is pressed during Boot sequence
++     */
++    /*
++     * Erase NandFlash block 0
++     */
++    if (!pio_get_value(AT91C_PIN_PA(31)))
++        AT91F_NandEraseBlock0();
++}
++
++/*------------------------------------------------------------------------------*/
++/* \fn    nandflash_hw_init							*/
++/* \brief NandFlash HW init							*/
++/*------------------------------------------------------------------------------*/
++void nandflash_hw_init(void)
++{
++    /*
++     * Configure PIOs
++     */
++    const struct pio_desc nand_pio[] = {
++        {"RDY_BSY", AT91C_PIN_PC(13), 0, PIO_PULLUP, PIO_INPUT},
++        {"NANDCS", AT91C_PIN_PC(14), 0, PIO_PULLUP, PIO_OUTPUT},
++        {(char *)0, 0, 0, PIO_DEFAULT, PIO_PERIPH_A},
++    };
++
++    /*
++     * Setup Smart Media, first enable the address range of CS3 in HMATRIX user interface
++     */
++    writel(readl(AT91C_BASE_CCFG + CCFG_EBICSA) | AT91C_EBI_CS3A_SM,
++           AT91C_BASE_CCFG + CCFG_EBICSA);
++
++    /*
++     * Configure SMC CS3
++     */
++    writel((AT91C_SM_NWE_SETUP | AT91C_SM_NCS_WR_SETUP | AT91C_SM_NRD_SETUP |
++            AT91C_SM_NCS_RD_SETUP), AT91C_BASE_SMC + SMC_SETUP3);
++    writel((AT91C_SM_NWE_PULSE | AT91C_SM_NCS_WR_PULSE | AT91C_SM_NRD_PULSE |
++            AT91C_SM_NCS_RD_PULSE), AT91C_BASE_SMC + SMC_PULSE3);
++    writel((AT91C_SM_NWE_CYCLE | AT91C_SM_NRD_CYCLE),
++           AT91C_BASE_SMC + SMC_CYCLE3);
++    writel((AT91C_SMC_READMODE | AT91C_SMC_WRITEMODE |
++            AT91C_SMC_NWAITM_NWAIT_DISABLE | AT91C_SMC_DBW_WIDTH_SIXTEEN_BITS |
++            AT91C_SM_TDF), AT91C_BASE_SMC + SMC_CTRL3);
++
++    /*
++     * Configure the PIO controller
++     */
++    writel((1 << AT91C_ID_PIOC), PMC_PCER + AT91C_BASE_PMC);
++    pio_setup(nand_pio);
++
++    nand_recovery();
++}
++
++/*------------------------------------------------------------------------------*/
++/* \fn    nandflash_cfg_16bits_dbw_init						*/
++/* \brief Configure SMC in 16 bits mode						*/
++/*------------------------------------------------------------------------------*/
++void nandflash_cfg_16bits_dbw_init(void)
++{
++    writel(readl(AT91C_BASE_SMC + SMC_CTRL3) | AT91C_SMC_DBW_WIDTH_SIXTEEN_BITS,
++           AT91C_BASE_SMC + SMC_CTRL3);
++}
++
++/*------------------------------------------------------------------------------*/
++/* \fn    nandflash_cfg_8bits_dbw_init						*/
++/* \brief Configure SMC in 8 bits mode						*/
++/*------------------------------------------------------------------------------*/
++void nandflash_cfg_8bits_dbw_init(void)
++{
++    writel((readl(AT91C_BASE_SMC + SMC_CTRL3) & ~(AT91C_SMC_DBW)) |
++           AT91C_SMC_DBW_WIDTH_EIGTH_BITS, AT91C_BASE_SMC + SMC_CTRL3);
++}
++
++#endif                          /* #ifdef CONFIG_NANDFLASH */
++
++#endif                          /* CONFIG_AT91SAM9G20EK */
+diff --git a/board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmc.h b/board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmc.h
+new file mode 100644
+index 0000000..c1092eb
+--- /dev/null
++++ b/board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmc.h
+@@ -0,0 +1,116 @@
++/* ----------------------------------------------------------------------------
++ *         ATMEL Microcontroller Software Support  -  ROUSSET  -
++ * ----------------------------------------------------------------------------
++ * Copyright (c) 2008, Atmel Corporation
++
++ * All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions are met:
++ *
++ * - Redistributions of source code must retain the above copyright notice,
++ * this list of conditions and the disclaimer below.
++ *
++ * Atmel's name may not be used to endorse or promote products derived from
++ * this software without specific prior written permission.
++ *
++ * DISCLAIMER: THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR
++ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
++ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
++ * DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR ANY DIRECT, INDIRECT,
++ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
++ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
++ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
++ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
++ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ * ----------------------------------------------------------------------------
++ * File Name           : at91sam9g20ek.h
++ * Object              :
++ * Creation            : NFe Jan 2008
++ *-----------------------------------------------------------------------------
++ */
++#ifndef _AT91SAM9G20EK_H
++#define _AT91SAM9G20EK_H
++
++/* ******************************************************************* */
++/* PMC Settings                                                        */
++/*                                                                     */
++/* The main oscillator is enabled as soon as possible in the c_startup */
++/* and MCK is switched on the main oscillator.                         */
++/* PLL initialization is done later in the hw_init() function          */
++/* ******************************************************************* */
++#define MASTER_CLOCK		(132096000)
++#define	TOP_OF_MEMORY		0x304000
++#define PLL_LOCK_TIMEOUT	1000000
++
++#define PLLA_SETTINGS	0x202A3F01
++#define PLLB_SETTINGS	0x10193F05
++
++/* Switch MCK on PLLA output PCK = PLLA/2 = 3 * MCK */
++#define MCKR_SETTINGS		0x1300
++#define MCKR_CSS_SETTINGS	(AT91C_PMC_CSS_PLLA_CLK | MCKR_SETTINGS)
++
++/* ******************************************************************* */
++/* DataFlash Settings                                                  */
++/*                                                                     */
++/* ******************************************************************* */
++#define AT91C_BASE_SPI	AT91C_BASE_SPI0
++#define AT91C_ID_SPI	AT91C_ID_SPI0
++
++/* AC characteristics */
++/* DLYBS = tCSS= 250ns min and DLYBCT = tCSH = 250ns */
++#define DATAFLASH_TCSS		(0x22 << 16)
++#define DATAFLASH_TCHS		(0x1 << 24)
++
++#define DF_CS_SETTINGS 		(AT91C_SPI_NCPHA | (AT91C_SPI_DLYBS & DATAFLASH_TCSS) | (AT91C_SPI_DLYBCT & DATAFLASH_TCHS) | ((MASTER_CLOCK / AT91C_SPI_CLK) << 8))
++
++/* ******************************************************************* */
++/* NandFlash Settings                                                  */
++/*                                                                     */
++/* ******************************************************************* */
++#define AT91C_SMARTMEDIA_BASE	0x40000000
++
++#define AT91_SMART_MEDIA_ALE    (1 << 21)       /* our ALE is AD21 */
++#define AT91_SMART_MEDIA_CLE    (1 << 22)       /* our CLE is AD22 */
++
++#define NAND_DISABLE_CE() do { *(volatile unsigned int *)AT91C_PIOC_SODR = AT91C_PIO_PC14;} while(0)
++#define NAND_ENABLE_CE() do { *(volatile unsigned int *)AT91C_PIOC_CODR = AT91C_PIO_PC14;} while(0)
++
++#define NAND_WAIT_READY() while (!(*(volatile unsigned int *)AT91C_PIOC_PDSR & AT91C_PIO_PC13))
++
++/* ******************************************************************** */
++/* SMC Chip Select 3 Timings for NandFlash for MASTER_CLOCK = 133000000.*/
++/* Please refer to SMC section in AT91SAM9 datasheet to learn how 	*/
++/* to generate these values. 						*/
++/* ******************************************************************** */
++#define AT91C_SM_NWE_SETUP	(2 << 0)
++#define AT91C_SM_NCS_WR_SETUP	(0 << 8)
++#define AT91C_SM_NRD_SETUP	(2 << 16)
++#define AT91C_SM_NCS_RD_SETUP	(0 << 24)
++
++#define AT91C_SM_NWE_PULSE 	(4 << 0)
++#define AT91C_SM_NCS_WR_PULSE	(4 << 8)
++#define AT91C_SM_NRD_PULSE	(4 << 16)
++#define AT91C_SM_NCS_RD_PULSE	(4 << 24)
++
++#define AT91C_SM_NWE_CYCLE 	(7 << 0)
++#define AT91C_SM_NRD_CYCLE	(7 << 16)
++
++#define AT91C_SM_TDF	        (3 << 16)
++
++#define OP_BOOTSTRAP_MCI_on
++#define BOARD_SD_PIN_CD \
++    {1 << 9, AT91C_BASE_PIOC, AT91C_ID_PIOC, PIO_INPUT, PIO_PULLUP}
++
++#define BOARD_SD_PINS \
++    {0x0000003B, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_B, PIO_PULLUP}, \
++    {1 << 8, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_DEFAULT}
++
++/// List of second MCI slot pins definitions.
++#define BOARD_SD_MCI1_PINS  \
++    {0xec0, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_PULLUP}, \
++    {1 << 8, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_DEFAULT}
++
++#define at91sam9g20
++#endif                          /* _AT91SAM9G20EK_H */
+diff --git a/board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmc_defconfig b/board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmc_defconfig
+new file mode 100644
+index 0000000..30aa60d
+--- /dev/null
++++ b/board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmc_defconfig
+@@ -0,0 +1,127 @@
++#
++# Automatically generated make config: don't edit
++# Thu Oct 27 21:23:50 2011
++#
++HAVE_DOT_CONFIG=y
++CONFIG_BOARDNAME="at91sam9g20ek_2mmc"
++# CONFIG_AT91SAM9260EK is not set
++# CONFIG_AT91SAM9261EK is not set
++# CONFIG_AT91SAM9263EK is not set
++# CONFIG_AT91SAM9RLEK is not set
++# CONFIG_AT91SAM9XEEK is not set
++# CONFIG_AT91SAM9G10EK is not set
++# CONFIG_AT91SAM9G20EK is not set
++CONFIG_AT91SAM9G20EK_2MMC=y
++# CONFIG_AT91SAM9G45EK is not set
++# CONFIG_AT91SAM9G45EKES is not set
++# CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
++# CONFIG_AT91CAP9ADK is not set
++# CONFIG_AT91CAP9STK is not set
++# CONFIG_AFEB9260 is not set
++# CONFIG_AT91SAM9X5EK is not set
++CONFIG_CHIP="AT91SAM9G20"
++CONFIG_BOARD="at91sam9g20ek_2mmc"
++CONFIG_MACH_TYPE="0x8F0"
++CONFIG_LINK_ADDR="0x000000"
++CONFIG_TOP_OF_MEMORY="0x304000"
++# CONFIG_CRYSTAL_12_000MHZ is not set
++# CONFIG_CRYSTAL_16_000MHZ is not set
++# CONFIG_CRYSTAL_16_36766MHZ is not set
++CONFIG_CRYSTAL_18_432MHZ=y
++ALLOW_CRYSTAL_18_432MHZ=y
++CONFIG_CRYSTAL="CRYSTAL_18_432MHZ"
++# CONFIG_CPU_CLK_166MHZ is not set
++# CONFIG_CPU_CLK_180MHZ is not set
++# CONFIG_CPU_CLK_200MHZ is not set
++# CONFIG_CPU_CLK_240MHZ is not set
++# CONFIG_CPU_CLK_266MHZ is not set
++CONFIG_CPU_CLK_400MHZ=y
++ALLOW_CPU_CLK_400MHZ=y
++# DISABLE_CPU_CLK_240MHZ is not set
++# CONFIG_BUS_SPEED_83MHZ is not set
++# CONFIG_BUS_SPEED_90MHZ is not set
++# CONFIG_BUS_SPEED_100MHZ is not set
++CONFIG_BUS_SPEED_133MHZ=y
++# ALLOW_PIO3 is not set
++# CPU_HAS_PMECC is not set
++
++#
++# Memory selection
++#
++CONFIG_SDRAM=y
++# CONFIG_SDDRC is not set
++# CONFIG_DDR2 is not set
++ALLOW_DATAFLASH=y
++# ALLOW_FLASH is not set
++ALLOW_NANDFLASH=y
++ALLOW_SDCARD=y
++# ALLOW_HSMCI is not set
++# ALLOW_PSRAM is not set
++# ALLOW_SDRAM_16BIT is not set
++# CONFIG_RAM_32MB is not set
++CONFIG_RAM_64MB=y
++# CONFIG_RAM_128MB is not set
++# CONFIG_RAM_256MB is not set
++CONFIG_DATAFLASH=y
++# CONFIG_FLASH is not set
++# CONFIG_NANDFLASH is not set
++# CONFIG_SDCARD is not set
++CONFIG_MEMORY="dataflash"
++# CONFIG_SDCARD_HS is not set
++
++#
++# SPI configuration
++#
++CONFIG_SPI_CLK=33000000
++CONFIG_SMALL_DATAFLASH=y
++CONFIG_DATAFLASH_RECOVERY=y
++ALLOW_DATAFLASH_RECOVERY=y
++# CONFIG_SPI_BOOT_CS0 is not set
++CONFIG_SPI_BOOT_CS1=y
++# CONFIG_SPI_BOOT_CS2 is not set
++# CONFIG_SPI_BOOT_CS3 is not set
++ALLOW_BOOT_FROM_DATAFLASH_CS0=y
++ALLOW_BOOT_FROM_DATAFLASH_CS1=y
++# ALLOW_BOOT_FROM_DATAFLASH_CS2 is not set
++# ALLOW_BOOT_FROM_DATAFLASH_CS3 is not set
++DATAFLASHCARD_ON_CS0=y
++# DATAFLASHCARD_ON_CS1 is not set
++# DATAFLASHCARD_ON_CS2 is not set
++# DATAFLASHCARD_ON_CS3 is not set
++# CONFIG_DATAFLASHCARD is not set
++CONFIG_CARD_SUFFIX=""
++CONFIG_SPI_BOOT="AT91C_SPI_PCS1_DATAFLASH"
++CONFIG_SPI_MODE_0=y
++# CONFIG_SPI_MODE_1 is not set
++# CONFIG_SPI_MODE_2 is not set
++# CONFIG_SPI_MODE_3 is not set
++CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
++CONFIG_PROJECT="dataflash"
++CONFIG_LOAD_UBOOT=y
++# CONFIG_LOAD_EBOOT is not set
++# CONFIG_LOAD_LINUX is not set
++# CONFIG_LOAD_NK is not set
++# CONFIG_LOAD_64KB is not set
++# CONFIG_LOAD_1MB is not set
++# CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_IMG_ADDRESS="0x00008400"
++CONFIG_SETTING_ADDRESS="0x00408400"
++CONFIG_SETTING_SIZE="0x00001000"
++CONFIG_IMG_SIZE="0x00050000"
++CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
++CONFIG_GLBDRV_ADDR="0x23F00000"
++# CONFIG_LONG_TEST is not set
++CONFIG_DEBUG=y
++CONFIG_DEBUG_INFO=y
++# CONFIG_DEBUG_LOUD is not set
++# CONFIG_DEBUG_VERY_LOUD is not set
++CONFIG_HW_INIT=y
++# CONFIG_USER_HW_INIT is not set
++CONFIG_THUMB=y
++# CONFIG_SX_AT91 is not set
++# CONFIG_RAW_AT91 is not set
+diff --git a/board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmcdf_defconfig b/board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmcdf_defconfig
+new file mode 100644
+index 0000000..8e924fd
+--- /dev/null
++++ b/board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmcdf_defconfig
+@@ -0,0 +1,127 @@
++#
++# Automatically generated make config: don't edit
++# Thu Oct 27 21:23:51 2011
++#
++HAVE_DOT_CONFIG=y
++CONFIG_BOARDNAME="at91sam9g20ek_2mmcdf"
++# CONFIG_AT91SAM9260EK is not set
++# CONFIG_AT91SAM9261EK is not set
++# CONFIG_AT91SAM9263EK is not set
++# CONFIG_AT91SAM9RLEK is not set
++# CONFIG_AT91SAM9XEEK is not set
++# CONFIG_AT91SAM9G10EK is not set
++# CONFIG_AT91SAM9G20EK is not set
++CONFIG_AT91SAM9G20EK_2MMC=y
++# CONFIG_AT91SAM9G45EK is not set
++# CONFIG_AT91SAM9G45EKES is not set
++# CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
++# CONFIG_AT91CAP9ADK is not set
++# CONFIG_AT91CAP9STK is not set
++# CONFIG_AFEB9260 is not set
++# CONFIG_AT91SAM9X5EK is not set
++CONFIG_CHIP="AT91SAM9G20"
++CONFIG_BOARD="at91sam9g20ek_2mmc"
++CONFIG_MACH_TYPE="0x8F0"
++CONFIG_LINK_ADDR="0x000000"
++CONFIG_TOP_OF_MEMORY="0x304000"
++# CONFIG_CRYSTAL_12_000MHZ is not set
++# CONFIG_CRYSTAL_16_000MHZ is not set
++# CONFIG_CRYSTAL_16_36766MHZ is not set
++CONFIG_CRYSTAL_18_432MHZ=y
++ALLOW_CRYSTAL_18_432MHZ=y
++CONFIG_CRYSTAL="CRYSTAL_18_432MHZ"
++# CONFIG_CPU_CLK_166MHZ is not set
++# CONFIG_CPU_CLK_180MHZ is not set
++# CONFIG_CPU_CLK_200MHZ is not set
++# CONFIG_CPU_CLK_240MHZ is not set
++# CONFIG_CPU_CLK_266MHZ is not set
++CONFIG_CPU_CLK_400MHZ=y
++ALLOW_CPU_CLK_400MHZ=y
++# DISABLE_CPU_CLK_240MHZ is not set
++# CONFIG_BUS_SPEED_83MHZ is not set
++# CONFIG_BUS_SPEED_90MHZ is not set
++# CONFIG_BUS_SPEED_100MHZ is not set
++CONFIG_BUS_SPEED_133MHZ=y
++# ALLOW_PIO3 is not set
++# CPU_HAS_PMECC is not set
++
++#
++# Memory selection
++#
++CONFIG_SDRAM=y
++# CONFIG_SDDRC is not set
++# CONFIG_DDR2 is not set
++ALLOW_DATAFLASH=y
++# ALLOW_FLASH is not set
++ALLOW_NANDFLASH=y
++ALLOW_SDCARD=y
++# ALLOW_HSMCI is not set
++# ALLOW_PSRAM is not set
++# ALLOW_SDRAM_16BIT is not set
++# CONFIG_RAM_32MB is not set
++CONFIG_RAM_64MB=y
++# CONFIG_RAM_128MB is not set
++# CONFIG_RAM_256MB is not set
++CONFIG_DATAFLASH=y
++# CONFIG_FLASH is not set
++# CONFIG_NANDFLASH is not set
++# CONFIG_SDCARD is not set
++CONFIG_MEMORY="dataflash"
++# CONFIG_SDCARD_HS is not set
++
++#
++# SPI configuration
++#
++CONFIG_SPI_CLK=33000000
++CONFIG_SMALL_DATAFLASH=y
++CONFIG_DATAFLASH_RECOVERY=y
++ALLOW_DATAFLASH_RECOVERY=y
++# CONFIG_SPI_BOOT_CS0 is not set
++CONFIG_SPI_BOOT_CS1=y
++# CONFIG_SPI_BOOT_CS2 is not set
++# CONFIG_SPI_BOOT_CS3 is not set
++ALLOW_BOOT_FROM_DATAFLASH_CS0=y
++ALLOW_BOOT_FROM_DATAFLASH_CS1=y
++# ALLOW_BOOT_FROM_DATAFLASH_CS2 is not set
++# ALLOW_BOOT_FROM_DATAFLASH_CS3 is not set
++DATAFLASHCARD_ON_CS0=y
++# DATAFLASHCARD_ON_CS1 is not set
++# DATAFLASHCARD_ON_CS2 is not set
++# DATAFLASHCARD_ON_CS3 is not set
++# CONFIG_DATAFLASHCARD is not set
++CONFIG_CARD_SUFFIX=""
++CONFIG_SPI_BOOT="AT91C_SPI_PCS1_DATAFLASH"
++CONFIG_SPI_MODE_0=y
++# CONFIG_SPI_MODE_1 is not set
++# CONFIG_SPI_MODE_2 is not set
++# CONFIG_SPI_MODE_3 is not set
++CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
++CONFIG_PROJECT="dataflash"
++CONFIG_LOAD_UBOOT=y
++# CONFIG_LOAD_EBOOT is not set
++# CONFIG_LOAD_LINUX is not set
++# CONFIG_LOAD_NK is not set
++# CONFIG_LOAD_64KB is not set
++# CONFIG_LOAD_1MB is not set
++# CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_IMG_ADDRESS="0x00008400"
++CONFIG_SETTING_ADDRESS="0x00408400"
++CONFIG_SETTING_SIZE="0x00001000"
++CONFIG_IMG_SIZE="0x00050000"
++CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
++CONFIG_GLBDRV_ADDR="0x23F00000"
++# CONFIG_LONG_TEST is not set
++CONFIG_DEBUG=y
++CONFIG_DEBUG_INFO=y
++# CONFIG_DEBUG_LOUD is not set
++# CONFIG_DEBUG_VERY_LOUD is not set
++CONFIG_HW_INIT=y
++# CONFIG_USER_HW_INIT is not set
++CONFIG_THUMB=y
++# CONFIG_SX_AT91 is not set
++# CONFIG_RAW_AT91 is not set
+diff --git a/board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmcdfc_defconfig b/board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmcdfc_defconfig
+new file mode 100644
+index 0000000..7e9e31d
+--- /dev/null
++++ b/board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmcdfc_defconfig
+@@ -0,0 +1,127 @@
++#
++# Automatically generated make config: don't edit
++# Thu Oct 27 21:23:51 2011
++#
++HAVE_DOT_CONFIG=y
++CONFIG_BOARDNAME="at91sam9g20ek_2mmcdfc"
++# CONFIG_AT91SAM9260EK is not set
++# CONFIG_AT91SAM9261EK is not set
++# CONFIG_AT91SAM9263EK is not set
++# CONFIG_AT91SAM9RLEK is not set
++# CONFIG_AT91SAM9XEEK is not set
++# CONFIG_AT91SAM9G10EK is not set
++# CONFIG_AT91SAM9G20EK is not set
++CONFIG_AT91SAM9G20EK_2MMC=y
++# CONFIG_AT91SAM9G45EK is not set
++# CONFIG_AT91SAM9G45EKES is not set
++# CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
++# CONFIG_AT91CAP9ADK is not set
++# CONFIG_AT91CAP9STK is not set
++# CONFIG_AFEB9260 is not set
++# CONFIG_AT91SAM9X5EK is not set
++CONFIG_CHIP="AT91SAM9G20"
++CONFIG_BOARD="at91sam9g20ek_2mmc"
++CONFIG_MACH_TYPE="0x8F0"
++CONFIG_LINK_ADDR="0x000000"
++CONFIG_TOP_OF_MEMORY="0x304000"
++# CONFIG_CRYSTAL_12_000MHZ is not set
++# CONFIG_CRYSTAL_16_000MHZ is not set
++# CONFIG_CRYSTAL_16_36766MHZ is not set
++CONFIG_CRYSTAL_18_432MHZ=y
++ALLOW_CRYSTAL_18_432MHZ=y
++CONFIG_CRYSTAL="CRYSTAL_18_432MHZ"
++# CONFIG_CPU_CLK_166MHZ is not set
++# CONFIG_CPU_CLK_180MHZ is not set
++# CONFIG_CPU_CLK_200MHZ is not set
++# CONFIG_CPU_CLK_240MHZ is not set
++# CONFIG_CPU_CLK_266MHZ is not set
++CONFIG_CPU_CLK_400MHZ=y
++ALLOW_CPU_CLK_400MHZ=y
++# DISABLE_CPU_CLK_240MHZ is not set
++# CONFIG_BUS_SPEED_83MHZ is not set
++# CONFIG_BUS_SPEED_90MHZ is not set
++# CONFIG_BUS_SPEED_100MHZ is not set
++CONFIG_BUS_SPEED_133MHZ=y
++# ALLOW_PIO3 is not set
++# CPU_HAS_PMECC is not set
++
++#
++# Memory selection
++#
++CONFIG_SDRAM=y
++# CONFIG_SDDRC is not set
++# CONFIG_DDR2 is not set
++ALLOW_DATAFLASH=y
++# ALLOW_FLASH is not set
++ALLOW_NANDFLASH=y
++ALLOW_SDCARD=y
++# ALLOW_HSMCI is not set
++# ALLOW_PSRAM is not set
++# ALLOW_SDRAM_16BIT is not set
++# CONFIG_RAM_32MB is not set
++CONFIG_RAM_64MB=y
++# CONFIG_RAM_128MB is not set
++# CONFIG_RAM_256MB is not set
++CONFIG_DATAFLASH=y
++# CONFIG_FLASH is not set
++# CONFIG_NANDFLASH is not set
++# CONFIG_SDCARD is not set
++CONFIG_MEMORY="dataflash"
++# CONFIG_SDCARD_HS is not set
++
++#
++# SPI configuration
++#
++CONFIG_SPI_CLK=33000000
++CONFIG_SMALL_DATAFLASH=y
++CONFIG_DATAFLASH_RECOVERY=y
++ALLOW_DATAFLASH_RECOVERY=y
++CONFIG_SPI_BOOT_CS0=y
++# CONFIG_SPI_BOOT_CS1 is not set
++# CONFIG_SPI_BOOT_CS2 is not set
++# CONFIG_SPI_BOOT_CS3 is not set
++ALLOW_BOOT_FROM_DATAFLASH_CS0=y
++ALLOW_BOOT_FROM_DATAFLASH_CS1=y
++# ALLOW_BOOT_FROM_DATAFLASH_CS2 is not set
++# ALLOW_BOOT_FROM_DATAFLASH_CS3 is not set
++DATAFLASHCARD_ON_CS0=y
++# DATAFLASHCARD_ON_CS1 is not set
++# DATAFLASHCARD_ON_CS2 is not set
++# DATAFLASHCARD_ON_CS3 is not set
++CONFIG_DATAFLASHCARD=y
++CONFIG_CARD_SUFFIX="card"
++CONFIG_SPI_BOOT="AT91C_SPI_PCS0_DATAFLASH"
++CONFIG_SPI_MODE_0=y
++# CONFIG_SPI_MODE_1 is not set
++# CONFIG_SPI_MODE_2 is not set
++# CONFIG_SPI_MODE_3 is not set
++CONFIG_SPI_MODE=0
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
++CONFIG_PROJECT="dataflash"
++CONFIG_LOAD_UBOOT=y
++# CONFIG_LOAD_EBOOT is not set
++# CONFIG_LOAD_LINUX is not set
++# CONFIG_LOAD_NK is not set
++# CONFIG_LOAD_64KB is not set
++# CONFIG_LOAD_1MB is not set
++# CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00063000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_IMG_ADDRESS="0x00008400"
++CONFIG_SETTING_ADDRESS="0x00408400"
++CONFIG_SETTING_SIZE="0x00001000"
++CONFIG_IMG_SIZE="0x00050000"
++CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
++CONFIG_GLBDRV_ADDR="0x23F00000"
++# CONFIG_LONG_TEST is not set
++CONFIG_DEBUG=y
++CONFIG_DEBUG_INFO=y
++# CONFIG_DEBUG_LOUD is not set
++# CONFIG_DEBUG_VERY_LOUD is not set
++CONFIG_HW_INIT=y
++# CONFIG_USER_HW_INIT is not set
++# CONFIG_THUMB is not set
++CONFIG_SX_AT91=y
++CONFIG_RAW_AT91=y
+diff --git a/board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmcnf_defconfig b/board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmcnf_defconfig
+new file mode 100644
+index 0000000..477eac8
+--- /dev/null
++++ b/board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmcnf_defconfig
+@@ -0,0 +1,109 @@
++#
++# Automatically generated make config: don't edit
++# Thu Oct 27 21:23:51 2011
++#
++HAVE_DOT_CONFIG=y
++CONFIG_BOARDNAME="at91sam9g20ek_2mmcnf"
++# CONFIG_AT91SAM9260EK is not set
++# CONFIG_AT91SAM9261EK is not set
++# CONFIG_AT91SAM9263EK is not set
++# CONFIG_AT91SAM9RLEK is not set
++# CONFIG_AT91SAM9XEEK is not set
++# CONFIG_AT91SAM9G10EK is not set
++# CONFIG_AT91SAM9G20EK is not set
++CONFIG_AT91SAM9G20EK_2MMC=y
++# CONFIG_AT91SAM9G45EK is not set
++# CONFIG_AT91SAM9G45EKES is not set
++# CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
++# CONFIG_AT91CAP9ADK is not set
++# CONFIG_AT91CAP9STK is not set
++# CONFIG_AFEB9260 is not set
++# CONFIG_AT91SAM9X5EK is not set
++CONFIG_CHIP="AT91SAM9G20"
++CONFIG_BOARD="at91sam9g20ek_2mmc"
++CONFIG_MACH_TYPE="0x8F0"
++CONFIG_LINK_ADDR="0x000000"
++CONFIG_TOP_OF_MEMORY="0x304000"
++# CONFIG_CRYSTAL_12_000MHZ is not set
++# CONFIG_CRYSTAL_16_000MHZ is not set
++# CONFIG_CRYSTAL_16_36766MHZ is not set
++CONFIG_CRYSTAL_18_432MHZ=y
++ALLOW_CRYSTAL_18_432MHZ=y
++CONFIG_CRYSTAL="CRYSTAL_18_432MHZ"
++# CONFIG_CPU_CLK_166MHZ is not set
++# CONFIG_CPU_CLK_180MHZ is not set
++# CONFIG_CPU_CLK_200MHZ is not set
++# CONFIG_CPU_CLK_240MHZ is not set
++# CONFIG_CPU_CLK_266MHZ is not set
++CONFIG_CPU_CLK_400MHZ=y
++ALLOW_CPU_CLK_400MHZ=y
++# DISABLE_CPU_CLK_240MHZ is not set
++# CONFIG_BUS_SPEED_83MHZ is not set
++# CONFIG_BUS_SPEED_90MHZ is not set
++# CONFIG_BUS_SPEED_100MHZ is not set
++CONFIG_BUS_SPEED_133MHZ=y
++# ALLOW_PIO3 is not set
++# CPU_HAS_PMECC is not set
++
++#
++# Memory selection
++#
++CONFIG_SDRAM=y
++# CONFIG_SDDRC is not set
++# CONFIG_DDR2 is not set
++ALLOW_DATAFLASH=y
++# ALLOW_FLASH is not set
++ALLOW_NANDFLASH=y
++ALLOW_SDCARD=y
++# ALLOW_HSMCI is not set
++# ALLOW_PSRAM is not set
++# ALLOW_SDRAM_16BIT is not set
++# CONFIG_RAM_32MB is not set
++CONFIG_RAM_64MB=y
++# CONFIG_RAM_128MB is not set
++# CONFIG_RAM_256MB is not set
++# CONFIG_DATAFLASH is not set
++# CONFIG_FLASH is not set
++CONFIG_NANDFLASH=y
++# CONFIG_SDCARD is not set
++CONFIG_ENABLE_SW_ECC=y
++CONFIG_MEMORY="nandflash"
++# CONFIG_SDCARD_HS is not set
++ALLOW_DATAFLASH_RECOVERY=y
++ALLOW_BOOT_FROM_DATAFLASH_CS0=y
++ALLOW_BOOT_FROM_DATAFLASH_CS1=y
++DATAFLASHCARD_ON_CS0=y
++
++#
++# NAND Flash configuration
++#
++# CONFIG_NANDFLASH_SMALL_BLOCKS is not set
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
++CONFIG_PROJECT="nandflash"
++CONFIG_LOAD_UBOOT=y
++# CONFIG_LOAD_EBOOT is not set
++# CONFIG_LOAD_LINUX is not set
++# CONFIG_LOAD_NK is not set
++# CONFIG_LOAD_64KB is not set
++# CONFIG_LOAD_1MB is not set
++# CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00040000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_IMG_ADDRESS="0x00020000"
++CONFIG_SETTING_ADDRESS="0x01FE0000"
++CONFIG_SETTING_SIZE="0x00001000"
++CONFIG_IMG_SIZE="0x00050000"
++CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
++CONFIG_GLBDRV_ADDR="0x23F00000"
++# CONFIG_LONG_TEST is not set
++CONFIG_DEBUG=y
++CONFIG_DEBUG_INFO=y
++# CONFIG_DEBUG_LOUD is not set
++# CONFIG_DEBUG_VERY_LOUD is not set
++CONFIG_HW_INIT=y
++# CONFIG_USER_HW_INIT is not set
++CONFIG_THUMB=y
++# CONFIG_SX_AT91 is not set
++# CONFIG_RAW_AT91 is not set
+diff --git a/board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmcsd_defconfig b/board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmcsd_defconfig
+new file mode 100644
+index 0000000..3f78566
+--- /dev/null
++++ b/board/at91sam9g20ek_2mmc/at91sam9g20ek_2mmcsd_defconfig
+@@ -0,0 +1,104 @@
++#
++# Automatically generated make config: don't edit
++# Thu Oct 27 21:56:00 2011
++#
++HAVE_DOT_CONFIG=y
++CONFIG_BOARDNAME="at91sam9g20ek_2mmcsd"
++# CONFIG_AT91SAM9260EK is not set
++# CONFIG_AT91SAM9261EK is not set
++# CONFIG_AT91SAM9263EK is not set
++# CONFIG_AT91SAM9RLEK is not set
++# CONFIG_AT91SAM9XEEK is not set
++# CONFIG_AT91SAM9G10EK is not set
++# CONFIG_AT91SAM9G20EK is not set
++CONFIG_AT91SAM9G20EK_2MMC=y
++# CONFIG_AT91SAM9G45EK is not set
++# CONFIG_AT91SAM9G45EKES is not set
++# CONFIG_AT91SAM9M10EK is not set
++# CONFIG_AT91SAM9M10EKES is not set
++# CONFIG_AT91CAP9ADK is not set
++# CONFIG_AT91CAP9STK is not set
++# CONFIG_AFEB9260 is not set
++# CONFIG_AT91SAM9X5EK is not set
++CONFIG_CHIP="AT91SAM9G20"
++CONFIG_BOARD="at91sam9g20ek_2mmc"
++CONFIG_MACH_TYPE="0x8F0"
++CONFIG_LINK_ADDR="0x000000"
++CONFIG_TOP_OF_MEMORY="0x304000"
++# CONFIG_CRYSTAL_12_000MHZ is not set
++# CONFIG_CRYSTAL_16_000MHZ is not set
++# CONFIG_CRYSTAL_16_36766MHZ is not set
++CONFIG_CRYSTAL_18_432MHZ=y
++ALLOW_CRYSTAL_18_432MHZ=y
++CONFIG_CRYSTAL="CRYSTAL_18_432MHZ"
++# CONFIG_CPU_CLK_166MHZ is not set
++# CONFIG_CPU_CLK_180MHZ is not set
++# CONFIG_CPU_CLK_200MHZ is not set
++# CONFIG_CPU_CLK_240MHZ is not set
++# CONFIG_CPU_CLK_266MHZ is not set
++CONFIG_CPU_CLK_400MHZ=y
++ALLOW_CPU_CLK_400MHZ=y
++# DISABLE_CPU_CLK_240MHZ is not set
++# CONFIG_BUS_SPEED_83MHZ is not set
++# CONFIG_BUS_SPEED_90MHZ is not set
++# CONFIG_BUS_SPEED_100MHZ is not set
++CONFIG_BUS_SPEED_133MHZ=y
++# ALLOW_PIO3 is not set
++# CPU_HAS_PMECC is not set
++
++#
++# Memory selection
++#
++CONFIG_SDRAM=y
++# CONFIG_SDDRC is not set
++# CONFIG_DDR2 is not set
++ALLOW_DATAFLASH=y
++# ALLOW_FLASH is not set
++ALLOW_NANDFLASH=y
++ALLOW_SDCARD=y
++# ALLOW_HSMCI is not set
++# ALLOW_PSRAM is not set
++# ALLOW_SDRAM_16BIT is not set
++# CONFIG_RAM_32MB is not set
++CONFIG_RAM_64MB=y
++# CONFIG_RAM_128MB is not set
++# CONFIG_RAM_256MB is not set
++# CONFIG_DATAFLASH is not set
++# CONFIG_FLASH is not set
++# CONFIG_NANDFLASH is not set
++CONFIG_SDCARD=y
++CONFIG_MEMORY="sdcard"
++# CONFIG_SDCARD_HS is not set
++ALLOW_DATAFLASH_RECOVERY=y
++ALLOW_BOOT_FROM_DATAFLASH_CS0=y
++ALLOW_BOOT_FROM_DATAFLASH_CS1=y
++DATAFLASHCARD_ON_CS0=y
++CONFIG_BOOTSTRAP_MAXSIZE="23000"
++CONFIG_PROJECT="sdcard"
++CONFIG_LOAD_UBOOT=y
++# CONFIG_LOAD_EBOOT is not set
++# CONFIG_LOAD_LINUX is not set
++# CONFIG_LOAD_NK is not set
++# CONFIG_LOAD_64KB is not set
++# CONFIG_LOAD_1MB is not set
++# CONFIG_LOAD_4MB is not set
++CONFIG_ALT_IMG_ADDRESS="0x00000000"
++CONFIG_ALT_IMG_SIZE="0x00010000"
++CONFIG_OS_IMAGE_NAME="at91sam9g20ek_2mmc\\\\u-boot.bin"
++CONFIG_IMG_ADDRESS="0x00000000"
++CONFIG_SETTING_ADDRESS="0x00000000"
++CONFIG_SETTING_SIZE="0x00001000"
++CONFIG_IMG_SIZE="0x00050000"
++CONFIG_JUMP_ADDR="0x23F00000"
++CONFIG_ALT_JUMP_ADDR="0x20000000"
++CONFIG_GLBDRV_ADDR="0x23F00000"
++# CONFIG_LONG_TEST is not set
++CONFIG_DEBUG=y
++# CONFIG_DEBUG_INFO is not set
++# CONFIG_DEBUG_LOUD is not set
++CONFIG_DEBUG_VERY_LOUD=y
++CONFIG_HW_INIT=y
++# CONFIG_USER_HW_INIT is not set
++CONFIG_THUMB=y
++# CONFIG_SX_AT91 is not set
++# CONFIG_RAW_AT91 is not set
+diff --git a/board/at91sam9g20ek_2mmc/board.mk b/board/at91sam9g20ek_2mmc/board.mk
+new file mode 100644
+index 0000000..6a4d544
+--- /dev/null
++++ b/board/at91sam9g20ek_2mmc/board.mk
+@@ -0,0 +1,5 @@
++CPPFLAGS += \
++	-DCONFIG_AT91SAM9G20EK_2MMC
++
++ASFLAGS += \
++	-DCONFIG_AT91SAM9G20EK_2MMC
+diff --git a/board/at91sam9g20ek_2mmc/makefile b/board/at91sam9g20ek_2mmc/makefile
+new file mode 100644
+index 0000000..0f3cbb0
+--- /dev/null
++++ b/board/at91sam9g20ek_2mmc/makefile
+@@ -0,0 +1,16 @@
++!if 0
++Copyright (c) Microsoft Corporation.  All rights reserved.
++!endif
++!if 0
++Use of this source code is subject to the terms of the Microsoft end-user
++license agreement (EULA) under which you licensed this SOFTWARE PRODUCT.
++If you did not accept the terms of the EULA, you are not authorized to use
++this source code. For a copy of the EULA, please see the LICENSE.RTF on your
++install media.
++!endif
++#
++# DO NOT EDIT THIS FILE!!!  Edit .\sources. if you want to add a new source
++# file to this component.  This file merely indirects to the real make file
++# that is shared by all the components of Pegasus
++#
++!INCLUDE $(_MAKEENVROOT)\makefile.def
+diff --git a/board/at91sam9g20ek_2mmc/sources b/board/at91sam9g20ek_2mmc/sources
+new file mode 100644
+index 0000000..e1de4cc
+--- /dev/null
++++ b/board/at91sam9g20ek_2mmc/sources
+@@ -0,0 +1,127 @@
++TARGETNAME=at91sam9g20ek_2mmc
++TARGETTYPE=LIBRARY
++RELEASETYPE=PLATFORM
++
++CDEFINES=$(CDEFINES) -DWINCE
++
++WINCE_OVERRIDE_CFLAGS=/GL /O1 /Ob1 /Os /QRthumb
++!IF $(_WINCEOSVER) >= 600
++CDEFINES=$(CDEFINES) /GS-
++CDEFINES=$(CDEFINES) /DWINCE600
++!ENDIF
++
++!IF ("$(CONFIG_AT91SAM9260EK)" == "Y")
++CDEFINES=$(CDEFINES) -DCONFIG_AT91SAM9260EK
++CDEFINES=$(CDEFINES) -DCONFIG_SDRAM
++!ENDIF
++!IF ("$(AT91SAM9260)" == "Y")
++CDEFINES=$(CDEFINES) -DAT91SAM9260
++!ENDIF
++
++!IF ("$(CONFIG_AT91SAM9261EK)" == "Y")
++CDEFINES=$(CDEFINES) -DCONFIG_AT91SAM9261EK
++CDEFINES=$(CDEFINES) -DCONFIG_SDRAM
++!ENDIF
++!IF ("$(AT91SAM9261)" == "Y")
++CDEFINES=$(CDEFINES) -DAT91SAM9261
++!ENDIF
++
++!IF ("$(CONFIG_AT91SAM9263EK)" == "Y")
++CDEFINES=$(CDEFINES) -DCONFIG_AT91SAM9263EK
++CDEFINES=$(CDEFINES) -DCONFIG_SDRAM
++!ENDIF
++!IF ("$(AT91SAM9263)" == "Y")
++CDEFINES=$(CDEFINES) -DAT91SAM9263
++!ENDIF
++
++!IF ("$(CONFIG_AT91SAM9RLEK)" == "Y")
++CDEFINES=$(CDEFINES) -DCONFIG_AT91SAM9RLEK
++CDEFINES=$(CDEFINES) -DCONFIG_SDRAM
++!ENDIF
++!IF ("$(AT91SAM9RL)" == "Y")
++CDEFINES=$(CDEFINES) -DAT91SAM9RL
++!ENDIF
++
++!IF ("$(CONFIG_AT91SAM9G10EK)" == "Y")
++CDEFINES=$(CDEFINES) -DCONFIG_AT91SAM9G10EK
++CDEFINES=$(CDEFINES) -DCONFIG_SDRAM
++!ENDIF
++!IF ("$(AT91SAM9G10)" == "Y")
++CDEFINES=$(CDEFINES) -DAT91SAM9G10
++!ENDIF
++
++!IF ("$(CONFIG_AT91SAM9G20EK)" == "Y")
++CDEFINES=$(CDEFINES) -DCONFIG_AT91SAM9G20EK
++CDEFINES=$(CDEFINES) -DCONFIG_SDRAM
++!ENDIF
++!IF ("$(AT91SAM9G20)" == "Y")
++CDEFINES=$(CDEFINES) -DAT91SAM9G20
++!ENDIF
++
++!IF ("$(CONFIG_AT91SAM9G20EK_2MMC)" == "Y")
++CDEFINES=$(CDEFINES) -DCONFIG_AT91SAM9G20EK_2MMC
++CDEFINES=$(CDEFINES) -DCONFIG_SDRAM
++!ENDIF
++!IF ("$(AT91SAM9G20)" == "Y")
++CDEFINES=$(CDEFINES) -DAT91SAM9G20
++!ENDIF
++
++!IF ("$(CONFIG_AT91SAM9G45EK)" == "Y")
++CDEFINES=$(CDEFINES) -DCONFIG_AT91SAM9G45EK
++CDEFINES=$(CDEFINES) -DCONFIG_DDR2
++!ENDIF
++!IF ("$(AT91SAM9G45)" == "Y")
++CDEFINES=$(CDEFINES) -DAT91SAM9G45
++!ENDIF
++
++!IF ("$(CONFIG_AT91SAM9M10EK)" == "Y")
++CDEFINES=$(CDEFINES) -DCONFIG_AT91SAM9M10EK
++CDEFINES=$(CDEFINES) -DCONFIG_DDR2
++!ENDIF
++!IF ("$(AT91SAM9M10)" == "Y")
++CDEFINES=$(CDEFINES) -DAT91SAM9M10
++!ENDIF
++
++!IF ("$(CONFIG_DATAFLASH)" == "Y")
++CDEFINES=$(CDEFINES) -DCONFIG_DATAFLASH
++CDEFINES=$(CDEFINES) -DAT91C_SPI_PCS_DATAFLASH=0xD
++!ENDIF
++!IF ("$(CONFIG_NANDFLASH)" == "Y")
++CDEFINES=$(CDEFINES) -DCONFIG_NANDFLASH
++!ENDIF
++!IF ("$(CONFIG_SDCARD)" == "Y")
++CDEFINES=$(CDEFINES) -DCONFIG_SDCARD
++!ENDIF
++!IF ("$(CONFIG_SERIALFLASH)" == "Y")
++CDEFINES=$(CDEFINES) -DCONFIG_SERIALFLASH
++!ENDIF
++!IF ("$(CONFIG_EEPROM)" == "Y")
++CDEFINES=$(CDEFINES) -DCONFIG_EEPROM
++!ENDIF
++
++CDEFINES=$(CDEFINES) -DJUMP_ADDR=$(JUMP_ADDR)
++CDEFINES=$(CDEFINES) -DIMG_ADDRESS=$(IMG_ADDRESS)
++CDEFINES=$(CDEFINES) -DIMG_SIZE=$(IMG_SIZE)
++
++CDEFINES=$(CDEFINES) -DCONFIG_HW_INIT
++
++!IF ("$(CONFIG_DEBUG)" == "Y")
++CDEFINES=$(CDEFINES) -DCONFIG_DEBUG
++!ENDIF
++CDEFINES=$(CDEFINES) -DBOOTSTRAP_DEBUG_LEVEL
++
++!IF ("$(CONFIG_CPU_CLK_200MHZ)" == "Y")
++CDEFINES=$(CDEFINES) -DCONFIG_CPU_CLK_200MHZ
++!ENDIF
++!IF ("$(CONFIG_CPU_CLK_250MHZ)" == "Y")
++CDEFINES=$(CDEFINES) -DCONFIG_CPU_CLK_250MHZ
++!ENDIF
++!IF ("$(CONFIG_CPU_CLK_266MHZ)" == "Y")
++CDEFINES=$(CDEFINES) -DCONFIG_CPU_CLK_266MHZ
++!ENDIF
++
++INCLUDES=..\..\include; \
++         $(_WINCEROOT)\PUBLIC\COMMON\SDK\INC; \
++
++SOURCES= \
++    at91sam9g20ek.c \
+-- 
+1.7.5.4
+

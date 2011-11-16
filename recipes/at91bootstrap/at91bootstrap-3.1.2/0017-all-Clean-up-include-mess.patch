@@ -1,0 +1,1113 @@
+From feb9442d6ebf5ff4f11b893b4f13b78571c2c1e5 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Sun, 23 Oct 2011 22:15:05 +0200
+Subject: [PATCH 17/39] all:	Clean up include mess.
+
+autoconf.h:
+	Link to the configuration files created by KConfig.
+	A lot of the -D<defines> can now be removes,
+	since they are in this file.
+
+common.h:
+	#include	<stdarg.h>
+	#include	"autoconf.h"
+	#include	"integer.h"
+	#include	"part.h"
+	#include	"main.h"
+	#include	"debug.h"
+	#include	"dbgu.h"
+	#include	"string.h"
+
+board-support.h:
+	#include "common.h"
+	#include "gpio.h"
+	#include "pmc.h"
+	#include "rstc.h"
+	#include "memory.h"
+	#include "matrix.h"
+
+	The board file should normally only include this file.
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@telia.com>
+---
+ board/afeb9260/afeb9260.c               |    8 +----
+ board/at91cap9adk/at91cap9adk.c         |    8 +----
+ board/at91cap9stk/at91cap9stk.c         |    8 +----
+ board/at91sam9260ek/at91sam9260ek.c     |    9 +-----
+ board/at91sam9261ek/at91sam9261ek.c     |    9 +-----
+ board/at91sam9263ek/at91sam9263ek.c     |   11 +------
+ board/at91sam9g10ek/at91sam9g10ek.c     |    9 +-----
+ board/at91sam9g20ek/at91sam9g20ek.c     |    9 +-----
+ board/at91sam9g45ek/at91sam9g45ek.c     |   16 +---------
+ board/at91sam9g45ekes/at91sam9g45ekes.c |   16 +---------
+ board/at91sam9m10ek/at91sam9m10ek.c     |   16 +---------
+ board/at91sam9m10ekes/at91sam9m10ekes.c |   17 +---------
+ board/at91sam9rlek/at91sam9rlek.c       |    9 +-----
+ board/at91sam9x5ek/at91sam9x5ek.c       |   13 +-------
+ board/at91sam9xeek/at91sam9xeek.c       |    9 +-----
+ driver/MEDSdcard.c                      |    6 +---
+ driver/aic.c                            |    3 +-
+ driver/bitops.c                         |    3 +-
+ driver/dataflash.c                      |    4 +--
+ driver/dbgu.c                           |    4 +--
+ driver/ddr2.c                           |    5 +--
+ driver/ddramc.c                         |    7 +---
+ driver/debug.c                          |    7 +---
+ driver/diskio.c                         |    4 +--
+ driver/ds24xx.c                         |   11 +------
+ driver/ff.c                             |   13 +-------
+ driver/flash.c                          |    8 +---
+ driver/gpio.c                           |    5 +--
+ driver/linux_loader.c                   |   10 +-----
+ driver/mci.c                            |    4 +--
+ driver/mci_hs.c                         |    4 +--
+ driver/nandflash.c                      |    5 +--
+ driver/pio.c                            |    4 +-
+ driver/pmc.c                            |    5 +--
+ driver/sddrc.c                          |    5 +--
+ driver/sdmmc_mci.c                      |    6 +---
+ driver/sdramc.c                         |    3 +-
+ driver/wince_loader.c                   |    4 +--
+ include/autoconf.h                      |    1 +
+ include/board-support.h                 |   45 ++++++++++++++++++++++++++
+ include/common.h                        |   52 +++++++++++++++++++++++++++++++
+ include/main.h                          |    2 -
+ include/memory.h                        |    5 +++
+ include/string.h                        |   48 ++++++++++++++++++++++++++++
+ lib/string.c                            |   35 ++++++++++++++++++++-
+ main.c                                  |    5 +--
+ 46 files changed, 232 insertions(+), 258 deletions(-)
+ create mode 120000 include/autoconf.h
+ create mode 100644 include/board-support.h
+ create mode 100644 include/common.h
+ create mode 100644 include/string.h
+
+diff --git a/board/afeb9260/afeb9260.c b/board/afeb9260/afeb9260.c
+index 0fed2b2..986295d 100644
+--- a/board/afeb9260/afeb9260.c
++++ b/board/afeb9260/afeb9260.c
+@@ -31,13 +31,7 @@
+  * ODi Nov 9th         : dstp #3507 "Bad PIO descriptors in at91samxxxek.c"
+  *-----------------------------------------------------------------------------
+  */
+-#include "part.h"
+-#include "main.h"
+-#include "gpio.h"
+-#include "pmc.h"
+-#include "rstc.h"
+-#include "debug.h"
+-#include "memory.h"
++#include "board-support.h"
+ 
+ #ifndef CONFIG_THUMB
+ static inline unsigned int get_cp15(void)
+diff --git a/board/at91cap9adk/at91cap9adk.c b/board/at91cap9adk/at91cap9adk.c
+index 9a5fceb..65c339b 100644
+--- a/board/at91cap9adk/at91cap9adk.c
++++ b/board/at91cap9adk/at91cap9adk.c
+@@ -31,13 +31,7 @@
+  * Creation            :
+  *-----------------------------------------------------------------------------
+  */
+-#include "part.h"
+-#include "gpio.h"
+-#include "pmc.h"
+-#include "rstc.h"
+-#include "debug.h"
+-#include "memory.h"
+-#include "main.h"
++#include "board-support.h"
+ 
+ #ifndef CONFIG_THUMB
+ static inline unsigned int get_cp15(void)
+diff --git a/board/at91cap9stk/at91cap9stk.c b/board/at91cap9stk/at91cap9stk.c
+index 9a5fceb..65c339b 100644
+--- a/board/at91cap9stk/at91cap9stk.c
++++ b/board/at91cap9stk/at91cap9stk.c
+@@ -31,13 +31,7 @@
+  * Creation            :
+  *-----------------------------------------------------------------------------
+  */
+-#include "part.h"
+-#include "gpio.h"
+-#include "pmc.h"
+-#include "rstc.h"
+-#include "debug.h"
+-#include "memory.h"
+-#include "main.h"
++#include "board-support.h"
+ 
+ #ifndef CONFIG_THUMB
+ static inline unsigned int get_cp15(void)
+diff --git a/board/at91sam9260ek/at91sam9260ek.c b/board/at91sam9260ek/at91sam9260ek.c
+index 0ca09d7..4443ed2 100644
+--- a/board/at91sam9260ek/at91sam9260ek.c
++++ b/board/at91sam9260ek/at91sam9260ek.c
+@@ -35,14 +35,7 @@
+ 
+ #else
+ 
+-#include "part.h"
+-#include "main.h"
+-#include "gpio.h"
+-#include "pmc.h"
+-#include "rstc.h"
+-#include "dbgu.h"
+-#include "debug.h"
+-#include "memory.h"
++#include "board-support.h"
+ 
+ int get_cp15(void);
+ 
+diff --git a/board/at91sam9261ek/at91sam9261ek.c b/board/at91sam9261ek/at91sam9261ek.c
+index 845306a..41f00c1 100644
+--- a/board/at91sam9261ek/at91sam9261ek.c
++++ b/board/at91sam9261ek/at91sam9261ek.c
+@@ -35,14 +35,7 @@
+ 
+ #else
+ 
+-#include "part.h"
+-#include "main.h"
+-#include "gpio.h"
+-#include "pmc.h"
+-#include "rstc.h"
+-#include "debug.h"
+-#include "dbgu.h"
+-#include "memory.h"
++#include "board-support.h"
+ 
+ int get_cp15(void);
+ 
+diff --git a/board/at91sam9263ek/at91sam9263ek.c b/board/at91sam9263ek/at91sam9263ek.c
+index dd965c0..485880d 100644
+--- a/board/at91sam9263ek/at91sam9263ek.c
++++ b/board/at91sam9263ek/at91sam9263ek.c
+@@ -33,16 +33,7 @@
+ 
+ #else
+ 
+-#include "part.h"
+-#include "main.h"
+-#include "gpio.h"
+-#include "pmc.h"
+-#include "rstc.h"
+-#include "debug.h"
+-#include "dbgu.h"
+-#include "memory.h"
+-#include "psram.h"
+-#include "matrix.h"
++#include "board-support.h"
+ 
+ int get_cp15(void);
+ 
+diff --git a/board/at91sam9g10ek/at91sam9g10ek.c b/board/at91sam9g10ek/at91sam9g10ek.c
+index cf1e4ef..7d4923f 100644
+--- a/board/at91sam9g10ek/at91sam9g10ek.c
++++ b/board/at91sam9g10ek/at91sam9g10ek.c
+@@ -34,14 +34,7 @@
+ 
+ #else
+ 
+-#include "part.h"
+-#include "main.h"
+-#include "gpio.h"
+-#include "pmc.h"
+-#include "rstc.h"
+-#include "dbgu.h"
+-#include "debug.h"
+-#include "memory.h"
++#include "board-support.h"
+ 
+ int get_cp15(void);
+ 
+diff --git a/board/at91sam9g20ek/at91sam9g20ek.c b/board/at91sam9g20ek/at91sam9g20ek.c
+index b49ea16..90cd1e0 100644
+--- a/board/at91sam9g20ek/at91sam9g20ek.c
++++ b/board/at91sam9g20ek/at91sam9g20ek.c
+@@ -34,14 +34,7 @@
+ 
+ #else
+ 
+-#include "part.h"
+-#include "main.h"
+-#include "gpio.h"
+-#include "pmc.h"
+-#include "rstc.h"
+-#include "dbgu.h"
+-#include "debug.h"
+-#include "memory.h"
++#include "board-support.h"
+ 
+ int get_cp15(void);
+ 
+diff --git a/board/at91sam9g45ek/at91sam9g45ek.c b/board/at91sam9g45ek/at91sam9g45ek.c
+index 5a5ec9e..9fb68f3 100644
+--- a/board/at91sam9g45ek/at91sam9g45ek.c
++++ b/board/at91sam9g45ek/at91sam9g45ek.c
+@@ -34,21 +34,7 @@
+ 
+ #else
+ 
+-#include "part.h"
+-#include "gpio.h"
+-#include "pmc.h"
+-#include "rstc.h"
+-#include "dbgu.h"
+-#include "debug.h"
+-#include "main.h"
+-#include "ddramc.h"
+-#include "gpio.h"
+-#ifdef CONFIG_NANDFLASH
+-#include "nandflash.h"
+-#endif
+-#ifdef CONFIG_DATAFLASH
+-#include "dataflash.h"
+-#endif
++#include "board-support.h"
+ 
+ int get_cp15(void);
+ 
+diff --git a/board/at91sam9g45ekes/at91sam9g45ekes.c b/board/at91sam9g45ekes/at91sam9g45ekes.c
+index e29e7ff..450b369 100644
+--- a/board/at91sam9g45ekes/at91sam9g45ekes.c
++++ b/board/at91sam9g45ekes/at91sam9g45ekes.c
+@@ -34,21 +34,7 @@
+ 
+ #else
+ 
+-#include "part.h"
+-#include "gpio.h"
+-#include "pmc.h"
+-#include "rstc.h"
+-#include "dbgu.h"
+-#include "debug.h"
+-#include "main.h"
+-#include "ddramc.h"
+-#include "gpio.h"
+-#ifdef CONFIG_NANDFLASH
+-#include "nandflash.h"
+-#endif
+-#ifdef CONFIG_DATAFLASH
+-#include "dataflash.h"
+-#endif
++#include "board-support.h"
+ 
+ int get_cp15(void);
+ 
+diff --git a/board/at91sam9m10ek/at91sam9m10ek.c b/board/at91sam9m10ek/at91sam9m10ek.c
+index efef653..8f0d0b0 100644
+--- a/board/at91sam9m10ek/at91sam9m10ek.c
++++ b/board/at91sam9m10ek/at91sam9m10ek.c
+@@ -34,21 +34,7 @@
+ 
+ #else
+ 
+-#include "part.h"
+-#include "gpio.h"
+-#include "pmc.h"
+-#include "rstc.h"
+-#include "dbgu.h"
+-#include "debug.h"
+-#include "main.h"
+-#include "ddramc.h"
+-#include "gpio.h"
+-#ifdef CONFIG_NANDFLASH
+-#include "nandflash.h"
+-#endif
+-#ifdef CONFIG_DATAFLASH
+-#include "dataflash.h"
+-#endif
++#include "board-support.h"
+ 
+ int get_cp15(void);
+ 
+diff --git a/board/at91sam9m10ekes/at91sam9m10ekes.c b/board/at91sam9m10ekes/at91sam9m10ekes.c
+index 71da109..ca25fa5 100644
+--- a/board/at91sam9m10ekes/at91sam9m10ekes.c
++++ b/board/at91sam9m10ekes/at91sam9m10ekes.c
+@@ -33,22 +33,7 @@
+ #if defined(WINCE) && !defined(CONFIG_AT91SAM9M10EKES)
+ 
+ #else
+-
+-#include "part.h"
+-#include "gpio.h"
+-#include "pmc.h"
+-#include "rstc.h"
+-#include "dbgu.h"
+-#include "debug.h"
+-#include "main.h"
+-#include "ddramc.h"
+-#include "gpio.h"
+-#ifdef CONFIG_NANDFLASH
+-#include "nandflash.h"
+-#endif
+-#ifdef CONFIG_DATAFLASH
+-#include "dataflash.h"
+-#endif
++#include "board-support.h"
+ 
+ int get_cp15(void);
+ 
+diff --git a/board/at91sam9rlek/at91sam9rlek.c b/board/at91sam9rlek/at91sam9rlek.c
+index 59ff5bb..749d44d 100644
+--- a/board/at91sam9rlek/at91sam9rlek.c
++++ b/board/at91sam9rlek/at91sam9rlek.c
+@@ -34,14 +34,7 @@
+ 
+ #else
+ 
+-#include "part.h"
+-#include "main.h"
+-#include "gpio.h"
+-#include "dbgu.h"
+-#include "pmc.h"
+-#include "rstc.h"
+-#include "debug.h"
+-#include "memory.h"
++#include "board-support.h"
+ 
+ int get_cp15(void);
+ 
+diff --git a/board/at91sam9x5ek/at91sam9x5ek.c b/board/at91sam9x5ek/at91sam9x5ek.c
+index 35f242f..7fbbdd1 100644
+--- a/board/at91sam9x5ek/at91sam9x5ek.c
++++ b/board/at91sam9x5ek/at91sam9x5ek.c
+@@ -34,18 +34,7 @@
+ 
+ #else
+ 
+-#include "part.h"
+-#include "gpio.h"
+-#include "pmc.h"
+-#include "rstc.h"
+-#include "dbgu.h"
+-#include "debug.h"
+-#include "main.h"
+-#include "ddramc.h"
+-
+-#ifdef CONFIG_NANDFLASH
+-#include "nandflash.h"
+-#endif
++#include "board-support.h"
+ 
+ #include "onewire_info.h"
+ 
+diff --git a/board/at91sam9xeek/at91sam9xeek.c b/board/at91sam9xeek/at91sam9xeek.c
+index 3205934..065325e 100644
+--- a/board/at91sam9xeek/at91sam9xeek.c
++++ b/board/at91sam9xeek/at91sam9xeek.c
+@@ -30,14 +30,7 @@
+  * Creation            : NFe Feb 2nd 2007
+  *-----------------------------------------------------------------------------
+  */
+-#include "part.h"
+-#include "main.h"
+-#include "gpio.h"
+-#include "pmc.h"
+-#include "rstc.h"
+-#include "dbgu.h"
+-#include "debug.h"
+-#include "memory.h"
++#include "board-support.h"
+ 
+ #ifndef CONFIG_THUMB
+ static inline unsigned int get_cp15(void)
+diff --git a/driver/MEDSdcard.c b/driver/MEDSdcard.c
+index 472797f..4158e9d 100644
+--- a/driver/MEDSdcard.c
++++ b/driver/MEDSdcard.c
+@@ -32,11 +32,9 @@
+ //------------------------------------------------------------------------------
+ //         Headers
+ //------------------------------------------------------------------------------
+-#include "part.h"
++#include "common.h"
+ #include "MEDSdcard.h"
+ #include "fatfs_config.h"
+-#include "dbgu.h"
+-#include "debug.h"
+ 
+ #include "irq.h"
+ #include "pio.h"
+@@ -46,8 +44,6 @@
+ #include "dmad.h"
+ #endif
+ 
+-#include <string.h>
+-
+ extern	unsigned int altboot;
+ 
+ #if defined(CONFIG_DUAL_BOOT)
+diff --git a/driver/aic.c b/driver/aic.c
+index 457eb90..928f40e 100644
+--- a/driver/aic.c
++++ b/driver/aic.c
+@@ -31,7 +31,8 @@
+ //         Headers
+ //------------------------------------------------------------------------------
+ 
+-#include <board.h>
++//#include <board.h>
++#include "common.h"
+ #include "irq.h"
+ 
+ #ifndef AT91C_AIC_SRCTYPE_INT_HIGH_LEVEL
+diff --git a/driver/bitops.c b/driver/bitops.c
+index b989ac8..2ad6b76 100644
+--- a/driver/bitops.c
++++ b/driver/bitops.c
+@@ -31,8 +31,7 @@
+  * ODi Nov 9th         : dstp #3507 "Bad PIO descriptors in at91samxxxek.c"
+  *-----------------------------------------------------------------------------
+  */
+-#include "part.h"
+-#include "main.h"
++#include "common.h"
+ 
+ void sbit(unsigned int bit, unsigned int adr)
+ {
+diff --git a/driver/dataflash.c b/driver/dataflash.c
+index 3c5a7ae..6028fe4 100644
+--- a/driver/dataflash.c
++++ b/driver/dataflash.c
+@@ -31,11 +31,9 @@
+  *---------------------------------------------------------------------------
+ */
+ 
+-#include "part.h"
++#include "common.h"
+ //#include "spi.h"
+-#include "main.h"
+ #include "dataflash.h"
+-#include "debug.h"
+ #include <stdlib.h>
+ 
+ #if defined(CONFIG_DATAFLASH) || defined(CONFIG_DATAFLASHCARD)
+diff --git a/driver/dbgu.c b/driver/dbgu.c
+index 3a43a38..545f1d5 100644
+--- a/driver/dbgu.c
++++ b/driver/dbgu.c
+@@ -30,9 +30,7 @@
+  * Creation            : Hong Apr 6th 2010
+  *-----------------------------------------------------------------------------
+  */
+-#include "part.h"
+-#include "main.h"
+-#include "dbgu.h"
++#include "common.h"
+ 
+ #ifdef CONFIG_DEBUG
+ /* Write DBGU register */
+diff --git a/driver/ddr2.c b/driver/ddr2.c
+index 749ed70..4ed0423 100644
+--- a/driver/ddr2.c
++++ b/driver/ddr2.c
+@@ -30,9 +30,8 @@
+  * Creation            :
+  *-----------------------------------------------------------------------------
+  */
+-#include "../include/ddr2.h"
+-#include "../include/part.h"
+-#include "../include/main.h"
++#include "common.h"
++#include "ddr2.h"
+ 
+ #ifdef CONFIG_DDR2
+ 
+diff --git a/driver/ddramc.c b/driver/ddramc.c
+index 08eac28..35cdacb 100644
+--- a/driver/ddramc.c
++++ b/driver/ddramc.c
+@@ -31,11 +31,8 @@
+  * Creation            :
+  *-----------------------------------------------------------------------------
+  */
+-#include "dbgu.h"
+-#include "debug.h"
+-#include "../include/part.h"
+-#include "../include/main.h"
+-#include "../include/ddramc.h"
++#include "common.h"
++#include "ddramc.h"
+ 
+ #ifdef CONFIG_DDR2
+ 
+diff --git a/driver/debug.c b/driver/debug.c
+index 4694703..d72de27 100644
+--- a/driver/debug.c
++++ b/driver/debug.c
+@@ -30,12 +30,7 @@
+  * Creation            : ODi Apr 19th 2006
+  *-----------------------------------------------------------------------------
+  */
+-#include "part.h"
+-#include "main.h"
+-#include "dbgu.h"
+-#include "debug.h"
+-#include <stdio.h>
+-#include <stdarg.h>
++#include "common.h"
+ 
+ #ifdef	CONFIG_DEBUG
+ 
+diff --git a/driver/diskio.c b/driver/diskio.c
+index ffd8492..58381dc 100644
+--- a/driver/diskio.c
++++ b/driver/diskio.c
+@@ -5,11 +5,9 @@
+ /* disk I/O modules and attach it to FatFs module with common interface. */
+ /*-----------------------------------------------------------------------*/
+ 
++#include "common.h"
+ #include "diskio.h"
+ #include "Media.h"
+-#include "part.h"
+-#include <string.h>
+-#include <stdio.h>
+ #include "integer.h"
+ #include "fatfs_config.h"
+ 
+diff --git a/driver/ds24xx.c b/driver/ds24xx.c
+index 834ecc8..aea808c 100644
+--- a/driver/ds24xx.c
++++ b/driver/ds24xx.c
+@@ -27,11 +27,9 @@
+  * ----------------------------------------------------------------------------
+  */
+ 
+-#include "part.h"
++#include "common.h"
+ #include "gpio.h"
+ #include "pmc.h"
+-#include "main.h"
+-#include "debug.h"
+ #include "onewire_info.h"
+ 
+ #define ROM_COMMAND_READ		0x33
+@@ -85,13 +83,6 @@
+ #define CM_REV_MASK			0x1F
+ #define CM_REV_OFFSET			0
+ 
+-size_t strlen(const char *str);
+-extern char *strcpy(char *dst, const char *src);
+-extern int strcmp(const char *p1, const char *p2);
+-extern int strncmp(const char *p1, const char *p2, size_t cnt);
+-extern void *memset(void *dst, int val, int cnt);
+-extern void *memcpy(void *dst, const void *src, int cnt);
+-
+ static unsigned int sn = 0xffffffff;
+ static unsigned int rev = 0xffffffff;
+ 
+diff --git a/driver/ff.c b/driver/ff.c
+index 8af3cbc..8200b14 100644
+--- a/driver/ff.c
++++ b/driver/ff.c
+@@ -70,11 +70,9 @@
+ /                   Added proper case conversion to extended char.
+ /---------------------------------------------------------------------------*/
+ 
++#include "common.h"
+ #include "ff.h"                 /* FatFs configurations and declarations */
+ #include "diskio.h"             /* Declarations of low level disk I/O functions */
+-#include "dbgu.h"
+-#include "debug.h"
+-#include "part.h"
+ /*--------------------------------------------------------------------------
+ 
+    Module Private Definitions
+@@ -152,15 +150,6 @@ WORD LfnBuf[_MAX_LFN + 1];
+ /* String functions                                                      */
+ /*-----------------------------------------------------------------------*/
+ 
+-/* Copy memory to memory */
+-extern void* memcpy(void *dst, const void *src, int cnt);
+-
+-/* Fill memory */
+-extern void* memset(void *dst, int val, int cnt);
+-
+-/* Compare memory to memory */
+-extern int memcmp(const void *dst, const void *src, int cnt);
+-
+ /* Check if chr is contained in the string */
+ static
+ int chk_chr(const char *str, int chr)
+diff --git a/driver/flash.c b/driver/flash.c
+index 3629537..00d5086 100644
+--- a/driver/flash.c
++++ b/driver/flash.c
+@@ -32,15 +32,11 @@
+  *---------------------------------------------------------------------------
+ */
+ 
+-#include "../include/part.h"
+-#include "../include/main.h"
+-#include "../include/flash.h"
+-#include <stdlib.h>
++#include "common.h"
++#include "flash.h"
+ 
+ #ifdef CONFIG_FLASH
+ 
+-extern void *memcpy(void *out, void *in, size_t length);
+-
+ /*------------------------------------------------------------------------------*/
+ /* \fn    load_df								*/
+ /* \brief This function loads norflash content to specified address		*/
+diff --git a/driver/gpio.c b/driver/gpio.c
+index c2c01f9..5b98870 100644
+--- a/driver/gpio.c
++++ b/driver/gpio.c
+@@ -30,10 +30,9 @@
+  * Creation            : ODi Apr 19th 2006
+  *-----------------------------------------------------------------------------
+  */
+-#include "part.h"
+-#include "main.h"
++
++#include "common.h"
+ #include "gpio.h"
+-#include "debug.h"
+ 
+ #define EINVAL 1                /* Error code returned when the PIN is unknown */
+ 
+diff --git a/driver/linux_loader.c b/driver/linux_loader.c
+index 819a6f9..f7711ca 100644
+--- a/driver/linux_loader.c
++++ b/driver/linux_loader.c
+@@ -1,6 +1,4 @@
+-#include "main.h"
+-#include "debug.h"
+-#include "dbgu.h"
++#include "common.h"
+ #include "linux_tags.h"
+ #include "dataflash.h"
+ #include "nandflash.h"
+@@ -129,12 +127,6 @@
+ #define BIN_LOAD_ADDR (OS_MEM_BANK + 0x2000000)
+ #define IMAGE_MAGIC 0x27051956
+ 
+-size_t strlen(const char *str);
+-
+-char *strcpy(char *dst, const char *src);
+-
+-void *memcpy(void *dst, const void *src, size_t cnt);
+-
+ #if 0
+ #ifndef CONFIG_THUMB
+ static inline unsigned int get_cp15(void)
+diff --git a/driver/mci.c b/driver/mci.c
+index 9e52024..ea1fc5e 100644
+--- a/driver/mci.c
++++ b/driver/mci.c
+@@ -33,10 +33,8 @@
+ //         Headers
+ //------------------------------------------------------------------------------
+ 
++#include "common.h"
+ #include "mci.h"
+-#include "part.h"
+-#include "dbgu.h"
+-#include "debug.h"
+ //------------------------------------------------------------------------------
+ //         Local constants
+ //------------------------------------------------------------------------------
+diff --git a/driver/mci_hs.c b/driver/mci_hs.c
+index 800e4e1..25a13e3 100644
+--- a/driver/mci_hs.c
++++ b/driver/mci_hs.c
+@@ -33,14 +33,12 @@
+ 
+ #if defined(CONFIG_SDCARD_HS)
+ 
++#include "common.h"
+ #include "mci_hs.h"
+ 
+ #include "dmad.h"
+ #include "dma.h"
+ 
+-#include "dbgu.h"
+-#include "debug.h"
+-
+ //------------------------------------------------------------------------------
+ //         Local constants
+ //------------------------------------------------------------------------------
+diff --git a/driver/nandflash.c b/driver/nandflash.c
+index 7bada9b..ea7068e 100644
+--- a/driver/nandflash.c
++++ b/driver/nandflash.c
+@@ -30,10 +30,7 @@
+  * Creation            : NLe Sep 28th 2006
+  *-----------------------------------------------------------------------------
+  */
+-#include <stdlib.h>
+-#include "part.h"
+-#include "main.h"
+-#include "debug.h"
++#include "common.h"
+ 
+ #ifdef CONFIG_NANDFLASH
+ 
+diff --git a/driver/pio.c b/driver/pio.c
+index 686e6a0..6cbbce3 100644
+--- a/driver/pio.c
++++ b/driver/pio.c
+@@ -30,9 +30,9 @@
+ //------------------------------------------------------------------------------
+ //         Headers
+ //------------------------------------------------------------------------------
+-#include "part.h"
++#include "common.h"
+ #include "pio.h"
+-#include "debug.h"
++
+ 
+ //------------------------------------------------------------------------------
+ //         Local Functions
+diff --git a/driver/pmc.c b/driver/pmc.c
+index 13d2195..edf1314 100644
+--- a/driver/pmc.c
++++ b/driver/pmc.c
+@@ -30,9 +30,8 @@
+  * Creation            : ODi Apr 24th 2006
+  *-----------------------------------------------------------------------------
+  */
+-#include "../include/pmc.h"
+-#include "../include/part.h"
+-#include "../include/main.h"
++#include "common.h"
++#include "pmc.h"
+ 
+ /* Write PMC register */
+ static inline void write_pmc(unsigned int offset, const unsigned int value)
+diff --git a/driver/sddrc.c b/driver/sddrc.c
+index 367b408..06ed202 100644
+--- a/driver/sddrc.c
++++ b/driver/sddrc.c
+@@ -31,9 +31,8 @@
+  * Creation            :
+  *-----------------------------------------------------------------------------
+  */
+-#include "../include/sddrc.h"
+-#include "../include/part.h"
+-#include "../include/main.h"
++#include "common.h"
++#include "sddrc.h"
+ 
+ #ifdef CONFIG_SDDRC
+ 
+diff --git a/driver/sdmmc_mci.c b/driver/sdmmc_mci.c
+index b9544d3..7451ab1 100644
+--- a/driver/sdmmc_mci.c
++++ b/driver/sdmmc_mci.c
+@@ -33,15 +33,11 @@
+ //         Headers
+ //------------------------------------------------------------------------------
+ 
++#include "common.h"
+ #include "sdmmc_mci.h"
+ 
+-#include "dbgu.h"
+-#include "debug.h"
+-
+ #include "pio.h"
+ 
+-#include <string.h>
+-
+ //------------------------------------------------------------------------------
+ //         Global variables
+ //------------------------------------------------------------------------------
+diff --git a/driver/sdramc.c b/driver/sdramc.c
+index c60d88b..0b0a00e 100644
+--- a/driver/sdramc.c
++++ b/driver/sdramc.c
+@@ -30,9 +30,8 @@
+  * Creation            : NLe Jul 11th 2006
+  *-----------------------------------------------------------------------------
+  */
++#include "common.h"
+ #include "sdramc.h"
+-#include "part.h"
+-#include "main.h"
+ 
+ #ifdef CONFIG_SDRAM
+ 
+diff --git a/driver/wince_loader.c b/driver/wince_loader.c
+index 6c7b94e..c371e93 100644
+--- a/driver/wince_loader.c
++++ b/driver/wince_loader.c
+@@ -1,6 +1,4 @@
+-#include "main.h"
+-#include "debug.h"
+-#include "dbgu.h"
++#include "common.h"
+ #include "dataflash.h"
+ #include "nandflash.h"
+ 
+diff --git a/include/autoconf.h b/include/autoconf.h
+new file mode 120000
+index 0000000..925f804
+--- /dev/null
++++ b/include/autoconf.h
+@@ -0,0 +1 @@
++../config/at91bootstrap-config/autoconf.h
+\ No newline at end of file
+diff --git a/include/board-support.h b/include/board-support.h
+new file mode 100644
+index 0000000..9859df7
+--- /dev/null
++++ b/include/board-support.h
+@@ -0,0 +1,45 @@
++/* ----------------------------------------------------------------------------
++ *         ATMEL Microcontroller Software Support  -  ROUSSET  -
++ * ----------------------------------------------------------------------------
++ * Copyright (c) 2011, Atmel Corporation
++
++ * All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions are met:
++ *
++ * - Redistributions of source code must retain the above copyright notice,
++ * this list of conditions and the disclaimer below.
++ *
++ * Atmel's name may not be used to endorse or promote products derived from
++ * this software without specific prior written permission.
++ *
++ * DISCLAIMER: THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR
++ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
++ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
++ * DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR ANY DIRECT, INDIRECT,
++ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
++ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
++ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
++ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
++ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ * ----------------------------------------------------------------------------
++ * File Name           : board-support.h
++ * Object              :
++ * Creation            : USa Oct 23 2011
++ *-----------------------------------------------------------------------------
++ */
++
++#ifndef _BOARD_SUPPORT_H
++#define _BOARD_SUPPORT_H
++
++#include "common.h"
++#include "gpio.h"
++#include "pmc.h"
++#include "rstc.h"
++#include "memory.h"
++#include "matrix.h"
++
++#endif
++
+diff --git a/include/common.h b/include/common.h
+new file mode 100644
+index 0000000..54ff699
+--- /dev/null
++++ b/include/common.h
+@@ -0,0 +1,52 @@
++/* ----------------------------------------------------------------------------
++ *         ATMEL Microcontroller Software Support  -  ROUSSET  -
++ * ----------------------------------------------------------------------------
++ * Copyright (c) 2010, Atmel Corporation
++
++ * All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions are met:
++ *
++ * - Redistributions of source code must retain the above copyright notice,
++ * this list of conditions and the disclaiimer below.
++ *
++ * Atmel's name may not be used to endorse or promote products derived from
++ * this software without specific prior written permission.
++ *
++ * DISCLAIMER: THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR
++ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
++ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
++ * DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR ANY DIRECT, INDIRECT,
++ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
++ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
++ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
++ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
++ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ * ----------------------------------------------------------------------------
++ * File Name           : common.h
++ * Object              :
++ * Creation            : USa 2010-02-02
++ *-----------------------------------------------------------------------------
++ */
++
++#ifndef _COMMON_H
++#define _COMMON_H
++
++#if	0
++#include	<stdio.h>
++#include	<stdlib.h>
++#endif
++
++#include	<stdarg.h>
++#include	"autoconf.h"
++#include	"integer.h"
++#include	"part.h"
++#include	"main.h"
++#include	"debug.h"
++#include	"dbgu.h"
++#include	"string.h"
++
++#endif /* _COMMON_H */
++
+diff --git a/include/main.h b/include/main.h
+index ea3a220..065ea71 100644
+--- a/include/main.h
++++ b/include/main.h
+@@ -35,8 +35,6 @@
+ #define _MAIN_H
+ #include	<stdlib.h>
+ 
+-typedef enum _BOOL { FALSE, TRUE } BOOL;
+-
+ #ifndef inline
+ #define inline __inline
+ #endif
+diff --git a/include/memory.h b/include/memory.h
+index 10de9cd..c566614 100644
+--- a/include/memory.h
++++ b/include/memory.h
+@@ -6,6 +6,10 @@
+ #endif
+ #ifdef	CONFIG_DDR2
+ #include "ddr2.h"
++#include "ddramc.h"
++#endif
++#ifdef CONFIG_PSRAM
++#include "psram.h"
+ #endif
+ #ifdef CONFIG_NANDFLASH
+ #include "nandflash.h"
+@@ -16,3 +20,4 @@
+ #ifdef CONFIG_FLASH
+ #include "flash.h"
+ #endif
++
+diff --git a/include/string.h b/include/string.h
+new file mode 100644
+index 0000000..4702acd
+--- /dev/null
++++ b/include/string.h
+@@ -0,0 +1,48 @@
++/* ----------------------------------------------------------------------------
++ *         ATMEL Microcontroller Software Support  -  ROUSSET  -
++ * ----------------------------------------------------------------------------
++ * Copyright (c) 2011, Atmel Corporation
++
++ * All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions are met:
++ *
++ * - Redistributions of source code must retain the above copyright notice,
++ * this list of conditions and the disclaiimer below.
++ *
++ * Atmel's name may not be used to endorse or promote products derived from
++ * this software without specific prior written permission.
++ *
++ * DISCLAIMER: THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR
++ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
++ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
++ * DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR ANY DIRECT, INDIRECT,
++ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
++ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
++ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
++ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
++ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ * ----------------------------------------------------------------------------
++ * File Name           : string.h
++ * Object              :
++ * Creation            : USa 2010-02-02
++ *-----------------------------------------------------------------------------
++ */
++
++#ifndef _STRING_H
++#define _STRING_H
++
++typedef unsigned int size_t;
++
++void	*memcpy(void *dst, const void *src, int cnt);
++void	*memset(void *dst, int val, int cnt);
++int	 memcmp(const void *dst, const void *src, size_t cnt);
++size_t	 strlen(const char *str);
++char	*strcpy(char *dst, const char *src);
++int	 strcmp(const char *p1, const char *p2);
++int	 strncmp(const char *p1, const char *p2, size_t cnt);
++
++#endif /* _STRING_H */
++
+diff --git a/lib/string.c b/lib/string.c
+index 32a6931..ab4aad0 100644
+--- a/lib/string.c
++++ b/lib/string.c
+@@ -1,4 +1,37 @@
+-typedef unsigned int size_t;
++/* ----------------------------------------------------------------------------
++ *         ATMEL Microcontroller Software Support  -  ROUSSET  -
++ * ----------------------------------------------------------------------------
++ * Copyright (c) 2011, Atmel Corporation
++
++ * All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions are met:
++ *
++ * - Redistributions of source code must retain the above copyright notice,
++ * this list of conditions and the disclaiimer below.
++ *
++ * Atmel's name may not be used to endorse or promote products derived from
++ * this software without specific prior written permission.
++ *
++ * DISCLAIMER: THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR
++ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
++ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
++ * DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR ANY DIRECT, INDIRECT,
++ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
++ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
++ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
++ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
++ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ * ----------------------------------------------------------------------------
++ * File Name           : string.c
++ * Object              :
++ * Creation            : USa 2011-10-23
++ *-----------------------------------------------------------------------------
++ */
++
++#include	"string.h"
+ 
+ /* Copy memory to memory */
+ void *memcpy(void *dst, const void *src, int cnt)
+diff --git a/main.c b/main.c
+index cd1d540..4f86e84 100644
+--- a/main.c
++++ b/main.c
+@@ -30,10 +30,7 @@
+  * Creation            : ODi Apr 19th 2006
+  *-----------------------------------------------------------------------------
+  */
+-#include "part.h"
+-#include "main.h"
+-#include "dbgu.h"
+-#include "debug.h"
++#include "common.h"
+ #include "dataflash.h"
+ #include "gpio.h"
+ #include "nandflash.h"
+-- 
+1.7.5.4
+

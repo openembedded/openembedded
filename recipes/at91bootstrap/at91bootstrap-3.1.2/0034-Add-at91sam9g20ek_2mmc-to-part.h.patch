@@ -1,0 +1,30 @@
+From e6be93d260bfa2b8d3a8946290b77cd6ee2a93e2 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Fri, 28 Oct 2011 12:43:22 +0200
+Subject: [PATCH 34/39] Add at91sam9g20ek_2mmc to part.h
+
+---
+ include/part.h |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/include/part.h b/include/part.h
+index 843dcfd..cb3f0e3 100644
+--- a/include/part.h
++++ b/include/part.h
+@@ -60,8 +60,13 @@
+ 
+ #ifdef AT91SAM9G20
+ #include "AT91SAM9260_inc.h"
++#ifdef	CONFIG_AT91SAM9G20EK
+ #include "at91sam9g20ek.h"
+ #endif
++#ifdef	CONFIG_AT91SAM9G20EK_2MMC
++#include "at91sam9g20ek_2mmc.h"
++#endif
++#endif
+ 
+ #ifdef AT91SAM9G45
+ #include "AT91SAM9G45_inc.h"
+-- 
+1.7.5.4
+

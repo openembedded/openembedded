@@ -27,6 +27,7 @@ SRC_URI_append = " \
 	file://0016-Update-configs.patch;apply=yes \
 	file://0017-at91bootstrap-fix-build-error-in-openembedded-due-to.patch;apply=yes \
 	file://0018-Change-switch-statements-to-if-statements-to-avoid-b.patch;apply=yes \
+	file://0019-Make-at91sam9g20sd-load-u-boot.patch \
 	"
 
 # S = "${WORKDIR}/${PN}-${PV}"
