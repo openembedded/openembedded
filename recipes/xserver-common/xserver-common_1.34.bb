@@ -1,8 +1,15 @@
 DESCRIPTION = "Common X11 scripts and support files"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=751419260aa954499f7abaabaa882bbe"
+SECTION = "x11"
 
-PR = "r3"
+PR = "r4"
+
+PACKAGE_ARCH = "all"
+DEFAULT_PREFERENCE = "-1"
+
+RCONFLICTS_${PN} = "xserver-kdrive-common"
+RREPLACES_${PN} = "xserver-kdrive-common"
 
 # we are using a gpe-style Makefile
 inherit gpe
@@ -14,21 +21,27 @@ SRC_URI_append = " \
                    file://gplv2-license.patch \
                    file://setDPI.sh \
                    file://89xdgautostart.sh \
-                   file://89xTs_Calibrate.xinput_calibrator.patch \
-                   file://90xXWindowManager.patch \
-                   file://Xserver.add.xserver-system.patch \
-                   file://Xserver.add.nocursor.for.gta.patch \
-                   file://Xserver.add.dpi.for.gta.patch \
-                   file://Xserver.n900.patch \
-                   file://Xserver.htcdream.patch \
-                   file://Xserver.nexusone.patch \
-"
+                   file://Xserver.add.at91sam9x5ek.patch"
 
+SRC_URI_append_angstrom = " file://xtscal-fix.patch "
+RDEPENDS_${PN}_append_angstrom = " tslib-calibrate "
+RDEPENDS_${PN}_append_shr = " xinput-calibrator "
+
+SRC_URI_append_shr = " \
+			file://89xTs_Calibrate.xinput_calibrator.patch \
+			file://90xXWindowManager.patch \
+			file://Xserver.add.xserver-system.patch \
+			file://Xserver.add.nocursor.for.gta.patch \
+			file://Xserver.add.dpi.for.gta.patch \
+			file://Xserver.n900.patch \
+			file://Xserver.htcdream.patch \
+			file://Xserver.nexusone.patch \
+			"
 
 do_install_append() {
-        install -m 0755 "${WORKDIR}/setDPI.sh" "${D}/etc/X11/Xinit.d/50setdpi"
-        install -m 0755 "${WORKDIR}/89xdgautostart.sh" "${D}/etc/X11/Xsession.d/89xdgautostart"
-        sed -i 's:^BINDIR=.*$:BINDIR=${bindir}:' ${D}/etc/X11/xserver-common
+	install -m 0755 "${WORKDIR}/setDPI.sh" "${D}/etc/X11/Xinit.d/50setdpi"
+	install -m 0755 "${WORKDIR}/89xdgautostart.sh" "${D}/etc/X11/Xsession.d/89xdgautostart"
+	sed -i 's:^BINDIR=.*$:BINDIR=${bindir}:' ${D}/etc/X11/xserver-common
 }
 
 PACKAGE_ARCH = "all"
