@@ -4,7 +4,7 @@
 #@NAME: KaeilOS(R) - http://www.kaeilos.com
 #@DESCRIPTION: KaeilOS Linux Distribution preferred version
 #@MAINTAINER: Marco Cavallini <m.cavallini@koansoftware.com>
-#@VERSION: 11-03-2011
+#@VERSION: 18-11-2011
 #
 # KaeilOS is a registered trade mark of KOAN - Bergamo - Italia
 # Product website : http://www.KaeilOS.com 
@@ -71,6 +71,7 @@ PREFERRED_VERSION_qt4-x11-free-gles = "${KAEILOS_QT_VERSION}"
 
 PREFERRED_VERSION_samba		= "3.3.9"
 PREFERRED_VERSION_tiff 		= "3.9.4+4.0.0beta6"
+PREFERRED_VERSION_tslib		= "1.0+gitr%"
 
 PREFERRED_VERSION_udev 		= "151"
 PREFERRED_VERSION_udev_libc-uclibc = "141"
