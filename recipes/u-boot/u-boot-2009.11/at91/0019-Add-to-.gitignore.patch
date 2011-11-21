@@ -1,0 +1,24 @@
+From bd666e06ba6a7ec853d2ac057ef11d4d9bcfa6d8 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Fri, 28 Oct 2011 12:09:56 +0200
+Subject: [PATCH 19/23] Add to .gitignore
+
+---
+ .gitignore |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/.gitignore b/.gitignore
+index 67d2cd6..932f179 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -63,3 +63,7 @@ cscope.*
+ /onenand_ipl/onenand-ipl*
+ /onenand_ipl/board/*/onenand*
+ /onenand_ipl/board/*/*.S
++
++/binaries
++/binaries-old
++
+-- 
+1.7.5.4
+

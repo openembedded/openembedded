@@ -1,0 +1,5 @@
+	file://u-boot-2009.11/at91/0022-sam920ek_2mmc-Add-support.patch \
+	file://u-boot-2009.11/at91/0023-sam9m10g45ek-sd-card-boot-environment.patch \
+	file://u-boot-2009.11/at91/0024-Minor-fixes-to-_2mmc-support.patch \
+	file://u-boot-2009.11/at91/0026-Revert-bad-sam9m10g45_devices.c-patch.patch \
+

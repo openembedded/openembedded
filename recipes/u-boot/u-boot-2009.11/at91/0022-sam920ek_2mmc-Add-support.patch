@@ -1,0 +1,203 @@
+From a8b47c3ed7121934fd5a412fc8c3e46289d1d476 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Fri, 28 Oct 2011 12:13:50 +0200
+Subject: [PATCH 22/23] sam920ek_2mmc: Add support
+
+---
+ board/atmel/at91sam9260ek/at91sam9260ek.c |   24 +++++++++-
+ cpu/arm926ejs/at91/at91sam9260_devices.c  |   12 +++++
+ include/configs/at91sam9260ek.h           |   70 ++++++++++++++++++++++++++---
+ 3 files changed, 97 insertions(+), 9 deletions(-)
+
+diff --git a/board/atmel/at91sam9260ek/at91sam9260ek.c b/board/atmel/at91sam9260ek/at91sam9260ek.c
+index ed47360..874da86 100644
+--- a/board/atmel/at91sam9260ek/at91sam9260ek.c
++++ b/board/atmel/at91sam9260ek/at91sam9260ek.c
+@@ -38,7 +38,7 @@
+ #include <netdev.h>
+ 
+ DECLARE_GLOBAL_DATA_PTR;
+-
++extern	atmel_mci_init(void);
+ /* ------------------------------------------------------------------------- */
+ /*
+  * Miscelaneous platform dependent initialisations
+@@ -148,9 +148,23 @@ int board_init(void)
+ #ifdef CONFIG_AT91SAM9G20EK
+ 	/* arch number of AT91SAM9260EK-Board */
+ 	gd->bd->bi_arch_number = MACH_TYPE_AT91SAM9G20EK;
+-#else
++#ifdef	CONFIG_SYS_USE_SDCARD
++	setenv("machine", "at91sam9g20ek");
++#endif
++#endif
++#ifdef CONFIG_AT91SAM9G20EK_2MMC
++	/* arch number of AT91SAM9260EK-Board */
++	gd->bd->bi_arch_number = MACH_TYPE_AT91SAM9G20EK_2MMC;
++#ifdef	CONFIG_SYS_USE_SDCARD
++	setenv("machine", "at91sam9g20ek_2mmc");
++#endif
++#endif
++#ifdef CONFIG_AT91SAM9260EK
+ 	/* arch number of AT91SAM9260EK-Board */
+ 	gd->bd->bi_arch_number = MACH_TYPE_AT91SAM9260EK;
++#ifdef	CONFIG_SYS_USE_SDCARD
++	setenv("machine", "at91sam9260ek");
++#endif
+ #endif
+ 	/* adress of boot parameters */
+ 	gd->bd->bi_boot_params = PHYS_SDRAM + 0x100;
+@@ -162,6 +176,12 @@ int board_init(void)
+ #ifdef CONFIG_HAS_DATAFLASH
+ 	at91_spi0_hw_init((1 << 0) | (1 << 1));
+ #endif
++
++#if defined(CONFIG_MMC)
++	at91_mci0_hw_init();
++	atmel_mci_init();
++#endif
++
+ #ifdef CONFIG_MACB
+ 	at91sam9260ek_macb_hw_init();
+ #endif
+diff --git a/cpu/arm926ejs/at91/at91sam9260_devices.c b/cpu/arm926ejs/at91/at91sam9260_devices.c
+index f86cb99..dd66047 100644
+--- a/cpu/arm926ejs/at91/at91sam9260_devices.c
++++ b/cpu/arm926ejs/at91/at91sam9260_devices.c
+@@ -182,3 +182,15 @@ void at91_macb_hw_init(void)
+ #endif
+ }
+ #endif
++#if defined(CONFIG_MMC)
++void	at91_mci0_hw_init()
++{
++	at91_set_A_periph(AT91_PIN_PA8, 0);	/* MCI0_CK */
++	at91_set_A_periph(AT91_PIN_PA7, 0);	/* MCI0_CDA */
++	at91_set_A_periph(AT91_PIN_PA6, 0);	/* MCI0_DA0 */
++	at91_set_A_periph(AT91_PIN_PA9, 0);	/* MCI0_DA1 */
++	at91_set_A_periph(AT91_PIN_PA10, 0);	/* MCI0_DA2 */
++	at91_set_A_periph(AT91_PIN_PA11, 0);	/* MCI0_DA3 */
++	at91_sys_write(AT91_PMC_PCER, 1 << AT91SAM9260_ID_MCI);
++}
++#endif
+diff --git a/include/configs/at91sam9260ek.h b/include/configs/at91sam9260ek.h
+index 3507de2..132c69e 100644
+--- a/include/configs/at91sam9260ek.h
++++ b/include/configs/at91sam9260ek.h
+@@ -82,13 +82,34 @@
+ #undef CONFIG_CMD_IMI
+ #undef CONFIG_CMD_IMLS
+ #undef CONFIG_CMD_LOADS
++
+ #undef CONFIG_CMD_SOURCE
+ 
++#define CONFIG_CMD_SOURCE
++#undef CONFIG_CMD_XIMG
++#define CONFIG_CMD_ASKENV
++#define CONFIG_CMD_EXT2
++#define CONFIG_CMD_FAT
++#undef CONFIG_CMD_JFFS2
++#define CONFIG_CMD_MMC
++#define CONFIG_CMD_AUTOSCRIPT
++
+ #define CONFIG_CMD_PING		1
+ #define CONFIG_CMD_DHCP		1
+ #define CONFIG_CMD_NAND		1
+ #define CONFIG_CMD_USB		1
+ 
++#define	CONFIG_CMD_DEBUG	1
++#define	CONFIG_CMD_FACTORY	1
++
++/* MCI */
++#define MMCI_BASE			AT91SAM9260_BASE_MCI
++#define CONFIG_MMC			1
++#define CONFIG_ATMEL_MCI		1
++#define	CONFIG_ATMEL_HSMCI		1
++#define CONFIG_SYS_MMC_CLK_OD		1000000
++#define CONFIG_SUPPORT_VFAT
++
+ /* SDRAM */
+ #define CONFIG_NR_DRAM_BANKS		1
+ #define PHYS_SDRAM			0x20000000
+@@ -145,7 +166,6 @@
+ #define CONFIG_SYS_USB_OHCI_SLOT_NAME		"at91sam9260"
+ #define CONFIG_SYS_USB_OHCI_MAX_ROOT_PORTS	2
+ #define CONFIG_USB_STORAGE		1
+-#define CONFIG_CMD_FAT			1
+ 
+ #define CONFIG_SYS_LOAD_ADDR			0x22000000	/* load address */
+ 
+@@ -166,7 +186,9 @@
+ 				"mtdparts=atmel_nand:-(root) "		\
+ 				"rw rootfstype=jffs2"
+ 
+-#elif CONFIG_SYS_USE_DATAFLASH_CS1
++#endif
++
++#ifdef CONFIG_SYS_USE_DATAFLASH_CS1
+ 
+ /* bootstrap + u-boot + env + linux in dataflash on CS1 */
+ #define CONFIG_ENV_IS_IN_DATAFLASH	1
+@@ -179,20 +201,54 @@
+ 				"root=/dev/mtdblock0 "			\
+ 				"mtdparts=atmel_nand:-(root) "		\
+ 				"rw rootfstype=jffs2"
++#endif
++
++#ifdef	CONFIG_SYS_USE_SDCARD
++#define	CONFIG_ENV_IS_NOWHERE
++#define CONFIG_ENV_SIZE		0x4200
++#define CONFIG_ENV_SECT_SIZE	0x420
++#define	CONFIG_SYS_ROOTFS_SD	1
++
++/*
++ *	Machine Ids
++ *	at91sam9260ek=		44b	1099
++ *	at91sam9g20ek=		658	1624
++ *	at91sam9g20ek_2mmc=	8F0	2288
++ */
++
++#define CONFIG_EXTRA_ENV_SETTINGS	\
++	"sdram_start=0x20000000\0"	\
++	"kernel_address=0x22000000\0"	\
++	"kernel=uimage\0"		\
++	"load_env=fatload mmc 0:1 ${sdram_start} ${machine}/u-boot.env ; source ${sdram_start}\0"	\
++	"load_kernel=fatload mmc 0:1 ${kernel_address} ${machine}/${kernel}\0"	\
++
++
++#define CONFIG_BOOTCOMMAND	"mmc init; run load_env ; run load_kernel ; bootm 0x22000000"
++#define CONFIG_BOOTARGS		"mem=64M "	\
++				"console=ttyS0,115200 " \
++				"root=/dev/mmcblk0p2 " \
++				"rootdelay=2 "\
++				"rootfstype=rootfs rw"
++#endif
+ 
+-#else /* CONFIG_SYS_USE_NANDFLASH */
++#ifdef CONFIG_SYS_USE_NANDFLASH
+ 
+ /* bootstrap + u-boot + env + linux in nandflash */
+ #define CONFIG_ENV_IS_IN_NAND	1
+ #define CONFIG_ENV_OFFSET		0x60000
+ #define CONFIG_ENV_OFFSET_REDUND	0x80000
+ #define CONFIG_ENV_SIZE		0x20000		/* 1 sector = 128 kB */
+-#define CONFIG_BOOTCOMMAND	"nand read 0x22000000 0xA0000 0x200000; bootm"
++#define CONFIG_BOOTCOMMAND	"nand read 0x22000000 0x200000 0x200000; bootm"
+ #define CONFIG_BOOTARGS		"console=ttyS0,115200 "			\
+ 				"root=/dev/mtdblock5 "			\
+-				"mtdparts=atmel_nand:128k(bootstrap)ro,"	\
+-				"256k(uboot)ro,128k(env1)ro,"		\
+-				"128k(env2)ro,2M(linux),-(root) "	\
++				"mtdparts=atmel_nand:128k(bootstrap)ro,"\
++				"256k(uboot)ro,"			\
++				"128k(env1)ro,"				\
++				"128k(env2)ro,"				\
++				"384k(unused)ro,"			\
++				"2M(linux),"				\
++				"-(root) "				\
+ 				"rw rootfstype=jffs2"
+ 
+ #endif
+-- 
+1.7.5.4
+

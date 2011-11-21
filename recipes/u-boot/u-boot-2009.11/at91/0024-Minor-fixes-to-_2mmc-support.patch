@@ -1,0 +1,103 @@
+From 5b9b37a48f4a1597731baa795f45c0a73867fce7 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Sat, 29 Oct 2011 12:46:22 +0200
+Subject: [PATCH] Minor fixes to _2mmc support
+
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@telia.com>
+---
+ cpu/arm926ejs/at91/at91sam9m10g45_devices.c |   14 +++++++-------
+ include/configs/at91sam9260ek.h             |   23 +++++++++++++----------
+ 2 files changed, 20 insertions(+), 17 deletions(-)
+
+diff --git a/cpu/arm926ejs/at91/at91sam9m10g45_devices.c b/cpu/arm926ejs/at91/at91sam9m10g45_devices.c
+index ad25e41..ec36209 100644
+--- a/cpu/arm926ejs/at91/at91sam9m10g45_devices.c
++++ b/cpu/arm926ejs/at91/at91sam9m10g45_devices.c
+@@ -176,13 +176,13 @@ void at91_macb_hw_init(void)
+ #if defined(CONFIG_MMC)
+ void	at91_mci0_hw_init()
+ {
+-	at91_set_A_periph(AT91_PIN_PA0, 0);	/* MCI0_CK */
+-	at91_set_A_periph(AT91_PIN_PA1, 0);	/* MCI0_CDA */
+-	at91_set_A_periph(AT91_PIN_PA2, 0);	/* MCI0_DA0 */
+-	at91_set_A_periph(AT91_PIN_PA3, 0);	/* MCI0_DA1 */
+-	at91_set_A_periph(AT91_PIN_PA4, 0);	/* MCI0_DA2 */
+-	at91_set_A_periph(AT91_PIN_PA5, 0);	/* MCI0_DA3 */
+-	at91_sys_write(AT91_PMC_PCER, 1 << AT91SAM9G45_ID_MCI0);
++	at91_set_A_periph(AT91_PIN_PA8, 0);	/* MCI0_CK */
++	at91_set_A_periph(AT91_PIN_PA7, 0);	/* MCI0_CDA */
++	at91_set_A_periph(AT91_PIN_PA6, 0);	/* MCI0_DA0 */
++	at91_set_A_periph(AT91_PIN_PA9, 0);	/* MCI0_DA1 */
++	at91_set_A_periph(AT91_PIN_PA10, 0);	/* MCI0_DA2 */
++	at91_set_A_periph(AT91_PIN_PA11, 0);	/* MCI0_DA3 */
++	at91_sys_write(AT91_PMC_PCER, 1 << AT91SAM9260_ID_MCI);
+ }
+ #endif
+ 
+diff --git a/include/configs/at91sam9260ek.h b/include/configs/at91sam9260ek.h
+index 132c69e..93d9007 100644
+--- a/include/configs/at91sam9260ek.h
++++ b/include/configs/at91sam9260ek.h
+@@ -30,13 +30,16 @@
+ /* ARM asynchronous clock */
+ #define AT91_MAIN_CLOCK		18432000	/* 18.432 MHz crystal */
+ #define CONFIG_SYS_HZ		1000
++#define CONFIG_SYS_MMC_CLK_PP	5000000
+ 
+ #define CONFIG_ARM926EJS	1	/* This is an ARM926EJS Core	*/
+ 
+-#ifdef CONFIG_AT91SAM9G20EK
++#if	defined(CONFIG_AT91SAM9G20EK) || defined(CONFIG_AT91SAM9G20EK_2MMC)
+ #define CONFIG_AT91SAM9G20	1	/* It's an Atmel AT91SAM9G20 SoC*/
+-#else
++#elif	defined(CONFIG_AT91SAM9260EK)
+ #define CONFIG_AT91SAM9260	1	/* It's an Atmel AT91SAM9260 SoC*/
++#else
++#error	"Unknown board"
+ #endif
+ 
+ #define CONFIG_ARCH_CPU_INIT
+@@ -106,7 +109,7 @@
+ #define MMCI_BASE			AT91SAM9260_BASE_MCI
+ #define CONFIG_MMC			1
+ #define CONFIG_ATMEL_MCI		1
+-#define	CONFIG_ATMEL_HSMCI		1
++#undef	CONFIG_ATMEL_HSMCI
+ #define CONFIG_SYS_MMC_CLK_OD		1000000
+ #define CONFIG_SUPPORT_VFAT
+ 
+@@ -124,7 +127,7 @@
+ #define CONFIG_SYS_DATAFLASH_LOGIC_ADDR_CS1	0xD0000000	/* CS1 */
+ #define AT91_SPI_CLK			15000000
+ 
+-#ifdef CONFIG_AT91SAM9G20EK
++#if	defined(CONFIG_AT91SAM9G20EK) || defined(CONFIG_AT91SAM9G20EK_2MMC)
+ #define DATAFLASH_TCSS			(0x22 << 16)
+ #else
+ #define DATAFLASH_TCSS			(0x1a << 16)
+@@ -220,15 +223,15 @@
+ 	"sdram_start=0x20000000\0"	\
+ 	"kernel_address=0x22000000\0"	\
+ 	"kernel=uimage\0"		\
+-	"load_env=fatload mmc 0:1 ${sdram_start} ${machine}/u-boot.env ; source ${sdram_start}\0"	\
+-	"load_kernel=fatload mmc 0:1 ${kernel_address} ${machine}/${kernel}\0"	\
++	"load_env=fatload mmc 0:1 ${sdram_start} u-boot.env ; source ${sdram_start}\0"	\
++	"load_kernel=fatload mmc 0:1 ${kernel_address} ${kernel}\0"	\
+ 
+ 
+ #define CONFIG_BOOTCOMMAND	"mmc init; run load_env ; run load_kernel ; bootm 0x22000000"
+-#define CONFIG_BOOTARGS		"mem=64M "	\
+-				"console=ttyS0,115200 " \
+-				"root=/dev/mmcblk0p2 " \
+-				"rootdelay=2 "\
++#define CONFIG_BOOTARGS		"mem=64M "		\
++				"console=ttyS0,115200 "	\
++				"root=/dev/mmcblk0p2 "	\
++				"rootdelay=2 "		\
+ 				"rootfstype=rootfs rw"
+ #endif
+ 
+-- 
+1.7.5.4
+

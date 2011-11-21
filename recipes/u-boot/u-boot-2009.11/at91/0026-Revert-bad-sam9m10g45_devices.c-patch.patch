@@ -1,0 +1,38 @@
+From 6b8008178f4b80c687d89127d32fb715fde2286e Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Sat, 29 Oct 2011 13:24:53 +0200
+Subject: [PATCH] Revert bad sam9m10g45_devices.c patch
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@telia.com>
+---
+ cpu/arm926ejs/at91/at91sam9m10g45_devices.c |   14 +++++++-------
+ 1 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/cpu/arm926ejs/at91/at91sam9m10g45_devices.c b/cpu/arm926ejs/at91/at91sam9m10g45_devices.c
+index ec36209..ad25e41 100644
+--- a/cpu/arm926ejs/at91/at91sam9m10g45_devices.c
++++ b/cpu/arm926ejs/at91/at91sam9m10g45_devices.c
+@@ -176,13 +176,13 @@ void at91_macb_hw_init(void)
+ #if defined(CONFIG_MMC)
+ void	at91_mci0_hw_init()
+ {
+-	at91_set_A_periph(AT91_PIN_PA8, 0);	/* MCI0_CK */
+-	at91_set_A_periph(AT91_PIN_PA7, 0);	/* MCI0_CDA */
+-	at91_set_A_periph(AT91_PIN_PA6, 0);	/* MCI0_DA0 */
+-	at91_set_A_periph(AT91_PIN_PA9, 0);	/* MCI0_DA1 */
+-	at91_set_A_periph(AT91_PIN_PA10, 0);	/* MCI0_DA2 */
+-	at91_set_A_periph(AT91_PIN_PA11, 0);	/* MCI0_DA3 */
+-	at91_sys_write(AT91_PMC_PCER, 1 << AT91SAM9260_ID_MCI);
++	at91_set_A_periph(AT91_PIN_PA0, 0);	/* MCI0_CK */
++	at91_set_A_periph(AT91_PIN_PA1, 0);	/* MCI0_CDA */
++	at91_set_A_periph(AT91_PIN_PA2, 0);	/* MCI0_DA0 */
++	at91_set_A_periph(AT91_PIN_PA3, 0);	/* MCI0_DA1 */
++	at91_set_A_periph(AT91_PIN_PA4, 0);	/* MCI0_DA2 */
++	at91_set_A_periph(AT91_PIN_PA5, 0);	/* MCI0_DA3 */
++	at91_sys_write(AT91_PMC_PCER, 1 << AT91SAM9G45_ID_MCI0);
+ }
+ #endif
+ 
+-- 
+1.7.5.4
+

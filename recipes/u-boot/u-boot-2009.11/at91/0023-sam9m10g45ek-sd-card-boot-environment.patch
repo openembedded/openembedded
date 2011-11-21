@@ -1,0 +1,30 @@
+From 1765845bf86b88a08bd8c009630cc442c43d9d05 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Fri, 28 Oct 2011 12:14:36 +0200
+Subject: [PATCH 23/23] sam9m10g45ek: sd-card boot environment
+
+---
+ include/configs/at91sam9m10g45ek.h |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/include/configs/at91sam9m10g45ek.h b/include/configs/at91sam9m10g45ek.h
+index a3d854b..7705adc 100644
+--- a/include/configs/at91sam9m10g45ek.h
++++ b/include/configs/at91sam9m10g45ek.h
+@@ -239,8 +239,11 @@
+ #define CONFIG_ENV_SECT_SIZE	0x420
+ #define	CONFIG_SYS_ROOTFS_SD	1
+ #define CONFIG_EXTRA_ENV_SETTINGS	\
+-	"load_env=fatload mmc 0:1 0x70000000 u-boot.env ; source 0x70000000 \0"	\
+-	"load_kernel=fatload mmc 0:1 0x72000000 uimage\0"	\
++	"sdram_start=0x70000000\0"	\
++	"kernel_address=0x72000000\0"	\
++	"kernel=uimage\0"		\
++	"load_env=fatload mmc 0:1 ${sdram_start} u-boot.env ; source ${sdram_start}\0"	\
++	"load_kernel=fatload mmc 0:1 ${kernel_address} ${machine}/${kernel}\0"	\
+ 	"at91sam9m10ekes=9cd\0"	\
+ 	"at91sam9g45ekes=8a4\0"	\
+ 	"at91sam9m10g45ek=726\0"	\
+-- 
+1.7.5.4
+

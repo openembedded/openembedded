@@ -1,0 +1,58 @@
+From b1f6887c71cc35b9f624cffc5eed6cd926362c28 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Fri, 28 Oct 2011 12:10:20 +0200
+Subject: [PATCH 20/23] Update build script
+
+---
+ AT91BUILD |   21 +++++++++++++++++++--
+ 1 files changed, 19 insertions(+), 2 deletions(-)
+ mode change 100644 => 100755 AT91BUILD
+
+diff --git a/AT91BUILD b/AT91BUILD
+old mode 100644
+new mode 100755
+index c138bd1..3bea49d
+--- a/AT91BUILD
++++ b/AT91BUILD
+@@ -1,8 +1,11 @@
+ #!/bin/sh
+ 
+-GCCROOT=~/projects/OE_atmel/build/tmp/sysroots/i686-linux/usr/armv5te/bin
++#GCCROOT=~/projects/OE_atmel/build/tmp/sysroots/i686-linux/usr/armv5te/bin
++GCCROOT=/usr/bin
++
+ PATH=${GCCROOT}:${PATH}
+-CROSS_COMPILE=${GCCROOT}/arm-angstrom-linux-gnueabi-
++# Assume Ubuntu ARM toolchain
++CROSS_COMPILE=${GCCROOT}/arm-linux-gnueabi-
+ mkdir 	-p	binaries
+ 
+ build	( )
+@@ -14,6 +17,7 @@ build	( )
+ 	make ${FLAGS} all
+ }
+ 
++if	[ "0" == "1" ] ; then
+ build   	at91sam9m10g45ek_nandflash
+ build   	at91sam9m10g45ek_dataflash
+ build   	at91sam9m10g45ek_dataflash_cs0
+@@ -24,3 +28,16 @@ build   	at91sam9g45ekes_dataflash
+ build   	at91sam9g45ekes_dataflash_cs0
+ build   	at91sam9g45ekes_sd
+ build   	at91sam9g45ekes
++build   	at91sam9g20ek_nandflash
++build   	at91sam9g20ek_dataflash_cs0
++build   	at91sam9g20ek_dataflash_cs1
++build   	at91sam9g20ek_sd
++build   	at91sam9g20ek
++build   	at91sam9g20ek_2mmc_nandflash
++build   	at91sam9g20ek_2mmc_dataflash_cs0
++build   	at91sam9g20ek_2mmc_dataflash_cs1
++build   	at91sam9g20ek_2mmc
++fi
++build   	at91sam9g20ek_sd
++build   	at91sam9g20ek_2mmc_sd
++
+-- 
+1.7.5.4
+

@@ -1,0 +1,67 @@
+From 8176a47931d8d418bacba4a6cfa0703f11f7b2a4 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Fri, 28 Oct 2011 12:12:35 +0200
+Subject: [PATCH 21/23] Makefile: add at91sam9g20ek_2mmc
+
+---
+ Makefile |   28 +++++++++++++++++++++++-----
+ 1 files changed, 23 insertions(+), 5 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 2db49be..f7f530f 100644
+--- a/Makefile
++++ b/Makefile
+@@ -2740,27 +2740,45 @@ at91cap9adk_config	:	unconfig
+ at91sam9260ek_nandflash_config \
+ at91sam9260ek_dataflash_cs0_config \
+ at91sam9260ek_dataflash_cs1_config \
++at91sam9260ek_sd_config \
+ at91sam9260ek_config \
+ at91sam9g20ek_nandflash_config \
+ at91sam9g20ek_dataflash_cs0_config \
+ at91sam9g20ek_dataflash_cs1_config \
+-at91sam9g20ek_config	:	unconfig
++at91sam9g20ek_sd_config \
++at91sam9g20ek_config \
++at91sam9g20ek_2mmc_nandflash_config \
++at91sam9g20ek_2mmc_dataflash_cs0_config \
++at91sam9g20ek_2mmc_dataflash_cs1_config \
++at91sam9g20ek_2mmc_sd_config \
++at91sam9g20ek_2mmc_config	:	unconfig
+ 	@mkdir -p $(obj)include
+ 	@if [ "$(findstring 9g20,$@)" ] ; then \
+-		echo "#define CONFIG_AT91SAM9G20EK 1"	>>$(obj)include/config.h ; \
+-		$(XECHO) "... 9G20 Variant" ; \
++		if [ "$(findstring 2mmc,$@)" ] ; then \
++			echo "#define CONFIG_AT91SAM9G20EK_2MMC 1"	>>$(obj)include/config.h ; \
++			$(XECHO) "... 9G20_2mmc Variant" ; \
++		else \
++			echo "#define CONFIG_AT91SAM9G20EK 1"	>>$(obj)include/config.h ; \
++			$(XECHO) "... 9G20 Variant" ; \
++		fi; \
+ 	else \
+ 		echo "#define CONFIG_AT91SAM9260EK 1"	>>$(obj)include/config.h ; \
+ 	fi;
+ 	@if [ "$(findstring _nandflash,$@)" ] ; then \
+ 		echo "#define CONFIG_SYS_USE_NANDFLASH 1"	>>$(obj)include/config.h ; \
+ 		$(XECHO) "... with environment variable in NAND FLASH" ; \
+-	elif [ "$(findstring dataflash_cs0,$@)" ] ; then \
++	elif [ "$(findstring _sd,$@)" ] ; then \
++		echo "#define CONFIG_SYS_USE_SDCARD 1"	>>$(obj)include/config.h ; \
++		$(XECHO) "... with environment variables on an SD-Card" ; \
++	elif [ "$(findstring _dataflash_cs0,$@)" ] ; then \
+ 		echo "#define CONFIG_SYS_USE_DATAFLASH_CS0 1"	>>$(obj)include/config.h ; \
+ 		$(XECHO) "... with environment variable in SPI DATAFLASH CS0" ; \
+-	else \
++	elif [ "$(findstring _dataflash_cs1,$@)" ] ; then \
+ 		echo "#define CONFIG_SYS_USE_DATAFLASH_CS1 1"	>>$(obj)include/config.h ; \
+ 		$(XECHO) "... with environment variable in SPI DATAFLASH CS1" ; \
++	else \
++		echo "#define CONFIG_SYS_USE_DATAFLASH_CS0 1"	>>$(obj)include/config.h ; \
++		$(XECHO) "... with environment variable in SPI DATAFLASH CS0" ; \
+ 	fi;
+ 	@$(MKCONFIG) -a at91sam9260ek arm arm926ejs at91sam9260ek atmel at91
+ 
+-- 
+1.7.5.4
+

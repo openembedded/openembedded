@@ -4,6 +4,7 @@ require u-boot_r2.inc
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_at91sam9g10ek = "2"
 DEFAULT_PREFERENCE_at91sam9g20ek = "2"
+DEFAULT_PREFERENCE_at91sam9g20ek-2mmc = "2"
 DEFAULT_PREFERENCE_at91sam9g45ek = "2"
 DEFAULT_PREFERENCE_at91sam9m10ekes = "2"
 DEFAULT_PREFERENCE_at91sam9m10g45ek = "2"
@@ -30,8 +31,15 @@ SRC_URI_append_at91 = "\
 	file://at91/0014-AT91-MCI-Add-support-for-SD-Card.patch \
 	file://at91/0015-sam9m10g45ek-Add-configuration-file.patch \
 	file://at91/0016-SupportEnv-load-from-SD-Card.patch \
-	file://0017-SD-Card-boot-patch-for-SAM9M10-G45.patch \
-	file://0018-ADD-AT91-Build-script.patch \
+	file://at91/0017-SD-Card-boot-patch-for-SAM9M10-G45.patch \
+	file://at91/0018-ADD-AT91-Build-script.patch \
+	file://at91/0019-Add-to-.gitignore.patch \
+	file://at91/0020-Update-build-script.patch \
+	file://at91/0021-Makefile-add-at91sam9g20ek_2mmc.patch \
+	file://at91/0022-sam920ek_2mmc-Add-support.patch \
+	file://at91/0023-sam9m10g45ek-sd-card-boot-environment.patch \
+	file://at91/0024-Minor-fixes-to-_2mmc-support.patch \
+	file://at91/0026-Revert-bad-sam9m10g45_devices.c-patch.patch \
 	"
 
 SRC_URI_append_adb4000 = "\
@@ -64,6 +72,10 @@ SRC_URI_append_vulcano-g20 = "\
 TARGET_LDFLAGS = ""
 
 inherit base
+
+do_configure () {
+	echo	"No configuration"
+}
 
 do_compile () {
 	if ! [ "x${UBOOT_MACHINES}" == "x" ] ; then
