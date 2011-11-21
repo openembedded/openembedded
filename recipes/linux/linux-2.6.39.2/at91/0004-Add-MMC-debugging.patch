@@ -1,0 +1,57 @@
+From e5752598abfe7037ca5e1582a781ad06cd685313 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Sun, 30 Oct 2011 22:35:40 +0100
+Subject: [PATCH 1/2] Add MMC debugging
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@telia.com>
+---
+ arch/arm/mach-at91/at91sam9260_devices.c |    2 ++
+ arch/arm/mach-at91/board-sam9g20ek.c     |    5 ++++-
+ 2 files changed, 6 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/mach-at91/at91sam9260_devices.c b/arch/arm/mach-at91/at91sam9260_devices.c
+index 07eb7b0..8c1738f 100644
+--- a/arch/arm/mach-at91/at91sam9260_devices.c
++++ b/arch/arm/mach-at91/at91sam9260_devices.c
+@@ -332,6 +332,7 @@ void __init at91_add_device_mci(short mmc_id, struct mci_platform_data *data)
+ 			switch (i) {
+ 			case 0:
+ 				/* CMD */
++				printk(KERN_INFO, "AT91 SD slot 0 init");
+ 				at91_set_A_periph(AT91_PIN_PA7, 1);
+ 				/* DAT0, maybe DAT1..DAT3 */
+ 				at91_set_A_periph(AT91_PIN_PA6, 1);
+@@ -344,6 +345,7 @@ void __init at91_add_device_mci(short mmc_id, struct mci_platform_data *data)
+ 				break;
+ 			case 1:
+ 				/* CMD */
++				printk(KERN_INFO, "AT91 SD slot 1 init");
+ 				at91_set_B_periph(AT91_PIN_PA1, 1);
+ 				/* DAT0, maybe DAT1..DAT3 */
+ 				at91_set_B_periph(AT91_PIN_PA0, 1);
+diff --git a/arch/arm/mach-at91/board-sam9g20ek.c b/arch/arm/mach-at91/board-sam9g20ek.c
+index 7e110e1..1e0135e 100644
+--- a/arch/arm/mach-at91/board-sam9g20ek.c
++++ b/arch/arm/mach-at91/board-sam9g20ek.c
+@@ -56,7 +56,7 @@
+ #define HAVE_2MMC	(1 << 0)
+ static int inline ek_have_2mmc(void)
+ {
+-	return machine_is_at91sam9g20ek_2mmc() || (system_rev & HAVE_2MMC);
++	return	machine_is_at91sam9g20ek_2mmc() || (system_rev & HAVE_2MMC);
+ }
+ 
+ 
+@@ -241,6 +241,9 @@ static void __init ek_add_device_mmc(void)
+ 	if (ek_have_2mmc()) {
+ 		ek_mmc_data.slot[0].bus_width = 4;
+ 		ek_mmc_data.slot[0].detect_pin = AT91_PIN_PC2;
++		printk(KERN_INFO, "AT91 MCI: Two MMC Slots");
++	} else {
++		printk(KERN_INFO, "AT91 MCI: One MMC Slot");
+ 	}
+ 	at91_add_device_mci(0, &ek_mmc_data);
+ #else
+-- 
+1.7.5.4
+

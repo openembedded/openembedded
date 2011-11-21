@@ -1,0 +1,3 @@
+	file://at91/0004-Add-MMC-debugging.patch \
+	file://at91/0005-Add-sam9g20_2mmc-defconfig-with-MMC-debugging.patch \
+

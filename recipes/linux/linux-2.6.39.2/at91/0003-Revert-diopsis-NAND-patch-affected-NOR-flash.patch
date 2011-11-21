@@ -1,0 +1,49 @@
+From 883af6280b37a4cf89de40e416c8b38c0d48fa95 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Sun, 30 Oct 2011 13:23:30 +0100
+Subject: [PATCH 3/3] Revert diopsis NAND patch, affected NOR flash
+
+Signed-off-by: Ulf Samuelsson <ulf.samuelsson@telia.com>
+---
+ arch/arm/mach-at91/board-at572d940hf_ek.c |   21 ++++++++++++---------
+ 1 files changed, 12 insertions(+), 9 deletions(-)
+
+diff --git a/arch/arm/mach-at91/board-at572d940hf_ek.c b/arch/arm/mach-at91/board-at572d940hf_ek.c
+index d737aa8..3929f1c 100644
+--- a/arch/arm/mach-at91/board-at572d940hf_ek.c
++++ b/arch/arm/mach-at91/board-at572d940hf_ek.c
+@@ -115,19 +115,22 @@ static struct at91_eth_data __initdata eb_eth_data = {
+ 
+ static struct mtd_partition eb_nor_partitions[] = {
+ 	{
+-		.name   = "Bootstrap",
+-		.offset = 0,
+-		.size   = 4 * SZ_1M,
++		.name		= "Raw Environment",
++		.offset		= 0,
++		.size		= SZ_4M,
++		.mask_flags	= 0,
+ 	},
+ 	{
+-		.name	= "Root File System",
+-		.offset	= MTDPART_OFS_NXTBLK,
+-		.size	= CONFIG_MTD_NAND_ATMEL_ROOTFS_SIZE * SZ_1M,
++		.name		= "OS FS",
++		.offset		= MTDPART_OFS_APPEND,
++		.size		= 3 * SZ_1M,
++		.mask_flags	= 0,
+ 	},
+ 	{
+-		.name	= "Data",
+-		.offset	= MTDPART_OFS_NXTBLK,
+-		.size	= MTDPART_SIZ_FULL,
++		.name		= "APP FS",
++		.offset		= MTDPART_OFS_APPEND,
++		.size		= MTDPART_SIZ_FULL,
++		.mask_flags	= 0,
+ 	},
+ };
+ 
+-- 
+1.7.5.4
+
