@@ -17,10 +17,6 @@ UBOOT_BINARY ?= "u-boot.bin"
 UBOOT_IMAGE ?= "u-boot-${MACHINE}-${PV}-${PR}.bin"
 UBOOT_SYMLINK ?= "u-boot-${MACHINE}.bin"
 
-do_configure () {
-	oe_runmake ${UBOOT_MACHINE}
-}
-
 do_compile () {
 	unset LDFLAGS
 	unset CFLAGS
@@ -73,9 +69,10 @@ INSANE_SKIP_${PN}-fw-utils = True
 do_deploy () {
 	install -d ${DEPLOY_DIR_IMAGE}
 	if ! [ "x${UBOOT_MACHINES}" == "x" ] ; then
+		install -d ${DEPLOY_DIR_IMAGE}/u-boot
 		for board in ${UBOOT_MACHINES} ; do
-			install ${S}/binaries/${board}/${UBOOT_BINARY}	${DEPLOY_DIR_IMAGE}/${board}-u-boot-${PV}-${PR}.bin
-			package_stagefile_shell				${DEPLOY_DIR_IMAGE}/${board}-u-boot-${PV}-${PR}.bin
+			install ${S}/binaries/${board}/${UBOOT_BINARY}	${DEPLOY_DIR_IMAGE}/u-boot/${board}-u-boot-${PV}-${PR}.bin
+			package_stagefile_shell				${DEPLOY_DIR_IMAGE}/u-boot/${board}-u-boot-${PV}-${PR}.bin
 		done
 	else
 		install ${S}/${UBOOT_BINARY} ${DEPLOY_DIR_IMAGE}/${UBOOT_IMAGE}
