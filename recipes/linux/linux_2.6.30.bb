@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r7"
+PR = "r8"
 AT91_EXPERIMENTAL = "4"
 S = "${WORKDIR}/linux-${PV}"
 
@@ -16,6 +16,8 @@ DEFAULT_PREFERENCE_at91sam9m10ekes	= "2"
 DEFAULT_PREFERENCE_at91sam9m10g45ek	= "2"
 DEFAULT_PREFERENCE_at91sam9g10ek	= "2"
 DEFAULT_PREFERENCE_at91sam9g20ek	= "2"
+DEFAULT_PREFERENCE_at91sam9g20ek_2mmc	= "2"
+DEFAULT_PREFERENCE_at91sam9g20ek-2mmc	= "2"
 DEFAULT_PREFERENCE_ronetix-pm9g45	= "2"
 DEFAULT_PREFERENCE_vulcano-g20		= "2"
 
@@ -33,6 +35,7 @@ AT91_EXPERIMENTAL_4 = " \
 	   ftp://www.at91.com/pub/linux/${PV}-at91/${PV}-at91-exp.${AT91_EXPERIMENTAL}.tar.gz;apply=no;name=at91exp${AT91_EXPERIMENTAL} \
 	   file://at91/exp.4/0001-Configurable-partition-size.patch;apply=yes \
 	   file://at91/exp.4/0002-mach-at91-KConfig-cleanup.patch;apply=yes \
+	   file://at91/exp.4/0003-change-NAND-partitions-for-Atmel-SAM9G20-boards.patch \
 	   http://linux.hd-wireless.se/pub/Linux/BuildSAM9M10EKES/2.6.30-at91-sdio-irq-support-both-slots.patch;apply=yes;name=owlwifi \
 	   file://defconfig"
 
@@ -50,19 +53,19 @@ at91sam_patch = " \
 
 SRC_URI_at91sam9m10ekes = "${AT91_EXPERIMENTAL_4}"
 SRC_URI_at91cap9stk	= "${AT91_EXPERIMENTAL_4}"
+SRC_URI_at91sam9g20ek-2mmc = "${AT91_EXPERIMENTAL_4}"
 SRC_URI_at91		= "${AT91_EXPERIMENTAL_2}"
 
-SRC_URI_append_at91sam9260ek = ${at91sam_patch}
-SRC_URI_append_at91sam9261ek = ${at91sam_patch}
-SRC_URI_append_at91sam9263ek = ${at91sam_patch}
-SRC_URI_append_at91sam9g10ek = ${at91sam_patch}
-SRC_URI_append_at91sam9g20ek = ${at91sam_patch}
-SRC_URI_append_at91sam9g20ek_2mmc = ${at91sam_patch}
-SRC_URI_append_at91sam9g45ekes = ${at91sam_patch}
-SRC_URI_append_at91sam9m10ekes = ${at91sam_patch}
-SRC_URI_append_at91sam9m10g45ek = ${at91sam_patch}
-SRC_URI_append_at91sam9rlek = ${at91sam_patch}
-SRC_URI_append_at91sam9xeek = ${at91sam_patch}
+SRC_URI_append_at91sam9260ek = "${AT91_EXPERIMENTAL_4}"
+SRC_URI_append_at91sam9261ek = "${AT91_EXPERIMENTAL_4}"
+SRC_URI_append_at91sam9263ek = "${AT91_EXPERIMENTAL_4}"
+SRC_URI_append_at91sam9g10ek = "${AT91_EXPERIMENTAL_4}"
+SRC_URI_append_at91sam9g20ek = "${AT91_EXPERIMENTAL_4}"
+SRC_URI_append_at91sam9g45ekes = "${AT91_EXPERIMENTAL_4}"
+SRC_URI_append_at91sam9m10ekes = "${AT91_EXPERIMENTAL_4}"
+SRC_URI_append_at91sam9m10g45ek = "${AT91_EXPERIMENTAL_4}"
+SRC_URI_append_at91sam9rlek = "${AT91_EXPERIMENTAL_4}"
+SRC_URI_append_at91sam9xeek = "${AT91_EXPERIMENTAL_4}"
 
 #do_patch_prepend_at91sam9m10ekes() {
 #	bb.build.exec_func('do_apply_at91_exp_patch', d)

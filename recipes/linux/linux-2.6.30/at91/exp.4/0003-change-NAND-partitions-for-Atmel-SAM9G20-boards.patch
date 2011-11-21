@@ -1,0 +1,55 @@
+From 3fa498b26edf800a26f91db628d63404a2b314e9 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Fri, 28 Oct 2011 11:55:28 +0200
+Subject: [PATCH] change NAND partitions for Atmel SAM9G20 boards
+
+---
+ arch/arm/mach-at91/board-sam9g20ek-2slot-mmc.c |    9 +++++++--
+ arch/arm/mach-at91/board-sam9g20ek.c           |    9 +++++++--
+ 2 files changed, 14 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/mach-at91/board-sam9g20ek-2slot-mmc.c b/arch/arm/mach-at91/board-sam9g20ek-2slot-mmc.c
+index 51b3008..3b3604f 100644
+--- a/arch/arm/mach-at91/board-sam9g20ek-2slot-mmc.c
++++ b/arch/arm/mach-at91/board-sam9g20ek-2slot-mmc.c
+@@ -125,9 +125,14 @@ static struct at91_eth_data __initdata ek_macb_data = {
+  */
+ static struct mtd_partition __initdata ek_nand_partition[] = {
+ 	{
+-		.name   = "Bootstrap",
++		.name   = "Boot",
+ 		.offset = 0,
+-		.size   = 4 * SZ_1M,
++		.size   = 2 * SZ_1M,
++	},
++	{
++		.name   = "Kernel",
++		.offset = 0,
++		.size   = 2 * SZ_1M,
+ 	},
+ 	{
+ 		.name	= "Root File System",
+diff --git a/arch/arm/mach-at91/board-sam9g20ek.c b/arch/arm/mach-at91/board-sam9g20ek.c
+index 811dd09..b1a3628 100644
+--- a/arch/arm/mach-at91/board-sam9g20ek.c
++++ b/arch/arm/mach-at91/board-sam9g20ek.c
+@@ -124,9 +124,14 @@ static struct at91_eth_data __initdata ek_macb_data = {
+  */
+ static struct mtd_partition __initdata ek_nand_partition[] = {
+ 	{
+-		.name   = "Bootstrap",
++		.name   = "Boot",
+ 		.offset = 0,
+-		.size   = 4 * SZ_1M,
++		.size   = 2 * SZ_1M,
++	},
++	{
++		.name   = "Kernel",
++		.offset = 0,
++		.size   = 2 * SZ_1M,
+ 	},
+ 	{
+ 		.name	= "Root File System",
+-- 
+1.7.5.4
+
