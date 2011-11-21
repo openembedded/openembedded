@@ -1,0 +1,25 @@
+From de0ff9ad9f973b1d9b38ec394a70e48c1e562f4d Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf_samuelsson@telia.com>
+Date: Sat, 22 Oct 2011 01:39:56 +0200
+Subject: [PATCH] Increase malloc area > 512 kB
+
+---
+ include/configs/at91sam9x5ek.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/include/configs/at91sam9x5ek.h b/include/configs/at91sam9x5ek.h
+index a123ece..5551a93 100644
+--- a/include/configs/at91sam9x5ek.h
++++ b/include/configs/at91sam9x5ek.h
+@@ -224,7 +224,7 @@
+ /*
+  * Size of malloc() pool
+  */
+-#define CONFIG_SYS_MALLOC_LEN	ROUND(3 * CONFIG_ENV_SIZE + 128*1024, 0x1000)
++#define CONFIG_SYS_MALLOC_LEN	ROUND(3 * CONFIG_ENV_SIZE + 512*1024, 0x1000)
+ #define CONFIG_SYS_GBL_DATA_SIZE	128	/* 128 bytes for initial data */
+ 
+ #define CONFIG_STACKSIZE	(32*1024)	/* regular stack */
+-- 
+1.7.5.4
+
