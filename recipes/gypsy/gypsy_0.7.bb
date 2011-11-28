@@ -2,7 +2,7 @@ require gypsy.inc
 
 PR = "${INC_PR}.0"
 
-SRC_URI = "http://gypsy.freedesktop.org/releases/gypsy-0.7.tar.gz;name=gypsy \
+SRC_URI += " \
            file://docs-reference-am.patch \
            file://remove-werror.patch \
 "
