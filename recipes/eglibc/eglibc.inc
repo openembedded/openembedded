@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.eglibc.org/home"
 SECTION = "libs"
 PRIORITY = "required"
 LICENSE = "LGPL"
-INC_PR = "r21"
+INC_PR = "r22"
 # nptl needs unwind support in gcc, which can't be built without glibc.
 DEPENDS = "virtual/${TARGET_PREFIX}gcc-intermediate linux-libc-headers"
 #this leads to circular deps, so lets not add it yet
@@ -42,7 +42,7 @@ do_move_ports() {
 	    mv ${WORKDIR}/${EGLIBC_BRANCH}/ports ${S}/
 	fi
 }
-OE_FEATURES := "${@features_to_eglibc_settings(d)}"
+OE_FEATURES = "${@features_to_eglibc_settings(d)}"
 do_configure_prepend() {
 	echo '${OE_FEATURES}' > ${B}/option-groups.config
 }
