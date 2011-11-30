@@ -5,6 +5,8 @@ DEPENDS = "glib-2.0 dbus-glib bluez4 libxslt-native"
 
 INC_PR = "r1"
 
+SRC_URI = "http://gypsy.freedesktop.org/releases/${PN}-${PV}.tar.gz;name=gypsy"
+
 inherit autotools pkgconfig
 
 do_configure_prepend () {
