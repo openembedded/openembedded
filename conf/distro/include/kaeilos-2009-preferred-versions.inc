@@ -4,7 +4,7 @@
 #@NAME: KaeilOS(R) - http://www.kaeilos.com
 #@DESCRIPTION: KaeilOS Linux Distribution preferred version
 #@MAINTAINER: Marco Cavallini <m.cavallini@koansoftware.com>
-#@VERSION: 18-11-2011
+#@VERSION: 03-12-2011
 #
 # KaeilOS is a registered trade mark of KOAN - Bergamo - Italia
 # Product website : http://www.KaeilOS.com 
@@ -14,7 +14,7 @@ PREFERRED_VERSION_autoconf = "2.65"
 PREFERRED_VERSION_autoconf-native = "2.65"
 PREFERRED_VERSION_automake = "1.11.1"
 PREFERRED_VERSION_automake-native = "1.11.1"
-PREFERRED_VERSION_busybox 	= "1.13.2"
+PREFERRED_VERSION_busybox 	= "1.18.4"
 PREFERRED_VERSION_cairo		= "1.10.0"
 PREFERRED_VERSION_dbus 		= "1.2.24"
 PREFERRED_VERSION_dropbear      = "0.51"
