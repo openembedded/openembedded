@@ -6,7 +6,7 @@ SECTION = "console/utils"
 PRIORITY = "optional"
 DEPENDS = "ncurses glib-2.0 glib-2.0-native"
 RDEPENDS_${PN} = "ncurses-terminfo"
-INC_PR = "r7"
+INC_PR = "r8"
 
 SRC_URI = "http://www.ibiblio.org/pub/Linux/utils/file/managers/mc/mc-${PV}.tar.gz"
 
@@ -40,6 +40,7 @@ do_compile_prepend() {
 	export HOST_PKG_CONFIG_PATH=
 	export GLIB_CFLAGS_FOR_BUILD="`PKG_CONFIG_PATH="$HOST_PKG_CONFIG_PATH" PKG_CONFIG_SYSROOT_DIR="" pkg-config --cflags glib-2.0`"
 	export GLIB_LIBS_FOR_BUILD="`PKG_CONFIG_PATH="$HOST_PKG_CONFIG_PATH" PKG_CONFIG_SYSROOT_DIR="" pkg-config --libs glib-2.0`"
+	oe_runmake CFLAGS="${GLIB_CFLAGS_FOR_BUILD}" CPPFLAGS="" -C src man2hlp
 }
 
 do_install_append() {
