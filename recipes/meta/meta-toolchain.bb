@@ -51,9 +51,9 @@ modify_opkg_conf () {
 
 do_populate_sdk() {
 	rm -rf ${SDK_OUTPUT}
-	mkdir -p ${SDK_OUTPUT}
-	mkdir -p ${SDK_OUTPUT}${libdir}/opkg/
-	mkdir -p ${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS}${libdir}/opkg/
+	install -d -m 755 ${SDK_OUTPUT}
+	install -d -m 755 ${SDK_OUTPUT}${libdir}/opkg/
+	install -d -m 755 ${SDK_OUTPUT}/${SDKPATH}/${TARGET_SYS}${libdir}/opkg/
 
 	package_generate_ipkg_conf
 
@@ -98,7 +98,7 @@ do_populate_sdk() {
 				cp $pkgnames ${SDK_OUTPUT2}/${SDKPATH}/ipk/
 				orig_pkg=`opkg-list-fields $pkgnames | grep OE: | cut -d ' ' -f2`
 				pkg_subdir=$arch${TARGET_VENDOR}${@['-' + bb.data.getVar('TARGET_OS', d, 1), ''][bb.data.getVar('TARGET_OS', d, 1) == ('' or 'custom')]}
-				mkdir -p ${SDK_OUTPUT2}/${SDKPATH}/pkgdata/$pkg_subdir/runtime
+				install -d -m 755 ${SDK_OUTPUT2}/${SDKPATH}/pkgdata/$pkg_subdir/runtime
 				cp ${TMPDIR}/pkgdata/$pkg_subdir/$orig_pkg ${SDK_OUTPUT2}/${SDKPATH}/pkgdata/$pkg_subdir/
 				subpkgs=`cat ${TMPDIR}/pkgdata/$pkg_subdir/$orig_pkg | grep PACKAGES: | cut -b 10-`
 				for subpkg in $subpkgs; do
@@ -157,6 +157,7 @@ do_populate_sdk() {
 	echo 'export PKG_CONFIG_SYSROOT_DIR=$SDK_PATH/$TARGET_SYS' >> $script
 	echo 'export PKG_CONFIG_PATH=$SDK_PATH/$TARGET_SYS${libdir}/pkgconfig' >> $script
 	echo 'export CONFIG_SITE=$SDK_PATH/site-config' >> $script
+	echo 'export LD_LIBRARY_PATH=$SDK_PATH/lib' >> $script
 	echo 'alias opkg="LD_LIBRARY_PATH=$SDK_PATH/lib $SDK_PATH/bin/opkg-cl -f $SDK_PATH/${sysconfdir}/opkg-sdk.conf -o $SDK_PATH"' >> $script
 	echo 'alias opkg-target="LD_LIBRARY_PATH=$SDK_PATH/lib $SDK_PATH/bin/opkg-cl -f $SDK_PATH/$TARGET_SYS${sysconfdir}/opkg.conf -o $SDK_PATH/$TARGET_SYS"' >> $script
 
@@ -171,7 +172,7 @@ do_populate_sdk() {
 	modify_opkg_conf
 
 	# Package it up
-	mkdir -p ${SDK_DEPLOY}
+	install -d -m 755 ${SDK_DEPLOY}
 	cd ${SDK_OUTPUT}
 	chmod -R go-w ${SDK_OUTPUT}
 	fakeroot tar cfj ${SDK_DEPLOY}/${TOOLCHAIN_OUTPUTNAME}.tar.bz2 .
