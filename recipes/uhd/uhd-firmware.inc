@@ -8,7 +8,7 @@ PACKAGE_ARCH = "all"
 
 #PV_U = `echo ${PV} | sed 's/\./_/g'`
 
-SRC_URI = "http://www.ettus.com/downloads/uhd_releases/${@'${PV}'.replace('.', '_')}/images-only/UHD-images-${PV}-59f407f.tar.gz"
+SRC_URI = "http://www.ettus.com/downloads/uhd_releases/${@'${PV}'.replace('.', '_')}/images-only/UHD-images-${PV}.tar.gz"
 
 S = ${WORKDIR}/UHD-images-${PV}-59f407f
 
