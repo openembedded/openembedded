@@ -13,7 +13,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/bluetooth/openobex-${PV}.tar.gz \
 
 inherit autotools binconfig pkgconfig
 
-EXTRA_OECONF = "--enable-apps --enable-syslog --enable-dump \
+EXTRA_OECONF = "--enable-apps --enable-syslog \
                 --with-usb=${STAGING_LIBDIR}/.. --with-bluez=${STAGING_LIBDIR}/.."
 
 do_install_append() {
