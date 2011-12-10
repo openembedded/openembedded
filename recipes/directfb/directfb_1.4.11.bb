@@ -17,3 +17,5 @@ LEAD_SONAME = "libdirectfb-1.4.so.5"
 SRC_URI[md5sum] = "94735ccec21120794adcce93a61445d2"
 SRC_URI[sha256sum] = "85e27aa6ab9e784689a803961724eb5674cb9f5153770e63f02bf3f75a573a02"
 
+BBCLASSEXTEND = "native"
+DEPENDS_virtclass-native = "tslib-native"
