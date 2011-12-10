@@ -4,8 +4,8 @@ DEFAULT_PREFERENCE = "-1"
 PR = "${INC_PR}.0"
 
 SRC_URI =+ "\
-  ${DEBIAN_MIRROR}/main/f/fakeroot/fakeroot_${PV}.orig.tar.bz2 \
-  file://quiet-getopt-check.patch \
+    https://launchpad.net/ubuntu/+archive/primary/+files/${PN}_${PV}.orig.tar.bz2 \
+    file://quiet-getopt-check.patch \
 "
 
 SRC_URI[md5sum] = "248c408b1e06e776c5739871b49bd968"
