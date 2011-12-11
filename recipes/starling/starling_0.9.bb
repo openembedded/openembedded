@@ -18,11 +18,11 @@ RDEPENDS_${PN} = "\
   gst-plugin-volume \
 "
 RRECOMMENDS_${PN} = "\
-  gst-plugin-mad \
   gst-plugin-modplug \
   gst-plugin-ivorbisdec \
   gst-plugin-tcp \
 "
+#  gst-plugin-mad \
 
 SRC_URI[md5sum] = "1c9cab1e49819dbe4e876c3be26cca6b"
 SRC_URI[sha256sum] = "63ed3e239c79a5913e9542b7023586c51a592e33d2ec0256dafa34cbae20c497"
