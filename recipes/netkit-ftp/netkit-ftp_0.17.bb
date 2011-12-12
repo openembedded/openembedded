@@ -1,9 +1,9 @@
 SECTION = "console/network"
 DESCRIPTION = "netkit-ftp includes a commandline ftp client."
 LICENSE = "BSD"
-SRC_URI = "ftp://ftp.uk.linux.org/pub/linux/Networking/netkit/netkit-ftp-${PV}.tar.gz;name=archive \
-	   file://mconfig.patch \
-       http://ftp.de.debian.org/debian/pool/main/n/netkit-ftp/netkit-ftp_0.17-19.diff.gz;name=patch19 "
+SRC_URI = "http://archive.debian.org/debian/pool/main/n/netkit-ftp/netkit-ftp_${PV}.orig.tar.gz;name=archive \
+           file://mconfig.patch \
+           http://archive.debian.org/debian/pool/main/n/netkit-ftp/netkit-ftp_0.17-19.diff.gz;name=patch19"
 
 PR = "r2"
 
