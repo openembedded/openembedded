@@ -1,11 +1,11 @@
 DESCRIPTION = "ChilliSpot is an open source captive portal or wireless LAN access point controller. It is used for authenticating users of a wireless LAN."
 HOMEPAGE = "http://www.chillispot.org/"
 LICENSE = "GPL"
-SRC_URI = "http://www.chillispot.org/download/chillispot-${PV}.tar.gz \
+SRC_URI = "http://www.geeklan.co.uk/files/chillispot-${PV}.tar.gz \
 	file://no-ansi.patch \
 	file://init"
 RDEPENDS_${PN} = "kernel-module-tun"
-PR = "r1"
+PR = "r0"
 
 inherit autotools
 
@@ -17,5 +17,5 @@ do_install_append() {
 
 CONFFILES_${PN}_nylon = "${sysconfdir}/chilli.conf"
 
-SRC_URI[md5sum] = "9ad5f4181ae2e9e2d5ccb165c37dfdde"
-SRC_URI[sha256sum] = "395d082c2355369f958d8f12583f07bbac6c00f901266592959bfba09b825bb7"
+SRC_URI[md5sum] = "997827a9302a85920cfbc1334092ac0c"
+SRC_URI[sha256sum] = "ea00bf63d420f515b9ec034eff6ca04c517459232899b7582f8435b7c097eebf"
