@@ -10,7 +10,7 @@ ICEDTEA = "NEEDS TO BE SET"
 S = "${WORKDIR}/${ICEDTEA}"
 B = "${S}/build"
 
-INC_PR = "r11"
+INC_PR = "r12"
 
 SRC_URI = "\
   ${ICEDTEA_URI} \
@@ -208,6 +208,13 @@ do_configure_prepend() {
 
 do_configure_append() {
 	oe_runmake patch-ecj
+
+	for F in ${WORKDIR}/openjdk-src-dir/hotspot/make/linux/Makefile ${WORKDIR}/icedtea6-1.8.5/build/openjdk-ecj/hotspot/make/linux/Makefile ${WORKDIR}/icedtea6-1.8.5/build/openjdk/hotspot/make/linux/Makefile ;
+	do
+		sed -i \
+			-e"s|SUPPORTED_OS_VERSION = 2.4% 2.5% 2.6% 2.7%|SUPPORTED_OS_VERSION = 2.4% 2.5% 2.6% 3%|" \
+			$F
+	done
 }
 
 # Work around broken variable quoting in oe-stable 2009 and provide the variable
