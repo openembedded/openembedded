@@ -1,6 +1,6 @@
 DESCRIPTION = "LXDE Panel"
 SECTION = "x11"
-DEPENDS = "menu-cache"
+DEPENDS = "menu-cache gtk+"
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lxde/${PN}-${PV}.tar.gz \
