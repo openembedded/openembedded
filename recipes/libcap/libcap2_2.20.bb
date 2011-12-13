@@ -9,7 +9,7 @@ BUILD_CFLAGS += "-I${S}/libcap/include"
 CFLAGS += "-I${S}/libcap/include"
 LDFLAGS =+ "-L../libcap"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/security/linux-privs/libcap2/libcap-${PV}.tar.bz2 \
+SRC_URI = "http://ftp.uni-frankfurt.de/kernel/linux/libs/security/linux-privs/libcap2/libcap-${PV}.tar.bz2 \
 	   file://make.patch \
 	"
 
