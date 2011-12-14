@@ -1,8 +1,9 @@
 require fakeroot.inc
+PE = "1"
 PR = "${INC_PR}.0"
 
 SRC_URI =+ "\
-  ${DEBIAN_MIRROR}/main/f/fakeroot/fakeroot_${PV}.orig.tar.bz2 \
+  http://snapshot.debian.org/archive/debian/20110301/pool/main/f/fakeroot/fakeroot_1.14.5.orig.tar.bz2 \
   file://quiet-getopt-check.patch \
 "
 
