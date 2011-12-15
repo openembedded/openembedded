@@ -1,0 +1,11 @@
+--- git/src/Makefile.am.orig	2011-12-15 00:07:42.569636423 +0100
++++ git/src/Makefile.am	2011-12-15 00:09:39.571337545 +0100
+@@ -30,7 +30,4 @@
+ 
+ v4l2_drv_la_SOURCES = \
+          v4l2.c \
+-         v4l2-alpha.c \
+-         armv7.s
+-
+-
++         v4l2-alpha.c
