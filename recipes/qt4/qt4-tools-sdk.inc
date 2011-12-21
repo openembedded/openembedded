@@ -17,6 +17,10 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-everywhere-opensource-src-${PV}.
            file://g++.conf \
            file://linux.conf"
 
+RPROVIDES_${PN} = "qt4-tools qt4-embedded-tools"
+RREPLACES_${PN} = "qt4-tools qt4-embedded-tools"
+RCONFLICTS_${PN} = "qt4-tools qt4-embedded-tools"
+
 S = "${WORKDIR}/qt-everywhere-opensource-src-${PV}"
 
 
