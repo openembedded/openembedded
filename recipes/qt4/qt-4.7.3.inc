@@ -49,10 +49,10 @@ do_install_append() {
 		install -m 0755 ${S}/bin/$i ${D}${bindir}/
 	done
 
-        #Append an E to the qtdemo file
-        if [ -n "${QT_LIBINFIX}" ] ; then
-                mv ${D}${bindir}/qtdemo ${D}${bindir}/qtdemo${QT_LIBINFIX}
-        fi
+	cd ${D}/${bindir}
+	for f in `ls | grep -v -E "*${QT_LIBINFIX}" | grep -v ${QT_DIR_NAME}`; do
+		mv ${f} ${f}${QT_LIBINFIX};
+	done
 }
 
 SRC_URI[md5sum] = "49b96eefb1224cc529af6fe5608654fe"
