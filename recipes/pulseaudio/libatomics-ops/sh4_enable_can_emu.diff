@@ -1,0 +1,10 @@
+--- a/src/atomic_ops.hg	2010-01-21 04:45:04.000000000 +0000
++++ b/src/atomic_ops.h	2010-01-21 04:45:47.000000000 +0000
+@@ -243,6 +243,7 @@
+ # endif /* __mips__ */
+ # if defined(__sh__) || defined(SH4)
+ #   include "atomic_ops/sysdeps/gcc/sh.h"
++#   define AO_REQUIRE_CAS
+ #   define AO_CAN_EMUL_CAS
+ # endif /* __sh__ */
+ #endif /* __GNUC__ && !AO_USE_PTHREAD_DEFS */
