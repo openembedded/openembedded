@@ -1,3 +1,11 @@
+#
+# File: classes/mirrors.bbclass
+# If you have problems with debian mirror please use 
+# a new one from here http://snapshot.debian.org/archive/debian/
+# and add a line in your local.conf
+# DEBIAN_MIRROR = "http://snapshot.debian.org/archive/debian/20111225T033644Z/pool"
+#
+
 MIRRORS[func] = "0"
 MIRRORS () {
 ${DEBIAN_MIRROR}/main	http://snapshot.debian.net/archive/pool
