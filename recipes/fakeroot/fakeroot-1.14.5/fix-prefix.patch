@@ -1,0 +1,15 @@
+This is not needed, kept just for reference.
+
+--- fakeroot-1.14.5.orig/scripts/fakeroot.in	2009-11-15 04:09:21.000000000 +0100
++++ fakeroot-1.14.5/scripts/fakeroot.in	2011-01-12 20:10:02.897300394 +0100
+@@ -30,8 +30,8 @@ fatal ()
+ }
+ 
+ # strip /bin/fakeroot to find install prefix
+-FAKEROOT_PREFIX=@prefix@
+-FAKEROOT_BINDIR=@bindir@
++FAKEROOT_BINDIR=`dirname $0`
++FAKEROOT_PREFIX=`dirname ${FAKEROOT_BINDIR}`
+ 
+ USEABSLIBPATH=@LDPRELOADABS@
+ LIB=lib@fakeroot_transformed@@DLSUFFIX@

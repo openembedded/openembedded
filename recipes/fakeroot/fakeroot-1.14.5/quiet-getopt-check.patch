@@ -1,0 +1,12 @@
+busybox provided getopt prints the help-text on stderr.
+--- fakeroot-1.14.5.orig/scripts/fakeroot.in	2009-11-15 04:09:21.000000000 +0100
++++ fakeroot-1.14.5/scripts/fakeroot.in	2011-01-12 20:11:50.059891996 +0100
+@@ -43,7 +43,7 @@ export FAKED_MODE
+ 
+ libfound=no
+ 
+-GETOPTEST=`getopt --version`
++GETOPTEST=`getopt --version 2> /dev/null`
+ case $GETOPTEST in
+ getopt*) # GNU getopt
+     FAKE_TEMP=`getopt -l lib: -l faked: -l unknown-is-real -l fd-base: -l version -l help -- +l:f:i:s:ub:vh "$@"`

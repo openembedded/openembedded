@@ -1,4 +1,6 @@
 require fakeroot.inc
+
+DEFAULT_PREFERENCE = "-1"
 PR = "${INC_PR}.0"
 
 SRC_URI =+ "\
