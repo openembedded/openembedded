@@ -4,6 +4,8 @@ LICENSE = "GPL"
 DEPENDS = "intltool-native gtk+ libpng unicap gconf libglade gdk-pixbuf-csource-native"
 PR = "r1"
 
+PARALLEL_MAKE = ""
+
 SRC_URI = "http://www.unicap-imaging.org/downloads/${P}.tar.gz \
            file://cross.patch"
 
