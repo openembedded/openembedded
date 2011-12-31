@@ -3,6 +3,7 @@ require u-boot.inc
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_overo = "1"
+DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
 
 SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2 \
     file://tools_fwenv.patch"
