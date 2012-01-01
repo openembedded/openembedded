@@ -7,7 +7,7 @@ DEPENDS = "libogg"
 SRC_URI = "${SOURCEFORGE_MIRROR}/flac/flac-${PV}.tar.gz \
 	   file://xmms.m4"
 
-INC_PR = "r2"
+INC_PR = "r3"
 
 inherit autotools gettext
 
@@ -20,6 +20,10 @@ EXTRA_OECONF = "--disable-oggtest --disable-id3libtest \
 		--without-libiconv-prefix \
 		--without-id3lib \
                "
+
+# Not supported by this platform but defaults to be on for PowerPC
+EXTRA_OECONF_append_ppce300c3 = " --disable-altivec"
+
 
 do_configure () {
 	install -d ${S}/m4

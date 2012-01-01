@@ -1,0 +1,18 @@
+--- a/src/libFLAC/Makefile.am	2011-02-04 10:53:28.715634068 +0100
++++ b/src/libFLAC/Makefile.am	2011-02-04 10:55:45.838299710 +0100
+@@ -36,12 +36,13 @@
+ # The -force_cpusubtype_ALL is needed to insert a ppc64 instruction
+ # into cpu.c with an asm().
+ if FLaC__SYS_DARWIN
+-#@@@ PPC optimizations temporarily disabled
++# @@@ PPC optimizations temporarily disabled
+ CPUCFLAGS = -faltivec -force_cpusubtype_ALL -DFLAC__NO_ASM
+ else
+ # Linux-gcc for PPC does not have -force_cpusubtype_ALL, it is Darwin-specific
+ #@@@ PPC optimizations temporarily disabled
+-CPUCFLAGS = -maltivec -mabi=altivec -DFLAC__NO_ASM
++#CPUCFLAGS = -maltivec -mabi=altivec -DFLAC__NO_ASM
++CPUCFLAGS = -DFLAC__NO_ASM
+ endif
+ endif
+ 
