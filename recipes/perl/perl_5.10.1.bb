@@ -75,7 +75,9 @@ SRC_URI = "ftp://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz;name=perl-${PV} \
         file://config.sh-32-be \
         file://config.sh-64 \
         file://config.sh-64-le \
-        file://config.sh-64-be"
+        file://config.sh-64-be \
+	file://0001-Find-pthread-libraries.patch \
+	"
 
 SRC_URI[perl-5.10.1.md5sum] = "b9b2fdb957f50ada62d73f43ee75d044"
 SRC_URI[perl-5.10.1.sha256sum] = "cb7f26ea4b2b28d6644354d87a269d01cac1b635287dae64e88eeafa24b44f35"

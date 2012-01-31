@@ -2,7 +2,7 @@ DESCRIPTION = "Perl is a popular scripting language."
 HOMEPAGE = "http://www.perl.org/"
 SECTION = "libs"
 LICENSE = "Artistic|GPLv1+"
-PR = "r12"
+PR = "r13"
 NATIVE_INSTALL_WORKS = "1"
 INHIBIT_DEFAULT_DEPS = "1"
 PATCHTOOL = "patch"
@@ -21,6 +21,7 @@ SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz;name=perl-${PV} \
            file://native-perlinc.patch \
 	   file://perl-fix-cross-library-check.patch \
            file://ubuntu-11.04-multiarch.patch \
+	   file://0001-Find-pthread-libraries.patch \
 	   "
 
 SRC_URI[perl-5.10.1.md5sum] = "b9b2fdb957f50ada62d73f43ee75d044"

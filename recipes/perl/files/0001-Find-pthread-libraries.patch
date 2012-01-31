@@ -1,0 +1,31 @@
+From 69f418972f17b7f03cdc335ad14af486d06d94b2 Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf@emagii.com>
+Date: Tue, 31 Jan 2012 09:59:31 +0100
+Subject: [PATCH] Find pthread libraries
+
+Signed-off-by: Ulf Samuelsson <ulf@emagii.com>
+---
+ hints/linux.sh |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
+
+diff --git a/hints/linux.sh b/hints/linux.sh
+index d208129..04a99da 100644
+--- a/hints/linux.sh
++++ b/hints/linux.sh
+@@ -441,3 +441,13 @@ case "$libdb_needs_pthread" in
+     libswanted="$libswanted pthread"
+     ;;
+ esac
++
++# plibpth to bypass this check.
++case "$plibpth" in
++  '')	plibpth=`gcc -print-search-dirs | grep libraries | cut -f2- -d= | tr ':' $trnl | grep -v 'gcc' | sed -e 's:/$::'`
++	set X $plibpth # Collapse all entries on one line
++	shift
++	plibpth="$*"
++	;;
++esac
++
+-- 
+1.7.4.1
+
