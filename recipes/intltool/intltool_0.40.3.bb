@@ -2,8 +2,6 @@ require intltool.inc
 
 PR = "${INC_PR}.0"
 
-DEPENDS += " libxml-parser-perl-native"
-
 EXTRA_OEMAKE = "'PERL_TARGET=/usr/bin/perl'"
 
 do_configure_prepend() {
