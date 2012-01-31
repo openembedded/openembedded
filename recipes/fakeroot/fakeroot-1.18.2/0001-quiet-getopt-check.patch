@@ -1,0 +1,30 @@
+From 1470e989b3136d1baef7e0e852849e6cf0638deb Mon Sep 17 00:00:00 2001
+From: Ulf Samuelsson <ulf@emagii.com>
+Date: Mon, 30 Jan 2012 22:43:53 +0100
+Subject: [PATCH 1/2] quiet getopt check
+
+busybox provided getopt prints the help-text on stderr
+
+Imported from an earlier version of fakeroot in openembedded
+
+Signed-off-by: Ulf Samuelsson <ulf@emagii.com>
+---
+ scripts/fakeroot.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/scripts/fakeroot.in b/scripts/fakeroot.in
+index 324a9dc..7e501bd 100755
+--- a/scripts/fakeroot.in
++++ b/scripts/fakeroot.in
+@@ -43,7 +43,7 @@ export FAKED_MODE
+ 
+ libfound=no
+ 
+-GETOPTEST=`getopt --version`
++GETOPTEST=`getopt --version 2> /dev/null`
+ case $GETOPTEST in
+ getopt*) # GNU getopt
+     FAKE_TEMP=`getopt -l lib: -l faked: -l unknown-is-real -l fd-base: -l version -l help -- +l:f:i:s:ub:vh "$@"`
+-- 
+1.7.5.4
+
