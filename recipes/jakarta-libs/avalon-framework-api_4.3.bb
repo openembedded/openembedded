@@ -3,7 +3,7 @@ LICENSE = "AL2.0"
 AUTHOR = "Apache Software Foundation"
 
 SRC_URI = "\
-	http://www.apache.org/dist/excalibur/avalon-framework/source/${BP}-src.tar.gz;name=archive \
+	http://archive.apache.org/dist/excalibur/framework/source/${BP}-src.tar.gz;name=archive \
 	http://www.apache.org/dist/avalon/logkit/source/logkit-1.2.2-src.tar.gz;name=logkit \
 	"
 
