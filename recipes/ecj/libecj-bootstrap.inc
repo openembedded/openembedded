@@ -6,6 +6,8 @@ LICENSE = "EPL"
 
 DEPENDS = "fastjar-native jikes-initial virtual/java-initial"
 
+INC_PR = "r1"
+
 inherit native java
 
 S = "${WORKDIR}"
@@ -48,7 +50,7 @@ do_unpackpost() {
 addtask unpackpost after do_unpack before do_patch
 
 do_compile() {
-  find source -name '*.java' > sourcefiles
+  find source -name '*.java' | LC_ALL=C sort > sourcefiles
   split -l 25 sourcefiles ecj-sources.
 
   # Compiling in place is done because the sources contain
