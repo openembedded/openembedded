@@ -4,7 +4,7 @@ LICENSE  = "GPL"
 PRIORITY = "optional"
 SECTION  = "interpreters"
 
-DEPENDS = "zlib-native libtool-native classpath-native ecj-initial fastjar-native"
+DEPENDS = "zlib-native libtool-native classpath-native ecj-initial-native fastjar-native"
 
 PROVIDES = "virtual/java-native"
 

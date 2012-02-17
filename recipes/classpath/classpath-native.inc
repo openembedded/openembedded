@@ -1,7 +1,7 @@
 DESCRIPTION = "GNU Classpath standard Java libraries - For native Java-dependent programs"
 HOMEPAGE = "http://www.gnu.org/software/classpath/"
 LICENSE = "Classpath"
-DEPENDS = "ecj-initial fastjar-native zip-native"
+DEPENDS = "ecj-initial-native fastjar-native zip-native"
 
 inherit autotools native
 
