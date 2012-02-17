@@ -1,0 +1,69 @@
+Index: git/configure.ac
+===================================================================
+--- git.orig/configure.ac	2011-11-18 15:47:15.339088111 +0100
++++ git/configure.ac	2011-11-18 15:47:15.742392674 +0100
+@@ -273,9 +273,24 @@
+     AC_CHECK_LIB(z,inflate,,AC_MSG_ERROR(zlib is missing))
+ fi
+ 
+-if test "$enable_ffi" != no; then
+-    AC_CHECK_LIB(ffi,ffi_call,,AC_MSG_ERROR(libffi is missing))
++LIBFFI_FOUND=no
++if test "$enable_ffi" = yes
++then
++PKG_CHECK_MODULES([LIBFFI], [libffi], [LIBFFI_FOUND=yes], [LIBFFI_FOUND=no])
++if test "x${LIBFFI_FOUND}" = xno
++then
++  LIBFFI_FOUND=
++  AC_CHECK_HEADER([ffi.h],[LIBFFI_CFLAGS=],[LIBFFI_FOUND=no])
++  AC_SEARCH_LIBS([ffi_call], [ffi],[LIBFFI_LIBS=-lffi],[LIBFFI_FOUND=no])
++  if test "x${LIBFFI_FOUND}" = xno
++    then
++      AC_MSG_ERROR([Could not find libffi headers - \
++      Instal libffi-devel or libffi-dev.])
++ fi
++fi
+ fi
++AC_SUBST(LIBFFI_CFLAGS)
++AC_SUBST(LIBFFI_LIBS)
+ 
+ dnl Checks for header files.
+ AC_HEADER_STDC
+@@ -285,10 +300,6 @@
+     AC_CHECK_HEADER(zlib.h,,AC_MSG_ERROR(zlib.h is missing))
+ fi
+ 
+-if test "$enable_ffi" != no; then
+-    AC_CHECK_HEADER(ffi.h,,AC_MSG_ERROR(ffi.h is missing))
+-fi
+-
+ if test "$enable_zip" != no; then
+     AC_DEFINE([USE_ZIP],1,[use zip])
+     use_zip_yes=
+@@ -302,7 +313,9 @@
+ AC_SUBST(use_zip_no)
+ 
+ if test "$enable_ffi" != no; then
+-    AC_DEFINE([USE_FFI],1,[use FFI])
++    if test "$LIBFFI_FOUND" != no; then
++        AC_DEFINE([USE_FFI],1,[use FFI])
++    fi
+ fi
+ 
+ if test "$enable_md_stubs" != no; then
+Index: git/src/Makefile.am
+===================================================================
+--- git.orig/src/Makefile.am	2011-11-18 15:47:15.685730049 +0100
++++ git/src/Makefile.am	2011-11-18 15:49:43.881825251 +0100
+@@ -43,8 +43,9 @@
+ jamvm_LDADD = libcore.la
+ libjvm_la_LIBADD = libcore.la
+ libcore_la_LIBADD = interp/libinterp.la os/@os@/@arch@/libnative.la \
+-                    os/@os@/libos.la classlib/@classlib@/libclasslib.la
++                    os/@os@/libos.la classlib/@classlib@/libclasslib.la \
++                    $(LIBFFI_LIBS)
+ 
+-AM_CPPFLAGS = -I$(top_srcdir)/src/interp/engine
++AM_CPPFLAGS = -I$(top_srcdir)/src/interp/engine $(LIBFFI_CFLAGS)
+ 
+ DISTCLEANFILES = arch.h classlib.h classlib-defs.h classlib-symbol.h
