@@ -4,13 +4,14 @@ LICENSE = "GPL"
 
 DEPENDS = "zlib-native classpath-initial jikes-initial libffi-native"
 
-PR = "r3"
+PR = "r4"
 
 PROVIDES = "virtual/java-initial"
 
 S = "${WORKDIR}/jamvm-${PV}"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/jamvm/jamvm-${PV}.tar.gz \
+          file://libffi.patch \
           file://jamvm_${PV}-initial.patch \
           "
 
@@ -22,6 +23,7 @@ inherit native autotools
 # libdir must be modified so that jamvm-initial and -native
 # do not interfere
 EXTRA_OECONF = "\
+  --enable-ffi \
   --with-classpath-install-dir=${prefix} \
   --program-suffix=-initial \
   --libdir=${STAGING_LIBDIR}/jamvm-initial \
@@ -30,11 +32,9 @@ EXTRA_OECONF = "\
 # jamvm-initial has to run some binaries which need lots of memory.
 CFLAGS += "-DDEFAULT_MAX_HEAP=512*MB"
 
-do_compile() {
-  oe_runmake \
-    JAVAC=jikes-initial \
-    GLIBJ_ZIP=${STAGING_DATADIR_NATIVE}/classpath-initial/glibj.zip
-}
+EXTRA_OEMAKE = "JAVAC=${STAGING_BINDIR_NATIVE}/jikes-initial \
+                GLIBJ_ZIP=${STAGING_DATADIR_NATIVE}/classpath-inital/glibj.zip \
+               "
 
 do_install_append() {
   install -d ${D}${bindir}/
