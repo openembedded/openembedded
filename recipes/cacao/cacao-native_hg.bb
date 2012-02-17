@@ -1,11 +1,9 @@
 require cacao-native.inc
 
 PV = "1.1.0+hgr${SRCPV}"
-PR = "r5"
+PR = "r6"
 
-SRCREV = "c7bf150bfa46"
-SRC_URI = "hg://mips.complang.tuwien.ac.at/hg/;module=cacao;rev=${SRCREV} \
-           file://cacao-shutdownguard.patch \
-          "
+SRCREV = "cff92704c4e0"
+SRC_URI = "hg://mips.complang.tuwien.ac.at/hg/;module=cacao;rev=${SRCREV}" 
 
 S = "${WORKDIR}/cacao"

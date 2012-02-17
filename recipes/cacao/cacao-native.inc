@@ -34,3 +34,16 @@ export JAVAC="${STAGING_BINDIR_NATIVE}/ecj-initial"
 
 # force usage of fastjar
 export JAR="fastjar"
+
+do_configure_prepend () {
+        # Remove old libtool macros.
+        MACROS="libtool.m4 lt~obsolete.m4 ltoptions.m4 ltsugar.m4 ltversion.m4"
+        for i in ${MACROS}; do
+               rm -f src/mm/boehm-gc/m4/$i
+               rm -f m4/$i
+        done
+	rm  ltmain.sh
+	rm  libtool
+	rm  src/mm/boehm-gc/ltmain.sh
+	rm  src/mm/boehm-gc/libtool
+}
