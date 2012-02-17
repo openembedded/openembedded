@@ -1,16 +1,13 @@
-COUNT=5
-END=0
-RETURNCODE=0
+COUNT=50
 
-while test "${COUNT}" -gt "${END}"
-do
- ${RUNTIME} -Xmx1024m -cp ${ECJ_JAR} org.eclipse.jdt.internal.compiler.batch.Main ${1+"$@"}
- RETURNCODE=${?}
- if test "${?}" -eq "${END}"
- then
-    break
- fi
- COUNT=$(($COUNT-1))
+redo_from_start=1;
+while [ ${redo_from_start} -eq 1 -a ${COUNT} -gt 0 ]; do
+    redo_from_start=0;
+    ${RUNTIME} -Xmx1024m -cp ${ECJ_JAR} org.eclipse.jdt.internal.compiler.batch.Main ${1+"$@"}
+    if [ ${?} -ne 0 ]; then
+        echo "underlying JVM crashed - silently trying again"
+        redo_from_start=1;
+	COUNT=$((${COUNT}-1))
+    fi
 done
 
-exit ${RETURNCODE}
