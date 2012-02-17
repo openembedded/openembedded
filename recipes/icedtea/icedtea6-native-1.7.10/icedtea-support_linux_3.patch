@@ -1,0 +1,19 @@
+# HG changeset patch
+# User andrew
+# Date 1309217125 -3600
+# Node ID f7e8b10f51c6a622520b55df0c644fb09ec78542
+# Parent  b8227c320dec384a94026fcaa650b0ebd4eef13b
+Allow building HotSpot with any Linux 3 version.
+
+diff -r b8227c320dec -r f7e8b10f51c6 make/linux/Makefile
+--- openjdk/hotspot/make/linux/Makefile	Wed Jun 15 18:56:52 2011 +0100
++++ openjdk/hotspot/make/linux/Makefile	Tue Jun 28 00:25:25 2011 +0100
+@@ -230,7 +230,7 @@
+ # Solaris 2.5.1, 2.6).
+ # Disable this check by setting DISABLE_HOTSPOT_OS_VERSION_CHECK=ok.
+ 
+-SUPPORTED_OS_VERSION = 2.4% 2.5% 2.6% 2.7%
++SUPPORTED_OS_VERSION = 2.4% 2.5% 2.6% 3%
+ OS_VERSION := $(shell uname -r)
+ EMPTY_IF_NOT_SUPPORTED = $(filter $(SUPPORTED_OS_VERSION),$(OS_VERSION))
+ 
