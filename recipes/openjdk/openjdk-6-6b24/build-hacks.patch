@@ -1,0 +1,79 @@
+Index: icedtea6/Makefile.am
+===================================================================
+--- icedtea6.orig/Makefile.am	2011-12-21 21:24:25.000000000 +0100
++++ icedtea6/Makefile.am	2011-12-21 22:50:11.649227590 +0100
+@@ -538,6 +538,11 @@
+ 	JAVAC="" \
+ 	JAVA_HOME="" \
+ 	JDK_HOME="" \
++        OE_CFLAGS="$(OE_CFLAGS)" \
++        OE_CPPFLAGS="$(OE_CPPFLAGS)" \
++        OE_CXXFLAGS="$(OE_CXXFLAGS)" \
++        OE_LDFLAGS="$(OE_LDFLAGS)" \
++        OE_LAUNCHER_LDFLAGS="$(OE_LAUNCHER_LDFLAGS)" \
+ 	DISTRIBUTION_ID="$(DIST_ID)" \
+ 	DERIVATIVE_ID="$(ICEDTEA_NAME) $(PACKAGE_VERSION)$(ICEDTEA_REV)" \
+ 	DEBUG_CLASSFILES="true" \
+@@ -1851,12 +1856,16 @@
+ if BUILD_JAMVM
+ 	cd jamvm/jamvm && \
+ 	LDFLAGS="-Xlinker -z -Xlinker noexecstack" \
+-	./autogen.sh --with-java-runtime-library=openjdk \
+-	  --prefix=$(abs_top_builddir)/jamvm/install ; \
+-	$(MAKE) ; \
+-	$(MAKE) install
++       $(ARCH_PREFIX) ./autogen.sh --with-java-runtime-library=openjdk \
++	  --prefix=/usr/lib \
++	  --host=$(host_alias) \
++	  --build=$(build_alias) \
++	  --target=$(target_alias)  \
++	  --with-libtool-sysroot ; \
++	$(ARCH_PREFIX) $(MAKE) ; \
++	$(ARCH_PREFIX) $(MAKE) install DESTDIR=$(abs_top_builddir)/jamvm/install
+ 	mkdir -p $(abs_top_builddir)/jamvm/install/hotspot/jre/lib/$(INSTALL_ARCH_DIR)/server
+-	cp $(abs_top_builddir)/jamvm/install/lib/libjvm.so $(abs_top_builddir)/jamvm/install/hotspot/jre/lib/$(INSTALL_ARCH_DIR)/server
++	cp $(abs_top_builddir)/jamvm/install/usr/lib/lib/libjvm.so $(abs_top_builddir)/jamvm/install/hotspot/jre/lib/$(INSTALL_ARCH_DIR)/server
+ 	ln -sf server $(abs_top_builddir)/jamvm/install/hotspot/jre/lib/$(INSTALL_ARCH_DIR)/client
+ 	touch $(abs_top_builddir)/jamvm/install/hotspot/jre/lib/$(INSTALL_ARCH_DIR)/server/Xusage.txt
+ 	ln -sf client/libjvm.so $(abs_top_builddir)/jamvm/install/hotspot/jre/lib/$(INSTALL_ARCH_DIR)/libjsig.so
+@@ -1874,7 +1883,7 @@
+ stamps/add-jamvm.stamp: stamps/icedtea.stamp stamps/jamvm.stamp
+ if ADD_JAMVM_BUILD
+ 	mkdir -p $(BUILD_JRE_ARCH_DIR)/jamvm
+-	install -m 644 jamvm/install/lib/libjvm.so \
++	install -m 644 jamvm/install/usr/lib/lib/libjvm.so \
+ 		$(BUILD_JRE_ARCH_DIR)/jamvm/
+ 	printf -- '-jamvm KNOWN\n' >> $(BUILD_JRE_ARCH_DIR)/jvm.cfg
+ else
+@@ -1918,6 +1927,7 @@
+ 	  --host=$(host_alias) \
+ 	  --build=$(build_alias) \
+ 	  --target=$(target_alias) \
++	  --with-libtool-sysroot \
+ 	  --prefix=$(abs_top_builddir)/cacao/install \
+ 	  --with-java-runtime-library=openjdk \
+ 	  --with-java-runtime-library-prefix=$(abs_top_builddir)/openjdk \
+@@ -1984,7 +1994,7 @@
+ # configure script arguments, quoted in single quotes
+ CONFIGURE_ARGS = @CONFIGURE_ARGS@
+ ADD_ZERO_CONFIGURE_ARGS = \
+-	--with-jdk-home=$(BUILD_OUTPUT_DIR)/j2sdk-image \
++	--with-jdk-home=$(abs_top_builddir)/bootstrap/jdk1.6.0 \
+ 	--enable-zero
+ if ADD_SHARK_BUILD
+ ADD_ZERO_CONFIGURE_ARGS += \
+Index: icedtea6/javac.in
+===================================================================
+--- icedtea6.orig/javac.in	2011-12-21 21:24:30.000000000 +0100
++++ icedtea6/javac.in	2011-12-21 22:44:25.860460813 +0100
+@@ -45,7 +45,9 @@
+     my @CLASSPATH = ('@ECJ_JAR@');
+     push @CLASSPATH, split /:/, $ENV{"CLASSPATH"} if exists $ENV{"CLASSPATH"};
+     $ENV{"CLASSPATH"} = join ':', @CLASSPATH;
+-    exec '@JAVA@', 'org.eclipse.jdt.internal.compiler.batch.Main', @ecj_parms, @ecj_args;
++    # Compiling hotspot-tools consumes tons of memory and exceeds any default
++    # limits for jamvm and cacao.
++    exec '@JAVA@', '-Xmx1024m', 'org.eclipse.jdt.internal.compiler.batch.Main', @ecj_parms, @ecj_args;
+ }
+ else
+ {

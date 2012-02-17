@@ -1,0 +1,13 @@
+Index: icedtea6-1.8/configure.ac
+===================================================================
+--- icedtea6-1.8.orig/configure.ac
++++ icedtea6-1.8/configure.ac
+@@ -472,7 +472,7 @@
+     if test "x$LLVM_SHARED_LIB" != x && echo "$flag" | grep -q '^-lLLVM'; then
+       continue
+     fi
+-    if echo "$flag" | grep -q '^-l'; then
++    if echo "$flag" | grep -q '^-l\|.so'; then
+       if test "x$LLVM_LIBS" != "x"; then
+         LLVM_LIBS="$LLVM_LIBS "
+       fi

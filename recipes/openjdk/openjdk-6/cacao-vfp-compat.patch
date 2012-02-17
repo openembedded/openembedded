@@ -1,0 +1,37 @@
+Index: cacao/cacao/src/vm/jit/arm/codegen.c
+===================================================================
+--- cacao/cacao/src/vm/jit/arm/codegen.c	2008-10-01 16:23:21.439856241 +0200
++++ cacao/cacao/src/vm/jit/arm/codegen.c	2008-10-01 16:41:24.278841537 +0200
+@@ -2353,10 +2353,12 @@
+ 
+ 			d = md->returntype.type;
+ 
+-#if !defined(__SOFTFP__)
++#if !defined(__SOFTFP__) && !defined(__VFP_FP__)
+ 			/* TODO: this is only a hack, since we use R0/R1 for float
+ 			   return!  this depends on gcc; it is independent from
+-			   our ENABLE_SOFTFLOAT define */
++			   our ENABLE_SOFTFLOAT define
++			   It is only needed for -mfpu=fpa -mfloat-abi=hard!
++			 */
+ 			if (iptr->opc == ICMD_BUILTIN && d != TYPE_VOID && IS_FLT_DBL_TYPE(d)) {
+ #if 0 && !defined(NDEBUG)
+ 				dolog("BUILTIN that returns float or double (%s.%s)", m->clazz->name->text, m->name->text);
+@@ -3019,7 +3021,7 @@
+ 	s1 = (s4) (cd->mcodeptr - cd->mcodebase);
+ 	M_RECOMPUTE_PV(s1);
+ 
+-#if !defined(__SOFTFP__)
++#if !defined(__SOFTFP__) && !defined(__VFP_FP__)
+ 	/* TODO: this is only a hack, since we use R0/R1 for float return! */
+ 	/* this depends on gcc; it is independent from our ENABLE_SOFTFLOAT define */
+ 	if (md->returntype.type != TYPE_VOID && IS_FLT_DBL_TYPE(md->returntype.type)) {
+@@ -3030,7 +3032,7 @@
+ 		/* M_CAST_FLT_TO_INT_TYPED(md->returntype.type, REG_FRESULT, REG_RESULT_TYPED(md->returntype.type)); */
+ 		if (IS_2_WORD_TYPE(md->returntype.type)) {
+ 			DCD(0xed2d8102); /* stfd    f0, [sp, #-8]! */
+-			M_LDRD_UPDATE(REG_RESULT_PACKED, REG_SP, 8);
++ 			M_LDRD_UPDATE(REG_RESULT_PACKED, REG_SP, 8);
+ 		} else {
+ 			DCD(0xed2d0101); /* stfs    f0, [sp, #-4]!*/
+ 			M_LDR_UPDATE(REG_RESULT, REG_SP, 4);

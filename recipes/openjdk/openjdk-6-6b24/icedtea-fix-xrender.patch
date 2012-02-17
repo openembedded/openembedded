@@ -1,0 +1,13 @@
+Index: openjdk/jdk/src/solaris/native/sun/java2d/x11/XRSurfaceData.c
+===================================================================
+--- openjdk.orig/jdk/src/solaris/native/sun/java2d/x11/XRSurfaceData.c	2011-10-19 16:56:03.014276748 +0200
++++ openjdk/jdk/src/solaris/native/sun/java2d/x11/XRSurfaceData.c	2011-10-19 16:57:19.942658211 +0200
+@@ -29,7 +29,7 @@
+ #include "X11SurfaceData.h"
+ 
+ /*#include <xcb/xcb.h>*/
+-#include <Xrender.h>
++#include <X11/extensions/Xrender.h>
+ 
+ #ifndef RepeatNone  /* added in 0.10 */
+ #define RepeatNone    0

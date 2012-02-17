@@ -1,0 +1,12 @@
+Index: openjdk/hotspot/make/linux/makefiles/rules.make
+===================================================================
+--- openjdk/hotspot/make/linux/makefiles/rules.make	2010-02-02 02:22:33.201668748 +0100
++++ openjdk/hotspot/make/linux/makefiles/rules.make	2010-02-02 02:23:08.480415783 +0100
+@@ -39,6 +39,7 @@
+ # $(CC) is the c compiler (cc/gcc), $(CCC) is the c++ compiler (CC/g++).
+ C_COMPILE       = $(CC) $(CPPFLAGS) $(CFLAGS)
+ CC_COMPILE      = $(CCC) $(CPPFLAGS) $(CFLAGS)
++CC_HOST_COMPILE  = $(BUILD_CC) $(CPPFLAGS) $(CFLAGS)
+ 
+ AS.S            = $(AS) $(ASFLAGS)
+ 

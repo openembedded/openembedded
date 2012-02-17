@@ -1,0 +1,16 @@
+Index: openjdk/hotspot/src/os/linux/vm/os_linux.cpp
+===================================================================
+--- openjdk/hotspot/src/os/linux/vm/os_linux.cpp	2011-12-20 19:15:05.000000000 +0100
++++ openjdk/hotspot/src/os/linux/vm/os_linux.cpp	2011-12-20 19:18:22.411503442 +0100
+@@ -2593,10 +2593,7 @@
+ // If we are running with earlier version, which did not have symbol versions,
+ // we should use the base version.
+ void* os::Linux::libnuma_dlsym(void* handle, const char *name) {
+-  void *f = dlvsym(handle, name, "libnuma_1.1");
+-  if (f == NULL) {
+-    f = dlsym(handle, name);
+-  }
++  void *f = dlsym(handle, name);
+   return f;
+ }
+ 

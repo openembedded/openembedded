@@ -1,0 +1,31 @@
+Index: icedtea6-1.8/Makefile.am
+===================================================================
+--- icedtea6-1.8.orig/Makefile.am	2010-04-12 23:55:51.754838172 +0200
++++ icedtea6-1.8/Makefile.am	2010-06-16 15:17:10.224708601 +0200
+@@ -477,6 +477,11 @@
+ 	JAVAC="" \
+ 	JAVA_HOME="" \
+ 	JDK_HOME="" \
++        OE_CFLAGS="$(OE_CFLAGS)" \
++        OE_CPPFLAGS="$(OE_CPPFLAGS)" \
++        OE_CXXFLAGS="$(OE_CXXFLAGS)" \
++        OE_LDFLAGS="$(OE_LDFLAGS)" \
++        OE_LAUNCHER_LDFLAGS="$(OE_LAUNCHER_LDFLAGS)" \
+ 	DISTRIBUTION_ID="$(DIST_ID)" \
+ 	DERIVATIVE_ID="$(ICEDTEA_NAME) $(PACKAGE_VERSION)$(ICEDTEA_REV)" \
+ 	DEBUG_CLASSFILES="true" \
+Index: icedtea6-1.8/javac.in
+===================================================================
+--- icedtea6-1.8.orig/javac.in	2010-03-25 15:10:41.714835519 +0100
++++ icedtea6-1.8/javac.in	2010-06-16 15:14:31.205334756 +0200
+@@ -35,7 +35,9 @@
+ elif [ ! -z "@ECJ@" ] ; then
+     @ECJ@ -1.5 -nowarn $bcoption $NEW_ARGS
+ else
++    # Compiling hotspot-tools consumes tons of memory and exceeds any default
++    # limits for jamvm and cacao.
+     CLASSPATH=@ECJ_JAR@${CLASSPATH:+:}$CLASSPATH \
+-     @JAVA@ org.eclipse.jdt.internal.compiler.batch.Main -1.5 -nowarn $bcoption $NEW_ARGS
++     @JAVA@ -Xmx1024m org.eclipse.jdt.internal.compiler.batch.Main -1.5 -nowarn $bcoption $NEW_ARGS
+ fi
+ 

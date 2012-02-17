@@ -1,0 +1,18 @@
+Index: openjdk/jdk/src/share/native/java/lang/fdlibm/include/fdlibm.h
+===================================================================
+--- openjdk/jdk/src/share/native/java/lang/fdlibm/include/fdlibm.h	2010-02-02 13:49:39.972718207 +0100
++++ openjdk/jdk/src/share/native/java/lang/fdlibm/include/fdlibm.h	2010-02-02 13:50:04.635639302 +0100
+@@ -27,13 +27,11 @@
+ 
+ #include "jfdlibm.h"
+ 
+-#ifdef __NEWVALID       /* special setup for Sun test regime */
+ #if defined(i386) || defined(i486) || \
+         defined(intel) || defined(x86) || \
+         defined(i86pc) || defined(_M_IA64) || defined(ia64)
+ #define _LITTLE_ENDIAN
+ #endif
+-#endif
+ 
+ #ifdef _LITTLE_ENDIAN
+ #define __HI(x) *(1+(int*)&x)

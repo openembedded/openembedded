@@ -1,0 +1,51 @@
+Index: icedtea6/acinclude.m4
+===================================================================
+--- icedtea6.orig/acinclude.m4	2011-12-20 02:25:50.000000000 +0100
++++ icedtea6/acinclude.m4	2011-12-20 18:02:08.340386576 +0100
+@@ -928,6 +928,21 @@
+   AC_SUBST(ALT_CACAO_SRC_DIR)
+ ])
+ 
++AC_DEFUN([AC_CHECK_WITH_CC_FOR_BUILD],
++[
++  AC_MSG_CHECKING(for compiler used for subsidiary programs)
++  AC_ARG_WITH([cc-for-build],
++              [AS_HELP_STRING(--with-cc-for-build,specify the compiler for subsidiary (helper) programs)],
++  [
++    CC_FOR_BUILD="${withval}"
++  ],
++  [
++    CC_FOR_BUILD="\$(CC)"
++  ])
++  AC_MSG_RESULT(${CC_FOR_BUILD})
++  AC_SUBST(CC_FOR_BUILD)
++])
++
+ AC_DEFUN([IT_WITH_GCJ],
+ [
+   AC_MSG_CHECKING([whether to compile ecj natively])
+Index: icedtea6/Makefile.am
+===================================================================
+--- icedtea6.orig/Makefile.am	2011-12-20 17:59:27.000000000 +0100
++++ icedtea6/Makefile.am	2011-12-20 18:04:32.972312064 +0100
+@@ -538,6 +538,7 @@
+ 	JAVAC="" \
+ 	JAVA_HOME="" \
+ 	JDK_HOME="" \
++	CC_FOR_BUILD="$(CC_FOR_BUILD)" \
+         OE_CFLAGS="$(OE_CFLAGS)" \
+         OE_CPPFLAGS="$(OE_CPPFLAGS)" \
+         OE_CXXFLAGS="$(OE_CXXFLAGS)" \
+Index: icedtea6/configure.ac
+===================================================================
+--- icedtea6.orig/configure.ac	2011-12-20 02:25:50.000000000 +0100
++++ icedtea6/configure.ac	2011-12-20 18:03:04.534043885 +0100
+@@ -18,6 +18,8 @@
+ AC_PROG_CC
+ AC_PROG_CXX
+ 
++AC_CHECK_WITH_CC_FOR_BUILD
++
+ IT_FIND_TOOL([MAKE], [make])
+ IT_FIND_TOOL([GZIP], [gzip])
+ IT_FIND_TOOL([ANT], [ant])

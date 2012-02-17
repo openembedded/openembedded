@@ -1,0 +1,131 @@
+Index: openjdk/jdk/src/share/classes/javax/swing/HasGetTransferHandler.java
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ openjdk/jdk/src/share/classes/javax/swing/HasGetTransferHandler.java	2011-11-18 20:44:00.281649848 +0100
+@@ -0,0 +1,38 @@
++/*
++ * Copyright 2000-2006 Sun Microsystems, Inc.  All Rights Reserved.
++ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
++ *
++ * This code is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 2 only, as
++ * published by the Free Software Foundation.  Sun designates this
++ * particular file as subject to the "Classpath" exception as provided
++ * by Sun in the LICENSE file that accompanied this code.
++ *
++ * This code is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
++ * version 2 for more details (a copy is included in the LICENSE file that
++ * accompanied this code).
++ *
++ * You should have received a copy of the GNU General Public License version
++ * 2 along with this work; if not, write to the Free Software Foundation,
++ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
++ *
++ * Please contact Sun Microsystems, Inc., 4150 Network Circle, Santa Clara,
++ * CA 95054 USA or visit www.sun.com if you need additional information or
++ * have any questions.
++ */
++package javax.swing;
++
++/**
++ * An interface to tag things with a {@code getTransferHandler} method.
++ */
++interface HasGetTransferHandler {
++
++     /** Returns the {@code TransferHandler}.
++      *
++      * @return The {@code TransferHandler} or {@code null}
++      */
++     public TransferHandler getTransferHandler();
++}
++
+Index: openjdk/jdk/src/share/classes/javax/swing/TransferHandler.java
+===================================================================
+--- openjdk/jdk/src/share/classes/javax/swing/TransferHandler.java	2011-11-18 18:51:22.000000000 +0100
++++ openjdk/jdk/src/share/classes/javax/swing/TransferHandler.java	2011-11-18 20:44:01.628219313 +0100
+@@ -122,18 +122,6 @@
+     public static final int LINK = DnDConstants.ACTION_LINK;
+ 
+     /**
+-     * An interface to tag things with a {@code getTransferHandler} method.
+-     */
+-    interface HasGetTransferHandler {
+-
+-        /** Returns the {@code TransferHandler}.
+-         *
+-         * @return The {@code TransferHandler} or {@code null}
+-         */
+-        public TransferHandler getTransferHandler();
+-    }
+-
+-    /**
+      * Represents a location where dropped data should be inserted.
+      * This is a base class that only encapsulates a point.
+      * Components supporting drop may provide subclasses of this
+diff --git a/jdk/src/share/classes/javax/swing/JApplet.java b/jdk/src/share/classes/javax/swing/JApplet.java
+index 47f792a..72c2cf9 100644
+--- openjdk/jdk/src/share/classes/javax/swing/JApplet.java
++++ openjdk/jdk/src/share/classes/javax/swing/JApplet.java
+@@ -91,7 +91,7 @@ import javax.accessibility.*;
+  */
+ public class JApplet extends Applet implements Accessible,
+                                                RootPaneContainer,
+-                               TransferHandler.HasGetTransferHandler
++                                               HasGetTransferHandler
+ {
+     /**
+      * @see #getRootPane
+diff --git a/jdk/src/share/classes/javax/swing/JComponent.java b/jdk/src/share/classes/javax/swing/JComponent.java
+index 4293a4f..0c0a1dc 100644
+--- openjdk/jdk/src/share/classes/javax/swing/JComponent.java
++++ openjdk/jdk/src/share/classes/javax/swing/JComponent.java
+@@ -171,7 +171,7 @@ import sun.swing.UIClientPropertyKey;
+  * @author Arnaud Weber
+  */
+ public abstract class JComponent extends Container implements Serializable,
+-                                              TransferHandler.HasGetTransferHandler
++                                                              HasGetTransferHandler
+ {
+     /**
+      * @see #getUIClassID
+diff --git a/jdk/src/share/classes/javax/swing/JDialog.java b/jdk/src/share/classes/javax/swing/JDialog.java
+index a0193d1..aeeb243 100644
+--- openjdk/jdk/src/share/classes/javax/swing/JDialog.java
++++ openjdk/jdk/src/share/classes/javax/swing/JDialog.java
+@@ -97,7 +97,7 @@ import javax.accessibility.*;
+ public class JDialog extends Dialog implements WindowConstants,
+                                                Accessible,
+                                                RootPaneContainer,
+-                               TransferHandler.HasGetTransferHandler
++                                               HasGetTransferHandler
+ {
+     /**
+      * Key into the AppContext, used to check if should provide decorations
+diff --git a/jdk/src/share/classes/javax/swing/JFrame.java b/jdk/src/share/classes/javax/swing/JFrame.java
+index 9910b43..4cb8f58 100644
+--- openjdk/jdk/src/share/classes/javax/swing/JFrame.java
++++ openjdk/jdk/src/share/classes/javax/swing/JFrame.java
+@@ -109,7 +109,7 @@ import javax.accessibility.*;
+ public class JFrame  extends Frame implements WindowConstants,
+                                               Accessible,
+                                               RootPaneContainer,
+-                              TransferHandler.HasGetTransferHandler
++                                              HasGetTransferHandler
+ {
+     /**
+      * The exit application default window close operation. If a window
+diff --git a/jdk/src/share/classes/javax/swing/JWindow.java b/jdk/src/share/classes/javax/swing/JWindow.java
+index c94803c..85bbb57 100644
+--- openjdk/jdk/src/share/classes/javax/swing/JWindow.java
++++ openjdk/jdk/src/share/classes/javax/swing/JWindow.java
+@@ -91,7 +91,7 @@ import javax.accessibility.*;
+  */
+ public class JWindow extends Window implements Accessible,
+                                                RootPaneContainer,
+-                               TransferHandler.HasGetTransferHandler
++                                               HasGetTransferHandler
+ {
+     /**
+      * The <code>JRootPane</code> instance that manages the

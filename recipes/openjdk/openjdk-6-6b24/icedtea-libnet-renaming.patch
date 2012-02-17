@@ -1,0 +1,148 @@
+Index: openjdk/jdk/make/java/net/Makefile
+===================================================================
+--- openjdk/jdk/make/java/net/Makefile	2010-07-05 12:28:58.476625401 +0200
++++ openjdk/jdk/make/java/net/Makefile	2010-07-05 12:29:11.876625138 +0200
+@@ -25,7 +25,7 @@
+ 
+ BUILDDIR = ../..
+ PACKAGE = java.net
+-LIBRARY = net
++LIBRARY = javanet
+ PRODUCT = sun
+ include $(BUILDDIR)/common/Defs.gmk
+ 
+Index: openjdk/jdk/make/java/nio/Makefile
+===================================================================
+--- openjdk/jdk/make/java/nio/Makefile	2010-07-05 12:31:27.046626250 +0200
++++ openjdk/jdk/make/java/nio/Makefile	2010-07-05 12:32:06.647874890 +0200
+@@ -139,11 +139,11 @@
+ endif
+ ifeq ($(PLATFORM), linux)
+ COMPILER_WARNINGS_FATAL=true
+-OTHER_LDLIBS += -L$(LIBDIR)/$(LIBARCH) -ljava -lnet -lpthread -ldl
++OTHER_LDLIBS += -L$(LIBDIR)/$(LIBARCH) -ljava -ljavanet -lpthread -ldl
+ endif
+ ifeq ($(PLATFORM), solaris)
+ OTHER_LDLIBS += $(JVMLIB) $(LIBSOCKET) -lposix4 -ldl \
+-		-L$(LIBDIR)/$(LIBARCH) -ljava -lnet
++		-L$(LIBDIR)/$(LIBARCH) -ljava -ljavanet
+ endif # PLATFORM
+ 
+ #
+Index: openjdk/jdk/src/share/classes/java/net/AbstractPlainDatagramSocketImpl.java
+===================================================================
+--- openjdk/jdk/src/share/classes/java/net/AbstractPlainDatagramSocketImpl.java	2010-07-05 17:40:56.467876415 +0200
++++ openjdk/jdk/src/share/classes/java/net/AbstractPlainDatagramSocketImpl.java	2010-07-05 17:41:43.326628410 +0200
+@@ -58,7 +58,7 @@
+      */
+     static {
+         java.security.AccessController.doPrivileged(
+-                  new sun.security.action.LoadLibraryAction("net"));
++                  new sun.security.action.LoadLibraryAction("javanet"));
+     }
+ 
+     /**
+Index: openjdk/jdk/src/share/classes/java/net/AbstractPlainSocketImpl.java
+===================================================================
+--- openjdk/jdk/src/share/classes/java/net/AbstractPlainSocketImpl.java	2010-07-05 17:41:01.027875484 +0200
++++ openjdk/jdk/src/share/classes/java/net/AbstractPlainSocketImpl.java	2010-07-05 17:41:56.826626386 +0200
+@@ -74,7 +74,7 @@
+      */
+     static {
+         java.security.AccessController.doPrivileged(
+-                  new sun.security.action.LoadLibraryAction("net"));
++                  new sun.security.action.LoadLibraryAction("javanet"));
+     }
+ 
+     /**
+Index: openjdk/jdk/src/share/classes/java/net/DatagramPacket.java
+===================================================================
+--- openjdk/jdk/src/share/classes/java/net/DatagramPacket.java	2010-07-05 17:41:02.017875980 +0200
++++ openjdk/jdk/src/share/classes/java/net/DatagramPacket.java	2010-07-05 17:42:06.057875677 +0200
+@@ -47,7 +47,7 @@
+      */
+     static {
+         java.security.AccessController.doPrivileged(
+-                  new sun.security.action.LoadLibraryAction("net"));
++                  new sun.security.action.LoadLibraryAction("javanet"));
+         init();
+     }
+ 
+Index: openjdk/jdk/src/share/classes/java/net/InetAddress.java
+===================================================================
+--- openjdk/jdk/src/share/classes/java/net/InetAddress.java	2010-07-05 17:41:02.756626429 +0200
++++ openjdk/jdk/src/share/classes/java/net/InetAddress.java	2010-07-05 17:42:15.997875786 +0200
+@@ -230,7 +230,7 @@
+     static {
+         preferIPv6Address = java.security.AccessController.doPrivileged(
+             new GetBooleanAction("java.net.preferIPv6Addresses")).booleanValue();
+-        AccessController.doPrivileged(new LoadLibraryAction("net"));
++        AccessController.doPrivileged(new LoadLibraryAction("javanet"));
+         init();
+     }
+ 
+Index: openjdk/jdk/src/share/classes/java/net/NetworkInterface.java
+===================================================================
+--- openjdk/jdk/src/share/classes/java/net/NetworkInterface.java	2010-07-05 17:41:03.547875282 +0200
++++ openjdk/jdk/src/share/classes/java/net/NetworkInterface.java	2010-07-05 17:42:22.647875475 +0200
+@@ -52,7 +52,7 @@
+     private boolean virtual = false;
+ 
+     static {
+-        AccessController.doPrivileged(new LoadLibraryAction("net"));
++        AccessController.doPrivileged(new LoadLibraryAction("javanet"));
+         init();
+     }
+ 
+Index: openjdk/jdk/src/share/classes/sun/net/spi/DefaultProxySelector.java
+===================================================================
+--- openjdk/jdk/src/share/classes/sun/net/spi/DefaultProxySelector.java	2010-07-05 17:41:04.306628153 +0200
++++ openjdk/jdk/src/share/classes/sun/net/spi/DefaultProxySelector.java	2010-07-05 17:42:32.666627264 +0200
+@@ -89,7 +89,7 @@
+                 }});
+         if (b != null && b.booleanValue()) {
+             java.security.AccessController.doPrivileged(
+-                      new sun.security.action.LoadLibraryAction("net"));
++                      new sun.security.action.LoadLibraryAction("javanet"));
+             hasSystemProxies = init();
+         }
+     }
+Index: henning/bug/com.buglabs.build.oe/tmp/work/armv7a-angstrom-linux-gnueabi/openjdk-6-jre-6b18-1.8-r3.3/openjdk-src-dir/jdk/src/share/classes/sun/nio/ch/Util.java
+===================================================================
+--- openjdk/jdk/src/share/classes/sun/nio/ch/Util.java	2010-07-05 17:41:05.086626745 +0200
++++ openjdk/jdk/src/share/classes/sun/nio/ch/Util.java	2010-07-05 17:42:39.266626410 +0200
+@@ -354,7 +354,7 @@
+                 return;
+             loaded = true;
+             java.security.AccessController
+-                .doPrivileged(new sun.security.action.LoadLibraryAction("net"));
++                .doPrivileged(new sun.security.action.LoadLibraryAction("javanet"));
+             java.security.AccessController
+                 .doPrivileged(new sun.security.action.LoadLibraryAction("nio"));
+             // IOUtil must be initialized; Its native methods are called from
+Index: openjdk/jdk/src/solaris/classes/sun/net/dns/ResolverConfigurationImpl.java
+===================================================================
+--- openjdk/jdk/src/solaris/classes/sun/net/dns/ResolverConfigurationImpl.java	2010-07-05 17:41:05.896626691 +0200
++++ openjdk/jdk/src/solaris/classes/sun/net/dns/ResolverConfigurationImpl.java	2010-07-05 17:42:45.606625991 +0200
+@@ -244,7 +244,7 @@
+ 
+     static {
+         java.security.AccessController.doPrivileged(
+-            new sun.security.action.LoadLibraryAction("net"));
++            new sun.security.action.LoadLibraryAction("javanet"));
+     }
+ 
+ }
+Index: henning/bug/com.buglabs.build.oe/tmp/work/armv7a-angstrom-linux-gnueabi/openjdk-6-jre-6b18-1.8-r3.3/openjdk-src-dir/jdk/src/windows/classes/sun/net/dns/ResolverConfigurationImpl.java
+===================================================================
+--- openjdk/jdk/src/windows/classes/sun/net/dns/ResolverConfigurationImpl.java	2010-07-05 17:41:06.786627210 +0200
++++ openjdk/jdk/src/windows/classes/sun/net/dns/ResolverConfigurationImpl.java	2010-07-05 17:42:51.926627747 +0200
+@@ -160,7 +160,7 @@
+ 
+     static {
+         java.security.AccessController.doPrivileged(
+-            new sun.security.action.LoadLibraryAction("net"));
++            new sun.security.action.LoadLibraryAction("javanet"));
+         init0();
+ 
+         // start the address listener thread

@@ -1,0 +1,29 @@
+Index: openjdk/hotspot/src/share/vm/shark/llvmHeaders.hpp
+===================================================================
+--- openjdk/hotspot/src/share/vm/shark/llvmHeaders.hpp	2011-11-18 20:38:09.000000000 +0100
++++ openjdk/hotspot/src/share/vm/shark/llvmHeaders.hpp	2011-11-18 21:03:15.781644337 +0100
+@@ -38,7 +38,11 @@
+ #include <llvm/ModuleProvider.h>
+ #endif
+ #include <llvm/Support/IRBuilder.h>
++#if SHARK_LLVM_VERSION >= 29
++#include <llvm/Support/Threading.h>
++#else
+ #include <llvm/System/Threading.h>
++#endif
+ #include <llvm/Target/TargetSelect.h>
+ #include <llvm/Type.h>
+ #include <llvm/ExecutionEngine/JITMemoryManager.h>
+@@ -47,8 +51,12 @@
+ #include <llvm/ExecutionEngine/JIT.h>
+ #include <llvm/ADT/StringMap.h>
+ #include <llvm/Support/Debug.h>
++#if SHARK_LLVM_VERSION >= 29
++#include <llvm/Support/Host.h>
++#else
+ #include <llvm/System/Host.h>
+ #endif
++#endif
+ 
+ #include <map>
+ 

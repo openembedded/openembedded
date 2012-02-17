@@ -1,0 +1,21 @@
+Index: icedtea6-1.8/build/openjdk/hotspot/src/share/vm/utilities/globalDefinitions_gcc.hpp
+===================================================================
+--- openjdk/hotspot/src/share/vm/utilities/globalDefinitions_gcc.hpp	2010-06-09 21:47:12.695674808 +0200
++++ openjdk/hotspot/src/share/vm/utilities/globalDefinitions_gcc.hpp	2010-06-09 21:48:08.699007491 +0200
+@@ -220,14 +220,14 @@
+ // checking for nanness
+ #ifdef SOLARIS
+ #ifdef SPARC
+-inline int g_isnan(float  f) { return isnanf(f); }
++inline int g_isnan(float  f) { return __isnanf(f); }
+ #else
+ // isnanf() broken on Intel Solaris use isnand()
+ inline int g_isnan(float  f) { return isnand(f); }
+ #endif
+ inline int g_isnan(double f) { return isnand(f); }
+ #elif LINUX
+-inline int g_isnan(float  f) { return isnanf(f); }
++inline int g_isnan(float  f) { return __isnanf(f); }
+ inline int g_isnan(double f) { return isnan(f); }
+ #else
+ #error "missing platform-specific definition here"

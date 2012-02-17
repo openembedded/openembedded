@@ -1,0 +1,41 @@
+Index: openjdk/jdk/src/solaris/native/sun/xawt/XToolkit.c
+===================================================================
+--- openjdk/jdk/src/solaris/native/sun/xawt/XToolkit.c	2010-08-05 16:45:56.607257503 +0200
++++ openjdk/jdk/src/solaris/native/sun/xawt/XToolkit.c	2010-08-05 16:47:19.727254686 +0200
+@@ -27,9 +27,6 @@
+ #include <X11/Xutil.h>
+ #include <X11/Xos.h>
+ #include <X11/Xatom.h>
+-#ifdef __linux__
+-#include <execinfo.h>
+-#endif
+ 
+ #include <jvm.h>
+ #include <jni.h>
+@@ -689,26 +686,6 @@
+     return ret;
+ }
+ 
+-#ifdef __linux__
+-void print_stack(void)
+-{
+-  void *array[10];
+-  size_t size;
+-  char **strings;
+-  size_t i;
+-
+-  size = backtrace (array, 10);
+-  strings = backtrace_symbols (array, size);
+-
+-  fprintf (stderr, "Obtained %zd stack frames.\n", size);
+-
+-  for (i = 0; i < size; i++)
+-     fprintf (stderr, "%s\n", strings[i]);
+-
+-  free (strings);
+-}
+-#endif
+-
+ Window get_xawt_root_shell(JNIEnv *env) {
+   static jclass classXRootWindow = NULL;
+   static jmethodID methodGetXRootWindow = NULL;

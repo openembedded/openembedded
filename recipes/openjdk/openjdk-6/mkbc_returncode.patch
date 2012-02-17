@@ -1,0 +1,11 @@
+Index: icedtea6/ports/hotspot/tools/mkbc.c
+===================================================================
+--- icedtea6.orig/ports/hotspot/tools/mkbc.c	2010-04-01 12:25:13.791317722 +0200
++++ icedtea6/ports/hotspot/tools/mkbc.c	2010-04-01 12:27:34.151606177 +0200
+@@ -602,4 +602,6 @@
+ 	if (ferror(bci_f)) fatal("Error writing bci");
+ 	if (source_f != stdin) fclose(source_f);
+ 	if (bci_f != stdout) fclose(bci_f);
++
++	return 0;
+ }

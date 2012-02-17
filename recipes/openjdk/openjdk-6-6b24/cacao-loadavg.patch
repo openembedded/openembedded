@@ -1,0 +1,27 @@
+Index: cacao-cff92704c4e0/src/vm/os.hpp
+===================================================================
+--- cacao-cff92704c4e0/src/vm/os.hpp	2011-12-08 13:40:45.000000000 +0100
++++ cacao-cff92704c4e0/src/vm/os.hpp	2011-12-20 11:42:36.985633921 +0100
+@@ -425,7 +425,21 @@
+ #if defined(HAVE_GETLOADAVG)
+ 	return ::getloadavg(loadavg, nelem);
+ #else
+-# error getloadavg not available
++        FILE *LOADAVG;
++        double avg[3] = { 0.0, 0.0, 0.0 };
++        int i, res = -1;;
++
++        if ((LOADAVG = fopen("/proc/loadavg", "r"))) {
++                fscanf(LOADAVG, "%lf %lf %lf", &avg[0], &avg[1], &avg[2]);
++                res = 0;
++                fclose(LOADAVG);
++        }
++
++        for (i = 0; (i < nelem) && (i < 3); i++) {
++                loadavg[i] = avg[i];
++        }
++
++        return res;
+ #endif
+ }
+ 

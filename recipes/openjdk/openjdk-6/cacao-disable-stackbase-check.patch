@@ -1,0 +1,12 @@
+Index: cacao/cacao/src/mm/boehm-gc/os_dep.c
+===================================================================
+--- cacao/cacao/src/mm/boehm-gc/os_dep.c	2009-02-15 16:29:15.000000000 +0100
++++ cacao/cacao/src/mm/boehm-gc/os_dep.c	2009-02-15 16:29:24.000000000 +0100
+@@ -1077,7 +1077,6 @@
+       c = stat_buf[buf_offset++];
+     }
+     close(f);
+-    if (result < 0x10000000) ABORT("Absurd stack bottom value");
+     return (ptr_t)result;
+   }
+ 
