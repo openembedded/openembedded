@@ -1,0 +1,13 @@
+Index: openjdk/jdk/src/solaris/native/sun/security/pkcs11/j2secmod_md.c
+===================================================================
+--- openjdk/jdk/src/solaris/native/sun/security/pkcs11/j2secmod_md.c	2010-06-13 15:18:05.655136951 +0200
++++ openjdk/jdk/src/solaris/native/sun/security/pkcs11/j2secmod_md.c	2010-06-13 15:20:29.601377967 +0200
+@@ -51,7 +51,7 @@
+ {
+     const char *libName = (*env)->GetStringUTFChars(env, jLibName, NULL);
+     // look up existing handle only, do not load
+-    void *hModule = dlopen(libName, RTLD_NOLOAD);
++    void *hModule = dlopen(libName, RTLD_LAZY);
+     dprintf2("-handle for %s: %u\n", libName, hModule);
+     (*env)->ReleaseStringUTFChars(env, jLibName, libName);
+     return (jlong)hModule;

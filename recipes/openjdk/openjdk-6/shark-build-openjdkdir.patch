@@ -1,0 +1,13 @@
+Index: icedtea6-1.8/Makefile.am
+===================================================================
+--- icedtea6-1.8.orig/Makefile.am	2010-06-30 11:30:49.526648376 +0200
++++ icedtea6-1.8/Makefile.am	2010-06-30 11:42:02.606648734 +0200
+@@ -1882,7 +1882,7 @@
+ # configure script arguments, quoted in single quotes
+ CONFIGURE_ARGS = @CONFIGURE_ARGS@
+ ADD_ZERO_CONFIGURE_ARGS = \
+-	--with-openjdk=$(abs_top_builddir)/$(BUILD_OUTPUT_DIR)/j2sdk-image \
++	--with-openjdk=$(abs_top_builddir)/bootstrap/jdk1.6.0 \
+ 	--enable-zero
+ if ADD_SHARK_BUILD
+ ADD_ZERO_CONFIGURE_ARGS += \

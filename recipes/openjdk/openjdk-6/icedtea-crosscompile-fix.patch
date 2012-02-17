@@ -1,0 +1,229 @@
+Index: openjdk/jdk/make/sun/awt/Makefile
+===================================================================
+--- openjdk.orig/jdk/make/sun/awt/Makefile	2009-01-24 17:54:57.000000000 +0100
++++ openjdk/jdk/make/sun/awt/Makefile	2009-01-24 17:55:07.000000000 +0100
+@@ -509,10 +509,10 @@
+ #
+ 
+ ifeq ($(PLATFORM), linux)
+-CPPFLAGS += -I$(MOTIF_DIR)/include \
+-            -I$(OPENWIN_HOME)/include \
+-            -I$(OPENWIN_HOME)/include/X11/extensions \
+-            -I$(PLATFORM_SRC)/native/$(PKGDIR)/font 
++#CPPFLAGS += -I$(MOTIF_DIR)/include \
++#            -I$(OPENWIN_HOME)/include \
++#            -I$(OPENWIN_HOME)/include/X11/extensions \
++CPPFLAGS +=  -I$(PLATFORM_SRC)/native/$(PKGDIR)/font 
+ endif
+ CPPFLAGS += -I$(SHARE_SRC)/native/$(PKGDIR)/debug \
+             -I$(SHARE_SRC)/native/$(PKGDIR)/../font \
+@@ -536,7 +536,7 @@
+ 	    $(EVENT_MODEL)
+ 
+ ifeq ($(PLATFORM), linux)
+-LDFLAGS += -L$(MOTIF_LIB) -L$(OPENWIN_LIB)
++#LDFLAGS += -L$(MOTIF_LIB) -L$(OPENWIN_LIB)
+ endif
+ 
+ LDFLAGS += -L$(LIBDIR)/$(LIBARCH)/$(TSOBJDIR) \
+Index: openjdk/jdk/make/sun/awt/mawt.gmk
+===================================================================
+--- openjdk.orig/jdk/make/sun/awt/mawt.gmk	2009-01-24 17:54:57.000000000 +0100
++++ openjdk/jdk/make/sun/awt/mawt.gmk	2009-01-24 17:55:07.000000000 +0100
+@@ -194,8 +194,8 @@
+ CPPFLAGS += -I$(CUPS_HEADERS_PATH)
+ 
+ ifndef HEADLESS
+-CPPFLAGS += -I$(OPENWIN_HOME)/include 
+-LDFLAGS  += -L$(OPENWIN_LIB)
++#CPPFLAGS += -I$(OPENWIN_HOME)/include 
++#LDFLAGS  += -L$(OPENWIN_LIB)
+ 
+ endif # !HEADLESS
+ 
+@@ -223,8 +223,8 @@
+ 
+ ifeq ($(PLATFORM), linux)
+ # Checking for the X11/extensions headers at the additional location
+-  CPPFLAGS += -I/X11R6/include/X11/extensions \
+-              -I/usr/include/X11/extensions
++#  CPPFLAGS += -I/X11R6/include/X11/extensions \
++#              -I/usr/include/X11/extensions
+ endif
+ 
+ ifeq ($(PLATFORM), solaris)
+Index: openjdk/jdk/make/sun/xawt/Makefile
+===================================================================
+--- openjdk.orig/jdk/make/sun/xawt/Makefile	2009-01-24 17:54:57.000000000 +0100
++++ openjdk/jdk/make/sun/xawt/Makefile	2009-01-24 17:55:07.000000000 +0100
+@@ -123,11 +123,12 @@
+         -I$(PLATFORM_SRC)/native/sun/awt 
+ 
+ ifeq ($(PLATFORM), linux)
++# Very unsuitable for cross-compilation.
+ # Allows for builds on Debian GNU Linux, X11 is in a different place 
+-  CPPFLAGS += -I/usr/X11R6/include/X11/extensions \
+-              -I/usr/include/X11/extensions \
+-              -I$(MOTIF_DIR)/include \
+-              -I$(OPENWIN_HOME)/include 
++#  CPPFLAGS += -I/usr/X11R6/include/X11/extensions \
++#              -I/usr/include/X11/extensions \
++#              -I$(MOTIF_DIR)/include \
++#              -I$(OPENWIN_HOME)/include 
+ endif
+ 
+ ifeq ($(PLATFORM), solaris)
+Index: openjdk/hotspot/make/linux/makefiles/vm.make
+===================================================================
+--- openjdk.orig/hotspot/make/linux/makefiles/vm.make	2009-01-24 17:54:57.000000000 +0100
++++ openjdk/hotspot/make/linux/makefiles/vm.make	2009-01-24 17:55:07.000000000 +0100
+@@ -170,6 +170,7 @@
+ LIBS_VM   += $(LLVM_LIBS)
+ endif
+ 
++LFLAGS_VM += $(OE_LDFLAGS)
+ LINK_VM = $(LINK_LIB.c)
+ 
+ # rule for building precompiled header
+Index: openjdk/hotspot/make/linux/makefiles/buildtree.make
+===================================================================
+--- openjdk.orig/hotspot/make/linux/makefiles/buildtree.make	2009-01-24 17:54:57.000000000 +0100
++++ openjdk/hotspot/make/linux/makefiles/buildtree.make	2009-01-24 17:55:07.000000000 +0100
+@@ -343,7 +343,7 @@
+ 	echo "rm -f Queens.class"; \
+ 	echo "\$${JAVA_HOME}/bin/javac -d . $(GAMMADIR)/make/test/Queens.java"; \
+ 	echo '[ -f gamma_g ] && { gamma=gamma_g; }'; \
+-	echo './$${gamma:-gamma} $(TESTFLAGS) Queens < /dev/null'; \
++	echo 'echo Silently skipping the execution of the gamma program'; \
+ 	) > $@
+ 	$(QUIETLY) chmod +x $@
+ 
+Index: openjdk/corba/make/common/Defs-linux.gmk
+===================================================================
+--- openjdk.orig/corba/make/common/Defs-linux.gmk	2009-01-24 17:54:57.000000000 +0100
++++ openjdk/corba/make/common/Defs-linux.gmk	2009-01-24 17:55:07.000000000 +0100
+@@ -82,9 +82,9 @@
+ CC_NO_OPT      =
+ 
+ ifeq ($(PRODUCT), java)
+-    _OPT = $(CC_HIGHER_OPT)
++    _OPT = $(OE_CFLAGS)
+ else
+-    _OPT = $(CC_LOWER_OPT)
++    _OPT = $(OE_CFLAGS)
+     CPPFLAGS_DBG    += -DLOGGING 
+ endif
+ 
+@@ -94,7 +94,7 @@
+ #    as the default.
+ CFLAGS_REQUIRED_alpha   += -mieee -D_LITTLE_ENDIAN
+ CFLAGS_REQUIRED_amd64   += -fno-omit-frame-pointer -D_LITTLE_ENDIAN
+-CFLAGS_REQUIRED_arm     += -D_LITTLE_ENDIAN
++CFLAGS_REQUIRED_arm     += -fno-omit-frame-pointer -D_LITTLE_ENDIAN
+ CFLAGS_REQUIRED_hppa    +=
+ CFLAGS_REQUIRED_i586    += -fno-omit-frame-pointer -D_LITTLE_ENDIAN
+ CFLAGS_REQUIRED_ia64    += -fno-omit-frame-pointer -D_LITTLE_ENDIAN
+@@ -221,7 +221,7 @@
+ #
+ # -L paths for finding and -ljava
+ #
+-LDFLAGS_OPT     = -Xlinker -O1
++LDFLAGS_OPT     = $(OE_LDFLAGS)
+ LDFLAGS_COMMON += -L$(LIBDIR)/$(LIBARCH)
+ LDFLAGS_COMMON += -Wl,-soname=$(LIB_PREFIX)$(LIBRARY).$(LIBRARY_SUFFIX)
+ 
+Index: openjdk/jdk/make/common/Defs-linux.gmk
+===================================================================
+--- openjdk.orig/jdk/make/common/Defs-linux.gmk	2009-01-24 17:54:57.000000000 +0100
++++ openjdk/jdk/make/common/Defs-linux.gmk	2009-01-24 17:55:07.000000000 +0100
+@@ -92,9 +92,9 @@
+ CC_NO_OPT      =
+ 
+ ifeq ($(PRODUCT), java)
+-    _OPT = $(CC_HIGHER_OPT)
++    _OPT = $(OE_CFLAGS)
+ else
+-    _OPT = $(CC_LOWER_OPT)
++    _OPT = $(OE_CFLAGS)
+     CPPFLAGS_DBG    += -DLOGGING 
+ endif
+ 
+@@ -104,7 +104,7 @@
+ #    as the default.
+ CFLAGS_REQUIRED_alpha   += -mieee -D_LITTLE_ENDIAN
+ CFLAGS_REQUIRED_amd64   += -fno-omit-frame-pointer -D_LITTLE_ENDIAN
+-CFLAGS_REQUIRED_arm     += -D_LITTLE_ENDIAN
++CFLAGS_REQUIRED_arm     += -fno-omit-frame-pointer -D_LITTLE_ENDIAN
+ CFLAGS_REQUIRED_hppa    +=
+ CFLAGS_REQUIRED_i586    += -fno-omit-frame-pointer -D_LITTLE_ENDIAN
+ CFLAGS_REQUIRED_ia64    += -fno-omit-frame-pointer -D_LITTLE_ENDIAN
+@@ -231,7 +231,7 @@
+ #
+ # -L paths for finding and -ljava
+ #
+-LDFLAGS_OPT     = -Xlinker -O1
++LDFLAGS_OPT     = $(OE_LDFLAGS)
+ LDFLAGS_COMMON += -L$(LIBDIR)/$(LIBARCH)
+ LDFLAGS_COMMON += -Wl,-soname=$(LIB_PREFIX)$(LIBRARY).$(LIBRARY_SUFFIX)
+ 
+Index: openjdk/hotspot/make/linux/makefiles/gcc.make
+===================================================================
+--- openjdk.orig/hotspot/make/linux/makefiles/gcc.make	2009-01-24 17:54:57.000000000 +0100
++++ openjdk/hotspot/make/linux/makefiles/gcc.make	2009-01-24 17:55:07.000000000 +0100
+@@ -119,7 +119,7 @@
+ CFLAGS_WARN/BYFILE = $(CFLAGS_WARN/$@)$(CFLAGS_WARN/DEFAULT$(CFLAGS_WARN/$@)) 
+ 
+ # The flags to use for an Optimized g++ build
+-OPT_CFLAGS += -O3
++OPT_CFLAGS += $(OE_CFLAGS)
+ 
+ # Hotspot uses very unstrict aliasing turn this optimization off
+ OPT_CFLAGS += -fno-strict-aliasing
+@@ -148,7 +148,7 @@
+ endif
+ 
+ # Enable linker optimization
+-LFLAGS += -Xlinker -O1
++LFLAGS += $(OE_LDFLAGS)
+ 
+ # Use $(MAPFLAG:FILENAME=real_file_name) to specify a map file.
+ MAPFLAG = -Xlinker --version-script=FILENAME
+Index: openjdk/hotspot/make/linux/makefiles/launcher.make
+===================================================================
+--- openjdk.orig/hotspot/make/linux/makefiles/launcher.make	2009-01-24 17:55:19.000000000 +0100
++++ openjdk/hotspot/make/linux/makefiles/launcher.make	2009-01-24 17:56:05.000000000 +0100
+@@ -44,7 +44,7 @@
+   LIBS_LAUNCHER             += $(STATIC_STDCXX) $(LIBS)
+ else
+   LAUNCHER.o                 = launcher.o
+-  LFLAGS_LAUNCHER           += -L `pwd`
++  LFLAGS_LAUNCHER           += -L `pwd` $(OE_LAUNCHER_LDFLAGS) $(OE_LDFLAGS)
+   LIBS_LAUNCHER             += -l$(JVM) $(LIBS) -lstdc++
+ endif
+ 
+Index: icedtea6-1.8.5/build/openjdk/jdk/make/sun/xawt/Makefile
+===================================================================
+--- openjdk/jdk/make/sun/xawt/Makefile	2011-03-14 14:17:03.926207269 +0100
++++ openjdk/jdk/make/sun/xawt/Makefile	2011-03-14 14:30:11.956186631 +0100
+@@ -245,7 +245,7 @@
+ 	    $(CHMOD) +w $@;\
+ 	else	\
+ 	    $(ECHO) GENERATING $@; \
+-	    $(WRAPPER_GENERATOR_DIR)/sizer$(suffix $@) > $@; \
++	    $(QEMU) $(WRAPPER_GENERATOR_DIR)/sizer$(suffix $@) > $@; \
+ 	fi
+ 	@if [ "$(DOCOMPARE)$(suffix $@)" = "true.64" ]; then \
+ 	    $(ECHO) COMPARING $@ and $(STORED_SIZES_TMPL_$(PLATFORM)_$(LIBARCH)); \
+Index: openjdk/hotspot/make/linux/makefiles/jsig.make
+===================================================================
+--- openjdk/hotspot/make/linux/makefiles/jsig.make	2010-02-17 04:11:04.000000000 +0100
++++ openjdk/hotspot/make/linux/makefiles/jsig.make	2011-11-18 22:56:03.923900991 +0100
+@@ -39,7 +39,7 @@
+ # cause problems with interposing. See CR: 6466665
+ # LFLAGS_JSIG += $(MAPFLAG:FILENAME=$(LIBJSIG_MAPFILE))
+ 
+-LFLAGS_JSIG += -D_GNU_SOURCE -D_REENTRANT
++LFLAGS_JSIG += -D_GNU_SOURCE -D_REENTRANT $(OE_LDFLAGS)
+ 
+ # DEBUG_BINARIES overrides everything, use full -g debug information
+ ifeq ($(DEBUG_BINARIES), true)

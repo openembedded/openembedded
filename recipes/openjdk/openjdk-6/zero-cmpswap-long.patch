@@ -1,0 +1,20 @@
+Index: icedtea6-1.8/ports/hotspot/src/os_cpu/linux_zero/vm/atomic_linux_zero.inline.hpp
+===================================================================
+--- icedtea6-1.8.orig/ports/hotspot/src/os_cpu/linux_zero/vm/atomic_linux_zero.inline.hpp	2010-06-17 10:26:16.885292426 +0200
++++ icedtea6-1.8/ports/hotspot/src/os_cpu/linux_zero/vm/atomic_linux_zero.inline.hpp	2010-06-17 10:29:19.034668305 +0200
+@@ -266,7 +266,15 @@
+                              volatile jlong* dest,
+                              jlong compare_value) {
+ 
++#ifdef ARM
++  return arm_compare_and_swap((jint *) dest, (jint) compare_value, (jint) exchange_value);
++#else
++#ifdef M68K
++  return m68k_compare_and_swap((jint *) dest, (jint) compare_value, (jint) exchange_value);
++#else
+   return __sync_val_compare_and_swap(dest, compare_value, exchange_value);
++#endif // M68K
++#endif // ARM
+ }
+ 
+ inline intptr_t Atomic::cmpxchg_ptr(intptr_t exchange_value,

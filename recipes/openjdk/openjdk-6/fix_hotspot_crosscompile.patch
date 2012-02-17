@@ -1,0 +1,94 @@
+Index: icedtea6-1.8/Makefile.am
+===================================================================
+--- icedtea6-1.8.orig/Makefile.am	2010-06-18 12:31:34.534667003 +0200
++++ icedtea6-1.8/Makefile.am	2010-06-18 12:31:34.714667729 +0200
+@@ -488,6 +488,7 @@
+ 	DEBUG_BINARIES="true" \
+ 	ALT_DROPS_DIR="$(abs_top_builddir)/drops" \
+ 	VERBOSE="$(VERBOSE)" \
++	CC_FOR_BUILD="$(CC_FOR_BUILD)" \
+ 	ALT_NETX_DIST="$(abs_top_builddir)/netx.build" \
+ 	ALT_LIVECONNECT_DIST="$(abs_top_builddir)/liveconnect"
+ 
+Index: icedtea6-1.8/acinclude.m4
+===================================================================
+--- icedtea6-1.8.orig/acinclude.m4	2010-04-10 21:58:40.804836529 +0200
++++ icedtea6-1.8/acinclude.m4	2010-06-18 12:31:34.714667729 +0200
+@@ -900,6 +900,21 @@
+   AC_SUBST(ALT_CACAO_SRC_DIR)
+ ])
+ 
++AC_DEFUN([AC_CHECK_WITH_CC_FOR_BUILD],
++[
++  AC_MSG_CHECKING(for compiler used for subsidiary programs)
++  AC_ARG_WITH([cc-for-build],
++              [AS_HELP_STRING(--with-cc-for-build,specify the compiler for subsidiary (helper) programs)],
++  [
++    CC_FOR_BUILD="${withval}"
++  ],
++  [
++    CC_FOR_BUILD="\$(CC)"
++  ])
++  AC_MSG_RESULT(${CC_FOR_BUILD})
++  AC_SUBST(CC_FOR_BUILD)
++])
++
+ AC_DEFUN([AC_CHECK_WITH_GCJ],
+ [
+   AC_MSG_CHECKING([whether to compile ecj natively])
+Index: icedtea6-1.8/configure.ac
+===================================================================
+--- icedtea6-1.8.orig/configure.ac	2010-04-12 13:46:18.821086023 +0200
++++ icedtea6-1.8/configure.ac	2010-06-18 12:31:34.724666321 +0200
+@@ -44,6 +44,7 @@
+ IT_CHECK_FOR_MERCURIAL
+ IT_OBTAIN_HG_REVISIONS
+ AC_PATH_TOOL([LSB_RELEASE],[lsb_release])
++AC_CHECK_WITH_CC_FOR_BUILD
+ AC_CHECK_WITH_GCJ
+ AC_CHECK_WITH_HOTSPOT_BUILD
+ AC_PATH_TOOL([LINUX32],[linux32])
+Index: icedtea6-1.8/ports/hotspot/make/linux/makefiles/zeroshark.make
+===================================================================
+--- icedtea6-1.8.orig/ports/hotspot/make/linux/makefiles/zeroshark.make	2010-03-25 15:10:42.061085966 +0100
++++ icedtea6-1.8/ports/hotspot/make/linux/makefiles/zeroshark.make	2010-06-18 12:40:42.834666505 +0200
+@@ -32,6 +32,13 @@
+ Obj_Files += thumb2.o
+ 
+ CFLAGS += -DHOTSPOT_ASM
++CCFLAGS += -DHOTSPOT_ASM
++
++ifeq ($(CROSS_COMPILATION), true)
++  C_COMPILE_FOR_MKBC = $(CC_FOR_BUILD)
++else
++  C_COMPILE_FOR_MKBC = $(C_COMPILE)
++endif
+ 
+ %.o: %.S
+ 	@echo Assembling $<
+@@ -43,20 +50,20 @@
+ 
+ offsets_arm.s:	mkoffsets
+ 	@echo Generating assembler offsets
+-	./mkoffsets > $@
++	$(QEMU) ./mkoffsets > $@
+ 
+ bytecodes_arm.s: bytecodes_arm.def mkbc
+ 	@echo Generatine ARM assembler bytecode sequences
+ 	$(CC_COMPILE) -E -x c++ - < $< | ./mkbc - $@ $(COMPILE_DONE)
+ 
+-mkbc:	$(GAMMADIR)/tools/mkbc.c
++mkbc: $(GAMMADIR)/tools/mkbc.c
+ 	@echo Compiling mkbc tool
+-	$(CC_COMPILE) -o $@ $< $(COMPILE_DONE)
++	$(C_COMPILE_FOR_MKBC) -o $@ $< $(COMPILE_DONE)
+ 
+-mkoffsets:	asm_helper.cpp
++mkoffsets: asm_helper.cpp
+ 	@echo Compiling offset generator
+ 	$(QUIETLY) $(REMOVE_TARGET)
+-	$(CC_COMPILE) -DSTATIC_OFFSETS -o $@ $< $(COMPILE_DONE)
++	$(CC_COMPILE) -static -DSTATIC_OFFSETS -o $@ $< $(COMPILE_DONE)
+ 
+ endif
+ 

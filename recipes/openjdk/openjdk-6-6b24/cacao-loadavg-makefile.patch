@@ -1,0 +1,12 @@
+Index: icedtea6/Makefile.am
+===================================================================
+--- icedtea6.orig/Makefile.am	2011-12-20 10:54:09.000000000 +0100
++++ icedtea6/Makefile.am	2011-12-20 11:49:12.810009279 +0100
+@@ -1921,6 +1921,7 @@
+ if BUILD_CACAO
+ if !USE_SYSTEM_CACAO
+ 	cd cacao/cacao && \
++	patch -p1 -N  < $(abs_top_srcdir)/patches/cacao-loadavg.patch && \
+ 	rm -f libtool && \
+ 	./autogen.sh && \
+ 	$(ARCH_PREFIX) ./configure \

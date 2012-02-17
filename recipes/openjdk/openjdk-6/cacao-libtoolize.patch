@@ -1,0 +1,18 @@
+Index: icedtea6-1.8.5/Makefile.am
+===================================================================
+--- icedtea6-1.8.5.orig/Makefile.am	2011-02-04 18:29:58.826701224 +0100
++++ icedtea6-1.8.5/Makefile.am	2011-02-04 18:31:53.430016002 +0100
+@@ -1918,10 +1918,13 @@
+ if BUILD_CACAO
+ if !USE_SYSTEM_CACAO
+ 	cd cacao/cacao && \
++        rm -f libtool && \
++        autoreconf --verbose --install --force --no-recursive && \
+ 	$(ARCH_PREFIX) ./configure \
+ 	  --host=$(host_alias) \
+ 	  --build=$(build_alias) \
+ 	  --target=$(target_alias) \
++          --with-libtool-sysroot \
+ 	  --prefix=$(abs_top_builddir)/cacao/install \
+ 	  --with-java-runtime-library=openjdk \
+ 	  --with-java-runtime-library-prefix=$(abs_top_builddir)/openjdk \

@@ -1,0 +1,113 @@
+Index: openjdk/hotspot/src/share/vm/shark/sharkCompiler.cpp
+===================================================================
+--- openjdk.orig/hotspot/src/share/vm/shark/sharkCompiler.cpp	2010-07-14 16:42:48.412103129 +0200
++++ openjdk/hotspot/src/share/vm/shark/sharkCompiler.cpp	2010-07-14 16:50:51.680282178 +0200
+@@ -32,6 +32,96 @@
+ 
+ #if SHARK_LLVM_VERSION >= 27
+ namespace {
++
++#if defined(__arm__) && defined(__linux__)
++#include <fcntl.h>
++#include <linux/auxvec.h>
++#include <asm/hwcap.h>
++#define VECBUFF_SIZE 32
++
++bool TestARMLinuxHWCAP(int feature) {
++  int fd;
++  unsigned vecs[VECBUFF_SIZE];
++  unsigned *p;
++  int i, n;
++  int rc;
++
++  rc = 0;
++  fd = open("/proc/self/auxv", O_RDONLY);
++  if (fd < 0) return 0;
++  do {
++    n = read(fd, vecs, VECBUFF_SIZE * sizeof(unsigned));
++    p = vecs;
++    i = n/8;
++    while (--i >=0) {
++      unsigned tag = *p++;
++      unsigned value = *p++;
++      if (tag == 0) goto fini;
++      if(tag == AT_HWCAP && (value & feature)) {
++        rc = 1;
++        goto fini;
++      }
++    }
++  } while (n == VECBUFF_SIZE * sizeof(unsigned));
++fini:
++  close(fd);
++  return rc;
++}
++
++char* TestARMLinuxAT(int auxvec) {
++  int fd;
++  unsigned vecs[VECBUFF_SIZE];
++  unsigned *p;
++  int i, n;
++  char* rc;
++
++  rc = 0;
++  fd = open("/proc/self/auxv", O_RDONLY);
++  if (fd < 0) return 0;
++  do {
++    n = read(fd, vecs, VECBUFF_SIZE * sizeof(unsigned));
++    p = vecs;
++    i = n/8;
++    while (--i >=0) {
++      unsigned tag = *p++;
++      unsigned value = *p++;
++      if (tag == 0) goto fini;
++      if(tag == (unsigned) auxvec ) {
++        rc = (char*)value;
++        goto fini;
++      }
++    }
++  } while (n == VECBUFF_SIZE * sizeof(unsigned));
++fini:
++  close(fd);
++  return rc;
++}
++
++bool getARMHostCPUFeatures(StringMap<bool> &Features) {
++  // FIXME LLVM PR6561 // Features["neon"]=TestARMLinuxHWCAP(HWCAP_NEON);
++  Features["thumb2"]=TestARMLinuxHWCAP(HWCAP_THUMBEE);
++  Features["vfp2"]=TestARMLinuxHWCAP(HWCAP_VFP);
++
++  std::string testArchKey(TestARMLinuxAT(AT_PLATFORM));
++
++  StringMap<std::string> archLinuxToLLVMMap;
++  archLinuxToLLVMMap["v4l"]="v4t";
++  archLinuxToLLVMMap["v5l"]="v5t";
++  archLinuxToLLVMMap["v6l"]="v6";
++  // FIXME change this from v6 to v7a when LLVM PR7048 have been fixed
++  archLinuxToLLVMMap["v7l"]="v6";
++
++  llvm::StringMapIterator<std::string> resultIterator(archLinuxToLLVMMap.find(
++                                                      testArchKey));
++  if(resultIterator->first()) {
++    std::string arch(resultIterator->second);
++    Features[arch]=true;
++  }
++
++  return true;
++}
++#endif
++
+   cl::opt<std::string>
+   MCPU("mcpu");
+ 
+@@ -64,7 +154,11 @@
+ #if SHARK_LLVM_VERSION >= 27
+   // Finetune LLVM for the current host CPU.
+   StringMap<bool> Features;
++#if defined(__arm__) && defined(__linux__)
++  bool gotCpuFeatures = getARMHostCPUFeatures(Features);
++#else
+   bool gotCpuFeatures = llvm::sys::getHostCPUFeatures(Features);
++#endif
+   std::string cpu("-mcpu=" + llvm::sys::getHostCPUName());
+ 
+   std::vector<const char*> args;
