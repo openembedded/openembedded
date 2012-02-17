@@ -1,7 +1,7 @@
 # Set PREFFERED and VERSION stuff for working java-toolchain
 
 PREFERRED_PROVIDER_virtual/java-initial ?= "jamvm-initial"
-PREFERRED_PROVIDER_virtual/java-native ?= "cacao-native"
+PREFERRED_PROVIDER_virtual/java-native ?= "jamvm-native"
 
 # target cacao is failing to build
 # without this provider we get
