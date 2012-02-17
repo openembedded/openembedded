@@ -4,7 +4,7 @@ LICENSE  = "GPL"
 
 PR = "r3"
 
-DEPENDS = "classpath-native fastjar-native ecj-initial virtual/java-native"
+DEPENDS = "classpath-native fastjar-native ecj-initial-native virtual/java-native"
 
 S = "${WORKDIR}/icepick-0.0+hg20080118"
 

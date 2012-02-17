@@ -1,6 +1,6 @@
 require jamvm.inc 
 
-DEPENDS = "zlib-native classpath-native ecj-initial libffi-native"
+DEPENDS = "zlib-native classpath-native ecj-initial-native libffi-native"
 RDEPENDS_${PN} = ""
 
 PROVIDES = "virtual/java-native"
