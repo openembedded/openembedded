@@ -1,5 +1,7 @@
 require git.inc
 
+SRC_URI = "http://pkgs.fedoraproject.org/repo/pkgs/git/git-1.7.3.5.tar.bz2/8a8cd93b8a4dff0a03c0fdc77253af3e/git-1.7.3.5.tar.bz2;name=src"
+
 SRC_URI += "file://git-less-hardlinks.diff"
 
 EXTRA_OECONF += "ac_cv_snprintf_returns_bogus=no ac_cv_c_c99_format=yes"
