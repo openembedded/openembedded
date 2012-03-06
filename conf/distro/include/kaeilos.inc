@@ -82,7 +82,8 @@ INHERIT += "angstrom-blacklist"
 INHERIT += "devshell" 
 
 #use angstrom source mirrors to combat 404s (see classes/kaeilos-mirrors.bbclass)
-INHERIT += "kaeilos-mirrors angstrom-mirrors" 
+INHERIT += "angstrom-mirrors" 
+INHERIT += "kaeilos-mirrors" 
 
 #run QA tests on builds and packages and log them  
 INHERIT += "insane"
