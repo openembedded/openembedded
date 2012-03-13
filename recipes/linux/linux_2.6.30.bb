@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r7"
+PR = "r8"
 AT91_EXPERIMENTAL = "4"
 S = "${WORKDIR}/linux-${PV}"
 
@@ -107,6 +107,7 @@ SRC_URI_vulcano-g20 = " \
 	    file://0002-linux-Add-VulcanoG20-in-mach-at91-Makefile.patch \
 	    file://0003-linux-Add-AT45DB0642-in-bin-page-mode-mtd_dataflash.patch \
 	    file://0004-linux-Add-VulcanoG20-support.patch \
+	    file://0005-vulcano-g20-mtd.patch \
 	    file://defconfig"
 
 
