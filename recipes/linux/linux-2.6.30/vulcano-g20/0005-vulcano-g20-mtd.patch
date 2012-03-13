@@ -1,0 +1,37 @@
+Index: linux-2.6.30.10-at91/arch/arm/mach-at91/board-m2-vulcanog20.c
+===================================================================
+--- linux-2.6.30.10-at91.orig/arch/arm/mach-at91/board-m2-vulcanog20.c	2012-03-13 17:03:31.315565242 +0100
++++ linux-2.6.30.10-at91/arch/arm/mach-at91/board-m2-vulcanog20.c	2012-03-13 17:03:48.854943800 +0100
+@@ -127,17 +127,27 @@
+  */
+ static struct mtd_partition __initdata ek_nand_partition[] = {
+ 	{
+-		.name   = "Bootstrap",
++		.name   = "At91Bootstrap",		// Start : 0x0000'0000
+ 		.offset = 0,
+-		.size   = 4 * SZ_1M,
++		.size	= 0x20000,
+ 	},
+ 	{
+-		.name	= "Root File System",
++		.name	= "U-Boot",				// Start : 0x0002'0000
+ 		.offset	= MTDPART_OFS_NXTBLK,
+-		.size	= 60 * SZ_1M,
++		.size	= 0x40000,
+ 	},
+ 	{
+-		.name	= "Data",
++		.name	= "U-Boot environment",	// Start : 0x0006'0000
++		.offset	= MTDPART_OFS_NXTBLK,
++		.size	= 0x40000,
++	},
++	{
++		.name	= "Linux kernel",		// Start : 0x000A'0000
++		.offset	= MTDPART_OFS_NXTBLK,
++		.size	= 0x360000,
++	},
++	{
++		.name	= "Root File System",	// Start : 0x0040'0000
+ 		.offset	= MTDPART_OFS_NXTBLK,
+ 		.size	= MTDPART_SIZ_FULL,
+ 	},
