@@ -6,7 +6,7 @@ LICENSE = "GPL"
 RDEPENDS_${PN} = "util-linux"
 PR = "r3"
 
-SRC_URI = "${DEBIAN_MIRROR}/main/f/fakeroot/fakeroot_${PV}.tar.gz \
+SRC_URI = "http://snapshot.debian.org/archive/debian/20080803T000000Z/pool/main/f/fakeroot/fakeroot_${PV}.tar.gz \
            file://configure-libtool.patch"
 	    
 inherit autotools
