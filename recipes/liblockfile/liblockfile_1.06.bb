@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "LGPL"
 PR ="r1"
 
-SRC_URI = "${DEBIAN_MIRROR}/main/libl/liblockfile/liblockfile_${PV}.tar.gz \
+SRC_URI = "http://snapshot.debian.org/archive/debian/20050312T000000Z/pool/main/libl/liblockfile/liblockfile_${PV}.tar.gz \
 	   file://install.patch \
 	   file://configure.patch \
 	   file://ldflags.patch \
