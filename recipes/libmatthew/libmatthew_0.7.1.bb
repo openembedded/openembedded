@@ -2,7 +2,7 @@ require libmatthew.inc
 
 PR = "r0"
 
-SRC_URI = "http://www.matthew.ath.cx/projects/java/libmatthew-java-${PV}.tar.gz \
+SRC_URI = "http://pkgs.fedoraproject.org/repo/pkgs/libmatthew-java/libmatthew-java-0.7.1.tar.gz/6a4db221129f230c64a0f937d00bb703/libmatthew-java-${PV}.tar.gz \
            file://Makefile-0.7.patch"
 
 
