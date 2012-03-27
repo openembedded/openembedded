@@ -2,5 +2,5 @@ require libpng.inc
 
 PR = "${INC_PR}.0"
 
-SRC_URI[libpng.md5sum] = "7612af5660cd4b5e8c433ce53bea01a7"
-SRC_URI[libpng.sha256sum] = "f6db51aff81b6920203678b29e8c68a5e3703cf5b39ae5e9e56370d17f31b1c4"
+SRC_URI[libpng.md5sum] = "74c8c261bdf9a75274e22875183fda07"
+SRC_URI[libpng.sha256sum] = "b4c92df11eadf3e81705a58253dbffc4b95169186899e28abdfc8aada8a20fcc"
