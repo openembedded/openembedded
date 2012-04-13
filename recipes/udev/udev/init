@@ -53,7 +53,7 @@ fi
 
 if [ ! -e "/lib/modules/$(uname -r)"/modules.dep ] ; then
 	mkdir -p /lib/modules/$(uname -r)
-	depmod -ae
+	depmod -a
 fi
 
 # make_extra_nodes
