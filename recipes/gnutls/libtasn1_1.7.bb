@@ -1,9 +1,9 @@
 DESCRIPTION = "Library for ASN.1 and DER manipulation"
 LICENSE = "LGPL"
 
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "ftp://ftp.gnutls.org/pub/gnutls/libtasn1/libtasn1-${PV}.tar.gz"
+SRC_URI = "ftp://ftp.gnu.org/gnu/libtasn1/libtasn1-${PV}.tar.gz"
 
 inherit autotools binconfig
 
