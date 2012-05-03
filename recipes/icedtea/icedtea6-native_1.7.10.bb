@@ -1,6 +1,6 @@
 require ${PN}.inc
 
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 SRC_URI = "\
 	http://icedtea.classpath.org/download/source/icedtea6-${PV}.tar.gz;name=iced \
@@ -10,6 +10,7 @@ SRC_URI = "\
 	file://build-hacks-native.patch \
 	file://icedtea-sane-x86-arch-name.patch \
         file://icedtea-javac-in.patch \
+        file://glibc_name_collision.patch \
 	${ICEDTEA_PATCHES} \
 	"
 SRC_URI[ojdk.md5sum] = "078fe0ab744c98694decc77f2456c560"
