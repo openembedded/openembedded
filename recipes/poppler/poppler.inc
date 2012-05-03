@@ -9,8 +9,6 @@ inherit autotools pkgconfig
 EXTRA_OECONF = "\
   --enable-xpdf-headers \
   --disable-gtk-test \
-  --disable-poppler-qt \
-  --disable-poppler-qt4 \
   --enable-zlib \
 "
 
