@@ -1,9 +1,9 @@
 DESCRIPTION = "An accessibility toolkit for GNOME."
 SECTION = "x11/libs"
 PRIORITY = "optional"
-LICENSE = "LGPL"
+LICENSE = "GPLv2+ LGPLv2+"
 
-PR = "r1"
+PR = "r2"
 
 inherit gnome
 
