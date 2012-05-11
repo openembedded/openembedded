@@ -1,7 +1,7 @@
 HOMEPAGE = "http://hostap.epitest.fi"
 SECTION = "kernel/userland"
 PRIORITY = "optional"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 DEPENDS = "libnl openssl"
 
 inherit update-rc.d
