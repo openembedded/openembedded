@@ -3,9 +3,9 @@ API for accessing a variety of audio file formats, such as AIFF/AIFF-C, \
 WAVE, NeXT/Sun .snd/.au, Berkeley/IRCAM/CARL Sound File, Audio Visual \
 Research, Amiga IFF/8SVX, and NIST SPHERE."
 SECTION = "libs"
-LICENSE = "LGPL GPL"
+LICENSE = "LGPLv2 GPLv2"
 RPROVIDES_${PN} += "audiofile"
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "http://www.68k.org/~michael/audiofile/audiofile-${PV}.tar.gz \
 	   file://audiofile-m4_quote_fix.diff;striplevel=0 \
