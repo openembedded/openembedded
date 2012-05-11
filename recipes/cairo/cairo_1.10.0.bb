@@ -1,6 +1,8 @@
 require cairo.inc
 
-PR = "r2"
+LICENSE = "MPL-1 LGPLv2.1"
+
+PR = "r3"
 
 SRC_URI = "http://cairographics.org/releases/cairo-${PV}.tar.gz;name=cairo \
 "
