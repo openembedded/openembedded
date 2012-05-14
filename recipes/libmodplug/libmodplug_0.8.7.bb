@@ -1,9 +1,9 @@
 DESCRIPTION = "Library for reading mod-like audio files."
 HOMEPAGE = "http://modplug-xmms.sf.net"
 SECTION = "libs"
-LICENSE = "GPL"
+LICENSE = "PD"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/modplug-xmms/libmodplug-${PV}.tar.gz"
 
