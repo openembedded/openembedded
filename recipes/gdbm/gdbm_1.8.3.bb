@@ -2,9 +2,9 @@ DESCRIPTION = "GNU dbm is a set of database routines that use extensible hashing
 HOMEPAGE = "http://www.gnu.org/software/gdbm/gdbm.html"
 SECTION = "libs"
 PRIORITY = "optional"
-LICENSE = "GPL"
+LICENSE = "GPLv2+"
 
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "${GNU_MIRROR}/gdbm/gdbm-${PV}.tar.gz \
 	   file://makefile.patch \
