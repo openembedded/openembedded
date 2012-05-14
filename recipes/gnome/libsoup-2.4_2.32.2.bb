@@ -1,7 +1,9 @@
 DESCRIPTION = "An HTTP library implementation in C"
 SECTION = "x11/gnome/libs"
-LICENSE = "GPL"
+LICENSE = "LGPLv2"
 DEPENDS = "libproxy glib-2.0 gnutls libxml2 sqlite3 gnome-keyring"
+
+PR = "r1"
 
 inherit gnome
 
