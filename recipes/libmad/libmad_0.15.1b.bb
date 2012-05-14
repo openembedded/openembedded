@@ -2,8 +2,8 @@ DESCRIPTION = "MPEG Audio Decoder Library"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "libid3tag"
-LICENSE = "GPL"
-PR = "r5"
+LICENSE = "GPLv2"
+PR = "r6"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/mad/libmad-${PV}.tar.gz \
            file://add-pkgconfig.patch \
