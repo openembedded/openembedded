@@ -2,7 +2,7 @@ SECTION = "libs"
 require libidl_${PV}.bb
 inherit native
 
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "bison-native glib-2.0-native"
 
