@@ -1,6 +1,8 @@
 require flac.inc
 
-PR = "${INC_PR}.2"
+LICENSE = "GFDL-1.2 GPLv2+ LGPLv2.1 BSD"
+
+PR = "${INC_PR}.3"
 
 # fixes from openSUSE:
 SRC_URI += "file://flac-gcc43-fixes.diff;striplevel=0 \
