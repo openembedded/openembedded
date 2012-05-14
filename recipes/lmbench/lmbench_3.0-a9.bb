@@ -1,9 +1,9 @@
 SECTION = "console/utils"
 DESCRIPTION = "Tools for performance analysis."
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 RDEPENDS_${PN} = "debianutils"
 
-PR = "r4"
+PR = "r5"
 
 inherit autotools
 
