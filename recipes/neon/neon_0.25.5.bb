@@ -1,10 +1,10 @@
 DESCRIPTION = "neon is an HTTP and WebDAV client library, with a C interface."
 HOMEPAGE = "http://www.webdav.org/neon"
 SECTION = "libs"
-LICENSE = "LGPL"
+LICENSE = "LGPLv2+"
 DEPENDS = "zlib libxml2 expat time gnutls"
 
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://www.webdav.org/${PN}/${P}.tar.gz \
            file://gnutls-force-and-detect.patch \
