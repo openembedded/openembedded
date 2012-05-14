@@ -1,9 +1,9 @@
 DESCRIPTION = "The MySQL Open Source Database System"
 HOMEPAGE = "http://www.mysql.com/"
 SECTION = "libs"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 DEPENDS = "ncurses"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "http://downloads.mysql.com/archives/mysql-5.1/mysql-${PV}.tar.gz \
            file://configure.in.patch \
