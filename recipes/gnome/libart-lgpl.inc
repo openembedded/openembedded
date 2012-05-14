@@ -1,10 +1,10 @@
 DESCRIPTION = "Library of functions for 2D graphics"
 SECTION = "x11/gnome"
-LICENSE = "LGPL"
+LICENSE = "LGPLv2"
 
 ART_CONFIG = "${HOST_ARCH}/art_config.h"
 
-INC_PR = "r5"
+INC_PR = "r6"
 
 # can't use gnome.bbclass due to _ in filename
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/libart_lgpl/2.3/libart_lgpl-${PV}.tar.bz2 \
