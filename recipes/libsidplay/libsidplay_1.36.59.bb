@@ -1,8 +1,8 @@
 DESCRIPTION = "A library for replaying C64 SID music"
 SECTION = "libs"
 PRIORITY = "optional"
-LICENSE = "GPL"
-PR = "r1"
+LICENSE = "GPLv2"
+PR = "r2"
 
 SRC_URI = "\
   ftp://ftp.uni-frankfurt.de/pub/Mirrors2/gentoo.org/distfiles/libsidplay-1.36.59.tgz;name=archive \
