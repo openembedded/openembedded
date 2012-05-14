@@ -1,9 +1,9 @@
 DESCRIPTION = "An Internet printing system for Unix."
 SECTION = "console/utils"
-LICENSE = "GPL LGPL"
+LICENSE = "GPLv2 LGPLv2"
 DEPENDS = "gnutls jpeg dbus dbus-glib libpng zlib fakeroot-native"
 
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "ftp://ftp.easysw.com/pub/cups/${PV}/cups-${PV}-source.tar.bz2 \
            file://0001-cups-desktop-fix-cups-desktop-file.patch \
