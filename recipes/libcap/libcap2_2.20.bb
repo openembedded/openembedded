@@ -1,9 +1,9 @@
 DESCRIPTION = "Libcap is a library for getting and setting POSIX.1e (formerly POSIX 6) draft 15 capabilities."
 PRIORITY = "optional"
 SECTION = "libs"
-LICENSE = "GPL"
+LICENSE = "BSD | GPLv2"
 DEPENDS = "bison-native flex-native attr ${@base_contains('DISTRO_FEATURES', 'pam', 'libpam', '', d)}"
-PR = "r0"
+PR = "r1"
 
 BUILD_CFLAGS += "-I${S}/libcap/include"
 CFLAGS += "-I${S}/libcap/include"
