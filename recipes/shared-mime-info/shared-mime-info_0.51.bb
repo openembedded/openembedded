@@ -1,7 +1,9 @@
 require shared-mime-info.inc
 
+LICENSE = "GPLv2"
+
 DEPENDS = "libxml2 intltool-native glib-2.0 shared-mime-info-native"
-PR = "r2"
+PR = "r3"
 
 do_install_append() {
     update-mime-database ${D}${datadir}/mime
