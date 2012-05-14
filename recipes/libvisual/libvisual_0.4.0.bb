@@ -2,8 +2,8 @@ DESCRIPTION = "A cross platform audio visualization library"
 HOMEPAGE = "http://libvisual.sf.net"
 SECTION = "libs"
 PRIORITY = "optional"
-LICENSE = "LGPL GPL"
-PR = "r1"
+LICENSE = "LGPLv2.1+ GPLv2"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libvisual/libvisual-${PV}.tar.gz \
            file://no-libdir.patch \
