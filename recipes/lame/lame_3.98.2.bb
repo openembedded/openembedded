@@ -1,7 +1,7 @@
 SECTION = "console/utils"
 DESCRIPTION = "Not an MP3 encoder"
-LICENSE = "LGPL"
-PR = "r0"
+LICENSE = "LGPLv2+"
+PR = "r1"
 
 S = "${WORKDIR}/${PN}-398-2"
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-398-2.tar.gz \
