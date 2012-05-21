@@ -1,6 +1,9 @@
 require libnl.inc
+
+LICENSE = "LGPLv2.1"
+
 PE = "1"
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 DEPENDS = "flex-native bison-native"
 
