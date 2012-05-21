@@ -1,7 +1,9 @@
 DESCRIPTION = "The Libcroco project is an effort to build a generic Cascading Style Sheet (CSS) parsing and manipulation toolkit"
 SECTION = "x11/utils"
 DEPENDS = "glib-2.0 libxml2"
-LICENSE = "LGPL"
+LICENSE = "LGPLv2 LGPLv2.1"
+
+PR = "r1"
 
 inherit gnome
 
