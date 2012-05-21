@@ -1,9 +1,9 @@
-LICENSE = "GPL"
+LICENSE = "GPLv2+ LGPLv2+"
 DEPENDS = "libxml2 gconf gnutls avahi dbus dbus-glib bzip2 gnome-mime-data zlib gtk-doc-native"
 RRECOMMENDS_${PN} = "gnome-vfs-plugin-file shared-mime-info"
 # Some legacy packages will require gnome-mime-data to be installed, but use of
 # it is deprecated.
-PR = "r3"
+PR = "r4"
 
 inherit gnome
 
