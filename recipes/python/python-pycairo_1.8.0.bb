@@ -1,10 +1,10 @@
 DESCRIPTION = "Python Bindings for the Cairo canvas library"
 SECTION = "devel/python"
 HOMEPAGE = "http://cairographics.org/pycairo"
-LICENSE = "LGPL MPL"
+LICENSE = "LGPLv2.1 MPL-1.1"
 # cairo >= 1.8.0
 DEPENDS = "cairo"
-PR = "ml4"
+PR = "ml5"
 
 SRC_URI = "http://cairographics.org/releases/pycairo-${PV}.tar.gz \
            file://fix-setup-py.patch"
