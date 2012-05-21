@@ -3,10 +3,10 @@ AUTHOR = "Luotao Fu"
 HOMEPAGE = "http://www.pengutronix.de"
 SECTION = "libs/network"
 PRIORITY = "optional"
-LICENSE = "LGPL"
+LICENSE = "LGPLv2.1"
 
 TAG = "v${PV}"
-INC_PR = "r0"
+INC_PR = "r1"
 
 SRC_URI = "git://git.pengutronix.de/git/tools/libsocketcan.git;protocol=git;tag=${TAG} \
 	"
