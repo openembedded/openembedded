@@ -2,8 +2,8 @@ DESCRIPTION = "time measures many of the CPU resources, such as time and \
 memory, that other programs use."
 HOMEPAGE = "http://www.gnu.org/software/time/"
 SECTION = "utils"
-LICENSE = "GPL"
-PR = "r1"
+LICENSE = "GPLv2+"
+PR = "r2"
 
 # We only want rename for update-alternatives on the target
 do_install_append_pn-time () {
