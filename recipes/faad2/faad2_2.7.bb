@@ -1,7 +1,9 @@
 DESCRIPTION = "Library for reading some sort of media format."
 SECTION = "libs"
-LICENSE = "LGPL"
+LICENSE = "GPLv2"
 PRIORITY = "optional"
+
+PR = "r1"
 
 inherit autotools
 
