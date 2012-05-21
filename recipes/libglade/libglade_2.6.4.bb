@@ -1,5 +1,9 @@
 require libglade.inc
 
+LICENSE = "LGPLv2 LGPLv2+"
+
+PR = "r1"
+
 inherit gnome
 
 SRC_URI += "file://glade-cruft.patch file://no-xml2.patch"
