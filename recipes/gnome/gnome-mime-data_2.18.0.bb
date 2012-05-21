@@ -1,9 +1,9 @@
-LICENSE = "GPL"
+LICENSE = "GPLv2 GPLv2+"
 inherit gnome
 
 DEPENDS += "shared-mime-info intltool-native"
 RDEPENDS_${PN} = "shared-mime-info"
-PR = "r1"
+PR = "r2"
 
 FILES_${PN}-dev += "${datadir}/pkgconfig/*.pc"
 
