@@ -1,6 +1,6 @@
 DESCRIPTION = "H.264 encoder"
-LICENSE = "GPL"
-PR = "r8"
+LICENSE = "GPLv2+"
+PR = "r9"
 
 X264PV = "snapshot-20100531-2245"
 
