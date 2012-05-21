@@ -1,10 +1,10 @@
 DESCRIPTION = "Simple DirectMedia Layer (DirectFB and Framebuffer support)"
 SECTION = "libs"
 PRIORITY = "optional"
-LICENSE = "LGPL"
+LICENSE = "LGPLv2.1"
 DEPENDS = "alsa-lib"
 PROVIDES = "virtual/libsdl"
-INC_PR = "r1"
+INC_PR = "r2"
 
 SRC_URI = "http://www.libsdl.org/release/SDL-${PV}.tar.gz"
 SRC_URI[md5sum] = "e52086d1b508fa0b76c52ee30b55bec4"
