@@ -1,10 +1,10 @@
 DESCRIPTION = "Tools for performance analysis."
 HOMEPAGE = "http://lmbench.sourceforge.net/"
 SECTION = "console/utils"
-LICENSE = "GPL"
+LICENSE = "GPLv2"
 RDEPENDS_${PN} = "debianutils"
 
-PR = "r7"
+PR = "r8"
 
 inherit autotools
 
