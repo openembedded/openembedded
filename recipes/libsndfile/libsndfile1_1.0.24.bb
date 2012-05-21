@@ -2,9 +2,9 @@ DESCRIPTION = "An audio format Conversion library"
 HOMEPAGE = "http://www.mega-nerd.com/libsndfile"
 AUTHOR = "Erik de Castro Lopo"
 SECTION = "libs/multimedia"
-LICENSE = "LGPL"
+LICENSE = "LGPLv2.1"
 DEPENDS = "sqlite3"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://www.mega-nerd.com/libsndfile/files/libsndfile-${PV}.tar.gz"
 
