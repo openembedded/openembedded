@@ -1,5 +1,7 @@
 DESCRIPTION = "Library for ASN.1 and DER manipulation"
-LICENSE = "LGPL"
+LICENSE = "GPLv3+ LGPLv2.1+"
+LICENSE_${PN}-bin = "GPLv3+"
+LICENSE_${PN} = "LGPLv2.1+"
 
 PR = "r1"
 
