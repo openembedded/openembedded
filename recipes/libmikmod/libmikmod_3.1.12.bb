@@ -1,8 +1,8 @@
 DESCRIPTION = "libmikmod is a module player library supporting many formats, including mod, s3m, it, and xm."
 SECTION = "libs"
 PRIORITY = "optional"
-LICENSE = "LGPL"
-PR = "r4"
+LICENSE = "LGPLv2.1"
+PR = "r5"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/mikmod/libmikmod-${PV}.tar.gz \
