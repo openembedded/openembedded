@@ -1,6 +1,8 @@
 require pango.inc
 
-PR = "${INC_PR}.1"
+LICENSE = "LGPLv2+"
+
+PR = "${INC_PR}.2"
 
 SRC_URI += "file://CVE-2010-0421.patch"
 
