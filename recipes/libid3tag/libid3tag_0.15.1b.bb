@@ -1,9 +1,9 @@
 DESCRIPTION = "Library for interacting with ID3 tags"
 SECTION = "libs/multimedia"
 PRIORITY = "optional"
-LICENSE = "GPL"
+LICENSE = "GPLv2+"
 DEPENDS = "zlib"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "ftp://ftp.mars.org/pub/mpeg/libid3tag-${PV}.tar.gz \
            file://libid3tag-pkg-config.patch"
