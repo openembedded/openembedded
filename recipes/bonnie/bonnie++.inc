@@ -3,8 +3,9 @@
 # Released under the MIT license (see packages/COPYING)
 
 DESCRIPTION="Tests large file IO and creation/deletion of small files."
-LICENSE="GPL"
+LICENSE="GPLv2"
 
+PR = "r1"
 
 SRC_URI="http://www.coker.com.au/bonnie++/${BPN}-${PV}.tgz \
 	 file://gcc-4.3-fixes.patch"
