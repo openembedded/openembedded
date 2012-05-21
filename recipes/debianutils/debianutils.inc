@@ -1,7 +1,7 @@
 DESCRIPTION = "Miscellaneous utilities specific to Debian"
 SECTION = "base"
-LICENSE = "GPL BSD BSD SMAIL"
-INC_PR = "r2"
+LICENSE = "GPLv2 BSD SMAIL_GPL"
+INC_PR = "r3"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/d/${PN}/${PN}_${PV}.tar.gz"
 
