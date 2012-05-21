@@ -1,5 +1,9 @@
 require orbit2.inc
 
+LICENSE = "GPLv2+"
+
+PR = "r1"
+
 SRC_URI += "file://disable-ipv6.patch"
 noipv6 = "${@base_contains('DISTRO_FEATURES', 'ipv6', '', '-DDISABLE_IPV6', d)}"
 EXTRA_OEMAKE_append = " 'CFLAGS=${CFLAGS} ${noipv6}'"
