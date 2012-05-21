@@ -1,4 +1,4 @@
-LICENSE = "GPL"
+LICENSE = "GPLv3"
 SECTION = "x11/gnome"
 DESCRIPTION = "Common macros for building GNOME applications"
 
