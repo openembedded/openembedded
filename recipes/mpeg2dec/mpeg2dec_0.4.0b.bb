@@ -2,9 +2,9 @@ DESCRIPTION = "Libraries and test programs for decoding mpeg-2 and mpeg-1 video 
 HOMEPAGE = "http://libmpeg2.sourceforge.net/"
 SECTION = "libs"
 PRIORITY = "optional"
-LICENSE = "GPL"
+LICENSE = "GPLv2+"
 DEPENDS = "virtual/libsdl"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "http://libmpeg2.sourceforge.net/files/mpeg2dec-${PV}.tar.gz"
 S = "${WORKDIR}/mpeg2dec-0.4.0"
