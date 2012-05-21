@@ -1,9 +1,9 @@
 DESCRIPTION = "userspace utilities for kernel nfs"
 PRIORITY = "optional"
 SECTION = "console/network"
-LICENSE = "GPL"
+LICENSE = "GPLv2+"
 
-PR = "r9"
+PR = "r10"
 
 DEPENDS = "util-linux-ng tcp-wrappers libevent"
 
