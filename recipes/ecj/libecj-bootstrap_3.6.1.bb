@@ -3,7 +3,7 @@ require libecj-bootstrap.inc
 PR = "r0"
 
 SRC_URI = " \
-	   http://mirrors.ibiblio.org/pub/mirrors/eclipse/eclipse/downloads/drops/R-3.6.1-201009090800/ecjsrc-${PV}.zip \
+	   http://archive.eclipse.org/eclipse/downloads/drops/R-3.6.1-201009090800/ecjsrc-${PV}.zip \
 
           "
 
