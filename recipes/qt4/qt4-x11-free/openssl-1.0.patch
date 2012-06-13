@@ -1,0 +1,172 @@
+backported from fedora 10
+
+Fixes compile error with openssl-1.x.x
+
+| ssl/qsslsocket_openssl_symbols_p.h:257: error: variable or field 'q_sk_free' declared void
+| ssl/qsslsocket_openssl_symbols_p.h:257: error: 'STACK' was not declared in this scope
+| ssl/qsslsocket_openssl_symbols_p.h:257: error: 'a' was not declared in this scope
+
+
+Signed-off-by: Khem Raj <raj.khem@gmail.com>
+
+Index: qt-x11-opensource-src-4.5.2/src/network/ssl/qsslcertificate.cpp
+===================================================================
+--- qt-x11-opensource-src-4.5.2.orig/src/network/ssl/qsslcertificate.cpp
++++ qt-x11-opensource-src-4.5.2/src/network/ssl/qsslcertificate.cpp
+@@ -362,7 +362,7 @@ QMultiMap<QSsl::AlternateNameEntryType,
+     if (!d->x509)
+         return result;
+ 
+-    STACK *altNames = (STACK *)q_X509_get_ext_d2i(d->x509, NID_subject_alt_name, 0, 0);
++    STACK_OF(GENERAL_NAME) *altNames = (STACK_OF(GENERAL_NAME) *)q_X509_get_ext_d2i(d->x509, NID_subject_alt_name, 0, 0);
+ 
+     if (altNames) {
+         for (int i = 0; i < q_sk_GENERAL_NAME_num(altNames); ++i) {
+@@ -383,7 +383,7 @@ QMultiMap<QSsl::AlternateNameEntryType,
+             else if (genName->type == GEN_EMAIL)
+                 result.insert(QSsl::EmailEntry, altName);
+         }
+-        q_sk_free(altNames);
++        q_sk_free((STACK *)altNames);
+     }
+ 
+     return result;
+Index: qt-x11-opensource-src-4.5.2/src/network/ssl/qsslsocket_openssl.cpp
+===================================================================
+--- qt-x11-opensource-src-4.5.2.orig/src/network/ssl/qsslsocket_openssl.cpp
++++ qt-x11-opensource-src-4.5.2/src/network/ssl/qsslsocket_openssl.cpp
+@@ -911,7 +911,7 @@ QSslCipher QSslSocketBackendPrivate::ses
+ {
+     if (!ssl || !ctx)
+         return QSslCipher();
+-    SSL_CIPHER *sessionCipher = q_SSL_get_current_cipher(ssl);
++    SSL_CIPHER *sessionCipher = (SSL_CIPHER *)q_SSL_get_current_cipher(ssl);
+     return sessionCipher ? QSslCipher_from_SSL_CIPHER(sessionCipher) : QSslCipher();
+ }
+ 
+Index: qt-x11-opensource-src-4.5.2/src/network/ssl/qsslsocket_openssl_symbols.cpp
+===================================================================
+--- qt-x11-opensource-src-4.5.2.orig/src/network/ssl/qsslsocket_openssl_symbols.cpp
++++ qt-x11-opensource-src-4.5.2/src/network/ssl/qsslsocket_openssl_symbols.cpp
+@@ -144,10 +144,10 @@ DEFINEFUNC(int, RAND_status, void, DUMMY
+ DEFINEFUNC(void, RSA_free, RSA *a, a, return, DUMMYARG)
+ DEFINEFUNC(void, sk_free, STACK *a, a, return, DUMMYARG)
+ DEFINEFUNC(int, sk_num, STACK *a, a, return -1, return)
+-DEFINEFUNC2(char *, sk_value, STACK *a, a, int b, b, return 0, return)
++DEFINEFUNC2(OSSL_SKVALUE_RTYPE *, sk_value, STACK *a, a, int b, b, return 0, return)
+ DEFINEFUNC(int, SSL_accept, SSL *a, a, return -1, return)
+ DEFINEFUNC(int, SSL_clear, SSL *a, a, return -1, return)
+-DEFINEFUNC3(char *, SSL_CIPHER_description, SSL_CIPHER *a, a, char *b, b, int c, c, return 0, return)
++DEFINEFUNC3(char *, SSL_CIPHER_description, OSSL_MORECONST SSL_CIPHER *a, a, char *b, b, int c, c, return 0, return)
+ DEFINEFUNC(int, SSL_connect, SSL *a, a, return -1, return)
+ #if OPENSSL_VERSION_NUMBER >= 0x00908000L
+ // 0.9.8 broke SC and BC by changing this function's signature.
+@@ -157,7 +157,7 @@ DEFINEFUNC(int, SSL_CTX_check_private_ke
+ #endif
+ DEFINEFUNC4(long, SSL_CTX_ctrl, SSL_CTX *a, a, int b, b, long c, c, void *d, d, return -1, return)
+ DEFINEFUNC(void, SSL_CTX_free, SSL_CTX *a, a, return, DUMMYARG)
+-DEFINEFUNC(SSL_CTX *, SSL_CTX_new, SSL_METHOD *a, a, return 0, return)
++DEFINEFUNC(SSL_CTX *, SSL_CTX_new, OSSL_MORECONST SSL_METHOD *a, a, return 0, return)
+ DEFINEFUNC2(int, SSL_CTX_set_cipher_list, SSL_CTX *a, a, const char *b, b, return -1, return)
+ DEFINEFUNC(int, SSL_CTX_set_default_verify_paths, SSL_CTX *a, a, return -1, return)
+ DEFINEFUNC3(void, SSL_CTX_set_verify, SSL_CTX *a, a, int b, b, int (*c)(int, X509_STORE_CTX *), c, return, DUMMYARG)
+@@ -174,7 +174,7 @@ DEFINEFUNC(STACK_OF(SSL_CIPHER) *, SSL_g
+ #else
+ DEFINEFUNC(STACK_OF(SSL_CIPHER) *, SSL_get_ciphers, SSL *a, a, return 0, return)
+ #endif
+-DEFINEFUNC(SSL_CIPHER *, SSL_get_current_cipher, SSL *a, a, return 0, return)
++DEFINEFUNC(OSSL_MORECONST SSL_CIPHER *, SSL_get_current_cipher, SSL *a, a, return 0, return)
+ DEFINEFUNC2(int, SSL_get_error, SSL *a, a, int b, b, return -1, return)
+ DEFINEFUNC(STACK_OF(X509) *, SSL_get_peer_cert_chain, SSL *a, a, return 0, return)
+ DEFINEFUNC(X509 *, SSL_get_peer_certificate, SSL *a, a, return 0, return)
+@@ -192,14 +192,14 @@ DEFINEFUNC3(void, SSL_set_bio, SSL *a, a
+ DEFINEFUNC(void, SSL_set_accept_state, SSL *a, a, return, DUMMYARG)
+ DEFINEFUNC(void, SSL_set_connect_state, SSL *a, a, return, DUMMYARG)
+ DEFINEFUNC(int, SSL_shutdown, SSL *a, a, return -1, return)
+-DEFINEFUNC(SSL_METHOD *, SSLv2_client_method, DUMMYARG, DUMMYARG, return 0, return)
+-DEFINEFUNC(SSL_METHOD *, SSLv3_client_method, DUMMYARG, DUMMYARG, return 0, return)
+-DEFINEFUNC(SSL_METHOD *, SSLv23_client_method, DUMMYARG, DUMMYARG, return 0, return)
+-DEFINEFUNC(SSL_METHOD *, TLSv1_client_method, DUMMYARG, DUMMYARG, return 0, return)
+-DEFINEFUNC(SSL_METHOD *, SSLv2_server_method, DUMMYARG, DUMMYARG, return 0, return)
+-DEFINEFUNC(SSL_METHOD *, SSLv3_server_method, DUMMYARG, DUMMYARG, return 0, return)
+-DEFINEFUNC(SSL_METHOD *, SSLv23_server_method, DUMMYARG, DUMMYARG, return 0, return)
+-DEFINEFUNC(SSL_METHOD *, TLSv1_server_method, DUMMYARG, DUMMYARG, return 0, return)
++DEFINEFUNC(OSSL_MORECONST SSL_METHOD *, SSLv2_client_method, DUMMYARG, DUMMYARG, return 0, return)
++DEFINEFUNC(OSSL_MORECONST SSL_METHOD *, SSLv3_client_method, DUMMYARG, DUMMYARG, return 0, return)
++DEFINEFUNC(OSSL_MORECONST SSL_METHOD *, SSLv23_client_method, DUMMYARG, DUMMYARG, return 0, return)
++DEFINEFUNC(OSSL_MORECONST SSL_METHOD *, TLSv1_client_method, DUMMYARG, DUMMYARG, return 0, return)
++DEFINEFUNC(OSSL_MORECONST SSL_METHOD *, SSLv2_server_method, DUMMYARG, DUMMYARG, return 0, return)
++DEFINEFUNC(OSSL_MORECONST SSL_METHOD *, SSLv3_server_method, DUMMYARG, DUMMYARG, return 0, return)
++DEFINEFUNC(OSSL_MORECONST SSL_METHOD *, SSLv23_server_method, DUMMYARG, DUMMYARG, return 0, return)
++DEFINEFUNC(OSSL_MORECONST SSL_METHOD *, TLSv1_server_method, DUMMYARG, DUMMYARG, return 0, return)
+ DEFINEFUNC3(int, SSL_write, SSL *a, a, const void *b, b, int c, c, return -1, return)
+ DEFINEFUNC2(int, X509_cmp, X509 *a, a, X509 *b, b, return -1, return)
+ #ifndef SSLEAY_MACROS
+Index: qt-x11-opensource-src-4.5.2/src/network/ssl/qsslsocket_openssl_symbols_p.h
+===================================================================
+--- qt-x11-opensource-src-4.5.2.orig/src/network/ssl/qsslsocket_openssl_symbols_p.h
++++ qt-x11-opensource-src-4.5.2/src/network/ssl/qsslsocket_openssl_symbols_p.h
+@@ -254,12 +254,20 @@ int q_PEM_write_bio_RSA_PUBKEY(BIO *a, R
+ void q_RAND_seed(const void *a, int b);
+ int q_RAND_status();
+ void q_RSA_free(RSA *a);
++#if OPENSSL_VERSION_NUMBER >= 0x10000000L
++#define STACK _STACK
++#define OSSL_SKVALUE_RTYPE void
++#define OSSL_MORECONST const
++#else
++#define OSSL_SKVALUE_RTYPE char
++#define OSSL_MORECONST
++#endif
+ void q_sk_free(STACK *a);
+ int q_sk_num(STACK *a);
+-char * q_sk_value(STACK *a, int b);
++OSSL_SKVALUE_RTYPE * q_sk_value(STACK *a, int b);
+ int q_SSL_accept(SSL *a);
+ int q_SSL_clear(SSL *a);
+-char *q_SSL_CIPHER_description(SSL_CIPHER *a, char *b, int c);
++char *q_SSL_CIPHER_description(OSSL_MORECONST SSL_CIPHER *a, char *b, int c);
+ int q_SSL_connect(SSL *a);
+ #if OPENSSL_VERSION_NUMBER >= 0x00908000L
+ // 0.9.8 broke SC and BC by changing this function's signature.
+@@ -269,7 +277,7 @@ int q_SSL_CTX_check_private_key(SSL_CTX
+ #endif
+ long q_SSL_CTX_ctrl(SSL_CTX *a, int b, long c, void *d);
+ void q_SSL_CTX_free(SSL_CTX *a);
+-SSL_CTX *q_SSL_CTX_new(SSL_METHOD *a);
++SSL_CTX *q_SSL_CTX_new(OSSL_MORECONST SSL_METHOD *a);
+ int q_SSL_CTX_set_cipher_list(SSL_CTX *a, const char *b);
+ int q_SSL_CTX_set_default_verify_paths(SSL_CTX *a);
+ void q_SSL_CTX_set_verify(SSL_CTX *a, int b, int (*c)(int, X509_STORE_CTX *));
+@@ -286,7 +294,7 @@ STACK_OF(SSL_CIPHER) *q_SSL_get_ciphers(
+ #else
+ STACK_OF(SSL_CIPHER) *q_SSL_get_ciphers(SSL *a);
+ #endif
+-SSL_CIPHER *q_SSL_get_current_cipher(SSL *a);
++OSSL_MORECONST SSL_CIPHER *q_SSL_get_current_cipher(SSL *a);
+ int q_SSL_get_error(SSL *a, int b);
+ STACK_OF(X509) *q_SSL_get_peer_cert_chain(SSL *a);
+ X509 *q_SSL_get_peer_certificate(SSL *a);
+@@ -304,14 +312,14 @@ void q_SSL_set_bio(SSL *a, BIO *b, BIO *
+ void q_SSL_set_accept_state(SSL *a);
+ void q_SSL_set_connect_state(SSL *a);
+ int q_SSL_shutdown(SSL *a);
+-SSL_METHOD *q_SSLv2_client_method();
+-SSL_METHOD *q_SSLv3_client_method();
+-SSL_METHOD *q_SSLv23_client_method();
+-SSL_METHOD *q_TLSv1_client_method();
+-SSL_METHOD *q_SSLv2_server_method();
+-SSL_METHOD *q_SSLv3_server_method();
+-SSL_METHOD *q_SSLv23_server_method();
+-SSL_METHOD *q_TLSv1_server_method();
++OSSL_MORECONST SSL_METHOD *q_SSLv2_client_method();
++OSSL_MORECONST SSL_METHOD *q_SSLv3_client_method();
++OSSL_MORECONST SSL_METHOD *q_SSLv23_client_method();
++OSSL_MORECONST SSL_METHOD *q_TLSv1_client_method();
++OSSL_MORECONST SSL_METHOD *q_SSLv2_server_method();
++OSSL_MORECONST SSL_METHOD *q_SSLv3_server_method();
++OSSL_MORECONST SSL_METHOD *q_SSLv23_server_method();
++OSSL_MORECONST SSL_METHOD *q_TLSv1_server_method();
+ int q_SSL_write(SSL *a, const void *b, int c);
+ int q_X509_cmp(X509 *a, X509 *b);
+ #ifdef SSLEAY_MACROS
