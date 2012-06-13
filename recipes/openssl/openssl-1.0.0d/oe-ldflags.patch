@@ -1,3 +1,5 @@
+Upstream-Status: Inappropriate [open-embedded]
+
 Index: openssl-1.0.0/Makefile.shared
 ===================================================================
 --- openssl-1.0.0.orig/Makefile.shared

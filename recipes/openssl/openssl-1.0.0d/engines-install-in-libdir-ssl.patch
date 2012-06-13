@@ -1,3 +1,6 @@
+Upstream-Status: Inappropriate [configuration]
+
+
 Index: openssl-1.0.0/engines/Makefile
 ===================================================================
 --- openssl-1.0.0.orig/engines/Makefile
