@@ -1,0 +1,22 @@
+--- gtk+-2.20.1/demos/Makefile.am.orig	2012-06-18 21:53:07.365997572 +0200
++++ gtk+-2.20.1/demos/Makefile.am	2012-06-18 21:53:43.718177837 +0200
+@@ -23,18 +23,9 @@
+ 	$(GTK_DEP_LIBS)							\
+ 	$(MATH_LIB)
+ 
+-noinst_PROGRAMS = 		\
+-	testpixbuf-drawable 	\
+-	testanimation 		\
+-	testpixbuf-color	\
+-	testpixbuf-save		\
+-	testpixbuf-scale 	\
+-	pixbuf-demo
+-
+ # Need to build test-inline-pixbufs.h for testpixbuf
+ if HAVE_PNG
+-noinst_PROGRAMS += testpixbuf
+-BUILT_SOURCES = test-inline-pixbufs.h
++BUILT_SOURCES =
+ endif
+ 
+ if CROSS_COMPILING
