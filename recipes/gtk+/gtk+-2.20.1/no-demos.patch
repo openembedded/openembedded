@@ -1,7 +1,8 @@
---- gtk+-2.10.1/Makefile.am.orig	2006-08-08 12:37:30.000000000 +0100
-+++ gtk+-2.10.1/Makefile.am	2006-08-08 12:37:48.000000000 +0100
-@@ -1,6 +1,6 @@
+--- gtk+-2.20.1/Makefile.am.orig	2012-06-18 22:40:19.348040648 +0200
++++ gtk+-2.20.1/Makefile.am	2012-06-18 22:40:41.272149318 +0200
+@@ -1,7 +1,7 @@
  ## Makefile.am for GTK+
+ include $(top_srcdir)/Makefile.decl
  
 -SRC_SUBDIRS = gdk-pixbuf gdk gtk modules demos tests perf contrib
 +SRC_SUBDIRS = gdk-pixbuf gdk gtk modules tests perf contrib
