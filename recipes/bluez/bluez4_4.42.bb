@@ -10,5 +10,5 @@ inherit update-rc.d
 INITSCRIPT_NAME = "bluetooth"
 INITSCRIPT_PARAMS = "defaults 23 19"
 
-SRC_URI[md5sum] = "d24dfd3ca42847123e29f58b29af6948"
-SRC_URI[sha256sum] = "ed7631a6d22b456eb26b881bdbe46ea47f93d2f192da420408bad4bbc245f796"
+SRC_URI[md5sum] = "a44181c8cf79796a99b792a5372e602d"
+SRC_URI[sha256sum] = "a834f3a961449c6ae83ad26aa5d0b82a6cdd7e49f608aa71a2454a33c62cfb99"
