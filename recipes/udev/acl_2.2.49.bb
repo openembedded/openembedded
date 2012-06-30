@@ -3,7 +3,7 @@ LICENSE = "GPLv2"
 PR = "r5"
 DEPENDS = "attr"
 
-SRC_URI = "http://mirror.its.uidaho.edu/pub/savannah/acl/acl-${PV}.src.tar.gz \
+SRC_URI = "http://download.savannah.gnu.org/releases/acl/acl-${PV}.src.tar.gz \
 		file://nolargefile.patch"
 
 inherit autotools lib_package
