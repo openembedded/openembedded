@@ -4,7 +4,7 @@ LICENSE = "GPLv2"
 PR = "r1"
 
 SRC_URI = "\
-  http://www.snapshot.debian.org/archive/debian-archive/20120328T092752Z/debian/pool/main/b/base-passwd/base-passwd_${PV}.tar.gz \
+  http://snapshot.debian.org/archive/debian-archive/20120328T092752Z/debian/pool/main/b/base-passwd/base-passwd_${PV}.tar.gz \
   file://nobash.patch \
   file://root-home.patch \
   file://mysql.patch \
