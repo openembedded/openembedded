@@ -15,7 +15,7 @@ RDEPENDS_${PN} += "module-init-tools-depmod udev-utils"
 SRC_URI[md5sum] = "4ee3bcc4e326e967167ccb6a6ba04514"
 SRC_URI[sha256sum] = "29d66a5a8499cc6e4f2bcc7f79f2c6b44f4d720cecef2e552f0354d792e40a83"
 
-SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
+SRC_URI = "http://www.mirrorservice.org/sites/ftp.kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	   file://mount.blacklist \
 	   file://run.rules \
 	   "
