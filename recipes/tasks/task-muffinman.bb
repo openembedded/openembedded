@@ -14,4 +14,4 @@ RDEPENDS_${PN} = "echinus ourico dzen2 matchbox-desktop net-tools xinit \
 		  fileselector feh imlib2-loaders mupdf stppc2x mplayer \
 		  gcalc psplash jlime-extras greq midpath-backend-sdl \
 		  midpath-core midpath-cldc libxmlpull-java netsurf-fb \
-		  phoneme-advanced-foundation"
+		  "
