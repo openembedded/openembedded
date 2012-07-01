@@ -5,7 +5,7 @@ PR = "r2"
 
 DEPENDS = "virtual/libx11 libxft libxrandr"
 
-SRC_URI = "http://plhk.ru/static/echinus/echinus-${PV}.tar.gz \
+SRC_URI = "http://plhk.ru/static/echinus/old/echinus-${PV}.tar.gz \
 	   file://Makefile"
 
 SRC_URI_append_jlime = " file://echinus-jlime.patch "
