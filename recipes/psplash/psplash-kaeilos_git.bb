@@ -3,7 +3,7 @@ require psplash-ua.inc
 
 ALTERNATIVE_PRIORITY = "20"
 
-SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=psplash;proto=http \
+SRC_URI = "git://git.yoctoproject.org/psplash;protocol=git \
           file://logo-math.patch \
           file://psplash-poky-img.h \
           file://psplash-bar-img.h \
@@ -13,6 +13,4 @@ SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=psplash;proto=http \
           file://psplash-18bpp.patch \
           file://psplash-24bpp-BGR666.patch"
 
-S = "${WORKDIR}/psplash"
-
-
+S = "${WORKDIR}/git"

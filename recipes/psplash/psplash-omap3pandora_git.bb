@@ -1,7 +1,8 @@
 require psplash.inc
 require psplash-ua.inc
 
-ALTERNATIVE_PRIORITY = "20"
+ALTERNATIVE_PRIORITY = "30"
+ALTERNATIVE_PRIORITY_omap3pandora = "5"
 
 # You can create your own pslash-poky-img.h by doing
 # ./make-image-header.sh <file>.png POKY
@@ -9,14 +10,11 @@ ALTERNATIVE_PRIORITY = "20"
 # respectively psplash-bar-img.h (BAR) for the bar.
 # You might also want to patch the colors (see patch)
 
-SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=psplash;proto=http \
-          file://psplash-18bpp.patch \
+SRC_URI = "git://git.yoctoproject.org/psplash;protocol=git \
           file://logo-math.patch \
-          file://0001-configurability-for-rev-422.patch \
           file://psplash-poky-img.h \
           file://psplash-bar-img.h \
           file://psplash-default \
           file://splashfuncs \
           file://psplash-init"
-S = "${WORKDIR}/psplash"
-
+S = "${WORKDIR}/git"
