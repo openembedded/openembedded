@@ -6,7 +6,7 @@ LICENSE = "MIT"
 
 PR = "r1"
 
-SRC_URI = "http://www.netsurf-browser.org/projects/releases/libparserutils-${PV}-src.tar.gz"
+SRC_URI = "http://download.netsurf-browser.org/libs/releases/libparserutils-${PV}-src.tar.gz"
 
 inherit pkgconfig
 

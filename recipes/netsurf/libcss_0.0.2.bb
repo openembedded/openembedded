@@ -7,7 +7,7 @@ DEPENDS = "libwapcaplet"
 
 PR = "r1"
 
-SRC_URI = "http://www.netsurf-browser.org/projects/releases/libcss-${PV}-src.tar.gz \
+SRC_URI = "http://download.netsurf-browser.org/libs/releases/libcss-${PV}-src.tar.gz \
 	   file://no-werror.patch"
 
 inherit pkgconfig

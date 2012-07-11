@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.netsurf-browser.org/"
 SECTION = "x11/network"
 LICENSE = "GPLv2"
 
-SRC_URI = "http://www.netsurf-browser.org/downloads/releases/netsurf-${PV}-src.tar.gz \
+SRC_URI = "http://download.netsurf-browser.org/netsurf/releases/source/netsurf-${PV}-src.tar.gz \
 	   file://fix_makefile.patch \
 	   file://debugxml_fix.patch \
 	   file://netsurf.png \
