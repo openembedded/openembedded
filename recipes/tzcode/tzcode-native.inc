@@ -2,8 +2,8 @@ DESCRIPTION = "tzcode, timezone zoneinfo utils -- zic, zdump, tzselect"
 INC_PR = "r4"
 
 SRC_URI = " \
-        ftp://elsie.nci.nih.gov/pub/tzcode${PV}.tar.gz;name=tzcode-${PV} \
-        ftp://elsie.nci.nih.gov/pub/tzdata${TZDATA_PV}.tar.gz;name=tzdata-${TZDATA_PV} \
+        http://tzmirror.sunbase.org/tzfiles/oldtz/tzcode${PV}.tar.gz;name=tzcode-${PV} \
+        http://tzmirror.sunbase.org/tzfiles/oldtz/tzdata${TZDATA_PV}.tar.gz;name=tzdata-${TZDATA_PV} \
 	"
 
 S = "${WORKDIR}"
