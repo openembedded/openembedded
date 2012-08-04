@@ -5,6 +5,7 @@ LICENSE = "GPL LGPL"
 DEPENDS = "gnutls libpng jpeg dbus dbus-glib zlib fakeroot-native"
 DEPENDS += "virtual/libusb0"
 PROVIDES = "cups14"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.easysw.com/pub/cups/${PV}/cups-${PV}-source.tar.bz2 \
            file://use_echo_only_in_init.patch \
@@ -42,7 +43,7 @@ do_configure() {
 }
 do_compile () {
     sed -i s:STRIP:NOSTRIP: Makedefs
-    sed -i s:serial:: backend/Makefile
+#    sed -i s:serial:: backend/Makefile
     echo "all:"    >  man/Makefile
     echo "libs:" >> man/Makefile
     echo "install:" >> man/Makefile
