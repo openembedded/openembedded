@@ -49,10 +49,6 @@ do_compile() {
     fi
 
     unset CFLAGS CXXFLAGS
-    install -m 0755 ${STAGING_BINDIR_NATIVE}/rcc4 ${S}/bin/rcc
-    install -m 0755 ${STAGING_BINDIR_NATIVE}/moc4 ${S}/bin/moc
-    install -m 0755 ${STAGING_BINDIR_NATIVE}/uic4 ${S}/bin/uic
-    install -m 0755 ${STAGING_BINDIR_NATIVE}/lrelease4 ${S}/bin/lrelease
 
     oe_runmake ${EXTRA_ENV}
 }
@@ -60,7 +56,10 @@ do_compile() {
 do_install_append() {
 	install -d ${D}${bindir}
 	for i in rcc uic moc ; do
-		install -m 0755 ${S}/bin/$i ${D}${bindir}/
+		if [ -e ${S}/bin/$i ]
+		then
+			install -m 0755 ${S}/bin/$i ${D}${bindir}/
+		fi
 	done
 
         #Append an E to the qtdemo file
