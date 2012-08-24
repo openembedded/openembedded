@@ -1,0 +1,13 @@
+Index: libwnck-2.30.5/configure.ac
+===================================================================
+--- libwnck-2.30.5.orig/configure.ac	2012-07-02 05:17:34.118158298 -0700
++++ libwnck-2.30.5/configure.ac	2012-07-02 05:23:19.071869288 -0700
+@@ -167,7 +167,7 @@
+ ##################################################
+ GTK_DOC_CHECK([1.9])
+ 
+-GOBJECT_INTROSPECTION_CHECK([0.6.14])
++AM_CONDITIONAL([HAVE_INTROSPECTION], [false])
+ 
+ AC_OUTPUT([
+ Makefile
