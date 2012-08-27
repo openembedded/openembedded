@@ -64,6 +64,7 @@ do_install() {
 	cd gdk-pixbuf && oe_runmake install DESTDIR=${D}
 }
 
+BBCLASSEXTEND = "native"
 
 SRC_URI[md5sum] = "018d7dd0fa7de01cfdb77c7c55e7ba26"
 SRC_URI[sha256sum] = "d02344239d048390ba02fcfd7de4f9efc0dfb51e7b06dfa46a6314d666ea4de2"
