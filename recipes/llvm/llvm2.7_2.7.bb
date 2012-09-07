@@ -1,6 +1,6 @@
 require llvm.inc
 
-PR = "r11"
+PR = "r12"
 
 DEPENDS = "llvm-common llvm2.7-native"
 
@@ -16,6 +16,7 @@ SRC_URI += "\
   file://r104653-BFC-BFI.patch \
   file://rawMOVLRPC.patch \
   file://include-fixes.patch \
+  file://r137567-lseek64.patch \
   "
 
 LLVM_RELEASE = "2.7"

@@ -1,0 +1,23 @@
+Upstream-Status: Accepted
+
+EE: Provide the symbol "lseek64" explicitly with <unistd.h> on Linux glibc.
+
+With libcxx, it seems <unistd.h> would not be provided. Thanks to Ryuta Suzuki.
+
+See also:
+
+   <http://llvm.org/viewvc/llvm-project?view=rev&revision=137567>
+
+Signed-off-by: Steffen Sledz <sledz@dresearch-fe.de>
+
+diff -Nurd llvm-2.7.orig/lib/ExecutionEngine/JIT/Intercept.cpp llvm-2.7/lib/ExecutionEngine/JIT/Intercept.cpp
+--- llvm-2.7.orig/lib/ExecutionEngine/JIT/Intercept.cpp	2012-09-07 16:21:14.000000000 +0200
++++ llvm-2.7/lib/ExecutionEngine/JIT/Intercept.cpp	2012-09-07 16:22:14.000000000 +0200
+@@ -51,6 +51,7 @@
+ #if defined(HAVE_SYS_STAT_H)
+ #include <sys/stat.h>
+ #endif
++#include <unistd.h>"
+ #include <fcntl.h>
+ /* stat functions are redirecting to __xstat with a version number.  On x86-64 
+  * linking with libc_nonshared.a and -Wl,--export-dynamic doesn't make 'stat' 
