@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.gtk.org/"
 SECTION = "libs"
 LICENSE = "LGPL"
 PRIORITY = "optional"
-DEPENDS = "libpng gettext glib-2.0"
+DEPENDS = "libpng gettext glib-2.0 atk pango cairo"
 PR = "r2"
 
 S = "${WORKDIR}/gtk+-${PV}"
