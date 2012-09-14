@@ -1,6 +1,8 @@
 require libav.inc
 
 DEPENDS += "virtual/libsdl schroedinger libgsm libvpx"
+DEPENDS_i586 += "yasm-native"
+DEPENDS_i686 += "yasm-native"
 
 # When bumping SRCREV make sure you bump PR here and in dependant recipes (gst-ffmpeg, gnash, omxil, etc) to account for SOVERSION changes
 SRCREV = "c6c2dfcf15c1d93b2189adff6f71c5c4b6b05338"
