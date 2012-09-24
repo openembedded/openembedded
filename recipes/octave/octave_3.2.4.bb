@@ -1,9 +1,10 @@
-DEFAULT_PREFERENCE = "-1"
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
+PARALLEL_MAKE=""
 
 require octave.inc
 
 SRC_URI = "ftp://ftp.octave.org/pub/octave/${PN}-${PV}.tar.gz \
+           file://configure.patch\
 "
 
 SRC_URI[md5sum] = "90c39fa9e241ad2e978bcee4682a2ba9"

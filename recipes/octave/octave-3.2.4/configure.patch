@@ -1,0 +1,38 @@
+--- a/configure.orig	2012-09-24 13:57:50.601133342 +0200
++++ b/configure	2012-09-24 13:57:55.585162629 +0200
+@@ -11994,10 +11994,8 @@
+ 	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether LSAME is called correctly from Fortran" >&5
+ $as_echo_n "checking whether LSAME is called correctly from Fortran... " >&6; }
+ 	if test "$cross_compiling" = yes; then :
+-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
++  { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+ $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+-as_fn_error "cannot run test program while cross compiling
+-See \`config.log' for more details." "$LINENO" 5; }
+ else
+   cat > conftest.$ac_ext <<_ACEOF
+       program main
+@@ -14707,10 +14705,8 @@
+ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+ 
+ if test "$cross_compiling" = yes; then :
+-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
++  { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+ $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+-as_fn_error "cannot run test program while cross compiling
+-See \`config.log' for more details." "$LINENO" 5; }
+ else
+   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+@@ -15760,10 +15756,8 @@
+ ac_compiler_gnu=$ac_cv_c_compiler_gnu
+ 
+ if test "$cross_compiling" = yes; then :
+-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
++  { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+ $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+-as_fn_error "cannot run test program while cross compiling
+-See \`config.log' for more details." "$LINENO" 5; }
+ else
+   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
