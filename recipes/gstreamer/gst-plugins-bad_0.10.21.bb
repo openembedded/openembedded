@@ -7,7 +7,7 @@ SRC_URI[archive.sha256sum] = "422badacbda37ac33cb446c6751dabcd0b223c308dbb01024a
 
 DEPENDS += "opencv orc-native orc libcdaudio gst-plugins-base openssl directfb libmodplug librsvg"
 
-PR = "${INC_PR}.0"
+PR = "${INC_PR}.1"
 
 # We don't have vdpau headers in OE and it creates crosscompile badness.
 # Also, mpeg2enc and mplex from mjpegtools don't build, because of AC_TRY_RUN.
@@ -16,6 +16,8 @@ EXTRA_OECONF += " \
         --disable-mplex \
         --disable-vdpau \
 "
+
+EXTRA_OECONF += "${@base_conditional('ENTERPRISE_DISTRO', '1', '--disable-faac --disable-faad', '', d)}"
 
 PACKAGES_DYNAMIC = "\
 gst-plugin-adpcmdec* \
@@ -40,8 +42,6 @@ gst-plugin-dtmf* \
 gst-plugin-dvb* \
 gst-plugin-dvbsuboverlay* \
 gst-plugin-dvdspu* \
-gst-plugin-faac* \
-gst-plugin-faad* \
 gst-plugin-fbdevsink* \
 gst-plugin-festival* \
 gst-plugin-freeze* \
@@ -100,3 +100,6 @@ gst-plugin-vmnc* \
 gst-plugin-vp8* \
 gst-plugin-y4mdec* \
 "
+
+PACKAGES_DYNAMIC += "${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'gst-plugin-faac* gst-plugin-faad*', d)}"
+

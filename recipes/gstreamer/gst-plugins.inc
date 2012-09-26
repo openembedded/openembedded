@@ -2,10 +2,10 @@ require gst-common.inc
 require gst-plugins-package.inc
 
 DESCRIPTION = "Plugins for GStreamer"
-DEPENDS += "libcdio wavpack libvisual gstreamer jack virtual/libsdl libvpx x264 libmms libmusicbrainz schroedinger faac faad2 libmikmod liboil libogg tremor libvorbis"
-DEPENDS += "${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad libid3tag', d)}"
+DEPENDS += "libcdio wavpack libvisual gstreamer jack virtual/libsdl libvpx x264 libmms libmusicbrainz schroedinger libmikmod liboil libogg tremor libvorbis"
+DEPENDS += "${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad libid3tag faac faad2', d)}"
 
-INC_PR = "r11"
+INC_PR = "r12"
 
 SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${PV}.tar.bz2;name=archive"
 
