@@ -9,7 +9,7 @@ RPROVIDES_${PN} = "ssh sshd"
 INC_PR = "r7"
 
 SRC_URI = "\
-  http://matt.ucc.asn.au/dropbear/dropbear-${PV}.tar.bz2 \
+  http://matt.ucc.asn.au/dropbear/releases/dropbear-${PV}.tar.bz2 \
   file://urandom-xauth-changes-to-options.h.patch \
   file://configure.patch \
   file://fix-2kb-keys.patch \
