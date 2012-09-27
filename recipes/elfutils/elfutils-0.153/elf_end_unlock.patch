@@ -1,0 +1,17 @@
+From: Kurt Roeckx <kurt@roeckx.be>
+Subject: Call rwlock_unlock() before rwlock_fini()
+Applied-Upstream: commit:495501611820a9d5c462fda56045c146f7b922d7
+Bug-Debian: http://bugs.debian.org/662041
+
+diff --git a/libelf/elf_end.c b/libelf/elf_end.c
+index 5112eae..6392eaf 100644
+--- a/libelf/elf_end.c
++++ b/libelf/elf_end.c
+@@ -241,6 +241,7 @@ elf_end (elf)
+ 	munmap (elf->map_address, elf->maximum_size);
+     }
+ 
++  rwlock_unlock (elf->lock);
+   rwlock_fini (elf->lock);
+ 
+   /* Finally the descriptor itself.  */

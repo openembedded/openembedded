@@ -1,0 +1,15 @@
+From: Kurt Roeckx <kurt@roeckx.be>
+Subject: Set up the test environment so that we actually test the new library
+Applied-Upstream: commit:593f2af73d971bdc9dcc06622d529e7848c31f57
+
+--- a/tests/run-alldts.sh.orig	2012-02-24 20:17:17.000000000 +0000
++++ a/tests/run-alldts.sh	2012-02-24 20:17:28.000000000 +0000
+@@ -26,7 +26,7 @@
+ . $srcdir/test-subr.sh
+ 
+ # This will produce "testfile-alldts" file
+-./alldts
++testrun ./alldts
+ 
+ testrun_compare ../src/readelf -d testfile-alldts <<\EOF
+ 

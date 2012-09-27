@@ -1,0 +1,22 @@
+From: Roland McGrath <roland@hack.frob.com>
+Subject: Don't exclude sh_type >= SHT_NUM from stripping.
+Origin: upstream, commit:8e8f0be57354d3fa094d0927930dbe1bc1ce8816
+Bug-Debian: http://bugs.debian.org/662041
+
+Needed on mips because sh_type is set to SHT_MIPS_DWARF
+
+index 8b4c0d7..bda192c 100644
+--- a/libelf/elf-knowledge.h
++++ b/libelf/elf-knowledge.h
+@@ -65,10 +65,7 @@
+        || (strncmp (name, ".gnu.warning.", sizeof ".gnu.warning." - 1) != 0   \
+ 	   /* We remove .comment sections only if explicitly told to do so. */\
+ 	   && (remove_comment						      \
+-	       || strcmp (name, ".comment") != 0)))			      \
+-   /* So far we do not remove any of the non-standard sections.		      \
+-      XXX Maybe in future.  */						      \
+-   && (shdr)->sh_type < SHT_NUM)
++	       || strcmp (name, ".comment") != 0))))
+ 
+ 
+ /* Test whether `sh_info' field in section header contains a section
