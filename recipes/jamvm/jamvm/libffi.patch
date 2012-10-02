@@ -1,0 +1,66 @@
+diff -Nurd /home/sledz/jamvm-1.4.5.orig/configure.ac jamvm-1.4.5/configure.ac
+--- /home/sledz/jamvm-1.4.5.orig/configure.ac	2012-10-02 15:14:03.000000000 +0200
++++ jamvm-1.4.5/configure.ac	2012-10-02 15:14:49.000000000 +0200
+@@ -166,10 +166,25 @@
+         enable_zip=no
+     fi])
+ 
+-AC_CHECK_LIB(ffi,ffi_call,,
+-    [if test "$enable_ffi" != no; then
+-        AC_MSG_ERROR(cannot find libffi)
+-    fi])
++LIBFFI_FOUND=no
++if test "$enable_ffi" = yes
++then
++PKG_CHECK_MODULES([LIBFFI], [libffi], [LIBFFI_FOUND=yes], [LIBFFI_FOUND=no])
++if test "x${LIBFFI_FOUND}" = xno
++then
++  LIBFFI_FOUND=
++  AC_CHECK_HEADER([ffi.h],[LIBFFI_CFLAGS=],[LIBFFI_FOUND=no])
++  AC_SEARCH_LIBS([ffi_call], [ffi],[LIBFFI_LIBS=-lffi],[LIBFFI_FOUND=no])
++  if test "x${LIBFFI_FOUND}" = xno
++    then
++      AC_MSG_ERROR([Could not find libffi headers - \
++      Instal libffi-devel or libffi-dev.])
++ fi
++fi
++fi
++AC_SUBST(LIBFFI_CFLAGS)
++AC_SUBST(LIBFFI_LIBS)
++
+ 
+ dnl Checks for header files.
+ AC_HEADER_STDC
+@@ -180,11 +195,6 @@
+         enable_zip=no
+     fi])
+ 
+-AC_CHECK_HEADER(ffi.h,,
+-    [if test "$enable_ffi" != no; then
+-        AC_MSG_ERROR(cannot find ffi.h)
+-    fi])
+-
+ if test "$enable_zip" != no; then
+     AC_DEFINE([USE_ZIP],1,[use zip])
+     use_zip_yes=
+@@ -197,7 +207,7 @@
+ AC_SUBST(use_zip_yes)
+ AC_SUBST(use_zip_no)
+ 
+-if test "$enable_ffi" != no; then
++if test "x${LIBFFI_FOUND}" != no; then
+     AC_DEFINE([USE_FFI],1,[use FFI])
+ fi
+ 
+diff -Nurd /home/sledz/jamvm-1.4.5.orig/src/Makefile.am jamvm-1.4.5/src/Makefile.am
+--- /home/sledz/jamvm-1.4.5.orig/src/Makefile.am	2012-10-02 15:14:03.000000000 +0200
++++ jamvm-1.4.5/src/Makefile.am	2012-10-02 15:14:49.000000000 +0200
+@@ -19,6 +19,7 @@
+ 
+ jamvm_LDADD = libcore.la
+ libjvm_la_LIBADD = libcore.la
+-libcore_la_LIBADD = os/@os@/@arch@/libnative.la os/@os@/libos.la
++libcore_la_LIBADD = os/@os@/@arch@/libnative.la os/@os@/libos.la $(LIBFFI_LIBS)
++libcore_la_CPPFLAGS = $(LIBFFI_CFLAGS)
+ 
+ DISTCLEANFILES = arch.h

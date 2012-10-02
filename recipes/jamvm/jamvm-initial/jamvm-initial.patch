@@ -10,25 +10,6 @@ Index: jamvm-1.4.5/configure.ac
  AC_CONFIG_HEADERS([src/config.h])
  AC_PREFIX_DEFAULT(/usr/local/jamvm)
  
-Index: jamvm-1.4.5/java-initial
-===================================================================
---- /dev/null
-+++ jamvm-1.4.5/java-initial
-@@ -0,0 +1,14 @@
-+#!/bin/sh
-+#
-+# Wrapper which (almost) silently restarts the VM in case of segfaults.
-+
-+redo_from_start=1;
-+while [ $redo_from_start -eq 1 ]; do
-+    echo "Running JamVM-initial: ${@}"
-+    redo_from_start=0;
-+    jamvm-initial ${1+"$@"}
-+    if [ $? -eq 139 ]; then
-+        echo "JamVM-initial crashed - silently trying again"
-+        redo_from_start=1;
-+    fi
-+done
 Index: jamvm-1.4.5/lib/Makefile.am
 ===================================================================
 --- jamvm-1.4.5.orig/lib/Makefile.am
