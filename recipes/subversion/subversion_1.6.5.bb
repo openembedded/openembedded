@@ -5,23 +5,30 @@ RDEPENDS_${PN} = "neon"
 LICENSE = "Apache BSD"
 HOMEPAGE = "http://subversion.tigris.org/"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://subversion.tigris.org/downloads/${P}.tar.bz2 \
-	   file://disable-revision-install.patch"
+	   file://disable-revision-install.patch \
+	   file://libtool2.patch \
+	   file://fix-install-depends.patch \
+	   "
 
 EXTRA_OECONF = "--without-berkeley-db --without-apxs --without-apache \
                 --without-swig --with-apr=${STAGING_BINDIR_CROSS} \
-                --with-apr-util=${STAGING_BINDIR_CROSS}"
+                --with-apr-util=${STAGING_BINDIR_CROSS} \
+		ac_cv_path_RUBY=none"
 
 
 inherit autotools
 
-acpaths = "-I build/ac-macros"
+export LDFLAGS += " -L${STAGING_LIBDIR} "
 
-# FIXME: Ugly hack!
-do_configure_append() {
-	if ! test -f libtool ; then cp -a *-libtool libtool ; fi
+acpaths = "-I build/ -I build/ac-macros/"
+
+do_configure_prepend () {
+	rm -f ${S}/libtool
+	rm -f ${S}/build/libtool.m4
+	sed -i -e 's:with_sasl="/usr/local":with_sasl="${STAGING_DIR}":' ${S}/build/ac-macros/sasl.m4
 }
 
 SRC_URI[md5sum] = "1a53a0e72bee0bf814f4da83a9b6a636"
