@@ -10,7 +10,7 @@ SECTION = "x11/libs"
 
 DEPENDS = "glib-2.0 fontconfig freetype zlib virtual/libiconv virtual/libx11 libxft gtk-doc cairo"
 
-DEPENDS_virtclass-native = "glib-2.0-native cairo-native"
+DEPENDS_virtclass-native = "glib-2.0-native cairo-native libxrender-native"
 BBCLASSEXTEND = "native"
 
 PACKAGES_DYNAMIC = "pango-module-*"
@@ -20,7 +20,7 @@ RRECOMMENDS_${PN} = "pango-module-basic-x pango-module-basic-fc"
 RRECOMMENDS_${PN}_virtclass-native = ""
 
 
-INC_PR = "r1"
+INC_PR = "r2"
 
 # seems to go wrong with default cflags
 FULL_OPTIMIZATION_arm = "-O2"
