@@ -20,7 +20,7 @@ Index: openssl-0.9.8m/Makefile
  MAKEFILE= Makefile
  
 -MANDIR=$(OPENSSLDIR)/man
-+MANDIR=/usr/share/man
++MANDIR=tmp
  MAN1=1
  MAN3=3
 -MANSUFFIX=
@@ -216,7 +216,7 @@ Index: openssl-0.9.8m/Makefile.org
  MAKEFILE= Makefile
  
 -MANDIR=$(OPENSSLDIR)/man
-+MANDIR=/usr/share/man
++MANDIR=tmp
  MAN1=1
  MAN3=3
 -MANSUFFIX=
