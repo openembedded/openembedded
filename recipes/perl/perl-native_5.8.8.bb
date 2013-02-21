@@ -15,7 +15,8 @@ SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
            file://native-no-gdbminc.patch;patch=1 \
            file://native-perlinc.patch;patch=1 \
            file://makedepend-dash.patch;patch=1 \
-           file://asm-pageh-fix.patch;patch=1"
+           file://asm-pageh-fix.patch;patch=1 \
+           file://Makefile.SH-native.patch;patch=1"
 
 S = "${WORKDIR}/perl-${PV}"
 

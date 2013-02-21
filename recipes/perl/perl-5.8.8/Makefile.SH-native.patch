@@ -1,0 +1,13 @@
+--- perl-5.8.8/Makefile.SH-orig	2013-02-21 22:11:14.000000000 +0100
++++ perl-5.8.8/Makefile.SH	2013-02-21 22:11:56.000000000 +0100
+@@ -196,8 +196,8 @@
+ CC = $cc
+ LD = $ld
+ 
+-LDFLAGS = $ldflags
+-CLDFLAGS = $ldflags
++LDFLAGS = $ldflags -lpthread -lm
++CLDFLAGS = $ldflags -lpthread -lm
+ 
+ mallocsrc = $mallocsrc
+ mallocobj = $mallocobj
