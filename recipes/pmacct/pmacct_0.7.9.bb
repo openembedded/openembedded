@@ -4,7 +4,7 @@ LICENSE = "GPLv2"
 DEPENDS = "libpcap"
 PR = "r2"
 
-SRC_URI = "http://www.ba.cnr.it/~paolo/pmacct/pmacct-${PV}.tar.gz \
+SRC_URI = "http://www.the-little-red-haired-girl.org/pub/nylon/thirdparty/pmacct-${PV}.tar.gz \
 	file://pmacct.init \
 	file://pmacct.conf.eth0"
 
