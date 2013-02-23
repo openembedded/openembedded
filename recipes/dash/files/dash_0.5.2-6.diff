@@ -1,0 +1,2427 @@
+--- dash-0.5.2.orig/debian/po/POTFILES.in
++++ dash-0.5.2/debian/po/POTFILES.in
+@@ -0,0 +1 @@
++[type: gettext/rfc822deb] dash.templates.in
+--- dash-0.5.2.orig/debian/po/cs.po
++++ dash-0.5.2/debian/po/cs.po
+@@ -0,0 +1,35 @@
++# Czech translation of dash templates
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: dash\n"
++"Report-Msgid-Bugs-To: \n"
++"POT-Creation-Date: 2004-04-30 21:51+1000\n"
++"PO-Revision-Date: 2005-05-07 12:27+0200\n"
++"Last-Translator: Miroslav Kure <kurem@debian.cz>\n"
++"Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=UTF-8\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#. Type: boolean
++#. Description
++#: ../dash.templates:4
++msgid "Install dash as /bin/sh?"
++msgstr "Nainstalovat dash jako /bin/sh?"
++
++#. Type: boolean
++#. Description
++#: ../dash.templates:4
++msgid ""
++"Bash is the default /bin/sh on a Debian system.  However, since our policy "
++"requires all shell scripts using /bin/sh to be POSIX compliant, any shell "
++"that conforms to POSIX can serve as /bin/sh.  Since dash is POSIX compliant, "
++"it can be used as /bin/sh.  You may wish to do this because dash is faster "
++"and smaller than bash."
++msgstr ""
++"V Debianu je jako v√Ωchoz√≠ /bin/sh nastaven bash. Proto≈æe v≈°ak na≈°e "
++"politika vy≈æaduje, aby byly v≈°echny shellov√© skripty vyu≈æ√≠vaj√≠c√≠ /bin/sh "
++"kompatibiln√≠ s POSIXem, m≈Ø≈æete jako /bin/sh pou≈æ√≠t jak√Ωkoliv shell spl≈àuj√≠c√≠ "
++"POSIX. Proto≈æe dash tuto normu spl≈àuje, m≈Ø≈æe b√Ωt pou≈æit jako /bin/sh, co≈æ "
++"je mo≈æn√° to, co chcete, proto≈æe dash je rychlej≈°√≠ a men≈°√≠ ne≈æ bash."
+--- dash-0.5.2.orig/debian/po/da.po
++++ dash-0.5.2/debian/po/da.po
+@@ -0,0 +1,36 @@
++# translation of dash_0.4.21_templates.po to Danish
++# Claus Hindsgaul <claus_h@image.dk>, 2004.
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: dash_0.4.21_templates\n"
++"Report-Msgid-Bugs-To: \n"
++"POT-Creation-Date: 2004-04-30 21:51+1000\n"
++"PO-Revision-Date: 2004-02-19 20:52+0100\n"
++"Last-Translator: Claus Hindsgaul <claus_h@image.dk>\n"
++"Language-Team: Danish <dansk@klid.dk>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=UTF-8\n"
++"Content-Transfer-Encoding: 8bit\n"
++"X-Generator: KBabel 1.0.2\n"
++
++#. Type: boolean
++#. Description
++#: ../dash.templates:4
++msgid "Install dash as /bin/sh?"
++msgstr "Install√©r dash som /bin/sh?"
++
++#. Type: boolean
++#. Description
++#: ../dash.templates:4
++msgid ""
++"Bash is the default /bin/sh on a Debian system.  However, since our policy "
++"requires all shell scripts using /bin/sh to be POSIX compliant, any shell "
++"that conforms to POSIX can serve as /bin/sh.  Since dash is POSIX compliant, "
++"it can be used as /bin/sh.  You may wish to do this because dash is faster "
++"and smaller than bash."
++msgstr ""
++"Bash ligger som udgangspunkt som /bin/sh p√• et Debiansystem. Da det er "
++"Debianspolitik er at skalskripter, der benytter /bin/sh skal overholde POSIX-"
++"standarden, vil enhver skal, der overholder POSIX kunne fungere som /bin/sh. "
++"Du kan v√¶lge at g√∏re dette fordi dash er hurtigere og mindre end bash."
+--- dash-0.5.2.orig/debian/po/de.po
++++ dash-0.5.2/debian/po/de.po
+@@ -0,0 +1,47 @@
++#
++#    Translators, if you are not familiar with the PO format, gettext
++#    documentation is worth reading, especially sections dedicated to
++#    this format, e.g. by running:
++#         info -n '(gettext)PO Files'
++#         info -n '(gettext)Header Entry'
++#
++#    Some information specific to po-debconf are available at
++#            /usr/share/doc/po-debconf/README-trans
++#         or http://www.debian.org/intl/l10n/po-debconf/README-trans
++#
++#    Developers do not need to manually edit POT or PO files.
++#
++#, fuzzy
++msgid ""
++msgstr ""
++"Project-Id-Version: PACKAGE VERSION\n"
++"Report-Msgid-Bugs-To: \n"
++"POT-Creation-Date: 2004-04-30 21:51+1000\n"
++"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
++"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
++"Language-Team: LANGUAGE <LL@li.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-15\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#. Type: boolean
++#. Description
++#: ../dash.templates:4
++msgid "Install dash as /bin/sh?"
++msgstr "dash als /bin/sh installieren?"
++
++#. Type: boolean
++#. Description
++#: ../dash.templates:4
++msgid ""
++"Bash is the default /bin/sh on a Debian system.  However, since our policy "
++"requires all shell scripts using /bin/sh to be POSIX compliant, any shell "
++"that conforms to POSIX can serve as /bin/sh.  Since dash is POSIX compliant, "
++"it can be used as /bin/sh.  You may wish to do this because dash is faster "
++"and smaller than bash."
++msgstr ""
++"Bash ist die Standard-Shell (/bin/sh) auf einem Debian-System. Da die Debian-"
++"Policy von allen Shellscripts, die /bin/sh benutzen, POSIX-Kompatibilit‰t "
++"verlangt, kann f¸r /bin/sh jede POSIX-kompatible Shell benutzt werden. Dash "
++"ist POSIX-kompatibel und kann daher als /bin/sh verwendet werden.  Eventuell "
++"wollen Sie dash verwenden, da dash schneller und auch kleiner ist als bash."
+--- dash-0.5.2.orig/debian/po/es.po
++++ dash-0.5.2/debian/po/es.po
+@@ -0,0 +1,49 @@
++#
++#    Translators, if you are not familiar with the PO format, gettext
++#    documentation is worth reading, especially sections dedicated to
++#    this format, e.g. by running:
++#         info -n '(gettext)PO Files'
++#         info -n '(gettext)Header Entry'
++#
++#    Some information specific to po-debconf are available at
++#            /usr/share/doc/po-debconf/README-trans
++#         or http://www.debian.org/intl/l10n/po-debconf/README-trans
++#
++#    Developers do not need to manually edit POT or PO files.
++#
++# Carlos Valdivia Yag¸e <valyag@dat.etsit.upm.es>, 2003
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: dash 0.4.18\n"
++"Report-Msgid-Bugs-To: \n"
++"POT-Creation-Date: 2004-04-30 21:51+1000\n"
++"PO-Revision-Date: 2003-10-18 05:45+0200\n"
++"Last-Translator: Carlos Valdivia Yag¸e <valyag@dat.etsit.upm.es>\n"
++"Language-Team: Debian L10n Spanish <debian-l10n-spanish@lists.debian.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-15\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#. Type: boolean
++#. Description
++#: ../dash.templates:4
++msgid "Install dash as /bin/sh?"
++msgstr "øInstalar dash como /bin/sh?"
++
++#. Type: boolean
++#. Description
++#: ../dash.templates:4
++msgid ""
++"Bash is the default /bin/sh on a Debian system.  However, since our policy "
++"requires all shell scripts using /bin/sh to be POSIX compliant, any shell "
++"that conforms to POSIX can serve as /bin/sh.  Since dash is POSIX compliant, "
++"it can be used as /bin/sh.  You may wish to do this because dash is faster "
++"and smaller than bash."
++msgstr ""
++"Bash es el intÈrprete de comandos /bin/sh predeterminado de los sistemas "
++"Debian. Sin embargo, dado que nuestras normas obligan a que todos los "
++"scripts para el intÈrprete de comandos se atengan a las normas POSIX, "
++"cualquier intÈrprete compatible con POSIX puede servir como /bin/sh. Puesto "
++"que dash lo es, puede usarse como /bin/sh, con la ventaja de ser m·s r·pido "
++"y pequeÒo que bash."
+--- dash-0.5.2.orig/debian/po/fr.po
++++ dash-0.5.2/debian/po/fr.po
+@@ -0,0 +1,47 @@
++#
++#    Translators, if you are not familiar with the PO format, gettext
++#    documentation is worth reading, especially sections dedicated to
++#    this format, e.g. by running:
++#         info -n '(gettext)PO Files'
++#         info -n '(gettext)Header Entry'
++#
++#    Some information specific to po-debconf are available at
++#            /usr/share/doc/po-debconf/README-trans
++#         or http://www.debian.org/intl/l10n/po-debconf/README-trans
++#
++#    Developers do not need to manually edit POT or PO files.
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: dash 0.4.17\n"
++"Report-Msgid-Bugs-To: \n"
++"POT-Creation-Date: 2004-04-30 21:51+1000\n"
++"PO-Revision-Date: 2003-06-30 15:40+0100\n"
++"Last-Translator: Denis Barbier <barbier@debian.org>\n"
++"Language-Team: French <debian-l10n-french@lists.debian.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-15\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#. Type: boolean
++#. Description
++#: ../dash.templates:4
++msgid "Install dash as /bin/sh?"
++msgstr "Mettre un lien de /bin/sh vers dash†?"
++
++#. Type: boolean
++#. Description
++#: ../dash.templates:4
++msgid ""
++"Bash is the default /bin/sh on a Debian system.  However, since our policy "
++"requires all shell scripts using /bin/sh to be POSIX compliant, any shell "
++"that conforms to POSIX can serve as /bin/sh.  Since dash is POSIX compliant, "
++"it can be used as /bin/sh.  You may wish to do this because dash is faster "
++"and smaller than bash."
++msgstr ""
++"Sur un systËme Debian, /bin/sh est, par dÈfaut, un lien vers bash. "
++"Cependant, comme notre charte impose que tous les scripts utilisant /bin/sh "
++"soient conformes ‡ la norme POSIX, /bin/sh peut Ítre n'importe quel "
++"processeur de commandes (´†shell†ª) conforme ‡ cette norme. Et comme dash "
++"l'est, il peut servir de /bin/sh. La rapiditÈ et la taille rÈduite de dash "
++"sont deux bonnes raisons pour accepter ici."
+--- dash-0.5.2.orig/debian/po/ja.po
++++ dash-0.5.2/debian/po/ja.po
+@@ -0,0 +1,47 @@
++#
++#    Translators, if you are not familiar with the PO format, gettext
++#    documentation is worth reading, especially sections dedicated to
++#    this format, e.g. by running:
++#         info -n '(gettext)PO Files'
++#         info -n '(gettext)Header Entry'
++#
++#    Some information specific to po-debconf are available at
++#            /usr/share/doc/po-debconf/README-trans
++#         or http://www.debian.org/intl/l10n/po-debconf/README-trans
++#
++#    Developers do not need to manually edit POT or PO files.
++#
++#, fuzzy
++msgid ""
++msgstr ""
++"Project-Id-Version: PACKAGE VERSION\n"
++"Report-Msgid-Bugs-To: \n"
++"POT-Creation-Date: 2004-04-30 21:51+1000\n"
++"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
++"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
++"Language-Team: LANGUAGE <LL@li.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=EUC-JP\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#. Type: boolean
++#. Description
++#: ../dash.templates:4
++msgid "Install dash as /bin/sh?"
++msgstr "dash §Ú /bin/sh §»§∑§∆•§•Û•π•»°º•Î§∑§ﬁ§π§´?"
++
++#. Type: boolean
++#. Description
++#: ../dash.templates:4
++msgid ""
++"Bash is the default /bin/sh on a Debian system.  However, since our policy "
++"requires all shell scripts using /bin/sh to be POSIX compliant, any shell "
++"that conforms to POSIX can serve as /bin/sh.  Since dash is POSIX compliant, "
++"it can be used as /bin/sh.  You may wish to do this because dash is faster "
++"and smaller than bash."
++msgstr ""
++"Debian •∑•π•∆•‡§«§œ bash §¨•«•’•©•Î•»§Œ /bin/sh §«§π°£§∑§´§∑°¢Debian §Œ•›•Í"
++"•∑°º§À§Ë§√§∆°¢/bin/sh §ÚÕ—§§§Î¡¥§∆§Œ•∑•ß•Î•π•Ø•Í•◊•»§œ POSIX Ω‡µÚ§«§ §±§Ï§–§ "
++"§È§ §§§ø§·°¢POSIX §ÚÀ˛§ø§π•∑•ß•Î§œ§…§Ï§«§‚ /bin/sh §»§ §Î§≥§»§¨§«§≠§ﬁ§π°£"
++"dash §œ POSIX Ω‡µÚ§«§π§Œ§«°¢/bin/sh §»§∑§∆ª»§¶ §≥§»§¨§«§≠§ﬁ§π°£dash §œ bash "
++"§Ë§Í¬Æ§Ø§∆æÆ§µ§§§Œ§«°¢§Ω§¶§∑§ø§§§»ª◊§¶ §´§‚§∑§Ï§ﬁ§ª§Û°£"
+--- dash-0.5.2.orig/debian/po/nl.po
++++ dash-0.5.2/debian/po/nl.po
+@@ -0,0 +1,47 @@
++#
++#    Translators, if you are not familiar with the PO format, gettext
++#    documentation is worth reading, especially sections dedicated to
++#    this format, e.g. by running:
++#         info -n '(gettext)PO Files'
++#         info -n '(gettext)Header Entry'
++#
++#    Some information specific to po-debconf are available at
++#            /usr/share/doc/po-debconf/README-trans
++#         or http://www.debian.org/intl/l10n/po-debconf/README-trans
++#
++#    Developers do not need to manually edit POT or PO files.
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: dash 0.4.18\n"
++"Report-Msgid-Bugs-To: \n"
++"POT-Creation-Date: 2004-04-30 21:51+1000\n"
++"PO-Revision-Date: 2003-10-21 10:59+0100\n"
++"Last-Translator: Tim Dijkstra <tim@famdijkstra.org>\n"
++"Language-Team: Debian Dutch <debian-l10n-dutch@lists.debian.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=iso-8859-15\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#. Type: boolean
++#. Description
++#: ../dash.templates:4
++msgid "Install dash as /bin/sh?"
++msgstr "dash als /bin/sh installeren?"
++
++#. Type: boolean
++#. Description
++#: ../dash.templates:4
++msgid ""
++"Bash is the default /bin/sh on a Debian system.  However, since our policy "
++"requires all shell scripts using /bin/sh to be POSIX compliant, any shell "
++"that conforms to POSIX can serve as /bin/sh.  Since dash is POSIX compliant, "
++"it can be used as /bin/sh.  You may wish to do this because dash is faster "
++"and smaller than bash."
++msgstr ""
++"Bash is de standaard /bin/sh op een Debian-systeem. Debian-beleid eist "
++"echter dat alle shell-scripts die /bin/sh gebruiken moeten voldoen aan de "
++"POSIX-standaard, dus elke shell die zich conformeert aan POSIX kan dienst "
++"doen als /bin/sh. Omdat dash zich conformeert aan POSIX, kan het dus "
++"gebruikt worden als /bin/sh. Een reden om dat inderdaad te doen is dat dash "
++"sneller en kleiner is dan bash."
+--- dash-0.5.2.orig/debian/po/pt.po
++++ dash-0.5.2/debian/po/pt.po
+@@ -0,0 +1,47 @@
++# translation of dash_0.4.18_pt.po to Portuguese
++#
++#    Translators, if you are not familiar with the PO format, gettext
++#    documentation is worth reading, especially sections dedicated to
++#    this format, e.g. by running:
++#         info -n '(gettext)PO Files'
++#         info -n '(gettext)Header Entry'
++#    Some information specific to po-debconf are available at
++#            /usr/share/doc/po-debconf/README-trans
++#         or http://www.debian.org/intl/l10n/po-debconf/README-trans#
++#    Developers do not need to manually edit POT or PO files.
++# Bruno Rodrigues <bruno.rodrigues@litux.org>, 2003.
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: dash_0.4.18_pt\n"
++"Report-Msgid-Bugs-To: \n"
++"POT-Creation-Date: 2004-04-30 21:51+1000\n"
++"PO-Revision-Date: 2003-10-17 11:40+0100\n"
++"Last-Translator: Bruno Rodrigues <bruno.rodrigues@litux.org>\n"
++"Language-Team: Portuguese <debian-l10n-portuguese@lists.debian.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=UTF-8\n"
++"Content-Transfer-Encoding: 8bit\n"
++"X-Generator: KBabel 1.0.2\n"
++
++#. Type: boolean
++#. Description
++#: ../dash.templates:4
++msgid "Install dash as /bin/sh?"
++msgstr "Instalar dash como /bin/sh?"
++
++#. Type: boolean
++#. Description
++#: ../dash.templates:4
++msgid ""
++"Bash is the default /bin/sh on a Debian system.  However, since our policy "
++"requires all shell scripts using /bin/sh to be POSIX compliant, any shell "
++"that conforms to POSIX can serve as /bin/sh.  Since dash is POSIX compliant, "
++"it can be used as /bin/sh.  You may wish to do this because dash is faster "
++"and smaller than bash."
++msgstr ""
++"A bash √© a shell default num sistema Debian. A \"Policy\" da Debian requer "
++"que qualquer script que use a /bin/sh seja compat√≠vel POSIX, portanto "
++"qualquer shell que tamb√©m seja compat√≠vel POSIX poder√° ser usada como /bin/"
++"sh. Como a dash √© mais r√°pida e pequena que a bash, e ainda assim compat√≠vel "
++"POSIX, poder√° activ√°-la como /bin/sh aqui."
+--- dash-0.5.2.orig/debian/po/pt_BR.po
++++ dash-0.5.2/debian/po/pt_BR.po
+@@ -0,0 +1,48 @@
++#
++#    Translators, if you are not familiar with the PO format, gettext
++#    documentation is worth reading, especially sections dedicated to
++#    this format, e.g. by running:
++#         info -n '(gettext)PO Files'
++#         info -n '(gettext)Header Entry'
++#
++#    Some information specific to po-debconf are available at
++#            /usr/share/doc/po-debconf/README-trans
++#         or http://www.debian.org/intl/l10n/po-debconf/README-trans
++#
++#    Developers do not need to manually edit POT or PO files.
++#
++#, fuzzy
++msgid ""
++msgstr ""
++"Project-Id-Version: dash_0.4.19\n"
++"Report-Msgid-Bugs-To: \n"
++"POT-Creation-Date: 2004-04-30 21:51+1000\n"
++"PO-Revision-Date: 2004-01-16 13:35-0300\n"
++"Last-Translator: AndrÈ LuÌs Lopes <andrelop@debian.org>\n"
++"Language-Team: Debian-BR Project <debian-l10n-portuguese@lists.debian.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-1\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#. Type: boolean
++#. Description
++#: ../dash.templates:4
++msgid "Install dash as /bin/sh?"
++msgstr "Instalar dash como /bin/sh ?"
++
++#. Type: boolean
++#. Description
++#: ../dash.templates:4
++msgid ""
++"Bash is the default /bin/sh on a Debian system.  However, since our policy "
++"requires all shell scripts using /bin/sh to be POSIX compliant, any shell "
++"that conforms to POSIX can serve as /bin/sh.  Since dash is POSIX compliant, "
++"it can be used as /bin/sh.  You may wish to do this because dash is faster "
++"and smaller than bash."
++msgstr ""
++"Bash È o /bin/sh padr„o em um sistema Debian. PorÈm, uma vez que nossa "
++"polÌtica requer que todos os shell scripts usando /bin/sh sejam compatÌveis "
++"POSIX, qualquer shell que esteja em conformidade POSIX pode servir como /bin/"
++"sh. Uma vez que o dash È compatÌvel POSIX, o mesmo pode ser usado como /bin/"
++"sh. VocÍ pode desejar usar o dash devido ao mesmo ser mais r·pido e menor "
++"que o bash."
+--- dash-0.5.2.orig/debian/po/ru.po
++++ dash-0.5.2/debian/po/ru.po
+@@ -0,0 +1,47 @@
++# translation of dash_0.4.18.po to russian
++#
++#    Translators, if you are not familiar with the PO format, gettext
++#    documentation is worth reading, especially sections dedicated to
++#    this format, e.g. by running:
++#         info -n '(gettext)PO Files'
++#         info -n '(gettext)Header Entry'
++#    Some information specific to po-debconf are available at
++#            /usr/share/doc/po-debconf/README-trans
++#         or http://www.debian.org/intl/l10n/po-debconf/README-trans#
++#    Developers do not need to manually edit POT or PO files.
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: dash_0.4.18\n"
++"Report-Msgid-Bugs-To: \n"
++"POT-Creation-Date: 2004-04-30 21:51+1000\n"
++"PO-Revision-Date: 2003-10-04 22:47+0600\n"
++"Last-Translator: Ilgiz Kalmetev <translator@ilgiz.pp.ru>\n"
++"Language-Team: russian <debian-russian@lists.debian.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=KOI8-R\n"
++"Content-Transfer-Encoding: 8bit\n"
++"X-Generator: KBabel 1.0.1\n"
++
++#. Type: boolean
++#. Description
++#: ../dash.templates:4
++msgid "Install dash as /bin/sh?"
++msgstr "ı”‘¡Œœ◊…‘ÿ dash À¡À /bin/sh?"
++
++#. Type: boolean
++#. Description
++#: ../dash.templates:4
++msgid ""
++"Bash is the default /bin/sh on a Debian system.  However, since our policy "
++"requires all shell scripts using /bin/sh to be POSIX compliant, any shell "
++"that conforms to POSIX can serve as /bin/sh.  Since dash is POSIX compliant, "
++"it can be used as /bin/sh.  You may wish to do this because dash is faster "
++"and smaller than bash."
++msgstr ""
++"Bash - ‹‘œ /bin/sh –œ ’ÕœÃﬁ¡Œ…¿ ◊ ”…”‘≈Õ≈ Debian. ÔƒŒ¡Àœ, ‘¡À À¡À Œ¡€¡ "
++"–œÃ…‘…À¡ ‘“≈¬’≈‘, ﬁ‘œ¬Ÿ ◊”≈ ”√≈Œ¡“…… œ¬œÃœﬁÀ…, …”–œÃÿ⁄’¿›…≈ /bin/sh, ¬ŸÃ…  "
++"”œ◊Õ≈”‘…ÕŸÕ… ” POSIX, ‘œ “¡¬œ‘¡‘ÿ À¡À /bin/sh Õœ÷≈‘ Ã¿¬¡— œ¬œÃœﬁÀ¡,  "
++"”œ◊Õ≈”‘…Õ¡— ” POSIX. Ù¡À À¡À dash ”œ◊Õ≈”‘…Õ ” POSIX, ‘œ œŒ Õœ÷≈‘ "
++"…”–œÃÿ⁄œ◊¡‘ÿ”— À¡À /bin/sh. ˜Ÿ Õœ÷≈‘≈ ⁄¡»œ‘≈‘ÿ ”ƒ≈Ã¡‘ÿ ‘¡À –œ‘œÕ’, ﬁ‘œ dash "
++"¬Ÿ”‘“≈≈ … Õ≈Œÿ€≈, ﬁ≈Õ bash."
+--- dash-0.5.2.orig/debian/po/sv.po
++++ dash-0.5.2/debian/po/sv.po
+@@ -0,0 +1,47 @@
++#
++#    Translators, if you are not familiar with the PO format, gettext
++#    documentation is worth reading, especially sections dedicated to
++#    this format, e.g. by running:
++#         info -n '(gettext)PO Files'
++#         info -n '(gettext)Header Entry'
++#
++#    Some information specific to po-debconf are available at
++#            /usr/share/doc/po-debconf/README-trans
++#         or http://www.debian.org/intl/l10n/po-debconf/README-trans
++#
++#    Developers do not need to manually edit POT or PO files.
++#
++#, fuzzy
++msgid ""
++msgstr ""
++"Project-Id-Version: PACKAGE VERSION\n"
++"Report-Msgid-Bugs-To: \n"
++"POT-Creation-Date: 2004-04-30 21:51+1000\n"
++"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
++"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
++"Language-Team: LANGUAGE <LL@li.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-1\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#. Type: boolean
++#. Description
++#: ../dash.templates:4
++msgid "Install dash as /bin/sh?"
++msgstr "Installera dash som /bin/sh?"
++
++#. Type: boolean
++#. Description
++#: ../dash.templates:4
++#, fuzzy
++msgid ""
++"Bash is the default /bin/sh on a Debian system.  However, since our policy "
++"requires all shell scripts using /bin/sh to be POSIX compliant, any shell "
++"that conforms to POSIX can serve as /bin/sh.  Since dash is POSIX compliant, "
++"it can be used as /bin/sh.  You may wish to do this because dash is faster "
++"and smaller than bash."
++msgstr ""
++"Bash ‰r standardinst‰llningen fˆr /bin/sh pÂ Debiansystem.  Eftersom vÂr "
++"policy kr‰ver att alla script som anv‰nder /bin/sh mÂste vara POSIX-"
++"kompatibla, kan vilket POSIX-kompatibelt skal som helst vara /bi/sh.  DÂ "
++"dash ‰r POSIX-kompatibelt kan det anv‰ndas som /bin/sh."
+--- dash-0.5.2.orig/debian/po/templates.pot
++++ dash-0.5.2/debian/po/templates.pot
+@@ -0,0 +1,42 @@
++#
++#    Translators, if you are not familiar with the PO format, gettext
++#    documentation is worth reading, especially sections dedicated to
++#    this format, e.g. by running:
++#         info -n '(gettext)PO Files'
++#         info -n '(gettext)Header Entry'
++#
++#    Some information specific to po-debconf are available at
++#            /usr/share/doc/po-debconf/README-trans
++#         or http://www.debian.org/intl/l10n/po-debconf/README-trans
++#
++#    Developers do not need to manually edit POT or PO files.
++#
++#, fuzzy
++msgid ""
++msgstr ""
++"Project-Id-Version: PACKAGE VERSION\n"
++"Report-Msgid-Bugs-To: \n"
++"POT-Creation-Date: 2004-04-30 21:51+1000\n"
++"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
++"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
++"Language-Team: LANGUAGE <LL@li.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=CHARSET\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#. Type: boolean
++#. Description
++#: ../dash.templates:4
++msgid "Install dash as /bin/sh?"
++msgstr ""
++
++#. Type: boolean
++#. Description
++#: ../dash.templates:4
++msgid ""
++"Bash is the default /bin/sh on a Debian system.  However, since our policy "
++"requires all shell scripts using /bin/sh to be POSIX compliant, any shell "
++"that conforms to POSIX can serve as /bin/sh.  Since dash is POSIX compliant, "
++"it can be used as /bin/sh.  You may wish to do this because dash is faster "
++"and smaller than bash."
++msgstr ""
+--- dash-0.5.2.orig/debian/po/vi.po
++++ dash-0.5.2/debian/po/vi.po
+@@ -0,0 +1,33 @@
++# Vietnamese translation for dash.
++# Copyright ¬© 2005 Free Software Foundation, Inc.
++# Clytie Siddall <clytie@riverland.net.au>, 2005.
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: dash 0.5.2-5\n"
++"Report-Msgid-Bugs-To: \n"
++"POT-Creation-Date: 2004-04-30 21:51+1000\n"
++"PO-Revision-Date: 2005-06-14 13:34+0930\n"
++"Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
++"Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=utf-8\n"
++"Content-Transfer-Encoding: 8bit\n"
++"Plural-Forms: nplurals=1; plural=0\n"
++
++#. Type: boolean
++#. Description
++#: ../dash.templates:4
++msgid "Install dash as /bin/sh?"
++msgstr "C√†i ƒë·∫∑t tr√¨nh dash l√† ¬´/bin/sh¬ª kh√¥ng?"
++
++#. Type: boolean
++#. Description
++#: ../dash.templates:4
++msgid ""
++"Bash is the default /bin/sh on a Debian system.  However, since our policy "
++"requires all shell scripts using /bin/sh to be POSIX compliant, any shell "
++"that conforms to POSIX can serve as /bin/sh.  Since dash is POSIX compliant, "
++"it can be used as /bin/sh.  You may wish to do this because dash is faster "
++"and smaller than bash."
++msgstr "Tr√¨nh bash l√† h·ªá v·ªè (¬´/bin/sh¬ª) m·∫∑c ƒë·ªãnh trong h·ªá th·ªëng Debian. Tuy nhi√™n, v√¨ ch√≠nh s√°ch Debian c·∫ßn ƒë·∫øn m·ªçi t·∫≠p l·ªánh h·ªá v·ªè c√≥ d√πng ¬´/bin/sh¬ª ch·ªâ tu√¢n theo POSIX, b·∫•t c·ª© h·ªá v·ªè n√†o tu√¢n theo POSIX c√≥ th·ªÉ ho·∫°t ƒë·ªông l√† ¬´/bin/sh¬ª. V√¨ tr√¨nh dash tu√¢n theo POSIX, b·∫°n c√≥ th·ªÉ s·ª≠ d·ª•ng n√≥ l√† ¬´/bin/sh¬ª. B·∫°n c√≥ l·∫Ω s·∫Ω mu·ªën l√†m nh∆∞ th·∫ø v√¨ tr√¨nh dash l√† nhanh h∆°n v√† nh·ªè h∆°n tr√¨nh bash."
+--- dash-0.5.2.orig/debian/README.Debian.diet
++++ dash-0.5.2/debian/README.Debian.diet
+@@ -0,0 +1,15 @@
++Building with the diet libc
++---------------------------
++
++This package optionally can be built with the diet libc instead of the
++glibc to provide small statically linked programs.  The resulting package
++has no dependency on any other package.
++
++To use the diet libc, make sure the latest versions of the dietlibc-dev
++package is installed, and set DEB_BUILD_OPTIONS=diet in the environment
++when building the package, e.g.:
++
++ # apt-get install dietlibc-dev
++ $ DEB_BUILD_OPTIONS=diet fakeroot apt-get source -b dash
++
++ -- Gerrit Pape <pape@smarden.org>, Wed, 23 Jun 2004 05:11:20 +0000
+--- dash-0.5.2.orig/debian/ash.postinst
++++ dash-0.5.2/debian/ash.postinst
+@@ -0,0 +1,52 @@
++#!/bin/sh
++#
++# post-install script for the Debian GNU/Linux ash package
++#
++# $Id: ash.postinst,v 1.9 2002/10/26 11:27:48 herbert Exp $
++
++set -e
++
++check_divert() {
++	div=$(dpkg-divert --list $1)
++	distrib=${3:-$1.distrib}
++	case $div in
++	'' | *by\ dash)
++		;;
++	*by\ ash)
++		dst=${div% by ash}
++		dst=${dst##* to }
++
++		# Work around dpkg-divert bug.
++		if [ -e "$dst" ]; then
++			mv "$dst" "$dst.ash-tmp"
++		fi
++		dpkg-divert --remove $1
++		if [ -e "$dst.ash-tmp" ]; then
++			mv "$dst.ash-tmp" "$dst"
++		fi
++
++		dpkg-divert --package dash --divert $distrib --add $1
++		if [ "$dst" != $distrib ] && [ -e "$dst" ]; then
++			mv "$dst" $distrib
++		fi
++		ln -sf $2 $1
++		;;
++	*)
++		d=${1%/*}
++		if
++			[ -h $1 ] && [ -f $1 ] && [ -f $d/$4 ] &&
++			cmp $1 $d/$4
++		then
++			ln -sf $2 $1
++		fi
++		;;
++	esac
++}
++
++dcv='dpkg --compare-versions'
++
++if [ "$1" = configure ] && [ -n "$2" ] && $dcv "$2" lt 0.4.3; then
++	check_divert /bin/sh dash '' ash
++	check_divert /usr/share/man/man1/sh.1.gz dash.1.gz \
++		/usr/share/man/man1/sh.distrib.1.gz ash.1.gz
++fi
+--- dash-0.5.2.orig/debian/ash.postrm
++++ dash-0.5.2/debian/ash.postrm
+@@ -0,0 +1,9 @@
++#!/bin/sh
++# $Id: ash.postrm,v 1.1 2003/11/21 08:47:16 herbert Exp $
++
++set -e
++
++if [ "$1" = purge ] && [ -e /usr/share/debconf/confmodule ]; then
++	. /usr/share/debconf/confmodule
++	db_purge
++fi
+--- dash-0.5.2.orig/debian/changelog
++++ dash-0.5.2/debian/changelog
+@@ -0,0 +1,1148 @@
++dash (0.5.2-6) unstable; urgency=low
++
++  * debian/po/vi.po: new; initial Vietnamese debconf translation (closes:
++    #313502, thx Clytie Siddall).
++  * debian/rules: install dash menu file into /usr/share/menu/; build
++    dash.udeb against dietlibc on archs !m68k.
++  * debian/control: Build-Depends: dietlibc-dev [archs]; Standards-Version:
++    3.6.2.0.
++
++ -- Gerrit Pape <pape@smarden.org>  Fri,  8 Jul 2005 16:17:00 +0000
++
++dash (0.5.2-5) unstable; urgency=low
++
++  * debian/po/cs.po: new; initial Czech debconf translation (closes:
++    #308043, thx Martin Sin, Miroslav Kure).
++
++ -- Gerrit Pape <pape@smarden.org>  Wed, 11 May 2005 14:01:40 +0000
++
++dash (0.5.2-4) unstable; urgency=medium
++
++  * debian/dash.postrm: fix typo in options to dpkg (in or list).
++
++ -- Gerrit Pape <pape@smarden.org>  Sat,  2 Apr 2005 18:04:39 +0000
++
++dash (0.5.2-3) unstable; urgency=low
++
++  * apply patch from upstream bk:
++    * src/var.c: add trailing equal sign in setvar for variables set to null
++      (closes: #299639).
++  * debian/dash.menu: new.
++  * debian/rules: install debian/dash.menu file (closes: #296297).
++  * debian/dash.postinst: conditionally run update-menus on configure.
++  * debian/dash.postrm: conditionally run update-menus on remove and upgrade
++    (actually downgrade).
++
++ -- Gerrit Pape <pape@smarden.org>  Mon, 28 Mar 2005 17:15:22 +0000
++
++dash (0.5.2-2) unstable; urgency=high
++
++  * debian/control: no longer Build-Depends: bison.
++  * apply patch from upstream:
++    * src/eval.c, src/eval.h: don't errexit on builtin in if condition and
++      or list (closes: #276964).
++  * src/dash.1: fix grammar, typo (thx A Costa, closes: #296396, #296545).
++
++ -- Gerrit Pape <pape@smarden.org>  Tue,  1 Mar 2005 21:14:37 +0000
++
++dash (0.5.2-1) unstable; urgency=low
++
++  * new upstream release.
++    * Fixed spelling errors in manual page; Spell behaviour consistently in
++      manual page (closes: #281803).
++    * Corrected manual entry about ENV and non-interactive shells (closes:
++      #292501).
++
++ -- Gerrit Pape <pape@smarden.org>  Mon, 31 Jan 2005 20:12:08 +0000
++
++dash (0.5.1-3) unstable; urgency=low
++
++  * apply patch from upstream bk:
++    * src/jobs.c: allow negative pid argument to kill(1).
++  * apply patch from upstream:
++    * src/expand.c: fix $@ expansion when leading argument is null (closes:
++      #266082).
++
++ -- Gerrit Pape <pape@smarden.org>  Sun, 22 Aug 2004 15:48:47 +0000
++
++dash (0.5.1-2) unstable; urgency=low
++
++  * apply patch from upstream:
++    * src/cd.c: fix cd - when OLDPWD is unset (closes: #263159).
++
++ -- Gerrit Pape <pape@smarden.org>  Thu,  5 Aug 2004 08:17:18 +0000
++
++dash (0.5.1-1) unstable; urgency=low
++
++  * new upstream release.
++  * debian/rules: reorganize; stop using debhelper, use implicit rules.
++  * debian/implicit: new; implicit Makefile rules.
++  * debian/control: no longer Build-Depends: debhelper, pmake;
++    Build-Depends: po-debconf.
++  * debian/copyright: adapt.
++  * debian/ash.dirs, debian/bsdyacc, debian/compat, debian/dash-udeb.dirs,
++    debian/dash.dirs, debian/dash.templates.merged: remove; obsolete.
++  * debian/dash.templates: rename to debian/dash.templates.in.
++  * debian/dash.postrm: new; run db_purge on purge if debconf is available.
++  * debian/ash.postinst, debian/ash.postrm, debian/dash.postinst,
++    debian/dash.prerm: remove "#DEBHELPER#".
++  * src/mystring.c, src/var.c, src/bltin/printf.c: #include "system.h" (for
++    diet libc).
++
++ -- Gerrit Pape <pape@smarden.org>  Fri,  9 Jul 2004 19:21:26 +0000
++
++dash (0.4.26-3) unstable; urgency=low
++
++  * apply patch approved by upstream:
++    * error.c, error.h, mystring.c, mystring.h, bltin/printf.c: optionally
++      compile with the diet libc.
++  * debian/README.Debian.diet, debian/dash.docs: new; how to build dash
++    with the diet libc.
++  * debian/rules: support "diet" in DEB_BUILD_OPTIONS to easily build the
++    packages with the diet libc instead of glibc.
++
++ -- Gerrit Pape <pape@smarden.org>  Sat, 26 Jun 2004 12:26:19 +0000
++
++dash (0.4.26-2) unstable; urgency=low
++
++  * apply patch from upstream:
++    * expand.c: add support for character classes to pmatch(), glibc's
++      fnmatch() still is broken (closes: #250499, works around: #243885).
++
++ -- Gerrit Pape <pape@smarden.org>  Tue,  1 Jun 2004 05:53:39 +0000
++
++dash (0.4.26-1) unstable; urgency=low
++
++  * new maintainer.
++  * add debian_revision to upstream_version, package no longer is debian
++    native, upstream is Herbert Xu.
++  * apply patch from upstream:
++    * Fixed vstype trim operator ordering in cmdputs.
++    * Fixed quote for CTLENDVAR in cmdputs.
++    * Fixed VSLENGTH crash in cmdputs (closes: #250855).
++
++ -- Gerrit Pape <pape@smarden.org>  Fri, 28 May 2004 18:40:53 +0000
++
++dash (0.4.26) unstable; urgency=low
++
++  * Disabled fnmatch code again (closes: #240887).
++  * Updated copyright.
++  * Updated German debconf translation (Florian Ernst, closes: #244507).
++  * Fixed obstack corruption in setprompt (closes: #246635).
++
++ -- Herbert Xu <herbert@debian.org>  Fri, 30 Apr 2004 21:48:52 +1000
++
++dash (0.4.25) unstable; urgency=low
++
++  * Fixed use-after-free bug in setvareq (Vladimir N. Oleynik).
++  * Fixed value of expdest after _STPUTC in expandarg (closes: #238265).
++
++ -- Herbert Xu <herbert@debian.org>  Thu, 18 Mar 2004 20:55:57 +1100
++
++dash (0.4.24) unstable; urgency=low
++
++  * Fixed segmentation fault when PWD is undefined.
++
++ -- Herbert Xu <herbert@debian.org>  Tue,  9 Mar 2004 19:58:41 +1100
++
++dash (0.4.23) unstable; urgency=low
++
++  * Verify PWD before using it.
++
++ -- Herbert Xu <herbert@debian.org>  Mon,  8 Mar 2004 20:12:27 +1100
++
++dash (0.4.22) unstable; urgency=low
++
++  * Read PWD from environment (closes: #228659).
++  * Added Danish debconf translation (Claus Hindsgaul, closes: #233756).
++  * Added check_gcc to support gcc 2.95 (closes: #235933).
++  * Perform here-doc expansion on PS1/PS2/PS4 (closes: #230858).
++
++ -- Herbert Xu <herbert@debian.org>  Sun,  7 Mar 2004 21:50:04 +1100
++
++dash (0.4.21) unstable; urgency=low
++
++  * Fixed typo that broke ulimit (GCS, closes: #228369).
++
++ -- Herbert Xu <herbert@debian.org>  Mon, 19 Jan 2004 19:02:32 +1100
++
++dash (0.4.20) unstable; urgency=low
++
++  * Added Dutch debconf translation (Tim Dijkstra, closes: #218904).
++  * Check existence RLIMIT symbols for ulimit.
++  * Removed table lookup in errmsg.
++  * Restored NULL check in cmdtxt.
++  * Restored ash postrm to purge debconf entries (closes: #221913).
++  * Fixed exit status of exit in EXIT trap (closes: #227734).
++  * Updated Brazilian debconf translation (Andre Luis Lopes, closes: #228095).
++  * Restored goodname check in prehash.
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 17 Jan 2004 09:57:14 +1100
++
++dash (0.4.19) unstable; urgency=low
++
++  * Fixed handling of evalskip in dotcmd (closes: #212975).
++  * Updated Russian debconf translation (Ilgiz Kalmetev, closes: #214333).
++  * Added Portugese debconf translation (Bruno Rodrigues, closes: #216214).
++  * Updated Spanish debconf translation (Carlos Valdivia, closes: #216338).
++  * Fixed length expansion of special variables (closes: #216767).
++  * Replaced umask builtin with pdksh version.
++  * Reverted bogus eval change in 0.3.1-20.
++  * Added vmemory/locks support in ulimit.
++  * Call install -D instead of cp for merged template.
++
++ -- Herbert Xu <herbert@debian.org>  Wed, 29 Oct 2003 22:14:22 +1100
++
++dash (0.4.18) unstable; urgency=low
++
++  * Fixed boundary checks in getopts.
++  * Updated Japanese debconf template (Tomohiro KUBOTA, closes: #192382).
++  * Use -falign-* instead -malign-*.
++  * Use strtoll for parsing integers in arith expansion.
++  * Added support for add-shell/remove-shell (closes: #163131).
++  * Fixed JOBS ifdefs in sprint_status (closes: #211009).
++  * Fixed bit-wise or in arith expansion (Mototoshi KONDO, closes: #212825).
++  * Print PS4 on previous stderr.
++  * Converted debconf templates to gettext (Christian Perrier,
++    closes: #200112).
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 27 Sep 2003 14:26:36 +1000
++
++dash (0.4.17) unstable; urgency=low
++
++  * Reset rehash when recylcing cmd entries.
++  * Fixed null arg0 segfault with -c (closes: #191687).
++  * Relocate job pointers in makejob (closes: #191595).
++
++ -- Herbert Xu <herbert@debian.org>  Sat,  3 May 2003 20:57:46 +1000
++
++dash (0.4.16) unstable; urgency=low
++
++  * Fixed printf so that exit status is cleared on entry.
++  * Call nextopt() in printf.
++  * Fixed command substitution corruption by grabbing expdest in expbackq
++    (closes: #187896).
++
++ -- Herbert Xu <herbert@debian.org>  Mon,  7 Apr 2003 21:21:30 +1000
++
++dash (0.4.15) unstable; urgency=low
++
++  * Fixed octal escapes in echo/printf (closes: #187827).
++
++ -- Herbert Xu <herbert@debian.org>  Sun,  6 Apr 2003 20:45:38 +1000
++
++dash (0.4.14) unstable; urgency=low
++
++  * Added missing newline when printing in dowait.
++  * Do not print status in dowait when stopped.
++  * Fixed job status display.
++  * Fixed current job setting.
++  * Fixed kill segfault with no arguments (closes: #187189).
++  * Fixed sorting of set output.
++  * Removed setvar builtin.
++
++ -- Herbert Xu <herbert@debian.org>  Thu,  3 Apr 2003 20:38:33 +1000
++
++dash (0.4.13) unstable; urgency=low
++
++  * Fixed precision type on 64 bit systems in showvars.
++
++ -- Herbert Xu <herbert@debian.org>  Wed, 26 Mar 2003 20:00:03 +1100
++
++dash (0.4.12) unstable; urgency=low
++
++  * Fixed dash_errno build problem with gcc 3.2.
++
++ -- Herbert Xu <herbert@debian.org>  Tue, 25 Mar 2003 22:28:50 +1100
++
++dash (0.4.11) unstable; urgency=low
++
++  * Removed unused pgrp field from job structure.
++  * Free jobs when calling wait with no arguments.
++  * Fixed build problem with bison.
++  * Merged changes from NetBSD 20030123.
++   . printf:
++    - Fixed mklong sefault.
++    - Fixed precision/field width with %b.
++   . Improved option parsing of command(1).
++   . Added rudimentary support for PS4.
++  * Moved builtin flags into builtins.def.
++  * Updated Spanish debconf template (Carlos Valdivia Yag¸e, closes: #178359).
++  * Fixed ordering of redirection versus assignment substitution.
++  * Fixed potential setvareq memory leaks.
++  * Use bison instead of byacc.
++  * Fixed wait(1) race condition.
++  * Fixed alignment memory corruption bug in growstackblock().
++  * Fixed potential memory corruption in parsing position parameters.
++  * Fixed getopts done check.
++
++ -- Herbert Xu <herbert@debian.org>  Mon, 24 Mar 2003 20:42:29 +1100
++
++dash (0.4.10) unstable; urgency=low
++
++  * Fixed redirection fd leak when execing.
++
++ -- Herbert Xu <herbert@debian.org>  Sun, 19 Jan 2003 13:25:41 +1100
++
++dash (0.4.9) unstable; urgency=low
++
++  * Reset exitstatus in evalsubshell if backgnd is true.
++  * Fixed glibc glob syntax error in expand.c.
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 11 Jan 2003 16:04:02 +1100
++
++dash (0.4.8) unstable; urgency=low
++
++  * Removed backgnd flag from ncmd due to previous redirection change.
++  * Set lim after the stack stablises in updatepwd (closes: #173884).
++  * Do not clobber the exitstatus after redirection.
++
++ -- Herbert Xu <herbert@debian.org>  Mon, 23 Dec 2002 19:50:06 +1100
++
++dash (0.4.7) unstable; urgency=low
++
++  * Merged clearredir with reset code in redir.c.
++  * Redirect before command search in evalcommand (closes: #168862).
++  * Build binary-all packages in binary-indep (closes: #173191).
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 21 Dec 2002 13:52:37 +1100
++
++dash (0.4.6) unstable; urgency=low
++
++  * Restored code for leaving job control.
++
++ -- Herbert Xu <herbert@debian.org>  Sun,  8 Dec 2002 15:21:58 +1100
++
++dash (0.4.5) unstable; urgency=low
++
++  * Optimised doformat so that vsnprintf is usually called only once.
++  * Reset redirlist in clearredir so that popredir can work (closes: #170247).
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 23 Nov 2002 22:09:59 +1100
++
++dash (0.4.4) unstable; urgency=low
++
++  * Fixed duplicate define warnings in init.c.
++  * Set debhelper compat to 4.
++  * Vanishing mail boxes no longer elicit "you have mail" messages.
++  * Function redirection errors no longer abort the shell.
++  * Fixed potential memory leak in redirect.
++  * Only allocate memory if necessary in redirect.
++  * Reap dead here documents.
++  * Do not strdup default values of static shell variables.
++  * Removed unnecessary setprompt(0) calls.
++  * Read in BUFSIZ chunks rather than BUFSIZ - 1.
++  * Documented undefined escape behaviour for echo(1) (closes: #167893).
++  * Do va_copy when we use a va_list twice (closes: #169503).
++
++ -- Herbert Xu <herbert@debian.org>  Wed, 20 Nov 2002 19:48:31 +1100
++
++dash (0.4.3) unstable; urgency=low
++
++  * Added manual entry for PPID.
++  * Exporting an unset variable no longer causes it to be set.
++  * Fixed fd0 redirection in asynchronous lists.
++  * Only stat if necessary in cdcmd (see #42880).
++  * Removed extra newline in error message in arith lexer.
++  * Set heredoclist to 0 ASAP in parseheredoc.
++  * Removed BSD advertising clause from copyright file.
++  * Check non-ash diversions as well in dash.postinst.
++  * Duplicated diversion checking in ash.postinst (closes: #166441).
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 26 Oct 2002 21:28:33 +1000
++
++dash (0.4.2) unstable; urgency=low
++
++  * Give benefits of dash in templates (closes: #161527).
++  * Fixed signed/unsigned on result of xwrite (closes: #161606).
++  * Removed support for SIG prefixes in kill and trap.
++  * Added -- processing in trap.
++  * Dropped use of unset in postinst (closes: 161868).
++  * Fixed printf(1) %* processing on bad integers and zero.
++  * Use stat64 in test(1).
++  * Allocate group_array with stalloc in test(1).
++  * Disabled alias checking after a pattern in a case statement.
++  * Wait now returns 128 + last trapped signal.
++  * Printf now keeps going after errors.
++  * Empty non-trivial parameter expansions are now removed correctly.
++  * Call reset() before exitshell() is called.  This fixes the bug where
++    returning an error from a function running under set -e caused the exit
++    trap to be taken with evalskip set.
++  * Fixed quoting of empty strings in single_quote().
++  * Show line numbers on all errors.
++  * Function names must be valid identifiers.
++  * Removed unused dependency on groff.
++  * Fixed race condition before entering a function.
++  * Fixed getopts initialisation for functions.
++  * Added memory barriers in INT macros.
++  * Banned empty compound lists in most places.
++  * Keep usage counters on functions (closes: #164234).
++  * Updated copyright file.
++  * Check evalskip in evalstring (closes: #165056).
++  * Merged changes from NetBSD 1.6:
++   . Added intmax support in printf(1).
++   . Implemented set -u.
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 19 Oct 2002 14:23:11 +1000
++
++dash (0.4.1) unstable; urgency=low
++
++  * Removed extra new line in command -v output for aliases.
++  * Removed alais prefix in the output of alias.
++  * Recognise octal and hex numbers in arith expansion (closes: #151449).
++  * Added sh(1) entries for echo, printf and test (closes: #156446).
++  * Renamed to dash --- the Debian Almquist Shell.
++  * Cleaned up rules file (Matej Vela).
++  * Check mtime instead of size in chkmail per POSIX.
++  * Added support for LFS (closes: #157884).
++  * Added SuS options to cd and pwd (closes: #145828).
++
++ -- Herbert Xu <herbert@debian.org>  Fri, 13 Sep 2002 20:35:06 +1000
++
++ash (0.3.8-38) unstable; urgency=low
++
++  * Turned pre-dependency to dependency in udeb since the former is not allowed
++    (closes: #143749).
++
++ -- Herbert Xu <herbert@debian.org>  Sun, 28 Apr 2002 11:59:05 +1000
++
++ash (0.3.8-37) unstable; urgency=low
++
++  * Added Japanese debconf translation (Tomohiro KUBOTA, closes: #137431).
++  * Added missing escapes in manual page (Aaron Schrab, closes: #137966).
++  * Added Russian debconf translation (Ilgiz Kalmetev, closes: #137618).
++  * Fixed trap(1) documentation (closes: #140973).
++  * Do not abort if getcwd fails.
++
++ -- Herbert Xu <herbert@debian.org>  Wed,  3 Apr 2002 20:58:09 +1000
++
++ash (0.3.8-36) unstable; urgency=low
++
++  * Added library dependency for ash-udeb.
++  * Handle null case statements correctly.
++  * Fixed alias expansions in case statements (NetBSD).
++  * Disabled unused jobid command.
++  * Corrected documentation about shifting too much.
++  * Added French debconf translation (Denis Barbier, closes: #134625).
++  * Updated Spanish debconf translation (Carlos Valdivia, closes: #136366).
++
++ -- Herbert Xu <herbert@debian.org>  Sat,  2 Mar 2002 18:31:22 +1100
++
++ash (0.3.8-35) unstable; urgency=low
++
++  * Moved PWD initialisation into var.c (closes: #124032).
++
++ -- Herbert Xu <herbert@debian.org>  Mon, 24 Dec 2001 09:34:55 +1100
++
++ash (0.3.8-34) unstable; urgency=low
++
++  * NSEMI must be NOR + 1.
++  * Set exitstatus to zero before evaluating cases (closes: #124066).
++  * Explicitly set default answer of the ash/sh question to false so that
++    people whose debconf priority is set to low and who keeps banging on their
++    keyboards don't accidently end up with ash as /bin/sh.
++
++ -- Herbert Xu <herbert@debian.org>  Fri, 21 Dec 2001 20:30:49 +1100
++
++ash (0.3.8-33) unstable; urgency=low
++
++  * Added missing inclusion of bltin.h in bltin/times.c.
++
++ -- Herbert Xu <herbert@debian.org>  Thu, 13 Dec 2001 18:46:07 +1100
++
++ash (0.3.8-32) unstable; urgency=low
++
++  * Back slashes in expansions are now escaped (closes: #121516).
++
++ -- Herbert Xu <herbert@debian.org>  Wed, 28 Nov 2001 20:15:01 +1100
++
++ash (0.3.8-31) unstable; urgency=low
++
++  * Made sure all back slashes are escaped.
++
++ -- Herbert Xu <herbert@debian.org>  Mon, 26 Nov 2001 19:10:27 +1100
++
++ash (0.3.8-30) unstable; urgency=low
++
++  * Restored fnmatch(3) code.
++  * Treat escaped slashes correctly while globbing.
++  * Restored missing EV_EXIT check in evalcommand (closes: #120364).
++  * Fixed stack corruption in _rmescapes.
++
++ -- Herbert Xu <herbert@debian.org>  Sun, 25 Nov 2001 17:51:19 +1100
++
++ash (0.3.8-29) unstable; urgency=low
++
++  * Added missing va_end in fmtstr (NetBSD).
++  * Removed shellproc crap.
++  * Updated Swedish debconf translation (Mikael Hedin, closes: #116097).
++  * Updated German debconf translation (Andreas Metzler, closes: #117160).
++  * Break now treats illegal numbers according to SuS.
++  * Errors in special builtins now rise to the top.
++  * Normal redirection errors no longer abort the shell.
++  * Functions now have the same variable assignment properties as special
++    builtins.
++
++ -- Herbert Xu <herbert@debian.org>  Sat,  3 Nov 2001 11:36:36 +1100
++
++ash (0.3.8-28) unstable; urgency=low
++
++  * Local variables are now unset properly in shprocvar() (closes: #114917).
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 13 Oct 2001 14:07:21 +1000
++
++ash (0.3.8-27) unstable; urgency=low
++
++  * Kill no longer aborts if it fails to kill someone.
++
++ -- Herbert Xu <herbert@debian.org>  Sun, 30 Sep 2001 22:20:36 +1000
++
++ash (0.3.8-26) unstable; urgency=low
++
++  * The sh.1.gz diversion now agrees with reality (closes: #113831).
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 29 Sep 2001 08:43:27 +1000
++
++ash (0.3.8-25) unstable; urgency=low
++
++  * Only read ENV if the shell is interactive (closes: #110421).
++
++ -- Herbert Xu <herbert@debian.org>  Wed, 29 Aug 2001 19:18:53 +1000
++
++ash (0.3.8-24) unstable; urgency=low
++
++  * Handle SIGINT when waiting even if there is no trap (closes: #107699).
++  * Protect all makejob/forkshell/waitforjobs sequences from SIGINT.
++  * Work around gcc bug that generates bad ..ng references (closes: #107994).
++
++ -- Herbert Xu <herbert@debian.org>  Wed,  8 Aug 2001 20:28:28 +1000
++
++ash (0.3.8-23) unstable; urgency=low
++
++  * Fixed fence post error in scanleft (closes: #107229).
++  * Removed stunalloc in expname as it interferes with addfname.
++  * Fixed CTLESC skipping in scanright.
++
++ -- Herbert Xu <herbert@debian.org>  Thu,  2 Aug 2001 20:06:00 +1000
++
++ash (0.3.8-22) unstable; urgency=low
++
++  * Fixed trailing back slash bug in echo/printf (closes: #106693).
++  * Some quoted's are meant to be quotes.
++  * Added Brazilian translation (Andre Luis Lopes, closes: #107041).
++
++ -- Herbert Xu <herbert@debian.org>  Mon, 30 Jul 2001 20:21:52 +1000
++
++ash (0.3.8-21) unstable; urgency=low
++
++  * Fixed EV_EXIT/redirection bugs that caused core dumps.
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 28 Jul 2001 17:03:28 +1000
++
++ash (0.3.8-20) unstable; urgency=low
++
++  * Don't save fd2 if job control is turned off.
++  * Don't push redirections when EV_EXIT is set.
++  * Fixed assignment recognition in the presence of back ticks.
++  * Combined checkkwd and checkalias.
++
++ -- Herbert Xu <herbert@debian.org>  Fri, 27 Jul 2001 22:29:41 +1000
++
++ash (0.3.8-19) unstable; urgency=low
++
++  * Recompute strings after growing in subevalvar (closes: #106050).
++
++ -- Herbert Xu <herbert@debian.org>  Mon, 23 Jul 2001 21:16:50 +1000
++
++ash (0.3.8-18) unstable; urgency=low
++
++  * Added more space optimisations for udeb on i386.
++  * Set stack mark in patmatch (closes: #106050).
++  * Fixed theoretical bug in expari.
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 21 Jul 2001 20:08:15 +1000
++
++ash (0.3.8-17) unstable; urgency=low
++
++  * Don't complain about unknown escape codes in echo and printf
++    (closes: #105659).
++  * Updated build-time dependency on groff-base (closes: #105612).
++
++ -- Herbert Xu <herbert@debian.org>  Wed, 18 Jul 2001 19:33:20 +1000
++
++ash (0.3.8-16) unstable; urgency=low
++
++  * Fixed backslash bug in new pattern matching code.
++
++ -- Herbert Xu <herbert@debian.org>  Mon, 16 Jul 2001 21:47:39 +1000
++
++ash (0.3.8-15) unstable; urgency=low
++
++  * Added Swedish translation of templates (Martin Sjˆgren, closes: #103158).
++  * Restored escape code support in echo.
++  * Removed assignment builtins since it is at best undefined by the SuS and
++    also can't be implemented consistently.
++  * Removed extraneous volatile modifier (closes: #104518).
++  * General overhaul of word expansion (closes: #96588).
++  * Redirection prefixes no longer stop assignments from being recognised.
++
++ -- Herbert Xu <herbert@debian.org>  Sun, 15 Jul 2001 17:27:03 +1000
++
++ash (0.3.8-14) unstable; urgency=low
++
++  * Divert sh.1.gz to sh.distrib.1.gz (closes: #102251).
++  * Added HETIO support for ^D and ^U (Aaron Lehmann, closes: #102215).
++  * Added Spaniash translation of debconf templates (Carlos Valdivia Yag¸e,
++    closes: #103040).
++  * Added versioned build-time dependency on groff.
++
++ -- Herbert Xu <herbert@debian.org>  Mon,  2 Jul 2001 19:32:03 +1000
++
++ash (0.3.8-13) unstable; urgency=low
++
++  * Fixed a bug where errors in pipelines which are part of andor lists were
++    not ignored when -e is in effect.
++
++ -- Herbert Xu <herbert@debian.org>  Mon, 25 Jun 2001 19:40:27 +1000
++
++ash (0.3.8-12) unstable; urgency=low
++
++  * Rewrote arith_lex.l in C (Aaron Lehmann, closes: #101741).
++  * && and || in arithmetic expansions now return either 0 or 1.
++
++ -- Herbert Xu <herbert@debian.org>  Sun, 24 Jun 2001 20:14:29 +1000
++
++ash (0.3.8-11) unstable; urgency=low
++
++  * Check for NULL argument in evaltree() (closes: #98865, #98867).
++
++ -- Herbert Xu <herbert@debian.org>  Sun, 27 May 2001 17:53:14 +1000
++
++ash (0.3.8-10) unstable; urgency=low
++
++  * Use /bin/ash in postinst to sidestep bugs in other shells (closes: #98739).
++  * Exit status is now tested on non-negated pipelines (closes: #98736).
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 26 May 2001 23:56:07 +1000
++
++ash (0.3.8-9) unstable; urgency=medium
++
++  * IFS is now fetched using bltinlookup() again in read (closes: #98343).
++  * Divert sh(1) man page as well as /bin/sh (closes: #98525).
++
++ -- Herbert Xu <herbert@debian.org>  Fri, 25 May 2001 20:30:06 +1000
++
++ash (0.3.8-8) unstable; urgency=low
++
++  * Fixed diversion removal in prerm (duh, closes: #98031).
++
++ -- Herbert Xu <herbert@debian.org>  Mon, 21 May 2001 20:52:48 +1000
++
++ash (0.3.8-7) unstable; urgency=low
++
++  * Fixed diversion test in prerm (closes: #98031).
++
++ -- Herbert Xu <herbert@debian.org>  Sun, 20 May 2001 12:30:53 +1000
++
++ash (0.3.8-6) unstable; urgency=low
++
++  * Make sure that fd2 is closed when clearing redirects (closes: #96619).
++  * Fixed memory corruption in stunalloc().
++  * The output of export/readonly/set is now correctly quoted.
++  * Fixed newline eating bug in expbackq().
++  * Set OLDPWD.
++  * Removed ash-medium as neither bf or di uses it.
++  * Wait now waits for all its argument rather than the first one.
++  * Wait will exit with 129 when interrupted by a signal for a which a trap has
++    been set.
++
++ -- Herbert Xu <herbert@debian.org>  Fri, 18 May 2001 21:51:41 +1000
++
++ash (0.3.8-5) unstable; urgency=low
++
++  * Added German translation to template file (Sebastian Feltel,
++    closes: #96203).
++  * Added missing initialisation in setalias() (closes: #95433).
++
++ -- Herbert Xu <herbert@debian.org>  Fri,  4 May 2001 20:54:31 +1000
++
++ash (0.3.8-4) unstable; urgency=low
++
++  * Disabled fnmatch code as fnmatch(3) in glibc is broken.
++  * Fixed echo example in man page (Kalle Olavi Niemitalo, closes: #96014).
++  * Fixed trailing semicolon bug with eval (NetBSD).
++  * Fixed globbing inconsistency with broken symlinks (NetBSD).
++
++ -- Herbert Xu <herbert@debian.org>  Wed,  2 May 2001 22:57:16 +1000
++
++ash (0.3.8-3) unstable; urgency=low
++
++  * Work around broken autoconf scripts (closes: #95430).
++
++ -- Herbert Xu <herbert@debian.org>  Tue,  1 May 2001 18:27:50 +1000
++
++ash (0.3.8-2) unstable; urgency=low
++
++  * Save checkalias before calling xxreadtoken() (closes: #95628).
++
++ -- Herbert Xu <herbert@debian.org>  Sun, 29 Apr 2001 17:36:01 +1000
++
++ash (0.3.8-1) unstable; urgency=low
++
++  * NetBSD-current version as of 20010316.
++  * Removed code that sets IFS.
++  * Fixed memory leak with PWD.
++  * Set PPID.
++  * Fixed inconsistencies in alias expansion.
++  * Restored original output code.
++  * Enabled fnmatch code again.
++  * Added builtin printf.
++  * Offer to divert /bin/sh (closes: #70462).
++
++ -- Herbert Xu <herbert@debian.org>  Wed, 25 Apr 2001 22:32:39 +1000
++
++ash (0.3.7-16) unstable; urgency=low
++
++  * Fixed incorrect default IFS in readcmd (closes: #88950).
++  * Added missing return in hashcmd.
++
++ -- Herbert Xu <herbert@debian.org>  Fri,  9 Mar 2001 20:44:40 +1100
++
++ash (0.3.7-15) unstable; urgency=low
++
++  * Unknown escape codes are now prnted literally by echo (closes: #82869).
++  * Made hetio_read_input() fail if fd is not stdin.
++  * Some uses of VSQUOTE were really meant to be quotes (closes: #88777).
++  * Build different ashes in different subdirectories.
++
++ -- Herbert Xu <herbert@debian.org>  Thu,  8 Mar 2001 21:32:28 +1100
++ 
++ash (0.3.7-14) unstable; urgency=low
++
++  * Removed predependency from udeb (closes: #81995).
++  * Added /bin/sh symlink to udeb (closes: #81967).
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 13 Jan 2001 15:23:21 +1100
++
++ash (0.3.7-13) unstable; urgency=low
++
++  * Renamed the udeb to ash-udeb.
++
++ -- Herbert Xu <herbert@debian.org>  Wed, 20 Dec 2000 19:32:34 +1100
++
++ash (0.3.7-12) unstable; urgency=low
++
++  * Added support for udebs (Randolph Chung, closes: #79237).
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 16 Dec 2000 13:53:28 +1100
++
++ash (0.3.7-11) unstable; urgency=low
++
++  * Preserve the previous exit status upon entering a function
++    (closes: #78374).
++
++ -- Herbert Xu <herbert@debian.org>  Sun,  3 Dec 2000 13:34:27 +1100
++
++ash (0.3.7-10) unstable; urgency=low
++
++  * Merged changes for GNU from Igor Khavkine.
++  * Minimise the number of sigactions.
++
++ -- Herbert Xu <herbert@debian.org>  Fri,  3 Nov 2000 20:31:52 +1100
++
++ash (0.3.7-9) unstable; urgency=low
++
++  * Predepend on the libraries.
++  * Always save fd 2 when it is redirected (closes: #75302).
++
++ -- Herbert Xu <herbert@debian.org>  Sun, 22 Oct 2000 08:40:40 +1100
++
++ash (0.3.7-8) unstable; urgency=high
++
++  * More redirection fixes (closes: #73613).
++
++ -- Herbert Xu <herbert@debian.org>  Thu,  5 Oct 2000 18:22:17 +1100
++
++ash (0.3.7-7) unstable; urgency=high
++
++  * Added missing break in redirection code (closes: #72956).
++
++ -- Herbert Xu <herbert@debian.org>  Tue,  3 Oct 2000 07:58:04 +1100
++
++ash (0.3.7-6) unstable; urgency=low
++
++  * command -[vV] no longer displays an error message on stdout.
++  * Redirecting to /proc/self/fd/* now works (closes: #72852).
++
++ -- Herbert Xu <herbert@debian.org>  Sun,  1 Oct 2000 12:56:39 +1100
++
++ash (0.3.7-5) unstable; urgency=low
++
++  * Implemented set -a.
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 30 Sep 2000 16:00:33 +1100
++
++ash (0.3.7-4) unstable; urgency=low
++
++  * Added build-time dependency on debhelper (closes: #69920).
++  * Extended maximum length of arithmetic expansions to match 32-bit integers.
++
++ -- Herbert Xu <herbert@debian.org>  Wed, 20 Sep 2000 14:28:16 +1100
++
++ash (0.3.7-3) unstable; urgency=low
++
++  * Switch to the old globbing code since glob(3) is hopelessly broken
++    (closes: #69455).
++
++ -- Herbert Xu <herbert@debian.org>  Mon, 21 Aug 2000 20:37:15 +1000
++
++ash (0.3.7-2) unstable; urgency=low
++
++  * Call glob(3) with GLOB_NOMAGIC (ouch).
++
++ -- Herbert Xu <herbert@debian.org>  Sun,  6 Aug 2000 17:47:08 +1000
++
++ash (0.3.7-1) unstable; urgency=low
++
++  * NetBSD-current version as of 20000729.
++  * Use fnmatch(3) and glob(3).
++  * Fixed the use of backslashes in the pattern in parameter substitutions,
++    hopefully for the last time.
++  * Applied HETIO patch and built ash.medium (closes: #50788).  Will do ash.big
++    when readline is fixed so that it doesn't leak anymore.
++
++ -- Herbert Xu <herbert@debian.org>  Fri,  4 Aug 2000 21:36:44 +1000
++
++ash (0.3.6-5) unstable; urgency=low
++
++  * Fixed manpage entry for read with patch from Kevin Ryde (closes: #62500).
++  * Fixed a file descriptor leak for pipelines.
++
++ -- Herbert Xu <herbert@debian.org>  Wed, 19 Apr 2000 18:56:20 +1000
++
++ash (0.3.6-4) unstable; urgency=low
++
++  * Fixed the case of an empty command with redirections.
++
++ -- Herbert Xu <herbert@debian.org>  Fri,  7 Apr 2000 12:07:18 +1000
++
++ash (0.3.6-3) unstable; urgency=low
++
++  * ! is now recognised correctly.
++  * Ash is now more strict on the syntax, e.g., a lone ! is no longer accepted
++    as an alternative to ! true.
++
++ -- Herbert Xu <herbert@debian.org>  Fri,  7 Apr 2000 10:46:06 +1000
++
++ash (0.3.6-2) unstable; urgency=low
++
++  * Fixed a problem with fmtstr() which broke getopts.
++
++ -- Herbert Xu <herbert@debian.org>  Sun,  2 Apr 2000 10:49:26 +1000
++
++ash (0.3.6-1) unstable; urgency=low
++
++  * NetBSD-current version as of 20000326.
++  * Added a Build-Depends on groff (closes: #61041).
++  * Implemented noclobber (closes: #59028).
++  * Rewrote output.c to use stream IO.
++
++ -- Herbert Xu <herbert@debian.org>  Sat,  1 Apr 2000 19:24:31 +1000
++
++ash (0.3.5-10) frozen unstable; urgency=low
++
++  * Don't stat mail boxes in non-interactive mode (closes: #59213).
++  * Added an fflush(stdout) to the times builtin (closes: #59027).
++  * Documented the times builtin.
++  * Added source depends.
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 18 Mar 2000 18:58:44 +1100
++
++ash (0.3.5-9) unstable; urgency=low
++
++  * Double quotes inside paramater substitutions inside double quotes are now
++    ignored as in bash (the originial behaviour was POSIX compliant too but
++    IMHO this one makes a little bit more sense).
++    This one broke mwm (but it was actually mwm's fault).
++  * Corrected backslash/CTLESC treatment for patterns in parameter
++    substitutions.
++
++ -- Herbert Xu <herbert@debian.org>  Sat,  6 Nov 1999 18:13:19 +1100
++
++ash (0.3.5-8) unstable; urgency=low
++
++  * Replaced use of echo -n in manual page with escape codes.
++  * Made FHS compliant (closes: #47978).
++  * Restored echo's option processing ability.
++
++ -- Herbert Xu <herbert@debian.org>  Fri, 22 Oct 1999 10:20:58 +1000
++
++ash (0.3.5-7) unstable; urgency=low
++
++  * echo no longer supports options.
++  * Don't quote patterns inside parameter substitutions enclosed by double
++    quotes (closes: #47842).
++
++ -- Herbert Xu <herbert@debian.org>  Wed, 20 Oct 1999 20:28:14 +1000
++
++ash (0.3.5-6) unstable; urgency=low
++
++  * Use getcwd() instead of /bin/pwd -- Zack Weinberg (closes: #46981).
++
++ -- Herbert Xu <herbert@debian.org>  Sun, 10 Oct 1999 16:31:49 +1000
++
++ash (0.3.5-5) unstable; urgency=low
++
++  * Only test for -e on simple commands (fixes #44559).
++
++ -- Herbert Xu <herbert@debian.org>  Wed,  8 Sep 1999 22:18:27 +1000
++
++ash (0.3.5-4) unstable; urgency=low
++
++  * Don't wait for stopped children if job control is disabled (fixes #42814).
++  * Allow an option '(' in a case statement (fixes #42364).
++
++ -- Herbert Xu <herbert@debian.org>  Thu, 12 Aug 1999 23:30:30 +1000
++
++ash (0.3.5-3) unstable; urgency=low
++
++  * OK, the fix to the esoteric problem in 0.3.5-1 actually breaks VSASSIGN
++    and VSQUESTION, they should work properly now (fixes #41327).
++
++ -- Herbert Xu <herbert@debian.org>  Thu, 15 Jul 1999 22:47:13 +1000
++
++ash (0.3.5-2) unstable; urgency=low
++
++  * PATH search and execution is now correct.
++  * hash no longer shows builtins.
++  * Added kill builtin.
++  * New description from James R. van Zandt reformatted by Josip Rodin.
++
++ -- Herbert Xu <herbert@debian.org>  Mon, 12 Jul 1999 18:51:42 +1000
++
++ash (0.3.5-1) unstable; urgency=low
++
++  * New upstream release.
++  * Adapted to new pmake (fixes #38737).
++  * Fixed behvaiour of backslashes preceding a closing brace for a parameter
++    substituion inside double quotes (even bash messes this one up :).
++  * Fixed command (fixes #34639).
++  * Fixed a pipe bug where stdin may be wrongly closed (fixes #35452).
++  * Revamped getopts (fixes #39694).
++
++ -- Herbert Xu <herbert@debian.org>  Sun,  4 Jul 1999 12:19:01 +1000
++
++ash (0.3.4-7) unstable; urgency=low
++
++  * Fixed a glibc 2.1 compatitibility problem.
++  * Fixed a PWD inconsistency that stuffed up the kernel compilation.
++
++ -- Herbert Xu <herbert@debian.org>  Mon, 17 May 1999 23:14:57 +1000
++
++ash (0.3.4-6) unstable; urgency=low
++
++  * Fixed incorrect -e test due to the last bug fix (fixes #26509).
++
++ -- Herbert Xu <herbert@debian.org>  Tue,  8 Sep 1998 10:02:46 +1000
++
++ash (0.3.4-5) unstable; urgency=low
++
++  * Use test_eaccess from bash instead of access(2) (fixes #26110).
++
++ -- Herbert Xu <herbert@debian.org>  Wed, 26 Aug 1998 21:22:49 +1000
++
++ash (0.3.4-4) unstable; urgency=low
++
++  * Only upload to unstable.
++
++ -- Herbert Xu <herbert@debian.org>  Tue,  5 May 1998 18:01:02 +1000
++
++ash (0.3.4-3) frozen unstable; urgency=low
++
++  * Applied sparc patch (fixes #21562).
++
++ -- Herbert Xu <herbert@debian.org>  Fri,  1 May 1998 19:48:13 +1000
++
++ash (0.3.4-2) frozen unstable; urgency=low
++
++  * Fixed the incorrect trap fixes (fixes #20363).
++
++ -- Herbert Xu <herbert@debian.org>  Thu, 16 Apr 1998 21:07:10 +1000
++
++ash (0.3.4-1) unstable; urgency=low
++
++  * New upstream release.
++  * Reverted word splitting change in 0.3.2-1 since the fix was broken and
++    major work (the quote removal is done too quickly at the moment) is needed
++    to fix it properly.
++  * Fixed more trap noncompliance.
++
++ -- Herbert Xu <herbert@debian.org>  Thu, 19 Mar 1998 22:59:12 +1100
++
++ash (0.3.2-5) unstable; urgency=low
++
++  * Fixed a bug when doing pattern matching in parameter expansions.
++
++ -- Herbert Xu <herbert@debian.org>  Tue, 10 Mar 1998 21:25:40 +1100
++
++ash (0.3.2-4) unstable; urgency=low
++
++  * Allow ] to be quoted in bracket expressions (fixes #17533).
++  * Move dh_fixperms to second last spot (fixes #18267).
++  * Don't do field splitting in evalfor.
++
++ -- Herbert Xu <herbert@debian.org>  Tue, 17 Feb 1998 13:32:09 +1100
++
++ash (0.3.2-3) unstable; urgency=low
++
++  * Fixed stupid core dump.
++
++ -- Herbert Xu <herbert@debian.org>  Wed, 11 Feb 1998 21:33:55 +1100
++
++ash (0.3.2-2) unstable; urgency=low
++
++  * Hack for special builtins (fixes #18055).
++  * Hack for command.
++
++ -- Herbert Xu <herbert@debian.org>  Wed, 11 Feb 1998 21:19:46 +1100
++
++ash (0.3.2-1) unstable; urgency=low
++
++  * NetBSD-current version as of 19980209.
++  * Fixed a word splitting problem after parameter expansion thanks to Alexey
++    Marinichev.
++  * Converted to debhelper (fixes #14612, #15005).
++
++ -- Herbert Xu <herbert@debian.org>  Mon,  9 Feb 1998 16:53:48 +1100
++
++ash (0.3.1-20) unstable; urgency=low
++
++  * Fixed -e problem with eval.
++
++ -- Herbert Xu <herbert@debian.org>  Sun,  7 Dec 1997 20:19:00 +1100
++
++ash (0.3.1-19) unstable; urgency=low
++
++  * Fixed -e problem with command substitution.
++
++ -- Herbert Xu <herbert@debian.org>  Sun,  7 Dec 1997 19:44:49 +1100
++
++ash (0.3.1-18) unstable; urgency=low
++
++  * Do not link with ncurses (#15485).
++
++ -- Herbert Xu <herbert@debian.org>  Sun, 30 Nov 1997 12:00:11 +1100
++
++ash (0.3.1-17) unstable; urgency=low
++
++  * Set PATH like bash (#15238).
++
++ -- Herbert Xu <herbert@debian.org>  Wed, 26 Nov 1997 16:17:27 +1100
++
++ash (0.3.1-16) unstable; urgency=low
++
++  * Fixed incorrect assignment builtin code.
++
++ -- Herbert Xu <herbert@debian.org>  Mon, 24 Nov 1997 16:19:10 +1100
++
++ash (0.3.1-15) unstable; urgency=low
++
++  * hash now returns error codes (needed by the Linux kernel).
++
++ -- Herbert Xu <herbert@debian.org>  Sun, 23 Nov 1997 21:37:08 +1100
++
++ash (0.3.1-14) unstable; urgency=low
++
++  * Disabled word-splitting for assignment builtins.
++
++ -- Herbert Xu <herbert@debian.org>  Sun, 23 Nov 1997 12:45:15 +1100
++
++ash (0.3.1-13) unstable; urgency=low
++
++  * ! is now recognised even after &&/||.
++
++ -- Herbert Xu <herbert@debian.org>  Fri, 21 Nov 1997 22:09:05 +1100
++
++ash (0.3.1-12) unstable; urgency=low
++
++  * More fixes to the handling of SIGINT when forking.
++
++ -- Herbert Xu <herbert@debian.org>  Fri, 14 Nov 1997 15:14:32 +1100
++
++ash (0.3.1-11) unstable; urgency=low
++
++  * Ignore SIGINT when forking non-interactively.
++
++ -- Herbert Xu <herbert@debian.org>  Mon,  3 Nov 1997 12:00:02 +1100
++
++ash (0.3.1-10) unstable; urgency=low
++
++  * echo now handles options correctly.
++  * echo nolonger returns 0 if erorrs occured while writing to stdout.
++  * New code from GNU echo merged.
++  * Error messages from test now work.
++
++ -- Herbert Xu <herbert@debian.org>  Wed,  8 Oct 1997 21:47:13 +1000
++
++ash (0.3.1-9) unstable; urgency=low
++
++  * ! is recognised at pipeline level like bash.
++
++ -- Herbert Xu <herbert@debian.org>  Mon, 15 Sep 1997 23:13:45 +1000
++
++ash (0.3.1-8) unstable; urgency=medium
++
++  * Old patch regarding SIGCHLD in again.
++
++ -- Herbert Xu <herbert@debian.org>  Sun, 31 Aug 1997 11:20:27 +1000
++
++ash (0.3.1-7) unstable; urgency=low
++
++  * /bin/sh -e is behaving even better now (for loops within conditionals).
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 23 Aug 1997 22:08:19 +1000
++
++ash (0.3.1-6) unstable; urgency=low
++
++  * /bin/sh -e is behaving better now.
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 23 Aug 1997 13:16:26 +1000
++
++ash (0.3.1-5) unstable; urgency=low
++
++  * hash -v /dir/command doesn't coredump anymore.
++  * type /dir/command now works correctly.
++
++ -- Herbert Xu <herbert@debian.org>  Fri,  1 Aug 1997 20:48:19 +1000
++
++ash (0.3.1-4) unstable; urgency=low
++
++  * trap now understands symbolic signal names.
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 26 Jul 1997 14:04:46 +1000
++
++ash (0.3.1-3) unstable; urgency=low
++
++  * Added the builtin test command.
++
++ -- Herbert Xu <herbert@debian.org>  Sun, 20 Jul 1997 15:00:14 +1000
++
++ash (0.3.1-2) unstable; urgency=medium
++
++  * Fixed a coredump involving $*.
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 19 Jul 1997 12:03:02 +1000
++
++ash (0.3.1-1) unstable; urgency=medium
++
++  * NetBSD-current version as of 19970715.
++  * Fixed a "use after free" bug (#11294).
++
++ -- Herbert Xu <herbert@debian.org>  Fri, 18 Jul 1997 13:48:09 +1000
++
++ash (0.3-1) unstable; urgency=low
++
++  * Initial Release.
++
++ -- Herbert Xu <herbert@debian.org>  Thu, 19 Jun 1997 19:29:16 +1000
++
+--- dash-0.5.2.orig/debian/control
++++ dash-0.5.2/debian/control
+@@ -0,0 +1,53 @@
++Source: dash
++Section: shells
++Priority: optional
++Maintainer: Gerrit Pape <pape@smarden.org>
++Build-Depends: po-debconf, dietlibc-dev [alpha amd64 arm hppa i386 ia64 mips mipsel powerpc ppc64 s390 sparc]
++Standards-Version: 3.6.2.0
++
++Package: dash
++Architecture: any
++Pre-Depends: ${shlibs:Depends}
++Description: The Debian Almquist Shell
++ "dash" is a POSIX compliant shell that is much smaller than "bash".
++ We take advantage of that by making it the shell on the installation
++ root floppy, where space is at a premium.
++ .
++ It can be usefully installed as /bin/sh (because it executes scripts
++ somewhat faster than "bash"), or as the default shell either of root
++ or of a second user with a userid of 0 (because it depends on fewer
++ libraries, and is therefore less likely to be affected by an upgrade
++ problem or a disk failure).  It is also useful for checking that a
++ script uses only POSIX syntax.
++ .
++ "bash" is a better shell for most users, since it has some nice
++ features absent from "dash", and is a required part of the system.
++
++Package: dash-udeb
++Architecture: any
++Depends: ${shlibs:Depends}
++Section: debian-installer
++Priority: extra
++Description: The Debian Almquist Shell for boot floppies
++ "dash" is a POSIX compliant shell that is much smaller than "bash".
++ We take advantage of that by making it the shell on the installation
++ root floppy, where space is at a premium.
++ .
++ It can be usefully installed as /bin/sh (because it executes scripts
++ somewhat faster than "bash"), or as the default shell either of root
++ or of a second user with a userid of 0 (because it depends on fewer
++ libraries, and is therefore less likely to be affected by an upgrade
++ problem or a disk failure).  It is also useful for checking that a
++ script uses only POSIX syntax.
++ .
++ "bash" is a better shell for most users, since it has some nice
++ features absent from "dash", and is a required part of the system.
++
++Package: ash
++Architecture: all
++Pre-Depends: dash
++Description: Compatibility package for the Debian Almquist Shell
++ This package exists so that users of the "ash" package can upgrade to the
++ "dash" package which replaces the former.  It includes the /bin/ash symlink.
++ You can remove this package if you do not use /bin/ash explicitly.
++
+--- dash-0.5.2.orig/debian/copyright
++++ dash-0.5.2/debian/copyright
+@@ -0,0 +1,45 @@
++This package was debianized by Mark W. Eichin eichin@kitten.gen.ma.us on
++Mon, 24 Feb 1997 16:00:16 -0500.
++
++This package was re-ported from NetBSD and debianized by
++Herbert Xu herbert@debian.org on Thu, 19 Jun 1997 19:29:16 +1000.
++
++This package was adopted by Gerrit Pape <pape@smarden.org> on
++Fri, 28 May 2004 18:38:18 +0000.
++
++It was downloaded from http://gondor.apana.org.au/~herbert/dash/
++
++Copyright:
++
++Copyright (c) 1989-1994
++	The Regents of the University of California.  All rights reserved.
++Copyright (c) 1997-2004
++	Herbert Xu <herbert@gondor.apana.org.au>.  All rights reserved.
++
++This code is derived from software contributed to Berkeley by Kenneth Almquist.
++
++Please refer to /usr/share/common-licenses/BSD for details.
++
++mksignames.c:
++
++This file is not directly linked with dash.  However, its output is.
++
++Copyright (C) 1992 Free Software Foundation, Inc.
++
++This file is part of GNU Bash, the Bourne Again SHell.
++
++Bash is free software; you can redistribute it and/or modify it under
++the terms of the GNU General Public License as published by the Free
++Software Foundation; either version 2, or (at your option) any later
++version.
++
++Bash is distributed in the hope that it will be useful, but WITHOUT ANY
++WARRANTY; without even the implied warranty of MERCHANTABILITY or
++FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
++for more details.
++
++You should have received a copy of the GNU General Public License with
++your Debian GNU/Linux system, in /usr/share/common-licenses/GPL, or with the
++Debian GNU/Linux hello source package as the file COPYING.  If not,
++write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
++Boston, MA 02111 USA.
+--- dash-0.5.2.orig/debian/dash.config
++++ dash-0.5.2/debian/dash.config
+@@ -0,0 +1,39 @@
++#!/bin/sh
++#
++# debconf script for the Debian GNU/Linux ash package
++#
++# $Id: dash.config,v 1.1 2002/09/14 06:17:50 herbert Exp $
++
++set -e
++
++. /usr/share/debconf/confmodule
++
++db_version 2.0
++
++if [ "$1" = configure ] && [ -z "$2" ]; then
++	set +e
++	db_fget ash/sh seen
++	err=$?
++	set -e
++
++	case $err in
++	0)
++		if [ "$RET" = true ]; then
++			db_fset dash/sh seen true
++			db_get ash/sh
++			db_set dash/sh "$RET"
++			exit
++		fi
++		;;
++	10)
++		# ash/sh does not exist
++		;;
++	*)
++		echo "db_fget exited with $err" >&2
++		exit $err
++		;;
++	esac
++fi
++
++db_input low dash/sh || true
++db_go
+--- dash-0.5.2.orig/debian/dash.docs
++++ dash-0.5.2/debian/dash.docs
+@@ -0,0 +1 @@
++debian/README.Debian.diet
+--- dash-0.5.2.orig/debian/dash.menu
++++ dash-0.5.2/debian/dash.menu
+@@ -0,0 +1,5 @@
++?package(dash): \
++  title="Dash"\
++  needs="text"\
++  section="Apps/Shells"\
++  command="/bin/dash -i"
+--- dash-0.5.2.orig/debian/dash.postinst
++++ dash-0.5.2/debian/dash.postinst
+@@ -0,0 +1,90 @@
++#!/bin/sh
++set -e
++
++check_divert() {
++	div=$(dpkg-divert --list $2)
++	distrib=${4:-$2.distrib}
++	case "$1" in
++	true)
++		if [ -z "$div" ]; then
++			dpkg-divert --package dash --divert $distrib --add $2
++			cp -dp $2 $distrib
++			ln -sf $3 $2
++		fi
++		;;
++	false)
++		if [ -n "$div" ] && [ -z "${div%%*by dash}" ]; then
++			mv $distrib $2
++			dpkg-divert --remove $2
++		fi
++		;;
++	ash)
++		case $div in
++		'')
++			;;
++		*by\ ash)
++			dst=${div% by ash}
++			dst=${dst##* to }
++
++			# Work around dpkg-divert bug.
++			if [ -e "$dst" ]; then
++				mv "$dst" "$dst.dash-tmp"
++			fi
++			dpkg-divert --remove $2
++			if [ -e "$dst.dash-tmp" ]; then
++				mv "$dst.dash-tmp" "$dst"
++			fi
++
++			dpkg-divert --package dash --divert $distrib --add $2
++			if [ "$dst" != $distrib ] && [ -e "$dst" ]; then
++				mv "$dst" $distrib
++			fi
++			ln -sf $3 $2
++			;;
++		*)
++			d=${2%/*}
++			if
++				[ -h $2 ] && [ -f $2 ] && [ -f $d/$5 ] &&
++				cmp $2 $d/$5
++			then
++				ln -sf $3 $2
++			fi
++			;;
++		esac
++	esac
++}
++
++add_shell() {
++	if ! type add-shell > /dev/null 2>&1; then
++		return
++	fi
++
++	add-shell /bin/dash
++}
++
++debconf=
++if [ -f /usr/share/debconf/confmodule ]; then
++	. /usr/share/debconf/confmodule
++	debconf=yes
++fi
++
++if [ "$1" = configure ] && [ -z "$2" ]; then
++	check_divert ash /bin/sh dash '' ash
++	check_divert ash /usr/share/man/man1/sh.1.gz dash.1.gz \
++		/usr/share/man/man1/sh.distrib.1.gz ash.1.gz
++	add_shell
++elif [ "$1" = configure ] && dpkg --compare-versions "$2" lt 0.4.18; then
++	add_shell
++fi
++
++if [ $debconf ]; then
++	db_get dash/sh
++	check_divert "$RET" /bin/sh dash
++	check_divert "$RET" /usr/share/man/man1/sh.1.gz dash.1.gz \
++		/usr/share/man/man1/sh.distrib.1.gz
++fi
++
++test "$1" = 'configure' || exit 0
++test -x /usr/bin/update-menus || exit 0
++test -z "$2" || dpkg --compare-versions "$2" lt 0.5.2-3 || exit 0
++exec update-menus
+--- dash-0.5.2.orig/debian/dash.postrm
++++ dash-0.5.2/debian/dash.postrm
+@@ -0,0 +1,10 @@
++#!/bin/sh
++set -e
++
++test "$1" != 'upgrade' || dpkg --compare-versions "$2" ge 0.5.2-3 || \
++  test ! -x /usr/bin/update-menus || exec update-menus
++test "$1" != 'remove' || test ! -x /usr/bin/update-menus || exec update-menus
++test "$1" = 'purge' || exit 0
++test -e /usr/share/debconf/confmodule || exit 0
++. /usr/share/debconf/confmodule
++db_purge
+--- dash-0.5.2.orig/debian/dash.prerm
++++ dash-0.5.2/debian/dash.prerm
+@@ -0,0 +1,34 @@
++#!/bin/sh
++#
++# pre-removal script for the Debian GNU/Linux ash package
++#
++# $Id: dash.prerm,v 1.2 2003/09/03 10:42:08 herbert Exp $
++
++set -e
++
++remove_divert() {
++	div=$(dpkg-divert --list $1)
++	if [ -n "$div" ] && [ -z "${div%%*by dash}" ]; then
++		distrib=${div% by dash}
++		distrib=${distrib##* to }
++		mv $distrib $1
++		dpkg-divert --remove $1
++	fi
++}
++
++remove_shell() {
++	if ! type remove-shell > /dev/null 2>&1; then
++		return
++	fi
++
++	remove-shell /bin/dash
++}
++
++if [ "$1" = remove ] || [ "$1" = deconfigure ]; then
++	remove_divert /bin/sh
++	remove_divert /usr/share/man/man1/sh.1.gz
++fi
++
++if [ "$1" = remove ]; then
++	remove_shell
++fi
+--- dash-0.5.2.orig/debian/dash.templates.in
++++ dash-0.5.2/debian/dash.templates.in
+@@ -0,0 +1,9 @@
++Template: dash/sh
++Type: boolean
++Default: false
++_Description: Install dash as /bin/sh?
++ Bash is the default /bin/sh on a Debian system.  However, since our policy
++ requires all shell scripts using /bin/sh to be POSIX compliant, any shell
++ that conforms to POSIX can serve as /bin/sh.  Since dash is POSIX
++ compliant, it can be used as /bin/sh.  You may wish to do this because
++ dash is faster and smaller than bash.
+--- dash-0.5.2.orig/debian/implicit
++++ dash-0.5.2/debian/implicit
+@@ -0,0 +1,85 @@
++# $Id: implicit,v 1.10 2004/07/03 15:20:00 pape Exp $
++
++.PHONY: deb-checkdir deb-checkuid
++
++deb-checkdir:
++	@test -e debian/control || sh -cx '! : wrong directory'
++deb-checkuid:
++	@test "`id -u`" -eq 0 || sh -cx '! : need root privileges'
++
++%.deb: %.deb-docs %.deb-DEBIAN
++	@rm -f $*.deb $*.deb-checkdir $*.deb-docs $*.deb-docs-base \
++	  $*.deb-docs-docs $*.deb-docs-examples $*.deb-DEBIAN \
++	  $*.deb-DEBIAN-dir $*.deb-DEBIAN-scripts $*.deb-DEBIAN-md5sums
++
++%.udeb: %.deb-DEBIAN
++	@rm -f $*.deb $*.deb-checkdir $*.deb-DEBIAN $*.deb-DEBIAN-dir \
++	  $*.deb-DEBIAN-scripts $*.deb-DEBIAN-md5sums
++
++%.deb-checkdir:
++	@test -d debian/$* || sh -cx '! : directory debian/$* missing'
++	@test "`id -u`" -eq 0 || sh -cx '! : need root privileges'
++
++%.deb-docs-base:
++	: implicit
++	@rm -f debian/$*/usr/share/doc/$*/* || :
++	@install -d -m0755 debian/$*/usr/share/doc/$*
++	: debian/$*/usr/share/doc/$*/
++	@sh -cx 'install -m0644 debian/copyright debian/$*/usr/share/doc/$*/'
++	@sh -cx 'install -m0644 debian/changelog \
++	  debian/$*/usr/share/doc/$*/changelog.Debian'
++	@test ! -r changelog || \
++	  sh -cx 'install -m0644 changelog debian/$*/usr/share/doc/$*/'
++	@test -r debian/$*/usr/share/doc/$*/changelog || \
++	  sh -cx 'mv debian/$*/usr/share/doc/$*/changelog.Debian \
++	    debian/$*/usr/share/doc/$*/changelog'
++	@test -s debian/$*/usr/share/doc/$*/changelog || \
++	  sh -cx 'rm -f debian/$*/usr/share/doc/$*/changelog'
++	@gzip -9 debian/$*/usr/share/doc/$*/changelog*
++%.deb-docs-docs:
++	@for i in `cat debian/$*.docs 2>/dev/null || :`; do \
++	  sh -cx "install -m0644 $$i debian/$*/usr/share/doc/$*/" || exit 1; \
++	done
++	@test ! -r debian/$*.README.Debian || \
++	  sh -cx 'install -m0644 debian/$*.README.Debian \
++	    debian/$*/usr/share/doc/$*/README.Debian'
++	@if test -r debian/$*.NEWS.Debian; then \
++	  sh -cx 'install -m0644 debian/$*.NEWS.Debian \
++	    debian/$*/usr/share/doc/$*/NEWS.Debian && \
++	      gzip -9 debian/$*/usr/share/doc/$*/NEWS.Debian'; \
++	fi
++%.deb-docs-examples:
++	@rm -rf debian/$*/usr/share/doc/$*/examples
++	: debian/$*/usr/share/doc/$*/examples/
++	@test ! -r debian/$*.examples || \
++	  install -d -m0755 debian/$*/usr/share/doc/$*/examples
++	@for i in `cat debian/$*.examples 2>/dev/null || :`; do \
++	  sh -cx "install -m0644 $$i debian/$*/usr/share/doc/$*/examples/" \
++	    || exit 1; \
++	done
++%.deb-docs: %.deb-checkdir %.deb-docs-base %.deb-docs-docs %.deb-docs-examples
++	: debian/$*/usr/share/doc/$*/ ok
++
++%.deb-DEBIAN-base:
++	@rm -rf debian/$*/DEBIAN
++	: debian/$*/DEBIAN/
++	@install -d -m0755 debian/$*/DEBIAN
++	@for i in conffiles shlibs templates; do \
++	  test ! -r debian/$*.$$i || \
++	    sh -cx "install -m0644 debian/$*.$$i debian/$*/DEBIAN/$$i" \
++	      || exit 1; \
++	done
++%.deb-DEBIAN-scripts:
++	@for i in preinst prerm postinst postrm config; do \
++	  test ! -r debian/$*.$$i || \
++	    sh -cx "install -m0755 debian/$*.$$i debian/$*/DEBIAN/$$i" \
++	      || exit 1; \
++	done
++%.deb-DEBIAN-md5sums:
++	: debian/$*/DEBIAN/md5sums
++	@rm -f debian/$*/DEBIAN/md5sums
++	@cd debian/$* && find * -path 'DEBIAN' -prune -o \
++	  -type f -exec md5sum {} >>DEBIAN/md5sums \;
++%.deb-DEBIAN: %.deb-checkdir %.deb-DEBIAN-base %.deb-DEBIAN-scripts \
++	  %.deb-DEBIAN-md5sums
++	: debian/$*/DEBIAN/ ok
+--- dash-0.5.2.orig/debian/rules
++++ dash-0.5.2/debian/rules
+@@ -0,0 +1,111 @@
++#!/usr/bin/make -f
++
++CC =cc
++CFLAGS =-g -O2 -Wall
++CCUDEB =diet -v -Os gcc
++CFLAGSUDEB =-nostdinc -g -Os -DREALLY_SMALL -Wall
++STRIP =strip
++
++DIET_ARCHS =alpha amd64 arm hppa i386 ia64 mips mipsel powerpc ppc64 s390 sparc
++ARCH ?=$(shell dpkg-architecture -qDEB_HOST_ARCH)
++ifeq (,$(findstring $(ARCH),$(DIET_ARCHS)))
++  CCUDEB =$(CC)
++  CFLAGSUDEB =-g -Os -DREALLY_SMALL -Wall
++endif
++ifneq (,$(findstring diet,$(DEB_BUILD_OPTIONS)))
++  CC =diet -v -Os gcc
++  CFLAGS =-nostdinc -Wall
++endif
++ifneq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
++  STRIP =: strip
++endif
++
++DIR =$(shell pwd)/debian/dash
++DIRA =$(shell pwd)/debian/ash
++
++configure: deb-checkdir configure-stamp configure-udeb-stamp
++configure-stamp:
++	mkdir -p build-tmp
++	(cd build-tmp && CC='$(CC)' CFLAGS='$(CFLAGS)' exec ../configure)
++	touch configure-stamp
++configure-udeb-stamp:
++	mkdir -p build-udeb-tmp
++	(cd build-udeb-tmp && \
++	  CC='$(CCUDEB)' CFLAGS='$(CFLAGSUDEB)' exec ../configure)
++	touch configure-udeb-stamp
++
++build: deb-checkdir build-stamp build-udeb-stamp
++build-stamp: configure-stamp
++	-gcc -v
++	(cd build-tmp && exec $(MAKE) CFLAGS='$(CFLAGS)')
++	touch build-stamp
++build-udeb-stamp: configure-udeb-stamp
++	-gcc -v
++	(cd build-udeb-tmp && exec $(MAKE) CFLAGS='$(CFLAGSUDEB)')
++	touch build-udeb-stamp
++
++po-templates: po-templates-stamp
++po-templates-stamp: deb-checkdir
++	po2debconf debian/dash.templates.in >debian/dash.templates
++	touch po-templates-stamp
++
++clean: deb-checkdir deb-checkuid
++	rm -rf build-tmp build-udeb-tmp
++	rm -f configure-stamp configure-udeb-stamp build-stamp \
++	  build-udeb-stamp po-templates-stamp
++	rm -rf '$(DIR)' '$(DIR)'-udeb '$(DIRA)'
++	rm -f debian/files debian/substvars debian/dash.templates changelog
++
++install: install-indep install-arch
++install-indep: deb-checkdir deb-checkuid
++	rm -rf '$(DIRA)'
++	install -d -m0755 '$(DIRA)'/bin
++	ln -s dash '$(DIRA)'/bin/ash
++	install -d -m0755 '$(DIRA)'/usr/share/man/man1/
++	ln -s dash.1.gz '$(DIRA)'/usr/share/man/man1/ash.1.gz
++	# changelog
++	test -r changelog || ln -s ChangeLog changelog
++install-arch: deb-checkdir deb-checkuid build-stamp build-udeb-stamp
++	# dash
++	rm -rf '$(DIR)'
++	install -d -m0755 '$(DIR)'/bin
++	install -m0755 build-tmp/src/dash '$(DIR)'/bin/dash
++	$(STRIP) -R .comment -R .note '$(DIR)'/bin/dash
++	install -d -m0755 '$(DIR)'/usr/share/man/man1/
++	install -m0644 src/dash.1 '$(DIR)'/usr/share/man/man1/dash.1
++	gzip -9 '$(DIR)'/usr/share/man/man1/dash.1
++	install -d -m0755 '$(DIR)'/usr/share/menu
++	install -m0644 debian/dash.menu '$(DIR)'/usr/share/menu/dash
++	# dash-udeb
++	rm -rf '$(DIR)'-udeb
++	install -d -m0755 '$(DIR)'-udeb/bin
++	install -m0755 build-udeb-tmp/src/dash '$(DIR)'-udeb/bin/dash
++	$(STRIP) -R .comment -R .note '$(DIR)'-udeb/bin/dash
++	ln -s dash '$(DIR)'-udeb/bin/sh
++	# changelog
++	test -r changelog || ln -s ChangeLog changelog
++
++binary: binary-indep binary-arch
++binary-indep: install-indep ash.deb
++	dpkg-gencontrol -isp -pash -P'$(DIRA)'
++	dpkg -b '$(DIRA)' ..
++binary-arch: install-arch po-templates dash.deb dash-udeb.udeb
++	# dash
++	rm -f debian/substvars
++	test '$(CC)' != 'cc' || dpkg-shlibdeps '$(DIR)'/bin/dash
++	dpkg-gencontrol -isp -pdash -P'$(DIR)'
++	dpkg -b '$(DIR)' ..
++	# dash-udeb
++	rm -f debian/substvars
++	test '$(CCUDEB)' != 'cc' || dpkg-shlibdeps '$(DIR)'-udeb/bin/dash
++	dpkg-gencontrol -isp -pdash-udeb -P'$(DIR)'-udeb
++	dpkg -b '$(DIR)'-udeb ..
++	for i in ../dash-udeb_*.deb; do mv $$i $${i%deb}udeb; done
++	sed -e '/^[^ ]*\.udeb/d;s/^\(dash-udeb_[^ ]*\.\)deb/\1udeb/' \
++	  <debian/files >debian/files.new
++	mv debian/files.new debian/files
++
++.PHONY: configure build po-templates clean install install-indep \
++	  install-arch binary binary-indep binary-arch
++
++include debian/implicit
+--- dash-0.5.2.orig/src/dash.1
++++ dash-0.5.2/src/dash.1
+@@ -743,7 +743,7 @@
+ inside g will refer to the variable x declared inside f, not to the global
+ variable named x.
+ .Pp
+-The only special parameter than can be made local is
++The only special parameter that can be made local is
+ .Dq - .
+ Making
+ .Dq -
+@@ -1029,7 +1029,7 @@
+ .Pp
+ The shell treats each character of the
+ .Ev IFS
+-as a delimiter and use the delimiters to split the results of parameter
++as a delimiter and uses the delimiters to split the results of parameter
+ expansion and command substitution into fields.
+ .Ss Pathname Expansion (File Name Generation)
+ Unless the
+--- dash-0.5.2.orig/src/eval.c
++++ dash-0.5.2/src/eval.c
+@@ -322,8 +322,10 @@
+ out:
+ 	if (pendingsigs)
+ 		dotrap();
+-	if (flags & EV_EXIT || checkexit & exitstatus)
++	if (flags & EV_EXIT)
+ 		exraise(EXEXIT);
++	if ((checkexit & exitstatus) && evalskip != SKIPFILE)
++		evalskip = SKIPEVAL;
+ }
+ 
+ 
+@@ -929,6 +931,8 @@
+ 	commandname = savecmdname;
+ 	exsig = 0;
+ 	handler = savehandler;
++	if (evalskip == SKIPEVAL)
++		evalskip = 0;
+ 
+ 	return i;
+ }
+--- dash-0.5.2.orig/src/eval.h
++++ dash-0.5.2/src/eval.h
+@@ -66,3 +66,4 @@
+ #define SKIPCONT	2
+ #define SKIPFUNC	3
+ #define SKIPFILE	4
++#define SKIPEVAL	5
+--- dash-0.5.2.orig/src/var.c
++++ dash-0.5.2/src/var.c
+@@ -232,7 +232,7 @@
+ 	INTOFF;
+ 	p = mempcpy(nameeq = ckmalloc(namelen + vallen + 2), name, namelen);
+ 	*p++ = '\0';
+-	if (vallen) {
++	if (val) {
+ 		p[-1] = '=';
+ 		p = mempcpy(p, val, vallen);
+ 	}
