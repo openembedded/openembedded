@@ -7,7 +7,7 @@ RDEPENDS = "python"
 SRCDATE = "20050404"
 PR = "r23"
 
-SRC_URI = "${HANDHELDS_CVS};module=ipkg-utils \
+SRC_URI = "http://www.the-little-red-haired-girl.org/pub/nylon/thirdparty/ipkg-utils_${PV}.tar.gz \
            file://ipkg-utils-fix.patch;patch=1 \
            file://ipkg-py-sane-vercompare.patch;patch=1 \
            file://ipkg-py-tarfile.patch;patch=1 \
