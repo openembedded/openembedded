@@ -5,7 +5,7 @@ LICENSE = "GPL"
 S = "${WORKDIR}/update-rc.d"
 PR = "r1"
 
-SRC_URI = "${HANDHELDS_CVS};module=apps/update-rc.d;tag=r0_7 \
+SRC_URI = "http://www.the-little-red-haired-girl.org/pub/nylon/thirdparty/update-rc.d-0.7.tar.gz \
            file://add-verbose.patch;patch=1"
 
 PACKAGE_ARCH = "all"
