@@ -1,6 +1,7 @@
 DESCRIPTION = "Host side USB console utilities."
 SECTION = "base"
 DEPENDS += "libusb-compat"
+DEPENDS_nylon += "libusb"
 LICENSE = "GPL"
 PRIORITY = "optional"
 DEFAULT_PREFERENCE = "1"
