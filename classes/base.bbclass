@@ -1278,8 +1278,7 @@ ${DEBIAN_MIRROR}	ftp://ftp.tr.debian.org/debian/pool
 ${GNU_MIRROR}	ftp://mirrors.kernel.org/gnu
 ${GNU_MIRROR}	ftp://ftp.matrix.com.br/pub/gnu
 ${GNU_MIRROR}	ftp://ftp.cs.ubc.ca/mirror2/gnu
-${GNU_MIRROR}	ftp://sunsite.ust.hk/pub/gnu
-${GNU_MIRROR}	ftp://ftp.ayamura.org/pub/gnu
+${GNU_MIRROR}	ftp://ftp.gnu.org/gnu/gdb/
 ${KERNELORG_MIRROR}	http://www.kernel.org/pub
 ${KERNELORG_MIRROR}	ftp://ftp.us.kernel.org/pub
 ${KERNELORG_MIRROR}	ftp://ftp.uk.kernel.org/pub
