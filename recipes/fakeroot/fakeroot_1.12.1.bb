@@ -4,7 +4,7 @@ SECTION = "base"
 LICENSE = "GPL"
 
 SRC_URI = "\
-  ${DEBIAN_MIRROR}/main/f/fakeroot/fakeroot_${PV}.tar.gz \
+  http://www.the-little-red-haired-girl.org/pub/nylon/thirdparty/fakeroot_${PV}.tar.gz \
   file://configure-libtool.patch;patch=1 \
 "
 	    
