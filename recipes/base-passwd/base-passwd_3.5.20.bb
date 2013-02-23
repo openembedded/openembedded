@@ -3,7 +3,7 @@ SECTION = "base"
 LICENSE = "GPL"
 
 SRC_URI = "\
-  ${DEBIAN_MIRROR}/main/b/base-passwd/base-passwd_${PV}.tar.gz \
+  http://www.the-little-red-haired-girl.org/pub/nylon/thirdparty/base-passwd_${PV}.tar.gz \
   file://nobash.patch;patch=1 \
   file://root-home.patch;patch=1 \
   file://mysql.patch;patch=1 \
