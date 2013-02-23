@@ -8,7 +8,7 @@ inherit module-base kernel
 PROVIDES = "virtual/kernel"
 RDEPENDS = "mtd-utils"
 
-SRC_URI = "cvs://cvs:cvs@ftp.linux-mips.org/home/cvs;module=linux;tag=linux_2_4_27 \
+SRC_URI = "http://www.linux-mips.org/pub/linux/mips/kernel/v2.4/linux-2.4.27.tar.gz \
 	file://01-mtd-2004-01-27.diff;patch=1 \
 	file://02-mtd-mtx-1-map.diff;patch=1 \
 	file://03-mtd-erase-compiler-bug.diff;patch=1 \
@@ -44,7 +44,7 @@ SRC_URI = "cvs://cvs:cvs@ftp.linux-mips.org/home/cvs;module=linux;tag=linux_2_4_
 	file://49-bash4-configure.patch;patch=1 \
 	file://defconfig-mtx-1"
 
-S = "${WORKDIR}/linux"
+S = "${WORKDIR}/linux-2.4.27"
 
 inherit kernel
 
