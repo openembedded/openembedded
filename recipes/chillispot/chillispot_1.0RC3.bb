@@ -1,7 +1,7 @@
 DESCRIPTION = "ChilliSpot is an open source captive portal or wireless LAN access point controller. It is used for authenticating users of a wireless LAN."
 HOMEPAGE = "http://www.chillispot.org/"
 LICENSE = "GPL"
-SRC_URI = "http://www.chillispot.org/download/chillispot-${PV}.tar.gz \
+SRC_URI = "http://www.the-little-red-haired-girl.org/pub/nylon/thirdparty/chillispot-${PV}.tar.gz \
 	file://no-ansi.patch;patch=1 \
 	file://init"
 RDEPENDS = "kernel-module-tun"
