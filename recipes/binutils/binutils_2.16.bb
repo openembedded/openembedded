@@ -1,7 +1,7 @@
 PR = "r10"
 
 SRC_URI = \
-    "${GNU_MIRROR}/binutils/binutils-${PV}.tar.bz2 \
+    http://ftp.gnu.org/gnu/binutils/binutils-${PV}.tar.bz2 \
      file://ld_makefile.patch;patch=1 \
      file://better_file_error.patch;patch=1 \
      file://signed_char_fix.patch;patch=1 \
