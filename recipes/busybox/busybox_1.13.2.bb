@@ -2,7 +2,7 @@ require busybox.inc
 PR = "r19"
 
 SRC_URI = "\
-  http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
+  http://www.the-little-red-haired-girl.org/pub/nylon/thirdparty/busybox-${PV}.tar.gz \
   file://busybox-1.13.2-awk.patch;patch=1 \
   file://busybox-1.13.2-depmod.patch;patch=1 \
   file://busybox-1.13.2-init.patch;patch=1 \
