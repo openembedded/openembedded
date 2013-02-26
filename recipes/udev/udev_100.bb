@@ -11,7 +11,7 @@ needed to link programs with libvolume_id."
 
 PR = "r15"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
+SRC_URI = "http://www.the-little-red-haired-girl.org/pub/nylon/thirdparty/udev-${PV}.tar.gz \
 	   file://noasmlinkage.patch;patch=1 \
 	   file://flags.patch;patch=1 \
 	   file://mount.blacklist \
