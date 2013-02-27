@@ -2,10 +2,7 @@ LICENSE = "MIT"
 
 include nylon-feed.inc
 DEPENDS = "${NYLON_FEED} \
-    boost \
     db3 \
-    dhcp \
-    dhcp-forwarder \
     expat \
     glib-2.0 \
     glibc \
@@ -19,18 +16,14 @@ DEPENDS = "${NYLON_FEED} \
     lzo \
     make \
     mystun-server \
-    mc \
-    net-snmp \
     openssl \
     openswan \
     openvpn \
-    python \
     ppp-dsl \
     rp-pppoe \
     simple-firewall \
     thttpd \
     wget \
-    wlan-ng-modules \
     zlib \
 "
 
