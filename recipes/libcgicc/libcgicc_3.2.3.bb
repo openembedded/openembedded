@@ -2,7 +2,7 @@ DESCRIPTION = "a C++ class library for writing CGI applications"
 HOMEPAGE = "http://www.cgicc.org/"
 LICENSE = "LGPL"
 
-SRC_URI = "http://www.cgicc.org/files/cgicc-${PV}.tar.bz2"
+SRC_URI = "http://ftp.gnu.org/gnu/cgicc/cgicc-${PV}.tar.bz2"
 S = "${WORKDIR}/cgicc-${PV}"
 
 inherit autotools
