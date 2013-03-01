@@ -1,0 +1,8 @@
+--- nylon-scripts/etc/network/if-pre-up.d/wireless-acl-orig	2013-03-02 03:33:23.000000000 +0100
++++ nylon-scripts/etc/network/if-pre-up.d/wireless-acl	2013-03-02 03:33:32.000000000 +0100
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ case "$METHOD" in loopback) exit 0 ;; esac
+ 

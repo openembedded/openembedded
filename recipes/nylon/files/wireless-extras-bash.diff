@@ -1,0 +1,8 @@
+--- nylon-scripts/etc/network/if-pre-up.d/wireless-extras-orig	2013-03-01 21:12:05.000000000 +0100
++++ nylon-scripts/etc/network/if-pre-up.d/wireless-extras	2013-03-01 21:12:18.000000000 +0100
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ case "$METHOD" in loopback) exit 0 ;; esac
+ 
