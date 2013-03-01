@@ -10,6 +10,9 @@ SRC_URI = "file://hostap_cs.conf \
            file://hostap_cs.modalias \
            file://hostap_cs.conf-upstream"
 
+SRC_URI_nylon = "file://hostap_cs.conf \
+           file://hostap_cs.conf-upstream"
+
 do_compile() {
 }
 
@@ -20,7 +23,9 @@ do_install() {
         install -m 0644 ${WORKDIR}/hostap_cs.conf-upstream ${D}${sysconfdir}/pcmcia/hostap_cs.conf
 	cat ${WORKDIR}/hostap_cs.conf >>${D}${sysconfdir}/pcmcia/hostap_cs.conf
 
-	install -m 0644 ${WORKDIR}/hostap_cs.modalias ${D}${sysconfdir}/modutils/hostap_cs.conf
+	if [ -r test -r ${WORKDIR}/hostap_cs.modalias ] ; then 
+		install -m 0644 ${WORKDIR}/hostap_cs.modalias ${D}${sysconfdir}/modutils/hostap_cs.conf
+	fi
 }
 
 pkg_postinst () {
