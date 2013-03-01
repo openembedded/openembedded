@@ -1,0 +1,11 @@
+--- elvis-2.2_1/data/elvis.ini-orig	2013-03-01 22:12:00.000000000 +0100
++++ elvis-2.2_1/data/elvis.ini	2013-03-01 22:12:10.000000000 +0100
+@@ -93,7 +93,7 @@
+ "
+ """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+ " DEFAULT COLORS
+-source! (elvispath("elvis.clr"))
++"source! (elvispath("elvis.clr"))
+ "
+ """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+ " EXECUTE THE STANDARD CUSTOMIZATION SCRIPTS
