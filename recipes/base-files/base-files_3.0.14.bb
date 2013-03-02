@@ -126,7 +126,6 @@ do_install_append_mnci () {
 }
 
 do_install_append_nylon() {
-	printf "" "" >${D}${sysconfdir}/resolv.conf
 	rm -r ${D}/mnt/*
 	rm -r ${D}/media
 	rm -rf ${D}/tmp
@@ -156,6 +155,6 @@ PACKAGE_ARCH_rt3000 = "rt3000"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 CONFFILES_${PN} = "${sysconfdir}/fstab ${sysconfdir}/hostname"
-CONFFILES_${PN}_nylon = "${sysconfdir}/resolv.conf ${sysconfdir}/fstab ${sysconfdir}/hostname"
+CONFFILES_${PN}_nylon = "${sysconfdir}/fstab ${sysconfdir}/hostname"
 CONFFILES_${PN}_slugos = "${sysconfdir}/resolv.conf ${sysconfdir}/fstab ${sysconfdir}/hostname"
 
