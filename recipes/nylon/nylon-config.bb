@@ -31,7 +31,7 @@ ln -s /etc/ppp/resolv.conf /etc/resolv.conf
 update-rc.d factorydefaults start 90 2 .
 
 # "fix" /etc/network/interfaces
-perl -I /srv/www/cgi-bin -MConfig::IFace -e '$w=new Config::IFace(); $v = $w->read(); $v->{auto} = {0=>"lo",1=>eth0,2=>"wlan0",3=>"wlan1",4=>"ath0",5=>"ath1"}; $w->write($v)'
+perl -I /srv/www/cgi-bin -MConfig::IFace -e '$w=new Config::IFace(); $v = $w->read(); $v->{auto} = {0=>"lo",1=>eth0,2=>"wlan0",3=>"wlan1"}; $w->write($v)'
 
 update-rc.d busybox-httpd start 40 2 3 4 5 .
 /etc/init.d/busybox-httpd stop || true

@@ -13,7 +13,8 @@ RDEPENDS = "bash"
 SRC_URI = "http://download.berlin.freifunk.net/meshcube.org/nylon/stable/sources/${PN}_gruen.4g__${SRCDATE}.tar.gz \
 	file://firewall-bash.diff;patch=1 \
 	file://wireless-acl-bash.diff;patch=1 \
-	file://wireless-extras-bash.diff;patch=1"
+	file://wireless-extras-bash.diff;patch=1 \
+	file://ath-to-wlan.diff;patch=1"
 S = "${WORKDIR}/${PN}"
 INHIBIT_PACKAGE_STRIP = "1"
 
