@@ -24,7 +24,7 @@ if test "x$D" != "x"; then
 fi
 
 # Create resolv.conf-link to ppp-file
-rm /etc/resolv.conf
+rm -f /etc/resolv.conf
 ln -s /etc/ppp/resolv.conf /etc/resolv.conf
 
 # enable factorydefaults
@@ -34,7 +34,8 @@ update-rc.d factorydefaults start 90 2 .
 perl -I /srv/www/cgi-bin -MConfig::IFace -e '$w=new Config::IFace(); $v = $w->read(); $v->{auto} = {0=>"lo",1=>eth0,2=>"wlan0",3=>"wlan1",4=>"ath0",5=>"ath1"}; $w->write($v)'
 
 update-rc.d busybox-httpd start 40 2 3 4 5 .
-/etc/init.d/busybox-httpd restart
+/etc/init.d/busybox-httpd stop || true
+/etc/init.d/busybox-httpd start
 }
 
 FILES_${PN} += "/srv"
