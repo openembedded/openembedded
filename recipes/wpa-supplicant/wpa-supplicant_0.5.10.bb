@@ -14,6 +14,11 @@ SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
 	file://defconfig-gnutls \
 	file://ifupdown.sh \
 	file://functions.sh"
+SRC_URI_nylon = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
+	file://driver-madwifi.patch;patch=1\
+	file://defconfig-gnutls \
+	file://ifupdown.sh \
+	file://functions.sh"
 
 S = "${WORKDIR}/wpa_supplicant-${PV}"
 
