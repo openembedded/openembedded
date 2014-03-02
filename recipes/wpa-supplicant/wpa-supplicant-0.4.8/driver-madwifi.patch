@@ -1,0 +1,25 @@
+--- wpa_supplicant-0.4.7/driver_madwifi.c-orig	2014-01-03 20:39:58.000000000 +0100
++++ wpa_supplicant-0.4.7/driver_madwifi.c	2014-01-03 20:40:11.000000000 +0100
+@@ -28,16 +28,16 @@
+ #include "wpa.h"
+ #include "wireless_copy.h"
+ 
+-#include <net80211/compat.h>
+-#include <net80211/_ieee80211.h>
+-#include <net80211/ieee80211.h>
++#include <madwifi/net80211/compat.h>
++#include <madwifi/net80211/_ieee80211.h>
++#include <madwifi/net80211/ieee80211.h>
+ #ifdef WME_NUM_AC
+ /* Assume this is built against BSD branch of madwifi driver. */
+ #define MADWIFI_BSD
+-#include <net80211/_ieee80211.h>
++#include <madwifi/net80211/_ieee80211.h>
+ #endif /* WME_NUM_AC */
+-#include <net80211/ieee80211_crypto.h>
+-#include <net80211/ieee80211_ioctl.h>
++#include <madwifi/net80211/ieee80211_crypto.h>
++#include <madwifi/net80211/ieee80211_ioctl.h>
+ 
+ #ifdef IEEE80211_IOCTL_SETWMMPARAMS
+ /* Assume this is built against madwifi-ng */
