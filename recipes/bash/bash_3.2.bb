@@ -1,6 +1,6 @@
 require bash.inc
 
-PR = "r12"
+PR = "r13"
 
 SRC_URI += "\
            file://builtins.patch \
@@ -43,6 +43,19 @@ SRC_URI += "\
            http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-037;apply=yes;striplevel=0;name=bash32-37 \
            http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-038;apply=yes;striplevel=0;name=bash32-38 \
            http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-039;apply=yes;striplevel=0;name=bash32-39 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-040;apply=yes;striplevel=0;name=bash32-40 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-041;apply=yes;striplevel=0;name=bash32-41 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-042;apply=yes;striplevel=0;name=bash32-42 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-043;apply=yes;striplevel=0;name=bash32-43 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-044;apply=yes;striplevel=0;name=bash32-44 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-045;apply=yes;striplevel=0;name=bash32-45 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-046;apply=yes;striplevel=0;name=bash32-46 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-047;apply=yes;striplevel=0;name=bash32-47 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-048;apply=yes;striplevel=0;name=bash32-48 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-049;apply=yes;striplevel=0;name=bash32-49 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-050;apply=yes;striplevel=0;name=bash32-50 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-051;apply=yes;striplevel=0;name=bash32-51 \
+           http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-052;apply=yes;striplevel=0;name=bash32-52 \
            file://default_path.patch \
            "
 
@@ -126,3 +139,29 @@ SRC_URI[bash32-38.md5sum] = "aca3afc341bd3e5a0d8a3b4ca40dbb3f"
 SRC_URI[bash32-38.sha256sum] = "0e3649531c3a5675743980ecf5ff5fcbca2801afe4dca7fb4b250aae7ac3b782"
 SRC_URI[bash32-39.md5sum] = "e240c34f979b64bcb83c5f6567110bb1"
 SRC_URI[bash32-39.sha256sum] = "46d427fd5b1509ec7dd980c07efd88634fde61cf07ab221dcbde9e1021bd2817"
+SRC_URI[bash32-40.md5sum] = "06e6df263398807fa032707fb7b77b5f"
+SRC_URI[bash32-40.sha256sum] = "c9e0387eb4a2904126864d24de0699cdb6070789e1c02287a3b81ea96bf945aa"
+SRC_URI[bash32-41.md5sum] = "373ae081d658dc85bc1058c4759d6669"
+SRC_URI[bash32-41.sha256sum] = "cc551fa57d613efea30ab2404fe724793a3d10f012b030e611d2c6449e463bcd"
+SRC_URI[bash32-42.md5sum] = "9c9ebc6bfc33a0215277ee17a276eb5a"
+SRC_URI[bash32-42.sha256sum] = "fd0df54d03034e104b6377f249624bda0271aa874190a46e9d41fc49ad3caaef"
+SRC_URI[bash32-43.md5sum] = "b87fb9ea16a64ca41b6676e9a7eb7a33"
+SRC_URI[bash32-43.sha256sum] = "43df7d2d7d61d3a8f0e14bc86d4f55b6d2e64829ba0829a78f5214d186087af7"
+SRC_URI[bash32-44.md5sum] = "07e0229ce5879bfbd26a8146070fd366"
+SRC_URI[bash32-44.sha256sum] = "204b5ecaaa5de334c3cfbce6dfd8a9d3770b09024ab4724d86080fbf501ded69"
+SRC_URI[bash32-45.md5sum] = "1ad07965a8a93f3556ee1ab18b97cde2"
+SRC_URI[bash32-45.sha256sum] = "3250e6c6d5d6884e31beaa2f521d2a1af9c2f701a4c0e67a7cd011b6ad8f082b"
+SRC_URI[bash32-46.md5sum] = "f7b1e19fcad54c2286bc0ed614aad9bf"
+SRC_URI[bash32-46.sha256sum] = "fc829e92fa951c34368d83272d746f5c0ed345a7ad037f93322347eed00a1e1f"
+SRC_URI[bash32-47.md5sum] = "550690766de770116c34dbdf74e59184"
+SRC_URI[bash32-47.sha256sum] = "623d4a958d2b022a15929a4de7403766ff07b295a185987b4d1e6cf3b70ea106"
+SRC_URI[bash32-48.md5sum] = "4cc593e7b789b23b37a5397e092d3954"
+SRC_URI[bash32-48.sha256sum] = "74cb56764274f393676f68738eb22a3ed8fa388c0487feeadf0d78a45b549749"
+SRC_URI[bash32-49.md5sum] = "af571a2d164d5abdcae4499e94e8892c"
+SRC_URI[bash32-49.sha256sum] = "b1217ed94bdb95dc878fa5cabbf8a164435eb0d9da23a392198f48566ee34a2f"
+SRC_URI[bash32-50.md5sum] = "8443d4385d73ec835abe401d90591377"
+SRC_URI[bash32-50.sha256sum] = "081bb03c580ecee63ba03b40beb3caf509eca29515b2e8dd3c078503609a1642"
+SRC_URI[bash32-51.md5sum] = "15c6653042e9814aa87120098fc7a849"
+SRC_URI[bash32-51.sha256sum] = "354886097cd95b4def77028f32ee01e2e088d58a98184fede9d3ce9320e218ef"
+SRC_URI[bash32-52.md5sum] = "691023a944bbb9003cc92ad462d91fa1"
+SRC_URI[bash32-52.sha256sum] = "a0eccf9ceda50871db10d21efdd74b99e35efbd55c970c400eeade012816bb61"
