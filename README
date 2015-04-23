@@ -1,3 +1,18 @@
-This is the OpenEmbedded packages metadata repository.
+This is the OpenEmbedded Classic (OE-Classic) metadata repository.
 
-See http://openembedded.org
+WARNING: This version of OpenEmbedded is no longer supported or actively
+developed - it has been replaced by a new model based upon
+OpenEmbedded-Core (OE-Core). Users are strongly encouraged to migrate
+to OE-Core as there will be no further updates to OE-Classic as part of
+the OpenEmbedded project.
+
+The OE-Core repository is available at:
+
+  http://cgit.openembedded.org/openembedded-core/
+  git://git.openembedded.org/openembedded-core
+
+For further details on the differences between OE-Classic and OE-Core,
+please see:
+
+  http://openembedded.org/wiki/OpenEmbedded-Core
+

@@ -1,0 +1,1 @@
+Superseded by openembedded-core - please see the README file for details.
